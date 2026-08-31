@@ -14,13 +14,13 @@ namespace Llyn.Infrastructure;
 /// across all <c>ipa</c> spans. A browser-like User-Agent on the shared <see cref="HttpClient"/> is
 /// required, otherwise Cambridge responds with 403.
 /// </summary>
-public sealed class LSourceCambridge : IPronunciationSource
+public sealed class LSourceCambridge : LSource
 {
-    private static readonly Regex IpaSpanPattern = new(
+    private static readonly Regex LSourceCambridgeIpa = new(
         "<span[^>]*class=\"[^\"]*\\bipa\\b[^\"]*\"[^>]*>",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    private static readonly Regex HeadwordPattern = new(
+    private static readonly Regex LSourceCambridgeHeadword = new(
         "<[^>]*class=\"[^\"]*\\bhw\\b[^\"]*\\bdhw\\b[^\"]*\"[^>]*>(.*?)</",
         RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 
@@ -31,9 +31,9 @@ public sealed class LSourceCambridge : IPronunciationSource
         _lSourceCambridgeClient = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public LookupSource Source => LookupSource.Cambridge;
+    public LOrigin LSourceKind => LOrigin.LOriginCambridge;
 
-    public async Task<PronunciationCandidate?> FindAsync(string word, CancellationToken cancellation)
+    public async Task<LCandidate?> LSourceFind(string word, CancellationToken cancellation)
     {
         if (string.IsNullOrWhiteSpace(word))
         {
@@ -48,15 +48,15 @@ public sealed class LSourceCambridge : IPronunciationSource
             "https://dictionary.cambridge.org/us/dictionary/english/" + escaped
         ];
 
-        string? html = await LSourceReader.ReadAsync(_lSourceCambridgeClient, urls, cancellation)
+        string? html = await LSourceReader.LSourceReaderRead(_lSourceCambridgeClient, urls, cancellation)
             .ConfigureAwait(false);
-        if (html is null || !HasEntry(html, normalized))
+        if (html is null || !LSourceEntryConfirm(html, normalized))
         {
             return null;
         }
 
-        string? phonetic = LPronunciationText.Extract(html, IpaSpanPattern);
-        return string.IsNullOrEmpty(phonetic) ? null : new PronunciationCandidate(Source, phonetic);
+        string? phonetic = LPronunciationText.LPronunciationTextRead(html, LSourceCambridgeIpa);
+        return string.IsNullOrEmpty(phonetic) ? null : new LCandidate(LSourceKind, phonetic);
     }
 
     /// <summary>
@@ -64,11 +64,11 @@ public sealed class LSourceCambridge : IPronunciationSource
     /// a 200 page for unknown words too, and that page carries unrelated IPA (a "Word of the day"
     /// widget), so a headword match guards against returning a stranger's pronunciation.
     /// </summary>
-    private static bool HasEntry(string html, string word)
+    private static bool LSourceEntryConfirm(string html, string word)
     {
-        foreach (Match headword in HeadwordPattern.Matches(html))
+        foreach (Match headword in LSourceCambridgeHeadword.Matches(html))
         {
-            string text = LPronunciationText.Normalize(headword.Groups[1].Value).ToLowerInvariant();
+            string text = LPronunciationText.LPronunciationTextNormalize(headword.Groups[1].Value).ToLowerInvariant();
             if (text == word)
             {
                 return true;

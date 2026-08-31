@@ -14,13 +14,13 @@ namespace Llyn.Infrastructure;
 /// rendered Wiktionary page: several page endpoints are tried with transient-retry, and the IPA is
 /// captured tolerantly so wrapping markup does not defeat it.
 /// </summary>
-public sealed class LSourceWikipedia : IPronunciationSource
+public sealed class LSourceWikipedia : LSource
 {
-    private static readonly Regex IpaTemplatePattern = new(
+    private static readonly Regex LSourceWikipediaTemplate = new(
         @"\{\{IPA\|[^}]*?(/[^/|}]+/|\[[^\]|}]+\])",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    private static readonly Regex IpaSpanPattern = new(
+    private static readonly Regex LSourceWikipediaIpa = new(
         "<span[^>]*class=\"[^\"]*\\bIPA\\b[^\"]*\"[^>]*>",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
@@ -31,22 +31,22 @@ public sealed class LSourceWikipedia : IPronunciationSource
         _lSourceWikipediaClient = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public LookupSource Source => LookupSource.Wikipedia;
+    public LOrigin LSourceKind => LOrigin.LOriginWikipedia;
 
-    public async Task<PronunciationCandidate?> FindAsync(string word, CancellationToken cancellation)
+    public async Task<LCandidate?> LSourceFind(string word, CancellationToken cancellation)
     {
         if (string.IsNullOrWhiteSpace(word))
         {
             return null;
         }
 
-        string? phonetic = await ReadFromApiAsync(word, cancellation).ConfigureAwait(false)
-            ?? await ReadFromPageAsync(word, cancellation).ConfigureAwait(false);
+        string? phonetic = await LSourceApiRead(word, cancellation).ConfigureAwait(false)
+            ?? await LSourcePageRead(word, cancellation).ConfigureAwait(false);
 
-        return string.IsNullOrEmpty(phonetic) ? null : new PronunciationCandidate(Source, phonetic);
+        return string.IsNullOrEmpty(phonetic) ? null : new LCandidate(LSourceKind, phonetic);
     }
 
-    private async Task<string?> ReadFromApiAsync(string word, CancellationToken cancellation)
+    private async Task<string?> LSourceApiRead(string word, CancellationToken cancellation)
     {
         string url =
             "https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page="
@@ -72,8 +72,8 @@ public sealed class LSourceWikipedia : IPronunciationSource
                 return null;
             }
 
-            Match match = IpaTemplatePattern.Match(content.GetString()!);
-            return match.Success ? LPronunciationText.Normalize(match.Groups[1].Value) : null;
+            Match match = LSourceWikipediaTemplate.Match(content.GetString()!);
+            return match.Success ? LPronunciationText.LPronunciationTextNormalize(match.Groups[1].Value) : null;
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
@@ -93,7 +93,7 @@ public sealed class LSourceWikipedia : IPronunciationSource
         }
     }
 
-    private async Task<string?> ReadFromPageAsync(string word, CancellationToken cancellation)
+    private async Task<string?> LSourcePageRead(string word, CancellationToken cancellation)
     {
         string escaped = Uri.EscapeDataString(word);
         string[] urls =
@@ -105,9 +105,9 @@ public sealed class LSourceWikipedia : IPronunciationSource
             "https://en.m.wiktionary.org/wiki/" + escaped
         ];
 
-        string? html = await LSourceReader.ReadAsync(_lSourceWikipediaClient, urls, cancellation)
+        string? html = await LSourceReader.LSourceReaderRead(_lSourceWikipediaClient, urls, cancellation)
             .ConfigureAwait(false);
 
-        return html is null ? null : LPronunciationText.Extract(html, IpaSpanPattern);
+        return html is null ? null : LPronunciationText.LPronunciationTextRead(html, LSourceWikipediaIpa);
     }
 }

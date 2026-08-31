@@ -15,16 +15,16 @@ namespace Llyn.Infrastructure;
 /// </summary>
 internal static class LSourceReader
 {
-    private const int RetryLimit = 2;
+    private const int LSourceReaderRetry = 2;
 
-    public static async Task<string?> ReadAsync(
+    public static async Task<string?> LSourceReaderRead(
         HttpClient client,
         IReadOnlyList<string> urls,
         CancellationToken cancellation)
     {
         foreach (string url in urls)
         {
-            string? body = await ReadOneAsync(client, url, cancellation).ConfigureAwait(false);
+            string? body = await LSourceReaderLoad(client, url, cancellation).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(body))
             {
                 return body;
@@ -34,7 +34,7 @@ internal static class LSourceReader
         return null;
     }
 
-    private static async Task<string?> ReadOneAsync(
+    private static async Task<string?> LSourceReaderLoad(
         HttpClient client,
         string url,
         CancellationToken cancellation)
@@ -52,7 +52,7 @@ internal static class LSourceReader
                     return await response.Content.ReadAsStringAsync(cancellation).ConfigureAwait(false);
                 }
 
-                retryable = IsTransient(response.StatusCode);
+                retryable = LSourceReaderConfirm(response.StatusCode);
             }
             catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
             {
@@ -68,7 +68,7 @@ internal static class LSourceReader
                 retryable = true;
             }
 
-            if (!retryable || attempt >= RetryLimit)
+            if (!retryable || attempt >= LSourceReaderRetry)
             {
                 return null;
             }
@@ -77,7 +77,7 @@ internal static class LSourceReader
         }
     }
 
-    private static bool IsTransient(HttpStatusCode status)
+    private static bool LSourceReaderConfirm(HttpStatusCode status)
     {
         return status == HttpStatusCode.RequestTimeout   // 408
             || status == HttpStatusCode.TooManyRequests  // 429

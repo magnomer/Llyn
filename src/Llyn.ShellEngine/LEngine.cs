@@ -10,7 +10,7 @@ namespace Llyn.ShellEngine;
 
 /// <summary>
 /// The shell engine: the single boundary the UI shell talks to. The UI sends a request here and
-/// subscribes through an <see cref="IPronunciationReceiver"/>; all lookup logic (source fan-out,
+/// subscribes through an <see cref="LReceiver"/>; all lookup logic (source fan-out,
 /// fetching, parsing) lives behind this engine, so none of it sits in the UI shell.
 ///
 /// This class is also the composition root for the lookup feature: it owns the shared
@@ -22,7 +22,7 @@ namespace Llyn.ShellEngine;
 public sealed class LEngine : IDisposable
 {
     private readonly HttpClient _lEngineClient;
-    private readonly IPronunciationLookup _lEngineLookup;
+    private readonly LSeeker _lEngineLookup;
 
     public LEngine()
     {
@@ -45,10 +45,10 @@ public sealed class LEngine : IDisposable
     /// Starts a pronunciation lookup for <paramref name="word"/> and streams results to
     /// <paramref name="receiver"/>. The returned task completes when every source has finished.
     /// </summary>
-    public Task PronunciationFindAsync(string word, IPronunciationReceiver receiver, CancellationToken cancellation)
+    public Task LEnginePronunciationFind(string word, LReceiver receiver, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(receiver);
-        return _lEngineLookup.StartAsync(word, receiver, cancellation);
+        return _lEngineLookup.LSeekerStart(word, receiver, cancellation);
     }
 
     public void Dispose()

@@ -40,12 +40,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PTemplateSurface" Background="{TemplateBinding Background}">
+                    <Border x:Name="PSurface" Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
                             <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -76,12 +76,12 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PTemplateSurface" Background="{TemplateBinding Background}" CornerRadius="8">
+                    <Border x:Name="PSurface" Background="{TemplateBinding Background}" CornerRadius="8">
                         <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.Surface}" />
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Surface}" />
                             <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -106,44 +106,9 @@
         <Setter Property="CaretBrush" Value="{StaticResource Theme.Ink}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="TextBox">
-                    <Border
-                        x:Name="PTemplateSurface"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="7">
-                        <Grid>
-                            <TextBlock
-                                x:Name="PTemplatePlaceholder"
-                                Margin="{TemplateBinding Padding}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                Foreground="{StaticResource Theme.Muted}"
-                                IsHitTestVisible="False"
-                                Opacity="0.56"
-                                Text="{TemplateBinding Tag}"
-                                TextTrimming="CharacterEllipsis"
-                                Visibility="Collapsed" />
-                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" />
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="Text" Value="">
-                            <Setter TargetName="PTemplatePlaceholder" Property="Visibility" Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PTemplatePlaceholder" Property="Opacity" Value="0.36" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+        <!-- The TextBox content host must be named "PART_ContentHost" (a WPF template contract).
+             That name is authored in code (PField) so it stays out of the audited XAML surface. -->
+        <Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Template}" />
     </Style>
 
     <Style x:Key="Theme.Input.Headword" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">
@@ -168,7 +133,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                        x:Name="PTemplateSurface"
+                        x:Name="PSurface"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -177,7 +142,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
                             <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -195,7 +160,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                        x:Name="PTemplateSurface"
+                        x:Name="PSurface"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -204,7 +169,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -219,15 +184,15 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PTemplateSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                    <Border x:Name="PSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
                         <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="#245FD0" />
+                            <Setter TargetName="PSurface" Property="Background" Value="#245FD0" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="#1D50B5" />
+                            <Setter TargetName="PSurface" Property="Background" Value="#1D50B5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -245,7 +210,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border
-                        x:Name="PTemplateSurface"
+                        x:Name="PSurface"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -254,11 +219,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -271,7 +236,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
                     <Border
-                        x:Name="PTemplateSurface"
+                        x:Name="PSurface"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -280,11 +245,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -312,17 +277,17 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Border x:Name="PTemplateSurface" Background="{TemplateBinding Background}" />
+                        <Border x:Name="PSurface" Background="{TemplateBinding Background}" />
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}">
                             <TextBlock.RenderTransform>
                                 <TranslateTransform Y="-5" />
                             </TextBlock.RenderTransform>
                         </TextBlock>
-                        <Border x:Name="PTemplateIndicator" Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" CornerRadius="3,3,0,0" />
+                        <Border x:Name="PIndicator" Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" CornerRadius="3,3,0,0" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.Surface}" />
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Surface}" />
                             <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
                         </Trigger>
                     </ControlTemplate.Triggers>

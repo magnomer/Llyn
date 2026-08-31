@@ -14,24 +14,24 @@ namespace Llyn.Infrastructure;
 /// </summary>
 internal static class LPronunciationText
 {
-    private static readonly Regex TagPattern = new("<[^>]+>", RegexOptions.Compiled);
+    private static readonly Regex LPronunciationTextPattern = new("<[^>]+>", RegexOptions.Compiled);
 
     /// <summary>
     /// Returns the first non-empty normalized phonetic found by <paramref name="openPattern"/>
     /// (which must match an IPA element's opening tag) across all matches in
     /// <paramref name="html"/>, or <c>null</c> when none qualifies.
     /// </summary>
-    public static string? Extract(string html, Regex openPattern)
+    public static string? LPronunciationTextRead(string html, Regex openPattern)
     {
         foreach (Match open in openPattern.Matches(html))
         {
-            string? inner = ReadSpanInner(html, open.Index + open.Length);
+            string? inner = LPronunciationTextScan(html, open.Index + open.Length);
             if (inner is null)
             {
                 continue;
             }
 
-            string phonetic = Normalize(TagPattern.Replace(inner, string.Empty));
+            string phonetic = LPronunciationTextNormalize(LPronunciationTextPattern.Replace(inner, string.Empty));
             if (phonetic.Length > 0)
             {
                 return phonetic;
@@ -45,7 +45,7 @@ internal static class LPronunciationText
     /// Decodes HTML entities and strips enclosing IPA delimiters, so the caller stores just the
     /// phonetic characters. The UI supplies its own surrounding brackets.
     /// </summary>
-    public static string Normalize(string raw)
+    public static string LPronunciationTextNormalize(string raw)
     {
         string decoded = WebUtility.HtmlDecode(raw).Trim();
         return decoded.Trim('/', '[', ']', '(', ')').Trim();
@@ -56,7 +56,7 @@ internal static class LPronunciationText
     /// the matching <c>&lt;/span&gt;</c> while accounting for nested spans, or <c>null</c> when the
     /// close is never found.
     /// </summary>
-    private static string? ReadSpanInner(string html, int start)
+    private static string? LPronunciationTextScan(string html, int start)
     {
         int depth = 1;
         int index = start;
@@ -69,7 +69,7 @@ internal static class LPronunciationText
                 return null;
             }
 
-            if (MatchesAt(html, next, "</span"))
+            if (LPronunciationTextMatch(html, next, "</span"))
             {
                 depth--;
                 if (depth == 0)
@@ -79,7 +79,7 @@ internal static class LPronunciationText
 
                 index = next + 6;
             }
-            else if (MatchesAt(html, next, "<span"))
+            else if (LPronunciationTextMatch(html, next, "<span"))
             {
                 depth++;
                 index = next + 5;
@@ -93,7 +93,7 @@ internal static class LPronunciationText
         return null;
     }
 
-    private static bool MatchesAt(string html, int index, string token)
+    private static bool LPronunciationTextMatch(string html, int index, string token)
     {
         return index + token.Length <= html.Length
             && string.Compare(html, index, token, 0, token.Length, StringComparison.OrdinalIgnoreCase) == 0;

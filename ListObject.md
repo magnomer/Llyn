@@ -6,8 +6,10 @@ This registry records the codebase-owned object bases used by the UI scaffold. A
 |---|---|---|
 | Bootstrap | Logic | WPF application startup object |
 | Brand | UI mother | Branding region in the roof |
+| Candidate | Logic | One pronunciation candidate from a lookup source |
 | Caption | UI mother | Custom window-caption region |
-| DualPanel | UI mother | Side-by-side comparison panel |
+| Card | UI mother | Sense/collocation entry card: its header controls, including the remove button |
+| Duplex | UI mother | Side-by-side comparison panel |
 | Establishment | UI mother | Program status region |
 | Favorite | UI mother | Favorite entries panel |
 | Headline | UI terminal | Product name within the brand |

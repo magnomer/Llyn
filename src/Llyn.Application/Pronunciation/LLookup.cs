@@ -11,23 +11,23 @@ namespace Llyn.Application;
 /// result back to the receiver as it arrives. One slow or failing source never blocks or fails the
 /// others; the lookup reports complete once all sources have finished.
 /// </summary>
-public sealed class LLookup : IPronunciationLookup
+public sealed class LLookup : LSeeker
 {
-    private readonly IReadOnlyList<IPronunciationSource> _lLookupSources;
+    private readonly IReadOnlyList<LSource> _lLookupSources;
 
-    public LLookup(IReadOnlyList<IPronunciationSource> sources)
+    public LLookup(IReadOnlyList<LSource> sources)
     {
         _lLookupSources = sources ?? throw new ArgumentNullException(nameof(sources));
     }
 
-    public async Task StartAsync(string word, IPronunciationReceiver receiver, CancellationToken cancellation)
+    public async Task LSeekerStart(string word, LReceiver receiver, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(receiver);
 
         List<Task> pending = new(_lLookupSources.Count);
-        foreach (IPronunciationSource source in _lLookupSources)
+        foreach (LSource source in _lLookupSources)
         {
-            pending.Add(RunSourceAsync(source, word, receiver, cancellation));
+            pending.Add(LLookupSourceRun(source, word, receiver, cancellation));
         }
 
         try
@@ -38,23 +38,23 @@ public sealed class LLookup : IPronunciationLookup
         {
             if (!cancellation.IsCancellationRequested)
             {
-                receiver.LookupStop();
+                receiver.LReceiverLookupFinish();
             }
         }
     }
 
-    private static async Task RunSourceAsync(
-        IPronunciationSource source,
+    private static async Task LLookupSourceRun(
+        LSource source,
         string word,
-        IPronunciationReceiver receiver,
+        LReceiver receiver,
         CancellationToken cancellation)
     {
-        receiver.SourceStart(source.Source);
+        receiver.LReceiverSourceStart(source.LSourceKind);
 
-        PronunciationCandidate? candidate;
+        LCandidate? candidate;
         try
         {
-            candidate = await source.FindAsync(word, cancellation).ConfigureAwait(false);
+            candidate = await source.LSourceFind(word, cancellation).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
@@ -68,7 +68,7 @@ public sealed class LLookup : IPronunciationLookup
 
         if (candidate is not null && !cancellation.IsCancellationRequested)
         {
-            receiver.CandidateAdd(candidate);
+            receiver.LReceiverCandidateAdd(candidate);
         }
     }
 }

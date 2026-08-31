@@ -1,28 +1,100 @@
-# Local helper scripts
-auditlines.ps1
-auditnames.ps1
-build.ps1
-clean.ps1
-codegraph.ps1
-debug.ps1
-gitdownload.ps1
-run.ps1
-syncnames.ps1
-test.ps1
-version.ps1
-zip.ps1
-
-# Helper-generated local state
-.name-registry.json
-docs-internal/
-docs-work/
+# Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Dd]ebug/
+[Pp]ublish/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
 build/
-debug/
-run/
-snapshots/
+bld/
+artifacts/
+tmp/
+/temp/
+.verify-build/
+/run/
 
-# .NET / IDE output
-**/bin/
-**/obj/
+# Published / packaged binaries
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+
+# Visual Studio / Rider / VS Code
 .vs/
-TestResults/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.rsuser
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+project.lock.json
+project.fragment.lock.json
+
+# Test and coverage output
+[Tt]est[Rr]esult*/
+coverage/
+coverage*.json
+coverage*.xml
+*.coverage
+*.coveragexml
+
+# Logs, temporary files, and generated intermediates
+[Ll]og/
+[Ll]ogs/
+*.log
+*.tmp
+*.temp
+*.tmp_proj
+*_wpftmp.csproj
+*.cache
+*.dll
+*.exe
+*.pdb
+*.deps.json
+*.runtimeconfig.json
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.ipdb
+*.pch
+__pycache__/
+*.py[cod]
+
+# OS metadata
+[Dd]esktop.ini
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+
+# AI / local project state
+.agents/
+.claude/
+.codegraph/
+.codex/
+
+# Project-internal material
+/docs-internal/
+/docs-work/
+/snapshots/
+/import/
+/gitdownload.json
+
+# Build-lifecycle helper scripts
+/*.ps1
+
+# Temporary gitignore
+/docs/

@@ -6,7 +6,7 @@ This document defines the overall UI structure and internal naming of Llyn.
 
 It covers the principal regions of the program window and the relationship between navigation elements and the panels displayed in the main content area.
 
-The internal structure of individual panels such as `PInput`, `PList`, `PSound`, `PTag`, `PSituation`, `PFavorite`, `PDualPanel`, and `PSettings` is defined separately.
+The internal structure of individual panels such as `PInput`, `PList`, `PSound`, `PTag`, `PSituation`, `PFavorite`, `PDuplex`, and `PSettings` is defined separately.
 
 ---
 
@@ -143,7 +143,7 @@ PNavigationSound        -> PSound
 PNavigationTag          -> PTag
 PNavigationSituation    -> PSituation
 PNavigationFavorite     -> PFavorite
-PNavigationDualpanel    -> PDualPanel
+PNavigationDuplex    -> PDuplex
 PNavigationSettings     -> PSettings
 ```
 
@@ -164,7 +164,7 @@ PSound
 PTag
 PSituation
 PFavorite
-PDualPanel
+PDuplex
 PSettings
 ```
 
@@ -208,9 +208,9 @@ It displays the list of favorite items.
 
 Its internal design is defined separately.
 
-## PDualPanel
+## PDuplex
 
-`PDualPanel` is opened through `PNavigationDualpanel`.
+`PDuplex` is opened through `PNavigationDuplex`.
 
 It offers a side-by-side comparison interface.
 
@@ -258,7 +258,7 @@ PWindow
 │   │   ├── PNavigationTag         -> PTag
 │   │   ├── PNavigationSituation   -> PSituation
 │   │   ├── PNavigationFavorite    -> PFavorite
-│   │   ├── PNavigationDualpanel   -> PDualPanel
+│   │   ├── PNavigationDuplex   -> PDuplex
 │   │   └── PNavigationSettings    -> PSettings
 │   │
 │   └── PPanel
@@ -268,7 +268,7 @@ PWindow
 │       ├── PTag
 │       ├── PSituation
 │       ├── PFavorite
-│       ├── PDualPanel
+│       ├── PDuplex
 │       └── PSettings
 │
 └── PEstablishment
@@ -341,7 +341,7 @@ PSound
 PTag
 PSituation
 PFavorite
-PDualPanel
+PDuplex
 PSettings
 ```
 

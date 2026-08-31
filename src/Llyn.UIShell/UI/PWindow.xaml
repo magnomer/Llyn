@@ -26,7 +26,7 @@
                 x:Name="PRoof"
                 Grid.Row="0"
                 Background="{StaticResource Theme.Roof}"
-                MouseLeftButtonDown="PRoof_OnMouseLeftButtonDown">
+                MouseLeftButtonDown="PRoofHandle">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -63,13 +63,13 @@
                 </Grid>
 
                 <StackPanel x:Name="PCaption" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
-                    <Button x:Name="PCaptionMinimize" Click="PCaptionMinimize_OnClick" Style="{StaticResource Theme.Caption.Button}" ToolTip="{DynamicResource Caption.Minimize}">
+                    <Button x:Name="PCaptionMinimize" Click="PCaptionMinimizeHandle" Style="{StaticResource Theme.Caption.Button}" ToolTip="{DynamicResource Caption.Minimize}">
                         <Path Width="10" Data="M 0,0 L 10,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
                     </Button>
-                    <Button x:Name="PCaptionMaximize" Click="PCaptionMaximize_OnClick" Style="{StaticResource Theme.Caption.Button}" ToolTip="{DynamicResource Caption.Maximize}">
+                    <Button x:Name="PCaptionMaximize" Click="PCaptionMaximizeHandle" Style="{StaticResource Theme.Caption.Button}" ToolTip="{DynamicResource Caption.Maximize}">
                         <Rectangle Width="10" Height="9" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
                     </Button>
-                    <Button x:Name="PCaptionClose" Click="PCaptionClose_OnClick" Style="{StaticResource Theme.Caption.Close}" ToolTip="{DynamicResource Caption.Close}">
+                    <Button x:Name="PCaptionExit" Click="PCaptionExitHandle" Style="{StaticResource Theme.Caption.Close}" ToolTip="{DynamicResource Caption.Close}">
                         <Path Width="10" Height="10" Data="M 0,0 L 10,10 M 10,0 L 0,10" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
                     </Button>
                 </StackPanel>
@@ -89,16 +89,16 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel>
-                            <Button x:Name="PNavigationInput" Style="{StaticResource Theme.Navigation.Selected}" Content="{DynamicResource Navigation.Input}" Click="PNavigation_OnClick" />
-                            <Button x:Name="PNavigationList" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.List}" Click="PNavigation_OnClick" />
-                            <Button x:Name="PNavigationSound" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Sound}" Click="PNavigation_OnClick" />
-                            <Button x:Name="PNavigationTag" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Tag}" Click="PNavigation_OnClick" />
-                            <Button x:Name="PNavigationSituation" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Situation}" Click="PNavigation_OnClick" />
-                            <Button x:Name="PNavigationFavorite" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Favorite}" Click="PNavigation_OnClick" />
-                            <Button x:Name="PNavigationDualpanel" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.DualPanel}" Click="PNavigation_OnClick" />
+                            <Button x:Name="PNavigationInput" Style="{StaticResource Theme.Navigation.Selected}" Content="{DynamicResource Navigation.Input}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationList" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.List}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationSound" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Sound}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationTag" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Tag}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationSituation" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Situation}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationFavorite" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Favorite}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationDuplex" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.DualPanel}" Click="PNavigationHandle" />
                         </StackPanel>
 
-                        <Button x:Name="PNavigationSettings" Grid.Row="1" Margin="12,8,12,16" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Settings}" Click="PNavigation_OnClick" />
+                        <Button x:Name="PNavigationSettings" Grid.Row="1" Margin="12,8,12,16" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Settings}" Click="PNavigationHandle" />
                     </Grid>
                 </Border>
 
@@ -190,7 +190,7 @@
                                     <TextBlock VerticalAlignment="Center" Text="Discard" />
                                 </StackPanel>
                             </Button>
-                            <Button x:Name="PSave" Grid.Column="4" Width="162" Height="51" Style="{StaticResource Theme.Input.Primary}">
+                            <Button x:Name="PStore" Grid.Column="4" Width="162" Height="51" Style="{StaticResource Theme.Input.Primary}">
                                 <StackPanel Orientation="Horizontal">
                                     <Path Width="15" Height="15" Margin="0,0,9,0" Data="M 1,1 L 12,1 L 14,3 L 14,14 L 1,14 Z M 4,1 L 4,6 L 11,6 L 11,1 M 4,10 L 11,10 L 11,14 L 4,14 Z" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeThickness="1.3" />
                                     <TextBlock VerticalAlignment="Center" Foreground="White" Text="Save entry" />
@@ -219,12 +219,12 @@
                                 </Grid>
                             </Border>
 
-                            <Button x:Name="PPlay" Grid.Column="1" Width="56" Height="49" Margin="13,0,0,0" Background="{StaticResource Theme.AccentSoft}" BorderBrush="{StaticResource Theme.AccentSoft}" Foreground="{StaticResource Theme.Accent}" Style="{StaticResource Theme.Input.Action}">
+                            <Button x:Name="PPlayback" Grid.Column="1" Width="56" Height="49" Margin="13,0,0,0" Background="{StaticResource Theme.AccentSoft}" BorderBrush="{StaticResource Theme.AccentSoft}" Foreground="{StaticResource Theme.Accent}" Style="{StaticResource Theme.Input.Action}">
                                 <Path Width="13" Height="15" Data="M 1,1 L 12,7.5 L 1,14 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Fill" />
                             </Button>
 
                             <Grid Grid.Column="2" Margin="15,0,0,0">
-                                <ToggleButton x:Name="PLookup" Width="136" Height="49" Padding="16,0" Checked="PLookup_OnChecked" Unchecked="PLookup_OnUnchecked" Style="{StaticResource Theme.Input.ToggleAction}">
+                                <ToggleButton x:Name="PLookup" Width="136" Height="49" Padding="16,0" Checked="PLookupCheckedHandle" Unchecked="PLookupUncheckedHandle" Style="{StaticResource Theme.Input.ToggleAction}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
@@ -257,9 +257,9 @@
                                                                 <ColumnDefinition Width="*" />
                                                                 <ColumnDefinition Width="Auto" />
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Margin="2,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SourceLabel}" />
-                                                            <TextBlock x:Name="PLookupMenuItem" Grid.Column="1" Margin="12,0" VerticalAlignment="Center" Foreground="{StaticResource Theme.Ink}" Text="{Binding Phonetic}" TextTrimming="CharacterEllipsis" />
-                                                            <RadioButton x:Name="PLookupMenuSelector" Grid.Column="2" VerticalAlignment="Center" Click="PLookupMenuSelector_OnClick" Content="{DynamicResource Lookup.Select}" GroupName="PLookupMenuSelector" />
+                                                            <TextBlock Margin="2,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding PLookupCandidateSource}" />
+                                                            <TextBlock x:Name="PLookupMenuItem" Grid.Column="1" Margin="12,0" VerticalAlignment="Center" Foreground="{StaticResource Theme.Ink}" Text="{Binding PLookupCandidatePhonetic}" TextTrimming="CharacterEllipsis" />
+                                                            <RadioButton x:Name="PLookupMenuSelector" Grid.Column="2" VerticalAlignment="Center" Click="PLookupMenuHandle" Content="{DynamicResource Lookup.Select}" GroupName="PLookupMenuSelector" />
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -276,9 +276,9 @@
 
                         <Border Grid.Row="2" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
                             <StackPanel x:Name="PStack" Margin="29,0,0,0" Orientation="Horizontal">
-                                <Button x:Name="PStackMeaning" Content="Meaning" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab.Selected}" />
-                                <Button x:Name="PStackCollocation" Content="Collocation" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
-                                <Button x:Name="PStackNote" Content="Note" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
+                                <Button x:Name="PStackMeaning" Content="Meaning" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab.Selected}" />
+                                <Button x:Name="PStackCollocation" Content="Collocation" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                                <Button x:Name="PStackNote" Content="Note" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
                             </StackPanel>
                         </Border>
 
@@ -313,10 +313,10 @@
                                                                         <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
                                                                     </UniformGrid>
                                                                     <Border Grid.Column="1" Width="28" Height="28" Background="{StaticResource Theme.AccentSoft}" CornerRadius="14">
-                                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding Order}" />
+                                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding PInputCardOrder}" />
                                                                     </Border>
-                                                                    <TextBlock Grid.Column="2" Margin="23,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding Title}" />
-                                                                    <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardRemove_OnClick" Style="{StaticResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
+                                                                    <TextBlock Grid.Column="2" Margin="23,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding PInputCardTitle}" />
+                                                                    <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardHandle" Style="{StaticResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
                                                                         <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stretch="Fill" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
                                                                     </Button>
                                                                 </Grid>
@@ -394,7 +394,7 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
 
-                                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PAddSense_OnClick">
+                                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PSenseHandle">
                                             <StackPanel Orientation="Horizontal">
                                                 <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
                                                     <Grid>
@@ -444,10 +444,10 @@
                                                                         <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
                                                                     </UniformGrid>
                                                                     <Border Grid.Column="1" Width="28" Height="28" Background="{StaticResource Theme.AccentSoft}" CornerRadius="14">
-                                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding Order}" />
+                                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding PInputCardOrder}" />
                                                                     </Border>
-                                                                    <TextBlock Grid.Column="2" Margin="23,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding Title}" />
-                                                                    <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardRemove_OnClick" Style="{StaticResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
+                                                                    <TextBlock Grid.Column="2" Margin="23,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding PInputCardTitle}" />
+                                                                    <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardHandle" Style="{StaticResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
                                                                         <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
                                                                     </Button>
                                                                 </Grid>
@@ -478,7 +478,7 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
 
-                                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PAddCollocation_OnClick">
+                                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PCollocationHandle">
                                             <StackPanel Orientation="Horizontal">
                                                 <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
                                                     <Grid>
@@ -512,7 +512,7 @@
                                         <Border Grid.Row="1" Margin="22,18,22,22" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="7">
                                             <Grid>
                                                 <TextBlock x:Name="PNotePlaceholder" Margin="14,12" Foreground="{StaticResource Theme.Muted}" IsHitTestVisible="False" Opacity="0.56" Text="Write a note about this entry" />
-                                                <RichTextBox x:Name="PNoteContents" Padding="10,6" Background="Transparent" BorderThickness="0" TextChanged="PNoteContents_OnTextChanged" />
+                                                <RichTextBox x:Name="PNoteContents" Padding="10,6" Background="Transparent" BorderThickness="0" TextChanged="PNoteContentsHandle" />
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -526,11 +526,11 @@
                     <Grid x:Name="PTag" Visibility="Collapsed" />
                     <Grid x:Name="PSituation" Visibility="Collapsed" />
                     <Grid x:Name="PFavorite" Visibility="Collapsed" />
-                    <Grid x:Name="PDualPanel" Visibility="Collapsed" />
+                    <Grid x:Name="PDuplex" Visibility="Collapsed" />
                     <Grid x:Name="PSettings" Visibility="Collapsed">
                         <StackPanel Margin="32" HorizontalAlignment="Left" VerticalAlignment="Top">
                             <TextBlock FontSize="18" FontWeight="SemiBold" Text="{DynamicResource Settings.Localization}" />
-                            <ComboBox x:Name="PLocalization" Width="240" Margin="0,12,0,0" HorizontalAlignment="Left" SelectedValuePath="Tag" SelectionChanged="PLocalization_OnSelectionChanged">
+                            <ComboBox x:Name="PLocalization" Width="240" Margin="0,12,0,0" HorizontalAlignment="Left" SelectedValuePath="Tag" SelectionChanged="PLocalizationHandle">
                                 <ComboBoxItem Content="English" Tag="en" />
                                 <ComboBoxItem Content="한국어" Tag="ko" />
                             </ComboBox>

@@ -6,14 +6,14 @@ namespace Llyn.Core;
 /// arrives, and the lookup reports once when all sources have finished. Callbacks may arrive on
 /// background threads; an implementation that touches UI is responsible for marshalling.
 /// </summary>
-public interface IPronunciationReceiver
+public interface LReceiver
 {
     /// <summary>A source has begun searching.</summary>
-    void SourceStart(LookupSource source);
+    void LReceiverSourceStart(LOrigin source);
 
     /// <summary>A candidate has arrived from a source.</summary>
-    void CandidateAdd(PronunciationCandidate candidate);
+    void LReceiverCandidateAdd(LCandidate candidate);
 
     /// <summary>Every source has finished; no further callbacks follow.</summary>
-    void LookupStop();
+    void LReceiverLookupFinish();
 }

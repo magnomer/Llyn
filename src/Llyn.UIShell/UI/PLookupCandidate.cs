@@ -4,17 +4,17 @@ namespace Llyn.UIShell;
 
 /// <summary>
 /// Presentation item for one pronunciation candidate shown in <c>PLookupMenu</c>. Wraps the domain
-/// <see cref="PronunciationCandidate"/> with the localized source label the menu row displays.
+/// <see cref="LCandidate"/> with the localized source label the menu row displays.
 /// </summary>
 internal sealed class PLookupCandidate
 {
-    internal PLookupCandidate(PronunciationCandidate candidate, string sourceLabel)
+    internal PLookupCandidate(LCandidate candidate, string sourceLabel)
     {
-        SourceLabel = sourceLabel;
-        Phonetic = candidate.Phonetic;
+        PLookupCandidateSource = sourceLabel;
+        PLookupCandidatePhonetic = candidate.LCandidatePhonetic;
     }
 
-    public string SourceLabel { get; }
+    public string PLookupCandidateSource { get; }
 
-    public string Phonetic { get; }
+    public string PLookupCandidatePhonetic { get; }
 }

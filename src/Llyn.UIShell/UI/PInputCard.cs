@@ -4,36 +4,36 @@ namespace Llyn.UIShell;
 
 internal sealed class PInputCard : INotifyPropertyChanged
 {
-    private readonly string _prefix;
-    private int _order;
+    private readonly string _pInputCardPrefix;
+    private int _pInputCardOrder;
 
     internal PInputCard(string prefix, int order)
     {
-        _prefix = prefix;
-        _order = order;
+        _pInputCardPrefix = prefix;
+        _pInputCardOrder = order;
     }
 
-    public int Order
+    public int PInputCardOrder
     {
-        get => _order;
+        get => _pInputCardOrder;
         set
         {
-            if (_order == value)
+            if (_pInputCardOrder == value)
             {
                 return;
             }
 
-            _order = value;
-            Raise(nameof(Order));
-            Raise(nameof(Title));
+            _pInputCardOrder = value;
+            PInputCardRaise(nameof(PInputCardOrder));
+            PInputCardRaise(nameof(PInputCardTitle));
         }
     }
 
-    public string Title => $"{_prefix} {_order}";
+    public string PInputCardTitle => $"{_pInputCardPrefix} {_pInputCardOrder}";
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void Raise(string propertyName)
+    private void PInputCardRaise(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

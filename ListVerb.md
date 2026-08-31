@@ -1,3 +1,7 @@
 # Bare Verb Registry
 
-The presentation-only scaffold declares no codebase-owned executable behavior. No bare verbs are registered yet.
+| Bare verb | Meaning |
+|---|---|
+| Find | Locate and return a value, or null when absent |
+| Confirm | Report whether a condition holds, returning true when confirmed |
+| Raise | Emit an event to its subscribers |

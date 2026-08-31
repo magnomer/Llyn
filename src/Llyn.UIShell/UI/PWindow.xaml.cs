@@ -11,46 +11,46 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PWindow : Window, IPronunciationReceiver
+public partial class PWindow : Window, LReceiver
 {
-    private readonly ObservableCollection<PInputCard> _senses = [];
-    private readonly ObservableCollection<PInputCard> _collocations = [];
-    private readonly ObservableCollection<PLookupCandidate> _lookupCandidates = [];
-    private readonly LEngine _engine = new();
-    private CancellationTokenSource? _lookupCancellation;
-    private bool _lookupSearching;
+    private readonly ObservableCollection<PInputCard> _pSenseList = [];
+    private readonly ObservableCollection<PInputCard> _pCollocationList = [];
+    private readonly ObservableCollection<PLookupCandidate> _pLookupCandidate = [];
+    private readonly LEngine _lEngine = new();
+    private CancellationTokenSource? _lLookupCancellation;
+    private bool _lLookupSearching;
 
     public PWindow()
     {
         InitializeComponent();
-        PLocalization.SelectedValue = PLocalizationLoader.DefaultLanguage;
+        PLocalization.SelectedValue = PLocalizationLoader.PLocalizationLoaderLanguage;
 
-        PSenseList.ItemsSource = _senses;
-        PCollocationList.ItemsSource = _collocations;
-        PLookupMenuList.ItemsSource = _lookupCandidates;
+        PSenseList.ItemsSource = _pSenseList;
+        PCollocationList.ItemsSource = _pCollocationList;
+        PLookupMenuList.ItemsSource = _pLookupCandidate;
 
-        _senses.Add(new PInputCard("Sense", 1));
-        _collocations.Add(new PInputCard("Collocation", 1));
+        _pSenseList.Add(new PInputCard("Sense", 1));
+        _pCollocationList.Add(new PInputCard("Collocation", 1));
 
-        Closed += PWindow_OnClosed;
+        Closed += PWindowExitHandle;
     }
 
-    private void PCaptionMinimize_OnClick(object sender, RoutedEventArgs e)
+    private void PCaptionMinimizeHandle(object sender, RoutedEventArgs e)
     {
         SystemCommands.MinimizeWindow(this);
     }
 
-    private void PCaptionMaximize_OnClick(object sender, RoutedEventArgs e)
+    private void PCaptionMaximizeHandle(object sender, RoutedEventArgs e)
     {
-        ToggleMaximizedState();
+        PWindowMaximizeToggle();
     }
 
-    private void PCaptionClose_OnClick(object sender, RoutedEventArgs e)
+    private void PCaptionExitHandle(object sender, RoutedEventArgs e)
     {
         SystemCommands.CloseWindow(this);
     }
 
-    private void PNavigation_OnClick(object sender, RoutedEventArgs e)
+    private void PNavigationHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not Button selectedButton)
         {
@@ -65,7 +65,7 @@ public partial class PWindow : Window, IPronunciationReceiver
             (PNavigationTag, PTag),
             (PNavigationSituation, PSituation),
             (PNavigationFavorite, PFavorite),
-            (PNavigationDualpanel, PDualPanel),
+            (PNavigationDuplex, PDuplex),
             (PNavigationSettings, PSettings)
         ];
 
@@ -78,7 +78,7 @@ public partial class PWindow : Window, IPronunciationReceiver
         }
     }
 
-    private void PStack_OnClick(object sender, RoutedEventArgs e)
+    private void PStackHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not Button selectedButton)
         {
@@ -101,7 +101,7 @@ public partial class PWindow : Window, IPronunciationReceiver
         }
     }
 
-    private void PCardRemove_OnClick(object sender, RoutedEventArgs e)
+    private void PCardHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PInputCard card })
         {
@@ -109,8 +109,8 @@ public partial class PWindow : Window, IPronunciationReceiver
         }
 
         ObservableCollection<PInputCard>? list =
-            _senses.Contains(card) ? _senses :
-            _collocations.Contains(card) ? _collocations :
+            _pSenseList.Contains(card) ? _pSenseList :
+            _pCollocationList.Contains(card) ? _pCollocationList :
             null;
 
         if (list is null || list.Count <= 1)
@@ -119,28 +119,28 @@ public partial class PWindow : Window, IPronunciationReceiver
         }
 
         list.Remove(card);
-        Renumber(list);
+        PInputOrderUpdate(list);
     }
 
-    private void PAddSense_OnClick(object sender, RoutedEventArgs e)
+    private void PSenseHandle(object sender, RoutedEventArgs e)
     {
-        _senses.Add(new PInputCard("Sense", _senses.Count + 1));
+        _pSenseList.Add(new PInputCard("Sense", _pSenseList.Count + 1));
     }
 
-    private void PAddCollocation_OnClick(object sender, RoutedEventArgs e)
+    private void PCollocationHandle(object sender, RoutedEventArgs e)
     {
-        _collocations.Add(new PInputCard("Collocation", _collocations.Count + 1));
+        _pCollocationList.Add(new PInputCard("Collocation", _pCollocationList.Count + 1));
     }
 
-    private static void Renumber(ObservableCollection<PInputCard> list)
+    private static void PInputOrderUpdate(ObservableCollection<PInputCard> list)
     {
         for (int index = 0; index < list.Count; index++)
         {
-            list[index].Order = index + 1;
+            list[index].PInputCardOrder = index + 1;
         }
     }
 
-    private void PNoteContents_OnTextChanged(object sender, TextChangedEventArgs e)
+    private void PNoteContentsHandle(object sender, TextChangedEventArgs e)
     {
         if (PNotePlaceholder is null || PNoteContents is null)
         {
@@ -153,31 +153,31 @@ public partial class PWindow : Window, IPronunciationReceiver
             : Visibility.Collapsed;
     }
 
-    private void PLocalization_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void PLocalizationHandle(object sender, SelectionChangedEventArgs e)
     {
         if (PLocalization.SelectedValue is string language)
         {
-            PLocalizationLoader.Apply(System.Windows.Application.Current.Resources, language);
+            PLocalizationLoader.PLocalizationLoaderApply(System.Windows.Application.Current.Resources, language);
         }
     }
 
-    private void PRoof_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void PRoofHandle(object sender, MouseButtonEventArgs e)
     {
         if (e.ClickCount == 2)
         {
-            ToggleMaximizedState();
+            PWindowMaximizeToggle();
             return;
         }
 
         if (WindowState == WindowState.Maximized)
         {
-            RestoreWindowAtPointer(e);
+            PWindowPointerRestore(e);
         }
 
         DragMove();
     }
 
-    private void ToggleMaximizedState()
+    private void PWindowMaximizeToggle()
     {
         if (WindowState == WindowState.Maximized)
         {
@@ -189,7 +189,7 @@ public partial class PWindow : Window, IPronunciationReceiver
         }
     }
 
-    private void RestoreWindowAtPointer(MouseButtonEventArgs e)
+    private void PWindowPointerRestore(MouseButtonEventArgs e)
     {
         Point pointerInWindow = e.GetPosition(this);
         Point pointerOnScreen = PointToScreen(pointerInWindow);
@@ -210,47 +210,47 @@ public partial class PWindow : Window, IPronunciationReceiver
         Top = pointerOnScreen.Y - Math.Min(pointerInWindow.Y, PRoof.ActualHeight / 2);
     }
 
-    private async void PLookup_OnChecked(object sender, RoutedEventArgs e)
+    private async void PLookupCheckedHandle(object sender, RoutedEventArgs e)
     {
-        await StartLookup();
+        await PLookupStart();
     }
 
-    private void PLookup_OnUnchecked(object sender, RoutedEventArgs e)
+    private void PLookupUncheckedHandle(object sender, RoutedEventArgs e)
     {
-        CancelLookup();
+        PLookupCancel();
     }
 
-    private void PLookupMenuSelector_OnClick(object sender, RoutedEventArgs e)
+    private void PLookupMenuHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PLookupCandidate candidate })
         {
             return;
         }
 
-        PPronunciation.Text = candidate.Phonetic;
+        PPronunciation.Text = candidate.PLookupCandidatePhonetic;
         PLookup.IsChecked = false;
     }
 
-    private async Task StartLookup()
+    private async Task PLookupStart()
     {
-        CancelLookup();
+        PLookupCancel();
 
         string word = PHeadword.Text?.Trim() ?? string.Empty;
-        _lookupCandidates.Clear();
-        _lookupSearching = word.Length > 0;
-        UpdateLookupStatus();
+        _pLookupCandidate.Clear();
+        _lLookupSearching = word.Length > 0;
+        PLookupStatusUpdate();
 
         if (word.Length == 0)
         {
             return;
         }
 
-        _lookupCancellation = new CancellationTokenSource();
-        CancellationToken token = _lookupCancellation.Token;
+        _lLookupCancellation = new CancellationTokenSource();
+        CancellationToken token = _lLookupCancellation.Token;
 
         try
         {
-            await _engine.PronunciationFindAsync(word, this, token);
+            await _lEngine.LEnginePronunciationFind(word, this, token);
         }
         catch (OperationCanceledException)
         {
@@ -260,32 +260,32 @@ public partial class PWindow : Window, IPronunciationReceiver
         {
             if (!token.IsCancellationRequested)
             {
-                _lookupSearching = false;
-                UpdateLookupStatus();
+                _lLookupSearching = false;
+                PLookupStatusUpdate();
             }
         }
     }
 
-    private void CancelLookup()
+    private void PLookupCancel()
     {
-        _lookupCancellation?.Cancel();
-        _lookupCancellation?.Dispose();
-        _lookupCancellation = null;
+        _lLookupCancellation?.Cancel();
+        _lLookupCancellation?.Dispose();
+        _lLookupCancellation = null;
     }
 
-    private void UpdateLookupStatus()
+    private void PLookupStatusUpdate()
     {
-        bool hasCandidates = _lookupCandidates.Count > 0;
+        bool hasCandidates = _pLookupCandidate.Count > 0;
         PLookupMenuList.Visibility = hasCandidates ? Visibility.Visible : Visibility.Collapsed;
 
-        if (_lookupSearching && !hasCandidates)
+        if (_lLookupSearching && !hasCandidates)
         {
-            PLookupMenuStatus.Text = ReadText("Lookup.Searching");
+            PLookupMenuStatus.Text = PLocalizationTextRead("Lookup.Searching");
             PLookupMenuStatus.Visibility = Visibility.Visible;
         }
-        else if (!_lookupSearching && !hasCandidates)
+        else if (!_lLookupSearching && !hasCandidates)
         {
-            PLookupMenuStatus.Text = ReadText("Lookup.Empty");
+            PLookupMenuStatus.Text = PLocalizationTextRead("Lookup.Empty");
             PLookupMenuStatus.Visibility = Visibility.Visible;
         }
         else
@@ -294,43 +294,49 @@ public partial class PWindow : Window, IPronunciationReceiver
         }
     }
 
-    private string ReadSourceLabel(LookupSource source)
+    private string PLookupSourceRead(LOrigin source)
     {
-        return ReadText("Lookup.Source" + source);
+        string name = source switch
+        {
+            LOrigin.LOriginWikipedia => "Wikipedia",
+            LOrigin.LOriginCambridge => "Cambridge",
+            _ => source.ToString()
+        };
+        return PLocalizationTextRead("Lookup.Source" + name);
     }
 
-    private string ReadText(string key)
+    private string PLocalizationTextRead(string key)
     {
         return TryFindResource(key) as string ?? key;
     }
 
-    private void PWindow_OnClosed(object? sender, EventArgs e)
+    private void PWindowExitHandle(object? sender, EventArgs e)
     {
-        CancelLookup();
-        _engine.Dispose();
+        PLookupCancel();
+        _lEngine.Dispose();
     }
 
-    void IPronunciationReceiver.SourceStart(LookupSource source)
+    void LReceiver.LReceiverSourceStart(LOrigin source)
     {
-        // Each source's arrival is surfaced through CandidateAdd; the shared "Searching…" status is
+        // Each source's arrival is surfaced through LReceiverCandidateAdd; the shared "Searching…" status is
         // already shown while the lookup runs, so no per-source UI update is needed here.
     }
 
-    void IPronunciationReceiver.CandidateAdd(PronunciationCandidate candidate)
+    void LReceiver.LReceiverCandidateAdd(LCandidate candidate)
     {
         Dispatcher.Invoke(() =>
         {
-            _lookupCandidates.Add(new PLookupCandidate(candidate, ReadSourceLabel(candidate.Source)));
-            UpdateLookupStatus();
+            _pLookupCandidate.Add(new PLookupCandidate(candidate, PLookupSourceRead(candidate.LCandidateSource)));
+            PLookupStatusUpdate();
         });
     }
 
-    void IPronunciationReceiver.LookupStop()
+    void LReceiver.LReceiverLookupFinish()
     {
         Dispatcher.Invoke(() =>
         {
-            _lookupSearching = false;
-            UpdateLookupStatus();
+            _lLookupSearching = false;
+            PLookupStatusUpdate();
         });
     }
 }

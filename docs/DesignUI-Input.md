@@ -15,9 +15,9 @@ UI fields may create or associate data without implying database ownership. Data
 The current conceptual layout is:
 
 ```text
-PHeadword  PLangcode                         PDiscard  PSave
+PHeadword  PLangcode                         PDiscard  PStore
 
-PPronunciation  PPlay                        PLookup  PDownloader
+PPronunciation  PPlayback                        PLookup  PDownloader
 
 PStackMeaning | PStackCollocation | PStackNote
 
@@ -35,9 +35,9 @@ PInput
 │       ├── PLangcodeListName
 │       └── PLangcodeListFlag
 ├── PDiscard
-├── PSave
+├── PStore
 ├── PPronunciation
-├── PPlay
+├── PPlayback
 ├── PLookup
 │   └── PLookupMenu
 │       └── PLookupMenuItem
@@ -89,9 +89,9 @@ PLangcodeListName  PLangcodeListFlag
 
 `PDiscard` discards the current input.
 
-## PSave
+## PStore
 
-`PSave` saves the current Entry and its associations.
+`PStore` saves the current Entry and its associations.
 
 Saving an Entry does not make independent Examples, Tags, or Situations subordinate to that Entry.
 
@@ -109,9 +109,9 @@ It always presents brackets:
 [ pronunciation ]
 ```
 
-## PPlay
+## PPlayback
 
-`PPlay` is shown when the local database has an audio file for the pronunciation.
+`PPlayback` is shown when the local database has an audio file for the pronunciation.
 
 It plays the locally stored pronunciation audio.
 
@@ -414,10 +414,10 @@ PInput
 │       ├── PLangcodeListName
 │       └── PLangcodeListFlag
 ├── PDiscard
-├── PSave
+├── PStore
 │
 ├── PPronunciation
-├── PPlay
+├── PPlayback
 ├── PLookup
 │   └── PLookupMenu
 │       ├── lookup procedure / status

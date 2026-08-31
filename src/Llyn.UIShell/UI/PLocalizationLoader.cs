@@ -11,20 +11,20 @@ namespace Llyn.UIShell;
 
 internal static class PLocalizationLoader
 {
-    internal const string DefaultLanguage = "en";
+    internal const string PLocalizationLoaderLanguage = "en";
 
-    private const string TermsPropertyName = "terms";
-    private const string TextsPropertyName = "texts";
+    private const string PLocalizationLoaderTerms = "terms";
+    private const string PLocalizationLoaderTexts = "texts";
 
-    private static readonly Regex TermKeyPattern = new(
+    private static readonly Regex PLocalizationLoaderKey = new(
         @"^terms\.[a-z][A-Za-z0-9]*$",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    private static readonly Regex TermPattern = new(
+    private static readonly Regex PLocalizationLoaderReference = new(
         @"\{(?<term>[Tt]erms\.[A-Za-z][A-Za-z0-9]*)\}",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    internal static void Apply(ResourceDictionary resources, string language)
+    internal static void PLocalizationLoaderApply(ResourceDictionary resources, string language)
     {
         CultureInfo culture = language switch
         {
@@ -59,15 +59,15 @@ internal static class PLocalizationLoader
             if (foundTexts)
             {
                 throw new InvalidDataException(
-                    $"No localization entries are allowed after '{TextsPropertyName}'.");
+                    $"No localization entries are allowed after '{PLocalizationLoaderTexts}'.");
             }
 
-            if (property.Name == TextsPropertyName)
+            if (property.Name == PLocalizationLoaderTexts)
             {
                 if (terms.Count == 0)
                 {
                     throw new InvalidDataException(
-                        $"The localization file must start with '{TermsPropertyName}.*' definitions.");
+                        $"The localization file must start with '{PLocalizationLoaderTerms}.*' definitions.");
                 }
 
                 textsElement = property.Value;
@@ -75,22 +75,22 @@ internal static class PLocalizationLoader
                 continue;
             }
 
-            AddTerm(property, terms);
+            PLocalizationLoaderAdd(property, terms);
         }
 
         if (!foundTexts)
         {
             throw new InvalidDataException(
-                $"The term definitions must be followed by a '{TextsPropertyName}' object.");
+                $"The term definitions must be followed by a '{PLocalizationLoaderTexts}' object.");
         }
 
-        Dictionary<string, string> localizedResources = ReadTexts(textsElement, terms, culture);
+        Dictionary<string, string> localizedResources = PLocalizationLoaderRead(textsElement, terms, culture);
 
         foreach ((string termKey, string termValue) in terms)
         {
             localizedResources.Add(
-                ToResourceKey(termKey),
-                UppercaseFirst(termValue, culture));
+                PLocalizationLoaderFormat(termKey),
+                LCase.LCaseUpperChange(termValue, culture));
         }
 
         foreach ((string key, string value) in localizedResources)
@@ -99,9 +99,9 @@ internal static class PLocalizationLoader
         }
     }
 
-    private static void AddTerm(JsonProperty property, IDictionary<string, string> terms)
+    private static void PLocalizationLoaderAdd(JsonProperty property, IDictionary<string, string> terms)
     {
-        if (!TermKeyPattern.IsMatch(property.Name))
+        if (!PLocalizationLoaderKey.IsMatch(property.Name))
         {
             throw new InvalidDataException(
                 $"'{property.Name}' is not a valid term key. Term keys must use 'terms.name'.");
@@ -118,14 +118,14 @@ internal static class PLocalizationLoader
         }
     }
 
-    private static Dictionary<string, string> ReadTexts(
+    private static Dictionary<string, string> PLocalizationLoaderRead(
         JsonElement element,
         IReadOnlyDictionary<string, string> terms,
         CultureInfo culture)
     {
         if (element.ValueKind != JsonValueKind.Object)
         {
-            throw new InvalidDataException($"'{TextsPropertyName}' must be a JSON object.");
+            throw new InvalidDataException($"'{PLocalizationLoaderTexts}' must be a JSON object.");
         }
 
         Dictionary<string, string> texts = new(StringComparer.Ordinal);
@@ -138,7 +138,7 @@ internal static class PLocalizationLoader
                     $"The localization text '{property.Name}' must be a string.");
             }
 
-            string resolved = ResolveTerms(property.Value.GetString()!, property.Name, terms, culture);
+            string resolved = PLocalizationLoaderResolve(property.Value.GetString()!, property.Name, terms, culture);
 
             if (!texts.TryAdd(property.Name, resolved))
             {
@@ -150,17 +150,17 @@ internal static class PLocalizationLoader
         return texts;
     }
 
-    private static string ResolveTerms(
+    private static string PLocalizationLoaderResolve(
         string text,
         string textKey,
         IReadOnlyDictionary<string, string> terms,
         CultureInfo culture)
     {
-        string resolved = TermPattern.Replace(text, match =>
+        string resolved = PLocalizationLoaderReference.Replace(text, match =>
         {
             string requestedKey = match.Groups["term"].Value;
             bool uppercase = char.IsUpper(requestedKey[0]);
-            string termKey = LowercaseFirst(requestedKey, CultureInfo.InvariantCulture);
+            string termKey = LCase.LCaseLowerChange(requestedKey, CultureInfo.InvariantCulture);
 
             if (!terms.TryGetValue(termKey, out string? termValue))
             {
@@ -169,8 +169,8 @@ internal static class PLocalizationLoader
             }
 
             return uppercase
-                ? UppercaseFirst(termValue, culture)
-                : LowercaseFirst(termValue, culture);
+                ? LCase.LCaseUpperChange(termValue, culture)
+                : LCase.LCaseLowerChange(termValue, culture);
         });
 
         if (resolved.Contains('{', StringComparison.Ordinal) ||
@@ -183,34 +183,13 @@ internal static class PLocalizationLoader
         return resolved;
     }
 
-    private static string UppercaseFirst(string value, CultureInfo culture)
-    {
-        return ChangeFirstTextElementCase(value, culture.TextInfo.ToUpper);
-    }
-
-    private static string LowercaseFirst(string value, CultureInfo culture)
-    {
-        return ChangeFirstTextElementCase(value, culture.TextInfo.ToLower);
-    }
-
-    private static string ChangeFirstTextElementCase(string value, Func<string, string> changeCase)
-    {
-        if (value.Length == 0)
-        {
-            return value;
-        }
-
-        string firstElement = StringInfo.GetNextTextElement(value);
-        return changeCase(firstElement) + value[firstElement.Length..];
-    }
-
-    private static string ToResourceKey(string qualifiedTermKey)
+    private static string PLocalizationLoaderFormat(string qualifiedTermKey)
     {
         string[] segments = qualifiedTermKey.Split('.');
 
         for (int index = 0; index < segments.Length; index++)
         {
-            segments[index] = UppercaseFirst(segments[index], CultureInfo.InvariantCulture);
+            segments[index] = LCase.LCaseUpperChange(segments[index], CultureInfo.InvariantCulture);
         }
 
         return string.Join('.', segments);

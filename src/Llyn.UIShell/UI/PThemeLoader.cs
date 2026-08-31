@@ -10,9 +10,9 @@ namespace Llyn.UIShell;
 
 internal static class PThemeLoader
 {
-    private const string DefaultThemeResourceName = "Llyn.UIShell.Themes.default.json";
+    private const string PThemeLoaderResource = "Llyn.UIShell.Themes.default.json";
 
-    private static readonly IReadOnlyDictionary<string, string> ResourceNames =
+    private static readonly IReadOnlyDictionary<string, string> PThemeLoaderColors =
         new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["ink"] = "Theme.Ink.Color",
@@ -29,12 +29,12 @@ internal static class PThemeLoader
             ["warningSoft"] = "Theme.WarningSoft.Color"
         };
 
-    internal static void Apply(ResourceDictionary resources)
+    internal static void PThemeLoaderApply(ResourceDictionary resources)
     {
         Assembly assembly = typeof(PThemeLoader).Assembly;
-        using Stream stream = assembly.GetManifestResourceStream(DefaultThemeResourceName)
+        using Stream stream = assembly.GetManifestResourceStream(PThemeLoaderResource)
             ?? throw new InvalidDataException(
-                $"The embedded theme '{DefaultThemeResourceName}' could not be found.");
+                $"The embedded theme '{PThemeLoaderResource}' could not be found.");
         using JsonDocument document = JsonDocument.Parse(stream);
 
         if (!document.RootElement.TryGetProperty("colors", out JsonElement colors) ||
@@ -43,7 +43,7 @@ internal static class PThemeLoader
             throw new InvalidDataException("The theme file must contain a 'colors' object.");
         }
 
-        foreach ((string jsonName, string resourceName) in ResourceNames)
+        foreach ((string jsonName, string resourceName) in PThemeLoaderColors)
         {
             if (!colors.TryGetProperty(jsonName, out JsonElement value) ||
                 value.ValueKind != JsonValueKind.String)

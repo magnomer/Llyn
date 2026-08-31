@@ -9,8 +9,9 @@ public partial class LBootstrap : System.Windows.Application
     {
         try
         {
-            PLocalizationLoader.Apply(Resources, PLocalizationLoader.DefaultLanguage);
-            PThemeLoader.Apply(Resources);
+            PLocalizationLoader.PLocalizationLoaderApply(Resources, PLocalizationLoader.PLocalizationLoaderLanguage);
+            PThemeLoader.PThemeLoaderApply(Resources);
+            PField.PFieldApply(Resources);
         }
         catch (Exception exception)
         {
