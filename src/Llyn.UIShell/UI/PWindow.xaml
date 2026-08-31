@@ -1,0 +1,343 @@
+<Window
+    x:Class="Llyn.UIShell.PWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    Title="{DynamicResource Terms.Product}"
+    Width="1180"
+    Height="760"
+    MinWidth="900"
+    MinHeight="620"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0" CornerRadius="0" GlassFrameThickness="0" ResizeBorderThickness="6" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Border BorderBrush="{StaticResource Theme.Line}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid
+                x:Name="PRoof"
+                Grid.Row="0"
+                Background="{StaticResource Theme.Roof}"
+                MouseLeftButtonDown="PRoof_OnMouseLeftButtonDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="PBrand" Grid.Column="0" Margin="18,0,0,0" HorizontalAlignment="Left">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid x:Name="PLogo" Width="34" Height="34" VerticalAlignment="Center">
+                        <Border Background="{StaticResource Theme.Accent}" CornerRadius="10" />
+                        <Path
+                            Width="17"
+                            Height="17"
+                            Data="M 2,2 L 2,15 L 15,15 M 6,2 L 6,11 L 15,11"
+                            Stretch="Fill"
+                            Stroke="{StaticResource Theme.Ink}"
+                            StrokeEndLineCap="Round"
+                            StrokeLineJoin="Round"
+                            StrokeThickness="2.3" />
+                        <Popup x:Name="PHeadquarter" Placement="Bottom" StaysOpen="False">
+                            <Border Width="180" Margin="0,8,0,0" Padding="8" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
+                                <StackPanel>
+                                    <TextBlock x:Name="PHeadquarterAbout" Padding="10,8" Text="{DynamicResource Headquarter.About}" />
+                                    <TextBlock x:Name="PHeadquarterExit" Padding="10,8" Foreground="{StaticResource Theme.Warning}" Text="{DynamicResource Headquarter.Exit}" />
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                    </Grid>
+
+                    <TextBlock x:Name="PHeadline" Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center" FontSize="17" FontWeight="SemiBold" Text="{DynamicResource Terms.Product}" />
+                </Grid>
+
+                <StackPanel x:Name="PCaption" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                    <Button x:Name="PCaptionMinimize" Click="PCaptionMinimize_OnClick" Style="{StaticResource Theme.Caption.Button}" ToolTip="{DynamicResource Caption.Minimize}">
+                        <Path Width="10" Data="M 0,0 L 10,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
+                    </Button>
+                    <Button x:Name="PCaptionMaximize" Click="PCaptionMaximize_OnClick" Style="{StaticResource Theme.Caption.Button}" ToolTip="{DynamicResource Caption.Maximize}">
+                        <Rectangle Width="10" Height="9" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
+                    </Button>
+                    <Button x:Name="PCaptionClose" Click="PCaptionClose_OnClick" Style="{StaticResource Theme.Caption.Close}" ToolTip="{DynamicResource Caption.Close}">
+                        <Path Width="10" Height="10" Data="M 0,0 L 10,10 M 10,0 L 0,10" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <Grid x:Name="PHouse" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="{StaticResource Theme.Navigation}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,1,1,0">
+                    <Grid x:Name="PNavigation">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel>
+                            <Button x:Name="PNavigationInput" Style="{StaticResource Theme.Navigation.Selected}" Content="{DynamicResource Navigation.Input}" Click="PNavigation_OnClick" />
+                            <Button x:Name="PNavigationList" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.List}" Click="PNavigation_OnClick" />
+                            <Button x:Name="PNavigationSound" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Sound}" Click="PNavigation_OnClick" />
+                            <Button x:Name="PNavigationTag" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Tag}" Click="PNavigation_OnClick" />
+                            <Button x:Name="PNavigationSituation" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Situation}" Click="PNavigation_OnClick" />
+                            <Button x:Name="PNavigationFavorite" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Favorite}" Click="PNavigation_OnClick" />
+                            <Button x:Name="PNavigationDualpanel" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.DualPanel}" Click="PNavigation_OnClick" />
+                        </StackPanel>
+
+                        <Button x:Name="PNavigationSettings" Grid.Row="1" Margin="12,8,12,16" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Settings}" Click="PNavigation_OnClick" />
+                    </Grid>
+                </Border>
+
+                <Grid x:Name="PPanel" Grid.Column="1" Background="{StaticResource Theme.Canvas}">
+                    <Grid x:Name="PInput" Margin="32,26,32,24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="178" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="PHeadword" Margin="0,0,10,0" FontSize="19" Style="{StaticResource Theme.Input.Field}" />
+
+                            <Grid x:Name="PLangcode" Grid.Column="1" Margin="0,0,10,0">
+                                <ToggleButton
+                                    x:Name="PLangcodeBase"
+                                    Height="38"
+                                    Padding="11,0"
+                                    HorizontalContentAlignment="Stretch"
+                                    Background="{StaticResource Theme.Surface}"
+                                    BorderBrush="{StaticResource Theme.Line}"
+                                    BorderThickness="1">
+                                    <Path
+                                        Width="10"
+                                        Height="6"
+                                        HorizontalAlignment="Right"
+                                        Data="M 0,0 L 5,5 L 10,0"
+                                        Stroke="{StaticResource Theme.Muted}"
+                                        StrokeThickness="1.5" />
+                                </ToggleButton>
+                                <Popup
+                                    x:Name="PLangcodeList"
+                                    Width="178"
+                                    Margin="0,6,0,0"
+                                    AllowsTransparency="True"
+                                    IsOpen="{Binding IsChecked, ElementName=PLangcodeBase}"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=PLangcodeBase}"
+                                    StaysOpen="False">
+                                    <Border Padding="6" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="9">
+                                        <ItemsControl>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Height="36">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock x:Name="PLangcodeListName" VerticalAlignment="Center" />
+                                                        <Image x:Name="PLangcodeListFlag" Grid.Column="1" Width="24" Height="16" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+
+                            <Button x:Name="PDiscard" Grid.Column="2" Margin="0,0,8,0" Foreground="{StaticResource Theme.Warning}" Style="{StaticResource Theme.Input.Action}">
+                                <Path Width="14" Height="14" Data="M 2,2 L 12,12 M 12,2 L 2,12" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeThickness="1.8" />
+                            </Button>
+                            <Button x:Name="PSave" Grid.Column="3" Background="{StaticResource Theme.AccentSoft}" Style="{StaticResource Theme.Input.Action}">
+                                <Path Width="15" Height="15" Data="M 1,1 L 12,1 L 14,3 L 14,14 L 1,14 Z M 4,1 L 4,6 L 11,6 L 11,1 M 4,10 L 11,10 L 11,14 L 4,14 Z" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeThickness="1.3" />
+                            </Button>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,12,0,22">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="30" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="30" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Text="[" />
+                                    <TextBox x:Name="PPronunciation" Grid.Column="1" MinHeight="36" Padding="0,6" Background="Transparent" BorderThickness="0" FontSize="16" VerticalContentAlignment="Center" />
+                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Text="]" />
+                                </Grid>
+                            </Border>
+
+                            <Button x:Name="PPlay" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Theme.Input.Action}" Visibility="Collapsed">
+                                <Path Width="13" Height="15" Data="M 1,1 L 12,7.5 L 1,14 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Fill" />
+                            </Button>
+
+                            <Grid Grid.Column="2" Margin="8,0,0,0">
+                                <ToggleButton x:Name="PLookup" Width="38" Height="38" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1">
+                                    <Path Width="15" Height="15" Data="M 6.5,1 A 5.5,5.5 0 1 0 6.5,12 A 5.5,5.5 0 1 0 6.5,1 M 10.5,10.5 L 15,15" Stretch="Fill" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                                </ToggleButton>
+                                <Popup
+                                    x:Name="PLookupMenu"
+                                    Width="280"
+                                    Margin="0,6,0,0"
+                                    AllowsTransparency="True"
+                                    IsOpen="{Binding IsChecked, ElementName=PLookup}"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=PLookup}"
+                                    StaysOpen="False">
+                                    <Border Padding="7" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="9">
+                                        <ItemsControl>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Height="36">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock x:Name="PLookupMenuItem" VerticalAlignment="Center" />
+                                                        <RadioButton x:Name="PLookupMenuSelector" Grid.Column="1" VerticalAlignment="Center" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+
+                            <Button x:Name="PDownloader" Grid.Column="3" Margin="8,0,0,0" Style="{StaticResource Theme.Input.Action}">
+                                <Path Width="15" Height="15" Data="M 7.5,1 L 7.5,10 M 3.5,6 L 7.5,10 L 11.5,6 M 1,13.5 L 14,13.5" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeLineJoin="Round" StrokeThickness="1.5" />
+                            </Button>
+                        </Grid>
+
+                        <StackPanel x:Name="PStack" Grid.Row="2" Orientation="Horizontal">
+                            <Button x:Name="PStackMeaning" Content="Meaning" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab.Selected}" />
+                            <Button x:Name="PStackCollocation" Content="Collocation" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
+                            <Button x:Name="PStackNote" Content="Note" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
+                        </StackPanel>
+
+                        <Border x:Name="PContents" Grid.Row="3" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="0,10,10,10">
+                            <Grid>
+                                <ScrollViewer x:Name="PMeaning" Padding="18" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                    <Border x:Name="PSense" Style="{StaticResource Theme.Input.Card}">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="72" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="38" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox x:Name="PSenseOrder" Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
+                                            <TextBox x:Name="PSenseDefinition" Grid.Column="1" Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
+                                            <Button Grid.Column="2" Margin="0,0,0,10" Click="PCardRemove_OnClick" Foreground="{StaticResource Theme.Warning}" Style="{StaticResource Theme.Input.Action}">
+                                                <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                                            </Button>
+                                            <TextBox x:Name="PSenseExample" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,10" Style="{StaticResource Theme.Input.Field}" />
+                                            <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox x:Name="PSenseSituation" Margin="0,0,5,0" Style="{StaticResource Theme.Input.Field}" />
+                                                <TextBox x:Name="PSenseSynonym" Grid.Column="1" Margin="5,0,0,0" Style="{StaticResource Theme.Input.Field}" />
+                                            </Grid>
+                                            <TextBox x:Name="PSenseTag" Grid.Row="3" Grid.ColumnSpan="3" Style="{StaticResource Theme.Input.Field}" />
+                                        </Grid>
+                                    </Border>
+                                </ScrollViewer>
+
+                                <ScrollViewer x:Name="PCollocation" Padding="18" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                                    <Border Style="{StaticResource Theme.Input.Card}">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="72" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="38" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
+                                            <TextBox x:Name="PCollocationExpression" Grid.Column="1" Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
+                                            <Button Grid.Column="2" Margin="0,0,0,10" Click="PCardRemove_OnClick" Foreground="{StaticResource Theme.Warning}" Style="{StaticResource Theme.Input.Action}">
+                                                <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                                            </Button>
+                                            <TextBox Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,10" Style="{StaticResource Theme.Input.Field}" />
+                                            <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Margin="0,0,5,0" Style="{StaticResource Theme.Input.Field}" />
+                                                <TextBox Grid.Column="1" Margin="5,0,0,0" Style="{StaticResource Theme.Input.Field}" />
+                                            </Grid>
+                                            <TextBox Grid.Row="3" Grid.ColumnSpan="3" Style="{StaticResource Theme.Input.Field}" />
+                                        </Grid>
+                                    </Border>
+                                </ScrollViewer>
+
+                                <Grid x:Name="PNote" Margin="18" Visibility="Collapsed">
+                                    <RichTextBox x:Name="PNoteContents" Padding="16" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <Grid x:Name="PList" Visibility="Collapsed" />
+                    <Grid x:Name="PSound" Visibility="Collapsed" />
+                    <Grid x:Name="PTag" Visibility="Collapsed" />
+                    <Grid x:Name="PSituation" Visibility="Collapsed" />
+                    <Grid x:Name="PFavorite" Visibility="Collapsed" />
+                    <Grid x:Name="PDualPanel" Visibility="Collapsed" />
+                    <Grid x:Name="PSettings" Visibility="Collapsed">
+                        <StackPanel Margin="32" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <TextBlock FontSize="18" FontWeight="SemiBold" Text="{DynamicResource Settings.Localization}" />
+                            <ComboBox x:Name="PLocalization" Width="240" Margin="0,12,0,0" HorizontalAlignment="Left" SelectedValuePath="Tag" SelectionChanged="PLocalization_OnSelectionChanged">
+                                <ComboBoxItem Content="English" Tag="en" />
+                                <ComboBoxItem Content="한국어" Tag="ko" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+        </Grid>
+    </Border>
+</Window>

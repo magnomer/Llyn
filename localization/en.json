@@ -1,0 +1,31 @@
+{
+  "terms.product": "Llyn",
+  "terms.exit": "exit",
+  "terms.minimize": "minimize",
+  "terms.maximizeOrRestore": "maximize or restore",
+  "terms.close": "close",
+  "terms.input": "input",
+  "terms.library": "library",
+  "terms.sound": "sound",
+  "terms.tag": "tags",
+  "terms.situation": "situations",
+  "terms.favorite": "favorites",
+  "terms.dualPanel": "dual panel",
+  "terms.settings": "settings",
+  "texts": {
+    "Headquarter.About": "{Terms.product} information",
+    "Headquarter.Exit": "{Terms.exit}",
+    "Caption.Minimize": "{Terms.minimize}",
+    "Caption.Maximize": "{Terms.maximizeOrRestore}",
+    "Caption.Close": "{Terms.close}",
+    "Navigation.Input": "{Terms.input}",
+    "Navigation.List": "{Terms.library}",
+    "Navigation.Sound": "{Terms.sound}",
+    "Navigation.Tag": "{Terms.tag}",
+    "Navigation.Situation": "{Terms.situation}",
+    "Navigation.Favorite": "{Terms.favorite}",
+    "Navigation.DualPanel": "{Terms.dualPanel}",
+    "Navigation.Settings": "{Terms.settings}",
+    "Settings.Localization": "Localization"
+  }
+}

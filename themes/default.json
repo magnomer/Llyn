@@ -1,0 +1,16 @@
+{
+  "colors": {
+    "ink": "#172033",
+    "muted": "#66758C",
+    "canvas": "#F4F7FB",
+    "roof": "#FFFFFF",
+    "navigation": "#F8FAFD",
+    "surface": "#FFFFFF",
+    "surfaceRaised": "#EAF0F7",
+    "line": "#D7E0EC",
+    "accent": "#2F6FED",
+    "accentSoft": "#E7EFFD",
+    "warning": "#C43D4D",
+    "warningSoft": "#FDECEF"
+  }
+}

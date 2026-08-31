@@ -1,0 +1,28 @@
+# Local helper scripts
+auditlines.ps1
+auditnames.ps1
+build.ps1
+clean.ps1
+codegraph.ps1
+debug.ps1
+gitdownload.ps1
+run.ps1
+syncnames.ps1
+test.ps1
+version.ps1
+zip.ps1
+
+# Helper-generated local state
+.name-registry.json
+docs-internal/
+docs-work/
+build/
+debug/
+run/
+snapshots/
+
+# .NET / IDE output
+**/bin/
+**/obj/
+.vs/
+TestResults/

@@ -1,0 +1,31 @@
+{
+  "terms.product": "Llyn",
+  "terms.exit": "종료",
+  "terms.minimize": "최소화",
+  "terms.maximizeOrRestore": "최대화 또는 복원",
+  "terms.close": "닫기",
+  "terms.input": "입력",
+  "terms.library": "라이브러리",
+  "terms.sound": "소리",
+  "terms.tag": "태그",
+  "terms.situation": "상황",
+  "terms.favorite": "즐겨찾기",
+  "terms.dualPanel": "이중 패널",
+  "terms.settings": "설정",
+  "texts": {
+    "Headquarter.About": "{Terms.product} 정보",
+    "Headquarter.Exit": "{terms.exit}",
+    "Caption.Minimize": "{terms.minimize}",
+    "Caption.Maximize": "{terms.maximizeOrRestore}",
+    "Caption.Close": "{terms.close}",
+    "Navigation.Input": "{terms.input}",
+    "Navigation.List": "{terms.library}",
+    "Navigation.Sound": "{terms.sound}",
+    "Navigation.Tag": "{terms.tag}",
+    "Navigation.Situation": "{terms.situation}",
+    "Navigation.Favorite": "{terms.favorite}",
+    "Navigation.DualPanel": "{terms.dualPanel}",
+    "Navigation.Settings": "{terms.settings}",
+    "Settings.Localization": "현지화"
+  }
+}
