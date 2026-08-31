@@ -39,8 +39,10 @@ internal static class PField
         pPlaceholder.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
         pPlaceholder.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
 
+        // No Margin binding here: WPF already offsets the editable text by TextBox.Padding
+        // internally. Binding the host's Margin to Padding too would apply it twice, pushing the
+        // caret right and down while the placeholder (padded once) stayed put.
         var pContent = new FrameworkElementFactory(typeof(ScrollViewer), "PART_ContentHost");
-        pContent.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
 
         pGrid.AppendChild(pPlaceholder);
         pGrid.AppendChild(pContent);

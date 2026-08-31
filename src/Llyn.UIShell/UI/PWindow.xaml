@@ -171,11 +171,34 @@
                                     Placement="Bottom"
                                     PlacementTarget="{Binding ElementName=PLangcodeBase}"
                                     StaysOpen="False">
-                                    <Border Padding="5" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="8">
+                                    <Border Padding="5" Background="White" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="8">
                                         <ItemsControl x:Name="PLangcodeListMenu">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Button Height="31" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PLangcodeHandle" Content="{Binding}" Foreground="{StaticResource Theme.Ink}" />
+                                                    <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PLangcodeHandle" Foreground="{StaticResource Theme.Ink}">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <Grid Width="19" Height="14" VerticalAlignment="Center">
+                                                                <Image Source="{Binding PLangcodeItemFlag}" Stretch="Uniform" />
+                                                                <Ellipse Width="12" Height="12" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2">
+                                                                    <Ellipse.Style>
+                                                                        <Style TargetType="Ellipse">
+                                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding PLangcodeItemFlag}" Value="{x:Null}">
+                                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Ellipse.Style>
+                                                                </Ellipse>
+                                                            </Grid>
+                                                            <TextBlock Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="{Binding PLangcodeItemName}" />
+                                                        </Grid>
+                                                    </Button>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>

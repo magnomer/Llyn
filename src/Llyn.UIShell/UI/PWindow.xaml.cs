@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,7 +24,7 @@ public partial class PWindow : Window, LReceiver, LListener
     private const string PWindowLanguage = "English";
 
     private readonly ObservableCollection<PInputCard> _pSenseList = [];
-    private readonly ObservableCollection<string> _pLangcodeList = [];
+    private readonly ObservableCollection<PLangcodeItem> _pLangcodeList = [];
     private readonly ObservableCollection<PInputCard> _pCollocationList = [];
     private readonly ObservableCollection<PLookupCandidate> _pLookupCandidate = [];
     private readonly ObservableCollection<PDownloaderRecording> _pDownloaderRecording = [];
@@ -364,17 +365,22 @@ public partial class PWindow : Window, LReceiver, LListener
         }
     }
 
-    private void PLangcodeLoad()
+    // Builds the language menu. Each row carries its own flag, resolved once here so the dropdown
+    // paints ready. The flag download may await a first-time fetch, hence async.
+    private async void PLangcodeLoad()
     {
         _pLangcodeList.Clear();
-        foreach (string language in _lEngine.LEngineLanguageRead())
+        var languages = _lEngine.LEngineLanguageRead();
+        foreach (string language in languages)
         {
-            _pLangcodeList.Add(language);
+            string? path = await _lEngine.LEngineFlagRead(language, CancellationToken.None);
+            ImageSource? flag = path is not null && File.Exists(path) ? PLangcodeFlagResolve(path) : null;
+            _pLangcodeList.Add(new PLangcodeItem(language, flag));
         }
 
-        if (_pLangcodeList.Count > 0 && !_pLangcodeList.Contains(_pLangcodeChoice))
+        if (languages.Count > 0 && !languages.Contains(_pLangcodeChoice))
         {
-            _pLangcodeChoice = _pLangcodeList[0];
+            _pLangcodeChoice = languages[0];
         }
 
         PLangcodeBaseName.Text = _pLangcodeChoice;
@@ -383,7 +389,7 @@ public partial class PWindow : Window, LReceiver, LListener
 
     private void PLangcodeHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: string language })
+        if (sender is not FrameworkElement { DataContext: PLangcodeItem { PLangcodeItemName: string language } })
         {
             return;
         }
