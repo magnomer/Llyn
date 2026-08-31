@@ -12,7 +12,7 @@ namespace Llyn.Infrastructure;
 public static class LSchema
 {
     /// <summary>The schema version this build produces. Later jobs raise it as they extend the schema.</summary>
-    private const long LSchemaVersion = 5;
+    private const long LSchemaVersion = 6;
 
     /// <summary>
     /// Creates every table that does not yet exist and stamps the schema version. Safe to run on each
@@ -172,6 +172,52 @@ public static class LSchema
                 sense_id TEXT NOT NULL,
                 FOREIGN KEY (relation_id) REFERENCES relation (id) ON DELETE CASCADE,
                 FOREIGN KEY (sense_id) REFERENCES sense (id)
+            );
+            """;
+        command.ExecuteNonQuery();
+
+        // The single pronunciation an entry owns and its two owned child structures. An entry carries at
+        // most one pronunciation — enforced by the unique entry_id, with no position on the pronunciation
+        // itself — and the pronunciation owns ordered syllables and representations keyed by
+        // (pronunciation_id, position). A syllable requires only its nucleus; every other syllable field
+        // and a representation's local_tone are optional and store NULL when absent (distinct from empty).
+        // Children cascade when their pronunciation is deleted, and the pronunciation cascades when its
+        // entry is deleted.
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS pronunciation (
+                id TEXT NOT NULL PRIMARY KEY,
+                entry_id TEXT NOT NULL UNIQUE,
+                level TEXT,
+                ipa TEXT,
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS syllable (
+                pronunciation_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                orthography TEXT,
+                local TEXT,
+                onset TEXT,
+                medial TEXT,
+                nucleus TEXT NOT NULL,
+                coda TEXT,
+                tone_number INTEGER,
+                tone_local TEXT,
+                tone_points TEXT,
+                PRIMARY KEY (pronunciation_id, position),
+                FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS representation (
+                pronunciation_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                system TEXT NOT NULL,
+                role TEXT NOT NULL,
+                text TEXT NOT NULL,
+                local_tone TEXT,
+                PRIMARY KEY (pronunciation_id, position),
+                FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
             );
             """;
         command.ExecuteNonQuery();
