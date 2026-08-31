@@ -20,11 +20,12 @@ internal static class LSourceReader
     public static async Task<string?> LSourceReaderRead(
         HttpClient client,
         IReadOnlyList<string> urls,
+        IReadOnlyDictionary<string, string>? headers,
         CancellationToken cancellation)
     {
         foreach (string url in urls)
         {
-            string? body = await LSourceReaderLoad(client, url, cancellation).ConfigureAwait(false);
+            string? body = await LSourceReaderLoad(client, url, headers, cancellation).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(body))
             {
                 return body;
@@ -37,6 +38,7 @@ internal static class LSourceReader
     private static async Task<string?> LSourceReaderLoad(
         HttpClient client,
         string url,
+        IReadOnlyDictionary<string, string>? headers,
         CancellationToken cancellation)
     {
         for (int attempt = 0; ; attempt++)
@@ -44,8 +46,18 @@ internal static class LSourceReader
             bool retryable;
             try
             {
+                using HttpRequestMessage request = new(HttpMethod.Get, url);
+                if (headers is not null)
+                {
+                    foreach (KeyValuePair<string, string> header in headers)
+                    {
+                        // Some are restricted headers (Referer); skip validation so they are sent verbatim.
+                        request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                    }
+                }
+
                 using HttpResponseMessage response =
-                    await client.GetAsync(url, cancellation).ConfigureAwait(false);
+                    await client.SendAsync(request, cancellation).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {

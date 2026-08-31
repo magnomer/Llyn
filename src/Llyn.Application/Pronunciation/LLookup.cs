@@ -7,12 +7,16 @@ using Llyn.Core;
 namespace Llyn.Application;
 
 /// <summary>
-/// Fans a pronunciation request out to every configured source concurrently and streams each
-/// result back to the receiver as it arrives. One slow or failing source never blocks or fails the
-/// others; the lookup reports complete once all sources have finished.
+/// Fans a pronunciation request out to every configured pronunciation source concurrently and
+/// streams each result back to the receiver as it arrives. One slow or failing source never blocks
+/// or fails the others; the lookup reports complete once all sources have finished. The sources are
+/// supplied ready-built and language-agnostic (see <see cref="LSource"/>); this orchestrator knows
+/// nothing about any particular source or language.
 /// </summary>
 public sealed class LLookup : LSeeker
 {
+    private const string LLookupKind = "pronunciation";
+
     private readonly IReadOnlyList<LSource> _lLookupSources;
 
     public LLookup(IReadOnlyList<LSource> sources)
@@ -27,7 +31,10 @@ public sealed class LLookup : LSeeker
         List<Task> pending = new(_lLookupSources.Count);
         foreach (LSource source in _lLookupSources)
         {
-            pending.Add(LLookupSourceRun(source, word, receiver, cancellation));
+            if (string.Equals(source.LSourceKind, LLookupKind, StringComparison.Ordinal))
+            {
+                pending.Add(LLookupSourceRun(source, word, receiver, cancellation));
+            }
         }
 
         try
@@ -49,12 +56,12 @@ public sealed class LLookup : LSeeker
         LReceiver receiver,
         CancellationToken cancellation)
     {
-        receiver.LReceiverSourceStart(source.LSourceKind);
+        receiver.LReceiverSourceStart(source.LSourceName);
 
-        LCandidate? candidate;
+        string? phonetic;
         try
         {
-            candidate = await source.LSourceFind(word, cancellation).ConfigureAwait(false);
+            phonetic = await source.LSourceFind(word, cancellation).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
@@ -66,9 +73,9 @@ public sealed class LLookup : LSeeker
             return;
         }
 
-        if (candidate is not null && !cancellation.IsCancellationRequested)
+        if (!string.IsNullOrEmpty(phonetic) && !cancellation.IsCancellationRequested)
         {
-            receiver.LReceiverCandidateAdd(candidate);
+            receiver.LReceiverCandidateAdd(new LCandidate(source.LSourceName, phonetic));
         }
     }
 }

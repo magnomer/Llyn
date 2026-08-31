@@ -1,33 +1,55 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Xml;
 using Llyn.Core;
 using Llyn.ShellEngine;
+using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
 
 namespace Llyn.UIShell;
 
-public partial class PWindow : Window, LReceiver
+public partial class PWindow : Window, LReceiver, LListener
 {
+    // Fallback language used until a pack is chosen, and when no pack folder is present on disk.
+    private const string PWindowLanguage = "English";
+
     private readonly ObservableCollection<PInputCard> _pSenseList = [];
+    private readonly ObservableCollection<string> _pLangcodeList = [];
     private readonly ObservableCollection<PInputCard> _pCollocationList = [];
     private readonly ObservableCollection<PLookupCandidate> _pLookupCandidate = [];
+    private readonly ObservableCollection<PDownloaderRecording> _pDownloaderRecording = [];
     private readonly LEngine _lEngine = new();
+    private readonly MediaPlayer _pDownloaderPlayer = new();
     private CancellationTokenSource? _lLookupCancellation;
+    private CancellationTokenSource? _lHarvestCancellation;
     private bool _lLookupSearching;
+    private bool _lHarvestSearching;
+    private string _pLangcodeChoice = PWindowLanguage;
+    private readonly bool _pWindowReady;
 
     public PWindow()
     {
         InitializeComponent();
-        PLocalization.SelectedValue = PLocalizationLoader.PLocalizationLoaderLanguage;
+
+        PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+        PLocalization.SelectedValue = _lEngine.LEngineSettingsRead().LSettingsLocalization;
+        _pWindowReady = true;
 
         PSenseList.ItemsSource = _pSenseList;
         PCollocationList.ItemsSource = _pCollocationList;
         PLookupMenuList.ItemsSource = _pLookupCandidate;
+        PDownloaderMenuList.ItemsSource = _pDownloaderRecording;
+        PLangcodeListMenu.ItemsSource = _pLangcodeList;
+        PLangcodeLoad();
 
         _pSenseList.Add(new PInputCard("Sense", 1));
         _pCollocationList.Add(new PInputCard("Collocation", 1));
@@ -155,9 +177,57 @@ public partial class PWindow : Window, LReceiver
 
     private void PLocalizationHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (PLocalization.SelectedValue is string language)
+        if (PLocalization.SelectedValue is not string language)
         {
-            PLocalizationLoader.PLocalizationLoaderApply(System.Windows.Application.Current.Resources, language);
+            return;
+        }
+
+        PLocalizationLoader.PLocalizationLoaderApply(System.Windows.Application.Current.Resources, language);
+
+        // Skip persistence while the constructor is applying the stored choice; only user changes save.
+        if (_pWindowReady)
+        {
+            _lEngine.LEngineSettingsSave(new LSettings(language));
+        }
+    }
+
+    private void PWorkspaceBrowseHandle(object sender, RoutedEventArgs e)
+    {
+        Microsoft.Win32.OpenFolderDialog dialog = new()
+        {
+            Title = PLocalizationTextRead("Settings.Workspace"),
+            InitialDirectory = PWorkspacePath.Text
+        };
+
+        if (dialog.ShowDialog(this) == true)
+        {
+            PWorkspacePath.Text = dialog.FolderName;
+            PWorkspaceApply();
+        }
+    }
+
+    private void PWorkspacePathHandle(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        PWorkspaceApply();
+    }
+
+    private void PWorkspaceApply()
+    {
+        string path = PWorkspacePath.Text?.Trim() ?? string.Empty;
+        if (path.Length == 0 || string.Equals(path, _lEngine.LEngineWorkspaceRead(), StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineWorkspaceChange(path);
+        }
+        catch (Exception)
+        {
+            // An unusable path (permission, invalid characters) leaves the previous workspace in place;
+            // restore the field so it keeps showing the folder actually in use.
+            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
         }
     }
 
@@ -250,7 +320,7 @@ public partial class PWindow : Window, LReceiver
 
         try
         {
-            await _lEngine.LEnginePronunciationFind(word, this, token);
+            await _lEngine.LEnginePronunciationFind(word, _pLangcodeChoice, this, token);
         }
         catch (OperationCanceledException)
         {
@@ -294,15 +364,208 @@ public partial class PWindow : Window, LReceiver
         }
     }
 
-    private string PLookupSourceRead(LOrigin source)
+    private void PLangcodeLoad()
     {
-        string name = source switch
+        _pLangcodeList.Clear();
+        foreach (string language in _lEngine.LEngineLanguageRead())
         {
-            LOrigin.LOriginWikipedia => "Wikipedia",
-            LOrigin.LOriginCambridge => "Cambridge",
-            _ => source.ToString()
-        };
-        return PLocalizationTextRead("Lookup.Source" + name);
+            _pLangcodeList.Add(language);
+        }
+
+        if (_pLangcodeList.Count > 0 && !_pLangcodeList.Contains(_pLangcodeChoice))
+        {
+            _pLangcodeChoice = _pLangcodeList[0];
+        }
+
+        PLangcodeBaseName.Text = _pLangcodeChoice;
+        PLangcodeFlagUpdate();
+    }
+
+    private void PLangcodeHandle(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: string language })
+        {
+            return;
+        }
+
+        _pLangcodeChoice = language;
+        PLangcodeBaseName.Text = language;
+        PLangcodeFlagUpdate();
+        PLangcodeBase.IsChecked = false;
+    }
+
+    // Shows the selected language's flag beside its name. A pack declares an ISO country code; the
+    // engine downloads and caches the matching flag-icons SVG, so this may await a first-time fetch.
+    // When the pack declares no flag or the download fails, a neutral globe stands in.
+    private async void PLangcodeFlagUpdate()
+    {
+        string chosen = _pLangcodeChoice;
+        string? path = await _lEngine.LEngineFlagRead(chosen, CancellationToken.None);
+
+        // The choice may have changed while the flag downloaded; only paint the still-current one.
+        if (chosen != _pLangcodeChoice)
+        {
+            return;
+        }
+
+        DrawingImage? flag = path is not null && File.Exists(path) ? PLangcodeFlagResolve(path) : null;
+        if (flag is not null)
+        {
+            PLangcodeBaseFlag.Source = flag;
+            PLangcodeBaseFlag.Visibility = Visibility.Visible;
+            PLangcodeBaseGlobe.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            PLangcodeBaseFlag.Source = null;
+            PLangcodeBaseFlag.Visibility = Visibility.Collapsed;
+            PLangcodeBaseGlobe.Visibility = Visibility.Visible;
+        }
+    }
+
+    // Rasterizes a flag SVG into a frozen drawing the Image can paint. Flag-icons ship as SVG, which
+    // WPF's bitmap decoders can't read, so SharpVectors renders it into a WPF drawing here.
+    private static DrawingImage? PLangcodeFlagResolve(string path)
+    {
+        try
+        {
+            FileSvgReader reader = new(new WpfDrawingSettings { IncludeRuntime = false, TextAsGeometry = true });
+            DrawingGroup drawing = reader.Read(path);
+            if (drawing is null)
+            {
+                return null;
+            }
+
+            DrawingImage image = new(drawing);
+            image.Freeze();
+            return image;
+        }
+        catch (Exception exception) when (exception is IOException or XmlException or NotSupportedException)
+        {
+            return null;
+        }
+    }
+
+    private async void PDownloaderCheckedHandle(object sender, RoutedEventArgs e)
+    {
+        await PDownloaderStart();
+    }
+
+    private void PDownloaderUncheckedHandle(object sender, RoutedEventArgs e)
+    {
+        PDownloaderCancel();
+    }
+
+    private async Task PDownloaderStart()
+    {
+        PDownloaderCancel();
+
+        string word = PHeadword.Text?.Trim() ?? string.Empty;
+        _pDownloaderRecording.Clear();
+        _lHarvestSearching = word.Length > 0;
+        PDownloaderStatusUpdate();
+
+        if (word.Length == 0)
+        {
+            return;
+        }
+
+        _lHarvestCancellation = new CancellationTokenSource();
+        CancellationToken token = _lHarvestCancellation.Token;
+
+        try
+        {
+            await _lEngine.LEngineRecordingFind(word, _pLangcodeChoice, this, token);
+        }
+        catch (OperationCanceledException)
+        {
+            // Superseded by a newer discovery or the window closed; ignore.
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                _lHarvestSearching = false;
+                PDownloaderStatusUpdate();
+            }
+        }
+    }
+
+    private void PDownloaderCancel()
+    {
+        _lHarvestCancellation?.Cancel();
+        _lHarvestCancellation?.Dispose();
+        _lHarvestCancellation = null;
+    }
+
+    private void PDownloaderStatusUpdate()
+    {
+        bool hasRecordings = _pDownloaderRecording.Count > 0;
+        PDownloaderMenuList.Visibility = hasRecordings ? Visibility.Visible : Visibility.Collapsed;
+
+        if (_lHarvestSearching && !hasRecordings)
+        {
+            PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Searching");
+            PDownloaderMenuStatus.Visibility = Visibility.Visible;
+        }
+        else if (!_lHarvestSearching && !hasRecordings)
+        {
+            PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Empty");
+            PDownloaderMenuStatus.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            PDownloaderMenuStatus.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private async void PDownloaderPlayHandle(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PDownloaderRecording recording })
+        {
+            return;
+        }
+
+        try
+        {
+            // Streaming the remote, token-bearing URL through the media stack is unreliable; fetch it
+            // to a local temp file first, then play that.
+            string path = await _lEngine.LEngineRecordingPrepare(recording.PDownloaderRecordingModel, CancellationToken.None);
+            _pDownloaderPlayer.Open(new Uri(path));
+            _pDownloaderPlayer.Play();
+        }
+        catch (Exception)
+        {
+            // Preview is best-effort; a failed fetch leaves the menu untouched.
+        }
+    }
+
+    private async void PDownloaderMenuHandle(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PDownloaderRecording recording })
+        {
+            return;
+        }
+
+        string word = PHeadword.Text?.Trim() ?? string.Empty;
+        if (word.Length == 0)
+        {
+            return;
+        }
+
+        PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Saving");
+        PDownloaderMenuStatus.Visibility = Visibility.Visible;
+
+        try
+        {
+            await _lEngine.LEngineRecordingSave(recording.PDownloaderRecordingModel, word, _pLangcodeChoice, CancellationToken.None);
+            PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Saved");
+        }
+        catch (Exception)
+        {
+            // A failed download leaves the menu open with a failure notice; the user can retry.
+            PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Failed");
+        }
     }
 
     private string PLocalizationTextRead(string key)
@@ -313,10 +576,12 @@ public partial class PWindow : Window, LReceiver
     private void PWindowExitHandle(object? sender, EventArgs e)
     {
         PLookupCancel();
+        PDownloaderCancel();
+        _pDownloaderPlayer.Close();
         _lEngine.Dispose();
     }
 
-    void LReceiver.LReceiverSourceStart(LOrigin source)
+    void LReceiver.LReceiverSourceStart(string source)
     {
         // Each source's arrival is surfaced through LReceiverCandidateAdd; the shared "Searching…" status is
         // already shown while the lookup runs, so no per-source UI update is needed here.
@@ -326,7 +591,7 @@ public partial class PWindow : Window, LReceiver
     {
         Dispatcher.Invoke(() =>
         {
-            _pLookupCandidate.Add(new PLookupCandidate(candidate, PLookupSourceRead(candidate.LCandidateSource)));
+            _pLookupCandidate.Add(new PLookupCandidate(candidate, candidate.LCandidateSource));
             PLookupStatusUpdate();
         });
     }
@@ -337,6 +602,29 @@ public partial class PWindow : Window, LReceiver
         {
             _lLookupSearching = false;
             PLookupStatusUpdate();
+        });
+    }
+
+    void LListener.LListenerSourceStart(string source)
+    {
+        // Handled the same way as lookup: the shared "Searching…" status already covers per-source starts.
+    }
+
+    void LListener.LListenerRecordingAdd(LRecording recording)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            _pDownloaderRecording.Add(new PDownloaderRecording(recording));
+            PDownloaderStatusUpdate();
+        });
+    }
+
+    void LListener.LListenerFinish()
+    {
+        Dispatcher.Invoke(() =>
+        {
+            _lHarvestSearching = false;
+            PDownloaderStatusUpdate();
         });
     }
 }

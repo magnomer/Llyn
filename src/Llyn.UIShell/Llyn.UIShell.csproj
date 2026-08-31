@@ -15,6 +15,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Renders flag-icons SVGs into WPF drawings; WPF's bitmap decoders can't read SVG on their own. -->
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Language packs ship as drop-in files copied next to the executable (not embedded), so a
+         language can be added or edited without a recompile. LLanguageLoader reads them from
+         languages/<Lang>/source.json under the application base directory. Flags are not shipped:
+         a pack declares an ISO country code and the engine downloads the flag on demand. -->
+    <Content Include="..\..\languages\**\*.json" Link="languages\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="..\..\localization\en.json" LogicalName="Llyn.UIShell.Localization.en.json" />
     <EmbeddedResource Include="..\..\localization\ko.json" LogicalName="Llyn.UIShell.Localization.ko.json" />
     <EmbeddedResource Include="..\..\themes\default.json" LogicalName="Llyn.UIShell.Themes.default.json" />

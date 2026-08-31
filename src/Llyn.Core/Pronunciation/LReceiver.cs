@@ -8,8 +8,8 @@ namespace Llyn.Core;
 /// </summary>
 public interface LReceiver
 {
-    /// <summary>A source has begun searching.</summary>
-    void LReceiverSourceStart(LOrigin source);
+    /// <summary>A source has begun searching. <paramref name="source"/> is the source's name.</summary>
+    void LReceiverSourceStart(string source);
 
     /// <summary>A candidate has arrived from a source.</summary>
     void LReceiverCandidateAdd(LCandidate candidate);

@@ -1,0 +1,79 @@
+{
+  "language": "English",
+  "flag": "gb",
+  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities.",
+  "sources": [
+    {
+      "name": "Wikipedia",
+      "kind": "pronunciation",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+          ],
+          "strategy": "json",
+          "path": "parse.wikitext.*",
+          "match": "\\{\\{IPA\\|[^}]*?(/[^/|}]+/|\\[[^\\]|}]+\\])",
+          "group": 1,
+          "normalize": true
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.m.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "<span[^>]*class=\"[^\"]*\\bIPA\\b[^\"]*\"[^>]*>"
+        }
+      ]
+    },
+    {
+      "name": "Cambridge",
+      "kind": "pronunciation",
+      "attempts": [
+        {
+          "urls": [
+            "https://dictionary.cambridge.org/dictionary/english/{word}",
+            "https://dictionary.cambridge.org/us/dictionary/english/{word}"
+          ],
+          "strategy": "span",
+          "match": "<span[^>]*class=\"[^\"]*\\bipa\\b[^\"]*\"[^>]*>",
+          "confirm": "<[^>]*\\bdhw\\b[^>]*>\\s*{word}"
+        }
+      ]
+    },
+    {
+      "name": "Cambridge",
+      "kind": "audio",
+      "note": "Cambridge serves per-entry mp3 audio via site-relative <source> src attributes; 'prefix' makes them absolute. The first audio/mpeg source is the headword pronunciation.",
+      "attempts": [
+        {
+          "urls": [
+            "https://dictionary.cambridge.org/us/dictionary/english/{word}"
+          ],
+          "strategy": "regex",
+          "match": "type=\"audio/mpeg\"[^>]*src=\"([^\"]+\\.mp3)\"",
+          "group": 1,
+          "prefix": "https://dictionary.cambridge.org"
+        }
+      ]
+    },
+    {
+      "name": "Naver",
+      "kind": "audio",
+      "note": "Naver English dictionary search API. The audio URL is the opaque, token-bearing 'symbolFile' of the first phonetic symbol (e.g. .../009123.mp3?_lsu_sa_=...). The API returns an empty body without a Referer header, so one is declared here.",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.dict.naver.com/api3/enko/search?query={word}&m=pc&range=word&page=1"
+          ],
+          "headers": { "Referer": "https://en.dict.naver.com/" },
+          "strategy": "regex",
+          "match": "\"symbolFile\":\"(https?://[^\"]+)\"",
+          "group": 1
+        }
+      ]
+    }
+  ]
+}

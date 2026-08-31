@@ -8,6 +8,8 @@ This document defines the UI structure and behavior of `PInput`.
 
 UI fields may create or associate data without implying database ownership. Data identity and ownership follow `Database-Structure-Proposal.md`.
 
+The shared `PEditor` used by `PList`, `PSound`, and `PTag` mirrors the lexical editing structure defined in this document.
+
 ---
 
 # 1. Overall layout
@@ -15,9 +17,9 @@ UI fields may create or associate data without implying database ownership. Data
 The current conceptual layout is:
 
 ```text
-PHeadword  PLangcode                         PDiscard  PStore
+PHeadword  PLangcode                         PDiscard  PSave
 
-PPronunciation  PPlayback                        PLookup  PDownloader
+PPronunciation  PPlay                        PLookup  PDownloader
 
 PStackMeaning | PStackCollocation | PStackNote
 
@@ -35,9 +37,9 @@ PInput
 │       ├── PLangcodeListName
 │       └── PLangcodeListFlag
 ├── PDiscard
-├── PStore
+├── PSave
 ├── PPronunciation
-├── PPlayback
+├── PPlay
 ├── PLookup
 │   └── PLookupMenu
 │       └── PLookupMenuItem
@@ -89,9 +91,9 @@ PLangcodeListName  PLangcodeListFlag
 
 `PDiscard` discards the current input.
 
-## PStore
+## PSave
 
-`PStore` saves the current Entry and its associations.
+`PSave` saves the current Entry and its associations.
 
 Saving an Entry does not make independent Examples, Tags, or Situations subordinate to that Entry.
 
@@ -101,7 +103,11 @@ Saving an Entry does not make independent Examples, Tags, or Situations subordin
 
 ## PPronunciation
 
-`PPronunciation` is an editable field in which the user can type or edit the pronunciation.
+`PPronunciation` is the single pronunciation field for the Entry.
+
+The user can type or edit the pronunciation directly.
+
+Each Entry records only one pronunciation.
 
 It always presents brackets:
 
@@ -109,9 +115,9 @@ It always presents brackets:
 [ pronunciation ]
 ```
 
-## PPlayback
+## PPlay
 
-`PPlayback` is shown when the local database has an audio file for the pronunciation.
+`PPlay` is shown when the local database has an audio file for the pronunciation.
 
 It plays the locally stored pronunciation audio.
 
@@ -252,21 +258,46 @@ Dragging a `PSense` card to another position updates the ordering represented by
 
 ## PSenseDefinition
 
-`PSenseDefinition` is the editable definition field.
+`PSenseDefinition` is the single editable definition field for the Sense.
+
+## PExample
+
+`PExample` is the overarching UI concept for working with an Example.
+
+It does not mean that an Example is owned by the Entry, Sense, or Collocation. Example data remains independent.
+
+The overarching Example structure is:
+
+```text
+PExample
+└── PExampleSource
+```
+
+### PExampleSource
+
+`PExampleSource` is the single Source field for an Example.
+
+An Example may reference one Source. The Source itself remains independent data.
+
+---
 
 ## PSenseExample
 
-`PSenseExample` is an editable field for an Example associated with the Sense.
+`PSenseExample` is the Sense-specific editable field for an Example associated with the Sense.
 
-The Example is not owned by the Entry or Sense. When a new Example is created from this field:
+Its Example behavior follows the overarching `PExample` structure, including `PExampleSource`.
+
+When a new Example is created from this field:
 
 1. it is stored as independent `Example` data;
 2. Llyn assigns it its own random stable identifier;
-3. the Sense stores an association to that Example.
+3. the Sense stores an association to that Example;
+4. the Example may reference one Source through `PExampleSource`.
 
 ```text
-PSenseExample  ---->  Example
-                     [independent]
+PSenseExample  ---->  Example [independent]
+                         │
+                         └── PExampleSource ----> Source [independent]
 ```
 
 The same Example may be referenced by multiple lexical objects.
@@ -335,6 +366,8 @@ PSenseDefinition  ->  PCollocationExpression
 
 `PCollocationExpression` is the editable collocation-expression field.
 
+The mirrored Collocation Example field follows the same overarching `PExample` structure as `PSenseExample`, including one `PExampleSource`.
+
 Conceptually:
 
 ```text
@@ -370,7 +403,7 @@ PNote
 
 ## PNoteContents
 
-`PNoteContents` is the editable note area.
+`PNoteContents` is the single editable Note area for the Entry.
 
 It must support Markdown in a WYSIWYG manner. The user edits the visually formatted result directly rather than being required to edit raw Markdown syntax as the primary interface.
 
@@ -390,6 +423,8 @@ PSenseExample   -> Example.id is separate from the example text
 PSenseTag       -> Tag.id is separate from the tag text
 PSenseSituation -> Situation.id is separate from the situation title/text
 ```
+
+`PExampleSource` references one independent Source. The Source is not part of the Example's identity and is not owned by the Example.
 
 The same independence rule applies when a Collocation references an Example, Tag, or Situation.
 
@@ -414,10 +449,10 @@ PInput
 │       ├── PLangcodeListName
 │       └── PLangcodeListFlag
 ├── PDiscard
-├── PStore
+├── PSave
 │
 ├── PPronunciation
-├── PPlayback
+├── PPlay
 ├── PLookup
 │   └── PLookupMenu
 │       ├── lookup procedure / status
@@ -437,6 +472,7 @@ PInput
     │       ├── PSenseOrder
     │       ├── PSenseDefinition
     │       ├── PSenseExample ───> Example [independent]
+    │       │                       └── PExampleSource ──> Source [independent]
     │       ├── PSenseSituation ─> Situation [independent]
     │       ├── PSenseSynonym ───> lexical relation
     │       └── PSenseTag ───────> Tag [independent]
@@ -447,6 +483,7 @@ PInput
     │       ├── corresponding order
     │       ├── PCollocationExpression
     │       ├── corresponding example ─────> Example [independent]
+    │       │                                  └── PExampleSource ──> Source [independent]
     │       ├── corresponding situation ───> Situation [independent]
     │       ├── corresponding synonym ─────> lexical interlink
     │       └── corresponding tag ─────────> Tag [independent]

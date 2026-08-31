@@ -12,6 +12,8 @@
   "terms.favorite": "즐겨찾기",
   "terms.dualPanel": "이중 패널",
   "terms.settings": "설정",
+  "terms.workspace": "작업 공간",
+  "terms.browse": "찾아보기",
   "texts": {
     "Headquarter.About": "{Terms.product} 정보",
     "Headquarter.Exit": "{terms.exit}",
@@ -27,10 +29,19 @@
     "Navigation.DualPanel": "{terms.dualPanel}",
     "Navigation.Settings": "{terms.settings}",
     "Settings.Localization": "현지화",
+    "Settings.Workspace": "{terms.workspace}",
+    "Workspace.Browse": "{terms.browse}",
     "Lookup.Searching": "검색 중…",
     "Lookup.Empty": "발음을 찾을 수 없습니다",
     "Lookup.Select": "선택",
     "Lookup.SourceWikipedia": "위키백과",
-    "Lookup.SourceCambridge": "케임브리지"
+    "Lookup.SourceCambridge": "케임브리지",
+    "Downloader.Searching": "검색 중…",
+    "Downloader.Empty": "오디오를 찾을 수 없습니다",
+    "Downloader.Play": "재생",
+    "Downloader.Apply": "적용",
+    "Downloader.Saving": "저장 중…",
+    "Downloader.Saved": "작업 공간에 저장됨",
+    "Downloader.Failed": "다운로드 실패"
   }
 }

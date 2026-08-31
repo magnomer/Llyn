@@ -10,28 +10,68 @@ The internal structure of individual panels such as `PInput`, `PList`, `PSound`,
 
 ---
 
-# 1. Naming rule
+# 1. Naming convention
 
-Principal UI component names use:
+Internal UI names begin with `P`.
 
-```text
-P + one word
-```
+The exact component names defined in these UI specifications are normative.
 
-Examples:
+Principal regions use concise names such as:
 
 ```text
 PWindow
 PRoof
 PBrand
-PLogo
+PHouse
+PPanel
 ```
 
-Navigation buttons may use the `PNavigation...` naming pattern to identify the panel they open.
+Nested elements may extend the parent concept where needed, for example:
+
+```text
+PNavigationInput
+PLangcodeListName
+PLookupMenuSelector
+PWorkbenchSelect
+```
+
+When an accepted concise name already exists, a longer generic replacement should not be invented. For example, the window-caption area is `PCaption`.
+
 
 ---
 
-# 2. PWindow
+# 2. Shared functional categories and tab-specific names
+
+Some tabs use different concrete component names for the same broader functional category.
+
+The three browse-style tabs currently follow this mapping:
+
+| Functional category | PList | PSound | PTag |
+|---|---|---|---|
+| Sorting | `POrder` | `PSequence` | `PFunnel` |
+| Search | `PInquiry` | `PProbe` | `PExploration` |
+| `PCatalog` | `PIndex` | `PInventory` | `PDirectory` |
+| Read/display area | `PDisplay` | `PDisplay` | `PDisplay` |
+| Mode toggle | `PScribe` | `PScribe` | `PScribe` |
+| Editing area | `PEditor` | `PEditor` | `PEditor` |
+
+`PCatalog` is an overarching functional term. It does not require the concrete component itself to be named `PCatalog`.
+
+Thus:
+
+```text
+PCatalog
+├── PIndex          [PList]
+├── PInventory      [PSound]
+└── PDirectory      [PTag]
+```
+
+`PDisplay`, `PScribe`, and `PEditor` are intentionally shared concrete names across these three tabs.
+
+---
+
+# 3. PWindow
+
 
 `PWindow` is the internal name of the entire program window UI.
 
@@ -54,7 +94,7 @@ PEstablishment
 
 ---
 
-# 3. PRoof
+# 4. PRoof
 
 `PRoof` is the uppermost area of `PWindow`.
 
@@ -108,7 +148,7 @@ Close
 
 ---
 
-# 4. PHouse
+# 5. PHouse
 
 `PHouse` is the principal working area below `PRoof`.
 
@@ -128,7 +168,7 @@ PHouse
 
 ---
 
-# 5. PNavigation
+# 6. PNavigation
 
 `PNavigation` contains the principal navigation buttons.
 
@@ -143,13 +183,13 @@ PNavigationSound        -> PSound
 PNavigationTag          -> PTag
 PNavigationSituation    -> PSituation
 PNavigationFavorite     -> PFavorite
-PNavigationDuplex    -> PDuplex
+PNavigationDuplex       -> PDuplex
 PNavigationSettings     -> PSettings
 ```
 
 ---
 
-# 6. PPanel
+# 7. PPanel
 
 `PPanel` is the principal content area of `PHouse`.
 
@@ -180,13 +220,13 @@ Its internal design is defined in `DesignUI-Input.md`.
 
 It displays the entire list of recorded entries.
 
-Its internal design is defined separately.
+Its internal design is defined in `DesignUI-List.md`.
 
 ## PSound
 
 `PSound` is opened through `PNavigationSound`.
 
-Its internal design is defined separately.
+Its internal design is defined in `DesignUI-Sound.md`.
 
 ## PTag
 
@@ -220,11 +260,11 @@ Its internal design is defined separately.
 
 `PSettings` is opened through `PNavigationSettings`.
 
-Its internal design is defined separately.
+Its internal design is defined in `DesignUI-Settings.md`.
 
 ---
 
-# 7. PEstablishment
+# 8. PEstablishment
 
 `PEstablishment` is the area below `PHouse`.
 
@@ -234,7 +274,7 @@ Its internal elements are defined separately.
 
 ---
 
-# 8. Current hierarchy
+# 9. Current hierarchy
 
 ```text
 PWindow
@@ -276,7 +316,7 @@ PWindow
 
 ---
 
-# 9. Spatial model
+# 10. Spatial model
 
 ```text
 ┌─────────────────────────────────────────────┐
@@ -312,7 +352,7 @@ PNavigation | PPanel
 
 ---
 
-# 10. Summary
+# 11. Summary
 
 The principal organization of Llyn's window UI is:
 
@@ -347,4 +387,15 @@ PSettings
 
 This document defines only the overall UI structure. The internal design of each principal panel is specified independently.
 
-The current specification for `PInput` is stored in `DesignUI-Input.md`.
+Current dedicated panel specifications include:
+
+```text
+PInput    -> DesignUI-Input.md
+PList     -> DesignUI-List.md
+PSound    -> DesignUI-Sound.md
+PTag      -> DesignUI-Tag.md
+PDuplex   -> DesignUI-Duplex.md
+PSettings -> DesignUI-Settings.md
+```
+
+The remaining principal panels will receive their own documents as their designs are defined.

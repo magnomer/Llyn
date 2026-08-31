@@ -6,6 +6,8 @@ This document proposes the database structure for rebuilding Llyn from scratch.
 
 The proposal focuses only on data construction, relationships, ownership, identity, and integrity. It does not describe program architecture, migration, compatibility, repository paths, or implementation history.
 
+UI component names such as `PIndex`, `PInventory`, `PDirectory`, `PDisplay`, and `PEditor` do not alter database identity or ownership.
+
 ---
 
 # 1. Core principles
@@ -210,6 +212,8 @@ Lexical data does not store copied display names for features or values.
 | `parent_id` | Parent Meaning, if subordinate |
 | `position` | Order among siblings; updated when senses are reordered |
 | `gloss` | Optional short gloss |
+| `definition_language` | Optional language of the definition |
+| `definition` | Single definition field for this Meaning |
 | `labels` | Meaning labels |
 
 A Meaning is subordinate to an Entry.
@@ -220,19 +224,7 @@ A subordinate Meaning is subordinate to another Meaning within the same Entry.
 
 Sibling positions must be unique within the same parent.
 
----
-
-## `definition`
-
-A Meaning may have more than one definition.
-
-| Field | Meaning |
-|---|---|
-| `id` | Definition ID |
-| `sense_id` | Parent Meaning |
-| `language` | Definition language |
-| `text` | Definition text |
-| `position` | Order |
+Each Meaning has one definition field. The UI counterpart is `PSenseDefinition`.
 
 ---
 
@@ -282,12 +274,15 @@ A Relation has at most one target.
 | Field | Meaning |
 |---|---|
 | `id` | Stable Pronunciation ID |
-| `entry_id` | Parent Entry |
-| `position` | Order |
+| `entry_id` | Parent Entry; unique |
 | `level` | Pronunciation level/category |
 | `ipa` | IPA representation |
 
 Pronunciation is subordinate to Entry.
+
+Each Entry may have at most one Pronunciation. There is therefore no pronunciation order and no primary/default-pronunciation distinction.
+
+The UI counterpart is `PPronunciation`.
 
 ---
 
@@ -363,25 +358,20 @@ Reordering collocation cards changes `collocation.position` without changing the
 
 ---
 
-# 11. Notes
+# 11. Note
 
 ## `note`
 
 | Field | Meaning |
 |---|---|
-| `entry_id` | Parent Entry |
-| `position` | Order |
-| `text` | Note text |
+| `entry_id` | Parent Entry; primary identity |
+| `text` | Note content |
 
-Primary identity:
+Each Entry has at most one Note.
 
-```text
-(entry_id, position)
-```
+The Note is subordinate to the Entry.
 
-Notes remain subordinate to the Entry unless a future requirement makes shared Notes necessary.
-
-The `PNoteContents` UI presents Note content as WYSIWYG Markdown. This database proposal does not yet prescribe the stored Markdown representation or editor serialization format.
+The UI counterpart is `PNoteContents`, which presents the Note as a WYSIWYG Markdown editing surface. This proposal does not prescribe the editor's internal serialization format beyond preserving the Note content.
 
 ---
 
@@ -395,10 +385,15 @@ The `PNoteContents` UI presents Note content as WYSIWYG Markdown. This database 
 | `language` | Example language |
 | `text` | Example text; not an identifier |
 | `local` | Optional local representation |
+| `source_id` | Optional reference to one independent Source |
 
 An Example is independent.
 
 It has no owning Entry, Meaning, or Collocation.
+
+An Example may reference at most one Source. The Source remains independent and is not owned by the Example.
+
+In the UI, `PExample` is the overarching Example concept and `PExampleSource` is its single Source field.
 
 ---
 
@@ -418,9 +413,11 @@ An Example may have multiple translations.
 
 ---
 
-# 13. Example references
+# 13. Example and Collocation associations
 
-## `entry_example`
+## Example associations
+
+### `entry_example`
 
 | Field | Meaning |
 |---|---|
@@ -438,7 +435,7 @@ The position is unique within the Entry.
 
 ---
 
-## `sense_example`
+### `sense_example`
 
 | Field | Meaning |
 |---|---|
@@ -456,7 +453,7 @@ The position is unique within the Meaning.
 
 ---
 
-## `collocation_example`
+### `collocation_example`
 
 | Field | Meaning |
 |---|---|
@@ -474,7 +471,9 @@ The position is unique within the Collocation.
 
 ---
 
-## `collocation_tag`
+## Collocation associations
+
+### `collocation_tag`
 
 | Field | Meaning |
 |---|---|
@@ -494,7 +493,7 @@ Removing the association does not delete the Tag.
 
 ---
 
-## `collocation_situation`
+### `collocation_situation`
 
 | Field | Meaning |
 |---|---|
@@ -698,7 +697,7 @@ An Author can be referenced by multiple Sources.
 
 # 18. Source references
 
-No Entry or Example owns Source information directly.
+Source information remains independent of the lexical objects that reference it.
 
 ## `entry_source`
 
@@ -714,23 +713,13 @@ Primary identity:
 (entry_id, source_id)
 ```
 
----
+An Entry may reference multiple Sources through `entry_source`.
 
-## `example_source`
+## Example Source reference
 
-| Field | Meaning |
-|---|---|
-| `example_id` | Example |
-| `source_id` | Source |
-| `position` | Order within the Example |
+An Example may reference at most one Source through `example.source_id`.
 
-Primary identity:
-
-```text
-(example_id, source_id)
-```
-
-The Source remains independent of all referrers.
+This is a reference only. The Source remains independent and is not owned by the Example.
 
 ---
 
@@ -876,7 +865,6 @@ Entry
 ├── Inflection
 │   └── Inflection Feature
 ├── Meaning
-│   ├── Definition
 │   ├── Relation
 │   ├── Example references ------> Example
 │   ├── Tag references ----------> Tag
@@ -897,7 +885,7 @@ Collocation
 
 Example                           [independent]
 ├── Translation
-└── Source references -----------> Source
+└── Source reference ------------> Source
 
 Tag                               [independent]
 
@@ -922,11 +910,11 @@ Deleting an Entry deletes its subordinate data:
 - Forms
 - Part-of-speech associations
 - Inflections and their features
-- Meanings and definitions
+- Meanings and their definition fields
 - Relations originating from those Meanings
-- Pronunciations, Syllables, and Representations
+- Pronunciation, Syllables, and Representations
 - Collocations
-- Notes
+- Note
 
 It also removes the Entry's association rows, including associations made through its Meanings and Collocations.
 
@@ -936,7 +924,7 @@ It does not delete independent Examples, Tags, Situations, Sources, or Authors.
 
 ## Deleting a Meaning
 
-Deleting a Meaning deletes data subordinate to that Meaning, including its Definitions, originating Relations, and subordinate Meanings according to the chosen deletion operation.
+Deleting a Meaning deletes that Meaning, its definition field, originating Relations, and subordinate Meanings according to the chosen deletion operation.
 
 It also removes that Meaning's associations to Examples, Tags, and Situations.
 
@@ -956,9 +944,9 @@ It does not delete the independent Examples, Tags, or Situations that were refer
 
 An Example must not be deleted while lexical objects still reference it unless those references are explicitly removed.
 
-Deleting an Example removes its subordinate translations and its Source-reference associations.
+Deleting an Example removes its subordinate translations and its reference to its Source, if one exists.
 
-It does not delete Sources.
+It does not delete the referenced Source.
 
 ---
 
@@ -1008,7 +996,7 @@ Collocation C -> Example X, position 2
 
 Example X itself has no global lexical position.
 
-The same rule applies to Source references and Author order.
+The same rule applies to ordered Entry-Source references and Author order.
 
 Sense order is stored by `sense.position`. Reordering `PSense` cards in the UI changes this ordering value; it does not change any Sense ID.
 
@@ -1044,7 +1032,7 @@ Note
 ## Meaning-owned data
 
 ```text
-Definition
+single definition field
 Relation
 subordinate Meaning
 ```
@@ -1077,9 +1065,18 @@ Collocation -> Situation
 Collocation -> lexical synonym target
 
 Entry       -> Source
-Example     -> Source
+Example     -> Source (at most one)
 
 Source      -> Author
+```
+
+Additional cardinality rules:
+
+```text
+Entry   -> at most one Pronunciation
+Sense   -> one definition field
+Entry   -> at most one Note
+Example -> at most one Source
 ```
 
 The central rules are:

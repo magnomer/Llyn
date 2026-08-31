@@ -12,6 +12,8 @@
   "terms.favorite": "favorites",
   "terms.dualPanel": "dual panel",
   "terms.settings": "settings",
+  "terms.workspace": "workspace",
+  "terms.browse": "browse",
   "texts": {
     "Headquarter.About": "{Terms.product} information",
     "Headquarter.Exit": "{Terms.exit}",
@@ -27,10 +29,19 @@
     "Navigation.DualPanel": "{Terms.dualPanel}",
     "Navigation.Settings": "{Terms.settings}",
     "Settings.Localization": "Localization",
+    "Settings.Workspace": "{Terms.workspace}",
+    "Workspace.Browse": "{Terms.browse}",
     "Lookup.Searching": "Searching…",
     "Lookup.Empty": "No pronunciations found",
     "Lookup.Select": "Select",
     "Lookup.SourceWikipedia": "Wikipedia",
-    "Lookup.SourceCambridge": "Cambridge"
+    "Lookup.SourceCambridge": "Cambridge",
+    "Downloader.Searching": "Searching…",
+    "Downloader.Empty": "No audio found",
+    "Downloader.Play": "Play",
+    "Downloader.Apply": "Apply",
+    "Downloader.Saving": "Saving…",
+    "Downloader.Saved": "Saved to workspace",
+    "Downloader.Failed": "Download failed"
   }
 }
