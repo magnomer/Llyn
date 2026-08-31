@@ -26,6 +26,11 @@
     "Navigation.Favorite": "{Terms.favorite}",
     "Navigation.DualPanel": "{Terms.dualPanel}",
     "Navigation.Settings": "{Terms.settings}",
-    "Settings.Localization": "Localization"
+    "Settings.Localization": "Localization",
+    "Lookup.Searching": "Searching…",
+    "Lookup.Empty": "No pronunciations found",
+    "Lookup.Select": "Select",
+    "Lookup.SourceWikipedia": "Wikipedia",
+    "Lookup.SourceCambridge": "Cambridge"
   }
 }

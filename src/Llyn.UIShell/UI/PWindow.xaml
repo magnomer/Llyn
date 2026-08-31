@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
     Title="{DynamicResource Terms.Product}"
-    Width="1180"
-    Height="760"
-    MinWidth="900"
-    MinHeight="620"
+    Width="1485"
+    Height="1001"
+    MinWidth="980"
+    MinHeight="700"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None">
 
@@ -102,8 +102,8 @@
                     </Grid>
                 </Border>
 
-                <Grid x:Name="PPanel" Grid.Column="1" Background="{StaticResource Theme.Canvas}">
-                    <Grid x:Name="PInput" Margin="32,26,32,24">
+                <Grid x:Name="PPanel" Grid.Column="1" Background="{StaticResource Theme.Surface}">
+                    <Grid x:Name="PInput" Margin="34,20,34,38">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -111,36 +111,54 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <Grid>
+                        <Grid Height="51" Margin="9,0,-8,0">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="178" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBox x:Name="PHeadword" Margin="0,0,10,0" FontSize="19" Style="{StaticResource Theme.Input.Field}" />
+                            <Grid Margin="0,0,16,0">
+                                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="Headword" />
+                                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="{Binding Text, ElementName=PHeadword}" />
+                                <TextBox x:Name="PHeadword" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="Headword" />
+                            </Grid>
 
-                            <Grid x:Name="PLangcode" Grid.Column="1" Margin="0,0,10,0">
+                            <Grid x:Name="PLangcode" Grid.Column="1">
                                 <ToggleButton
                                     x:Name="PLangcodeBase"
-                                    Height="38"
-                                    Padding="11,0"
+                                    Width="198"
+                                    Height="48"
+                                    Padding="20,0"
                                     HorizontalContentAlignment="Stretch"
                                     Background="{StaticResource Theme.Surface}"
                                     BorderBrush="{StaticResource Theme.Line}"
-                                    BorderThickness="1">
-                                    <Path
-                                        Width="10"
-                                        Height="6"
-                                        HorizontalAlignment="Right"
-                                        Data="M 0,0 L 5,5 L 10,0"
-                                        Stroke="{StaticResource Theme.Muted}"
-                                        StrokeThickness="1.5" />
+                                    BorderThickness="1"
+                                    Style="{StaticResource Theme.Input.TogglePill}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Width="22" Height="16" VerticalAlignment="Center" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0.5" CornerRadius="2">
+                                            <Grid ClipToBounds="True" Background="White">
+                                                <Rectangle Height="2" VerticalAlignment="Top" Fill="#E83B4F" />
+                                                <Rectangle Height="2" Margin="0,4,0,0" VerticalAlignment="Top" Fill="#E83B4F" />
+                                                <Rectangle Height="2" Margin="0,8,0,0" VerticalAlignment="Top" Fill="#E83B4F" />
+                                                <Rectangle Height="2" VerticalAlignment="Bottom" Fill="#E83B4F" />
+                                                <Rectangle Width="9" Height="8" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#2F6FED" />
+                                            </Grid>
+                                        </Border>
+                                        <TextBlock Grid.Column="1" Margin="9,0" VerticalAlignment="Center" FontSize="13" Text="English" />
+                                        <Path Grid.Column="2" Width="9" Height="5" Data="M 0,0 L 4.5,4 L 9,0" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.5" />
+                                    </Grid>
                                 </ToggleButton>
                                 <Popup
                                     x:Name="PLangcodeList"
-                                    Width="178"
+                                    Width="198"
                                     Margin="0,6,0,0"
                                     AllowsTransparency="True"
                                     IsOpen="{Binding IsChecked, ElementName=PLangcodeBase}"
@@ -166,43 +184,57 @@
                                 </Popup>
                             </Grid>
 
-                            <Button x:Name="PDiscard" Grid.Column="2" Margin="0,0,8,0" Foreground="{StaticResource Theme.Warning}" Style="{StaticResource Theme.Input.Action}">
-                                <Path Width="14" Height="14" Data="M 2,2 L 12,12 M 12,2 L 2,12" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeThickness="1.8" />
+                            <Button x:Name="PDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Style="{StaticResource Theme.Input.Pill}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Width="14" Height="16" Margin="0,0,9,0" Data="M 2,4 L 12,4 M 5,4 L 5,2 L 9,2 L 9,4 M 3,4 L 4,15 L 10,15 L 11,4" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeThickness="1.4" />
+                                    <TextBlock VerticalAlignment="Center" Text="Discard" />
+                                </StackPanel>
                             </Button>
-                            <Button x:Name="PSave" Grid.Column="3" Background="{StaticResource Theme.AccentSoft}" Style="{StaticResource Theme.Input.Action}">
-                                <Path Width="15" Height="15" Data="M 1,1 L 12,1 L 14,3 L 14,14 L 1,14 Z M 4,1 L 4,6 L 11,6 L 11,1 M 4,10 L 11,10 L 11,14 L 4,14 Z" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeThickness="1.3" />
+                            <Button x:Name="PSave" Grid.Column="4" Width="162" Height="51" Style="{StaticResource Theme.Input.Primary}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Width="15" Height="15" Margin="0,0,9,0" Data="M 1,1 L 12,1 L 14,3 L 14,14 L 1,14 Z M 4,1 L 4,6 L 11,6 L 11,1 M 4,10 L 11,10 L 11,14 L 4,14 Z" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeLineJoin="Round" StrokeThickness="1.3" />
+                                    <TextBlock VerticalAlignment="Center" Foreground="White" Text="Save entry" />
+                                </StackPanel>
                             </Button>
                         </Grid>
 
-                        <Grid Grid.Row="1" Margin="0,12,0,22">
+                        <Grid Grid.Row="1" Height="49" Margin="9,20,0,0" HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="240" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1">
+                            <Border Height="49" Background="{StaticResource Theme.AccentSoft}" BorderBrush="{StaticResource Theme.AccentSoft}" BorderThickness="1" CornerRadius="10">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="30" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="30" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Text="[" />
-                                    <TextBox x:Name="PPronunciation" Grid.Column="1" MinHeight="36" Padding="0,6" Background="Transparent" BorderThickness="0" FontSize="16" VerticalContentAlignment="Center" />
-                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Text="]" />
+                                    <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="16" Text="[" />
+                                    <TextBox x:Name="PPronunciation" Grid.Column="1" MinHeight="40" Padding="6,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Pronunciation" VerticalContentAlignment="Center" />
+                                    <TextBlock Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="]" />
                                 </Grid>
                             </Border>
 
-                            <Button x:Name="PPlay" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Theme.Input.Action}" Visibility="Collapsed">
+                            <Button x:Name="PPlay" Grid.Column="1" Width="56" Height="49" Margin="13,0,0,0" Background="{StaticResource Theme.AccentSoft}" BorderBrush="{StaticResource Theme.AccentSoft}" Foreground="{StaticResource Theme.Accent}" Style="{StaticResource Theme.Input.Action}">
                                 <Path Width="13" Height="15" Data="M 1,1 L 12,7.5 L 1,14 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Fill" />
                             </Button>
 
-                            <Grid Grid.Column="2" Margin="8,0,0,0">
-                                <ToggleButton x:Name="PLookup" Width="38" Height="38" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1">
-                                    <Path Width="15" Height="15" Data="M 6.5,1 A 5.5,5.5 0 1 0 6.5,12 A 5.5,5.5 0 1 0 6.5,1 M 10.5,10.5 L 15,15" Stretch="Fill" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                            <Grid Grid.Column="2" Margin="15,0,0,0">
+                                <ToggleButton x:Name="PLookup" Width="136" Height="49" Padding="16,0" Checked="PLookup_OnChecked" Unchecked="PLookup_OnUnchecked" Style="{StaticResource Theme.Input.ToggleAction}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Path Width="15" Height="15" Data="M 6.5,1 A 5.5,5.5 0 1 0 6.5,12 A 5.5,5.5 0 1 0 6.5,1 M 10.5,10.5 L 15,15" Stretch="Fill" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                                        <TextBlock Grid.Column="1" Margin="9,0" VerticalAlignment="Center" Text="Lookup" />
+                                        <Path Grid.Column="2" Width="8" Height="5" Data="M 0,0 L 4,4 L 8,0" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.4" />
+                                    </Grid>
                                 </ToggleButton>
                                 <Popup
                                     x:Name="PLookupMenu"
@@ -214,108 +246,277 @@
                                     PlacementTarget="{Binding ElementName=PLookup}"
                                     StaysOpen="False">
                                     <Border Padding="7" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="9">
-                                        <ItemsControl>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid Height="36">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="*" />
-                                                            <ColumnDefinition Width="Auto" />
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock x:Name="PLookupMenuItem" VerticalAlignment="Center" />
-                                                        <RadioButton x:Name="PLookupMenuSelector" Grid.Column="1" VerticalAlignment="Center" />
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
+                                        <StackPanel>
+                                            <TextBlock x:Name="PLookupMenuStatus" Margin="9,8" VerticalAlignment="Center" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Lookup.Searching}" Visibility="Collapsed" />
+                                            <ItemsControl x:Name="PLookupMenuList" Visibility="Collapsed">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Height="36">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto" />
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Margin="2,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding SourceLabel}" />
+                                                            <TextBlock x:Name="PLookupMenuItem" Grid.Column="1" Margin="12,0" VerticalAlignment="Center" Foreground="{StaticResource Theme.Ink}" Text="{Binding Phonetic}" TextTrimming="CharacterEllipsis" />
+                                                            <RadioButton x:Name="PLookupMenuSelector" Grid.Column="2" VerticalAlignment="Center" Click="PLookupMenuSelector_OnClick" Content="{DynamicResource Lookup.Select}" GroupName="PLookupMenuSelector" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
                                     </Border>
                                 </Popup>
                             </Grid>
 
-                            <Button x:Name="PDownloader" Grid.Column="3" Margin="8,0,0,0" Style="{StaticResource Theme.Input.Action}">
+                            <Button x:Name="PDownloader" Grid.Column="3" Width="50" Height="49" Margin="14,0,0,0" Style="{StaticResource Theme.Input.Action}">
                                 <Path Width="15" Height="15" Data="M 7.5,1 L 7.5,10 M 3.5,6 L 7.5,10 L 11.5,6 M 1,13.5 L 14,13.5" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeLineJoin="Round" StrokeThickness="1.5" />
                             </Button>
                         </Grid>
 
-                        <StackPanel x:Name="PStack" Grid.Row="2" Orientation="Horizontal">
-                            <Button x:Name="PStackMeaning" Content="Meaning" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab.Selected}" />
-                            <Button x:Name="PStackCollocation" Content="Collocation" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
-                            <Button x:Name="PStackNote" Content="Note" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
-                        </StackPanel>
+                        <Border Grid.Row="2" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
+                            <StackPanel x:Name="PStack" Margin="29,0,0,0" Orientation="Horizontal">
+                                <Button x:Name="PStackMeaning" Content="Meaning" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab.Selected}" />
+                                <Button x:Name="PStackCollocation" Content="Collocation" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
+                                <Button x:Name="PStackNote" Content="Note" Click="PStack_OnClick" Style="{StaticResource Theme.Input.Tab}" />
+                            </StackPanel>
+                        </Border>
 
-                        <Border x:Name="PContents" Grid.Row="3" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="0,10,10,10">
+                        <Border x:Name="PContents" Grid.Row="3" Padding="0,22,0,0" Background="Transparent">
                             <Grid>
-                                <ScrollViewer x:Name="PMeaning" Padding="18" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                    <Border x:Name="PSense" Style="{StaticResource Theme.Input.Card}">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="72" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="38" />
-                                            </Grid.ColumnDefinitions>
+                                <ScrollViewer x:Name="PMeaning" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden">
+                                    <StackPanel>
+                                        <ItemsControl x:Name="PSenseList">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Height="471" Margin="0,0,0,15" Style="{StaticResource Theme.Input.Card}">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="55" />
+                                                                <RowDefinition Height="416" />
+                                                            </Grid.RowDefinitions>
 
-                                            <TextBox x:Name="PSenseOrder" Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
-                                            <TextBox x:Name="PSenseDefinition" Grid.Column="1" Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
-                                            <Button Grid.Column="2" Margin="0,0,0,10" Click="PCardRemove_OnClick" Foreground="{StaticResource Theme.Warning}" Style="{StaticResource Theme.Input.Action}">
-                                                <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
-                                            </Button>
-                                            <TextBox x:Name="PSenseExample" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,10" Style="{StaticResource Theme.Input.Field}" />
-                                            <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="0,0,0,10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBox x:Name="PSenseSituation" Margin="0,0,5,0" Style="{StaticResource Theme.Input.Field}" />
-                                                <TextBox x:Name="PSenseSynonym" Grid.Column="1" Margin="5,0,0,0" Style="{StaticResource Theme.Input.Field}" />
-                                            </Grid>
-                                            <TextBox x:Name="PSenseTag" Grid.Row="3" Grid.ColumnSpan="3" Style="{StaticResource Theme.Input.Field}" />
-                                        </Grid>
-                                    </Border>
+                                                            <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
+                                                                <Grid Margin="14,0,10,0">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="38" />
+                                                                        <ColumnDefinition Width="34" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="38" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <UniformGrid Width="13" Height="19" HorizontalAlignment="Left" VerticalAlignment="Center" Columns="2" Rows="3">
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                    </UniformGrid>
+                                                                    <Border Grid.Column="1" Width="28" Height="28" Background="{StaticResource Theme.AccentSoft}" CornerRadius="14">
+                                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding Order}" />
+                                                                    </Border>
+                                                                    <TextBlock Grid.Column="2" Margin="23,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding Title}" />
+                                                                    <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardRemove_OnClick" Style="{StaticResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
+                                                                        <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stretch="Fill" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                                                                    </Button>
+                                                                </Grid>
+                                                            </Border>
+
+                                                            <Grid Grid.Row="1" Margin="22,13,22,20">
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="133" />
+                                                                    <RowDefinition Height="75" />
+                                                                    <RowDefinition Height="61" />
+                                                                    <RowDefinition Height="61" />
+                                                                    <RowDefinition Height="52" />
+                                                                </Grid.RowDefinitions>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="142" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <Grid Grid.ColumnSpan="2">
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="26" />
+                                                                        <RowDefinition Height="89" />
+                                                                        <RowDefinition Height="18" />
+                                                                    </Grid.RowDefinitions>
+                                                                    <TextBlock VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Definition" />
+                                                                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+                                                                        <TextBlock Margin="10,0" Foreground="{StaticResource Theme.Muted}" FontWeight="Bold" Text="B" />
+                                                                        <TextBlock Margin="10,0" Foreground="{StaticResource Theme.Muted}" FontStyle="Italic" Text="I" />
+                                                                        <Path Width="14" Height="12" Margin="10,0" Data="M 1,2 L 3,2 M 6,2 L 13,2 M 1,6 L 3,6 M 6,6 L 13,6 M 1,10 L 3,10 M 6,10 L 13,10" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.4" />
+                                                                        <Path Width="15" Height="15" Margin="10,0" Data="M 6,10 L 4,12 A 3,3 0 0 1 0,8 L 3,5 A 3,3 0 0 1 7,5 M 9,5 L 11,3 A 3,3 0 0 1 15,7 L 12,10 A 3,3 0 0 1 8,10 M 5,8 L 10,7" Stretch="Fill" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.3" />
+                                                                        <Path Width="14" Height="14" Margin="10,0,2,0" Data="M 1,5 L 1,1 L 5,1 M 9,1 L 13,1 L 13,5 M 13,9 L 13,13 L 9,13 M 5,13 L 1,13 L 1,9" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.3" />
+                                                                    </StackPanel>
+                                                                    <TextBox Grid.Row="1" Height="89" AcceptsReturn="True" Style="{StaticResource Theme.Input.Field}" Tag="Write a clear definition" TextWrapping="Wrap" VerticalContentAlignment="Top" />
+                                                                </Grid>
+
+                                                                <TextBlock Grid.Row="1" Margin="0,10,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Example" />
+                                                                <Grid Grid.Row="1" Grid.Column="1" Height="42" VerticalAlignment="Top">
+                                                                    <TextBox Height="42" Padding="12,7,72,7" Style="{StaticResource Theme.Input.Field}" Tag="Add an example sentence" />
+                                                                    <StackPanel Margin="0,0,13,0" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" IsHitTestVisible="False">
+                                                                        <Path Width="13" Height="13" Margin="0,0,14,0" Data="M 5,2 L 2,2 L 2,11 L 11,11 L 11,8 M 7,1 L 12,1 L 12,6 M 6,7 L 12,1" Stroke="{StaticResource Theme.Accent}" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeLineJoin="Round" StrokeThickness="1.3" />
+                                                                        <Path Width="5" Height="9" Data="M 0,0 L 4,4.5 L 0,9" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                                                                    </StackPanel>
+                                                                </Grid>
+
+                                                                <TextBlock Grid.Row="2" Margin="0,10,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Situation" />
+                                                                <Grid Grid.Row="2" Grid.Column="1" Height="42" VerticalAlignment="Top">
+                                                                    <TextBox Height="42" Padding="12,7,72,7" Style="{StaticResource Theme.Input.Field}" Tag="Where or when is it used?" />
+                                                                    <StackPanel Margin="0,0,13,0" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" IsHitTestVisible="False">
+                                                                        <Path Width="13" Height="16" Margin="0,0,14,0" Data="M 6.5,15 C 5,12 2,9 2,6.5 A 4.5,4.5 0 1 1 11,6.5 C 11,9 8,12 6.5,15 M 6.5,4.5 A 2,2 0 1 0 6.5,8.5 A 2,2 0 1 0 6.5,4.5" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
+                                                                        <Path Width="5" Height="9" Data="M 0,0 L 4,4.5 L 0,9" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                                                                    </StackPanel>
+                                                                </Grid>
+
+                                                                <TextBlock Grid.Row="3" Margin="0,10,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Synonym" />
+                                                                <Grid Grid.Row="3" Grid.Column="1" Height="42" VerticalAlignment="Top">
+                                                                    <TextBox Height="42" Padding="12,7,72,7" Style="{StaticResource Theme.Input.Field}" Tag="Add a related word" />
+                                                                    <StackPanel Margin="0,0,13,0" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" IsHitTestVisible="False">
+                                                                        <Path Width="14" Height="14" Margin="0,0,14,0" Data="M 6,9 L 4,11 A 3,3 0 0 1 0,7 L 3,4 A 3,3 0 0 1 7,4 M 8,5 L 10,3 A 3,3 0 0 1 14,7 L 11,10 A 3,3 0 0 1 7,10 M 5,8 L 9,6" Stroke="{StaticResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.2" />
+                                                                        <Path Width="5" Height="9" Data="M 0,0 L 4,4.5 L 0,9" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                                                                    </StackPanel>
+                                                                </Grid>
+
+                                                                <TextBlock Grid.Row="4" Margin="0,14,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Tags" />
+                                                                <Grid Grid.Row="4" Grid.Column="1" Height="52">
+                                                                    <TextBox Height="52" Padding="12,7,72,7" Style="{StaticResource Theme.Input.Field}" Tag="Add tags" />
+                                                                    <StackPanel Margin="0,0,13,0" HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal" IsHitTestVisible="False">
+                                                                        <Path Width="15" Height="14" Margin="0,0,14,0" Data="M 1,2 L 8,2 L 14,8 L 8,14 L 1,14 Z M 5,6 A 1.2,1.2 0 1 0 5,8.4 A 1.2,1.2 0 1 0 5,6" Stretch="Fill" Stroke="{StaticResource Theme.Accent}" StrokeLineJoin="Round" StrokeThickness="1.2" />
+                                                                        <Path Width="5" Height="9" Data="M 0,0 L 4,4.5 L 0,9" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PAddSense_OnClick">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
+                                                    <Grid>
+                                                        <Rectangle Width="10" Height="1.5" Fill="White" />
+                                                        <Rectangle Width="1.5" Height="10" Fill="White" />
+                                                    </Grid>
+                                                </Border>
+                                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="Add another sense" />
+                                            </StackPanel>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Grid Background="Transparent">
+                                                        <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource Theme.Accent}" StrokeDashArray="5,3" StrokeThickness="1" Opacity="0.52" />
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
                                 </ScrollViewer>
 
-                                <ScrollViewer x:Name="PCollocation" Padding="18" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
-                                    <Border Style="{StaticResource Theme.Input.Card}">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="72" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="38" />
-                                            </Grid.ColumnDefinitions>
+                                <ScrollViewer x:Name="PCollocation" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Visibility="Collapsed">
+                                    <StackPanel>
+                                        <ItemsControl x:Name="PCollocationList">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Height="328" Margin="0,0,0,15" Style="{StaticResource Theme.Input.Card}">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="55" />
+                                                                <RowDefinition Height="273" />
+                                                            </Grid.RowDefinitions>
+                                                            <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
+                                                                <Grid Margin="14,0,10,0">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="38" />
+                                                                        <ColumnDefinition Width="34" />
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <ColumnDefinition Width="38" />
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <UniformGrid Width="13" Height="19" HorizontalAlignment="Left" VerticalAlignment="Center" Columns="2" Rows="3">
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                        <Ellipse Width="3" Height="3" Fill="{StaticResource Theme.Muted}" />
+                                                                    </UniformGrid>
+                                                                    <Border Grid.Column="1" Width="28" Height="28" Background="{StaticResource Theme.AccentSoft}" CornerRadius="14">
+                                                                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding Order}" />
+                                                                    </Border>
+                                                                    <TextBlock Grid.Column="2" Margin="23,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding Title}" />
+                                                                    <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardRemove_OnClick" Style="{StaticResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
+                                                                        <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                                                                    </Button>
+                                                                </Grid>
+                                                            </Border>
+                                                            <Grid Grid.Row="1" Margin="22,14,22,15">
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="61" />
+                                                                    <RowDefinition Height="61" />
+                                                                    <RowDefinition Height="61" />
+                                                                    <RowDefinition Height="61" />
+                                                                </Grid.RowDefinitions>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="142" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Margin="0,10,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Expression" />
+                                                                <TextBox Grid.Column="1" Height="42" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Field}" Tag="Add a word combination" />
+                                                                <TextBlock Grid.Row="1" Margin="0,10,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Meaning" />
+                                                                <TextBox Grid.Row="1" Grid.Column="1" Height="42" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Field}" Tag="Explain what it means" />
+                                                                <TextBlock Grid.Row="2" Margin="0,10,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Example" />
+                                                                <TextBox Grid.Row="2" Grid.Column="1" Height="42" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Field}" Tag="Add an example sentence" />
+                                                                <TextBlock Grid.Row="3" Margin="0,10,0,0" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Label}" Text="Tags" />
+                                                                <TextBox Grid.Row="3" Grid.Column="1" Height="42" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Field}" Tag="Add tags" />
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
 
-                                            <TextBox Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
-                                            <TextBox x:Name="PCollocationExpression" Grid.Column="1" Margin="0,0,10,10" Style="{StaticResource Theme.Input.Field}" />
-                                            <Button Grid.Column="2" Margin="0,0,0,10" Click="PCardRemove_OnClick" Foreground="{StaticResource Theme.Warning}" Style="{StaticResource Theme.Input.Action}">
-                                                <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
-                                            </Button>
-                                            <TextBox Grid.Row="1" Grid.ColumnSpan="3" Margin="0,0,0,10" Style="{StaticResource Theme.Input.Field}" />
-                                            <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="0,0,0,10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBox Margin="0,0,5,0" Style="{StaticResource Theme.Input.Field}" />
-                                                <TextBox Grid.Column="1" Margin="5,0,0,0" Style="{StaticResource Theme.Input.Field}" />
-                                            </Grid>
-                                            <TextBox Grid.Row="3" Grid.ColumnSpan="3" Style="{StaticResource Theme.Input.Field}" />
-                                        </Grid>
-                                    </Border>
+                                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PAddCollocation_OnClick">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
+                                                    <Grid>
+                                                        <Rectangle Width="10" Height="1.5" Fill="White" />
+                                                        <Rectangle Width="1.5" Height="10" Fill="White" />
+                                                    </Grid>
+                                                </Border>
+                                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="Add another collocation" />
+                                            </StackPanel>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Grid Background="Transparent">
+                                                        <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource Theme.Accent}" StrokeDashArray="5,3" StrokeThickness="1" Opacity="0.52" />
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
+                                    </StackPanel>
                                 </ScrollViewer>
 
-                                <Grid x:Name="PNote" Margin="18" Visibility="Collapsed">
-                                    <RichTextBox x:Name="PNoteContents" Padding="16" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" />
-                                </Grid>
+                                <Border x:Name="PNote" Height="360" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="55" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
+                                            <TextBlock Margin="22,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="Note" />
+                                        </Border>
+                                        <Border Grid.Row="1" Margin="22,18,22,22" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="7">
+                                            <Grid>
+                                                <TextBlock x:Name="PNotePlaceholder" Margin="14,12" Foreground="{StaticResource Theme.Muted}" IsHitTestVisible="False" Opacity="0.56" Text="Write a note about this entry" />
+                                                <RichTextBox x:Name="PNoteContents" Padding="10,6" Background="Transparent" BorderThickness="0" TextChanged="PNoteContents_OnTextChanged" />
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Border>
                             </Grid>
                         </Border>
                     </Grid>

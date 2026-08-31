@@ -137,7 +137,7 @@ else {
     $destinationDir = Join-Path $snapshotsRoot $Version
 }
 
-$executableName = if ($useCurrentSource) { 'Llyn.UIShell.exe' } else { 'Llyn.Windows.exe' }
+$executableName = if ($useCurrentSource) { 'Llyn.exe' } else { 'Llyn.Windows.exe' }
 $destinationExe = Join-Path $destinationDir $executableName
 $stagingParent = if ($useCurrentSource) { $root } else { $snapshotsRoot }
 $stagingDir = Join-Path $stagingParent ('.' + $Version + '.staging-' + [Guid]::NewGuid().ToString('N'))

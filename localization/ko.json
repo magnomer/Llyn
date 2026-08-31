@@ -26,6 +26,11 @@
     "Navigation.Favorite": "{terms.favorite}",
     "Navigation.DualPanel": "{terms.dualPanel}",
     "Navigation.Settings": "{terms.settings}",
-    "Settings.Localization": "현지화"
+    "Settings.Localization": "현지화",
+    "Lookup.Searching": "검색 중…",
+    "Lookup.Empty": "발음을 찾을 수 없습니다",
+    "Lookup.Select": "선택",
+    "Lookup.SourceWikipedia": "위키백과",
+    "Lookup.SourceCambridge": "케임브리지"
   }
 }

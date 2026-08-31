@@ -97,14 +97,62 @@
     </Style>
 
     <Style x:Key="Theme.Input.Field" TargetType="TextBox">
-        <Setter Property="MinHeight" Value="38" />
-        <Setter Property="Padding" Value="11,7" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="12,7" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
         <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CaretBrush" Value="{StaticResource Theme.Ink}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border
+                        x:Name="PTemplateSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="7">
+                        <Grid>
+                            <TextBlock
+                                x:Name="PTemplatePlaceholder"
+                                Margin="{TemplateBinding Padding}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Foreground="{StaticResource Theme.Muted}"
+                                IsHitTestVisible="False"
+                                Opacity="0.56"
+                                Text="{TemplateBinding Tag}"
+                                TextTrimming="CharacterEllipsis"
+                                Visibility="Collapsed" />
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="PTemplatePlaceholder" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PTemplatePlaceholder" Property="Opacity" Value="0.36" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.Headword" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">
+        <Setter Property="MinHeight" Value="51" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontSize" Value="40" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
     </Style>
 
     <Style x:Key="Theme.Input.Action" TargetType="Button">
@@ -138,11 +186,125 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Input.Pill" TargetType="Button" BasedOn="{StaticResource Theme.Input.Action}">
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="44" />
+        <Setter Property="Padding" Value="15,0" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="PTemplateSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="10">
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.Primary" TargetType="Button" BasedOn="{StaticResource Theme.Input.Pill}">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="PTemplateSurface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10">
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="Background" Value="#245FD0" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="Background" Value="#1D50B5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.TogglePill" TargetType="ToggleButton">
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border
+                        x:Name="PTemplateSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="24">
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.ToggleAction" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Input.TogglePill}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border
+                        x:Name="PTemplateSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="9">
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PTemplateSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.Label" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
     <Style x:Key="Theme.Input.Tab" TargetType="Button">
-        <Setter Property="MinWidth" Value="112" />
-        <Setter Property="Height" Value="42" />
+        <Setter Property="Width" Value="145" />
+        <Setter Property="Height" Value="61" />
         <Setter Property="Padding" Value="18,0" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Cursor" Value="Hand" />
@@ -150,9 +312,13 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Border x:Name="PTemplateSurface" Background="{TemplateBinding Background}" CornerRadius="8,8,0,0" />
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <Border x:Name="PTemplateIndicator" Height="2" VerticalAlignment="Bottom" Background="Transparent" />
+                        <Border x:Name="PTemplateSurface" Background="{TemplateBinding Background}" />
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}">
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform Y="-5" />
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                        <Border x:Name="PTemplateIndicator" Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" CornerRadius="3,3,0,0" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -166,16 +332,20 @@
     </Style>
 
     <Style x:Key="Theme.Input.Tab.Selected" TargetType="Button" BasedOn="{StaticResource Theme.Input.Tab}">
-        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8,8,0,0" />
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <Border Height="2" VerticalAlignment="Bottom" Background="{StaticResource Theme.Accent}" />
+                        <Border Background="{TemplateBinding Background}" />
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}">
+                            <TextBlock.RenderTransform>
+                                <TranslateTransform Y="-5" />
+                            </TextBlock.RenderTransform>
+                        </TextBlock>
+                        <Border Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="{StaticResource Theme.Accent}" CornerRadius="3,3,0,0" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
@@ -183,7 +353,7 @@
     </Style>
 
     <Style x:Key="Theme.Input.Card" TargetType="Border">
-        <Setter Property="Padding" Value="18" />
+        <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
         <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
         <Setter Property="BorderThickness" Value="1" />

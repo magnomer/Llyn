@@ -5,9 +5,14 @@
     <UseWPF>true</UseWPF>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>Llyn.UIShell</AssemblyName>
+    <AssemblyName>Llyn</AssemblyName>
     <RootNamespace>Llyn.UIShell</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
+    <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="..\..\localization\en.json" LogicalName="Llyn.UIShell.Localization.en.json" />

@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Llyn.UIShell;
 
-public partial class LBootstrap : Application
+public partial class LBootstrap : System.Windows.Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
