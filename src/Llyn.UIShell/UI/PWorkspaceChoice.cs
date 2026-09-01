@@ -60,9 +60,9 @@ public partial class PSettings
         }
 
         // The new workspace has its own database, so everything on screen came from a database that is
-        // no longer open and carries ids that mean nothing here. The form moves onto the new
-        // workspace's own session, and the list and display are re-read from it.
-        _pSettingsHost.PInput.PStateRestore();
+        // no longer open and carries ids that mean nothing here. The input form is emptied, and the
+        // list and display are re-read from the new workspace.
+        _pSettingsHost.PInput.PInputReset();
         _pSettingsHost.PList.PListReset();
     }
 }

@@ -45,6 +45,10 @@ PInput
 │       └── PLookupMenuItem
 │           └── PLookupMenuSelector
 ├── PDownloader
+│   └── PDownloaderMenu
+│       └── PDownloaderMenuItem
+│           ├── PDownloaderMenuPreview
+│           └── PDownloaderMenuSelector
 ├── PStack
 │   ├── PStackMeaning
 │   ├── PStackCollocation
@@ -95,6 +99,11 @@ PLangcodeListName  PLangcodeListFlag
 
 `PStore` saves the current Entry and its associations.
 
+`PInput` only ever creates Entries: it opens on an empty form and is never mounted over a stored Entry.
+A store therefore always writes a new Entry, and the form is emptied and left standing on no Entry
+afterwards, ready for the next one. Correcting an Entry that already exists is done in the browse-style
+panels, where the same `PEditor` is mounted over the Entry they loaded.
+
 Saving an Entry does not make independent Examples, Tags, or Situations subordinate to that Entry.
 
 ---
@@ -144,7 +153,8 @@ PLookupMenu
 
 ## PLookupMenuItem
 
-`PLookupMenuItem` displays a pronunciation candidate returned by the lookup.
+`PLookupMenuItem` displays a pronunciation candidate returned by the lookup: the source that offered
+it in a small label, then the phonetic itself inside the brackets `PPronunciation` wears.
 
 The menu may contain one candidate or several candidates.
 
@@ -154,9 +164,48 @@ The menu may contain one candidate or several candidates.
 
 The user uses it to choose which candidate should be added to `PPronunciation`.
 
+It is the only thing in the row that acts. The row itself is a plain card: it does not take a click,
+so nothing in it looks like a control without being one, and a row is free to carry a second action.
+
 ## PDownloader
 
-`PDownloader` downloads the audio file for the pronunciation.
+`PDownloader` downloads the audio file for the pronunciation and opens `PDownloaderMenu` below it.
+
+## PDownloaderMenu
+
+`PDownloaderMenu` is a small dropdown-like UI element shown below `PDownloader`.
+
+It first shows the download procedure while Llyn searches audio sources. It then shows one or more
+recordings, in the same row shape `PLookupMenu` uses.
+
+```text
+PDownloader
+   │
+   ▼
+PDownloaderMenu
+├── download procedure / status
+├── PDownloaderMenuItem  PDownloaderMenuPreview  PDownloaderMenuSelector
+├── PDownloaderMenuItem  PDownloaderMenuPreview  PDownloaderMenuSelector
+└── ...
+```
+
+## PDownloaderMenuItem
+
+`PDownloaderMenuItem` displays one recording found for the headword by naming the source that offered
+it, the same small label `PLookupMenuItem` leads with. A recording has nothing else to read: what it
+is, is heard through `PDownloaderMenuPreview`.
+
+## PDownloaderMenuPreview
+
+`PDownloaderMenuPreview` plays the recording of its `PDownloaderMenuItem` without downloading it.
+
+## PDownloaderMenuSelector
+
+`PDownloaderMenuSelector` appears next to a `PDownloaderMenuItem`.
+
+The user uses it to choose which recording should be downloaded and attached to the entry. Both
+selectors are the same control with the same wording; the audio one also carries the progress and the
+result of its own download, because the shared procedure line belongs to the search.
 
 ---
 
@@ -471,6 +520,11 @@ PInput
 │       └── PLookupMenuItem
 │           └── PLookupMenuSelector
 ├── PDownloader
+│   └── PDownloaderMenu
+│       ├── download procedure / status
+│       └── PDownloaderMenuItem
+│           ├── PDownloaderMenuPreview
+│           └── PDownloaderMenuSelector
 │
 ├── PStack
 │   ├── PStackMeaning ───────────> PMeaning

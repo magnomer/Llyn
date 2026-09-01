@@ -8,9 +8,9 @@ namespace Llyn.UIShell;
 /// </summary>
 public partial class PLookupTemplate : ResourceDictionary
 {
-    private readonly PInput _pLookupHost;
+    private readonly PEditor _pLookupHost;
 
-    internal PLookupTemplate(PInput host)
+    internal PLookupTemplate(PEditor host)
     {
         _pLookupHost = host;
         InitializeComponent();

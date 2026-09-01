@@ -3,23 +3,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PLookupTemplate">
 
-    <!-- One pronunciation candidate in the lookup menu: the source it came from and the phonetic it offers. -->
+    <!-- One pronunciation candidate: the source that offered it, small, and the phonetic itself in
+         the brackets the pronunciation field wears. Same row as the downloader row. -->
     <DataTemplate x:Key="Theme.Lookup.Row">
-        <Button Margin="4,3" Click="PLookupMenuHandle" Style="{DynamicResource Theme.Popup.Row}">
+        <Border Style="{DynamicResource Theme.Popup.RowSurface}">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackPanel>
-                    <TextBlock FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLookupCandidateSource}" />
-                    <TextBlock x:Name="PLookupMenuItem" Margin="0,3,0,0" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PLookupCandidatePhonetic}" TextTrimming="CharacterEllipsis" />
-                </StackPanel>
-                <StackPanel Grid.Column="1" Margin="12,0,2,0" VerticalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{DynamicResource Lookup.Select}" />
-                    <Path Width="5" Height="9" Margin="7,0,0,0" Data="M 0,0 L 4,4.5 L 0,9" Stretch="Fill" Stroke="{DynamicResource Theme.Accent}" StrokeLineJoin="Round" StrokeThickness="1.4" />
-                </StackPanel>
+                <TextBlock MaxWidth="88" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLookupCandidateSource}" TextTrimming="CharacterEllipsis" />
+                <TextBlock x:Name="PLookupMenuItem" Grid.Column="1" Margin="10,0,8,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"><Run Foreground="{DynamicResource Theme.Muted}" Text="[" /><Run Foreground="{DynamicResource Theme.Ink}" Text="{Binding PLookupCandidatePhonetic, Mode=OneWay}" /><Run Foreground="{DynamicResource Theme.Muted}" Text="]" /></TextBlock>
+                <Button x:Name="PLookupMenuSelector" Grid.Column="2" VerticalAlignment="Center" Click="PLookupMenuHandle" Content="{DynamicResource Lookup.Use}" Style="{DynamicResource Theme.Popup.RowAction}" />
             </Grid>
-        </Button>
+        </Border>
     </DataTemplate>
 </ResourceDictionary>

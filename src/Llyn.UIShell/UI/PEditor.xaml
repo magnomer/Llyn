@@ -1,0 +1,347 @@
+<UserControl
+    x:Class="Llyn.UIShell.PEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
+
+    <!-- The margin is the host panel's: the input panel gives the editor the whole tab, a
+         browse-style panel gives it the card beside its catalog. -->
+    <Grid Margin="{Binding Padding, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Height="51" Margin="9,0,-8,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Margin="0,0,16,0">
+                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="Headword">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=PHeadword}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="{Binding Text, ElementName=PHeadword}" />
+                <TextBox x:Name="PHeadword" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="Headword" />
+            </Grid>
+
+            <Grid x:Name="PLangcode" Grid.Column="1">
+                <ToggleButton
+                    x:Name="PLangcodeBase"
+                    Width="170"
+                    Height="41"
+                    Padding="17,0"
+                    HorizontalContentAlignment="Stretch"
+                    Background="{StaticResource Theme.Surface}"
+                    BorderBrush="{StaticResource Theme.Line}"
+                    BorderThickness="1"
+                    Style="{StaticResource Theme.Input.TogglePill}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Width="19" Height="14" VerticalAlignment="Center">
+                            <Image x:Name="PLangcodeBaseFlag" Stretch="Uniform" />
+                            <Ellipse x:Name="PLangcodeBaseGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                        </Grid>
+                        <TextBlock x:Name="PLangcodeBaseName" Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="English" />
+                        <Path Grid.Column="2" Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.5" />
+                    </Grid>
+                </ToggleButton>
+                <Popup
+                    x:Name="PLangcodeMenu"
+                    Width="190"
+                    Margin="0,6,0,0"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PLangcodeBase}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PLangcodeBase}"
+                    StaysOpen="False">
+                    <!-- The same floating ground the other pickers stand on, rather than a white box
+                         of its own that no theme reaches. -->
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <ItemsControl x:Name="PLangcodeMenuList" ItemTemplate="{DynamicResource Theme.Langcode.Row}" />
+                    </Border>
+                </Popup>
+            </Grid>
+
+            <Button x:Name="PDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Click="PDiscardHandle" Style="{StaticResource Theme.Input.Pill}">
+                <StackPanel Orientation="Horizontal">
+                    <!-- Phosphor trash.svg. SvgViewbox has no foreground of its own, so the
+                         glyph is used as an opacity mask over the button's foreground. -->
+                    <Rectangle Width="14" Height="16" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform">
+                                <VisualBrush.Visual>
+                                    <svgc:SvgViewbox Width="14" Height="16" Source="icons/trash.svg" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock VerticalAlignment="Center" Text="Discard" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="PStore" Grid.Column="4" Width="162" Height="51" Click="PStoreHandle" Style="{StaticResource Theme.Input.Primary}">
+                <StackPanel Orientation="Horizontal">
+                    <!-- Phosphor floppy-disk.svg, tinted through an opacity mask (see PDiscard). -->
+                    <Rectangle Width="15" Height="15" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform">
+                                <VisualBrush.Visual>
+                                    <svgc:SvgViewbox Width="15" Height="15" Source="icons/floppy-disk.svg" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock VerticalAlignment="Center" Text="Save entry" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1" Height="49" Margin="9,20,0,0" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Border Height="49" MaxWidth="360" HorizontalAlignment="Left" Background="{StaticResource Theme.AccentSoft}" BorderBrush="{StaticResource Theme.AccentSoft}" BorderThickness="1" CornerRadius="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="34" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Text="[" />
+                    <TextBox x:Name="PPronunciation" Grid.Column="1" MaxWidth="292" MinHeight="40" Padding="4,0" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Pronunciation" VerticalContentAlignment="Center" />
+                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Text="]" />
+                </Grid>
+            </Border>
+
+            <Button x:Name="PPlayback" Grid.Column="1" Width="50" Height="49" Margin="14,0,0,0" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Foreground="{StaticResource Theme.Accent}" Click="PPlaybackHandle" Style="{StaticResource Theme.Input.Action}" Visibility="Collapsed">
+                <!-- Phosphor play.svg, tinted through an opacity mask (see PDiscard). -->
+                <Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Uniform">
+                            <VisualBrush.Visual>
+                                <svgc:SvgViewbox Width="13" Height="15" Source="icons/play.svg" />
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+
+            <Grid Grid.Column="2" Margin="14,0,0,0">
+                <ToggleButton x:Name="PLookup" Width="50" Height="49" Padding="0" Foreground="{StaticResource Theme.Accent}" Checked="PLookupCheckedHandle" Unchecked="PLookupUncheckedHandle" Style="{StaticResource Theme.Input.ToggleAction}">
+                    <!-- Phosphor magnifying-glass.svg, tinted through an opacity mask (see PDiscard). -->
+                    <Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform">
+                                <VisualBrush.Visual>
+                                    <svgc:SvgViewbox Width="15" Height="15" Source="icons/magnifying-glass.svg" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ToggleButton>
+                <Popup
+                    x:Name="PLookupMenu"
+                    Width="320"
+                    Margin="0,6,0,0"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PLookup}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PLookup}"
+                    StaysOpen="False">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Lookup.Title}" />
+                            <Border x:Name="PLookupMenuProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
+                                <Border Width="84" HorizontalAlignment="Left" Background="{StaticResource Theme.Accent}" CornerRadius="1">
+                                    <Border.RenderTransform>
+                                        <TranslateTransform X="-84" />
+                                    </Border.RenderTransform>
+                                    <Border.Triggers>
+                                        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="-84" To="268" Duration="0:0:1.15" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Border.Triggers>
+                                </Border>
+                            </Border>
+                            <TextBlock x:Name="PLookupMenuNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Lookup.Searching}" Visibility="Collapsed" />
+                            <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="PLookupMenuList" ItemTemplate="{DynamicResource Theme.Lookup.Row}" Visibility="Collapsed">
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
+
+            <Grid Grid.Column="3" Margin="14,0,0,0">
+                <ToggleButton x:Name="PDownloader" Width="50" Height="49" Foreground="{StaticResource Theme.Accent}" Checked="PDownloaderCheckedHandle" Unchecked="PDownloaderUncheckedHandle" Style="{StaticResource Theme.Input.ToggleAction}">
+                    <!-- Phosphor box-arrow-down.svg, tinted through an opacity mask (see PDiscard). -->
+                    <Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform">
+                                <VisualBrush.Visual>
+                                    <svgc:SvgViewbox Width="15" Height="15" Source="icons/box-arrow-down.svg" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </ToggleButton>
+                <Popup
+                    x:Name="PDownloaderMenu"
+                    Width="320"
+                    Margin="0,6,0,0"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PDownloader}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PDownloader}"
+                    StaysOpen="False">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Downloader.Title}" />
+                            <Border x:Name="PDownloaderMenuProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
+                                <Border Width="84" HorizontalAlignment="Left" Background="{StaticResource Theme.Accent}" CornerRadius="1">
+                                    <Border.RenderTransform>
+                                        <TranslateTransform X="-84" />
+                                    </Border.RenderTransform>
+                                    <Border.Triggers>
+                                        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)" From="-84" To="268" Duration="0:0:1.15" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </Border.Triggers>
+                                </Border>
+                            </Border>
+                            <TextBlock x:Name="PDownloaderMenuNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Downloader.Searching}" Visibility="Collapsed" />
+                            <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="PDownloaderMenuList" ItemTemplate="{DynamicResource Theme.Downloader.Row}" Visibility="Collapsed">
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Grid>
+
+        <Border Grid.Row="2" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
+            <StackPanel x:Name="PStack" Margin="29,0,0,0" Orientation="Horizontal">
+                <Button x:Name="PStackMeaning" Content="Meaning" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab.Selected}" />
+                <Button x:Name="PStackCollocation" Content="Collocation" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                <Button x:Name="PStackNote" Content="Note" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+            </StackPanel>
+        </Border>
+
+        <Border x:Name="PContents" Grid.Row="3" Padding="0,22,0,0" Background="Transparent">
+            <Grid>
+                <ScrollViewer x:Name="PMeaning" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <ItemsControl x:Name="PSenseList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Sense.Card}" />
+
+                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PSenseHandle">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
+                                    <Grid>
+                                        <Rectangle Width="10" Height="1.5" Fill="White" />
+                                        <Rectangle Width="1.5" Height="10" Fill="White" />
+                                    </Grid>
+                                </Border>
+                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="Add another meaning" />
+                            </StackPanel>
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid Background="Transparent">
+                                        <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource Theme.Accent}" StrokeDashArray="5,3" StrokeThickness="1" Opacity="0.52" />
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer x:Name="PCollocation" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                    <StackPanel>
+                        <ItemsControl x:Name="PCollocationList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Collocation.Card}" />
+
+                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PCollocationHandle">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
+                                    <Grid>
+                                        <Rectangle Width="10" Height="1.5" Fill="White" />
+                                        <Rectangle Width="1.5" Height="10" Fill="White" />
+                                    </Grid>
+                                </Border>
+                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="Add another collocation" />
+                            </StackPanel>
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Grid Background="Transparent">
+                                        <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource Theme.Accent}" StrokeDashArray="5,3" StrokeThickness="1" Opacity="0.52" />
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Border x:Name="PNote" VerticalAlignment="Stretch" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="55" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
+                            <TextBlock Margin="22,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="Note" />
+                        </Border>
+                        <Border Grid.Row="1" Margin="22,18,22,22" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="7">
+                            <Grid>
+                                <TextBlock x:Name="PNotePlaceholder" Margin="14,12" Foreground="{StaticResource Theme.Muted}" IsHitTestVisible="False" Opacity="0.56" Text="Write a note about this entry" />
+                                <TextBox x:Name="PNoteContents" Padding="10,6" VerticalAlignment="Stretch" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Ink}" CaretBrush="{StaticResource Theme.Ink}" TextChanged="PNoteContentsHandle" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

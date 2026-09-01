@@ -8,17 +8,17 @@ namespace Llyn.UIShell;
 /// </summary>
 public partial class PDownloaderTemplate : ResourceDictionary
 {
-    private readonly PInput _pDownloaderHost;
+    private readonly PEditor _pDownloaderHost;
 
-    internal PDownloaderTemplate(PInput host)
+    internal PDownloaderTemplate(PEditor host)
     {
         _pDownloaderHost = host;
         InitializeComponent();
     }
 
-    private void PDownloaderPlayHandle(object sender, RoutedEventArgs e)
+    private void PDownloaderPreviewHandle(object sender, RoutedEventArgs e)
     {
-        _pDownloaderHost.PDownloaderPlayHandle(sender, e);
+        _pDownloaderHost.PDownloaderPreviewHandle(sender, e);
     }
 
     private void PDownloaderMenuHandle(object sender, RoutedEventArgs e)

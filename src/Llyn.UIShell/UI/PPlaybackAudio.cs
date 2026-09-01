@@ -7,11 +7,11 @@ using System.Windows.Media;
 namespace Llyn.UIShell;
 
 /// <summary>
-/// The recording the input form currently carries: which file it is, where it came from, whether it
+/// The recording the editing form currently carries: which file it is, where it came from, whether it
 /// is the loaded entry's own, and playing it back. The downloader attaches one and the entry loader
 /// attaches one; this is where it lives, plays, and is let go of.
 /// </summary>
-public partial class PInput
+public partial class PEditor
 {
     private readonly MediaPlayer _pDownloaderPlayer = new();
 

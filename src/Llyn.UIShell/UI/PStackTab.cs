@@ -4,11 +4,11 @@ using System.Windows.Controls;
 namespace Llyn.UIShell;
 
 /// <summary>
-/// Which region of the input editor is open: the tab strip picks one of meaning, collocation, or
+/// Which region of the editor is open: the tab strip picks one of meaning, collocation, or
 /// note, and collapses the other two. The same selection shape as the navigation strip, over the
-/// input panel's own contents rather than over the window's panels.
+/// editor's own contents rather than over the window's panels.
 /// </summary>
-public partial class PInput
+public partial class PEditor
 {
     private void PStackHandle(object sender, RoutedEventArgs e)
     {

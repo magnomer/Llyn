@@ -7,9 +7,9 @@ namespace Llyn.UIShell;
 /// </summary>
 public partial class PLangcodeTemplate : ResourceDictionary
 {
-    private readonly PInput _pLangcodeHost;
+    private readonly PEditor _pLangcodeHost;
 
-    internal PLangcodeTemplate(PInput host)
+    internal PLangcodeTemplate(PEditor host)
     {
         _pLangcodeHost = host;
         InitializeComponent();

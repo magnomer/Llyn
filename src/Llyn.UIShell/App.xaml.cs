@@ -13,6 +13,7 @@ public partial class LBootstrap : System.Windows.Application
             PLocalizationLoader.PLocalizationLoaderApply(Resources, PLocalizationLoader.PLocalizationLoaderLanguage);
             PThemeLoader.PThemeLoaderApply(Resources);
             PField.PFieldApply(Resources);
+            PIndicator.PIndicatorApply(Resources);
         }
         catch (Exception exception)
         {

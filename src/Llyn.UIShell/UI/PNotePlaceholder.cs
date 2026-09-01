@@ -7,7 +7,7 @@ namespace Llyn.UIShell;
 /// The prompt shown over an empty note. WPF text boxes carry no placeholder of their own, so the
 /// hint is a separate element whose visibility follows whether anything has been typed.
 /// </summary>
-public partial class PInput
+public partial class PEditor
 {
     private void PNoteContentsHandle(object sender, TextChangedEventArgs e)
     {

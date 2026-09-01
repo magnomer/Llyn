@@ -33,7 +33,7 @@ public partial class PWindow : Window
         PSettings.PSettingsAttach(this, engine);
 
         // Closing runs while the window is still up and can be called off; Closed cannot. Unsaved text
-        // is caught in the first, and the session is recorded in the second.
+        // is caught in the first, and the panels are stopped in the second.
         Closing += PWindowClosingHandle;
         Closed += PWindowExitHandle;
     }
@@ -47,7 +47,7 @@ public partial class PWindow : Window
 
     private void PWindowExitHandle(object? sender, EventArgs e)
     {
-        // Every panel is stopped before the engine goes: the session save runs through it.
+        // Every panel is stopped before the engine goes.
         PInput.PInputClose();
         PList.PListClose();
         _lEngine.Dispose();

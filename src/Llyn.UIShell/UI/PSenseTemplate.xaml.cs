@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Input;
 
 namespace Llyn.UIShell;
 
@@ -9,9 +10,9 @@ namespace Llyn.UIShell;
 /// </summary>
 public partial class PSenseTemplate : ResourceDictionary
 {
-    private readonly PInput _pSenseHost;
+    private readonly PEditor _pSenseHost;
 
-    internal PSenseTemplate(PInput host)
+    internal PSenseTemplate(PEditor host)
     {
         _pSenseHost = host;
         InitializeComponent();
@@ -20,5 +21,10 @@ public partial class PSenseTemplate : ResourceDictionary
     private void PCardHandle(object sender, RoutedEventArgs e)
     {
         _pSenseHost.PCardHandle(sender, e);
+    }
+
+    private void PCardDragHandle(object sender, MouseButtonEventArgs e)
+    {
+        _pSenseHost.PCardDragHandle(sender, e);
     }
 }

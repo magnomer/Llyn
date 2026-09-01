@@ -34,12 +34,21 @@ public partial class PWindow
             MessageBoxImage.Warning);
     }
 
-    // Asks before typed text is thrown away, and answers whether it may be. Nothing unsaved on the
-    // form means nothing to ask about, so the question is only ever put when there is something to
-    // lose — which is why it can sit in front of every path that discards the form.
+    // Asks before typed text is thrown away, and answers whether it may be. Every panel that edits an
+    // entry is asked whether it holds unsaved work, because the window closing and the workspace
+    // changing take all of them with it.
     internal bool PWindowDiscardConfirm()
     {
-        if (!PInput.PInputChangeCheck())
+        return PWindowDiscardConfirm(PInput.PInputChangeCheck() || PList.PListChangeCheck());
+    }
+
+    // The same question over one panel's own answer, for a panel that is leaving its editing state
+    // while the rest of the window stays as it is. Nothing unsaved means nothing to ask about, so the
+    // question is only ever put when there is something to lose — which is why it can sit in front of
+    // every path that discards typed work.
+    internal bool PWindowDiscardConfirm(bool unsaved)
+    {
+        if (!unsaved)
         {
             return true;
         }

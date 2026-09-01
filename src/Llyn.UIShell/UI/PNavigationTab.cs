@@ -16,6 +16,14 @@ public partial class PWindow
             return;
         }
 
+        // Leaving the list panel while it is being written in is leaving the editing state, so it is
+        // asked about here: a tab that is switched away from keeps its editor, but the correction the
+        // user typed would sit out of sight until they came back to it.
+        if (PList.IsVisible && selectedButton != PNavigationList && !PWindowDiscardConfirm(PList.PListChangeCheck()))
+        {
+            return;
+        }
+
         (Button Button, FrameworkElement Panel)[] tabs =
         [
             (PNavigationInput, PInput),

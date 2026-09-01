@@ -6,23 +6,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Xml;
-using SharpVectors.Converters;
-using SharpVectors.Renderers.Wpf;
 
 namespace Llyn.UIShell;
 
 /// <summary>
-/// The language an entry is written in, as the input panel chooses it: the dropdown of installed
+/// The language an entry is written in, as the editor chooses it: the dropdown of installed
 /// packs, the pill that shows the chosen one, and the flag beside it. The choice is what lookup,
 /// audio download, and the saved entry are all carried out in.
 /// </summary>
-public partial class PInput
+public partial class PEditor
 {
     // Fallback language used until a pack is chosen, and when no pack folder is present on disk.
     private const string PWindowLanguage = "English";
 
-    private readonly ObservableCollection<PLangcodeItem> _pLangcodeList = [];
+    private readonly ObservableCollection<PLangcodeItem> _pLangcodeItem = [];
 
     private string _pLangcodeChoice = PWindowLanguage;
 
@@ -35,7 +32,7 @@ public partial class PInput
     // paints ready. The flag download may await a first-time fetch, hence async.
     internal async void PLangcodeLoad()
     {
-        _pLangcodeList.Clear();
+        _pLangcodeItem.Clear();
         var languages = _lEngine.LEngineLanguageRead();
 
         // Every flag is asked for at once rather than one after the next: each is a first-time
@@ -47,8 +44,10 @@ public partial class PInput
         for (int index = 0; index < languages.Count; index++)
         {
             string? path = paths[index];
-            ImageSource? flag = path is not null && File.Exists(path) ? PLangcodeFlagResolve(path) : null;
-            _pLangcodeList.Add(new PLangcodeItem(languages[index], flag));
+            ImageSource? flag = path is not null && File.Exists(path)
+                ? PLangcodeIndicator.PLangcodeIndicatorResolve(path)
+                : null;
+            _pLangcodeItem.Add(new PLangcodeItem(languages[index], flag));
         }
 
         // A form standing on an entry keeps that entry's language even when no pack answers to it;
@@ -96,7 +95,9 @@ public partial class PInput
             return;
         }
 
-        DrawingImage? flag = path is not null && File.Exists(path) ? PLangcodeFlagResolve(path) : null;
+        DrawingImage? flag = path is not null && File.Exists(path)
+            ? PLangcodeIndicator.PLangcodeIndicatorResolve(path)
+            : null;
         if (flag is not null)
         {
             PLangcodeBaseFlag.Source = flag;
@@ -111,26 +112,4 @@ public partial class PInput
         }
     }
 
-    // Rasterizes a flag SVG into a frozen drawing the Image can paint. Flag-icons ship as SVG, which
-    // WPF's bitmap decoders can't read, so SharpVectors renders it into a WPF drawing here.
-    private static DrawingImage? PLangcodeFlagResolve(string path)
-    {
-        try
-        {
-            FileSvgReader reader = new(new WpfDrawingSettings { IncludeRuntime = false, TextAsGeometry = true });
-            DrawingGroup drawing = reader.Read(path);
-            if (drawing is null)
-            {
-                return null;
-            }
-
-            DrawingImage image = new(drawing);
-            image.Freeze();
-            return image;
-        }
-        catch (Exception exception) when (exception is IOException or XmlException or NotSupportedException)
-        {
-            return null;
-        }
-    }
 }
