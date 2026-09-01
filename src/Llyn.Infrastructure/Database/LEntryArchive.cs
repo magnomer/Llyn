@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
@@ -90,19 +90,43 @@ public sealed class LEntryArchive
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
-        if (!reader.Read())
+        return reader.Read() ? LEntryRowRead(reader) : null;
+    }
+
+    /// <summary>
+    /// Returns the entries whose headword contains <paramref name="query"/>, ordered by headword, or
+    /// every entry when <paramref name="query"/> is empty. Matching is a case-insensitive contains and
+    /// nothing more; anything cleverer — prefix weighting, forms, folded accents — waits for a stated
+    /// requirement rather than being guessed at here.
+    /// <para>
+    /// SQLite's <c>lower()</c> folds ASCII only, so case-insensitivity covers Latin letters; scripts
+    /// without case (Korean, Japanese, Chinese) are unaffected, and a non-ASCII cased letter matches
+    /// only in the case it was typed.
+    /// </para>
+    /// </summary>
+    public IReadOnlyList<LEntry> LEntryFind(string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
+            FROM entry
+            WHERE $query = '' OR instr(lower(headword), lower($query)) > 0
+            ORDER BY headword;
+            """;
+        command.Parameters.AddWithValue("$query", query);
+
+        List<LEntry> entries = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            return null;
+            entries.Add(LEntryRowRead(reader));
         }
 
-        return new LEntry(
-            reader.GetString(0),
-            reader.GetString(1),
-            reader.GetString(2),
-            reader.IsDBNull(3) ? null : reader.GetString(3),
-            reader.IsDBNull(4) ? null : reader.GetString(4),
-            reader.IsDBNull(5) ? null : reader.GetString(5),
-            reader.IsDBNull(6) ? null : reader.GetString(6));
+        return entries;
     }
 
     /// <summary>Reads the entry's written forms, ordered by position.</summary>
@@ -337,6 +361,20 @@ public sealed class LEntryArchive
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
+    }
+
+    // The entry row shape every read here selects, in one place: a single read and a find would
+    // otherwise drift apart column by column.
+    private static LEntry LEntryRowRead(SqliteDataReader reader)
+    {
+        return new LEntry(
+            reader.GetString(0),
+            reader.GetString(1),
+            reader.GetString(2),
+            reader.IsDBNull(3) ? null : reader.GetString(3),
+            reader.IsDBNull(4) ? null : reader.GetString(4),
+            reader.IsDBNull(5) ? null : reader.GetString(5),
+            reader.IsDBNull(6) ? null : reader.GetString(6));
     }
 
     private static void LEntryFormInsert(SqliteConnection connection, string id, IReadOnlyList<LForm> forms)

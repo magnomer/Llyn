@@ -20,7 +20,7 @@ namespace Llyn.Infrastructure;
 public static class LSchemaMigration
 {
     /// <summary>The schema version this build produces. A later change to an existing table raises it.</summary>
-    public const long LSchemaMigrationVersion = 13;
+    public const long LSchemaMigrationVersion = 14;
 
     /// <summary>
     /// Records the version on a database that has never carried one, and otherwise applies every step
@@ -71,6 +71,14 @@ public static class LSchemaMigration
         if (stored < 13)
         {
             LSchemaCollocationNormalize(connection);
+        }
+
+        // Version 14. The pronunciation's downloaded recording gets a table of its own. A database
+        // built before this version has no pronunciation_audio at all, so the step creates it; the
+        // rows already stored are untouched, and a pronunciation with no recording simply has no row.
+        if (stored < 14)
+        {
+            LSchemaAudioNormalize(connection);
         }
 
         LSchemaVersionSave(connection);
@@ -141,6 +149,25 @@ public static class LSchemaMigration
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "UPDATE schema_version SET version = $version;";
         command.Parameters.AddWithValue("$version", LSchemaMigrationVersion);
+        command.ExecuteNonQuery();
+    }
+
+    // Creates the pronunciation_audio table on a database that predates it. LSchema's own CREATE
+    // statement usually gets there first on startup, but the step is what makes the change explicit at
+    // the version that introduced it — and what carries it when the table is created by any other path.
+    private static void LSchemaAudioNormalize(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS pronunciation_audio (
+                pronunciation_id TEXT NOT NULL PRIMARY KEY,
+                file TEXT NOT NULL,
+                source TEXT,
+                added_utc TEXT NOT NULL,
+                FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
+            );
+            """;
         command.ExecuteNonQuery();
     }
 

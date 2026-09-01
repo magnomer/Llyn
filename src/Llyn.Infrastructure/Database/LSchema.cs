@@ -178,6 +178,9 @@ public static class LSchema
         // itself — and the pronunciation owns ordered syllables and representations keyed by
         // (pronunciation_id, position). A syllable requires only its nucleus; every other syllable field
         // and a representation's local_tone are optional and store NULL when absent (distinct from empty).
+        // The pronunciation also owns at most one downloaded recording: pronunciation_audio has no id of
+        // its own, since pronunciation_id is its primary key, and its file is stored relative to the
+        // workspace folder so a moved or copied workspace keeps its audio.
         // Children cascade when their pronunciation is deleted, and the pronunciation cascades when its
         // entry is deleted.
         command.CommandText =
@@ -214,6 +217,14 @@ public static class LSchema
                 text TEXT NOT NULL,
                 local_tone TEXT,
                 PRIMARY KEY (pronunciation_id, position),
+                FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS pronunciation_audio (
+                pronunciation_id TEXT NOT NULL PRIMARY KEY,
+                file TEXT NOT NULL,
+                source TEXT,
+                added_utc TEXT NOT NULL,
                 FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
             );
             """;

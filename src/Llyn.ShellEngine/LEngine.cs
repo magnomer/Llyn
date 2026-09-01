@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -165,9 +166,28 @@ public sealed class LEngine : IDisposable
     /// out of several of them.
     /// </para>
     /// <para>
+    /// A recording the downloader saved is written as the pronunciation's audio row, in the same
+    /// transaction, with its path made relative to the workspace so a moved workspace keeps its audio.
+    /// Because the row hangs off the pronunciation, a recording with no typed IPA still creates the
+    /// pronunciation to hang from.
+    /// </para>
+    /// <para>
+    /// The Example, Situation and Tag text a card carries is written as independent data: each non-empty
+    /// field becomes a new row of its own entity, which the card's sense or collocation then references.
+    /// The entry owns none of them, so clearing a card would only detach what it points at.
+    /// </para>
+    /// <para>
+    /// Text is never matched against an existing Example, Situation or Tag: every non-empty field
+    /// creates a new row, even when the same words were saved before. Matching needs a picker that
+    /// resolves typed text to a chosen row, and none exists yet.
+    /// </para>
+    /// <para>
     /// Parts of speech are not written: <c>part_of_speech_value</c> is unseeded and the input panel has
-    /// no control for them. The example, situation, synonym, and tag text a card carries is not written
-    /// either — each is an independent entity reached through its own association, which is a later job.
+    /// no control for them. <b>Synonyms are not written either.</b> An <c>LSynonym</c> targets an Entry
+    /// or a Meaning by id, and a sense-card synonym is an <c>LRelation</c> with the same requirement;
+    /// the card's field holds free text, which is neither, and no picker exists to resolve it. Writing
+    /// one would mean fabricating a target and corrupting the relation model. The collocation card has
+    /// no Synonym control at all, so nothing feeds <c>LCollocationDraft.LCollocationDraftSynonym</c>.
     /// </para>
     /// </summary>
     public LEntry LEngineEntrySave(LEntryDraft draft)
@@ -199,7 +219,7 @@ public sealed class LEngine : IDisposable
         foreach (LSenseDraft card in draft.LEntryDraftSenses)
         {
             // Each sense is appended, so card order becomes stored position.
-            senses.LSenseCreate(new LSense(
+            LSense sense = senses.LSenseCreate(new LSense(
                 string.Empty,
                 entry.LEntryId,
                 null,
@@ -208,17 +228,21 @@ public sealed class LEngine : IDisposable
                 null,
                 card.LSenseDraftDefinition,
                 string.Empty));
+
+            LEngineSenseAttach(sense.LSenseId, card, draft.LEntryDraftLanguage);
         }
 
         LCollocationArchive collocations = new(_lEngineDatabase);
         foreach (LCollocationDraft card in draft.LEntryDraftCollocations)
         {
-            collocations.LCollocationCreate(new LCollocation(
+            LCollocation collocation = collocations.LCollocationCreate(new LCollocation(
                 string.Empty,
                 entry.LEntryId,
                 0,
                 card.LCollocationDraftExpression,
                 card.LCollocationDraftMeaning));
+
+            LEngineCollocationAttach(collocation.LCollocationId, card, draft.LEntryDraftLanguage);
         }
 
         if (!string.IsNullOrWhiteSpace(draft.LEntryDraftNote))
@@ -226,15 +250,27 @@ public sealed class LEngine : IDisposable
             new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, draft.LEntryDraftNote));
         }
 
-        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation))
+        // The pronunciation row is what a recording hangs from, so a downloaded recording creates one
+        // even when no IPA was typed; without it the audio would have nothing to reference.
+        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) ||
+            !string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
         {
-            new LPronunciationArchive(_lEngineDatabase).LPronunciationCreate(new LPronunciation(
+            LPronunciationArchive pronunciations = new(_lEngineDatabase);
+            LPronunciation pronunciation = pronunciations.LPronunciationCreate(new LPronunciation(
                 string.Empty,
                 entry.LEntryId,
                 null,
                 draft.LEntryDraftPronunciation,
                 [],
                 []));
+
+            if (!string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+            {
+                pronunciations.LPronunciationAudioSave(
+                    pronunciation.LPronunciationId,
+                    LEngineRecordingFormat(draft.LEntryDraftAudio),
+                    draft.LEntryDraftSource);
+            }
         }
 
         LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
@@ -256,6 +292,53 @@ public sealed class LEngine : IDisposable
     public LEntry? LEngineEntryRead(string id)
     {
         return new LEntryArchive(_lEngineDatabase).LEntryRead(id);
+    }
+
+    /// <summary>
+    /// Returns the entries whose headword contains <paramref name="query"/>, ordered by headword, or
+    /// every entry when <paramref name="query"/> is empty — the list a browsing or searching pane shows.
+    /// Matching is a case-insensitive contains.
+    /// </summary>
+    public IReadOnlyList<LEntry> LEngineEntryFind(string query)
+    {
+        return new LEntryArchive(_lEngineDatabase).LEntryFind(query);
+    }
+
+    /// <summary>
+    /// Reads the entry identified by <paramref name="id"/> back into the draft the input form saved, or
+    /// <c>null</c> when no entry has that id. This is the inverse of <see cref="LEngineEntrySave"/>: it
+    /// composes the entry row, its meanings and collocations, its note and pronunciation, and the
+    /// Example, Situation and Tag each card references into one value the shell can put back on screen,
+    /// read as a single consistent snapshot. Synonyms come back empty, because the save writes none.
+    /// </summary>
+    public LEntryDraft? LEngineEntryLoad(string id)
+    {
+        LEntryDraft? draft = new LEntryLoader(_lEngineDatabase).LEntryLoad(id);
+        if (draft is null || draft.LEntryDraftAudio.Length == 0)
+        {
+            return draft;
+        }
+
+        // Stored relative, handed out full: the shell plays a file, so it never has to know the
+        // workspace folder, and the same entry opened from a moved workspace still resolves.
+        return draft with { LEntryDraftAudio = LEngineRecordingResolve(draft.LEntryDraftAudio) };
+    }
+
+    // The workspace-relative form of a downloaded recording's path, which is how it is stored. A path
+    // outside the workspace has no relative form and is stored as it stands.
+    private string LEngineRecordingFormat(string path)
+    {
+        string relative = Path.GetRelativePath(_lEngineWorkspace, path);
+        return Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal)
+            ? path
+            : relative;
+    }
+
+    // The full path of a stored recording within the workspace in use now. A path that was stored
+    // absolute — one saved outside the workspace — is returned unchanged.
+    private string LEngineRecordingResolve(string file)
+    {
+        return Path.IsPathRooted(file) ? file : Path.Combine(_lEngineWorkspace, file);
     }
 
     /// <summary>
@@ -353,6 +436,71 @@ public sealed class LEngine : IDisposable
     {
         ArgumentNullException.ThrowIfNull(recording);
         return LWorkspace.LWorkspaceRecordingPrepare(recording, _lEngineWorkspace, _lEngineClient, cancellation);
+    }
+
+    /// <summary>
+    /// Writes the Example, Situation and Tag a sense card typed and points the stored sense at them.
+    /// Each non-empty field creates a row of its own — independent data the sense references rather
+    /// than owns — and an empty field writes nothing at all.
+    /// <para>
+    /// A card holds one of each field, so each reference set the card fills holds a single row and its
+    /// position is 0. The card's own order is already carried by the sense row it produced.
+    /// </para>
+    /// </summary>
+    private void LEngineSenseAttach(string senseId, LSenseDraft card, string language)
+    {
+        if (!string.IsNullOrWhiteSpace(card.LSenseDraftExample))
+        {
+            LExample example = new LExampleArchive(_lEngineDatabase).LExampleCreate(
+                new LExample(string.Empty, language, card.LSenseDraftExample, null, null, []));
+            new LExampleLink(_lEngineDatabase).LExampleSenseAttach(senseId, example.LExampleId, 0);
+        }
+
+        if (!string.IsNullOrWhiteSpace(card.LSenseDraftSituation))
+        {
+            LSituationArchive situations = new(_lEngineDatabase);
+            LSituation situation = situations.LSituationCreate(
+                new LSituation(string.Empty, card.LSenseDraftSituation, null, null));
+            situations.LSituationSenseAttach(senseId, situation.LSituationId, 0);
+        }
+
+        if (!string.IsNullOrWhiteSpace(card.LSenseDraftTag))
+        {
+            LTagArchive tags = new(_lEngineDatabase);
+            LTag tag = tags.LTagCreate(new LTag(string.Empty, card.LSenseDraftTag));
+            tags.LTagSenseAttach(senseId, tag.LTagId, 0);
+        }
+    }
+
+    /// <summary>
+    /// Writes the Example, Situation and Tag a collocation card typed and points the stored collocation
+    /// at them, on the same terms as a sense card: independent rows, referenced and never owned, and
+    /// nothing written for an empty field.
+    /// </summary>
+    private void LEngineCollocationAttach(string collocationId, LCollocationDraft card, string language)
+    {
+        if (!string.IsNullOrWhiteSpace(card.LCollocationDraftExample))
+        {
+            LExample example = new LExampleArchive(_lEngineDatabase).LExampleCreate(
+                new LExample(string.Empty, language, card.LCollocationDraftExample, null, null, []));
+            new LExampleLink(_lEngineDatabase).LExampleCollocationAttach(
+                collocationId, example.LExampleId, 0);
+        }
+
+        if (!string.IsNullOrWhiteSpace(card.LCollocationDraftSituation))
+        {
+            LSituationArchive situations = new(_lEngineDatabase);
+            LSituation situation = situations.LSituationCreate(
+                new LSituation(string.Empty, card.LCollocationDraftSituation, null, null));
+            situations.LSituationCollocationAttach(collocationId, situation.LSituationId, 0);
+        }
+
+        if (!string.IsNullOrWhiteSpace(card.LCollocationDraftTag))
+        {
+            LTagArchive tags = new(_lEngineDatabase);
+            LTag tag = tags.LTagCreate(new LTag(string.Empty, card.LCollocationDraftTag));
+            tags.LTagCollocationAttach(collocationId, tag.LTagId, 0);
+        }
     }
 
     private IReadOnlyList<LSource> LEngineSourcesRead(string language)

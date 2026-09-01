@@ -13,10 +13,18 @@ namespace Llyn.Core;
 /// <param name="LEntryDraftNote">Plain text of the note editor.</param>
 /// <param name="LEntryDraftSenses">Sense cards in list order.</param>
 /// <param name="LEntryDraftCollocations">Collocation cards in list order.</param>
+/// <param name="LEntryDraftAudio">
+/// Full path to the recording downloaded for this entry, or empty when none was chosen. The shell
+/// deals in full paths; the engine stores the path relative to the workspace and resolves it back on
+/// the way out, so the draft is the same value in both directions.
+/// </param>
+/// <param name="LEntryDraftSource">Label of the source the recording came from, when there is one.</param>
 public sealed record LEntryDraft(
     string LEntryDraftHeadword,
     string LEntryDraftLanguage,
     string LEntryDraftPronunciation,
     string LEntryDraftNote,
     IReadOnlyList<LSenseDraft> LEntryDraftSenses,
-    IReadOnlyList<LCollocationDraft> LEntryDraftCollocations);
+    IReadOnlyList<LCollocationDraft> LEntryDraftCollocations,
+    string LEntryDraftAudio = "",
+    string? LEntryDraftSource = null);

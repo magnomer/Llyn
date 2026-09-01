@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="Llyn.UIShell.PWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -207,7 +207,7 @@
                                 </Popup>
                             </Grid>
 
-                            <Button x:Name="PDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Style="{StaticResource Theme.Input.Pill}">
+                            <Button x:Name="PDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Click="PDiscardHandle" Style="{StaticResource Theme.Input.Pill}">
                                 <StackPanel Orientation="Horizontal">
                                     <!-- Phosphor trash.svg. SvgViewbox has no foreground of its own, so the
                                          glyph is used as an opacity mask over the button's foreground. -->
@@ -223,7 +223,7 @@
                                     <TextBlock VerticalAlignment="Center" Text="Discard" />
                                 </StackPanel>
                             </Button>
-                            <Button x:Name="PStore" Grid.Column="4" Width="162" Height="51" Style="{StaticResource Theme.Input.Primary}">
+                            <Button x:Name="PStore" Grid.Column="4" Width="162" Height="51" Click="PStoreHandle" Style="{StaticResource Theme.Input.Primary}">
                                 <StackPanel Orientation="Horizontal">
                                     <!-- Phosphor floppy-disk.svg, tinted through an opacity mask (see PDiscard). -->
                                     <Rectangle Width="15" Height="15" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
@@ -740,7 +740,125 @@
                         </Border>
                     </Grid>
 
-                    <Grid x:Name="PList" Visibility="Collapsed" />
+                    <Grid x:Name="PList" Margin="34,20,34,38" IsVisibleChanged="PListHandle" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- POrder belongs beside PInquiry in this row; ordering is a later job. -->
+                        <TextBox
+                            x:Name="PInquiry"
+                            Grid.Row="0"
+                            Grid.ColumnSpan="2"
+                            Height="44"
+                            Margin="0,0,0,18"
+                            Style="{StaticResource Theme.Input.Field}"
+                            Tag="{DynamicResource List.Search}"
+                            TextChanged="PInquiryHandle" />
+
+                        <Border Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
+                            <Grid>
+                                <ScrollViewer Margin="10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl x:Name="PIndex">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Margin="0,0,0,6" Click="PIndexHandle" Style="{StaticResource Theme.Popup.Row}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold" Text="{Binding PIndexItemHeadword}" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PIndexItemLanguage}" />
+                                                    </Grid>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                                <TextBlock
+                                    x:Name="PIndexEmpty"
+                                    Margin="22"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top"
+                                    Foreground="{StaticResource Theme.Muted}"
+                                    IsHitTestVisible="False"
+                                    Text="{DynamicResource List.Empty}"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Input.Card}">
+                            <Grid x:Name="PDisplay">
+                                <TextBlock
+                                    x:Name="PDisplayEmpty"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource Theme.Muted}"
+                                    Text="{DynamicResource List.Unselected}" />
+                                <ScrollViewer x:Name="PDisplayContents" Margin="34,28,34,28" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Bottom" FontSize="34" FontWeight="Bold" TextWrapping="Wrap" />
+                                            <TextBlock x:Name="PDisplayLanguage" Margin="14,0,0,8" VerticalAlignment="Bottom" FontSize="13" Foreground="{StaticResource Theme.Muted}" />
+                                        </StackPanel>
+                                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                            <TextBlock x:Name="PDisplayPronunciation" VerticalAlignment="Center" FontSize="16" Foreground="{StaticResource Theme.Accent}" Visibility="Collapsed" />
+                                            <!-- Shown only when the entry has an audio file on disk; see PDisplayShow. -->
+                                            <Button x:Name="PDisplayPlayback" Width="34" Height="34" Margin="12,0,0,0" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Foreground="{StaticResource Theme.Accent}" Click="PDisplayPlaybackHandle" Style="{StaticResource Theme.Input.Action}" Visibility="Collapsed">
+                                                <!-- Phosphor play.svg, tinted through an opacity mask (see PPlayback). -->
+                                                <Rectangle Width="11" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                                                    <Rectangle.OpacityMask>
+                                                        <VisualBrush Stretch="Uniform">
+                                                            <VisualBrush.Visual>
+                                                                <svgc:SvgViewbox Width="11" Height="13" Source="icons/play.svg" />
+                                                            </VisualBrush.Visual>
+                                                        </VisualBrush>
+                                                    </Rectangle.OpacityMask>
+                                                </Rectangle>
+                                            </Button>
+                                        </StackPanel>
+
+                                        <TextBlock Margin="0,26,0,8" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Sense}" />
+                                        <ItemsControl x:Name="PDisplaySense">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid Margin="0,0,0,8">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="28" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock VerticalAlignment="Top" Foreground="{StaticResource Theme.Muted}" Text="{Binding LSenseDraftPosition}" />
+                                                        <TextBlock Grid.Column="1" FontSize="14" Text="{Binding LSenseDraftDefinition}" TextWrapping="Wrap" />
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <TextBlock Margin="0,20,0,8" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Collocation}" />
+                                        <ItemsControl x:Name="PDisplayCollocation">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Margin="0,0,0,10">
+                                                        <TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding LCollocationDraftExpression}" TextWrapping="Wrap" />
+                                                        <TextBlock Margin="0,3,0,0" FontSize="13" Foreground="{StaticResource Theme.Muted}" Text="{Binding LCollocationDraftMeaning}" TextWrapping="Wrap" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <TextBlock Margin="0,20,0,8" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Note}" />
+                                        <TextBlock x:Name="PDisplayNote" FontSize="14" TextWrapping="Wrap" Visibility="Collapsed" />
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </Grid>
                     <Grid x:Name="PSound" Visibility="Collapsed" />
                     <Grid x:Name="PTag" Visibility="Collapsed" />
                     <Grid x:Name="PSituation" Visibility="Collapsed" />

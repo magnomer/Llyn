@@ -31,6 +31,7 @@ public partial class PWindow : Window, LReceiver, LListener
     private readonly LEngine _lEngine = new();
     private readonly MediaPlayer _pDownloaderPlayer = new();
     private string? _pRecording;
+    private string? _pRecordingSource;
     private PGhost? _pGhost;
     private FrameworkElement? _pGhostCard;
     private TextBox? _pGhostTitle;
@@ -63,8 +64,9 @@ public partial class PWindow : Window, LReceiver, LListener
         PreviewMouseLeftButtonUp += PCardDropHandle;
         PLangcodeLoad();
 
-        _pSenseList.Add(new PInputCard("Sense", 1));
-        _pCollocationList.Add(new PInputCard("Collocation", 1));
+        // The session the last run left behind: the form opens on the entry the workspace row names,
+        // or empty when it names nothing. This also seeds the card lists, so no cards are added here.
+        PStateRestore();
 
         Closed += PWindowExitHandle;
     }
@@ -520,7 +522,15 @@ public partial class PWindow : Window, LReceiver, LListener
             // An unusable path (permission, invalid characters) leaves the previous workspace in place;
             // restore the field so it keeps showing the folder actually in use.
             PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+            return;
         }
+
+        // The new workspace has its own database, so everything on screen came from a database that is
+        // no longer open and carries ids that mean nothing here. The form moves onto the new
+        // workspace's own session, and the list and display are re-read from it.
+        PStateRestore();
+        PDisplayClear();
+        PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
     private void PRoofHandle(object sender, MouseButtonEventArgs e)
@@ -873,6 +883,7 @@ public partial class PWindow : Window, LReceiver, LListener
                 string.Equals(_pLangcodeChoice, language, StringComparison.Ordinal))
             {
                 _pRecording = path;
+                _pRecordingSource = recording.PDownloaderRecordingSource;
                 PPlayback.Visibility = Visibility.Visible;
             }
         }
@@ -904,6 +915,7 @@ public partial class PWindow : Window, LReceiver, LListener
     private void PRecordingClear()
     {
         _pRecording = null;
+        _pRecordingSource = null;
         _pDownloaderPlayer.Stop();
         PPlayback.Visibility = Visibility.Collapsed;
     }
@@ -918,6 +930,8 @@ public partial class PWindow : Window, LReceiver, LListener
         PLookupCancel();
         PDownloaderCancel();
         _pDownloaderPlayer.Close();
+        // The session is recorded before the engine goes: the save runs through it.
+        PStateSave();
         _lEngine.Dispose();
     }
 

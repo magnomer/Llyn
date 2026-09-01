@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -13,6 +14,11 @@ namespace Llyn.Infrastructure;
 /// <c>entry_id</c> column — a second create for the same entry fails at the database. Reading returns
 /// the whole aggregate by entry id; updating replaces the level, IPA, and both child lists; deleting
 /// removes the syllables and representations through the foreign-key cascade.
+/// <para>
+/// A pronunciation also owns at most one downloaded recording, kept beside the aggregate rather than
+/// inside it: <see cref="LPronunciationAudioSave"/> and <see cref="LPronunciationAudioRead"/> write and
+/// read that one row, whose file path is stored relative to the workspace folder.
+/// </para>
 /// </summary>
 public sealed class LPronunciationArchive
 {
@@ -164,6 +170,71 @@ public sealed class LPronunciationArchive
         }
 
         session.LDatabaseSessionCommit();
+    }
+
+    /// <summary>
+    /// Records <paramref name="file"/> — a path relative to the workspace folder — as the recording the
+    /// pronunciation owns, together with the <paramref name="source"/> label it was downloaded from and
+    /// the moment it was stored. A pronunciation carries at most one recording, so a second save for the
+    /// same pronunciation replaces the first rather than adding a row.
+    /// </summary>
+    public void LPronunciationAudioSave(string pronunciationId, string file, string? source)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(pronunciationId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(file);
+
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                INSERT INTO pronunciation_audio (pronunciation_id, file, source, added_utc)
+                VALUES ($pronunciation, $file, $source, $added)
+                ON CONFLICT (pronunciation_id) DO UPDATE SET
+                    file = excluded.file,
+                    source = excluded.source,
+                    added_utc = excluded.added_utc;
+                """;
+            command.Parameters.AddWithValue("$pronunciation", pronunciationId);
+            command.Parameters.AddWithValue("$file", file);
+            command.Parameters.AddWithValue("$source", (object?)source ?? DBNull.Value);
+            command.Parameters.AddWithValue(
+                "$added", DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    /// <summary>
+    /// Reads the recording the pronunciation owns, or <c>null</c> when it has none. The file path comes
+    /// back exactly as stored — relative to the workspace folder — so the caller that knows the
+    /// workspace resolves it against the folder in use now.
+    /// </summary>
+    public LPronunciationAudio? LPronunciationAudioRead(string pronunciationId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(pronunciationId);
+
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT pronunciation_id, file, source, added_utc
+            FROM pronunciation_audio WHERE pronunciation_id = $pronunciation;
+            """;
+        command.Parameters.AddWithValue("$pronunciation", pronunciationId);
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        if (!reader.Read())
+        {
+            return null;
+        }
+
+        return new LPronunciationAudio(
+            reader.GetString(0),
+            reader.GetString(1),
+            reader.IsDBNull(2) ? null : reader.GetString(2),
+            reader.GetString(3));
     }
 
     private static IReadOnlyList<LSyllable> LPronunciationSyllableBuild(
