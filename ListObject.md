@@ -12,6 +12,7 @@ This registry records the codebase-owned object bases used by the UI scaffold. A
 | Duplex | UI mother | Side-by-side comparison panel |
 | Establishment | UI mother | Program status region |
 | Favorite | UI mother | Favorite entries panel |
+| Ghost | UI structure | Floating preview that follows the pointer while a card is dragged |
 | Headline | UI terminal | Product name within the brand |
 | Headquarter | UI mother | Product menu owned by the logo |
 | House | UI mother | Principal working region |
@@ -27,4 +28,5 @@ This registry records the codebase-owned object bases used by the UI scaffold. A
 | Surface | UI structure | Reusable control-template surface |
 | Tag | UI mother | Tag panel |
 | Theme | UI structure | Shared visual design resources |
+| Title | UI terminal | Editable title of a sense or collocation card |
 | Window | UI mother | Entire program window UI |

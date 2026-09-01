@@ -30,6 +30,11 @@ public partial class PWindow : Window, LReceiver, LListener
     private readonly ObservableCollection<PDownloaderRecording> _pDownloaderRecording = [];
     private readonly LEngine _lEngine = new();
     private readonly MediaPlayer _pDownloaderPlayer = new();
+    private string? _pRecording;
+    private PGhost? _pGhost;
+    private FrameworkElement? _pGhostCard;
+    private TextBox? _pGhostTitle;
+    private Point _pGhostGrab;
     private CancellationTokenSource? _lLookupCancellation;
     private CancellationTokenSource? _lHarvestCancellation;
     private bool _lLookupSearching;
@@ -50,6 +55,12 @@ public partial class PWindow : Window, LReceiver, LListener
         PLookupMenuList.ItemsSource = _pLookupCandidate;
         PDownloaderMenuList.ItemsSource = _pDownloaderRecording;
         PLangcodeListMenu.ItemsSource = _pLangcodeList;
+        PHeadword.TextChanged += PHeadwordHandle;
+        // Card drags re-parent their container on every reorder, which drops mouse capture and
+        // with it the header's event routing; the window-level preview events tunnel from the root
+        // on every input, so the drag loop and the drop stay reachable for the whole gesture.
+        PreviewMouseMove += PCardDragHandle;
+        PreviewMouseLeftButtonUp += PCardDropHandle;
         PLangcodeLoad();
 
         _pSenseList.Add(new PInputCard("Sense", 1));
@@ -161,6 +172,286 @@ public partial class PWindow : Window, LReceiver, LListener
         {
             list[index].PInputCardOrder = index + 1;
         }
+    }
+
+    private void PCardPressHandle(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton != MouseButton.Left || e.ButtonState != MouseButtonState.Pressed)
+        {
+            return;
+        }
+
+        // Clears any stale drag state before arming a new one.
+        PCardGhostStop();
+
+        if (sender is not FrameworkElement { DataContext: PInputCard } header)
+        {
+            return;
+        }
+
+        // A press on the remove button must remove the card, not arm a drag.
+        DependencyObject? origin = e.OriginalSource as DependencyObject;
+        if (PCardButtonCheck(origin))
+        {
+            return;
+        }
+
+        FrameworkElement? card = PCardRootFind(header);
+        if (card is null)
+        {
+            return;
+        }
+
+        _pGhostCard = card;
+        _pGhostGrab = e.GetPosition(card);
+        _pGhostTitle = PCardTitleFind(origin);
+    }
+
+    private void PCardDragHandle(object sender, MouseEventArgs e)
+    {
+        if (_pGhostCard is null)
+        {
+            return;
+        }
+
+        if (e.LeftButton != MouseButtonState.Pressed)
+        {
+            PCardGhostStop();
+            return;
+        }
+
+        if (Content is not FrameworkElement surface)
+        {
+            return;
+        }
+
+        Point cursor = e.GetPosition(surface);
+        if (_pGhost is null)
+        {
+            Point current = e.GetPosition(_pGhostCard);
+            if (Math.Abs(current.X - _pGhostGrab.X) < SystemParameters.MinimumHorizontalDragDistance &&
+                Math.Abs(current.Y - _pGhostGrab.Y) < SystemParameters.MinimumVerticalDragDistance)
+            {
+                return;
+            }
+
+            PCardGhostStart(surface, cursor);
+            return;
+        }
+
+        _pGhost.PGhostPlace(new Point(cursor.X - _pGhostGrab.X, cursor.Y - _pGhostGrab.Y));
+        PCardOrderPlace(e, surface);
+    }
+
+    private void PCardDropHandle(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton != MouseButton.Left)
+        {
+            return;
+        }
+
+        PCardGhostStop();
+    }
+
+    private void PCardGhostStart(FrameworkElement surface, Point cursor)
+    {
+        if (_pGhostCard is null)
+        {
+            return;
+        }
+
+        // A press inside the title starts a text selection before the drag threshold is reached;
+        // collapse it so the drag does not carry the highlight along.
+        if (_pGhostTitle is not null)
+        {
+            _pGhostTitle.Select(_pGhostTitle.CaretIndex, 0);
+        }
+
+        AdornerLayer? layer = AdornerLayer.GetAdornerLayer(surface);
+        if (layer is null)
+        {
+            return;
+        }
+
+        _pGhost = new PGhost(surface, _pGhostCard);
+        layer.Add(_pGhost);
+        _pGhost.PGhostPlace(new Point(cursor.X - _pGhostGrab.X, cursor.Y - _pGhostGrab.Y));
+        _pGhostCard.Opacity = 0.35;
+        // Capture on the window itself: unlike the card header it is never re-parented mid-drag,
+        // so the capture survives every reorder.
+        Mouse.Capture(this);
+    }
+
+    // The cleanup re-enters: WPF re-raises mouse-button events, and the adorner removal, capture
+    // release, and binding refresh below can dispatch queued input mid-cleanup. Clear the state
+    // first so any re-entered call sees nothing to stop.
+    private void PCardGhostStop()
+    {
+        if (_pGhostCard is null)
+        {
+            return;
+        }
+
+        FrameworkElement card = _pGhostCard;
+        PGhost? ghost = _pGhost;
+        _pGhost = null;
+        _pGhostCard = null;
+        _pGhostTitle = null;
+
+        if (ghost is not null)
+        {
+            if (Content is Visual surface)
+            {
+                AdornerLayer.GetAdornerLayer(surface)?.Remove(ghost);
+            }
+
+            if (PCardListFind(card) is { } list)
+            {
+                PInputOrderUpdate(list);
+            }
+
+            Mouse.Capture(null);
+        }
+
+        card.Opacity = 1;
+    }
+
+    // Moves the dragged card within its own list each time the pointer crosses another card's
+    // midpoint, so the cards rearrange live under the ghost.
+    private void PCardOrderPlace(MouseEventArgs e, FrameworkElement surface)
+    {
+        if (_pGhostCard is null)
+        {
+            return;
+        }
+
+        ObservableCollection<PInputCard>? list = PCardListFind(_pGhostCard);
+        if (list is null || list.Count <= 1)
+        {
+            return;
+        }
+
+        ScrollViewer scroll = list == _pSenseList ? PMeaning : PCollocation;
+        PCardScrollMove(scroll, e.GetPosition(scroll));
+
+        if (_pGhostCard.DataContext is not PInputCard card ||
+            VisualTreeHelper.GetParent(_pGhostCard) is not Panel host)
+        {
+            return;
+        }
+
+        int current = list.IndexOf(card);
+        if (current < 0)
+        {
+            return;
+        }
+
+        // The pointer grabs the card by its title, so the ghost hangs below the cursor; comparing
+        // the raw cursor to the sibling midpoints would swap far too early upward and far too late
+        // downward. Compare the dragged card's own center instead.
+        Point cursor = e.GetPosition(surface);
+        double probe = cursor.Y - _pGhostGrab.Y + (_pGhostCard.ActualHeight / 2);
+        int target = 0;
+        foreach (UIElement sibling in host.Children)
+        {
+            if (sibling is not FrameworkElement element || element.DataContext == card)
+            {
+                continue;
+            }
+
+            Point middle = element.TransformToAncestor(surface).Transform(new Point(0, element.ActualHeight / 2));
+            if (middle.Y < probe)
+            {
+                target++;
+            }
+        }
+
+        if (target != current)
+        {
+            list.Move(current, target);
+        }
+    }
+
+    // Nudges the list scroll while the ghost nears the viewport edge, so cards outside the
+    // visible range stay reachable.
+    private static void PCardScrollMove(ScrollViewer scroll, Point cursor)
+    {
+        const double edge = 56;
+        double step = 0;
+
+        if (cursor.Y < edge)
+        {
+            step = -(edge - cursor.Y) / 4;
+        }
+        else if (cursor.Y > scroll.ActualHeight - edge)
+        {
+            step = (edge - (scroll.ActualHeight - cursor.Y)) / 4;
+        }
+
+        if (step != 0 && scroll.ScrollableHeight > 0)
+        {
+            scroll.ScrollToVerticalOffset(scroll.VerticalOffset + step);
+        }
+    }
+
+    private ObservableCollection<PInputCard>? PCardListFind(FrameworkElement card)
+    {
+        if (card.DataContext is not PInputCard inputCard)
+        {
+            return null;
+        }
+
+        return _pSenseList.Contains(inputCard) ? _pSenseList
+            : _pCollocationList.Contains(inputCard) ? _pCollocationList
+            : null;
+    }
+
+    // The card visual is the template-root element sitting directly under the list's items panel;
+    // walk up from the header until the element is found whose parent is that StackPanel (a Grid
+    // is a Panel too, so the items-host type, not Panel, is what marks the card root).
+    private static FrameworkElement? PCardRootFind(FrameworkElement header)
+    {
+        FrameworkElement? root = null;
+        for (DependencyObject? current = header; current is not null; current = VisualTreeHelper.GetParent(current))
+        {
+            if (current is ItemsControl)
+            {
+                return root;
+            }
+
+            if (current is FrameworkElement candidate && VisualTreeHelper.GetParent(current) is StackPanel)
+            {
+                root ??= candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool PCardButtonCheck(DependencyObject? origin)
+    {
+        for (DependencyObject? current = origin; current is not null; current = VisualTreeHelper.GetParent(current))
+        {
+            if (current is Button)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static TextBox? PCardTitleFind(DependencyObject? origin)
+    {
+        for (DependencyObject? current = origin; current is not null; current = VisualTreeHelper.GetParent(current))
+        {
+            if (current is TextBox box)
+            {
+                return box;
+            }
+        }
+
+        return null;
     }
 
     private void PNoteContentsHandle(object sender, TextChangedEventArgs e)
@@ -352,16 +643,18 @@ public partial class PWindow : Window, LReceiver, LListener
         if (_lLookupSearching && !hasCandidates)
         {
             PLookupMenuStatus.Text = PLocalizationTextRead("Lookup.Searching");
-            PLookupMenuStatus.Visibility = Visibility.Visible;
+            PLookupStatusCard.Visibility = Visibility.Visible;
+            PLookupProgress.Visibility = Visibility.Visible;
         }
         else if (!_lLookupSearching && !hasCandidates)
         {
             PLookupMenuStatus.Text = PLocalizationTextRead("Lookup.Empty");
-            PLookupMenuStatus.Visibility = Visibility.Visible;
+            PLookupStatusCard.Visibility = Visibility.Visible;
+            PLookupProgress.Visibility = Visibility.Collapsed;
         }
         else
         {
-            PLookupMenuStatus.Visibility = Visibility.Collapsed;
+            PLookupStatusCard.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -394,7 +687,11 @@ public partial class PWindow : Window, LReceiver, LListener
             return;
         }
 
-        _pLangcodeChoice = language;
+        if (!string.Equals(_pLangcodeChoice, language, StringComparison.Ordinal))
+        {
+            PRecordingClear();
+            _pLangcodeChoice = language;
+        }
         PLangcodeBaseName.Text = language;
         PLangcodeFlagUpdate();
         PLangcodeBase.IsChecked = false;
@@ -512,16 +809,18 @@ public partial class PWindow : Window, LReceiver, LListener
         if (_lHarvestSearching && !hasRecordings)
         {
             PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Searching");
-            PDownloaderMenuStatus.Visibility = Visibility.Visible;
+            PDownloaderStatusCard.Visibility = Visibility.Visible;
+            PDownloaderProgress.Visibility = Visibility.Visible;
         }
         else if (!_lHarvestSearching && !hasRecordings)
         {
             PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Empty");
-            PDownloaderMenuStatus.Visibility = Visibility.Visible;
+            PDownloaderStatusCard.Visibility = Visibility.Visible;
+            PDownloaderProgress.Visibility = Visibility.Collapsed;
         }
         else
         {
-            PDownloaderMenuStatus.Visibility = Visibility.Collapsed;
+            PDownloaderStatusCard.Visibility = Visibility.Collapsed;
         }
     }
 
@@ -559,19 +858,54 @@ public partial class PWindow : Window, LReceiver, LListener
             return;
         }
 
+        string language = _pLangcodeChoice;
         PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Saving");
-        PDownloaderMenuStatus.Visibility = Visibility.Visible;
+        PDownloaderStatusCard.Visibility = Visibility.Visible;
+        PDownloaderProgress.Visibility = Visibility.Visible;
 
         try
         {
-            await _lEngine.LEngineRecordingSave(recording.PDownloaderRecordingModel, word, _pLangcodeChoice, CancellationToken.None);
+            string path = await _lEngine.LEngineRecordingSave(recording.PDownloaderRecordingModel, word, language, CancellationToken.None);
             PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Saved");
+            PDownloaderProgress.Visibility = Visibility.Collapsed;
+
+            if (string.Equals(PHeadword.Text?.Trim(), word, StringComparison.Ordinal) &&
+                string.Equals(_pLangcodeChoice, language, StringComparison.Ordinal))
+            {
+                _pRecording = path;
+                PPlayback.Visibility = Visibility.Visible;
+            }
         }
         catch (Exception)
         {
             // A failed download leaves the menu open with a failure notice; the user can retry.
             PDownloaderMenuStatus.Text = PLocalizationTextRead("Downloader.Failed");
+            PDownloaderProgress.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private void PPlaybackHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pRecording is null || !File.Exists(_pRecording))
+        {
+            PRecordingClear();
+            return;
+        }
+
+        _pDownloaderPlayer.Open(new Uri(_pRecording));
+        _pDownloaderPlayer.Play();
+    }
+
+    private void PHeadwordHandle(object sender, TextChangedEventArgs e)
+    {
+        PRecordingClear();
+    }
+
+    private void PRecordingClear()
+    {
+        _pRecording = null;
+        _pDownloaderPlayer.Stop();
+        PPlayback.Visibility = Visibility.Collapsed;
     }
 
     private string PLocalizationTextRead(string key)

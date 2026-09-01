@@ -143,7 +143,8 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -200,6 +201,50 @@
         </Setter>
     </Style>
 
+    <!-- Compact controls used inside floating pickers. Keeping these templated avoids falling back
+         to the platform's square, grey Button chrome inside otherwise themed popups. -->
+    <Style x:Key="Theme.Popup.Row" TargetType="Button">
+        <Setter Property="Padding" Value="12,10" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="PSurface" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="9">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.72" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Popup.IconAction" TargetType="Button" BasedOn="{StaticResource Theme.Input.Action}">
+        <Setter Property="Width" Value="34" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+    </Style>
+
+    <Style x:Key="Theme.Popup.PrimaryAction" TargetType="Button" BasedOn="{StaticResource Theme.Input.Primary}">
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
     <Style x:Key="Theme.Input.TogglePill" TargetType="ToggleButton">
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
@@ -247,6 +292,7 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
                             <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
