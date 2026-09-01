@@ -5,13 +5,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers reading entries back: listing and searching them by headword, and loading one whole entry
-/// into the draft it was saved from. The load is the inverse of the save, so what a test writes
-/// through <c>LEngineEntrySave</c> is exactly what comes back — headword, language, pronunciation and
-/// note, and every card with its definition and the whole ordered set of Examples, Situations and Tags
-/// it references.
-/// </summary>
 public sealed class TEntryLoad
 {
     [Fact]
@@ -48,11 +41,8 @@ public sealed class TEntryLoad
         LEntry stored = engine.LEngineEntrySave(word);
         engine.LEngineEntrySave(sword);
 
-        // An empty query lists everything, ordered by headword.
         Assert.Equal(["sword", "word"], engine.LEngineEntryFind(string.Empty).Select(e => e.LEntryHeadword));
 
-        // A partial headword narrows it, case-insensitively, and matches anywhere in the headword —
-        // "word" is inside "sword" too, so a query that picks exactly one has to be one of its own.
         Assert.Equal(["sword", "word"], engine.LEngineEntryFind("WORD").Select(e => e.LEntryHeadword));
         Assert.Equal("sword", Assert.Single(engine.LEngineEntryFind("swo")).LEntryHeadword);
         Assert.Empty(engine.LEngineEntryFind("axe"));
@@ -65,15 +55,10 @@ public sealed class TEntryLoad
         Assert.Equal(word.LEntryDraftPronunciation, loaded.LEntryDraftPronunciation);
         Assert.Equal(word.LEntryDraftNote, loaded.LEntryDraftNote);
 
-        // The cards are compared field by field: a draft holds its cards, and a card its Examples,
-        // Situations and Tags, in lists, and list equality is reference equality — never true across a
-        // round trip through the store.
         TEntryCardMatch(word.LEntryDraftSenses, loaded.LEntryDraftSenses);
         TEntryCardMatch(word.LEntryDraftCollocations, loaded.LEntryDraftCollocations);
     }
 
-    // Asserts that two card lists carry the same cards in the same order, every field included: the
-    // save and the load are inverses, so a card that was written comes back exactly as it went in.
     private static void TEntryCardMatch(IReadOnlyList<LCardDraft> expected, IReadOnlyList<LCardDraft> actual)
     {
         Assert.Equal(expected.Count, actual.Count);
@@ -95,7 +80,6 @@ public sealed class TEntryLoad
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        // The file the downloader would have written: under the workspace, in its audio bucket.
         string folder = Path.Combine(workspace.TWorkspaceFolder, "audio", "english");
         Directory.CreateDirectory(folder);
         string file = Path.Combine(folder, "word.mp3");
@@ -111,8 +95,6 @@ public sealed class TEntryLoad
             file,
             "Wiktionary"));
 
-        // Stored relative, so a workspace that is moved or copied keeps its audio. The row is read
-        // through the archive rather than as SQL text, so the path separator stays the platform's.
         LPronunciationArchive pronunciations = new(workspace.TWorkspaceDatabase);
         LPronunciation? pronunciation = pronunciations.LPronunciationRead(stored.LEntryId);
         Assert.NotNull(pronunciation);
@@ -161,7 +143,6 @@ public sealed class TEntryLoad
             [new LCardDraft(
                 "the set phrase", "in a word", "briefly", [], [], string.Empty, [])]));
 
-        // The titles are columns of the cards themselves, so they are on the rows before any load.
         LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));
         Assert.Equal("the plain sense", sense.LSenseTitle);
         LCollocation collocation = Assert.Single(
@@ -205,8 +186,6 @@ public sealed class TEntryLoad
                 string.Empty,
                 ["written", "idiom"])]));
 
-        // The rows are stored at the positions the lists held, so nothing shares a position and the
-        // order is a fact of the store rather than of the read.
         LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));
         Assert.Equal(
             ["verb", "formal", "spoken"],
@@ -219,13 +198,11 @@ public sealed class TEntryLoad
 
         Assert.NotNull(loaded);
 
-        // Three tags and two examples on the one card, all five back in the order they were written.
         LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);
         Assert.Equal(["verb", "formal", "spoken"], card.LCardDraftTag);
         Assert.Equal(["he said a word", "not a word was spoken"], card.LCardDraftExample);
         Assert.Equal(["conversation"], card.LCardDraftSituation);
 
-        // The collocation card references its own sets on the same terms.
         LCardDraft phrase = Assert.Single(loaded.LEntryDraftCollocations);
         Assert.Equal(["written", "idiom"], phrase.LCardDraftTag);
         Assert.Equal(["in a word, no"], phrase.LCardDraftExample);
@@ -238,8 +215,6 @@ public sealed class TEntryLoad
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        // A blank value in a list is not a row: an empty field detaches, and the independent tables
-        // stay empty rather than collecting rows with no text.
         LEntry stored = engine.LEngineEntrySave(new LEntryDraft(
             "word",
             "English",

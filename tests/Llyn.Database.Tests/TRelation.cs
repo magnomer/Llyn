@@ -5,11 +5,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the engine's relation seam: a Meaning's relations and a Collocation's synonyms created,
-/// read, updated, moved and deleted through <see cref="LEngine"/>, the lookup a caller resolves typed
-/// text with before it writes, and the refusal that meets a target which resolved to nothing.
-/// </summary>
 public sealed class TRelation
 {
     [Fact]
@@ -21,8 +16,6 @@ public sealed class TRelation
         LEntry origin = TRelationEntryCreate(engine, "word", "the first meaning");
         LEntry target = TRelationEntryCreate(engine, "term", "the other meaning");
 
-        // The caller resolves first: typed text becomes the entry the user meant, and its id is what
-        // reaches the engine. Nothing about the text is handed over.
         LEntry resolved = Assert.Single(engine.LEngineEntryFind("term"));
         Assert.Equal(target.LEntryId, resolved.LEntryId);
 
@@ -48,8 +41,6 @@ public sealed class TRelation
         LEntry origin = TRelationEntryCreate(engine, "word", "the first meaning");
         LEntry target = TRelationEntryCreate(engine, "term", "the other meaning");
 
-        // The meaning-level twin of the entry lookup: text names the Meanings it could mean, and the
-        // caller picks one of them.
         LSense chosen = Assert.Single(engine.LEngineSenseFind("term"));
         Assert.Equal(target.LEntryId, chosen.LSenseEntryId);
         Assert.Equal("the other meaning", chosen.LSenseDefinition);
@@ -72,12 +63,9 @@ public sealed class TRelation
         LEntry origin = TRelationEntryCreate(engine, "word", "the first meaning");
         string senseId = TRelationSenseRead(workspace, origin.LEntryId);
 
-        // Nothing in the workspace is spelled this way, so the lookup finds nothing to resolve to.
         Assert.Empty(engine.LEngineEntryFind("nothingatall"));
         Assert.Empty(engine.LEngineSenseFind("nothingatall"));
 
-        // An id nobody carries, both targets at once, and neither target are one failure: the caller
-        // did not hand over a resolved target, and all three are refused with the same stated reason.
         LRelation unresolved = new(
             string.Empty, senseId, 0, "synonym", null, null, "no-such-entry", null);
         LRefusal refusal = Assert.Throws<LRefusal>(() => engine.LEngineRelationCreate(unresolved));
@@ -93,7 +81,6 @@ public sealed class TRelation
             Assert.Throws<LRefusal>(() => engine.LEngineRelationCreate(
                 unresolved with { LRelationTargetEntry = null })).LRefusalReason);
 
-        // A refused write leaves no row behind: the relation is not written half-resolved.
         Assert.Empty(engine.LEngineRelationRead(senseId));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));
     }
@@ -128,7 +115,6 @@ public sealed class TRelation
         engine.LEngineRelationDelete(second.LRelationId);
         Assert.Equal(first.LRelationId, Assert.Single(engine.LEngineRelationRead(senseId)).LRelationId);
 
-        // The link went; what it linked to did not.
         Assert.NotNull(engine.LEngineEntryRead(target.LEntryId));
     }
 
@@ -151,7 +137,6 @@ public sealed class TRelation
 
         Assert.Equal([0, 1], engine.LEngineSynonymRead(collocationId).Select(row => row.LSynonymPosition));
 
-        // Re-pointing resolves the new target on the same terms the create did.
         LSense chosen = Assert.Single(engine.LEngineSenseFind("term"));
         engine.LEngineSynonymUpdate(first with
         {
@@ -191,19 +176,14 @@ public sealed class TRelation
         TRelationEntryCreate(engine, "Résumé", "a summary");
         TRelationEntryCreate(engine, "term", "the other meaning");
 
-        // Folded over the whole of Unicode, the same as the entry lookup, so an accented headword is
-        // found typed in either case.
         Assert.Equal("a summary", Assert.Single(engine.LEngineSenseFind("résumé")).LSenseDefinition);
         Assert.Equal("a summary", Assert.Single(engine.LEngineSenseFind("RÉSUMÉ")).LSenseDefinition);
 
-        // An empty query is every Meaning, ordered by the headword each one hangs from.
         Assert.Equal(
             ["a summary", "the other meaning"],
             engine.LEngineSenseFind(string.Empty).Select(sense => sense.LSenseDefinition));
     }
 
-    // One saved entry with a single Meaning card and a single Collocation card, which is the shape
-    // every test here needs an origin and a target to have.
     private static LEntry TRelationEntryCreate(LEngine engine, string headword, string definition)
     {
         return engine.LEngineEntrySave(new LEntryDraft(
@@ -215,7 +195,6 @@ public sealed class TRelation
             [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [])]));
     }
 
-    // The id of the entry's only Meaning.
     private static string TRelationSenseRead(TWorkspace workspace, string entryId)
     {
         return Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(entryId)).LSenseId;

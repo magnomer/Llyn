@@ -7,12 +7,6 @@ using System.Threading.Tasks;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Resilient page reader for HTML pronunciation sources. Tries each candidate URL in turn and, per
-/// URL, retries transient failures (timeout, 408, 429, 5xx) with a short backoff. Non-transient
-/// responses (403, 404) fall through to the next URL rather than being retried. Returns the first
-/// successful body, or <c>null</c> when every URL is exhausted.
-/// </summary>
 internal static class LSourceReader
 {
     private const int LSourceReaderRetry = 2;
@@ -51,7 +45,6 @@ internal static class LSourceReader
                 {
                     foreach (KeyValuePair<string, string> header in headers)
                     {
-                        // Some are restricted headers (Referer); skip validation so they are sent verbatim.
                         request.Headers.TryAddWithoutValidation(header.Key, header.Value);
                     }
                 }
@@ -72,7 +65,6 @@ internal static class LSourceReader
             }
             catch (OperationCanceledException)
             {
-                // A per-request timeout (HttpClient.Timeout), not a user cancellation: retry.
                 retryable = true;
             }
             catch (HttpRequestException)
@@ -91,8 +83,8 @@ internal static class LSourceReader
 
     private static bool LSourceReaderConfirm(HttpStatusCode status)
     {
-        return status == HttpStatusCode.RequestTimeout   // 408
-            || status == HttpStatusCode.TooManyRequests  // 429
-            || (int)status >= 500;                        // 5xx
+        return status == HttpStatusCode.RequestTimeout
+            || status == HttpStatusCode.TooManyRequests
+            || (int)status >= 500;
     }
 }

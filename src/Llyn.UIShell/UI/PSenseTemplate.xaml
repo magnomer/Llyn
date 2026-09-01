@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PSenseTemplate">
 
-    <!-- One sense card in the meaning tab: its draggable header, title box, and the fields a sense carries. -->
     <DataTemplate x:Key="Theme.Sense.Card">
         <Border Margin="0,0,0,15" Style="{DynamicResource Theme.Input.Card}">
             <Grid>

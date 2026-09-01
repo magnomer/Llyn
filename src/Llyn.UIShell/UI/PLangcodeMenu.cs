@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -9,35 +9,21 @@ using System.Windows.Media;
 
 namespace Llyn.UIShell;
 
-/// <summary>
-/// The language an entry is written in, as the editor chooses it: the dropdown of installed
-/// packs, the pill that shows the chosen one, and the flag beside it. The choice is what lookup,
-/// audio download, and the saved entry are all carried out in.
-/// </summary>
 public partial class PEditor
 {
-    // Fallback language used until a pack is chosen, and when no pack folder is present on disk.
     private const string PWindowLanguage = "English";
 
     private readonly ObservableCollection<PLangcodeItem> _pLangcodeItem = [];
 
     private string _pLangcodeChoice = PWindowLanguage;
 
-    // Whether the current language came from a loaded entry. A pack that is no longer on disk is
-    // still the language the entry was written in, so the start-up fallback to the first pack leaves
-    // it alone; only a form standing on no entry may be moved off its language.
     private bool _pLangcodeEntry;
 
-    // Builds the language menu. Each row carries its own flag, resolved once here so the dropdown
-    // paints ready. The flag download may await a first-time fetch, hence async.
     internal async void PLangcodeLoad()
     {
         _pLangcodeItem.Clear();
         var languages = _lEngine.LEngineLanguageRead();
 
-        // Every flag is asked for at once rather than one after the next: each is a first-time
-        // download with its own ten-second timeout, and awaiting them in turn made the menu wait for
-        // the sum of them. The rows are added afterwards, in the order the packs were read.
         string?[] paths = await Task.WhenAll(
             languages.Select(language => _lEngine.LEngineFlagRead(language, CancellationToken.None)));
 
@@ -50,9 +36,6 @@ public partial class PEditor
             _pLangcodeItem.Add(new PLangcodeItem(languages[index], flag));
         }
 
-        // A form standing on an entry keeps that entry's language even when no pack answers to it;
-        // the fallback is for a form that stands on nothing and would otherwise name a pack that is
-        // not installed.
         if (!_pLangcodeEntry && languages.Count > 0 && !languages.Contains(_pLangcodeChoice))
         {
             _pLangcodeChoice = languages[0];
@@ -60,6 +43,7 @@ public partial class PEditor
 
         PLangcodeBaseName.Text = _pLangcodeChoice;
         PLangcodeFlagUpdate();
+        PSpeechLoad();
     }
 
     internal void PLangcodeHandle(object sender, RoutedEventArgs e)
@@ -73,23 +57,19 @@ public partial class PEditor
         {
             PRecordingClear();
             _pLangcodeChoice = language;
-            // Chosen by hand, so the language is no longer the loaded entry's.
             _pLangcodeEntry = false;
+            PSpeechLoad();
         }
         PLangcodeBaseName.Text = language;
         PLangcodeFlagUpdate();
         PLangcodeBase.IsChecked = false;
     }
 
-    // Shows the selected language's flag beside its name. A pack declares an ISO country code; the
-    // engine downloads and caches the matching flag-icons SVG, so this may await a first-time fetch.
-    // When the pack declares no flag or the download fails, a neutral globe stands in.
     private async void PLangcodeFlagUpdate()
     {
         string chosen = _pLangcodeChoice;
         string? path = await _lEngine.LEngineFlagRead(chosen, CancellationToken.None);
 
-        // The choice may have changed while the flag downloaded; only paint the still-current one.
         if (chosen != _pLangcodeChoice)
         {
             return;
@@ -111,5 +91,4 @@ public partial class PEditor
             PLangcodeBaseGlobe.Visibility = Visibility.Visible;
         }
     }
-
 }

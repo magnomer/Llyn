@@ -5,42 +5,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists bibliographic References — independent data no Entry, Example, or Author owns. A Reference
-/// is created once with an opaque id and is then cited two ways: an Entry cites any number of them in
-/// its own order through <c>entry_source</c>, and an Example cites at most one through its
-/// <c>example.source_id</c> column. Both are pointers — detaching a citation leaves the Reference
-/// standing, and <see cref="LReferenceDelete"/> refuses to run while any citation remains.
-/// <para>
-/// Every field is stored as a state column beside its value column so "never filled in", "recorded as
-/// unknown", and "this value" stay three different facts; the value column is written only when the
-/// state is specified. The Authors a Reference credits are attached in order through
-/// <c>source_author</c>: attaching and detaching write association rows only, deleting the Reference
-/// drops those rows and never an Author, and the Authors themselves live in
-/// <see cref="LAuthorArchive"/>.
-/// </para>
-/// <para>
-/// Both citation orders are unique indexes, so attaching and detaching renumber the whole set they touch
-/// through <see cref="LDatabaseOrder"/>; a caller names the index it wants and never has to find a free
-/// position or leave a gap behind.
-/// </para>
-/// </summary>
 public sealed class LReferenceArchive
 {
     private readonly LDatabase _lReferenceArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LReferenceArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lReferenceArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Inserts <paramref name="reference"/> with a fresh opaque id and returns the stored Reference with
-    /// that id filled in. Each field is written as its state plus, for a specified field alone, its
-    /// value. The new Reference is cited by nothing and credits no Author until one is attached.
-    /// </summary>
     public LReference LReferenceCreate(LReference reference)
     {
         ArgumentNullException.ThrowIfNull(reference);
@@ -83,7 +57,6 @@ public sealed class LReferenceArchive
         return stored;
     }
 
-    /// <summary>Reads the Reference identified by <paramref name="id"/>, or <c>null</c> when none exists.</summary>
     public LReference? LReferenceRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -92,10 +65,6 @@ public sealed class LReferenceArchive
         return LReferenceSingleRead(session.LDatabaseSessionConnection, id);
     }
 
-    /// <summary>
-    /// Reads the References an Entry cites, in the order that Entry gives them. Another Entry citing the
-    /// same References may order them differently — the order lives on the association row.
-    /// </summary>
     public IReadOnlyList<LReference> LReferenceEntryRead(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -128,10 +97,6 @@ public sealed class LReferenceArchive
         return references;
     }
 
-    /// <summary>
-    /// Reads the single Reference an Example cites, or <c>null</c> when the Example cites none or does
-    /// not exist.
-    /// </summary>
     public LReference? LReferenceExampleRead(string exampleId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
@@ -156,12 +121,6 @@ public sealed class LReferenceArchive
         return LReferenceSingleRead(connection, id);
     }
 
-    /// <summary>
-    /// Rewrites every field of the Reference identified by <paramref name="reference"/>'s id, states and
-    /// values alike. The id, the Authors credited, and every citation pointing at it are untouched, so an
-    /// update never changes where the Reference appears or in what order. Throws when no Reference
-    /// carries that id.
-    /// </summary>
     public void LReferenceUpdate(LReference reference)
     {
         ArgumentNullException.ThrowIfNull(reference);
@@ -197,13 +156,6 @@ public sealed class LReferenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Deletes the Reference identified by <paramref name="id"/> together with the author links it owns.
-    /// Guarded: while any Entry or Example still cites the Reference, nothing is deleted and an
-    /// <see cref="InvalidOperationException"/> is thrown — remove those citations first. The Authors it
-    /// credited survive; only the links between them and this Reference go. The guard and the delete
-    /// share one transaction, so nothing can cite the Reference between them.
-    /// </summary>
     public void LReferenceDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -228,7 +180,6 @@ public sealed class LReferenceArchive
             }
         }
 
-        // source_author cascades from source, so the author links go with the row and the Authors stay.
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = "DELETE FROM source WHERE id = $id;";
@@ -239,10 +190,6 @@ public sealed class LReferenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Credits an existing Author on this Reference at <paramref name="position"/> in the Reference's own
-    /// author order. The Author row itself is untouched and stays available to every other Reference.
-    /// </summary>
     public void LReferenceAuthorAttach(string referenceId, string authorId, int position)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
@@ -251,7 +198,6 @@ public sealed class LReferenceArchive
         LReferenceLinkAttach("source_author", "source_id", "author_id", referenceId, authorId, position);
     }
 
-    /// <summary>Removes this Reference's credit for an Author. The Author and its other credits survive.</summary>
     public void LReferenceAuthorDetach(string referenceId, string authorId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
@@ -260,10 +206,6 @@ public sealed class LReferenceArchive
         LReferenceLinkDetach("source_author", "source_id", "author_id", referenceId, authorId);
     }
 
-    /// <summary>
-    /// Cites this Reference from an Entry at <paramref name="position"/> in that Entry's citation order.
-    /// An Entry may cite any number of References; each keeps its own position there.
-    /// </summary>
     public void LReferenceEntryAttach(string entryId, string referenceId, int position)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -272,7 +214,6 @@ public sealed class LReferenceArchive
         LReferenceLinkAttach("entry_source", "entry_id", "source_id", entryId, referenceId, position);
     }
 
-    /// <summary>Removes an Entry's citation of a Reference. The Reference and its other citations survive.</summary>
     public void LReferenceEntryDetach(string entryId, string referenceId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -281,11 +222,6 @@ public sealed class LReferenceArchive
         LReferenceLinkDetach("entry_source", "entry_id", "source_id", entryId, referenceId);
     }
 
-    /// <summary>
-    /// Makes this Reference the single one an Example cites, replacing whatever it cited before — an
-    /// Example holds one source column, so there is nothing to order and nothing to duplicate. The
-    /// Reference is only pointed at, never owned.
-    /// </summary>
     public void LReferenceExampleAttach(string exampleId, string referenceId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
@@ -294,10 +230,6 @@ public sealed class LReferenceArchive
         LReferenceExampleSave(exampleId, referenceId);
     }
 
-    /// <summary>
-    /// Clears the Reference an Example cites. Only the pointer is cleared: both the Example and the
-    /// Reference stay exactly as they were.
-    /// </summary>
     public void LReferenceExampleDetach(string exampleId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
@@ -322,12 +254,6 @@ public sealed class LReferenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    // The two citation tables differ only in their name and their two columns, so both attach and both
-    // detach share one implementation. Every identifier here is a store-owned literal chosen by the
-    // methods above, never caller input; every value still travels as a parameter.
-    //
-    // The row goes in beyond the end of the set and the set is then renumbered around it, so the
-    // requested index is honoured and an occupied position is no longer a unique-index failure.
     private void LReferenceLinkAttach(
         string table, string ownerColumn, string memberColumn, string ownerId, string memberId, int position)
     {

@@ -1,54 +1,158 @@
 {
   "language": "Japanese",
-  "note": "Display vocabulary for Japanese: the parts of speech an entry may carry and the morphology each of them takes. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
+  "note": "Display vocabulary for Japanese: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
   "parts": [
     {
       "id": "noun",
-      "name": "noun"
+      "name": "Noun"
+    },
+    {
+      "id": "noun_proper",
+      "name": "Noun, proper"
     },
     {
       "id": "verb",
-      "name": "verb"
+      "name": "Verb"
+    },
+    {
+      "id": "verb_transitive",
+      "name": "Verb, transitive"
+    },
+    {
+      "id": "verb_intransitive",
+      "name": "Verb, intransitive"
+    },
+    {
+      "id": "verb_godan",
+      "name": "Verb, godan"
+    },
+    {
+      "id": "verb_ichidan",
+      "name": "Verb, ichidan"
+    },
+    {
+      "id": "verb_suru",
+      "name": "Verb, suru"
+    },
+    {
+      "id": "verb_irregular",
+      "name": "Verb, irregular"
     },
     {
       "id": "adjective",
-      "name": "i-adjective"
+      "name": "I-adjective"
+    },
+    {
+      "id": "adjective_attributive",
+      "name": "I-adjective, attributive"
+    },
+    {
+      "id": "adjective_predicative",
+      "name": "I-adjective, predicative"
     },
     {
       "id": "adjectival_noun",
-      "name": "na-adjective"
+      "name": "Na-adjective"
     },
     {
       "id": "adverb",
-      "name": "adverb"
+      "name": "Adverb"
+    },
+    {
+      "id": "adverb_manner",
+      "name": "Adverb, manner"
+    },
+    {
+      "id": "adverb_degree",
+      "name": "Adverb, degree"
+    },
+    {
+      "id": "adverb_frequency",
+      "name": "Adverb, frequency"
     },
     {
       "id": "particle",
-      "name": "particle"
+      "name": "Particle"
     },
     {
       "id": "auxiliary",
-      "name": "auxiliary verb"
+      "name": "Auxiliary verb"
     },
     {
       "id": "conjunction",
-      "name": "conjunction"
+      "name": "Conjunction"
+    },
+    {
+      "id": "conjunction_coordinating",
+      "name": "Conjunction, coordinating"
+    },
+    {
+      "id": "conjunction_subordinating",
+      "name": "Conjunction, subordinating"
     },
     {
       "id": "interjection",
-      "name": "interjection"
+      "name": "Interjection"
     },
     {
       "id": "counter",
-      "name": "counter"
+      "name": "Counter"
     },
     {
       "id": "pronoun",
-      "name": "pronoun"
+      "name": "Pronoun"
+    },
+    {
+      "id": "pronoun_personal",
+      "name": "Pronoun, personal"
+    },
+    {
+      "id": "pronoun_possessive",
+      "name": "Pronoun, possessive"
+    },
+    {
+      "id": "pronoun_demonstrative",
+      "name": "Pronoun, demonstrative"
+    },
+    {
+      "id": "pronoun_relative",
+      "name": "Pronoun, relative"
+    },
+    {
+      "id": "pronoun_interrogative",
+      "name": "Pronoun, interrogative"
+    },
+    {
+      "id": "pronoun_reflexive",
+      "name": "Pronoun, reflexive"
     },
     {
       "id": "prenominal",
-      "name": "prenominal adjectival"
+      "name": "Prenominal adjectival"
+    },
+    {
+      "id": "phrase",
+      "name": "Phrase"
+    },
+    {
+      "id": "idiom",
+      "name": "Idiom"
+    },
+    {
+      "id": "proverb",
+      "name": "Proverb"
+    },
+    {
+      "id": "abbreviation",
+      "name": "Abbreviation"
+    },
+    {
+      "id": "prefix",
+      "name": "Prefix"
+    },
+    {
+      "id": "suffix",
+      "name": "Suffix"
     }
   ],
   "morphology": [

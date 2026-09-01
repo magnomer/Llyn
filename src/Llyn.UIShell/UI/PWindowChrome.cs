@@ -4,10 +4,6 @@ using System.Windows.Input;
 
 namespace Llyn.UIShell;
 
-/// <summary>
-/// The window frame the program draws for itself, since the system one is off: the caption buttons,
-/// dragging the window by its roof, and the maximize/restore toggle they share.
-/// </summary>
 public partial class PWindow
 {
     private void PCaptionMinimizeHandle(object sender, RoutedEventArgs e)

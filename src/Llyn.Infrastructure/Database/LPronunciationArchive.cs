@@ -6,38 +6,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists the single pronunciation an entry owns, together with its ordered syllables and
-/// representations. A pronunciation's id is assigned here on creation; its children are written as
-/// ordered rows whose <c>pronunciation_id</c> and <c>position</c> come from that id and list order, so
-/// reordering rewrites positions only. One pronunciation per entry is enforced by the unique
-/// <c>entry_id</c> column — a second create for the same entry fails at the database. Reading returns
-/// the whole aggregate by entry id; updating replaces the level, IPA, and both child lists; deleting
-/// removes the syllables and representations through the foreign-key cascade.
-/// <para>
-/// A pronunciation also owns at most one downloaded recording, kept beside the aggregate rather than
-/// inside it: <see cref="LPronunciationAudioSave"/> and <see cref="LPronunciationAudioRead"/> write and
-/// read that one row, whose file path is stored relative to the workspace folder.
-/// </para>
-/// </summary>
 public sealed class LPronunciationArchive
 {
     private readonly LDatabase _lPronunciationArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LPronunciationArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lPronunciationArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Inserts <paramref name="pronunciation"/> with a fresh opaque id, writing its syllables and
-    /// representations as ordered child rows (their pronunciation id and position are assigned from the
-    /// new id and list order). Returns the stored pronunciation with its id and children filled in. The
-    /// whole write is one transaction. The entry's unique constraint rejects a second pronunciation for
-    /// the same entry.
-    /// </summary>
     public LPronunciation LPronunciationCreate(LPronunciation pronunciation)
     {
         ArgumentNullException.ThrowIfNull(pronunciation);
@@ -76,10 +54,6 @@ public sealed class LPronunciationArchive
         return stored;
     }
 
-    /// <summary>
-    /// Reads the entry's pronunciation with its ordered syllables and representations, or <c>null</c>
-    /// when the entry has none.
-    /// </summary>
     public LPronunciation? LPronunciationRead(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -116,12 +90,6 @@ public sealed class LPronunciationArchive
             LPronunciationRepresentationRead(connection, id));
     }
 
-    /// <summary>
-    /// Replaces the level, IPA, and both child lists of the pronunciation identified by
-    /// <paramref name="pronunciation"/>'s id. Existing syllable and representation rows are cleared and
-    /// the supplied lists written in order, so the pronunciation id, entry link, and identity stay
-    /// fixed. The whole write is one transaction, and it throws when no pronunciation carries that id.
-    /// </summary>
     public void LPronunciationUpdate(LPronunciation pronunciation)
     {
         ArgumentNullException.ThrowIfNull(pronunciation);
@@ -153,10 +121,6 @@ public sealed class LPronunciationArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Deletes the pronunciation identified by <paramref name="id"/>. Its syllables and representations
-    /// are removed by the foreign-key cascade.
-    /// </summary>
     public void LPronunciationDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -172,12 +136,6 @@ public sealed class LPronunciationArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Records <paramref name="file"/> — a path relative to the workspace folder — as the recording the
-    /// pronunciation owns, together with the <paramref name="source"/> label it was downloaded from and
-    /// the moment it was stored. A pronunciation carries at most one recording, so a second save for the
-    /// same pronunciation replaces the first rather than adding a row.
-    /// </summary>
     public void LPronunciationAudioSave(string pronunciationId, string file, string? source)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(pronunciationId);
@@ -206,11 +164,6 @@ public sealed class LPronunciationArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Reads the recording the pronunciation owns, or <c>null</c> when it has none. The file path comes
-    /// back exactly as stored — relative to the workspace folder — so the caller that knows the
-    /// workspace resolves it against the folder in use now.
-    /// </summary>
     public LPronunciationAudio? LPronunciationAudioRead(string pronunciationId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(pronunciationId);

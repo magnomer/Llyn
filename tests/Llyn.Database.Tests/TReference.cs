@@ -4,12 +4,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the engine's bibliographic seams: a Reference created, cited by an Entry and by an Example,
-/// credited to Authors in order, and the deletes each side refuses while something still points at the
-/// row. Neither a Reference nor an Author is deleted by a citation or a credit going: both are
-/// deliberate data, not something typed into a card.
-/// </summary>
 public sealed class TReference
 {
     [Fact]
@@ -30,7 +24,6 @@ public sealed class TReference
             engine.LEngineReferenceRead(entry.LEntryId, LOwner.LOwnerEntry)
                 .Select(row => row.LReferenceId));
 
-        // An Example holds one citation, so attaching a second replaces the first rather than adding.
         LExample example = engine.LEngineExampleCreate(
             new LExample(string.Empty, "English", "he said the word", null, null, []));
         engine.LEngineReferenceAttach(
@@ -87,7 +80,6 @@ public sealed class TReference
             "Kim Minji",
             engine.LEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference)[0].LAuthorName);
 
-        // A credited Author is not deletable, and losing the credit does not delete the person.
         Assert.Throws<InvalidOperationException>(() => engine.LEngineAuthorDelete(first.LAuthorId));
         engine.LEngineAuthorDetach(reference.LReferenceId, first.LAuthorId);
         Assert.NotNull(engine.LEngineAuthorRead(first.LAuthorId));
@@ -95,7 +87,6 @@ public sealed class TReference
         engine.LEngineAuthorDelete(first.LAuthorId);
         Assert.Null(engine.LEngineAuthorRead(first.LAuthorId));
 
-        // Deleting the Reference takes the credits it owns and leaves the Author it credited.
         engine.LEngineReferenceDelete(reference.LReferenceId);
         Assert.NotNull(engine.LEngineAuthorRead(second.LAuthorId));
     }

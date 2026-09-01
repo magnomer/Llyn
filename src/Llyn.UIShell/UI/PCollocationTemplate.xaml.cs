@@ -3,10 +3,6 @@ using System.Windows.Input;
 
 namespace Llyn.UIShell;
 
-/// <summary>
-/// The collocation card as a template — the same card shape a sense uses, over the expression a
-/// collocation adds. Like every template dictionary here, it only hands its events back to the panel.
-/// </summary>
 public partial class PCollocationTemplate : ResourceDictionary
 {
     private readonly PEditor _pCollocationHost;

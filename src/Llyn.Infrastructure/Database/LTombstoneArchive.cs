@@ -6,33 +6,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists the record that an Entry was deleted. A tombstone is written after the Entry row is gone
-/// and names it as recorded text, so it survives the deletion it describes; the revision it is filed
-/// under is a real reference and must already exist.
-/// <para>
-/// One deleted Entry leaves exactly one tombstone: <c>entry_id</c> is the primary key, so recording
-/// the same Entry twice is a conflict rather than a second row. This store never deletes lexical
-/// data — <see cref="LEntryArchive.LEntryDelete"/> does that, and the caller records the tombstone
-/// afterwards.
-/// </para>
-/// </summary>
 public sealed class LTombstoneArchive
 {
     private readonly LDatabase _lTombstoneArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LTombstoneArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lTombstoneArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Records that the Entry identified by <paramref name="entryId"/> was deleted under
-    /// <paramref name="revisionId"/>, stamped with the current UTC time, and returns the stored
-    /// tombstone.
-    /// </summary>
     public LTombstone LTombstoneRecord(string entryId, string revisionId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -61,10 +44,6 @@ public sealed class LTombstoneArchive
         return stored;
     }
 
-    /// <summary>
-    /// Reads the tombstone for the Entry identified by <paramref name="entryId"/>, or <c>null</c> when
-    /// that Entry has never been deleted.
-    /// </summary>
     public LTombstone? LTombstoneRead(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -84,7 +63,6 @@ public sealed class LTombstoneArchive
         return new LTombstone(reader.GetString(0), reader.GetString(1), reader.GetString(2));
     }
 
-    /// <summary>Reads every tombstone filed under <paramref name="revisionId"/>, oldest deletion first.</summary>
     public IReadOnlyList<LTombstone> LTombstoneRevisionRead(string revisionId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(revisionId);

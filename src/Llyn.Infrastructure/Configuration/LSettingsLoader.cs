@@ -6,13 +6,6 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Loads and saves the user's <see cref="LSettings"/> as <c>settings.json</c> inside a workspace
-/// folder. The workspace folder is supplied by the caller (resolved through
-/// <see cref="LWorkspaceRoot"/>); this loader never decides where the workspace is, only how the
-/// settings file within it is read and written. A missing or unreadable file yields defaults so the
-/// program always starts.
-/// </summary>
 public static class LSettingsLoader
 {
     private const string LSettingsLoaderFile = "settings.json";
@@ -58,7 +51,6 @@ public static class LSettingsLoader
 
         Directory.CreateDirectory(root);
 
-        // Persisted keys are a data contract, so they stay lowercase and independent of member names.
         Dictionary<string, string> payload = new(StringComparer.Ordinal)
         {
             [LSettingsLoaderLocalization] = settings.LSettingsLocalization

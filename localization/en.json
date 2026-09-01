@@ -64,6 +64,8 @@
     "Display.Situation": "Situation",
     "Display.Tags": "Tags",
     "Display.Note": "Note",
+    "Speech.Title": "Part of speech",
+    "Speech.Empty": "This language declares no parts of speech",
     "Lookup.Title": "Pronunciation",
     "Lookup.Searching": "Searching…",
     "Lookup.Empty": "No pronunciations found",

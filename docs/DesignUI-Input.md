@@ -1,4 +1,4 @@
-# Llyn UI Design — Input
+﻿# Llyn UI Design — Input
 
 ## Scope
 
@@ -19,7 +19,7 @@ The current conceptual layout is:
 ```text
 PHeadword  PLangcode                         PDiscard  PStore
 
-PPronunciation  PPlay                        PLookup  PDownloader
+PPronunciation  PPlay   PLookup  PDownloader   PSpeechLabel  PSpeechContents PSpeechBase
 
 PStackMeaning | PStackCollocation | PStackNote
 
@@ -44,6 +44,11 @@ PInput
 │   └── PLookupMenu
 │       └── PLookupMenuItem
 │           └── PLookupMenuSelector
+├── PSpeechLabel
+├── PSpeechContents
+├── PSpeechBase
+│   └── PSpeechMenu
+│       └── PSpeechMenuItem
 ├── PDownloader
 │   └── PDownloaderMenu
 │       └── PDownloaderMenuItem
@@ -206,6 +211,50 @@ is, is heard through `PDownloaderMenuPreview`.
 The user uses it to choose which recording should be downloaded and attached to the entry. Both
 selectors are the same control with the same wording; the audio one also carries the progress and the
 result of its own download, because the shared procedure line belongs to the search.
+
+---
+
+# 3.1 Part of speech
+
+## PSpeechLabel
+
+`PSpeechLabel` stands to the left of the field and says the part of speech the Entry now carries.
+
+It is not a placeholder and not a saved value: it follows `PSpeechContents` as it is typed, so what
+the Entry will be filed under is readable while it is still being decided.
+
+```text
+Verb                     [ Verb                  v ]
+Verb, transitive         [ Verb, transitive      v ]
+```
+
+## PSpeechContents
+
+`PSpeechContents` is the part-of-speech field.
+
+The user can type into it directly. Anything typed is kept: a part of speech the language's presets do
+not name is stored exactly as written, because a language pack cannot have thought of every
+distinction a user will want to draw.
+
+Text that does name a preset is stored as that preset instead, matched by its name however it was
+typed, so choosing from the dropdown and typing the same words file the Entry the same way.
+
+## PSpeechBase
+
+`PSpeechBase` is the button at the right end of the field. It opens `PSpeechMenu` below it.
+
+## PSpeechMenu
+
+`PSpeechMenu` lists the parts of speech the selected language declares, in the order that language
+declares them.
+
+The presets belong to the language, so changing `PLangcode` changes what the menu offers; what is
+already typed is left alone.
+
+## PSpeechMenuItem
+
+`PSpeechMenuItem` is one preset. Choosing it writes its name into `PSpeechContents`, which the user is
+then free to edit.
 
 ---
 

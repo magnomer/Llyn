@@ -14,9 +14,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
   </ItemGroup>
 
-  <!-- The engine seeds the controlled vocabularies from the language packs when it binds to a
-       workspace, so the packs have to sit beside the test binaries the same way they sit beside the
-       application's. -->
   <ItemGroup>
     <Content Include="..\..\languages\**\*.json" Link="languages\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

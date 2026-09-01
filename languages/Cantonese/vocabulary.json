@@ -1,54 +1,170 @@
 {
   "language": "Cantonese",
-  "note": "Display vocabulary for Cantonese: the parts of speech an entry may carry and the morphology each of them takes. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
+  "note": "Display vocabulary for Cantonese: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
   "parts": [
     {
       "id": "noun",
-      "name": "noun"
+      "name": "Noun"
+    },
+    {
+      "id": "noun_proper",
+      "name": "Noun, proper"
     },
     {
       "id": "verb",
-      "name": "verb"
+      "name": "Verb"
+    },
+    {
+      "id": "verb_transitive",
+      "name": "Verb, transitive"
+    },
+    {
+      "id": "verb_intransitive",
+      "name": "Verb, intransitive"
+    },
+    {
+      "id": "verb_resultative",
+      "name": "Verb, resultative"
+    },
+    {
+      "id": "verb_separable",
+      "name": "Verb, separable"
     },
     {
       "id": "adjective",
-      "name": "adjective"
+      "name": "Adjective"
+    },
+    {
+      "id": "adjective_attributive",
+      "name": "Adjective, attributive"
+    },
+    {
+      "id": "adjective_predicative",
+      "name": "Adjective, predicative"
     },
     {
       "id": "adverb",
-      "name": "adverb"
+      "name": "Adverb"
+    },
+    {
+      "id": "adverb_manner",
+      "name": "Adverb, manner"
+    },
+    {
+      "id": "adverb_degree",
+      "name": "Adverb, degree"
+    },
+    {
+      "id": "adverb_frequency",
+      "name": "Adverb, frequency"
     },
     {
       "id": "pronoun",
-      "name": "pronoun"
+      "name": "Pronoun"
+    },
+    {
+      "id": "pronoun_personal",
+      "name": "Pronoun, personal"
+    },
+    {
+      "id": "pronoun_possessive",
+      "name": "Pronoun, possessive"
+    },
+    {
+      "id": "pronoun_demonstrative",
+      "name": "Pronoun, demonstrative"
+    },
+    {
+      "id": "pronoun_relative",
+      "name": "Pronoun, relative"
+    },
+    {
+      "id": "pronoun_interrogative",
+      "name": "Pronoun, interrogative"
+    },
+    {
+      "id": "pronoun_reflexive",
+      "name": "Pronoun, reflexive"
     },
     {
       "id": "numeral",
-      "name": "numeral"
+      "name": "Numeral"
+    },
+    {
+      "id": "numeral_cardinal",
+      "name": "Numeral, cardinal"
+    },
+    {
+      "id": "numeral_ordinal",
+      "name": "Numeral, ordinal"
     },
     {
       "id": "classifier",
-      "name": "classifier"
+      "name": "Classifier"
     },
     {
       "id": "preposition",
-      "name": "preposition"
+      "name": "Preposition"
     },
     {
       "id": "conjunction",
-      "name": "conjunction"
+      "name": "Conjunction"
+    },
+    {
+      "id": "conjunction_coordinating",
+      "name": "Conjunction, coordinating"
+    },
+    {
+      "id": "conjunction_subordinating",
+      "name": "Conjunction, subordinating"
     },
     {
       "id": "particle",
-      "name": "particle"
+      "name": "Particle"
+    },
+    {
+      "id": "particle_aspect",
+      "name": "Particle, aspect"
+    },
+    {
+      "id": "particle_modal",
+      "name": "Particle, modal"
+    },
+    {
+      "id": "particle_sentence_final",
+      "name": "Particle, sentence-final"
     },
     {
       "id": "interjection",
-      "name": "interjection"
+      "name": "Interjection"
     },
     {
       "id": "auxiliary",
-      "name": "auxiliary"
+      "name": "Auxiliary"
+    },
+    {
+      "id": "phrase",
+      "name": "Phrase"
+    },
+    {
+      "id": "idiom",
+      "name": "Idiom"
+    },
+    {
+      "id": "proverb",
+      "name": "Proverb"
+    },
+    {
+      "id": "abbreviation",
+      "name": "Abbreviation"
+    },
+    {
+      "id": "prefix",
+      "name": "Prefix"
+    },
+    {
+      "id": "suffix",
+      "name": "Suffix"
     }
   ],
   "morphology": [

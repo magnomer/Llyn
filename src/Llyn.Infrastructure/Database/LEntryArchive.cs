@@ -6,33 +6,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists entries and their two owned child structures — written forms and parts of speech — in the
-/// workspace database. An entry's id and timestamps are assigned here on creation; its forms and POS
-/// are written as ordered child rows, so reordering rewrites <c>position</c> only and never touches
-/// the entry id. Deleting an entry removes its forms and POS through the foreign-key cascade.
-/// <para>
-/// Every method runs inside a <see cref="LDatabaseSession"/>, so a caller that opens one of its own
-/// around several stores gets one transaction across all of them.
-/// </para>
-/// </summary>
 public sealed class LEntryArchive
 {
     private readonly LDatabase _lEntryArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LEntryArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lEntryArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Inserts <paramref name="entry"/> with a fresh opaque id and creation/modification timestamps,
-    /// writing <paramref name="forms"/> and <paramref name="speeches"/> as ordered child rows (their
-    /// entry id and position are assigned from list order). Returns the stored entry with its id and
-    /// timestamps filled in. The whole write is one transaction.
-    /// </summary>
     public LEntry LEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
     {
         ArgumentNullException.ThrowIfNull(entry);
@@ -75,7 +58,6 @@ public sealed class LEntryArchive
         return stored;
     }
 
-    /// <summary>Reads the entry row for <paramref name="id"/>, or <c>null</c> when no entry has that id.</summary>
     public LEntry? LEntryRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -93,23 +75,6 @@ public sealed class LEntryArchive
         return reader.Read() ? LEntryRowRead(reader) : null;
     }
 
-    /// <summary>
-    /// Returns the entries whose headword contains <paramref name="query"/>, ordered by headword, or
-    /// every entry when <paramref name="query"/> is empty or holds nothing but whitespace. Matching is
-    /// a case-insensitive contains and nothing more; anything cleverer — prefix weighting, forms,
-    /// accent folding — waits for a stated requirement rather than being guessed at here.
-    /// <para>
-    /// Case is folded over the whole of Unicode, not just ASCII: <c>Ä</c> finds <c>ä</c>, and Turkish,
-    /// Greek or Cyrillic headwords match in either case. That is what <c>lfold()</c> is for — the
-    /// invariant .NET fold registered on every connection (<see cref="LDatabase.LDatabaseConnectionRead"/>),
-    /// standing in for SQLite's <c>lower()</c>, which folds ASCII only. Scripts without case (Korean,
-    /// Japanese, Chinese) are unaffected either way.
-    /// </para>
-    /// <para>
-    /// The query is trimmed before it is matched, so trailing space left by typing does not narrow the
-    /// result and a query of spaces alone lists everything, exactly as an empty box does.
-    /// </para>
-    /// </summary>
     public IReadOnlyList<LEntry> LEntryFind(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
@@ -136,7 +101,6 @@ public sealed class LEntryArchive
         return entries;
     }
 
-    /// <summary>Reads the entry's written forms, ordered by position.</summary>
     public IReadOnlyList<LForm> LEntryFormRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -165,7 +129,6 @@ public sealed class LEntryArchive
         return forms;
     }
 
-    /// <summary>Reads the entry's part-of-speech assignments, ordered by position.</summary>
     public IReadOnlyList<LSpeech> LEntrySpeechRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -174,7 +137,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, position, value_id
+            SELECT entry_id, position, value_id, custom_name
             FROM part_of_speech WHERE entry_id = $id ORDER BY position;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -186,17 +149,13 @@ public sealed class LEntryArchive
             speeches.Add(new LSpeech(
                 reader.GetString(0),
                 reader.GetInt32(1),
-                reader.GetString(2)));
+                reader.IsDBNull(2) ? null : reader.GetString(2),
+                reader.IsDBNull(3) ? null : reader.GetString(3)));
         }
 
         return speeches;
     }
 
-    /// <summary>
-    /// Updates the headword and metadata of the entry identified by <paramref name="entry"/>'s id and
-    /// stamps a fresh modification timestamp. The id, forms, and POS are untouched. Throws when no
-    /// entry carries that id, rather than reporting success for a write that reached nothing.
-    /// </summary>
     public void LEntryUpdate(LEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
@@ -229,10 +188,6 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Replaces the entry's forms with <paramref name="forms"/> in list order: existing form rows are
-    /// cleared and the new set written, so reordering rewrites positions while the entry id stays fixed.
-    /// </summary>
     public void LEntryFormSet(string id, IReadOnlyList<LForm> forms)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -245,10 +200,6 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Replaces the entry's part-of-speech assignments with <paramref name="speeches"/> in list order,
-    /// clearing the existing rows first. Reordering rewrites positions; the entry id stays fixed.
-    /// </summary>
     public void LEntrySpeechSet(string id, IReadOnlyList<LSpeech> speeches)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -261,23 +212,6 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Deletes the entry identified by <paramref name="id"/> and everything it owns. The foreign-key
-    /// cascade carries away its forms and parts of speech, its inflections and their features, its
-    /// meanings (each with its inline definition field), the relations originating from those meanings,
-    /// its single pronunciation with its syllables and representations, its collocations, its single
-    /// note, and every association row hanging from the entry, its meanings, or its collocations. The
-    /// independent Examples, Tags, Situations, References, and Authors those associations pointed at
-    /// are left standing — only the rows linking them to this entry disappear.
-    /// <para>
-    /// Guarded against the one thing a cascade must not decide on its own: a lexical link from
-    /// <em>another</em> entry pointing at this entry or at one of its meanings — a relation target or a
-    /// collocation synonym. While any such link exists nothing is deleted and an
-    /// <see cref="InvalidOperationException"/> is thrown; remove those links first. Links pointing here
-    /// from inside this entry are cleared as part of the delete, since they are owned by rows that are
-    /// going anyway. The guard and the delete share one transaction, so nothing can slip between them.
-    /// </para>
-    /// </summary>
     public void LEntryDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -298,10 +232,6 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    // Counts the lexical links that reach this entry from outside it: relations elsewhere whose target
-    // is this entry or one of its meanings, and collocation synonyms elsewhere pointing at either. The
-    // schema declares those columns without a cascade precisely so they cannot be swept away silently;
-    // this turns the resulting foreign-key error into a message that names the reason.
     private static void LEntryLinkValidate(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -334,11 +264,6 @@ public sealed class LEntryArchive
         }
     }
 
-    // Clears the links this entry owns before the entry row goes. They would cascade anyway — a
-    // relation's target row hangs from the relation, a synonym from its collocation — but a link that
-    // points back at this same entry would be checked against a row already being deleted, and the
-    // order the cascade visits tables in is not ours to rely on. Removing them first makes the delete
-    // deterministic.
     private static void LEntryLinkClear(SqliteConnection connection, string id)
     {
         string[] statements =
@@ -370,8 +295,6 @@ public sealed class LEntryArchive
         }
     }
 
-    // The entry row shape every read here selects, in one place: a single read and a find would
-    // otherwise drift apart column by column.
     private static LEntry LEntryRowRead(SqliteDataReader reader)
     {
         return new LEntry(
@@ -410,14 +333,18 @@ public sealed class LEntryArchive
         {
             LSpeech speech = speeches[position];
             using SqliteCommand command = connection.CreateCommand();
+
+            bool declared = !string.IsNullOrWhiteSpace(speech.LSpeechValueId);
             command.CommandText =
                 """
-                INSERT INTO part_of_speech (entry_id, position, value_id)
-                VALUES ($entry, $position, $value);
+                INSERT INTO part_of_speech (entry_id, position, value_id, custom_name)
+                VALUES ($entry, $position, $value, $custom);
                 """;
             command.Parameters.AddWithValue("$entry", id);
             command.Parameters.AddWithValue("$position", position);
-            command.Parameters.AddWithValue("$value", speech.LSpeechValueId);
+            command.Parameters.AddWithValue("$value", declared ? speech.LSpeechValueId! : DBNull.Value);
+            command.Parameters.AddWithValue(
+                "$custom", declared ? DBNull.Value : (object?)speech.LSpeechCustom ?? DBNull.Value);
             command.ExecuteNonQuery();
         }
     }

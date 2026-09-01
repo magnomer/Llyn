@@ -7,11 +7,6 @@ using SharpVectors.Renderers.Wpf;
 
 namespace Llyn.UIShell;
 
-/// <summary>
-/// Resolves a language pack's cached SVG flag into the frozen drawing used by both the editor's
-/// language picker and the read-only entry display. A malformed or unreadable flag becomes no image,
-/// which lets each surface show its neutral globe fallback.
-/// </summary>
 internal static class PLangcodeIndicator
 {
     internal static DrawingImage? PLangcodeIndicatorResolve(string path)

@@ -4,11 +4,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the engine's Situation seam, which mirrors the Tag one: a Situation created, read, rewritten
-/// and referenced from both card kinds, the difference between a detach and a remove, and the delete
-/// the references refuse.
-/// </summary>
 public sealed class TSituation
 {
     [Fact]
@@ -62,7 +57,6 @@ public sealed class TSituation
         engine.LEngineSituationAttach(senseId, first.LSituationId, 0, LOwner.LOwnerSense);
         engine.LEngineSituationAttach(senseId, second.LSituationId, 0, LOwner.LOwnerSense);
 
-        // The second one asked for position 0, so it takes it and the set is renumbered around it.
         Assert.Equal(
             ["at home", "in court"],
             engine.LEngineSituationRead(senseId, LOwner.LOwnerSense)
@@ -93,8 +87,6 @@ public sealed class TSituation
         Assert.Null(engine.LEngineSituationRead(situation.LSituationId));
     }
 
-    // One saved entry with a Meaning card and a Collocation card, neither carrying situations of its
-    // own.
     private static LEntry TSituationEntryCreate(LEngine engine)
     {
         return engine.LEngineEntrySave(new LEntryDraft(

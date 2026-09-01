@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PLangcodeTemplate">
 
-    <!-- One language in the language dropdown: its flag, or a neutral globe when the pack declares none. -->
     <DataTemplate x:Key="Theme.Langcode.Row">
         <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PLangcodeHandle" Foreground="{DynamicResource Theme.Ink}">
             <Grid>

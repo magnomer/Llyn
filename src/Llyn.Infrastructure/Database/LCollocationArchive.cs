@@ -5,34 +5,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists the collocations an entry owns. A collocation is a stable-id row assigned an opaque id here
-/// on creation, ordered within its entry; updating rewrites its title, expression and meaning, so ids survive
-/// reordering.
-/// Its synonym interlinks are not owned text and live in their own store
-/// (<see cref="LSynonymArchive"/>); they are removed with the collocation by the foreign-key cascade, and
-/// deleting the entry removes its collocations and, with them, their synonyms.
-/// <para>
-/// Order within the entry is a unique index, so a position is never written one row at a time: a new
-/// collocation is appended to the end, and <see cref="LCollocationMove"/> renumbers the whole set through
-/// <see cref="LDatabaseOrder"/>.
-/// </para>
-/// </summary>
 public sealed class LCollocationArchive
 {
     private readonly LDatabase _lCollocationArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LCollocationArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lCollocationArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Inserts <paramref name="collocation"/> with a fresh opaque id at the end of its entry's order and
-    /// returns the stored collocation with that id and its assigned position filled in.
-    /// </summary>
     public LCollocation LCollocationCreate(LCollocation collocation)
     {
         ArgumentNullException.ThrowIfNull(collocation);
@@ -67,7 +49,6 @@ public sealed class LCollocationArchive
         return stored;
     }
 
-    /// <summary>Reads the entry's collocations in card order.</summary>
     public IReadOnlyList<LCollocation> LCollocationRead(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -98,12 +79,6 @@ public sealed class LCollocationArchive
         return collocations;
     }
 
-    /// <summary>
-    /// Updates the title, expression, and meaning of the collocation identified by
-    /// <paramref name="collocation"/>'s id. The id, owning entry, and position are untouched — card order is changed by
-    /// <see cref="LCollocationMove"/>, which has to renumber the whole set. Throws when no collocation
-    /// carries that id.
-    /// </summary>
     public void LCollocationUpdate(LCollocation collocation)
     {
         ArgumentNullException.ThrowIfNull(collocation);
@@ -129,11 +104,6 @@ public sealed class LCollocationArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Moves the collocation identified by <paramref name="id"/> to <paramref name="position"/> in its
-    /// entry's card order, renumbering the whole set so positions stay <c>0 … n-1</c>. A position outside
-    /// the set is clamped into it, and nothing moves when no collocation carries that id.
-    /// </summary>
     public void LCollocationMove(string id, int position)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -155,12 +125,6 @@ public sealed class LCollocationArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Deletes the collocation identified by <paramref name="id"/>. Its synonym interlinks and its
-    /// example, tag, and situation association rows go with it through the foreign-key cascade; the
-    /// independent Examples, Tags, and Situations they pointed at are left standing. The collocations
-    /// left under the same entry are renumbered so their positions stay contiguous.
-    /// </summary>
     public void LCollocationDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -187,7 +151,6 @@ public sealed class LCollocationArchive
         session.LDatabaseSessionCommit();
     }
 
-    // The entry a collocation belongs to, or null when no collocation carries the id.
     private static string? LCollocationHolderRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -196,7 +159,6 @@ public sealed class LCollocationArchive
         return command.ExecuteScalar() as string;
     }
 
-    // The collocations of one entry, in card order.
     private static IReadOnlyList<string> LCollocationSiblingRead(SqliteConnection connection, string entryId)
     {
         return LDatabaseOrder.LDatabaseOrderRead(

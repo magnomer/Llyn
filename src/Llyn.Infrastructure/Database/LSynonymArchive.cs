@@ -5,39 +5,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists the synonym interlinks a Collocation owns. A synonym is a stable-id row assigned an opaque id
-/// here on creation, hanging from its origin collocation and pointing at exactly one target — an Entry or
-/// a Meaning — through the job05 discriminated target model. The single-target rule is enforced before
-/// anything is written, and again by the table's check constraint. Deleting the origin collocation removes
-/// its synonyms through the foreign-key cascade; the referenced Entry/Meaning is left intact.
-/// <para>
-/// A new synonym is appended to the end of its collocation's order and <see cref="LSynonymMove"/>
-/// renumbers the whole set, so the caller never writes a position into a set that has to stay contiguous.
-/// </para>
-/// <para>
-/// TODO: this is the storage seam only — the precise targeting rules for a collocation synonym are not
-/// finalized (see <see cref="LSynonym"/>). Beyond the XOR, no rule about which targets are legal is
-/// enforced yet.
-/// </para>
-/// </summary>
 public sealed class LSynonymArchive
 {
     private readonly LDatabase _lSynonymArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LSynonymArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lSynonymArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Inserts <paramref name="synonym"/> with a fresh opaque id at the end of its collocation's order and
-    /// returns it with that id and its assigned position filled in. Exactly one of the target ids must be
-    /// set; naming both or neither throws an <see cref="InvalidOperationException"/> before anything is
-    /// written.
-    /// </summary>
     public LSynonym LSynonymCreate(LSynonym synonym)
     {
         ArgumentNullException.ThrowIfNull(synonym);
@@ -72,11 +49,6 @@ public sealed class LSynonymArchive
         return stored;
     }
 
-    /// <summary>
-    /// Reads the synonym interlinks hanging from the collocation identified by
-    /// <paramref name="collocationId"/>, ordered by position, each with its single target resolved to
-    /// either a target Entry id or a target Meaning id.
-    /// </summary>
     public IReadOnlyList<LSynonym> LSynonymRead(string collocationId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(collocationId);
@@ -106,14 +78,6 @@ public sealed class LSynonymArchive
         return synonyms;
     }
 
-    /// <summary>
-    /// Re-points the synonym identified by <paramref name="synonym"/>'s id at the target it now names.
-    /// A synonym holds nothing but its target, so this is the whole of an update: the id, the origin
-    /// Collocation, and the position are untouched — where a synonym sits among its siblings is changed
-    /// by <see cref="LSynonymMove"/>, which has to renumber the whole set. Exactly one of the target ids
-    /// must be set; naming both or neither throws an <see cref="InvalidOperationException"/> before
-    /// anything is written, and so does an id no synonym carries.
-    /// </summary>
     public void LSynonymUpdate(LSynonym synonym)
     {
         ArgumentNullException.ThrowIfNull(synonym);
@@ -141,11 +105,6 @@ public sealed class LSynonymArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Moves the synonym identified by <paramref name="id"/> to <paramref name="position"/> in its
-    /// collocation's order, renumbering the whole set so positions stay <c>0 … n-1</c>. A position outside
-    /// the set is clamped into it, and nothing moves when no synonym carries that id.
-    /// </summary>
     public void LSynonymMove(string id, int position)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -167,11 +126,6 @@ public sealed class LSynonymArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Deletes the synonym interlink identified by <paramref name="id"/>. The Entry/Meaning it pointed at
-    /// is untouched, and the synonyms left under the same collocation are renumbered so their positions
-    /// stay contiguous.
-    /// </summary>
     public void LSynonymDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -198,7 +152,6 @@ public sealed class LSynonymArchive
         session.LDatabaseSessionCommit();
     }
 
-    // The collocation a synonym hangs from, or null when no synonym carries the id.
     private static string? LSynonymHolderRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -207,7 +160,6 @@ public sealed class LSynonymArchive
         return command.ExecuteScalar() as string;
     }
 
-    // The synonyms of one collocation, in order.
     private static IReadOnlyList<string> LSynonymSiblingRead(SqliteConnection connection, string collocationId)
     {
         return LDatabaseOrder.LDatabaseOrderRead(

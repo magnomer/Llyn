@@ -7,12 +7,6 @@ using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// The user's workspace on disk. Downloads remote assets into the workspace and returns their local
-/// paths: a chosen recording's bytes saved under a per-language folder, and a language's flag image
-/// fetched by country code and cached for reuse. The engine calls these once a source or language is
-/// chosen; nothing about which source or language is baked in here.
-/// </summary>
 public static class LWorkspace
 {
     private const string LWorkspaceBucket = "audio";
@@ -21,8 +15,6 @@ public static class LWorkspace
     private const string LWorkspaceFlagFolder = "flags";
     private const string LWorkspaceFlagExtension = ".svg";
 
-    // The flag-icons set (github.com/lipis/flag-icons), served over jsDelivr's CDN of the repo. The
-    // 4x3 SVGs match the flag box's aspect; the leaf is the lowercased ISO 3166-1 alpha-2 code.
     private const string LWorkspaceFlagHost = "https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/";
 
     public static async Task<string> LWorkspaceRecordingSave(
@@ -41,7 +33,6 @@ public static class LWorkspace
 
         byte[] audio = await client.GetByteArrayAsync(recording.LRecordingAddress, cancellation).ConfigureAwait(false);
 
-        // Saved audio is workspace data, so it lives under the chosen workspace root, never elsewhere.
         string directory = Path.Combine(root, LWorkspaceBucket, LWorkspaceNormalize(language));
         Directory.CreateDirectory(directory);
 
@@ -50,11 +41,6 @@ public static class LWorkspace
         return path;
     }
 
-    /// <summary>
-    /// Downloads a recording to a temporary cache file for immediate playback and returns its path.
-    /// Playing a local file is reliable, whereas streaming a remote, token-bearing URL through the
-    /// media stack is not. The file name derives from the audio's own name, so replaying reuses it.
-    /// </summary>
     public static async Task<string> LWorkspaceRecordingPrepare(
         LRecording recording,
         string root,
@@ -67,7 +53,6 @@ public static class LWorkspace
 
         byte[] audio = await client.GetByteArrayAsync(recording.LRecordingAddress, cancellation).ConfigureAwait(false);
 
-        // Temporary files also stay inside the workspace, under its own temp folder.
         string directory = Path.Combine(root, LWorkspaceCache);
         Directory.CreateDirectory(directory);
 
@@ -76,12 +61,6 @@ public static class LWorkspace
         return path;
     }
 
-    /// <summary>
-    /// Returns the local path to the flag image for <paramref name="code"/> (an ISO 3166-1 alpha-2
-    /// country code), downloading it from the flag-icons set into the workspace cache on first use and
-    /// serving the cached copy thereafter. Returns <c>null</c> when the download fails, so a missing
-    /// flag never blocks the UI.
-    /// </summary>
     public static async Task<string?> LWorkspaceFlagRead(
         string code,
         string root,
@@ -128,7 +107,6 @@ public static class LWorkspace
         }
         catch (UriFormatException)
         {
-            // Fall through to the default name below.
         }
 
         return "audio" + LWorkspaceExtension;

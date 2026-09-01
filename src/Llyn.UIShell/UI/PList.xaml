@@ -6,12 +6,6 @@
     xmlns:local="clr-namespace:Llyn.UIShell"
     IsVisibleChanged="PListHandle">
 
-    <!--
-        The read-only card shapes. A Meaning card and a Collocation card are one card (LCardDraft), so
-        the two templates below differ in one element: the Collocation's Expression. Every member the
-        loaded draft carries is drawn, and a field the card left empty collapses rather than leaving a
-        blank line, which is what these styles are for.
-    -->
     <UserControl.Resources>
         <local:PCardOrderConverter x:Key="Display.Card.Order" />
 
@@ -215,8 +209,6 @@
             </Border>
         </DataTemplate>
 
-        <!-- A sorting choice reads as one row in a single menu, not as another stack of cards. The
-             checked row keeps the current order visible when the menu is opened again. -->
         <Style x:Key="Display.Order.Row" TargetType="RadioButton">
             <Setter Property="Height" Value="40" />
             <Setter Property="Margin" Value="0,1" />
@@ -279,11 +271,6 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!--
-            The two controls share the index column, so their combined edge is the same as the catalog
-            below. The viewer deliberately has no control in this row: that clear band keeps its card
-            visually separate from the browsing tools that act on the catalog.
-        -->
         <Grid x:Name="POrder" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="44" />
@@ -307,7 +294,7 @@
                     </Style>
                 </ToggleButton.Style>
                 <Grid Width="16" Height="14">
-                    <!-- Three descending bars: the sorting mark, drawn rather than fetched. -->
+
                     <Canvas Width="16" Height="14">
                         <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                         <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
@@ -327,8 +314,7 @@
                 <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
                     <StackPanel>
                         <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Order.Title}" />
-                        <!-- Radio state makes the current ordering legible without repeating it on the
-                             compact toolbar button. The tag remains the stable value the handler reads. -->
+
                         <RadioButton GroupName="POrderChoice" IsChecked="True" Click="POrderHandle" Style="{StaticResource Display.Order.Row}" Tag="Headword" Content="{DynamicResource Order.Headword}" />
                         <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Display.Order.Row}" Tag="Reverse" Content="{DynamicResource Order.Reverse}" />
                         <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Display.Order.Row}" Tag="Recent" Content="{DynamicResource Order.Recent}" />
@@ -384,8 +370,6 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <!-- Entry actions stay above both the reader and editor. Only Edit is wired today;
-                     New, Export and Print are present as the requested mock-up controls. -->
                 <StackPanel Grid.Row="0" Margin="20,16,20,10" HorizontalAlignment="Right" Orientation="Horizontal">
                     <Button Height="40" Margin="0,0,8,0" Content="{DynamicResource Scribe.New}" Style="{StaticResource Theme.Input.Pill}" />
                     <Button
@@ -454,9 +438,9 @@
                                     <TextBlock FontSize="15" Text="]" />
                                 </StackPanel>
                             </Border>
-                            <!-- Shown only when the entry has an audio file on disk; see PDisplayShow. -->
+
                             <Button x:Name="PDisplayPlayback" Width="42" Height="42" Margin="10,0,0,0" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Foreground="{StaticResource Theme.Accent}" Click="PDisplayPlaybackHandle" Style="{StaticResource Theme.Input.Action}" Visibility="Collapsed">
-                                <!-- Phosphor play.svg, tinted through an opacity mask (see PPlayback). -->
+
                                 <Rectangle Width="11" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                                     <Rectangle.OpacityMask>
                                         <VisualBrush Stretch="Uniform">
@@ -469,8 +453,6 @@
                             </Button>
                         </StackPanel>
 
-                        <!-- The editor's tabs become document sections here, so reading never hides one
-                             kind of content behind another. -->
                         <StackPanel x:Name="PDisplaySenseSection" Margin="0,34,0,0">
                             <TextBlock Margin="2,0,2,12" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Sense}" />
                             <ItemsControl x:Name="PDisplaySense" AlternationCount="2147483647" ItemTemplate="{StaticResource Display.Sense.Card}" />
@@ -491,11 +473,6 @@
                 </ScrollViewer>
                 </Grid>
 
-                <!--
-                    The same editor the input panel mounts, over the entry this panel has selected: what
-                    differs is not the editing structure but that this one always stands on an entry, so
-                    a store modifies that entry and a discard puts it back as it is stored.
-                -->
                 <local:PEditor x:Name="PEditor" Grid.Row="1" Padding="20,4,20,20" Visibility="Collapsed" />
             </Grid>
         </Border>

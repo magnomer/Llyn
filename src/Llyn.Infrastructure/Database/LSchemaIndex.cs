@@ -3,32 +3,14 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Creates the lookup indexes the schema needs but does not get for free. SQLite indexes a primary key
-/// and a unique constraint, and nothing else — in particular it never indexes the <em>child</em> side of
-/// a foreign key. With <c>PRAGMA foreign_keys = ON</c> every parent delete has to prove no child row
-/// points at the row going away, so an unindexed child column turns one delete into a full scan of that
-/// table, and the cascade of an Entry delete reaches a dozen of them.
-/// <para>
-/// Only the columns no existing key already covers are listed here. A composite primary key indexes its
-/// leading column, so <c>form (entry_id, position)</c> and <c>entry_example (entry_id, example_id)</c>
-/// need nothing for their first column — it is the second column, the one an association is searched by
-/// from the other direction, that needs an index of its own.
-/// </para>
-/// </summary>
 public static class LSchemaIndex
 {
-    /// <summary>
-    /// Creates every index that does not yet exist. Called by <see cref="LSchema.LSchemaCreate"/> on
-    /// each startup; existing indexes are left as they are.
-    /// </summary>
     public static void LSchemaIndexCreate(SqliteConnection connection)
     {
         ArgumentNullException.ThrowIfNull(connection);
 
         using SqliteCommand command = connection.CreateCommand();
 
-        // Lexical rows owned by an Entry or a Meaning whose owning column carries no key of its own.
         command.CommandText =
             """
             CREATE INDEX IF NOT EXISTS sense_parent ON sense (parent_id);
@@ -39,7 +21,6 @@ public static class LSchemaIndex
             """;
         command.ExecuteNonQuery();
 
-        // The target side of every interlink: the column a delete of the referenced row must scan.
         command.CommandText =
             """
             CREATE INDEX IF NOT EXISTS relation_entry_target ON relation_entry (entry_id);
@@ -50,7 +31,6 @@ public static class LSchemaIndex
             """;
         command.ExecuteNonQuery();
 
-        // The member side of every association table, and the shared entities those members name.
         command.CommandText =
             """
             CREATE INDEX IF NOT EXISTS entry_example_member ON entry_example (example_id);
@@ -65,7 +45,6 @@ public static class LSchemaIndex
             """;
         command.ExecuteNonQuery();
 
-        // Operational rows pointing at lexical rows and at history.
         command.CommandText =
             """
             CREATE INDEX IF NOT EXISTS tombstone_revision ON tombstone (revision_id);
@@ -75,11 +54,6 @@ public static class LSchemaIndex
             """;
         command.ExecuteNonQuery();
 
-        // The ordered sets that were left without a unique position: a relation within its Meaning, a
-        // collocation within its Entry, a synonym within its Collocation, and a translation within its
-        // Example. Every other ordered set already has one, and without it a duplicate position is
-        // silently possible and the read order becomes arbitrary. Any duplicate an older database still
-        // holds is renumbered by the migration that precedes this call.
         command.CommandText =
             """
             CREATE UNIQUE INDEX IF NOT EXISTS relation_position ON relation (sense_id, position);

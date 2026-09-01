@@ -5,32 +5,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists Authors — independent data no Reference owns. An Author is created once with an opaque id
-/// and is then <em>referenced</em> by any number of References through <c>source_author</c>, which
-/// carries the position the Author takes on that Reference alone. Renaming rewrites the visible name
-/// and never the id, so every Reference keeps pointing at the same Author, and
-/// <see cref="LAuthorDelete"/> refuses to run while any Reference still credits it.
-/// <para>
-/// Attaching an Author to a Reference belongs to <see cref="LReferenceArchive"/>, which owns the
-/// association rows; this store only creates, reads, renames, and deletes the Authors themselves.
-/// </para>
-/// </summary>
 public sealed class LAuthorArchive
 {
     private readonly LDatabase _lAuthorArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LAuthorArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lAuthorArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Inserts <paramref name="author"/> with a fresh opaque id and returns the stored Author with that
-    /// id filled in. The new Author is credited on no Reference until one attaches it.
-    /// </summary>
     public LAuthor LAuthorCreate(LAuthor author)
     {
         ArgumentNullException.ThrowIfNull(author);
@@ -51,7 +35,6 @@ public sealed class LAuthorArchive
         return stored;
     }
 
-    /// <summary>Reads the Author identified by <paramref name="id"/>, or <c>null</c> when none exists.</summary>
     public LAuthor? LAuthorRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -60,10 +43,6 @@ public sealed class LAuthorArchive
         return LAuthorSingleRead(session.LDatabaseSessionConnection, id);
     }
 
-    /// <summary>
-    /// Reads the Authors a Reference credits, in the order that Reference gives them. Another Reference
-    /// crediting the same Authors may order them differently — the order lives on the association row.
-    /// </summary>
     public IReadOnlyList<LAuthor> LAuthorReferenceRead(string referenceId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
@@ -90,11 +69,6 @@ public sealed class LAuthorArchive
         return authors;
     }
 
-    /// <summary>
-    /// Rewrites the name of the Author identified by <paramref name="author"/>'s id. The id and every
-    /// Reference crediting it are untouched, so a rename never changes where the Author appears. Throws
-    /// when no Author carries that id.
-    /// </summary>
     public void LAuthorUpdate(LAuthor author)
     {
         ArgumentNullException.ThrowIfNull(author);
@@ -116,13 +90,6 @@ public sealed class LAuthorArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Deletes the Author identified by <paramref name="id"/>. Guarded: while any Reference still
-    /// credits the Author, nothing is deleted and an <see cref="InvalidOperationException"/> is thrown —
-    /// detach the Author from every Reference first. Deleting an Author never deletes a Reference. The
-    /// guard and the delete share one transaction, so nothing can start crediting the Author between
-    /// them.
-    /// </summary>
     public void LAuthorDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);

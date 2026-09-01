@@ -1,15 +1,9 @@
-using Llyn.Infrastructure;
+﻿using Llyn.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the schema runner and the migration that brings an older database up to the current version:
-/// creating twice changes nothing, the version is recorded and read back, a database written by a newer
-/// build is refused, and a database in the shape an earlier build left behind is corrected rather than
-/// merely restamped.
-/// </summary>
 public sealed class TSchemaMigration
 {
     [Fact]
@@ -39,9 +33,6 @@ public sealed class TSchemaMigration
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        // The shape an earlier build left behind: a version table that permits several rows, and an
-        // example table whose source_id carries no foreign key because the source table did not exist
-        // when the column was declared.
         workspace.TWorkspaceScriptRun(
             """
             CREATE TABLE schema_version (version INTEGER NOT NULL);
@@ -76,7 +67,6 @@ public sealed class TSchemaMigration
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        // Version 13: every table this build creates except pronunciation_audio, which did not exist.
         workspace.TWorkspaceScriptRun(
             """
             CREATE TABLE schema_version (
@@ -114,8 +104,6 @@ public sealed class TSchemaMigration
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        // Two collocations sharing one position under the same entry — possible before the unique index
-        // existed, and fatal to creating it now.
         workspace.TWorkspaceScriptRun(
             """
             CREATE TABLE schema_version (version INTEGER NOT NULL);
@@ -160,8 +148,6 @@ public sealed class TSchemaMigration
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
-        // A database in the version-12 shape: the collocation table as it stood, with a row in it.
-        // CREATE TABLE IF NOT EXISTS never reaches it, so only the migration step can add the column.
         workspace.TWorkspaceScriptRun(
             """
             INSERT INTO entry (id, headword, language) VALUES ('e1', 'word', 'en');
@@ -182,7 +168,6 @@ public sealed class TSchemaMigration
             workspace.TWorkspaceCountRead(
                 "SELECT COUNT(*) FROM pragma_table_info('collocation') WHERE name = 'meaning';"));
 
-        // The row that was there before the column existed survives, expression intact, meaning empty.
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
@@ -195,8 +180,6 @@ public sealed class TSchemaMigration
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
-        // A database in the version-14 shape: neither card table had a title column, and both hold a
-        // row. CREATE TABLE IF NOT EXISTS never reaches an existing table, so only the step adds them.
         workspace.TWorkspaceScriptRun(
             """
             INSERT INTO entry (id, headword, language) VALUES ('e1', 'word', 'en');
@@ -215,7 +198,6 @@ public sealed class TSchemaMigration
             LSchemaMigration.LSchemaMigrationVersion,
             workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
 
-        // Both tables end up the same shape for this field, and both rows survive with a NULL title.
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
@@ -232,6 +214,57 @@ public sealed class TSchemaMigration
             workspace.TWorkspaceCountRead(
                 "SELECT COUNT(*) FROM collocation WHERE id = 'c1' AND expression = 'in a word' "
                 + "AND title IS NULL;"));
+    }
+
+    [Fact]
+    public void AVersionFifteenDatabaseGainsTheCustomPartOfSpeechWithoutLosingAnAssignment()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            INSERT INTO entry (id, headword, language) VALUES ('e1', 'word', 'English');
+
+            DROP TABLE part_of_speech;
+
+            CREATE TABLE part_of_speech (
+                entry_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                value_id TEXT NOT NULL,
+                PRIMARY KEY (entry_id, position),
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+            );
+
+            INSERT INTO part_of_speech (entry_id, position, value_id) VALUES ('e1', 0, 'noun');
+            UPDATE schema_version SET version = 15;
+            """);
+
+        workspace.TWorkspaceDatabase.LDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('part_of_speech') WHERE name = 'custom_name';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM part_of_speech "
+                + "WHERE entry_id = 'e1' AND value_id = 'noun' AND custom_name IS NULL;"));
+
+        workspace.TWorkspaceScriptRun(
+            """
+            INSERT INTO entry (id, headword, language) VALUES ('e2', 'other', 'English');
+            INSERT INTO part_of_speech (entry_id, position, value_id, custom_name)
+            VALUES ('e2', 0, NULL, 'Verb, ergative');
+            """);
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM part_of_speech WHERE custom_name = 'Verb, ergative';"));
     }
 
     [Fact]
@@ -252,8 +285,6 @@ public sealed class TSchemaMigration
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
-        // A child column with no index turns each parent delete into a full scan of the child table, so
-        // the index set is part of the schema rather than an optimization applied later.
         Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "relation", "sense_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
@@ -264,8 +295,6 @@ public sealed class TSchemaMigration
         Assert.Equal(1, TSchemaIndexRead(workspace, "tombstone", "revision_id"));
     }
 
-    // Whether some index on the table has the named column first — which is what the foreign-key check
-    // and the cascade actually use.
     private static long TSchemaIndexRead(TWorkspace workspace, string table, string column)
     {
         using SqliteConnection connection = workspace.TWorkspaceConnectionRead();

@@ -3,8 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PLookupTemplate">
 
-    <!-- One pronunciation candidate: the source that offered it, small, and the phonetic itself in
-         the brackets the pronunciation field wears. Same row as the downloader row. -->
     <DataTemplate x:Key="Theme.Lookup.Row">
         <Border Style="{DynamicResource Theme.Popup.RowSurface}">
             <Grid>

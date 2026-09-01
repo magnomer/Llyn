@@ -64,6 +64,8 @@
     "Display.Situation": "상황",
     "Display.Tags": "태그",
     "Display.Note": "메모",
+    "Speech.Title": "품사",
+    "Speech.Empty": "이 언어에 등록된 품사가 없습니다",
     "Lookup.Title": "발음",
     "Lookup.Searching": "검색 중…",
     "Lookup.Empty": "발음을 찾을 수 없습니다",

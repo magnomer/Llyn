@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Llyn.UIShell.PSpeechTemplate">
+
+    <DataTemplate x:Key="Theme.Speech.Row">
+        <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSpeechHandle" Foreground="{DynamicResource Theme.Ink}">
+            <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PSpeechItemName}" TextTrimming="CharacterEllipsis" />
+        </Button>
+    </DataTemplate>
+</ResourceDictionary>

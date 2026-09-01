@@ -1,0 +1,41 @@
+# LCollocationArchive.cs
+
+## `public sealed class LCollocationArchive`
+
+Persists the collocations an entry owns. A collocation is a stable-id row assigned an opaque id here on creation, ordered within its entry; updating rewrites its title, expression and meaning, so ids survive reordering. Its synonym interlinks are not owned text and live in their own store (`LSynonymArchive`); they are removed with the collocation by the foreign-key cascade, and deleting the entry removes its collocations and, with them, their synonyms.
+
+Order within the entry is a unique index, so a position is never written one row at a time: a new collocation is appended to the end, and `LCollocationMove` renumbers the whole set through `LDatabaseOrder`.
+
+## `public LCollocationArchive(LDatabase database)`
+
+Binds the store to the workspace `database` it opens sessions through.
+
+## `public LCollocation LCollocationCreate(LCollocation collocation)`
+
+Inserts `collocation` with a fresh opaque id at the end of its entry's order and returns the stored collocation with that id and its assigned position filled in.
+
+## `public IReadOnlyList<LCollocation> LCollocationRead(string entryId)`
+
+Reads the entry's collocations in card order.
+
+## `public void LCollocationUpdate(LCollocation collocation)`
+
+Updates the title, expression, and meaning of the collocation identified by `collocation`'s id. The id, owning entry, and position are untouched — card order is changed by `LCollocationMove`, which has to renumber the whole set. Throws when no collocation carries that id.
+
+## `public void LCollocationMove(string id, int position)`
+
+Moves the collocation identified by `id` to `position` in its entry's card order, renumbering the whole set so positions stay `0 … n-1`. A position outside the set is clamped into it, and nothing moves when no collocation carries that id.
+
+## `public void LCollocationDelete(string id)`
+
+Deletes the collocation identified by `id`. Its synonym interlinks and its example, tag, and situation association rows go with it through the foreign-key cascade; the independent Examples, Tags, and Situations they pointed at are left standing. The collocations left under the same entry are renumbered so their positions stay contiguous.
+
+## Inline notes
+
+### `private static string? LCollocationHolderRead(SqliteConnection connection, string id)`
+
+The entry a collocation belongs to, or null when no collocation carries the id.
+
+### `private static IReadOnlyList<string> LCollocationSiblingRead(SqliteConnection connection, string entryId)`
+
+The collocations of one entry, in card order.

@@ -4,12 +4,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the unit of work and the ordering it makes possible: a session spanning several stores lands
-/// as one transaction or not at all, a nested session leaves the decision to the outermost one, and
-/// every ordered set stays numbered <c>0 … n-1</c> across a move, an insert into the middle, and a
-/// removal — the reorders the unique position indexes used to make impossible.
-/// </summary>
 public sealed class TDatabaseSession
 {
     [Fact]
@@ -22,8 +16,6 @@ public sealed class TDatabaseSession
         {
             entries.LEntryCreate(
                 new LEntry(string.Empty, "word", "en", null, null, null, null), [], []);
-
-            // The store committed its own nested session; the outermost one never does.
         }
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
@@ -212,7 +204,6 @@ public sealed class TDatabaseSession
         }
     }
 
-    // The stored positions of one referrer's association rows, in order.
     private static IReadOnlyList<long> TDatabasePositionRead(
         TWorkspace workspace, string table, string column, string referrerId)
     {

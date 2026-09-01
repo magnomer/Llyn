@@ -5,37 +5,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists an entry's inflected forms and the ordered grammatical features each carries. Inflections
-/// are written as ordered child rows under an entry, so reordering rewrites <c>position</c> only and
-/// never touches the entry id; a feature's identity is <c>(entry_id, inflection_position, position)</c>.
-/// Deleting an inflection removes its features through the foreign-key cascade, and deleting the entry
-/// removes both. Only stable ids are stored here — feature and value display names are resolved from
-/// the morphology vocabulary (<see cref="LMorphologyArchive"/>).
-/// <para>
-/// Position is both the order and the key here: a feature names the inflection it belongs to by that
-/// number, so no single row is ever renumbered on its own. Removing or moving an inflection rewrites
-/// the entry's whole set instead, which keeps positions at <c>0 … n-1</c> and carries every feature
-/// along with its inflection.
-/// </para>
-/// </summary>
 public sealed class LInflectionArchive
 {
     private readonly LDatabase _lInflectionArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LInflectionArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lInflectionArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Adds <paramref name="inflections"/> after the inflections the entry identified by
-    /// <paramref name="entryId"/> already has, each with its features in list order. The whole write is
-    /// one transaction, and the new positions continue the entry's existing numbering — so adding to an
-    /// entry that already has inflections extends the set rather than colliding with it.
-    /// </summary>
     public void LInflectionAppend(string entryId, IReadOnlyList<LInflection> inflections)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -47,7 +26,6 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>Reads the entry's inflections, ordered by position, each carrying its ordered features.</summary>
     public IReadOnlyList<LInflection> LInflectionRead(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -56,11 +34,6 @@ public sealed class LInflectionArchive
         return LInflectionSetRead(session.LDatabaseSessionConnection, entryId);
     }
 
-    /// <summary>
-    /// Replaces the entry's inflections with <paramref name="inflections"/> in list order: existing
-    /// inflection rows are cleared (their features cascade) and the new set written, so reordering
-    /// rewrites positions while the entry id stays fixed.
-    /// </summary>
     public void LInflectionSet(string entryId, IReadOnlyList<LInflection> inflections)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -73,12 +46,6 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Deletes the single inflection at <paramref name="position"/> under <paramref name="entryId"/> and
-    /// closes the gap it leaves: the inflections that remain keep their order, are renumbered
-    /// <c>0 … n-1</c>, and their features move with them. Nothing happens when the entry has no
-    /// inflection at that position.
-    /// </summary>
     public void LInflectionDelete(string entryId, int position)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -100,12 +67,6 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Moves the inflection at <paramref name="position"/> under <paramref name="entryId"/> to
-    /// <paramref name="target"/>, rewriting the whole set so positions stay <c>0 … n-1</c> and every
-    /// feature follows its inflection. A target outside the set is clamped into it, and nothing moves
-    /// when the entry has no inflection at that position.
-    /// </summary>
     public void LInflectionMove(string entryId, int position, int target)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -130,8 +91,6 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    // The entry's inflections in order on a connection the caller already holds: one query for the
-    // inflections and one for every feature of all of them, rather than a round-trip per inflection.
     private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, string entryId)
     {
         List<(int Position, string Text, string? Local, string? SpeechId)> rows = [];
@@ -173,7 +132,6 @@ public sealed class LInflectionArchive
         return inflections;
     }
 
-    // How many inflections the entry already has, so an append continues its numbering.
     private static int LInflectionCountRead(SqliteConnection connection, string entryId)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -182,8 +140,6 @@ public sealed class LInflectionArchive
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    // Every feature of every inflection the entry has, in one query, grouped by the inflection position
-    // it belongs to.
     private static IReadOnlyDictionary<int, IReadOnlyList<LFeature>> LInflectionFeatureRead(
         SqliteConnection connection, string entryId)
     {

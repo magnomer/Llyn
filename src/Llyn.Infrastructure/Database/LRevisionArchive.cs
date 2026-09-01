@@ -6,34 +6,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists revisions and the ordered changes recorded under them. A revision is written once,
-/// complete: <see cref="LRevisionRecord"/> stamps it and inserts its changes in list order inside one
-/// transaction, so a half-written revision never reaches the database.
-/// <para>
-/// The change rows name their targets as recorded text rather than by foreign key, so a revision
-/// stays readable after the rows it describes are deleted — which is exactly the case the history
-/// exists for. Nothing here deletes lexical data; the stores that own that data do, and the caller
-/// hands the resulting change list to this store afterwards.
-/// </para>
-/// </summary>
 public sealed class LRevisionArchive
 {
     private readonly LDatabase _lRevisionArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LRevisionArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lRevisionArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Opens a revision with a fresh opaque id and the current UTC timestamp and records
-    /// <paramref name="changes"/> under it in list order — each stored position comes from that order,
-    /// not from the position the caller happened to set. Returns the stored revision. The whole write
-    /// is one transaction; an empty change list records an empty revision.
-    /// </summary>
     public LRevision LRevisionRecord(IReadOnlyList<LRevisionChange> changes)
     {
         ArgumentNullException.ThrowIfNull(changes);
@@ -75,7 +57,6 @@ public sealed class LRevisionArchive
         return stored;
     }
 
-    /// <summary>Reads the revision for <paramref name="id"/>, or <c>null</c> when no revision has that id.</summary>
     public LRevision? LRevisionRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -94,11 +75,6 @@ public sealed class LRevisionArchive
         return new LRevision(reader.GetString(0), reader.GetString(1));
     }
 
-    /// <summary>
-    /// Reads the most recently opened revision, or <c>null</c> when the workspace has none yet.
-    /// Ordering is by the stamped timestamp, then by id, so two revisions opened in the same tick
-    /// still read back in one stable order.
-    /// </summary>
     public LRevision? LRevisionLatestRead()
     {
         using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
@@ -115,7 +91,6 @@ public sealed class LRevisionArchive
         return new LRevision(reader.GetString(0), reader.GetString(1));
     }
 
-    /// <summary>Reads the changes recorded under <paramref name="revisionId"/>, in the order they were recorded.</summary>
     public IReadOnlyList<LRevisionChange> LRevisionChangeRead(string revisionId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(revisionId);

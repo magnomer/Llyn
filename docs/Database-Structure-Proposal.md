@@ -116,7 +116,8 @@ Forms are subordinate to Entry.
 |---|---|
 | `entry_id` | Parent Entry |
 | `position` | Order |
-| `value_id` | Stable language-controlled POS identifier |
+| `value_id` | Stable language-controlled POS identifier, or empty when the assignment is custom |
+| `custom_name` | Part of speech exactly as typed, when no preset in the language names it |
 
 Primary identity:
 
@@ -124,7 +125,11 @@ Primary identity:
 (entry_id, position)
 ```
 
-The Entry stores the stable POS identifier, not its display name.
+A row says its part of speech exactly one of two ways, and a constraint enforces it. When the
+language declares a preset for what was chosen, the Entry stores that preset's stable identifier and
+never its display name. When it does not, the typed text is stored as it stands: the part-of-speech
+field is editable, so a part of speech a language pack has not thought of is still the one the user
+meant. A custom row resolves against nothing and is displayed as it was written.
 
 ---
 
@@ -144,6 +149,12 @@ language = English
 value_id = noun
 display_name = Noun
 ```
+
+The rows of one language are that language's presets: what the part-of-speech field offers in its
+dropdown, in the order the language pack lists them. They come from
+`languages/<Lang>/vocabulary.json` and are rewritten from it whenever a workspace is opened, so a
+correction to a pack's wording reaches every Entry that named the preset, and none that typed past
+it.
 
 ---
 

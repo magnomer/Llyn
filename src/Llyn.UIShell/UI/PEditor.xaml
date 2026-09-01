@@ -4,8 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
 
-    <!-- The margin is the host panel's: the input panel gives the editor the whole tab, a
-         browse-style panel gives it the card beside its catalog. -->
     <Grid Margin="{Binding Padding, RelativeSource={RelativeSource AncestorType=UserControl}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -74,8 +72,7 @@
                     Placement="Bottom"
                     PlacementTarget="{Binding ElementName=PLangcodeBase}"
                     StaysOpen="False">
-                    <!-- The same floating ground the other pickers stand on, rather than a white box
-                         of its own that no theme reaches. -->
+
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                         <ItemsControl x:Name="PLangcodeMenuList" ItemTemplate="{DynamicResource Theme.Langcode.Row}" />
                     </Border>
@@ -84,8 +81,7 @@
 
             <Button x:Name="PDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Click="PDiscardHandle" Style="{StaticResource Theme.Input.Pill}">
                 <StackPanel Orientation="Horizontal">
-                    <!-- Phosphor trash.svg. SvgViewbox has no foreground of its own, so the
-                         glyph is used as an opacity mask over the button's foreground. -->
+
                     <Rectangle Width="14" Height="16" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
@@ -100,7 +96,7 @@
             </Button>
             <Button x:Name="PStore" Grid.Column="4" Width="162" Height="51" Click="PStoreHandle" Style="{StaticResource Theme.Input.Primary}">
                 <StackPanel Orientation="Horizontal">
-                    <!-- Phosphor floppy-disk.svg, tinted through an opacity mask (see PDiscard). -->
+
                     <Rectangle Width="15" Height="15" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
@@ -121,9 +117,11 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Border Height="49" MaxWidth="360" HorizontalAlignment="Left" Background="{StaticResource Theme.AccentSoft}" BorderBrush="{StaticResource Theme.AccentSoft}" BorderThickness="1" CornerRadius="10">
+            <Border Height="49" MaxWidth="360" HorizontalAlignment="Left" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="34" />
@@ -137,7 +135,7 @@
             </Border>
 
             <Button x:Name="PPlayback" Grid.Column="1" Width="50" Height="49" Margin="14,0,0,0" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Foreground="{StaticResource Theme.Accent}" Click="PPlaybackHandle" Style="{StaticResource Theme.Input.Action}" Visibility="Collapsed">
-                <!-- Phosphor play.svg, tinted through an opacity mask (see PDiscard). -->
+
                 <Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform">
@@ -151,7 +149,7 @@
 
             <Grid Grid.Column="2" Margin="14,0,0,0">
                 <ToggleButton x:Name="PLookup" Width="50" Height="49" Padding="0" Foreground="{StaticResource Theme.Accent}" Checked="PLookupCheckedHandle" Unchecked="PLookupUncheckedHandle" Style="{StaticResource Theme.Input.ToggleAction}">
-                    <!-- Phosphor magnifying-glass.svg, tinted through an opacity mask (see PDiscard). -->
+
                     <Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
@@ -207,7 +205,7 @@
 
             <Grid Grid.Column="3" Margin="14,0,0,0">
                 <ToggleButton x:Name="PDownloader" Width="50" Height="49" Foreground="{StaticResource Theme.Accent}" Checked="PDownloaderCheckedHandle" Unchecked="PDownloaderUncheckedHandle" Style="{StaticResource Theme.Input.ToggleAction}">
-                    <!-- Phosphor box-arrow-down.svg, tinted through an opacity mask (see PDiscard). -->
+
                     <Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
@@ -249,6 +247,56 @@
                             <TextBlock x:Name="PDownloaderMenuNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Downloader.Searching}" Visibility="Collapsed" />
                             <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                 <ItemsControl x:Name="PDownloaderMenuList" ItemTemplate="{DynamicResource Theme.Downloader.Row}" Visibility="Collapsed">
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentPresenter">
+                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
+
+            <TextBlock
+                x:Name="PSpeechLabel"
+                Grid.Column="4"
+                MaxWidth="230"
+                Margin="24,0,12,0"
+                Style="{StaticResource Theme.Input.Label}"
+                Text="{Binding Text, ElementName=PSpeechContents}"
+                TextTrimming="CharacterEllipsis" />
+
+            <Grid Grid.Column="5">
+                <Border Height="49" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="PSpeechContents" Width="212" MinHeight="40" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />
+                        <ToggleButton x:Name="PSpeechBase" Grid.Column="1" Width="38" Height="47" Padding="0" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Muted}" Style="{StaticResource Theme.Input.ToggleAction}">
+                            <Path Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeThickness="1.5" />
+                        </ToggleButton>
+                    </Grid>
+                </Border>
+                <Popup
+                    x:Name="PSpeechMenu"
+                    Width="260"
+                    Margin="0,6,0,0"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PSpeechBase}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PSpeechBase}"
+                    StaysOpen="False">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Speech.Title}" />
+                            <TextBlock x:Name="PSpeechMenuNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Empty}" Visibility="Collapsed" />
+                            <ScrollViewer MaxHeight="300" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="PSpeechMenuList" ItemTemplate="{DynamicResource Theme.Speech.Row}">
                                     <ItemsControl.ItemContainerStyle>
                                         <Style TargetType="ContentPresenter">
                                             <Setter Property="HorizontalAlignment" Value="Stretch" />

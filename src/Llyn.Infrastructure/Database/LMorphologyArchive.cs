@@ -4,27 +4,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists and resolves the language-controlled morphology display vocabulary. Inflections store only
-/// stable ids; the feature and value display names for a language live here and are resolved by
-/// <c>(language, part_of_speech_id, feature_id, value_id)</c>, so a name is never copied onto an
-/// entry's lexical rows.
-/// </summary>
 public sealed class LMorphologyArchive
 {
     private readonly LDatabase _lMorphologyArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LMorphologyArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lMorphologyArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Adds or replaces one vocabulary row, keyed by <c>(language, part_of_speech_id, feature_id,
-    /// value_id)</c>, with its feature and value display names and display order.
-    /// </summary>
     public void LMorphologyCreate(LMorphology morphology)
     {
         ArgumentNullException.ThrowIfNull(morphology);
@@ -56,11 +45,6 @@ public sealed class LMorphologyArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Resolves the vocabulary row for <paramref name="language"/>, <paramref name="speechId"/>,
-    /// <paramref name="featureId"/>, and <paramref name="valueId"/>, or <c>null</c> when the vocabulary
-    /// has no such row.
-    /// </summary>
     public LMorphology? LMorphologyRead(string language, string speechId, string featureId, string valueId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);

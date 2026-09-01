@@ -5,11 +5,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the engine's stored-pronunciation seams: the pronunciation row an Entry keeps, the audio
-/// hanging from it — stored workspace-relative and handed back resolved — and the single note an Entry
-/// keeps beside them.
-/// </summary>
 public sealed class TPronunciation
 {
     [Fact]
@@ -45,8 +40,6 @@ public sealed class TPronunciation
         string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "English", "word.mp3");
         engine.LEngineAudioSave(pronunciation.LPronunciationId, file, "Wikipedia");
 
-        // Stored relative, so a moved workspace keeps its audio; handed back full, so the shell plays a
-        // path without knowing where the workspace is.
         Assert.Equal(
             Path.Combine("audio", "English", "word.mp3"),
             TPronunciationFileRead(workspace));
@@ -54,7 +47,6 @@ public sealed class TPronunciation
         Assert.Equal(file, audio?.LPronunciationAudioFile);
         Assert.Equal("Wikipedia", audio?.LPronunciationAudioSource);
 
-        // The pronunciation going takes the audio row with it; the file on disk is the workspace's.
         engine.LEnginePronunciationDelete(pronunciation.LPronunciationId);
         Assert.Null(engine.LEngineAudioRead(pronunciation.LPronunciationId));
     }
@@ -77,8 +69,6 @@ public sealed class TPronunciation
         Assert.Null(engine.LEngineNoteRead(entry.LEntryId));
     }
 
-    // The audio path as it sits in the table, which is the point of the test: the stored form is
-    // relative, and only the seam turns it into a path the shell can play.
     private static string TPronunciationFileRead(TWorkspace workspace)
     {
         using SqliteConnection connection = workspace.TWorkspaceConnectionRead();

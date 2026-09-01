@@ -3,11 +3,6 @@ using System.Windows;
 
 namespace Llyn.UIShell;
 
-/// <summary>
-/// Which cards the editor holds: the sense list and the collocation list, the buttons that add
-/// and remove a card, and the numbering that keeps each list reading 1, 2, 3 after every change. The
-/// order the cards are in is the order they are saved in, so it is kept here rather than derived.
-/// </summary>
 public partial class PEditor
 {
     private readonly ObservableCollection<PCard> _pSenseList = [];
@@ -23,7 +18,6 @@ public partial class PEditor
         _pCollocationList.Add(new PCard("Collocation", _pCollocationList.Count + 1));
     }
 
-    // Removing the last card would leave the tab with nothing to type into, so a list of one keeps it.
     internal void PCardHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PCard card })
@@ -50,7 +44,6 @@ public partial class PEditor
         }
     }
 
-    // Which of the two lists a card belongs to, since both are drawn from the same template.
     private ObservableCollection<PCard>? PCardListFind(PCard card)
     {
         return _pSenseList.Contains(card) ? _pSenseList

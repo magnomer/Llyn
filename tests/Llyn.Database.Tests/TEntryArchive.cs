@@ -4,11 +4,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers what an Entry owns and what it must not take with it: the cascade that removes everything
-/// beneath a deleted Entry, the guard that refuses the delete while another Entry still links to it, and
-/// the refusal to report success for an update that reached no row.
-/// </summary>
 public sealed class TEntryArchive
 {
     [Fact]
@@ -65,7 +60,6 @@ public sealed class TEntryArchive
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
 
-        // The Example was referenced, never owned, so it outlives the Entry that pointed at it.
         Assert.NotNull(examples.LExampleRead(example.LExampleId));
     }
 
@@ -125,13 +119,10 @@ public sealed class TEntryArchive
         entries.LEntryCreate(new LEntry(string.Empty, "Äpfel", "de", null, null, null, null), [], []);
         entries.LEntryCreate(new LEntry(string.Empty, "straße", "de", null, null, null, null), [], []);
 
-        // SQLite's own lower() folds ASCII only, so this is the case the old matching could not make.
         Assert.Equal("Äpfel", Assert.Single(entries.LEntryFind("äpfel")).LEntryHeadword);
         Assert.Equal("Äpfel", Assert.Single(entries.LEntryFind("ÄPF")).LEntryHeadword);
         Assert.Equal("straße", Assert.Single(entries.LEntryFind("STRAßE")).LEntryHeadword);
 
-        // A query of whitespace alone lists everything, exactly as an empty box does; a query is
-        // trimmed before it is matched.
         Assert.Equal(2, entries.LEntryFind("   ").Count);
         Assert.Equal(2, entries.LEntryFind(string.Empty).Count);
         Assert.Single(entries.LEntryFind("  Äpfel "));

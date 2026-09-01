@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PCollocationTemplate">
 
-    <!-- One collocation card in the collocation tab: the same card shape as a sense, over the expression a collocation adds. -->
     <DataTemplate x:Key="Theme.Collocation.Card">
         <Border Margin="0,0,0,15" Style="{DynamicResource Theme.Input.Card}">
             <Grid>

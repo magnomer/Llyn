@@ -5,54 +5,8 @@ using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
-/// <summary>
-/// The one write path that changes a stored entry: the same draft the save consumes goes in, and the
-/// rows the entry is already made of are reconciled to it. It is the counterpart of
-/// <c>LEngineEntrySave</c> — the save creates, this one changes — and it lives beside it rather than
-/// inside it because the two share nothing but the draft shape: creating writes rows in card order,
-/// changing has to work out which stored row each card is first.
-/// </summary>
 public sealed partial class LEngine
 {
-    /// <summary>
-    /// Applies <paramref name="draft"/> to the entry identified by <paramref name="id"/> and returns
-    /// the stored entry as it now stands. The entry keeps its opaque id and its <c>added_utc</c>; only
-    /// <c>updated_utc</c> moves, so an edit is the same record, not a new one.
-    /// <para>
-    /// A blank headword and an id no entry carries are both refused before anything is written, each
-    /// with a reason key the shell localizes. The refusal for a missing entry matters: the form may
-    /// have been opened on an entry that has since been deleted, and falling back to creating a copy
-    /// is exactly the defect this seam exists to remove.
-    /// </para>
-    /// <para>
-    /// Everything after the refusals runs inside one session and commits once, so an update is whole
-    /// or it never happened: a card that cannot be deleted — one another entry still links to — leaves
-    /// the stored entry exactly as it was, down to its timestamps, rather than half-applied.
-    /// </para>
-    /// <para>
-    /// Which stored card a draft card is comes from <see cref="LCardDraft.LCardDraftId"/>, never from
-    /// its place in the list: a card naming a stored Meaning or Collocation of this entry updates that
-    /// row in place, so its id survives and every row referencing it keeps pointing at the same
-    /// Meaning. A card naming nothing is created, a stored card the draft no longer names is deleted,
-    /// and a card gone entirely blank counts as dropped on the same terms the save counts it as
-    /// unwritten. The survivors are then renumbered to draft order in one pass through
-    /// <see cref="LDatabaseOrder"/>, because the unique <c>(owner, position)</c> index makes moving one
-    /// row at a time collide on the first statement.
-    /// </para>
-    /// <para>
-    /// A card's Examples, Situations and Tags are re-attached to match the draft: a value the card
-    /// still lists keeps the row it already referenced, a new value creates a new row, and a value it
-    /// dropped is detached and nothing more. Detaching the last reference never deletes the row —
-    /// those are independent data the card references and does not own, so a Tag typed once and
-    /// cleared survives its last referrer.
-    /// </para>
-    /// <para>
-    /// The revision records one change per altered child — each Meaning and Collocation created,
-    /// updated or deleted, and the note and pronunciation when they moved — rather than one change
-    /// saying the entry changed, so the history says what an edit actually did. The workspace row is
-    /// moved onto that revision, as the save and the delete both do.
-    /// </para>
-    /// </summary>
     public LEntry LEngineEntryUpdate(string id, LEntryDraft draft)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -70,8 +24,6 @@ public sealed partial class LEngine
 
         List<LRevisionChange> changes = [];
 
-        // The row is updated in place: the archive stamps updated_utc and touches neither the id nor
-        // added_utc, so the entry stays the record it was.
         entries.LEntryUpdate(stored with
         {
             LEntryHeadword = draft.LEntryDraftHeadword,
@@ -99,6 +51,7 @@ public sealed partial class LEngine
             collocation: true,
             changes);
 
+        LEngineSpeechUpdate(entries, id, draft, changes);
         LEngineNoteUpdate(id, draft, changes);
         LEnginePronunciationUpdate(id, draft, changes);
 
@@ -117,8 +70,46 @@ public sealed partial class LEngine
         return updated;
     }
 
-    // The entry's note reconciled to the draft: text replaces whatever was stored, and a note the user
-    // cleared is deleted rather than left standing as the last thing they typed.
+    private void LEngineSpeechUpdate(
+        LEntryArchive entries, string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    {
+        IReadOnlyList<LSpeech> stored = entries.LEntrySpeechRead(entryId);
+        IReadOnlyList<LSpeech> current = LEngineSpeechResolve(
+            entryId, draft.LEntryDraftLanguage, draft.LEntryDraftSpeech);
+
+        if (LEngineSpeechMatch(stored, current))
+        {
+            return;
+        }
+
+        entries.LEntrySpeechSet(entryId, current);
+        changes.Add(new LRevisionChange(
+            0,
+            entryId,
+            "speech",
+            current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
+            draft.LEntryDraftSpeech.Trim()));
+    }
+
+    private static bool LEngineSpeechMatch(IReadOnlyList<LSpeech> one, IReadOnlyList<LSpeech> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (!string.Equals(one[index].LSpeechValueId, other[index].LSpeechValueId, StringComparison.Ordinal) ||
+                !string.Equals(one[index].LSpeechCustom, other[index].LSpeechCustom, StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void LEngineNoteUpdate(string entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         LNoteArchive notes = new(_lEngineDatabase);
@@ -145,10 +136,6 @@ public sealed partial class LEngine
             0, entryId, "note", stored is null ? "create" : "update", null));
     }
 
-    // The entry's pronunciation reconciled to the draft. The row is what a recording hangs from, so it
-    // is created when either the IPA or a recording is present and deleted only when both are gone —
-    // and its id survives an edit of the IPA, so the recording hanging from it is not re-downloaded to
-    // stay attached.
     private void LEnginePronunciationUpdate(
         string entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
@@ -197,8 +184,6 @@ public sealed partial class LEngine
             return;
         }
 
-        // The draft carries the recording as a full path and the row stores it relative to the
-        // workspace, so the comparison is made in stored terms; an unchanged recording writes nothing.
         string file = LEngineRecordingFormat(draft.LEntryDraftAudio);
         LPronunciationAudio? audio = pronunciations.LPronunciationAudioRead(pronunciationId);
         if (string.Equals(audio?.LPronunciationAudioFile, file, StringComparison.Ordinal))

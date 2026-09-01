@@ -4,26 +4,16 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists the single Note an entry owns. The note table is keyed by <c>entry_id</c>, so at most one Note
-/// exists per entry as a schema fact: saving a Note for an entry that already has one replaces it rather
-/// than adding a second. Deleting the entry removes its Note through the foreign-key cascade.
-/// </summary>
 public sealed class LNoteArchive
 {
     private readonly LDatabase _lNoteArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LNoteArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lNoteArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Writes <paramref name="note"/> as the entry's Note, replacing any Note the entry already had. The
-    /// text is stored exactly as given — see the format TODO on <see cref="LNote"/>.
-    /// </summary>
     public void LNoteSave(LNote note)
     {
         ArgumentNullException.ThrowIfNull(note);
@@ -45,7 +35,6 @@ public sealed class LNoteArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>Reads the entry's Note, or <c>null</c> when it has none.</summary>
     public LNote? LNoteRead(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
@@ -59,7 +48,6 @@ public sealed class LNoteArchive
         return reader.Read() ? new LNote(reader.GetString(0), reader.GetString(1)) : null;
     }
 
-    /// <summary>Removes the entry's Note, if it has one. The entry itself is untouched.</summary>
     public void LNoteDelete(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);

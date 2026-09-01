@@ -4,11 +4,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the engine's card seams: a Meaning and a Collocation created, read, rewritten, moved among
-/// their siblings and deleted one row at a time, rather than through the whole-form save the input
-/// panel uses.
-/// </summary>
 public sealed class TSense
 {
     [Fact]
@@ -77,7 +72,6 @@ public sealed class TSense
         LEntry entry = TSenseEntryCreate(engine);
         string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
 
-        // Meanings and Collocations hang from an Entry and from nothing else.
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             engine.LEngineSenseRead(senseId, LOwner.LOwnerSense));
         Assert.Throws<ArgumentOutOfRangeException>(() =>

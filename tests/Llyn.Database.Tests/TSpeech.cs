@@ -1,14 +1,10 @@
-using Llyn.Core;
+﻿using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the controlled vocabularies and the inflections that use them: the parts of speech and
-/// morphology the engine writes into a workspace from the language packs on disk, the seams that add
-/// and resolve one row, and an Entry's inflected forms set, appended to, moved and deleted.
-/// </summary>
 public sealed class TSpeech
 {
     [Fact]
@@ -17,22 +13,20 @@ public sealed class TSpeech
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        // The tables are no longer empty on a fresh workspace: what a language declares on disk is what
-        // the workspace holds, so an entry can carry a part of speech from the first save.
-        Assert.Equal("noun", engine.LEngineSpeechRead("English", "noun"));
-        Assert.Equal("verb", engine.LEngineSpeechRead("English", "verb"));
+        Assert.Equal("Noun", engine.LEngineSpeechRead("English", "noun"));
+        Assert.Equal("Verb", engine.LEngineSpeechRead("English", "verb"));
+
+        Assert.Equal("Verb, transitive", engine.LEngineSpeechRead("English", "verb_transitive"));
         Assert.Null(engine.LEngineSpeechRead("English", "nosuchpartofspeech"));
 
         LMorphology? plural = engine.LEngineMorphologyRead("English", "noun", "number", "plural");
         Assert.Equal("number", plural?.LMorphologyFeatureName);
         Assert.Equal("plural", plural?.LMorphologyValueName);
 
-        // Order is the order the pack lists the values in, and it is stored, not inferred.
         Assert.Equal(0, engine.LEngineMorphologyRead("English", "noun", "number", "singular")?.LMorphologyPosition);
         Assert.Equal(1, plural?.LMorphologyPosition);
 
-        // A language declaring no morphology is an ordinary language, not a broken pack.
-        Assert.Equal("classifier", engine.LEngineSpeechRead("Vietnamese", "classifier"));
+        Assert.Equal("Classifier", engine.LEngineSpeechRead("Vietnamese", "classifier"));
     }
 
     [Fact]
@@ -57,10 +51,8 @@ public sealed class TSpeech
         Assert.Equal(parts, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM part_of_speech_value;"));
         Assert.Equal(rows, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM morphology_value;"));
 
-        // A second engine over the same workspace writes the packs again, so the pack's wording is what
-        // the workspace ends up holding.
         using LEngine reopened = new(workspace.TWorkspaceFolder);
-        Assert.Equal("noun", reopened.LEngineSpeechRead("English", "noun"));
+        Assert.Equal("Noun", reopened.LEngineSpeechRead("English", "noun"));
     }
 
     [Fact]
@@ -97,9 +89,104 @@ public sealed class TSpeech
             ["word", "words"],
             engine.LEngineInflectionRead(entry.LEntryId).Select(row => row.LInflectionText));
 
-        // Setting the list makes it the list: an empty one clears the forms.
         engine.LEngineInflectionSet(entry.LEntryId, []);
         Assert.Empty(engine.LEngineInflectionRead(entry.LEntryId));
+    }
+
+    [Fact]
+    public void APartOfSpeechNamingAPresetIsStoredAsThatPresetsIdAndReadsBackAsItsName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = engine.LEngineEntrySave(TSpeechDraftCreate("Verb, transitive"));
+
+        LSpeech speech = Assert.Single(
+            new LEntryArchive(workspace.TWorkspaceDatabase).LEntrySpeechRead(entry.LEntryId));
+        Assert.Equal("verb_transitive", speech.LSpeechValueId);
+        Assert.Null(speech.LSpeechCustom);
+
+        Assert.Equal("Verb, transitive", engine.LEngineEntryLoad(entry.LEntryId)?.LEntryDraftSpeech);
+    }
+
+    [Fact]
+    public void APartOfSpeechNoPresetNamesIsStoredAsTypedAndReadsBackUnchanged()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = engine.LEngineEntrySave(TSpeechDraftCreate("  Verb, ergative  "));
+
+        LSpeech speech = Assert.Single(
+            new LEntryArchive(workspace.TWorkspaceDatabase).LEntrySpeechRead(entry.LEntryId));
+        Assert.Null(speech.LSpeechValueId);
+        Assert.Equal("Verb, ergative", speech.LSpeechCustom);
+        Assert.Equal("Verb, ergative", engine.LEngineEntryLoad(entry.LEntryId)?.LEntryDraftSpeech);
+
+        Assert.Equal("verb_transitive", engine.LEngineSpeechFind("English", "verb, TRANSITIVE"));
+        Assert.Null(engine.LEngineSpeechFind("English", "Verb, ergative"));
+    }
+
+    [Fact]
+    public void AnEmptyPartOfSpeechFieldWritesNoAssignmentAtAll()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = engine.LEngineEntrySave(TSpeechDraftCreate("   "));
+
+        Assert.Empty(new LEntryArchive(workspace.TWorkspaceDatabase).LEntrySpeechRead(entry.LEntryId));
+        Assert.Equal(string.Empty, engine.LEngineEntryLoad(entry.LEntryId)?.LEntryDraftSpeech);
+    }
+
+    [Fact]
+    public void ChangingThePartOfSpeechReplacesTheAssignmentAndClearingItRemovesIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+        LEntryArchive entries = new(workspace.TWorkspaceDatabase);
+
+        LEntry entry = engine.LEngineEntrySave(TSpeechDraftCreate("Noun"));
+
+        engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, intransitive"));
+        Assert.Equal(
+            "verb_intransitive",
+            Assert.Single(entries.LEntrySpeechRead(entry.LEntryId)).LSpeechValueId);
+
+        engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Verb, ergative"));
+        LSpeech custom = Assert.Single(entries.LEntrySpeechRead(entry.LEntryId));
+        Assert.Null(custom.LSpeechValueId);
+        Assert.Equal("Verb, ergative", custom.LSpeechCustom);
+
+        engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate(string.Empty));
+        Assert.Empty(entries.LEntrySpeechRead(entry.LEntryId));
+
+        engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));
+        LRevision? revision = engine.LEngineRevisionRead();
+        Assert.Equal(
+            "speech",
+            Assert.Single(engine.LEngineChangeRead(revision!.LRevisionId),
+                change => change.LRevisionChangeType == "speech").LRevisionChangeType);
+
+        engine.LEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));
+        revision = engine.LEngineRevisionRead();
+        Assert.DoesNotContain(
+            engine.LEngineChangeRead(revision!.LRevisionId),
+            change => change.LRevisionChangeType == "speech");
+    }
+
+    private static LEntryDraft TSpeechDraftCreate(string speech)
+    {
+        return new LEntryDraft(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [])],
+            [],
+            string.Empty,
+            null,
+            speech);
     }
 
     private static LEntry TSpeechEntryCreate(LEngine engine)

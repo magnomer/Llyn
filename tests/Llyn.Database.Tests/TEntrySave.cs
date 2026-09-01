@@ -5,11 +5,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the one seam that writes an entry: the whole input form goes in as a single engine call and
-/// every row it produces reads back, a blank headword is refused before anything is opened, and a
-/// failure part-way through leaves no entry row behind — the save is one unit of work or none.
-/// </summary>
 public sealed class TEntrySave
 {
     [Fact]
@@ -38,14 +33,12 @@ public sealed class TEntrySave
         Assert.Equal("word", entries.LEntryRead(entry.LEntryId)?.LEntryHeadword);
         Assert.Equal("English", entries.LEntryRead(entry.LEntryId)?.LEntryLanguage);
 
-        // The senses land in card order, each at the position its card held.
         IReadOnlyList<LSense> senses = new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(entry.LEntryId);
         Assert.Equal(
             ["the first meaning", "the second meaning"],
             senses.Select(sense => sense.LSenseDefinition));
         Assert.Equal([0, 1], senses.Select(sense => sense.LSensePosition));
 
-        // The collocation carries both of its fields: the expression and the meaning that explains it.
         LCollocation collocation = Assert.Single(
             new LCollocationArchive(workspace.TWorkspaceDatabase).LCollocationRead(entry.LEntryId));
         Assert.Equal("in a word", collocation.LCollocationExpression);
@@ -57,7 +50,6 @@ public sealed class TEntrySave
             new LPronunciationArchive(workspace.TWorkspaceDatabase)
                 .LPronunciationRead(entry.LEntryId)?.LPronunciationIpa);
 
-        // The save is recorded as history and the workspace row is moved onto it.
         LRevision? revision = new LRevisionArchive(workspace.TWorkspaceDatabase).LRevisionLatestRead();
         Assert.NotNull(revision);
         LRevisionChange change = Assert.Single(
@@ -98,7 +90,6 @@ public sealed class TEntrySave
         LSituationArchive situations = new(workspace.TWorkspaceDatabase);
         LTagArchive tags = new(workspace.TWorkspaceDatabase);
 
-        // Each field became a row of its own that the card now references, not a column on the card.
         Assert.Equal(
             "he said a word",
             Assert.Single(examples.LExampleSenseRead(sense.LSenseId)).LExampleText);
@@ -117,13 +108,9 @@ public sealed class TEntrySave
             "written",
             Assert.Single(tags.LTagCollocationRead(collocation.LCollocationId)).LTagText);
 
-        // The sense card's Synonym text is deliberately dropped: the relation it would become targets
-        // an Entry or a Meaning by id and the field holds free text, so nothing can resolve it yet.
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_synonym;"));
 
-        // Saving the same text again matches nothing: every non-empty field creates a new row, so the
-        // second entry references rows of its own rather than the first entry's.
         LEntry second = engine.LEngineEntrySave(draft);
         LSense other = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(second.LEntryId));
 
@@ -148,8 +135,6 @@ public sealed class TEntrySave
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        // What the form always hands over: one seeded Meaning card and one seeded Collocation card,
-        // both untouched, because it refuses to remove a list's last card.
         LCardDraft blank = new(
             string.Empty, string.Empty, string.Empty, [], [], string.Empty, []);
 
@@ -159,7 +144,6 @@ public sealed class TEntrySave
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation;"));
 
-        // An entry with no cards loads as cleanly as it saved.
         LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
         Assert.Equal("word", loaded.LEntryDraftHeadword);
@@ -173,7 +157,6 @@ public sealed class TEntrySave
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        // A card of whitespace counts as blank, on the same terms a card field does.
         LEntry entry = engine.LEngineEntrySave(new LEntryDraft(
             "word",
             "English",
@@ -210,8 +193,6 @@ public sealed class TEntrySave
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        // The refusal names its reason with a localization key, so the shell can present it in the
-        // interface language; the engine carries no sentence of its own.
         LRefusal refusal = Assert.Throws<LRefusal>(() => engine.LEngineEntrySave(
             new LEntryDraft("   ", "English", string.Empty, string.Empty, [], [])));
 
@@ -226,9 +207,6 @@ public sealed class TEntrySave
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        // The revision is written after the entry and everything under it, so removing the table it
-        // needs fails the save at its last step — with the entry, its sense, and its note already
-        // written inside the session. The engine is built first, or creating it would restore the table.
         workspace.TWorkspaceScriptRun("DROP TABLE revision_change; DROP TABLE revision;");
 
         Assert.ThrowsAny<Exception>(() => engine.LEngineEntrySave(new LEntryDraft(

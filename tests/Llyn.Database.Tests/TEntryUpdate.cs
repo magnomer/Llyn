@@ -5,11 +5,6 @@ using Xunit;
 
 namespace Llyn.Database.Tests;
 
-/// <summary>
-/// Covers the seam that changes a stored entry: the entry keeps its identity while its cards are
-/// reconciled to the draft, the revision says what actually moved, an entry that is no longer there is
-/// refused, and an update that fails part-way leaves the stored entry exactly as it was.
-/// </summary>
 public sealed class TEntryUpdate
 {
     [Fact]
@@ -35,8 +30,6 @@ public sealed class TEntryUpdate
         string firstId = saved[0].LSenseId;
         string thirdId = saved[2].LSenseId;
 
-        // What the shell hands back: the loaded draft with its middle card dropped, its first card
-        // renamed, and a card the user added carrying no id of its own.
         LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
         LEntryDraft edited = loaded with
@@ -51,7 +44,6 @@ public sealed class TEntryUpdate
 
         LEntry updated = engine.LEngineEntryUpdate(entry.LEntryId, edited);
 
-        // The entry is the same record: same id, same creation stamp, a fresh modification stamp.
         Assert.Equal(entry.LEntryId, updated.LEntryId);
         Assert.Equal(entry.LEntryAddedUtc, updated.LEntryAddedUtc);
         Assert.NotEqual(entry.LEntryUpdatedUtc, updated.LEntryUpdatedUtc);
@@ -60,8 +52,6 @@ public sealed class TEntryUpdate
         Assert.Equal(["first, reworded", "third", "fourth"], stored.Select(sense => sense.LSenseDefinition));
         Assert.Equal([0, 1, 2], stored.Select(sense => sense.LSensePosition));
 
-        // The cards the draft still named kept their rows, so anything pointing at them still points
-        // at the same Meaning; the card added got a row of its own.
         Assert.Equal(firstId, stored[0].LSenseId);
         Assert.Equal(thirdId, stored[1].LSenseId);
         Assert.DoesNotContain(stored[2].LSenseId, new[] { firstId, thirdId });
@@ -77,7 +67,6 @@ public sealed class TEntryUpdate
         Assert.Contains(changes, change =>
             change.LRevisionChangeKind == "create" && change.LRevisionChangeSummary == "fourth");
 
-        // The workspace row moved onto the revision the update recorded.
         Assert.Equal(revision.LRevisionId, engine.LEngineStateRead().LWorkspaceStateRevision);
     }
 
@@ -101,7 +90,6 @@ public sealed class TEntryUpdate
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.LEngineEntryLoad(entry.LEntryId));
         LCardDraft card = loaded.LEntryDraftSenses[0];
 
-        // The Examples are reordered and the second Tag cleared; the first Tag stays as it was.
         engine.LEngineEntryUpdate(entry.LEntryId, loaded with
         {
             LEntryDraftSenses =
@@ -116,13 +104,11 @@ public sealed class TEntryUpdate
             ["two", "one"],
             examples.LExampleSenseRead(sense.LSenseId).Select(example => example.LExampleText));
 
-        // Reordering re-attached the rows that were already there rather than writing new ones.
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
 
         LTagArchive tags = new(workspace.TWorkspaceDatabase);
         Assert.Equal(["kept"], tags.LTagSenseRead(sense.LSenseId).Select(tag => tag.LTagText));
 
-        // The dropped Tag was detached, not deleted: it is independent data the card only referenced.
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM tag;"));
     }
@@ -147,8 +133,6 @@ public sealed class TEntryUpdate
         LSenseArchive senses = new(workspace.TWorkspaceDatabase);
         IReadOnlyList<LSense> saved = senses.LSenseRead(entry.LEntryId);
 
-        // Another entry links to the second Meaning, so deleting that Meaning is refused — a failure
-        // reached only after the entry row and the first card have already been written.
         LEntryArchive entries = new(workspace.TWorkspaceDatabase);
         LEntry origin = entries.LEntryCreate(
             new LEntry(string.Empty, "origin", "English", null, null, null, null), [], []);
@@ -179,7 +163,6 @@ public sealed class TEntryUpdate
             "a note",
             new LNoteArchive(workspace.TWorkspaceDatabase).LNoteRead(entry.LEntryId)?.LNoteText);
 
-        // A refused update records no history at all.
         Assert.Equal(before?.LRevisionId, engine.LEngineRevisionRead()?.LRevisionId);
     }
 

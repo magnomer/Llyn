@@ -1,29 +1,20 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-/// <summary>
-/// Persists and resolves the language-controlled part-of-speech display vocabulary. An entry's POS
-/// rows store only the stable value id; the display name for a language lives here and is resolved by
-/// <c>(language, value_id)</c>, so a name is never copied onto an entry's rows.
-/// </summary>
 public sealed class LSpeechArchive
 {
     private readonly LDatabase _lSpeechArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LSpeechArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
         _lSpeechArchiveDatabase = database;
     }
 
-    /// <summary>
-    /// Adds or replaces one vocabulary entry, keyed by <c>(language, value_id)</c>, with its display
-    /// name and display order.
-    /// </summary>
     public void LSpeechValueCreate(LSpeechValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -48,10 +39,6 @@ public sealed class LSpeechArchive
         session.LDatabaseSessionCommit();
     }
 
-    /// <summary>
-    /// Resolves the display name for <paramref name="valueId"/> in <paramref name="language"/>, or
-    /// <c>null</c> when the vocabulary has no such entry.
-    /// </summary>
     public string? LSpeechValueRead(string language, string valueId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
@@ -69,5 +56,56 @@ public sealed class LSpeechArchive
 
         object? result = command.ExecuteScalar();
         return result is string name ? name : null;
+    }
+
+    public IReadOnlyList<LSpeechValue> LSpeechValueRead(string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        using LDatabaseSession session = _lSpeechArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT language, value_id, display_name, position FROM part_of_speech_value
+            WHERE language = $language ORDER BY position;
+            """;
+        command.Parameters.AddWithValue("$language", language);
+
+        List<LSpeechValue> values = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            values.Add(new LSpeechValue(
+                reader.GetString(0),
+                reader.GetString(1),
+                reader.GetString(2),
+                reader.GetInt32(3)));
+        }
+
+        return values;
+    }
+
+    public string? LSpeechValueFind(string language, string name)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return null;
+        }
+
+        using LDatabaseSession session = _lSpeechArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+
+        command.CommandText =
+            """
+            SELECT value_id FROM part_of_speech_value
+            WHERE language = $language AND trim(display_name) = trim($name) COLLATE NOCASE
+            ORDER BY position LIMIT 1;
+            """;
+        command.Parameters.AddWithValue("$language", language);
+        command.Parameters.AddWithValue("$name", name);
+
+        object? result = command.ExecuteScalar();
+        return result is string value ? value : null;
     }
 }
