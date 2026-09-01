@@ -115,4 +115,25 @@ public sealed class TEntryArchive
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation_sense;"));
     }
+
+    [Fact]
+    public void AnAccentedHeadwordIsFoundTypedInTheOtherCase()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LEntryArchive entries = new(workspace.TWorkspaceDatabase);
+
+        entries.LEntryCreate(new LEntry(string.Empty, "Äpfel", "de", null, null, null, null), [], []);
+        entries.LEntryCreate(new LEntry(string.Empty, "straße", "de", null, null, null, null), [], []);
+
+        // SQLite's own lower() folds ASCII only, so this is the case the old matching could not make.
+        Assert.Equal("Äpfel", Assert.Single(entries.LEntryFind("äpfel")).LEntryHeadword);
+        Assert.Equal("Äpfel", Assert.Single(entries.LEntryFind("ÄPF")).LEntryHeadword);
+        Assert.Equal("straße", Assert.Single(entries.LEntryFind("STRAßE")).LEntryHeadword);
+
+        // A query of whitespace alone lists everything, exactly as an empty box does; a query is
+        // trimmed before it is matched.
+        Assert.Equal(2, entries.LEntryFind("   ").Count);
+        Assert.Equal(2, entries.LEntryFind(string.Empty).Count);
+        Assert.Single(entries.LEntryFind("  Äpfel "));
+    }
 }

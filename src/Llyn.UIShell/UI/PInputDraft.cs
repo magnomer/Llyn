@@ -15,20 +15,44 @@ namespace Llyn.UIShell;
 /// </summary>
 public partial class PWindow
 {
+    // The form as it stood when it was last filled: what a save would have written the moment the
+    // user was given the form. Everything typed since is the unsaved work, so this is the one thing
+    // needed to know whether closing the window or changing the workspace would throw anything away.
+    private LEntryDraft? _pStateDraft;
+
     private void PStoreHandle(object sender, RoutedEventArgs e)
     {
+        // The form already knows which entry it was opened on, and that is the whole decision: a form
+        // standing on an entry is an edit of it, a form standing on nothing is a new entry. Saving
+        // unconditionally is what wrote a second entry with the same headword on every ordinary
+        // session - launch, correct a typo, press Save.
+        string? entry = _pStateEntry;
+
         LEntry stored;
         try
         {
-            // The save is deliberately synchronous: LDatabase keeps its ambient session in a plain
-            // instance field and LEngine is built on the UI thread, so the write stays on it.
-            stored = _lEngine.LEngineEntrySave(PInputDraftRead());
+            // The write is deliberately synchronous: LDatabase keeps its ambient session in a plain
+            // instance field and LEngine is built on the UI thread, so it stays on it.
+            stored = entry is null
+                ? _lEngine.LEngineEntrySave(PInputDraftRead())
+                : _lEngine.LEngineEntryUpdate(entry, PInputDraftRead());
         }
         catch (Exception exception)
         {
-            // A refused save leaves the form exactly as typed, so the missing field can be filled
-            // in and the save repeated.
-            PWindowFailureShow("Input.SaveFailed", exception);
+            // A refused write leaves the form exactly as typed, so the missing field can be filled
+            // in and the write repeated. An update whose entry vanished between load and save is
+            // reported as that, and never quietly turned back into a create.
+            PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
+            return;
+        }
+
+        if (entry is not null)
+        {
+            // The user corrected an entry; they did not finish one, so the form stays on it rather
+            // than resetting. It is filled from the store again rather than left as typed, because
+            // the cards this update created carry stored ids now and a form still holding none would
+            // create them a second time on the next save.
+            PStateEntryShow(stored.LEntryId);
             return;
         }
 
@@ -74,6 +98,11 @@ public partial class PWindow
 
         PInputNoteShow(draft.LEntryDraftNote);
         PInputRecordingShow(draft);
+
+        // Read back rather than kept as handed in: a recording whose file is gone is not shown and so
+        // is not on the form, and comparing against what is actually on screen is what makes an
+        // untouched form count as untouched.
+        _pStateDraft = PInputDraftRead();
     }
 
     // The inverse of PInputCardRead, for either list. An entry saved with no cards still shows one empty
@@ -94,7 +123,10 @@ public partial class PWindow
                 PInputCardExample = PInputFieldFormat(draft.LCardDraftExample),
                 PInputCardSituation = PInputFieldFormat(draft.LCardDraftSituation),
                 PInputCardSynonym = draft.LCardDraftSynonym,
-                PInputCardTag = PInputTagFormat(draft.LCardDraftTag)
+                PInputCardTag = PInputTagFormat(draft.LCardDraftTag),
+                // Which stored row this card is, carried through the form untouched so a save of the
+                // same card changes that row instead of adding another one beside it.
+                PInputCardId = draft.LCardDraftId
             });
         }
 
@@ -164,6 +196,83 @@ public partial class PWindow
         // Clearing the document does not always route through the TextChanged handler, so the
         // placeholder is put back explicitly rather than left hidden over an empty note.
         PNotePlaceholder.Visibility = Visibility.Visible;
+
+        // An empty form is the state it was last filled in, so nothing on it is unsaved work.
+        _pStateDraft = PInputDraftRead();
+    }
+
+    // Whether the form now differs from the form the user was given: true once anything has been
+    // typed, changed or cleared and not yet written. A form never filled - which cannot happen once
+    // the window is up, since both filling paths record their state - counts as unchanged, because a
+    // baseline that does not exist is no evidence that work would be lost.
+    private bool PInputChangeCheck()
+    {
+        return _pStateDraft is not null && !PInputDraftMatch(_pStateDraft, PInputDraftRead());
+    }
+
+    // Two forms compared as the user sees them. The generated record equality is no use here: a draft
+    // carries lists, and those compare by reference, so two drafts holding the same text are never
+    // equal to it.
+    private static bool PInputDraftMatch(LEntryDraft one, LEntryDraft other)
+    {
+        return string.Equals(one.LEntryDraftHeadword, other.LEntryDraftHeadword, StringComparison.Ordinal)
+            && string.Equals(one.LEntryDraftLanguage, other.LEntryDraftLanguage, StringComparison.Ordinal)
+            && string.Equals(
+                one.LEntryDraftPronunciation, other.LEntryDraftPronunciation, StringComparison.Ordinal)
+            && string.Equals(one.LEntryDraftNote, other.LEntryDraftNote, StringComparison.Ordinal)
+            && string.Equals(one.LEntryDraftAudio, other.LEntryDraftAudio, StringComparison.Ordinal)
+            && string.Equals(one.LEntryDraftSource, other.LEntryDraftSource, StringComparison.Ordinal)
+            && PInputCardMatch(one.LEntryDraftSenses, other.LEntryDraftSenses)
+            && PInputCardMatch(one.LEntryDraftCollocations, other.LEntryDraftCollocations);
+    }
+
+    // One list of cards against another, in order: a card moved is a change like any other, because
+    // the order of the list is the order the entry is stored in.
+    private static bool PInputCardMatch(IReadOnlyList<LCardDraft> one, IReadOnlyList<LCardDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            LCardDraft first = one[index];
+            LCardDraft second = other[index];
+            if (!string.Equals(first.LCardDraftTitle, second.LCardDraftTitle, StringComparison.Ordinal)
+                || !string.Equals(
+                    first.LCardDraftExpression, second.LCardDraftExpression, StringComparison.Ordinal)
+                || !string.Equals(first.LCardDraftMeaning, second.LCardDraftMeaning, StringComparison.Ordinal)
+                || !string.Equals(first.LCardDraftSynonym, second.LCardDraftSynonym, StringComparison.Ordinal)
+                || !string.Equals(first.LCardDraftId, second.LCardDraftId, StringComparison.Ordinal)
+                || !PInputTextMatch(first.LCardDraftExample, second.LCardDraftExample)
+                || !PInputTextMatch(first.LCardDraftSituation, second.LCardDraftSituation)
+                || !PInputTextMatch(first.LCardDraftTag, second.LCardDraftTag))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // The ordered sets a card carries, compared element by element.
+    private static bool PInputTextMatch(IReadOnlyList<string> one, IReadOnlyList<string> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (!string.Equals(one[index], other[index], StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     // The one read path for both card lists: a Meaning card and a Collocation card are the same card,
@@ -187,7 +296,8 @@ public partial class PWindow
                 // No collocation control feeds a synonym: that template has no Synonym TextBox, so a
                 // collocation card always reads back empty here.
                 card.PInputCardSynonym,
-                PInputTagParse(card.PInputCardTag)));
+                PInputTagParse(card.PInputCardTag),
+                card.PInputCardId));
         }
 
         return drafts;

@@ -65,6 +65,13 @@ public sealed class LDatabase
             """;
         pragma.ExecuteNonQuery();
 
+        // SQLite's own lower() folds ASCII only, so a query typed as "Ä" would never find a headword
+        // stored as "ä" — unusable in an application whose subject is other languages. lfold() hands
+        // the fold to .NET, which knows the whole of Unicode. It is registered on every connection
+        // because a user-defined function lives on the connection that declared it.
+        connection.CreateFunction<string?, string?>(
+            "lfold", text => text?.ToLowerInvariant(), isDeterministic: true);
+
         return connection;
     }
 

@@ -21,26 +21,43 @@ public partial class PWindow
     // because a stale id is the normal cost of remembering one across sessions, not an error.
     private void PStateRestore()
     {
-        _pStateEntry = null;
-
-        LEntryDraft? draft = null;
+        string? id;
         try
         {
-            string? id = _lEngine.LEngineStateRead().LWorkspaceStateLeft;
-            if (id is not null)
-            {
-                draft = _lEngine.LEngineEntryLoad(id);
-                if (draft is not null)
-                {
-                    _pStateEntry = id;
-                }
-            }
+            id = _lEngine.LEngineStateRead().LWorkspaceStateLeft;
         }
         catch (Exception)
         {
             // A workspace whose database cannot be read still opens: the form comes up empty rather
             // than the window failing to appear.
+            id = null;
+        }
+
+        if (id is null)
+        {
             _pStateEntry = null;
+            PInputReset();
+            return;
+        }
+
+        PStateEntryShow(id);
+    }
+
+    // Opens the form on one entry and leaves the session standing on it, which is what makes the next
+    // save an edit of that entry rather than a copy of it. It is the one way the form is put on an
+    // entry: the start-up restore rides on it, and so does a save that keeps the user where they
+    // were, which needs the entry read back so its cards carry the ids they were just written under.
+    private void PStateEntryShow(string id)
+    {
+        _pStateEntry = null;
+
+        LEntryDraft? draft = null;
+        try
+        {
+            draft = _lEngine.LEngineEntryLoad(id);
+        }
+        catch (Exception)
+        {
             draft = null;
         }
 
@@ -51,6 +68,7 @@ public partial class PWindow
         }
 
         PInputDraftShow(draft);
+        _pStateEntry = id;
     }
 
     // Records the entry the form stands on. Reading the row first keeps every other column — mode,

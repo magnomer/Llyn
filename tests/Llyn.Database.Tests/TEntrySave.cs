@@ -143,6 +143,68 @@ public sealed class TEntrySave
     }
 
     [Fact]
+    public void ADraftOfNothingButAHeadwordWritesNoSenseAndNoCollocation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        // What the form always hands over: one seeded Meaning card and one seeded Collocation card,
+        // both untouched, because it refuses to remove a list's last card.
+        LCardDraft blank = new(
+            string.Empty, string.Empty, string.Empty, [], [], string.Empty, []);
+
+        LEntry entry = engine.LEngineEntrySave(new LEntryDraft(
+            "word", "English", string.Empty, string.Empty, [blank], [blank]));
+
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation;"));
+
+        // An entry with no cards loads as cleanly as it saved.
+        LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);
+        Assert.NotNull(loaded);
+        Assert.Equal("word", loaded.LEntryDraftHeadword);
+        Assert.Empty(loaded.LEntryDraftSenses);
+        Assert.Empty(loaded.LEntryDraftCollocations);
+    }
+
+    [Fact]
+    public void ABlankCardBetweenTwoFilledOnesLeavesTheRestAtContiguousPositions()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        // A card of whitespace counts as blank, on the same terms a card field does.
+        LEntry entry = engine.LEngineEntrySave(new LEntryDraft(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                new LCardDraft(string.Empty, string.Empty, "the first meaning", [], [], string.Empty, []),
+                new LCardDraft(string.Empty, string.Empty, "   ", [], [], string.Empty, ["  "]),
+                new LCardDraft(string.Empty, string.Empty, "the second meaning", [], [], string.Empty, []),
+            ],
+            [
+                new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, []),
+                new LCardDraft(string.Empty, string.Empty, string.Empty, [], [], string.Empty, []),
+                new LCardDraft(string.Empty, "word for word", "exactly", [], [], string.Empty, []),
+            ]));
+
+        IReadOnlyList<LSense> senses = new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(entry.LEntryId);
+        Assert.Equal(
+            ["the first meaning", "the second meaning"],
+            senses.Select(sense => sense.LSenseDefinition));
+        Assert.Equal([0, 1], senses.Select(sense => sense.LSensePosition));
+
+        IReadOnlyList<LCollocation> collocations =
+            new LCollocationArchive(workspace.TWorkspaceDatabase).LCollocationRead(entry.LEntryId);
+        Assert.Equal(
+            ["in a word", "word for word"],
+            collocations.Select(collocation => collocation.LCollocationExpression));
+        Assert.Equal([0, 1], collocations.Select(collocation => collocation.LCollocationPosition));
+    }
+
+    [Fact]
     public void ADraftWithNoHeadwordIsRefusedBeforeAnythingIsWritten()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

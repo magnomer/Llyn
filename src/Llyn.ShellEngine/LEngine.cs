@@ -171,8 +171,9 @@ public sealed partial class LEngine : IDisposable
 
     /// <summary>
     /// Returns the entries whose headword contains <paramref name="query"/>, ordered by headword, or
-    /// every entry when <paramref name="query"/> is empty — the list a browsing or searching pane shows.
-    /// Matching is a case-insensitive contains.
+    /// every entry when <paramref name="query"/> is empty or all whitespace — the list a browsing or
+    /// searching pane shows. Matching is a contains whose case is folded over the whole of Unicode, so
+    /// an accented headword is found typed in either case.
     /// </summary>
     public IReadOnlyList<LEntry> LEngineEntryFind(string query)
     {

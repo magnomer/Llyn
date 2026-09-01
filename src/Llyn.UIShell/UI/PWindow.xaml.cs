@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -78,6 +79,9 @@ public partial class PWindow : Window, LReceiver, LListener
         // or empty when it names nothing. This also seeds the card lists, so no cards are added here.
         PStateRestore();
 
+        // Closing runs while the window is still up and can be called off; Closed cannot. Unsaved text
+        // is caught in the first, and the session is recorded in the second.
+        Closing += PWindowClosingHandle;
         Closed += PWindowExitHandle;
     }
 
@@ -523,6 +527,14 @@ public partial class PWindow : Window, LReceiver, LListener
             return;
         }
 
+        // Changing the workspace throws the form away with it, and this runs from a mere
+        // LostKeyboardFocus on the path box — tabbing past it must not cost the user what they typed.
+        if (!PWindowDiscardConfirm())
+        {
+            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+            return;
+        }
+
         try
         {
             _lEngine.LEngineWorkspaceChange(path);
@@ -951,6 +963,31 @@ public partial class PWindow : Window, LReceiver, LListener
             PLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
+    }
+
+    // Asks before typed text is thrown away, and answers whether it may be. Nothing unsaved on the
+    // form means nothing to ask about, so the question is only ever put when there is something to
+    // lose — which is why it can sit in front of every path that discards the form.
+    private bool PWindowDiscardConfirm()
+    {
+        if (!PInputChangeCheck())
+        {
+            return true;
+        }
+
+        return MessageBox.Show(
+            this,
+            PLocalizationTextRead("Input.DiscardConfirm"),
+            PLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) == MessageBoxResult.Yes;
+    }
+
+    private void PWindowClosingHandle(object? sender, CancelEventArgs e)
+    {
+        // Declining leaves the window open on the form exactly as typed, which is the only place the
+        // work still exists.
+        e.Cancel = !PWindowDiscardConfirm();
     }
 
     private void PWindowExitHandle(object? sender, EventArgs e)

@@ -95,18 +95,25 @@ public sealed class LEntryArchive
 
     /// <summary>
     /// Returns the entries whose headword contains <paramref name="query"/>, ordered by headword, or
-    /// every entry when <paramref name="query"/> is empty. Matching is a case-insensitive contains and
-    /// nothing more; anything cleverer — prefix weighting, forms, folded accents — waits for a stated
-    /// requirement rather than being guessed at here.
+    /// every entry when <paramref name="query"/> is empty or holds nothing but whitespace. Matching is
+    /// a case-insensitive contains and nothing more; anything cleverer — prefix weighting, forms,
+    /// accent folding — waits for a stated requirement rather than being guessed at here.
     /// <para>
-    /// SQLite's <c>lower()</c> folds ASCII only, so case-insensitivity covers Latin letters; scripts
-    /// without case (Korean, Japanese, Chinese) are unaffected, and a non-ASCII cased letter matches
-    /// only in the case it was typed.
+    /// Case is folded over the whole of Unicode, not just ASCII: <c>Ä</c> finds <c>ä</c>, and Turkish,
+    /// Greek or Cyrillic headwords match in either case. That is what <c>lfold()</c> is for — the
+    /// invariant .NET fold registered on every connection (<see cref="LDatabase.LDatabaseConnectionRead"/>),
+    /// standing in for SQLite's <c>lower()</c>, which folds ASCII only. Scripts without case (Korean,
+    /// Japanese, Chinese) are unaffected either way.
+    /// </para>
+    /// <para>
+    /// The query is trimmed before it is matched, so trailing space left by typing does not narrow the
+    /// result and a query of spaces alone lists everything, exactly as an empty box does.
     /// </para>
     /// </summary>
     public IReadOnlyList<LEntry> LEntryFind(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
+        query = query.Trim();
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -114,7 +121,7 @@ public sealed class LEntryArchive
             """
             SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
             FROM entry
-            WHERE $query = '' OR instr(lower(headword), lower($query)) > 0
+            WHERE $query = '' OR instr(lfold(headword), lfold($query)) > 0
             ORDER BY headword;
             """;
         command.Parameters.AddWithValue("$query", query);

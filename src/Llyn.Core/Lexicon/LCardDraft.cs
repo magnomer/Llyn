@@ -9,7 +9,8 @@ namespace Llyn.Core;
 /// leaves empty. A field added to the form is therefore added once.
 /// <para>
 /// A draft is what the shell hands the engine before anything is persisted: it carries the typed text
-/// exactly as it stands on screen and nothing else — no identity, no state, no database concern. Empty
+/// exactly as it stands on screen, plus the id of the row it was loaded from when it came from one —
+/// no state, no database concern beyond saying which stored card it is. Empty
 /// fields stay empty strings rather than <c>null</c>, because "nothing was typed" is what the form
 /// means. The card's position is not carried: it is the order of the list the card sits in, which the
 /// save reads off that order and the load writes back into it.
@@ -37,6 +38,14 @@ namespace Llyn.Core;
 /// <param name="LCardDraftSituation">Situation titles the card references, in the order they are shown.</param>
 /// <param name="LCardDraftSynonym">Synonym text from the card's Synonym field.</param>
 /// <param name="LCardDraftTag">Tag texts the card references, in the order they are shown.</param>
+/// <param name="LCardDraftId">
+/// Id of the stored row this card was loaded from, empty for a card that has never been stored. It is
+/// the one member that is not typed text, and the only reason it exists is the update: a draft handed
+/// back for saving must say which stored Meaning or Collocation each card is, or an update could only
+/// match cards by their place in the list and would move one card's text onto another card's row. A
+/// card carrying no id is a new card and is created; the form builds its cards without one, so nothing
+/// in the shell has to carry it until it chooses to.
+/// </param>
 public sealed record LCardDraft(
     string LCardDraftTitle,
     string LCardDraftExpression,
@@ -44,4 +53,5 @@ public sealed record LCardDraft(
     IReadOnlyList<string> LCardDraftExample,
     IReadOnlyList<string> LCardDraftSituation,
     string LCardDraftSynonym,
-    IReadOnlyList<string> LCardDraftTag);
+    IReadOnlyList<string> LCardDraftTag,
+    string LCardDraftId = "");

@@ -26,6 +26,13 @@ public sealed partial class LEngine
     /// out of several of them.
     /// </para>
     /// <para>
+    /// A card with every field blank writes nothing. The form keeps an empty card on screen to type
+    /// into and refuses to remove a list's last card, so it always hands over at least one Meaning card
+    /// and one Collocation card; deciding that a blank one is neither belongs here, not in the form. A
+    /// headword saved on its own therefore gains no sense row and no collocation row, and a blank card
+    /// between two filled ones leaves the two stored at positions 0 and 1.
+    /// </para>
+    /// <para>
     /// A recording the downloader saved is written as the pronunciation's audio row, in the same
     /// transaction, with its path made relative to the workspace so a moved workspace keeps its audio.
     /// Because the row hangs off the pronunciation, a recording with no typed IPA still creates the
@@ -79,7 +86,7 @@ public sealed partial class LEngine
             speeches: []);
 
         LSenseArchive senses = new(_lEngineDatabase);
-        foreach (LCardDraft card in draft.LEntryDraftSenses)
+        foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftSenses))
         {
             // Each sense is appended, so card order becomes stored position.
             LSense sense = senses.LSenseCreate(new LSense(
@@ -97,7 +104,7 @@ public sealed partial class LEngine
         }
 
         LCollocationArchive collocations = new(_lEngineDatabase);
-        foreach (LCardDraft card in draft.LEntryDraftCollocations)
+        foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftCollocations))
         {
             LCollocation collocation = collocations.LCollocationCreate(new LCollocation(
                 string.Empty,
@@ -227,6 +234,44 @@ public sealed partial class LEngine
 
             position++;
         }
+    }
+
+    // The cards worth a row: a card with every field blank is neither a Meaning nor a Collocation, so
+    // it is skipped rather than written. The form always hands over at least one card of each kind —
+    // it seeds one of each and refuses to remove a list's last card, because an editor must keep an
+    // empty card to type into — so this is where an entry with nothing typed stops becoming a sense
+    // row with no definition and a collocation row with no expression. Positions come from the stored
+    // sibling count, so skipping a card in the middle still leaves 0, 1, 2 over the cards that remain.
+    private static IEnumerable<LCardDraft> LEngineCardRead(IReadOnlyList<LCardDraft> cards)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            if (!string.IsNullOrWhiteSpace(card.LCardDraftTitle) ||
+                !string.IsNullOrWhiteSpace(card.LCardDraftExpression) ||
+                !string.IsNullOrWhiteSpace(card.LCardDraftMeaning) ||
+                !string.IsNullOrWhiteSpace(card.LCardDraftSynonym) ||
+                LEngineFieldCheck(card.LCardDraftExample) ||
+                LEngineFieldCheck(card.LCardDraftSituation) ||
+                LEngineFieldCheck(card.LCardDraftTag))
+            {
+                yield return card;
+            }
+        }
+    }
+
+    // Whether one card field carries any value worth a row, on the same terms LEngineFieldRead writes
+    // them: a field holding only blanks counts as typed-in nothing.
+    private static bool LEngineFieldCheck(IReadOnlyList<string> texts)
+    {
+        foreach (string text in texts)
+        {
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // The values of one card field that are worth a row: blank entries are dropped here rather than

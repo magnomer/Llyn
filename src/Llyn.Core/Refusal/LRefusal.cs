@@ -17,6 +17,9 @@ public sealed class LRefusal : Exception
     /// <summary>Reason key for a save whose entry carries no headword.</summary>
     public const string LRefusalHeadword = "Refusal.HeadwordMissing";
 
+    /// <summary>Reason key for an update whose entry is not in the workspace.</summary>
+    public const string LRefusalEntry = "Refusal.EntryMissing";
+
     /// <summary>Refuses a request for <paramref name="reason"/>, a localization key.</summary>
     public LRefusal(string reason)
         : base(reason)

@@ -41,6 +41,11 @@ public sealed class LEntryLoader
     /// would come back as a card of its own.
     /// </para>
     /// <para>
+    /// Each card carries the id of the row it was read from, so a draft loaded, edited and handed to
+    /// <c>LEngineEntryUpdate</c> names the Meaning or Collocation each card belongs to; a card the user
+    /// adds afterwards has no id and is created.
+    /// </para>
+    /// <para>
     /// Synonyms come back empty. The save writes none (the card's field is free text and a relation
     /// needs a target id), so there is nothing stored to read, and the collocation card has no Synonym
     /// control feeding it at all.
@@ -127,7 +132,10 @@ public sealed class LEntryLoader
             string.Empty,
             LEntryTextRead(
                 collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId),
-                tag => tag.LTagText));
+                tag => tag.LTagText),
+            // The card says which stored row it is, so a draft handed back to the engine updates that
+            // row rather than being read as a new card.
+            ownerId);
     }
 
     // A card field is an ordered set, so every referenced row fills it and none is discarded. The rows
