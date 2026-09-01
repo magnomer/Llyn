@@ -7,7 +7,7 @@ namespace Llyn.Infrastructure;
 
 /// <summary>
 /// Persists the collocations an entry owns. A collocation is a stable-id row assigned an opaque id here
-/// on creation, ordered within its entry; updating rewrites its expression and meaning, so ids survive
+/// on creation, ordered within its entry; updating rewrites its title, expression and meaning, so ids survive
 /// reordering.
 /// Its synonym interlinks are not owned text and live in their own store
 /// (<see cref="LSynonymArchive"/>); they are removed with the collocation by the foreign-key cascade, and
@@ -51,12 +51,13 @@ public sealed class LCollocationArchive
         {
             command.CommandText =
                 """
-                INSERT INTO collocation (id, entry_id, position, expression, meaning)
-                VALUES ($id, $entry, $position, $expression, $meaning);
+                INSERT INTO collocation (id, entry_id, position, title, expression, meaning)
+                VALUES ($id, $entry, $position, $title, $expression, $meaning);
                 """;
             command.Parameters.AddWithValue("$id", stored.LCollocationId);
             command.Parameters.AddWithValue("$entry", stored.LCollocationEntryId);
             command.Parameters.AddWithValue("$position", stored.LCollocationPosition);
+            command.Parameters.AddWithValue("$title", (object?)stored.LCollocationTitle ?? DBNull.Value);
             command.Parameters.AddWithValue("$expression", (object?)stored.LCollocationExpression ?? DBNull.Value);
             command.Parameters.AddWithValue("$meaning", (object?)stored.LCollocationMeaning ?? DBNull.Value);
             command.ExecuteNonQuery();
@@ -75,7 +76,7 @@ public sealed class LCollocationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, position, expression, meaning
+            SELECT id, entry_id, position, title, expression, meaning
             FROM collocation WHERE entry_id = $entry
             ORDER BY position;
             """;
@@ -90,15 +91,16 @@ public sealed class LCollocationArchive
                 reader.GetString(1),
                 reader.GetInt32(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3),
-                reader.IsDBNull(4) ? null : reader.GetString(4)));
+                reader.IsDBNull(4) ? null : reader.GetString(4),
+                reader.IsDBNull(5) ? null : reader.GetString(5)));
         }
 
         return collocations;
     }
 
     /// <summary>
-    /// Updates the expression and meaning of the collocation identified by <paramref name="collocation"/>'s id. The
-    /// id, owning entry, and position are untouched — card order is changed by
+    /// Updates the title, expression, and meaning of the collocation identified by
+    /// <paramref name="collocation"/>'s id. The id, owning entry, and position are untouched — card order is changed by
     /// <see cref="LCollocationMove"/>, which has to renumber the whole set. Throws when no collocation
     /// carries that id.
     /// </summary>
@@ -111,7 +113,9 @@ public sealed class LCollocationArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE collocation SET expression = $expression, meaning = $meaning WHERE id = $id;";
+                "UPDATE collocation SET title = $title, expression = $expression, meaning = $meaning "
+                + "WHERE id = $id;";
+            command.Parameters.AddWithValue("$title", (object?)collocation.LCollocationTitle ?? DBNull.Value);
             command.Parameters.AddWithValue("$expression", (object?)collocation.LCollocationExpression ?? DBNull.Value);
             command.Parameters.AddWithValue("$meaning", (object?)collocation.LCollocationMeaning ?? DBNull.Value);
             command.Parameters.AddWithValue("$id", collocation.LCollocationId);

@@ -28,7 +28,7 @@ public partial class PWindow : Window, LReceiver, LListener
     private readonly ObservableCollection<PInputCard> _pCollocationList = [];
     private readonly ObservableCollection<PLookupCandidate> _pLookupCandidate = [];
     private readonly ObservableCollection<PDownloaderRecording> _pDownloaderRecording = [];
-    private readonly LEngine _lEngine = new();
+    private readonly LEngine _lEngine;
     private readonly MediaPlayer _pDownloaderPlayer = new();
     private string? _pRecording;
     private string? _pRecordingSource;
@@ -43,8 +43,18 @@ public partial class PWindow : Window, LReceiver, LListener
     private string _pLangcodeChoice = PWindowLanguage;
     private readonly bool _pWindowReady;
 
-    public PWindow()
+    /// <summary>
+    /// Opens the window on <paramref name="engine"/>, already built and bound to a workspace that
+    /// opened. The engine is not constructed here: opening the workspace can fail, and a failure in a
+    /// window constructor has nowhere to be shown. <see cref="LBootstrap"/> builds it and hands it
+    /// over; the window owns it from here and disposes it when it closes.
+    /// </summary>
+    public PWindow(LEngine engine)
     {
+        ArgumentNullException.ThrowIfNull(engine);
+
+        _lEngine = engine;
+
         InitializeComponent();
 
         PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
@@ -923,6 +933,24 @@ public partial class PWindow : Window, LReceiver, LListener
     private string PLocalizationTextRead(string key)
     {
         return TryFindResource(key) as string ?? key;
+    }
+
+    // Presents a request that failed, under the localized headline the given key names.
+    // A deliberate refusal carries a reason key, which resolves through the same catalog as the rest
+    // of the interface; anything unexpected is a fault rather than a refusal, so it keeps its own
+    // message, which stays diagnosable even though it is not translated.
+    private void PWindowFailureShow(string key, Exception exception)
+    {
+        string detail = exception is LRefusal refusal
+            ? PLocalizationTextRead(refusal.LRefusalReason)
+            : exception.Message;
+
+        MessageBox.Show(
+            this,
+            $"{PLocalizationTextRead(key)}\n\n{detail}",
+            PLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
     }
 
     private void PWindowExitHandle(object? sender, EventArgs e)

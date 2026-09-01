@@ -20,7 +20,7 @@ namespace Llyn.Infrastructure;
 public static class LSchemaMigration
 {
     /// <summary>The schema version this build produces. A later change to an existing table raises it.</summary>
-    public const long LSchemaMigrationVersion = 14;
+    public const long LSchemaMigrationVersion = 15;
 
     /// <summary>
     /// Records the version on a database that has never carried one, and otherwise applies every step
@@ -79,6 +79,15 @@ public static class LSchemaMigration
         if (stored < 14)
         {
             LSchemaAudioNormalize(connection);
+        }
+
+        // Version 15. Both card templates have always carried a Title field that nothing stored. The
+        // step gives sense and collocation the same title column, so the two cards end up the same
+        // shape for it; sense.gloss is left as it stands, unused by the input form.
+        if (stored < 15)
+        {
+            LSchemaTitleNormalize(connection, "sense");
+            LSchemaTitleNormalize(connection, "collocation");
         }
 
         LSchemaVersionSave(connection);
@@ -168,6 +177,26 @@ public static class LSchemaMigration
                 FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
             );
             """;
+        command.ExecuteNonQuery();
+    }
+
+    // Gives a card table the title column its template has always had a field for. Adding a column
+    // needs no table rebuild, so existing rows keep everything they have and read back a NULL title,
+    // which is what they had. Skipped when the column is already there.
+    private static void LSchemaTitleNormalize(SqliteConnection connection, string table)
+    {
+        using (SqliteCommand check = connection.CreateCommand())
+        {
+            check.CommandText =
+                $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = 'title';";
+            if (Convert.ToInt64(check.ExecuteScalar()) > 0)
+            {
+                return;
+            }
+        }
+
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = $"ALTER TABLE {table} ADD COLUMN title TEXT;";
         command.ExecuteNonQuery();
     }
 

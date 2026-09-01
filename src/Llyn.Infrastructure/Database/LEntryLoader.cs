@@ -7,8 +7,8 @@ namespace Llyn.Infrastructure;
 /// <summary>
 /// Reads a stored entry back into the <see cref="LEntryDraft"/> the input form saved. It owns no SQL
 /// of its own: it composes what the archives already read — the entry row, its meanings and
-/// collocations, its note and pronunciation, and the Examples, Situations and Tags each card
-/// references — into the one value shape <c>LEngineEntrySave</c> consumes, so a save and a load are
+/// collocations, its note and pronunciation, and every Example, Situation and Tag each card
+/// references, in stored order — into the one value shape <c>LEngineEntrySave</c> consumes, so a save and a load are
 /// inverses of each other.
 /// <para>
 /// The whole composition runs inside one <see cref="LDatabaseSession"/>. Every archive call it makes
@@ -35,10 +35,10 @@ public sealed class LEntryLoader
     /// Returns the draft for the entry identified by <paramref name="id"/>, or <c>null</c> when no
     /// entry has that id.
     /// <para>
-    /// A card carries one Example, one Situation and one Tag, because the input form gives it one field
-    /// for each; the save writes at most one row per field, so the first referenced row fills the field
-    /// back in and a card the save produced round-trips exactly. Meanings arrive flat, as the draft has
-    /// no nesting: a sub-meaning — which no save writes — would come back as a card of its own.
+    /// A card's Examples, Situations and Tags are ordered sets: every row the card references fills the
+    /// field, in the order the associations record, so a card referencing three tags loads back with
+    /// three. Meanings arrive flat, as the draft has no nesting: a sub-meaning — which no save writes —
+    /// would come back as a card of its own.
     /// </para>
     /// <para>
     /// Synonyms come back empty. The save writes none (the card's field is free text and a relation
@@ -65,34 +65,26 @@ public sealed class LEntryLoader
             ? null
             : pronunciations.LPronunciationAudioRead(pronunciation.LPronunciationId);
 
-        LExampleLink examples = new(_lEntryLoaderDatabase);
-        LSituationArchive situations = new(_lEntryLoaderDatabase);
-        LTagArchive tags = new(_lEntryLoaderDatabase);
-
-        List<LSenseDraft> senseCards = [];
+        List<LCardDraft> senseCards = [];
         foreach (LSense sense in new LSenseArchive(_lEntryLoaderDatabase).LSenseRead(id))
         {
-            senseCards.Add(new LSenseDraft(
-                senseCards.Count + 1,
-                sense.LSenseDefinition ?? string.Empty,
-                LEntryFirstRead(examples.LExampleSenseRead(sense.LSenseId), example => example.LExampleText),
-                LEntryFirstRead(situations.LSituationSenseRead(sense.LSenseId), situation => situation.LSituationTitle),
+            senseCards.Add(LEntryCardRead(
+                sense.LSenseId,
+                collocation: false,
+                sense.LSenseTitle ?? string.Empty,
                 string.Empty,
-                LEntryFirstRead(tags.LTagSenseRead(sense.LSenseId), tag => tag.LTagText)));
+                sense.LSenseDefinition ?? string.Empty));
         }
 
-        List<LCollocationDraft> collocationCards = [];
+        List<LCardDraft> collocationCards = [];
         foreach (LCollocation collocation in new LCollocationArchive(_lEntryLoaderDatabase).LCollocationRead(id))
         {
-            string cardId = collocation.LCollocationId;
-            collocationCards.Add(new LCollocationDraft(
-                collocationCards.Count + 1,
+            collocationCards.Add(LEntryCardRead(
+                collocation.LCollocationId,
+                collocation: true,
+                collocation.LCollocationTitle ?? string.Empty,
                 collocation.LCollocationExpression ?? string.Empty,
-                collocation.LCollocationMeaning ?? string.Empty,
-                LEntryFirstRead(examples.LExampleCollocationRead(cardId), example => example.LExampleText),
-                LEntryFirstRead(situations.LSituationCollocationRead(cardId), situation => situation.LSituationTitle),
-                string.Empty,
-                LEntryFirstRead(tags.LTagCollocationRead(cardId), tag => tag.LTagText)));
+                collocation.LCollocationMeaning ?? string.Empty));
         }
 
         return new LEntryDraft(
@@ -106,10 +98,52 @@ public sealed class LEntryLoader
             audio?.LPronunciationAudioSource);
     }
 
-    // A card field holds one value, so a referenced set fills it from its first row and an empty set
-    // leaves the empty string the draft uses for "nothing was typed".
-    private static string LEntryFirstRead<TRow>(IReadOnlyList<TRow> rows, Func<TRow, string?> text)
+    // The one read path for the independents a card references. A Meaning card and a Collocation card
+    // reference Examples, Situations and Tags on identical terms, so which owner side is being read is
+    // the only thing that differs: the collocation flag says which side ownerId names, and the card's
+    // own columns are handed in already read off its row.
+    private LCardDraft LEntryCardRead(
+        string ownerId,
+        bool collocation,
+        string title,
+        string expression,
+        string meaning)
     {
-        return rows.Count == 0 ? string.Empty : text(rows[0]) ?? string.Empty;
+        LExampleLink examples = new(_lEntryLoaderDatabase);
+        LSituationArchive situations = new(_lEntryLoaderDatabase);
+        LTagArchive tags = new(_lEntryLoaderDatabase);
+
+        return new LCardDraft(
+            title,
+            expression,
+            meaning,
+            LEntryTextRead(
+                collocation ? examples.LExampleCollocationRead(ownerId) : examples.LExampleSenseRead(ownerId),
+                example => example.LExampleText),
+            LEntryTextRead(
+                collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationSenseRead(ownerId),
+                situation => situation.LSituationTitle),
+            // Nothing stored feeds a card synonym: the save writes none, so the field comes back empty.
+            string.Empty,
+            LEntryTextRead(
+                collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId),
+                tag => tag.LTagText));
+    }
+
+    // A card field is an ordered set, so every referenced row fills it and none is discarded. The rows
+    // arrive ordered by the position each association carries, which is the order the save wrote them
+    // in, so the field reads back as it was typed. A row whose text is null reads as the empty string
+    // the draft uses for "nothing was typed".
+    private static IReadOnlyList<string> LEntryTextRead<TRow>(
+        IReadOnlyList<TRow> rows,
+        Func<TRow, string?> text)
+    {
+        List<string> texts = new(rows.Count);
+        foreach (TRow row in rows)
+        {
+            texts.Add(text(row) ?? string.Empty);
+        }
+
+        return texts;
     }
 }

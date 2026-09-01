@@ -66,12 +66,7 @@ public partial class PWindow
         }
         catch (Exception exception)
         {
-            MessageBox.Show(
-                this,
-                $"{PLocalizationTextRead("List.LoadFailed")}\n\n{exception.Message}",
-                PLocalizationTextRead("Terms.Product"),
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            PWindowFailureShow("List.LoadFailed", exception);
             return;
         }
 

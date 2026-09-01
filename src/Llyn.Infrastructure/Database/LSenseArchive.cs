@@ -55,13 +55,14 @@ public sealed class LSenseArchive
         {
             command.CommandText =
                 """
-                INSERT INTO sense (id, entry_id, parent_id, position, gloss, definition_language, definition, labels)
-                VALUES ($id, $entry, $parent, $position, $gloss, $language, $definition, $labels);
+                INSERT INTO sense (id, entry_id, parent_id, position, title, gloss, definition_language, definition, labels)
+                VALUES ($id, $entry, $parent, $position, $title, $gloss, $language, $definition, $labels);
                 """;
             command.Parameters.AddWithValue("$id", stored.LSenseId);
             command.Parameters.AddWithValue("$entry", stored.LSenseEntryId);
             command.Parameters.AddWithValue("$parent", (object?)stored.LSenseParentId ?? DBNull.Value);
             command.Parameters.AddWithValue("$position", stored.LSensePosition);
+            command.Parameters.AddWithValue("$title", (object?)stored.LSenseTitle ?? DBNull.Value);
             command.Parameters.AddWithValue("$gloss", (object?)stored.LSenseGloss ?? DBNull.Value);
             command.Parameters.AddWithValue("$language", (object?)stored.LSenseDefinitionLanguage ?? DBNull.Value);
             command.Parameters.AddWithValue("$definition", (object?)stored.LSenseDefinition ?? DBNull.Value);
@@ -86,7 +87,7 @@ public sealed class LSenseArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, parent_id, position, gloss, definition_language, definition, labels
+            SELECT id, entry_id, parent_id, position, title, gloss, definition_language, definition, labels
             FROM sense WHERE entry_id = $entry
             ORDER BY ifnull(parent_id, ''), position;
             """;
@@ -104,14 +105,15 @@ public sealed class LSenseArchive
                 reader.IsDBNull(4) ? null : reader.GetString(4),
                 reader.IsDBNull(5) ? null : reader.GetString(5),
                 reader.IsDBNull(6) ? null : reader.GetString(6),
-                reader.GetString(7)));
+                reader.IsDBNull(7) ? null : reader.GetString(7),
+                reader.GetString(8)));
         }
 
         return senses;
     }
 
     /// <summary>
-    /// Updates the gloss, definition (with its language), and labels of the sense identified by
+    /// Updates the title, gloss, definition (with its language), and labels of the sense identified by
     /// <paramref name="sense"/>'s id. The id, entry, parent link, and position are untouched — where a
     /// Meaning sits among its siblings is changed by <see cref="LSenseMove"/>, which has to renumber the
     /// whole group. Throws when no sense carries that id.
@@ -127,10 +129,11 @@ public sealed class LSenseArchive
             command.CommandText =
                 """
                 UPDATE sense
-                SET gloss = $gloss, definition_language = $language, definition = $definition,
-                    labels = $labels
+                SET title = $title, gloss = $gloss, definition_language = $language,
+                    definition = $definition, labels = $labels
                 WHERE id = $id;
                 """;
+            command.Parameters.AddWithValue("$title", (object?)sense.LSenseTitle ?? DBNull.Value);
             command.Parameters.AddWithValue("$gloss", (object?)sense.LSenseGloss ?? DBNull.Value);
             command.Parameters.AddWithValue("$language", (object?)sense.LSenseDefinitionLanguage ?? DBNull.Value);
             command.Parameters.AddWithValue("$definition", (object?)sense.LSenseDefinition ?? DBNull.Value);

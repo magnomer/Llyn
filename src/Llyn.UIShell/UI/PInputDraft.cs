@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
@@ -27,12 +28,7 @@ public partial class PWindow
         {
             // A refused save leaves the form exactly as typed, so the missing field can be filled
             // in and the save repeated.
-            MessageBox.Show(
-                this,
-                $"{PLocalizationTextRead("Input.SaveFailed")}\n\n{exception.Message}",
-                PLocalizationTextRead("Terms.Product"),
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            PWindowFailureShow("Input.SaveFailed", exception);
             return;
         }
 
@@ -55,8 +51,8 @@ public partial class PWindow
             _pLangcodeChoice,
             PPronunciation.Text ?? string.Empty,
             PInputNoteRead(),
-            PInputSenseRead(),
-            PInputCollocationRead(),
+            PInputCardRead(_pSenseList),
+            PInputCardRead(_pCollocationList),
             // The downloaded recording is form state like any field: it travels in the draft, so the
             // save writes its row inside the same transaction as the rest of the entry.
             _pRecording ?? string.Empty,
@@ -73,47 +69,39 @@ public partial class PWindow
         PPronunciation.Text = draft.LEntryDraftPronunciation;
         PInputLangcodeShow(draft.LEntryDraftLanguage);
 
-        _pSenseList.Clear();
-        foreach (LSenseDraft sense in draft.LEntryDraftSenses)
-        {
-            _pSenseList.Add(new PInputCard("Sense", _pSenseList.Count + 1)
-            {
-                PInputCardDefinition = sense.LSenseDraftDefinition,
-                PInputCardExample = sense.LSenseDraftExample,
-                PInputCardSituation = sense.LSenseDraftSituation,
-                PInputCardSynonym = sense.LSenseDraftSynonym,
-                PInputCardTag = sense.LSenseDraftTag
-            });
-        }
-
-        // An entry saved with no cards still shows one empty card: the panel is an editor, and an
-        // editor with nothing to type into is not a state the form has.
-        if (_pSenseList.Count == 0)
-        {
-            _pSenseList.Add(new PInputCard("Sense", 1));
-        }
-
-        _pCollocationList.Clear();
-        foreach (LCollocationDraft collocation in draft.LEntryDraftCollocations)
-        {
-            _pCollocationList.Add(new PInputCard("Collocation", _pCollocationList.Count + 1)
-            {
-                PInputCardExpression = collocation.LCollocationDraftExpression,
-                PInputCardDefinition = collocation.LCollocationDraftMeaning,
-                PInputCardExample = collocation.LCollocationDraftExample,
-                PInputCardSituation = collocation.LCollocationDraftSituation,
-                PInputCardSynonym = collocation.LCollocationDraftSynonym,
-                PInputCardTag = collocation.LCollocationDraftTag
-            });
-        }
-
-        if (_pCollocationList.Count == 0)
-        {
-            _pCollocationList.Add(new PInputCard("Collocation", 1));
-        }
+        PInputCardShow(_pSenseList, "Sense", draft.LEntryDraftSenses);
+        PInputCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations);
 
         PInputNoteShow(draft.LEntryDraftNote);
         PInputRecordingShow(draft);
+    }
+
+    // The inverse of PInputCardRead, for either list. An entry saved with no cards still shows one empty
+    // card: the panel is an editor, and an editor with nothing to type into is not a state the form has.
+    private static void PInputCardShow(
+        ObservableCollection<PInputCard> cards,
+        string prefix,
+        IReadOnlyList<LCardDraft> drafts)
+    {
+        cards.Clear();
+        foreach (LCardDraft draft in drafts)
+        {
+            cards.Add(new PInputCard(prefix, cards.Count + 1)
+            {
+                PTitle = draft.LCardDraftTitle,
+                PInputCardExpression = draft.LCardDraftExpression,
+                PInputCardDefinition = draft.LCardDraftMeaning,
+                PInputCardExample = PInputFieldFormat(draft.LCardDraftExample),
+                PInputCardSituation = PInputFieldFormat(draft.LCardDraftSituation),
+                PInputCardSynonym = draft.LCardDraftSynonym,
+                PInputCardTag = PInputTagFormat(draft.LCardDraftTag)
+            });
+        }
+
+        if (cards.Count == 0)
+        {
+            cards.Add(new PInputCard(prefix, 1));
+        }
     }
 
     // Puts the note back as one paragraph of plain text, which is what the note was read out as.
@@ -168,10 +156,9 @@ public partial class PWindow
         // next entry is typed into.
         PRecordingClear();
 
-        _pSenseList.Clear();
-        _pSenseList.Add(new PInputCard("Sense", 1));
-        _pCollocationList.Clear();
-        _pCollocationList.Add(new PInputCard("Collocation", 1));
+        // No cards to show is the empty form, which is one empty card of each kind.
+        PInputCardShow(_pSenseList, "Sense", []);
+        PInputCardShow(_pCollocationList, "Collocation", []);
 
         PNoteContents.Document.Blocks.Clear();
         // Clearing the document does not always route through the TextChanged handler, so the
@@ -179,44 +166,66 @@ public partial class PWindow
         PNotePlaceholder.Visibility = Visibility.Visible;
     }
 
-    private IReadOnlyList<LSenseDraft> PInputSenseRead()
+    // The one read path for both card lists: a Meaning card and a Collocation card are the same card,
+    // so they are read into the same value. A Meaning card's Expression stays empty — its template has
+    // no Expression control, and no writer looks at the field for a sense.
+    private IReadOnlyList<LCardDraft> PInputCardRead(IReadOnlyList<PInputCard> cards)
     {
-        List<LSenseDraft> drafts = new(_pSenseList.Count);
-        for (int index = 0; index < _pSenseList.Count; index++)
+        List<LCardDraft> drafts = new(cards.Count);
+        foreach (PInputCard card in cards)
         {
-            PInputCard card = _pSenseList[index];
-            drafts.Add(new LSenseDraft(
-                index + 1,
+            drafts.Add(new LCardDraft(
+                // The card's own Title field, which is not PInputCardTitle: that one is the "Sense 1"
+                // header the template shows as a placeholder over this box.
+                card.PTitle,
+                card.PInputCardExpression,
+                // The Meaning field of a collocation card and the Definition field of a sense card are
+                // one property; one card class serves both kinds and the label differs, not the field.
                 card.PInputCardDefinition,
-                card.PInputCardExample,
-                card.PInputCardSituation,
+                PInputFieldRead(card.PInputCardExample),
+                PInputFieldRead(card.PInputCardSituation),
+                // No collocation control feeds a synonym: that template has no Synonym TextBox, so a
+                // collocation card always reads back empty here.
                 card.PInputCardSynonym,
-                card.PInputCardTag));
+                PInputTagParse(card.PInputCardTag)));
         }
 
         return drafts;
     }
 
-    private IReadOnlyList<LCollocationDraft> PInputCollocationRead()
+    // The Example and Situation boxes are single-value controls, so the set a card hands over holds the
+    // one thing typed, or nothing at all. Splitting a sentence would be guessing where one example ends.
+    private static IReadOnlyList<string> PInputFieldRead(string text)
     {
-        List<LCollocationDraft> drafts = new(_pCollocationList.Count);
-        for (int index = 0; index < _pCollocationList.Count; index++)
+        return string.IsNullOrWhiteSpace(text) ? [] : [text];
+    }
+
+    // The inverse, for a stored card: one box shows one value, so a card that references several shows
+    // the first. The rest stay in the store — a save writes a new entry, so nothing is overwritten.
+    private static string PInputFieldFormat(IReadOnlyList<string> texts)
+    {
+        return texts.Count == 0 ? string.Empty : texts[0];
+    }
+
+    // The Tags box is one control over a set: the label is Tags and the placeholder is Add tags, so
+    // commas separate one tag from the next and "verb, formal" is two tags rather than one oddly named
+    // one. Splitting is the shell's decision and stays here — the engine takes the list as given.
+    private static IReadOnlyList<string> PInputTagParse(string text)
+    {
+        List<string> tags = [];
+        foreach (string part in text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
-            PInputCard card = _pCollocationList[index];
-            drafts.Add(new LCollocationDraft(
-                index + 1,
-                card.PInputCardExpression,
-                // The collocation card's Meaning field is bound to PInputCardDefinition; one card
-                // class serves both kinds and the label differs, not the property.
-                card.PInputCardDefinition,
-                card.PInputCardExample,
-                card.PInputCardSituation,
-                // No collocation control feeds a synonym: the template has no Synonym TextBox.
-                card.PInputCardSynonym,
-                card.PInputCardTag));
+            tags.Add(part);
         }
 
-        return drafts;
+        return tags;
+    }
+
+    // The inverse of PInputTagParse: the separator it splits on is the one the box is filled with, so a
+    // loaded card can be saved again unchanged.
+    private static string PInputTagFormat(IReadOnlyList<string> tags)
+    {
+        return string.Join(", ", tags);
     }
 
     private string PInputNoteRead()

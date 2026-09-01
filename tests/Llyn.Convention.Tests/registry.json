@@ -6,9 +6,9 @@
     "Feature", "Field", "Form", "Ghost", "Harvest", "Headline", "Headquarter", "Headword", "House", "Identity",
     "Index", "Indicator", "Inflection", "Input", "Inquiry", "Langcode", "Language", "List", "Listener", "Localization",
     "Logo", "Lookup", "Meaning", "Morphology", "Navigation", "Note", "Panel", "Playback", "Pronunciation", "Receiver",
-    "Recording", "Reference", "Relation", "Representation", "Revision", "Roof", "Schema", "Seeker", "Sense", "Settings",
-    "Situation", "Sound", "Source", "Specimen", "Speech", "Stack", "State", "Store", "Surface", "Syllable",
-    "Synonym", "Tag", "Theme", "Title", "Tombstone", "Translation", "Violation", "Window", "Workspace"
+    "Recording", "Reference", "Refusal", "Relation", "Representation", "Revision", "Roof", "Schema", "Seeker", "Sense",
+    "Settings", "Situation", "Sound", "Source", "Specimen", "Speech", "Stack", "State", "Store", "Surface",
+    "Syllable", "Synonym", "Tag", "Theme", "Title", "Tombstone", "Translation", "Violation", "Window", "Workspace"
   ],
   "verbs": [
     "Accept", "Add", "Adjust", "Append", "Apply", "Attach", "Build", "Cancel", "Change", "Check",

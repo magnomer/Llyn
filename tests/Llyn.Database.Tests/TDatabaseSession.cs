@@ -75,11 +75,11 @@ public sealed class TDatabaseSession
         LEntry entry = entries.LEntryCreate(
             new LEntry(string.Empty, "word", "en", null, null, null, null), [], []);
         LSense first = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, "one", null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
         LSense second = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, "two", null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
         LSense third = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, "three", null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
 
         Assert.Equal([0, 1, 2], senses.LSenseRead(entry.LEntryId).Select(sense => sense.LSensePosition));
 
@@ -101,9 +101,9 @@ public sealed class TDatabaseSession
         LEntry entry = entries.LEntryCreate(
             new LEntry(string.Empty, "word", "en", null, null, null, null), [], []);
         LSense first = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, "one", null, null, string.Empty));
-        senses.LSenseCreate(new LSense(string.Empty, entry.LEntryId, null, 0, "two", null, null, string.Empty));
-        senses.LSenseCreate(new LSense(string.Empty, entry.LEntryId, null, 0, "three", null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+        senses.LSenseCreate(new LSense(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+        senses.LSenseCreate(new LSense(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
 
         senses.LSenseDelete(first.LSenseId);
 
@@ -121,7 +121,7 @@ public sealed class TDatabaseSession
         LEntry entry = entries.LEntryCreate(
             new LEntry(string.Empty, "word", "en", null, null, null, null), [], []);
         LSense sense = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, null, null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, null, null, null, string.Empty));
         LTag formal = tags.LTagCreate(new LTag(string.Empty, "formal"));
         LTag archaic = tags.LTagCreate(new LTag(string.Empty, "archaic"));
         LTag rare = tags.LTagCreate(new LTag(string.Empty, "rare"));

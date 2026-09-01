@@ -24,12 +24,12 @@ public sealed class TEntrySave
             "wɜːd",
             "a note",
             [
-                new LSenseDraft(1, "the first meaning", string.Empty, string.Empty, string.Empty, string.Empty),
-                new LSenseDraft(2, "the second meaning", string.Empty, string.Empty, string.Empty, string.Empty),
+                new LCardDraft(string.Empty, string.Empty, "the first meaning", [], [], string.Empty, []),
+                new LCardDraft(string.Empty, string.Empty, "the second meaning", [], [], string.Empty, []),
             ],
             [
-                new LCollocationDraft(
-                    1, "in a word", "briefly", string.Empty, string.Empty, string.Empty, string.Empty),
+                new LCardDraft(
+                    string.Empty, "in a word", "briefly", [], [], string.Empty, []),
             ]));
 
         Assert.NotEmpty(entry.LEntryId);
@@ -81,9 +81,12 @@ public sealed class TEntrySave
             "English",
             string.Empty,
             string.Empty,
-            [new LSenseDraft(1, "a meaning", "he said a word", "conversation", "term", "spoken")],
-            [new LCollocationDraft(
-                1, "in a word", "briefly", "in a word, no", "summary", string.Empty, "written")]);
+            [new LCardDraft(
+                string.Empty, string.Empty, "a meaning", ["he said a word"], ["conversation"], "term",
+                ["spoken"])],
+            [new LCardDraft(
+                string.Empty, "in a word", "briefly", ["in a word, no"], ["summary"], string.Empty,
+                ["written"])]);
 
         LEntry entry = engine.LEngineEntrySave(draft);
 
@@ -145,8 +148,12 @@ public sealed class TEntrySave
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
-        Assert.Throws<InvalidOperationException>(() => engine.LEngineEntrySave(
+        // The refusal names its reason with a localization key, so the shell can present it in the
+        // interface language; the engine carries no sentence of its own.
+        LRefusal refusal = Assert.Throws<LRefusal>(() => engine.LEngineEntrySave(
             new LEntryDraft("   ", "English", string.Empty, string.Empty, [], [])));
+
+        Assert.Equal(LRefusal.LRefusalHeadword, refusal.LRefusalReason);
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
     }
@@ -167,7 +174,7 @@ public sealed class TEntrySave
             "English",
             string.Empty,
             "a note",
-            [new LSenseDraft(1, "a meaning", string.Empty, string.Empty, string.Empty, string.Empty)],
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [])],
             [])));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));

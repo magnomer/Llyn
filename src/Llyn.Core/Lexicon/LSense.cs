@@ -12,7 +12,8 @@ namespace Llyn.Core;
 /// <param name="LSenseEntryId">Owning entry id.</param>
 /// <param name="LSenseParentId">Parent Meaning id in the same entry, or <c>null</c> for a root Meaning.</param>
 /// <param name="LSensePosition">Order within its siblings under the same parent.</param>
-/// <param name="LSenseGloss">Optional short gloss.</param>
+/// <param name="LSenseTitle">Title typed on the Meaning card; <c>null</c> when none was typed.</param>
+/// <param name="LSenseGloss">Optional short gloss, unused by the input form.</param>
 /// <param name="LSenseDefinitionLanguage">Optional language the definition is written in.</param>
 /// <param name="LSenseDefinition">Single inline definition text; empty when unset.</param>
 /// <param name="LSenseLabels">Labels as JSON array text (for example <c>["figurative"]</c>).</param>
@@ -21,6 +22,7 @@ public sealed record LSense(
     string LSenseEntryId,
     string? LSenseParentId,
     int LSensePosition,
+    string? LSenseTitle,
     string? LSenseGloss,
     string? LSenseDefinitionLanguage,
     string? LSenseDefinition,

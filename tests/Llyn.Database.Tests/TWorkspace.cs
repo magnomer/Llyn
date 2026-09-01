@@ -55,6 +55,26 @@ internal sealed class TWorkspace : IDisposable
         return Convert.ToInt64(command.ExecuteScalar());
     }
 
+    /// <summary>
+    /// Runs one statement and returns its first column for every row, for a test that has to see a
+    /// column the store layer does not hand out — an association's position, say.
+    /// </summary>
+    public IReadOnlyList<long> TWorkspaceColumnRead(string sql)
+    {
+        using SqliteConnection connection = TWorkspaceConnectionRead();
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = sql;
+
+        List<long> values = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            values.Add(reader.GetInt64(0));
+        }
+
+        return values;
+    }
+
     /// <summary>Runs statements that set the database up in a shape the store layer would not produce.</summary>
     public void TWorkspaceScriptRun(string sql)
     {

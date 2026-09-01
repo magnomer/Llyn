@@ -191,6 +191,50 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void AVersionFourteenDatabaseGainsBothTitleColumnsWithoutLosingARow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        // A database in the version-14 shape: neither card table had a title column, and both hold a
+        // row. CREATE TABLE IF NOT EXISTS never reaches an existing table, so only the step adds them.
+        workspace.TWorkspaceScriptRun(
+            """
+            INSERT INTO entry (id, headword, language) VALUES ('e1', 'word', 'en');
+            INSERT INTO sense (id, entry_id, position, labels) VALUES ('s1', 'e1', 0, '');
+            INSERT INTO collocation (id, entry_id, position, expression)
+            VALUES ('c1', 'e1', 0, 'in a word');
+
+            ALTER TABLE sense DROP COLUMN title;
+            ALTER TABLE collocation DROP COLUMN title;
+            UPDATE schema_version SET version = 14;
+            """);
+
+        workspace.TWorkspaceDatabase.LDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+
+        // Both tables end up the same shape for this field, and both rows survive with a NULL title.
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('sense') WHERE name = 'title';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('collocation') WHERE name = 'title';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense WHERE id = 's1' AND title IS NULL;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM collocation WHERE id = 'c1' AND expression = 'in a word' "
+                + "AND title IS NULL;"));
+    }
+
+    [Fact]
     public void ADatabaseFromANewerBuildIsRefused()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

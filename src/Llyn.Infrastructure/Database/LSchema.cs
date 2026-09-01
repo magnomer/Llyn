@@ -126,6 +126,7 @@ public static class LSchema
                 entry_id TEXT NOT NULL,
                 parent_id TEXT,
                 position INTEGER NOT NULL,
+                title TEXT,
                 gloss TEXT,
                 definition_language TEXT,
                 definition TEXT,
@@ -245,6 +246,7 @@ public static class LSchema
                 id TEXT NOT NULL PRIMARY KEY,
                 entry_id TEXT NOT NULL,
                 position INTEGER NOT NULL,
+                title TEXT,
                 expression TEXT,
                 meaning TEXT,
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE

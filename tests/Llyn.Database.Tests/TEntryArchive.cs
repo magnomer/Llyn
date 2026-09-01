@@ -53,7 +53,7 @@ public sealed class TEntryArchive
             [new LForm(string.Empty, 0, "word", null, "headword")],
             []);
         LSense sense = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, "a meaning", null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
         LExample example = examples.LExampleCreate(
             new LExample(string.Empty, "en", "a sentence", null, null, []));
         links.LExampleSenseAttach(sense.LSenseId, example.LExampleId, 0);
@@ -82,7 +82,7 @@ public sealed class TEntryArchive
         LEntry origin = entries.LEntryCreate(
             new LEntry(string.Empty, "origin", "en", null, null, null, null), [], []);
         LSense sense = senses.LSenseCreate(
-            new LSense(string.Empty, origin.LEntryId, null, 0, null, null, null, string.Empty));
+            new LSense(string.Empty, origin.LEntryId, null, 0, null, null, null, null, string.Empty));
         relations.LRelationCreate(
             new LRelation(string.Empty, sense.LSenseId, 0, "synonym", null, null, target.LEntryId, null));
 
@@ -104,9 +104,9 @@ public sealed class TEntryArchive
         LEntry entry = entries.LEntryCreate(
             new LEntry(string.Empty, "word", "en", null, null, null, null), [], []);
         LSense first = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, "one", null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
         LSense second = senses.LSenseCreate(
-            new LSense(string.Empty, entry.LEntryId, null, 0, "two", null, null, string.Empty));
+            new LSense(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
         relations.LRelationCreate(
             new LRelation(string.Empty, first.LSenseId, 0, "related", null, null, null, second.LSenseId));
 
