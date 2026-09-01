@@ -12,12 +12,18 @@ namespace Llyn.Infrastructure;
 /// Deleting an inflection removes its features through the foreign-key cascade, and deleting the entry
 /// removes both. Only stable ids are stored here — feature and value display names are resolved from
 /// the morphology vocabulary (<see cref="LMorphologyArchive"/>).
+/// <para>
+/// Position is both the order and the key here: a feature names the inflection it belongs to by that
+/// number, so no single row is ever renumbered on its own. Removing or moving an inflection rewrites
+/// the entry's whole set instead, which keeps positions at <c>0 … n-1</c> and carries every feature
+/// along with its inflection.
+/// </para>
 /// </summary>
 public sealed class LInflectionArchive
 {
     private readonly LDatabase _lInflectionArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LInflectionArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -25,19 +31,20 @@ public sealed class LInflectionArchive
     }
 
     /// <summary>
-    /// Writes <paramref name="inflections"/> as ordered child rows under the entry identified by
-    /// <paramref name="entryId"/>, each with its features in list order. The whole write is one
-    /// transaction; the inflection and feature positions are assigned from list order.
+    /// Adds <paramref name="inflections"/> after the inflections the entry identified by
+    /// <paramref name="entryId"/> already has, each with its features in list order. The whole write is
+    /// one transaction, and the new positions continue the entry's existing numbering — so adding to an
+    /// entry that already has inflections extends the set rather than colliding with it.
     /// </summary>
-    public void LInflectionCreate(string entryId, IReadOnlyList<LInflection> inflections)
+    public void LInflectionAppend(string entryId, IReadOnlyList<LInflection> inflections)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
         ArgumentNullException.ThrowIfNull(inflections);
 
-        using SqliteConnection connection = _lInflectionArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
-        LInflectionInsert(connection, entryId, inflections);
-        transaction.Commit();
+        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+        LInflectionInsert(connection, entryId, inflections, LInflectionCountRead(connection, entryId));
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>Reads the entry's inflections, ordered by position, each carrying its ordered features.</summary>
@@ -45,8 +52,88 @@ public sealed class LInflectionArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
 
-        using SqliteConnection connection = _lInflectionArchiveDatabase.LDatabaseRead();
+        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
+        return LInflectionSetRead(session.LDatabaseSessionConnection, entryId);
+    }
 
+    /// <summary>
+    /// Replaces the entry's inflections with <paramref name="inflections"/> in list order: existing
+    /// inflection rows are cleared (their features cascade) and the new set written, so reordering
+    /// rewrites positions while the entry id stays fixed.
+    /// </summary>
+    public void LInflectionSet(string entryId, IReadOnlyList<LInflection> inflections)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentNullException.ThrowIfNull(inflections);
+
+        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+        LInflectionClear(connection, entryId);
+        LInflectionInsert(connection, entryId, inflections, 0);
+        session.LDatabaseSessionCommit();
+    }
+
+    /// <summary>
+    /// Deletes the single inflection at <paramref name="position"/> under <paramref name="entryId"/> and
+    /// closes the gap it leaves: the inflections that remain keep their order, are renumbered
+    /// <c>0 … n-1</c>, and their features move with them. Nothing happens when the entry has no
+    /// inflection at that position.
+    /// </summary>
+    public void LInflectionDelete(string entryId, int position)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+
+        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        List<LInflection> remaining = new(LInflectionSetRead(connection, entryId));
+        int index = remaining.FindIndex(inflection => inflection.LInflectionPosition == position);
+        if (index < 0)
+        {
+            return;
+        }
+
+        remaining.RemoveAt(index);
+        LInflectionClear(connection, entryId);
+        LInflectionInsert(connection, entryId, remaining, 0);
+
+        session.LDatabaseSessionCommit();
+    }
+
+    /// <summary>
+    /// Moves the inflection at <paramref name="position"/> under <paramref name="entryId"/> to
+    /// <paramref name="target"/>, rewriting the whole set so positions stay <c>0 … n-1</c> and every
+    /// feature follows its inflection. A target outside the set is clamped into it, and nothing moves
+    /// when the entry has no inflection at that position.
+    /// </summary>
+    public void LInflectionMove(string entryId, int position, int target)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+
+        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        List<LInflection> ordered = new(LInflectionSetRead(connection, entryId));
+        int index = ordered.FindIndex(inflection => inflection.LInflectionPosition == position);
+        if (index < 0)
+        {
+            return;
+        }
+
+        LInflection moved = ordered[index];
+        ordered.RemoveAt(index);
+        ordered.Insert(Math.Clamp(target, 0, ordered.Count), moved);
+
+        LInflectionClear(connection, entryId);
+        LInflectionInsert(connection, entryId, ordered, 0);
+
+        session.LDatabaseSessionCommit();
+    }
+
+    // The entry's inflections in order on a connection the caller already holds: one query for the
+    // inflections and one for every feature of all of them, rather than a round-trip per inflection.
+    private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, string entryId)
+    {
         List<(int Position, string Text, string? Local, string? SpeechId)> rows = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -68,6 +155,9 @@ public sealed class LInflectionArchive
             }
         }
 
+        IReadOnlyDictionary<int, IReadOnlyList<LFeature>> features =
+            LInflectionFeatureRead(connection, entryId);
+
         List<LInflection> inflections = [];
         foreach ((int position, string text, string? local, string? speechId) in rows)
         {
@@ -77,75 +167,60 @@ public sealed class LInflectionArchive
                 text,
                 local,
                 speechId,
-                LInflectionFeatureRead(connection, entryId, position)));
+                features.TryGetValue(position, out IReadOnlyList<LFeature>? found) ? found : []));
         }
 
         return inflections;
     }
 
-    /// <summary>
-    /// Replaces the entry's inflections with <paramref name="inflections"/> in list order: existing
-    /// inflection rows are cleared (their features cascade) and the new set written, so reordering
-    /// rewrites positions while the entry id stays fixed.
-    /// </summary>
-    public void LInflectionSet(string entryId, IReadOnlyList<LInflection> inflections)
+    // How many inflections the entry already has, so an append continues its numbering.
+    private static int LInflectionCountRead(SqliteConnection connection, string entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
-        ArgumentNullException.ThrowIfNull(inflections);
-
-        using SqliteConnection connection = _lInflectionArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
-        LInflectionClear(connection, entryId);
-        LInflectionInsert(connection, entryId, inflections);
-        transaction.Commit();
-    }
-
-    /// <summary>
-    /// Deletes the single inflection at <paramref name="position"/> under <paramref name="entryId"/>.
-    /// Its features are removed by the foreign-key cascade; other inflections are untouched.
-    /// </summary>
-    public void LInflectionDelete(string entryId, int position)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
-
-        using SqliteConnection connection = _lInflectionArchiveDatabase.LDatabaseRead();
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM inflection WHERE entry_id = $entry AND position = $position;";
+        command.CommandText = "SELECT COUNT(*) FROM inflection WHERE entry_id = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
-        command.Parameters.AddWithValue("$position", position);
-        command.ExecuteNonQuery();
+        return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    private static IReadOnlyList<LFeature> LInflectionFeatureRead(
-        SqliteConnection connection, string entryId, int inflectionPosition)
+    // Every feature of every inflection the entry has, in one query, grouped by the inflection position
+    // it belongs to.
+    private static IReadOnlyDictionary<int, IReadOnlyList<LFeature>> LInflectionFeatureRead(
+        SqliteConnection connection, string entryId)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT feature_id, value_id
-            FROM inflection_feature
-            WHERE entry_id = $entry AND inflection_position = $inflection
-            ORDER BY position;
+            SELECT inflection_position, feature_id, value_id
+            FROM inflection_feature WHERE entry_id = $entry
+            ORDER BY inflection_position, position;
             """;
         command.Parameters.AddWithValue("$entry", entryId);
-        command.Parameters.AddWithValue("$inflection", inflectionPosition);
 
-        List<LFeature> features = [];
+        Dictionary<int, IReadOnlyList<LFeature>> grouped = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            features.Add(new LFeature(reader.GetString(0), reader.GetString(1)));
+            int position = reader.GetInt32(0);
+            if (!grouped.TryGetValue(position, out IReadOnlyList<LFeature>? existing))
+            {
+                existing = new List<LFeature>();
+                grouped[position] = existing;
+            }
+
+            ((List<LFeature>)existing).Add(new LFeature(reader.GetString(1), reader.GetString(2)));
         }
 
-        return features;
+        return grouped;
     }
 
     private static void LInflectionInsert(
-        SqliteConnection connection, string entryId, IReadOnlyList<LInflection> inflections)
+        SqliteConnection connection, string entryId, IReadOnlyList<LInflection> inflections, int first)
     {
-        for (int position = 0; position < inflections.Count; position++)
+        for (int index = 0; index < inflections.Count; index++)
         {
-            LInflection inflection = inflections[position];
+            LInflection inflection = inflections[index];
+            int position = first + index;
+
             using (SqliteCommand command = connection.CreateCommand())
             {
                 command.CommandText =

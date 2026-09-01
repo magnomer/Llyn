@@ -4,19 +4,23 @@ using Microsoft.Data.Sqlite;
 namespace Llyn.Infrastructure;
 
 /// <summary>
-/// Creates the database schema idempotently and records its version. Job01 defines only the runner
-/// and the version row; each later job adds its own <c>CREATE TABLE IF NOT EXISTS</c> statements
-/// here (or in a per-area file it owns) so the schema grows one job at a time without ever dropping
-/// what an earlier job built.
+/// Creates the database schema idempotently. Each job adds its own <c>CREATE TABLE IF NOT EXISTS</c>
+/// statements here (or in a per-area file it owns) so the schema grows one job at a time without ever
+/// dropping what an earlier job built.
+/// <para>
+/// Creating a table is only half of it. <c>IF NOT EXISTS</c> leaves an existing table untouched, so a
+/// change to a table an earlier build already created is carried by <see cref="LSchemaMigration"/>,
+/// which also owns the version row; the lookup indexes live in <see cref="LSchemaIndex"/> and are
+/// created after the migration, because one of them cannot exist until the migration has cleaned the
+/// rows it indexes.
+/// </para>
 /// </summary>
 public static class LSchema
 {
-    /// <summary>The schema version this build produces. Later jobs raise it as they extend the schema.</summary>
-    private const long LSchemaVersion = 11;
-
     /// <summary>
-    /// Creates every table that does not yet exist and stamps the schema version. Safe to run on each
-    /// startup: existing tables and an existing version row are left as they are.
+    /// Creates every table that does not yet exist, migrates a database built by an earlier version,
+    /// and creates the lookup indexes. Safe to run on each startup: existing tables and an existing
+    /// version row are left as they are.
     /// </summary>
     public static void LSchemaCreate(SqliteConnection connection)
     {
@@ -26,14 +30,7 @@ public static class LSchema
 
         // Data-contract names (table and column identifiers) are persisted keys, so they stay
         // lowercase and independent of code member names.
-        command.CommandText =
-            """
-            CREATE TABLE IF NOT EXISTS schema_version (
-                version INTEGER NOT NULL
-            );
-            """;
-        command.ExecuteNonQuery();
-
+        //
         // The Entry root, its owned written forms and parts of speech, and the language-controlled POS
         // display vocabulary. Owned child rows carry an (entry_id, position) identity and cascade when
         // their Entry is deleted.
@@ -223,7 +220,8 @@ public static class LSchema
         command.ExecuteNonQuery();
 
         // The collocations an entry owns and the single Note it owns. A collocation is a stable-id row
-        // ordered within its entry, carrying an expression where a sense carries a definition; reordering
+        // ordered within its entry, carrying both an expression and the meaning that explains it — the
+        // card has a field for each — where a sense carries a definition; reordering
         // rewrites position only. A collocation's synonym is an interlink, not owned text: it uses the same
         // discriminated target model as a job05 relation — an Entry XOR a Meaning — with the XOR enforced by
         // a check constraint and each target column a checked foreign key, so the referenced row must exist
@@ -237,6 +235,7 @@ public static class LSchema
                 entry_id TEXT NOT NULL,
                 position INTEGER NOT NULL,
                 expression TEXT,
+                meaning TEXT,
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
             );
 
@@ -475,15 +474,10 @@ public static class LSchema
         // workspace row points at both entry and revision, so they are created last, in their own file.
         LSchemaRevision.LSchemaRevisionCreate(connection);
 
-        // The version row is written on a fresh database and raised on an existing one, so a database
-        // built by an earlier job reports the version whose tables it now actually has. The guard on
-        // the update keeps a newer database — one an older build opened — from being written backwards.
-        command.CommandText = "SELECT COUNT(*) FROM schema_version;";
-        long rows = Convert.ToInt64(command.ExecuteScalar());
-        command.CommandText = rows == 0
-            ? "INSERT INTO schema_version (version) VALUES ($version);"
-            : "UPDATE schema_version SET version = $version WHERE version < $version;";
-        command.Parameters.AddWithValue("$version", LSchemaVersion);
-        command.ExecuteNonQuery();
+        // Every table now exists. What an earlier build left in the wrong shape is corrected next, and
+        // only then are the indexes created: the unique position indexes cannot be built over rows that
+        // still hold the duplicates the migration removes.
+        LSchemaMigration.LSchemaMigrationApply(connection);
+        LSchemaIndex.LSchemaIndexCreate(connection);
     }
 }

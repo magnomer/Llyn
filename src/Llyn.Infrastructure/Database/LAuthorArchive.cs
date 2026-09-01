@@ -20,7 +20,7 @@ public sealed class LAuthorArchive
 {
     private readonly LDatabase _lAuthorArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LAuthorArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -38,13 +38,16 @@ public sealed class LAuthorArchive
 
         LAuthor stored = author with { LAuthorId = LIdentity.LIdentityCreate() };
 
-        using SqliteConnection connection = _lAuthorArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "INSERT INTO author (id, name) VALUES ($id, $name);";
-        command.Parameters.AddWithValue("$id", stored.LAuthorId);
-        command.Parameters.AddWithValue("$name", stored.LAuthorName);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "INSERT INTO author (id, name) VALUES ($id, $name);";
+            command.Parameters.AddWithValue("$id", stored.LAuthorId);
+            command.Parameters.AddWithValue("$name", stored.LAuthorName);
+            command.ExecuteNonQuery();
+        }
 
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -53,8 +56,8 @@ public sealed class LAuthorArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lAuthorArchiveDatabase.LDatabaseRead();
-        return LAuthorSingleRead(connection, id);
+        using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
+        return LAuthorSingleRead(session.LDatabaseSessionConnection, id);
     }
 
     /// <summary>
@@ -65,29 +68,23 @@ public sealed class LAuthorArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
 
-        using SqliteConnection connection = _lAuthorArchiveDatabase.LDatabaseRead();
-
-        List<string> ids = [];
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText =
-                "SELECT author_id FROM source_author WHERE source_id = $reference ORDER BY position;";
-            command.Parameters.AddWithValue("$reference", referenceId);
-            using SqliteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                ids.Add(reader.GetString(0));
-            }
-        }
+        using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT author.id, author.name
+            FROM source_author link
+            JOIN author ON author.id = link.author_id
+            WHERE link.source_id = $reference
+            ORDER BY link.position;
+            """;
+        command.Parameters.AddWithValue("$reference", referenceId);
 
         List<LAuthor> authors = [];
-        foreach (string id in ids)
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            LAuthor? author = LAuthorSingleRead(connection, id);
-            if (author is not null)
-            {
-                authors.Add(author);
-            }
+            authors.Add(new LAuthor(reader.GetString(0), reader.GetString(1)));
         }
 
         return authors;
@@ -95,7 +92,8 @@ public sealed class LAuthorArchive
 
     /// <summary>
     /// Rewrites the name of the Author identified by <paramref name="author"/>'s id. The id and every
-    /// Reference crediting it are untouched, so a rename never changes where the Author appears.
+    /// Reference crediting it are untouched, so a rename never changes where the Author appears. Throws
+    /// when no Author carries that id.
     /// </summary>
     public void LAuthorUpdate(LAuthor author)
     {
@@ -103,24 +101,34 @@ public sealed class LAuthorArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(author.LAuthorId);
         ArgumentException.ThrowIfNullOrWhiteSpace(author.LAuthorName);
 
-        using SqliteConnection connection = _lAuthorArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "UPDATE author SET name = $name WHERE id = $id;";
-        command.Parameters.AddWithValue("$name", author.LAuthorName);
-        command.Parameters.AddWithValue("$id", author.LAuthorId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "UPDATE author SET name = $name WHERE id = $id;";
+            command.Parameters.AddWithValue("$name", author.LAuthorName);
+            command.Parameters.AddWithValue("$id", author.LAuthorId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Author carries the id '{author.LAuthorId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
     /// Deletes the Author identified by <paramref name="id"/>. Guarded: while any Reference still
     /// credits the Author, nothing is deleted and an <see cref="InvalidOperationException"/> is thrown —
-    /// detach the Author from every Reference first. Deleting an Author never deletes a Reference.
+    /// detach the Author from every Reference first. Deleting an Author never deletes a Reference. The
+    /// guard and the delete share one transaction, so nothing can start crediting the Author between
+    /// them.
     /// </summary>
     public void LAuthorDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lAuthorArchiveDatabase.LDatabaseRead();
+        using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand guard = connection.CreateCommand())
         {
@@ -134,10 +142,14 @@ public sealed class LAuthorArchive
             }
         }
 
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM author WHERE id = $id;";
-        command.Parameters.AddWithValue("$id", id);
-        command.ExecuteNonQuery();
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM author WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     private static LAuthor? LAuthorSingleRead(SqliteConnection connection, string id)

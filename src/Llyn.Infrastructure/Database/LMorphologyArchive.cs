@@ -14,7 +14,7 @@ public sealed class LMorphologyArchive
 {
     private readonly LDatabase _lMorphologyArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LMorphologyArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -29,27 +29,31 @@ public sealed class LMorphologyArchive
     {
         ArgumentNullException.ThrowIfNull(morphology);
 
-        using SqliteConnection connection = _lMorphologyArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            INSERT INTO morphology_value
-                (language, part_of_speech_id, feature_id, feature_display_name,
-                 value_id, value_display_name, position)
-            VALUES ($language, $speech, $feature, $featureName, $value, $valueName, $position)
-            ON CONFLICT (language, part_of_speech_id, feature_id, value_id)
-            DO UPDATE SET feature_display_name = excluded.feature_display_name,
-                          value_display_name = excluded.value_display_name,
-                          position = excluded.position;
-            """;
-        command.Parameters.AddWithValue("$language", morphology.LMorphologyLanguage);
-        command.Parameters.AddWithValue("$speech", morphology.LMorphologySpeechId);
-        command.Parameters.AddWithValue("$feature", morphology.LMorphologyFeatureId);
-        command.Parameters.AddWithValue("$featureName", morphology.LMorphologyFeatureName);
-        command.Parameters.AddWithValue("$value", morphology.LMorphologyValueId);
-        command.Parameters.AddWithValue("$valueName", morphology.LMorphologyValueName);
-        command.Parameters.AddWithValue("$position", morphology.LMorphologyPosition);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lMorphologyArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                INSERT INTO morphology_value
+                    (language, part_of_speech_id, feature_id, feature_display_name,
+                     value_id, value_display_name, position)
+                VALUES ($language, $speech, $feature, $featureName, $value, $valueName, $position)
+                ON CONFLICT (language, part_of_speech_id, feature_id, value_id)
+                DO UPDATE SET feature_display_name = excluded.feature_display_name,
+                              value_display_name = excluded.value_display_name,
+                              position = excluded.position;
+                """;
+            command.Parameters.AddWithValue("$language", morphology.LMorphologyLanguage);
+            command.Parameters.AddWithValue("$speech", morphology.LMorphologySpeechId);
+            command.Parameters.AddWithValue("$feature", morphology.LMorphologyFeatureId);
+            command.Parameters.AddWithValue("$featureName", morphology.LMorphologyFeatureName);
+            command.Parameters.AddWithValue("$value", morphology.LMorphologyValueId);
+            command.Parameters.AddWithValue("$valueName", morphology.LMorphologyValueName);
+            command.Parameters.AddWithValue("$position", morphology.LMorphologyPosition);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
@@ -64,8 +68,8 @@ public sealed class LMorphologyArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(featureId);
         ArgumentException.ThrowIfNullOrWhiteSpace(valueId);
 
-        using SqliteConnection connection = _lMorphologyArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lMorphologyArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT feature_display_name, value_display_name, position

@@ -11,12 +11,18 @@ namespace Llyn.Infrastructure;
 /// validated before the row is written. Reordering rewrites a sense's <c>position</c> only, so ids never
 /// change. Deleting a sense removes its subordinate senses through the foreign-key cascade, and deleting
 /// the entry removes the whole tree.
+/// <para>
+/// Sibling order is a unique index, so a position is never written one row at a time: a new sense is
+/// appended to the end of its sibling group, and <see cref="LSenseMove"/> renumbers the whole group
+/// through <see cref="LDatabaseOrder"/>. Updating a sense therefore changes its content and nothing
+/// about where it sits.
+/// </para>
 /// </summary>
 public sealed class LSenseArchive
 {
     private readonly LDatabase _lSenseArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LSenseArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -24,22 +30,26 @@ public sealed class LSenseArchive
     }
 
     /// <summary>
-    /// Inserts <paramref name="sense"/> with a fresh opaque id and returns the stored sense with that id
-    /// filled in. When it names a parent, the parent must be an existing sense in the same entry;
-    /// otherwise an <see cref="InvalidOperationException"/> is thrown before anything is written.
+    /// Inserts <paramref name="sense"/> with a fresh opaque id at the end of its sibling group and
+    /// returns the stored sense with that id and its assigned position filled in. When it names a
+    /// parent, the parent must be an existing sense in the same entry; otherwise an
+    /// <see cref="InvalidOperationException"/> is thrown before anything is written.
     /// </summary>
     public LSense LSenseCreate(LSense sense)
     {
         ArgumentNullException.ThrowIfNull(sense);
         ArgumentException.ThrowIfNullOrWhiteSpace(sense.LSenseEntryId);
 
-        string id = LIdentity.LIdentityCreate();
-        LSense stored = sense with { LSenseId = id };
+        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        using SqliteConnection connection = _lSenseArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        LSenseParentValidate(connection, sense.LSenseEntryId, sense.LSenseParentId);
 
-        LSenseParentValidate(connection, stored.LSenseEntryId, stored.LSenseParentId);
+        LSense stored = sense with
+        {
+            LSenseId = LIdentity.LIdentityCreate(),
+            LSensePosition = LSenseSiblingRead(connection, sense.LSenseEntryId, sense.LSenseParentId).Count,
+        };
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -59,7 +69,7 @@ public sealed class LSenseArchive
             command.ExecuteNonQuery();
         }
 
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -72,8 +82,8 @@ public sealed class LSenseArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
 
-        using SqliteConnection connection = _lSenseArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT id, entry_id, parent_id, position, gloss, definition_language, definition, labels
@@ -101,39 +111,72 @@ public sealed class LSenseArchive
     }
 
     /// <summary>
-    /// Updates the gloss, definition (with its language), labels, and position of the sense identified by
-    /// <paramref name="sense"/>'s id. The id, entry, and parent link are untouched, so this covers both
-    /// editing a Meaning's definition and reordering it among its siblings.
+    /// Updates the gloss, definition (with its language), and labels of the sense identified by
+    /// <paramref name="sense"/>'s id. The id, entry, parent link, and position are untouched — where a
+    /// Meaning sits among its siblings is changed by <see cref="LSenseMove"/>, which has to renumber the
+    /// whole group. Throws when no sense carries that id.
     /// </summary>
     public void LSenseUpdate(LSense sense)
     {
         ArgumentNullException.ThrowIfNull(sense);
         ArgumentException.ThrowIfNullOrWhiteSpace(sense.LSenseId);
 
-        using SqliteConnection connection = _lSenseArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            UPDATE sense
-            SET gloss = $gloss, definition_language = $language, definition = $definition,
-                labels = $labels, position = $position
-            WHERE id = $id;
-            """;
-        command.Parameters.AddWithValue("$gloss", (object?)sense.LSenseGloss ?? DBNull.Value);
-        command.Parameters.AddWithValue("$language", (object?)sense.LSenseDefinitionLanguage ?? DBNull.Value);
-        command.Parameters.AddWithValue("$definition", (object?)sense.LSenseDefinition ?? DBNull.Value);
-        command.Parameters.AddWithValue("$labels", sense.LSenseLabels);
-        command.Parameters.AddWithValue("$position", sense.LSensePosition);
-        command.Parameters.AddWithValue("$id", sense.LSenseId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                UPDATE sense
+                SET gloss = $gloss, definition_language = $language, definition = $definition,
+                    labels = $labels
+                WHERE id = $id;
+                """;
+            command.Parameters.AddWithValue("$gloss", (object?)sense.LSenseGloss ?? DBNull.Value);
+            command.Parameters.AddWithValue("$language", (object?)sense.LSenseDefinitionLanguage ?? DBNull.Value);
+            command.Parameters.AddWithValue("$definition", (object?)sense.LSenseDefinition ?? DBNull.Value);
+            command.Parameters.AddWithValue("$labels", sense.LSenseLabels);
+            command.Parameters.AddWithValue("$id", sense.LSenseId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Meaning carries the id '{sense.LSenseId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    /// <summary>
+    /// Moves the sense identified by <paramref name="id"/> to <paramref name="position"/> among its
+    /// siblings, renumbering the whole group so positions stay <c>0 … n-1</c>. A position outside the
+    /// group is clamped into it. Nothing moves when no sense carries that id.
+    /// </summary>
+    public void LSenseMove(string id, int position)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        (string? entryId, string? parentId) = LSenseHolderRead(connection, id);
+        if (entryId is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<string> siblings = LSenseSiblingRead(connection, entryId, parentId);
+        IReadOnlyList<string> moved = LDatabaseOrder.LDatabaseOrderInsert(siblings, id, position);
+        LSenseSiblingNormalize(connection, entryId, parentId, moved);
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
     /// Deletes the sense identified by <paramref name="id"/> together with everything it owns: its
     /// inline definition field (columns of the row itself), the relations originating from it, its
     /// subordinate senses with the same treatment applied down the tree, and its example, tag, and
-    /// situation association rows. Sibling and ancestor senses are untouched, and the independent
-    /// Examples, Tags, and Situations it referenced are left standing — only the links go.
+    /// situation association rows. Sibling and ancestor senses are untouched and are renumbered so their
+    /// positions stay contiguous, and the independent Examples, Tags, and Situations it referenced are
+    /// left standing — only the links go.
     /// <para>
     /// Guarded where a cascade must not decide alone: while a relation outside the deleted subtree or
     /// any collocation synonym still points at one of these senses, nothing is deleted and an
@@ -145,8 +188,10 @@ public sealed class LSenseArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lSenseArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        (string? entryId, string? parentId) = LSenseHolderRead(connection, id);
 
         LSenseLinkValidate(connection, id);
         LSenseLinkClear(connection, id);
@@ -158,7 +203,12 @@ public sealed class LSenseArchive
             command.ExecuteNonQuery();
         }
 
-        transaction.Commit();
+        if (entryId is not null)
+        {
+            LSenseSiblingNormalize(connection, entryId, parentId, LSenseSiblingRead(connection, entryId, parentId));
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     // The senses this delete removes: the named one and every sense beneath it, walked with a
@@ -171,6 +221,49 @@ public sealed class LSenseArchive
             SELECT child.id FROM sense child JOIN subtree ON child.parent_id = subtree.id
         )
         """;
+
+    // The entry a sense belongs to and the parent it hangs from — the two values that name its sibling
+    // group. Both are null when no sense carries the id.
+    private static (string? Entry, string? Parent) LSenseHolderRead(SqliteConnection connection, string id)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT entry_id, parent_id FROM sense WHERE id = $id;";
+        command.Parameters.AddWithValue("$id", id);
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        if (!reader.Read())
+        {
+            return (null, null);
+        }
+
+        return (reader.GetString(0), reader.IsDBNull(1) ? null : reader.GetString(1));
+    }
+
+    // The ids of one sibling group in order. Root senses have no parent id to key on, so their group is
+    // the entry's parentless senses — the same group the ifnull() expression index treats as one.
+    private static IReadOnlyList<string> LSenseSiblingRead(
+        SqliteConnection connection, string entryId, string? parentId)
+    {
+        return parentId is null
+            ? LDatabaseOrder.LDatabaseOrderRead(
+                connection, "sense", "entry_id = $owner AND parent_id IS NULL", entryId, "id")
+            : LDatabaseOrder.LDatabaseOrderRead(
+                connection, "sense", "parent_id = $owner", parentId, "id");
+    }
+
+    private static void LSenseSiblingNormalize(
+        SqliteConnection connection, string entryId, string? parentId, IReadOnlyList<string> order)
+    {
+        if (parentId is null)
+        {
+            LDatabaseOrder.LDatabaseOrderNormalize(
+                connection, "sense", "entry_id = $owner AND parent_id IS NULL", entryId, "id", order);
+            return;
+        }
+
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            connection, "sense", "parent_id = $owner", parentId, "id", order);
+    }
 
     // Counts the links reaching the subtree from outside it: a relation held by a sense that survives,
     // and any collocation synonym — a collocation is not deleted when a sense is, so every synonym

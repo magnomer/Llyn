@@ -11,12 +11,16 @@ namespace Llyn.Infrastructure;
 /// workspace database. An entry's id and timestamps are assigned here on creation; its forms and POS
 /// are written as ordered child rows, so reordering rewrites <c>position</c> only and never touches
 /// the entry id. Deleting an entry removes its forms and POS through the foreign-key cascade.
+/// <para>
+/// Every method runs inside a <see cref="LDatabaseSession"/>, so a caller that opens one of its own
+/// around several stores gets one transaction across all of them.
+/// </para>
 /// </summary>
 public sealed class LEntryArchive
 {
     private readonly LDatabase _lEntryArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LEntryArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -44,8 +48,8 @@ public sealed class LEntryArchive
             LEntryUpdatedUtc = now,
         };
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -67,7 +71,7 @@ public sealed class LEntryArchive
         LEntryFormInsert(connection, id, forms);
         LEntrySpeechInsert(connection, id, speeches);
 
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -76,8 +80,8 @@ public sealed class LEntryArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
@@ -106,8 +110,8 @@ public sealed class LEntryArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT entry_id, position, text, local, role
@@ -135,8 +139,8 @@ public sealed class LEntryArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT entry_id, position, value_id
@@ -159,7 +163,8 @@ public sealed class LEntryArchive
 
     /// <summary>
     /// Updates the headword and metadata of the entry identified by <paramref name="entry"/>'s id and
-    /// stamps a fresh modification timestamp. The id, forms, and POS are untouched.
+    /// stamps a fresh modification timestamp. The id, forms, and POS are untouched. Throws when no
+    /// entry carries that id, rather than reporting success for a write that reached nothing.
     /// </summary>
     public void LEntryUpdate(LEntry entry)
     {
@@ -168,22 +173,29 @@ public sealed class LEntryArchive
 
         string now = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            UPDATE entry
-            SET headword = $headword, language = $language, proficiency = $proficiency,
-                frequency = $frequency, updated_utc = $updated
-            WHERE id = $id;
-            """;
-        command.Parameters.AddWithValue("$headword", entry.LEntryHeadword);
-        command.Parameters.AddWithValue("$language", entry.LEntryLanguage);
-        command.Parameters.AddWithValue("$proficiency", (object?)entry.LEntryProficiency ?? DBNull.Value);
-        command.Parameters.AddWithValue("$frequency", (object?)entry.LEntryFrequency ?? DBNull.Value);
-        command.Parameters.AddWithValue("$updated", now);
-        command.Parameters.AddWithValue("$id", entry.LEntryId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                UPDATE entry
+                SET headword = $headword, language = $language, proficiency = $proficiency,
+                    frequency = $frequency, updated_utc = $updated
+                WHERE id = $id;
+                """;
+            command.Parameters.AddWithValue("$headword", entry.LEntryHeadword);
+            command.Parameters.AddWithValue("$language", entry.LEntryLanguage);
+            command.Parameters.AddWithValue("$proficiency", (object?)entry.LEntryProficiency ?? DBNull.Value);
+            command.Parameters.AddWithValue("$frequency", (object?)entry.LEntryFrequency ?? DBNull.Value);
+            command.Parameters.AddWithValue("$updated", now);
+            command.Parameters.AddWithValue("$id", entry.LEntryId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No entry carries the id '{entry.LEntryId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
@@ -195,11 +207,11 @@ public sealed class LEntryArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
         ArgumentNullException.ThrowIfNull(forms);
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
         LEntryChildClear(connection, "form", id);
         LEntryFormInsert(connection, id, forms);
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
@@ -211,11 +223,11 @@ public sealed class LEntryArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
         ArgumentNullException.ThrowIfNull(speeches);
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
         LEntryChildClear(connection, "part_of_speech", id);
         LEntrySpeechInsert(connection, id, speeches);
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
@@ -232,15 +244,15 @@ public sealed class LEntryArchive
     /// collocation synonym. While any such link exists nothing is deleted and an
     /// <see cref="InvalidOperationException"/> is thrown; remove those links first. Links pointing here
     /// from inside this entry are cleared as part of the delete, since they are owned by rows that are
-    /// going anyway.
+    /// going anyway. The guard and the delete share one transaction, so nothing can slip between them.
     /// </para>
     /// </summary>
     public void LEntryDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         LEntryLinkValidate(connection, id);
         LEntryLinkClear(connection, id);
@@ -252,7 +264,7 @@ public sealed class LEntryArchive
             command.ExecuteNonQuery();
         }
 
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
     }
 
     // Counts the lexical links that reach this entry from outside it: relations elsewhere whose target

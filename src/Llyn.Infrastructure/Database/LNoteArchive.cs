@@ -13,7 +13,7 @@ public sealed class LNoteArchive
 {
     private readonly LDatabase _lNoteArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LNoteArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -29,16 +29,20 @@ public sealed class LNoteArchive
         ArgumentNullException.ThrowIfNull(note);
         ArgumentException.ThrowIfNullOrWhiteSpace(note.LNoteEntryId);
 
-        using SqliteConnection connection = _lNoteArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            INSERT INTO note (entry_id, text) VALUES ($entry, $text)
-            ON CONFLICT (entry_id) DO UPDATE SET text = excluded.text;
-            """;
-        command.Parameters.AddWithValue("$entry", note.LNoteEntryId);
-        command.Parameters.AddWithValue("$text", note.LNoteText);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                INSERT INTO note (entry_id, text) VALUES ($entry, $text)
+                ON CONFLICT (entry_id) DO UPDATE SET text = excluded.text;
+                """;
+            command.Parameters.AddWithValue("$entry", note.LNoteEntryId);
+            command.Parameters.AddWithValue("$text", note.LNoteText);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>Reads the entry's Note, or <c>null</c> when it has none.</summary>
@@ -46,8 +50,8 @@ public sealed class LNoteArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
 
-        using SqliteConnection connection = _lNoteArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText = "SELECT entry_id, text FROM note WHERE entry_id = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
 
@@ -60,10 +64,14 @@ public sealed class LNoteArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
 
-        using SqliteConnection connection = _lNoteArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM note WHERE entry_id = $entry;";
-        command.Parameters.AddWithValue("$entry", entryId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM note WHERE entry_id = $entry;";
+            command.Parameters.AddWithValue("$entry", entryId);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
     }
 }

@@ -12,12 +12,17 @@ namespace Llyn.Infrastructure;
 /// Attaching and detaching therefore only ever write association rows: detaching leaves the Situation and
 /// its other references untouched, updating rewrites the visible title, description, and kind and never
 /// the id, and <see cref="LSituationDelete"/> refuses to run while any reference remains.
+/// <para>
+/// A referrer's order is a unique index, so attaching and detaching renumber that referrer's whole set
+/// through <see cref="LDatabaseOrder"/>: a caller names the index it wants and never has to find a free
+/// position or leave a gap behind.
+/// </para>
 /// </summary>
 public sealed class LSituationArchive
 {
     private readonly LDatabase _lSituationArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LSituationArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -35,19 +40,22 @@ public sealed class LSituationArchive
 
         LSituation stored = situation with { LSituationId = LIdentity.LIdentityCreate() };
 
-        using SqliteConnection connection = _lSituationArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            INSERT INTO situation (id, title, description, kind)
-            VALUES ($id, $title, $description, $kind);
-            """;
-        command.Parameters.AddWithValue("$id", stored.LSituationId);
-        command.Parameters.AddWithValue("$title", stored.LSituationTitle);
-        command.Parameters.AddWithValue("$description", (object?)stored.LSituationDescription ?? DBNull.Value);
-        command.Parameters.AddWithValue("$kind", (object?)stored.LSituationKind ?? DBNull.Value);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                INSERT INTO situation (id, title, description, kind)
+                VALUES ($id, $title, $description, $kind);
+                """;
+            command.Parameters.AddWithValue("$id", stored.LSituationId);
+            command.Parameters.AddWithValue("$title", stored.LSituationTitle);
+            command.Parameters.AddWithValue("$description", (object?)stored.LSituationDescription ?? DBNull.Value);
+            command.Parameters.AddWithValue("$kind", (object?)stored.LSituationKind ?? DBNull.Value);
+            command.ExecuteNonQuery();
+        }
 
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -59,8 +67,8 @@ public sealed class LSituationArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lSituationArchiveDatabase.LDatabaseRead();
-        return LSituationSingleRead(connection, id);
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        return LSituationSingleRead(session.LDatabaseSessionConnection, id);
     }
 
     /// <summary>Reads the Situations a Meaning references, in the order that Meaning gives them.</summary>
@@ -78,39 +86,49 @@ public sealed class LSituationArchive
     /// <summary>
     /// Rewrites the visible title, description, and kind of the Situation identified by
     /// <paramref name="situation"/>'s id. The id and every reference pointing at it are untouched, so an
-    /// update never changes where the Situation appears or in what order.
+    /// update never changes where the Situation appears or in what order. Throws when no Situation
+    /// carries that id.
     /// </summary>
     public void LSituationUpdate(LSituation situation)
     {
         ArgumentNullException.ThrowIfNull(situation);
         ArgumentException.ThrowIfNullOrWhiteSpace(situation.LSituationId);
 
-        using SqliteConnection connection = _lSituationArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            UPDATE situation
-            SET title = $title, description = $description, kind = $kind
-            WHERE id = $id;
-            """;
-        command.Parameters.AddWithValue("$title", situation.LSituationTitle);
-        command.Parameters.AddWithValue("$description", (object?)situation.LSituationDescription ?? DBNull.Value);
-        command.Parameters.AddWithValue("$kind", (object?)situation.LSituationKind ?? DBNull.Value);
-        command.Parameters.AddWithValue("$id", situation.LSituationId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                UPDATE situation
+                SET title = $title, description = $description, kind = $kind
+                WHERE id = $id;
+                """;
+            command.Parameters.AddWithValue("$title", situation.LSituationTitle);
+            command.Parameters.AddWithValue("$description", (object?)situation.LSituationDescription ?? DBNull.Value);
+            command.Parameters.AddWithValue("$kind", (object?)situation.LSituationKind ?? DBNull.Value);
+            command.Parameters.AddWithValue("$id", situation.LSituationId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Situation carries the id '{situation.LSituationId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
     /// Deletes the Situation identified by <paramref name="id"/>. Guarded: while any Meaning or
     /// Collocation still references the Situation, nothing is deleted and an
     /// <see cref="InvalidOperationException"/> is thrown — detach every reference first. Deleting a
-    /// Situation never deletes the rows that referenced it.
+    /// Situation never deletes the rows that referenced it. The guard and the delete share one
+    /// transaction, so nothing can attach the Situation between them.
     /// </summary>
     public void LSituationDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lSituationArchiveDatabase.LDatabaseRead();
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand guard = connection.CreateCommand())
         {
@@ -129,10 +147,14 @@ public sealed class LSituationArchive
             }
         }
 
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM situation WHERE id = $id;";
-        command.Parameters.AddWithValue("$id", id);
-        command.ExecuteNonQuery();
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM situation WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>References an existing Situation from a Meaning at <paramref name="position"/> in that Meaning's order.</summary>
@@ -163,6 +185,9 @@ public sealed class LSituationArchive
     // operations share one implementation each. Both identifiers are store-owned literals chosen by the
     // methods above, never caller input, so composing them into the statement text opens no injection
     // seam; every value still travels as a parameter.
+    //
+    // The row goes in beyond the end of the set and the whole set is then renumbered around it, so the
+    // requested index is honoured and an occupied position is no longer a unique-index failure.
     private void LSituationReferenceAttach(
         string table,
         string column,
@@ -173,14 +198,32 @@ public sealed class LSituationArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
         ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
 
-        using SqliteConnection connection = _lSituationArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            $"INSERT INTO {table} ({column}, situation_id, position) VALUES ($referrer, $situation, $position);";
-        command.Parameters.AddWithValue("$referrer", referrerId);
-        command.Parameters.AddWithValue("$situation", situationId);
-        command.Parameters.AddWithValue("$position", position);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        string scope = $"{column} = $owner";
+        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
+            connection, table, scope, referrerId, "situation_id");
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText =
+                $"""
+                INSERT INTO {table} ({column}, situation_id, position)
+                VALUES ($referrer, $situation, $position)
+                ON CONFLICT ({column}, situation_id) DO NOTHING;
+                """;
+            command.Parameters.AddWithValue("$referrer", referrerId);
+            command.Parameters.AddWithValue("$situation", situationId);
+            command.Parameters.AddWithValue("$position", current.Count);
+            command.ExecuteNonQuery();
+        }
+
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            connection, table, scope, referrerId, "situation_id",
+            LDatabaseOrder.LDatabaseOrderInsert(current, situationId, position));
+
+        session.LDatabaseSessionCommit();
     }
 
     private void LSituationReferenceDetach(string table, string column, string referrerId, string situationId)
@@ -188,40 +231,51 @@ public sealed class LSituationArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
         ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
 
-        using SqliteConnection connection = _lSituationArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND situation_id = $situation;";
-        command.Parameters.AddWithValue("$referrer", referrerId);
-        command.Parameters.AddWithValue("$situation", situationId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+        string scope = $"{column} = $owner";
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText =
+                $"DELETE FROM {table} WHERE {column} = $referrer AND situation_id = $situation;";
+            command.Parameters.AddWithValue("$referrer", referrerId);
+            command.Parameters.AddWithValue("$situation", situationId);
+            command.ExecuteNonQuery();
+        }
+
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            connection, table, scope, referrerId, "situation_id",
+            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "situation_id"));
+
+        session.LDatabaseSessionCommit();
     }
 
     private IReadOnlyList<LSituation> LSituationReferrerRead(string table, string column, string referrerId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
 
-        using SqliteConnection connection = _lSituationArchiveDatabase.LDatabaseRead();
-
-        List<string> ids = [];
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = $"SELECT situation_id FROM {table} WHERE {column} = $referrer ORDER BY position;";
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            using SqliteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                ids.Add(reader.GetString(0));
-            }
-        }
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            $"""
+            SELECT situation.id, situation.title, situation.description, situation.kind
+            FROM {table} link
+            JOIN situation ON situation.id = link.situation_id
+            WHERE link.{column} = $referrer
+            ORDER BY link.position;
+            """;
+        command.Parameters.AddWithValue("$referrer", referrerId);
 
         List<LSituation> situations = [];
-        foreach (string id in ids)
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            LSituation? situation = LSituationSingleRead(connection, id);
-            if (situation is not null)
-            {
-                situations.Add(situation);
-            }
+            situations.Add(new LSituation(
+                reader.GetString(0),
+                reader.GetString(1),
+                reader.IsDBNull(2) ? null : reader.GetString(2),
+                reader.IsDBNull(3) ? null : reader.GetString(3)));
         }
 
         return situations;

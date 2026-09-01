@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -17,6 +17,7 @@ public static class LLanguageLoader
 {
     private const string LLanguageLoaderFolder = "languages";
     private const string LLanguageLoaderFile = "source.json";
+    private const string LLanguageLoaderPrimary = "English";
 
     /// <summary>
     /// Scans the <c>languages/</c> folder for available packs, returning the name of every language
@@ -40,8 +41,25 @@ public static class LLanguageLoader
             }
         }
 
-        names.Sort(StringComparer.Ordinal);
+        LLanguageSort(names);
         return names;
+    }
+
+    // English always heads the language list; every other pack follows in ordinal order. The order is
+    // a rule about the language set, not a detail of one menu, so it is settled here, not in the UI.
+    private static void LLanguageSort(List<string> names)
+    {
+        names.Sort(static (left, right) =>
+        {
+            bool leftPrimary = string.Equals(left, LLanguageLoaderPrimary, StringComparison.OrdinalIgnoreCase);
+            bool rightPrimary = string.Equals(right, LLanguageLoaderPrimary, StringComparison.OrdinalIgnoreCase);
+            if (leftPrimary != rightPrimary)
+            {
+                return leftPrimary ? -1 : 1;
+            }
+
+            return string.CompareOrdinal(left, right);
+        });
     }
 
     public static LLanguage LLanguageLoaderLoad(string language)

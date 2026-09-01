@@ -13,12 +13,16 @@ namespace Llyn.Infrastructure;
 /// untouched, and <see cref="LExampleDelete"/> refuses to run while any reference remains. Translations
 /// are owned text, rewritten wholesale on update and removed with the Example; the single Source an
 /// Example cites is a reference only and is never created, updated, or deleted from here.
+/// <para>
+/// The association tables live in <see cref="LExampleLink"/>, which owns attaching, detaching, and
+/// reading an Example set by referrer; this file owns the Example itself.
+/// </para>
 /// </summary>
 public sealed class LExampleArchive
 {
     private readonly LDatabase _lExampleArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LExampleArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -42,12 +46,11 @@ public sealed class LExampleArchive
             LExampleTranslations = LExampleTranslationPrepare(example.LExampleTranslations),
         };
 
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.Transaction = transaction;
             command.CommandText =
                 """
                 INSERT INTO example (id, language, text, local, source_id)
@@ -61,8 +64,8 @@ public sealed class LExampleArchive
             command.ExecuteNonQuery();
         }
 
-        LExampleTranslationInsert(connection, transaction, stored.LExampleId, stored.LExampleTranslations);
-        transaction.Commit();
+        LExampleTranslationInsert(connection, stored.LExampleId, stored.LExampleTranslations);
+        session.LDatabaseSessionCommit();
 
         return stored;
     }
@@ -75,33 +78,17 @@ public sealed class LExampleArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
-        return LExampleSingleRead(connection, id);
-    }
-
-    /// <summary>Reads the Examples an Entry references, in the order that Entry gives them.</summary>
-    public IReadOnlyList<LExample> LExampleEntryRead(string entryId)
-    {
-        return LExampleReferrerRead("entry_example", "entry_id", entryId);
-    }
-
-    /// <summary>Reads the Examples a Meaning references, in the order that Meaning gives them.</summary>
-    public IReadOnlyList<LExample> LExampleSenseRead(string senseId)
-    {
-        return LExampleReferrerRead("sense_example", "sense_id", senseId);
-    }
-
-    /// <summary>Reads the Examples a Collocation references, in the order that Collocation gives them.</summary>
-    public IReadOnlyList<LExample> LExampleCollocationRead(string collocationId)
-    {
-        return LExampleReferrerRead("collocation_example", "collocation_id", collocationId);
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        return LExampleSingleRead(session.LDatabaseSessionConnection, id);
     }
 
     /// <summary>
     /// Rewrites the Example identified by <paramref name="example"/>'s id: its language, text, local
-    /// rendering, and Source reference, plus its translations, which are replaced wholesale with fresh
-    /// ids. The Example's own id and every reference pointing at it are untouched, so an update never
-    /// changes where the Example appears or in what order.
+    /// rendering, and Source reference, plus its translations, which are replaced wholesale. A
+    /// translation that arrives with an id keeps it, so an id a caller is holding stays valid; only a
+    /// translation without one is given a fresh id. The Example's own id and every reference pointing at
+    /// it are untouched, so an update never changes where the Example appears or in what order. Throws
+    /// when no Example carries that id.
     /// </summary>
     public void LExampleUpdate(LExample example)
     {
@@ -110,12 +97,11 @@ public sealed class LExampleArchive
 
         IReadOnlyList<LTranslation> translations = LExampleTranslationPrepare(example.LExampleTranslations);
 
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.Transaction = transaction;
             command.CommandText =
                 """
                 UPDATE example
@@ -127,49 +113,60 @@ public sealed class LExampleArchive
             command.Parameters.AddWithValue("$local", (object?)example.LExampleLocal ?? DBNull.Value);
             command.Parameters.AddWithValue("$source", (object?)example.LExampleSourceId ?? DBNull.Value);
             command.Parameters.AddWithValue("$id", example.LExampleId);
-            command.ExecuteNonQuery();
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Example carries the id '{example.LExampleId}'.");
+            }
         }
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.Transaction = transaction;
             command.CommandText = "DELETE FROM example_translation WHERE example_id = $example;";
             command.Parameters.AddWithValue("$example", example.LExampleId);
             command.ExecuteNonQuery();
         }
 
-        LExampleTranslationInsert(connection, transaction, example.LExampleId, translations);
-        transaction.Commit();
+        LExampleTranslationInsert(connection, example.LExampleId, translations);
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
     /// Sets or clears the single Source the Example identified by <paramref name="exampleId"/> cites —
     /// pass <c>null</c> for <paramref name="sourceId"/> to clear it. Only the reference moves: the Source
-    /// row itself is never created, changed, or removed here.
+    /// row itself is never created, changed, or removed here. Throws when no Example carries that id.
     /// </summary>
     public void LExampleSourceUpdate(string exampleId, string? sourceId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
 
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "UPDATE example SET source_id = $source WHERE id = $id;";
-        command.Parameters.AddWithValue("$source", (object?)sourceId ?? DBNull.Value);
-        command.Parameters.AddWithValue("$id", exampleId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "UPDATE example SET source_id = $source WHERE id = $id;";
+            command.Parameters.AddWithValue("$source", (object?)sourceId ?? DBNull.Value);
+            command.Parameters.AddWithValue("$id", exampleId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Example carries the id '{exampleId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
     /// Deletes the Example identified by <paramref name="id"/> together with its translations. Guarded:
     /// while any Entry, Meaning, or Collocation still references the Example, nothing is deleted and an
     /// <see cref="InvalidOperationException"/> is thrown — detach every reference first. A Source the
-    /// Example cited is left standing; only the reference to it disappears with the row.
+    /// Example cited is left standing; only the reference to it disappears with the row. The guard and
+    /// the delete share one transaction, so nothing can attach the Example between them.
     /// </summary>
     public void LExampleDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand guard = connection.CreateCommand())
         {
@@ -189,112 +186,21 @@ public sealed class LExampleArchive
             }
         }
 
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM example WHERE id = $id;";
-        command.Parameters.AddWithValue("$id", id);
-        command.ExecuteNonQuery();
-    }
-
-    /// <summary>References an existing Example from an Entry at <paramref name="position"/> in that Entry's order.</summary>
-    public void LExampleEntryAttach(string entryId, string exampleId, int position)
-    {
-        LExampleReferenceAttach("entry_example", "entry_id", entryId, exampleId, position);
-    }
-
-    /// <summary>References an existing Example from a Meaning at <paramref name="position"/> in that Meaning's order.</summary>
-    public void LExampleSenseAttach(string senseId, string exampleId, int position)
-    {
-        LExampleReferenceAttach("sense_example", "sense_id", senseId, exampleId, position);
-    }
-
-    /// <summary>References an existing Example from a Collocation at <paramref name="position"/> in that Collocation's order.</summary>
-    public void LExampleCollocationAttach(string collocationId, string exampleId, int position)
-    {
-        LExampleReferenceAttach("collocation_example", "collocation_id", collocationId, exampleId, position);
-    }
-
-    /// <summary>Removes an Entry's reference to an Example. The Example and its other references survive.</summary>
-    public void LExampleEntryDetach(string entryId, string exampleId)
-    {
-        LExampleReferenceDetach("entry_example", "entry_id", entryId, exampleId);
-    }
-
-    /// <summary>Removes a Meaning's reference to an Example. The Example and its other references survive.</summary>
-    public void LExampleSenseDetach(string senseId, string exampleId)
-    {
-        LExampleReferenceDetach("sense_example", "sense_id", senseId, exampleId);
-    }
-
-    /// <summary>Removes a Collocation's reference to an Example. The Example and its other references survive.</summary>
-    public void LExampleCollocationDetach(string collocationId, string exampleId)
-    {
-        LExampleReferenceDetach("collocation_example", "collocation_id", collocationId, exampleId);
-    }
-
-    // The three association tables differ only in their name and their referrer column, so the reference
-    // operations share one implementation each. Both identifiers are store-owned literals chosen by the
-    // methods above, never caller input, so composing them into the statement text opens no injection
-    // seam; every value still travels as a parameter.
-    private void LExampleReferenceAttach(string table, string column, string referrerId, string exampleId, int position)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
-
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            $"INSERT INTO {table} ({column}, example_id, position) VALUES ($referrer, $example, $position);";
-        command.Parameters.AddWithValue("$referrer", referrerId);
-        command.Parameters.AddWithValue("$example", exampleId);
-        command.Parameters.AddWithValue("$position", position);
-        command.ExecuteNonQuery();
-    }
-
-    private void LExampleReferenceDetach(string table, string column, string referrerId, string exampleId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
-
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND example_id = $example;";
-        command.Parameters.AddWithValue("$referrer", referrerId);
-        command.Parameters.AddWithValue("$example", exampleId);
-        command.ExecuteNonQuery();
-    }
-
-    private IReadOnlyList<LExample> LExampleReferrerRead(string table, string column, string referrerId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-
-        using SqliteConnection connection = _lExampleArchiveDatabase.LDatabaseRead();
-
-        List<string> ids = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"SELECT example_id FROM {table} WHERE {column} = $referrer ORDER BY position;";
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            using SqliteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                ids.Add(reader.GetString(0));
-            }
+            command.CommandText = "DELETE FROM example WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
         }
 
-        List<LExample> examples = [];
-        foreach (string id in ids)
-        {
-            LExample? example = LExampleSingleRead(connection, id);
-            if (example is not null)
-            {
-                examples.Add(example);
-            }
-        }
-
-        return examples;
+        session.LDatabaseSessionCommit();
     }
 
-    private static LExample? LExampleSingleRead(SqliteConnection connection, string id)
+    /// <summary>
+    /// Reads one Example with its translations on a connection the caller already holds. Shared with
+    /// <see cref="LExampleLink"/>, which resolves a whole referrer's set at once.
+    /// </summary>
+    internal static LExample? LExampleSingleRead(SqliteConnection connection, string id)
     {
         string language;
         string text;
@@ -320,18 +226,71 @@ public sealed class LExampleArchive
         return new LExample(id, language, text, local, source, LExampleTranslationRead(connection, id));
     }
 
-    private static IReadOnlyList<LTranslation> LExampleTranslationPrepare(IReadOnlyList<LTranslation> translations)
+    /// <summary>
+    /// Reads the translations of every Example a referrer names, in one query, grouped by Example id.
+    /// Reading them one Example at a time is what turns a referrer's set into a round-trip per row.
+    /// </summary>
+    internal static IReadOnlyDictionary<string, IReadOnlyList<LTranslation>> LExampleTranslationRead(
+        SqliteConnection connection, string table, string column, string referrerId)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            $"""
+            SELECT translation.id, translation.example_id, translation.language,
+                   translation.text, translation.position
+            FROM example_translation translation
+            JOIN {table} link ON link.example_id = translation.example_id
+            WHERE link.{column} = $referrer
+            ORDER BY translation.example_id, translation.position;
+            """;
+        command.Parameters.AddWithValue("$referrer", referrerId);
+
+        Dictionary<string, IReadOnlyList<LTranslation>> grouped = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            string exampleId = reader.GetString(1);
+            if (grouped.TryGetValue(exampleId, out IReadOnlyList<LTranslation>? existing) is false)
+            {
+                existing = new List<LTranslation>();
+                grouped[exampleId] = existing;
+            }
+
+            ((List<LTranslation>)existing).Add(new LTranslation(
+                reader.GetString(0),
+                reader.GetString(2),
+                reader.GetString(3),
+                reader.GetInt32(4)));
+        }
+
+        return grouped;
+    }
+
+    // A translation keeps the id it arrives with, so an id a caller already holds stays valid across an
+    // update; only one that has never been stored is given a fresh id. The position is not taken from
+    // the record at all — it is the index the caller put the translation at, assigned on insert, which
+    // is how every other ordered child in the schema works.
+    private static IReadOnlyList<LTranslation> LExampleTranslationPrepare(
+        IReadOnlyList<LTranslation> translations)
     {
         List<LTranslation> identified = [];
-        foreach (LTranslation translation in translations)
+        for (int position = 0; position < translations.Count; position++)
         {
-            identified.Add(translation with { LTranslationId = LIdentity.LIdentityCreate() });
+            LTranslation translation = translations[position];
+            identified.Add(translation with
+            {
+                LTranslationId = string.IsNullOrWhiteSpace(translation.LTranslationId)
+                    ? LIdentity.LIdentityCreate()
+                    : translation.LTranslationId,
+                LTranslationPosition = position,
+            });
         }
 
         return identified;
     }
 
-    private static IReadOnlyList<LTranslation> LExampleTranslationRead(SqliteConnection connection, string exampleId)
+    private static IReadOnlyList<LTranslation> LExampleTranslationRead(
+        SqliteConnection connection, string exampleId)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -358,14 +317,13 @@ public sealed class LExampleArchive
 
     private static void LExampleTranslationInsert(
         SqliteConnection connection,
-        SqliteTransaction transaction,
         string exampleId,
         IReadOnlyList<LTranslation> translations)
     {
-        foreach (LTranslation translation in translations)
+        for (int position = 0; position < translations.Count; position++)
         {
+            LTranslation translation = translations[position];
             using SqliteCommand command = connection.CreateCommand();
-            command.Transaction = transaction;
             command.CommandText =
                 """
                 INSERT INTO example_translation (id, example_id, language, text, position)
@@ -375,7 +333,7 @@ public sealed class LExampleArchive
             command.Parameters.AddWithValue("$example", exampleId);
             command.Parameters.AddWithValue("$language", translation.LTranslationLanguage);
             command.Parameters.AddWithValue("$text", translation.LTranslationText);
-            command.Parameters.AddWithValue("$position", translation.LTranslationPosition);
+            command.Parameters.AddWithValue("$position", position);
             command.ExecuteNonQuery();
         }
     }

@@ -28,9 +28,22 @@ public sealed class LEngine : IDisposable
     private LSettings _lEngineSettings;
     private LDatabase _lEngineDatabase;
 
+    /// <summary>Binds the engine to the workspace the pointer file records, creating it on first run.</summary>
     public LEngine()
+        : this(LWorkspaceRoot.LWorkspaceRootRead())
     {
-        _lEngineWorkspace = LWorkspaceRoot.LWorkspaceRootRead();
+    }
+
+    /// <summary>
+    /// Binds the engine to <paramref name="workspace"/> directly, without reading or rewriting the
+    /// recorded workspace pointer — the folder is given, so there is nothing to resolve. Changing the
+    /// user's workspace is <see cref="LEngineWorkspaceChange"/>; this only says which folder to open.
+    /// </summary>
+    public LEngine(string workspace)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
+
+        _lEngineWorkspace = workspace;
         _lEngineSettings = LSettingsLoader.LSettingsLoaderLoad(_lEngineWorkspace);
 
         // Initialize the database once the workspace is known, so the store is ready before any UI
@@ -139,6 +152,106 @@ public sealed class LEngine : IDisposable
         return new LEntryArchive(_lEngineDatabase).LEntryCreate(entry, forms, speeches);
     }
 
+    /// <summary>
+    /// Saves the whole input form as one new entry: the headword row, its senses and collocations in
+    /// card order, its note and pronunciation when they carry text, the revision recording the create,
+    /// and the workspace row moved onto that revision and that entry. Returns the stored entry with its
+    /// assigned id and timestamps.
+    /// <para>
+    /// A blank headword is refused before any connection opens, so a save that cannot be made costs
+    /// nothing. Everything after that runs inside one session, which is what makes a half-written entry
+    /// impossible: a failure at any write rolls back every write before it, leaving no entry row behind.
+    /// That is also why this is a single engine call — the shell has no way to compose a partial write
+    /// out of several of them.
+    /// </para>
+    /// <para>
+    /// Parts of speech are not written: <c>part_of_speech_value</c> is unseeded and the input panel has
+    /// no control for them. The example, situation, synonym, and tag text a card carries is not written
+    /// either — each is an independent entity reached through its own association, which is a later job.
+    /// </para>
+    /// </summary>
+    public LEntry LEngineEntrySave(LEntryDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+
+        if (string.IsNullOrWhiteSpace(draft.LEntryDraftHeadword))
+        {
+            throw new InvalidOperationException("An entry cannot be saved without a headword.");
+        }
+
+        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+
+        // The entry's language is the language-pack name, which is the key part_of_speech_value and
+        // morphology_value are already written against.
+        LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
+            new LEntry(
+                string.Empty,
+                draft.LEntryDraftHeadword,
+                draft.LEntryDraftLanguage,
+                null,
+                null,
+                null,
+                null),
+            forms: [],
+            speeches: []);
+
+        LSenseArchive senses = new(_lEngineDatabase);
+        foreach (LSenseDraft card in draft.LEntryDraftSenses)
+        {
+            // Each sense is appended, so card order becomes stored position.
+            senses.LSenseCreate(new LSense(
+                string.Empty,
+                entry.LEntryId,
+                null,
+                0,
+                null,
+                null,
+                card.LSenseDraftDefinition,
+                string.Empty));
+        }
+
+        LCollocationArchive collocations = new(_lEngineDatabase);
+        foreach (LCollocationDraft card in draft.LEntryDraftCollocations)
+        {
+            collocations.LCollocationCreate(new LCollocation(
+                string.Empty,
+                entry.LEntryId,
+                0,
+                card.LCollocationDraftExpression,
+                card.LCollocationDraftMeaning));
+        }
+
+        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftNote))
+        {
+            new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, draft.LEntryDraftNote));
+        }
+
+        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation))
+        {
+            new LPronunciationArchive(_lEngineDatabase).LPronunciationCreate(new LPronunciation(
+                string.Empty,
+                entry.LEntryId,
+                null,
+                draft.LEntryDraftPronunciation,
+                [],
+                []));
+        }
+
+        LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
+        LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+
+        LWorkspaceArchive workspace = new(_lEngineDatabase);
+        LWorkspaceState state = workspace.LWorkspaceStateRead();
+        workspace.LWorkspaceStateSave(state with
+        {
+            LWorkspaceStateLeft = entry.LEntryId,
+            LWorkspaceStateRevision = revision.LRevisionId,
+        });
+
+        session.LDatabaseSessionCommit();
+        return entry;
+    }
+
     /// <summary>Reads the entry for <paramref name="id"/>, or <c>null</c> when no entry has that id.</summary>
     public LEntry? LEngineEntryRead(string id)
     {
@@ -154,13 +267,22 @@ public sealed class LEngine : IDisposable
     /// The delete runs first, so a refused delete — an entry another entry still links to — records no
     /// history at all and throws its own message through.
     /// </para>
+    /// <para>
+    /// All four writes share one session, so they are one transaction: the deleted entry, the revision
+    /// recording it, the tombstone filed under that revision, and the workspace row moved onto it either
+    /// all land or none of them do. Without it a failure part-way would leave an entry deleted with no
+    /// tombstone naming it — history that no longer describes the file.
+    /// </para>
     /// </summary>
     public LRevision LEngineEntryDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        LEntry? deleted = new LEntryArchive(_lEngineDatabase).LEntryRead(id);
-        new LEntryArchive(_lEngineDatabase).LEntryDelete(id);
+        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+
+        LEntryArchive entries = new(_lEngineDatabase);
+        LEntry? deleted = entries.LEntryRead(id);
+        entries.LEntryDelete(id);
 
         LRevisionChange change = new(0, id, "entry", "delete", deleted?.LEntryHeadword);
         LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
@@ -170,6 +292,7 @@ public sealed class LEngine : IDisposable
         LWorkspaceState state = workspace.LWorkspaceStateRead();
         workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
+        session.LDatabaseSessionCommit();
         return revision;
     }
 

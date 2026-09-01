@@ -13,7 +13,7 @@ public sealed class LSpeechArchive
 {
     private readonly LDatabase _lSpeechArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LSpeechArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -28,20 +28,24 @@ public sealed class LSpeechArchive
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        using SqliteConnection connection = _lSpeechArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            INSERT INTO part_of_speech_value (language, value_id, display_name, position)
-            VALUES ($language, $value, $name, $position)
-            ON CONFLICT (language, value_id)
-            DO UPDATE SET display_name = excluded.display_name, position = excluded.position;
-            """;
-        command.Parameters.AddWithValue("$language", value.LSpeechValueLanguage);
-        command.Parameters.AddWithValue("$value", value.LSpeechValueId);
-        command.Parameters.AddWithValue("$name", value.LSpeechValueName);
-        command.Parameters.AddWithValue("$position", value.LSpeechValuePosition);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lSpeechArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                INSERT INTO part_of_speech_value (language, value_id, display_name, position)
+                VALUES ($language, $value, $name, $position)
+                ON CONFLICT (language, value_id)
+                DO UPDATE SET display_name = excluded.display_name, position = excluded.position;
+                """;
+            command.Parameters.AddWithValue("$language", value.LSpeechValueLanguage);
+            command.Parameters.AddWithValue("$value", value.LSpeechValueId);
+            command.Parameters.AddWithValue("$name", value.LSpeechValueName);
+            command.Parameters.AddWithValue("$position", value.LSpeechValuePosition);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
@@ -53,8 +57,8 @@ public sealed class LSpeechArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
         ArgumentException.ThrowIfNullOrWhiteSpace(valueId);
 
-        using SqliteConnection connection = _lSpeechArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lSpeechArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT display_name FROM part_of_speech_value

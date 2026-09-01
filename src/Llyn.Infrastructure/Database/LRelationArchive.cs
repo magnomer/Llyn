@@ -12,12 +12,17 @@ namespace Llyn.Infrastructure;
 /// The single-target rule is enforced before anything is written. Deleting the origin Meaning removes
 /// its relations and their target rows through the foreign-key cascade; the referenced Entry/Meaning is
 /// left intact.
+/// <para>
+/// Order within the origin Meaning is a unique index, so a position is never written one row at a time:
+/// a new relation is appended to the end, and <see cref="LRelationMove"/> renumbers the whole set
+/// through <see cref="LDatabaseOrder"/>.
+/// </para>
 /// </summary>
 public sealed class LRelationArchive
 {
     private readonly LDatabase _lRelationArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LRelationArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -25,9 +30,10 @@ public sealed class LRelationArchive
     }
 
     /// <summary>
-    /// Inserts <paramref name="relation"/> with a fresh opaque id and its single target row, returning the
-    /// stored relation with that id filled in. Exactly one of the target ids must be set; naming both or
-    /// neither throws an <see cref="InvalidOperationException"/> before anything is written.
+    /// Inserts <paramref name="relation"/> with a fresh opaque id and its single target row at the end of
+    /// its origin Meaning's order, returning the stored relation with that id and its assigned position
+    /// filled in. Exactly one of the target ids must be set; naming both or neither throws an
+    /// <see cref="InvalidOperationException"/> before anything is written.
     /// </summary>
     public LRelation LRelationCreate(LRelation relation)
     {
@@ -36,11 +42,14 @@ public sealed class LRelationArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(relation.LRelationType);
         LRelationTargetValidate(relation);
 
-        string id = LIdentity.LIdentityCreate();
-        LRelation stored = relation with { LRelationId = id };
+        using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        using SqliteConnection connection = _lRelationArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        LRelation stored = relation with
+        {
+            LRelationId = LIdentity.LIdentityCreate(),
+            LRelationPosition = LRelationSiblingRead(connection, relation.LRelationSenseId).Count,
+        };
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -60,7 +69,7 @@ public sealed class LRelationArchive
 
         LRelationTargetInsert(connection, stored);
 
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -73,8 +82,8 @@ public sealed class LRelationArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(senseId);
 
-        using SqliteConnection connection = _lRelationArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT r.id, r.sense_id, r.position, r.relation_type, r.label, r.labels,
@@ -106,9 +115,10 @@ public sealed class LRelationArchive
     }
 
     /// <summary>
-    /// Updates the type, label, labels, and position of the relation identified by
-    /// <paramref name="relation"/>'s id. The id, origin Meaning, and target are untouched, so this covers
-    /// retyping or relabelling a relation and reordering it among its siblings.
+    /// Updates the type, label, and labels of the relation identified by <paramref name="relation"/>'s
+    /// id. The id, origin Meaning, target, and position are untouched — where a relation sits among its
+    /// siblings is changed by <see cref="LRelationMove"/>, which has to renumber the whole set. Throws
+    /// when no relation carries that id.
     /// </summary>
     public void LRelationUpdate(LRelation relation)
     {
@@ -116,35 +126,98 @@ public sealed class LRelationArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(relation.LRelationId);
         ArgumentException.ThrowIfNullOrWhiteSpace(relation.LRelationType);
 
-        using SqliteConnection connection = _lRelationArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            UPDATE relation
-            SET relation_type = $type, label = $label, labels = $labels, position = $position
-            WHERE id = $id;
-            """;
-        command.Parameters.AddWithValue("$type", relation.LRelationType);
-        command.Parameters.AddWithValue("$label", (object?)relation.LRelationLabel ?? DBNull.Value);
-        command.Parameters.AddWithValue("$labels", (object?)relation.LRelationLabels ?? DBNull.Value);
-        command.Parameters.AddWithValue("$position", relation.LRelationPosition);
-        command.Parameters.AddWithValue("$id", relation.LRelationId);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                UPDATE relation
+                SET relation_type = $type, label = $label, labels = $labels
+                WHERE id = $id;
+                """;
+            command.Parameters.AddWithValue("$type", relation.LRelationType);
+            command.Parameters.AddWithValue("$label", (object?)relation.LRelationLabel ?? DBNull.Value);
+            command.Parameters.AddWithValue("$labels", (object?)relation.LRelationLabels ?? DBNull.Value);
+            command.Parameters.AddWithValue("$id", relation.LRelationId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No relation carries the id '{relation.LRelationId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    /// <summary>
+    /// Moves the relation identified by <paramref name="id"/> to <paramref name="position"/> among the
+    /// relations of its origin Meaning, renumbering the whole set so positions stay <c>0 … n-1</c>. A
+    /// position outside the set is clamped into it, and nothing moves when no relation carries that id.
+    /// </summary>
+    public void LRelationMove(string id, int position)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        string? senseId = LRelationHolderRead(connection, id);
+        if (senseId is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<string> order = LDatabaseOrder.LDatabaseOrderInsert(
+            LRelationSiblingRead(connection, senseId), id, position);
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            connection, "relation", "sense_id = $owner", senseId, "id", order);
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
     /// Deletes the relation identified by <paramref name="id"/>. Its target row is removed by the
-    /// foreign-key cascade; the referenced Entry/Meaning is untouched.
+    /// foreign-key cascade; the referenced Entry/Meaning is untouched. The relations left under the same
+    /// origin Meaning are renumbered so their positions stay contiguous.
     /// </summary>
     public void LRelationDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lRelationArchiveDatabase.LDatabaseRead();
+        using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        string? senseId = LRelationHolderRead(connection, id);
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM relation WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        if (senseId is not null)
+        {
+            LDatabaseOrder.LDatabaseOrderNormalize(
+                connection, "relation", "sense_id = $owner", senseId,
+                "id", LRelationSiblingRead(connection, senseId));
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    // The Meaning a relation hangs from, or null when no relation carries the id.
+    private static string? LRelationHolderRead(SqliteConnection connection, string id)
+    {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM relation WHERE id = $id;";
+        command.CommandText = "SELECT sense_id FROM relation WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
-        command.ExecuteNonQuery();
+        return command.ExecuteScalar() as string;
+    }
+
+    // The relations of one origin Meaning, in order.
+    private static IReadOnlyList<string> LRelationSiblingRead(SqliteConnection connection, string senseId)
+    {
+        return LDatabaseOrder.LDatabaseOrderRead(connection, "relation", "sense_id = $owner", senseId, "id");
     }
 
     private static void LRelationTargetValidate(LRelation relation)

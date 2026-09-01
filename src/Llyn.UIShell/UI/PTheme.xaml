@@ -1,4 +1,4 @@
-<ResourceDictionary
+﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -178,7 +178,17 @@
         </Setter>
     </Style>
 
+    <!-- Text inside an accent button. The button's white Foreground only reaches content by
+         inheritance, which the app-wide implicit TextBlock style (Theme.Ink) outranks, so the
+         accent styles below restate it as an implicit style of their own. -->
+    <Style x:Key="Theme.Text.Inverse" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
     <Style x:Key="Theme.Input.Primary" TargetType="Button" BasedOn="{StaticResource Theme.Input.Pill}">
+        <Style.Resources>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Inverse}" />
+        </Style.Resources>
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Background" Value="{StaticResource Theme.Accent}" />
         <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
@@ -207,13 +217,22 @@
         <Setter Property="Padding" Value="12,10" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
+        <!-- The rows sit on the raised popup ground, so they carry the same white card as the
+             status card and the downloader rows; the hover trigger below still repaints it. -->
+        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="PSurface" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="9">
+                    <Border
+                        x:Name="PSurface"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="10">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -238,6 +257,10 @@
     </Style>
 
     <Style x:Key="Theme.Popup.PrimaryAction" TargetType="Button" BasedOn="{StaticResource Theme.Input.Primary}">
+        <!-- Style.Resources are not carried across BasedOn, so the white text style is restated. -->
+        <Style.Resources>
+            <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Inverse}" />
+        </Style.Resources>
         <Setter Property="Width" Value="Auto" />
         <Setter Property="Height" Value="34" />
         <Setter Property="Padding" Value="12,0" />
@@ -312,7 +335,7 @@
 
     <Style x:Key="Theme.Input.Tab" TargetType="Button">
         <Setter Property="Width" Value="145" />
-        <Setter Property="Height" Value="61" />
+        <Setter Property="Height" Value="37" />
         <Setter Property="Padding" Value="18,0" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
         <Setter Property="FontSize" Value="14" />
@@ -324,11 +347,7 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="PSurface" Background="{TemplateBinding Background}" />
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}">
-                            <TextBlock.RenderTransform>
-                                <TranslateTransform Y="-5" />
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}" />
                         <Border x:Name="PIndicator" Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" CornerRadius="3,3,0,0" />
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -351,11 +370,7 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border Background="{TemplateBinding Background}" />
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}">
-                            <TextBlock.RenderTransform>
-                                <TranslateTransform Y="-5" />
-                            </TextBlock.RenderTransform>
-                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}" />
                         <Border Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="{StaticResource Theme.Accent}" CornerRadius="3,3,0,0" />
                     </Grid>
                 </ControlTemplate>

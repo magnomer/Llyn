@@ -28,6 +28,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Button icons ship the same way: Phosphor (regular weight) SVG files copied next to the
+         executable, so a glyph can be swapped or restyled without a recompile. SvgViewbox reads
+         them from icons/ under the application base directory. -->
+    <Content Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="..\..\localization\en.json" LogicalName="Llyn.UIShell.Localization.en.json" />
     <EmbeddedResource Include="..\..\localization\ko.json" LogicalName="Llyn.UIShell.Localization.ko.json" />
     <EmbeddedResource Include="..\..\themes\default.json" LogicalName="Llyn.UIShell.Themes.default.json" />

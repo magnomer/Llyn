@@ -18,7 +18,7 @@ public sealed class LPronunciationArchive
 {
     private readonly LDatabase _lPronunciationArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LPronunciationArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -46,8 +46,8 @@ public sealed class LPronunciationArchive
                 LPronunciationRepresentationBuild(id, pronunciation.LPronunciationRepresentations),
         };
 
-        using SqliteConnection connection = _lPronunciationArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -66,7 +66,7 @@ public sealed class LPronunciationArchive
         LPronunciationSyllableInsert(connection, id, stored.LPronunciationSyllables);
         LPronunciationRepresentationInsert(connection, id, stored.LPronunciationRepresentations);
 
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -78,7 +78,8 @@ public sealed class LPronunciationArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
 
-        using SqliteConnection connection = _lPronunciationArchiveDatabase.LDatabaseRead();
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         string id;
         string? level;
@@ -113,7 +114,7 @@ public sealed class LPronunciationArchive
     /// Replaces the level, IPA, and both child lists of the pronunciation identified by
     /// <paramref name="pronunciation"/>'s id. Existing syllable and representation rows are cleared and
     /// the supplied lists written in order, so the pronunciation id, entry link, and identity stay
-    /// fixed. The whole write is one transaction.
+    /// fixed. The whole write is one transaction, and it throws when no pronunciation carries that id.
     /// </summary>
     public void LPronunciationUpdate(LPronunciation pronunciation)
     {
@@ -122,8 +123,8 @@ public sealed class LPronunciationArchive
 
         string id = pronunciation.LPronunciationId;
 
-        using SqliteConnection connection = _lPronunciationArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -132,7 +133,10 @@ public sealed class LPronunciationArchive
             command.Parameters.AddWithValue("$level", (object?)pronunciation.LPronunciationLevel ?? DBNull.Value);
             command.Parameters.AddWithValue("$ipa", (object?)pronunciation.LPronunciationIpa ?? DBNull.Value);
             command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No pronunciation carries the id '{id}'.");
+            }
         }
 
         LPronunciationChildClear(connection, "syllable", id);
@@ -140,7 +144,7 @@ public sealed class LPronunciationArchive
         LPronunciationSyllableInsert(connection, id, pronunciation.LPronunciationSyllables);
         LPronunciationRepresentationInsert(connection, id, pronunciation.LPronunciationRepresentations);
 
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>
@@ -151,11 +155,15 @@ public sealed class LPronunciationArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lPronunciationArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM pronunciation WHERE id = $id;";
-        command.Parameters.AddWithValue("$id", id);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM pronunciation WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     private static IReadOnlyList<LSyllable> LPronunciationSyllableBuild(

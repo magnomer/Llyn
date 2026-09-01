@@ -21,7 +21,7 @@ public sealed class LTombstoneArchive
 {
     private readonly LDatabase _lTombstoneArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LTombstoneArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -43,18 +43,21 @@ public sealed class LTombstoneArchive
             revisionId,
             DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
 
-        using SqliteConnection connection = _lTombstoneArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            INSERT INTO tombstone (entry_id, revision_id, deleted_utc)
-            VALUES ($entry, $revision, $deleted);
-            """;
-        command.Parameters.AddWithValue("$entry", stored.LTombstoneEntryId);
-        command.Parameters.AddWithValue("$revision", stored.LTombstoneRevisionId);
-        command.Parameters.AddWithValue("$deleted", stored.LTombstoneDeletedUtc);
-        command.ExecuteNonQuery();
+        using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                INSERT INTO tombstone (entry_id, revision_id, deleted_utc)
+                VALUES ($entry, $revision, $deleted);
+                """;
+            command.Parameters.AddWithValue("$entry", stored.LTombstoneEntryId);
+            command.Parameters.AddWithValue("$revision", stored.LTombstoneRevisionId);
+            command.Parameters.AddWithValue("$deleted", stored.LTombstoneDeletedUtc);
+            command.ExecuteNonQuery();
+        }
 
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -66,8 +69,8 @@ public sealed class LTombstoneArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
 
-        using SqliteConnection connection = _lTombstoneArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             "SELECT entry_id, revision_id, deleted_utc FROM tombstone WHERE entry_id = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
@@ -86,8 +89,8 @@ public sealed class LTombstoneArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(revisionId);
 
-        using SqliteConnection connection = _lTombstoneArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT entry_id, revision_id, deleted_utc

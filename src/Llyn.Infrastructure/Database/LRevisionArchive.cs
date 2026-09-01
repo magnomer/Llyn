@@ -21,7 +21,7 @@ public sealed class LRevisionArchive
 {
     private readonly LDatabase _lRevisionArchiveDatabase;
 
-    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens connections through.</summary>
+    /// <summary>Binds the store to the workspace <paramref name="database"/> it opens sessions through.</summary>
     public LRevisionArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
@@ -42,8 +42,8 @@ public sealed class LRevisionArchive
             LIdentity.LIdentityCreate(),
             DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
 
-        using SqliteConnection connection = _lRevisionArchiveDatabase.LDatabaseRead();
-        using SqliteTransaction transaction = connection.BeginTransaction();
+        using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -71,7 +71,7 @@ public sealed class LRevisionArchive
             command.ExecuteNonQuery();
         }
 
-        transaction.Commit();
+        session.LDatabaseSessionCommit();
         return stored;
     }
 
@@ -80,8 +80,8 @@ public sealed class LRevisionArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using SqliteConnection connection = _lRevisionArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText = "SELECT id, created_utc FROM revision WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
@@ -101,8 +101,8 @@ public sealed class LRevisionArchive
     /// </summary>
     public LRevision? LRevisionLatestRead()
     {
-        using SqliteConnection connection = _lRevisionArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             "SELECT id, created_utc FROM revision ORDER BY created_utc DESC, id DESC LIMIT 1;";
 
@@ -120,8 +120,8 @@ public sealed class LRevisionArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(revisionId);
 
-        using SqliteConnection connection = _lRevisionArchiveDatabase.LDatabaseRead();
-        using SqliteCommand command = connection.CreateCommand();
+        using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT position, target_id, target_type, kind, summary
