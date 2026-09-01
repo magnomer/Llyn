@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Llyn.Core;
 
@@ -19,6 +19,12 @@ public sealed class LRefusal : Exception
 
     /// <summary>Reason key for an update whose entry is not in the workspace.</summary>
     public const string LRefusalEntry = "Refusal.EntryMissing";
+
+    /// <summary>
+    /// Reason key for a relation or synonym whose target is not one lexical row of this workspace —
+    /// text that resolved to nothing, or a request naming both an Entry and a Meaning, or neither.
+    /// </summary>
+    public const string LRefusalTarget = "Refusal.TargetMissing";
 
     /// <summary>Refuses a request for <paramref name="reason"/>, a localization key.</summary>
     public LRefusal(string reason)

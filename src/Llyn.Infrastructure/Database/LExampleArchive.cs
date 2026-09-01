@@ -155,6 +155,36 @@ public sealed class LExampleArchive
     }
 
     /// <summary>
+    /// Counts the references that still point at the Example identified by <paramref name="id"/> — the
+    /// number <see cref="LExampleDelete"/> refuses a delete over. A caller that has just detached one
+    /// reference reads this to learn whether the row it detached from was the last one, without a store
+    /// of its own having to know which association tables exist.
+    /// </summary>
+    public int LExampleReferenceRead(string id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        return LExampleReferenceRead(session.LDatabaseSessionConnection, id);
+    }
+
+    // The same count on a connection the caller already holds, so a guard and the delete it guards run
+    // in one transaction and nothing can attach the row between them.
+    private static int LExampleReferenceRead(SqliteConnection connection, string id)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT
+                (SELECT COUNT(*) FROM entry_example WHERE example_id = $id)
+                + (SELECT COUNT(*) FROM sense_example WHERE example_id = $id)
+                + (SELECT COUNT(*) FROM collocation_example WHERE example_id = $id);
+            """;
+        command.Parameters.AddWithValue("$id", id);
+        return Convert.ToInt32(command.ExecuteScalar());
+    }
+
+    /// <summary>
     /// Deletes the Example identified by <paramref name="id"/> together with its translations. Guarded:
     /// while any Entry, Meaning, or Collocation still references the Example, nothing is deleted and an
     /// <see cref="InvalidOperationException"/> is thrown — detach every reference first. A Source the
@@ -168,22 +198,11 @@ public sealed class LExampleArchive
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        using (SqliteCommand guard = connection.CreateCommand())
+        int references = LExampleReferenceRead(connection, id);
+        if (references > 0)
         {
-            guard.CommandText =
-                """
-                SELECT
-                    (SELECT COUNT(*) FROM entry_example WHERE example_id = $id)
-                    + (SELECT COUNT(*) FROM sense_example WHERE example_id = $id)
-                    + (SELECT COUNT(*) FROM collocation_example WHERE example_id = $id);
-                """;
-            guard.Parameters.AddWithValue("$id", id);
-            long references = Convert.ToInt64(guard.ExecuteScalar());
-            if (references > 0)
-            {
-                throw new InvalidOperationException(
-                    $"Example {id} is still referenced {references} time(s); detach every reference before deleting it.");
-            }
+            throw new InvalidOperationException(
+                $"Example {id} is still referenced {references} time(s); detach every reference before deleting it.");
         }
 
         using (SqliteCommand command = connection.CreateCommand())

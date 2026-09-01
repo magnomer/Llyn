@@ -9,7 +9,7 @@ namespace Llyn.UIShell;
 /// closed. The workspace row is the store, the engine is the seam, and this file is the only place
 /// the shell reads or writes it — on start, on exit, and after the workspace folder changes.
 /// </summary>
-public partial class PWindow
+public partial class PInput
 {
     // Id of the entry the input panel stands on, or null when the form is empty. It is what the
     // exit save records, so it survives a reset of the form: saving an entry leaves the form blank
@@ -19,7 +19,7 @@ public partial class PWindow
     // Opens the form on the entry the workspace row names. A row naming nothing, an entry deleted
     // since it was recorded, and a load that fails all mean the same thing here — an empty form —
     // because a stale id is the normal cost of remembering one across sessions, not an error.
-    private void PStateRestore()
+    internal void PStateRestore()
     {
         string? id;
         try
@@ -73,7 +73,7 @@ public partial class PWindow
 
     // Records the entry the form stands on. Reading the row first keeps every other column — mode,
     // split, revision — as the engine last wrote it; only the pane this shell owns is changed.
-    private void PStateSave()
+    internal void PStateSave()
     {
         try
         {

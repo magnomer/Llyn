@@ -1,0 +1,73 @@
+{
+  "language": "Vietnamese",
+  "note": "Display vocabulary for Vietnamese: the parts of speech an entry may carry and the morphology each of them takes. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
+  "parts": [
+    {
+      "id": "noun",
+      "name": "noun"
+    },
+    {
+      "id": "verb",
+      "name": "verb"
+    },
+    {
+      "id": "adjective",
+      "name": "adjective"
+    },
+    {
+      "id": "adverb",
+      "name": "adverb"
+    },
+    {
+      "id": "pronoun",
+      "name": "pronoun"
+    },
+    {
+      "id": "numeral",
+      "name": "numeral"
+    },
+    {
+      "id": "classifier",
+      "name": "classifier"
+    },
+    {
+      "id": "preposition",
+      "name": "preposition"
+    },
+    {
+      "id": "conjunction",
+      "name": "conjunction"
+    },
+    {
+      "id": "particle",
+      "name": "particle"
+    },
+    {
+      "id": "interjection",
+      "name": "interjection"
+    }
+  ],
+  "morphology": [
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "past",
+      "valueName": "past"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "present",
+      "valueName": "present"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "future",
+      "valueName": "future"
+    }
+  ]
+}

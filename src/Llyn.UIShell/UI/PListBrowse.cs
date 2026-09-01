@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -12,9 +13,14 @@ namespace Llyn.UIShell;
 /// row is loaded back from the workspace and rendered read-only in the display area. This is the
 /// read half of the entry round trip — the input panel writes an entry, this reads it back.
 /// </summary>
-public partial class PWindow
+public partial class PList
 {
     private readonly ObservableCollection<PIndexItem> _pIndexList = [];
+
+    // This panel's own playback. The input panel has one too, and sharing a single player made the
+    // two panels each other's business: clearing the input recording — which typing a headword does —
+    // stopped whatever the List tab was playing.
+    private readonly MediaPlayer _pDisplayPlayer = new();
 
     // Full path of the audio the shown entry owns, or null when it has none — what the display's play
     // button plays, kept apart from the input panel's own transient recording.
@@ -25,7 +31,7 @@ public partial class PWindow
     // of the window constructor and beside the code that owns it.
     private void PListHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
-        if (!PList.IsVisible)
+        if (!IsVisible)
         {
             return;
         }
@@ -66,7 +72,7 @@ public partial class PWindow
         }
         catch (Exception exception)
         {
-            PWindowFailureShow("List.LoadFailed", exception);
+            _pListHost.PWindowFailureShow("List.LoadFailed", exception);
             return;
         }
 
@@ -118,15 +124,15 @@ public partial class PWindow
             return;
         }
 
-        _pDownloaderPlayer.Open(new Uri(_pDisplayRecording));
-        _pDownloaderPlayer.Play();
+        _pDisplayPlayer.Open(new Uri(_pDisplayRecording));
+        _pDisplayPlayer.Play();
     }
 
     // The display must not assume an entry is selected: with none chosen it shows only its prompt.
     private void PDisplayClear()
     {
         _pDisplayRecording = null;
-        _pDownloaderPlayer.Stop();
+        _pDisplayPlayer.Stop();
         PDisplayPlayback.Visibility = Visibility.Collapsed;
         PDisplaySense.ItemsSource = null;
         PDisplayCollocation.ItemsSource = null;

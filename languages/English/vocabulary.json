@@ -1,0 +1,182 @@
+{
+  "language": "English",
+  "note": "Display vocabulary for English: the parts of speech an entry may carry and the morphology each of them takes. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
+  "parts": [
+    {
+      "id": "noun",
+      "name": "noun"
+    },
+    {
+      "id": "verb",
+      "name": "verb"
+    },
+    {
+      "id": "adjective",
+      "name": "adjective"
+    },
+    {
+      "id": "adverb",
+      "name": "adverb"
+    },
+    {
+      "id": "pronoun",
+      "name": "pronoun"
+    },
+    {
+      "id": "determiner",
+      "name": "determiner"
+    },
+    {
+      "id": "preposition",
+      "name": "preposition"
+    },
+    {
+      "id": "conjunction",
+      "name": "conjunction"
+    },
+    {
+      "id": "numeral",
+      "name": "numeral"
+    },
+    {
+      "id": "interjection",
+      "name": "interjection"
+    },
+    {
+      "id": "auxiliary",
+      "name": "auxiliary"
+    },
+    {
+      "id": "particle",
+      "name": "particle"
+    }
+  ],
+  "morphology": [
+    {
+      "part": "noun",
+      "feature": "number",
+      "featureName": "number",
+      "value": "singular",
+      "valueName": "singular"
+    },
+    {
+      "part": "noun",
+      "feature": "number",
+      "featureName": "number",
+      "value": "plural",
+      "valueName": "plural"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "base",
+      "valueName": "base"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "third_person",
+      "valueName": "third person singular"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "past",
+      "valueName": "past"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "past_participle",
+      "valueName": "past participle"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "present_participle",
+      "valueName": "present participle"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "present",
+      "valueName": "present"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "past",
+      "valueName": "past"
+    },
+    {
+      "part": "adjective",
+      "feature": "degree",
+      "featureName": "degree",
+      "value": "positive",
+      "valueName": "positive"
+    },
+    {
+      "part": "adjective",
+      "feature": "degree",
+      "featureName": "degree",
+      "value": "comparative",
+      "valueName": "comparative"
+    },
+    {
+      "part": "adjective",
+      "feature": "degree",
+      "featureName": "degree",
+      "value": "superlative",
+      "valueName": "superlative"
+    },
+    {
+      "part": "adverb",
+      "feature": "degree",
+      "featureName": "degree",
+      "value": "positive",
+      "valueName": "positive"
+    },
+    {
+      "part": "adverb",
+      "feature": "degree",
+      "featureName": "degree",
+      "value": "comparative",
+      "valueName": "comparative"
+    },
+    {
+      "part": "adverb",
+      "feature": "degree",
+      "featureName": "degree",
+      "value": "superlative",
+      "valueName": "superlative"
+    },
+    {
+      "part": "pronoun",
+      "feature": "case",
+      "featureName": "case",
+      "value": "subject",
+      "valueName": "subject"
+    },
+    {
+      "part": "pronoun",
+      "feature": "case",
+      "featureName": "case",
+      "value": "object",
+      "valueName": "object"
+    },
+    {
+      "part": "pronoun",
+      "feature": "case",
+      "featureName": "case",
+      "value": "possessive",
+      "valueName": "possessive"
+    }
+  ]
+}

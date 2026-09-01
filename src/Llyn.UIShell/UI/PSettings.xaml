@@ -1,0 +1,19 @@
+<UserControl
+    x:Class="Llyn.UIShell.PSettings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel Margin="32" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <TextBlock FontSize="18" FontWeight="SemiBold" Text="{DynamicResource Settings.Localization}" />
+        <ComboBox x:Name="PLocalization" Width="240" Margin="0,12,0,0" HorizontalAlignment="Left" SelectedValuePath="Tag" SelectionChanged="PLocalizationHandle">
+            <ComboBoxItem Content="English" Tag="en" />
+            <ComboBoxItem Content="한국어" Tag="ko" />
+        </ComboBox>
+
+        <TextBlock FontSize="18" FontWeight="SemiBold" Margin="0,28,0,0" Text="{DynamicResource Settings.Workspace}" />
+        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+            <TextBox x:Name="PWorkspacePath" Width="360" VerticalContentAlignment="Center" LostKeyboardFocus="PWorkspacePathHandle" />
+            <Button x:Name="PWorkspaceBrowse" Margin="8,0,0,0" Padding="12,4" Content="{DynamicResource Workspace.Browse}" Click="PWorkspaceBrowseHandle" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

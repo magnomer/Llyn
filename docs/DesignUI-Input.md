@@ -17,7 +17,7 @@ The shared `PEditor` used by `PList`, `PSound`, and `PTag` mirrors the lexical e
 The current conceptual layout is:
 
 ```text
-PHeadword  PLangcode                         PDiscard  PSave
+PHeadword  PLangcode                         PDiscard  PStore
 
 PPronunciation  PPlay                        PLookup  PDownloader
 
@@ -37,7 +37,7 @@ PInput
 │       ├── PLangcodeListName
 │       └── PLangcodeListFlag
 ├── PDiscard
-├── PSave
+├── PStore
 ├── PPronunciation
 ├── PPlay
 ├── PLookup
@@ -91,9 +91,9 @@ PLangcodeListName  PLangcodeListFlag
 
 `PDiscard` discards the current input.
 
-## PSave
+## PStore
 
-`PSave` saves the current Entry and its associations.
+`PStore` saves the current Entry and its associations.
 
 Saving an Entry does not make independent Examples, Tags, or Situations subordinate to that Entry.
 
@@ -225,10 +225,10 @@ Each card contains:
 ```text
 PSense
 ├── PSenseOrder
+├── PSenseTitle
 ├── PSenseDefinition
 ├── PSenseExample
 ├── PSenseSituation
-├── PSenseSynonym
 └── PSenseTag
 ```
 
@@ -238,17 +238,22 @@ Conceptually:
 
 ```text
 ┌─────────────────────────────────────────────┐
-│ PSenseOrder   PSenseDefinition          [X] │
-│               PSenseExample                 │
+│ PSenseOrder   PSenseTitle               [X] │
 │                                             │
+│ PSenseDefinition                            │
+│ PSenseExample                               │
 │ PSenseSituation                             │
-│ PSenseSynonym                               │
 │ PSenseTag                                   │
 └─────────────────────────────────────────────┘
           ↕ draggable for reordering
 ```
 
-All six named `PSense` elements are editable fields.
+All named `PSense` elements are editable fields.
+
+## PSenseTitle
+
+`PSenseTitle` is the editable title of the card, shown in the card header beside `PSenseOrder`. A
+Collocation card carries the same title field in the same place.
 
 ## PSenseOrder
 
@@ -317,9 +322,9 @@ The same Situation may be associated with multiple Senses.
 
 ## PSenseSynonym
 
-`PSenseSynonym` is an editable field used to create or edit a synonym interlink.
-
 A synonym is not subordinate data owned by the Entry. It is represented as a lexical relation from the Sense to another lexical object through the database relation structure.
+
+Because that relation points at a stored Entry or Sense rather than at typed text, no `PSenseSynonym` field is offered on the card: neither the Sense card nor the Collocation card carries one until a picker exists that can resolve what the user types to the lexical object the relation needs.
 
 ## PSenseTag
 
@@ -353,18 +358,24 @@ Its construction mirrors the card-based construction used by `PMeaning` and `PSe
 The same interaction rules apply:
 
 - multiple collocation cards may be present;
+- each card carries an editable title in its header, beside the order badge;
 - each card has an `X` button at the upper-right for removal;
 - cards are draggable for reordering;
-- the corresponding order, example, situation, synonym, and tag fields are editable;
+- the corresponding order, example, situation, and tag fields are editable;
 - Examples, Situations, and Tags are referenced independent data rather than data owned by the Entry.
 
-The one explicitly different field is:
+Where a Sense card carries one definition, a Collocation card carries two fields:
 
 ```text
 PSenseDefinition  ->  PCollocationExpression
+                      PCollocationMeaning
 ```
 
-`PCollocationExpression` is the editable collocation-expression field.
+`PCollocationExpression` is the editable collocation-expression field: the word combination itself.
+
+`PCollocationMeaning` is the editable field explaining what that combination means. It is the
+Collocation's definition, kept separate from the expression because the expression is the lexical
+form and the meaning is what it says.
 
 The mirrored Collocation Example field follows the same overarching `PExample` structure as `PSenseExample`, including one `PExampleSource`.
 
@@ -373,11 +384,12 @@ Conceptually:
 ```text
 PMeaning / PSense                    PCollocation
 ─────────────────                    ────────────
+card title                           card title
 order                                corresponding order
 PSenseDefinition        ->           PCollocationExpression
+                                     PCollocationMeaning
 PSenseExample                        corresponding example
 PSenseSituation                      corresponding situation
-PSenseSynonym                        corresponding synonym
 PSenseTag                            corresponding tag
 
 [X] remove card                      [X] remove card
@@ -449,7 +461,7 @@ PInput
 │       ├── PLangcodeListName
 │       └── PLangcodeListFlag
 ├── PDiscard
-├── PSave
+├── PStore
 │
 ├── PPronunciation
 ├── PPlay
@@ -470,22 +482,23 @@ PInput
     │   └── PSense [card; draggable]
     │       ├── [X] remove PSense
     │       ├── PSenseOrder
+    │       ├── PSenseTitle
     │       ├── PSenseDefinition
     │       ├── PSenseExample ───> Example [independent]
     │       │                       └── PExampleSource ──> Source [independent]
     │       ├── PSenseSituation ─> Situation [independent]
-    │       ├── PSenseSynonym ───> lexical relation
     │       └── PSenseTag ───────> Tag [independent]
     │
     ├── PCollocation
     │   └── collocation cards [mirror PSense; draggable]
     │       ├── [X] remove collocation
     │       ├── corresponding order
+    │       ├── corresponding title
     │       ├── PCollocationExpression
+    │       ├── PCollocationMeaning
     │       ├── corresponding example ─────> Example [independent]
     │       │                                  └── PExampleSource ──> Source [independent]
     │       ├── corresponding situation ───> Situation [independent]
-    │       ├── corresponding synonym ─────> lexical interlink
     │       └── corresponding tag ─────────> Tag [independent]
     │
     └── PNote

@@ -1,9 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Documents;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -13,7 +12,7 @@ namespace Llyn.UIShell;
 /// shell walks its own controls for a save: everything on screen is copied into an
 /// <see cref="LEntryDraft"/> once, and the engine is handed that value instead of the window.
 /// </summary>
-public partial class PWindow
+public partial class PInput
 {
     // The form as it stood when it was last filled: what a save would have written the moment the
     // user was given the form. Everything typed since is the unsaved work, so this is the one thing
@@ -42,7 +41,7 @@ public partial class PWindow
             // A refused write leaves the form exactly as typed, so the missing field can be filled
             // in and the write repeated. An update whose entry vanished between load and save is
             // reported as that, and never quietly turned back into a create.
-            PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
+            _pInputHost.PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
             return;
         }
 
@@ -122,7 +121,6 @@ public partial class PWindow
                 PInputCardDefinition = draft.LCardDraftMeaning,
                 PInputCardExample = PInputFieldFormat(draft.LCardDraftExample),
                 PInputCardSituation = PInputFieldFormat(draft.LCardDraftSituation),
-                PInputCardSynonym = draft.LCardDraftSynonym,
                 PInputCardTag = PInputTagFormat(draft.LCardDraftTag),
                 // Which stored row this card is, carried through the form untouched so a save of the
                 // same card changes that row instead of adding another one beside it.
@@ -136,15 +134,13 @@ public partial class PWindow
         }
     }
 
-    // Puts the note back as one paragraph of plain text, which is what the note was read out as.
+    // The note goes back exactly as it was read out. The box is a plain TextBox now: a note is stored
+    // as text, so offering bold and italic that the store drops on the next save was offering an edit
+    // the entry could not keep. Formatting a note is a feature of the store first, and the control
+    // will offer it again when the store can hold it.
     private void PInputNoteShow(string note)
     {
-        PNoteContents.Document.Blocks.Clear();
-        if (note.Length > 0)
-        {
-            PNoteContents.Document.Blocks.Add(new Paragraph(new Run(note)));
-        }
-
+        PNoteContents.Text = note;
         PNotePlaceholder.Visibility = note.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
@@ -160,6 +156,9 @@ public partial class PWindow
 
         _pRecording = draft.LEntryDraftAudio;
         _pRecordingSource = draft.LEntryDraftSource;
+        // The entry's own audio, not a fetch for the spelling currently in the headword box: editing
+        // the headword from here on leaves it alone.
+        _pRecordingStored = true;
         PPlayback.Visibility = Visibility.Visible;
     }
 
@@ -167,7 +166,16 @@ public partial class PWindow
     // no longer on disk is still shown: it is what the entry was written in.
     private void PInputLangcodeShow(string language)
     {
-        if (language.Length == 0 || string.Equals(_pLangcodeChoice, language, StringComparison.Ordinal))
+        if (language.Length == 0)
+        {
+            return;
+        }
+
+        // Recorded even when the selector already stands on it: what matters to the language menu
+        // being built is that this language is an entry's, not that the selector had to move.
+        _pLangcodeEntry = true;
+
+        if (string.Equals(_pLangcodeChoice, language, StringComparison.Ordinal))
         {
             return;
         }
@@ -187,14 +195,17 @@ public partial class PWindow
         // The saved recording belongs to the entry that was just written, not to the empty form the
         // next entry is typed into.
         PRecordingClear();
+        // An empty form stands on no entry, so its language is nobody's: the language menu may move
+        // it onto an installed pack.
+        _pLangcodeEntry = false;
 
         // No cards to show is the empty form, which is one empty card of each kind.
         PInputCardShow(_pSenseList, "Sense", []);
         PInputCardShow(_pCollocationList, "Collocation", []);
 
-        PNoteContents.Document.Blocks.Clear();
-        // Clearing the document does not always route through the TextChanged handler, so the
-        // placeholder is put back explicitly rather than left hidden over an empty note.
+        PNoteContents.Text = string.Empty;
+        // Clearing the box does not always route through the TextChanged handler, so the placeholder
+        // is put back explicitly rather than left hidden over an empty note.
         PNotePlaceholder.Visibility = Visibility.Visible;
 
         // An empty form is the state it was last filled in, so nothing on it is unsaved work.
@@ -205,7 +216,7 @@ public partial class PWindow
     // typed, changed or cleared and not yet written. A form never filled - which cannot happen once
     // the window is up, since both filling paths record their state - counts as unchanged, because a
     // baseline that does not exist is no evidence that work would be lost.
-    private bool PInputChangeCheck()
+    internal bool PInputChangeCheck()
     {
         return _pStateDraft is not null && !PInputDraftMatch(_pStateDraft, PInputDraftRead());
     }
@@ -243,7 +254,6 @@ public partial class PWindow
                 || !string.Equals(
                     first.LCardDraftExpression, second.LCardDraftExpression, StringComparison.Ordinal)
                 || !string.Equals(first.LCardDraftMeaning, second.LCardDraftMeaning, StringComparison.Ordinal)
-                || !string.Equals(first.LCardDraftSynonym, second.LCardDraftSynonym, StringComparison.Ordinal)
                 || !string.Equals(first.LCardDraftId, second.LCardDraftId, StringComparison.Ordinal)
                 || !PInputTextMatch(first.LCardDraftExample, second.LCardDraftExample)
                 || !PInputTextMatch(first.LCardDraftSituation, second.LCardDraftSituation)
@@ -293,9 +303,10 @@ public partial class PWindow
                 card.PInputCardDefinition,
                 PInputFieldRead(card.PInputCardExample),
                 PInputFieldRead(card.PInputCardSituation),
-                // No collocation control feeds a synonym: that template has no Synonym TextBox, so a
-                // collocation card always reads back empty here.
-                card.PInputCardSynonym,
+                // Neither template has a Synonym control any more: a synonym is a link to a stored
+                // Entry or Meaning, and no picker exists to resolve typed text to one, so the field is
+                // not offered rather than offered and discarded. Both card kinds read back empty here.
+                string.Empty,
                 PInputTagParse(card.PInputCardTag),
                 card.PInputCardId));
         }
@@ -340,7 +351,6 @@ public partial class PWindow
 
     private string PInputNoteRead()
     {
-        TextRange contents = new(PNoteContents.Document.ContentStart, PNoteContents.Document.ContentEnd);
-        return contents.Text.TrimEnd('\r', '\n');
+        return (PNoteContents.Text ?? string.Empty).TrimEnd('\r', '\n');
     }
 }

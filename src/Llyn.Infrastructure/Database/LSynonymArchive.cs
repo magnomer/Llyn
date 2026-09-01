@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -104,6 +104,41 @@ public sealed class LSynonymArchive
         }
 
         return synonyms;
+    }
+
+    /// <summary>
+    /// Re-points the synonym identified by <paramref name="synonym"/>'s id at the target it now names.
+    /// A synonym holds nothing but its target, so this is the whole of an update: the id, the origin
+    /// Collocation, and the position are untouched — where a synonym sits among its siblings is changed
+    /// by <see cref="LSynonymMove"/>, which has to renumber the whole set. Exactly one of the target ids
+    /// must be set; naming both or neither throws an <see cref="InvalidOperationException"/> before
+    /// anything is written, and so does an id no synonym carries.
+    /// </summary>
+    public void LSynonymUpdate(LSynonym synonym)
+    {
+        ArgumentNullException.ThrowIfNull(synonym);
+        ArgumentException.ThrowIfNullOrWhiteSpace(synonym.LSynonymId);
+        LSynonymTargetValidate(synonym);
+
+        using LDatabaseSession session = _lSynonymArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                UPDATE collocation_synonym
+                SET target_entry_id = $entry, target_sense_id = $sense
+                WHERE id = $id;
+                """;
+            command.Parameters.AddWithValue("$entry", (object?)synonym.LSynonymTargetEntry ?? DBNull.Value);
+            command.Parameters.AddWithValue("$sense", (object?)synonym.LSynonymTargetSense ?? DBNull.Value);
+            command.Parameters.AddWithValue("$id", synonym.LSynonymId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No synonym carries the id '{synonym.LSynonymId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
     }
 
     /// <summary>

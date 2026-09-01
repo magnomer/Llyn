@@ -1,0 +1,189 @@
+{
+  "language": "Japanese",
+  "note": "Display vocabulary for Japanese: the parts of speech an entry may carry and the morphology each of them takes. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
+  "parts": [
+    {
+      "id": "noun",
+      "name": "noun"
+    },
+    {
+      "id": "verb",
+      "name": "verb"
+    },
+    {
+      "id": "adjective",
+      "name": "i-adjective"
+    },
+    {
+      "id": "adjectival_noun",
+      "name": "na-adjective"
+    },
+    {
+      "id": "adverb",
+      "name": "adverb"
+    },
+    {
+      "id": "particle",
+      "name": "particle"
+    },
+    {
+      "id": "auxiliary",
+      "name": "auxiliary verb"
+    },
+    {
+      "id": "conjunction",
+      "name": "conjunction"
+    },
+    {
+      "id": "interjection",
+      "name": "interjection"
+    },
+    {
+      "id": "counter",
+      "name": "counter"
+    },
+    {
+      "id": "pronoun",
+      "name": "pronoun"
+    },
+    {
+      "id": "prenominal",
+      "name": "prenominal adjectival"
+    }
+  ],
+  "morphology": [
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "dictionary",
+      "valueName": "dictionary"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "polite",
+      "valueName": "polite"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "te",
+      "valueName": "te"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "past",
+      "valueName": "past"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "negative",
+      "valueName": "negative"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "potential",
+      "valueName": "potential"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "passive",
+      "valueName": "passive"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "causative",
+      "valueName": "causative"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "volitional",
+      "valueName": "volitional"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "imperative",
+      "valueName": "imperative"
+    },
+    {
+      "part": "verb",
+      "feature": "form",
+      "featureName": "form",
+      "value": "conditional",
+      "valueName": "conditional"
+    },
+    {
+      "part": "adjective",
+      "feature": "form",
+      "featureName": "form",
+      "value": "plain",
+      "valueName": "plain"
+    },
+    {
+      "part": "adjective",
+      "feature": "form",
+      "featureName": "form",
+      "value": "past",
+      "valueName": "past"
+    },
+    {
+      "part": "adjective",
+      "feature": "form",
+      "featureName": "form",
+      "value": "negative",
+      "valueName": "negative"
+    },
+    {
+      "part": "adjective",
+      "feature": "form",
+      "featureName": "form",
+      "value": "adverbial",
+      "valueName": "adverbial"
+    },
+    {
+      "part": "adjective",
+      "feature": "form",
+      "featureName": "form",
+      "value": "te",
+      "valueName": "te"
+    },
+    {
+      "part": "adjectival_noun",
+      "feature": "form",
+      "featureName": "form",
+      "value": "attributive",
+      "valueName": "attributive"
+    },
+    {
+      "part": "adjectival_noun",
+      "feature": "form",
+      "featureName": "form",
+      "value": "predicative",
+      "valueName": "predicative"
+    },
+    {
+      "part": "adjectival_noun",
+      "feature": "form",
+      "featureName": "form",
+      "value": "adverbial",
+      "valueName": "adverbial"
+    }
+  ]
+}

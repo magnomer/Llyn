@@ -1,0 +1,195 @@
+{
+  "language": "Spanish",
+  "note": "Display vocabulary for Spanish: the parts of speech an entry may carry and the morphology each of them takes. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json.",
+  "parts": [
+    {
+      "id": "noun",
+      "name": "noun"
+    },
+    {
+      "id": "verb",
+      "name": "verb"
+    },
+    {
+      "id": "adjective",
+      "name": "adjective"
+    },
+    {
+      "id": "adverb",
+      "name": "adverb"
+    },
+    {
+      "id": "pronoun",
+      "name": "pronoun"
+    },
+    {
+      "id": "article",
+      "name": "article"
+    },
+    {
+      "id": "preposition",
+      "name": "preposition"
+    },
+    {
+      "id": "conjunction",
+      "name": "conjunction"
+    },
+    {
+      "id": "numeral",
+      "name": "numeral"
+    },
+    {
+      "id": "interjection",
+      "name": "interjection"
+    }
+  ],
+  "morphology": [
+    {
+      "part": "noun",
+      "feature": "gender",
+      "featureName": "gender",
+      "value": "masculine",
+      "valueName": "masculine"
+    },
+    {
+      "part": "noun",
+      "feature": "gender",
+      "featureName": "gender",
+      "value": "feminine",
+      "valueName": "feminine"
+    },
+    {
+      "part": "noun",
+      "feature": "number",
+      "featureName": "number",
+      "value": "singular",
+      "valueName": "singular"
+    },
+    {
+      "part": "noun",
+      "feature": "number",
+      "featureName": "number",
+      "value": "plural",
+      "valueName": "plural"
+    },
+    {
+      "part": "adjective",
+      "feature": "gender",
+      "featureName": "gender",
+      "value": "masculine",
+      "valueName": "masculine"
+    },
+    {
+      "part": "adjective",
+      "feature": "gender",
+      "featureName": "gender",
+      "value": "feminine",
+      "valueName": "feminine"
+    },
+    {
+      "part": "adjective",
+      "feature": "number",
+      "featureName": "number",
+      "value": "singular",
+      "valueName": "singular"
+    },
+    {
+      "part": "adjective",
+      "feature": "number",
+      "featureName": "number",
+      "value": "plural",
+      "valueName": "plural"
+    },
+    {
+      "part": "verb",
+      "feature": "mood",
+      "featureName": "mood",
+      "value": "indicative",
+      "valueName": "indicative"
+    },
+    {
+      "part": "verb",
+      "feature": "mood",
+      "featureName": "mood",
+      "value": "subjunctive",
+      "valueName": "subjunctive"
+    },
+    {
+      "part": "verb",
+      "feature": "mood",
+      "featureName": "mood",
+      "value": "imperative",
+      "valueName": "imperative"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "present",
+      "valueName": "present"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "preterite",
+      "valueName": "preterite"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "imperfect",
+      "valueName": "imperfect"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "future",
+      "valueName": "future"
+    },
+    {
+      "part": "verb",
+      "feature": "tense",
+      "featureName": "tense",
+      "value": "conditional",
+      "valueName": "conditional"
+    },
+    {
+      "part": "verb",
+      "feature": "person",
+      "featureName": "person",
+      "value": "first",
+      "valueName": "first"
+    },
+    {
+      "part": "verb",
+      "feature": "person",
+      "featureName": "person",
+      "value": "second",
+      "valueName": "second"
+    },
+    {
+      "part": "verb",
+      "feature": "person",
+      "featureName": "person",
+      "value": "third",
+      "valueName": "third"
+    },
+    {
+      "part": "verb",
+      "feature": "number",
+      "featureName": "number",
+      "value": "singular",
+      "valueName": "singular"
+    },
+    {
+      "part": "verb",
+      "feature": "number",
+      "featureName": "number",
+      "value": "plural",
+      "valueName": "plural"
+    }
+  ]
+}

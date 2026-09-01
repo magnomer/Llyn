@@ -1,4 +1,4 @@
-{
+﻿{
   "terms.product": "Llyn",
   "terms.exit": "종료",
   "terms.minimize": "최소화",
@@ -37,6 +37,7 @@
     "Input.DiscardConfirm": "저장하지 않은 변경 사항이 있습니다. 버리겠습니까?",
     "Refusal.HeadwordMissing": "표제어 없이는 항목을 저장할 수 없습니다.",
     "Refusal.EntryMissing": "해당 항목은 이 {terms.workspace}에 더 이상 없습니다.",
+    "Refusal.TargetMissing": "해당 단어는 이 {terms.workspace}의 항목이나 뜻이 아닙니다.",
     "List.Search": "항목 검색",
     "List.Empty": "아직 항목이 없습니다",
     "List.Unselected": "읽을 항목을 선택하세요",

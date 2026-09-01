@@ -100,6 +100,35 @@ public sealed class LTagArchive
     }
 
     /// <summary>
+    /// Counts the references that still point at the Tag identified by <paramref name="id"/> — the
+    /// number <see cref="LTagDelete"/> refuses a delete over. A caller that has just detached one
+    /// reference reads this to learn whether the row it detached from was the last one, without a store
+    /// of its own having to know which association tables exist.
+    /// </summary>
+    public int LTagReferenceRead(string id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
+        return LTagReferenceRead(session.LDatabaseSessionConnection, id);
+    }
+
+    // The same count on a connection the caller already holds, so a guard and the delete it guards run
+    // in one transaction and nothing can attach the row between them.
+    private static int LTagReferenceRead(SqliteConnection connection, string id)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT
+                (SELECT COUNT(*) FROM sense_tag WHERE tag_id = $id)
+                + (SELECT COUNT(*) FROM collocation_tag WHERE tag_id = $id);
+            """;
+        command.Parameters.AddWithValue("$id", id);
+        return Convert.ToInt32(command.ExecuteScalar());
+    }
+
+    /// <summary>
     /// Deletes the Tag identified by <paramref name="id"/>. Guarded: while any Meaning or Collocation
     /// still references the Tag, nothing is deleted and an <see cref="InvalidOperationException"/> is
     /// thrown — detach every reference first. Deleting a Tag never deletes the rows that referenced it.
@@ -112,21 +141,11 @@ public sealed class LTagArchive
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        using (SqliteCommand guard = connection.CreateCommand())
+        int references = LTagReferenceRead(connection, id);
+        if (references > 0)
         {
-            guard.CommandText =
-                """
-                SELECT
-                    (SELECT COUNT(*) FROM sense_tag WHERE tag_id = $id)
-                    + (SELECT COUNT(*) FROM collocation_tag WHERE tag_id = $id);
-                """;
-            guard.Parameters.AddWithValue("$id", id);
-            long references = Convert.ToInt64(guard.ExecuteScalar());
-            if (references > 0)
-            {
-                throw new InvalidOperationException(
-                    $"Tag {id} is still referenced {references} time(s); detach every reference before deleting it.");
-            }
+            throw new InvalidOperationException(
+                $"Tag {id} is still referenced {references} time(s); detach every reference before deleting it.");
         }
 
         using (SqliteCommand command = connection.CreateCommand())

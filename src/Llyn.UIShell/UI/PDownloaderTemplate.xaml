@@ -1,0 +1,23 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Llyn.UIShell.PDownloaderTemplate">
+
+    <!-- One recording in the download menu: its source, a preview button, and the choice that saves it. -->
+    <DataTemplate x:Key="Theme.Downloader.Row">
+        <Border Margin="4,3" Padding="10" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Line}" BorderThickness="1" CornerRadius="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PDownloaderRecordingSource}" TextTrimming="CharacterEllipsis" />
+                <Button Grid.Column="1" Margin="0,0,7,0" Click="PDownloaderPlayHandle" Style="{DynamicResource Theme.Popup.IconAction}" ToolTip="{DynamicResource Downloader.Play}">
+                    <Path Width="9" Height="11" Data="M 1,1 L 8,5.5 L 1,10 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Fill" />
+                </Button>
+                <Button Grid.Column="2" Click="PDownloaderMenuHandle" Content="{DynamicResource Downloader.Apply}" Style="{DynamicResource Theme.Popup.PrimaryAction}" />
+            </Grid>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

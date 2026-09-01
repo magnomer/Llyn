@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -97,16 +97,68 @@ public sealed class LSenseArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            senses.Add(new LSense(
-                reader.GetString(0),
-                reader.GetString(1),
-                reader.IsDBNull(2) ? null : reader.GetString(2),
-                reader.GetInt32(3),
-                reader.IsDBNull(4) ? null : reader.GetString(4),
-                reader.IsDBNull(5) ? null : reader.GetString(5),
-                reader.IsDBNull(6) ? null : reader.GetString(6),
-                reader.IsDBNull(7) ? null : reader.GetString(7),
-                reader.GetString(8)));
+            senses.Add(LSenseRowRead(reader));
+        }
+
+        return senses;
+    }
+
+    /// <summary>
+    /// Reads the single sense identified by <paramref name="id"/>, or <c>null</c> when no sense carries
+    /// that id — the existence check a caller needs before pointing a relation at a Meaning.
+    /// </summary>
+    public LSense? LSenseSingleRead(string id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT id, entry_id, parent_id, position, title, gloss, definition_language, definition, labels
+            FROM sense WHERE id = $id;
+            """;
+        command.Parameters.AddWithValue("$id", id);
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        return reader.Read() ? LSenseRowRead(reader) : null;
+    }
+
+    /// <summary>
+    /// Returns the senses whose owning entry's headword contains <paramref name="query"/>, ordered by
+    /// that headword and then by the sense's place in its entry, or every sense when
+    /// <paramref name="query"/> is empty or all whitespace. This is the meaning-level twin of
+    /// <c>LEntryFind</c>: a caller holding typed text gets back the Meanings that text could name, and
+    /// picks one of them, rather than a store inventing a target for words nobody matched.
+    /// <para>
+    /// Matching is a contains whose case is folded over the whole of Unicode, the same as
+    /// <c>LEntryFind</c>, so an accented headword is found typed in either case. Sub-meanings are
+    /// included: a relation may point at any Meaning, not only a top-level one.
+    /// </para>
+    /// </summary>
+    public IReadOnlyList<LSense> LSenseFind(string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        query = query.Trim();
+
+        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT s.id, s.entry_id, s.parent_id, s.position, s.title, s.gloss,
+                   s.definition_language, s.definition, s.labels
+            FROM sense s
+            JOIN entry e ON e.id = s.entry_id
+            WHERE $query = '' OR instr(lfold(e.headword), lfold($query)) > 0
+            ORDER BY e.headword, ifnull(s.parent_id, ''), s.position;
+            """;
+        command.Parameters.AddWithValue("$query", query);
+
+        List<LSense> senses = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            senses.Add(LSenseRowRead(reader));
         }
 
         return senses;
@@ -335,5 +387,20 @@ public sealed class LSenseArchive
             throw new InvalidOperationException(
                 $"Parent sense '{parentId}' does not exist in entry '{entryId}'.");
         }
+    }
+
+    // One sense row in the column order every read in this store selects.
+    private static LSense LSenseRowRead(SqliteDataReader reader)
+    {
+        return new LSense(
+            reader.GetString(0),
+            reader.GetString(1),
+            reader.IsDBNull(2) ? null : reader.GetString(2),
+            reader.GetInt32(3),
+            reader.IsDBNull(4) ? null : reader.GetString(4),
+            reader.IsDBNull(5) ? null : reader.GetString(5),
+            reader.IsDBNull(6) ? null : reader.GetString(6),
+            reader.IsDBNull(7) ? null : reader.GetString(7),
+            reader.GetString(8));
     }
 }

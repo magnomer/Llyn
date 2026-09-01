@@ -1,4 +1,4 @@
-{
+﻿{
   "terms.product": "Llyn",
   "terms.exit": "exit",
   "terms.minimize": "minimize",
@@ -37,6 +37,7 @@
     "Input.DiscardConfirm": "The entry has unsaved changes. Discard them?",
     "Refusal.HeadwordMissing": "An entry cannot be saved without a headword.",
     "Refusal.EntryMissing": "That entry is no longer in this workspace.",
+    "Refusal.TargetMissing": "That word is not an entry or a meaning in this workspace yet.",
     "List.Search": "Search entries",
     "List.Empty": "No entries yet",
     "List.Unselected": "Select an entry to read it",

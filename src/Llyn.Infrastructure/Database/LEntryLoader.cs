@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -46,9 +46,11 @@ public sealed class LEntryLoader
     /// adds afterwards has no id and is created.
     /// </para>
     /// <para>
-    /// Synonyms come back empty. The save writes none (the card's field is free text and a relation
-    /// needs a target id), so there is nothing stored to read, and the collocation card has no Synonym
-    /// control feeding it at all.
+    /// <c>LCardDraftSynonym</c> comes back empty on every card, because no card writes one: a synonym is
+    /// a link to a stored Entry or Meaning, neither card offers a control for it any more, and the drafts
+    /// carry no target to read back. A Meaning's relations and a Collocation's synonyms are read through
+    /// <c>LRelationArchive</c> and <c>LSynonymArchive</c>, which is what the engine's relation seam
+    /// exposes; they are links between rows rather than text belonging to the card.
     /// </para>
     /// </summary>
     public LEntryDraft? LEntryLoad(string id)

@@ -1,0 +1,125 @@
+using Llyn.Core;
+using Llyn.ShellEngine;
+using Xunit;
+
+namespace Llyn.Database.Tests;
+
+/// <summary>
+/// Covers the engine's bibliographic seams: a Reference created, cited by an Entry and by an Example,
+/// credited to Authors in order, and the deletes each side refuses while something still points at the
+/// row. Neither a Reference nor an Author is deleted by a citation or a credit going: both are
+/// deliberate data, not something typed into a card.
+/// </summary>
+public sealed class TReference
+{
+    [Fact]
+    public void AnEntryCitesReferencesInOrderAndAnExampleCitesAtMostOne()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = TReferenceEntryCreate(engine);
+        LReference dictionary = TReferenceCreate(engine, "A Dictionary");
+        LReference grammar = TReferenceCreate(engine, "A Grammar");
+
+        engine.LEngineReferenceAttach(entry.LEntryId, dictionary.LReferenceId, 0, LOwner.LOwnerEntry);
+        engine.LEngineReferenceAttach(entry.LEntryId, grammar.LReferenceId, 0, LOwner.LOwnerEntry);
+
+        Assert.Equal(
+            [grammar.LReferenceId, dictionary.LReferenceId],
+            engine.LEngineReferenceRead(entry.LEntryId, LOwner.LOwnerEntry)
+                .Select(row => row.LReferenceId));
+
+        // An Example holds one citation, so attaching a second replaces the first rather than adding.
+        LExample example = engine.LEngineExampleCreate(
+            new LExample(string.Empty, "English", "he said the word", null, null, []));
+        engine.LEngineReferenceAttach(
+            example.LExampleId, dictionary.LReferenceId, 0, LOwner.LOwnerExample);
+        engine.LEngineReferenceAttach(example.LExampleId, grammar.LReferenceId, 0, LOwner.LOwnerExample);
+
+        Assert.Equal(
+            grammar.LReferenceId,
+            Assert.Single(engine.LEngineReferenceRead(example.LExampleId, LOwner.LOwnerExample))
+                .LReferenceId);
+
+        engine.LEngineReferenceDetach(example.LExampleId, grammar.LReferenceId, LOwner.LOwnerExample);
+        Assert.Empty(engine.LEngineReferenceRead(example.LExampleId, LOwner.LOwnerExample));
+    }
+
+    [Fact]
+    public void ACitedReferenceIsNotDeletedUntilTheCitationsAreGone()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = TReferenceEntryCreate(engine);
+        LReference reference = TReferenceCreate(engine, "A Dictionary");
+        engine.LEngineReferenceAttach(entry.LEntryId, reference.LReferenceId, 0, LOwner.LOwnerEntry);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            engine.LEngineReferenceDelete(reference.LReferenceId));
+
+        engine.LEngineReferenceDetach(entry.LEntryId, reference.LReferenceId, LOwner.LOwnerEntry);
+        engine.LEngineReferenceDelete(reference.LReferenceId);
+        Assert.Null(engine.LEngineReferenceRead(reference.LReferenceId));
+    }
+
+    [Fact]
+    public void AnAuthorIsCreditedOnReferencesAndOutlivesEveryCredit()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LReference reference = TReferenceCreate(engine, "A Dictionary");
+        LAuthor first = engine.LEngineAuthorCreate(new LAuthor(string.Empty, "Kim"));
+        LAuthor second = engine.LEngineAuthorCreate(new LAuthor(string.Empty, "Lee"));
+
+        engine.LEngineAuthorAttach(reference.LReferenceId, first.LAuthorId, 0);
+        engine.LEngineAuthorAttach(reference.LReferenceId, second.LAuthorId, 1);
+
+        Assert.Equal(
+            ["Kim", "Lee"],
+            engine.LEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference)
+                .Select(author => author.LAuthorName));
+
+        engine.LEngineAuthorUpdate(first with { LAuthorName = "Kim Minji" });
+        Assert.Equal(
+            "Kim Minji",
+            engine.LEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference)[0].LAuthorName);
+
+        // A credited Author is not deletable, and losing the credit does not delete the person.
+        Assert.Throws<InvalidOperationException>(() => engine.LEngineAuthorDelete(first.LAuthorId));
+        engine.LEngineAuthorDetach(reference.LReferenceId, first.LAuthorId);
+        Assert.NotNull(engine.LEngineAuthorRead(first.LAuthorId));
+
+        engine.LEngineAuthorDelete(first.LAuthorId);
+        Assert.Null(engine.LEngineAuthorRead(first.LAuthorId));
+
+        // Deleting the Reference takes the credits it owns and leaves the Author it credited.
+        engine.LEngineReferenceDelete(reference.LReferenceId);
+        Assert.NotNull(engine.LEngineAuthorRead(second.LAuthorId));
+    }
+
+    private static LReference TReferenceCreate(LEngine engine, string title)
+    {
+        return engine.LEngineReferenceCreate(new LReference(
+            string.Empty,
+            LReferenceValue.LReferenceValueCreate(title),
+            LReferenceValue.LReferenceValueUnspecified,
+            LReferenceValue.LReferenceValueUnspecified,
+            LReferenceValue.LReferenceValueCreate("1998"),
+            LReferenceValue.LReferenceValueUnspecified,
+            LState.LStateUnspecified));
+    }
+
+    private static LEntry TReferenceEntryCreate(LEngine engine)
+    {
+        return engine.LEngineEntrySave(new LEntryDraft(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [])],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [])]));
+    }
+}

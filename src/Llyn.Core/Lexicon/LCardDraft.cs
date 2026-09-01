@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -36,7 +36,11 @@ namespace Llyn.Core;
 /// </param>
 /// <param name="LCardDraftExample">Example texts the card references, in the order they are shown.</param>
 /// <param name="LCardDraftSituation">Situation titles the card references, in the order they are shown.</param>
-/// <param name="LCardDraftSynonym">Synonym text from the card's Synonym field.</param>
+/// <param name="LCardDraftSynonym">
+/// Always empty. Neither card template offers a Synonym control: a synonym is a link to a stored Entry
+/// or Meaning, not text the card owns, and it is written through the engine's relation seam against a
+/// target the caller resolved. The member is kept so the card shape stays one shape for both kinds.
+/// </param>
 /// <param name="LCardDraftTag">Tag texts the card references, in the order they are shown.</param>
 /// <param name="LCardDraftId">
 /// Id of the stored row this card was loaded from, empty for a card that has never been stored. It is

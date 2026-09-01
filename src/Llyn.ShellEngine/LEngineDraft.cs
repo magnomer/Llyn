@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -50,12 +50,15 @@ public sealed partial class LEngine
     /// resolves typed text to a chosen row, and none exists yet.
     /// </para>
     /// <para>
-    /// Parts of speech are not written: <c>part_of_speech_value</c> is unseeded and the input panel has
-    /// no control for them. <b>Synonyms are not written either.</b> An <c>LSynonym</c> targets an Entry
-    /// or a Meaning by id, and a sense-card synonym is an <c>LRelation</c> with the same requirement;
-    /// the card's field holds free text, which is neither, and no picker exists to resolve it. Writing
-    /// one would mean fabricating a target and corrupting the relation model. The collocation card has
-    /// no Synonym control at all, so its <c>LCardDraftSynonym</c> arrives empty.
+    /// Parts of speech are not written: the input panel has no control to choose one with. The
+    /// vocabulary itself is there — <c>part_of_speech_value</c> is written from the language packs when
+    /// the engine binds to a workspace — so what is missing is the control, not the data behind it. <b>Synonyms are not written either</b>, and no card offers one to type. An
+    /// <c>LSynonym</c> targets an Entry or a Meaning by id, and a sense-card synonym is an
+    /// <c>LRelation</c> with the same requirement; free text is neither, and no picker exists to resolve
+    /// it, so the field was removed from the form rather than left to discard what was typed.
+    /// <c>LCardDraftSynonym</c> therefore arrives empty from both card kinds. Writing a link is its own
+    /// seam — <c>LEngineRelationCreate</c> and <c>LEngineSynonymCreate</c>, each taking a target the
+    /// caller resolved through <c>LEngineEntryFind</c> or <c>LEngineSenseFind</c> first.
     /// </para>
     /// </summary>
     public LEntry LEngineEntrySave(LEntryDraft draft)

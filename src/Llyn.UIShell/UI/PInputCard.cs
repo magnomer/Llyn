@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 
 namespace Llyn.UIShell;
@@ -12,7 +12,6 @@ internal sealed class PInputCard : INotifyPropertyChanged
     private string _pInputCardExpression;
     private string _pInputCardExample;
     private string _pInputCardSituation;
-    private string _pInputCardSynonym;
     private string _pInputCardTag;
 
     internal PInputCard(string prefix, int order)
@@ -24,7 +23,6 @@ internal sealed class PInputCard : INotifyPropertyChanged
         _pInputCardExpression = string.Empty;
         _pInputCardExample = string.Empty;
         _pInputCardSituation = string.Empty;
-        _pInputCardSynonym = string.Empty;
         _pInputCardTag = string.Empty;
     }
 
@@ -124,21 +122,6 @@ internal sealed class PInputCard : INotifyPropertyChanged
 
             _pInputCardSituation = value;
             PInputCardRaise(nameof(PInputCardSituation));
-        }
-    }
-
-    public string PInputCardSynonym
-    {
-        get => _pInputCardSynonym;
-        set
-        {
-            if (string.Equals(_pInputCardSynonym, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pInputCardSynonym = value;
-            PInputCardRaise(nameof(PInputCardSynonym));
         }
     }
 
