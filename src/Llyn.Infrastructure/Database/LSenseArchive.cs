@@ -129,18 +129,97 @@ public sealed class LSenseArchive
     }
 
     /// <summary>
-    /// Deletes the sense identified by <paramref name="id"/>. Its subordinate senses are removed by the
-    /// foreign-key cascade; sibling and ancestor senses are untouched.
+    /// Deletes the sense identified by <paramref name="id"/> together with everything it owns: its
+    /// inline definition field (columns of the row itself), the relations originating from it, its
+    /// subordinate senses with the same treatment applied down the tree, and its example, tag, and
+    /// situation association rows. Sibling and ancestor senses are untouched, and the independent
+    /// Examples, Tags, and Situations it referenced are left standing — only the links go.
+    /// <para>
+    /// Guarded where a cascade must not decide alone: while a relation outside the deleted subtree or
+    /// any collocation synonym still points at one of these senses, nothing is deleted and an
+    /// <see cref="InvalidOperationException"/> is thrown. Links originating inside the subtree are
+    /// cleared as part of the delete, since they belong to rows that are going anyway.
+    /// </para>
     /// </summary>
     public void LSenseDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
         using SqliteConnection connection = _lSenseArchiveDatabase.LDatabaseRead();
+        using SqliteTransaction transaction = connection.BeginTransaction();
+
+        LSenseLinkValidate(connection, id);
+        LSenseLinkClear(connection, id);
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM sense WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
+    // The senses this delete removes: the named one and every sense beneath it, walked with a
+    // recursive term over parent_id. Both link statements below start from this set.
+    private const string LSenseSubtreeQuery =
+        """
+        WITH RECURSIVE subtree(id) AS (
+            SELECT id FROM sense WHERE id = $id
+            UNION ALL
+            SELECT child.id FROM sense child JOIN subtree ON child.parent_id = subtree.id
+        )
+        """;
+
+    // Counts the links reaching the subtree from outside it: a relation held by a sense that survives,
+    // and any collocation synonym — a collocation is not deleted when a sense is, so every synonym
+    // pointing here counts as an outside link. The schema keeps those columns cascade-free on purpose;
+    // this turns the foreign-key error they would raise into a message that names the reason.
+    private static void LSenseLinkValidate(SqliteConnection connection, string id)
+    {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM sense WHERE id = $id;";
+        command.CommandText =
+            LSenseSubtreeQuery +
+            """
+
+            SELECT
+                (SELECT COUNT(*) FROM relation_sense target
+                    JOIN relation origin ON origin.id = target.relation_id
+                 WHERE target.sense_id IN (SELECT id FROM subtree)
+                   AND origin.sense_id NOT IN (SELECT id FROM subtree))
+                + (SELECT COUNT(*) FROM collocation_synonym link
+                   WHERE link.target_sense_id IN (SELECT id FROM subtree));
+            """;
         command.Parameters.AddWithValue("$id", id);
-        command.ExecuteNonQuery();
+        long links = Convert.ToInt64(command.ExecuteScalar());
+        if (links > 0)
+        {
+            throw new InvalidOperationException(
+                $"Meaning {id} is still the target of {links} lexical link(s) from outside it; remove those links before deleting it.");
+        }
+    }
+
+    // Clears the target rows of the relations the subtree owns before the senses go. They would
+    // cascade with their relation anyway, but a relation inside the subtree pointing at another sense
+    // in the same subtree would be checked against a row already being deleted, and the order the
+    // cascade visits tables in is not ours to rely on.
+    private static void LSenseLinkClear(SqliteConnection connection, string id)
+    {
+        string[] tables = ["relation_entry", "relation_sense"];
+        foreach (string table in tables)
+        {
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                LSenseSubtreeQuery +
+                $"""
+
+                DELETE FROM {table} WHERE relation_id IN
+                    (SELECT id FROM relation WHERE sense_id IN (SELECT id FROM subtree));
+                """;
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
     }
 
     private static void LSenseParentValidate(SqliteConnection connection, string entryId, string? parentId)

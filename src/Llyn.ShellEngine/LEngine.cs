@@ -114,6 +114,87 @@ public sealed class LEngine : IDisposable
     }
 
     /// <summary>
+    /// Opens the workspace row — which Entry each pane shows, the display mode, the split, and the
+    /// current revision — creating it on first use so the UI always receives a state.
+    /// </summary>
+    public LWorkspaceState LEngineStateRead()
+    {
+        return new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead();
+    }
+
+    /// <summary>Writes <paramref name="state"/> back into the workspace row.</summary>
+    public void LEngineStateSave(LWorkspaceState state)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateSave(state);
+    }
+
+    /// <summary>
+    /// Creates <paramref name="entry"/> with <paramref name="forms"/> and <paramref name="speeches"/>
+    /// as its ordered child rows, and returns the stored entry with its assigned id and timestamps.
+    /// </summary>
+    public LEntry LEngineEntryCreate(LEntry entry, IReadOnlyList<LForm> forms, IReadOnlyList<LSpeech> speeches)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        return new LEntryArchive(_lEngineDatabase).LEntryCreate(entry, forms, speeches);
+    }
+
+    /// <summary>Reads the entry for <paramref name="id"/>, or <c>null</c> when no entry has that id.</summary>
+    public LEntry? LEngineEntryRead(string id)
+    {
+        return new LEntryArchive(_lEngineDatabase).LEntryRead(id);
+    }
+
+    /// <summary>
+    /// Deletes the entry identified by <paramref name="id"/> with everything it owns, then writes the
+    /// history the deletion leaves behind: a revision carrying one delete change for the entry, a
+    /// tombstone filed under that revision, and the workspace row moved onto it. Returns the recorded
+    /// revision.
+    /// <para>
+    /// The delete runs first, so a refused delete — an entry another entry still links to — records no
+    /// history at all and throws its own message through.
+    /// </para>
+    /// </summary>
+    public LRevision LEngineEntryDelete(string id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        LEntry? deleted = new LEntryArchive(_lEngineDatabase).LEntryRead(id);
+        new LEntryArchive(_lEngineDatabase).LEntryDelete(id);
+
+        LRevisionChange change = new(0, id, "entry", "delete", deleted?.LEntryHeadword);
+        LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+        new LTombstoneArchive(_lEngineDatabase).LTombstoneRecord(id, revision.LRevisionId);
+
+        LWorkspaceArchive workspace = new(_lEngineDatabase);
+        LWorkspaceState state = workspace.LWorkspaceStateRead();
+        workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
+
+        return revision;
+    }
+
+    /// <summary>
+    /// Reads the tombstone left by deleting the Entry identified by <paramref name="entryId"/>, or
+    /// <c>null</c> when that Entry has never been deleted.
+    /// </summary>
+    public LTombstone? LEngineTombstoneRead(string entryId)
+    {
+        return new LTombstoneArchive(_lEngineDatabase).LTombstoneRead(entryId);
+    }
+
+    /// <summary>Reads the most recently opened revision, or <c>null</c> when the workspace has none yet.</summary>
+    public LRevision? LEngineRevisionRead()
+    {
+        return new LRevisionArchive(_lEngineDatabase).LRevisionLatestRead();
+    }
+
+    /// <summary>Reads the changes recorded under <paramref name="revisionId"/>, in the order recorded.</summary>
+    public IReadOnlyList<LRevisionChange> LEngineChangeRead(string revisionId)
+    {
+        return new LRevisionArchive(_lEngineDatabase).LRevisionChangeRead(revisionId);
+    }
+
+    /// <summary>
     /// Starts a pronunciation lookup for <paramref name="word"/> in <paramref name="language"/> and
     /// streams results to <paramref name="receiver"/>. The task completes when every source finishes.
     /// </summary>

@@ -219,18 +219,112 @@ public sealed class LEntryArchive
     }
 
     /// <summary>
-    /// Deletes the entry identified by <paramref name="id"/>. Its forms and POS rows are removed by the
-    /// foreign-key cascade.
+    /// Deletes the entry identified by <paramref name="id"/> and everything it owns. The foreign-key
+    /// cascade carries away its forms and parts of speech, its inflections and their features, its
+    /// meanings (each with its inline definition field), the relations originating from those meanings,
+    /// its single pronunciation with its syllables and representations, its collocations, its single
+    /// note, and every association row hanging from the entry, its meanings, or its collocations. The
+    /// independent Examples, Tags, Situations, References, and Authors those associations pointed at
+    /// are left standing — only the rows linking them to this entry disappear.
+    /// <para>
+    /// Guarded against the one thing a cascade must not decide on its own: a lexical link from
+    /// <em>another</em> entry pointing at this entry or at one of its meanings — a relation target or a
+    /// collocation synonym. While any such link exists nothing is deleted and an
+    /// <see cref="InvalidOperationException"/> is thrown; remove those links first. Links pointing here
+    /// from inside this entry are cleared as part of the delete, since they are owned by rows that are
+    /// going anyway.
+    /// </para>
     /// </summary>
     public void LEntryDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
         using SqliteConnection connection = _lEntryArchiveDatabase.LDatabaseRead();
+        using SqliteTransaction transaction = connection.BeginTransaction();
+
+        LEntryLinkValidate(connection, id);
+        LEntryLinkClear(connection, id);
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = "DELETE FROM entry WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
+    // Counts the lexical links that reach this entry from outside it: relations elsewhere whose target
+    // is this entry or one of its meanings, and collocation synonyms elsewhere pointing at either. The
+    // schema declares those columns without a cascade precisely so they cannot be swept away silently;
+    // this turns the resulting foreign-key error into a message that names the reason.
+    private static void LEntryLinkValidate(SqliteConnection connection, string id)
+    {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM entry WHERE id = $id;";
+        command.CommandText =
+            """
+            SELECT
+                (SELECT COUNT(*) FROM relation_entry target
+                    JOIN relation origin ON origin.id = target.relation_id
+                    JOIN sense holder ON holder.id = origin.sense_id
+                 WHERE target.entry_id = $id AND holder.entry_id <> $id)
+                + (SELECT COUNT(*) FROM relation_sense target
+                    JOIN relation origin ON origin.id = target.relation_id
+                    JOIN sense holder ON holder.id = origin.sense_id
+                    JOIN sense aimed ON aimed.id = target.sense_id
+                   WHERE aimed.entry_id = $id AND holder.entry_id <> $id)
+                + (SELECT COUNT(*) FROM collocation_synonym link
+                    JOIN collocation holder ON holder.id = link.collocation_id
+                   WHERE link.target_entry_id = $id AND holder.entry_id <> $id)
+                + (SELECT COUNT(*) FROM collocation_synonym link
+                    JOIN collocation holder ON holder.id = link.collocation_id
+                    JOIN sense aimed ON aimed.id = link.target_sense_id
+                   WHERE aimed.entry_id = $id AND holder.entry_id <> $id);
+            """;
         command.Parameters.AddWithValue("$id", id);
-        command.ExecuteNonQuery();
+        long links = Convert.ToInt64(command.ExecuteScalar());
+        if (links > 0)
+        {
+            throw new InvalidOperationException(
+                $"Entry {id} is still the target of {links} lexical link(s) from other entries; remove those links before deleting it.");
+        }
+    }
+
+    // Clears the links this entry owns before the entry row goes. They would cascade anyway — a
+    // relation's target row hangs from the relation, a synonym from its collocation — but a link that
+    // points back at this same entry would be checked against a row already being deleted, and the
+    // order the cascade visits tables in is not ours to rely on. Removing them first makes the delete
+    // deterministic.
+    private static void LEntryLinkClear(SqliteConnection connection, string id)
+    {
+        string[] statements =
+        [
+            """
+            DELETE FROM relation_entry WHERE relation_id IN
+                (SELECT origin.id FROM relation origin
+                    JOIN sense holder ON holder.id = origin.sense_id
+                 WHERE holder.entry_id = $id);
+            """,
+            """
+            DELETE FROM relation_sense WHERE relation_id IN
+                (SELECT origin.id FROM relation origin
+                    JOIN sense holder ON holder.id = origin.sense_id
+                 WHERE holder.entry_id = $id);
+            """,
+            """
+            DELETE FROM collocation_synonym WHERE collocation_id IN
+                (SELECT id FROM collocation WHERE entry_id = $id);
+            """,
+        ];
+
+        foreach (string statement in statements)
+        {
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = statement;
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
     }
 
     private static void LEntryFormInsert(SqliteConnection connection, string id, IReadOnlyList<LForm> forms)

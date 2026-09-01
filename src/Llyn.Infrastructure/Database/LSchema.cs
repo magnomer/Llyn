@@ -12,7 +12,7 @@ namespace Llyn.Infrastructure;
 public static class LSchema
 {
     /// <summary>The schema version this build produces. Later jobs raise it as they extend the schema.</summary>
-    private const long LSchemaVersion = 9;
+    private const long LSchemaVersion = 11;
 
     /// <summary>
     /// Creates every table that does not yet exist and stamps the schema version. Safe to run on each
@@ -260,6 +260,71 @@ public static class LSchema
             """;
         command.ExecuteNonQuery();
 
+        // The independent Author and the independent bibliographic Reference, created before the Example
+        // block below so example.source_id can carry its foreign key. Both are owned by nothing: an
+        // Author is shared by any number of References, and a Reference is cited by any number of
+        // Entries and Examples without belonging to any of them. Every Reference field is stored as a
+        // state column plus a value column: the state says whether the field was never filled in, was
+        // recorded as unknown, or holds a value, and the value column is NULL unless the state is
+        // 'specified' — the check constraints make that a schema fact rather than a store convention.
+        // author_state has no value column of its own because the authors themselves are the value,
+        // attached in order through source_author. That table cascades from its Reference, so deleting
+        // a Reference drops its author links and never an Author; entry_source cascades from its Entry
+        // only, so the source_id and author_id foreign keys deliberately have no cascade and the stores
+        // refuse to delete a Reference or an Author while anything still points at it.
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS author (
+                id TEXT NOT NULL PRIMARY KEY,
+                name TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS source (
+                id TEXT NOT NULL PRIMARY KEY,
+                title_state TEXT NOT NULL,
+                title TEXT,
+                program_name_state TEXT NOT NULL,
+                program_name TEXT,
+                channel_name_state TEXT NOT NULL,
+                channel_name TEXT,
+                year_state TEXT NOT NULL,
+                year TEXT,
+                url_state TEXT NOT NULL,
+                url TEXT,
+                author_state TEXT NOT NULL,
+                CHECK (title_state = 'specified' OR title IS NULL),
+                CHECK (program_name_state = 'specified' OR program_name IS NULL),
+                CHECK (channel_name_state = 'specified' OR channel_name IS NULL),
+                CHECK (year_state = 'specified' OR year IS NULL),
+                CHECK (url_state = 'specified' OR url IS NULL)
+            );
+
+            CREATE TABLE IF NOT EXISTS source_author (
+                source_id TEXT NOT NULL,
+                author_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (source_id, author_id),
+                FOREIGN KEY (source_id) REFERENCES source (id) ON DELETE CASCADE,
+                FOREIGN KEY (author_id) REFERENCES author (id)
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS source_author_position
+                ON source_author (source_id, position);
+
+            CREATE TABLE IF NOT EXISTS entry_source (
+                entry_id TEXT NOT NULL,
+                source_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (entry_id, source_id),
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
+                FOREIGN KEY (source_id) REFERENCES source (id)
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS entry_source_position
+                ON entry_source (entry_id, position);
+            """;
+        command.ExecuteNonQuery();
+
         // The independent Example and the references that reach it. An Example is owned by nothing: it
         // carries its own opaque id, its language and display text, and at most one Source reference —
         // and it is reached through the three association tables below, one per referrer kind. Each
@@ -270,11 +335,11 @@ public static class LSchema
         // cascade, so an Example survives every detach and the store refuses to delete one while any
         // reference still points at it. Translations are owned text and cascade with their Example.
         //
-        // TODO: example.source_id is the reference to the single independent Source job10 introduces. It
-        // cannot carry its FOREIGN KEY clause yet: SQLite refuses to prepare any statement writing to a
-        // child table whose parent table is missing ("no such table: main.source"), even for NULL keys,
-        // so declaring the constraint here would break every Example insert until job10 runs. Job10 owns
-        // adding "FOREIGN KEY (source_id) REFERENCES source (id)" once the source table exists.
+        // example.source_id points at the independent Reference the block above creates. Its foreign key
+        // could only be declared once that source table existed — SQLite refuses to prepare any statement
+        // writing to a child table whose parent is missing, even for NULL keys — which is why the source
+        // block runs first. A database created before this version keeps the column without the
+        // constraint: CREATE TABLE IF NOT EXISTS leaves the existing table as it stands.
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS example (
@@ -282,7 +347,8 @@ public static class LSchema
                 language TEXT NOT NULL,
                 text TEXT NOT NULL,
                 local TEXT,
-                source_id TEXT
+                source_id TEXT,
+                FOREIGN KEY (source_id) REFERENCES source (id)
             );
 
             CREATE TABLE IF NOT EXISTS example_translation (
@@ -405,13 +471,19 @@ public static class LSchema
             """;
         command.ExecuteNonQuery();
 
+        // The operational and history tables close the schema: they carry no lexical ownership and the
+        // workspace row points at both entry and revision, so they are created last, in their own file.
+        LSchemaRevision.LSchemaRevisionCreate(connection);
+
+        // The version row is written on a fresh database and raised on an existing one, so a database
+        // built by an earlier job reports the version whose tables it now actually has. The guard on
+        // the update keeps a newer database — one an older build opened — from being written backwards.
         command.CommandText = "SELECT COUNT(*) FROM schema_version;";
         long rows = Convert.ToInt64(command.ExecuteScalar());
-        if (rows == 0)
-        {
-            command.CommandText = "INSERT INTO schema_version (version) VALUES ($version);";
-            command.Parameters.AddWithValue("$version", LSchemaVersion);
-            command.ExecuteNonQuery();
-        }
+        command.CommandText = rows == 0
+            ? "INSERT INTO schema_version (version) VALUES ($version);"
+            : "UPDATE schema_version SET version = $version WHERE version < $version;";
+        command.Parameters.AddWithValue("$version", LSchemaVersion);
+        command.ExecuteNonQuery();
     }
 }
