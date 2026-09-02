@@ -184,33 +184,7 @@ public sealed partial class LEngine
         LEngineExampleSync(ownerId, card.LCardDraftExample, language, collocation);
         LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation);
 
-        LTagArchive tags = new(_lEngineDatabase);
-        LEngineFieldSync(
-            card.LCardDraftTag,
-            collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId),
-            row => row.LTagId,
-            row => row.LTagText,
-            text => tags.LTagCreate(new LTag(string.Empty, text)).LTagId,
-            rowId =>
-            {
-                if (collocation)
-                {
-                    tags.LTagCollocationDetach(ownerId, rowId);
-                    return;
-                }
-
-                tags.LTagSenseDetach(ownerId, rowId);
-            },
-            (rowId, position) =>
-            {
-                if (collocation)
-                {
-                    tags.LTagCollocationAttach(ownerId, rowId, position);
-                    return;
-                }
-
-                tags.LTagSenseAttach(ownerId, rowId, position);
-            });
+        LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
 
         LImageArchive images = new(_lEngineDatabase);
         LEngineFieldSync(
@@ -340,6 +314,24 @@ public sealed partial class LEngine
 
             situations.LSituationSenseAttach(ownerId, targets[position], position);
         }
+    }
+
+    private void LEngineTagSave(string ownerId, IReadOnlyList<string> texts, bool collocation)
+    {
+        List<LTag> written = new(texts.Count);
+        foreach (string text in texts)
+        {
+            written.Add(new LTag(text));
+        }
+
+        LTagArchive tags = new(_lEngineDatabase);
+        if (collocation)
+        {
+            tags.LTagCollocationSave(ownerId, written);
+            return;
+        }
+
+        tags.LTagSenseSave(ownerId, written);
     }
 
     private static void LEngineFieldSync<TRow>(

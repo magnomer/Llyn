@@ -2,13 +2,18 @@
 
 ## `public sealed class TExample`
 
-Covers the engine's Example seam: an Example created with its translations, referenced from all three sides that may quote one, rewritten, pointed at a Reference and let go of — including the removal that deletes an Example nothing quotes any more.
+Covers the engine's Example seam.
+An Example is created with its translations.
+It is referenced from all three sides that may quote one.
+It is rewritten, pointed at a Reference and let go of.
+That includes the removal that deletes an Example nothing quotes any more.
 
 ## Inline notes
 
 ### `Assert.Throws<InvalidOperationException>(() => engine.LEngineExampleDelete(example.LExampleId));`
 
-A delete while something still quotes it is refused; a detach leaves the row for the side that still does.
+A delete while something still quotes it is refused.
+A detach leaves the row for the side that still does.
 
 ### `engine.LEngineExampleUpdate(example.LExampleId, null);`
 

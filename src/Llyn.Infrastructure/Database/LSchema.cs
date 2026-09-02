@@ -344,20 +344,13 @@ public static class LSchema
 
         command.CommandText =
             """
-            CREATE TABLE IF NOT EXISTS tag (
-                id TEXT NOT NULL PRIMARY KEY,
-                text_state TEXT NOT NULL DEFAULT 'unspecified',
-                text TEXT,
-                CHECK (text_state = 'specified' OR text IS NULL)
-            );
-
             CREATE TABLE IF NOT EXISTS sense_tag (
                 sense_id TEXT NOT NULL,
-                tag_id TEXT NOT NULL,
+                text TEXT NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, tag_id),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_id) REFERENCES tag (id)
+                PRIMARY KEY (sense_id, text),
+                CHECK (length(text) > 0),
+                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_tag_position
@@ -365,11 +358,11 @@ public static class LSchema
 
             CREATE TABLE IF NOT EXISTS collocation_tag (
                 collocation_id TEXT NOT NULL,
-                tag_id TEXT NOT NULL,
+                text TEXT NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, tag_id),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_id) REFERENCES tag (id)
+                PRIMARY KEY (collocation_id, text),
+                CHECK (length(text) > 0),
+                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_tag_position

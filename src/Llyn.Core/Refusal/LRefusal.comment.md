@@ -2,9 +2,16 @@
 
 ## `public sealed class LRefusal : Exception`
 
-A deliberate refusal the shell is meant to present: a request the logic declines for a reason the user can act on, such as a save without a headword.
+A deliberate refusal the shell is meant to present.
+It is a request the logic declines for a reason the user can act on.
+A save without a headword is one such reason.
 
-The refusal names its reason with a key, never with a sentence. Display text belongs to the localization catalog the shell owns, so the logic layers stay free of user-facing wording and a refusal reads in whichever interface language is selected. Only deliberate refusals carry a key; an unexpected failure stays an ordinary exception and travels with its own message.
+The refusal names its reason with a key, never with a sentence.
+Display text belongs to the localization catalog the shell owns.
+So the logic layers stay free of user-facing wording.
+A refusal reads in whichever interface language is selected.
+Only deliberate refusals carry a key.
+An unexpected failure stays an ordinary exception and travels with its own message.
 
 ## `public const string LRefusalHeadword = "Refusal.HeadwordMissing";`
 
@@ -16,7 +23,9 @@ Reason key for an update whose entry is not in the workspace.
 
 ## `public const string LRefusalTarget = "Refusal.TargetMissing";`
 
-Reason key for a relation or synonym whose target is not one lexical row of this workspace — text that resolved to nothing, or a request naming both an Entry and a Meaning, or neither.
+Reason key for a relation or synonym whose target is not one lexical row of this workspace.
+The text may have resolved to nothing.
+Or the request may name both an Entry and a Meaning, or neither.
 
 ## `public LRefusal(string reason)`
 

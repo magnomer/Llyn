@@ -1,67 +1,83 @@
-# LTagArchive.cs
+﻿# LTagArchive.cs
 
 ## `public sealed class LTagArchive`
 
-Persists Tags — independent data no Entry, Meaning, or Collocation owns. A Tag is created once with an opaque id, then *referenced* by any number of Meanings and Collocations through the association tables, each carrying the position the Tag takes for that referrer alone. Attaching and detaching therefore only ever write association rows: detaching leaves the Tag and its other references untouched, updating rewrites the visible text and never the id, and `LTagDelete` refuses to run while any reference remains.
+Persists Tags.
+A Tag has no identity apart from the text it reads.
+So there is no Tag row to create and no id to carry.
+A Tag exists exactly where a Meaning or a Collocation writes it.
+Two cards writing the same words hold the same Tag by saying the same thing.
+The association tables are therefore the whole of the storage.
+Each row is one card, one text and the position that text takes on that card alone.
+The catalog of Tags is read back out of them rather than kept beside them.
 
-A referrer's order is a unique index, so attaching and detaching renumber that referrer's whole set through `LDatabaseOrder`: a caller names the index it wants and never has to find a free position or leave a gap behind.
+A card's Tag line is written as a whole rather than edited a reference at a time.
+The old rows go and the new ones are numbered from zero in the order given.
+Blank texts and repeats are dropped on the way.
+Editing a card is exactly that write.
+So no caller has to work out which Tags were added and which were taken away.
+A card's positions are contiguous by construction rather than by repair.
+
+Renaming and deleting a Tag reach across every card that wrote it, because that is what a Tag is.
+Both fold and close.
+Renaming onto a text a card already carries leaves that card one Tag, not two.
+Deleting closes the gap the removed text left in every card's order.
 
 ## `public LTagArchive(LDatabase database)`
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public LTag LTagCreate(LTag tag)`
-
-Inserts `tag` with a fresh opaque id and returns the stored Tag with that id filled in. The new Tag is referenced by nothing until it is attached to a referrer.
-
-## `public LTag? LTagRead(string id)`
-
-Reads the Tag identified by `id`, or `null` when no such Tag exists.
-
 ## `public IReadOnlyList<LTag> LTagSenseRead(string senseId)`
 
-Reads the Tags a Meaning references, in the order that Meaning gives them.
+Reads the Tags a Meaning carries, in the order that Meaning gives them.
 
 ## `public IReadOnlyList<LTag> LTagCollocationRead(string collocationId)`
 
-Reads the Tags a Collocation references, in the order that Collocation gives them.
+Reads the Tags a Collocation carries, in the order that Collocation gives them.
 
-## `public void LTagUpdate(LTag tag)`
+## `public void LTagSenseSave(string senseId, IReadOnlyList<LTag> tags)`
 
-Rewrites the visible text of the Tag identified by `tag`'s id. The id and every reference pointing at it are untouched, so an update never changes where the Tag appears or in what order. Throws when no Tag carries that id.
+Writes a Meaning's whole Tag line, replacing whatever it carried.
+Texts are trimmed, blanks and repeats are dropped, and what survives is numbered from zero in the order given.
 
-## `public int LTagReferenceRead(string id)`
+## `public void LTagCollocationSave(string collocationId, IReadOnlyList<LTag> tags)`
 
-Counts the references that still point at the Tag identified by `id` — the number `LTagDelete` refuses a delete over. A caller that has just detached one reference reads this to learn whether the row it detached from was the last one, without a store of its own having to know which association tables exist.
+The same write for a Collocation.
 
-## `public void LTagDelete(string id)`
+## `public IReadOnlyList<LTag> LTagCatalogRead()`
 
-Deletes the Tag identified by `id`. Guarded: while any Meaning or Collocation still references the Tag, nothing is deleted and an `InvalidOperationException` is thrown — detach every reference first. Deleting a Tag never deletes the rows that referenced it. The guard and the delete share one transaction, so nothing can attach the Tag between them.
+Reads every Tag any card carries, once each, in alphabetical order.
+That is the Tag list itself.
+It is gathered from the cards that write it, because nothing else holds it.
 
-## `public void LTagSenseAttach(string senseId, string tagId, int position)`
+## `public int LTagReferenceRead(string text)`
 
-References an existing Tag from a Meaning at `position` in that Meaning's order.
+Counts the cards carrying `text`.
+A Tag no card carries is not a Tag that was deleted.
+It simply is not written anywhere.
 
-## `public void LTagCollocationAttach(string collocationId, string tagId, int position)`
+## `public void LTagChange(string text, string renamed)`
 
-References an existing Tag from a Collocation at `position` in that Collocation's order.
+Renames a Tag everywhere it is written.
+A card already carrying `renamed` keeps one Tag rather than gaining a duplicate.
+That card's order closes over the row that folded away.
 
-## `public void LTagSenseDetach(string senseId, string tagId)`
+## `public void LTagDelete(string text)`
 
-Removes a Meaning's reference to a Tag. The Tag and its other references survive.
-
-## `public void LTagCollocationDetach(string collocationId, string tagId)`
-
-Removes a Collocation's reference to a Tag. The Tag and its other references survive.
+Takes a Tag off every card that carries it, closing the gap it leaves in each card's order.
+Nothing else is deleted: a card that carried only this Tag stays, now carrying none.
 
 ## Inline notes
 
-### `private static int LTagReferenceRead(SqliteConnection connection, string id)`
+### `private static void LTagOwnerNormalize(SqliteConnection connection, string table, string column, string owner)`
 
-The same count on a connection the caller already holds, so a guard and the delete it guards run in one transaction and nothing can attach the row between them.
+One card's rows are read in order, deleted and written back numbered from zero.
+The rewrite rather than an in-place shift keeps the unique index on (card, position) satisfied.
+A shift would have to pass through a position another row still holds.
 
-### `private void LTagReferenceAttach(string table, string column, string referrerId, string tagId, int position)`
+### `private void LTagReferrerSave(string table, string column, string referrerId, IReadOnlyList<LTag> tags)`
 
-The two association tables differ only in their name and their referrer column, so the reference operations share one implementation each. Both identifiers are store-owned literals chosen by the methods above, never caller input, so composing them into the statement text opens no injection seam; every value still travels as a parameter.
-
-The row goes in beyond the end of the set and the whole set is then renumbered around it, so the requested index is honoured and an occupied position is no longer a unique-index failure.
+The two association tables differ only in their name and their card column, so the write is one implementation.
+Both identifiers are store-owned literals chosen by the methods above, never caller input.
+So composing them into the statement text opens no injection seam.
+Every value still travels as a parameter.

@@ -148,7 +148,7 @@ public sealed class TMarkup
         Assert.Equal("kindle a fire", card.LCardDraftExpression.LStateValueShow());
         Assert.Equal("to set something burning", card.LCardDraftMeaning.LStateValueShow());
         Assert.Equal("ignite, light", card.LCardDraftSynonym);
-        Assert.Equal(["literal", "old"], card.LCardDraftTag.Select(tag => tag.LStateValueShow()));
+        Assert.Equal(["literal", "old"], card.LCardDraftTag);
         Assert.Equal(
             ["media/one.jpg", "media/two.jpg"],
             card.LCardDraftImage.Select(image => image.LStateValueShow()));
@@ -162,7 +162,7 @@ public sealed class TMarkup
     }
 
     [Fact]
-    public void AnEmptyTagIsUnknownAndAnAbsentTagIsUnspecified()
+    public void AnEmptyTagCarriesNoNameAndSoCarriesNoTag()
     {
         LCardDraft card = LMarkup.LMarkupCardRead(LMarkup.LMarkupScan(
             "<sense><meaning></meaning><tag></tag></sense>"));
@@ -171,7 +171,7 @@ public sealed class TMarkup
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftExpression.LStateValueState);
         Assert.Equal(string.Empty, card.LCardDraftSynonym);
-        Assert.Equal(LState.LStateUnknown, Assert.Single(card.LCardDraftTag).LStateValueState);
+        Assert.Empty(card.LCardDraftTag);
         Assert.Empty(card.LCardDraftExample);
         Assert.Empty(card.LCardDraftSituation);
         Assert.Empty(card.LCardDraftImage);
@@ -387,14 +387,13 @@ public sealed class TMarkup
         LCardDraft alight = kindle.LEntryDraftSenses[0];
         Assert.Equal("set alight", alight.LCardDraftTitle.LStateValueShow());
         Assert.Equal("ignite, light", alight.LCardDraftSynonym);
-        Assert.Equal(["literal"], alight.LCardDraftTag.Select(tag => tag.LStateValueShow()));
+        Assert.Equal(["literal"], alight.LCardDraftTag);
         Assert.Equal(["media/kindle-hearth.jpg"], alight.LCardDraftImage.Select(image => image.LStateValueShow()));
         Assert.Equal("oed", Assert.Single(alight.LCardDraftExample).LExampleDraftReference.LStateValueShow());
         Assert.Equal("oed", Assert.Single(alight.LCardDraftSituation).LSituationDraftReference.LStateValueShow());
 
         LCardDraft rouse = kindle.LEntryDraftSenses[1];
-        Assert.Equal(["figurative", ""], rouse.LCardDraftTag.Select(tag => tag.LStateValueShow()));
-        Assert.Equal([LState.LStateSpecified, LState.LStateUnknown], rouse.LCardDraftTag.Select(tag => tag.LStateValueState));
+        Assert.Equal(["figurative"], rouse.LCardDraftTag);
         Assert.Equal(
             [LState.LStateUnspecified, LState.LStateUnknown],
             rouse.LCardDraftExample.Select(example => example.LExampleDraftReference.LStateValueState));

@@ -153,22 +153,7 @@ public sealed partial class LEngine
             position++;
         }
 
-        LTagArchive tags = new(_lEngineDatabase);
-        position = 0;
-        foreach (LStateValue text in LEngineFieldRead(card.LCardDraftTag))
-        {
-            LTag tag = tags.LTagCreate(new LTag(string.Empty, text));
-            if (collocation)
-            {
-                tags.LTagCollocationAttach(ownerId, tag.LTagId, position);
-            }
-            else
-            {
-                tags.LTagSenseAttach(ownerId, tag.LTagId, position);
-            }
-
-            position++;
-        }
+        LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
 
         LImageArchive images = new(_lEngineDatabase);
         position = 0;
@@ -198,7 +183,7 @@ public sealed partial class LEngine
                 !string.IsNullOrWhiteSpace(card.LCardDraftSynonym) ||
                 LEngineExampleCheck(card.LCardDraftExample) ||
                 LEngineSituationCheck(card.LCardDraftSituation) ||
-                LEngineFieldCheck(card.LCardDraftTag) ||
+                LEngineTagCheck(card.LCardDraftTag) ||
                 LEngineFieldCheck(card.LCardDraftImage))
             {
                 yield return card;
@@ -312,6 +297,19 @@ public sealed partial class LEngine
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             draft.LSituationDraftReference)).LSituationId;
+    }
+
+    private static bool LEngineTagCheck(IReadOnlyList<string> texts)
+    {
+        foreach (string text in texts)
+        {
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool LEngineFieldCheck(IReadOnlyList<LStateValue> texts)

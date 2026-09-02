@@ -15,34 +15,6 @@ public sealed class LTagArchive
         _lTagArchiveDatabase = database;
     }
 
-    public LTag LTagCreate(LTag tag)
-    {
-        ArgumentNullException.ThrowIfNull(tag);
-
-        LTag stored = tag with { LTagId = LIdentity.LIdentityCreate() };
-
-        using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            command.CommandText =
-                "INSERT INTO tag (id, text_state, text) VALUES ($id, $textState, $text);";
-            command.Parameters.AddWithValue("$id", stored.LTagId);
-            LStateColumn.LStateColumnApply(command, "text", stored.LTagText);
-            command.ExecuteNonQuery();
-        }
-
-        session.LDatabaseSessionCommit();
-        return stored;
-    }
-
-    public LTag? LTagRead(string id)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-
-        using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
-        return LTagSingleRead(session.LDatabaseSessionConnection, id);
-    }
-
     public IReadOnlyList<LTag> LTagSenseRead(string senseId)
     {
         return LTagReferrerRead("sense_tag", "sense_id", senseId);
@@ -53,145 +25,233 @@ public sealed class LTagArchive
         return LTagReferrerRead("collocation_tag", "collocation_id", collocationId);
     }
 
-    public void LTagUpdate(LTag tag)
+    public void LTagSenseSave(string senseId, IReadOnlyList<LTag> tags)
     {
-        ArgumentNullException.ThrowIfNull(tag);
-        ArgumentException.ThrowIfNullOrWhiteSpace(tag.LTagId);
+        LTagReferrerSave("sense_tag", "sense_id", senseId, tags);
+    }
 
+    public void LTagCollocationSave(string collocationId, IReadOnlyList<LTag> tags)
+    {
+        LTagReferrerSave("collocation_tag", "collocation_id", collocationId, tags);
+    }
+
+    public IReadOnlyList<LTag> LTagCatalogRead()
+    {
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT text FROM sense_tag
+            UNION
+            SELECT text FROM collocation_tag
+            ORDER BY text;
+            """;
+
+        List<LTag> tags = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
         {
-            command.CommandText =
-                "UPDATE tag SET text_state = $textState, text = $text WHERE id = $id;";
-            LStateColumn.LStateColumnApply(command, "text", tag.LTagText);
-            command.Parameters.AddWithValue("$id", tag.LTagId);
-            if (command.ExecuteNonQuery() == 0)
-            {
-                throw new InvalidOperationException($"No Tag carries the id '{tag.LTagId}'.");
-            }
+            tags.Add(new LTag(reader.GetString(0)));
         }
 
-        session.LDatabaseSessionCommit();
+        return tags;
     }
 
-    public int LTagReferenceRead(string id)
+    public int LTagReferenceRead(string text)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentException.ThrowIfNullOrWhiteSpace(text);
 
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
-        return LTagReferenceRead(session.LDatabaseSessionConnection, id);
-    }
-
-    private static int LTagReferenceRead(SqliteConnection connection, string id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM sense_tag WHERE tag_id = $id)
-                + (SELECT COUNT(*) FROM collocation_tag WHERE tag_id = $id);
+                (SELECT COUNT(*) FROM sense_tag WHERE text = $text)
+                + (SELECT COUNT(*) FROM collocation_tag WHERE text = $text);
             """;
-        command.Parameters.AddWithValue("$id", id);
+        command.Parameters.AddWithValue("$text", text);
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    public void LTagDelete(string id)
+    public void LTagChange(string text, string renamed)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentException.ThrowIfNullOrWhiteSpace(text);
+        ArgumentException.ThrowIfNullOrWhiteSpace(renamed);
 
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        int references = LTagReferenceRead(connection, id);
-        if (references > 0)
-        {
-            throw new InvalidOperationException(
-                $"Tag {id} is still referenced {references} time(s); detach every reference before deleting it.");
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "DELETE FROM tag WHERE id = $id;";
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
+        LTagChange(connection, "sense_tag", "sense_id", text.Trim(), renamed.Trim());
+        LTagChange(connection, "collocation_tag", "collocation_id", text.Trim(), renamed.Trim());
 
         session.LDatabaseSessionCommit();
     }
 
-    public void LTagSenseAttach(string senseId, string tagId, int position)
+    public void LTagDelete(string text)
     {
-        LTagReferenceAttach("sense_tag", "sense_id", senseId, tagId, position);
-    }
-
-    public void LTagCollocationAttach(string collocationId, string tagId, int position)
-    {
-        LTagReferenceAttach("collocation_tag", "collocation_id", collocationId, tagId, position);
-    }
-
-    public void LTagSenseDetach(string senseId, string tagId)
-    {
-        LTagReferenceDetach("sense_tag", "sense_id", senseId, tagId);
-    }
-
-    public void LTagCollocationDetach(string collocationId, string tagId)
-    {
-        LTagReferenceDetach("collocation_tag", "collocation_id", collocationId, tagId);
-    }
-
-    private void LTagReferenceAttach(string table, string column, string referrerId, string tagId, int position)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(tagId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(text);
 
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string scope = $"{column} = $owner";
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, referrerId, "tag_id");
+        LTagDelete(connection, "sense_tag", "sense_id", text.Trim());
+        LTagDelete(connection, "collocation_tag", "collocation_id", text.Trim());
 
-        using (SqliteCommand command = connection.CreateCommand())
+        session.LDatabaseSessionCommit();
+    }
+
+    private static void LTagChange(
+        SqliteConnection connection, string table, string column, string text, string renamed)
+    {
+        using (SqliteCommand carried = connection.CreateCommand())
         {
-            command.CommandText =
+            carried.CommandText =
                 $"""
-                INSERT INTO {table} ({column}, tag_id, position)
-                VALUES ($referrer, $tag, $position)
-                ON CONFLICT ({column}, tag_id) DO NOTHING;
+                DELETE FROM {table}
+                WHERE text = $text
+                  AND EXISTS (
+                      SELECT 1 FROM {table} kept
+                      WHERE kept.{column} = {table}.{column} AND kept.text = $renamed);
                 """;
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            command.Parameters.AddWithValue("$tag", tagId);
-            command.Parameters.AddWithValue("$position", current.Count);
-            command.ExecuteNonQuery();
+            carried.Parameters.AddWithValue("$text", text);
+            carried.Parameters.AddWithValue("$renamed", renamed);
+            carried.ExecuteNonQuery();
         }
-
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "tag_id",
-            LDatabaseOrder.LDatabaseOrderInsert(current, tagId, position));
-
-        session.LDatabaseSessionCommit();
-    }
-
-    private void LTagReferenceDetach(string table, string column, string referrerId, string tagId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(tagId);
-
-        using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-        string scope = $"{column} = $owner";
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND tag_id = $tag;";
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            command.Parameters.AddWithValue("$tag", tagId);
+            command.CommandText = $"UPDATE {table} SET text = $renamed WHERE text = $text;";
+            command.Parameters.AddWithValue("$text", text);
+            command.Parameters.AddWithValue("$renamed", renamed);
             command.ExecuteNonQuery();
         }
 
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "tag_id",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "tag_id"));
+        LTagPositionNormalize(connection, table, column, renamed);
+    }
+
+    private static void LTagDelete(
+        SqliteConnection connection, string table, string column, string text)
+    {
+        List<string> owners = [];
+        using (SqliteCommand named = connection.CreateCommand())
+        {
+            named.CommandText = $"SELECT {column} FROM {table} WHERE text = $text;";
+            named.Parameters.AddWithValue("$text", text);
+            using SqliteDataReader reader = named.ExecuteReader();
+            while (reader.Read())
+            {
+                owners.Add(reader.GetString(0));
+            }
+        }
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = $"DELETE FROM {table} WHERE text = $text;";
+            command.Parameters.AddWithValue("$text", text);
+            command.ExecuteNonQuery();
+        }
+
+        foreach (string owner in owners)
+        {
+            LTagOwnerNormalize(connection, table, column, owner);
+        }
+    }
+
+    private static void LTagPositionNormalize(
+        SqliteConnection connection, string table, string column, string text)
+    {
+        List<string> owners = [];
+        using (SqliteCommand named = connection.CreateCommand())
+        {
+            named.CommandText = $"SELECT {column} FROM {table} WHERE text = $text;";
+            named.Parameters.AddWithValue("$text", text);
+            using SqliteDataReader reader = named.ExecuteReader();
+            while (reader.Read())
+            {
+                owners.Add(reader.GetString(0));
+            }
+        }
+
+        foreach (string owner in owners)
+        {
+            LTagOwnerNormalize(connection, table, column, owner);
+        }
+    }
+
+    private static void LTagOwnerNormalize(
+        SqliteConnection connection, string table, string column, string owner)
+    {
+        List<string> texts = [];
+        using (SqliteCommand named = connection.CreateCommand())
+        {
+            named.CommandText =
+                $"SELECT text FROM {table} WHERE {column} = $owner ORDER BY position;";
+            named.Parameters.AddWithValue("$owner", owner);
+            using SqliteDataReader reader = named.ExecuteReader();
+            while (reader.Read())
+            {
+                texts.Add(reader.GetString(0));
+            }
+        }
+
+        using (SqliteCommand cleared = connection.CreateCommand())
+        {
+            cleared.CommandText = $"DELETE FROM {table} WHERE {column} = $owner;";
+            cleared.Parameters.AddWithValue("$owner", owner);
+            cleared.ExecuteNonQuery();
+        }
+
+        LTagOwnerSave(connection, table, column, owner, texts);
+    }
+
+    private static void LTagOwnerSave(
+        SqliteConnection connection, string table, string column, string owner, IReadOnlyList<string> texts)
+    {
+        int position = 0;
+        foreach (string text in texts)
+        {
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                $"INSERT INTO {table} ({column}, text, position) VALUES ($owner, $text, $position);";
+            command.Parameters.AddWithValue("$owner", owner);
+            command.Parameters.AddWithValue("$text", text);
+            command.Parameters.AddWithValue("$position", position);
+            command.ExecuteNonQuery();
+            position++;
+        }
+    }
+
+    private void LTagReferrerSave(
+        string table, string column, string referrerId, IReadOnlyList<LTag> tags)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentNullException.ThrowIfNull(tags);
+
+        using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        using (SqliteCommand cleared = connection.CreateCommand())
+        {
+            cleared.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer;";
+            cleared.Parameters.AddWithValue("$referrer", referrerId);
+            cleared.ExecuteNonQuery();
+        }
+
+        List<string> texts = [];
+        HashSet<string> written = new(StringComparer.Ordinal);
+        foreach (LTag tag in tags)
+        {
+            ArgumentNullException.ThrowIfNull(tag);
+            string text = tag.LTagText.Trim();
+            if (text.Length == 0 || !written.Add(text))
+            {
+                continue;
+            }
+
+            texts.Add(text);
+        }
+
+        LTagOwnerSave(connection, table, column, referrerId, texts);
 
         session.LDatabaseSessionCommit();
     }
@@ -203,36 +263,16 @@ public sealed class LTagArchive
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            $"""
-            SELECT tag.id, tag.text_state, tag.text
-            FROM {table} link
-            JOIN tag ON tag.id = link.tag_id
-            WHERE link.{column} = $referrer
-            ORDER BY link.position;
-            """;
+            $"SELECT text FROM {table} WHERE {column} = $referrer ORDER BY position;";
         command.Parameters.AddWithValue("$referrer", referrerId);
 
         List<LTag> tags = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            tags.Add(new LTag(reader.GetString(0), LStateColumn.LStateColumnRead(reader, 1)));
+            tags.Add(new LTag(reader.GetString(0)));
         }
 
         return tags;
-    }
-
-    private static LTag? LTagSingleRead(SqliteConnection connection, string id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT text_state, text FROM tag WHERE id = $id;";
-        command.Parameters.AddWithValue("$id", id);
-        using SqliteDataReader reader = command.ExecuteReader();
-        if (!reader.Read())
-        {
-            return null;
-        }
-
-        return new LTag(id, LStateColumn.LStateColumnRead(reader, 0));
     }
 }

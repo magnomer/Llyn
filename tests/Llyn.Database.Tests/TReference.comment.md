@@ -2,7 +2,12 @@
 
 ## `public sealed class TReference`
 
-Covers the engine's bibliographic seams: a Reference created, cited by an Entry and by an Example, credited to Authors in order, and the deletes each side refuses while something still points at the row. Neither a Reference nor an Author is deleted by a citation or a credit going: both are deliberate data, not something typed into a card.
+Covers the engine's bibliographic seams.
+A Reference is created, cited by an Entry and by an Example.
+It is credited to Authors in order.
+Each side refuses a delete while something still points at the row.
+Neither a Reference nor an Author is deleted by a citation or a credit going.
+Both are deliberate data, not something typed into a card.
 
 ## Inline notes
 

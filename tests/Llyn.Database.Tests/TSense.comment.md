@@ -2,7 +2,9 @@
 
 ## `public sealed class TSense`
 
-Covers the engine's card seams: a Meaning and a Collocation created, read, rewritten, moved among their siblings and deleted one row at a time, rather than through the whole-form save the input panel uses.
+Covers the engine's card seams.
+A Meaning and a Collocation are created, read, rewritten, moved among siblings and deleted.
+It is done one row at a time, not through the whole-form save the input panel uses.
 
 ## Inline notes
 

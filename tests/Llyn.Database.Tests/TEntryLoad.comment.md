@@ -2,7 +2,14 @@
 
 ## `public sealed class TEntryLoad`
 
-Covers reading entries back: listing and searching them by headword, and loading one whole entry into the draft it was saved from. The load is the inverse of the save, so what a test writes through `LEngineEntrySave` is exactly what comes back — headword, language, pronunciation and note, and every card with its definition and the whole ordered set of Examples, Situations and Tags it references.
+Covers reading entries back.
+That is listing and searching them by headword.
+It is also loading one whole entry into the draft it was saved from.
+The load is the inverse of the save.
+So what a test writes through `LEngineEntrySave` is exactly what comes back.
+That is headword, language, pronunciation and note.
+It is also every card with its definition.
+It is also the whole ordered set of Examples, Situations and Tags it references.
 
 ## Inline notes
 
@@ -12,15 +19,22 @@ An empty query lists everything, ordered by headword.
 
 ### `Assert.Equal(["sword", "word"], engine.LEngineEntryFind("WORD").Select(e => e.LEntryHeadword));`
 
-A partial headword narrows it, case-insensitively, and matches anywhere in the headword — "word" is inside "sword" too, so a query that picks exactly one has to be one of its own.
+A partial headword narrows it, case-insensitively, and matches anywhere in the headword.
+"word" is inside "sword" too.
+So a query that picks exactly one has to be one of its own.
 
 ### `TEntryCardMatch(word.LEntryDraftSenses, loaded.LEntryDraftSenses);`
 
-The cards are compared field by field: a draft holds its cards, and a card its Examples, Situations and Tags, in lists, and list equality is reference equality — never true across a round trip through the store.
+The cards are compared field by field.
+A draft holds its cards in lists, and a card holds its Examples, Situations and Tags in lists.
+List equality is reference equality.
+It is never true across a round trip through the store.
 
 ### `private static void TEntryCardMatch(IReadOnlyList<LCardDraft> expected, IReadOnlyList<LCardDraft> actual)`
 
-Asserts that two card lists carry the same cards in the same order, every field included: the save and the load are inverses, so a card that was written comes back exactly as it went in.
+Asserts that two card lists carry the same cards in the same order, every field included.
+The save and the load are inverses.
+So a card that was written comes back exactly as it went in.
 
 ### `string folder = Path.Combine(workspace.TWorkspaceFolder, "audio", "english");`
 
@@ -28,7 +42,8 @@ The file the downloader would have written: under the workspace, in its audio bu
 
 ### `LPronunciationArchive pronunciations = new(workspace.TWorkspaceDatabase);`
 
-Stored relative, so a workspace that is moved or copied keeps its audio. The row is read through the archive rather than as SQL text, so the path separator stays the platform's.
+Stored relative, so a workspace that is moved or copied keeps its audio.
+The row is read through the archive rather than as SQL text, so the path separator stays the platform's.
 
 ### `LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));`
 
@@ -36,7 +51,9 @@ The titles are columns of the cards themselves, so they are on the rows before a
 
 ### `LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));`
 
-The rows are stored at the positions the lists held, so nothing shares a position and the order is a fact of the store rather than of the read.
+The rows are stored at the positions the lists held.
+So nothing shares a position.
+The order is a fact of the store rather than of the read.
 
 ### `LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);`
 
@@ -48,4 +65,6 @@ The collocation card references its own sets on the same terms.
 
 ### `LEntry stored = engine.LEngineEntrySave(new LEntryDraft(`
 
-A blank value in a list is not a row: an empty field detaches, and the independent tables stay empty rather than collecting rows with no text.
+A blank value in a list is not a row.
+An empty field detaches.
+The independent tables stay empty rather than collecting rows with no text.

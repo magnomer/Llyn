@@ -2,7 +2,10 @@
 
 ## `public sealed class TSituation`
 
-Covers the engine's Situation seam, which mirrors the Tag one: a Situation created, read, rewritten and referenced from both card kinds, the difference between a detach and a remove, and the delete the references refuse.
+Covers the engine's Situation seam, which mirrors the Tag one.
+A Situation is created, read, rewritten and referenced from both card kinds.
+It covers the difference between a detach and a remove.
+It covers the delete the references refuse.
 
 ## Inline notes
 

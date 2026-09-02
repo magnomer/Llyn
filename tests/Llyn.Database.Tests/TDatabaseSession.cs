@@ -103,7 +103,7 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void AttachingATagAtAnOccupiedPositionInsertsInsteadOfFailing()
+    public void WritingATagLineOverAnOlderOneLeavesTheNewOrderNumberedFromZero()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = new(workspace.TWorkspaceDatabase);
@@ -114,19 +114,15 @@ public sealed class TDatabaseSession
             new LEntry(string.Empty, "word", "en", null, null, null, null), [], []);
         LSense sense = senses.LSenseCreate(
             new LSense(string.Empty, entry.LEntryId, null, 0, null, null, null, null, string.Empty));
-        LTag formal = tags.LTagCreate(new LTag(string.Empty, "formal"));
-        LTag archaic = tags.LTagCreate(new LTag(string.Empty, "archaic"));
-        LTag rare = tags.LTagCreate(new LTag(string.Empty, "rare"));
 
-        tags.LTagSenseAttach(sense.LSenseId, formal.LTagId, 0);
-        tags.LTagSenseAttach(sense.LSenseId, archaic.LTagId, 1);
-        tags.LTagSenseAttach(sense.LSenseId, rare.LTagId, 0);
+        tags.LTagSenseSave(
+            sense.LSenseId, [new LTag("formal"), new LTag("archaic"), new LTag("rare")]);
 
         Assert.Equal(
-            ["rare", "formal", "archaic"],
+            ["formal", "archaic", "rare"],
             tags.LTagSenseRead(sense.LSenseId).Select(tag => tag.LTagText));
 
-        tags.LTagSenseDetach(sense.LSenseId, formal.LTagId);
+        tags.LTagSenseSave(sense.LSenseId, [new LTag("rare"), new LTag("archaic")]);
 
         Assert.Equal(
             ["rare", "archaic"],

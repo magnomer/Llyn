@@ -2,7 +2,11 @@
 
 ## `internal sealed class PDownloaderRecording : INotifyPropertyChanged`
 
-Presentation item for one downloadable recording shown in the downloader menu. Wraps the domain `LRecording` with the source label the row shows, and with that row's own download state, so the menu can report a save on the row that was taken rather than on the one status line the search owns.
+Presentation item for one downloadable recording shown in the downloader menu.
+Wraps the domain `LRecording` with the source label the row shows.
+It also wraps that row's own download state.
+So the menu can report a save on the row that was taken.
+It need not report it on the one status line the search owns.
 
 ## `public string PDownloaderRecordingAction`
 

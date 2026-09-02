@@ -18,6 +18,7 @@ public partial class PEditor : UserControl
         Resources.MergedDictionaries.Add(new PSituationTemplate(this));
         Resources.MergedDictionaries.Add(new PImageTemplate(this));
         Resources.MergedDictionaries.Add(new PVideoTemplate(this));
+        Resources.MergedDictionaries.Add(new PTagTemplate(this));
         Resources.MergedDictionaries.Add(new PSenseTemplate(this));
         Resources.MergedDictionaries.Add(new PCollocationTemplate(this));
         Resources.MergedDictionaries.Add(new PLangcodeTemplate(this));

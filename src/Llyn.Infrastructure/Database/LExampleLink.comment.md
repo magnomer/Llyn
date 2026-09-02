@@ -2,9 +2,18 @@
 
 ## `public sealed class LExampleLink`
 
-Owns the three association tables that reach an Example — from an Entry, a Meaning, or a Collocation. It lives beside `LExampleArchive` rather than inside it because attaching is a different responsibility from storing: nothing here creates, changes, or deletes an Example, and every method writes only the rows that link one to a referrer.
+Owns the three association tables that reach an Example — from an Entry, a Meaning, or a Collocation.
+It lives beside `LExampleArchive` rather than inside it.
+Attaching is a different responsibility from storing.
+Nothing here creates, changes, or deletes an Example.
+Every method writes only the rows that link one to a referrer.
 
-Each association carries the position the Example takes *for that referrer*, so the same Example may be first under an Entry and third under a Meaning. That order is a unique index, so attaching, detaching, and moving all renumber the referrer's whole set through `LDatabaseOrder`; a caller therefore names the index it wants and never has to leave a gap or find a free position.
+Each association carries the position the Example takes *for that referrer*.
+So the same Example may be first under an Entry and third under a Meaning.
+That order is a unique index.
+So attaching, detaching, and moving all renumber the referrer's whole set through `LDatabaseOrder`.
+A caller therefore names the index it wants.
+It never has to leave a gap or find a free position.
 
 ## `public LExampleLink(LDatabase database)`
 
@@ -36,20 +45,29 @@ References an existing Example from a Collocation at `position` in that Collocat
 
 ## `public void LExampleEntryDetach(string entryId, string exampleId)`
 
-Removes an Entry's reference to an Example. The Example and its other references survive.
+Removes an Entry's reference to an Example.
+The Example and its other references survive.
 
 ## `public void LExampleSenseDetach(string senseId, string exampleId)`
 
-Removes a Meaning's reference to an Example. The Example and its other references survive.
+Removes a Meaning's reference to an Example.
+The Example and its other references survive.
 
 ## `public void LExampleCollocationDetach(string collocationId, string exampleId)`
 
-Removes a Collocation's reference to an Example. The Example and its other references survive.
+Removes a Collocation's reference to an Example.
+The Example and its other references survive.
 
 ## Inline notes
 
 ### `private void LExampleReferenceAttach(`
 
-The three association tables differ only in their name and their referrer column, so the reference operations share one implementation each. Both identifiers are store-owned literals chosen by the methods above, never caller input, so composing them into the statement text opens no injection seam; every value still travels as a parameter.
+The three association tables differ only in their name and their referrer column.
+So the reference operations share one implementation each.
+Both identifiers are store-owned literals chosen by the methods above, never caller input.
+So composing them into the statement text opens no injection seam.
+Every value still travels as a parameter.
 
-The row is inserted beyond the end of the set and the whole set is then renumbered around it, so the requested index is honoured — and a position that is already taken is no longer a unique-index failure the caller has to work around.
+The row is inserted beyond the end of the set.
+The whole set is then renumbered around it, so the requested index is honoured.
+A position that is already taken is no longer a unique-index failure to work around.

@@ -9,7 +9,7 @@ public sealed record LCardDraft(
     IReadOnlyList<LExampleDraft> LCardDraftExample,
     IReadOnlyList<LSituationDraft> LCardDraftSituation,
     string LCardDraftSynonym,
-    IReadOnlyList<LStateValue> LCardDraftTag,
+    IReadOnlyList<string> LCardDraftTag,
     IReadOnlyList<LStateValue> LCardDraftImage,
     string LCardDraftId = "")
 {

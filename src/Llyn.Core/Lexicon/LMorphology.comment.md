@@ -2,7 +2,12 @@
 
 ## `public sealed record LMorphology(`
 
-One row of the language-controlled morphology display vocabulary: it maps a stable `(part_of_speech id, feature id, value id)` triple to the feature and value display names shown for a given language. Inflections store only the ids (`LFeature`); the names live here and are resolved by `(language, part_of_speech_id, feature_id, value_id)`, never copied onto an entry's lexical rows.
+One row of the language-controlled morphology display vocabulary.
+It maps a stable `(part_of_speech id, feature id, value id)` triple to display names.
+Those are the feature and value names shown for a given language.
+Inflections store only the ids (`LFeature`).
+The names live here and are resolved by `(language, part_of_speech_id, feature_id, value_id)`.
+They are never copied onto an entry's lexical rows.
 
 **Parameters**
 

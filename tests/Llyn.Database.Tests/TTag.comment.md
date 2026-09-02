@@ -2,7 +2,11 @@
 
 ## `public sealed class TTag`
 
-Covers the engine's Tag seam: a Tag created, read, renamed and referenced from both card kinds through `LEngine`, the difference between detaching a reference and removing one, and the refusals that meet a delete the references forbid and a side a Tag never hangs from.
+Covers the engine's Tag seam.
+A Tag is created, read, renamed and referenced from both card kinds through `LEngine`.
+It covers the difference between detaching a reference and removing one.
+It covers the refusals that meet a delete the references forbid.
+It also covers a side a Tag never hangs from.
 
 ## Inline notes
 
@@ -32,4 +36,5 @@ An Entry references Examples but never Tags, so there is no table to attach this
 
 ### `private static LEntry TTagEntryCreate(LEngine engine)`
 
-One saved entry with a Meaning card and a Collocation card, neither carrying tags of its own, so every Tag in these tests is one the seam wrote.
+One saved entry with a Meaning card and a Collocation card, neither carrying tags of its own.
+So every Tag in these tests is one the seam wrote.

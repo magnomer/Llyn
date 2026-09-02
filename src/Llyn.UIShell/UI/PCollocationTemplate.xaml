@@ -99,7 +99,7 @@
                     <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Situation" />
                     <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Situation.Row}" ItemsSource="{Binding PCardSituation}" />
                     <TextBlock Grid.Row="4" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Tags" />
-                    <TextBox Grid.Row="4" Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Tag="Add tags" Text="{Binding PCardTag, UpdateSourceTrigger=PropertyChanged}" />
+                    <ItemsControl Grid.Row="4" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardTag}" Style="{DynamicResource Theme.Tag.Field}" />
                     <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Image.Section}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="142" />

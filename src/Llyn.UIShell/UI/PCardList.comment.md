@@ -2,7 +2,12 @@
 
 ## `public partial class PEditor`
 
-Which cards the editor holds: the sense list and the collocation list, the buttons that add and remove a card, and the numbering that keeps each list reading 1, 2, 3 after every change. The order the cards are in is the order they are saved in, so it is kept here rather than derived.
+Which cards the editor holds.
+That is the sense list and the collocation list.
+It is also the buttons that add and remove a card.
+It is also the numbering that keeps each list reading 1, 2, 3 after every change.
+The order the cards are in is the order they are saved in.
+So it is kept here rather than derived.
 
 ## Inline notes
 

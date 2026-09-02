@@ -26,7 +26,7 @@ public sealed class TState
                 [new LSituationDraft(
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
                 string.Empty,
-                [LStateValue.LStateValueUnknown, LStateValue.LStateValueCreate("spoken")], [])],
+                ["spoken"], [])],
             []));
 
         Assert.Equal(
@@ -43,8 +43,7 @@ public sealed class TState
                 "SELECT COUNT(*) FROM situation WHERE title_state = 'unknown' AND title IS NULL;"));
         Assert.Equal(
             1,
-            workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM tag WHERE text_state = 'unknown' AND text IS NULL;"));
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.LEngineEntryLoad(stored.LEntryId));
         LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);
@@ -57,9 +56,7 @@ public sealed class TState
         Assert.Equal(
             LStateValue.LStateValueUnknown,
             Assert.Single(card.LCardDraftSituation).LSituationDraftText);
-        Assert.Equal(
-            [LStateValue.LStateValueUnknown, LStateValue.LStateValueCreate("spoken")],
-            card.LCardDraftTag);
+        Assert.Equal(["spoken"], card.LCardDraftTag);
     }
 
     [Fact]

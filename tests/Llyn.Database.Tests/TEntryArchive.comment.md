@@ -2,7 +2,10 @@
 
 ## `public sealed class TEntryArchive`
 
-Covers what an Entry owns and what it must not take with it: the cascade that removes everything beneath a deleted Entry, the guard that refuses the delete while another Entry still links to it, and the refusal to report success for an update that reached no row.
+Covers what an Entry owns and what it must not take with it.
+That is the cascade that removes everything beneath a deleted Entry.
+It is also the guard that refuses the delete while another Entry still links to it.
+It is also the refusal to report success for an update that reached no row.
 
 ## Inline notes
 
@@ -16,4 +19,5 @@ SQLite's own lower() folds ASCII only, so this is the case the old matching coul
 
 ### `Assert.Equal(2, entries.LEntryFind("   ").Count);`
 
-A query of whitespace alone lists everything, exactly as an empty box does; a query is trimmed before it is matched.
+A query of whitespace alone lists everything, exactly as an empty box does.
+A query is trimmed before it is matched.

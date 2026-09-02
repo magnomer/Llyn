@@ -2,7 +2,11 @@
 
 ## `public sealed record LSourceSpec(`
 
-The language-pack definition of one source: its name, the kind of value it yields, and the ordered extraction attempts that make it work. This is pure data loaded from `languages//source.json`; the generic source runner turns it into a live `LSource`, so no source-specific code is needed for an ordinary source.
+The language-pack definition of one source.
+It gives its name, the kind of value it yields, and the ordered extraction attempts.
+This is pure data loaded from `languages//source.json`.
+The generic source runner turns it into a live `LSource`.
+So no source-specific code is needed for an ordinary source.
 
 **Parameters**
 

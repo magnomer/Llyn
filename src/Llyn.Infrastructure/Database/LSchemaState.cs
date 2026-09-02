@@ -124,22 +124,6 @@ public static class LSchemaState
 
                     ALTER TABLE example_next RENAME TO example;
 
-                    DROP TABLE IF EXISTS tag_next;
-
-                    CREATE TABLE tag_next (
-                        id TEXT NOT NULL PRIMARY KEY,
-                        text_state TEXT NOT NULL DEFAULT 'unspecified',
-                        text TEXT,
-                        CHECK (text_state = 'specified' OR text IS NULL)
-                    );
-
-                    INSERT INTO tag_next
-                        SELECT id, iif(text IS NULL, 'unspecified', 'specified'), text FROM tag;
-
-                    DROP TABLE tag;
-
-                    ALTER TABLE tag_next RENAME TO tag;
-
                     DROP TABLE IF EXISTS situation_next;
 
                     CREATE TABLE situation_next (

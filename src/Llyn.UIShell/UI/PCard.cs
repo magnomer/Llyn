@@ -18,7 +18,6 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private bool _pCardDefinitionUnreadable;
     private string _pCardExpression;
     private bool _pCardExpressionUnreadable;
-    private string _pCardTag;
 
     internal PCard(string prefix, int order, ObservableCollection<PReference> catalog)
     {
@@ -28,13 +27,13 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pTitle = string.Empty;
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;
-        _pCardTag = string.Empty;
         PCardExample = [];
         PCardExampleAdd(new PExample(catalog));
         PCardExampleUpdate();
         PCardSituation = [];
         PCardSituationAdd(new PSituation(catalog));
         PCardSituationUpdate();
+        PCardTagStart();
         PCardImage = [];
         PCardVideo = [];
     }
@@ -149,21 +148,6 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
             _pCardExpressionUnreadable = value;
             PCardRaise(nameof(PCardExpressionUnreadable));
-        }
-    }
-
-    public string PCardTag
-    {
-        get => _pCardTag;
-        set
-        {
-            if (string.Equals(_pCardTag, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pCardTag = value;
-            PCardRaise(nameof(PCardTag));
         }
     }
 

@@ -2,11 +2,23 @@
 
 ## `internal sealed class PImage`
 
-One Image row on a card. The row carries where the picture is read from and the preview drawn from it; the location field takes a file on this machine and an address on the web alike, because both are places a picture lives and neither is more the picture than the other.
+One Image row on a card.
+The row carries where the picture is read from, and the preview drawn from it.
+The location field takes a file on this machine and an address on the web alike.
+Both are places a picture lives, and neither is more the picture than the other.
 
-A location standing empty is not one thing. It may never have been written, or it may have been written and be unreadable now: the second is marked rather than shown, and the mark stands until the user writes over it or the row is dropped. Writing in the row is the user saying what the location is, which is why any edit ends the mark.
+A location standing empty is not one thing.
+It may never have been written.
+Or it may have been written and be unreadable now.
+The second is marked rather than shown.
+The mark stands until the user writes over it or the row is dropped.
+Writing in the row is the user saying what the location is, which is why any edit ends the mark.
 
-A preview is attempted and allowed to fail. A path that names nothing, an address that answers nothing, and a file that is not a picture all leave the row with no preview and the location the user wrote still standing — the row says what was meant, not what could be reached.
+A preview is attempted and allowed to fail.
+A path that names nothing and an address that answers nothing leave the row with no preview.
+So does a file that is not a picture.
+The location the user wrote is still standing.
+The row says what was meant, not what could be reached.
 
 ## `internal PImage()`
 
@@ -22,4 +34,8 @@ What the row says its location is: nothing written, unreadable, or the text it s
 
 ## `internal static Uri? PImageAddressRead(string location)`
 
-Turns what was typed into an address to load from, or `null` when it names no reachable place. An absolute address is taken as written, so `https://` and a drive path both pass; anything else is treated as a path relative to where the program runs, and only when that file exists. The Video row reads its own location the same way, which is why this is shared rather than written twice.
+Turns what was typed into an address to load from, or `null` when it names no reachable place.
+An absolute address is taken as written, so `https://` and a drive path both pass.
+Anything else is treated as a path relative to where the program runs.
+It passes only when that file exists.
+The Video row reads its own location the same way, which is why this is shared rather than written twice.

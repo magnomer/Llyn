@@ -2,7 +2,10 @@
 
 ## `internal sealed class TWorkspace : IDisposable`
 
-A throwaway workspace folder with its own `llyn.db`, so every test runs against a database nothing else has touched. Disposing removes the folder; the connection pool is cleared first, since a pooled connection would otherwise keep the file open and the delete would fail on Windows.
+A throwaway workspace folder with its own `llyn.db`, so every test runs against a database nothing else has touched.
+Disposing removes the folder.
+The connection pool is cleared first.
+A pooled connection would otherwise keep the file open and the delete would fail on Windows.
 
 ## `public LDatabase TWorkspaceDatabase { get; }`
 
@@ -30,7 +33,9 @@ Runs one statement against the workspace database and returns its first column.
 
 ## `public IReadOnlyList<long> TWorkspaceColumnRead(string sql)`
 
-Runs one statement and returns its first column for every row, for a test that has to see a column the store layer does not hand out — an association's position, say.
+Runs one statement and returns its first column for every row.
+It is for a test that has to see a column the store layer does not hand out.
+An association's position is one such column.
 
 ## `public void TWorkspaceScriptRun(string sql)`
 

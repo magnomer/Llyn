@@ -100,7 +100,7 @@ public sealed class TMarkup
         LCardDraft alight = kindle.LEntryDraftSenses[0];
         Assert.Equal("set alight", alight.LCardDraftTitle.LStateValueShow());
         Assert.Equal("to set something burning; to start a flame", alight.LCardDraftMeaning.LStateValueShow());
-        Assert.Equal(["literal"], alight.LCardDraftTag.Select(tag => tag.LStateValueShow()));
+        Assert.Equal(["literal"], alight.LCardDraftTag);
         Assert.Equal(["media/kindle-hearth.jpg"], alight.LCardDraftImage.Select(image => image.LStateValueShow()));
 
         LExampleDraft logs = Assert.Single(alight.LCardDraftExample);
@@ -120,9 +120,7 @@ public sealed class TMarkup
             engine.LEngineAuthorRead(oed.LReferenceId, LOwner.LOwnerReference).Select(author => author.LAuthorName));
 
         LCardDraft rouse = kindle.LEntryDraftSenses[1];
-        Assert.Equal(
-            [LState.LStateSpecified, LState.LStateUnknown],
-            rouse.LCardDraftTag.Select(tag => tag.LStateValueState));
+        Assert.Equal(["figurative"], rouse.LCardDraftTag);
         Assert.Equal(
             [LState.LStateUnspecified, LState.LStateUnknown],
             rouse.LCardDraftExample.Select(example => example.LExampleDraftReference.LStateValueState));
@@ -138,7 +136,7 @@ public sealed class TMarkup
         Assert.Equal(2, brook.LEntryDraftSenses.Count);
         Assert.Equal(
             ["formal", "usually negative"],
-            brook.LEntryDraftSenses[1].LCardDraftTag.Select(tag => tag.LStateValueShow()));
+            brook.LEntryDraftSenses[1].LCardDraftTag);
         Assert.Equal(
             LState.LStateUnknown,
             Assert.Single(brook.LEntryDraftSenses[1].LCardDraftSituation).LSituationDraftText.LStateValueState);

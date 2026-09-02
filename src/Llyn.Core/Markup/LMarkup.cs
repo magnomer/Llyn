@@ -125,7 +125,7 @@ public static partial class LMarkup
         LMarkupToken? expression = null;
         LMarkupToken? meaning = null;
         LMarkupToken? synonym = null;
-        List<LStateValue> tags = new List<LStateValue>();
+        List<string> tags = new List<string>();
         List<LStateValue> images = new List<LStateValue>();
         List<LExampleDraft> examples = new List<LExampleDraft>();
         List<LSituationDraft> situations = new List<LSituationDraft>();
@@ -147,7 +147,7 @@ public static partial class LMarkup
                     synonym = token;
                     break;
                 case "tag":
-                    tags.Add(LMarkupStateRead(token));
+                    LMarkupTagRead(tags, token);
                     break;
                 case "image":
                     images.Add(LMarkupStateRead(token));
@@ -277,6 +277,16 @@ public static partial class LMarkup
                     break;
             }
         }
+    }
+
+    private static void LMarkupTagRead(List<string> tags, LMarkupToken token)
+    {
+        if (token.LMarkupTokenEmpty)
+        {
+            return;
+        }
+
+        tags.Add(token.LMarkupTokenText);
     }
 
     private static LStateValue LMarkupStateRead(LMarkupToken? token)

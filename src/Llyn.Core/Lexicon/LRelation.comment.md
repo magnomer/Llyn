@@ -2,7 +2,13 @@
 
 ## `public sealed record LRelation(`
 
-One lexical relation originating from a Meaning and pointing at exactly one target — an Entry or another Meaning — through a checked reference, never a free-text id. `LRelationId` is the identity; `LRelationSenseId` names the origin Meaning the relation hangs from. The target is discriminated: exactly one of `LRelationTargetEntry` and `LRelationTargetSense` is set, and the store enforces that XOR. This is also the synonym/collocation interlink mechanism later jobs reuse, so the target model stays reusable.
+One lexical relation originating from a Meaning and pointing at exactly one target.
+The target is an Entry or another Meaning, reached through a checked reference.
+It is never a free-text id.
+`LRelationId` is the identity.
+`LRelationSenseId` names the origin Meaning the relation hangs from.
+The target is discriminated: exactly one of `LRelationTargetEntry` and `LRelationTargetSense` is set, and the store enforces that XOR.
+This is also the synonym/collocation interlink mechanism later jobs reuse, so the target model stays reusable.
 
 **Parameters**
 

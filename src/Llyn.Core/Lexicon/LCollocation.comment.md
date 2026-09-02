@@ -2,13 +2,22 @@
 
 ## `public sealed record LCollocation(`
 
-One Collocation owned by an entry: a stable-id node mirroring the Meaning construction, carrying an `LCollocationExpression` — the phrase itself — beside the `LCollocationMeaning` that explains it, which is the definition analogue of a Meaning. The card has a field for each, so a collocation keeps both, beside the `LCollocationTitle` the card is headed with. `LCollocationId` is the identity — an opaque, program-generated stable id — and is the base the job08/job09 associations target. Reordering collocation cards rewrites `LCollocationPosition` only; the id never changes. A collocation's synonym is not text held here: it is an interlink, modelled by `LCollocationSynonym`.
+One Collocation owned by an entry, a stable-id node mirroring the Meaning construction.
+It carries an `LCollocationExpression`, the phrase itself.
+Beside it stands the `LCollocationMeaning` that explains it, the definition analogue of a Meaning.
+The card has a field for each, so a collocation keeps both, beside the `LCollocationTitle` the card is headed with.
+`LCollocationId` is the identity — an opaque, program-generated stable id — and is the base the job08/job09 associations target.
+Reordering collocation cards rewrites `LCollocationPosition` only.
+The id never changes.
+A collocation's synonym is not text held here: it is an interlink, modelled by `LCollocationSynonym`.
 
 **Parameters**
 
 - `LCollocationId` — Opaque, program-generated stable id.
 - `LCollocationEntryId` — Owning entry id.
 - `LCollocationPosition` — Order among the entry's collocations.
-- `LCollocationTitle` — Title typed on the Collocation card, and what is known about it: nothing recorded when none was typed, unreadable when what was typed cannot be read back.
+- `LCollocationTitle` — Title typed on the Collocation card, and what is known about it.
+  Nothing was recorded when none was typed.
+  It is unreadable when what was typed cannot be read back.
 - `LCollocationExpression` — The collocation expression text, and what is known about it.
 - `LCollocationMeaning` — What the expression means, and what is known about it.

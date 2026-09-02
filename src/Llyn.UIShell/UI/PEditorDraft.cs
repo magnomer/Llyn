@@ -51,7 +51,6 @@ public partial class PEditor
         {
             PCard card = new(prefix, cards.Count + 1, _pExampleReference)
             {
-                PCardTag = PEditorTagFormat(draft.LCardDraftTag),
                 PCardId = draft.LCardDraftId
             };
 
@@ -60,6 +59,7 @@ public partial class PEditor
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
             card.PCardExampleShow(draft.LCardDraftExample);
             card.PCardSituationShow(draft.LCardDraftSituation);
+            card.PCardTagShow(draft.LCardDraftTag);
             card.PCardImageShow(draft.LCardDraftImage);
             cards.Add(card);
         }
@@ -164,7 +164,7 @@ public partial class PEditor
                 || !string.Equals(first.LCardDraftId, second.LCardDraftId, StringComparison.Ordinal)
                 || !PEditorExampleMatch(first.LCardDraftExample, second.LCardDraftExample)
                 || !PEditorSituationMatch(first.LCardDraftSituation, second.LCardDraftSituation)
-                || !PEditorValueMatch(first.LCardDraftTag, second.LCardDraftTag)
+                || !PEditorTextMatch(first.LCardDraftTag, second.LCardDraftTag)
                 || !PEditorValueMatch(first.LCardDraftImage, second.LCardDraftImage))
             {
                 return false;
@@ -267,43 +267,12 @@ public partial class PEditor
                 card.PCardExampleRead(),
                 card.PCardSituationRead(),
                 string.Empty,
-                PEditorTagParse(card.PCardTag),
+                card.PCardTagRead(),
                 card.PCardImageRead(),
                 card.PCardId));
         }
 
         return drafts;
-    }
-
-    private static IReadOnlyList<LStateValue> PEditorTagParse(string text)
-    {
-        List<LStateValue> tags = [];
-        foreach (string part in text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-        {
-            tags.Add(string.Equals(part, PCard.PCardUnreadableMark, StringComparison.Ordinal)
-                ? LStateValue.LStateValueUnknown
-                : LStateValue.LStateValueCreate(part));
-        }
-
-        return tags;
-    }
-
-    private static string PEditorTagFormat(IReadOnlyList<LStateValue> tags)
-    {
-        List<string> texts = new(tags.Count);
-        foreach (LStateValue tag in tags)
-        {
-            if (tag.LStateValueEmpty)
-            {
-                continue;
-            }
-
-            texts.Add(tag.LStateValueState == LState.LStateUnknown
-                ? PCard.PCardUnreadableMark
-                : tag.LStateValueShow());
-        }
-
-        return string.Join(", ", texts);
     }
 
     private string PEditorNoteRead()

@@ -153,9 +153,9 @@ public sealed class LEntryLoader
         return locations;
     }
 
-    private static IReadOnlyList<LStateValue> LEntryTagRead(IReadOnlyList<LTag> tags)
+    private static IReadOnlyList<string> LEntryTagRead(IReadOnlyList<LTag> tags)
     {
-        List<LStateValue> texts = new(tags.Count);
+        List<string> texts = new(tags.Count);
         foreach (LTag tag in tags)
         {
             texts.Add(tag.LTagText);

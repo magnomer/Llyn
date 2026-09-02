@@ -20,7 +20,7 @@ UI component names such as `PIndex`, `PInventory`, `PDirectory`, `PDisplay`, and
 6. Display names governed by language settings are not copied into lexical records.
 7. Ordering that belongs to a relationship is stored on the relationship, not on the referenced object.
 8. Visible lexical content is never used as the identity of an independent object.
-9. Entry, Example, Tag, and Situation receive program-generated random identifiers when they are created.
+9. Entry, Example, and Situation receive program-generated random identifiers when they are created.
 
 ---
 
@@ -31,7 +31,6 @@ The principal independent entities are:
 ```text
 Entry
 Example
-Tag
 Situation
 Source
 Author
@@ -43,7 +42,7 @@ Their IDs do not depend on another entity's ID or visible lexical content.
 
 ## Identifier generation
 
-When a new Entry, Example, Tag, or Situation is created, the program assigns it a random identifier.
+When a new Entry, Example, or Situation is created, the program assigns it a random identifier.
 
 The identifier may contain letters and digits, for example:
 
@@ -58,7 +57,7 @@ In particular:
 ```text
 Entry.id      != headword
 Example.id    != example text
-Tag.id        != tag text
+Tag           == its own text
 Situation.id  != situation title
 ```
 
@@ -361,7 +360,7 @@ At the UI level:
 PSenseDefinition  ->  PCollocationExpression
 ```
 
-Collocations may reference independent Examples, Tags, and Situations. They do not own those objects.
+Collocations may reference independent Examples and Situations, which they do not own, and carry Tags of their own.
 
 The Collocation synonym field is an interlink rather than Entry-owned text. Its precise relation-storage form remains to be finalized together with the detailed targeting rules for collocation synonyms.
 
@@ -489,7 +488,7 @@ The position is unique within the Collocation.
 | Field | Meaning |
 |---|---|
 | `collocation_id` | Collocation |
-| `tag_id` | Referenced Tag |
+| `text` | Tag text, which is the Tag |
 | `position` | Order within this Collocation |
 
 Primary identity:
@@ -500,7 +499,7 @@ Primary identity:
 
 The position is unique within the Collocation.
 
-Removing the association does not delete the Tag.
+Removing the row removes the Tag from that card; nothing else holds it.
 
 ---
 
@@ -736,18 +735,9 @@ This is a reference only. The Source remains independent and is not owned by the
 
 # 19. Tags
 
-## `tag`
+A Tag is its own text. It has no identifier, and no table of its own: the text *is* the Tag, so two cards writing the same text carry the same Tag, and a Tag nothing writes does not exist.
 
-| Field | Meaning |
-|---|---|
-| `id` | Program-generated random stable Tag ID |
-| `text` | Tag text; not an identifier |
-
-Tag is independent data.
-
-A Tag is not owned by an Entry, Meaning, or Collocation. The same Tag may be referenced by multiple Meanings and Collocations.
-
-Changing the visible tag text does not change the Tag ID.
+Tag text may hold spaces and ordinary punctuation. It is stored exactly as written, with leading and trailing spaces removed. An empty Tag is not stored.
 
 ---
 
@@ -756,18 +746,36 @@ Changing the visible tag text does not change the Tag ID.
 | Field | Meaning |
 |---|---|
 | `sense_id` | Meaning |
-| `tag_id` | Referenced Tag |
+| `text` | Tag text, which is the Tag |
 | `position` | Order within this Meaning |
 
 Primary identity:
 
 ```text
-(sense_id, tag_id)
+(sense_id, text)
 ```
 
-The position is unique within the Meaning.
+A Meaning therefore carries a given Tag at most once. The position is unique within the Meaning.
 
-Removing a Meaning-Tag association does not delete the Tag.
+Deleting the Meaning deletes its Tag rows. Nothing else is deleted, because nothing else holds the Tag.
+
+---
+
+## `collocation_tag`
+
+The same shape for a Collocation:
+
+```text
+(collocation_id, text)
+```
+
+---
+
+## The Tag list
+
+The set of Tags in a workspace is read from `sense_tag` and `collocation_tag` together. It is not stored separately, so it can never disagree with the cards.
+
+Renaming a Tag rewrites the text on every card that carries it. Where a card already carries the new text, the two fold into one. Deleting a Tag removes it from every card and leaves the cards themselves untouched.
 
 ---
 
@@ -878,7 +886,7 @@ Entry
 ├── Meaning
 │   ├── Relation
 │   ├── Example references ------> Example
-│   ├── Tag references ----------> Tag
+│   ├── Tag                  ----> its own text
 │   └── Situation references ----> Situation
 ├── Pronunciation
 │   ├── Syllable
@@ -890,15 +898,13 @@ Entry
 
 Collocation
 ├── Example references ----------> Example
-├── Tag references -------------> Tag
+├── Tag                  --------> its own text
 ├── Situation references -------> Situation
 └── Synonym interlink ----------> lexical target
 
 Example                           [independent]
 ├── Translation
 └── Source reference ------------> Source
-
-Tag                               [independent]
 
 Situation                         [independent]
 
@@ -929,7 +935,7 @@ Deleting an Entry deletes its subordinate data:
 
 It also removes the Entry's association rows, including associations made through its Meanings and Collocations.
 
-It does not delete independent Examples, Tags, Situations, Sources, or Authors.
+It does not delete independent Examples, Situations, Sources, or Authors.
 
 ---
 
@@ -937,17 +943,17 @@ It does not delete independent Examples, Tags, Situations, Sources, or Authors.
 
 Deleting a Meaning deletes that Meaning, its definition field, originating Relations, and subordinate Meanings according to the chosen deletion operation.
 
-It also removes that Meaning's associations to Examples, Tags, and Situations.
+It also removes that Meaning's Tags and its associations to Examples and Situations.
 
-It does not delete the independent Examples, Tags, or Situations that were referenced by the Meaning.
+It does not delete the independent Examples or Situations that were referenced by the Meaning.
 
 ---
 
 ## Deleting a Collocation
 
-Deleting a Collocation removes the Collocation and its association rows, including its references to Examples, Tags, and Situations and its synonym interlink data.
+Deleting a Collocation removes the Collocation, its Tags, and its association rows, including its references to Examples and Situations and its synonym interlink data.
 
-It does not delete the independent Examples, Tags, or Situations that were referenced by the Collocation.
+It does not delete the independent Examples or Situations that were referenced by the Collocation.
 
 ---
 
@@ -963,9 +969,9 @@ It does not delete the referenced Source.
 
 ## Deleting a Tag
 
-A Tag must not be deleted while Meanings or Collocations still reference it unless those references are explicitly removed.
+Deleting a Tag removes its text from every Meaning and Collocation that carries it.
 
-Deleting a Tag does not delete the Meanings that previously referenced it.
+Deleting a Tag does not delete the Meanings or Collocations that carried it.
 
 ---
 
@@ -1022,7 +1028,6 @@ Collocation order is stored by `collocation.position`. Reordering collocation ca
 ```text
 Entry
 Example
-Tag
 Situation
 Source
 Author
@@ -1068,10 +1073,8 @@ Entry       -> Example
 Meaning     -> Example
 Collocation -> Example
 
-Meaning     -> Tag
 Meaning     -> Situation
 
-Collocation -> Tag
 Collocation -> Situation
 Collocation -> lexical synonym target
 
@@ -1094,4 +1097,4 @@ The central rules are:
 
 > Independent data is never embedded into or owned by an object merely because that object currently uses it. Shared data is represented once and connected through explicit references.
 
-> Visible lexical content is not database identity. Entry, Example, Tag, and Situation receive program-generated random stable identifiers when they are created.
+> Visible lexical content is not database identity, with one deliberate exception: a Tag is its own text. Entry, Example, and Situation receive program-generated random stable identifiers when they are created.

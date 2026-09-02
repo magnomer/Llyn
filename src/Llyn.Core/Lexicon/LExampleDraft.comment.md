@@ -2,7 +2,13 @@
 
 ## `public sealed record LExampleDraft(`
 
-One Example as a card draft carries it: the id of the Example the row edits, the sentence shown for it, and the Reference it cites. The draft never owns the sentence — the id is the reference — and an empty id means the row has not been stored as an Example yet. The sentence and the citation each carry what is known about them, so a row standing empty because nothing was written is never confused with one standing empty because what was written cannot be read back.
+One Example as a card draft carries it.
+It holds the id of the Example the row edits, the sentence shown, and the Reference it cites.
+The draft never owns the sentence, because the id is the reference.
+An empty id means the row has not been stored as an Example yet.
+The sentence and the citation each carry what is known about them.
+A row standing empty because nothing was written is never confused with another case.
+That case is a row standing empty because what was written cannot be read back.
 
 **Parameters**
 

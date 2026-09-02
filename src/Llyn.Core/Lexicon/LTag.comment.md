@@ -2,9 +2,17 @@
 
 ## `public sealed record LTag(`
 
-One Tag — independent data owned by nothing. No Entry, Meaning, or Collocation contains a Tag; any number of Meanings and Collocations *reference* it instead, and the order a Tag appears in lives on each reference rather than here, so the same Tag can sit first under one Meaning and third under a Collocation. `LTagId` is the identity — an opaque, program-generated stable id; `LTagText` is display text and never identity, so editing the text leaves the id and every reference to it untouched, and two Tags reading alike remain distinct rows.
+One Tag.
+A Tag has no identity beyond the text it reads, because the name *is* the tag.
+So two Tags reading alike are the same Tag.
+Renaming one produces a different Tag rather than the same Tag under a new name.
+A Tag carries no state of its own.
+A Tag that was never written is simply absent, and a nameless Tag does not exist.
+The order a Tag appears in lives on the card that carries it rather than here.
+So the same Tag can sit first under one Meaning and third under a Collocation.
 
 **Parameters**
 
-- `LTagId` — Opaque, program-generated stable id.
-- `LTagText` — The tag text and what is known about it; display text, never identity. A Tag that is there but unreadable is not a Tag that was never written.
+- `LTagText` — The tag text, which is also its identity.
+  Text may hold spaces and ordinary punctuation.
+  Only a comma separates one Tag from the next where Tags are written as a line.

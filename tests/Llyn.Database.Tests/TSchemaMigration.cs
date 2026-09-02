@@ -182,6 +182,68 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void AVersionEighteenDatabaseTradesTagIdentityForTagTextWithoutLosingALabel()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 18);
+
+            CREATE TABLE tag (
+                id TEXT NOT NULL PRIMARY KEY,
+                text_state TEXT NOT NULL DEFAULT 'unspecified',
+                text TEXT,
+                CHECK (text_state = 'specified' OR text IS NULL)
+            );
+            INSERT INTO tag (id, text_state, text) VALUES ('t1', 'specified', 'formal');
+            INSERT INTO tag (id, text_state, text) VALUES ('t2', 'specified', 'formal');
+            INSERT INTO tag (id, text_state, text) VALUES ('t3', 'unknown', NULL);
+
+            CREATE TABLE sense_tag (
+                sense_id TEXT NOT NULL,
+                tag_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (sense_id, tag_id)
+            );
+            INSERT INTO sense_tag (sense_id, tag_id, position) VALUES ('s1', 't3', 0);
+            INSERT INTO sense_tag (sense_id, tag_id, position) VALUES ('s1', 't1', 1);
+            INSERT INTO sense_tag (sense_id, tag_id, position) VALUES ('s1', 't2', 2);
+
+            CREATE TABLE collocation_tag (
+                collocation_id TEXT NOT NULL,
+                tag_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (collocation_id, tag_id)
+            );
+            INSERT INTO collocation_tag (collocation_id, tag_id, position) VALUES ('c1', 't1', 0);
+            """);
+
+        workspace.TWorkspaceDatabase.LDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'tag';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sense_tag WHERE text = 'formal' AND position = 0;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM collocation_tag WHERE text = 'formal' AND position = 0;"));
+    }
+
+    [Fact]
     public void AVersionTwelveDatabaseGainsTheCollocationMeaningWithoutLosingARow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -380,7 +442,7 @@ public sealed class TSchemaMigration
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "example_translation", "example_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "entry_example", "example_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "tag_id"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "text"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "tombstone", "revision_id"));
     }

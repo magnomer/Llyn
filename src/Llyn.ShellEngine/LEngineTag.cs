@@ -7,15 +7,9 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LTag LEngineTagCreate(LTag tag)
+    public IReadOnlyList<LTag> LEngineTagRead()
     {
-        ArgumentNullException.ThrowIfNull(tag);
-        return new LTagArchive(_lEngineDatabase).LTagCreate(tag);
-    }
-
-    public LTag? LEngineTagRead(string id)
-    {
-        return new LTagArchive(_lEngineDatabase).LTagRead(id);
+        return new LTagArchive(_lEngineDatabase).LTagCatalogRead();
     }
 
     public IReadOnlyList<LTag> LEngineTagRead(string ownerId, LOwner owner)
@@ -26,54 +20,27 @@ public sealed partial class LEngine
             : tags.LTagSenseRead(ownerId);
     }
 
-    public void LEngineTagUpdate(LTag tag)
+    public void LEngineTagSave(string ownerId, IReadOnlyList<LTag> written, LOwner owner)
     {
-        new LTagArchive(_lEngineDatabase).LTagUpdate(tag);
-    }
+        ArgumentNullException.ThrowIfNull(written);
 
-    public void LEngineTagAttach(string ownerId, string tagId, int position, LOwner owner)
-    {
         LTagArchive tags = new(_lEngineDatabase);
         if (LEngineOwnerCheck(owner))
         {
-            tags.LTagCollocationAttach(ownerId, tagId, position);
+            tags.LTagCollocationSave(ownerId, written);
             return;
         }
 
-        tags.LTagSenseAttach(ownerId, tagId, position);
+        tags.LTagSenseSave(ownerId, written);
     }
 
-    public void LEngineTagDetach(string ownerId, string tagId, LOwner owner)
+    public void LEngineTagChange(string text, string renamed)
     {
-        LTagArchive tags = new(_lEngineDatabase);
-        if (LEngineOwnerCheck(owner))
-        {
-            tags.LTagCollocationDetach(ownerId, tagId);
-            return;
-        }
-
-        tags.LTagSenseDetach(ownerId, tagId);
+        new LTagArchive(_lEngineDatabase).LTagChange(text, renamed);
     }
 
-    public void LEngineTagRemove(string ownerId, string tagId, LOwner owner)
+    public void LEngineTagDelete(string text)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(tagId);
-
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-
-        LEngineTagDetach(ownerId, tagId, owner);
-
-        LTagArchive tags = new(_lEngineDatabase);
-        if (tags.LTagReferenceRead(tagId) == 0)
-        {
-            tags.LTagDelete(tagId);
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
-    public void LEngineTagDelete(string id)
-    {
-        new LTagArchive(_lEngineDatabase).LTagDelete(id);
+        new LTagArchive(_lEngineDatabase).LTagDelete(text);
     }
 }

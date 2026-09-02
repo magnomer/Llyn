@@ -2,9 +2,20 @@
 
 ## `internal sealed class PExample`
 
-One Example row on a card. The row carries the id of the Example it edits, so a sentence the user rewrites stays the same Example; a row that has never been written carries an empty id and is given one the moment a sentence is typed into it, which is the id it is then stored under and the id the row shows while they are still writing.
+One Example row on a card.
+The row carries the id of the Example it edits.
+So a sentence the user rewrites stays the same Example.
+A row that has never been written carries an empty id.
+It is given one the moment a sentence is typed into it.
+That is the id it is then stored under, and the id the row shows while writing.
 
-A row standing empty is not one thing. The sentence may never have been written, or it may have been written and be unreadable now: the second is marked rather than shown, and the mark stands until the user writes over it or clears the row, so nothing unreadable is quietly turned into nothing at all. Writing in the row is the user saying what the sentence is, which is why any edit ends the mark.
+A row standing empty is not one thing.
+The sentence may never have been written.
+Or it may have been written and be unreadable now.
+The second is marked rather than shown.
+The mark stands until the user writes over it or clears the row.
+So nothing unreadable is quietly turned into nothing at all.
+Writing in the row is the user saying what the sentence is, which is why any edit ends the mark.
 
 ## `internal PExample(ObservableCollection<PReference> catalog)`
 
@@ -12,11 +23,14 @@ An empty row nothing has been written in.
 
 ## `internal PExample(ObservableCollection<PReference> catalog, LStateValue text, string id, LStateValue reference)`
 
-The row for a stored Example: the sentence and the Source it cites as the store knows them, under the id that names it.
+The row for a stored Example.
+It holds the sentence and the Source it cites as the store knows them.
+Both stand under the id that names it.
 
 ## `public ObservableCollection<PReference> PExampleReferenceCatalog { get; }`
 
-The Sources the whole form offers, shared by every row so a Source written on one row is on offer to the next without reloading anything.
+The Sources the whole form offers, shared by every row.
+So a Source written on one row is on offer to the next without reloading anything.
 
 ## `internal LStateValue PExampleTextRead()`
 
@@ -28,11 +42,13 @@ What the row says about the Source it cites: none, unreadable, or the one it nam
 
 ## `internal void PExampleIdentityApply()`
 
-Gives the row the id its Example will be stored under, once the row holds a sentence. An id, once given, stays with the row.
+Gives the row the id its Example will be stored under, once the row holds a sentence.
+An id, once given, stays with the row.
 
 ## `internal void PExampleClear()`
 
-Empties the row without dropping it, which is what removing the last row on a card leaves. An emptied row says nothing was written, because the user said so.
+Empties the row without dropping it, which is what removing the last row on a card leaves.
+An emptied row says nothing was written, because the user said so.
 
 ## `internal void PExampleReferenceShow()`
 

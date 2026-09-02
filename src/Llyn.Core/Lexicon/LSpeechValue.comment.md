@@ -2,7 +2,10 @@
 
 ## `public sealed record LSpeechValue(`
 
-One entry in the language-controlled part-of-speech display vocabulary: it maps a stable POS id to the display name shown for a given language. Entries store only the id (`LSpeech`); the name lives here and is resolved by `(language, value_id)`, never copied onto the entry's rows.
+One entry in the language-controlled part-of-speech display vocabulary.
+It maps a stable POS id to the display name shown for a given language.
+Entries store only the id (`LSpeech`).
+The name lives here and is resolved by `(language, value_id)`, never copied onto the entry's rows.
 
 **Parameters**
 

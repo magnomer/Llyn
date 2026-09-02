@@ -115,7 +115,6 @@ public sealed class TEntryUpdate
         Assert.Equal(["kept"], tags.LTagSenseRead(sense.LSenseId).Select(tag => tag.LTagText));
 
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));
-        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM tag;"));
     }
 
     [Fact]

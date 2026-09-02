@@ -2,7 +2,11 @@
 
 ## `public sealed record LPronunciationAudio(`
 
-The recorded audio a pronunciation owns: one downloaded file per pronunciation, stored as a path relative to the workspace folder so moving or copying a workspace keeps its audio. The owning pronunciation id is the identity — at most one audio row per pronunciation — so saving replaces whatever file the pronunciation had.
+The recorded audio a pronunciation owns, one downloaded file per pronunciation.
+It is stored as a path relative to the workspace folder.
+So moving or copying a workspace keeps its audio.
+The owning pronunciation id is the identity, so there is at most one audio row per pronunciation.
+Saving replaces whatever file the pronunciation had.
 
 **Parameters**
 
