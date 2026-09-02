@@ -15,7 +15,10 @@ Closes the Tag whose button was pressed.
 ## `internal void PTagEntryHandle(object sender, KeyEventArgs e)`
 
 Enter commits what is standing in the entry.
-Backspace on an empty entry reaches back past the caret and drops the last Tag.
+Backspace at the start of the entry drops the Tag before it.
+Delete at the end of the entry drops the Tag after it.
+The arrow keys walk the entry past a Tag once the text runs out.
+So a Tag is crossed the way a character is, in either direction.
 Every other key is left to the text box.
 
 ## `internal void PTagCloseHandle(object sender, RoutedEventArgs e)`
@@ -29,6 +32,12 @@ Puts the caret in the entry when the field's empty space is clicked.
 So the whole box behaves as the one input it looks like, not only its trailing text.
 
 ## Inline notes
+
+### `private static void PTagEntryApply(TextBox box, PTagEntry row, int caret)`
+
+Moving the entry rebuilds its item, so the focused box is gone by the time the move lands.
+The caret is put back on the newly drawn entry once the field is laid out again.
+Without it a step across a Tag would drop the user out of the field.
 
 ### `private static TextBox? PTagEntryFind(DependencyObject root)`
 

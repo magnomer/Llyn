@@ -11,3 +11,4 @@ It is kept in a small fixed pointer outside the workspace.
 **Parameters**
 
 - `LSettingsLocalization` — The chosen interface-language code, for example `"en"`.
+- `LSettingsWindow` — The window geometry from the last run, or nothing before a first close.

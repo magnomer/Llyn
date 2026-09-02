@@ -82,7 +82,7 @@
 
         <DataTemplate x:Key="Display.Card.TagPill">
             <Border Margin="0,4,7,0" Padding="9,4" Background="{StaticResource Theme.AccentSoft}" CornerRadius="10">
-                <TextBlock FontSize="12" Foreground="{StaticResource Theme.Accent}" Text="{Binding Converter={StaticResource Display.Card.State}}" />
+                <TextBlock FontSize="12" Foreground="{StaticResource Theme.Accent}" Text="{Binding}" />
             </Border>
         </DataTemplate>
 

@@ -18,6 +18,10 @@ The window owns it from here and disposes it when it closes.
 
 ## Inline notes
 
+### `PWindowStateRestore();`
+
+Geometry is applied before any panel is attached, while the window is still unshown.
+
 ### `Closing += PWindowClosingHandle;`
 
 Closing runs while the window is still up and can be called off.
@@ -27,6 +31,10 @@ Unsaved text is caught in the first, and the panels are stopped in the second.
 ### `e.Cancel = !PWindowDiscardConfirm();`
 
 Declining leaves the window open on the form exactly as typed, which is the only place the work still exists.
+
+### `PWindowStateSave();`
+
+Geometry is stored only once the close is certain, so a declined close changes nothing.
 
 ### `PInput.PInputClose();`
 

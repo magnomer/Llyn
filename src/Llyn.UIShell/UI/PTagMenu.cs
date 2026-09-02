@@ -1,7 +1,8 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace Llyn.UIShell;
 
@@ -35,9 +36,35 @@ public partial class PEditor
             return;
         }
 
-        if (e.Key == Key.Back && box.Text.Length == 0)
+        if (box.SelectionLength != 0)
         {
-            card.PCardTagRemove();
+            return;
+        }
+
+        if (e.Key == Key.Back && box.CaretIndex == 0)
+        {
+            card.PCardTagRemove(-1);
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Delete && box.CaretIndex == box.Text.Length)
+        {
+            card.PCardTagRemove(1);
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Left && box.Text.Length == 0 && card.PCardTagMove(-1))
+        {
+            PTagEntryApply(box, row, 0);
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Right && box.Text.Length == 0 && card.PCardTagMove(1))
+        {
+            PTagEntryApply(box, row, 0);
             e.Handled = true;
         }
     }
@@ -66,6 +93,40 @@ public partial class PEditor
         entry.Focus();
         entry.CaretIndex = entry.Text.Length;
         e.Handled = true;
+    }
+
+    private static void PTagEntryApply(TextBox box, PTagEntry row, int caret)
+    {
+        ItemsControl? host = ItemsControl.ItemsControlFromItemContainer(box) ?? PTagHostFind(box);
+        box.Dispatcher.BeginInvoke(
+            DispatcherPriority.Input,
+            () =>
+            {
+                TextBox? entry = host is null ? box : PTagEntryFind(host) ?? box;
+                if (entry.DataContext != row)
+                {
+                    return;
+                }
+
+                entry.Focus();
+                entry.CaretIndex = caret > entry.Text.Length ? entry.Text.Length : caret;
+            });
+    }
+
+    private static ItemsControl? PTagHostFind(DependencyObject start)
+    {
+        DependencyObject? step = start;
+        while (step is not null)
+        {
+            if (step is ItemsControl host)
+            {
+                return host;
+            }
+
+            step = VisualTreeHelper.GetParent(step);
+        }
+
+        return null;
     }
 
     private static TextBox? PTagEntryFind(DependencyObject root)

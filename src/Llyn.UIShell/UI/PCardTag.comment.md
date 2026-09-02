@@ -3,8 +3,8 @@
 ## `internal sealed partial class PCard`
 
 The Tags a card carries, held as the items of one field rather than as a line of text.
-The collection is a run of committed Tags followed by one open entry.
-That entry is the caret the user types into.
+The collection is a run of committed Tags with one open entry among them.
+That entry is the caret the user types into, and it moves between Tags as a caret does.
 So the field can be drawn as boxed Tags with a cursor after them.
 A Tag can hold spaces and punctuation without a separator being guessed at inside it.
 Only a comma ends a Tag.
@@ -19,7 +19,7 @@ Replaces the Tags with the stored ones of the card being loaded and reopens an e
 ## `internal IReadOnlyList<string> PCardTagRead()`
 
 What the card says its Tags are.
-That is the committed Tags, and the text still standing in the open entry after them.
+That is the committed Tags and the entry text, each in the order the field shows them.
 So a Tag typed but never followed by a comma is not lost on save.
 Reading does not change the field.
 An unsaved-change check runs this while the user is still typing.
@@ -29,11 +29,16 @@ Closing a half-typed word into a Tag there would edit the card behind them.
 
 Drops one Tag the user closed.
 
-## `internal void PCardTagRemove()`
+## `internal void PCardTagRemove(int step)`
 
-Drops the last Tag, which is what a backspace at the start of an empty entry means.
-The caret is already past every Tag, so the one before it is the one being reached for.
-Does nothing while the entry still holds text.
+Drops the Tag standing one step from the entry, before it or after it.
+That is what a backspace at the start, or a delete at the end, reaches for.
+
+## `internal bool PCardTagMove(int step)`
+
+Steps the entry one place along the field, past the Tag on that side.
+A Tag is passed over as a single character would be.
+Reports whether there was anywhere left to go.
 
 ## `internal void PCardTagCommit()`
 

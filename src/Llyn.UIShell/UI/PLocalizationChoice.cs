@@ -16,7 +16,7 @@ public partial class PSettings
 
         if (_pSettingsReady)
         {
-            _lEngine.LEngineSettingsSave(new LSettings(language));
+            _lEngine.LEngineSettingsSave(_lEngine.LEngineSettingsRead() with { LSettingsLocalization = language });
         }
     }
 }

@@ -25,6 +25,7 @@
         <TextBox
             MinWidth="96"
             Height="28"
+            MinHeight="28"
             Margin="0,3,0,3"
             Padding="2,0"
             Background="Transparent"

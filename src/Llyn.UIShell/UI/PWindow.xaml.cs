@@ -17,6 +17,8 @@ public partial class PWindow : Window
 
         InitializeComponent();
 
+        PWindowStateRestore();
+
         PInput.PInputAttach(this, engine);
         PList.PListAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
@@ -28,6 +30,11 @@ public partial class PWindow : Window
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)
     {
         e.Cancel = !PWindowDiscardConfirm();
+
+        if (!e.Cancel)
+        {
+            PWindowStateSave();
+        }
     }
 
     private void PWindowExitHandle(object? sender, EventArgs e)

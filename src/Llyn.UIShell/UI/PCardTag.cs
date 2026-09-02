@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -41,13 +41,14 @@ internal sealed partial class PCard
             if (row is PTagChip chip)
             {
                 texts.Add(chip.PTagChipName);
+                continue;
             }
-        }
 
-        string written = _pCardTagEntry.PTagEntryText.Trim();
-        if (written.Length != 0 && !PCardTagCheck(written))
-        {
-            texts.Add(written);
+            string written = _pCardTagEntry.PTagEntryText.Trim();
+            if (written.Length != 0 && !PCardTagCheck(written))
+            {
+                texts.Add(written);
+            }
         }
 
         return texts;
@@ -59,23 +60,29 @@ internal sealed partial class PCard
         PCardTagUpdate();
     }
 
-    internal void PCardTagRemove()
+    internal void PCardTagRemove(int step)
     {
-        if (_pCardTagEntry.PTagEntryText.Length != 0)
+        int index = PCardTag.IndexOf(_pCardTagEntry);
+        int target = index + step;
+        if (index < 0 || target < 0 || target >= PCardTag.Count || PCardTag[target] is not PTagChip chip)
         {
             return;
         }
 
-        for (int index = PCardTag.Count - 1; index >= 0; index--)
-        {
-            if (PCardTag[index] is not PTagChip chip)
-            {
-                continue;
-            }
+        PCardTagRemove(chip);
+    }
 
-            PCardTagRemove(chip);
-            return;
+    internal bool PCardTagMove(int step)
+    {
+        int index = PCardTag.IndexOf(_pCardTagEntry);
+        int target = index + step;
+        if (index < 0 || target < 0 || target >= PCardTag.Count)
+        {
+            return false;
         }
+
+        PCardTag.Move(index, target);
+        return true;
     }
 
     internal void PCardTagCommit()
@@ -126,7 +133,8 @@ internal sealed partial class PCard
             return;
         }
 
-        PCardTag.Insert(PCardTag.Count - 1, new PTagChip(written));
+        int index = PCardTag.IndexOf(_pCardTagEntry);
+        PCardTag.Insert(index < 0 ? PCardTag.Count : index, new PTagChip(written));
     }
 
     private bool PCardTagCheck(string text)
