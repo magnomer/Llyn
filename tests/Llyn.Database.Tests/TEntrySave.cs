@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -74,10 +74,10 @@ public sealed class TEntrySave
             string.Empty,
             string.Empty,
             [new LCardDraft(
-                string.Empty, string.Empty, "a meaning", ["he said a word"], ["conversation"], "term",
+                string.Empty, string.Empty, "a meaning", [LExampleDraft.LExampleDraftCreate("he said a word")], [LSituationDraft.LSituationDraftCreate("conversation")], "term",
                 ["spoken"])],
             [new LCardDraft(
-                string.Empty, "in a word", "briefly", ["in a word, no"], ["summary"], string.Empty,
+                string.Empty, "in a word", "briefly", [LExampleDraft.LExampleDraftCreate("in a word, no")], [LSituationDraft.LSituationDraftCreate("summary")], string.Empty,
                 ["written"])]);
 
         LEntry entry = engine.LEngineEntrySave(draft);

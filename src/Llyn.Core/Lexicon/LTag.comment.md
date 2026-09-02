@@ -7,4 +7,4 @@ One Tag — independent data owned by nothing. No Entry, Meaning, or Collocation
 **Parameters**
 
 - `LTagId` — Opaque, program-generated stable id.
-- `LTagText` — The tag text; display text, never identity.
+- `LTagText` — The tag text and what is known about it; display text, never identity. A Tag that is there but unreadable is not a Tag that was never written.

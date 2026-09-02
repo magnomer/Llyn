@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows.Controls;
 using Llyn.ShellEngine;
 
@@ -14,6 +14,8 @@ public partial class PEditor : UserControl
     {
         InitializeComponent();
 
+        Resources.MergedDictionaries.Add(new PExampleTemplate(this));
+        Resources.MergedDictionaries.Add(new PSituationTemplate(this));
         Resources.MergedDictionaries.Add(new PSenseTemplate(this));
         Resources.MergedDictionaries.Add(new PCollocationTemplate(this));
         Resources.MergedDictionaries.Add(new PLangcodeTemplate(this));
@@ -40,6 +42,8 @@ public partial class PEditor : UserControl
     {
         _pEditorHost = host;
         _lEngine = engine;
+
+        PExampleLoad();
 
         if (entry is null)
         {

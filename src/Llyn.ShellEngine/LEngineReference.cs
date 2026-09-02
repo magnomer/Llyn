@@ -18,6 +18,11 @@ public sealed partial class LEngine
         return new LReferenceArchive(_lEngineDatabase).LReferenceRead(id);
     }
 
+    public IReadOnlyList<LReference> LEngineReferenceRead()
+    {
+        return new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+    }
+
     public IReadOnlyList<LReference> LEngineReferenceRead(string ownerId, LOwner owner)
     {
         LReferenceArchive references = new(_lEngineDatabase);
@@ -28,6 +33,9 @@ public sealed partial class LEngine
             case LOwner.LOwnerExample:
                 LReference? cited = references.LReferenceExampleRead(ownerId);
                 return cited is null ? [] : [cited];
+            case LOwner.LOwnerSituation:
+                LReference? named = references.LReferenceSituationRead(ownerId);
+                return named is null ? [] : [named];
             default:
                 throw LEngineOwnerRaise(owner);
         }
@@ -49,6 +57,9 @@ public sealed partial class LEngine
             case LOwner.LOwnerExample:
                 references.LReferenceExampleAttach(ownerId, referenceId);
                 return;
+            case LOwner.LOwnerSituation:
+                references.LReferenceSituationAttach(ownerId, referenceId);
+                return;
             default:
                 throw LEngineOwnerRaise(owner);
         }
@@ -64,6 +75,9 @@ public sealed partial class LEngine
                 return;
             case LOwner.LOwnerExample:
                 references.LReferenceExampleDetach(ownerId);
+                return;
+            case LOwner.LOwnerSituation:
+                references.LReferenceSituationDetach(ownerId);
                 return;
             default:
                 throw LEngineOwnerRaise(owner);

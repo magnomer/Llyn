@@ -9,6 +9,6 @@ One Collocation owned by an entry: a stable-id node mirroring the Meaning constr
 - `LCollocationId` — Opaque, program-generated stable id.
 - `LCollocationEntryId` — Owning entry id.
 - `LCollocationPosition` — Order among the entry's collocations.
-- `LCollocationTitle` — Title typed on the Collocation card; `null` when none was typed.
-- `LCollocationExpression` — The collocation expression text; empty when unset.
-- `LCollocationMeaning` — What the expression means; empty when unset.
+- `LCollocationTitle` — Title typed on the Collocation card, and what is known about it: nothing recorded when none was typed, unreadable when what was typed cannot be read back.
+- `LCollocationExpression` — The collocation expression text, and what is known about it.
+- `LCollocationMeaning` — What the expression means, and what is known about it.

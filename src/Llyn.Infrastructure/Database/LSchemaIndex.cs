@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
@@ -18,6 +18,7 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_id);
             CREATE INDEX IF NOT EXISTS example_translation_example ON example_translation (example_id);
             CREATE INDEX IF NOT EXISTS example_source ON example (source_id);
+            CREATE INDEX IF NOT EXISTS situation_source ON situation (source_id);
             """;
         command.ExecuteNonQuery();
 

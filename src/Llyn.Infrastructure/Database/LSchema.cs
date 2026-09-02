@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
@@ -96,11 +96,15 @@ public static class LSchema
                 entry_id TEXT NOT NULL,
                 parent_id TEXT,
                 position INTEGER NOT NULL,
+                title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
                 gloss TEXT,
                 definition_language TEXT,
+                definition_state TEXT NOT NULL DEFAULT 'unspecified',
                 definition TEXT,
                 labels TEXT NOT NULL,
+                CHECK (title_state = 'specified' OR title IS NULL),
+                CHECK (definition_state = 'specified' OR definition IS NULL),
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
                 FOREIGN KEY (parent_id) REFERENCES sense (id) ON DELETE CASCADE
             );
@@ -191,9 +195,15 @@ public static class LSchema
                 id TEXT NOT NULL PRIMARY KEY,
                 entry_id TEXT NOT NULL,
                 position INTEGER NOT NULL,
+                title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
+                expression_state TEXT NOT NULL DEFAULT 'unspecified',
                 expression TEXT,
+                meaning_state TEXT NOT NULL DEFAULT 'unspecified',
                 meaning TEXT,
+                CHECK (title_state = 'specified' OR title IS NULL),
+                CHECK (expression_state = 'specified' OR expression IS NULL),
+                CHECK (meaning_state = 'specified' OR meaning IS NULL),
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
             );
 
@@ -226,7 +236,7 @@ public static class LSchema
 
             CREATE TABLE IF NOT EXISTS source (
                 id TEXT NOT NULL PRIMARY KEY,
-                title_state TEXT NOT NULL,
+                title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
                 program_name_state TEXT NOT NULL,
                 program_name TEXT,
@@ -275,9 +285,13 @@ public static class LSchema
             CREATE TABLE IF NOT EXISTS example (
                 id TEXT NOT NULL PRIMARY KEY,
                 language TEXT NOT NULL,
-                text TEXT NOT NULL,
+                text_state TEXT NOT NULL DEFAULT 'unspecified',
+                text TEXT,
                 local TEXT,
+                source_state TEXT NOT NULL DEFAULT 'unspecified',
                 source_id TEXT,
+                CHECK (text_state = 'specified' OR text IS NULL),
+                CHECK (source_state = 'specified' OR source_id IS NULL),
                 FOREIGN KEY (source_id) REFERENCES source (id)
             );
 
@@ -332,7 +346,9 @@ public static class LSchema
             """
             CREATE TABLE IF NOT EXISTS tag (
                 id TEXT NOT NULL PRIMARY KEY,
-                text TEXT NOT NULL
+                text_state TEXT NOT NULL DEFAULT 'unspecified',
+                text TEXT,
+                CHECK (text_state = 'specified' OR text IS NULL)
             );
 
             CREATE TABLE IF NOT EXISTS sense_tag (
@@ -361,9 +377,19 @@ public static class LSchema
 
             CREATE TABLE IF NOT EXISTS situation (
                 id TEXT NOT NULL PRIMARY KEY,
-                title TEXT NOT NULL,
+                title_state TEXT NOT NULL DEFAULT 'unspecified',
+                title TEXT,
+                description_state TEXT NOT NULL DEFAULT 'unspecified',
                 description TEXT,
-                kind TEXT
+                kind_state TEXT NOT NULL DEFAULT 'unspecified',
+                kind TEXT,
+                source_state TEXT NOT NULL DEFAULT 'unspecified',
+                source_id TEXT,
+                CHECK (title_state = 'specified' OR title IS NULL),
+                CHECK (description_state = 'specified' OR description IS NULL),
+                CHECK (kind_state = 'specified' OR kind IS NULL),
+                CHECK (source_state = 'specified' OR source_id IS NULL),
+                FOREIGN KEY (source_id) REFERENCES source (id)
             );
 
             CREATE TABLE IF NOT EXISTS sense_situation (

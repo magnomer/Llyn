@@ -1,3 +1,6 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -78,26 +81,110 @@ public sealed class TExample
             new LExample(string.Empty, "English", "he said the word", null, null, []));
         LReference reference = engine.LEngineReferenceCreate(new LReference(
             string.Empty,
-            LReferenceValue.LReferenceValueCreate("A Dictionary"),
-            LReferenceValue.LReferenceValueUnspecified,
-            LReferenceValue.LReferenceValueUnspecified,
-            LReferenceValue.LReferenceValueCreate("1998"),
-            LReferenceValue.LReferenceValueUnspecified,
+            LStateValue.LStateValueCreate("A Dictionary"),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueCreate("1998"),
+            LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified));
 
         engine.LEngineExampleUpdate(example.LExampleId, reference.LReferenceId);
         Assert.Equal(
             reference.LReferenceId,
-            engine.LEngineExampleRead(example.LExampleId)?.LExampleSourceId);
+            engine.LEngineExampleRead(example.LExampleId)?.LExampleSource.LStateValueShow());
         Assert.Equal(
             reference.LReferenceId,
             Assert.Single(engine.LEngineReferenceRead(example.LExampleId, LOwner.LOwnerExample))
                 .LReferenceId);
 
-        engine.LEngineExampleUpdate(example.LExampleId, null);
-        Assert.Null(engine.LEngineExampleRead(example.LExampleId)?.LExampleSourceId);
+        engine.LEngineExampleUpdate(example.LExampleId, LStateValue.LStateValueUnspecified);
+        Assert.Equal(
+            LStateValue.LStateValueUnspecified,
+            engine.LEngineExampleRead(example.LExampleId)?.LExampleSource);
         Assert.NotNull(engine.LEngineReferenceRead(reference.LReferenceId));
         Assert.NotNull(engine.LEngineExampleRead(example.LExampleId));
+    }
+
+    [Fact]
+    public void AMeaningKeepsEveryExampleItRefersToAndEditsOneWithoutLosingItsIdOrSource()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = engine.LEngineEntrySave(new LEntryDraft(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [new LCardDraft(
+                string.Empty,
+                string.Empty,
+                "a unit of language",
+                [
+                    LExampleDraft.LExampleDraftCreate("he said a word"),
+                    LExampleDraft.LExampleDraftCreate("not a word was spoken"),
+                    LExampleDraft.LExampleDraftCreate("a word of advice"),
+                ],
+                [],
+                string.Empty,
+                [])],
+            []));
+
+        string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        Assert.Equal(
+            ["he said a word", "not a word was spoken", "a word of advice"],
+            engine.LEngineExampleRead(senseId, LOwner.LOwnerSense).Select(example => example.LExampleText));
+
+        LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.LEngineEntryLoad(entry.LEntryId));
+        LCardDraft card = loaded.LEntryDraftSenses[0];
+        Assert.Equal(3, card.LCardDraftExample.Count);
+        foreach (LExampleDraft draft in card.LCardDraftExample)
+        {
+            Assert.NotEmpty(draft.LExampleDraftId);
+        }
+
+        LReference reference = engine.LEngineReferenceCreate(new LReference(
+            string.Empty,
+            LStateValue.LStateValueCreate("A Dictionary"),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LState.LStateUnspecified));
+        string citedId = card.LCardDraftExample[1].LExampleDraftId;
+        engine.LEngineExampleUpdate(citedId, reference.LReferenceId);
+
+        loaded = Assert.IsType<LEntryDraft>(engine.LEngineEntryLoad(entry.LEntryId));
+        card = loaded.LEntryDraftSenses[0];
+        Assert.Equal(reference.LReferenceId, card.LCardDraftExample[1].LExampleDraftReference);
+
+        engine.LEngineEntryUpdate(entry.LEntryId, loaded with
+        {
+            LEntryDraftSenses =
+            [
+                card with
+                {
+                    LCardDraftExample =
+                    [
+                        card.LCardDraftExample[1] with { LExampleDraftText = "not one word was spoken" },
+                        card.LCardDraftExample[0],
+                        LExampleDraft.LExampleDraftCreate("in a word"),
+                    ],
+                },
+            ],
+        });
+
+        IReadOnlyList<LExample> attached = engine.LEngineExampleRead(senseId, LOwner.LOwnerSense);
+        Assert.Equal(
+            ["not one word was spoken", "he said a word", "in a word"],
+            attached.Select(example => example.LExampleText));
+        Assert.Equal(citedId, attached[0].LExampleId);
+        Assert.Equal(reference.LReferenceId, attached[0].LExampleSource.LStateValueShow());
+        Assert.Equal(card.LCardDraftExample[0].LExampleDraftId, attached[1].LExampleId);
+
+        Assert.NotNull(engine.LEngineExampleRead(card.LCardDraftExample[2].LExampleDraftId));
+        Assert.Equal(4, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
+        Assert.Equal(3, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
     }
 
     private static LEntry TExampleEntryCreate(LEngine engine)

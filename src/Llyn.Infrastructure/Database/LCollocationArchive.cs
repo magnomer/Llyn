@@ -33,15 +33,19 @@ public sealed class LCollocationArchive
         {
             command.CommandText =
                 """
-                INSERT INTO collocation (id, entry_id, position, title, expression, meaning)
-                VALUES ($id, $entry, $position, $title, $expression, $meaning);
+                INSERT INTO collocation (
+                    id, entry_id, position, title_state, title,
+                    expression_state, expression, meaning_state, meaning)
+                VALUES (
+                    $id, $entry, $position, $titleState, $title,
+                    $expressionState, $expression, $meaningState, $meaning);
                 """;
             command.Parameters.AddWithValue("$id", stored.LCollocationId);
             command.Parameters.AddWithValue("$entry", stored.LCollocationEntryId);
             command.Parameters.AddWithValue("$position", stored.LCollocationPosition);
-            command.Parameters.AddWithValue("$title", (object?)stored.LCollocationTitle ?? DBNull.Value);
-            command.Parameters.AddWithValue("$expression", (object?)stored.LCollocationExpression ?? DBNull.Value);
-            command.Parameters.AddWithValue("$meaning", (object?)stored.LCollocationMeaning ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "title", stored.LCollocationTitle);
+            LStateColumn.LStateColumnApply(command, "expression", stored.LCollocationExpression);
+            LStateColumn.LStateColumnApply(command, "meaning", stored.LCollocationMeaning);
             command.ExecuteNonQuery();
         }
 
@@ -57,7 +61,8 @@ public sealed class LCollocationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, position, title, expression, meaning
+            SELECT id, entry_id, position, title_state, title,
+                   expression_state, expression, meaning_state, meaning
             FROM collocation WHERE entry_id = $entry
             ORDER BY position;
             """;
@@ -71,9 +76,9 @@ public sealed class LCollocationArchive
                 reader.GetString(0),
                 reader.GetString(1),
                 reader.GetInt32(2),
-                reader.IsDBNull(3) ? null : reader.GetString(3),
-                reader.IsDBNull(4) ? null : reader.GetString(4),
-                reader.IsDBNull(5) ? null : reader.GetString(5)));
+                LStateColumn.LStateColumnRead(reader, 3),
+                LStateColumn.LStateColumnRead(reader, 5),
+                LStateColumn.LStateColumnRead(reader, 7)));
         }
 
         return collocations;
@@ -88,11 +93,16 @@ public sealed class LCollocationArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE collocation SET title = $title, expression = $expression, meaning = $meaning "
-                + "WHERE id = $id;";
-            command.Parameters.AddWithValue("$title", (object?)collocation.LCollocationTitle ?? DBNull.Value);
-            command.Parameters.AddWithValue("$expression", (object?)collocation.LCollocationExpression ?? DBNull.Value);
-            command.Parameters.AddWithValue("$meaning", (object?)collocation.LCollocationMeaning ?? DBNull.Value);
+                """
+                UPDATE collocation
+                SET title_state = $titleState, title = $title,
+                    expression_state = $expressionState, expression = $expression,
+                    meaning_state = $meaningState, meaning = $meaning
+                WHERE id = $id;
+                """;
+            LStateColumn.LStateColumnApply(command, "title", collocation.LCollocationTitle);
+            LStateColumn.LStateColumnApply(command, "expression", collocation.LCollocationExpression);
+            LStateColumn.LStateColumnApply(command, "meaning", collocation.LCollocationMeaning);
             command.Parameters.AddWithValue("$id", collocation.LCollocationId);
             if (command.ExecuteNonQuery() == 0)
             {

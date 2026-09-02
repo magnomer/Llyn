@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -44,12 +44,12 @@ public sealed class LReferenceArchive
                     $authorState);
                 """;
             command.Parameters.AddWithValue("$id", stored.LReferenceId);
-            LReferenceValueApply(command, "title", stored.LReferenceTitle);
-            LReferenceValueApply(command, "program", stored.LReferenceProgram);
-            LReferenceValueApply(command, "channel", stored.LReferenceChannel);
-            LReferenceValueApply(command, "year", stored.LReferenceYear);
-            LReferenceValueApply(command, "url", stored.LReferenceUrl);
-            command.Parameters.AddWithValue("$authorState", LReferenceStateFormat(stored.LReferenceAuthorState));
+            LStateColumn.LStateColumnApply(command, "title", stored.LReferenceTitle);
+            LStateColumn.LStateColumnApply(command, "program", stored.LReferenceProgram);
+            LStateColumn.LStateColumnApply(command, "channel", stored.LReferenceChannel);
+            LStateColumn.LStateColumnApply(command, "year", stored.LReferenceYear);
+            LStateColumn.LStateColumnApply(command, "url", stored.LReferenceUrl);
+            command.Parameters.AddWithValue("$authorState", LStateColumn.LStateColumnFormat(stored.LReferenceAuthorState));
             command.ExecuteNonQuery();
         }
 
@@ -97,6 +97,33 @@ public sealed class LReferenceArchive
         return references;
     }
 
+    public IReadOnlyList<LReference> LReferenceAllRead()
+    {
+        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT id,
+                   title_state, title,
+                   program_name_state, program_name,
+                   channel_name_state, channel_name,
+                   year_state, year,
+                   url_state, url,
+                   author_state
+            FROM source
+            ORDER BY title;
+            """;
+
+        List<LReference> references = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            references.Add(LReferenceRowRead(reader, reader.GetString(0), 1));
+        }
+
+        return references;
+    }
+
     public LReference? LReferenceExampleRead(string exampleId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
@@ -109,6 +136,30 @@ public sealed class LReferenceArchive
         {
             command.CommandText = "SELECT source_id FROM example WHERE id = $example;";
             command.Parameters.AddWithValue("$example", exampleId);
+            using SqliteDataReader reader = command.ExecuteReader();
+            if (!reader.Read() || reader.IsDBNull(0))
+            {
+                return null;
+            }
+
+            id = reader.GetString(0);
+        }
+
+        return LReferenceSingleRead(connection, id);
+    }
+
+    public LReference? LReferenceSituationRead(string situationId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+
+        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        string id;
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = "SELECT source_id FROM situation WHERE id = $situation;";
+            command.Parameters.AddWithValue("$situation", situationId);
             using SqliteDataReader reader = command.ExecuteReader();
             if (!reader.Read() || reader.IsDBNull(0))
             {
@@ -140,12 +191,12 @@ public sealed class LReferenceArchive
                     author_state = $authorState
                 WHERE id = $id;
                 """;
-            LReferenceValueApply(command, "title", reference.LReferenceTitle);
-            LReferenceValueApply(command, "program", reference.LReferenceProgram);
-            LReferenceValueApply(command, "channel", reference.LReferenceChannel);
-            LReferenceValueApply(command, "year", reference.LReferenceYear);
-            LReferenceValueApply(command, "url", reference.LReferenceUrl);
-            command.Parameters.AddWithValue("$authorState", LReferenceStateFormat(reference.LReferenceAuthorState));
+            LStateColumn.LStateColumnApply(command, "title", reference.LReferenceTitle);
+            LStateColumn.LStateColumnApply(command, "program", reference.LReferenceProgram);
+            LStateColumn.LStateColumnApply(command, "channel", reference.LReferenceChannel);
+            LStateColumn.LStateColumnApply(command, "year", reference.LReferenceYear);
+            LStateColumn.LStateColumnApply(command, "url", reference.LReferenceUrl);
+            command.Parameters.AddWithValue("$authorState", LStateColumn.LStateColumnFormat(reference.LReferenceAuthorState));
             command.Parameters.AddWithValue("$id", reference.LReferenceId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -169,7 +220,8 @@ public sealed class LReferenceArchive
                 """
                 SELECT
                     (SELECT COUNT(*) FROM entry_source WHERE source_id = $id)
-                    + (SELECT COUNT(*) FROM example WHERE source_id = $id);
+                    + (SELECT COUNT(*) FROM example WHERE source_id = $id)
+                    + (SELECT COUNT(*) FROM situation WHERE source_id = $id);
                 """;
             guard.Parameters.AddWithValue("$id", id);
             long citations = Convert.ToInt64(guard.ExecuteScalar());
@@ -227,27 +279,61 @@ public sealed class LReferenceArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
         ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
 
-        LReferenceExampleSave(exampleId, referenceId);
+        LReferenceExampleSave(exampleId, LStateValue.LStateValueCreate(referenceId));
     }
 
     public void LReferenceExampleDetach(string exampleId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
 
-        LReferenceExampleSave(exampleId, null);
+        LReferenceExampleSave(exampleId, LStateValue.LStateValueUnspecified);
     }
 
-    private void LReferenceExampleSave(string exampleId, string? referenceId)
+    private void LReferenceExampleSave(string exampleId, LStateValue reference)
     {
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "UPDATE example SET source_id = $reference WHERE id = $example;";
-            command.Parameters.AddWithValue("$reference", (object?)referenceId ?? DBNull.Value);
+            command.CommandText =
+                "UPDATE example SET source_state = $referenceState, source_id = $reference WHERE id = $example;";
+            LStateColumn.LStateColumnApply(command, "reference", reference);
             command.Parameters.AddWithValue("$example", exampleId);
             if (command.ExecuteNonQuery() == 0)
             {
                 throw new InvalidOperationException($"No Example carries the id '{exampleId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LReferenceSituationAttach(string situationId, string referenceId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
+
+        LReferenceSituationSave(situationId, LStateValue.LStateValueCreate(referenceId));
+    }
+
+    public void LReferenceSituationDetach(string situationId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+
+        LReferenceSituationSave(situationId, LStateValue.LStateValueUnspecified);
+    }
+
+    private void LReferenceSituationSave(string situationId, LStateValue reference)
+    {
+        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                "UPDATE situation SET source_state = $referenceState, source_id = $reference WHERE id = $situation;";
+            LStateColumn.LStateColumnApply(command, "reference", reference);
+            command.Parameters.AddWithValue("$situation", situationId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Situation carries the id '{situationId}'.");
             }
         }
 
@@ -308,21 +394,6 @@ public sealed class LReferenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    // Every field is written the same way: its state always, its text only while the state is specified.
-    // Binding both from one place is what keeps "unknown" and "unspecified" free of stray values, which
-    // the source table's check constraints then hold to.
-    private static void LReferenceValueApply(SqliteCommand command, string field, LReferenceValue value)
-    {
-        ArgumentNullException.ThrowIfNull(value);
-
-        command.Parameters.AddWithValue($"${field}State", LReferenceStateFormat(value.LReferenceValueState));
-        command.Parameters.AddWithValue(
-            $"${field}",
-            value.LReferenceValueState == LState.LStateSpecified && value.LReferenceValueText is not null
-                ? value.LReferenceValueText
-                : DBNull.Value);
-    }
-
     private static LReference? LReferenceSingleRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -348,46 +419,16 @@ public sealed class LReferenceArchive
         return LReferenceRowRead(reader, id, 0);
     }
 
-    // One Reference from a reader positioned on its row, with the field block starting at `first` — 0
-    // when the query selects the fields alone, 1 when it selects the id ahead of them.
     private static LReference LReferenceRowRead(SqliteDataReader reader, string id, int first)
     {
         return new LReference(
             id,
-            LReferenceValueRead(reader, first),
-            LReferenceValueRead(reader, first + 2),
-            LReferenceValueRead(reader, first + 4),
-            LReferenceValueRead(reader, first + 6),
-            LReferenceValueRead(reader, first + 8),
-            LReferenceStateParse(reader.GetString(first + 10)));
+            LStateColumn.LStateColumnRead(reader, first),
+            LStateColumn.LStateColumnRead(reader, first + 2),
+            LStateColumn.LStateColumnRead(reader, first + 4),
+            LStateColumn.LStateColumnRead(reader, first + 6),
+            LStateColumn.LStateColumnRead(reader, first + 8),
+            LStateColumn.LStateColumnParse(reader.GetString(first + 10)));
     }
 
-    private static LReferenceValue LReferenceValueRead(SqliteDataReader reader, int state)
-    {
-        return new LReferenceValue(
-            LReferenceStateParse(reader.GetString(state)),
-            reader.IsDBNull(state + 1) ? null : reader.GetString(state + 1));
-    }
-
-    // The state text is a persisted data-contract value, so it stays the lowercase word the schema
-    // documents rather than the member name of the enum.
-    private static string LReferenceStateFormat(LState state)
-    {
-        return state switch
-        {
-            LState.LStateUnknown => "unknown",
-            LState.LStateSpecified => "specified",
-            _ => "unspecified",
-        };
-    }
-
-    private static LState LReferenceStateParse(string state)
-    {
-        return state switch
-        {
-            "unknown" => LState.LStateUnknown,
-            "specified" => LState.LStateSpecified,
-            _ => LState.LStateUnspecified,
-        };
-    }
 }

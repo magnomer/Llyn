@@ -2,9 +2,9 @@ namespace Llyn.Core;
 
 public sealed record LReference(
     string LReferenceId,
-    LReferenceValue LReferenceTitle,
-    LReferenceValue LReferenceProgram,
-    LReferenceValue LReferenceChannel,
-    LReferenceValue LReferenceYear,
-    LReferenceValue LReferenceUrl,
+    LStateValue LReferenceTitle,
+    LStateValue LReferenceProgram,
+    LStateValue LReferenceChannel,
+    LStateValue LReferenceYear,
+    LStateValue LReferenceUrl,
     LState LReferenceAuthorState);

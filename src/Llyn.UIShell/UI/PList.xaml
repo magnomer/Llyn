@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Llyn.UIShell.PList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,6 +8,7 @@
 
     <UserControl.Resources>
         <local:PCardOrderConverter x:Key="Display.Card.Order" />
+        <local:PStateConverter x:Key="Display.Card.State" />
 
         <Style x:Key="Display.Card.Title" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -15,7 +16,7 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="TextWrapping" Value="Wrap" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding LCardDraftTitle}" Value="">
+                <DataTrigger Binding="{Binding LCardDraftTitle, Converter={StaticResource Display.Card.State}}" Value="">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
@@ -24,7 +25,7 @@
         <Style x:Key="Display.Card.Expression" TargetType="StackPanel">
             <Setter Property="Margin" Value="0,0,0,18" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding LCardDraftExpression}" Value="">
+                <DataTrigger Binding="{Binding LCardDraftExpression, Converter={StaticResource Display.Card.State}}" Value="">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
@@ -33,7 +34,7 @@
         <Style x:Key="Display.Card.Meaning" TargetType="StackPanel">
             <Setter Property="Margin" Value="0,0,0,18" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding LCardDraftMeaning}" Value="">
+                <DataTrigger Binding="{Binding LCardDraftMeaning, Converter={StaticResource Display.Card.State}}" Value="">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
@@ -71,13 +72,17 @@
             </Style.Triggers>
         </Style>
 
-        <DataTemplate x:Key="Display.Card.Line">
-            <TextBlock Margin="0,3,0,0" FontSize="14" LineHeight="20" Text="{Binding}" TextWrapping="Wrap" />
+        <DataTemplate x:Key="Display.Card.SituationLine">
+            <TextBlock Margin="0,3,0,0" FontSize="14" LineHeight="20" Text="{Binding LSituationDraftText, Converter={StaticResource Display.Card.State}}" TextWrapping="Wrap" />
+        </DataTemplate>
+
+        <DataTemplate x:Key="Display.Card.ExampleLine">
+            <TextBlock Margin="0,3,0,0" FontSize="14" LineHeight="20" Text="{Binding LExampleDraftText, Converter={StaticResource Display.Card.State}}" TextWrapping="Wrap" />
         </DataTemplate>
 
         <DataTemplate x:Key="Display.Card.TagPill">
             <Border Margin="0,4,7,0" Padding="9,4" Background="{StaticResource Theme.AccentSoft}" CornerRadius="10">
-                <TextBlock FontSize="12" Foreground="{StaticResource Theme.Accent}" Text="{Binding}" />
+                <TextBlock FontSize="12" Foreground="{StaticResource Theme.Accent}" Text="{Binding Converter={StaticResource Display.Card.State}}" />
             </Border>
         </DataTemplate>
 
@@ -102,13 +107,13 @@
                                     Foreground="{StaticResource Theme.Accent}"
                                     Text="{Binding (ItemsControl.AlternationIndex), Converter={StaticResource Display.Card.Order}, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" />
                             </Border>
-                            <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}" Text="{Binding LCardDraftTitle}" />
+                            <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}" Text="{Binding LCardDraftTitle, Converter={StaticResource Display.Card.State}}" />
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Display.SenseSingle}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding LCardDraftTitle}" Value="">
+                                            <DataTrigger Binding="{Binding LCardDraftTitle, Converter={StaticResource Display.Card.State}}" Value="">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -120,15 +125,15 @@
                     <StackPanel Grid.Row="1" Margin="30,23,30,26">
                         <StackPanel Style="{StaticResource Display.Card.Meaning}">
                             <TextBlock Margin="0,0,0,7" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Definition}" />
-                            <TextBlock Style="{StaticResource Display.Card.Value}" Text="{Binding LCardDraftMeaning}" />
+                            <TextBlock Style="{StaticResource Display.Card.Value}" Text="{Binding LCardDraftMeaning, Converter={StaticResource Display.Card.State}}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource Display.Card.Example}">
                             <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Example}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.Line}" ItemsSource="{Binding LCardDraftExample}" />
+                            <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleLine}" ItemsSource="{Binding LCardDraftExample}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource Display.Card.Situation}">
                             <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Situation}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.Line}" ItemsSource="{Binding LCardDraftSituation}" />
+                            <ItemsControl ItemTemplate="{StaticResource Display.Card.SituationLine}" ItemsSource="{Binding LCardDraftSituation}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource Display.Card.Tag}">
                             <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Tags}" />
@@ -164,13 +169,13 @@
                                     Foreground="{StaticResource Theme.Accent}"
                                     Text="{Binding (ItemsControl.AlternationIndex), Converter={StaticResource Display.Card.Order}, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" />
                             </Border>
-                            <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}" Text="{Binding LCardDraftTitle}" />
+                            <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}" Text="{Binding LCardDraftTitle, Converter={StaticResource Display.Card.State}}" />
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Display.CollocationSingle}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding LCardDraftTitle}" Value="">
+                                            <DataTrigger Binding="{Binding LCardDraftTitle, Converter={StaticResource Display.Card.State}}" Value="">
                                                 <Setter Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -182,19 +187,19 @@
                     <StackPanel Grid.Row="1" Margin="30,23,30,26">
                         <StackPanel Style="{StaticResource Display.Card.Expression}">
                             <TextBlock Margin="0,0,0,7" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Expression}" />
-                            <TextBlock Style="{StaticResource Display.Card.Value}" Text="{Binding LCardDraftExpression}" />
+                            <TextBlock Style="{StaticResource Display.Card.Value}" Text="{Binding LCardDraftExpression, Converter={StaticResource Display.Card.State}}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource Display.Card.Meaning}">
                             <TextBlock Margin="0,0,0,7" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Meaning}" />
-                            <TextBlock Style="{StaticResource Display.Card.Value}" Text="{Binding LCardDraftMeaning}" />
+                            <TextBlock Style="{StaticResource Display.Card.Value}" Text="{Binding LCardDraftMeaning, Converter={StaticResource Display.Card.State}}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource Display.Card.Example}">
                             <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Example}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.Line}" ItemsSource="{Binding LCardDraftExample}" />
+                            <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleLine}" ItemsSource="{Binding LCardDraftExample}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource Display.Card.Situation}">
                             <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Situation}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.Line}" ItemsSource="{Binding LCardDraftSituation}" />
+                            <ItemsControl ItemTemplate="{StaticResource Display.Card.SituationLine}" ItemsSource="{Binding LCardDraftSituation}" />
                         </StackPanel>
                         <StackPanel Style="{StaticResource Display.Card.Tag}">
                             <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Tags}" />

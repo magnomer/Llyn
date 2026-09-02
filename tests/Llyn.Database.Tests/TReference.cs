@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -37,6 +37,39 @@ public sealed class TReference
 
         engine.LEngineReferenceDetach(example.LExampleId, grammar.LReferenceId, LOwner.LOwnerExample);
         Assert.Empty(engine.LEngineReferenceRead(example.LExampleId, LOwner.LOwnerExample));
+    }
+
+    [Fact]
+    public void ASituationCitesAtMostOneReferenceAndHoldsTheSourceFromBeingDeleted()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LReference dictionary = TReferenceCreate(engine, "A Dictionary");
+        LReference grammar = TReferenceCreate(engine, "A Grammar");
+
+        LSituation situation = engine.LEngineSituationCreate(
+            new LSituation(string.Empty, "in court", null, null, null));
+
+        engine.LEngineReferenceAttach(
+            situation.LSituationId, dictionary.LReferenceId, 0, LOwner.LOwnerSituation);
+        engine.LEngineReferenceAttach(
+            situation.LSituationId, grammar.LReferenceId, 0, LOwner.LOwnerSituation);
+
+        Assert.Equal(
+            grammar.LReferenceId,
+            Assert.Single(engine.LEngineReferenceRead(situation.LSituationId, LOwner.LOwnerSituation))
+                .LReferenceId);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            engine.LEngineReferenceDelete(grammar.LReferenceId));
+
+        engine.LEngineReferenceDetach(
+            situation.LSituationId, grammar.LReferenceId, LOwner.LOwnerSituation);
+        Assert.Empty(engine.LEngineReferenceRead(situation.LSituationId, LOwner.LOwnerSituation));
+
+        engine.LEngineReferenceDelete(grammar.LReferenceId);
+        Assert.Null(engine.LEngineReferenceRead(grammar.LReferenceId));
     }
 
     [Fact]
@@ -95,11 +128,11 @@ public sealed class TReference
     {
         return engine.LEngineReferenceCreate(new LReference(
             string.Empty,
-            LReferenceValue.LReferenceValueCreate(title),
-            LReferenceValue.LReferenceValueUnspecified,
-            LReferenceValue.LReferenceValueUnspecified,
-            LReferenceValue.LReferenceValueCreate("1998"),
-            LReferenceValue.LReferenceValueUnspecified,
+            LStateValue.LStateValueCreate(title),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueCreate("1998"),
+            LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified));
     }
 

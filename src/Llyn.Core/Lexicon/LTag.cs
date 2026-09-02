@@ -2,4 +2,8 @@ namespace Llyn.Core;
 
 public sealed record LTag(
     string LTagId,
-    string LTagText);
+    LStateValue LTagText)
+{
+    public LStateValue LTagText { get; init; } = LTagText ?? LStateValue.LStateValueUnspecified;
+}
+

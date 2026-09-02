@@ -31,6 +31,11 @@ public sealed partial class LEngine
         new LSituationArchive(_lEngineDatabase).LSituationUpdate(situation);
     }
 
+    public void LEngineSituationUpdate(string situationId, LStateValue reference)
+    {
+        new LSituationArchive(_lEngineDatabase).LSituationSourceUpdate(situationId, reference);
+    }
+
     public void LEngineSituationAttach(string ownerId, string situationId, int position, LOwner owner)
     {
         LSituationArchive situations = new(_lEngineDatabase);

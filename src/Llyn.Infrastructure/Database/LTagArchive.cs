@@ -18,16 +18,16 @@ public sealed class LTagArchive
     public LTag LTagCreate(LTag tag)
     {
         ArgumentNullException.ThrowIfNull(tag);
-        ArgumentException.ThrowIfNullOrWhiteSpace(tag.LTagText);
 
         LTag stored = tag with { LTagId = LIdentity.LIdentityCreate() };
 
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "INSERT INTO tag (id, text) VALUES ($id, $text);";
+            command.CommandText =
+                "INSERT INTO tag (id, text_state, text) VALUES ($id, $textState, $text);";
             command.Parameters.AddWithValue("$id", stored.LTagId);
-            command.Parameters.AddWithValue("$text", stored.LTagText);
+            LStateColumn.LStateColumnApply(command, "text", stored.LTagText);
             command.ExecuteNonQuery();
         }
 
@@ -61,8 +61,9 @@ public sealed class LTagArchive
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "UPDATE tag SET text = $text WHERE id = $id;";
-            command.Parameters.AddWithValue("$text", tag.LTagText);
+            command.CommandText =
+                "UPDATE tag SET text_state = $textState, text = $text WHERE id = $id;";
+            LStateColumn.LStateColumnApply(command, "text", tag.LTagText);
             command.Parameters.AddWithValue("$id", tag.LTagId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -203,7 +204,7 @@ public sealed class LTagArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT tag.id, tag.text
+            SELECT tag.id, tag.text_state, tag.text
             FROM {table} link
             JOIN tag ON tag.id = link.tag_id
             WHERE link.{column} = $referrer
@@ -215,7 +216,7 @@ public sealed class LTagArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            tags.Add(new LTag(reader.GetString(0), reader.GetString(1)));
+            tags.Add(new LTag(reader.GetString(0), LStateColumn.LStateColumnRead(reader, 1)));
         }
 
         return tags;
@@ -224,7 +225,7 @@ public sealed class LTagArchive
     private static LTag? LTagSingleRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT text FROM tag WHERE id = $id;";
+        command.CommandText = "SELECT text_state, text FROM tag WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
         if (!reader.Read())
@@ -232,6 +233,6 @@ public sealed class LTagArchive
             return null;
         }
 
-        return new LTag(id, reader.GetString(0));
+        return new LTag(id, LStateColumn.LStateColumnRead(reader, 0));
     }
 }

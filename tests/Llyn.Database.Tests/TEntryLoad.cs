@@ -1,3 +1,4 @@
+﻿using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -21,12 +22,12 @@ public sealed class TEntryLoad
             [
                 new LCardDraft(
                     string.Empty, string.Empty, "a unit of language",
-                    ["he said a word"], ["conversation"], string.Empty, ["spoken"]),
+                    [LExampleDraft.LExampleDraftCreate("he said a word")], [LSituationDraft.LSituationDraftCreate("conversation")], string.Empty, ["spoken"]),
                 new LCardDraft(string.Empty, string.Empty, "a promise", [], [], string.Empty, []),
             ],
             [
                 new LCardDraft(
-                    string.Empty, "in a word", "briefly", ["in a word, no"], ["summary"], string.Empty,
+                    string.Empty, "in a word", "briefly", [LExampleDraft.LExampleDraftCreate("in a word, no")], [LSituationDraft.LSituationDraftCreate("summary")], string.Empty,
                     ["written"]),
             ]);
 
@@ -59,6 +60,28 @@ public sealed class TEntryLoad
         TEntryCardMatch(word.LEntryDraftCollocations, loaded.LEntryDraftCollocations);
     }
 
+    private static IReadOnlyList<string> TEntrySituationRead(IReadOnlyList<LSituationDraft> drafts)
+    {
+        List<string> texts = new(drafts.Count);
+        foreach (LSituationDraft draft in drafts)
+        {
+            texts.Add(draft.LSituationDraftText.LStateValueShow());
+        }
+
+        return texts;
+    }
+
+    private static IReadOnlyList<string> TEntryExampleRead(IReadOnlyList<LExampleDraft> drafts)
+    {
+        List<string> texts = new(drafts.Count);
+        foreach (LExampleDraft draft in drafts)
+        {
+            texts.Add(draft.LExampleDraftText.LStateValueShow());
+        }
+
+        return texts;
+    }
+
     private static void TEntryCardMatch(IReadOnlyList<LCardDraft> expected, IReadOnlyList<LCardDraft> actual)
     {
         Assert.Equal(expected.Count, actual.Count);
@@ -68,8 +91,12 @@ public sealed class TEntryLoad
             Assert.Equal(expected[index].LCardDraftExpression, actual[index].LCardDraftExpression);
             Assert.Equal(expected[index].LCardDraftMeaning, actual[index].LCardDraftMeaning);
             Assert.Equal(expected[index].LCardDraftSynonym, actual[index].LCardDraftSynonym);
-            Assert.Equal(expected[index].LCardDraftExample, actual[index].LCardDraftExample);
-            Assert.Equal(expected[index].LCardDraftSituation, actual[index].LCardDraftSituation);
+            Assert.Equal(
+                TEntryExampleRead(expected[index].LCardDraftExample),
+                TEntryExampleRead(actual[index].LCardDraftExample));
+            Assert.Equal(
+                TEntrySituationRead(expected[index].LCardDraftSituation),
+                TEntrySituationRead(actual[index].LCardDraftSituation));
             Assert.Equal(expected[index].LCardDraftTag, actual[index].LCardDraftTag);
         }
     }
@@ -173,16 +200,16 @@ public sealed class TEntryLoad
                 string.Empty,
                 string.Empty,
                 "a unit of language",
-                ["he said a word", "not a word was spoken"],
-                ["conversation"],
+                [LExampleDraft.LExampleDraftCreate("he said a word"), LExampleDraft.LExampleDraftCreate("not a word was spoken")],
+                [LSituationDraft.LSituationDraftCreate("conversation")],
                 string.Empty,
                 ["verb", "formal", "spoken"])],
             [new LCardDraft(
                 string.Empty,
                 "in a word",
                 "briefly",
-                ["in a word, no"],
-                ["summary", "writing"],
+                [LExampleDraft.LExampleDraftCreate("in a word, no")],
+                [LSituationDraft.LSituationDraftCreate("summary"), LSituationDraft.LSituationDraftCreate("writing")],
                 string.Empty,
                 ["written", "idiom"])]));
 
@@ -200,13 +227,15 @@ public sealed class TEntryLoad
 
         LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);
         Assert.Equal(["verb", "formal", "spoken"], card.LCardDraftTag);
-        Assert.Equal(["he said a word", "not a word was spoken"], card.LCardDraftExample);
-        Assert.Equal(["conversation"], card.LCardDraftSituation);
+        Assert.Equal(
+            ["he said a word", "not a word was spoken"],
+            TEntryExampleRead(card.LCardDraftExample));
+        Assert.Equal(["conversation"], TEntrySituationRead(card.LCardDraftSituation));
 
         LCardDraft phrase = Assert.Single(loaded.LEntryDraftCollocations);
         Assert.Equal(["written", "idiom"], phrase.LCardDraftTag);
-        Assert.Equal(["in a word, no"], phrase.LCardDraftExample);
-        Assert.Equal(["summary", "writing"], phrase.LCardDraftSituation);
+        Assert.Equal(["in a word, no"], TEntryExampleRead(phrase.LCardDraftExample));
+        Assert.Equal(["summary", "writing"], TEntrySituationRead(phrase.LCardDraftSituation));
     }
 
     [Fact]
@@ -220,7 +249,7 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", ["  "], [], string.Empty, [])],
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [LExampleDraft.LExampleDraftCreate("  ")], [], string.Empty, [])],
             []));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));

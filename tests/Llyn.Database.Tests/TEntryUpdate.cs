@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -83,7 +83,8 @@ public sealed class TEntryUpdate
             string.Empty,
             [
                 new LCardDraft(
-                    string.Empty, string.Empty, "meaning", ["one", "two"], [], string.Empty, ["kept", "dropped"]),
+                    string.Empty, string.Empty, "meaning", [LExampleDraft.LExampleDraftCreate("one"), LExampleDraft.LExampleDraftCreate("two")], [],
+                    string.Empty, ["kept", "dropped"]),
             ],
             []));
 
@@ -94,7 +95,11 @@ public sealed class TEntryUpdate
         {
             LEntryDraftSenses =
             [
-                card with { LCardDraftExample = ["two", "one"], LCardDraftTag = ["kept"] },
+                card with
+                {
+                    LCardDraftExample = [card.LCardDraftExample[1], card.LCardDraftExample[0]],
+                    LCardDraftTag = ["kept"],
+                },
             ],
         });
 

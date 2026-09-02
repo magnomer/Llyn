@@ -5,8 +5,14 @@ public sealed record LSense(
     string LSenseEntryId,
     string? LSenseParentId,
     int LSensePosition,
-    string? LSenseTitle,
+    LStateValue LSenseTitle,
     string? LSenseGloss,
     string? LSenseDefinitionLanguage,
-    string? LSenseDefinition,
-    string LSenseLabels);
+    LStateValue LSenseDefinition,
+    string LSenseLabels)
+{
+    public LStateValue LSenseTitle { get; init; } = LSenseTitle ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LSenseDefinition { get; init; } = LSenseDefinition ?? LStateValue.LStateValueUnspecified;
+}
+

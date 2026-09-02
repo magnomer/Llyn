@@ -35,17 +35,21 @@ public sealed class LSenseArchive
         {
             command.CommandText =
                 """
-                INSERT INTO sense (id, entry_id, parent_id, position, title, gloss, definition_language, definition, labels)
-                VALUES ($id, $entry, $parent, $position, $title, $gloss, $language, $definition, $labels);
+                INSERT INTO sense (
+                    id, entry_id, parent_id, position, title_state, title, gloss,
+                    definition_language, definition_state, definition, labels)
+                VALUES (
+                    $id, $entry, $parent, $position, $titleState, $title, $gloss,
+                    $language, $definitionState, $definition, $labels);
                 """;
             command.Parameters.AddWithValue("$id", stored.LSenseId);
             command.Parameters.AddWithValue("$entry", stored.LSenseEntryId);
             command.Parameters.AddWithValue("$parent", (object?)stored.LSenseParentId ?? DBNull.Value);
             command.Parameters.AddWithValue("$position", stored.LSensePosition);
-            command.Parameters.AddWithValue("$title", (object?)stored.LSenseTitle ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "title", stored.LSenseTitle);
             command.Parameters.AddWithValue("$gloss", (object?)stored.LSenseGloss ?? DBNull.Value);
             command.Parameters.AddWithValue("$language", (object?)stored.LSenseDefinitionLanguage ?? DBNull.Value);
-            command.Parameters.AddWithValue("$definition", (object?)stored.LSenseDefinition ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "definition", stored.LSenseDefinition);
             command.Parameters.AddWithValue("$labels", stored.LSenseLabels);
             command.ExecuteNonQuery();
         }
@@ -62,7 +66,8 @@ public sealed class LSenseArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, parent_id, position, title, gloss, definition_language, definition, labels
+            SELECT id, entry_id, parent_id, position, title_state, title, gloss,
+                   definition_language, definition_state, definition, labels
             FROM sense WHERE entry_id = $entry
             ORDER BY ifnull(parent_id, ''), position;
             """;
@@ -86,7 +91,8 @@ public sealed class LSenseArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, parent_id, position, title, gloss, definition_language, definition, labels
+            SELECT id, entry_id, parent_id, position, title_state, title, gloss,
+                   definition_language, definition_state, definition, labels
             FROM sense WHERE id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -104,8 +110,8 @@ public sealed class LSenseArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT s.id, s.entry_id, s.parent_id, s.position, s.title, s.gloss,
-                   s.definition_language, s.definition, s.labels
+            SELECT s.id, s.entry_id, s.parent_id, s.position, s.title_state, s.title, s.gloss,
+                   s.definition_language, s.definition_state, s.definition, s.labels
             FROM sense s
             JOIN entry e ON e.id = s.entry_id
             WHERE $query = '' OR instr(lfold(e.headword), lfold($query)) > 0
@@ -134,14 +140,15 @@ public sealed class LSenseArchive
             command.CommandText =
                 """
                 UPDATE sense
-                SET title = $title, gloss = $gloss, definition_language = $language,
-                    definition = $definition, labels = $labels
+                SET title_state = $titleState, title = $title, gloss = $gloss,
+                    definition_language = $language,
+                    definition_state = $definitionState, definition = $definition, labels = $labels
                 WHERE id = $id;
                 """;
-            command.Parameters.AddWithValue("$title", (object?)sense.LSenseTitle ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "title", sense.LSenseTitle);
             command.Parameters.AddWithValue("$gloss", (object?)sense.LSenseGloss ?? DBNull.Value);
             command.Parameters.AddWithValue("$language", (object?)sense.LSenseDefinitionLanguage ?? DBNull.Value);
-            command.Parameters.AddWithValue("$definition", (object?)sense.LSenseDefinition ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "definition", sense.LSenseDefinition);
             command.Parameters.AddWithValue("$labels", sense.LSenseLabels);
             command.Parameters.AddWithValue("$id", sense.LSenseId);
             if (command.ExecuteNonQuery() == 0)
@@ -309,7 +316,6 @@ public sealed class LSenseArchive
         }
     }
 
-    // One sense row in the column order every read in this store selects.
     private static LSense LSenseRowRead(SqliteDataReader reader)
     {
         return new LSense(
@@ -317,10 +323,10 @@ public sealed class LSenseArchive
             reader.GetString(1),
             reader.IsDBNull(2) ? null : reader.GetString(2),
             reader.GetInt32(3),
-            reader.IsDBNull(4) ? null : reader.GetString(4),
-            reader.IsDBNull(5) ? null : reader.GetString(5),
+            LStateColumn.LStateColumnRead(reader, 4),
             reader.IsDBNull(6) ? null : reader.GetString(6),
             reader.IsDBNull(7) ? null : reader.GetString(7),
-            reader.GetString(8));
+            LStateColumn.LStateColumnRead(reader, 8),
+            reader.GetString(10));
     }
 }

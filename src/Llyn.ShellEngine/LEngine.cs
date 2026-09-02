@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -41,6 +41,11 @@ public sealed partial class LEngine : IDisposable
         };
         _lEngineClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
+    }
+
+    public static string LEngineIdentityCreate()
+    {
+        return LIdentity.LIdentityCreate();
     }
 
     public IReadOnlyList<string> LEngineLanguageRead()

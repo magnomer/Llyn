@@ -1,7 +1,10 @@
-<ResourceDictionary
+﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIShell"
     x:Class="Llyn.UIShell.PCollocationTemplate">
+
+    <local:PStateConverter x:Key="Theme.State.Show" />
 
     <DataTemplate x:Key="Theme.Collocation.Card">
         <Border Margin="0,0,0,15" Style="{DynamicResource Theme.Input.Card}">
@@ -45,8 +48,14 @@
                             FontSize="16"
                             FontWeight="SemiBold"
                             Style="{DynamicResource Theme.Input.Field}"
-                            Tag="{Binding PCardTitle}"
-                            Text="{Binding PTitle, UpdateSourceTrigger=PropertyChanged}" />
+                            Text="{Binding PTitle, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.Tag>
+                                <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                    <Binding Path="PTitleUnreadable" />
+                                    <Binding Path="PCardTitle" />
+                                </MultiBinding>
+                            </TextBox.Tag>
+                        </TextBox>
                         <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardHandle" Style="{DynamicResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
                             <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
                         </Button>
@@ -65,13 +74,27 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Expression" />
-                    <TextBox Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Tag="Add a word combination" Text="{Binding PCardExpression, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PCardExpression, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.Tag>
+                            <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                <Binding Path="PCardExpressionUnreadable" />
+                                <Binding Source="Add a word combination" />
+                            </MultiBinding>
+                        </TextBox.Tag>
+                    </TextBox>
                     <TextBlock Grid.Row="1" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Meaning" />
-                    <TextBox Grid.Row="1" Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Tag="Explain what it means" Text="{Binding PCardDefinition, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PCardDefinition, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.Tag>
+                            <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                <Binding Path="PCardDefinitionUnreadable" />
+                                <Binding Source="Explain what it means" />
+                            </MultiBinding>
+                        </TextBox.Tag>
+                    </TextBox>
                     <TextBlock Grid.Row="2" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Example" />
-                    <TextBox Grid.Row="2" Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Tag="Add an example sentence" Text="{Binding PCardExample, UpdateSourceTrigger=PropertyChanged}" />
+                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Example.Row}" ItemsSource="{Binding PCardExample}" />
                     <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Situation" />
-                    <TextBox Grid.Row="3" Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Tag="Where or when is it used?" Text="{Binding PCardSituation, UpdateSourceTrigger=PropertyChanged}" />
+                    <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Situation.Row}" ItemsSource="{Binding PCardSituation}" />
                     <TextBlock Grid.Row="4" Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Tags" />
                     <TextBox Grid.Row="4" Grid.Column="1" MinHeight="42" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Tag="Add tags" Text="{Binding PCardTag, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>

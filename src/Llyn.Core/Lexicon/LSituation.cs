@@ -2,6 +2,17 @@ namespace Llyn.Core;
 
 public sealed record LSituation(
     string LSituationId,
-    string LSituationTitle,
-    string? LSituationDescription,
-    string? LSituationKind);
+    LStateValue LSituationTitle,
+    LStateValue LSituationDescription,
+    LStateValue LSituationKind,
+    LStateValue LSituationSource)
+{
+    public LStateValue LSituationTitle { get; init; } = LSituationTitle ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LSituationDescription { get; init; } = LSituationDescription ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LSituationKind { get; init; } = LSituationKind ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LSituationSource { get; init; } = LSituationSource ?? LStateValue.LStateValueUnspecified;
+}
+

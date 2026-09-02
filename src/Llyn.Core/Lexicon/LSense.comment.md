@@ -10,8 +10,8 @@ One Meaning owned by an entry: a node in the entry's self-referential Meaning tr
 - `LSenseEntryId` — Owning entry id.
 - `LSenseParentId` — Parent Meaning id in the same entry, or `null` for a root Meaning.
 - `LSensePosition` — Order within its siblings under the same parent.
-- `LSenseTitle` — Title typed on the Meaning card; `null` when none was typed.
+- `LSenseTitle` — Title typed on the Meaning card, and what is known about it: nothing recorded when none was typed, unreadable when what was typed cannot be read back.
 - `LSenseGloss` — Optional short gloss, unused by the input form.
 - `LSenseDefinitionLanguage` — Optional language the definition is written in.
-- `LSenseDefinition` — Single inline definition text; empty when unset.
+- `LSenseDefinition` — Single inline definition text, and what is known about it.
 - `LSenseLabels` — Labels as JSON array text (for example `["figurative"]`).

@@ -10,12 +10,12 @@ public partial class PEditor
 
     private void PSenseHandle(object sender, RoutedEventArgs e)
     {
-        _pSenseList.Add(new PCard("Meaning", _pSenseList.Count + 1));
+        _pSenseList.Add(new PCard("Meaning", _pSenseList.Count + 1, _pExampleReference));
     }
 
     private void PCollocationHandle(object sender, RoutedEventArgs e)
     {
-        _pCollocationList.Add(new PCard("Collocation", _pCollocationList.Count + 1));
+        _pCollocationList.Add(new PCard("Collocation", _pCollocationList.Count + 1, _pExampleReference));
     }
 
     internal void PCardHandle(object sender, RoutedEventArgs e)

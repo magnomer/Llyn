@@ -119,8 +119,6 @@ public sealed class LExampleLink
         session.LDatabaseSessionCommit();
     }
 
-    // One query for the referrer's Examples and one for all of their translations, rather than a
-    // round-trip per Example.
     private IReadOnlyList<LExample> LExampleReferrerRead(string table, string column, string referrerId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
@@ -134,7 +132,8 @@ public sealed class LExampleLink
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT example.id, example.language, example.text, example.local, example.source_id
+            SELECT example.id, example.language, example.text_state, example.text, example.local,
+                   example.source_state, example.source_id
             FROM {table} link
             JOIN example ON example.id = link.example_id
             WHERE link.{column} = $referrer
@@ -150,9 +149,9 @@ public sealed class LExampleLink
             examples.Add(new LExample(
                 id,
                 reader.GetString(1),
-                reader.GetString(2),
-                reader.IsDBNull(3) ? null : reader.GetString(3),
+                LStateColumn.LStateColumnRead(reader, 2),
                 reader.IsDBNull(4) ? null : reader.GetString(4),
+                LStateColumn.LStateColumnRead(reader, 5),
                 translations.TryGetValue(id, out IReadOnlyList<LTranslation>? found) ? found : []));
         }
 

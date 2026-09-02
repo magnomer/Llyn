@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -18,22 +18,31 @@ public sealed class LSituationArchive
     public LSituation LSituationCreate(LSituation situation)
     {
         ArgumentNullException.ThrowIfNull(situation);
-        ArgumentException.ThrowIfNullOrWhiteSpace(situation.LSituationTitle);
 
-        LSituation stored = situation with { LSituationId = LIdentity.LIdentityCreate() };
+        LSituation stored = situation with
+        {
+            LSituationId = string.IsNullOrWhiteSpace(situation.LSituationId)
+                ? LIdentity.LIdentityCreate()
+                : situation.LSituationId,
+        };
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
                 """
-                INSERT INTO situation (id, title, description, kind)
-                VALUES ($id, $title, $description, $kind);
+                INSERT INTO situation (
+                    id, title_state, title, description_state, description,
+                    kind_state, kind, source_state, source_id)
+                VALUES (
+                    $id, $titleState, $title, $descriptionState, $description,
+                    $kindState, $kind, $sourceState, $source);
                 """;
             command.Parameters.AddWithValue("$id", stored.LSituationId);
-            command.Parameters.AddWithValue("$title", stored.LSituationTitle);
-            command.Parameters.AddWithValue("$description", (object?)stored.LSituationDescription ?? DBNull.Value);
-            command.Parameters.AddWithValue("$kind", (object?)stored.LSituationKind ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "title", stored.LSituationTitle);
+            LStateColumn.LStateColumnApply(command, "description", stored.LSituationDescription);
+            LStateColumn.LStateColumnApply(command, "kind", stored.LSituationKind);
+            LStateColumn.LStateColumnApply(command, "source", stored.LSituationSource);
             command.ExecuteNonQuery();
         }
 
@@ -70,16 +79,62 @@ public sealed class LSituationArchive
             command.CommandText =
                 """
                 UPDATE situation
-                SET title = $title, description = $description, kind = $kind
+                SET title_state = $titleState, title = $title,
+                    description_state = $descriptionState, description = $description,
+                    kind_state = $kindState, kind = $kind,
+                    source_state = $sourceState, source_id = $source
                 WHERE id = $id;
                 """;
-            command.Parameters.AddWithValue("$title", situation.LSituationTitle);
-            command.Parameters.AddWithValue("$description", (object?)situation.LSituationDescription ?? DBNull.Value);
-            command.Parameters.AddWithValue("$kind", (object?)situation.LSituationKind ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "title", situation.LSituationTitle);
+            LStateColumn.LStateColumnApply(command, "description", situation.LSituationDescription);
+            LStateColumn.LStateColumnApply(command, "kind", situation.LSituationKind);
+            LStateColumn.LStateColumnApply(command, "source", situation.LSituationSource);
             command.Parameters.AddWithValue("$id", situation.LSituationId);
             if (command.ExecuteNonQuery() == 0)
             {
                 throw new InvalidOperationException($"No Situation carries the id '{situation.LSituationId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LSituationTitleUpdate(string situationId, LStateValue title)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+        ArgumentNullException.ThrowIfNull(title);
+
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                "UPDATE situation SET title_state = $titleState, title = $title WHERE id = $id;";
+            LStateColumn.LStateColumnApply(command, "title", title);
+            command.Parameters.AddWithValue("$id", situationId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Situation carries the id '{situationId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LSituationSourceUpdate(string situationId, LStateValue source)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+        ArgumentNullException.ThrowIfNull(source);
+
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                "UPDATE situation SET source_state = $sourceState, source_id = $source WHERE id = $id;";
+            LStateColumn.LStateColumnApply(command, "source", source);
+            command.Parameters.AddWithValue("$id", situationId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Situation carries the id '{situationId}'.");
             }
         }
 
@@ -222,7 +277,10 @@ public sealed class LSituationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT situation.id, situation.title, situation.description, situation.kind
+            SELECT situation.id, situation.title_state, situation.title,
+                   situation.description_state, situation.description,
+                   situation.kind_state, situation.kind,
+                   situation.source_state, situation.source_id
             FROM {table} link
             JOIN situation ON situation.id = link.situation_id
             WHERE link.{column} = $referrer
@@ -236,9 +294,10 @@ public sealed class LSituationArchive
         {
             situations.Add(new LSituation(
                 reader.GetString(0),
-                reader.GetString(1),
-                reader.IsDBNull(2) ? null : reader.GetString(2),
-                reader.IsDBNull(3) ? null : reader.GetString(3)));
+                LStateColumn.LStateColumnRead(reader, 1),
+                LStateColumn.LStateColumnRead(reader, 3),
+                LStateColumn.LStateColumnRead(reader, 5),
+                LStateColumn.LStateColumnRead(reader, 7)));
         }
 
         return situations;
@@ -247,7 +306,12 @@ public sealed class LSituationArchive
     private static LSituation? LSituationSingleRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT title, description, kind FROM situation WHERE id = $id;";
+        command.CommandText =
+            """
+            SELECT title_state, title, description_state, description,
+                   kind_state, kind, source_state, source_id
+            FROM situation WHERE id = $id;
+            """;
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
         if (!reader.Read())
@@ -257,8 +321,9 @@ public sealed class LSituationArchive
 
         return new LSituation(
             id,
-            reader.GetString(0),
-            reader.IsDBNull(1) ? null : reader.GetString(1),
-            reader.IsDBNull(2) ? null : reader.GetString(2));
+            LStateColumn.LStateColumnRead(reader, 0),
+            LStateColumn.LStateColumnRead(reader, 2),
+            LStateColumn.LStateColumnRead(reader, 4),
+            LStateColumn.LStateColumnRead(reader, 6));
     }
 }

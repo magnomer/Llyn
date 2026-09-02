@@ -3,11 +3,21 @@
 namespace Llyn.Core;
 
 public sealed record LCardDraft(
-    string LCardDraftTitle,
-    string LCardDraftExpression,
-    string LCardDraftMeaning,
-    IReadOnlyList<string> LCardDraftExample,
-    IReadOnlyList<string> LCardDraftSituation,
+    LStateValue LCardDraftTitle,
+    LStateValue LCardDraftExpression,
+    LStateValue LCardDraftMeaning,
+    IReadOnlyList<LExampleDraft> LCardDraftExample,
+    IReadOnlyList<LSituationDraft> LCardDraftSituation,
     string LCardDraftSynonym,
-    IReadOnlyList<string> LCardDraftTag,
-    string LCardDraftId = "");
+    IReadOnlyList<LStateValue> LCardDraftTag,
+    string LCardDraftId = "")
+{
+    public LStateValue LCardDraftTitle { get; init; } =
+        LCardDraftTitle ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LCardDraftExpression { get; init; } =
+        LCardDraftExpression ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LCardDraftMeaning { get; init; } =
+        LCardDraftMeaning ?? LStateValue.LStateValueUnspecified;
+}

@@ -5,7 +5,13 @@ namespace Llyn.Core;
 public sealed record LExample(
     string LExampleId,
     string LExampleLanguage,
-    string LExampleText,
+    LStateValue LExampleText,
     string? LExampleLocal,
-    string? LExampleSourceId,
-    IReadOnlyList<LTranslation> LExampleTranslations);
+    LStateValue LExampleSource,
+    IReadOnlyList<LTranslation> LExampleTranslations)
+{
+    public LStateValue LExampleText { get; init; } = LExampleText ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LExampleSource { get; init; } = LExampleSource ?? LStateValue.LStateValueUnspecified;
+}
+

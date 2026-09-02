@@ -20,10 +20,11 @@ public sealed class LExampleArchive
         ArgumentNullException.ThrowIfNull(example);
         ArgumentException.ThrowIfNullOrWhiteSpace(example.LExampleLanguage);
 
-        string id = LIdentity.LIdentityCreate();
         LExample stored = example with
         {
-            LExampleId = id,
+            LExampleId = string.IsNullOrWhiteSpace(example.LExampleId)
+                ? LIdentity.LIdentityCreate()
+                : example.LExampleId,
             LExampleTranslations = LExampleTranslationPrepare(example.LExampleTranslations),
         };
 
@@ -34,14 +35,14 @@ public sealed class LExampleArchive
         {
             command.CommandText =
                 """
-                INSERT INTO example (id, language, text, local, source_id)
-                VALUES ($id, $language, $text, $local, $source);
+                INSERT INTO example (id, language, text_state, text, local, source_state, source_id)
+                VALUES ($id, $language, $textState, $text, $local, $sourceState, $source);
                 """;
             command.Parameters.AddWithValue("$id", stored.LExampleId);
             command.Parameters.AddWithValue("$language", stored.LExampleLanguage);
-            command.Parameters.AddWithValue("$text", stored.LExampleText);
+            LStateColumn.LStateColumnApply(command, "text", stored.LExampleText);
             command.Parameters.AddWithValue("$local", (object?)stored.LExampleLocal ?? DBNull.Value);
-            command.Parameters.AddWithValue("$source", (object?)stored.LExampleSourceId ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "source", stored.LExampleSource);
             command.ExecuteNonQuery();
         }
 
@@ -74,13 +75,14 @@ public sealed class LExampleArchive
             command.CommandText =
                 """
                 UPDATE example
-                SET language = $language, text = $text, local = $local, source_id = $source
+                SET language = $language, text_state = $textState, text = $text, local = $local,
+                    source_state = $sourceState, source_id = $source
                 WHERE id = $id;
                 """;
             command.Parameters.AddWithValue("$language", example.LExampleLanguage);
-            command.Parameters.AddWithValue("$text", example.LExampleText);
+            LStateColumn.LStateColumnApply(command, "text", example.LExampleText);
             command.Parameters.AddWithValue("$local", (object?)example.LExampleLocal ?? DBNull.Value);
-            command.Parameters.AddWithValue("$source", (object?)example.LExampleSourceId ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "source", example.LExampleSource);
             command.Parameters.AddWithValue("$id", example.LExampleId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -99,15 +101,38 @@ public sealed class LExampleArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LExampleSourceUpdate(string exampleId, string? sourceId)
+    public void LExampleTextUpdate(string exampleId, LStateValue text)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentNullException.ThrowIfNull(text);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "UPDATE example SET source_id = $source WHERE id = $id;";
-            command.Parameters.AddWithValue("$source", (object?)sourceId ?? DBNull.Value);
+            command.CommandText =
+                "UPDATE example SET text_state = $textState, text = $text WHERE id = $id;";
+            LStateColumn.LStateColumnApply(command, "text", text);
+            command.Parameters.AddWithValue("$id", exampleId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No Example carries the id '{exampleId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LExampleSourceUpdate(string exampleId, LStateValue source)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentNullException.ThrowIfNull(source);
+
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                "UPDATE example SET source_state = $sourceState, source_id = $source WHERE id = $id;";
+            LStateColumn.LStateColumnApply(command, "source", source);
             command.Parameters.AddWithValue("$id", exampleId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -167,13 +192,17 @@ public sealed class LExampleArchive
     internal static LExample? LExampleSingleRead(SqliteConnection connection, string id)
     {
         string language;
-        string text;
+        LStateValue text;
         string? local;
-        string? source;
+        LStateValue source;
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "SELECT language, text, local, source_id FROM example WHERE id = $id;";
+            command.CommandText =
+                """
+                SELECT language, text_state, text, local, source_state, source_id
+                FROM example WHERE id = $id;
+                """;
             command.Parameters.AddWithValue("$id", id);
             using SqliteDataReader reader = command.ExecuteReader();
             if (!reader.Read())
@@ -182,9 +211,9 @@ public sealed class LExampleArchive
             }
 
             language = reader.GetString(0);
-            text = reader.GetString(1);
-            local = reader.IsDBNull(2) ? null : reader.GetString(2);
-            source = reader.IsDBNull(3) ? null : reader.GetString(3);
+            text = LStateColumn.LStateColumnRead(reader, 1);
+            local = reader.IsDBNull(3) ? null : reader.GetString(3);
+            source = LStateColumn.LStateColumnRead(reader, 4);
         }
 
         return new LExample(id, language, text, local, source, LExampleTranslationRead(connection, id));
@@ -226,10 +255,6 @@ public sealed class LExampleArchive
         return grouped;
     }
 
-    // A translation keeps the id it arrives with, so an id a caller already holds stays valid across an
-    // update; only one that has never been stored is given a fresh id. The position is not taken from
-    // the record at all — it is the index the caller put the translation at, assigned on insert, which
-    // is how every other ordered child in the schema works.
     private static IReadOnlyList<LTranslation> LExampleTranslationPrepare(
         IReadOnlyList<LTranslation> translations)
     {

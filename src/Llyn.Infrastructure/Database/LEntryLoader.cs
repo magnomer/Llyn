@@ -43,9 +43,9 @@ public sealed class LEntryLoader
             senseCards.Add(LEntryCardRead(
                 sense.LSenseId,
                 collocation: false,
-                sense.LSenseTitle ?? string.Empty,
-                string.Empty,
-                sense.LSenseDefinition ?? string.Empty));
+                sense.LSenseTitle,
+                LStateValue.LStateValueUnspecified,
+                sense.LSenseDefinition));
         }
 
         List<LCardDraft> collocationCards = [];
@@ -54,9 +54,9 @@ public sealed class LEntryLoader
             collocationCards.Add(LEntryCardRead(
                 collocation.LCollocationId,
                 collocation: true,
-                collocation.LCollocationTitle ?? string.Empty,
-                collocation.LCollocationExpression ?? string.Empty,
-                collocation.LCollocationMeaning ?? string.Empty));
+                collocation.LCollocationTitle,
+                collocation.LCollocationExpression,
+                collocation.LCollocationMeaning));
         }
 
         return new LEntryDraft(
@@ -93,9 +93,9 @@ public sealed class LEntryLoader
     private LCardDraft LEntryCardRead(
         string ownerId,
         bool collocation,
-        string title,
-        string expression,
-        string meaning)
+        LStateValue title,
+        LStateValue expression,
+        LStateValue meaning)
     {
         LExampleLink examples = new(_lEntryLoaderDatabase);
         LSituationArchive situations = new(_lEntryLoaderDatabase);
@@ -105,27 +105,46 @@ public sealed class LEntryLoader
             title,
             expression,
             meaning,
-            LEntryTextRead(
-                collocation ? examples.LExampleCollocationRead(ownerId) : examples.LExampleSenseRead(ownerId),
-                example => example.LExampleText),
-            LEntryTextRead(
-                collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationSenseRead(ownerId),
-                situation => situation.LSituationTitle),
+            LEntryExampleRead(
+                collocation ? examples.LExampleCollocationRead(ownerId) : examples.LExampleSenseRead(ownerId)),
+            LEntrySituationRead(
+                collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationSenseRead(ownerId)),
             string.Empty,
-            LEntryTextRead(
-                collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId),
-                tag => tag.LTagText),
+            LEntryTagRead(
+                collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId)),
             ownerId);
     }
 
-    private static IReadOnlyList<string> LEntryTextRead<TRow>(
-        IReadOnlyList<TRow> rows,
-        Func<TRow, string?> text)
+    private static IReadOnlyList<LExampleDraft> LEntryExampleRead(IReadOnlyList<LExample> examples)
     {
-        List<string> texts = new(rows.Count);
-        foreach (TRow row in rows)
+        List<LExampleDraft> drafts = new(examples.Count);
+        foreach (LExample example in examples)
         {
-            texts.Add(text(row) ?? string.Empty);
+            drafts.Add(new LExampleDraft(
+                example.LExampleText, example.LExampleId, example.LExampleSource));
+        }
+
+        return drafts;
+    }
+
+    private static IReadOnlyList<LSituationDraft> LEntrySituationRead(IReadOnlyList<LSituation> situations)
+    {
+        List<LSituationDraft> drafts = new(situations.Count);
+        foreach (LSituation situation in situations)
+        {
+            drafts.Add(new LSituationDraft(
+                situation.LSituationTitle, situation.LSituationId, situation.LSituationSource));
+        }
+
+        return drafts;
+    }
+
+    private static IReadOnlyList<LStateValue> LEntryTagRead(IReadOnlyList<LTag> tags)
+    {
+        List<LStateValue> texts = new(tags.Count);
+        foreach (LTag tag in tags)
+        {
+            texts.Add(tag.LTagText);
         }
 
         return texts;

@@ -10,5 +10,7 @@ public enum LOwner
 
     LOwnerExample,
 
+    LOwnerSituation,
+
     LOwnerReference,
 }

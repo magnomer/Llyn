@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -41,7 +41,7 @@ public partial class PEditor
         _pStateDraft = PEditorDraftRead();
     }
 
-    private static void PCardShow(
+    private void PCardShow(
         ObservableCollection<PCard> cards,
         string prefix,
         IReadOnlyList<LCardDraft> drafts)
@@ -49,21 +49,23 @@ public partial class PEditor
         cards.Clear();
         foreach (LCardDraft draft in drafts)
         {
-            cards.Add(new PCard(prefix, cards.Count + 1)
+            PCard card = new(prefix, cards.Count + 1, _pExampleReference)
             {
-                PTitle = draft.LCardDraftTitle,
-                PCardExpression = draft.LCardDraftExpression,
-                PCardDefinition = draft.LCardDraftMeaning,
-                PCardExample = PEditorFieldFormat(draft.LCardDraftExample),
-                PCardSituation = PEditorFieldFormat(draft.LCardDraftSituation),
                 PCardTag = PEditorTagFormat(draft.LCardDraftTag),
                 PCardId = draft.LCardDraftId
-            });
+            };
+
+            card.PCardTitleShow(draft.LCardDraftTitle);
+            card.PCardExpressionShow(draft.LCardDraftExpression);
+            card.PCardDefinitionShow(draft.LCardDraftMeaning);
+            card.PCardExampleShow(draft.LCardDraftExample);
+            card.PCardSituationShow(draft.LCardDraftSituation);
+            cards.Add(card);
         }
 
         if (cards.Count == 0)
         {
-            cards.Add(new PCard(prefix, 1));
+            cards.Add(new PCard(prefix, 1, _pExampleReference));
         }
     }
 
@@ -155,14 +157,76 @@ public partial class PEditor
         {
             LCardDraft first = one[index];
             LCardDraft second = other[index];
-            if (!string.Equals(first.LCardDraftTitle, second.LCardDraftTitle, StringComparison.Ordinal)
-                || !string.Equals(
-                    first.LCardDraftExpression, second.LCardDraftExpression, StringComparison.Ordinal)
-                || !string.Equals(first.LCardDraftMeaning, second.LCardDraftMeaning, StringComparison.Ordinal)
+            if (first.LCardDraftTitle != second.LCardDraftTitle
+                || first.LCardDraftExpression != second.LCardDraftExpression
+                || first.LCardDraftMeaning != second.LCardDraftMeaning
                 || !string.Equals(first.LCardDraftId, second.LCardDraftId, StringComparison.Ordinal)
-                || !PEditorTextMatch(first.LCardDraftExample, second.LCardDraftExample)
-                || !PEditorTextMatch(first.LCardDraftSituation, second.LCardDraftSituation)
-                || !PEditorTextMatch(first.LCardDraftTag, second.LCardDraftTag))
+                || !PEditorExampleMatch(first.LCardDraftExample, second.LCardDraftExample)
+                || !PEditorSituationMatch(first.LCardDraftSituation, second.LCardDraftSituation)
+                || !PEditorValueMatch(first.LCardDraftTag, second.LCardDraftTag))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool PEditorExampleMatch(
+        IReadOnlyList<LExampleDraft> one, IReadOnlyList<LExampleDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index].LExampleDraftText != other[index].LExampleDraftText
+                || !string.Equals(
+                    one[index].LExampleDraftId, other[index].LExampleDraftId, StringComparison.Ordinal)
+                || one[index].LExampleDraftReference != other[index].LExampleDraftReference)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool PEditorSituationMatch(
+        IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index].LSituationDraftText != other[index].LSituationDraftText
+                || !string.Equals(
+                    one[index].LSituationDraftId, other[index].LSituationDraftId, StringComparison.Ordinal)
+                || one[index].LSituationDraftReference != other[index].LSituationDraftReference)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool PEditorValueMatch(
+        IReadOnlyList<LStateValue> one, IReadOnlyList<LStateValue> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index] != other[index])
             {
                 return false;
             }
@@ -195,11 +259,11 @@ public partial class PEditor
         foreach (PCard card in cards)
         {
             drafts.Add(new LCardDraft(
-                card.PTitle,
-                card.PCardExpression,
-                card.PCardDefinition,
-                PEditorFieldRead(card.PCardExample),
-                PEditorFieldRead(card.PCardSituation),
+                card.PCardTitleRead(),
+                card.PCardExpressionRead(),
+                card.PCardDefinitionRead(),
+                card.PCardExampleRead(),
+                card.PCardSituationRead(),
                 string.Empty,
                 PEditorTagParse(card.PCardTag),
                 card.PCardId));
@@ -208,30 +272,35 @@ public partial class PEditor
         return drafts;
     }
 
-    private static IReadOnlyList<string> PEditorFieldRead(string text)
+    private static IReadOnlyList<LStateValue> PEditorTagParse(string text)
     {
-        return string.IsNullOrWhiteSpace(text) ? [] : [text];
-    }
-
-    private static string PEditorFieldFormat(IReadOnlyList<string> texts)
-    {
-        return texts.Count == 0 ? string.Empty : texts[0];
-    }
-
-    private static IReadOnlyList<string> PEditorTagParse(string text)
-    {
-        List<string> tags = [];
+        List<LStateValue> tags = [];
         foreach (string part in text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
-            tags.Add(part);
+            tags.Add(string.Equals(part, PCard.PCardUnreadableMark, StringComparison.Ordinal)
+                ? LStateValue.LStateValueUnknown
+                : LStateValue.LStateValueCreate(part));
         }
 
         return tags;
     }
 
-    private static string PEditorTagFormat(IReadOnlyList<string> tags)
+    private static string PEditorTagFormat(IReadOnlyList<LStateValue> tags)
     {
-        return string.Join(", ", tags);
+        List<string> texts = new(tags.Count);
+        foreach (LStateValue tag in tags)
+        {
+            if (tag.LStateValueEmpty)
+            {
+                continue;
+            }
+
+            texts.Add(tag.LStateValueState == LState.LStateUnknown
+                ? PCard.PCardUnreadableMark
+                : tag.LStateValueShow());
+        }
+
+        return string.Join(", ", texts);
     }
 
     private string PEditorNoteRead()

@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 16;
+    public const long LSchemaMigrationVersion = 18;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -61,7 +61,35 @@ public static class LSchemaMigration
             LSchemaSpeechNormalize(connection);
         }
 
+        if (stored < 17)
+        {
+            LSchemaSituationNormalize(connection);
+        }
+
+        if (stored < 18)
+        {
+            LSchemaState.LSchemaStateNormalize(connection);
+        }
+
         LSchemaVersionSave(connection);
+    }
+
+    private static void LSchemaSituationNormalize(SqliteConnection connection)
+    {
+        using (SqliteCommand check = connection.CreateCommand())
+        {
+            check.CommandText =
+                "SELECT COUNT(*) FROM pragma_table_info('situation') WHERE name = 'source_id';";
+            if (Convert.ToInt64(check.ExecuteScalar()) > 0)
+            {
+                return;
+            }
+        }
+
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            "ALTER TABLE situation ADD COLUMN source_id TEXT REFERENCES source (id);";
+        command.ExecuteNonQuery();
     }
 
     private static void LSchemaSpeechNormalize(SqliteConnection connection)

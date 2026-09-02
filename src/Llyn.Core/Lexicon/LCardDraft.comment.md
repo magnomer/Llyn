@@ -10,11 +10,11 @@ Example, Situation and Tag are ordered sets, because the store models them as ma
 
 **Parameters**
 
-- `LCardDraftTitle` — Title text from the card's Title field.
+- `LCardDraftTitle` — Title from the card's Title field, and what is known about it: nothing recorded when the field stands empty, unreadable when it holds something that cannot be read back.
 - `LCardDraftExpression` — Expression text from a Collocation card's Expression field; always empty for a Meaning card, whose template has no Expression control.
 - `LCardDraftMeaning` — The card's meaning text: the Definition field of a Meaning card, the Meaning field of a Collocation card. One field, labelled differently on the two templates.
-- `LCardDraftExample` — Example texts the card references, in the order they are shown.
-- `LCardDraftSituation` — Situation titles the card references, in the order they are shown.
+- `LCardDraftExample` — The Examples the card references, each carrying its id, its sentence and the Source it cites, in the order they are shown.
+- `LCardDraftSituation` — The Situations the card references, each carrying its id, its wording and the Source it cites, in the order they are shown.
 - `LCardDraftSynonym` — Always empty. Neither card template offers a Synonym control: a synonym is a link to a stored Entry or Meaning, not text the card owns, and it is written through the engine's relation seam against a target the caller resolved. The member is kept so the card shape stays one shape for both kinds.
-- `LCardDraftTag` — Tag texts the card references, in the order they are shown.
+- `LCardDraftTag` — The Tags the card references, each carrying its text and what is known about it, in the order they are shown.
 - `LCardDraftId` — Id of the stored row this card was loaded from, empty for a card that has never been stored. It is the one member that is not typed text, and the only reason it exists is the update: a draft handed back for saving must say which stored Meaning or Collocation each card is, or an update could only match cards by their place in the list and would move one card's text onto another card's row. A card carrying no id is a new card and is created; the form builds its cards without one, so nothing in the shell has to carry it until it chooses to.

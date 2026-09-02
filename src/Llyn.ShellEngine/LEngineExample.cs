@@ -35,9 +35,9 @@ public sealed partial class LEngine
         new LExampleArchive(_lEngineDatabase).LExampleUpdate(example);
     }
 
-    public void LEngineExampleUpdate(string exampleId, string? referenceId)
+    public void LEngineExampleUpdate(string exampleId, LStateValue reference)
     {
-        new LExampleArchive(_lEngineDatabase).LExampleSourceUpdate(exampleId, referenceId);
+        new LExampleArchive(_lEngineDatabase).LExampleSourceUpdate(exampleId, reference);
     }
 
     public void LEngineExampleAttach(string ownerId, string exampleId, int position, LOwner owner)

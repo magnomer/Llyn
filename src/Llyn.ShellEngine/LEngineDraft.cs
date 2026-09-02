@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -109,17 +109,22 @@ public sealed partial class LEngine
         LExampleArchive exampleRows = new(_lEngineDatabase);
         LExampleLink examples = new(_lEngineDatabase);
         int position = 0;
-        foreach (string text in LEngineFieldRead(card.LCardDraftExample))
+        HashSet<string> attachedExamples = new(StringComparer.Ordinal);
+        foreach (LExampleDraft draft in LEngineExampleRead(card.LCardDraftExample))
         {
-            LExample example = exampleRows.LExampleCreate(
-                new LExample(string.Empty, language, text, null, null, []));
+            string exampleId = LEngineExampleResolve(exampleRows, draft, language);
+            if (!attachedExamples.Add(exampleId))
+            {
+                continue;
+            }
+
             if (collocation)
             {
-                examples.LExampleCollocationAttach(ownerId, example.LExampleId, position);
+                examples.LExampleCollocationAttach(ownerId, exampleId, position);
             }
             else
             {
-                examples.LExampleSenseAttach(ownerId, example.LExampleId, position);
+                examples.LExampleSenseAttach(ownerId, exampleId, position);
             }
 
             position++;
@@ -127,17 +132,22 @@ public sealed partial class LEngine
 
         LSituationArchive situations = new(_lEngineDatabase);
         position = 0;
-        foreach (string text in LEngineFieldRead(card.LCardDraftSituation))
+        HashSet<string> attachedSituations = new(StringComparer.Ordinal);
+        foreach (LSituationDraft draft in LEngineSituationRead(card.LCardDraftSituation))
         {
-            LSituation situation = situations.LSituationCreate(
-                new LSituation(string.Empty, text, null, null));
+            string situationId = LEngineSituationResolve(situations, draft);
+            if (!attachedSituations.Add(situationId))
+            {
+                continue;
+            }
+
             if (collocation)
             {
-                situations.LSituationCollocationAttach(ownerId, situation.LSituationId, position);
+                situations.LSituationCollocationAttach(ownerId, situationId, position);
             }
             else
             {
-                situations.LSituationSenseAttach(ownerId, situation.LSituationId, position);
+                situations.LSituationSenseAttach(ownerId, situationId, position);
             }
 
             position++;
@@ -145,7 +155,7 @@ public sealed partial class LEngine
 
         LTagArchive tags = new(_lEngineDatabase);
         position = 0;
-        foreach (string text in LEngineFieldRead(card.LCardDraftTag))
+        foreach (LStateValue text in LEngineFieldRead(card.LCardDraftTag))
         {
             LTag tag = tags.LTagCreate(new LTag(string.Empty, text));
             if (collocation)
@@ -165,12 +175,12 @@ public sealed partial class LEngine
     {
         foreach (LCardDraft card in cards)
         {
-            if (!string.IsNullOrWhiteSpace(card.LCardDraftTitle) ||
-                !string.IsNullOrWhiteSpace(card.LCardDraftExpression) ||
-                !string.IsNullOrWhiteSpace(card.LCardDraftMeaning) ||
+            if (!card.LCardDraftTitle.LStateValueEmpty ||
+                !card.LCardDraftExpression.LStateValueEmpty ||
+                !card.LCardDraftMeaning.LStateValueEmpty ||
                 !string.IsNullOrWhiteSpace(card.LCardDraftSynonym) ||
-                LEngineFieldCheck(card.LCardDraftExample) ||
-                LEngineFieldCheck(card.LCardDraftSituation) ||
+                LEngineExampleCheck(card.LCardDraftExample) ||
+                LEngineSituationCheck(card.LCardDraftSituation) ||
                 LEngineFieldCheck(card.LCardDraftTag))
             {
                 yield return card;
@@ -178,11 +188,11 @@ public sealed partial class LEngine
         }
     }
 
-    private static bool LEngineFieldCheck(IReadOnlyList<string> texts)
+    private static bool LEngineExampleCheck(IReadOnlyList<LExampleDraft> drafts)
     {
-        foreach (string text in texts)
+        foreach (LExampleDraft draft in drafts)
         {
-            if (!string.IsNullOrWhiteSpace(text))
+            if (!draft.LExampleDraftText.LStateValueEmpty)
             {
                 return true;
             }
@@ -191,11 +201,119 @@ public sealed partial class LEngine
         return false;
     }
 
-    private static IEnumerable<string> LEngineFieldRead(IReadOnlyList<string> texts)
+    private static IEnumerable<LExampleDraft> LEngineExampleRead(IReadOnlyList<LExampleDraft> drafts)
     {
-        foreach (string text in texts)
+        foreach (LExampleDraft draft in drafts)
         {
-            if (!string.IsNullOrWhiteSpace(text))
+            if (!draft.LExampleDraftText.LStateValueEmpty)
+            {
+                yield return draft;
+            }
+        }
+    }
+
+    private static string LEngineExampleResolve(
+        LExampleArchive examples, LExampleDraft draft, string language)
+    {
+        if (!string.IsNullOrWhiteSpace(draft.LExampleDraftId))
+        {
+            LExample? stored = examples.LExampleRead(draft.LExampleDraftId);
+            if (stored is not null)
+            {
+                if (stored.LExampleText != draft.LExampleDraftText)
+                {
+                    examples.LExampleTextUpdate(stored.LExampleId, draft.LExampleDraftText);
+                }
+
+                if (stored.LExampleSource != draft.LExampleDraftReference)
+                {
+                    examples.LExampleSourceUpdate(stored.LExampleId, draft.LExampleDraftReference);
+                }
+
+                return stored.LExampleId;
+            }
+        }
+
+        return examples.LExampleCreate(new LExample(
+            draft.LExampleDraftId,
+            language,
+            draft.LExampleDraftText,
+            null,
+            draft.LExampleDraftReference,
+            [])).LExampleId;
+    }
+
+    private static bool LEngineSituationCheck(IReadOnlyList<LSituationDraft> drafts)
+    {
+        foreach (LSituationDraft draft in drafts)
+        {
+            if (!draft.LSituationDraftText.LStateValueEmpty)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static IEnumerable<LSituationDraft> LEngineSituationRead(IReadOnlyList<LSituationDraft> drafts)
+    {
+        foreach (LSituationDraft draft in drafts)
+        {
+            if (!draft.LSituationDraftText.LStateValueEmpty)
+            {
+                yield return draft;
+            }
+        }
+    }
+
+    private static string LEngineSituationResolve(LSituationArchive situations, LSituationDraft draft)
+    {
+        if (!string.IsNullOrWhiteSpace(draft.LSituationDraftId))
+        {
+            LSituation? stored = situations.LSituationRead(draft.LSituationDraftId);
+            if (stored is not null)
+            {
+                if (stored.LSituationTitle != draft.LSituationDraftText)
+                {
+                    situations.LSituationTitleUpdate(stored.LSituationId, draft.LSituationDraftText);
+                }
+
+                if (stored.LSituationSource != draft.LSituationDraftReference)
+                {
+                    situations.LSituationSourceUpdate(stored.LSituationId, draft.LSituationDraftReference);
+                }
+
+                return stored.LSituationId;
+            }
+        }
+
+        return situations.LSituationCreate(new LSituation(
+            draft.LSituationDraftId,
+            draft.LSituationDraftText,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            draft.LSituationDraftReference)).LSituationId;
+    }
+
+    private static bool LEngineFieldCheck(IReadOnlyList<LStateValue> texts)
+    {
+        foreach (LStateValue text in texts)
+        {
+            if (!text.LStateValueEmpty)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static IEnumerable<LStateValue> LEngineFieldRead(IReadOnlyList<LStateValue> texts)
+    {
+        foreach (LStateValue text in texts)
+        {
+            if (!text.LStateValueEmpty)
             {
                 yield return text;
             }
