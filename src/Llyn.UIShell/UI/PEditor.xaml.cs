@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Controls;
 using Llyn.ShellEngine;
 
@@ -27,7 +27,9 @@ public partial class PEditor : UserControl
         PDownloaderMenuList.ItemsSource = _pDownloaderRecording;
         PLangcodeMenuList.ItemsSource = _pLangcodeItem;
         PSpeechMenuList.ItemsSource = _pSpeechItem;
+        PSpeechList.ItemsSource = _pSpeechChip;
         PHeadword.TextChanged += PHeadwordHandle;
+        PSpeechContents.KeyDown += PSpeechContentsHandle;
     }
 
     internal Action<string>? PEditorStoreDispatcher { get; set; }

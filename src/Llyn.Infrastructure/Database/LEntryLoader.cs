@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -27,7 +27,7 @@ public sealed class LEntryLoader
         }
 
         LEntryArchive entries = new(_lEntryLoaderDatabase);
-        string speech = LEntrySpeechFormat(
+        IReadOnlyList<string> speeches = LEntrySpeechFormat(
             entry.LEntryLanguage, entries.LEntrySpeechRead(id));
 
         LNote? note = new LNoteArchive(_lEntryLoaderDatabase).LNoteRead(id);
@@ -68,23 +68,26 @@ public sealed class LEntryLoader
             collocationCards,
             audio?.LPronunciationAudioFile ?? string.Empty,
             audio?.LPronunciationAudioSource,
-            speech);
+            speeches);
     }
 
-    private string LEntrySpeechFormat(string language, IReadOnlyList<LSpeech> speeches)
+    private IReadOnlyList<string> LEntrySpeechFormat(string language, IReadOnlyList<LSpeech> speeches)
     {
         if (speeches.Count == 0)
         {
-            return string.Empty;
+            return [];
         }
 
-        LSpeech speech = speeches[0];
-        if (speech.LSpeechValueId is not string value)
+        LSpeechArchive values = new(_lEntryLoaderDatabase);
+        List<string> names = new(speeches.Count);
+        foreach (LSpeech speech in speeches)
         {
-            return speech.LSpeechCustom ?? string.Empty;
+            names.Add(speech.LSpeechValueId is not string value
+                ? speech.LSpeechCustom ?? string.Empty
+                : values.LSpeechValueRead(language, value) ?? value);
         }
 
-        return new LSpeechArchive(_lEntryLoaderDatabase).LSpeechValueRead(language, value) ?? value;
+        return names;
     }
 
     private LCardDraft LEntryCardRead(

@@ -207,6 +207,7 @@ public partial class PList
             ? Visibility.Collapsed
             : Visibility.Visible;
 
+        PDisplaySpeech.ItemsSource = draft.LEntryDraftSpeeches ?? [];
         PDisplaySense.ItemsSource = draft.LEntryDraftSenses;
         PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
         PDisplaySenseSection.Visibility = draft.LEntryDraftSenses.Count == 0
@@ -272,6 +273,7 @@ public partial class PList
         PDisplayLanguageFlag.Source = null;
         PDisplayPlayback.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
+        PDisplaySpeech.ItemsSource = null;
         PDisplaySense.ItemsSource = null;
         PDisplayCollocation.ItemsSource = null;
         PDisplaySenseSection.Visibility = Visibility.Collapsed;

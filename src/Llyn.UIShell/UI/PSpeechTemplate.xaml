@@ -8,4 +8,21 @@
             <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PSpeechItemName}" TextTrimming="CharacterEllipsis" />
         </Button>
     </DataTemplate>
+    <DataTemplate x:Key="Theme.Speech.Chip">
+        <Border Height="41" Margin="0,0,8,6" Padding="13,0,7,0" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Line}" BorderThickness="1" CornerRadius="9">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PSpeechChipName}" />
+                <Button Width="20" Height="20" Margin="9,0,0,0" Padding="0" Click="PSpeechChipHandle">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="Transparent">
+                                <Rectangle Width="9" Height="1.5" Fill="{DynamicResource Theme.Muted}" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
+        </Border>
+    </DataTemplate>
 </ResourceDictionary>
+

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -22,14 +22,14 @@ public partial class PEditor
             PCardRead(_pCollocationList),
             _pRecording ?? string.Empty,
             _pRecordingSource,
-            PSpeechContents.Text ?? string.Empty);
+            PSpeechRead());
     }
 
     private void PEditorDraftShow(LEntryDraft draft)
     {
         PHeadword.Text = draft.LEntryDraftHeadword;
         PPronunciation.Text = draft.LEntryDraftPronunciation;
-        PSpeechContents.Text = draft.LEntryDraftSpeech;
+        PSpeechShow(draft.LEntryDraftSpeeches);
         PEditorLangcodeShow(draft.LEntryDraftLanguage);
 
         PCardShow(_pSenseList, "Meaning", draft.LEntryDraftSenses);
@@ -112,7 +112,7 @@ public partial class PEditor
 
         PHeadword.Text = string.Empty;
         PPronunciation.Text = string.Empty;
-        PSpeechContents.Text = string.Empty;
+        PSpeechShow(null);
         PRecordingClear();
         _pLangcodeEntry = false;
 
@@ -137,7 +137,7 @@ public partial class PEditor
             && string.Equals(
                 one.LEntryDraftPronunciation, other.LEntryDraftPronunciation, StringComparison.Ordinal)
             && string.Equals(one.LEntryDraftNote, other.LEntryDraftNote, StringComparison.Ordinal)
-            && string.Equals(one.LEntryDraftSpeech, other.LEntryDraftSpeech, StringComparison.Ordinal)
+            && PEditorTextMatch(one.LEntryDraftSpeeches ?? [], other.LEntryDraftSpeeches ?? [])
             && string.Equals(one.LEntryDraftAudio, other.LEntryDraftAudio, StringComparison.Ordinal)
             && string.Equals(one.LEntryDraftSource, other.LEntryDraftSource, StringComparison.Ordinal)
             && PCardMatch(one.LEntryDraftSenses, other.LEntryDraftSenses)

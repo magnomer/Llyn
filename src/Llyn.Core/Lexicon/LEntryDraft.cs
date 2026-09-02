@@ -11,4 +11,4 @@ public sealed record LEntryDraft(
     IReadOnlyList<LCardDraft> LEntryDraftCollocations,
     string LEntryDraftAudio = "",
     string? LEntryDraftSource = null,
-    string LEntryDraftSpeech = "");
+    IReadOnlyList<string>? LEntryDraftSpeeches = null);

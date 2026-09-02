@@ -1,4 +1,6 @@
-﻿using Llyn.Core;
+using System.Collections.Generic;
+using System.Linq;
+using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -106,7 +108,9 @@ public sealed class TSpeech
         Assert.Equal("verb_transitive", speech.LSpeechValueId);
         Assert.Null(speech.LSpeechCustom);
 
-        Assert.Equal("Verb, transitive", engine.LEngineEntryLoad(entry.LEntryId)?.LEntryDraftSpeech);
+        Assert.Equal(
+            "Verb, transitive",
+            Assert.Single(engine.LEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!));
     }
 
     [Fact]
@@ -121,7 +125,9 @@ public sealed class TSpeech
             new LEntryArchive(workspace.TWorkspaceDatabase).LEntrySpeechRead(entry.LEntryId));
         Assert.Null(speech.LSpeechValueId);
         Assert.Equal("Verb, ergative", speech.LSpeechCustom);
-        Assert.Equal("Verb, ergative", engine.LEngineEntryLoad(entry.LEntryId)?.LEntryDraftSpeech);
+        Assert.Equal(
+            "Verb, ergative",
+            Assert.Single(engine.LEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!));
 
         Assert.Equal("verb_transitive", engine.LEngineSpeechFind("English", "verb, TRANSITIVE"));
         Assert.Null(engine.LEngineSpeechFind("English", "Verb, ergative"));
@@ -136,7 +142,7 @@ public sealed class TSpeech
         LEntry entry = engine.LEngineEntrySave(TSpeechDraftCreate("   "));
 
         Assert.Empty(new LEntryArchive(workspace.TWorkspaceDatabase).LEntrySpeechRead(entry.LEntryId));
-        Assert.Equal(string.Empty, engine.LEngineEntryLoad(entry.LEntryId)?.LEntryDraftSpeech);
+        Assert.Empty(engine.LEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!);
     }
 
     [Fact]
@@ -175,7 +181,28 @@ public sealed class TSpeech
             change => change.LRevisionChangeType == "speech");
     }
 
-    private static LEntryDraft TSpeechDraftCreate(string speech)
+    [Fact]
+    public void ManyPartsOfSpeechAreStoredInTheOrderTheyWereAdded()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = engine.LEngineEntrySave(
+            TSpeechDraftCreate("Noun", "Verb, transitive", "Verb, ergative"));
+
+        IReadOnlyList<LSpeech> speeches =
+            new LEntryArchive(workspace.TWorkspaceDatabase).LEntrySpeechRead(entry.LEntryId);
+        Assert.Equal(3, speeches.Count);
+        Assert.Equal([0, 1, 2], speeches.Select(row => row.LSpeechPosition));
+        Assert.Equal("verb_transitive", speeches[1].LSpeechValueId);
+        Assert.Equal("Verb, ergative", speeches[2].LSpeechCustom);
+
+        Assert.Equal(
+            ["Noun", "Verb, transitive", "Verb, ergative"],
+            engine.LEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!);
+    }
+
+    private static LEntryDraft TSpeechDraftCreate(params string[] speeches)
     {
         return new LEntryDraft(
             "word",
@@ -186,7 +213,7 @@ public sealed class TSpeech
             [],
             string.Empty,
             null,
-            speech);
+            speeches);
     }
 
     private static LEntry TSpeechEntryCreate(LEngine engine)

@@ -9,6 +9,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -113,8 +114,6 @@
 
         <Grid Grid.Row="1" Height="49" Margin="9,20,0,0" HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -259,25 +258,28 @@
                 </Popup>
             </Grid>
 
-            <TextBlock
-                x:Name="PSpeechLabel"
-                Grid.Column="4"
-                MaxWidth="230"
-                Margin="24,0,12,0"
-                Style="{StaticResource Theme.Input.Label}"
-                Text="{Binding Text, ElementName=PSpeechContents}"
-                TextTrimming="CharacterEllipsis" />
+        </Grid>
 
-            <Grid Grid.Column="5">
-                <Border Height="49" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
+        <WrapPanel x:Name="PSpeechFlow" Grid.Row="2" Margin="9,14,0,0" Orientation="Horizontal">
+
+            <ItemsControl x:Name="PSpeechList" MaxWidth="{Binding ActualWidth, ElementName=PSpeechFlow}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Speech.Chip}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <Grid Margin="0,0,0,6" VerticalAlignment="Top">
+                <Border Height="41" VerticalAlignment="Top" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="PSpeechContents" Width="212" MinHeight="40" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />
-                        <ToggleButton x:Name="PSpeechBase" Grid.Column="1" Width="38" Height="47" Padding="0" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Muted}" Style="{StaticResource Theme.Input.ToggleAction}">
+                        <TextBox x:Name="PSpeechContents" Width="212" MinHeight="33" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />
+                        <ToggleButton x:Name="PSpeechBase" Grid.Column="1" Width="38" Height="39" Padding="0" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Muted}" Style="{StaticResource Theme.Input.ToggleAction}">
                             <Path Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeThickness="1.5" />
                         </ToggleButton>
                     </Grid>
@@ -308,9 +310,9 @@
                     </Border>
                 </Popup>
             </Grid>
-        </Grid>
+        </WrapPanel>
 
-        <Border Grid.Row="2" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
+        <Border Grid.Row="3" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
             <StackPanel x:Name="PStack" Margin="29,0,0,0" Orientation="Horizontal">
                 <Button x:Name="PStackMeaning" Content="Meaning" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab.Selected}" />
                 <Button x:Name="PStackCollocation" Content="Collocation" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
@@ -318,7 +320,7 @@
             </StackPanel>
         </Border>
 
-        <Border x:Name="PContents" Grid.Row="3" Padding="0,22,0,0" Background="Transparent">
+        <Border x:Name="PContents" Grid.Row="4" Padding="0,22,0,0" Background="Transparent">
             <Grid>
                 <ScrollViewer x:Name="PMeaning" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel>

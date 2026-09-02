@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -29,7 +29,7 @@ public sealed partial class LEngine
                 null),
             forms: [],
             speeches: LEngineSpeechResolve(
-                string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeech));
+                string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
 
         LSenseArchive senses = new(_lEngineDatabase);
         foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftSenses))

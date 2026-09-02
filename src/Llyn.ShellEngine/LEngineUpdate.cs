@@ -75,7 +75,7 @@ public sealed partial class LEngine
     {
         IReadOnlyList<LSpeech> stored = entries.LEntrySpeechRead(entryId);
         IReadOnlyList<LSpeech> current = LEngineSpeechResolve(
-            entryId, draft.LEntryDraftLanguage, draft.LEntryDraftSpeech);
+            entryId, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches);
 
         if (LEngineSpeechMatch(stored, current))
         {
@@ -88,7 +88,18 @@ public sealed partial class LEngine
             entryId,
             "speech",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
-            draft.LEntryDraftSpeech.Trim()));
+            LEngineSpeechFormat(current)));
+    }
+
+    private static string LEngineSpeechFormat(IReadOnlyList<LSpeech> speeches)
+    {
+        List<string> names = new(speeches.Count);
+        foreach (LSpeech speech in speeches)
+        {
+            names.Add(speech.LSpeechCustom ?? speech.LSpeechValueId ?? string.Empty);
+        }
+
+        return string.Join(", ", names);
     }
 
     private static bool LEngineSpeechMatch(IReadOnlyList<LSpeech> one, IReadOnlyList<LSpeech> other)

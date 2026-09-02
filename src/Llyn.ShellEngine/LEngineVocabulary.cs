@@ -28,21 +28,34 @@ public sealed partial class LEngine
         return new LSpeechArchive(_lEngineDatabase).LSpeechValueFind(language, name);
     }
 
-    private IReadOnlyList<LSpeech> LEngineSpeechResolve(string entryId, string language, string text)
+    private IReadOnlyList<LSpeech> LEngineSpeechResolve(
+        string entryId, string language, IReadOnlyList<string>? texts)
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (texts is null || texts.Count == 0)
         {
             return [];
         }
 
-        string typed = text.Trim();
-        string? value = string.IsNullOrWhiteSpace(language)
-            ? null
-            : new LSpeechArchive(_lEngineDatabase).LSpeechValueFind(language, typed);
+        LSpeechArchive values = new(_lEngineDatabase);
+        List<LSpeech> speeches = [];
+        foreach (string text in texts)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                continue;
+            }
 
-        return [value is null
-            ? new LSpeech(entryId, 0, null, typed)
-            : new LSpeech(entryId, 0, value)];
+            string typed = text.Trim();
+            string? value = string.IsNullOrWhiteSpace(language)
+                ? null
+                : values.LSpeechValueFind(language, typed);
+
+            speeches.Add(value is null
+                ? new LSpeech(entryId, speeches.Count, null, typed)
+                : new LSpeech(entryId, speeches.Count, value));
+        }
+
+        return speeches;
     }
 
     public void LEngineMorphologyCreate(LMorphology morphology)

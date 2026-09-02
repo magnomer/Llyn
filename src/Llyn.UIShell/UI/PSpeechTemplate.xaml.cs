@@ -16,4 +16,9 @@ public partial class PSpeechTemplate : ResourceDictionary
     {
         _pSpeechHost.PSpeechHandle(sender, e);
     }
+
+    private void PSpeechChipHandle(object sender, RoutedEventArgs e)
+    {
+        _pSpeechHost.PSpeechChipHandle(sender, e);
+    }
 }
