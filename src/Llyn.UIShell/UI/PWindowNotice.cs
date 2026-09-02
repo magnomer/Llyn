@@ -13,16 +13,24 @@ public partial class PWindow
 
     internal void PWindowFailureShow(string key, Exception exception)
     {
-        string detail = exception is LRefusal refusal
-            ? PLocalizationTextRead(refusal.LRefusalReason)
-            : exception.Message;
-
         MessageBox.Show(
             this,
-            $"{PLocalizationTextRead(key)}\n\n{detail}",
+            $"{PLocalizationTextRead(key)}\n\n{PWindowDetailRead(exception)}",
             PLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
+    }
+
+    private string PWindowDetailRead(Exception exception)
+    {
+        if (exception is LRefusal refusal)
+        {
+            return PLocalizationTextRead(refusal.LRefusalReason);
+        }
+
+        return exception.InnerException is null
+            ? exception.Message
+            : $"{exception.Message}\n{PWindowDetailRead(exception.InnerException)}";
     }
 
     internal bool PWindowDiscardConfirm()

@@ -281,6 +281,8 @@
                 <ColumnDefinition Width="44" />
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ToggleButton
                 x:Name="POrderBase"
@@ -334,6 +336,12 @@
                 Style="{StaticResource Theme.Input.Field}"
                 Tag="{DynamicResource List.Search}"
                 TextChanged="PInquiryHandle" />
+            <Button
+                Grid.Column="4"
+                Height="44"
+                Click="PMarkupImportHandle"
+                Content="{DynamicResource List.Import}"
+                Style="{StaticResource Theme.Input.Pill}" />
         </Grid>
 
         <Border Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">

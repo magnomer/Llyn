@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Llyn.Core;
 
-public static class LMarkup
+public static partial class LMarkup
 {
     internal enum LMarkupTokenKind
     {
@@ -21,17 +21,24 @@ public static class LMarkup
         string LMarkupTokenText,
         bool LMarkupTokenEmpty);
 
-    internal readonly record struct LMarkupReference(
+    public readonly record struct LMarkupReference(
         string LMarkupReferenceId,
         LReference LMarkupReferenceValue,
-        LStateValue LMarkupReferenceAuthor);
+        IReadOnlyList<string> LMarkupReferenceAuthor);
 
     private static readonly HashSet<string> LMarkupBlockList =
         new HashSet<string>(StringComparer.Ordinal) { "entry", "sense", "collocation", "source" };
 
     public static IReadOnlyList<LEntryDraft> LMarkupRead(string text)
     {
-        return new List<LEntryDraft>();
+        List<LEntryDraft> drafts = new List<LEntryDraft>();
+
+        foreach (LMarkupEntry entry in LMarkupEntryRead(text))
+        {
+            drafts.Add(entry.LMarkupEntryDraft);
+        }
+
+        return drafts;
     }
 
     internal static IReadOnlyList<LMarkupToken> LMarkupScan(string text)
@@ -70,12 +77,13 @@ public static class LMarkup
             }
 
             string name = LMarkupNameRead(text, ref position, start);
-            (string? source, bool closing) = LMarkupHeadRead(text, ref position, start, name);
+            (string? cited, string? named, bool closing) =
+                LMarkupHeadRead(text, ref position, start, name);
 
             if (LMarkupBlockList.Contains(name))
             {
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenEnter, name, source, string.Empty, closing));
+                    LMarkupTokenKind.LMarkupTokenEnter, name, named, string.Empty, closing));
 
                 if (closing)
                 {
@@ -93,13 +101,13 @@ public static class LMarkup
             if (closing)
             {
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenText, name, source, string.Empty, true));
+                    LMarkupTokenKind.LMarkupTokenText, name, cited, string.Empty, true));
                 continue;
             }
 
             string inner = LMarkupTextRead(text, ref position, start, name);
             tokens.Add(new LMarkupToken(
-                LMarkupTokenKind.LMarkupTokenText, name, source, inner, inner.Length == 0));
+                LMarkupTokenKind.LMarkupTokenText, name, cited, inner, inner.Length == 0));
         }
 
         if (blocks.Count > 0)
@@ -122,13 +130,8 @@ public static class LMarkup
         List<LExampleDraft> examples = new List<LExampleDraft>();
         List<LSituationDraft> situations = new List<LSituationDraft>();
 
-        foreach (LMarkupToken token in tokens)
+        foreach (LMarkupToken token in LMarkupLeafRead(tokens))
         {
-            if (token.LMarkupTokenKind != LMarkupTokenKind.LMarkupTokenText)
-            {
-                continue;
-            }
-
             switch (token.LMarkupTokenName)
             {
                 case "title":
@@ -179,31 +182,33 @@ public static class LMarkup
 
     internal static LMarkupReference LMarkupReferenceRead(IReadOnlyList<LMarkupToken> tokens)
     {
-        string id = tokens.Count > 0 && tokens[0].LMarkupTokenKind == LMarkupTokenKind.LMarkupTokenEnter
-            ? tokens[0].LMarkupTokenSource ?? string.Empty
-            : string.Empty;
+        string? named = tokens.Count > 0 && tokens[0].LMarkupTokenKind == LMarkupTokenKind.LMarkupTokenEnter
+            ? tokens[0].LMarkupTokenSource
+            : null;
+
+        if (string.IsNullOrEmpty(named))
+        {
+            throw new FormatException("A source is declared without an id.");
+        }
+
+        string id = named;
 
         LMarkupToken? title = null;
-        LMarkupToken? author = null;
+        List<LMarkupToken> authors = new List<LMarkupToken>();
         LMarkupToken? year = null;
         LMarkupToken? url = null;
         LMarkupToken? program = null;
         LMarkupToken? channel = null;
 
-        foreach (LMarkupToken token in tokens)
+        foreach (LMarkupToken token in LMarkupLeafRead(tokens))
         {
-            if (token.LMarkupTokenKind != LMarkupTokenKind.LMarkupTokenText)
-            {
-                continue;
-            }
-
             switch (token.LMarkupTokenName)
             {
                 case "title":
                     title = token;
                     break;
                 case "author":
-                    author = token;
+                    authors.Add(token);
                     break;
                 case "year":
                     year = token;
@@ -222,7 +227,21 @@ public static class LMarkup
             }
         }
 
-        LStateValue credited = LMarkupStateRead(author);
+        List<string> names = new List<string>();
+        foreach (LMarkupToken author in authors)
+        {
+            if (!author.LMarkupTokenEmpty)
+            {
+                names.Add(author.LMarkupTokenText);
+            }
+        }
+
+        LState credited = names.Count > 0
+            ? LState.LStateSpecified
+            : authors.Count > 0
+                ? LState.LStateUnknown
+                : LState.LStateUnspecified;
+
         LReference reference = new LReference(
             id,
             LMarkupStateRead(title),
@@ -230,9 +249,34 @@ public static class LMarkup
             LMarkupStateRead(channel),
             LMarkupStateRead(year),
             LMarkupStateRead(url),
-            credited.LStateValueState);
+            credited);
 
-        return new LMarkupReference(id, reference, credited);
+        return new LMarkupReference(id, reference, names);
+    }
+
+    private static IEnumerable<LMarkupToken> LMarkupLeafRead(IReadOnlyList<LMarkupToken> tokens)
+    {
+        int depth = 0;
+
+        foreach (LMarkupToken token in tokens)
+        {
+            switch (token.LMarkupTokenKind)
+            {
+                case LMarkupTokenKind.LMarkupTokenEnter:
+                    depth++;
+                    break;
+                case LMarkupTokenKind.LMarkupTokenLeave:
+                    depth--;
+                    break;
+                default:
+                    if (depth == 1)
+                    {
+                        yield return token;
+                    }
+
+                    break;
+            }
+        }
     }
 
     private static LStateValue LMarkupStateRead(LMarkupToken? token)
@@ -275,10 +319,11 @@ public static class LMarkup
         return text[first..position];
     }
 
-    private static (string? Source, bool Closing) LMarkupHeadRead(
+    private static (string? Cited, string? Named, bool Closing) LMarkupHeadRead(
         string text, ref int position, int start, string name)
     {
-        string? source = null;
+        string? cited = null;
+        string? named = null;
 
         while (true)
         {
@@ -295,7 +340,7 @@ public static class LMarkup
             if (text[position] == '>')
             {
                 position++;
-                return (source, false);
+                return (cited, named, false);
             }
 
             if (text[position] == '/')
@@ -307,7 +352,7 @@ public static class LMarkup
                 }
 
                 position++;
-                return (source, true);
+                return (cited, named, true);
             }
 
             int first = position;
@@ -325,10 +370,13 @@ public static class LMarkup
             string attribute = text[first..position];
             string value = LMarkupValueRead(text, ref position, name);
 
-            if (string.Equals(attribute, "src", StringComparison.Ordinal) ||
-                string.Equals(attribute, "id", StringComparison.Ordinal))
+            if (string.Equals(attribute, "src", StringComparison.Ordinal))
             {
-                source = value;
+                cited = value;
+            }
+            else if (string.Equals(attribute, "id", StringComparison.Ordinal))
+            {
+                named = value;
             }
         }
     }

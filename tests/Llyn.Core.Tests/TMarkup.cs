@@ -206,9 +206,66 @@ public sealed class TMarkup
         Assert.Equal("2011", reference.LReferenceYear.LStateValueShow());
         Assert.Equal(LState.LStateUnknown, reference.LReferenceUrl.LStateValueState);
         Assert.Equal(LState.LStateUnknown, reference.LReferenceAuthorState);
-        Assert.Equal(LState.LStateUnknown, read.LMarkupReferenceAuthor.LStateValueState);
+        Assert.Empty(read.LMarkupReferenceAuthor);
         Assert.Equal(LState.LStateUnspecified, reference.LReferenceProgram.LStateValueState);
         Assert.Equal(LState.LStateUnspecified, reference.LReferenceChannel.LStateValueState);
+    }
+
+    [Fact]
+    public void ASourceWithoutAnIdIsRefused()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() => LMarkup.LMarkupReferenceRead(
+            LMarkup.LMarkupScan("<source><title>A Field Guide to Rivers</title></source>")));
+
+        Assert.Contains("id", failure.Message);
+    }
+
+    [Fact]
+    public void ASourceWithAnEmptyIdIsRefused()
+    {
+        Assert.Throws<FormatException>(() => LMarkup.LMarkupReferenceRead(
+            LMarkup.LMarkupScan("<source id=\"\"><title>A Field Guide</title></source>")));
+    }
+
+    [Fact]
+    public void ASourceNestedInACardLeavesNoFieldOfItsOwnOnThatCard()
+    {
+        LCardDraft card = LMarkup.LMarkupCardRead(LMarkup.LMarkupScan(
+            """
+            <sense>
+              <meaning>to set something burning</meaning>
+              <source id="oed"><title>Oxford English Dictionary</title></source>
+            </sense>
+            """));
+
+        Assert.Equal("to set something burning", card.LCardDraftMeaning.LStateValueShow());
+        Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
+    }
+
+    [Fact]
+    public void AnIdAttributeOnAnExampleIsNotACitation()
+    {
+        LCardDraft card = LMarkup.LMarkupCardRead(LMarkup.LMarkupScan(
+            "<sense><example id=\"oed\">she knelt to kindle the damp logs</example></sense>"));
+
+        Assert.Equal(
+            LState.LStateUnspecified,
+            Assert.Single(card.LCardDraftExample).LExampleDraftReference.LStateValueState);
+    }
+
+    [Fact]
+    public void AnEntryThatDeclaresOneSourceIdTwiceIsRefused()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() => LMarkup.LMarkupRead(
+            """
+            <entry>
+              <headword>kindle</headword>
+              <source id="oed"><title>Oxford English Dictionary</title></source>
+              <source id="oed"><title>A Field Guide to Rivers</title></source>
+            </entry>
+            """));
+
+        Assert.Contains("oed", failure.Message);
     }
 
     [Fact]
@@ -225,9 +282,216 @@ public sealed class TMarkup
             """));
 
         Assert.Equal("oed", read.LMarkupReferenceId);
-        Assert.Equal("Murray, James", read.LMarkupReferenceAuthor.LStateValueShow());
+        Assert.Equal(["Murray, James"], read.LMarkupReferenceAuthor);
         Assert.Equal(LState.LStateSpecified, read.LMarkupReferenceValue.LReferenceAuthorState);
         Assert.Equal("Word of Mouth", read.LMarkupReferenceValue.LReferenceProgram.LStateValueShow());
         Assert.Equal("Radio 4", read.LMarkupReferenceValue.LReferenceChannel.LStateValueShow());
+    }
+
+    private const string TMarkupSample =
+        """
+        <entry>
+          <headword>kindle</headword>
+          <lang>English</lang>
+          <ipa>/ˈkɪnd(ə)l/</ipa>
+          <audio>media/kindle.mp3</audio>
+          <pos>verb</pos>
+          <note>Chiefly literary in its figurative senses.</note>
+
+          <sense>
+            <title>set alight</title>
+            <expression>kindle a fire</expression>
+            <meaning>to set something burning; to start a flame</meaning>
+            <synonym>ignite, light</synonym>
+            <tag>literal</tag>
+            <example src="oed">she knelt to kindle the damp logs</example>
+            <situation src="oed">around a hearth on a cold evening</situation>
+            <image>media/kindle-hearth.jpg</image>
+          </sense>
+
+          <sense>
+            <title>rouse a feeling</title>
+            <meaning>to stir up an emotion or interest</meaning>
+            <synonym>arouse, awaken, spark</synonym>
+            <tag>figurative</tag>
+            <tag></tag>
+            <example>the teacher kindled a love of poetry in her class</example>
+            <example src="">a remark that kindled old resentments</example>
+          </sense>
+
+          <collocation>
+            <expression>kindle interest</expression>
+            <meaning>to cause interest to begin</meaning>
+            <example>the exhibition kindled fresh interest in the painter</example>
+          </collocation>
+
+          <source id="oed">
+            <title>Oxford English Dictionary</title>
+            <author>Murray, James</author>
+            <year>1928</year>
+            <url>https://www.oed.com/</url>
+            <program></program>
+            <channel></channel>
+          </source>
+        </entry>
+
+        <entry>
+          <headword>brook</headword>
+          <lang>English</lang>
+          <ipa>/brʊk/</ipa>
+          <pos>noun, verb</pos>
+
+          <sense>
+            <title>a small stream</title>
+            <meaning>a small natural watercourse</meaning>
+            <synonym>stream, creek, rivulet</synonym>
+            <tag>nature</tag>
+            <example src="field">the path followed a shallow brook down the valley</example>
+          </sense>
+
+          <sense>
+            <title>to tolerate</title>
+            <meaning>to bear or put up with, usually in the negative</meaning>
+            <tag>formal</tag>
+            <tag>usually negative</tag>
+            <example>she would brook no argument on the matter</example>
+            <situation></situation>
+          </sense>
+
+          <source id="field">
+            <title>A Field Guide to Rivers</title>
+            <author></author>
+            <year>2011</year>
+            <url></url>
+          </source>
+        </entry>
+        """;
+
+    [Fact]
+    public void TheCompleteSampleReadsAsTwoEntriesCarryingEveryFieldItWrites()
+    {
+        IReadOnlyList<LEntryDraft> entries = LMarkup.LMarkupRead(TMarkupSample);
+
+        Assert.Equal(2, entries.Count);
+
+        LEntryDraft kindle = entries[0];
+        Assert.Equal("kindle", kindle.LEntryDraftHeadword);
+        Assert.Equal("English", kindle.LEntryDraftLanguage);
+        Assert.Equal("/\u02c8k\u026And(\u0259)l/", kindle.LEntryDraftPronunciation);
+        Assert.Equal("media/kindle.mp3", kindle.LEntryDraftAudio);
+        Assert.Equal(["verb"], kindle.LEntryDraftSpeeches);
+        Assert.Equal("Chiefly literary in its figurative senses.", kindle.LEntryDraftNote);
+        Assert.Equal(2, kindle.LEntryDraftSenses.Count);
+        Assert.Equal("kindle interest", Assert.Single(kindle.LEntryDraftCollocations).LCardDraftExpression.LStateValueShow());
+
+        LCardDraft alight = kindle.LEntryDraftSenses[0];
+        Assert.Equal("set alight", alight.LCardDraftTitle.LStateValueShow());
+        Assert.Equal("ignite, light", alight.LCardDraftSynonym);
+        Assert.Equal(["literal"], alight.LCardDraftTag.Select(tag => tag.LStateValueShow()));
+        Assert.Equal(["media/kindle-hearth.jpg"], alight.LCardDraftImage.Select(image => image.LStateValueShow()));
+        Assert.Equal("oed", Assert.Single(alight.LCardDraftExample).LExampleDraftReference.LStateValueShow());
+        Assert.Equal("oed", Assert.Single(alight.LCardDraftSituation).LSituationDraftReference.LStateValueShow());
+
+        LCardDraft rouse = kindle.LEntryDraftSenses[1];
+        Assert.Equal(["figurative", ""], rouse.LCardDraftTag.Select(tag => tag.LStateValueShow()));
+        Assert.Equal([LState.LStateSpecified, LState.LStateUnknown], rouse.LCardDraftTag.Select(tag => tag.LStateValueState));
+        Assert.Equal(
+            [LState.LStateUnspecified, LState.LStateUnknown],
+            rouse.LCardDraftExample.Select(example => example.LExampleDraftReference.LStateValueState));
+
+        LEntryDraft brook = entries[1];
+        Assert.Equal("brook", brook.LEntryDraftHeadword);
+        Assert.Equal(["noun", "verb"], brook.LEntryDraftSpeeches);
+        Assert.Equal(string.Empty, brook.LEntryDraftAudio);
+        Assert.Equal(string.Empty, brook.LEntryDraftNote);
+        Assert.Equal("field", Assert.Single(brook.LEntryDraftSenses[0].LCardDraftExample).LExampleDraftReference.LStateValueShow());
+        Assert.Equal(
+            LState.LStateUnknown,
+            Assert.Single(brook.LEntryDraftSenses[1].LCardDraftSituation).LSituationDraftText.LStateValueState);
+    }
+
+    [Fact]
+    public void ASharedSourceIsResolvedOnceAndCitedByEveryTagThatNamesIt()
+    {
+        LMarkup.LMarkupEntry entry = Assert.Single(LMarkup.LMarkupEntryRead(
+            """
+            <entry>
+              <headword>kindle</headword>
+              <sense>
+                <example src="oed">she knelt to kindle the damp logs</example>
+                <situation src="oed">around a hearth on a cold evening</situation>
+              </sense>
+              <source id="oed">
+                <title>Oxford English Dictionary</title>
+                <author>Murray, James</author>
+                <author>Bradley, Henry</author>
+              </source>
+            </entry>
+            """));
+
+        LMarkupReference source = Assert.Single(entry.LMarkupEntrySource);
+        Assert.Equal("oed", source.LMarkupReferenceId);
+        Assert.Equal(["Murray, James", "Bradley, Henry"], source.LMarkupReferenceAuthor);
+        Assert.Equal(LState.LStateSpecified, source.LMarkupReferenceValue.LReferenceAuthorState);
+
+        LCardDraft card = Assert.Single(entry.LMarkupEntryDraft.LEntryDraftSenses);
+        Assert.Equal(
+            source.LMarkupReferenceValue.LReferenceId,
+            Assert.Single(card.LCardDraftExample).LExampleDraftReference.LStateValueShow());
+        Assert.Equal(
+            source.LMarkupReferenceValue.LReferenceId,
+            Assert.Single(card.LCardDraftSituation).LSituationDraftReference.LStateValueShow());
+    }
+
+    [Fact]
+    public void AnIdIsMeaningfulOnlyInsideItsOwnEntry()
+    {
+        IReadOnlyList<LMarkup.LMarkupEntry> entries = LMarkup.LMarkupEntryRead(
+            """
+            <entry>
+              <headword>one</headword>
+              <sense><example src="key">first</example></sense>
+              <source id="key"><title>First Work</title></source>
+            </entry>
+            <entry>
+              <headword>two</headword>
+              <sense><example src="key">second</example></sense>
+              <source id="key"><title>Second Work</title></source>
+            </entry>
+            """);
+
+        Assert.Equal(2, entries.Count);
+        Assert.Equal("First Work", Assert.Single(entries[0].LMarkupEntrySource).LMarkupReferenceValue.LReferenceTitle.LStateValueShow());
+        Assert.Equal("Second Work", Assert.Single(entries[1].LMarkupEntrySource).LMarkupReferenceValue.LReferenceTitle.LStateValueShow());
+    }
+
+    [Fact]
+    public void AMissingHeadwordThrowsAFormatExceptionNamingTheEntryIndex()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() => LMarkup.LMarkupRead(
+            "<entry><headword>kindle</headword></entry><entry><lang>English</lang></entry>"));
+
+        Assert.Contains("headword", failure.Message);
+        Assert.Contains("2", failure.Message);
+    }
+
+    [Fact]
+    public void AnEmptyHeadwordIsAsMissingAsAnAbsentOne()
+    {
+        Assert.Throws<FormatException>(() => LMarkup.LMarkupRead("<entry><headword></headword></entry>"));
+    }
+
+    [Fact]
+    public void AnUnknownSourceKeyThrowsAFormatExceptionNamingTheKey()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() => LMarkup.LMarkupRead(
+            """
+            <entry>
+              <headword>brook</headword>
+              <sense><example src="field">the path followed a shallow brook</example></sense>
+            </entry>
+            """));
+
+        Assert.Contains("field", failure.Message);
     }
 }
