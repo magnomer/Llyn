@@ -23,6 +23,12 @@ public sealed partial class LEngine
         return new LEntryArchive(_lEngineDatabase).LEntryFind(query);
     }
 
+    public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag)
+    {
+        ArgumentNullException.ThrowIfNull(tag);
+        return new LEntryArchive(_lEngineDatabase).LEntryTagFind(tag.LTagText);
+    }
+
     public LEntryDraft? LEngineEntryLoad(string id)
     {
         LEntryDraft? draft = new LEntryLoader(_lEngineDatabase).LEntryLoad(id);

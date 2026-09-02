@@ -27,7 +27,7 @@ That is what the window asks before the workspace changes or the program closes.
 
 ## `internal void PListClose()`
 
-Stops the panel: the editor is shut down and this panel's own playback is released.
+Stops the panel: the editor is shut down and the shared display releases its playback.
 
 ## Inline notes
 
@@ -36,6 +36,11 @@ Stops the panel: the editor is shut down and this panel's own playback is releas
 The window this panel sits in.
 It is who reports a load that failed.
 It also asks the question put before unsaved work would be lost.
+
+### `PDisplay.PDisplayAttach(engine);`
+
+The shared display is given the workspace it draws a flag from.
+It is told nothing about which entry to show, because that is this panel's decision.
 
 ### `PEditor.PEditorAttach(host, engine, null);`
 

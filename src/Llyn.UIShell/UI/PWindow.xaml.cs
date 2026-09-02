@@ -21,6 +21,8 @@ public partial class PWindow : Window
 
         PInput.PInputAttach(this, engine);
         PList.PListAttach(this, engine);
+        PSound.PSoundAttach(this, engine);
+        PTag.PTagAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
 
         Closing += PWindowClosingHandle;
@@ -41,6 +43,8 @@ public partial class PWindow : Window
     {
         PInput.PInputClose();
         PList.PListClose();
+        PSound.PSoundClose();
+        PTag.PTagClose();
         _lEngine.Dispose();
     }
 }

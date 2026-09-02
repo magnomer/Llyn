@@ -1,13 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -16,15 +13,11 @@ public partial class PList
 {
     private readonly ObservableCollection<PIndexItem> _pIndexList = [];
 
-    private readonly MediaPlayer _pDisplayPlayer = new();
-
-    private string? _pDisplayRecording;
-
     private string? _pDisplayEntry;
 
     private string _pOrderChoice = "Headword";
 
-    private void PListHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private async void PListHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (!IsVisible)
         {
@@ -32,6 +25,9 @@ public partial class PList
         }
 
         PIndex.ItemsSource = _pIndexList;
+
+        await PLangcodeIndicator.PLangcodeIndicatorLoad(_lEngine);
+
         PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
@@ -107,13 +103,13 @@ public partial class PList
 
         if (draft is null)
         {
-            PDisplayClear();
+            PListClear();
             PIndexFind(PInquiry.Text ?? string.Empty);
             return;
         }
 
         _pDisplayEntry = id;
-        PDisplayShow(draft);
+        PListEntryShow(draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -138,7 +134,7 @@ public partial class PList
 
         if (draft is not null)
         {
-            PDisplayShow(draft);
+            PListEntryShow(draft);
         }
     }
 
@@ -160,7 +156,7 @@ public partial class PList
             return;
         }
 
-        PDisplayClear();
+        PListClear();
         PScribe.IsEnabled = true;
         PScribeShow(true);
     }
@@ -205,95 +201,16 @@ public partial class PList
         return _pListHost.PWindowDiscardConfirm(PListChangeCheck());
     }
 
-    private void PDisplayShow(LEntryDraft draft)
+    private void PListEntryShow(LEntryDraft draft)
     {
-        _pDisplayRecording = draft.LEntryDraftAudio.Length > 0 && File.Exists(draft.LEntryDraftAudio)
-            ? draft.LEntryDraftAudio
-            : null;
-        PDisplayPlayback.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;
-
-        PDisplayHeadword.Text = draft.LEntryDraftHeadword;
-        PDisplayLanguageShow(draft.LEntryDraftLanguage);
-        PDisplayPronunciation.Text = draft.LEntryDraftPronunciation;
-        PDisplayPronunciationSurface.Visibility = draft.LEntryDraftPronunciation.Length == 0
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-
-        PDisplaySpeech.ItemsSource = draft.LEntryDraftSpeeches ?? [];
-        PDisplaySense.ItemsSource = draft.LEntryDraftSenses;
-        PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
-        PDisplaySenseSection.Visibility = draft.LEntryDraftSenses.Count == 0
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-        PDisplayCollocationSection.Visibility = draft.LEntryDraftCollocations.Count == 0
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-
-        PDisplayNote.Text = draft.LEntryDraftNote;
-        PDisplayNoteSection.Visibility = draft.LEntryDraftNote.Length == 0
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-
-        PDisplayEmpty.Visibility = Visibility.Collapsed;
-        PDisplayContents.Visibility = Visibility.Visible;
-
+        PDisplay.PDisplayShow(draft);
         PScribe.IsEnabled = true;
     }
 
-    private async void PDisplayLanguageShow(string language)
-    {
-        PDisplayLanguage.Text = language;
-        PDisplayLanguageFlag.Source = null;
-
-        string? path;
-        try
-        {
-            path = await _lEngine.LEngineFlagRead(language, CancellationToken.None);
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        if (!string.Equals(PDisplayLanguage.Text, language, StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        PDisplayLanguageFlag.Source = path is not null && File.Exists(path)
-            ? PLangcodeIndicator.PLangcodeIndicatorResolve(path)
-            : null;
-    }
-
-    private void PDisplayPlaybackHandle(object sender, RoutedEventArgs e)
-    {
-        if (_pDisplayRecording is null)
-        {
-            return;
-        }
-
-        _pDisplayPlayer.Open(new Uri(_pDisplayRecording));
-        _pDisplayPlayer.Play();
-    }
-
-    private void PDisplayClear()
+    private void PListClear()
     {
         _pDisplayEntry = null;
-        _pDisplayRecording = null;
-        _pDisplayPlayer.Stop();
-        PDisplayLanguage.Text = string.Empty;
-        PDisplayLanguageFlag.Source = null;
-        PDisplayPlayback.Visibility = Visibility.Collapsed;
-        PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
-        PDisplaySpeech.ItemsSource = null;
-        PDisplaySense.ItemsSource = null;
-        PDisplayCollocation.ItemsSource = null;
-        PDisplaySenseSection.Visibility = Visibility.Collapsed;
-        PDisplayCollocationSection.Visibility = Visibility.Collapsed;
-        PDisplayNoteSection.Visibility = Visibility.Collapsed;
-        PDisplayContents.Visibility = Visibility.Collapsed;
-        PDisplayEmpty.Visibility = Visibility.Visible;
-
+        PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PScribeShow(false);
         PScribe.IsEnabled = false;

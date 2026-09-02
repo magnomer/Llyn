@@ -27,6 +27,13 @@ That is the list a browsing or searching pane shows.
 Matching is a contains whose case is folded over the whole of Unicode.
 So an accented headword is found typed in either case.
 
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag)`
+
+Returns the entries carrying `tag`, ordered by headword.
+An empty tag text stands for no tag chosen and returns every entry.
+That is the list the tag panel shows beside its tag catalog.
+The overload takes a tag rather than text so the two searches cannot be confused.
+
 ## `public LEntryDraft? LEngineEntryLoad(string id)`
 
 Reads the entry identified by `id` back into the draft the input form saved.

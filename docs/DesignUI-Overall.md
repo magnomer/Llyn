@@ -6,7 +6,7 @@ This document defines the overall UI structure and internal naming of Llyn.
 
 It covers the principal regions of the program window and the relationship between navigation elements and the panels displayed in the main content area.
 
-The internal structure of individual panels such as `PInput`, `PList`, `PSound`, `PTag`, `PSituation`, `PFavorite`, `PDuplex`, and `PSettings` is defined separately.
+The internal structure of individual panels such as `PInput`, `PList`, `PSound`, `PTag`, `PSituation`, `PExample`, `PReference`, `PFavorite`, `PDuplex`, and `PSettings` is defined separately.
 
 ---
 
@@ -44,16 +44,16 @@ When an accepted concise name already exists, a longer generic replacement shoul
 
 Some tabs use different concrete component names for the same broader functional category.
 
-The three browse-style tabs currently follow this mapping:
+The browse-style tabs currently follow this mapping:
 
-| Functional category | PList | PSound | PTag |
-|---|---|---|---|
-| Sorting | `POrder` | `PSequence` | `PFunnel` |
-| Search | `PInquiry` | `PProbe` | `PExploration` |
-| `PCatalog` | `PIndex` | `PInventory` | `PDirectory` |
-| Read/display area | `PDisplay` | `PDisplay` | `PDisplay` |
-| Mode toggle | `PScribe` | `PScribe` | `PScribe` |
-| Editing area | `PEditor` | `PEditor` | `PEditor` |
+| Functional category | PList | PSound | PTag | PExample | PReference |
+|---|---|---|---|---|---|
+| Sorting | `POrder` | `PSequence` | `PFunnel` | `PRank` | `PGrade` |
+| Search | `PInquiry` | `PProbe` | `PExploration` | `PQuery` | `PSurvey` |
+| `PCatalog` | `PIndex` | `PInventory` | `PDirectory` | `PAnthology` | `PShelf` |
+| Read/display area | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` |
+| Mode toggle | `PScribe` | `PScribe` | `PScribe` | `PScribe` | `PScribe` |
+| Editing area | `PEditor` | `PEditor` | `PEditor` | `PEditor` | `PEditor` |
 
 `PCatalog` is an overarching functional term. It does not require the concrete component itself to be named `PCatalog`.
 
@@ -63,10 +63,14 @@ Thus:
 PCatalog
 ├── PIndex          [PList]
 ├── PInventory      [PSound]
-└── PDirectory      [PTag]
+├── PDirectory      [PTag]
+├── PAnthology      [PExample]
+└── PShelf          [PReference]
 ```
 
-`PDisplay`, `PScribe`, and `PEditor` are intentionally shared concrete names across these three tabs.
+`PDisplay`, `PScribe`, and `PEditor` are intentionally shared concrete names across these tabs.
+
+What they share is the read/edit mechanism, not the object. In `PList`, `PSound`, and `PTag` they stand on an Entry. In `PExample` they stand on an Example, and in `PReference` on a Source.
 
 ---
 
@@ -182,6 +186,8 @@ PNavigationList         -> PList
 PNavigationSound        -> PSound
 PNavigationTag          -> PTag
 PNavigationSituation    -> PSituation
+PNavigationExample      -> PExample
+PNavigationSource       -> PReference
 PNavigationFavorite     -> PFavorite
 PNavigationDuplex       -> PDuplex
 PNavigationSettings     -> PSettings
@@ -203,6 +209,8 @@ PList
 PSound
 PTag
 PSituation
+PExample
+PReference
 PFavorite
 PDuplex
 PSettings
@@ -239,6 +247,24 @@ Its internal design is defined separately.
 `PSituation` is opened through `PNavigationSituation`.
 
 Its internal design is defined separately.
+
+## PExample
+
+`PExample` is opened through `PNavigationExample`.
+
+It browses the Examples the workspace holds, which are independent data no Entry owns.
+
+Its internal design is defined in `DesignUI-Example.md`.
+
+## PReference
+
+`PReference` is opened through `PNavigationSource`.
+
+It browses the bibliographic Sources the workspace holds, which are independent data no Entry or Example owns.
+
+The panel is shown to the user as **Source**. Its internal base is `Reference`, because the base `Source` already names a pronunciation source defined by a language pack.
+
+Its internal design is defined in `DesignUI-Source.md`.
 
 ## PFavorite
 
@@ -297,6 +323,8 @@ PWindow
 │   │   ├── PNavigationSound       -> PSound
 │   │   ├── PNavigationTag         -> PTag
 │   │   ├── PNavigationSituation   -> PSituation
+│   │   ├── PNavigationExample     -> PExample
+│   │   ├── PNavigationSource      -> PReference
 │   │   ├── PNavigationFavorite    -> PFavorite
 │   │   ├── PNavigationDuplex   -> PDuplex
 │   │   └── PNavigationSettings    -> PSettings
@@ -307,6 +335,8 @@ PWindow
 │       ├── PSound
 │       ├── PTag
 │       ├── PSituation
+│       ├── PExample
+│       ├── PReference
 │       ├── PFavorite
 │       ├── PDuplex
 │       └── PSettings
@@ -380,6 +410,8 @@ PList
 PSound
 PTag
 PSituation
+PExample
+PReference
 PFavorite
 PDuplex
 PSettings
@@ -390,12 +422,14 @@ This document defines only the overall UI structure. The internal design of each
 Current dedicated panel specifications include:
 
 ```text
-PInput    -> DesignUI-Input.md
-PList     -> DesignUI-List.md
-PSound    -> DesignUI-Sound.md
-PTag      -> DesignUI-Tag.md
-PDuplex   -> DesignUI-Duplex.md
-PSettings -> DesignUI-Settings.md
+PInput     -> DesignUI-Input.md
+PList      -> DesignUI-List.md
+PSound     -> DesignUI-Sound.md
+PTag       -> DesignUI-Tag.md
+PExample   -> DesignUI-Example.md
+PReference -> DesignUI-Source.md
+PDuplex    -> DesignUI-Duplex.md
+PSettings  -> DesignUI-Settings.md
 ```
 
 The remaining principal panels will receive their own documents as their designs are defined.

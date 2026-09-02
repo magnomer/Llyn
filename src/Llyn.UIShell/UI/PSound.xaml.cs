@@ -1,45 +1,47 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PList : UserControl
+public partial class PSound : UserControl
 {
-    private PWindow _pListHost = null!;
+    private PWindow _pSoundHost = null!;
 
     private LEngine _lEngine = null!;
 
-    public PList()
+    public PSound()
     {
         InitializeComponent();
     }
 
-    internal void PListAttach(PWindow host, LEngine engine)
+    internal void PSoundAttach(PWindow host, LEngine engine)
     {
-        _pListHost = host;
+        _pSoundHost = host;
         _lEngine = engine;
 
         PDisplay.PDisplayAttach(engine);
 
         PEditor.PEditorAttach(host, engine, null);
 
-        PEditor.PEditorStoreDispatcher = PIndexEntryUpdate;
+        PEditor.PEditorStoreDispatcher = PInventoryEntryUpdate;
 
         PEditor.PEditorDiscardDispatcher = PEditorEntryRestore;
+
+        PArticulation.PArticulationAttach(PEditor.PPronunciation);
     }
 
-    internal void PListReset()
+    internal void PSoundReset()
     {
-        PListClear();
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        PSoundClear();
+        PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
-    internal bool PListChangeCheck()
+    internal bool PSoundChangeCheck()
     {
         return PEditor.Visibility == System.Windows.Visibility.Visible && PEditor.PEditorChangeCheck();
     }
 
-    internal void PListClose()
+    internal void PSoundClose()
     {
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();

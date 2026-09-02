@@ -11,19 +11,6 @@ The input panel writes an entry, and this reads it back and corrects it.
 
 ## Inline notes
 
-### `private readonly MediaPlayer _pDisplayPlayer = new();`
-
-This panel's own playback.
-The input panel has one too.
-Sharing a single player made the two panels each other's business.
-Clearing the input recording, which typing a headword does, stopped what the List tab played.
-
-### `private string? _pDisplayRecording;`
-
-Full path of the audio the shown entry owns, or null when it has none.
-That is what the display's play button plays.
-It is kept apart from the input panel's own transient recording.
-
 ### `private string? _pDisplayEntry;`
 
 The entry the right-hand side stands on, or null when none is selected.
@@ -72,7 +59,7 @@ Puts the whole right-hand side on one entry.
 The display is filled from the store.
 An editor that is open moves onto the same entry, since the entry being edited is selected.
 
-### `PDisplayClear();`
+### `PListClear();`
 
 The entry went away between the search and the click.
 The row is stale.
@@ -121,31 +108,13 @@ That is selecting another entry, or toggling back to the display.
 It is anything else that would leave typed corrections behind.
 Nothing unsaved means nothing to ask about.
 
-### `_pDisplayRecording = draft.LEntryDraftAudio.Length > 0 && File.Exists(draft.LEntryDraftAudio)`
+### `private void PListEntryShow(LEntryDraft draft)`
 
-The audio the entry was saved with, as a full path in the workspace open now.
-The button appears only when that file is actually there.
-So a workspace whose audio folder was removed shows no play control.
-It does not show one that fails on click.
-
-### `PDisplaySense.ItemsSource = draft.LEntryDraftSenses;`
-
-The draft records carry exactly the fields the read view shows.
-So the templates bind to them directly instead of copying each one into a second row model.
-
-### `PScribe.IsEnabled = true;`
-
+The shared display draws the entry, and this panel decides what the toggle may then do.
 An entry is selected now, so it can be written as well as read.
 
-### `private async void PDisplayLanguageShow(string language)`
+### `private void PListClear()`
 
-Keeps the language on the same visual line as the headword.
-It gives the language the flag resolved by the same path as the editor's picker.
-Flag lookup is asynchronous.
-So a result is painted only while the display still shows the language that asked for it.
-
-### `private void PDisplayClear()`
-
-The display must not assume an entry is selected.
-With none chosen it shows only its prompt.
+The panel must not assume an entry is selected.
+With none chosen the display shows only its prompt.
 There is nothing to write, so the editor is closed and the toggle offers nothing.

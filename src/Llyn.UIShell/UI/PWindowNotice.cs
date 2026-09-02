@@ -35,7 +35,8 @@ public partial class PWindow
 
     internal bool PWindowDiscardConfirm()
     {
-        return PWindowDiscardConfirm(PInput.PInputChangeCheck() || PList.PListChangeCheck());
+        return PWindowDiscardConfirm(PInput.PInputChangeCheck() || PList.PListChangeCheck() || PSound.PSoundChangeCheck()
+            || PTag.PTagChangeCheck());
     }
 
     internal bool PWindowDiscardConfirm(bool unsaved)

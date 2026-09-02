@@ -17,6 +17,16 @@ public partial class PWindow
             return;
         }
 
+        if (PSound.IsVisible && selectedButton != PNavigationSound && !PWindowDiscardConfirm(PSound.PSoundChangeCheck()))
+        {
+            return;
+        }
+
+        if (PTag.IsVisible && selectedButton != PNavigationTag && !PWindowDiscardConfirm(PTag.PTagChangeCheck()))
+        {
+            return;
+        }
+
         (Button Button, FrameworkElement Panel)[] tabs =
         [
             (PNavigationInput, PInput),

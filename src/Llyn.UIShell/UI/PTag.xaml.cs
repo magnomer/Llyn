@@ -3,43 +3,44 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PList : UserControl
+public partial class PTag : UserControl
 {
-    private PWindow _pListHost = null!;
+    private PWindow _pTagHost = null!;
 
     private LEngine _lEngine = null!;
 
-    public PList()
+    public PTag()
     {
         InitializeComponent();
     }
 
-    internal void PListAttach(PWindow host, LEngine engine)
+    internal void PTagAttach(PWindow host, LEngine engine)
     {
-        _pListHost = host;
+        _pTagHost = host;
         _lEngine = engine;
 
         PDisplay.PDisplayAttach(engine);
 
         PEditor.PEditorAttach(host, engine, null);
 
-        PEditor.PEditorStoreDispatcher = PIndexEntryUpdate;
+        PEditor.PEditorStoreDispatcher = PMembershipEntryUpdate;
 
         PEditor.PEditorDiscardDispatcher = PEditorEntryRestore;
     }
 
-    internal void PListReset()
+    internal void PTagReset()
     {
-        PListClear();
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        PTagClear();
+        PDirectoryReset();
+        PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 
-    internal bool PListChangeCheck()
+    internal bool PTagChangeCheck()
     {
         return PEditor.Visibility == System.Windows.Visibility.Visible && PEditor.PEditorChangeCheck();
     }
 
-    internal void PListClose()
+    internal void PTagClose()
     {
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();

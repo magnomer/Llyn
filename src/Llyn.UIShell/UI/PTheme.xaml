@@ -268,6 +268,57 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Choice.Order" TargetType="RadioButton">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Margin" Value="0,1" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border
+                        x:Name="PSurface"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="9">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter VerticalAlignment="Center" />
+                            <Path
+                                x:Name="PIndicator"
+                                Grid.Column="1"
+                                Width="11"
+                                Height="8"
+                                Margin="12,0,2,0"
+                                Data="M 0,4 L 3.5,7.5 L 11,0"
+                                Stroke="{StaticResource Theme.Accent}"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="1.8"
+                                Visibility="Collapsed" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PIndicator" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="Theme.Popup.Surface" TargetType="Border">
         <Setter Property="Padding" Value="6" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />

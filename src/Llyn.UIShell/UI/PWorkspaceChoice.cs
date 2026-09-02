@@ -52,5 +52,7 @@ public partial class PSettings
 
         _pSettingsHost.PInput.PInputReset();
         _pSettingsHost.PList.PListReset();
+        _pSettingsHost.PSound.PSoundReset();
+        _pSettingsHost.PTag.PTagReset();
     }
 }

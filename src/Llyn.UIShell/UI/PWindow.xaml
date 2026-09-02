@@ -106,8 +106,8 @@
                 <Grid x:Name="PPanel" Grid.Column="1" Background="{StaticResource Theme.Surface}">
                     <local:PInput x:Name="PInput" />
                     <local:PList x:Name="PList" Visibility="Collapsed" />
-                    <Grid x:Name="PSound" Visibility="Collapsed" />
-                    <Grid x:Name="PTag" Visibility="Collapsed" />
+                    <local:PSound x:Name="PSound" Visibility="Collapsed" />
+                    <local:PTag x:Name="PTag" Visibility="Collapsed" />
                     <Grid x:Name="PSituation" Visibility="Collapsed" />
                     <Grid x:Name="PFavorite" Visibility="Collapsed" />
                     <Grid x:Name="PDuplex" Visibility="Collapsed" />
