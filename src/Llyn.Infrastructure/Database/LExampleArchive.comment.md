@@ -81,3 +81,21 @@ Reading them one Example at a time is what turns a referrer's set into a round-t
 The same count on a connection the caller already holds.
 So a guard and the delete it guards run in one transaction.
 Nothing can attach the row between them.
+
+## `public IReadOnlyList<LExample> LExampleRead()`
+
+Every stored Example with its translations, in insertion order.
+The translations of the whole table are read once and grouped, rather than once per Example.
+
+## `public IReadOnlyDictionary<string, int> LExampleReferenceRead()`
+
+How many rows reference each Example, counted across the three association tables at once.
+The browsing panel needs the figure for every row it lists, so one statement answers for all of them.
+
+## `public void LExampleDelete(string id, bool detach)`
+
+Deletes the Example, clearing every reference to it first when `detach` is set.
+The clearing, the count and the delete share one session.
+So the row is judged against the references as they stand at that moment.
+The Source it cited is left standing, because a citation is a pointer and never ownership.
+

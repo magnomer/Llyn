@@ -18,6 +18,11 @@ public sealed partial class LEngine
         return new LExampleArchive(_lEngineDatabase).LExampleRead(id);
     }
 
+    public IReadOnlyList<LExample> LEngineExampleRead()
+    {
+        return new LExampleArchive(_lEngineDatabase).LExampleRead();
+    }
+
     public IReadOnlyList<LExample> LEngineExampleRead(string ownerId, LOwner owner)
     {
         LExampleLink examples = new(_lEngineDatabase);
@@ -98,5 +103,10 @@ public sealed partial class LEngine
     public void LEngineExampleDelete(string id)
     {
         new LExampleArchive(_lEngineDatabase).LExampleDelete(id);
+    }
+
+    public void LEngineExampleDelete(string id, bool detach)
+    {
+        new LExampleArchive(_lEngineDatabase).LExampleDelete(id, detach);
     }
 }

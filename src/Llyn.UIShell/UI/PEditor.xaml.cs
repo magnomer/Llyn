@@ -14,7 +14,7 @@ public partial class PEditor : UserControl
     {
         InitializeComponent();
 
-        Resources.MergedDictionaries.Add(new PExampleTemplate(this));
+        Resources.MergedDictionaries.Add(new PSentenceTemplate(this));
         Resources.MergedDictionaries.Add(new PContextTemplate(this));
         Resources.MergedDictionaries.Add(new PImageTemplate(this));
         Resources.MergedDictionaries.Add(new PVideoTemplate(this));
@@ -46,7 +46,7 @@ public partial class PEditor : UserControl
         _pEditorHost = host;
         _lEngine = engine;
 
-        PExampleLoad();
+        PSentenceLoad();
 
         if (entry is null)
         {

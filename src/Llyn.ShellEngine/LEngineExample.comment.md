@@ -71,3 +71,16 @@ Deletes the Example identified by `id` together with its translations.
 Refused while any Entry, Meaning or Collocation still references it.
 `LEngineExampleRemove` is the seam that deletes one as its last reference goes.
 A Reference it cited is left standing.
+
+## `public IReadOnlyList<LExample> LEngineExampleRead()`
+
+Every Example in the workspace, for the panel that browses the shared stock of sentences itself.
+It is not a view of one card's references, so an Example nothing quotes is in it.
+
+## `public void LEngineExampleDelete(string id, bool detach)`
+
+Deletes the Example, dropping every reference to it first when the user asked for that.
+Without `detach` it is the refusing delete above.
+With it the detaching, the count and the delete are one operation rather than a sequence a caller composes.
+Between any two steps the answer to what still quotes this can change.
+

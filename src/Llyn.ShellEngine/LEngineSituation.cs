@@ -18,16 +18,6 @@ public sealed partial class LEngine
         return new LSituationArchive(_lEngineDatabase).LSituationRead();
     }
 
-    public IReadOnlyDictionary<string, int> LEngineUsageRead()
-    {
-        return new LSituationArchive(_lEngineDatabase).LSituationReferenceRead();
-    }
-
-    public IReadOnlyList<LUsage> LEngineUsageRead(string id)
-    {
-        return new LSituationArchive(_lEngineDatabase).LSituationUsageRead(id);
-    }
-
     public LSituation? LEngineSituationRead(string id)
     {
         return new LSituationArchive(_lEngineDatabase).LSituationRead(id);

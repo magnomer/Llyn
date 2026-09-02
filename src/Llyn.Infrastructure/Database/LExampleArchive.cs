@@ -60,6 +60,39 @@ public sealed class LExampleArchive
         return LExampleSingleRead(session.LDatabaseSessionConnection, id);
     }
 
+    public IReadOnlyList<LExample> LExampleRead()
+    {
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        IReadOnlyDictionary<string, IReadOnlyList<LTranslation>> translations =
+            LExampleTranslationRead(connection);
+
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT id, language, text_state, text, local, source_state, source_id
+            FROM example
+            ORDER BY rowid;
+            """;
+
+        List<LExample> examples = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            string id = reader.GetString(0);
+            examples.Add(new LExample(
+                id,
+                reader.GetString(1),
+                LStateColumn.LStateColumnRead(reader, 2),
+                reader.IsDBNull(4) ? null : reader.GetString(4),
+                LStateColumn.LStateColumnRead(reader, 5),
+                translations.TryGetValue(id, out IReadOnlyList<LTranslation>? found) ? found : []));
+        }
+
+        return examples;
+    }
+
     public void LExampleUpdate(LExample example)
     {
         ArgumentNullException.ThrowIfNull(example);
@@ -165,12 +198,48 @@ public sealed class LExampleArchive
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
+    public IReadOnlyDictionary<string, int> LExampleReferenceRead()
+    {
+        using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT example_id, COUNT(*) FROM (
+                SELECT example_id FROM entry_example
+                UNION ALL
+                SELECT example_id FROM sense_example
+                UNION ALL
+                SELECT example_id FROM collocation_example
+            )
+            GROUP BY example_id;
+            """;
+
+        Dictionary<string, int> counts = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            counts[reader.GetString(0)] = reader.GetInt32(1);
+        }
+
+        return counts;
+    }
+
     public void LExampleDelete(string id)
+    {
+        LExampleDelete(id, false);
+    }
+
+    public void LExampleDelete(string id, bool detach)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        if (detach)
+        {
+            LExampleLink.LExampleLinkClear(connection, id);
+        }
 
         int references = LExampleReferenceRead(connection, id);
         if (references > 0)
@@ -233,6 +302,38 @@ public sealed class LExampleArchive
             ORDER BY translation.example_id, translation.position;
             """;
         command.Parameters.AddWithValue("$referrer", referrerId);
+
+        Dictionary<string, IReadOnlyList<LTranslation>> grouped = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            string exampleId = reader.GetString(1);
+            if (grouped.TryGetValue(exampleId, out IReadOnlyList<LTranslation>? existing) is false)
+            {
+                existing = new List<LTranslation>();
+                grouped[exampleId] = existing;
+            }
+
+            ((List<LTranslation>)existing).Add(new LTranslation(
+                reader.GetString(0),
+                reader.GetString(2),
+                reader.GetString(3),
+                reader.GetInt32(4)));
+        }
+
+        return grouped;
+    }
+
+    private static IReadOnlyDictionary<string, IReadOnlyList<LTranslation>> LExampleTranslationRead(
+        SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT id, example_id, language, text, position
+            FROM example_translation
+            ORDER BY example_id, position;
+            """;
 
         Dictionary<string, IReadOnlyList<LTranslation>> grouped = [];
         using SqliteDataReader reader = command.ExecuteReader();

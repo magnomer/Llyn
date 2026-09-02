@@ -22,3 +22,17 @@ Clearing the citation leaves both rows standing: only the pointer moved.
 ### `private static LEntry TExampleEntryCreate(LEngine engine)`
 
 One saved entry with a Meaning card and a Collocation card, neither quoting an Example of its own.
+
+## `public void TheWorkspaceStockOfExamplesIsReadWithItsUsageCounted()`
+
+The reads the browsing panel stands on.
+Every Example comes back with its translations, including one nothing quotes.
+The counts answer for every Example at once, and an unquoted one is simply absent rather than zero.
+
+## `public void UsageNamesEveryQuotingSideAndDetachingDeleteDropsThemAll()`
+
+The itemized usage and the detaching delete.
+An Entry, a Meaning and a Collocation each quote on their own terms, and the read says which is which.
+The plain delete is still refused while anything quotes it.
+The detaching delete drops every reference and the row in one operation.
+

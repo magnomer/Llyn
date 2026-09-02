@@ -8,95 +8,95 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard
 {
-    public ObservableCollection<PExample> PCardExample { get; }
+    public ObservableCollection<PSentence> PCardSentence { get; }
 
-    internal void PCardExampleShow(IReadOnlyList<LExampleDraft> drafts)
+    internal void PCardSentenceShow(IReadOnlyList<LExampleDraft> drafts)
     {
-        foreach (PExample row in PCardExample)
+        foreach (PSentence row in PCardSentence)
         {
-            row.PropertyChanged -= PCardExampleChange;
+            row.PropertyChanged -= PCardSentenceChange;
         }
 
-        PCardExample.Clear();
+        PCardSentence.Clear();
         foreach (LExampleDraft draft in drafts)
         {
-            PCardExampleAdd(new PExample(
+            PCardSentenceAdd(new PSentence(
                 _pCardReference,
                 draft.LExampleDraftText,
                 draft.LExampleDraftId,
                 draft.LExampleDraftReference));
         }
 
-        if (PCardExample.Count == 0)
+        if (PCardSentence.Count == 0)
         {
-            PCardExampleAdd(new PExample(_pCardReference));
+            PCardSentenceAdd(new PSentence(_pCardReference));
         }
 
-        PCardExampleUpdate();
+        PCardSentenceUpdate();
     }
 
-    internal IReadOnlyList<LExampleDraft> PCardExampleRead()
+    internal IReadOnlyList<LExampleDraft> PCardSentenceRead()
     {
         List<LExampleDraft> drafts = [];
-        foreach (PExample row in PCardExample)
+        foreach (PSentence row in PCardSentence)
         {
-            LStateValue text = row.PExampleTextRead();
+            LStateValue text = row.PSentenceTextRead();
             if (text.LStateValueEmpty)
             {
                 continue;
             }
 
-            drafts.Add(new LExampleDraft(text, row.PExampleId, row.PExampleReferenceRead()));
+            drafts.Add(new LExampleDraft(text, row.PSentenceId, row.PSentenceReferenceRead()));
         }
 
         return drafts;
     }
 
-    internal void PCardExampleInsert(PExample row)
+    internal void PCardSentenceInsert(PSentence row)
     {
-        int index = PCardExample.IndexOf(row);
-        PExample opened = new(_pCardReference);
-        opened.PropertyChanged += PCardExampleChange;
-        PCardExample.Insert(index < 0 ? PCardExample.Count : index + 1, opened);
-        PCardExampleUpdate();
+        int index = PCardSentence.IndexOf(row);
+        PSentence opened = new(_pCardReference);
+        opened.PropertyChanged += PCardSentenceChange;
+        PCardSentence.Insert(index < 0 ? PCardSentence.Count : index + 1, opened);
+        PCardSentenceUpdate();
     }
 
-    internal void PCardExampleRemove(PExample row)
+    internal void PCardSentenceRemove(PSentence row)
     {
-        if (PCardExample.Count <= 1)
+        if (PCardSentence.Count <= 1)
         {
-            row.PExampleClear();
+            row.PSentenceClear();
             return;
         }
 
-        row.PropertyChanged -= PCardExampleChange;
-        PCardExample.Remove(row);
-        PCardExampleUpdate();
+        row.PropertyChanged -= PCardSentenceChange;
+        PCardSentence.Remove(row);
+        PCardSentenceUpdate();
     }
 
-    internal void PCardExampleUpdate()
+    internal void PCardSentenceUpdate()
     {
-        bool numbered = PCardExample.Count > 1;
-        for (int index = 0; index < PCardExample.Count; index++)
+        bool numbered = PCardSentence.Count > 1;
+        for (int index = 0; index < PCardSentence.Count; index++)
         {
-            PCardExample[index].PExampleOrderText = numbered
+            PCardSentence[index].PSentenceOrderText = numbered
                 ? $"({index + 1})"
                 : string.Empty;
         }
     }
 
-    private void PCardExampleAdd(PExample row)
+    private void PCardSentenceAdd(PSentence row)
     {
-        row.PropertyChanged += PCardExampleChange;
-        PCardExample.Add(row);
+        row.PropertyChanged += PCardSentenceChange;
+        PCardSentence.Add(row);
     }
 
-    private void PCardExampleChange(object? sender, PropertyChangedEventArgs arguments)
+    private void PCardSentenceChange(object? sender, PropertyChangedEventArgs arguments)
     {
-        if (sender is PExample row &&
-            string.Equals(arguments.PropertyName, nameof(PExample.PExampleText), StringComparison.Ordinal))
+        if (sender is PSentence row &&
+            string.Equals(arguments.PropertyName, nameof(PSentence.PSentenceText), StringComparison.Ordinal))
         {
-            row.PExampleIdentityApply();
+            row.PSentenceIdentityApply();
         }
     }
 }

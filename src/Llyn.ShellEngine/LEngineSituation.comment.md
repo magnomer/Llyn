@@ -61,19 +61,11 @@ Refused while any Meaning or Collocation still references it.
 
 Every Situation in the workspace, for the panel that browses the shelf itself rather than one card's references.
 
-## `public IReadOnlyDictionary<string, int> LEngineUsageRead()`
-
-The reference count of every Situation at once.
-The catalog shows the figure on every row, and it decides which delete may be offered.
-
-## `public IReadOnlyList<LUsage> LEngineUsageRead(string id)`
-
-Where one Situation is used, itemized.
-A count says how many; this says which Meaning or Collocation, and under which Entry.
-The relationship is what the shell must keep: a Situation reached through one Meaning is not a property of the whole Entry.
-
 ## `public void LEngineSituationDelete(string id, bool detach)`
 
 Deletes the Situation, dropping every reference to it first when the user asked for that.
 Without `detach` it is the refusing delete above.
 With it the detaching and the delete are one operation rather than a sequence a caller composes.
+
+The usage seams that once stood here now live in `LEngineUsage.cs`.
+An Example is browsed the same way a Situation is, so the two share one seam rather than each carrying its own.

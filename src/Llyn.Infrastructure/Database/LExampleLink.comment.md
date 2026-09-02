@@ -71,3 +71,17 @@ Every value still travels as a parameter.
 The row is inserted beyond the end of the set.
 The whole set is then renumbered around it, so the requested index is honoured.
 A position that is already taken is no longer a unique-index failure to work around.
+
+## `public IReadOnlyList<LUsage> LExampleUsageRead(string id)`
+
+Every side quoting one Example, itemized rather than counted.
+An Entry row names itself, and a Meaning or Collocation row names the Entry it belongs to.
+A row carries the entry id it is followed through, so it stays followable after the text it shows is edited.
+A referring side with no wording of its own falls back to the definition or expression beneath it.
+
+## `internal static void LExampleLinkClear(SqliteConnection connection, string exampleId)`
+
+Drops every reference to one Example from all three association tables.
+Each referrer whose set lost a row is renumbered, so no order keeps a gap.
+It takes the caller's connection, so the clearing and the delete that follows commit together.
+

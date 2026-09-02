@@ -2,33 +2,33 @@ using System.Windows;
 
 namespace Llyn.UIShell;
 
-public partial class PExampleTemplate : ResourceDictionary
+public partial class PSentenceTemplate : ResourceDictionary
 {
-    private readonly PEditor _pExampleHost;
+    private readonly PEditor _pSentenceHost;
 
-    internal PExampleTemplate(PEditor host)
+    internal PSentenceTemplate(PEditor host)
     {
-        _pExampleHost = host;
+        _pSentenceHost = host;
         InitializeComponent();
     }
 
-    private void PExampleAddHandle(object sender, RoutedEventArgs e)
+    private void PSentenceAddHandle(object sender, RoutedEventArgs e)
     {
-        _pExampleHost.PExampleAddHandle(sender, e);
+        _pSentenceHost.PSentenceAddHandle(sender, e);
     }
 
-    private void PExampleRemoveHandle(object sender, RoutedEventArgs e)
+    private void PSentenceRemoveHandle(object sender, RoutedEventArgs e)
     {
-        _pExampleHost.PExampleRemoveHandle(sender, e);
+        _pSentenceHost.PSentenceRemoveHandle(sender, e);
     }
 
-    private void PExampleReferenceClear(object sender, RoutedEventArgs e)
+    private void PSentenceReferenceClear(object sender, RoutedEventArgs e)
     {
-        _pExampleHost.PExampleReferenceClear(sender, e);
+        _pSentenceHost.PSentenceReferenceClear(sender, e);
     }
 
-    private void PExampleReferenceCreate(object sender, RoutedEventArgs e)
+    private void PSentenceReferenceCreate(object sender, RoutedEventArgs e)
     {
-        _pExampleHost.PExampleReferenceCreate(sender, e);
+        _pSentenceHost.PSentenceReferenceCreate(sender, e);
     }
 }

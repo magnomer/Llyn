@@ -24,6 +24,7 @@ public partial class PWindow : Window
         PSound.PSoundAttach(this, engine);
         PTag.PTagAttach(this, engine);
         PSituation.PSituationAttach(this, engine);
+        PExample.PExampleAttach(this, engine);
         PDuplex.PDuplexAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
 
@@ -48,6 +49,7 @@ public partial class PWindow : Window
         PSound.PSoundClose();
         PTag.PTagClose();
         PSituation.PSituationClose();
+        PExample.PExampleClose();
         PDuplex.PDuplexClose();
         _lEngine.Dispose();
     }

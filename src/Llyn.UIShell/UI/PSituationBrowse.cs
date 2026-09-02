@@ -96,7 +96,7 @@ public partial class PSituation
         try
         {
             read = _lEngine.LEngineSituationRead();
-            _pAtlasUsage = _lEngine.LEngineUsageRead();
+            _pAtlasUsage = _lEngine.LEngineUsageRead(LOwner.LOwnerSituation);
         }
         catch (Exception exception)
         {
@@ -219,7 +219,7 @@ public partial class PSituation
         IReadOnlyList<LUsage> read;
         try
         {
-            read = _lEngine.LEngineUsageRead(id);
+            read = _lEngine.LEngineUsageRead(id, LOwner.LOwnerSituation);
         }
         catch (Exception exception)
         {

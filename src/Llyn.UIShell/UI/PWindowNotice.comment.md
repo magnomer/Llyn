@@ -43,8 +43,10 @@ Nothing unsaved means nothing to ask about.
 So the question is only ever put when there is something to lose.
 That is why it can sit in front of every path that discards typed work.
 
-### `internal bool PWindowRemovalConfirm(int usage)`
+### `internal bool PWindowRemovalConfirm(int usage, string scope)`
 
 Asks before a shared record is deleted, and says how much the delete reaches.
 A record nothing references is a plain question.
 One something references names the number of places first, because the delete drops those references too.
+`scope` names the kind of record, so a Situation and an Example each speak of themselves.
+The wording is the panel's, but the shape of the question belongs to the window that asks it.

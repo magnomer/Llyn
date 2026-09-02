@@ -37,17 +37,23 @@ public partial class PWindow
     internal bool PWindowDiscardConfirm()
     {
         return PWindowDiscardConfirm(PInput.PInputChangeCheck() || PList.PListChangeCheck() || PSound.PSoundChangeCheck()
-            || PTag.PTagChangeCheck() || PSituation.PSituationChangeCheck());
+            || PTag.PTagChangeCheck() || PSituation.PSituationChangeCheck()
+            || PExample.PExampleChangeCheck());
     }
 
     internal bool PWindowRemovalConfirm(int usage)
     {
-        string count = $"{PLocalizationTextRead("Situation.DetachCount")} "
+        return PWindowRemovalConfirm(usage, "Situation");
+    }
+
+    internal bool PWindowRemovalConfirm(int usage, string scope)
+    {
+        string count = $"{PLocalizationTextRead($"{scope}.DetachCount")} "
             + usage.ToString(CultureInfo.CurrentCulture);
 
         string question = usage > 0
-            ? $"{PLocalizationTextRead("Situation.DetachConfirm")}\n\n{count}"
-            : PLocalizationTextRead("Situation.DeleteConfirm");
+            ? $"{PLocalizationTextRead($"{scope}.DetachConfirm")}\n\n{count}"
+            : PLocalizationTextRead($"{scope}.DeleteConfirm");
 
         return MessageBox.Show(
             this,

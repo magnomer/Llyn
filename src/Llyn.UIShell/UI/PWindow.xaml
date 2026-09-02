@@ -95,6 +95,7 @@
                             <Button x:Name="PNavigationSound" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Sound}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationTag" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Tag}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationSituation" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Situation}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationExample" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Example}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationFavorite" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Favorite}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationDuplex" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.DualPanel}" Click="PNavigationHandle" />
                         </StackPanel>
@@ -109,6 +110,7 @@
                     <local:PSound x:Name="PSound" Visibility="Collapsed" />
                     <local:PTag x:Name="PTag" Visibility="Collapsed" />
                     <local:PSituation x:Name="PSituation" Visibility="Collapsed" />
+                    <local:PExample x:Name="PExample" Visibility="Collapsed" />
                     <Grid x:Name="PFavorite" Visibility="Collapsed" />
                     <local:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
                     <local:PSettings x:Name="PSettings" Visibility="Collapsed" />

@@ -187,6 +187,76 @@ public sealed class TExample
         Assert.Equal(3, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
     }
 
+    [Fact]
+    public void TheWorkspaceStockOfExamplesIsReadWithItsUsageCounted()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = TExampleEntryCreate(engine);
+        string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+
+        LExample shared = engine.LEngineExampleCreate(new LExample(
+            string.Empty,
+            "English",
+            "he said the word",
+            null,
+            null,
+            [new LTranslation(string.Empty, "Korean", "그가 그 말을 했다", 0)]));
+        LExample lonely = engine.LEngineExampleCreate(
+            new LExample(string.Empty, "English", "nobody quotes me", null, null, []));
+
+        engine.LEngineExampleAttach(entry.LEntryId, shared.LExampleId, 0, LOwner.LOwnerEntry);
+        engine.LEngineExampleAttach(senseId, shared.LExampleId, 0, LOwner.LOwnerSense);
+
+        Assert.Equal(
+            ["he said the word", "nobody quotes me"],
+            engine.LEngineExampleRead().Select(row => row.LExampleText.LStateValueShow()));
+        Assert.Equal(
+            "그가 그 말을 했다",
+            Assert.Single(engine.LEngineExampleRead()[0].LExampleTranslations).LTranslationText);
+
+        IReadOnlyDictionary<string, int> counts = engine.LEngineUsageRead(LOwner.LOwnerExample);
+        Assert.Equal(2, counts[shared.LExampleId]);
+        Assert.DoesNotContain(lonely.LExampleId, counts);
+    }
+
+    [Fact]
+    public void UsageNamesEveryQuotingSideAndDetachingDeleteDropsThemAll()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = TExampleEntryCreate(engine);
+        string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string collocationId =
+            engine.LEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
+
+        LExample example = engine.LEngineExampleCreate(
+            new LExample(string.Empty, "English", "he said the word", null, null, []));
+        engine.LEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
+        engine.LEngineExampleAttach(senseId, example.LExampleId, 0, LOwner.LOwnerSense);
+        engine.LEngineExampleAttach(collocationId, example.LExampleId, 0, LOwner.LOwnerCollocation);
+
+        IReadOnlyList<LUsage> usage = engine.LEngineUsageRead(example.LExampleId, LOwner.LOwnerExample);
+        Assert.Equal(3, usage.Count);
+        Assert.Equal(entry.LEntryId, usage.Single(row => row.LUsageOwner == LOwner.LOwnerEntry).LUsageEntry);
+        Assert.Equal(senseId, usage.Single(row => row.LUsageOwner == LOwner.LOwnerSense).LUsageId);
+        Assert.Equal(
+            "in a word",
+            usage.Single(row => row.LUsageOwner == LOwner.LOwnerCollocation).LUsageTitle.LStateValueShow());
+
+        Assert.Throws<InvalidOperationException>(() => engine.LEngineExampleDelete(example.LExampleId));
+
+        engine.LEngineExampleDelete(example.LExampleId, true);
+
+        Assert.Null(engine.LEngineExampleRead(example.LExampleId));
+        Assert.Empty(engine.LEngineExampleRead(entry.LEntryId, LOwner.LOwnerEntry));
+        Assert.Empty(engine.LEngineExampleRead(senseId, LOwner.LOwnerSense));
+        Assert.Empty(engine.LEngineExampleRead(collocationId, LOwner.LOwnerCollocation));
+        Assert.Empty(engine.LEngineUsageRead(example.LExampleId, LOwner.LOwnerExample));
+    }
+
     private static LEntry TExampleEntryCreate(LEngine engine)
     {
         return engine.LEngineEntrySave(new LEntryDraft(

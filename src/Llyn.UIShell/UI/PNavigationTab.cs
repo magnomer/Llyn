@@ -33,6 +33,12 @@ public partial class PWindow
             return;
         }
 
+        if (PExample.IsVisible && selectedButton != PNavigationExample
+            && !PWindowDiscardConfirm(PExample.PExampleChangeCheck()))
+        {
+            return;
+        }
+
         (Button Button, FrameworkElement Panel)[] tabs =
         [
             (PNavigationInput, PInput),
@@ -40,6 +46,7 @@ public partial class PWindow
             (PNavigationSound, PSound),
             (PNavigationTag, PTag),
             (PNavigationSituation, PSituation),
+            (PNavigationExample, PExample),
             (PNavigationFavorite, PFavorite),
             (PNavigationDuplex, PDuplex),
             (PNavigationSettings, PSettings)

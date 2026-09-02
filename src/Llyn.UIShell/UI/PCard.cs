@@ -27,9 +27,9 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pTitle = string.Empty;
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;
-        PCardExample = [];
-        PCardExampleAdd(new PExample(catalog));
-        PCardExampleUpdate();
+        PCardSentence = [];
+        PCardSentenceAdd(new PSentence(catalog));
+        PCardSentenceUpdate();
         PCardSituation = [];
         PCardSituationAdd(new PContext(catalog));
         PCardSituationUpdate();

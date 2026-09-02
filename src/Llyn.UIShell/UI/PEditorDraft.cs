@@ -49,7 +49,7 @@ public partial class PEditor
         cards.Clear();
         foreach (LCardDraft draft in drafts)
         {
-            PCard card = new(prefix, cards.Count + 1, _pExampleReference)
+            PCard card = new(prefix, cards.Count + 1, _pSentenceReference)
             {
                 PCardId = draft.LCardDraftId
             };
@@ -57,7 +57,7 @@ public partial class PEditor
             card.PCardTitleShow(draft.LCardDraftTitle);
             card.PCardExpressionShow(draft.LCardDraftExpression);
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
-            card.PCardExampleShow(draft.LCardDraftExample);
+            card.PCardSentenceShow(draft.LCardDraftExample);
             card.PCardSituationShow(draft.LCardDraftSituation);
             card.PCardTagShow(draft.LCardDraftTag);
             card.PCardImageShow(draft.LCardDraftImage);
@@ -66,7 +66,7 @@ public partial class PEditor
 
         if (cards.Count == 0)
         {
-            cards.Add(new PCard(prefix, 1, _pExampleReference));
+            cards.Add(new PCard(prefix, 1, _pSentenceReference));
         }
     }
 
@@ -274,7 +274,7 @@ public partial class PEditor
                 card.PCardTitleRead(),
                 card.PCardExpressionRead(),
                 card.PCardDefinitionRead(),
-                card.PCardExampleRead(),
+                card.PCardSentenceRead(),
                 card.PCardSituationRead(),
                 string.Empty,
                 card.PCardTagRead(),

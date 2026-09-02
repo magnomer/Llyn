@@ -6,24 +6,24 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-internal sealed class PExample : INotifyPropertyChanged
+internal sealed class PSentence : INotifyPropertyChanged
 {
-    private string _pExampleId;
-    private string _pExampleText;
-    private bool _pExampleUnreadable;
-    private string _pExampleReference;
-    private bool _pExampleReferenceUnreadable;
-    private string _pExampleReferenceName;
-    private string _pExampleReferenceDraft;
-    private string _pExampleOrderText;
-    private bool _pExampleReferenceVisible;
+    private string _pSentenceId;
+    private string _pSentenceText;
+    private bool _pSentenceUnreadable;
+    private string _pSentenceReference;
+    private bool _pSentenceReferenceUnreadable;
+    private string _pSentenceReferenceName;
+    private string _pSentenceReferenceDraft;
+    private string _pSentenceOrderText;
+    private bool _pSentenceReferenceVisible;
 
-    internal PExample(ObservableCollection<PReference> catalog)
+    internal PSentence(ObservableCollection<PReference> catalog)
         : this(catalog, LStateValue.LStateValueUnspecified, string.Empty, LStateValue.LStateValueUnspecified)
     {
     }
 
-    internal PExample(
+    internal PSentence(
         ObservableCollection<PReference> catalog,
         LStateValue text,
         string id,
@@ -32,207 +32,207 @@ internal sealed class PExample : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(reference);
 
-        PExampleReferenceCatalog = catalog;
-        _pExampleId = id;
-        _pExampleText = text.LStateValueShow();
-        _pExampleUnreadable = text.LStateValueState == LState.LStateUnknown;
-        _pExampleReference = reference.LStateValueShow();
-        _pExampleReferenceUnreadable = reference.LStateValueState == LState.LStateUnknown;
-        _pExampleReferenceName = PExampleReferenceFind(_pExampleReference);
-        _pExampleReferenceDraft = string.Empty;
-        _pExampleOrderText = string.Empty;
+        PSentenceReferenceCatalog = catalog;
+        _pSentenceId = id;
+        _pSentenceText = text.LStateValueShow();
+        _pSentenceUnreadable = text.LStateValueState == LState.LStateUnknown;
+        _pSentenceReference = reference.LStateValueShow();
+        _pSentenceReferenceUnreadable = reference.LStateValueState == LState.LStateUnknown;
+        _pSentenceReferenceName = PSentenceReferenceFind(_pSentenceReference);
+        _pSentenceReferenceDraft = string.Empty;
+        _pSentenceOrderText = string.Empty;
     }
 
-    public ObservableCollection<PReference> PExampleReferenceCatalog { get; }
+    public ObservableCollection<PReference> PSentenceReferenceCatalog { get; }
 
-    public string PExampleId
+    public string PSentenceId
     {
-        get => _pExampleId;
+        get => _pSentenceId;
         private set
         {
-            if (string.Equals(_pExampleId, value, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceId, value, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pExampleId = value;
-            PExampleRaise(nameof(PExampleId));
+            _pSentenceId = value;
+            PSentenceRaise(nameof(PSentenceId));
         }
     }
 
-    public string PExampleText
+    public string PSentenceText
     {
-        get => _pExampleText;
+        get => _pSentenceText;
         set
         {
-            if (string.Equals(_pExampleText, value, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceText, value, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pExampleText = value;
-            PExampleUnreadable = false;
-            PExampleRaise(nameof(PExampleText));
+            _pSentenceText = value;
+            PSentenceUnreadable = false;
+            PSentenceRaise(nameof(PSentenceText));
         }
     }
 
-    public bool PExampleUnreadable
+    public bool PSentenceUnreadable
     {
-        get => _pExampleUnreadable;
+        get => _pSentenceUnreadable;
         private set
         {
-            if (_pExampleUnreadable == value)
+            if (_pSentenceUnreadable == value)
             {
                 return;
             }
 
-            _pExampleUnreadable = value;
-            PExampleRaise(nameof(PExampleUnreadable));
+            _pSentenceUnreadable = value;
+            PSentenceRaise(nameof(PSentenceUnreadable));
         }
     }
 
-    public string PExampleReference
+    public string PSentenceReference
     {
-        get => _pExampleReference;
+        get => _pSentenceReference;
         set
         {
             string chosen = value ?? string.Empty;
-            if (string.Equals(_pExampleReference, chosen, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceReference, chosen, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pExampleReference = chosen;
-            PExampleReferenceUnreadable = false;
-            PExampleRaise(nameof(PExampleReference));
+            _pSentenceReference = chosen;
+            PSentenceReferenceUnreadable = false;
+            PSentenceRaise(nameof(PSentenceReference));
 
-            PExampleReferenceName = PExampleReferenceFind(chosen);
-            PExampleReferenceVisible = false;
+            PSentenceReferenceName = PSentenceReferenceFind(chosen);
+            PSentenceReferenceVisible = false;
         }
     }
 
-    public bool PExampleReferenceUnreadable
+    public bool PSentenceReferenceUnreadable
     {
-        get => _pExampleReferenceUnreadable;
+        get => _pSentenceReferenceUnreadable;
         private set
         {
-            if (_pExampleReferenceUnreadable == value)
+            if (_pSentenceReferenceUnreadable == value)
             {
                 return;
             }
 
-            _pExampleReferenceUnreadable = value;
-            PExampleRaise(nameof(PExampleReferenceUnreadable));
+            _pSentenceReferenceUnreadable = value;
+            PSentenceRaise(nameof(PSentenceReferenceUnreadable));
         }
     }
 
-    public string PExampleReferenceName
+    public string PSentenceReferenceName
     {
-        get => _pExampleReferenceName;
+        get => _pSentenceReferenceName;
         private set
         {
-            if (string.Equals(_pExampleReferenceName, value, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceReferenceName, value, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pExampleReferenceName = value;
-            PExampleRaise(nameof(PExampleReferenceName));
+            _pSentenceReferenceName = value;
+            PSentenceRaise(nameof(PSentenceReferenceName));
         }
     }
 
-    public string PExampleReferenceDraft
+    public string PSentenceReferenceDraft
     {
-        get => _pExampleReferenceDraft;
+        get => _pSentenceReferenceDraft;
         set
         {
-            if (string.Equals(_pExampleReferenceDraft, value, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceReferenceDraft, value, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pExampleReferenceDraft = value;
-            PExampleRaise(nameof(PExampleReferenceDraft));
+            _pSentenceReferenceDraft = value;
+            PSentenceRaise(nameof(PSentenceReferenceDraft));
         }
     }
 
-    public bool PExampleReferenceVisible
+    public bool PSentenceReferenceVisible
     {
-        get => _pExampleReferenceVisible;
+        get => _pSentenceReferenceVisible;
         set
         {
-            if (_pExampleReferenceVisible == value)
+            if (_pSentenceReferenceVisible == value)
             {
                 return;
             }
 
-            _pExampleReferenceVisible = value;
-            PExampleRaise(nameof(PExampleReferenceVisible));
+            _pSentenceReferenceVisible = value;
+            PSentenceRaise(nameof(PSentenceReferenceVisible));
         }
     }
 
-    public string PExampleOrderText
+    public string PSentenceOrderText
     {
-        get => _pExampleOrderText;
+        get => _pSentenceOrderText;
         set
         {
-            if (string.Equals(_pExampleOrderText, value, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceOrderText, value, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pExampleOrderText = value;
-            PExampleRaise(nameof(PExampleOrderText));
+            _pSentenceOrderText = value;
+            PSentenceRaise(nameof(PSentenceOrderText));
         }
     }
 
-    internal LStateValue PExampleTextRead()
+    internal LStateValue PSentenceTextRead()
     {
-        return _pExampleUnreadable
+        return _pSentenceUnreadable
             ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pExampleText);
+            : LStateValue.LStateValueRead(_pSentenceText);
     }
 
-    internal LStateValue PExampleReferenceRead()
+    internal LStateValue PSentenceReferenceRead()
     {
-        return _pExampleReferenceUnreadable
+        return _pSentenceReferenceUnreadable
             ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pExampleReference);
+            : LStateValue.LStateValueRead(_pSentenceReference);
     }
 
-    internal void PExampleIdentityApply()
+    internal void PSentenceIdentityApply()
     {
-        if (_pExampleId.Length != 0 || PExampleTextRead().LStateValueEmpty)
+        if (_pSentenceId.Length != 0 || PSentenceTextRead().LStateValueEmpty)
         {
             return;
         }
 
-        PExampleId = LEngine.LEngineIdentityCreate();
+        PSentenceId = LEngine.LEngineIdentityCreate();
     }
 
-    internal void PExampleClear()
+    internal void PSentenceClear()
     {
-        PExampleText = string.Empty;
-        PExampleUnreadable = false;
-        PExampleReference = string.Empty;
-        PExampleReferenceUnreadable = false;
-        PExampleReferenceDraft = string.Empty;
-        PExampleId = string.Empty;
+        PSentenceText = string.Empty;
+        PSentenceUnreadable = false;
+        PSentenceReference = string.Empty;
+        PSentenceReferenceUnreadable = false;
+        PSentenceReferenceDraft = string.Empty;
+        PSentenceId = string.Empty;
     }
 
-    internal void PExampleReferenceShow()
+    internal void PSentenceReferenceShow()
     {
-        PExampleReferenceName = PExampleReferenceFind(_pExampleReference);
+        PSentenceReferenceName = PSentenceReferenceFind(_pSentenceReference);
     }
 
-    private string PExampleReferenceFind(string reference)
+    private string PSentenceReferenceFind(string reference)
     {
         if (string.IsNullOrWhiteSpace(reference))
         {
             return string.Empty;
         }
 
-        foreach (PReference row in PExampleReferenceCatalog)
+        foreach (PReference row in PSentenceReferenceCatalog)
         {
             if (string.Equals(row.PReferenceId, reference, StringComparison.Ordinal))
             {
@@ -245,7 +245,7 @@ internal sealed class PExample : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void PExampleRaise(string propertyName)
+    private void PSentenceRaise(string propertyName)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

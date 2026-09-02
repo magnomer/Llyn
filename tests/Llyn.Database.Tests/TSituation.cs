@@ -191,7 +191,7 @@ public sealed class TSituation
             ["in court", "at home"],
             engine.LEngineSituationRead().Select(row => row.LSituationTitle.LStateValueShow()));
 
-        IReadOnlyDictionary<string, int> counts = engine.LEngineUsageRead();
+        IReadOnlyDictionary<string, int> counts = engine.LEngineUsageRead(LOwner.LOwnerSituation);
         Assert.Equal(2, counts[shared.LSituationId]);
         Assert.DoesNotContain(lonely.LSituationId, counts);
     }
@@ -212,7 +212,7 @@ public sealed class TSituation
         engine.LEngineSituationAttach(senseId, situation.LSituationId, 0, LOwner.LOwnerSense);
         engine.LEngineSituationAttach(collocationId, situation.LSituationId, 0, LOwner.LOwnerCollocation);
 
-        IReadOnlyList<LUsage> usage = engine.LEngineUsageRead(situation.LSituationId);
+        IReadOnlyList<LUsage> usage = engine.LEngineUsageRead(situation.LSituationId, LOwner.LOwnerSituation);
         Assert.Equal(2, usage.Count);
 
         LUsage sense = usage.Single(row => row.LUsageOwner == LOwner.LOwnerSense);
@@ -228,7 +228,8 @@ public sealed class TSituation
 
         Assert.Empty(engine.LEngineUsageRead(
             engine.LEngineSituationCreate(new LSituation(string.Empty, "at home", null, null, null))
-                .LSituationId));
+                .LSituationId,
+            LOwner.LOwnerSituation));
     }
 
     [Fact]

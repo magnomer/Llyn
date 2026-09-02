@@ -1,6 +1,6 @@
-# PExampleTemplate.xaml
+# PSentenceTemplate.xaml
 
-## `Theme.Example.Row`
+## `Theme.Sentence.Row`
 
 The Example row as the card shows it.
 That is the sentence field, with the id the row will be stored under at its right.
@@ -15,23 +15,23 @@ One Source in the list a row cites from, and the row it sits in.
 Both are offered to the Situation rows as well.
 That is why they live in this dictionary rather than beside a single template.
 
-## `Theme.Example.Identity`
+## `Theme.Sentence.Identity`
 
 The box the row's id stands in, hidden until the row has an id.
 
-## `Theme.Example.Order`
+## `Theme.Sentence.Order`
 
 The number stands ahead of the field, in the label column's gutter.
 So an Example field starts exactly where every other field on the card does.
 That holds whether or not the rows are numbered.
 
-## `Theme.Example.Citation`
+## `Theme.Sentence.Citation`
 
 What the Source button reads.
 It reads the cited Source's name.
 It reads the invitation to assign one when the row cites none.
 It reads the unreadable mark when the citation cannot be read back.
 
-## `Theme.Example.Notice`
+## `Theme.Sentence.Notice`
 
 The line shown in the Source list while the workspace holds no Sources at all.

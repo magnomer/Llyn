@@ -8,11 +8,11 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<PReference> _pExampleReference = [];
+    private readonly ObservableCollection<PReference> _pSentenceReference = [];
 
-    internal void PExampleLoad()
+    internal void PSentenceLoad()
     {
-        _pExampleReference.Clear();
+        _pSentenceReference.Clear();
 
         IReadOnlyList<LReference> references;
         try
@@ -26,45 +26,45 @@ public partial class PEditor
 
         foreach (LReference reference in references)
         {
-            _pExampleReference.Add(PReference.PReferenceCreate(reference));
+            _pSentenceReference.Add(PReference.PReferenceCreate(reference));
         }
 
-        PExampleReferenceShow();
+        PSentenceReferenceShow();
         PContextReferenceShow();
     }
 
-    internal void PExampleAddHandle(object sender, RoutedEventArgs e)
+    internal void PSentenceAddHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PExample row })
+        if (sender is FrameworkElement { DataContext: PSentence row })
         {
-            PCardExampleFind(row)?.PCardExampleInsert(row);
+            PCardSentenceFind(row)?.PCardSentenceInsert(row);
         }
     }
 
-    internal void PExampleRemoveHandle(object sender, RoutedEventArgs e)
+    internal void PSentenceRemoveHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PExample row })
+        if (sender is FrameworkElement { DataContext: PSentence row })
         {
-            PCardExampleFind(row)?.PCardExampleRemove(row);
+            PCardSentenceFind(row)?.PCardSentenceRemove(row);
         }
     }
 
-    internal void PExampleReferenceClear(object sender, RoutedEventArgs e)
+    internal void PSentenceReferenceClear(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PExample row })
+        if (sender is FrameworkElement { DataContext: PSentence row })
         {
-            row.PExampleReference = string.Empty;
+            row.PSentenceReference = string.Empty;
         }
     }
 
-    internal void PExampleReferenceCreate(object sender, RoutedEventArgs e)
+    internal void PSentenceReferenceCreate(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PExample row })
+        if (sender is not FrameworkElement { DataContext: PSentence row })
         {
             return;
         }
 
-        string name = row.PExampleReferenceDraft.Trim();
+        string name = row.PSentenceReferenceDraft.Trim();
         if (name.Length == 0)
         {
             return;
@@ -88,37 +88,37 @@ public partial class PEditor
             return;
         }
 
-        _pExampleReference.Add(PReference.PReferenceCreate(created));
-        row.PExampleReferenceDraft = string.Empty;
-        row.PExampleReference = created.LReferenceId;
+        _pSentenceReference.Add(PReference.PReferenceCreate(created));
+        row.PSentenceReferenceDraft = string.Empty;
+        row.PSentenceReference = created.LReferenceId;
     }
 
-    private void PExampleReferenceShow()
+    private void PSentenceReferenceShow()
     {
         foreach (PCard card in _pSenseList)
         {
-            PExampleReferenceShow(card);
+            PSentenceReferenceShow(card);
         }
 
         foreach (PCard card in _pCollocationList)
         {
-            PExampleReferenceShow(card);
+            PSentenceReferenceShow(card);
         }
     }
 
-    private static void PExampleReferenceShow(PCard card)
+    private static void PSentenceReferenceShow(PCard card)
     {
-        foreach (PExample row in card.PCardExample)
+        foreach (PSentence row in card.PCardSentence)
         {
-            row.PExampleReferenceShow();
+            row.PSentenceReferenceShow();
         }
     }
 
-    private PCard? PCardExampleFind(PExample row)
+    private PCard? PCardSentenceFind(PSentence row)
     {
         foreach (PCard card in _pSenseList)
         {
-            if (card.PCardExample.Contains(row))
+            if (card.PCardSentence.Contains(row))
             {
                 return card;
             }
@@ -126,7 +126,7 @@ public partial class PEditor
 
         foreach (PCard card in _pCollocationList)
         {
-            if (card.PCardExample.Contains(row))
+            if (card.PCardSentence.Contains(row))
             {
                 return card;
             }
