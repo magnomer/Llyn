@@ -168,6 +168,109 @@ public sealed class TSituation
         Assert.Equal(3, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_situation;"));
     }
 
+    [Fact]
+    public void TheShelfListsEverySituationWithHowManyPlacesReferenceIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = TSituationEntryCreate(engine);
+        string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string collocationId =
+            engine.LEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
+
+        LSituation shared = engine.LEngineSituationCreate(
+            new LSituation(string.Empty, "in court", null, null, null));
+        LSituation lonely = engine.LEngineSituationCreate(
+            new LSituation(string.Empty, "at home", null, null, null));
+
+        engine.LEngineSituationAttach(senseId, shared.LSituationId, 0, LOwner.LOwnerSense);
+        engine.LEngineSituationAttach(collocationId, shared.LSituationId, 0, LOwner.LOwnerCollocation);
+
+        Assert.Equal(
+            ["in court", "at home"],
+            engine.LEngineSituationRead().Select(row => row.LSituationTitle.LStateValueShow()));
+
+        IReadOnlyDictionary<string, int> counts = engine.LEngineUsageRead();
+        Assert.Equal(2, counts[shared.LSituationId]);
+        Assert.DoesNotContain(lonely.LSituationId, counts);
+    }
+
+    [Fact]
+    public void UsageNamesTheReferringSideAndTheEntryItBelongsTo()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = TSituationEntryCreate(engine);
+        string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string collocationId =
+            engine.LEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
+
+        LSituation situation = engine.LEngineSituationCreate(
+            new LSituation(string.Empty, "in court", null, null, null));
+        engine.LEngineSituationAttach(senseId, situation.LSituationId, 0, LOwner.LOwnerSense);
+        engine.LEngineSituationAttach(collocationId, situation.LSituationId, 0, LOwner.LOwnerCollocation);
+
+        IReadOnlyList<LUsage> usage = engine.LEngineUsageRead(situation.LSituationId);
+        Assert.Equal(2, usage.Count);
+
+        LUsage sense = usage.Single(row => row.LUsageOwner == LOwner.LOwnerSense);
+        Assert.Equal(senseId, sense.LUsageId);
+        Assert.Equal(entry.LEntryId, sense.LUsageEntry);
+        Assert.Equal("word", sense.LUsageHeadword);
+        Assert.Equal("English", sense.LUsageLanguage);
+        Assert.Equal("a meaning", sense.LUsageTitle.LStateValueShow());
+
+        LUsage collocation = usage.Single(row => row.LUsageOwner == LOwner.LOwnerCollocation);
+        Assert.Equal(collocationId, collocation.LUsageId);
+        Assert.Equal("in a word", collocation.LUsageTitle.LStateValueShow());
+
+        Assert.Empty(engine.LEngineUsageRead(
+            engine.LEngineSituationCreate(new LSituation(string.Empty, "at home", null, null, null))
+                .LSituationId));
+    }
+
+    [Fact]
+    public void ADetachingDeleteDropsEveryReferenceAndRenumbersWhatEachCardHasLeft()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry entry = TSituationEntryCreate(engine);
+        string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string collocationId =
+            engine.LEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
+
+        LSituation first = engine.LEngineSituationCreate(
+            new LSituation(string.Empty, "in court", null, null, null));
+        LSituation second = engine.LEngineSituationCreate(
+            new LSituation(string.Empty, "at home", null, null, null));
+
+        engine.LEngineSituationAttach(senseId, first.LSituationId, 0, LOwner.LOwnerSense);
+        engine.LEngineSituationAttach(senseId, second.LSituationId, 1, LOwner.LOwnerSense);
+        engine.LEngineSituationAttach(collocationId, first.LSituationId, 0, LOwner.LOwnerCollocation);
+
+        engine.LEngineSituationDelete(first.LSituationId, true);
+
+        Assert.Null(engine.LEngineSituationRead(first.LSituationId));
+        Assert.Equal(
+            ["at home"],
+            engine.LEngineSituationRead(senseId, LOwner.LOwnerSense)
+                .Select(row => row.LSituationTitle.LStateValueShow()));
+        Assert.Empty(engine.LEngineSituationRead(collocationId, LOwner.LOwnerCollocation));
+        Assert.Equal(0, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM sense_situation WHERE position <> 0;"));
+
+        LSituation third = engine.LEngineSituationCreate(
+            new LSituation(string.Empty, "in a letter", null, null, null));
+        engine.LEngineSituationAttach(senseId, third.LSituationId, 1, LOwner.LOwnerSense);
+        Assert.Equal(
+            ["at home", "in a letter"],
+            engine.LEngineSituationRead(senseId, LOwner.LOwnerSense)
+                .Select(row => row.LSituationTitle.LStateValueShow()));
+    }
+
     private static LEntry TSituationEntryCreate(LEngine engine)
     {
         return engine.LEngineEntrySave(new LEntryDraft(

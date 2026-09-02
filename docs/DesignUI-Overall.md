@@ -46,14 +46,14 @@ Some tabs use different concrete component names for the same broader functional
 
 The browse-style tabs currently follow this mapping:
 
-| Functional category | PList | PSound | PTag | PExample | PReference |
-|---|---|---|---|---|---|
-| Sorting | `POrder` | `PSequence` | `PFunnel` | `PRank` | `PGrade` |
-| Search | `PInquiry` | `PProbe` | `PExploration` | `PQuery` | `PSurvey` |
-| `PCatalog` | `PIndex` | `PInventory` | `PDirectory` | `PAnthology` | `PShelf` |
-| Read/display area | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` |
-| Mode toggle | `PScribe` | `PScribe` | `PScribe` | `PScribe` | `PScribe` |
-| Editing area | `PEditor` | `PEditor` | `PEditor` | `PEditor` | `PEditor` |
+| Functional category | PList | PSound | PTag | PExample | PReference | PSituation | PFavorite |
+|---|---|---|---|---|---|---|---|
+| Sorting | `POrder` | `PSequence` | `PFunnel` | `PRank` | `PGrade` | `PTier` | `PSeries` |
+| Search | `PInquiry` | `PProbe` | `PExploration` | `PQuery` | `PSurvey` | `PInquest` | `PRecall` |
+| `PCatalog` | `PIndex` | `PInventory` | `PDirectory` | `PAnthology` | `PShelf` | `PAtlas` | `PRoster` |
+| Read/display area | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` | `PDisplay` |
+| Mode toggle | `PScribe` | `PScribe` | `PScribe` | `PScribe` | `PScribe` | `PScribe` | `PScribe` |
+| Editing area | `PEditor` | `PEditor` | `PEditor` | `PEditor` | `PEditor` | `PEditor` | `PEditor` |
 
 `PCatalog` is an overarching functional term. It does not require the concrete component itself to be named `PCatalog`.
 
@@ -65,12 +65,14 @@ PCatalog
 ├── PInventory      [PSound]
 ├── PDirectory      [PTag]
 ├── PAnthology      [PExample]
-└── PShelf          [PReference]
+├── PShelf          [PReference]
+├── PAtlas          [PSituation]
+└── PRoster         [PFavorite]
 ```
 
 `PDisplay`, `PScribe`, and `PEditor` are intentionally shared concrete names across these tabs.
 
-What they share is the read/edit mechanism, not the object. In `PList`, `PSound`, and `PTag` they stand on an Entry. In `PExample` they stand on an Example, and in `PReference` on a Source.
+What they share is the read/edit mechanism, not the object. In `PList`, `PSound`, `PTag`, and `PFavorite` they stand on an Entry. In `PExample` they stand on an Example, in `PReference` on a Source, and in `PSituation` on a Situation.
 
 ---
 

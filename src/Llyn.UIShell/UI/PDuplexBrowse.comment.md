@@ -1,0 +1,31 @@
+# PDuplexBrowse.cs
+
+## `public partial class PDuplex`
+
+Browsing behavior of the duplex panel.
+A query refills the matches of its own side only.
+A chosen match is loaded back from the workspace and rendered read-only on that side.
+The panel never writes, so there is no editor and nothing to discard.
+
+## Inline notes
+
+### `private readonly ObservableCollection<PIndexItem> _pLeftIndex = [];`
+
+The matches the left query found, held per side because the sides are peers.
+Changing one side leaves the other where it was.
+
+### `private async void PDuplexHandle(object sender, DependencyPropertyChangedEventArgs e)`
+
+The first time the panel is shown it binds both match lists and loads the flags.
+A session that never opens the duplex tab never touches either.
+
+## `private void PDuplexIndexFind(string query, ObservableCollection<PIndexItem> catalog, ItemsControl index)`
+
+Refills one side's matches from its query.
+An empty query stands for no matches rather than for every entry.
+The list hides itself when it has nothing to offer.
+
+## `private void PDuplexEntryShow(string id, PDisplay display)`
+
+Loads one Entry back from the workspace onto the side that asked for it.
+An Entry that is gone leaves that side empty rather than showing what it was.

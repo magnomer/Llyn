@@ -13,6 +13,21 @@ public sealed partial class LEngine
         return new LSituationArchive(_lEngineDatabase).LSituationCreate(situation);
     }
 
+    public IReadOnlyList<LSituation> LEngineSituationRead()
+    {
+        return new LSituationArchive(_lEngineDatabase).LSituationRead();
+    }
+
+    public IReadOnlyDictionary<string, int> LEngineUsageRead()
+    {
+        return new LSituationArchive(_lEngineDatabase).LSituationReferenceRead();
+    }
+
+    public IReadOnlyList<LUsage> LEngineUsageRead(string id)
+    {
+        return new LSituationArchive(_lEngineDatabase).LSituationUsageRead(id);
+    }
+
     public LSituation? LEngineSituationRead(string id)
     {
         return new LSituationArchive(_lEngineDatabase).LSituationRead(id);
@@ -80,5 +95,10 @@ public sealed partial class LEngine
     public void LEngineSituationDelete(string id)
     {
         new LSituationArchive(_lEngineDatabase).LSituationDelete(id);
+    }
+
+    public void LEngineSituationDelete(string id, bool detach)
+    {
+        new LSituationArchive(_lEngineDatabase).LSituationDelete(id, detach);
     }
 }

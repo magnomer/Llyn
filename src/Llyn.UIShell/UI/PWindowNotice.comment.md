@@ -42,3 +42,9 @@ It is for a panel leaving its editing state while the rest of the window stays a
 Nothing unsaved means nothing to ask about.
 So the question is only ever put when there is something to lose.
 That is why it can sit in front of every path that discards typed work.
+
+### `internal bool PWindowRemovalConfirm(int usage)`
+
+Asks before a shared record is deleted, and says how much the delete reaches.
+A record nothing references is a plain question.
+One something references names the number of places first, because the delete drops those references too.

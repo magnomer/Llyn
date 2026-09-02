@@ -31,7 +31,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardExampleAdd(new PExample(catalog));
         PCardExampleUpdate();
         PCardSituation = [];
-        PCardSituationAdd(new PSituation(catalog));
+        PCardSituationAdd(new PContext(catalog));
         PCardSituationUpdate();
         PCardTagStart();
         PCardImage = [];

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -54,5 +54,7 @@ public partial class PSettings
         _pSettingsHost.PList.PListReset();
         _pSettingsHost.PSound.PSoundReset();
         _pSettingsHost.PTag.PTagReset();
+        _pSettingsHost.PSituation.PSituationReset();
+        _pSettingsHost.PDuplex.PDuplexReset();
     }
 }

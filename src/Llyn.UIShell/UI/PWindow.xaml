@@ -108,9 +108,9 @@
                     <local:PList x:Name="PList" Visibility="Collapsed" />
                     <local:PSound x:Name="PSound" Visibility="Collapsed" />
                     <local:PTag x:Name="PTag" Visibility="Collapsed" />
-                    <Grid x:Name="PSituation" Visibility="Collapsed" />
+                    <local:PSituation x:Name="PSituation" Visibility="Collapsed" />
                     <Grid x:Name="PFavorite" Visibility="Collapsed" />
-                    <Grid x:Name="PDuplex" Visibility="Collapsed" />
+                    <local:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
                     <local:PSettings x:Name="PSettings" Visibility="Collapsed" />
                 </Grid>
             </Grid>

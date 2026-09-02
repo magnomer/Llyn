@@ -6,38 +6,38 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    internal void PSituationAddHandle(object sender, RoutedEventArgs e)
+    internal void PContextAddHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PSituation row })
+        if (sender is FrameworkElement { DataContext: PContext row })
         {
             PCardSituationFind(row)?.PCardSituationInsert(row);
         }
     }
 
-    internal void PSituationRemoveHandle(object sender, RoutedEventArgs e)
+    internal void PContextRemoveHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PSituation row })
+        if (sender is FrameworkElement { DataContext: PContext row })
         {
             PCardSituationFind(row)?.PCardSituationRemove(row);
         }
     }
 
-    internal void PSituationReferenceClear(object sender, RoutedEventArgs e)
+    internal void PContextReferenceClear(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PSituation row })
+        if (sender is FrameworkElement { DataContext: PContext row })
         {
-            row.PSituationReference = string.Empty;
+            row.PContextReference = string.Empty;
         }
     }
 
-    internal void PSituationReferenceCreate(object sender, RoutedEventArgs e)
+    internal void PContextReferenceCreate(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PSituation row })
+        if (sender is not FrameworkElement { DataContext: PContext row })
         {
             return;
         }
 
-        string name = row.PSituationReferenceDraft.Trim();
+        string name = row.PContextReferenceDraft.Trim();
         if (name.Length == 0)
         {
             return;
@@ -62,32 +62,32 @@ public partial class PEditor
         }
 
         _pExampleReference.Add(PReference.PReferenceCreate(created));
-        row.PSituationReferenceDraft = string.Empty;
-        row.PSituationReference = created.LReferenceId;
+        row.PContextReferenceDraft = string.Empty;
+        row.PContextReference = created.LReferenceId;
     }
 
-    private void PSituationReferenceShow()
+    private void PContextReferenceShow()
     {
         foreach (PCard card in _pSenseList)
         {
-            PSituationReferenceShow(card);
+            PContextReferenceShow(card);
         }
 
         foreach (PCard card in _pCollocationList)
         {
-            PSituationReferenceShow(card);
+            PContextReferenceShow(card);
         }
     }
 
-    private static void PSituationReferenceShow(PCard card)
+    private static void PContextReferenceShow(PCard card)
     {
-        foreach (PSituation row in card.PCardSituation)
+        foreach (PContext row in card.PCardSituation)
         {
-            row.PSituationReferenceShow();
+            row.PContextReferenceShow();
         }
     }
 
-    private PCard? PCardSituationFind(PSituation row)
+    private PCard? PCardSituationFind(PContext row)
     {
         foreach (PCard card in _pSenseList)
         {

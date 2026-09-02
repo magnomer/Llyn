@@ -30,7 +30,7 @@ public partial class PEditor
         }
 
         PExampleReferenceShow();
-        PSituationReferenceShow();
+        PContextReferenceShow();
     }
 
     internal void PExampleAddHandle(object sender, RoutedEventArgs e)

@@ -56,3 +56,24 @@ No caller can compose the steps itself.
 Deletes the Situation identified by `id`.
 Refused while any Meaning or Collocation still references it.
 `LEngineSituationRemove` is the seam that deletes one as its last reference goes.
+
+## `public IReadOnlyList<LSituation> LEngineSituationRead()`
+
+Every Situation in the workspace, for the panel that browses the shelf itself rather than one card's references.
+
+## `public IReadOnlyDictionary<string, int> LEngineUsageRead()`
+
+The reference count of every Situation at once.
+The catalog shows the figure on every row, and it decides which delete may be offered.
+
+## `public IReadOnlyList<LUsage> LEngineUsageRead(string id)`
+
+Where one Situation is used, itemized.
+A count says how many; this says which Meaning or Collocation, and under which Entry.
+The relationship is what the shell must keep: a Situation reached through one Meaning is not a property of the whole Entry.
+
+## `public void LEngineSituationDelete(string id, bool detach)`
+
+Deletes the Situation, dropping every reference to it first when the user asked for that.
+Without `detach` it is the refusing delete above.
+With it the detaching and the delete are one operation rather than a sequence a caller composes.

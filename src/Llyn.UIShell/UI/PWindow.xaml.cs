@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Windows;
 using Llyn.ShellEngine;
@@ -23,6 +23,8 @@ public partial class PWindow : Window
         PList.PListAttach(this, engine);
         PSound.PSoundAttach(this, engine);
         PTag.PTagAttach(this, engine);
+        PSituation.PSituationAttach(this, engine);
+        PDuplex.PDuplexAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
 
         Closing += PWindowClosingHandle;
@@ -45,6 +47,8 @@ public partial class PWindow : Window
         PList.PListClose();
         PSound.PSoundClose();
         PTag.PTagClose();
+        PSituation.PSituationClose();
+        PDuplex.PDuplexClose();
         _lEngine.Dispose();
     }
 }

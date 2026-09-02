@@ -15,11 +15,11 @@ It leaves one empty row when the card references none.
 What the card says its Situations are.
 A row nothing was written in is left out rather than read as an empty Situation.
 
-## `internal void PCardSituationInsert(PSituation row)`
+## `internal void PCardSituationInsert(PContext row)`
 
 Opens a new row directly beneath the one the user asked from.
 
-## `internal void PCardSituationRemove(PSituation row)`
+## `internal void PCardSituationRemove(PContext row)`
 
 Drops the row, except when it is the last one: the last row is emptied instead.
 

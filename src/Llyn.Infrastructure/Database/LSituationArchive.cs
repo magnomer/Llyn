@@ -58,6 +58,33 @@ public sealed class LSituationArchive
         return LSituationSingleRead(session.LDatabaseSessionConnection, id);
     }
 
+    public IReadOnlyList<LSituation> LSituationRead()
+    {
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT id, title_state, title, description_state, description,
+                   kind_state, kind, source_state, source_id
+            FROM situation
+            ORDER BY rowid;
+            """;
+
+        List<LSituation> situations = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            situations.Add(new LSituation(
+                reader.GetString(0),
+                LStateColumn.LStateColumnRead(reader, 1),
+                LStateColumn.LStateColumnRead(reader, 3),
+                LStateColumn.LStateColumnRead(reader, 5),
+                LStateColumn.LStateColumnRead(reader, 7)));
+        }
+
+        return situations;
+    }
+
     public IReadOnlyList<LSituation> LSituationSenseRead(string senseId)
     {
         return LSituationReferrerRead("sense_situation", "sense_id", senseId);
@@ -149,6 +176,103 @@ public sealed class LSituationArchive
         return LSituationReferenceRead(session.LDatabaseSessionConnection, id);
     }
 
+    public IReadOnlyDictionary<string, int> LSituationReferenceRead()
+    {
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT situation_id, COUNT(*) FROM (
+                SELECT situation_id FROM sense_situation
+                UNION ALL
+                SELECT situation_id FROM collocation_situation
+            )
+            GROUP BY situation_id;
+            """;
+
+        Dictionary<string, int> counts = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            counts[reader.GetString(0)] = reader.GetInt32(1);
+        }
+
+        return counts;
+    }
+
+    public IReadOnlyList<LUsage> LSituationUsageRead(string id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        List<LUsage> usages = [];
+        usages.AddRange(LSituationUsageRead(
+            connection,
+            id,
+            LOwner.LOwnerSense,
+            """
+            SELECT link.sense_id, sense.entry_id, entry.headword, entry.language,
+                   sense.title_state, sense.title,
+                   CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
+                   COALESCE(sense.gloss, sense.definition)
+            FROM sense_situation link
+            JOIN sense ON sense.id = link.sense_id
+            JOIN entry ON entry.id = sense.entry_id
+            WHERE link.situation_id = $id
+            ORDER BY entry.headword, sense.position;
+            """));
+        usages.AddRange(LSituationUsageRead(
+            connection,
+            id,
+            LOwner.LOwnerCollocation,
+            """
+            SELECT link.collocation_id, collocation.entry_id, entry.headword, entry.language,
+                   collocation.title_state, collocation.title,
+                   collocation.expression_state, collocation.expression
+            FROM collocation_situation link
+            JOIN collocation ON collocation.id = link.collocation_id
+            JOIN entry ON entry.id = collocation.entry_id
+            WHERE link.situation_id = $id
+            ORDER BY entry.headword, collocation.position;
+            """));
+
+        return usages;
+    }
+
+    private static IReadOnlyList<LUsage> LSituationUsageRead(
+        SqliteConnection connection,
+        string id,
+        LOwner owner,
+        string statement)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = statement;
+        command.Parameters.AddWithValue("$id", id);
+
+        List<LUsage> usages = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            LStateValue title = LStateColumn.LStateColumnRead(reader, 4);
+            if (title.LStateValueEmpty)
+            {
+                title = LStateColumn.LStateColumnRead(reader, 6);
+            }
+
+            usages.Add(new LUsage(
+                reader.GetString(0),
+                owner,
+                reader.GetString(1),
+                reader.GetString(2),
+                reader.GetString(3),
+                title));
+        }
+
+        return usages;
+    }
+
     private static int LSituationReferenceRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
@@ -164,10 +288,21 @@ public sealed class LSituationArchive
 
     public void LSituationDelete(string id)
     {
+        LSituationDelete(id, false);
+    }
+
+    public void LSituationDelete(string id, bool detach)
+    {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        if (detach)
+        {
+            LSituationLinkDelete(connection, "sense_situation", id);
+            LSituationLinkDelete(connection, "collocation_situation", id);
+        }
 
         int references = LSituationReferenceRead(connection, id);
         if (references > 0)
@@ -184,6 +319,43 @@ public sealed class LSituationArchive
         }
 
         session.LDatabaseSessionCommit();
+    }
+
+    private static void LSituationLinkDelete(SqliteConnection connection, string table, string situationId)
+    {
+        string column = table == "sense_situation" ? "sense_id" : "collocation_id";
+
+        List<string> referrers = [];
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = $"SELECT {column} FROM {table} WHERE situation_id = $situation;";
+            command.Parameters.AddWithValue("$situation", situationId);
+            using SqliteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                referrers.Add(reader.GetString(0));
+            }
+        }
+
+        if (referrers.Count == 0)
+        {
+            return;
+        }
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText = $"DELETE FROM {table} WHERE situation_id = $situation;";
+            command.Parameters.AddWithValue("$situation", situationId);
+            command.ExecuteNonQuery();
+        }
+
+        string scope = $"{column} = $owner";
+        foreach (string referrer in referrers)
+        {
+            LDatabaseOrder.LDatabaseOrderNormalize(
+                connection, table, scope, referrer, "situation_id",
+                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrer, "situation_id"));
+        }
     }
 
     public void LSituationSenseAttach(string senseId, string situationId, int position)

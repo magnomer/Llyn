@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Windows;
 using Llyn.Core;
 
@@ -36,7 +37,24 @@ public partial class PWindow
     internal bool PWindowDiscardConfirm()
     {
         return PWindowDiscardConfirm(PInput.PInputChangeCheck() || PList.PListChangeCheck() || PSound.PSoundChangeCheck()
-            || PTag.PTagChangeCheck());
+            || PTag.PTagChangeCheck() || PSituation.PSituationChangeCheck());
+    }
+
+    internal bool PWindowRemovalConfirm(int usage)
+    {
+        string count = $"{PLocalizationTextRead("Situation.DetachCount")} "
+            + usage.ToString(CultureInfo.CurrentCulture);
+
+        string question = usage > 0
+            ? $"{PLocalizationTextRead("Situation.DetachConfirm")}\n\n{count}"
+            : PLocalizationTextRead("Situation.DeleteConfirm");
+
+        return MessageBox.Show(
+            this,
+            question,
+            PLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) == MessageBoxResult.Yes;
     }
 
     internal bool PWindowDiscardConfirm(bool unsaved)

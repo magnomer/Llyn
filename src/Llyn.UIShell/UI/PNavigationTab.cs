@@ -27,6 +27,12 @@ public partial class PWindow
             return;
         }
 
+        if (PSituation.IsVisible && selectedButton != PNavigationSituation
+            && !PWindowDiscardConfirm(PSituation.PSituationChangeCheck()))
+        {
+            return;
+        }
+
         (Button Button, FrameworkElement Panel)[] tabs =
         [
             (PNavigationInput, PInput),
@@ -46,5 +52,11 @@ public partial class PWindow
                 isSelected ? "Theme.Navigation.Selected" : "Theme.Navigation.Button");
             panel.Visibility = isSelected ? Visibility.Visible : Visibility.Collapsed;
         }
+    }
+
+    internal void PWindowEntryShow(string id)
+    {
+        PNavigationHandle(PNavigationList, new RoutedEventArgs());
+        PList.PIndexEntryShow(id);
     }
 }

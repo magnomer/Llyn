@@ -8,11 +8,11 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard
 {
-    public ObservableCollection<PSituation> PCardSituation { get; }
+    public ObservableCollection<PContext> PCardSituation { get; }
 
     internal void PCardSituationShow(IReadOnlyList<LSituationDraft> drafts)
     {
-        foreach (PSituation row in PCardSituation)
+        foreach (PContext row in PCardSituation)
         {
             row.PropertyChanged -= PCardSituationChange;
         }
@@ -20,7 +20,7 @@ internal sealed partial class PCard
         PCardSituation.Clear();
         foreach (LSituationDraft draft in drafts)
         {
-            PCardSituationAdd(new PSituation(
+            PCardSituationAdd(new PContext(
                 _pCardReference,
                 draft.LSituationDraftText,
                 draft.LSituationDraftId,
@@ -29,7 +29,7 @@ internal sealed partial class PCard
 
         if (PCardSituation.Count == 0)
         {
-            PCardSituationAdd(new PSituation(_pCardReference));
+            PCardSituationAdd(new PContext(_pCardReference));
         }
 
         PCardSituationUpdate();
@@ -38,34 +38,34 @@ internal sealed partial class PCard
     internal IReadOnlyList<LSituationDraft> PCardSituationRead()
     {
         List<LSituationDraft> drafts = [];
-        foreach (PSituation row in PCardSituation)
+        foreach (PContext row in PCardSituation)
         {
-            LStateValue text = row.PSituationTextRead();
+            LStateValue text = row.PContextTextRead();
             if (text.LStateValueEmpty)
             {
                 continue;
             }
 
-            drafts.Add(new LSituationDraft(text, row.PSituationId, row.PSituationReferenceRead()));
+            drafts.Add(new LSituationDraft(text, row.PContextId, row.PContextReferenceRead()));
         }
 
         return drafts;
     }
 
-    internal void PCardSituationInsert(PSituation row)
+    internal void PCardSituationInsert(PContext row)
     {
         int index = PCardSituation.IndexOf(row);
-        PSituation opened = new(_pCardReference);
+        PContext opened = new(_pCardReference);
         opened.PropertyChanged += PCardSituationChange;
         PCardSituation.Insert(index < 0 ? PCardSituation.Count : index + 1, opened);
         PCardSituationUpdate();
     }
 
-    internal void PCardSituationRemove(PSituation row)
+    internal void PCardSituationRemove(PContext row)
     {
         if (PCardSituation.Count <= 1)
         {
-            row.PSituationClear();
+            row.PContextClear();
             return;
         }
 
@@ -79,13 +79,13 @@ internal sealed partial class PCard
         bool numbered = PCardSituation.Count > 1;
         for (int index = 0; index < PCardSituation.Count; index++)
         {
-            PCardSituation[index].PSituationOrderText = numbered
+            PCardSituation[index].PContextOrderText = numbered
                 ? $"({index + 1})"
                 : string.Empty;
         }
     }
 
-    private void PCardSituationAdd(PSituation row)
+    private void PCardSituationAdd(PContext row)
     {
         row.PropertyChanged += PCardSituationChange;
         PCardSituation.Add(row);
@@ -93,10 +93,10 @@ internal sealed partial class PCard
 
     private void PCardSituationChange(object? sender, PropertyChangedEventArgs arguments)
     {
-        if (sender is PSituation row &&
-            string.Equals(arguments.PropertyName, nameof(PSituation.PSituationText), StringComparison.Ordinal))
+        if (sender is PContext row &&
+            string.Equals(arguments.PropertyName, nameof(PContext.PContextText), StringComparison.Ordinal))
         {
-            row.PSituationIdentityApply();
+            row.PContextIdentityApply();
         }
     }
 }

@@ -88,7 +88,7 @@ public partial class PList
         PIndexEntryShow(item.PIndexItemId);
     }
 
-    private void PIndexEntryShow(string id)
+    internal void PIndexEntryShow(string id)
     {
         LEntryDraft? draft;
         try

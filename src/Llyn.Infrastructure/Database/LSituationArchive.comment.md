@@ -97,3 +97,36 @@ Every value still travels as a parameter.
 The row goes in beyond the end of the set and the whole set is then renumbered around it.
 So the requested index is honoured.
 An occupied position is no longer a unique-index failure.
+
+## `public IReadOnlyList<LSituation> LSituationRead()`
+
+Every Situation the workspace holds, in the order they were written.
+It includes one nothing references, which is reachable nowhere else.
+
+## `public IReadOnlyDictionary<string, int> LSituationReferenceRead()`
+
+How many places reference each Situation, the whole shelf in one statement.
+A panel listing the catalog needs the figure on every row, and one query per row is a query per row.
+A Situation nothing references is absent rather than present as zero.
+
+## `public IReadOnlyList<LUsage> LSituationUsageRead(string id)`
+
+The referring sides of one Situation, named rather than counted.
+A Meaning is named by its title and, standing without one, by its gloss.
+A Collocation is named by its title and, standing without one, by its expression.
+The Entry each side belongs to is read with it, so a row is legible without a second query.
+
+## `public void LSituationDelete(string id, bool detach)`
+
+Deletes the Situation, first dropping every reference to it when `detach` is asked for.
+Detaching, counting and deleting share one session.
+Between any two of them the answer to whether something still references the row can change.
+Without `detach` the count still refuses the delete, which is the guard a card edit relies on.
+
+## Inline notes
+
+### `private static void LSituationLinkDelete(SqliteConnection connection, string table, string situationId)`
+
+Drops one association table's references to a Situation and renumbers what each referrer has left.
+The referrers are read before the delete because afterwards there is nothing left to name them.
+A gap in a referrer's positions is a unique-index failure waiting for its next attach.
