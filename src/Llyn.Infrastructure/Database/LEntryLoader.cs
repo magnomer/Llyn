@@ -100,6 +100,7 @@ public sealed class LEntryLoader
         LExampleLink examples = new(_lEntryLoaderDatabase);
         LSituationArchive situations = new(_lEntryLoaderDatabase);
         LTagArchive tags = new(_lEntryLoaderDatabase);
+        LImageArchive images = new(_lEntryLoaderDatabase);
 
         return new LCardDraft(
             title,
@@ -112,6 +113,8 @@ public sealed class LEntryLoader
             string.Empty,
             LEntryTagRead(
                 collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId)),
+            LEntryImageRead(
+                collocation ? images.LImageCollocationRead(ownerId) : images.LImageSenseRead(ownerId)),
             ownerId);
     }
 
@@ -137,6 +140,17 @@ public sealed class LEntryLoader
         }
 
         return drafts;
+    }
+
+    private static IReadOnlyList<LStateValue> LEntryImageRead(IReadOnlyList<LImage> images)
+    {
+        List<LStateValue> locations = new(images.Count);
+        foreach (LImage image in images)
+        {
+            locations.Add(image.LImageLocation);
+        }
+
+        return locations;
     }
 
     private static IReadOnlyList<LStateValue> LEntryTagRead(IReadOnlyList<LTag> tags)

@@ -22,4 +22,14 @@ public partial class PCollocationTemplate : ResourceDictionary
     {
         _pCollocationHost.PCardDragHandle(sender, e);
     }
+
+    private void PImageAddHandle(object sender, RoutedEventArgs e)
+    {
+        _pCollocationHost.PImageAddHandle(sender, e);
+    }
+
+    private void PVideoAddHandle(object sender, RoutedEventArgs e)
+    {
+        _pCollocationHost.PVideoAddHandle(sender, e);
+    }
 }

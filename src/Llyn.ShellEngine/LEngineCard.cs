@@ -211,6 +211,34 @@ public sealed partial class LEngine
 
                 tags.LTagSenseAttach(ownerId, rowId, position);
             });
+
+        LImageArchive images = new(_lEngineDatabase);
+        LEngineFieldSync(
+            card.LCardDraftImage,
+            collocation ? images.LImageCollocationRead(ownerId) : images.LImageSenseRead(ownerId),
+            row => row.LImageId,
+            row => row.LImageLocation,
+            location => images.LImageCreate(new LImage(string.Empty, location)).LImageId,
+            rowId =>
+            {
+                if (collocation)
+                {
+                    images.LImageCollocationDetach(ownerId, rowId);
+                    return;
+                }
+
+                images.LImageSenseDetach(ownerId, rowId);
+            },
+            (rowId, position) =>
+            {
+                if (collocation)
+                {
+                    images.LImageCollocationAttach(ownerId, rowId, position);
+                    return;
+                }
+
+                images.LImageSenseAttach(ownerId, rowId, position);
+            });
     }
 
     private void LEngineExampleSync(

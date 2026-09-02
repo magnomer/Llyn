@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-internal sealed class PCard : INotifyPropertyChanged
+internal sealed partial class PCard : INotifyPropertyChanged
 {
     internal const string PCardUnreadableMark = "(?)";
 
@@ -36,6 +35,8 @@ internal sealed class PCard : INotifyPropertyChanged
         PCardSituation = [];
         PCardSituationAdd(new PSituation(catalog));
         PCardSituationUpdate();
+        PCardImage = [];
+        PCardVideo = [];
     }
 
     public string PCardId { get; set; } = string.Empty;
@@ -151,10 +152,6 @@ internal sealed class PCard : INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<PExample> PCardExample { get; }
-
-    public ObservableCollection<PSituation> PCardSituation { get; }
-
     public string PCardTag
     {
         get => _pCardTag;
@@ -212,189 +209,9 @@ internal sealed class PCard : INotifyPropertyChanged
         PCardExpressionUnreadable = value.LStateValueState == LState.LStateUnknown;
     }
 
-    internal void PCardExampleShow(IReadOnlyList<LExampleDraft> drafts)
-    {
-        foreach (PExample row in PCardExample)
-        {
-            row.PropertyChanged -= PCardExampleChange;
-        }
-
-        PCardExample.Clear();
-        foreach (LExampleDraft draft in drafts)
-        {
-            PCardExampleAdd(new PExample(
-                _pCardReference,
-                draft.LExampleDraftText,
-                draft.LExampleDraftId,
-                draft.LExampleDraftReference));
-        }
-
-        if (PCardExample.Count == 0)
-        {
-            PCardExampleAdd(new PExample(_pCardReference));
-        }
-
-        PCardExampleUpdate();
-    }
-
-    internal IReadOnlyList<LExampleDraft> PCardExampleRead()
-    {
-        List<LExampleDraft> drafts = [];
-        foreach (PExample row in PCardExample)
-        {
-            LStateValue text = row.PExampleTextRead();
-            if (text.LStateValueEmpty)
-            {
-                continue;
-            }
-
-            drafts.Add(new LExampleDraft(text, row.PExampleId, row.PExampleReferenceRead()));
-        }
-
-        return drafts;
-    }
-
-    internal void PCardExampleInsert(PExample row)
-    {
-        int index = PCardExample.IndexOf(row);
-        PExample opened = new(_pCardReference);
-        opened.PropertyChanged += PCardExampleChange;
-        PCardExample.Insert(index < 0 ? PCardExample.Count : index + 1, opened);
-        PCardExampleUpdate();
-    }
-
-    internal void PCardExampleRemove(PExample row)
-    {
-        if (PCardExample.Count <= 1)
-        {
-            row.PExampleClear();
-            return;
-        }
-
-        row.PropertyChanged -= PCardExampleChange;
-        PCardExample.Remove(row);
-        PCardExampleUpdate();
-    }
-
-    internal void PCardExampleUpdate()
-    {
-        bool numbered = PCardExample.Count > 1;
-        for (int index = 0; index < PCardExample.Count; index++)
-        {
-            PCardExample[index].PExampleOrderText = numbered
-                ? $"({index + 1})"
-                : string.Empty;
-        }
-    }
-
-    internal void PCardSituationShow(IReadOnlyList<LSituationDraft> drafts)
-    {
-        foreach (PSituation row in PCardSituation)
-        {
-            row.PropertyChanged -= PCardSituationChange;
-        }
-
-        PCardSituation.Clear();
-        foreach (LSituationDraft draft in drafts)
-        {
-            PCardSituationAdd(new PSituation(
-                _pCardReference,
-                draft.LSituationDraftText,
-                draft.LSituationDraftId,
-                draft.LSituationDraftReference));
-        }
-
-        if (PCardSituation.Count == 0)
-        {
-            PCardSituationAdd(new PSituation(_pCardReference));
-        }
-
-        PCardSituationUpdate();
-    }
-
-    internal IReadOnlyList<LSituationDraft> PCardSituationRead()
-    {
-        List<LSituationDraft> drafts = [];
-        foreach (PSituation row in PCardSituation)
-        {
-            LStateValue text = row.PSituationTextRead();
-            if (text.LStateValueEmpty)
-            {
-                continue;
-            }
-
-            drafts.Add(new LSituationDraft(text, row.PSituationId, row.PSituationReferenceRead()));
-        }
-
-        return drafts;
-    }
-
-    internal void PCardSituationInsert(PSituation row)
-    {
-        int index = PCardSituation.IndexOf(row);
-        PSituation opened = new(_pCardReference);
-        opened.PropertyChanged += PCardSituationChange;
-        PCardSituation.Insert(index < 0 ? PCardSituation.Count : index + 1, opened);
-        PCardSituationUpdate();
-    }
-
-    internal void PCardSituationRemove(PSituation row)
-    {
-        if (PCardSituation.Count <= 1)
-        {
-            row.PSituationClear();
-            return;
-        }
-
-        row.PropertyChanged -= PCardSituationChange;
-        PCardSituation.Remove(row);
-        PCardSituationUpdate();
-    }
-
-    internal void PCardSituationUpdate()
-    {
-        bool numbered = PCardSituation.Count > 1;
-        for (int index = 0; index < PCardSituation.Count; index++)
-        {
-            PCardSituation[index].PSituationOrderText = numbered
-                ? $"({index + 1})"
-                : string.Empty;
-        }
-    }
-
     private static LStateValue PCardValueRead(bool unreadable, string text)
     {
         return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueRead(text);
-    }
-
-    private void PCardExampleAdd(PExample row)
-    {
-        row.PropertyChanged += PCardExampleChange;
-        PCardExample.Add(row);
-    }
-
-    private void PCardExampleChange(object? sender, PropertyChangedEventArgs arguments)
-    {
-        if (sender is PExample row &&
-            string.Equals(arguments.PropertyName, nameof(PExample.PExampleText), StringComparison.Ordinal))
-        {
-            row.PExampleIdentityApply();
-        }
-    }
-
-    private void PCardSituationAdd(PSituation row)
-    {
-        row.PropertyChanged += PCardSituationChange;
-        PCardSituation.Add(row);
-    }
-
-    private void PCardSituationChange(object? sender, PropertyChangedEventArgs arguments)
-    {
-        if (sender is PSituation row &&
-            string.Equals(arguments.PropertyName, nameof(PSituation.PSituationText), StringComparison.Ordinal))
-        {
-            row.PSituationIdentityApply();
-        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

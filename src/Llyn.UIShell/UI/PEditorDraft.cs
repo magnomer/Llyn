@@ -60,6 +60,7 @@ public partial class PEditor
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
             card.PCardExampleShow(draft.LCardDraftExample);
             card.PCardSituationShow(draft.LCardDraftSituation);
+            card.PCardImageShow(draft.LCardDraftImage);
             cards.Add(card);
         }
 
@@ -163,7 +164,8 @@ public partial class PEditor
                 || !string.Equals(first.LCardDraftId, second.LCardDraftId, StringComparison.Ordinal)
                 || !PEditorExampleMatch(first.LCardDraftExample, second.LCardDraftExample)
                 || !PEditorSituationMatch(first.LCardDraftSituation, second.LCardDraftSituation)
-                || !PEditorValueMatch(first.LCardDraftTag, second.LCardDraftTag))
+                || !PEditorValueMatch(first.LCardDraftTag, second.LCardDraftTag)
+                || !PEditorValueMatch(first.LCardDraftImage, second.LCardDraftImage))
             {
                 return false;
             }
@@ -266,6 +268,7 @@ public partial class PEditor
                 card.PCardSituationRead(),
                 string.Empty,
                 PEditorTagParse(card.PCardTag),
+                card.PCardImageRead(),
                 card.PCardId));
         }
 

@@ -22,4 +22,14 @@ public partial class PSenseTemplate : ResourceDictionary
     {
         _pSenseHost.PCardDragHandle(sender, e);
     }
+
+    private void PImageAddHandle(object sender, RoutedEventArgs e)
+    {
+        _pSenseHost.PImageAddHandle(sender, e);
+    }
+
+    private void PVideoAddHandle(object sender, RoutedEventArgs e)
+    {
+        _pSenseHost.PVideoAddHandle(sender, e);
+    }
 }

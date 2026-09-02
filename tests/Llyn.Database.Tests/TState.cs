@@ -26,7 +26,7 @@ public sealed class TState
                 [new LSituationDraft(
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
                 string.Empty,
-                [LStateValue.LStateValueUnknown, LStateValue.LStateValueCreate("spoken")])],
+                [LStateValue.LStateValueUnknown, LStateValue.LStateValueCreate("spoken")], [])],
             []));
 
         Assert.Equal(
@@ -85,7 +85,7 @@ public sealed class TState
                 ],
                 [],
                 string.Empty,
-                [])],
+                [], [])],
             []));
 
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
@@ -116,7 +116,7 @@ public sealed class TState
                 ],
                 [],
                 string.Empty,
-                [])],
+                [], [])],
             []));
 
         Assert.Equal(
@@ -156,7 +156,7 @@ public sealed class TState
                 [new LSituationDraft(
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
                 string.Empty,
-                [])],
+                [], [])],
             []));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.LEngineEntryLoad(stored.LEntryId));

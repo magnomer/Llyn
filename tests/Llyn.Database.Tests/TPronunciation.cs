@@ -84,7 +84,7 @@ public sealed class TPronunciation
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [])]));
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [], [])]));
     }
 }

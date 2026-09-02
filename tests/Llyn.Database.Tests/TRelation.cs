@@ -191,8 +191,8 @@ public sealed class TRelation
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, definition, [], [], string.Empty, [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [])]));
+            [new LCardDraft(string.Empty, string.Empty, definition, [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [], [])]));
     }
 
     private static string TRelationSenseRead(TWorkspace workspace, string entryId)

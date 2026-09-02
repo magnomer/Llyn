@@ -169,6 +169,23 @@ public sealed partial class LEngine
 
             position++;
         }
+
+        LImageArchive images = new(_lEngineDatabase);
+        position = 0;
+        foreach (LStateValue location in LEngineFieldRead(card.LCardDraftImage))
+        {
+            LImage image = images.LImageCreate(new LImage(string.Empty, location));
+            if (collocation)
+            {
+                images.LImageCollocationAttach(ownerId, image.LImageId, position);
+            }
+            else
+            {
+                images.LImageSenseAttach(ownerId, image.LImageId, position);
+            }
+
+            position++;
+        }
     }
 
     private static IEnumerable<LCardDraft> LEngineCardRead(IReadOnlyList<LCardDraft> cards)
@@ -181,7 +198,8 @@ public sealed partial class LEngine
                 !string.IsNullOrWhiteSpace(card.LCardDraftSynonym) ||
                 LEngineExampleCheck(card.LCardDraftExample) ||
                 LEngineSituationCheck(card.LCardDraftSituation) ||
-                LEngineFieldCheck(card.LCardDraftTag))
+                LEngineFieldCheck(card.LCardDraftTag) ||
+                LEngineFieldCheck(card.LCardDraftImage))
             {
                 yield return card;
             }

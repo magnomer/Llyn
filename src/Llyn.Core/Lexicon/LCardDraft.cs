@@ -10,6 +10,7 @@ public sealed record LCardDraft(
     IReadOnlyList<LSituationDraft> LCardDraftSituation,
     string LCardDraftSynonym,
     IReadOnlyList<LStateValue> LCardDraftTag,
+    IReadOnlyList<LStateValue> LCardDraftImage,
     string LCardDraftId = "")
 {
     public LStateValue LCardDraftTitle { get; init; } =

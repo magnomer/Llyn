@@ -4,12 +4,12 @@
     "Audio", "Audit", "Author", "Bootstrap", "Brand", "Candidate", "Caption", "Card", "Case", "Collocation",
     "Contents", "Database", "Discard", "Display", "Downloader", "Duplex", "Editor", "Engine", "Entry", "Establishment",
     "Example", "Favorite", "Feature", "Field", "Form", "Harvest", "Headline", "Headquarter", "Headword", "House",
-    "Identity", "Index", "Indicator", "Inflection", "Input", "Inquiry", "Langcode", "Language", "List", "Listener",
-    "Localization", "Logo", "Lookup", "Meaning", "Morphology", "Navigation", "Note", "Order", "Owner", "Panel",
-    "Playback", "Pronunciation", "Receiver", "Recording", "Reference", "Refusal", "Relation", "Representation", "Revision", "Roof",
-    "Schema", "Scribe", "Seeker", "Sense", "Settings", "Situation", "Sound", "Source", "Specimen", "Speech",
-    "Stack", "State", "Store", "Surface", "Syllable", "Synonym", "Tag", "Theme", "Title", "Tombstone",
-    "Translation", "Violation", "Window", "Workspace"
+    "Identity", "Image", "Index", "Indicator", "Inflection", "Input", "Inquiry", "Langcode", "Language", "List",
+    "Listener", "Localization", "Logo", "Lookup", "Markup", "Meaning", "Morphology", "Navigation", "Note", "Order",
+    "Owner", "Panel", "Playback", "Pronunciation", "Receiver", "Recording", "Reference", "Refusal", "Relation", "Representation",
+    "Revision", "Roof", "Schema", "Scribe", "Seeker", "Sense", "Settings", "Situation", "Sound", "Source",
+    "Specimen", "Speech", "Stack", "State", "Store", "Surface", "Syllable", "Synonym", "Tag", "Theme",
+    "Title", "Tombstone", "Translation", "Video", "Violation", "Window", "Workspace"
   ],
   "verbs": [
     "Accept", "Add", "Adjust", "Append", "Apply", "Attach", "Build", "Cancel", "Change", "Check",

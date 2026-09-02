@@ -19,9 +19,9 @@ public sealed class TEntryUpdate
             string.Empty,
             string.Empty,
             [
-                new LCardDraft(string.Empty, string.Empty, "first", [], [], string.Empty, []),
-                new LCardDraft(string.Empty, string.Empty, "second", [], [], string.Empty, []),
-                new LCardDraft(string.Empty, string.Empty, "third", [], [], string.Empty, []),
+                new LCardDraft(string.Empty, string.Empty, "first", [], [], string.Empty, [], []),
+                new LCardDraft(string.Empty, string.Empty, "second", [], [], string.Empty, [], []),
+                new LCardDraft(string.Empty, string.Empty, "third", [], [], string.Empty, [], []),
             ],
             []));
 
@@ -38,7 +38,7 @@ public sealed class TEntryUpdate
             [
                 loaded.LEntryDraftSenses[0] with { LCardDraftMeaning = "first, reworded" },
                 loaded.LEntryDraftSenses[2],
-                new LCardDraft(string.Empty, string.Empty, "fourth", [], [], string.Empty, []),
+                new LCardDraft(string.Empty, string.Empty, "fourth", [], [], string.Empty, [], []),
             ],
         };
 
@@ -84,7 +84,7 @@ public sealed class TEntryUpdate
             [
                 new LCardDraft(
                     string.Empty, string.Empty, "meaning", [LExampleDraft.LExampleDraftCreate("one"), LExampleDraft.LExampleDraftCreate("two")], [],
-                    string.Empty, ["kept", "dropped"]),
+                    string.Empty, ["kept", "dropped"], []),
             ],
             []));
 
@@ -130,8 +130,8 @@ public sealed class TEntryUpdate
             string.Empty,
             "a note",
             [
-                new LCardDraft(string.Empty, string.Empty, "first", [], [], string.Empty, []),
-                new LCardDraft(string.Empty, string.Empty, "second", [], [], string.Empty, []),
+                new LCardDraft(string.Empty, string.Empty, "first", [], [], string.Empty, [], []),
+                new LCardDraft(string.Empty, string.Empty, "second", [], [], string.Empty, [], []),
             ],
             []));
 

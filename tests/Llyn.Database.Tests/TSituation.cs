@@ -109,7 +109,7 @@ public sealed class TSituation
                     LSituationDraft.LSituationDraftCreate("at home"),
                 ],
                 string.Empty,
-                [])],
+                [], [])],
             []));
 
         string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
@@ -175,7 +175,7 @@ public sealed class TSituation
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [])]));
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [], [])]));
     }
 }
