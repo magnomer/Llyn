@@ -59,10 +59,13 @@ public partial class PEditor : UserControl
 
         PLangcodeLoad();
         PSpeechLoad();
+
+        PEditorChangeStart();
     }
 
     internal void PEditorClose()
     {
+        PEditorChangeStop();
         PLookupCancel();
         PDownloaderCancel();
         PVideoClose();

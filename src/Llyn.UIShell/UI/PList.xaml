@@ -502,7 +502,7 @@
                 </ScrollViewer>
                 </Grid>
 
-                <local:PEditor x:Name="PEditor" Grid.Row="1" Padding="20,4,20,20" Visibility="Collapsed" />
+                <local:PEditor x:Name="PEditor" Grid.Row="1" Padding="20,22,20,20" Visibility="Collapsed" />
             </Grid>
         </Border>
     </Grid>

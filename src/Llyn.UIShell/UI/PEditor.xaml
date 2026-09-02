@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Llyn.UIShell.PEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -80,7 +80,7 @@
                 </Popup>
             </Grid>
 
-            <Button x:Name="PDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Click="PDiscardHandle" Style="{StaticResource Theme.Input.Pill}">
+            <Button x:Name="PDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Click="PDiscardHandle" IsEnabled="False" Style="{StaticResource Theme.Input.Pill}">
                 <StackPanel Orientation="Horizontal">
 
                     <Rectangle Width="14" Height="16" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
@@ -95,7 +95,7 @@
                     <TextBlock VerticalAlignment="Center" Text="Discard" />
                 </StackPanel>
             </Button>
-            <Button x:Name="PStore" Grid.Column="4" Width="162" Height="51" Click="PStoreHandle" Style="{StaticResource Theme.Input.Primary}">
+            <Button x:Name="PStore" Grid.Column="4" Width="162" Height="51" Click="PStoreHandle" IsEnabled="False" Style="{StaticResource Theme.Input.Primary}">
                 <StackPanel Orientation="Horizontal">
 
                     <Rectangle Width="15" Height="15" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">

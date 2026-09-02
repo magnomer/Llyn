@@ -128,6 +128,16 @@ public partial class PEditor
         _pStateDraft = PEditorDraftRead();
     }
 
+    private void PEditorStateUpdate()
+    {
+        if (_pStateDraft is null)
+        {
+            return;
+        }
+
+        _pStateDraft = _pStateDraft with { LEntryDraftLanguage = _pLangcodeChoice };
+    }
+
     internal bool PEditorChangeCheck()
     {
         return _pStateDraft is not null && !PEditorDraftMatch(_pStateDraft, PEditorDraftRead());

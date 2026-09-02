@@ -39,6 +39,7 @@ public partial class PEditor
         if (!_pLangcodeEntry && languages.Count > 0 && !languages.Contains(_pLangcodeChoice))
         {
             _pLangcodeChoice = languages[0];
+            PEditorStateUpdate();
         }
 
         PLangcodeBaseName.Text = _pLangcodeChoice;
