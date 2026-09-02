@@ -95,6 +95,11 @@ A display that cannot be filled again is not worth reporting as a failure that d
 The discard the editor hands over: the selected entry comes back as it is stored.
 With no entry selected there is nothing stored to come back to, so the form is emptied instead.
 
+### `private void PFreshHandle(object sender, RoutedEventArgs e)`
+
+The new-entry command: the selection is dropped and the editor opens on a blank form.
+Nothing selected means the discard falls back to an empty form, so the writer stays in the new entry.
+
 ### `private void PScribeHandle(object sender, RoutedEventArgs e)`
 
 The mode toggle: reading becomes writing on the selected entry, and writing goes back to reading what is actually stored.

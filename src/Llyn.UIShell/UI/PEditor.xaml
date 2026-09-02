@@ -385,8 +385,8 @@
                         </Border>
                         <Border Grid.Row="1" Margin="22,18,22,22" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="7">
                             <Grid>
-                                <TextBlock x:Name="PNotePlaceholder" Margin="14,12" Foreground="{StaticResource Theme.Muted}" IsHitTestVisible="False" Opacity="0.56" Text="Write a note about this entry" />
-                                <TextBox x:Name="PNoteContents" Padding="10,6" VerticalAlignment="Stretch" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Ink}" CaretBrush="{StaticResource Theme.Ink}" TextChanged="PNoteContentsHandle" />
+                                <TextBlock x:Name="PNotePlaceholder" Margin="18,12,14,12" VerticalAlignment="Top" Foreground="{StaticResource Theme.Muted}" IsHitTestVisible="False" Opacity="0.56" Text="Write a note about this entry" />
+                                <TextBox x:Name="PNoteContents" Padding="14,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Ink}" CaretBrush="{StaticResource Theme.Ink}" TextChanged="PNoteContentsHandle" />
                             </Grid>
                         </Border>
                     </Grid>

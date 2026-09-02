@@ -26,6 +26,7 @@ internal static class PField
 
         var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), "PPlaceholder");
         pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
+        pPlaceholder.SetValue(TextBlock.PaddingProperty, new Thickness(4, 0, 0, 0));
         pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);

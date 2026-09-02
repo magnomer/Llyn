@@ -95,10 +95,10 @@
                     </Grid>
 
                     <TextBlock Grid.Row="1" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Example" />
-                    <ItemsControl Grid.Row="1" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Example.Row}" ItemsSource="{Binding PCardExample}" />
+                    <ItemsControl Grid.Row="1" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Example.Row}" ItemsSource="{Binding PCardExample}" />
 
                     <TextBlock Grid.Row="2" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Situation" />
-                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Situation.Row}" ItemsSource="{Binding PCardSituation}" />
+                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Situation.Row}" ItemsSource="{Binding PCardSituation}" />
 
                     <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Tags" />
                     <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardTag}" Style="{DynamicResource Theme.Tag.Field}" />

@@ -376,29 +376,30 @@
             </Grid>
         </Border>
 
+        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button
+                x:Name="PFresh"
+                Height="44"
+                Margin="0,0,8,0"
+                Click="PFreshHandle"
+                Content="{DynamicResource Scribe.New}"
+                Style="{StaticResource Theme.Input.Pill}" />
+            <Button
+                x:Name="PScribe"
+                Width="96"
+                Height="44"
+                Margin="0,0,8,0"
+                Click="PScribeHandle"
+                Content="{DynamicResource Scribe.Edit}"
+                IsEnabled="False"
+                Style="{StaticResource Theme.Input.Pill}" />
+            <Button Height="44" Margin="0,0,8,0" Content="{DynamicResource Scribe.Export}" Style="{StaticResource Theme.Input.Pill}" />
+            <Button Height="44" Content="{DynamicResource Scribe.Print}" Style="{StaticResource Theme.Input.Pill}" />
+        </StackPanel>
+
         <Border Grid.Row="1" Grid.Column="1" ClipToBounds="True" Style="{StaticResource Theme.Input.Card}">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <StackPanel Grid.Row="0" Margin="20,16,20,10" HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button Height="40" Margin="0,0,8,0" Content="{DynamicResource Scribe.New}" Style="{StaticResource Theme.Input.Pill}" />
-                    <Button
-                        x:Name="PScribe"
-                        Width="96"
-                        Height="40"
-                        Margin="0,0,8,0"
-                        Click="PScribeHandle"
-                        Content="{DynamicResource Scribe.Edit}"
-                        IsEnabled="False"
-                        Style="{StaticResource Theme.Input.Pill}" />
-                    <Button Height="40" Margin="0,0,8,0" Content="{DynamicResource Scribe.Export}" Style="{StaticResource Theme.Input.Pill}" />
-                    <Button Height="40" Content="{DynamicResource Scribe.Print}" Style="{StaticResource Theme.Input.Pill}" />
-                </StackPanel>
-
-                <Grid x:Name="PDisplay" Grid.Row="1">
+                <Grid x:Name="PDisplay">
                 <TextBlock
                     x:Name="PDisplayEmpty"
                     HorizontalAlignment="Center"

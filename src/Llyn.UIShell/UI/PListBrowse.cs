@@ -153,6 +153,18 @@ public partial class PList
         PEditor.PEditorEntryShow(_pDisplayEntry);
     }
 
+    private void PFreshHandle(object sender, RoutedEventArgs e)
+    {
+        if (!PListLeaveConfirm())
+        {
+            return;
+        }
+
+        PDisplayClear();
+        PScribe.IsEnabled = true;
+        PScribeShow(true);
+    }
+
     private void PScribeHandle(object sender, RoutedEventArgs e)
     {
         if (PEditor.Visibility == Visibility.Visible)

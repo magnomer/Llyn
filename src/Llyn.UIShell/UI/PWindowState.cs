@@ -6,10 +6,17 @@ namespace Llyn.UIShell;
 
 public partial class PWindow
 {
+    private const double PWindowStateShare = 0.8;
+
     private void PWindowStateRestore()
     {
         if (_lEngine.LEngineSettingsRead().LSettingsWindow is not LWindowState state)
         {
+            Rect area = SystemParameters.WorkArea;
+
+            Width = Math.Clamp(area.Width * PWindowStateShare, MinWidth, Math.Max(MinWidth, area.Width));
+            Height = Math.Clamp(area.Height * PWindowStateShare, MinHeight, Math.Max(MinHeight, area.Height));
+
             return;
         }
 
