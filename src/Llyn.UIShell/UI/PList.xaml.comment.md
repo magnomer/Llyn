@@ -1,4 +1,4 @@
-# PList.xaml.cs
+﻿# PList.xaml.cs
 
 ## `public partial class PList : UserControl`
 
@@ -37,9 +37,10 @@ The window this panel sits in.
 It is who reports a load that failed.
 It also asks the question put before unsaved work would be lost.
 
-### `PDisplay.PDisplayAttach(engine);`
+### `PDisplay.PDisplayAttach(host, engine);`
 
 The shared display is given the workspace it draws a flag from.
+It is given the window as well, because an incoming row asks for another entry to be opened.
 It is told nothing about which entry to show, because that is this panel's decision.
 
 ### `PEditor.PEditorAttach(host, engine, null);`

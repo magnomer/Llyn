@@ -7,7 +7,7 @@ It owns no SQL of its own.
 It composes what the archives already read into one value shape.
 That shape is what `LEngineEntrySave` consumes, so a save and a load are inverses.
 The parts are the entry row, its meanings and collocations, its note and pronunciation.
-They also include every Example and Situation each card references and every Tag it carries.
+They also include every Example and Situation each card references and every Tag and Translation it carries.
 All of them arrive in stored order.
 
 The whole composition runs inside one `LDatabaseSession`.
@@ -26,7 +26,7 @@ Binds the loader to the workspace `database` it reads through.
 
 Returns the draft for the entry identified by `id`, or `null` when no entry has that id.
 
-A card's Examples, Situations and Tags are ordered sets.
+A card's Examples, Situations, Tags and Translations are ordered sets.
 Every row the card references or carries fills the field, in the order the associations record.
 So a card referencing three tags loads back with three.
 Meanings arrive flat, as the draft has no nesting.
@@ -59,7 +59,7 @@ A second row, which no save writes, stays stored and is simply not displayed.
 ### `private LCardDraft LEntryCardRead(`
 
 The one read path for the independents a card references.
-A Meaning card and a Collocation card hold Examples, Situations and Tags on identical terms.
+A Meaning card and a Collocation card hold Examples, Situations, Tags and Translations on identical terms.
 So which owner side is being read is the only thing that differs.
 The collocation flag says which side ownerId names.
 The card's own columns are handed in already read off its row.

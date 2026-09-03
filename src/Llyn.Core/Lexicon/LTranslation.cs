@@ -1,7 +1,5 @@
 namespace Llyn.Core;
 
 public sealed record LTranslation(
-    string LTranslationId,
-    string LTranslationLanguage,
-    string LTranslationText,
+    string LTranslationEntryId,
     int LTranslationPosition);

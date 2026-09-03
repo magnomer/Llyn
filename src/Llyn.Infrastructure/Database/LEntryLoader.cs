@@ -100,6 +100,7 @@ public sealed class LEntryLoader
         LExampleLink examples = new(_lEntryLoaderDatabase);
         LSituationArchive situations = new(_lEntryLoaderDatabase);
         LTagArchive tags = new(_lEntryLoaderDatabase);
+        LTranslationArchive translations = new(_lEntryLoaderDatabase);
         LImageArchive images = new(_lEntryLoaderDatabase);
 
         return new LCardDraft(
@@ -110,6 +111,10 @@ public sealed class LEntryLoader
                 collocation ? examples.LExampleCollocationRead(ownerId) : examples.LExampleSenseRead(ownerId)),
             LEntrySituationRead(
                 collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationSenseRead(ownerId)),
+            LEntryTranslationRead(
+                collocation
+                    ? translations.LTranslationCollocationRead(ownerId)
+                    : translations.LTranslationSenseRead(ownerId)),
             string.Empty,
             LEntryTagRead(
                 collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId)),
@@ -151,6 +156,18 @@ public sealed class LEntryLoader
         }
 
         return locations;
+    }
+
+    private static IReadOnlyList<string> LEntryTranslationRead(
+        IReadOnlyList<LTranslation> translations)
+    {
+        List<string> ids = new(translations.Count);
+        foreach (LTranslation translation in translations)
+        {
+            ids.Add(translation.LTranslationEntryId);
+        }
+
+        return ids;
     }
 
     private static IReadOnlyList<string> LEntryTagRead(IReadOnlyList<LTag> tags)

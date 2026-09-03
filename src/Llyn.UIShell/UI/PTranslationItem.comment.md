@@ -2,8 +2,8 @@
 
 ## `internal sealed class PTranslationItem`
 
-One translation row, in the editor that writes them and in the display that reads them back.
-It is mutable where `PAnthologyItem` is not, because the editor binds to it and the user types into it.
-A row already carrying an id keeps it, so an id anything holds stays valid across a save.
-A row written here carries no id until the store assigns one.
-Position is not held: the order is the order of the list, and reordering is moving the row.
+One row of the dropdown that opens when typed text matches more than one Entry.
+Most rows stand for an Entry that already exists, so they carry its id.
+The last row stands for the Entry the typed word would create, and carries no id yet.
+That row is the only one marked fresh.
+The flag is derived from the language so the dropdown reads the same as every other headword list.

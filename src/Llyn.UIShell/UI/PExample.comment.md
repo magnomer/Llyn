@@ -24,7 +24,7 @@ Export and print are mock-up controls and are not wired.
 The catalog of every Example the workspace holds, including one nothing quotes.
 A row reads its sentence over its language and cited Source, with its usage count at the far end.
 That count is shown here and not only in the display, because it decides which delete the panel offers.
-The translation count is not shown: a translation is owned text that says nothing about where the sentence is used.
+The rendition count is not shown: a rendition is owned text that says nothing about where the sentence is used.
 
 ## `<Grid x:Name="PDisplay">`
 
@@ -51,10 +51,10 @@ The language is required by the row, so it is chosen rather than typed.
 The local rendering is plain nullable text and carries no state of its own.
 `PCitation` is the single Source the Example cites, a pointer that is cleared without touching the Source itself.
 
-## `<ItemsControl x:Name="PTranslation">`
+## `<ItemsControl x:Name="PRendition">`
 
-The ordered translations the Example owns.
-A translation exists only as part of its Example and is removed with it.
+The ordered renditions the Example owns.
+A rendition exists only as part of its Example and is removed with it.
 Reordering writes the position and changes nothing else, so a row that already has an id keeps it.
 The store rewrites the whole list on update, so the editor hands it the full order rather than a delta.
 

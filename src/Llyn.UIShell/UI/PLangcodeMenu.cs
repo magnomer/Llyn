@@ -44,6 +44,7 @@ public partial class PEditor
 
         PLangcodeBaseName.Text = _pLangcodeChoice;
         PLangcodeFlagUpdate();
+        PTranslationFlagUpdate();
         PSpeechLoad();
     }
 

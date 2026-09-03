@@ -3,7 +3,7 @@
 ## `public sealed partial class LEngine`
 
 The Example half of the engine.
-An Example with its translations is created, read, rewritten and let go of.
+An Example with its renditions is created, read, rewritten and let go of.
 So are the references an Entry, a Meaning or a Collocation holds to it.
 An Example is independent data owned by nothing.
 So three sides may reference the same one.
@@ -20,20 +20,20 @@ Pointing one away from it changes nothing either.
 
 ## `public LExample LEngineExampleCreate(LExample example)`
 
-Creates `example` with its translations as its ordered child rows and returns it with its assigned id.
+Creates `example` with its renditions as its ordered child rows and returns it with its assigned id.
 
 ## `public LExample? LEngineExampleRead(string id)`
 
-Reads the Example for `id` with its translations in stored order, or `null` when no Example has that id.
+Reads the Example for `id` with its renditions in stored order, or `null` when no Example has that id.
 
 ## `public IReadOnlyList<LExample> LEngineExampleRead(string ownerId, LOwner owner)`
 
 Reads the Examples the Entry, Meaning or Collocation identified by `ownerId` references.
-They arrive in the order that side holds them, each with its translations.
+They arrive in the order that side holds them, each with its renditions.
 
 ## `public void LEngineExampleUpdate(LExample example)`
 
-Rewrites the text, its local rendering and the translations of the Example `example` identifies.
+Rewrites the text, its local rendering and the renditions of the Example `example` identifies.
 The Source it cites is not touched here — that is `LEngineExampleUpdate(string, string?)`.
 
 ## `public void LEngineExampleUpdate(string exampleId, string? referenceId)`
@@ -56,7 +56,7 @@ Dropping an Example from a card leaves what other cards quote.
 
 ## `public void LEngineExampleRemove(string ownerId, string exampleId, LOwner owner)`
 
-Removes one side's reference to an Example and deletes the Example, with its translations, when that was its last reference.
+Removes one side's reference to an Example and deletes the Example, with its renditions, when that was its last reference.
 An Example quoted by nothing is unreachable data, so the reference going takes it.
 An Example another card still quotes stays as it is.
 
@@ -67,7 +67,7 @@ Between any two steps the answer to "does anything still quote this" can change.
 
 ## `public void LEngineExampleDelete(string id)`
 
-Deletes the Example identified by `id` together with its translations.
+Deletes the Example identified by `id` together with its renditions.
 Refused while any Entry, Meaning or Collocation still references it.
 `LEngineExampleRemove` is the seam that deletes one as its last reference goes.
 A Reference it cited is left standing.

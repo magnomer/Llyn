@@ -1,4 +1,4 @@
-# PCardList.cs
+﻿# PCardList.cs
 
 ## `public partial class PEditor`
 
@@ -10,6 +10,11 @@ The order the cards are in is the order they are saved in.
 So it is kept here rather than derived.
 
 ## Inline notes
+
+### `PTranslationAttach(card);`
+
+A card added by hand is attached exactly as a loaded one is.
+Otherwise its Translation field would take typing and resolve none of it.
 
 ### `internal void PCardHandle(object sender, RoutedEventArgs e)`
 

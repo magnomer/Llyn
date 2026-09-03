@@ -23,6 +23,7 @@ public sealed class TImage
                 "a meaning",
                 [],
                 [],
+                [],
                 string.Empty,
                 [],
                 [@"D:\pictures\word.png", "https://example.com/word.png"])],
@@ -30,6 +31,7 @@ public sealed class TImage
                 string.Empty,
                 "in a word",
                 "briefly",
+                [],
                 [],
                 [],
                 string.Empty,
@@ -59,7 +61,7 @@ public sealed class TImage
             string.Empty,
             string.Empty,
             [new LCardDraft(
-                string.Empty, string.Empty, "a meaning", [], [], string.Empty, [], ["first.png", "second.png"])],
+                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], ["first.png", "second.png"])],
             []));
 
         LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);
@@ -94,7 +96,7 @@ public sealed class TImage
             string.Empty,
             string.Empty,
             [new LCardDraft(
-                string.Empty, string.Empty, "a meaning", [], [], string.Empty, [], ["   "])],
+                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], ["   "])],
             []));
 
         LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);

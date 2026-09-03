@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -122,7 +122,7 @@ public partial class PSound
         }
 
         _pDisplayEntry = id;
-        PSoundEntryShow(draft);
+        PSoundEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -147,7 +147,7 @@ public partial class PSound
 
         if (draft is not null)
         {
-            PSoundEntryShow(draft);
+            PSoundEntryShow(id, draft);
         }
     }
 
@@ -214,9 +214,9 @@ public partial class PSound
         return _pSoundHost.PWindowDiscardConfirm(PSoundChangeCheck());
     }
 
-    private void PSoundEntryShow(LEntryDraft draft)
+    private void PSoundEntryShow(string id, LEntryDraft draft)
     {
-        PDisplay.PDisplayShow(draft);
+        PDisplay.PDisplayShow(id, draft);
         PScribe.IsEnabled = true;
     }
 

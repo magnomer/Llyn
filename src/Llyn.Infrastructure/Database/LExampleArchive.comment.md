@@ -9,7 +9,7 @@ Each association carries the position the Example takes for that referrer alone.
 Attaching and detaching therefore only ever write association rows.
 Detaching leaves the Example and its other references untouched.
 `LExampleDelete` refuses to run while any reference remains.
-Translations are owned text, rewritten wholesale on update and removed with the Example.
+Renditions are owned text, rewritten wholesale on update and removed with the Example.
 The single Source an Example cites is a reference only.
 It is never created, updated, or deleted from here.
 
@@ -23,20 +23,20 @@ Binds the store to the workspace `database` it opens sessions through.
 
 ## `public LExample LExampleCreate(LExample example)`
 
-Inserts `example` and its translations with fresh opaque ids and returns the stored Example with those ids filled in.
+Inserts `example` and its renditions with fresh opaque ids and returns the stored Example with those ids filled in.
 The new Example is referenced by nothing until it is attached to a referrer.
 
 ## `public LExample? LExampleRead(string id)`
 
-Reads the Example identified by `id` with its translations in order, or `null` when no such Example exists.
+Reads the Example identified by `id` with its renditions in order, or `null` when no such Example exists.
 
 ## `public void LExampleUpdate(LExample example)`
 
 Rewrites the Example identified by `example`'s id.
 It rewrites its language, text, local rendering, and Source reference.
-It also replaces its translations wholesale.
-A translation that arrives with an id keeps it, so an id a caller is holding stays valid.
-Only a translation without one is given a fresh id.
+It also replaces its renditions wholesale.
+A rendition that arrives with an id keeps it, so an id a caller is holding stays valid.
+Only a rendition without one is given a fresh id.
 The Example's own id and every reference pointing at it are untouched.
 So an update never changes where the Example appears or in what order.
 Throws when no Example carries that id.
@@ -56,7 +56,7 @@ No store of its own has to know which association tables exist.
 
 ## `public void LExampleDelete(string id)`
 
-Deletes the Example identified by `id` together with its translations.
+Deletes the Example identified by `id` together with its renditions.
 Guarded: while any Entry, Meaning, or Collocation still references the Example, nothing is deleted.
 An `InvalidOperationException` is thrown instead.
 Detach every reference first.
@@ -66,12 +66,12 @@ The guard and the delete share one transaction, so nothing can attach the Exampl
 
 ## `internal static LExample? LExampleSingleRead(SqliteConnection connection, string id)`
 
-Reads one Example with its translations on a connection the caller already holds.
+Reads one Example with its renditions on a connection the caller already holds.
 Shared with `LExampleLink`, which resolves a whole referrer's set at once.
 
-## `internal static IReadOnlyDictionary<string, IReadOnlyList<LTranslation>> LExampleTranslationRead(`
+## `internal static IReadOnlyDictionary<string, IReadOnlyList<LRendition>> LExampleRenditionRead(`
 
-Reads the translations of every Example a referrer names, in one query, grouped by Example id.
+Reads the renditions of every Example a referrer names, in one query, grouped by Example id.
 Reading them one Example at a time is what turns a referrer's set into a round-trip per row.
 
 ## Inline notes
@@ -84,8 +84,8 @@ Nothing can attach the row between them.
 
 ## `public IReadOnlyList<LExample> LExampleRead()`
 
-Every stored Example with its translations, in insertion order.
-The translations of the whole table are read once and grouped, rather than once per Example.
+Every stored Example with its renditions, in insertion order.
+The renditions of the whole table are read once and grouped, rather than once per Example.
 
 ## `public IReadOnlyDictionary<string, int> LExampleReferenceRead()`
 

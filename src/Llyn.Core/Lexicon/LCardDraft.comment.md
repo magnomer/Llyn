@@ -4,7 +4,7 @@
 
 One card of the input form, captured as an immutable value.
 A Meaning card and a Collocation card are the same card.
-Both carry Title, a meaning text, Example, Situation, Synonym and Tags.
+Both carry Title, a meaning text, Example, Situation, Translation, Synonym and Tags.
 So they are the same value here.
 The Collocation's own Expression field is the single member a Meaning card leaves empty.
 A field added to the form is therefore added once.
@@ -18,7 +18,7 @@ The card's position is not carried.
 It is the order of the list the card sits in.
 The save reads it off that order and the load writes it back.
 
-Example, Situation, Tag and Image are ordered sets, because the store models them as many-per-card.
+Example, Situation, Translation, Tag and Image are ordered sets, because the store models them as many-per-card.
 A card may reference any number of each.
 The order of the list is the order they are stored in and read back.
 A field the form leaves empty is an empty list, never a list holding an empty string.
@@ -41,6 +41,11 @@ A comparison that means "the same card" walks the lists itself.
   Each carries its id, its sentence and the Source it cites.
 - `LCardDraftSituation` — The Situations the card references, in the order they are shown.
   Each carries its id, its wording and the Source it cites.
+- `LCardDraftTranslation` — The Entries this card is translated by, in the order they are shown.
+  Each is the id of a stored Entry and never the word it shows.
+  The word a chip shows is read back from that Entry, so a renamed headword follows.
+  A link crosses languages, so a target sits in a language pack the card's own entry does not.
+  The list is one way: the target holds nothing pointing back.
 - `LCardDraftSynonym` — Always empty.
   Neither card template offers a Synonym control.
   A synonym is a link to a stored Entry or Meaning, not text the card owns.

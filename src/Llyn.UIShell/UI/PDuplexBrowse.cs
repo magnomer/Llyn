@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -91,6 +91,6 @@ public partial class PDuplex
             return;
         }
 
-        display.PDisplayShow(draft);
+        display.PDisplayShow(id, draft);
     }
 }

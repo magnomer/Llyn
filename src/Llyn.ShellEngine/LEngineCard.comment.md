@@ -67,6 +67,8 @@ So the last reference going does not take the row with it.
 Tags are not reconciled that way.
 A Tag is its own text and lives on the card.
 So the card's whole Tag line is written over.
+Translations are written over the same way, because a link is an id the card holds.
+Nothing is created or detached for one, and no target row is touched.
 A newly created card has nothing attached yet, so the same path attaches its whole set.
 
 ### `private static void LEngineFieldSync<TRow>(`

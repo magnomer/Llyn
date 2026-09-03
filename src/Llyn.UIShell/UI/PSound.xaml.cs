@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -19,7 +19,7 @@ public partial class PSound : UserControl
         _pSoundHost = host;
         _lEngine = engine;
 
-        PDisplay.PDisplayAttach(engine);
+        PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, null);
 

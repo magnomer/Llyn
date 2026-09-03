@@ -22,12 +22,12 @@ public sealed class TEntryLoad
             [
                 new LCardDraft(
                     string.Empty, string.Empty, "a unit of language",
-                    [LExampleDraft.LExampleDraftCreate("he said a word")], [LSituationDraft.LSituationDraftCreate("conversation")], string.Empty, ["spoken"], []),
-                new LCardDraft(string.Empty, string.Empty, "a promise", [], [], string.Empty, [], []),
+                    [LExampleDraft.LExampleDraftCreate("he said a word")], [LSituationDraft.LSituationDraftCreate("conversation")], [], string.Empty, ["spoken"], []),
+                new LCardDraft(string.Empty, string.Empty, "a promise", [], [], [], string.Empty, [], []),
             ],
             [
                 new LCardDraft(
-                    string.Empty, "in a word", "briefly", [LExampleDraft.LExampleDraftCreate("in a word, no")], [LSituationDraft.LSituationDraftCreate("summary")], string.Empty,
+                    string.Empty, "in a word", "briefly", [LExampleDraft.LExampleDraftCreate("in a word, no")], [LSituationDraft.LSituationDraftCreate("summary")], [], string.Empty,
                     ["written"], []),
             ]);
 
@@ -36,7 +36,7 @@ public sealed class TEntryLoad
             "English",
             "sɔːd",
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a bladed weapon", [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, string.Empty, "a bladed weapon", [], [], [], string.Empty, [], [])],
             []);
 
         LEntry stored = engine.LEngineEntrySave(word);
@@ -98,6 +98,8 @@ public sealed class TEntryLoad
                 TEntrySituationRead(expected[index].LCardDraftSituation),
                 TEntrySituationRead(actual[index].LCardDraftSituation));
             Assert.Equal(expected[index].LCardDraftTag, actual[index].LCardDraftTag);
+            Assert.Equal(
+                expected[index].LCardDraftTranslation, actual[index].LCardDraftTranslation);
         }
     }
 
@@ -166,9 +168,9 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft("the plain sense", string.Empty, "a meaning", [], [], string.Empty, [], [])],
+            [new LCardDraft("the plain sense", string.Empty, "a meaning", [], [], [], string.Empty, [], [])],
             [new LCardDraft(
-                "the set phrase", "in a word", "briefly", [], [], string.Empty, [], [])]));
+                "the set phrase", "in a word", "briefly", [], [], [], string.Empty, [], [])]));
 
         LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));
         Assert.Equal("the plain sense", sense.LSenseTitle);
@@ -202,6 +204,7 @@ public sealed class TEntryLoad
                 "a unit of language",
                 [LExampleDraft.LExampleDraftCreate("he said a word"), LExampleDraft.LExampleDraftCreate("not a word was spoken")],
                 [LSituationDraft.LSituationDraftCreate("conversation")],
+                [],
                 string.Empty,
                 ["verb", "formal", "spoken"], [])],
             [new LCardDraft(
@@ -210,6 +213,7 @@ public sealed class TEntryLoad
                 "briefly",
                 [LExampleDraft.LExampleDraftCreate("in a word, no")],
                 [LSituationDraft.LSituationDraftCreate("summary"), LSituationDraft.LSituationDraftCreate("writing")],
+                [],
                 string.Empty,
                 ["written", "idiom"], [])]));
 
@@ -249,7 +253,7 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [LExampleDraft.LExampleDraftCreate("  ")], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [LExampleDraft.LExampleDraftCreate("  ")], [], [], string.Empty, [], [])],
             []));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));

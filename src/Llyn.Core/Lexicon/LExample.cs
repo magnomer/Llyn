@@ -8,7 +8,7 @@ public sealed record LExample(
     LStateValue LExampleText,
     string? LExampleLocal,
     LStateValue LExampleSource,
-    IReadOnlyList<LTranslation> LExampleTranslations)
+    IReadOnlyList<LRendition> LExampleRenditions)
 {
     public LStateValue LExampleText { get; init; } = LExampleText ?? LStateValue.LStateValueUnspecified;
 

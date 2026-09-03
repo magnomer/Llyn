@@ -393,5 +393,52 @@
                 </Border>
             </Grid>
         </Border>
+
+        <Popup
+            x:Name="PTranslationMenuChoice"
+            Grid.Row="4"
+            Width="320"
+            Margin="0,4,0,0"
+            AllowsTransparency="True"
+            Placement="Bottom"
+            StaysOpen="False">
+            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                <ListBox
+                    x:Name="PTranslationMenuList"
+                    MaxHeight="264"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Focusable="False"
+                    ItemTemplate="{DynamicResource Theme.Translation.Candidate}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    SelectionMode="Single">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Focusable" Value="False" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="PSurface" MinHeight="38" Padding="10,0" Background="Transparent" CornerRadius="9">
+                                            <ContentPresenter VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Border>
+        </Popup>
     </Grid>
 </UserControl>

@@ -18,7 +18,7 @@ That requires foreign-key enforcement to be off.
 Enforcement cannot be changed inside a transaction.
 So the runner is called with a plain connection, before any session is open.
 
-## `public const long LSchemaMigrationVersion = 16;`
+## `public const long LSchemaMigrationVersion = 20;`
 
 The schema version this build produces.
 A later change to an existing table raises it.
@@ -70,6 +70,14 @@ The part-of-speech field is editable, so a row may now carry text no preset name
 The step rebuilds part_of_speech with value_id nullable beside a custom_name column.
 A CHECK keeps a row to exactly one of the two.
 The assignments already stored are all preset ids and copy across untouched.
+
+### `if (stored < 20)`
+
+Version 20.
+The owned text rows of an Example are Renditions, so their table is example_rendition.
+The step stands ahead of every older one because they name the table it renames.
+A step that normalized example_translation would find nothing once the name moved on.
+The same version adds the card-to-entry link tables, so an upgraded workspace gains them too.
 
 ### `private static void LSchemaSpeechNormalize(SqliteConnection connection)`
 
@@ -145,3 +153,18 @@ Hence the explicit statements rather than a session.
 Renumbers an ordered set to 0…n-1 per owner so the unique position index can be created over it.
 The new positions are computed into a temporary table first.
 An UPDATE that read the very column it writes would depend on the order rows were visited.
+
+### `private static void LSchemaTranslationCreate(SqliteConnection connection)`
+
+Creates sense_translation and collocation_translation with their unique position indexes.
+The tables hold nothing yet, so there is no data to move and no rebuild to run.
+CREATE TABLE IF NOT EXISTS makes the step harmless on a workspace that already carries them.
+
+### `private static void LSchemaRenditionNormalize(SqliteConnection connection)`
+
+Moves the rows of example_translation into example_rendition on a database that predates the name.
+LSchema has already created the new table, so a plain ALTER TABLE rename would collide with it.
+The rows carry their ids and positions across, so nothing but the table name changes.
+Dropping the old table takes its indexes with it, and LSchemaIndex rebuilds them under the new name.
+Foreign-key enforcement is off across the move, as it is across every table rebuild here.
+Skipped when no example_translation table is there, which is every database built at this version or later.

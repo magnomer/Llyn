@@ -244,6 +244,98 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void AVersionNineteenDatabaseRenamesTheRenditionTableWithoutLosingARow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 19);
+
+            CREATE TABLE example_translation (
+                id TEXT NOT NULL PRIMARY KEY,
+                example_id TEXT NOT NULL,
+                language TEXT NOT NULL,
+                text TEXT NOT NULL,
+                position INTEGER NOT NULL
+            );
+            CREATE INDEX example_translation_example ON example_translation (example_id);
+            CREATE UNIQUE INDEX example_translation_position
+                ON example_translation (example_id, position);
+
+            INSERT INTO example_translation (id, example_id, language, text, position)
+                VALUES ('r1', 'e1', 'ko', '부수다', 0);
+            INSERT INTO example_translation (id, example_id, language, text, position)
+                VALUES ('r2', 'e1', 'fr', 'casser', 1);
+            """);
+
+        workspace.TWorkspaceDatabase.LDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'example_translation';"));
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example_rendition;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM example_rendition WHERE id = 'r2' AND text = 'casser' AND position = 1;"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "example_rendition", "example_id"));
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'example_translation_position';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'example_rendition_position';"));
+    }
+
+    [Fact]
+    public void AVersionNineteenDatabaseGainsBothTranslationLinkTables()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 19);
+            """);
+
+        workspace.TWorkspaceDatabase.LDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'sense_translation';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'collocation_translation';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'sense_translation_position';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'collocation_translation_position';"));
+    }
+
+    [Fact]
     public void AVersionTwelveDatabaseGainsTheCollocationMeaningWithoutLosingARow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -440,7 +532,7 @@ public sealed class TSchemaMigration
         Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "relation", "sense_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "example_translation", "example_id"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "example_rendition", "example_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "entry_example", "example_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "text"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_id"));

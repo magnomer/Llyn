@@ -32,8 +32,9 @@ public partial class PEditor
         PSpeechShow(draft.LEntryDraftSpeeches);
         PEditorLangcodeShow(draft.LEntryDraftLanguage);
 
-        PCardShow(_pSenseList, "Meaning", draft.LEntryDraftSenses);
-        PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations);
+        IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);
+        PCardShow(_pSenseList, "Meaning", draft.LEntryDraftSenses, targets);
+        PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets);
 
         PEditorNoteShow(draft.LEntryDraftNote);
         PEditorRecordingShow(draft);
@@ -41,10 +42,70 @@ public partial class PEditor
         _pStateDraft = PEditorDraftRead();
     }
 
+    private static IReadOnlyDictionary<string, LTranslationTarget> PEditorTargetEmpty =>
+        new Dictionary<string, LTranslationTarget>(StringComparer.Ordinal);
+
+    private IReadOnlyDictionary<string, LTranslationTarget> PEditorTargetRead(LEntryDraft draft)
+    {
+        List<string> ids = [];
+        PEditorTargetRead(draft.LEntryDraftSenses, ids);
+        PEditorTargetRead(draft.LEntryDraftCollocations, ids);
+
+        Dictionary<string, LTranslationTarget> targets = new(StringComparer.Ordinal);
+        if (ids.Count == 0)
+        {
+            return targets;
+        }
+
+        try
+        {
+            foreach (LTranslationTarget target in _lEngine.LEngineTargetRead(ids))
+            {
+                targets[target.LTranslationTargetId] = target;
+            }
+        }
+        catch (Exception)
+        {
+            targets.Clear();
+        }
+
+        return targets;
+    }
+
+    private static IReadOnlyList<LTranslationTarget> PCardTargetRead(
+        IReadOnlyDictionary<string, LTranslationTarget> targets, IReadOnlyList<string> ids)
+    {
+        List<LTranslationTarget> found = [];
+        foreach (string id in ids)
+        {
+            if (targets.TryGetValue(id, out LTranslationTarget? target))
+            {
+                found.Add(target);
+            }
+        }
+
+        return found;
+    }
+
+    private static void PEditorTargetRead(IReadOnlyList<LCardDraft> cards, List<string> ids)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            foreach (string id in card.LCardDraftTranslation)
+            {
+                if (!ids.Contains(id))
+                {
+                    ids.Add(id);
+                }
+            }
+        }
+    }
+
     private void PCardShow(
         ObservableCollection<PCard> cards,
         string prefix,
-        IReadOnlyList<LCardDraft> drafts)
+        IReadOnlyList<LCardDraft> drafts,
+        IReadOnlyDictionary<string, LTranslationTarget> targets)
     {
         cards.Clear();
         foreach (LCardDraft draft in drafts)
@@ -59,6 +120,8 @@ public partial class PEditor
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
             card.PCardSentenceShow(draft.LCardDraftExample);
             card.PCardSituationShow(draft.LCardDraftSituation);
+            card.PCardTranslationShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
+            PTranslationAttach(card);
             card.PCardTagShow(draft.LCardDraftTag);
             card.PCardImageShow(draft.LCardDraftImage);
             cards.Add(card);
@@ -66,7 +129,9 @@ public partial class PEditor
 
         if (cards.Count == 0)
         {
-            cards.Add(new PCard(prefix, 1, _pSentenceReference));
+            PCard card = new(prefix, 1, _pSentenceReference);
+            PTranslationAttach(card);
+            cards.Add(card);
         }
     }
 
@@ -119,8 +184,8 @@ public partial class PEditor
         PRecordingClear();
         _pLangcodeEntry = false;
 
-        PCardShow(_pSenseList, "Meaning", []);
-        PCardShow(_pCollocationList, "Collocation", []);
+        PCardShow(_pSenseList, "Meaning", [], PEditorTargetEmpty);
+        PCardShow(_pCollocationList, "Collocation", [], PEditorTargetEmpty);
 
         PNoteContents.Text = string.Empty;
         PNotePlaceholder.Visibility = Visibility.Visible;
@@ -174,6 +239,7 @@ public partial class PEditor
                 || !string.Equals(first.LCardDraftId, second.LCardDraftId, StringComparison.Ordinal)
                 || !PEditorExampleMatch(first.LCardDraftExample, second.LCardDraftExample)
                 || !PEditorSituationMatch(first.LCardDraftSituation, second.LCardDraftSituation)
+                || !PEditorTextMatch(first.LCardDraftTranslation, second.LCardDraftTranslation)
                 || !PEditorTextMatch(first.LCardDraftTag, second.LCardDraftTag)
                 || !PEditorValueMatch(first.LCardDraftImage, second.LCardDraftImage))
             {
@@ -276,6 +342,7 @@ public partial class PEditor
                 card.PCardDefinitionRead(),
                 card.PCardSentenceRead(),
                 card.PCardSituationRead(),
+                card.PCardTranslationRead(),
                 string.Empty,
                 card.PCardTagRead(),
                 card.PCardImageRead(),

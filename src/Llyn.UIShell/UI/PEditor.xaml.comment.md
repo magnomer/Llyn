@@ -1,4 +1,4 @@
-# PEditor.xaml.cs
+﻿# PEditor.xaml.cs
 
 ## `public partial class PEditor : UserControl`
 
@@ -57,6 +57,12 @@ Each card and menu row is a template in a dictionary of its own.
 So this control's markup stays its own layout.
 A template still raises this control's events.
 That is why the dictionaries are built here against this instance rather than merged from markup.
+
+### `PTranslationMenuList.ItemsSource = _pTranslationItem;`
+
+The Translation dropdown is one popup for the whole editor rather than one per card.
+Only one caret is typed into at a time, so only one list of candidates is ever open.
+It hangs off the caret it was opened from, which is why the markup names no placement target.
 
 ### `PSpeechLoad();`
 

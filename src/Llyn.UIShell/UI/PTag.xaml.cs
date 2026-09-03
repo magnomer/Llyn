@@ -19,7 +19,7 @@ public partial class PTag : UserControl
         _pTagHost = host;
         _lEngine = engine;
 
-        PDisplay.PDisplayAttach(engine);
+        PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, null);
 

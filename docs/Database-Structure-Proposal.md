@@ -407,19 +407,19 @@ In the UI, `PExample` is the overarching Example concept and `PExampleSource` is
 
 ---
 
-## `example_translation`
+## `example_rendition`
 
 | Field | Meaning |
 |---|---|
-| `id` | Translation ID |
+| `id` | Rendition ID |
 | `example_id` | Parent Example |
-| `language` | Translation language |
-| `text` | Translation |
+| `language` | Rendition language |
+| `text` | Rendition |
 | `position` | Order |
 
-Translations are subordinate to the Example.
+Renditions are subordinate to the Example.
 
-An Example may have multiple translations.
+An Example may have multiple renditions.
 
 ---
 
@@ -903,7 +903,7 @@ Collocation
 └── Synonym interlink ----------> lexical target
 
 Example                           [independent]
-├── Translation
+├── Rendition
 └── Source reference ------------> Source
 
 Situation                         [independent]
@@ -961,7 +961,7 @@ It does not delete the independent Examples or Situations that were referenced b
 
 An Example must not be deleted while lexical objects still reference it unless those references are explicitly removed.
 
-Deleting an Example removes its subordinate translations and its reference to its Source, if one exists.
+Deleting an Example removes its subordinate renditions and its reference to its Source, if one exists.
 
 It does not delete the referenced Source.
 
@@ -1063,7 +1063,7 @@ Representation
 ## Example-owned data
 
 ```text
-Translation
+Rendition
 ```
 
 ## Reference-based relationships

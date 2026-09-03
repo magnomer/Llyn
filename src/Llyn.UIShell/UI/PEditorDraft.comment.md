@@ -1,4 +1,4 @@
-# PEditorDraft.cs
+﻿# PEditorDraft.cs
 
 ## `public partial class PEditor`
 
@@ -54,6 +54,23 @@ An entry saved with no cards still shows one empty card.
 The panel is an editor.
 An editor with nothing to type into is not a state the form has.
 
+### `IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);`
+
+A card stores link ids and the field shows words, so the two are joined before any card is built.
+Every card's ids are asked for together, so an entry of many cards still asks once.
+The engine is asked, because the panel reaches no database of its own.
+A workspace that refuses the read leaves the chips off rather than stopping the load.
+
+### `card.PCardTranslationShow(PCardTargetRead(targets, draft.LCardDraftTranslation));`
+
+Each card takes its own words out of the one answer, in the order the card holds them.
+An id the answer does not name is passed over, as a chip with no Entry has nothing to say.
+
+### `PTranslationAttach(card);`
+
+Every card is given the way back to the editor before it is shown.
+A card resolves no typed word on its own.
+
 ### `PCardId = draft.LCardDraftId`
 
 Which stored row this card is.
@@ -104,9 +121,10 @@ It does not belong to the empty form the next entry is typed into.
 An empty form stands on no entry, so its language is nobody's.
 The language menu may move it onto an installed pack.
 
-### `PCardShow(_pSenseList, "Meaning", []);`
+### `PCardShow(_pSenseList, "Meaning", [], PEditorTargetEmpty);`
 
 No cards to show is the empty form, which is one empty card of each kind.
+An empty form links to nothing, so there is nothing to look words up for.
 
 ### `PNotePlaceholder.Visibility = Visibility.Visible;`
 
@@ -149,6 +167,7 @@ A Meaning card and a Collocation card are the same card.
 So they are read into the same value.
 A Meaning card's Expression stays empty.
 Its template has no Expression control, and no writer looks at the field for a sense.
+The Translation line reads back the ids the card's link field holds.
 
 ### `card.PTitle,`
 

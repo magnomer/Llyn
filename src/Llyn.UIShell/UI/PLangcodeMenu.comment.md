@@ -24,6 +24,7 @@ Only a form standing on no entry may be moved off its language.
 
 Builds the language menu.
 Each row carries its own flag, resolved once here so the dropdown paints ready.
+The Translation chips are redrawn afterwards, because they were built before any flag existed.
 The flag download may await a first-time fetch, hence async.
 
 ### `string?[] paths = await Task.WhenAll(`

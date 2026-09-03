@@ -15,9 +15,9 @@ public partial class PExample
 
     private readonly ObservableCollection<PUsageItem> _pUsageList = [];
 
-    private readonly ObservableCollection<PTranslationItem> _pDisplayTranslation = [];
+    private readonly ObservableCollection<PRenditionItem> _pDisplayRendition = [];
 
-    private readonly ObservableCollection<PTranslationItem> _pTranslationList = [];
+    private readonly ObservableCollection<PRenditionItem> _pRenditionList = [];
 
     private readonly ObservableCollection<PReference> _pCitationCatalog = [];
 
@@ -38,8 +38,8 @@ public partial class PExample
 
         PAnthology.ItemsSource = _pAnthologyList;
         PUsage.ItemsSource = _pUsageList;
-        PDisplayTranslation.ItemsSource = _pDisplayTranslation;
-        PTranslation.ItemsSource = _pTranslationList;
+        PDisplayRendition.ItemsSource = _pDisplayRendition;
+        PRendition.ItemsSource = _pRenditionList;
         PCitationList.ItemsSource = _pCitationCatalog;
         PLangcodeList.ItemsSource = _pLangcodeItem;
 
@@ -140,9 +140,9 @@ public partial class PExample
             return true;
         }
 
-        foreach (LTranslation translation in example.LExampleTranslations)
+        foreach (LRendition rendition in example.LExampleRenditions)
         {
-            if (PQueryMatch(translation.LTranslationText, query))
+            if (PQueryMatch(rendition.LRenditionText, query))
             {
                 return true;
             }
@@ -203,17 +203,17 @@ public partial class PExample
             example.LExampleSource,
             PCitationNameRead(example.LExampleSource));
 
-        _pDisplayTranslation.Clear();
-        foreach (LTranslation translation in example.LExampleTranslations)
+        _pDisplayRendition.Clear();
+        foreach (LRendition rendition in example.LExampleRenditions)
         {
-            _pDisplayTranslation.Add(new PTranslationItem(
-                translation.LTranslationId,
-                translation.LTranslationLanguage,
-                translation.LTranslationText));
+            _pDisplayRendition.Add(new PRenditionItem(
+                rendition.LRenditionId,
+                rendition.LRenditionLanguage,
+                rendition.LRenditionText));
         }
 
-        PDisplayTranslationEmpty.Visibility =
-            _pDisplayTranslation.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        PDisplayRenditionEmpty.Visibility =
+            _pDisplayRendition.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PUsageFind(id);
 
@@ -350,7 +350,7 @@ public partial class PExample
         _pDisplayExample = null;
         _pEditorExample = null;
         _pUsageList.Clear();
-        _pDisplayTranslation.Clear();
+        _pDisplayRendition.Clear();
 
         PDisplayBody.Visibility = Visibility.Collapsed;
         PDisplayUnselected.Visibility = Visibility.Visible;

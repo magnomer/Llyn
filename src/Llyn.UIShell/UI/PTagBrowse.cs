@@ -178,7 +178,7 @@ public partial class PTag
         }
 
         _pDisplayEntry = id;
-        PTagEntryShow(draft);
+        PTagEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -203,7 +203,7 @@ public partial class PTag
 
         if (draft is not null)
         {
-            PTagEntryShow(draft);
+            PTagEntryShow(id, draft);
         }
     }
 
@@ -270,9 +270,9 @@ public partial class PTag
         return _pTagHost.PWindowDiscardConfirm(PTagChangeCheck());
     }
 
-    private void PTagEntryShow(LEntryDraft draft)
+    private void PTagEntryShow(string id, LEntryDraft draft)
     {
-        PDisplay.PDisplayShow(draft);
+        PDisplay.PDisplayShow(id, draft);
         PScribe.IsEnabled = true;
     }
 

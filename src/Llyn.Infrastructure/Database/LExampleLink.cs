@@ -259,8 +259,8 @@ public sealed class LExampleLink
         using LDatabaseSession session = _lExampleLinkDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        IReadOnlyDictionary<string, IReadOnlyList<LTranslation>> translations =
-            LExampleArchive.LExampleTranslationRead(connection, table, column, referrerId);
+        IReadOnlyDictionary<string, IReadOnlyList<LRendition>> renditions =
+            LExampleArchive.LExampleRenditionRead(connection, table, column, referrerId);
 
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -285,7 +285,7 @@ public sealed class LExampleLink
                 LStateColumn.LStateColumnRead(reader, 2),
                 reader.IsDBNull(4) ? null : reader.GetString(4),
                 LStateColumn.LStateColumnRead(reader, 5),
-                translations.TryGetValue(id, out IReadOnlyList<LTranslation>? found) ? found : []));
+                renditions.TryGetValue(id, out IReadOnlyList<LRendition>? found) ? found : []));
         }
 
         return examples;

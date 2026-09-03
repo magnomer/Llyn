@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Llyn.Core;
@@ -33,6 +33,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardSituation = [];
         PCardSituationAdd(new PContext(catalog));
         PCardSituationUpdate();
+        PCardTranslationStart();
         PCardTagStart();
         PCardImage = [];
         PCardVideo = [];

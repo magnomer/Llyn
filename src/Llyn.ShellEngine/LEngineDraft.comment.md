@@ -67,7 +67,7 @@ Each takes a target the caller resolved through `LEngineEntryFind` or `LEngineSe
 
 ## `private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)`
 
-Writes the Example and Situation a card typed, points the stored card at them, and writes the card's Tag line.
+Writes the Example and Situation a card typed, points the stored card at them, and writes its Tag and Translation lines.
 Each non-empty Example and Situation field creates a row of its own.
 That row is independent data the card references rather than owns.
 An empty field writes nothing at all.
@@ -118,6 +118,8 @@ Without it the audio would have nothing to reference.
 The cards worth a row.
 A card with every field blank is neither a Meaning nor a Collocation.
 So it is skipped rather than written.
+A card carrying nothing but a Translation is a card, because a link is something the user chose.
+It is stored so the link it holds has a row to hang from.
 The form always hands over at least one card of each kind.
 It seeds one of each and refuses to remove a list's last card.
 An editor must keep an empty card to type into.

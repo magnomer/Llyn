@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace Llyn.UIShell;
@@ -10,12 +10,16 @@ public partial class PEditor
 
     private void PSenseHandle(object sender, RoutedEventArgs e)
     {
-        _pSenseList.Add(new PCard("Meaning", _pSenseList.Count + 1, _pSentenceReference));
+        PCard card = new("Meaning", _pSenseList.Count + 1, _pSentenceReference);
+        PTranslationAttach(card);
+        _pSenseList.Add(card);
     }
 
     private void PCollocationHandle(object sender, RoutedEventArgs e)
     {
-        _pCollocationList.Add(new PCard("Collocation", _pCollocationList.Count + 1, _pSentenceReference));
+        PCard card = new("Collocation", _pCollocationList.Count + 1, _pSentenceReference);
+        PTranslationAttach(card);
+        _pCollocationList.Add(card);
     }
 
     internal void PCardHandle(object sender, RoutedEventArgs e)

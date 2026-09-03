@@ -1,17 +1,25 @@
+using System.Windows.Media;
+
 namespace Llyn.UIShell;
 
 internal sealed class PTranslationItem
 {
-    internal PTranslationItem(string id, string language, string text)
+    internal PTranslationItem(string id, string headword, string language, bool fresh)
     {
         PTranslationItemId = id;
+        PTranslationItemHeadword = headword;
         PTranslationItemLanguage = language;
-        PTranslationItemText = text;
+        PTranslationItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(language);
+        PTranslationItemFresh = fresh;
     }
 
-    public string PTranslationItemId { get; set; }
+    public string PTranslationItemId { get; }
 
-    public string PTranslationItemLanguage { get; set; }
+    public string PTranslationItemHeadword { get; }
 
-    public string PTranslationItemText { get; set; }
+    public string PTranslationItemLanguage { get; }
+
+    public ImageSource? PTranslationItemFlag { get; }
+
+    public bool PTranslationItemFresh { get; }
 }

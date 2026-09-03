@@ -185,6 +185,7 @@ public sealed partial class LEngine
         LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation);
 
         LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
+        LEngineTranslationSave(ownerId, card.LCardDraftTranslation, collocation);
 
         LImageArchive images = new(_lEngineDatabase);
         LEngineFieldSync(
@@ -332,6 +333,25 @@ public sealed partial class LEngine
         }
 
         tags.LTagSenseSave(ownerId, written);
+    }
+
+    private void LEngineTranslationSave(
+        string ownerId, IReadOnlyList<string> ids, bool collocation)
+    {
+        List<LTranslation> written = new(ids.Count);
+        foreach (string id in ids)
+        {
+            written.Add(new LTranslation(id, 0));
+        }
+
+        LTranslationArchive translations = new(_lEngineDatabase);
+        if (collocation)
+        {
+            translations.LTranslationCollocationSave(ownerId, written);
+            return;
+        }
+
+        translations.LTranslationSenseSave(ownerId, written);
     }
 
     private static void LEngineFieldSync<TRow>(

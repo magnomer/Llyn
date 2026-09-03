@@ -14,9 +14,9 @@ The panel answers two questions rather than one: what this sentence is, and wher
 How many places quote each Example, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
-### `private readonly ObservableCollection<PTranslationItem> _pDisplayTranslation = [];`
+### `private readonly ObservableCollection<PRenditionItem> _pDisplayRendition = [];`
 
-The translations as the display reads them, kept apart from the list the editor writes into.
+The renditions as the display reads them, kept apart from the list the editor writes into.
 The two must not share rows, because discarding an edit may not disturb what the reading showed.
 
 ## `private async void PExampleHandle(object sender, DependencyPropertyChangedEventArgs e)`
@@ -37,7 +37,7 @@ An open editor keeps its selection either way, because the row may be the one be
 
 ## `private bool PQueryMatch(LExample example, string query)`
 
-Whether one Example answers the query, over its sentence, its local rendering, its translations and its Source name.
+Whether one Example answers the query, over its sentence, its local rendering, its renditions and its Source name.
 
 ## `private void PExampleShow(string id)`
 

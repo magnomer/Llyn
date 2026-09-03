@@ -108,6 +108,7 @@ public sealed class TSituation
                     LSituationDraft.LSituationDraftCreate("in court"),
                     LSituationDraft.LSituationDraftCreate("at home"),
                 ],
+                [],
                 string.Empty,
                 [], [])],
             []));
@@ -279,7 +280,7 @@ public sealed class TSituation
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [], [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [], [])]));
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [])]));
     }
 }

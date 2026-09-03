@@ -25,6 +25,7 @@ public sealed class TState
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
                 [new LSituationDraft(
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
+                [],
                 string.Empty,
                 ["spoken"], [])],
             []));
@@ -81,6 +82,7 @@ public sealed class TState
                     LExampleDraft.LExampleDraftCreate("   "),
                 ],
                 [],
+                [],
                 string.Empty,
                 [], [])],
             []));
@@ -111,6 +113,7 @@ public sealed class TState
                         LStateValue.LStateValueUnknown),
                     LExampleDraft.LExampleDraftCreate("not a word was spoken"),
                 ],
+                [],
                 [],
                 string.Empty,
                 [], [])],
@@ -152,6 +155,7 @@ public sealed class TState
                 [],
                 [new LSituationDraft(
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
+                [],
                 string.Empty,
                 [], [])],
             []));

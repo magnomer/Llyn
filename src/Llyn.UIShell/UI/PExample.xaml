@@ -195,22 +195,22 @@
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Example.Local}" />
                             <TextBlock x:Name="PDisplayLocal" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Example.Translation}" />
-                            <ItemsControl x:Name="PDisplayTranslation" Margin="0,5,0,0">
+                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Example.Rendition}" />
+                            <ItemsControl x:Name="PDisplayRendition" Margin="0,5,0,0">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
-                                            <TextBlock MinWidth="90" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PTranslationItemLanguage}" />
-                                            <TextBlock Margin="8,0,0,0" Style="{StaticResource Theme.Display.Value}" Text="{Binding PTranslationItemText}" />
+                                            <TextBlock MinWidth="90" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PRenditionItemLanguage}" />
+                                            <TextBlock Margin="8,0,0,0" Style="{StaticResource Theme.Display.Value}" Text="{Binding PRenditionItemText}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <TextBlock
-                                x:Name="PDisplayTranslationEmpty"
+                                x:Name="PDisplayRenditionEmpty"
                                 Margin="0,5,0,0"
                                 Foreground="{StaticResource Theme.Muted}"
-                                Text="{DynamicResource Example.TranslationEmpty}"
+                                Text="{DynamicResource Example.RenditionEmpty}"
                                 TextWrapping="Wrap" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Reference.Title}" />
@@ -322,17 +322,17 @@
                                 Style="{StaticResource Theme.Input.Field}" />
 
                             <Grid Margin="0,18,0,0">
-                                <TextBlock VerticalAlignment="Center" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Example.Translation}" />
+                                <TextBlock VerticalAlignment="Center" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Example.Rendition}" />
                                 <Button
-                                    x:Name="PTranslationFresh"
+                                    x:Name="PRenditionFresh"
                                     Height="31"
                                     Padding="12,0"
                                     HorizontalAlignment="Right"
-                                    Click="PTranslationFreshHandle"
-                                    Content="{DynamicResource Example.TranslationNew}"
+                                    Click="PRenditionFreshHandle"
+                                    Content="{DynamicResource Example.RenditionNew}"
                                     Style="{StaticResource Theme.Input.Pill}" />
                             </Grid>
-                            <ItemsControl x:Name="PTranslation" Margin="0,7,0,0">
+                            <ItemsControl x:Name="PRendition" Margin="0,7,0,0">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Margin="0,0,0,6">
@@ -345,18 +345,18 @@
                                                 Height="38"
                                                 VerticalContentAlignment="Center"
                                                 ItemsSource="{Binding PExampleLanguage, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                SelectedItem="{Binding PTranslationItemLanguage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                SelectedItem="{Binding PRenditionItemLanguage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                             <TextBox
                                                 Grid.Column="1"
                                                 Height="38"
                                                 Margin="8,0,0,0"
                                                 Padding="12,7"
                                                 Style="{StaticResource Theme.Input.Field}"
-                                                Text="{Binding PTranslationItemText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                Text="{Binding PRenditionItemText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                             <StackPanel Grid.Column="2" Margin="8,0,0,0" Orientation="Horizontal">
-                                                <Button Width="38" Height="38" Click="PTranslationMoveHandle" Content="&#x2191;" Style="{StaticResource Theme.Input.Pill}" Tag="-1" />
-                                                <Button Width="38" Height="38" Margin="4,0,0,0" Click="PTranslationMoveHandle" Content="&#x2193;" Style="{StaticResource Theme.Input.Pill}" Tag="1" />
-                                                <Button Width="38" Height="38" Margin="4,0,0,0" Click="PTranslationRemoveHandle" Content="&#x2715;" Style="{StaticResource Theme.Input.Pill}" />
+                                                <Button Width="38" Height="38" Click="PRenditionMoveHandle" Content="&#x2191;" Style="{StaticResource Theme.Input.Pill}" Tag="-1" />
+                                                <Button Width="38" Height="38" Margin="4,0,0,0" Click="PRenditionMoveHandle" Content="&#x2193;" Style="{StaticResource Theme.Input.Pill}" Tag="1" />
+                                                <Button Width="38" Height="38" Margin="4,0,0,0" Click="PRenditionRemoveHandle" Content="&#x2715;" Style="{StaticResource Theme.Input.Pill}" />
                                             </StackPanel>
                                         </Grid>
                                     </DataTemplate>

@@ -184,55 +184,55 @@ public partial class PExample
         PEditorText.Tag = string.Empty;
     }
 
-    private void PTranslationFreshHandle(object sender, RoutedEventArgs e)
+    private void PRenditionFreshHandle(object sender, RoutedEventArgs e)
     {
-        _pTranslationList.Add(new PTranslationItem(string.Empty, _pEditorLanguage, string.Empty));
+        _pRenditionList.Add(new PRenditionItem(string.Empty, _pEditorLanguage, string.Empty));
     }
 
-    private void PTranslationRemoveHandle(object sender, RoutedEventArgs e)
+    private void PRenditionRemoveHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PTranslationItem row })
+        if (sender is FrameworkElement { DataContext: PRenditionItem row })
         {
-            _pTranslationList.Remove(row);
+            _pRenditionList.Remove(row);
         }
     }
 
-    private void PTranslationMoveHandle(object sender, RoutedEventArgs e)
+    private void PRenditionMoveHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PTranslationItem row, Tag: string step })
+        if (sender is not FrameworkElement { DataContext: PRenditionItem row, Tag: string step })
         {
             return;
         }
 
-        int index = _pTranslationList.IndexOf(row);
+        int index = _pRenditionList.IndexOf(row);
         int moved = index + int.Parse(step, CultureInfo.InvariantCulture);
-        if (index < 0 || moved < 0 || moved >= _pTranslationList.Count)
+        if (index < 0 || moved < 0 || moved >= _pRenditionList.Count)
         {
             return;
         }
 
-        _pTranslationList.Move(index, moved);
+        _pRenditionList.Move(index, moved);
     }
 
-    private IReadOnlyList<LTranslation> PTranslationRead()
+    private IReadOnlyList<LRendition> PRenditionRead()
     {
-        List<LTranslation> translations = [];
-        foreach (PTranslationItem row in _pTranslationList)
+        List<LRendition> renditions = [];
+        foreach (PRenditionItem row in _pRenditionList)
         {
-            if (string.IsNullOrWhiteSpace(row.PTranslationItemText)
-                || string.IsNullOrWhiteSpace(row.PTranslationItemLanguage))
+            if (string.IsNullOrWhiteSpace(row.PRenditionItemText)
+                || string.IsNullOrWhiteSpace(row.PRenditionItemLanguage))
             {
                 continue;
             }
 
-            translations.Add(new LTranslation(
-                row.PTranslationItemId,
-                row.PTranslationItemLanguage,
-                row.PTranslationItemText,
-                translations.Count));
+            renditions.Add(new LRendition(
+                row.PRenditionItemId,
+                row.PRenditionItemLanguage,
+                row.PRenditionItemText,
+                renditions.Count));
         }
 
-        return translations;
+        return renditions;
     }
 
     private void PEditorApply(LExample? example)
@@ -254,13 +254,13 @@ public partial class PExample
 
         PLangcodeShow();
 
-        _pTranslationList.Clear();
-        foreach (LTranslation translation in example?.LExampleTranslations ?? [])
+        _pRenditionList.Clear();
+        foreach (LRendition rendition in example?.LExampleRenditions ?? [])
         {
-            _pTranslationList.Add(new PTranslationItem(
-                translation.LTranslationId,
-                translation.LTranslationLanguage,
-                translation.LTranslationText));
+            _pRenditionList.Add(new PRenditionItem(
+                rendition.LRenditionId,
+                rendition.LRenditionLanguage,
+                rendition.LRenditionText));
         }
 
         _pEditorCitation = example?.LExampleSource.LStateValueShow() ?? string.Empty;
@@ -294,7 +294,7 @@ public partial class PExample
             PEditorValueRead(PEditorText.Text, _pEditorTextUnreadable),
             string.IsNullOrWhiteSpace(PEditorLocal.Text) ? null : PEditorLocal.Text,
             PEditorValueRead(_pEditorCitation, false),
-            PTranslationRead());
+            PRenditionRead());
     }
 
     private static LStateValue PEditorValueRead(string text, bool unreadable)
@@ -316,7 +316,7 @@ public partial class PExample
             return !written.LExampleText.LStateValueEmpty
                 || written.LExampleLocal is not null
                 || !written.LExampleSource.LStateValueEmpty
-                || written.LExampleTranslations.Count > 0;
+                || written.LExampleRenditions.Count > 0;
         }
 
         return written.LExampleText != _pEditorExample.LExampleText
@@ -327,11 +327,11 @@ public partial class PExample
                 written.LExampleLocal ?? string.Empty,
                 _pEditorExample.LExampleLocal ?? string.Empty,
                 StringComparison.Ordinal)
-            || PTranslationChangeCheck(written.LExampleTranslations, _pEditorExample.LExampleTranslations);
+            || PRenditionChangeCheck(written.LExampleRenditions, _pEditorExample.LExampleRenditions);
     }
 
-    private static bool PTranslationChangeCheck(
-        IReadOnlyList<LTranslation> written, IReadOnlyList<LTranslation> stored)
+    private static bool PRenditionChangeCheck(
+        IReadOnlyList<LRendition> written, IReadOnlyList<LRendition> stored)
     {
         if (written.Count != stored.Count)
         {
@@ -341,12 +341,12 @@ public partial class PExample
         for (int index = 0; index < written.Count; index++)
         {
             if (!string.Equals(
-                    written[index].LTranslationLanguage,
-                    stored[index].LTranslationLanguage,
+                    written[index].LRenditionLanguage,
+                    stored[index].LRenditionLanguage,
                     StringComparison.Ordinal)
                 || !string.Equals(
-                    written[index].LTranslationText,
-                    stored[index].LTranslationText,
+                    written[index].LRenditionText,
+                    stored[index].LRenditionText,
                     StringComparison.Ordinal))
             {
                 return true;

@@ -1,4 +1,4 @@
-# PListBrowse.cs
+﻿# PListBrowse.cs
 
 ## `public partial class PList`
 
@@ -108,7 +108,7 @@ That is selecting another entry, or toggling back to the display.
 It is anything else that would leave typed corrections behind.
 Nothing unsaved means nothing to ask about.
 
-### `private void PListEntryShow(LEntryDraft draft)`
+### `private void PListEntryShow(string id, LEntryDraft draft)`
 
 The shared display draws the entry, and this panel decides what the toggle may then do.
 An entry is selected now, so it can be written as well as read.

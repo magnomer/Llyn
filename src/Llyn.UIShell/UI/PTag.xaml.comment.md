@@ -1,4 +1,4 @@
-# PTag.xaml.cs
+﻿# PTag.xaml.cs
 
 ## `public partial class PTag : UserControl`
 
@@ -37,9 +37,10 @@ The window this panel sits in.
 It is who reports a read that failed.
 It also asks the question put before unsaved work would be lost.
 
-### `PDisplay.PDisplayAttach(engine);`
+### `PDisplay.PDisplayAttach(host, engine);`
 
 The reader is the same control the list panel mounts.
+The window comes with it, because an incoming row opens the entry it names.
 It is given the workspace because it fetches the flag of the language it shows.
 
 ### `PEditor.PEditorAttach(host, engine, null);`

@@ -2,14 +2,12 @@
 
 ## `public sealed record LTranslation(`
 
-One translation of an `LExample` into another language.
-A translation is owned text: it belongs to exactly one Example, is ordered within it, and is removed with it.
-Its identity is `LTranslationId`, an opaque and program-generated stable id.
-So reordering rewrites `LTranslationPosition` only and never changes which translation is which.
+One translation link a Meaning or Collocation carries to another Entry.
+The link stores the target Entry's id and never its text.
+So renaming a headword changes nothing about the link that points at it.
+Links are held in order on the card that carries them.
 
 **Parameters**
 
-- `LTranslationId` — Opaque, program-generated stable id.
-- `LTranslationLanguage` — Language code the translation is written in.
-- `LTranslationText` — The translated text.
-- `LTranslationPosition` — Order among the owning Example's translations.
+- `LTranslationEntryId` — Id of the Entry this link points at.
+- `LTranslationPosition` — Order among the owning card's translations.

@@ -22,7 +22,7 @@ Filling a field raises the same change the user typing raises, and only the seco
 
 ## `public ObservableCollection<string> PExampleLanguage { get; }`
 
-The workspace languages, offered to every translation row through the panel itself.
+The workspace languages, offered to every rendition row through the panel itself.
 A row inside a template cannot reach the panel's private fields, so this stands public for the binding.
 
 ## `private void PLangcodeLoad()`
@@ -51,15 +51,15 @@ The full Source structure is written in the sources panel, not here.
 Drops the citation.
 The Source is left standing, because clearing a pointer is not deleting what it pointed at.
 
-## `private void PTranslationMoveHandle(object sender, RoutedEventArgs e)`
+## `private void PRenditionMoveHandle(object sender, RoutedEventArgs e)`
 
-Moves one translation within the order.
+Moves one rendition within the order.
 Reordering changes the position and nothing else, so an id anything holds stays valid.
 
-## `private IReadOnlyList<LTranslation> PTranslationRead()`
+## `private IReadOnlyList<LRendition> PRenditionRead()`
 
-The translations as written, in list order, skipping a row with no text or no language.
-A half-written row is not a translation, and the store would not know what to make of one.
+The renditions as written, in list order, skipping a row with no text or no language.
+A half-written row is not a rendition, and the store would not know what to make of one.
 
 ## `private void PEditorApply(LExample? example)`
 
@@ -69,8 +69,8 @@ It is also the discard: what the store holds is written back over what the user 
 ## `private bool PEditorChangeCheck()`
 
 Whether the editor stands over modifications nothing has saved yet.
-The record cannot be compared whole, because two translation lists holding equal rows are not the same object.
-So the fields are compared one by one and the translations in order.
+The record cannot be compared whole, because two rendition lists holding equal rows are not the same object.
+So the fields are compared one by one and the renditions in order.
 
 ## `private void PStoreHandle(object sender, RoutedEventArgs e)`
 

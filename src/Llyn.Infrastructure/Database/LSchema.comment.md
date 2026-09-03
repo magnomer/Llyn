@@ -128,7 +128,7 @@ Deleting a referrer removes only its own association rows, by ON DELETE CASCADE 
 The example_id foreign keys deliberately have no cascade.
 So an Example survives every detach.
 The store refuses to delete one while any reference still points at it.
-Translations are owned text and cascade with their Example.
+Renditions are owned text and cascade with their Example.
 
 example.source_id points at the independent Reference the block above creates.
 Its foreign key could only be declared once that source table existed.
@@ -146,6 +146,10 @@ It is one card, one text, and the position that text takes on that card.
 The primary key on (card, text) stops a card carrying the same Tag twice.
 The unique index on (card, position) keeps the order free of duplicates.
 Both cascade with the card, since a Tag no card writes is not data left behind.
+The translation tables beside them are the links a card carries to another Entry.
+A link stores the target's id and never its text, so it is one card, one entry, one position.
+The primary key on (card, entry) stops a card linking the same Entry twice.
+The entry_id cascade is deliberate, since deleting a target Entry drops the links pointing at it.
 Situation is the opposite and keeps the older shape.
 It carries its own opaque id, and its visible data is never identity.
 It is reached only through the association table below.

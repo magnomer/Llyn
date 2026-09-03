@@ -325,6 +325,7 @@ PSense
 ├── PSenseOrder
 ├── PSenseTitle
 ├── PSenseDefinition
+├── PSenseTranslation
 ├── PSenseExample
 ├── PSenseSituation
 └── PSenseTag
@@ -339,6 +340,7 @@ Conceptually:
 │ PSenseOrder   PSenseTitle               [X] │
 │                                             │
 │ PSenseDefinition                            │
+│ PSenseTranslation                           │
 │ PSenseExample                               │
 │ PSenseSituation                             │
 │ PSenseTag                                   │
@@ -383,6 +385,23 @@ PExample
 An Example may reference one Source. The Source itself remains independent data.
 
 ---
+
+## PSenseTranslation
+
+`PSenseTranslation` is an editable field used to link the Sense to another Entry that translates it.
+
+A link stores the identifier of the linked Entry rather than the typed headword. Both Entries remain independent data: neither is owned by the other, and removing one link removes no Entry.
+
+Typed text that matches no Entry creates a new Entry with the language chosen while committing, and the link then points at that Entry.
+
+```text
+PSenseTranslation  ---->  Entry
+                       [independent]
+```
+
+Links are stored one way. The linked Entry lists what points at it when it is read, rather than carrying a link of its own.
+
+The same Entry may be linked from multiple Senses and Collocations.
 
 ## PSenseExample
 
@@ -459,7 +478,7 @@ The same interaction rules apply:
 - each card carries an editable title in its header, beside the order badge;
 - each card has an `X` button at the upper-right for removal;
 - cards are draggable for reordering;
-- the corresponding order, example, situation, and tag fields are editable;
+- the corresponding order, translation, example, situation, and tag fields are editable;
 - Examples, Situations, and Tags are referenced independent data rather than data owned by the Entry.
 
 Where a Sense card carries one definition, a Collocation card carries two fields:
@@ -475,6 +494,8 @@ PSenseDefinition  ->  PCollocationExpression
 Collocation's definition, kept separate from the expression because the expression is the lexical
 form and the meaning is what it says.
 
+`PCollocationTranslation` is the mirrored translation field. It behaves as `PSenseTranslation` does: a link stores an Entry identifier, and the two Entries stay independent.
+
 The mirrored Collocation Example field follows the same overarching `PExample` structure as `PSenseExample`, including one `PExampleSource`.
 
 Conceptually:
@@ -486,6 +507,7 @@ card title                           card title
 order                                corresponding order
 PSenseDefinition        ->           PCollocationExpression
                                      PCollocationMeaning
+PSenseTranslation                    PCollocationTranslation
 PSenseExample                        corresponding example
 PSenseSituation                      corresponding situation
 PSenseTag                            corresponding tag
@@ -531,6 +553,7 @@ Visible text entered through `PInput` does not serve as the identity of independ
 PHeadword       -> Entry.id is separate from the headword
 PSenseExample   -> Example.id is separate from the example text
 PSenseTag       -> Tag.id is separate from the tag text
+PSenseTranslation -> Entry.id is stored, not the headword shown on the chip
 PSenseSituation -> Situation.id is separate from the situation title/text
 ```
 

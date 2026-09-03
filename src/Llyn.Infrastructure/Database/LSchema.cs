@@ -295,7 +295,7 @@ public static class LSchema
                 FOREIGN KEY (source_id) REFERENCES source (id)
             );
 
-            CREATE TABLE IF NOT EXISTS example_translation (
+            CREATE TABLE IF NOT EXISTS example_rendition (
                 id TEXT NOT NULL PRIMARY KEY,
                 example_id TEXT NOT NULL,
                 language TEXT NOT NULL,
@@ -367,6 +367,24 @@ public static class LSchema
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_tag_position
                 ON collocation_tag (collocation_id, position);
+
+            CREATE TABLE IF NOT EXISTS sense_translation (
+                sense_id TEXT NOT NULL,
+                entry_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (sense_id, entry_id),
+                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS collocation_translation (
+                collocation_id TEXT NOT NULL,
+                entry_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (collocation_id, entry_id),
+                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+            );
 
             CREATE TABLE IF NOT EXISTS situation (
                 id TEXT NOT NULL PRIMARY KEY,

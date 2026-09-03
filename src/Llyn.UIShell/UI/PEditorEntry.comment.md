@@ -63,8 +63,14 @@ The next thing typed here is the next entry, not a rewrite of the one just writt
 PEditorReset detaches it, and nothing puts it back on.
 A blank form still holding an id overwrote the first entry of a session with the second.
 
+### `PTranslationFreshClear();`
+
+A saved entry keeps every stub its links made, so the editor stops watching them.
+
 ### `private void PDiscardHandle(object sender, RoutedEventArgs e)`
 
+A thrown-away edit takes its stubs with it, so they are dropped before the form is reset.
+Loading another entry throws the current edit away too, so it drops them the same way.
 What a discard means is the host's.
 An input form comes up empty.
 A browse-style panel puts the selected entry back as it is stored.

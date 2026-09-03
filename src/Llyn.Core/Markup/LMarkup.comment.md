@@ -145,6 +145,9 @@ Everything else is read by tag name in one pass.
 So `<tag>`, `<example>`, `<situation>` and `<image>` keep the order the document writes them in.
 Section 7 makes that order meaningful.
 
+The card comes back holding no Translation, because the format writes none.
+A link is an id of a stored Entry, and a document has no id to give.
+
 An empty `<tag></tag>` contributes nothing.
 A Tag is its own name.
 So a Tag with no name is not an unreadable Tag but no Tag at all.

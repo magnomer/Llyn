@@ -1,4 +1,4 @@
-# PDisplay.xaml.cs
+﻿# PDisplay.xaml.cs
 
 ## `public partial class PDisplay : UserControl`
 
@@ -7,16 +7,19 @@ It is handed a loaded draft and draws it.
 It never loads one itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
 
-## `internal void PDisplayAttach(LEngine engine)`
+## `internal void PDisplayAttach(PWindow host, LEngine engine)`
 
 Puts the view on `engine`, the workspace the window opened.
-The engine is read for one thing only, the flag drawn beside the language.
+The engine is read for the flag beside the language, the linked headwords and the incoming cards.
+The window is held because an incoming row opens the entry it names.
 
-## `internal void PDisplayShow(LEntryDraft draft)`
+## `internal void PDisplayShow(string id, LEntryDraft draft)`
 
 Draws `draft` as the entry being read.
 A field the draft left empty collapses instead of standing as a blank line.
 The play button appears only when the entry owns a recording that is still on disk.
+The id is taken as well as the draft, because a draft does not say which entry it is.
+That id is what the incoming cards are looked up by.
 
 ## `internal void PDisplayClear()`
 
@@ -28,6 +31,13 @@ Playback stops, because what it was playing belonged to the entry that was shown
 Releases this view's own playback.
 
 ## Inline notes
+
+### `private void PDisplayCardUpdate()`
+
+The chips a card shows are read through a converter that is filled just before they are drawn.
+A converter holding a dictionary says nothing when that dictionary changes.
+So the card lists are handed their items again once the words behind the ids are known.
+That way the order of the two steps cannot quietly cost the reader every chip.
 
 ### `private readonly MediaPlayer _pDisplayPlayer = new();`
 

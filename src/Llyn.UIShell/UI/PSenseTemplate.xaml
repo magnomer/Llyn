@@ -72,6 +72,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="142" />
@@ -94,15 +95,18 @@
                         </TextBox>
                     </Grid>
 
-                    <TextBlock Grid.Row="1" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Example" />
-                    <ItemsControl Grid.Row="1" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Sentence.Row}" ItemsSource="{Binding PCardSentence}" />
+                    <TextBlock Grid.Row="1" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Card.Translation}" />
+                    <ItemsControl Grid.Row="1" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardTranslation}" Style="{DynamicResource Theme.Translation.Field}" />
 
-                    <TextBlock Grid.Row="2" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Situation" />
-                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Context.Row}" ItemsSource="{Binding PCardSituation}" />
+                    <TextBlock Grid.Row="2" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Example" />
+                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Sentence.Row}" ItemsSource="{Binding PCardSentence}" />
 
-                    <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Tags" />
-                    <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardTag}" Style="{DynamicResource Theme.Tag.Field}" />
-                    <Grid Grid.Row="4" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Image.Section}">
+                    <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Situation" />
+                    <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Context.Row}" ItemsSource="{Binding PCardSituation}" />
+
+                    <TextBlock Grid.Row="4" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Tags" />
+                    <ItemsControl Grid.Row="4" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardTag}" Style="{DynamicResource Theme.Tag.Field}" />
+                    <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Image.Section}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="142" />
                             <ColumnDefinition Width="*" />
@@ -110,7 +114,7 @@
                         <TextBlock Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Image" />
                         <ItemsControl Grid.Column="1" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Image.Row}" ItemsSource="{Binding PCardImage}" />
                     </Grid>
-                    <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Video.Section}">
+                    <Grid Grid.Row="6" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Video.Section}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="142" />
                             <ColumnDefinition Width="*" />
@@ -118,8 +122,8 @@
                         <TextBlock Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Video" />
                         <ItemsControl Grid.Column="1" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Video.Row}" ItemsSource="{Binding PCardVideo}" />
                     </Grid>
-                    <TextBlock Grid.Row="6" Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Extra" />
-                    <StackPanel Grid.Row="6" Grid.Column="1" VerticalAlignment="Top" Orientation="Horizontal">
+                    <TextBlock Grid.Row="7" Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="Extra" />
+                    <StackPanel Grid.Row="7" Grid.Column="1" VerticalAlignment="Top" Orientation="Horizontal">
                         <Button Height="42" Padding="14,0" Click="PImageAddHandle" Style="{DynamicResource Theme.Input.Pill}">
                             <TextBlock VerticalAlignment="Center" FontSize="13" Text="+ Image" />
                         </Button>

@@ -175,6 +175,7 @@ public static partial class LMarkup
             LMarkupStateRead(meaning),
             examples,
             situations,
+            [],
             LMarkupStateRead(synonym).LStateValueShow(),
             tags,
             images);

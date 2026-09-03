@@ -26,13 +26,13 @@ public sealed class TExample
             "he said the word",
             null,
             null,
-            [new LTranslation(string.Empty, "Korean", "그가 그 말을 했다", 0)]));
+            [new LRendition(string.Empty, "Korean", "그가 그 말을 했다", 0)]));
 
         Assert.NotEmpty(example.LExampleId);
         Assert.Equal(
             "그가 그 말을 했다",
-            Assert.Single(engine.LEngineExampleRead(example.LExampleId)!.LExampleTranslations)
-                .LTranslationText);
+            Assert.Single(engine.LEngineExampleRead(example.LExampleId)!.LExampleRenditions)
+                .LRenditionText);
 
         engine.LEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
         engine.LEngineExampleAttach(senseId, example.LExampleId, 0, LOwner.LOwnerSense);
@@ -126,6 +126,7 @@ public sealed class TExample
                     LExampleDraft.LExampleDraftCreate("a word of advice"),
                 ],
                 [],
+                [],
                 string.Empty,
                 [], [])],
             []));
@@ -202,7 +203,7 @@ public sealed class TExample
             "he said the word",
             null,
             null,
-            [new LTranslation(string.Empty, "Korean", "그가 그 말을 했다", 0)]));
+            [new LRendition(string.Empty, "Korean", "그가 그 말을 했다", 0)]));
         LExample lonely = engine.LEngineExampleCreate(
             new LExample(string.Empty, "English", "nobody quotes me", null, null, []));
 
@@ -214,7 +215,7 @@ public sealed class TExample
             engine.LEngineExampleRead().Select(row => row.LExampleText.LStateValueShow()));
         Assert.Equal(
             "그가 그 말을 했다",
-            Assert.Single(engine.LEngineExampleRead()[0].LExampleTranslations).LTranslationText);
+            Assert.Single(engine.LEngineExampleRead()[0].LExampleRenditions).LRenditionText);
 
         IReadOnlyDictionary<string, int> counts = engine.LEngineUsageRead(LOwner.LOwnerExample);
         Assert.Equal(2, counts[shared.LExampleId]);
@@ -264,7 +265,7 @@ public sealed class TExample
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], string.Empty, [], [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], string.Empty, [], [])]));
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [])]));
     }
 }

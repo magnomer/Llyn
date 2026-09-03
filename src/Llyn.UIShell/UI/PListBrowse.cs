@@ -109,7 +109,7 @@ public partial class PList
         }
 
         _pDisplayEntry = id;
-        PListEntryShow(draft);
+        PListEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -134,7 +134,7 @@ public partial class PList
 
         if (draft is not null)
         {
-            PListEntryShow(draft);
+            PListEntryShow(id, draft);
         }
     }
 
@@ -201,9 +201,9 @@ public partial class PList
         return _pListHost.PWindowDiscardConfirm(PListChangeCheck());
     }
 
-    private void PListEntryShow(LEntryDraft draft)
+    private void PListEntryShow(string id, LEntryDraft draft)
     {
-        PDisplay.PDisplayShow(draft);
+        PDisplay.PDisplayShow(id, draft);
         PScribe.IsEnabled = true;
     }
 

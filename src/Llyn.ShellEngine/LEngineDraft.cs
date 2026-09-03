@@ -154,6 +154,7 @@ public sealed partial class LEngine
         }
 
         LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
+        LEngineTranslationSave(ownerId, card.LCardDraftTranslation, collocation);
 
         LImageArchive images = new(_lEngineDatabase);
         position = 0;
@@ -184,6 +185,7 @@ public sealed partial class LEngine
                 LEngineExampleCheck(card.LCardDraftExample) ||
                 LEngineSituationCheck(card.LCardDraftSituation) ||
                 LEngineTagCheck(card.LCardDraftTag) ||
+                LEngineTranslationCheck(card.LCardDraftTranslation) ||
                 LEngineFieldCheck(card.LCardDraftImage))
             {
                 yield return card;
@@ -304,6 +306,19 @@ public sealed partial class LEngine
         foreach (string text in texts)
         {
             if (!string.IsNullOrWhiteSpace(text))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool LEngineTranslationCheck(IReadOnlyList<string> ids)
+    {
+        foreach (string id in ids)
+        {
+            if (!string.IsNullOrWhiteSpace(id))
             {
                 return true;
             }

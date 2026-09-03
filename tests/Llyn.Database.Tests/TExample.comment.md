@@ -3,7 +3,7 @@
 ## `public sealed class TExample`
 
 Covers the engine's Example seam.
-An Example is created with its translations.
+An Example is created with its renditions.
 It is referenced from all three sides that may quote one.
 It is rewritten, pointed at a Reference and let go of.
 That includes the removal that deletes an Example nothing quotes any more.
@@ -26,7 +26,7 @@ One saved entry with a Meaning card and a Collocation card, neither quoting an E
 ## `public void TheWorkspaceStockOfExamplesIsReadWithItsUsageCounted()`
 
 The reads the browsing panel stands on.
-Every Example comes back with its translations, including one nothing quotes.
+Every Example comes back with its renditions, including one nothing quotes.
 The counts answer for every Example at once, and an unquoted one is simply absent rather than zero.
 
 ## `public void UsageNamesEveryQuotingSideAndDetachingDeleteDropsThemAll()`

@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 19;
+    public const long LSchemaMigrationVersion = 20;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -30,13 +30,19 @@ public static class LSchemaMigration
             return;
         }
 
+        if (stored < 20)
+        {
+            LSchemaRenditionNormalize(connection);
+            LSchemaTranslationCreate(connection);
+        }
+
         if (stored < 12)
         {
             LSchemaExampleNormalize(connection);
             LSchemaPositionNormalize(connection, "relation", "sense_id");
             LSchemaPositionNormalize(connection, "collocation", "entry_id");
             LSchemaPositionNormalize(connection, "collocation_synonym", "collocation_id");
-            LSchemaPositionNormalize(connection, "example_translation", "example_id");
+            LSchemaPositionNormalize(connection, "example_rendition", "example_id");
             LSchemaVersionNormalize(connection);
         }
 
@@ -77,6 +83,87 @@ public static class LSchemaMigration
         }
 
         LSchemaVersionSave(connection);
+    }
+
+    private static void LSchemaTranslationCreate(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS sense_translation (
+                sense_id TEXT NOT NULL,
+                entry_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (sense_id, entry_id),
+                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS collocation_translation (
+                collocation_id TEXT NOT NULL,
+                entry_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (collocation_id, entry_id),
+                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS sense_translation_position
+                ON sense_translation (sense_id, position);
+
+            CREATE UNIQUE INDEX IF NOT EXISTS collocation_translation_position
+                ON collocation_translation (collocation_id, position);
+            """;
+        command.ExecuteNonQuery();
+    }
+
+    private static void LSchemaRenditionNormalize(SqliteConnection connection)
+    {
+        using (SqliteCommand check = connection.CreateCommand())
+        {
+            check.CommandText =
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'example_translation';";
+            if (Convert.ToInt64(check.ExecuteScalar()) == 0)
+            {
+                return;
+            }
+        }
+
+        using (SqliteCommand off = connection.CreateCommand())
+        {
+            off.CommandText = "PRAGMA foreign_keys = OFF;";
+            off.ExecuteNonQuery();
+        }
+
+        try
+        {
+            using SqliteTransaction rebuild = connection.BeginTransaction();
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                """
+                CREATE TABLE IF NOT EXISTS example_rendition (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    example_id TEXT NOT NULL,
+                    language TEXT NOT NULL,
+                    text TEXT NOT NULL,
+                    position INTEGER NOT NULL,
+                    FOREIGN KEY (example_id) REFERENCES example (id) ON DELETE CASCADE
+                );
+
+                INSERT INTO example_rendition (id, example_id, language, text, position)
+                    SELECT id, example_id, language, text, position FROM example_translation;
+
+                DROP TABLE example_translation;
+                """;
+            command.ExecuteNonQuery();
+            rebuild.Commit();
+        }
+        finally
+        {
+            using SqliteCommand on = connection.CreateCommand();
+            on.CommandText = "PRAGMA foreign_keys = ON;";
+            on.ExecuteNonQuery();
+        }
     }
 
     private static void LSchemaTagNormalize(SqliteConnection connection)

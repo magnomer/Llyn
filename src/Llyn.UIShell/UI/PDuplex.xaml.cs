@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -19,8 +19,8 @@ public partial class PDuplex : UserControl
         _pDuplexHost = host;
         _lEngine = engine;
 
-        PLeftDisplay.PDisplayAttach(engine);
-        PRightDisplay.PDisplayAttach(engine);
+        PLeftDisplay.PDisplayAttach(host, engine);
+        PRightDisplay.PDisplayAttach(host, engine);
     }
 
     internal void PDuplexReset()
