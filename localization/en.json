@@ -198,7 +198,6 @@
     "Rank.Text": "Sentence A → Z",
     "Rank.Language": "Language A → Z",
     "Rank.Source": "Source A → Z",
-    "Rank.Translation": "Most translations first",
     "Rank.Usage": "Most quoted first"
   }
 }

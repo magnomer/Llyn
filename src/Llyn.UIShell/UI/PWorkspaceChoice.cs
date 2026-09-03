@@ -55,6 +55,7 @@ public partial class PSettings
         _pSettingsHost.PSound.PSoundReset();
         _pSettingsHost.PTag.PTagReset();
         _pSettingsHost.PSituation.PSituationReset();
+        _pSettingsHost.PExample.PExampleReset();
         _pSettingsHost.PDuplex.PDuplexReset();
     }
 }

@@ -75,7 +75,6 @@ public partial class PExample
                 example => example.LExampleLanguage, StringComparer.CurrentCultureIgnoreCase),
             "Source" => examples.OrderBy(
                 example => PCitationNameRead(example.LExampleSource), StringComparer.CurrentCultureIgnoreCase),
-            "Translation" => examples.OrderByDescending(example => example.LExampleTranslations.Count),
             "Usage" => examples.OrderByDescending(PAnthologyUsageRead),
             _ => examples.OrderBy(
                 example => example.LExampleText.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase)

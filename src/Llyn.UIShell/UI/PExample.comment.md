@@ -22,8 +22,9 @@ Export and print are mock-up controls and are not wired.
 ## `<ItemsControl x:Name="PAnthology">`
 
 The catalog of every Example the workspace holds, including one nothing quotes.
-A row reads its sentence over its language and cited Source, with two counts at the far end.
-The usage count is shown here and not only in the display, because it decides which delete the panel offers.
+A row reads its sentence over its language and cited Source, with its usage count at the far end.
+That count is shown here and not only in the display, because it decides which delete the panel offers.
+The translation count is not shown: a translation is owned text that says nothing about where the sentence is used.
 
 ## `<Grid x:Name="PDisplay">`
 

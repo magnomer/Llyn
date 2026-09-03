@@ -198,7 +198,6 @@
     "Rank.Text": "문장 가 → 하",
     "Rank.Language": "언어 가 → 하",
     "Rank.Source": "출처 가 → 하",
-    "Rank.Translation": "번역 많은 순",
     "Rank.Usage": "많이 인용된 순"
   }
 }

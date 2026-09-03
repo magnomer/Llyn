@@ -13,7 +13,6 @@ internal sealed class PAnthologyItem
         PAnthologyItemLanguage = example.LExampleLanguage;
         PAnthologyItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(example.LExampleLanguage);
         PAnthologyItemSource = source;
-        PAnthologyItemTranslation = example.LExampleTranslations.Count.ToString(CultureInfo.CurrentCulture);
         PAnthologyItemUsage = usage.ToString(CultureInfo.CurrentCulture);
     }
 
@@ -26,8 +25,6 @@ internal sealed class PAnthologyItem
     public ImageSource? PAnthologyItemFlag { get; }
 
     public string PAnthologyItemSource { get; }
-
-    public string PAnthologyItemTranslation { get; }
 
     public string PAnthologyItemUsage { get; }
 

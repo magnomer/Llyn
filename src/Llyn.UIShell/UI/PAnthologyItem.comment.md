@@ -3,7 +3,7 @@
 ## `internal sealed class PAnthologyItem`
 
 Presentation item for one Example row in `PAnthology`.
-Carries the sentence, its language and flag, the cited Source, the translation count and the usage count.
+Carries the sentence, its language and flag, the cited Source, and the usage count.
 The id is identity and never displayed.
 Two Examples may carry the same sentence, so a row is never found by what it reads.
 A sentence standing empty is not one thing.
@@ -21,8 +21,3 @@ The two texts are handed in rather than read here, because a row is built while 
 
 How many Entries, Meanings and Collocations quote this Example, as the row shows it.
 It is the figure that decides whether a delete is legal, so the catalog carries it and not only the display.
-
-## `public string PAnthologyItemTranslation { get; }`
-
-How many translations the Example owns.
-A translation lives and dies with its Example, so the count is a property of the row rather than of its use.

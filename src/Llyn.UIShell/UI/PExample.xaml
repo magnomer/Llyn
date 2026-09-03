@@ -103,7 +103,6 @@
                         <RadioButton GroupName="PRankChoice" IsChecked="True" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Text" Content="{DynamicResource Rank.Text}" />
                         <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Language" Content="{DynamicResource Rank.Language}" />
                         <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Source" Content="{DynamicResource Rank.Source}" />
-                        <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Translation" Content="{DynamicResource Rank.Translation}" />
                         <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Rank.Usage}" />
                     </StackPanel>
                 </Border>
@@ -158,14 +157,9 @@
                                                 <TextBlock MaxWidth="150" Margin="9,0,0,0" Style="{StaticResource Theme.Anthology.Meta}" Text="{Binding PAnthologyItemSource}" />
                                             </StackPanel>
                                         </StackPanel>
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                                            <Border Padding="8,2" Background="{StaticResource Theme.WarningSoft}" CornerRadius="7">
-                                                <TextBlock FontSize="11" Foreground="{StaticResource Theme.Warning}" Text="{Binding PAnthologyItemTranslation}" />
-                                            </Border>
-                                            <Border Margin="5,0,0,0" Padding="8,2" Background="{StaticResource Theme.AccentSoft}" CornerRadius="7">
-                                                <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PAnthologyItemUsage}" />
-                                            </Border>
-                                        </StackPanel>
+                                        <Border Grid.Column="1" Margin="10,0,0,0" Padding="8,2" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="7">
+                                            <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PAnthologyItemUsage}" />
+                                        </Border>
                                     </Grid>
                                 </Button>
                             </DataTemplate>
