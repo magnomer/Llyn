@@ -259,13 +259,11 @@ public sealed class LExampleLink
         using LDatabaseSession session = _lExampleLinkDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        IReadOnlyDictionary<string, IReadOnlyList<LRendition>> renditions =
-            LExampleArchive.LExampleRenditionRead(connection, table, column, referrerId);
-
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT example.id, example.language, example.text_state, example.text, example.local,
+            SELECT example.id, example.language, example.text_state, example.text,
+                   example.translation_state, example.translation,
                    example.source_state, example.source_id
             FROM {table} link
             JOIN example ON example.id = link.example_id
@@ -278,14 +276,12 @@ public sealed class LExampleLink
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            string id = reader.GetString(0);
             examples.Add(new LExample(
-                id,
+                reader.GetString(0),
                 reader.GetString(1),
                 LStateColumn.LStateColumnRead(reader, 2),
-                reader.IsDBNull(4) ? null : reader.GetString(4),
-                LStateColumn.LStateColumnRead(reader, 5),
-                renditions.TryGetValue(id, out IReadOnlyList<LRendition>? found) ? found : []));
+                LStateColumn.LStateColumnRead(reader, 4),
+                LStateColumn.LStateColumnRead(reader, 6)));
         }
 
         return examples;

@@ -16,7 +16,6 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS sense_parent ON sense (parent_id);
             CREATE INDEX IF NOT EXISTS relation_sense_origin ON relation (sense_id);
             CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_id);
-            CREATE INDEX IF NOT EXISTS example_rendition_example ON example_rendition (example_id);
             CREATE INDEX IF NOT EXISTS example_source ON example (source_id);
             CREATE INDEX IF NOT EXISTS situation_source ON situation (source_id);
             """;
@@ -61,8 +60,6 @@ public static class LSchemaIndex
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_position ON collocation (entry_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_synonym_position
                 ON collocation_synonym (collocation_id, position);
-            CREATE UNIQUE INDEX IF NOT EXISTS example_rendition_position
-                ON example_rendition (example_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS sense_translation_position
                 ON sense_translation (sense_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_translation_position

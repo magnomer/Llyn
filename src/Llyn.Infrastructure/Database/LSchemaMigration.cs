@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 20;
+    public const long LSchemaMigrationVersion = 21;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -32,7 +32,6 @@ public static class LSchemaMigration
 
         if (stored < 20)
         {
-            LSchemaRenditionNormalize(connection);
             LSchemaTranslationCreate(connection);
         }
 
@@ -42,7 +41,6 @@ public static class LSchemaMigration
             LSchemaPositionNormalize(connection, "relation", "sense_id");
             LSchemaPositionNormalize(connection, "collocation", "entry_id");
             LSchemaPositionNormalize(connection, "collocation_synonym", "collocation_id");
-            LSchemaPositionNormalize(connection, "example_rendition", "example_id");
             LSchemaVersionNormalize(connection);
         }
 
@@ -82,7 +80,130 @@ public static class LSchemaMigration
             LSchemaTagNormalize(connection);
         }
 
+        if (stored < 21)
+        {
+            LSchemaTranslationNormalize(connection);
+        }
+
         LSchemaVersionSave(connection);
+    }
+
+    private static void LSchemaTranslationNormalize(SqliteConnection connection)
+    {
+        if (LSchemaColumnFind(connection, "example", "local"))
+        {
+            LSchemaExampleRebuild(connection, LSchemaCarriedRead(connection));
+        }
+
+        using SqliteCommand drop = connection.CreateCommand();
+        drop.CommandText =
+            """
+            DROP TABLE IF EXISTS example_rendition;
+
+            DROP TABLE IF EXISTS example_translation;
+            """;
+        drop.ExecuteNonQuery();
+    }
+
+    private static void LSchemaExampleRebuild(SqliteConnection connection, string carried)
+    {
+        using (SqliteCommand off = connection.CreateCommand())
+        {
+            off.CommandText = "PRAGMA foreign_keys = OFF;";
+            off.ExecuteNonQuery();
+        }
+
+        try
+        {
+            using SqliteTransaction rebuild = connection.BeginTransaction();
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                $"""
+                DROP TABLE IF EXISTS example_next;
+
+                CREATE TABLE example_next (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    language TEXT NOT NULL,
+                    text_state TEXT NOT NULL DEFAULT 'unspecified',
+                    text TEXT,
+                    translation_state TEXT NOT NULL DEFAULT 'unspecified',
+                    translation TEXT,
+                    source_state TEXT NOT NULL DEFAULT 'unspecified',
+                    source_id TEXT,
+                    CHECK (text_state = 'specified' OR text IS NULL),
+                    CHECK (translation_state = 'specified' OR translation IS NULL),
+                    CHECK (source_state = 'specified' OR source_id IS NULL),
+                    FOREIGN KEY (source_id) REFERENCES source (id)
+                );
+
+                INSERT INTO example_next (
+                    id, language, text_state, text, translation_state, translation,
+                    source_state, source_id)
+                    SELECT
+                        example.id,
+                        example.language,
+                        example.text_state,
+                        example.text,
+                        CASE WHEN {carried} IS NULL THEN 'unspecified' ELSE 'specified' END,
+                        {carried},
+                        example.source_state,
+                        example.source_id
+                    FROM example;
+
+                DROP TABLE example;
+
+                ALTER TABLE example_next RENAME TO example;
+                """;
+            command.ExecuteNonQuery();
+            rebuild.Commit();
+        }
+        finally
+        {
+            using SqliteCommand on = connection.CreateCommand();
+            on.CommandText = "PRAGMA foreign_keys = ON;";
+            on.ExecuteNonQuery();
+        }
+    }
+
+    private static string LSchemaCarriedRead(SqliteConnection connection)
+    {
+        const string local = "NULLIF(TRIM(COALESCE(example.local, '')), '')";
+
+        string owned = LSchemaTableFind(connection, "example_rendition")
+            ? "example_rendition"
+            : LSchemaTableFind(connection, "example_translation")
+                ? "example_translation"
+                : string.Empty;
+
+        if (owned.Length == 0)
+        {
+            return local;
+        }
+
+        return $"""
+            COALESCE({local}, (SELECT NULLIF(TRIM(owned.text), '')
+                               FROM {owned} owned
+                               WHERE owned.example_id = example.id
+                               ORDER BY owned.position LIMIT 1))
+            """;
+    }
+
+    private static bool LSchemaTableFind(SqliteConnection connection, string table)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = $table;";
+        command.Parameters.AddWithValue("$table", table);
+        return Convert.ToInt64(command.ExecuteScalar()) > 0;
+    }
+
+    private static bool LSchemaColumnFind(SqliteConnection connection, string table, string column)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = $column;";
+        command.Parameters.AddWithValue("$column", column);
+        return Convert.ToInt64(command.ExecuteScalar()) > 0;
     }
 
     private static void LSchemaTranslationCreate(SqliteConnection connection)
@@ -115,55 +236,6 @@ public static class LSchemaMigration
                 ON collocation_translation (collocation_id, position);
             """;
         command.ExecuteNonQuery();
-    }
-
-    private static void LSchemaRenditionNormalize(SqliteConnection connection)
-    {
-        using (SqliteCommand check = connection.CreateCommand())
-        {
-            check.CommandText =
-                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'example_translation';";
-            if (Convert.ToInt64(check.ExecuteScalar()) == 0)
-            {
-                return;
-            }
-        }
-
-        using (SqliteCommand off = connection.CreateCommand())
-        {
-            off.CommandText = "PRAGMA foreign_keys = OFF;";
-            off.ExecuteNonQuery();
-        }
-
-        try
-        {
-            using SqliteTransaction rebuild = connection.BeginTransaction();
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText =
-                """
-                CREATE TABLE IF NOT EXISTS example_rendition (
-                    id TEXT NOT NULL PRIMARY KEY,
-                    example_id TEXT NOT NULL,
-                    language TEXT NOT NULL,
-                    text TEXT NOT NULL,
-                    position INTEGER NOT NULL,
-                    FOREIGN KEY (example_id) REFERENCES example (id) ON DELETE CASCADE
-                );
-
-                INSERT INTO example_rendition (id, example_id, language, text, position)
-                    SELECT id, example_id, language, text, position FROM example_translation;
-
-                DROP TABLE example_translation;
-                """;
-            command.ExecuteNonQuery();
-            rebuild.Commit();
-        }
-        finally
-        {
-            using SqliteCommand on = connection.CreateCommand();
-            on.CommandText = "PRAGMA foreign_keys = ON;";
-            on.ExecuteNonQuery();
-        }
     }
 
     private static void LSchemaTagNormalize(SqliteConnection connection)

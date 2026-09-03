@@ -24,15 +24,13 @@ public sealed class TExample
             string.Empty,
             "English",
             "he said the word",
-            null,
-            null,
-            [new LRendition(string.Empty, "Korean", "그가 그 말을 했다", 0)]));
+            "그가 그 말을 했다",
+            null));
 
         Assert.NotEmpty(example.LExampleId);
         Assert.Equal(
             "그가 그 말을 했다",
-            Assert.Single(engine.LEngineExampleRead(example.LExampleId)!.LExampleRenditions)
-                .LRenditionText);
+            engine.LEngineExampleRead(example.LExampleId)!.LExampleTranslation.LStateValueShow());
 
         engine.LEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
         engine.LEngineExampleAttach(senseId, example.LExampleId, 0, LOwner.LOwnerSense);
@@ -58,7 +56,7 @@ public sealed class TExample
         string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
 
         LExample example = engine.LEngineExampleCreate(
-            new LExample(string.Empty, "English", "he said the word", null, null, []));
+            new LExample(string.Empty, "English", "he said the word", null, null));
         engine.LEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
         engine.LEngineExampleAttach(senseId, example.LExampleId, 0, LOwner.LOwnerSense);
 
@@ -78,7 +76,7 @@ public sealed class TExample
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
         LExample example = engine.LEngineExampleCreate(
-            new LExample(string.Empty, "English", "he said the word", null, null, []));
+            new LExample(string.Empty, "English", "he said the word", null, null));
         LReference reference = engine.LEngineReferenceCreate(new LReference(
             string.Empty,
             LStateValue.LStateValueCreate("A Dictionary"),
@@ -201,11 +199,10 @@ public sealed class TExample
             string.Empty,
             "English",
             "he said the word",
-            null,
-            null,
-            [new LRendition(string.Empty, "Korean", "그가 그 말을 했다", 0)]));
+            "그가 그 말을 했다",
+            null));
         LExample lonely = engine.LEngineExampleCreate(
-            new LExample(string.Empty, "English", "nobody quotes me", null, null, []));
+            new LExample(string.Empty, "English", "nobody quotes me", null, null));
 
         engine.LEngineExampleAttach(entry.LEntryId, shared.LExampleId, 0, LOwner.LOwnerEntry);
         engine.LEngineExampleAttach(senseId, shared.LExampleId, 0, LOwner.LOwnerSense);
@@ -215,7 +212,7 @@ public sealed class TExample
             engine.LEngineExampleRead().Select(row => row.LExampleText.LStateValueShow()));
         Assert.Equal(
             "그가 그 말을 했다",
-            Assert.Single(engine.LEngineExampleRead()[0].LExampleRenditions).LRenditionText);
+            engine.LEngineExampleRead()[0].LExampleTranslation.LStateValueShow());
 
         IReadOnlyDictionary<string, int> counts = engine.LEngineUsageRead(LOwner.LOwnerExample);
         Assert.Equal(2, counts[shared.LExampleId]);
@@ -234,7 +231,7 @@ public sealed class TExample
             engine.LEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         LExample example = engine.LEngineExampleCreate(
-            new LExample(string.Empty, "English", "he said the word", null, null, []));
+            new LExample(string.Empty, "English", "he said the word", null, null));
         engine.LEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
         engine.LEngineExampleAttach(senseId, example.LExampleId, 0, LOwner.LOwnerSense);
         engine.LEngineExampleAttach(collocationId, example.LExampleId, 0, LOwner.LOwnerCollocation);

@@ -20,11 +20,6 @@ Comparing the written fields against it is what says whether anything is unsaved
 Set while fields are being filled from a stored Example.
 Filling a field raises the same change the user typing raises, and only the second may clear an unreadable mark.
 
-## `public ObservableCollection<string> PExampleLanguage { get; }`
-
-The workspace languages, offered to every rendition row through the panel itself.
-A row inside a template cannot reach the panel's private fields, so this stands public for the binding.
-
 ## `private void PLangcodeLoad()`
 
 Reads the workspace languages and fixes a default for an Example being written for the first time.
@@ -51,15 +46,10 @@ The full Source structure is written in the sources panel, not here.
 Drops the citation.
 The Source is left standing, because clearing a pointer is not deleting what it pointed at.
 
-## `private void PRenditionMoveHandle(object sender, RoutedEventArgs e)`
+## `private void PEditorTranslationHandle(object sender, TextChangedEventArgs e)`
 
-Moves one rendition within the order.
-Reordering changes the position and nothing else, so an id anything holds stays valid.
-
-## `private IReadOnlyList<LRendition> PRenditionRead()`
-
-The renditions as written, in list order, skipping a row with no text or no language.
-A half-written row is not a rendition, and the store would not know what to make of one.
+Clears the unreadable mark on the translation as soon as the user types over it.
+Typing is a recording, so what stood there as unreadable stops being that the moment it is written.
 
 ## `private void PEditorApply(LExample? example)`
 
@@ -69,8 +59,7 @@ It is also the discard: what the store holds is written back over what the user 
 ## `private bool PEditorChangeCheck()`
 
 Whether the editor stands over modifications nothing has saved yet.
-The record cannot be compared whole, because two rendition lists holding equal rows are not the same object.
-So the fields are compared one by one and the renditions in order.
+The fields are compared one by one, so an Example read back from the store is judged against what stands in the editor.
 
 ## `private void PStoreHandle(object sender, RoutedEventArgs e)`
 

@@ -394,7 +394,7 @@ The UI counterpart is `PNoteContents`, which presents the Note as a WYSIWYG Mark
 | `id` | Program-generated random stable Example ID |
 | `language` | Example language |
 | `text` | Example text; not an identifier |
-| `local` | Optional local representation |
+| `translation` | Translation of the example text |
 | `source_id` | Optional reference to one independent Source |
 
 An Example is independent.
@@ -405,21 +405,9 @@ An Example may reference at most one Source. The Source remains independent and 
 
 In the UI, `PExample` is the overarching Example concept and `PExampleSource` is its single Source field.
 
----
+The Example's translation is text on the Example row.
 
-## `example_rendition`
-
-| Field | Meaning |
-|---|---|
-| `id` | Rendition ID |
-| `example_id` | Parent Example |
-| `language` | Rendition language |
-| `text` | Rendition |
-| `position` | Order |
-
-Renditions are subordinate to the Example.
-
-An Example may have multiple renditions.
+It is unlike the Translation a Meaning or Collocation carries, which is a reference to another Entry.
 
 ---
 
@@ -903,7 +891,6 @@ Collocation
 └── Synonym interlink ----------> lexical target
 
 Example                           [independent]
-├── Rendition
 └── Source reference ------------> Source
 
 Situation                         [independent]
@@ -961,7 +948,7 @@ It does not delete the independent Examples or Situations that were referenced b
 
 An Example must not be deleted while lexical objects still reference it unless those references are explicitly removed.
 
-Deleting an Example removes its subordinate renditions and its reference to its Source, if one exists.
+Deleting an Example removes its reference to its Source, if one exists.
 
 It does not delete the referenced Source.
 
@@ -1058,12 +1045,6 @@ subordinate Meaning
 ```text
 Syllable
 Representation
-```
-
-## Example-owned data
-
-```text
-Rendition
 ```
 
 ## Reference-based relationships

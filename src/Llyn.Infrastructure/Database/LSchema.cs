@@ -287,21 +287,14 @@ public static class LSchema
                 language TEXT NOT NULL,
                 text_state TEXT NOT NULL DEFAULT 'unspecified',
                 text TEXT,
-                local TEXT,
+                translation_state TEXT NOT NULL DEFAULT 'unspecified',
+                translation TEXT,
                 source_state TEXT NOT NULL DEFAULT 'unspecified',
                 source_id TEXT,
                 CHECK (text_state = 'specified' OR text IS NULL),
+                CHECK (translation_state = 'specified' OR translation IS NULL),
                 CHECK (source_state = 'specified' OR source_id IS NULL),
                 FOREIGN KEY (source_id) REFERENCES source (id)
-            );
-
-            CREATE TABLE IF NOT EXISTS example_rendition (
-                id TEXT NOT NULL PRIMARY KEY,
-                example_id TEXT NOT NULL,
-                language TEXT NOT NULL,
-                text TEXT NOT NULL,
-                position INTEGER NOT NULL,
-                FOREIGN KEY (example_id) REFERENCES example (id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS entry_example (

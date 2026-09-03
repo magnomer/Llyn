@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,9 +17,9 @@ public partial class PExample
 
     private bool _pEditorTextUnreadable;
 
-    private bool _pEditorLoading;
+    private bool _pEditorTranslationUnreadable;
 
-    public ObservableCollection<string> PExampleLanguage { get; } = [];
+    private bool _pEditorLoading;
 
     private void PLangcodeLoad()
     {
@@ -35,12 +34,10 @@ public partial class PExample
         }
 
         _pLangcodeItem.Clear();
-        PExampleLanguage.Clear();
         foreach (string language in languages)
         {
             _pLangcodeItem.Add(new PLangcodeItem(
                 language, PLangcodeIndicator.PLangcodeIndicatorFind(language)));
-            PExampleLanguage.Add(language);
         }
 
         if (_pEditorLanguage.Length == 0 && languages.Count > 0)
@@ -184,55 +181,15 @@ public partial class PExample
         PEditorText.Tag = string.Empty;
     }
 
-    private void PRenditionFreshHandle(object sender, RoutedEventArgs e)
+    private void PEditorTranslationHandle(object sender, TextChangedEventArgs e)
     {
-        _pRenditionList.Add(new PRenditionItem(string.Empty, _pEditorLanguage, string.Empty));
-    }
-
-    private void PRenditionRemoveHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement { DataContext: PRenditionItem row })
-        {
-            _pRenditionList.Remove(row);
-        }
-    }
-
-    private void PRenditionMoveHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { DataContext: PRenditionItem row, Tag: string step })
+        if (_pEditorLoading)
         {
             return;
         }
 
-        int index = _pRenditionList.IndexOf(row);
-        int moved = index + int.Parse(step, CultureInfo.InvariantCulture);
-        if (index < 0 || moved < 0 || moved >= _pRenditionList.Count)
-        {
-            return;
-        }
-
-        _pRenditionList.Move(index, moved);
-    }
-
-    private IReadOnlyList<LRendition> PRenditionRead()
-    {
-        List<LRendition> renditions = [];
-        foreach (PRenditionItem row in _pRenditionList)
-        {
-            if (string.IsNullOrWhiteSpace(row.PRenditionItemText)
-                || string.IsNullOrWhiteSpace(row.PRenditionItemLanguage))
-            {
-                continue;
-            }
-
-            renditions.Add(new LRendition(
-                row.PRenditionItemId,
-                row.PRenditionItemLanguage,
-                row.PRenditionItemText,
-                renditions.Count));
-        }
-
-        return renditions;
+        _pEditorTranslationUnreadable = false;
+        PEditorTranslation.Tag = string.Empty;
     }
 
     private void PEditorApply(LExample? example)
@@ -245,7 +202,10 @@ public partial class PExample
         _pEditorTextUnreadable = example?.LExampleText.LStateValueState == LState.LStateUnknown;
         PEditorText.Tag = _pEditorTextUnreadable ? unreadable : string.Empty;
 
-        PEditorLocal.Text = example?.LExampleLocal ?? string.Empty;
+        PEditorTranslation.Text = example?.LExampleTranslation.LStateValueShow() ?? string.Empty;
+        _pEditorTranslationUnreadable =
+            example?.LExampleTranslation.LStateValueState == LState.LStateUnknown;
+        PEditorTranslation.Tag = _pEditorTranslationUnreadable ? unreadable : string.Empty;
 
         if (example is not null && example.LExampleLanguage.Length > 0)
         {
@@ -253,15 +213,6 @@ public partial class PExample
         }
 
         PLangcodeShow();
-
-        _pRenditionList.Clear();
-        foreach (LRendition rendition in example?.LExampleRenditions ?? [])
-        {
-            _pRenditionList.Add(new PRenditionItem(
-                rendition.LRenditionId,
-                rendition.LRenditionLanguage,
-                rendition.LRenditionText));
-        }
 
         _pEditorCitation = example?.LExampleSource.LStateValueShow() ?? string.Empty;
         PCitationList.SelectedValue = _pEditorCitation.Length == 0 ? null : _pEditorCitation;
@@ -292,9 +243,8 @@ public partial class PExample
             _pEditorExample?.LExampleId ?? string.Empty,
             _pEditorLanguage,
             PEditorValueRead(PEditorText.Text, _pEditorTextUnreadable),
-            string.IsNullOrWhiteSpace(PEditorLocal.Text) ? null : PEditorLocal.Text,
-            PEditorValueRead(_pEditorCitation, false),
-            PRenditionRead());
+            PEditorValueRead(PEditorTranslation.Text, _pEditorTranslationUnreadable),
+            PEditorValueRead(_pEditorCitation, false));
     }
 
     private static LStateValue PEditorValueRead(string text, bool unreadable)
@@ -314,46 +264,15 @@ public partial class PExample
         if (_pEditorExample is null)
         {
             return !written.LExampleText.LStateValueEmpty
-                || written.LExampleLocal is not null
-                || !written.LExampleSource.LStateValueEmpty
-                || written.LExampleRenditions.Count > 0;
+                || !written.LExampleTranslation.LStateValueEmpty
+                || !written.LExampleSource.LStateValueEmpty;
         }
 
         return written.LExampleText != _pEditorExample.LExampleText
+            || written.LExampleTranslation != _pEditorExample.LExampleTranslation
             || written.LExampleSource != _pEditorExample.LExampleSource
             || !string.Equals(
-                written.LExampleLanguage, _pEditorExample.LExampleLanguage, StringComparison.Ordinal)
-            || !string.Equals(
-                written.LExampleLocal ?? string.Empty,
-                _pEditorExample.LExampleLocal ?? string.Empty,
-                StringComparison.Ordinal)
-            || PRenditionChangeCheck(written.LExampleRenditions, _pEditorExample.LExampleRenditions);
-    }
-
-    private static bool PRenditionChangeCheck(
-        IReadOnlyList<LRendition> written, IReadOnlyList<LRendition> stored)
-    {
-        if (written.Count != stored.Count)
-        {
-            return true;
-        }
-
-        for (int index = 0; index < written.Count; index++)
-        {
-            if (!string.Equals(
-                    written[index].LRenditionLanguage,
-                    stored[index].LRenditionLanguage,
-                    StringComparison.Ordinal)
-                || !string.Equals(
-                    written[index].LRenditionText,
-                    stored[index].LRenditionText,
-                    StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
+                written.LExampleLanguage, _pEditorExample.LExampleLanguage, StringComparison.Ordinal);
     }
 
     private void PFreshHandle(object sender, RoutedEventArgs e)

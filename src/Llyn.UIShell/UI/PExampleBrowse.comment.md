@@ -14,11 +14,6 @@ The panel answers two questions rather than one: what this sentence is, and wher
 How many places quote each Example, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
-### `private readonly ObservableCollection<PRenditionItem> _pDisplayRendition = [];`
-
-The renditions as the display reads them, kept apart from the list the editor writes into.
-The two must not share rows, because discarding an edit may not disturb what the reading showed.
-
 ## `private async void PExampleHandle(object sender, DependencyPropertyChangedEventArgs e)`
 
 Binds the sources and reads the workspace when the panel becomes visible.
@@ -37,7 +32,7 @@ An open editor keeps its selection either way, because the row may be the one be
 
 ## `private bool PQueryMatch(LExample example, string query)`
 
-Whether one Example answers the query, over its sentence, its local rendering, its renditions and its Source name.
+Whether one Example answers the query, over its sentence, its translation and its Source name.
 
 ## `private void PExampleShow(string id)`
 
@@ -48,11 +43,6 @@ An id the store no longer knows clears the selection and refills the catalog rat
 
 Writes one three-state field into the display.
 An unwritten value reads the unrecorded mark in the muted colour, so a blank row never stands for two facts.
-
-## `private void PDisplayLocalShow(string? local)`
-
-Writes the local rendering, which is plain nullable text rather than a three-state field.
-It reads the same unrecorded mark, so the two kinds of field look alike to the reader.
 
 ## `private void PUsageFind(string id)`
 

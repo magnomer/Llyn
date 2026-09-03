@@ -15,10 +15,6 @@ public partial class PExample
 
     private readonly ObservableCollection<PUsageItem> _pUsageList = [];
 
-    private readonly ObservableCollection<PRenditionItem> _pDisplayRendition = [];
-
-    private readonly ObservableCollection<PRenditionItem> _pRenditionList = [];
-
     private readonly ObservableCollection<PReference> _pCitationCatalog = [];
 
     private readonly ObservableCollection<PLangcodeItem> _pLangcodeItem = [];
@@ -38,8 +34,6 @@ public partial class PExample
 
         PAnthology.ItemsSource = _pAnthologyList;
         PUsage.ItemsSource = _pUsageList;
-        PDisplayRendition.ItemsSource = _pDisplayRendition;
-        PRendition.ItemsSource = _pRenditionList;
         PCitationList.ItemsSource = _pCitationCatalog;
         PLangcodeList.ItemsSource = _pLangcodeItem;
 
@@ -134,18 +128,10 @@ public partial class PExample
     private bool PQueryMatch(LExample example, string query)
     {
         if (PQueryMatch(example.LExampleText.LStateValueShow(), query)
-            || PQueryMatch(example.LExampleLocal ?? string.Empty, query)
+            || PQueryMatch(example.LExampleTranslation.LStateValueShow(), query)
             || PQueryMatch(PCitationNameRead(example.LExampleSource), query))
         {
             return true;
-        }
-
-        foreach (LRendition rendition in example.LExampleRenditions)
-        {
-            if (PQueryMatch(rendition.LRenditionText, query))
-            {
-                return true;
-            }
         }
 
         return false;
@@ -197,23 +183,11 @@ public partial class PExample
         PDisplayValueShow(PDisplayText, example.LExampleText);
         PDisplayLanguage.Text = example.LExampleLanguage;
         PDisplayFlag.Source = PLangcodeIndicator.PLangcodeIndicatorFind(example.LExampleLanguage);
-        PDisplayLocalShow(example.LExampleLocal);
+        PDisplayValueShow(PDisplayTranslation, example.LExampleTranslation);
         PDisplayValueShow(
             PDisplayCitation,
             example.LExampleSource,
             PCitationNameRead(example.LExampleSource));
-
-        _pDisplayRendition.Clear();
-        foreach (LRendition rendition in example.LExampleRenditions)
-        {
-            _pDisplayRendition.Add(new PRenditionItem(
-                rendition.LRenditionId,
-                rendition.LRenditionLanguage,
-                rendition.LRenditionText));
-        }
-
-        PDisplayRenditionEmpty.Visibility =
-            _pDisplayRendition.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PUsageFind(id);
 
@@ -240,15 +214,6 @@ public partial class PExample
         field.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");
-    }
-
-    private void PDisplayLocalShow(string? local)
-    {
-        bool written = !string.IsNullOrWhiteSpace(local);
-        PDisplayLocal.Text = written ? local : _pExampleHost.PLocalizationTextRead("Example.Unset");
-        PDisplayLocal.SetResourceReference(
-            TextBlock.ForegroundProperty,
-            written ? "Theme.Ink" : "Theme.Muted");
     }
 
     private void PUsageFind(string id)
@@ -350,7 +315,6 @@ public partial class PExample
         _pDisplayExample = null;
         _pEditorExample = null;
         _pUsageList.Clear();
-        _pDisplayRendition.Clear();
 
         PDisplayBody.Visibility = Visibility.Collapsed;
         PDisplayUnselected.Visibility = Visibility.Visible;

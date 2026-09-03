@@ -243,9 +243,8 @@ public sealed partial class LEngine
             draft.LExampleDraftId,
             language,
             draft.LExampleDraftText,
-            null,
-            draft.LExampleDraftReference,
-            [])).LExampleId;
+            LStateValue.LStateValueUnspecified,
+            draft.LExampleDraftReference)).LExampleId;
     }
 
     private static bool LEngineSituationCheck(IReadOnlyList<LSituationDraft> drafts)

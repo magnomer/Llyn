@@ -25,7 +25,6 @@ public sealed class LExampleArchive
             LExampleId = string.IsNullOrWhiteSpace(example.LExampleId)
                 ? LIdentity.LIdentityCreate()
                 : example.LExampleId,
-            LExampleRenditions = LExampleRenditionPrepare(example.LExampleRenditions),
         };
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
@@ -35,18 +34,21 @@ public sealed class LExampleArchive
         {
             command.CommandText =
                 """
-                INSERT INTO example (id, language, text_state, text, local, source_state, source_id)
-                VALUES ($id, $language, $textState, $text, $local, $sourceState, $source);
+                INSERT INTO example (
+                    id, language, text_state, text, translation_state, translation,
+                    source_state, source_id)
+                VALUES (
+                    $id, $language, $textState, $text, $translationState, $translation,
+                    $sourceState, $source);
                 """;
             command.Parameters.AddWithValue("$id", stored.LExampleId);
             command.Parameters.AddWithValue("$language", stored.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", stored.LExampleText);
-            command.Parameters.AddWithValue("$local", (object?)stored.LExampleLocal ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "translation", stored.LExampleTranslation);
             LStateColumn.LStateColumnApply(command, "source", stored.LExampleSource);
             command.ExecuteNonQuery();
         }
 
-        LExampleRenditionInsert(connection, stored.LExampleId, stored.LExampleRenditions);
         session.LDatabaseSessionCommit();
 
         return stored;
@@ -65,13 +67,11 @@ public sealed class LExampleArchive
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        IReadOnlyDictionary<string, IReadOnlyList<LRendition>> renditions =
-            LExampleRenditionRead(connection);
-
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, language, text_state, text, local, source_state, source_id
+            SELECT id, language, text_state, text, translation_state, translation,
+                   source_state, source_id
             FROM example
             ORDER BY rowid;
             """;
@@ -80,14 +80,12 @@ public sealed class LExampleArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            string id = reader.GetString(0);
             examples.Add(new LExample(
-                id,
+                reader.GetString(0),
                 reader.GetString(1),
                 LStateColumn.LStateColumnRead(reader, 2),
-                reader.IsDBNull(4) ? null : reader.GetString(4),
-                LStateColumn.LStateColumnRead(reader, 5),
-                renditions.TryGetValue(id, out IReadOnlyList<LRendition>? found) ? found : []));
+                LStateColumn.LStateColumnRead(reader, 4),
+                LStateColumn.LStateColumnRead(reader, 6)));
         }
 
         return examples;
@@ -98,8 +96,6 @@ public sealed class LExampleArchive
         ArgumentNullException.ThrowIfNull(example);
         ArgumentException.ThrowIfNullOrWhiteSpace(example.LExampleId);
 
-        IReadOnlyList<LRendition> renditions = LExampleRenditionPrepare(example.LExampleRenditions);
-
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
@@ -108,13 +104,14 @@ public sealed class LExampleArchive
             command.CommandText =
                 """
                 UPDATE example
-                SET language = $language, text_state = $textState, text = $text, local = $local,
+                SET language = $language, text_state = $textState, text = $text,
+                    translation_state = $translationState, translation = $translation,
                     source_state = $sourceState, source_id = $source
                 WHERE id = $id;
                 """;
             command.Parameters.AddWithValue("$language", example.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", example.LExampleText);
-            command.Parameters.AddWithValue("$local", (object?)example.LExampleLocal ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "translation", example.LExampleTranslation);
             LStateColumn.LStateColumnApply(command, "source", example.LExampleSource);
             command.Parameters.AddWithValue("$id", example.LExampleId);
             if (command.ExecuteNonQuery() == 0)
@@ -123,14 +120,6 @@ public sealed class LExampleArchive
             }
         }
 
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "DELETE FROM example_rendition WHERE example_id = $example;";
-            command.Parameters.AddWithValue("$example", example.LExampleId);
-            command.ExecuteNonQuery();
-        }
-
-        LExampleRenditionInsert(connection, example.LExampleId, renditions);
         session.LDatabaseSessionCommit();
     }
 
@@ -260,167 +249,25 @@ public sealed class LExampleArchive
 
     internal static LExample? LExampleSingleRead(SqliteConnection connection, string id)
     {
-        string language;
-        LStateValue text;
-        string? local;
-        LStateValue source;
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText =
-                """
-                SELECT language, text_state, text, local, source_state, source_id
-                FROM example WHERE id = $id;
-                """;
-            command.Parameters.AddWithValue("$id", id);
-            using SqliteDataReader reader = command.ExecuteReader();
-            if (!reader.Read())
-            {
-                return null;
-            }
-
-            language = reader.GetString(0);
-            text = LStateColumn.LStateColumnRead(reader, 1);
-            local = reader.IsDBNull(3) ? null : reader.GetString(3);
-            source = LStateColumn.LStateColumnRead(reader, 4);
-        }
-
-        return new LExample(id, language, text, local, source, LExampleRenditionRead(connection, id));
-    }
-
-    internal static IReadOnlyDictionary<string, IReadOnlyList<LRendition>> LExampleRenditionRead(
-        SqliteConnection connection, string table, string column, string referrerId)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            $"""
-            SELECT rendition.id, rendition.example_id, rendition.language,
-                   rendition.text, rendition.position
-            FROM example_rendition rendition
-            JOIN {table} link ON link.example_id = rendition.example_id
-            WHERE link.{column} = $referrer
-            ORDER BY rendition.example_id, rendition.position;
-            """;
-        command.Parameters.AddWithValue("$referrer", referrerId);
-
-        Dictionary<string, IReadOnlyList<LRendition>> grouped = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            string exampleId = reader.GetString(1);
-            if (grouped.TryGetValue(exampleId, out IReadOnlyList<LRendition>? existing) is false)
-            {
-                existing = new List<LRendition>();
-                grouped[exampleId] = existing;
-            }
-
-            ((List<LRendition>)existing).Add(new LRendition(
-                reader.GetString(0),
-                reader.GetString(2),
-                reader.GetString(3),
-                reader.GetInt32(4)));
-        }
-
-        return grouped;
-    }
-
-    private static IReadOnlyDictionary<string, IReadOnlyList<LRendition>> LExampleRenditionRead(
-        SqliteConnection connection)
-    {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, example_id, language, text, position
-            FROM example_rendition
-            ORDER BY example_id, position;
+            SELECT language, text_state, text, translation_state, translation,
+                   source_state, source_id
+            FROM example WHERE id = $id;
             """;
-
-        Dictionary<string, IReadOnlyList<LRendition>> grouped = [];
+        command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
+        if (!reader.Read())
         {
-            string exampleId = reader.GetString(1);
-            if (grouped.TryGetValue(exampleId, out IReadOnlyList<LRendition>? existing) is false)
-            {
-                existing = new List<LRendition>();
-                grouped[exampleId] = existing;
-            }
-
-            ((List<LRendition>)existing).Add(new LRendition(
-                reader.GetString(0),
-                reader.GetString(2),
-                reader.GetString(3),
-                reader.GetInt32(4)));
+            return null;
         }
 
-        return grouped;
-    }
-
-    private static IReadOnlyList<LRendition> LExampleRenditionPrepare(
-        IReadOnlyList<LRendition> renditions)
-    {
-        List<LRendition> identified = [];
-        for (int position = 0; position < renditions.Count; position++)
-        {
-            LRendition rendition = renditions[position];
-            identified.Add(rendition with
-            {
-                LRenditionId = string.IsNullOrWhiteSpace(rendition.LRenditionId)
-                    ? LIdentity.LIdentityCreate()
-                    : rendition.LRenditionId,
-                LRenditionPosition = position,
-            });
-        }
-
-        return identified;
-    }
-
-    private static IReadOnlyList<LRendition> LExampleRenditionRead(
-        SqliteConnection connection, string exampleId)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT id, language, text, position
-            FROM example_rendition WHERE example_id = $example
-            ORDER BY position;
-            """;
-        command.Parameters.AddWithValue("$example", exampleId);
-
-        List<LRendition> renditions = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            renditions.Add(new LRendition(
-                reader.GetString(0),
-                reader.GetString(1),
-                reader.GetString(2),
-                reader.GetInt32(3)));
-        }
-
-        return renditions;
-    }
-
-    private static void LExampleRenditionInsert(
-        SqliteConnection connection,
-        string exampleId,
-        IReadOnlyList<LRendition> renditions)
-    {
-        for (int position = 0; position < renditions.Count; position++)
-        {
-            LRendition rendition = renditions[position];
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText =
-                """
-                INSERT INTO example_rendition (id, example_id, language, text, position)
-                VALUES ($id, $example, $language, $text, $position);
-                """;
-            command.Parameters.AddWithValue("$id", rendition.LRenditionId);
-            command.Parameters.AddWithValue("$example", exampleId);
-            command.Parameters.AddWithValue("$language", rendition.LRenditionLanguage);
-            command.Parameters.AddWithValue("$text", rendition.LRenditionText);
-            command.Parameters.AddWithValue("$position", position);
-            command.ExecuteNonQuery();
-        }
+        return new LExample(
+            id,
+            reader.GetString(0),
+            LStateColumn.LStateColumnRead(reader, 1),
+            LStateColumn.LStateColumnRead(reader, 3),
+            LStateColumn.LStateColumnRead(reader, 5));
     }
 }

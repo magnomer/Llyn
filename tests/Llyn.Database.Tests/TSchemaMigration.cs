@@ -244,7 +244,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AVersionNineteenDatabaseRenamesTheRenditionTableWithoutLosingARow()
+    public void AVersionTwentyDatabaseCarriesEachExampleTranslationOntoTheExampleRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -254,23 +254,35 @@ public sealed class TSchemaMigration
                 id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
                 version INTEGER NOT NULL
             );
-            INSERT INTO schema_version (id, version) VALUES (1, 19);
+            INSERT INTO schema_version (id, version) VALUES (1, 20);
 
-            CREATE TABLE example_translation (
+            CREATE TABLE example (
+                id TEXT NOT NULL PRIMARY KEY,
+                language TEXT NOT NULL,
+                text_state TEXT NOT NULL DEFAULT 'unspecified',
+                text TEXT,
+                local TEXT,
+                source_state TEXT NOT NULL DEFAULT 'unspecified',
+                source_id TEXT
+            );
+
+            CREATE TABLE example_rendition (
                 id TEXT NOT NULL PRIMARY KEY,
                 example_id TEXT NOT NULL,
                 language TEXT NOT NULL,
                 text TEXT NOT NULL,
                 position INTEGER NOT NULL
             );
-            CREATE INDEX example_translation_example ON example_translation (example_id);
-            CREATE UNIQUE INDEX example_translation_position
-                ON example_translation (example_id, position);
 
-            INSERT INTO example_translation (id, example_id, language, text, position)
+            INSERT INTO example (id, language, text_state, text, local)
+                VALUES ('e1', 'fr', 'specified', 'casser', NULL);
+            INSERT INTO example (id, language, text_state, text, local)
+                VALUES ('e2', 'fr', 'specified', 'briser', 'written by hand');
+
+            INSERT INTO example_rendition (id, example_id, language, text, position)
                 VALUES ('r1', 'e1', 'ko', '부수다', 0);
-            INSERT INTO example_translation (id, example_id, language, text, position)
-                VALUES ('r2', 'e1', 'fr', 'casser', 1);
+            INSERT INTO example_rendition (id, example_id, language, text, position)
+                VALUES ('r2', 'e1', 'en', 'to break', 1);
             """);
 
         workspace.TWorkspaceDatabase.LDatabaseCreate();
@@ -281,21 +293,22 @@ public sealed class TSchemaMigration
         Assert.Equal(
             0,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'example_translation';"));
-        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example_rendition;"));
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'example_rendition';"));
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM example_rendition WHERE id = 'r2' AND text = 'casser' AND position = 1;"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "example_rendition", "example_id"));
-        Assert.Equal(
-            0,
-            workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'example_translation_position';"));
+                """
+                SELECT COUNT(*) FROM example
+                WHERE id = 'e1' AND translation = '부수다' AND translation_state = 'specified';
+                """));
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'index' AND name = 'example_rendition_position';"));
+                """
+                SELECT COUNT(*) FROM example
+                WHERE id = 'e2' AND translation = 'written by hand'
+                    AND translation_state = 'specified';
+                """));
     }
 
     [Fact]
@@ -532,7 +545,6 @@ public sealed class TSchemaMigration
         Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "relation", "sense_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "example_rendition", "example_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "entry_example", "example_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "text"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_id"));

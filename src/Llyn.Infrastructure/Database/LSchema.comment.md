@@ -128,7 +128,7 @@ Deleting a referrer removes only its own association rows, by ON DELETE CASCADE 
 The example_id foreign keys deliberately have no cascade.
 So an Example survives every detach.
 The store refuses to delete one while any reference still points at it.
-Renditions are owned text and cascade with their Example.
+The translation is a column on the Example row, so it goes when the row goes.
 
 example.source_id points at the independent Reference the block above creates.
 Its foreign key could only be declared once that source table existed.

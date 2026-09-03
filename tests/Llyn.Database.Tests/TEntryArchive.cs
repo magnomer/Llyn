@@ -50,7 +50,7 @@ public sealed class TEntryArchive
         LSense sense = senses.LSenseCreate(
             new LSense(string.Empty, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
         LExample example = examples.LExampleCreate(
-            new LExample(string.Empty, "en", "a sentence", null, null, []));
+            new LExample(string.Empty, "en", "a sentence", null, null));
         links.LExampleSenseAttach(sense.LSenseId, example.LExampleId, 0);
 
         entries.LEntryDelete(entry.LEntryId);

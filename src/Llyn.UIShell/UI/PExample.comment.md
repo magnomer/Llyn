@@ -24,7 +24,7 @@ Export and print are mock-up controls and are not wired.
 The catalog of every Example the workspace holds, including one nothing quotes.
 A row reads its sentence over its language and cited Source, with its usage count at the far end.
 That count is shown here and not only in the display, because it decides which delete the panel offers.
-The rendition count is not shown: a rendition is owned text that says nothing about where the sentence is used.
+The translation is not shown here: it is text of the sentence itself and says nothing about where the sentence is used.
 
 ## `<Grid x:Name="PDisplay">`
 
@@ -46,17 +46,11 @@ An Example nothing quotes shows the empty state rather than hiding the region.
 ## `<Grid x:Name="PEditor" Visibility="Collapsed">`
 
 The editable view of the selected Example.
-The sentence is three-state, so an empty field says which kind of empty it is.
-The language is required by the row, so it is chosen rather than typed.
-The local rendering is plain nullable text and carries no state of its own.
+The language stands first, because it is what the sentence beneath it is written in.
+It is required by the row, so it is chosen rather than typed.
+The sentence and the translation are both three-state, so an empty field says which kind of empty it is.
+The translation is the sentence rendered in plain text and links nothing, unlike the Translation a Meaning carries.
 `PCitation` is the single Source the Example cites, a pointer that is cleared without touching the Source itself.
-
-## `<ItemsControl x:Name="PRendition">`
-
-The ordered renditions the Example owns.
-A rendition exists only as part of its Example and is removed with it.
-Reordering writes the position and changes nothing else, so a row that already has an id keeps it.
-The store rewrites the whole list on update, so the editor hands it the full order rather than a delta.
 
 ## `<TextBlock x:Name="PEditorUsage" ...>`
 

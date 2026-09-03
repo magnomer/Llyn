@@ -165,27 +165,20 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void RenditionPositionsComeFromListOrderAndIdentifiersSurviveAnUpdate()
+    public void AnExampleCarriesItsOwnTranslationThroughAnUpdate()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LExampleArchive examples = new(workspace.TWorkspaceDatabase);
 
         LExample stored = examples.LExampleCreate(new LExample(
-            string.Empty, "en", "a sentence", null, null,
-            [
-                new LRendition(string.Empty, "ko", "first", 7),
-                new LRendition(string.Empty, "ja", "second", 7),
-            ]));
+            string.Empty, "en", "a sentence", "one translation", null));
 
-        Assert.Equal([0, 1], stored.LExampleRenditions.Select(t => t.LRenditionPosition));
-
-        string kept = stored.LExampleRenditions[0].LRenditionId;
         examples.LExampleUpdate(stored with { LExampleText = "a changed sentence" });
 
         LExample? read = examples.LExampleRead(stored.LExampleId);
         Assert.NotNull(read);
         Assert.Equal("a changed sentence", read.LExampleText);
-        Assert.Equal(kept, read.LExampleRenditions[0].LRenditionId);
+        Assert.Equal("one translation", read.LExampleTranslation);
     }
 
     [Fact]

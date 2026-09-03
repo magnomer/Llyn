@@ -25,7 +25,7 @@ public sealed class TReference
                 .Select(row => row.LReferenceId));
 
         LExample example = engine.LEngineExampleCreate(
-            new LExample(string.Empty, "English", "he said the word", null, null, []));
+            new LExample(string.Empty, "English", "he said the word", null, null));
         engine.LEngineReferenceAttach(
             example.LExampleId, dictionary.LReferenceId, 0, LOwner.LOwnerExample);
         engine.LEngineReferenceAttach(example.LExampleId, grammar.LReferenceId, 0, LOwner.LOwnerExample);
