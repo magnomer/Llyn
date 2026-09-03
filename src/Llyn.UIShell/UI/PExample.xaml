@@ -37,15 +37,15 @@
             <Setter Property="Background" Value="Transparent" />
         </Style>
 
-        <DataTemplate x:Key="Theme.Langcode.Choice">
-            <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PLangcodeHandle" Foreground="{DynamicResource Theme.Ink}">
+        <DataTemplate x:Key="Theme.Tongue.Choice">
+            <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PLanguageHandle" Foreground="{DynamicResource Theme.Ink}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image Width="19" Height="14" VerticalAlignment="Center" Source="{Binding PLangcodeItemFlag}" Stretch="Uniform" />
-                    <TextBlock Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="{Binding PLangcodeItemName}" />
+                    <Image Width="19" Height="14" VerticalAlignment="Center" Source="{Binding PTongueItemFlag}" Stretch="Uniform" />
+                    <TextBlock Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="{Binding PTongueItemName}" />
                 </Grid>
             </Button>
         </DataTemplate>
@@ -254,7 +254,7 @@
                             <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Example.Language}" />
                             <Grid Margin="0,7,0,0" HorizontalAlignment="Left">
                                 <ToggleButton
-                                    x:Name="PLangcode"
+                                    x:Name="PLanguage"
                                     MinWidth="220"
                                     Height="44"
                                     Padding="12,0"
@@ -265,20 +265,20 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <Image x:Name="PLangcodeFlag" Width="19" Height="14" VerticalAlignment="Center" Stretch="Uniform" />
-                                        <TextBlock x:Name="PLangcodeName" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="13" TextTrimming="CharacterEllipsis" />
+                                        <Image x:Name="PLanguageFlag" Width="19" Height="14" VerticalAlignment="Center" Stretch="Uniform" />
+                                        <TextBlock x:Name="PLanguageName" Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="13" TextTrimming="CharacterEllipsis" />
                                     </Grid>
                                 </ToggleButton>
                                 <Popup
-                                    x:Name="PLangcodeMenu"
+                                    x:Name="PTongue"
                                     Width="238"
                                     AllowsTransparency="True"
-                                    IsOpen="{Binding IsChecked, ElementName=PLangcode, Mode=TwoWay}"
+                                    IsOpen="{Binding IsChecked, ElementName=PLanguage, Mode=TwoWay}"
                                     Placement="Bottom"
-                                    PlacementTarget="{Binding ElementName=PLangcode}"
+                                    PlacementTarget="{Binding ElementName=PLanguage}"
                                     StaysOpen="False">
                                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                                        <ItemsControl x:Name="PLangcodeList" ItemTemplate="{StaticResource Theme.Langcode.Choice}" />
+                                        <ItemsControl x:Name="PTongueList" ItemTemplate="{StaticResource Theme.Tongue.Choice}" />
                                     </Border>
                                 </Popup>
                             </Grid>

@@ -18,7 +18,7 @@ internal sealed class PUsageItem
             LState.LStateUnknown => unreadable,
             _ => unnamed,
         };
-        PUsageItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(usage.LUsageLanguage);
+        PUsageItemFlag = PEnsign.PEnsignFind(usage.LUsageLanguage);
     }
 
     public string PUsageItemId { get; }

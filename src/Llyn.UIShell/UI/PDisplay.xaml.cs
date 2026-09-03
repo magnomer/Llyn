@@ -192,24 +192,14 @@ public partial class PDisplay : UserControl
         PDisplayLanguage.Text = language;
         PDisplayLanguageFlag.Source = null;
 
-        string? path;
-        try
-        {
-            path = await _lEngine.LEngineFlagRead(language, CancellationToken.None);
-        }
-        catch (Exception)
-        {
-            return;
-        }
+        await PEnsign.PEnsignLoad(_lEngine);
 
         if (!string.Equals(PDisplayLanguage.Text, language, StringComparison.Ordinal))
         {
             return;
         }
 
-        PDisplayLanguageFlag.Source = path is not null && File.Exists(path)
-            ? PLangcodeIndicator.PLangcodeIndicatorResolve(path)
-            : null;
+        PDisplayLanguageFlag.Source = PEnsign.PEnsignFind(language);
     }
 
     private void PDisplayPlaybackHandle(object sender, RoutedEventArgs e)

@@ -52,5 +52,6 @@ That is what the play button plays.
 
 ### `private async void PDisplayLanguageShow(string language)`
 
-The flag is fetched, so a later entry may be shown before it arrives.
+The flag comes from `PEnsign`, which every tab holding a display reads too.
+The first call may await a fetch, so a later entry may be shown before it arrives.
 The language shown now is compared before the image is set.

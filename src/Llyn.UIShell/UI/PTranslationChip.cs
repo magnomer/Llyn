@@ -9,7 +9,7 @@ internal sealed class PTranslationChip
         PTranslationChipId = id;
         PTranslationChipHeadword = headword;
         PTranslationChipLanguage = language;
-        PTranslationChipFlag = PLangcodeIndicator.PLangcodeIndicatorFind(language);
+        PTranslationChipFlag = PEnsign.PEnsignFind(language);
     }
 
     public string PTranslationChipId { get; }

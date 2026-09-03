@@ -1,4 +1,4 @@
-# PLangcodeMenu.cs
+# PLanguage.cs
 
 ## `public partial class PEditor`
 
@@ -13,28 +13,27 @@ The choice is what lookup, audio download, and the saved entry are all carried o
 
 Fallback language used until a pack is chosen, and when no pack folder is present on disk.
 
-### `private bool _pLangcodeEntry;`
+### `private bool _pLanguageEntry;`
 
 Whether the current language came from a loaded entry.
 A pack that is no longer on disk is still the language the entry was written in.
 So the start-up fallback to the first pack leaves it alone.
 Only a form standing on no entry may be moved off its language.
 
-### `internal async void PLangcodeLoad()`
+### `internal async void PLanguageLoad()`
 
 Builds the language menu.
-Each row carries its own flag, resolved once here so the dropdown paints ready.
+Each row reads its flag from `PEnsign`, which every other tab reads too.
 The Translation chips are redrawn afterwards, because they were built before any flag existed.
-The flag download may await a first-time fetch, hence async.
+The flags may await a first-time fetch, hence async.
 
-### `string?[] paths = await Task.WhenAll(`
+### `await PEnsign.PEnsignLoad(_lEngine);`
 
-Every flag is asked for at once rather than one after the next.
-Each is a first-time download with its own ten-second timeout.
-Awaiting them in turn made the menu wait for the sum of them.
+The menu waits for the shared flags rather than fetching its own.
+This tab once resolved every SVG again on its own, so a flag was parsed twice.
 The rows are added afterwards, in the order the packs were read.
 
-### `if (!_pLangcodeEntry && languages.Count > 0 && !languages.Contains(_pLangcodeChoice))`
+### `if (!_pLanguageEntry && languages.Count > 0 && !languages.Contains(_pLanguageChoice))`
 
 A form standing on an entry keeps that entry's language even when no pack answers to it.
 The fallback is for a form that stands on nothing.
@@ -44,7 +43,7 @@ Such a form would otherwise name a pack that is not installed.
 
 The parts of speech on offer are the chosen language's, so a fallback that moved the choice moves them too.
 
-### `_pLangcodeEntry = false;`
+### `_pLanguageEntry = false;`
 
 Chosen by hand, so the language is no longer the loaded entry's.
 
@@ -54,15 +53,16 @@ The presets belong to the language, so the dropdown now offers the new one's.
 What is already typed in the field is left alone.
 It is what the user wrote, and a language change is not a reason to throw it away.
 
-### `private async void PLangcodeFlagUpdate()`
+### `private async void PLanguageFlagUpdate()`
 
 Shows the selected language's flag beside its name.
 A pack declares an ISO country code.
 The engine downloads and caches the matching flag-icons SVG.
-So this may await a first-time fetch.
+So the first call may await that fetch, and later ones read what is kept.
 When the pack declares no flag or the download fails, a neutral globe stands in.
+A pack that is gone from disk fails inside `PEnsign` rather than here.
 
-### `if (chosen != _pLangcodeChoice)`
+### `if (chosen != _pLanguageChoice)`
 
-The choice may have changed while the flag downloaded.
+The choice may have changed while the flags loaded.
 Only paint the still-current one.

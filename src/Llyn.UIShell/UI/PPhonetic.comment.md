@@ -1,4 +1,4 @@
-# PLookupMenu.cs
+# PPhonetic.cs
 
 ## `public partial class PEditor : LReceiver`
 
@@ -12,7 +12,7 @@ So every arrival is marshalled onto the dispatcher here.
 
 ## Inline notes
 
-### `await _lEngine.LEnginePronunciationFind(word, _pLangcodeChoice, this, _pLookupCancellation.Token);`
+### `await _lEngine.LEnginePronunciationFind(word, _pLanguageChoice, this, _pPhoneticCancellation.Token);`
 
 The panel asks and then listens.
 The search is over when the receiver is told it is, never when this call returns.
@@ -26,13 +26,13 @@ The search is not one the menu runs.
 Superseded by a newer lookup, or the window closed.
 Ignore it.
 
-### `_pLookupSearching = false;`
+### `_pPhoneticSearching = false;`
 
 A lookup that could not be started reports no end of its own.
 So the menu is taken out of its searching state here.
 It is not left running under a search that never began.
 
-### `private void PLookupMenuUpdate()`
+### `private void PPhoneticUpdate()`
 
 What the menu shows, from the two things it knows.
 Those are whether the search is still running, and what has arrived so far.

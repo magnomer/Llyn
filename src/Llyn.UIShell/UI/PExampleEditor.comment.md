@@ -20,7 +20,7 @@ Comparing the written fields against it is what says whether anything is unsaved
 Set while fields are being filled from a stored Example.
 Filling a field raises the same change the user typing raises, and only the second may clear an unreadable mark.
 
-## `private void PLangcodeLoad()`
+## `private void PLanguageLoad()`
 
 Reads the workspace languages and fixes a default for an Example being written for the first time.
 The `example` row requires a language, so the field is never left empty on the way to the store.

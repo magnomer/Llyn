@@ -11,7 +11,7 @@ internal sealed class PAnthologyItem
         PAnthologyItemId = example.LExampleId;
         PAnthologyItemText = PAnthologyTextRead(example.LExampleText, unreadable) ?? unwritten;
         PAnthologyItemLanguage = example.LExampleLanguage;
-        PAnthologyItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(example.LExampleLanguage);
+        PAnthologyItemFlag = PEnsign.PEnsignFind(example.LExampleLanguage);
         PAnthologyItemSource = source;
         PAnthologyItemCount = usage.ToString(CultureInfo.CurrentCulture);
     }

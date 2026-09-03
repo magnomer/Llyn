@@ -1,0 +1,22 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Llyn.UIShell.PClipTemplate">
+
+    <DataTemplate x:Key="Theme.Clip.Row">
+        <Border Style="{DynamicResource Theme.Popup.RowSurface}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="PClipOption" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PClipItemSource}" TextTrimming="CharacterEllipsis" />
+                <Button x:Name="PClipPreview" Grid.Column="1" Margin="0,0,2,0" VerticalAlignment="Center" Click="PClipPreviewHandle" Style="{DynamicResource Theme.Popup.IconAction}" ToolTip="{DynamicResource Downloader.Play}">
+                    <Path Width="8" Height="10" Data="M 1,1 L 8,5.5 L 1,10 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Fill" />
+                </Button>
+                <Button x:Name="PClipSelector" Grid.Column="2" VerticalAlignment="Center" Click="PClipSelectorHandle" Content="{Binding PClipItemAction}" IsEnabled="{Binding PClipItemReady}" Style="{DynamicResource Theme.Popup.RowAction}" />
+            </Grid>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

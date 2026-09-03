@@ -9,7 +9,7 @@ internal sealed class PIndexItem
         PIndexItemId = id;
         PIndexItemHeadword = headword;
         PIndexItemLanguage = language;
-        PIndexItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(language);
+        PIndexItemFlag = PEnsign.PEnsignFind(language);
     }
 
     public string PIndexItemId { get; }

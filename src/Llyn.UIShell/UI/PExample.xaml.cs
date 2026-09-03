@@ -35,7 +35,7 @@ public partial class PExample : UserControl
     internal void PExampleClose()
     {
         PCitationMenu.IsOpen = false;
-        PLangcodeMenu.IsOpen = false;
+        PTongue.IsOpen = false;
         PRankMenu.IsOpen = false;
     }
 }

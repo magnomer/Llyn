@@ -15,7 +15,7 @@ public partial class PEditor
     {
         return new LEntryDraft(
             PHeadword.Text ?? string.Empty,
-            _pLangcodeChoice,
+            _pLanguageChoice,
             PPronunciation.Text ?? string.Empty,
             PEditorNoteRead(),
             PCardRead(_pSenseList),
@@ -30,7 +30,7 @@ public partial class PEditor
         PHeadword.Text = draft.LEntryDraftHeadword;
         PPronunciation.Text = draft.LEntryDraftPronunciation;
         PSpeechShow(draft.LEntryDraftSpeeches);
-        PEditorLangcodeShow(draft.LEntryDraftLanguage);
+        PEditorLanguageShow(draft.LEntryDraftLanguage);
 
         IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);
         PCardShow(_pSenseList, "Meaning", draft.LEntryDraftSenses, targets);
@@ -155,23 +155,23 @@ public partial class PEditor
         PPlayback.Visibility = Visibility.Visible;
     }
 
-    private void PEditorLangcodeShow(string language)
+    private void PEditorLanguageShow(string language)
     {
         if (language.Length == 0)
         {
             return;
         }
 
-        _pLangcodeEntry = true;
+        _pLanguageEntry = true;
 
-        if (string.Equals(_pLangcodeChoice, language, StringComparison.Ordinal))
+        if (string.Equals(_pLanguageChoice, language, StringComparison.Ordinal))
         {
             return;
         }
 
-        _pLangcodeChoice = language;
-        PLangcodeBaseName.Text = language;
-        PLangcodeFlagUpdate();
+        _pLanguageChoice = language;
+        PLanguageName.Text = language;
+        PLanguageFlagUpdate();
     }
 
     internal void PEditorReset()
@@ -182,7 +182,7 @@ public partial class PEditor
         PPronunciation.Text = string.Empty;
         PSpeechShow(null);
         PRecordingClear();
-        _pLangcodeEntry = false;
+        _pLanguageEntry = false;
 
         PCardShow(_pSenseList, "Meaning", [], PEditorTargetEmpty);
         PCardShow(_pCollocationList, "Collocation", [], PEditorTargetEmpty);
@@ -200,7 +200,7 @@ public partial class PEditor
             return;
         }
 
-        _pStateDraft = _pStateDraft with { LEntryDraftLanguage = _pLangcodeChoice };
+        _pStateDraft = _pStateDraft with { LEntryDraftLanguage = _pLanguageChoice };
     }
 
     internal bool PEditorChangeCheck()

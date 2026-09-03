@@ -11,7 +11,7 @@ internal sealed class PInventoryItem
         PInventoryItemLanguage = language;
         PInventoryItemSound = sound;
         PInventoryItemPronunciation = sound.Length == 0 ? "[ ]" : $"[{sound}]";
-        PInventoryItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(language);
+        PInventoryItemFlag = PEnsign.PEnsignFind(language);
     }
 
     public string PInventoryItemId { get; }

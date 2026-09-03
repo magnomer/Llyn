@@ -96,12 +96,12 @@ A workspace whose audio folder was removed shows no play control rather than one
 The entry's own audio, not a fetch for the spelling currently in the headword box.
 Editing the headword from here on leaves it alone.
 
-### `private void PEditorLangcodeShow(string language)`
+### `private void PEditorLanguageShow(string language)`
 
 The language selector moved onto the entry's language, flag included.
 A language whose pack is no longer on disk is still shown: it is what the entry was written in.
 
-### `_pLangcodeEntry = true;`
+### `_pLanguageEntry = true;`
 
 Recorded even when the selector already stands on it.
 What matters to the language menu being built is that this language is an entry's.
@@ -116,7 +116,7 @@ An empty form stands on no entry.
 The saved recording belongs to the entry that was just written.
 It does not belong to the empty form the next entry is typed into.
 
-### `_pLangcodeEntry = false;`
+### `_pLanguageEntry = false;`
 
 An empty form stands on no entry, so its language is nobody's.
 The language menu may move it onto an installed pack.

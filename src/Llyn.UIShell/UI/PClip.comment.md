@@ -1,4 +1,4 @@
-# PDownloaderMenu.cs
+# PClip.cs
 
 ## `public partial class PEditor : LListener`
 
@@ -12,7 +12,7 @@ So every arrival is marshalled onto the dispatcher here.
 
 ## Inline notes
 
-### `await _lEngine.LEngineRecordingFind(word, _pLangcodeChoice, this, _pDownloaderCancellation.Token);`
+### `await _lEngine.LEngineRecordingFind(word, _pLanguageChoice, this, _pClipCancellation.Token);`
 
 The panel asks and then listens.
 The search is over when the listener is told it is, never when this call returns.
@@ -25,13 +25,13 @@ The search is not one the menu runs.
 Superseded by a newer discovery, or the window closed.
 Ignore it.
 
-### `_pDownloaderSearching = false;`
+### `_pClipSearching = false;`
 
 A discovery that could not be started reports no end of its own.
 So the menu is taken out of its searching state here.
 It is not left running under a search that never began.
 
-### `private void PDownloaderMenuUpdate()`
+### `private void PClipUpdate()`
 
 What the menu shows, from the two things it knows.
 Those are whether the search is still running, and what has arrived so far.
@@ -45,17 +45,17 @@ The notice is the one line the menu says while it has no rows to show.
 It says what it is doing, or that there was nothing to find.
 With rows on screen it says nothing — a row reports its own download itself.
 
-### `string path = await _lEngine.LEngineRecordingPrepare(recording.PDownloaderRecordingModel, CancellationToken.None);`
+### `string path = await _lEngine.LEngineRecordingPrepare(recording.PClipItemModel, CancellationToken.None);`
 
 Streaming the remote, token-bearing URL through the media stack is unreliable.
 Fetch it to a local temp file first, then play that.
 
-### `internal async void PDownloaderMenuHandle(object sender, RoutedEventArgs e)`
+### `internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)`
 
 Preview is best-effort.
 A failed fetch leaves the menu untouched.
 
-### `recording.PDownloaderRecordingAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");`
+### `recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");`
 
 The download is reported on the row that was taken, not on the status card.
 That card belongs to the search.
@@ -75,7 +75,7 @@ Fetched for the headword as it stands now, so a further edit of it drops this.
 
 Taking a recording closes the menu, the way taking a pronunciation candidate does.
 
-### `recording.PDownloaderRecordingAction = _pEditorHost.PLocalizationTextRead("Downloader.Retry");`
+### `recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Retry");`
 
 A failed download leaves the row offering another try.
 

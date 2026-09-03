@@ -9,7 +9,7 @@ internal sealed class PTranslationItem
         PTranslationItemId = id;
         PTranslationItemHeadword = headword;
         PTranslationItemLanguage = language;
-        PTranslationItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(language);
+        PTranslationItemFlag = PEnsign.PEnsignFind(language);
         PTranslationItemFresh = fresh;
     }
 

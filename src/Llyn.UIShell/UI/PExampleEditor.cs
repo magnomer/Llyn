@@ -21,7 +21,7 @@ public partial class PExample
 
     private bool _pTranscriptLoading;
 
-    private void PLangcodeLoad()
+    private void PLanguageLoad()
     {
         IReadOnlyList<string> languages;
         try
@@ -33,11 +33,11 @@ public partial class PExample
             languages = [];
         }
 
-        _pLangcodeItem.Clear();
+        _pTongueItem.Clear();
         foreach (string language in languages)
         {
-            _pLangcodeItem.Add(new PLangcodeItem(
-                language, PLangcodeIndicator.PLangcodeIndicatorFind(language)));
+            _pTongueItem.Add(new PTongueItem(
+                language, PEnsign.PEnsignFind(language)));
         }
 
         if (_pTranscriptLanguage.Length == 0 && languages.Count > 0)
@@ -45,25 +45,25 @@ public partial class PExample
             _pTranscriptLanguage = languages[0];
         }
 
-        PLangcodeShow();
+        PLanguageShow();
     }
 
-    private void PLangcodeHandle(object sender, RoutedEventArgs e)
+    private void PLanguageHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PLangcodeItem item })
+        if (sender is not FrameworkElement { DataContext: PTongueItem item })
         {
             return;
         }
 
-        _pTranscriptLanguage = item.PLangcodeItemName;
-        PLangcode.IsChecked = false;
-        PLangcodeShow();
+        _pTranscriptLanguage = item.PTongueItemName;
+        PLanguage.IsChecked = false;
+        PLanguageShow();
     }
 
-    private void PLangcodeShow()
+    private void PLanguageShow()
     {
-        PLangcodeName.Text = _pTranscriptLanguage;
-        PLangcodeFlag.Source = PLangcodeIndicator.PLangcodeIndicatorFind(_pTranscriptLanguage);
+        PLanguageName.Text = _pTranscriptLanguage;
+        PLanguageFlag.Source = PEnsign.PEnsignFind(_pTranscriptLanguage);
     }
 
     private void PCitationFind()
@@ -212,7 +212,7 @@ public partial class PExample
             _pTranscriptLanguage = example.LExampleLanguage;
         }
 
-        PLangcodeShow();
+        PLanguageShow();
 
         _pTranscriptCitation = example?.LExampleSource.LStateValueShow() ?? string.Empty;
         PCitationList.SelectedValue = _pTranscriptCitation.Length == 0 ? null : _pTranscriptCitation;

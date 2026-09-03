@@ -17,7 +17,7 @@ public partial class PExample
 
     private readonly ObservableCollection<PCitationItem> _pCitationCatalog = [];
 
-    private readonly ObservableCollection<PLangcodeItem> _pLangcodeItem = [];
+    private readonly ObservableCollection<PTongueItem> _pTongueItem = [];
 
     private IReadOnlyDictionary<string, int> _pAnthologyCount = new Dictionary<string, int>();
 
@@ -35,11 +35,11 @@ public partial class PExample
         PAnthology.ItemsSource = _pAnthologyList;
         PQuotation.ItemsSource = _pQuotationList;
         PCitationList.ItemsSource = _pCitationCatalog;
-        PLangcodeList.ItemsSource = _pLangcodeItem;
+        PTongueList.ItemsSource = _pTongueItem;
 
-        await PLangcodeIndicator.PLangcodeIndicatorLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_lEngine);
 
-        PLangcodeLoad();
+        PLanguageLoad();
         PCitationFind();
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
@@ -182,7 +182,7 @@ public partial class PExample
 
         PExcerptValueShow(PExcerptText, example.LExampleText);
         PExcerptLanguage.Text = example.LExampleLanguage;
-        PExcerptFlag.Source = PLangcodeIndicator.PLangcodeIndicatorFind(example.LExampleLanguage);
+        PExcerptFlag.Source = PEnsign.PEnsignFind(example.LExampleLanguage);
         PExcerptValueShow(PExcerptTranslation, example.LExampleTranslation);
         PExcerptValueShow(
             PExcerptCitation,

@@ -285,7 +285,7 @@ public partial class PEditor
                 entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
         }
 
-        foreach (string language in PTranslationLangcodeRead())
+        foreach (string language in PTranslationLanguageRead())
         {
             _pTranslationItem.Add(new PTranslationItem(string.Empty, word, language, true));
         }
@@ -304,18 +304,18 @@ public partial class PEditor
         _pTranslationCard = null;
     }
 
-    private IReadOnlyList<string> PTranslationLangcodeRead()
+    private IReadOnlyList<string> PTranslationLanguageRead()
     {
         List<string> languages = [];
-        foreach (PLangcodeItem item in _pLangcodeItem)
+        foreach (PTongueItem item in _pTongueItem)
         {
-            if (!string.Equals(item.PLangcodeItemName, _pLangcodeChoice, StringComparison.Ordinal))
+            if (!string.Equals(item.PTongueItemName, _pLanguageChoice, StringComparison.Ordinal))
             {
-                languages.Add(item.PLangcodeItemName);
+                languages.Add(item.PTongueItemName);
             }
         }
 
-        languages.Add(_pLangcodeChoice);
+        languages.Add(_pLanguageChoice);
         return languages;
     }
 

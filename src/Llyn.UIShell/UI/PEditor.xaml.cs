@@ -22,18 +22,19 @@ public partial class PEditor : UserControl
         Resources.MergedDictionaries.Add(new PTranslationTemplate(this));
         Resources.MergedDictionaries.Add(new PSenseTemplate(this));
         Resources.MergedDictionaries.Add(new PCollocationTemplate(this));
-        Resources.MergedDictionaries.Add(new PLangcodeTemplate(this));
+        Resources.MergedDictionaries.Add(new PTongueTemplate(this));
         Resources.MergedDictionaries.Add(new PSpeechTemplate(this));
-        Resources.MergedDictionaries.Add(new PLookupTemplate(this));
-        Resources.MergedDictionaries.Add(new PDownloaderTemplate(this));
+        Resources.MergedDictionaries.Add(new PCategoryTemplate(this));
+        Resources.MergedDictionaries.Add(new PPhoneticTemplate(this));
+        Resources.MergedDictionaries.Add(new PClipTemplate(this));
 
         PSenseList.ItemsSource = _pSenseList;
         PCollocationList.ItemsSource = _pCollocationList;
-        PLookupMenuList.ItemsSource = _pLookupCandidate;
-        PDownloaderMenuList.ItemsSource = _pDownloaderRecording;
-        PLangcodeMenuList.ItemsSource = _pLangcodeItem;
+        PPhoneticList.ItemsSource = _pPhoneticItem;
+        PClipList.ItemsSource = _pClipItem;
+        PTongueList.ItemsSource = _pTongueItem;
         PTranslationMenuList.ItemsSource = _pTranslationItem;
-        PSpeechMenuList.ItemsSource = _pSpeechItem;
+        PCategoryList.ItemsSource = _pCategoryItem;
         PSpeechList.ItemsSource = _pSpeechChip;
         PHeadword.TextChanged += PHeadwordHandle;
         PSpeechContents.KeyDown += PSpeechContentsHandle;
@@ -59,8 +60,8 @@ public partial class PEditor : UserControl
             PEditorEntryShow(entry);
         }
 
-        PLangcodeLoad();
-        PSpeechLoad();
+        PLanguageLoad();
+        PCategoryLoad();
 
         PEditorChangeStart();
     }
@@ -68,8 +69,8 @@ public partial class PEditor : UserControl
     internal void PEditorClose()
     {
         PEditorChangeStop();
-        PLookupCancel();
-        PDownloaderCancel();
+        PPhoneticCancel();
+        PClipCancel();
         PVideoClose();
         _pDownloaderPlayer.Close();
     }

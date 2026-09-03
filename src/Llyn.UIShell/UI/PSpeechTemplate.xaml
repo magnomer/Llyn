@@ -3,11 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PSpeechTemplate">
 
-    <DataTemplate x:Key="Theme.Speech.Row">
-        <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSpeechHandle" Foreground="{DynamicResource Theme.Ink}">
-            <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PSpeechItemName}" TextTrimming="CharacterEllipsis" />
-        </Button>
-    </DataTemplate>
     <DataTemplate x:Key="Theme.Speech.Chip">
         <Border Height="41" Margin="0,0,8,6" Padding="13,0,7,0" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Line}" BorderThickness="1" CornerRadius="9">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
@@ -25,4 +20,3 @@
         </Border>
     </DataTemplate>
 </ResourceDictionary>
-

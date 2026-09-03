@@ -1,8 +1,8 @@
-# PLangcodeItem.cs
+# PTongueItem.cs
 
-## `internal sealed class PLangcodeItem`
+## `internal sealed class PTongueItem`
 
-Presentation item for one language row in the `PLangcode` dropdown.
+Presentation item for one language row in the `PLanguage` dropdown.
 Carries the language name the row shows and the resolved flag image beside it.
 It is `null` when the pack declares no flag.
 The row then falls back to a neutral globe.

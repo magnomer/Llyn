@@ -46,7 +46,7 @@ public partial class PSituation
         POccurrence.ItemsSource = _pOccurrenceList;
         PCitationList.ItemsSource = _pCitationCatalog;
 
-        await PLangcodeIndicator.PLangcodeIndicatorLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_lEngine);
 
         PCitationFind();
         PAtlasFind(PInquest.Text ?? string.Empty);

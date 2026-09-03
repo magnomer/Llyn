@@ -26,7 +26,7 @@ public partial class PSound
 
         PInventory.ItemsSource = _pInventoryList;
 
-        await PLangcodeIndicator.PLangcodeIndicatorLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_lEngine);
 
         PInventoryFind(PProbe.Text ?? string.Empty);
     }

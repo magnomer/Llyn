@@ -22,7 +22,7 @@ public partial class PDuplex
         PLeftIndex.ItemsSource = _pLeftIndex;
         PRightIndex.ItemsSource = _pRightIndex;
 
-        await PLangcodeIndicator.PLangcodeIndicatorLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_lEngine);
     }
 
     private void PLeftQueryHandle(object sender, TextChangedEventArgs e)

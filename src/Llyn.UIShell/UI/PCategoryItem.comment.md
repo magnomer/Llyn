@@ -1,8 +1,8 @@
-# PSpeechItem.cs
+# PCategoryItem.cs
 
-## `internal sealed class PSpeechItem`
+## `internal sealed class PCategoryItem`
 
-Presentation item for one preset row in the `PSpeech` dropdown.
+Presentation item for one preset row in the `PCategory` menu.
 It is the display name the chosen language declares for one part of speech.
 That is also what the row writes into the field when it is clicked.
 The stable id behind the name is not carried here.

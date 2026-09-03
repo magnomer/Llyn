@@ -85,7 +85,7 @@ A search the workspace refuses raises a notice, because a silent nothing reads a
 The create row stands after the matches rather than among them.
 It carries the typed word untouched, because that word is what the stub Entry will be called.
 
-### `private IReadOnlyList<string> PTranslationLangcodeRead()`
+### `private IReadOnlyList<string> PTranslationLanguageRead()`
 
 The stub is offered once per language the workspace holds, so the user picks rather than accepts.
 The language being edited comes last, because a link usually crosses into another one.

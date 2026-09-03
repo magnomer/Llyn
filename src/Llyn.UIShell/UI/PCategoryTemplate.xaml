@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Llyn.UIShell.PCategoryTemplate">
+
+    <DataTemplate x:Key="Theme.Category.Row">
+        <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PCategoryHandle" Foreground="{DynamicResource Theme.Ink}">
+            <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PCategoryItemName}" TextTrimming="CharacterEllipsis" />
+        </Button>
+    </DataTemplate>
+</ResourceDictionary>

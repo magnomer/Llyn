@@ -26,7 +26,7 @@ public partial class PList
 
         PIndex.ItemsSource = _pIndexList;
 
-        await PLangcodeIndicator.PLangcodeIndicatorLoad(_lEngine);
+        await PEnsign.PEnsignLoad(_lEngine);
 
         PIndexFind(PInquiry.Text ?? string.Empty);
     }

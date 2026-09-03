@@ -9,7 +9,7 @@ internal sealed class PMembershipItem
         PMembershipItemId = id;
         PMembershipItemHeadword = headword;
         PMembershipItemLanguage = language;
-        PMembershipItemFlag = PLangcodeIndicator.PLangcodeIndicatorFind(language);
+        PMembershipItemFlag = PEnsign.PEnsignFind(language);
     }
 
     public string PMembershipItemId { get; }
