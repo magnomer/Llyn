@@ -33,8 +33,8 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardSituation = [];
         PCardSituationAdd(new PContext(catalog));
         PCardSituationUpdate();
-        PCardTranslationStart();
-        PCardTagStart();
+        PCardLinkStart();
+        PCardLabelStart();
         PCardImage = [];
         PCardVideo = [];
     }

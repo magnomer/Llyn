@@ -120,9 +120,9 @@ public partial class PEditor
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
             card.PCardSentenceShow(draft.LCardDraftExample);
             card.PCardSituationShow(draft.LCardDraftSituation);
-            card.PCardTranslationShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
-            PTranslationAttach(card);
-            card.PCardTagShow(draft.LCardDraftTag);
+            card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
+            PLinkAttach(card);
+            card.PCardLabelShow(draft.LCardDraftTag);
             card.PCardImageShow(draft.LCardDraftImage);
             cards.Add(card);
         }
@@ -130,7 +130,7 @@ public partial class PEditor
         if (cards.Count == 0)
         {
             PCard card = new(prefix, 1, _pSentenceReference);
-            PTranslationAttach(card);
+            PLinkAttach(card);
             cards.Add(card);
         }
     }
@@ -342,9 +342,9 @@ public partial class PEditor
                 card.PCardDefinitionRead(),
                 card.PCardSentenceRead(),
                 card.PCardSituationRead(),
-                card.PCardTranslationRead(),
+                card.PCardLinkRead(),
                 string.Empty,
-                card.PCardTagRead(),
+                card.PCardLabelRead(),
                 card.PCardImageRead(),
                 card.PCardId));
         }

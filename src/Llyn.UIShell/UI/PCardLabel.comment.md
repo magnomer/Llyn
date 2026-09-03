@@ -1,4 +1,4 @@
-# PCardTag.cs
+# PCardLabel.cs
 
 ## `internal sealed partial class PCard`
 
@@ -12,11 +12,11 @@ Only a comma ends a Tag.
 Duplicates are refused as they are committed rather than repaired afterwards.
 So what the field shows is what the store will hold.
 
-## `internal void PCardTagShow(IReadOnlyList<string> texts)`
+## `internal void PCardLabelShow(IReadOnlyList<string> texts)`
 
 Replaces the Tags with the stored ones of the card being loaded and reopens an empty entry after them.
 
-## `internal IReadOnlyList<string> PCardTagRead()`
+## `internal IReadOnlyList<string> PCardLabelRead()`
 
 What the card says its Tags are.
 That is the committed Tags and the entry text, each in the order the field shows them.
@@ -25,29 +25,29 @@ Reading does not change the field.
 An unsaved-change check runs this while the user is still typing.
 Closing a half-typed word into a Tag there would edit the card behind them.
 
-## `internal void PCardTagRemove(PTagChip chip)`
+## `internal void PCardLabelRemove(PLabelChip chip)`
 
 Drops one Tag the user closed.
 
-## `internal void PCardTagRemove(int step)`
+## `internal void PCardLabelRemove(int step)`
 
 Drops the Tag standing one step from the entry, before it or after it.
 That is what a backspace at the start, or a delete at the end, reaches for.
 
-## `internal bool PCardTagMove(int step)`
+## `internal bool PCardLabelMove(int step)`
 
 Steps the entry one place along the field, past the Tag on that side.
 A Tag is passed over as a single character would be.
 Reports whether there was anywhere left to go.
 
-## `internal void PCardTagCommit()`
+## `internal void PCardLabelCommit()`
 
 Closes what is standing in the entry into a Tag and clears the entry.
 That is what leaving the field or pressing enter means.
 
 ## Inline notes
 
-### `private void PCardTagChange(object? sender, PropertyChangedEventArgs arguments)`
+### `private void PCardLabelChange(object? sender, PropertyChangedEventArgs arguments)`
 
 The comma is read off the entry's text rather than off a keystroke.
 So a comma arriving by paste ends a Tag exactly as a typed one does.
@@ -58,7 +58,7 @@ That is what makes the field reactive as it is typed into.
 The guard around the rewrite is there because the rewrite sets the property being answered.
 Without it the handler would answer itself.
 
-### `private void PCardTagUpdate()`
+### `private void PCardLabelUpdate()`
 
 The hint belongs to the empty field, not to the entry.
 Once a card carries a Tag the entry sits beside it.

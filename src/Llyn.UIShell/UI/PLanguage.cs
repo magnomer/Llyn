@@ -36,7 +36,7 @@ public partial class PEditor
 
         PLanguageName.Text = _pLanguageChoice;
         PLanguageFlagUpdate();
-        PTranslationFlagUpdate();
+        PLinkFlagUpdate();
         PCategoryLoad();
     }
 

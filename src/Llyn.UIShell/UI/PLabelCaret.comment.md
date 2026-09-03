@@ -1,6 +1,6 @@
-# PTagEntry.cs
+# PLabelCaret.cs
 
-## `internal sealed class PTagEntry`
+## `internal sealed class PLabelCaret`
 
 The open caret at the end of a card's Tag field.
 It holds the text being typed before it becomes a Tag.

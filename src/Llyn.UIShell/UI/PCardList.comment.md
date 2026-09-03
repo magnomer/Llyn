@@ -11,7 +11,7 @@ So it is kept here rather than derived.
 
 ## Inline notes
 
-### `PTranslationAttach(card);`
+### `PLinkAttach(card);`
 
 A card added by hand is attached exactly as a loaded one is.
 Otherwise its Translation field would take typing and resolve none of it.

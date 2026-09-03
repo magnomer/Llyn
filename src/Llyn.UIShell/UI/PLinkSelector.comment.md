@@ -1,6 +1,6 @@
-# PTranslationSelector.cs
+# PLinkSelector.cs
 
-## `internal sealed class PTranslationSelector`
+## `internal sealed class PLinkSelector`
 
 Chooses which of the two shapes a Translation field item is drawn in.
 The field holds committed chips and one open entry in a single collection.

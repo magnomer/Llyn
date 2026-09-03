@@ -395,7 +395,7 @@
         </Border>
 
         <Popup
-            x:Name="PTranslationMenuChoice"
+            x:Name="PLinkMenuChoice"
             Grid.Row="4"
             Width="320"
             Margin="0,4,0,0"
@@ -404,12 +404,12 @@
             StaysOpen="False">
             <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                 <ListBox
-                    x:Name="PTranslationMenuList"
+                    x:Name="PLinkMenuList"
                     MaxHeight="264"
                     Background="Transparent"
                     BorderThickness="0"
                     Focusable="False"
-                    ItemTemplate="{DynamicResource Theme.Translation.Candidate}"
+                    ItemTemplate="{DynamicResource Theme.Link.Candidate}"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     SelectionMode="Single">

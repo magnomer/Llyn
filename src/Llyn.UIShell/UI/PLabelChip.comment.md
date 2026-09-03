@@ -1,6 +1,6 @@
-# PTagChip.cs
+# PLabelChip.cs
 
-## `internal sealed class PTagChip`
+## `internal sealed class PLabelChip`
 
 One committed Tag inside a card's Tag field — the boxed label the user sees.
 It holds nothing but its name, because a Tag is nothing but its name.

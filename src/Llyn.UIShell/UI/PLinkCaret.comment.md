@@ -1,6 +1,6 @@
-# PTranslationEntry.cs
+# PLinkCaret.cs
 
-## `internal sealed class PTranslationEntry`
+## `internal sealed class PLinkCaret`
 
 The open caret at the end of a card's Translation field.
 It holds the text being typed before it resolves to a linked Entry.

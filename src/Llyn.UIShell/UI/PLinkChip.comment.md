@@ -1,6 +1,6 @@
-# PTranslationChip.cs
+# PLinkChip.cs
 
-## `internal sealed class PTranslationChip`
+## `internal sealed class PLinkChip`
 
 One committed link inside a card's Translation field.
 The chip carries the id of another Entry and nothing else that is saved.

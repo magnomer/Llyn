@@ -11,7 +11,7 @@ public partial class PEditor
     internal void PEditorEntryShow(string id)
     {
         _pEditorEntry = null;
-        PTranslationFreshDelete();
+        PLinkFreshDelete();
 
         LEntryDraft? draft;
         try
@@ -50,7 +50,7 @@ public partial class PEditor
             return;
         }
 
-        PTranslationFreshClear();
+        PLinkFreshClear();
 
         if (entry is not null)
         {
@@ -65,7 +65,7 @@ public partial class PEditor
 
     private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
     {
-        PTranslationFreshDelete();
+        PLinkFreshDelete();
 
         if (PEditorDiscardDispatcher is not null)
         {

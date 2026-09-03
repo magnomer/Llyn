@@ -6,33 +6,33 @@ using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-internal sealed class PTranslationConverter : IValueConverter
+internal sealed class PLinkConverter : IValueConverter
 {
-    private readonly Dictionary<string, PTranslationChip> _pTranslationConverterTargets =
+    private readonly Dictionary<string, PLinkChip> _pLinkConverterTargets =
         new(StringComparer.Ordinal);
 
-    internal void PTranslationConverterShow(IReadOnlyList<LTranslationTarget> targets)
+    internal void PLinkConverterShow(IReadOnlyList<LTranslationTarget> targets)
     {
         ArgumentNullException.ThrowIfNull(targets);
 
-        _pTranslationConverterTargets.Clear();
+        _pLinkConverterTargets.Clear();
         foreach (LTranslationTarget target in targets)
         {
-            _pTranslationConverterTargets[target.LTranslationTargetId] = new PTranslationChip(
+            _pLinkConverterTargets[target.LTranslationTargetId] = new PLinkChip(
                 target.LTranslationTargetId,
                 target.LTranslationTargetHeadword,
                 target.LTranslationTargetLanguage);
         }
     }
 
-    internal void PTranslationConverterClear()
+    internal void PLinkConverterClear()
     {
-        _pTranslationConverterTargets.Clear();
+        _pLinkConverterTargets.Clear();
     }
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        List<PTranslationChip> chips = [];
+        List<PLinkChip> chips = [];
         if (value is not IEnumerable<string> ids)
         {
             return chips;
@@ -40,7 +40,7 @@ internal sealed class PTranslationConverter : IValueConverter
 
         foreach (string id in ids)
         {
-            if (_pTranslationConverterTargets.TryGetValue(id, out PTranslationChip? chip))
+            if (_pLinkConverterTargets.TryGetValue(id, out PLinkChip? chip))
             {
                 chips.Add(chip);
             }

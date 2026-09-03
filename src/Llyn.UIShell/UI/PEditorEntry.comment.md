@@ -63,7 +63,7 @@ The next thing typed here is the next entry, not a rewrite of the one just writt
 PEditorReset detaches it, and nothing puts it back on.
 A blank form still holding an id overwrote the first entry of a session with the second.
 
-### `PTranslationFreshClear();`
+### `PLinkFreshClear();`
 
 A saved entry keeps every stub its links made, so the editor stops watching them.
 

@@ -8,7 +8,7 @@
     <UserControl.Resources>
         <local:PCardOrderConverter x:Key="Display.Card.Order" />
         <local:PStateConverter x:Key="Display.Card.State" />
-        <local:PTranslationConverter x:Key="Display.Card.Translation" />
+        <local:PLinkConverter x:Key="Display.Card.Translation" />
 
         <Style x:Key="Display.Card.Title" TargetType="TextBlock">
             <Setter Property="VerticalAlignment" Value="Center" />
@@ -98,9 +98,9 @@
 
         <DataTemplate x:Key="Display.Card.TranslationLine">
             <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
-                <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PTranslationChipFlag}" Stretch="Uniform" />
-                <TextBlock VerticalAlignment="Center" FontSize="14" Text="{Binding PTranslationChipHeadword}" />
-                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PTranslationChipLanguage}" />
+                <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PLinkChipFlag}" Stretch="Uniform" />
+                <TextBlock VerticalAlignment="Center" FontSize="14" Text="{Binding PLinkChipHeadword}" />
+                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PLinkChipLanguage}" />
             </StackPanel>
         </DataTemplate>
 

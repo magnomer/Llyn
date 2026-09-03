@@ -83,7 +83,7 @@ public partial class PDisplay : UserControl
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
         PDisplaySpeech.ItemsSource = null;
         _pDisplayIncoming.Clear();
-        PDisplayTranslationRead().PTranslationConverterClear();
+        PDisplayTranslationRead().PLinkConverterClear();
         PDisplaySense.ItemsSource = null;
         PDisplayCollocation.ItemsSource = null;
         PDisplaySenseSection.Visibility = Visibility.Collapsed;
@@ -104,14 +104,14 @@ public partial class PDisplay : UserControl
         PDisplayTranslationRead(draft.LEntryDraftSenses, ids);
         PDisplayTranslationRead(draft.LEntryDraftCollocations, ids);
 
-        PTranslationConverter converter = PDisplayTranslationRead();
+        PLinkConverter converter = PDisplayTranslationRead();
         try
         {
-            converter.PTranslationConverterShow(_lEngine.LEngineTargetRead(ids));
+            converter.PLinkConverterShow(_lEngine.LEngineTargetRead(ids));
         }
         catch (Exception)
         {
-            converter.PTranslationConverterClear();
+            converter.PLinkConverterClear();
         }
 
         PDisplayCardUpdate();
@@ -142,9 +142,9 @@ public partial class PDisplay : UserControl
         }
     }
 
-    private PTranslationConverter PDisplayTranslationRead()
+    private PLinkConverter PDisplayTranslationRead()
     {
-        return (PTranslationConverter)Resources["Display.Card.Translation"];
+        return (PLinkConverter)Resources["Display.Card.Translation"];
     }
 
     private void PDisplayIncomingShow(string id)

@@ -1,6 +1,6 @@
-# PTagSelector.cs
+# PLabelSelector.cs
 
-## `internal sealed class PTagSelector`
+## `internal sealed class PLabelSelector`
 
 Chooses which of the two shapes a Tag field item is drawn in.
 The field holds committed Tags and one open entry in a single collection.

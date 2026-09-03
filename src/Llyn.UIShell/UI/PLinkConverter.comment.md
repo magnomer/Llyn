@@ -1,6 +1,6 @@
-# PTranslationConverter.cs
+# PLinkConverter.cs
 
-## `internal sealed class PTranslationConverter`
+## `internal sealed class PLinkConverter`
 
 Turns the ids a read-only card carries into the links it shows.
 A card stores ids alone, and the display draws headwords with their flags.
@@ -9,12 +9,12 @@ So the headwords are read once for the whole entry and held here while it is sho
 The display cannot ask per card, because each card would then be its own query.
 One lookup for the entry keeps the reading of an entry to a single question.
 
-## `internal void PTranslationConverterShow(IReadOnlyList<LTranslationTarget> targets)`
+## `internal void PLinkConverterShow(IReadOnlyList<LTranslationTarget> targets)`
 
 Takes the headwords the entry's links resolved to.
 It is called before the cards are handed over, so the templates find them ready.
 
-## `internal void PTranslationConverterClear()`
+## `internal void PLinkConverterClear()`
 
 Forgets the headwords of the entry that was shown.
 

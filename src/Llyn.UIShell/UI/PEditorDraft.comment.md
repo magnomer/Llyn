@@ -61,12 +61,12 @@ Every card's ids are asked for together, so an entry of many cards still asks on
 The engine is asked, because the panel reaches no database of its own.
 A workspace that refuses the read leaves the chips off rather than stopping the load.
 
-### `card.PCardTranslationShow(PCardTargetRead(targets, draft.LCardDraftTranslation));`
+### `card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));`
 
 Each card takes its own words out of the one answer, in the order the card holds them.
 An id the answer does not name is passed over, as a chip with no Entry has nothing to say.
 
-### `PTranslationAttach(card);`
+### `PLinkAttach(card);`
 
 Every card is given the way back to the editor before it is shown.
 A card resolves no typed word on its own.

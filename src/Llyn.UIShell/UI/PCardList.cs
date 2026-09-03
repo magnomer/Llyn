@@ -11,14 +11,14 @@ public partial class PEditor
     private void PSenseHandle(object sender, RoutedEventArgs e)
     {
         PCard card = new("Meaning", _pSenseList.Count + 1, _pSentenceReference);
-        PTranslationAttach(card);
+        PLinkAttach(card);
         _pSenseList.Add(card);
     }
 
     private void PCollocationHandle(object sender, RoutedEventArgs e)
     {
         PCard card = new("Collocation", _pCollocationList.Count + 1, _pSentenceReference);
-        PTranslationAttach(card);
+        PLinkAttach(card);
         _pCollocationList.Add(card);
     }
 
