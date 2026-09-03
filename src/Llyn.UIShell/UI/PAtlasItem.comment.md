@@ -16,7 +16,7 @@ It is given the untitled text for the first so no row stands blank beside the ne
 Builds the row from the stored Situation and the number of places referencing it.
 The two texts are handed in rather than read here, because a row is built while the list is being filled.
 
-## `public string PAtlasItemUsage { get; }`
+## `public string PAtlasItemCount { get; }`
 
 How many Meanings and Collocations reference this Situation, as the row shows it.
 It is the figure that decides whether a delete is legal, so the catalog carries it and not only the display.

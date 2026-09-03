@@ -7,7 +7,7 @@
     <local:PStateConverter x:Key="Theme.State.Show" />
 
     <DataTemplate x:Key="Theme.Reference.Row">
-        <TextBlock Margin="12,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PReferenceName}" TextTrimming="CharacterEllipsis" />
+        <TextBlock Margin="12,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PCitationItemName}" TextTrimming="CharacterEllipsis" />
     </DataTemplate>
 
     <Style x:Key="Theme.Reference.Item" TargetType="ListBoxItem">
@@ -16,15 +16,15 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border x:Name="PReferenceSurface" Background="Transparent" CornerRadius="7">
+                    <Border x:Name="PCitationSurface" Background="Transparent" CornerRadius="7">
                         <ContentPresenter VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PReferenceSurface" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
+                            <Setter TargetName="PCitationSurface" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="PReferenceSurface" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
+                            <Setter TargetName="PCitationSurface" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -140,7 +140,7 @@
                                 ItemsSource="{Binding PSentenceReferenceCatalog}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                 SelectedValue="{Binding PSentenceReference, Mode=TwoWay}"
-                                SelectedValuePath="PReferenceId" />
+                                SelectedValuePath="PCitationItemId" />
                             <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSentenceReferenceClear" Foreground="{DynamicResource Theme.Muted}">
                                 <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
                             </Button>

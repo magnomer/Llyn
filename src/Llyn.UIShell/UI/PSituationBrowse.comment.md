@@ -4,23 +4,23 @@
 
 Browsing and editing behavior of the Situations panel.
 `PAtlas` lists every Situation the workspace holds, including one nothing references.
-A chosen row is read back and shown with everything referencing it, and `PScribe` swaps that reading for the editor.
+A chosen row is read back and shown with everything referencing it, and `PSituationScribe` swaps that reading for the editor.
 The panel answers two questions rather than one: what this Situation is, and where it is used.
 
 ## Inline notes
 
-### `private IReadOnlyDictionary<string, int> _pAtlasUsage = new Dictionary<string, int>();`
+### `private IReadOnlyDictionary<string, int> _pAtlasCount = new Dictionary<string, int>();`
 
 How many places reference each Situation, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
-### `private LSituation? _pEditorSituation;`
+### `private LSituation? _pScenarioSituation;`
 
 The Situation the editor stands on as the store knows it.
 It stands empty while the editor is open over a Situation no card references yet and nothing has stored.
 Comparing the written fields against it is what says whether anything is unsaved.
 
-### `private bool _pEditorLoading;`
+### `private bool _pScenarioLoading;`
 
 Set while fields are being filled from a stored Situation.
 Filling a field raises the same change the user typing raises, and only the second may clear an unreadable mark.
@@ -40,14 +40,14 @@ Whether one Situation answers the query, over its title, description, kind, and 
 Reads one Situation back and shows it with the sides referencing it.
 A Situation that is gone leaves the panel unselected rather than showing a stale reading.
 
-## `private void PDisplayValueShow(TextBlock field, LStateValue value, string? shown = null)`
+## `private void PVignetteValueShow(TextBlock field, LStateValue value, string? shown = null)`
 
 Draws one stored field as a row of the reading.
 A written value reads itself, or the name resolved for it when the value is an id.
 An unreadable one reads the mark, and one never written reads the unrecorded text in the muted colour.
 The row is never hidden, because a missing row and an empty field are different claims about the store.
 
-## `private void PUsageFind(string id)`
+## `private void POccurrenceFind(string id)`
 
 Reads the referring sides of one Situation, itemized rather than counted.
 An empty result is shown rather than hidden: a Situation nothing references is reachable only here.
@@ -57,23 +57,23 @@ An empty result is shown rather than hidden: a Situation nothing references is r
 Reads the whole shelf of Sources the editor offers.
 A Source is referenced, never owned, so nothing here creates or changes one.
 
-## `private LSituation PEditorRead()`
+## `private LSituation PScenarioRead()`
 
 What the editor says the Situation is.
 A field standing empty says nothing was recorded, unless it still carries the mark it was loaded with.
 Then it says instead that something was recorded that cannot be read back.
 
-## `private bool PEditorChangeCheck()`
+## `private bool PScenarioChangeCheck()`
 
 Compares the written Situation against the stored one, ignoring the id.
 A fresh Situation is compared against an empty one, so opening the editor and typing nothing is not a change.
 
-## `private void PStoreHandle(object sender, RoutedEventArgs e)`
+## `private void PScenarioStoreHandle(object sender, RoutedEventArgs e)`
 
 Stores the editor over the selected Situation, or creates one nothing references yet.
 Saving does not change the id, what references it, or the order it takes for any referrer.
 
-## `private void PRemovalHandle(object sender, RoutedEventArgs e)`
+## `private void PScenarioRemovalHandle(object sender, RoutedEventArgs e)`
 
 Deletes the shown Situation.
 A Situation nothing references is deleted outright.

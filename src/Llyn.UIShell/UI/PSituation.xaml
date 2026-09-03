@@ -29,12 +29,12 @@
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
-        <Style x:Key="Theme.Usage.Row" TargetType="Button" BasedOn="{StaticResource Theme.Choice.Row}">
+        <Style x:Key="Theme.Occurrence.Row" TargetType="Button" BasedOn="{StaticResource Theme.Choice.Row}">
             <Setter Property="Margin" Value="0,0,0,6" />
         </Style>
 
         <DataTemplate x:Key="Theme.Citation.Row">
-            <TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding PReferenceName}" TextTrimming="CharacterEllipsis" />
+            <TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding PCitationItemName}" TextTrimming="CharacterEllipsis" />
         </DataTemplate>
 
         <Style x:Key="Theme.Citation.Item" TargetType="ListBoxItem">
@@ -110,18 +110,18 @@
 
         <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button
-                x:Name="PFresh"
+                x:Name="PSituationFresh"
                 Height="44"
                 Margin="0,0,8,0"
-                Click="PFreshHandle"
+                Click="PSituationFreshHandle"
                 Content="{DynamicResource Scribe.New}"
                 Style="{StaticResource Theme.Input.Pill}" />
             <Button
-                x:Name="PScribe"
+                x:Name="PSituationScribe"
                 Width="96"
                 Height="44"
                 Margin="0,0,8,0"
-                Click="PScribeHandle"
+                Click="PSituationScribeHandle"
                 Content="{DynamicResource Scribe.Edit}"
                 IsEnabled="False"
                 Style="{StaticResource Theme.Input.Pill}" />
@@ -146,7 +146,7 @@
                                             <TextBlock Margin="0,2,0,0" Style="{StaticResource Theme.Atlas.Kind}" Text="{Binding PAtlasItemKind}" />
                                         </StackPanel>
                                         <Border Grid.Column="1" Margin="10,0,0,0" Padding="8,2" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="7">
-                                            <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PAtlasItemUsage}" />
+                                            <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PAtlasItemCount}" />
                                         </Border>
                                     </Grid>
                                 </Button>
@@ -168,26 +168,26 @@
 
         <Border Grid.Row="1" Grid.Column="1" ClipToBounds="True" Style="{StaticResource Theme.Input.Card}">
             <Grid>
-                <Grid x:Name="PDisplay">
+                <Grid x:Name="PVignette">
                     <ScrollViewer Padding="24,22,24,20" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <StackPanel x:Name="PDisplayBody" Visibility="Collapsed">
+                        <StackPanel x:Name="PVignetteBody" Visibility="Collapsed">
                             <TextBlock Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Title}" />
-                            <TextBlock x:Name="PDisplayTitle" Margin="0,5,0,0" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" />
+                            <TextBlock x:Name="PVignetteTitle" Margin="0,5,0,0" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Kind}" />
-                            <TextBlock x:Name="PDisplayKind" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
+                            <TextBlock x:Name="PVignetteKind" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Description}" />
-                            <TextBlock x:Name="PDisplayDescription" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
+                            <TextBlock x:Name="PVignetteDescription" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Reference.Title}" />
-                            <TextBlock x:Name="PDisplayCitation" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
+                            <TextBlock x:Name="PVignetteCitation" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
 
                             <TextBlock Margin="0,26,0,10" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Usage}" />
-                            <ItemsControl x:Name="PUsage">
+                            <ItemsControl x:Name="POccurrence">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Button Click="PUsageHandle" Style="{StaticResource Theme.Usage.Row}">
+                                        <Button Click="POccurrenceHandle" Style="{StaticResource Theme.Occurrence.Row}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
@@ -210,7 +210,7 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <TextBlock
-                                x:Name="PUsageEmpty"
+                                x:Name="POccurrenceEmpty"
                                 Margin="0,2,0,0"
                                 Foreground="{StaticResource Theme.Muted}"
                                 Text="{DynamicResource Situation.UsageEmpty}"
@@ -218,7 +218,7 @@
                         </StackPanel>
                     </ScrollViewer>
                     <TextBlock
-                        x:Name="PDisplayUnselected"
+                        x:Name="PVignetteUnselected"
                         Margin="24"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -228,7 +228,7 @@
                         TextWrapping="Wrap" />
                 </Grid>
 
-                <Grid x:Name="PEditor" Visibility="Collapsed">
+                <Grid x:Name="PScenario" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -238,31 +238,31 @@
                         <StackPanel>
                             <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Situation.Title}" />
                             <TextBox
-                                x:Name="PEditorTitle"
+                                x:Name="PScenarioTitle"
                                 Height="44"
                                 Margin="0,7,0,0"
                                 Padding="12,7"
                                 Style="{StaticResource Theme.Input.Field}"
-                                TextChanged="PEditorTitleHandle" />
+                                TextChanged="PScenarioTitleHandle" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Situation.Kind}" />
                             <TextBox
-                                x:Name="PEditorKind"
+                                x:Name="PScenarioKind"
                                 Height="44"
                                 Margin="0,7,0,0"
                                 Padding="12,7"
                                 Style="{StaticResource Theme.Input.Field}"
-                                TextChanged="PEditorKindHandle" />
+                                TextChanged="PScenarioKindHandle" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Situation.Description}" />
                             <TextBox
-                                x:Name="PEditorDescription"
+                                x:Name="PScenarioDescription"
                                 MinHeight="120"
                                 Margin="0,7,0,0"
                                 Padding="12,9"
                                 AcceptsReturn="True"
                                 Style="{StaticResource Theme.Input.Field}"
-                                TextChanged="PEditorDescriptionHandle"
+                                TextChanged="PScenarioDescriptionHandle"
                                 TextWrapping="Wrap"
                                 VerticalContentAlignment="Top" />
 
@@ -304,7 +304,7 @@
                                                 ItemContainerStyle="{StaticResource Theme.Citation.Item}"
                                                 ItemTemplate="{StaticResource Theme.Citation.Row}"
                                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                SelectedValuePath="PReferenceId"
+                                                SelectedValuePath="PCitationItemId"
                                                 SelectionChanged="PCitationHandle" />
                                             <Button
                                                 x:Name="PCitationNone"
@@ -326,24 +326,24 @@
 
                     <StackPanel Grid.Row="1" Margin="24,10,24,20" HorizontalAlignment="Right" Orientation="Horizontal">
                         <Button
-                            x:Name="PRemoval"
+                            x:Name="PScenarioRemoval"
                             Height="44"
                             Margin="0,0,8,0"
-                            Click="PRemovalHandle"
+                            Click="PScenarioRemovalHandle"
                             Content="{DynamicResource Situation.Delete}"
                             IsEnabled="False"
                             Style="{StaticResource Theme.Input.Pill}" />
                         <Button
-                            x:Name="PDiscard"
+                            x:Name="PScenarioDiscard"
                             Height="44"
                             Margin="0,0,8,0"
-                            Click="PDiscardHandle"
+                            Click="PScenarioDiscardHandle"
                             Content="{DynamicResource Situation.Discard}"
                             Style="{StaticResource Theme.Input.Pill}" />
                         <Button
-                            x:Name="PStore"
+                            x:Name="PScenarioStore"
                             Height="44"
-                            Click="PStoreHandle"
+                            Click="PScenarioStoreHandle"
                             Content="{DynamicResource Situation.Store}"
                             Style="{StaticResource Theme.Input.Primary}" />
                     </StackPanel>

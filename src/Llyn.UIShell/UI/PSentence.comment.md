@@ -17,17 +17,17 @@ The mark stands until the user writes over it or clears the row.
 So nothing unreadable is quietly turned into nothing at all.
 Writing in the row is the user saying what the sentence is, which is why any edit ends the mark.
 
-## `internal PSentence(ObservableCollection<PReference> catalog)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog)`
 
 An empty row nothing has been written in.
 
-## `internal PSentence(ObservableCollection<PReference> catalog, LStateValue text, string id, LStateValue reference)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog, LStateValue text, string id, LStateValue reference)`
 
 The row for a stored Example.
 It holds the sentence and the Source it cites as the store knows them.
 Both stand under the id that names it.
 
-## `public ObservableCollection<PReference> PSentenceReferenceCatalog { get; }`
+## `public ObservableCollection<PCitationItem> PSentenceReferenceCatalog { get; }`
 
 The Sources the whole form offers, shared by every row.
 So a Source written on one row is on offer to the next without reloading anything.

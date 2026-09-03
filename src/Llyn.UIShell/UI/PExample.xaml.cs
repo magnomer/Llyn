@@ -29,7 +29,7 @@ public partial class PExample : UserControl
 
     internal bool PExampleChangeCheck()
     {
-        return PEditor.Visibility == Visibility.Visible && PEditorChangeCheck();
+        return PTranscript.Visibility == Visibility.Visible && PTranscriptChangeCheck();
     }
 
     internal void PExampleClose()

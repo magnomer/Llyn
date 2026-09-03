@@ -13,27 +13,27 @@ public partial class PSituation
 {
     private readonly ObservableCollection<PAtlasItem> _pAtlasList = [];
 
-    private readonly ObservableCollection<PUsageItem> _pUsageList = [];
+    private readonly ObservableCollection<PUsageItem> _pOccurrenceList = [];
 
-    private readonly ObservableCollection<PReference> _pCitationCatalog = [];
+    private readonly ObservableCollection<PCitationItem> _pCitationCatalog = [];
 
-    private IReadOnlyDictionary<string, int> _pAtlasUsage = new Dictionary<string, int>();
+    private IReadOnlyDictionary<string, int> _pAtlasCount = new Dictionary<string, int>();
 
-    private string? _pDisplaySituation;
+    private string? _pVignetteSituation;
 
     private string _pTierChoice = "Title";
 
-    private LSituation? _pEditorSituation;
+    private LSituation? _pScenarioSituation;
 
-    private string _pEditorCitation = string.Empty;
+    private string _pScenarioCitation = string.Empty;
 
-    private bool _pEditorTitleUnreadable;
+    private bool _pScenarioTitleUnreadable;
 
-    private bool _pEditorKindUnreadable;
+    private bool _pScenarioKindUnreadable;
 
-    private bool _pEditorDescriptionUnreadable;
+    private bool _pScenarioDescriptionUnreadable;
 
-    private bool _pEditorLoading;
+    private bool _pScenarioLoading;
 
     private async void PSituationHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -43,7 +43,7 @@ public partial class PSituation
         }
 
         PAtlas.ItemsSource = _pAtlasList;
-        PUsage.ItemsSource = _pUsageList;
+        POccurrence.ItemsSource = _pOccurrenceList;
         PCitationList.ItemsSource = _pCitationCatalog;
 
         await PLangcodeIndicator.PLangcodeIndicatorLoad(_lEngine);
@@ -77,15 +77,15 @@ public partial class PSituation
                 situation => situation.LSituationKind.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase),
             "Source" => situations.OrderBy(
                 situation => PCitationNameRead(situation.LSituationSource), StringComparer.CurrentCultureIgnoreCase),
-            "Usage" => situations.OrderByDescending(PAtlasUsageRead),
+            "Usage" => situations.OrderByDescending(PAtlasCountRead),
             _ => situations.OrderBy(
                 situation => situation.LSituationTitle.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase)
         };
     }
 
-    private int PAtlasUsageRead(LSituation situation)
+    private int PAtlasCountRead(LSituation situation)
     {
-        return _pAtlasUsage.TryGetValue(situation.LSituationId, out int usage) ? usage : 0;
+        return _pAtlasCount.TryGetValue(situation.LSituationId, out int usage) ? usage : 0;
     }
 
     private void PAtlasFind(string query)
@@ -96,7 +96,7 @@ public partial class PSituation
         try
         {
             read = _lEngine.LEngineSituationRead();
-            _pAtlasUsage = _lEngine.LEngineUsageRead(LOwner.LOwnerSituation);
+            _pAtlasCount = _lEngine.LEngineUsageRead(LOwner.LOwnerSituation);
         }
         catch (Exception exception)
         {
@@ -116,13 +116,13 @@ public partial class PSituation
                 continue;
             }
 
-            kept |= string.Equals(situation.LSituationId, _pDisplaySituation, StringComparison.Ordinal);
-            _pAtlasList.Add(new PAtlasItem(situation, PAtlasUsageRead(situation), unreadable, untitled));
+            kept |= string.Equals(situation.LSituationId, _pVignetteSituation, StringComparison.Ordinal);
+            _pAtlasList.Add(new PAtlasItem(situation, PAtlasCountRead(situation), unreadable, untitled));
         }
 
         PAtlasEmpty.Visibility = _pAtlasList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        if (!kept && _pDisplaySituation is not null && PEditor.Visibility != Visibility.Visible)
+        if (!kept && _pVignetteSituation is not null && PScenario.Visibility != Visibility.Visible)
         {
             PSituationClear();
         }
@@ -176,30 +176,30 @@ public partial class PSituation
             return;
         }
 
-        _pDisplaySituation = id;
-        _pEditorSituation = situation;
+        _pVignetteSituation = id;
+        _pScenarioSituation = situation;
 
-        PDisplayValueShow(PDisplayTitle, situation.LSituationTitle);
-        PDisplayValueShow(PDisplayKind, situation.LSituationKind);
-        PDisplayValueShow(PDisplayDescription, situation.LSituationDescription);
-        PDisplayValueShow(
-            PDisplayCitation,
+        PVignetteValueShow(PVignetteTitle, situation.LSituationTitle);
+        PVignetteValueShow(PVignetteKind, situation.LSituationKind);
+        PVignetteValueShow(PVignetteDescription, situation.LSituationDescription);
+        PVignetteValueShow(
+            PVignetteCitation,
             situation.LSituationSource,
             PCitationNameRead(situation.LSituationSource));
 
-        PUsageFind(id);
+        POccurrenceFind(id);
 
-        PDisplayBody.Visibility = Visibility.Visible;
-        PDisplayUnselected.Visibility = Visibility.Collapsed;
-        PScribe.IsEnabled = true;
+        PVignetteBody.Visibility = Visibility.Visible;
+        PVignetteUnselected.Visibility = Visibility.Collapsed;
+        PSituationScribe.IsEnabled = true;
 
-        if (PEditor.Visibility == Visibility.Visible)
+        if (PScenario.Visibility == Visibility.Visible)
         {
-            PEditorApply(situation);
+            PScenarioApply(situation);
         }
     }
 
-    private void PDisplayValueShow(TextBlock field, LStateValue value, string? shown = null)
+    private void PVignetteValueShow(TextBlock field, LStateValue value, string? shown = null)
     {
         string? text = value.LStateValueState switch
         {
@@ -214,7 +214,7 @@ public partial class PSituation
             text is null ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void PUsageFind(string id)
+    private void POccurrenceFind(string id)
     {
         IReadOnlyList<LUsage> read;
         try
@@ -232,20 +232,20 @@ public partial class PSituation
         string sense = _pSituationHost.PLocalizationTextRead("Situation.Meaning");
         string collocation = _pSituationHost.PLocalizationTextRead("Situation.Collocation");
 
-        _pUsageList.Clear();
+        _pOccurrenceList.Clear();
         foreach (LUsage usage in read)
         {
-            _pUsageList.Add(new PUsageItem(
+            _pOccurrenceList.Add(new PUsageItem(
                 usage,
                 usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : sense,
                 unreadable,
                 unnamed));
         }
 
-        PUsageEmpty.Visibility = _pUsageList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        POccurrenceEmpty.Visibility = _pOccurrenceList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PUsageHandle(object sender, RoutedEventArgs e)
+    private void POccurrenceHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement row || row.DataContext is not PUsageItem item)
         {
@@ -276,7 +276,7 @@ public partial class PSituation
         _pCitationCatalog.Clear();
         foreach (LReference reference in read)
         {
-            _pCitationCatalog.Add(PReference.PReferenceCreate(reference));
+            _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(reference));
         }
 
         PCitationEmpty.Visibility = _pCitationCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -290,11 +290,11 @@ public partial class PSituation
             return string.Empty;
         }
 
-        foreach (PReference row in _pCitationCatalog)
+        foreach (PCitationItem row in _pCitationCatalog)
         {
-            if (string.Equals(row.PReferenceId, id, StringComparison.Ordinal))
+            if (string.Equals(row.PCitationItemId, id, StringComparison.Ordinal))
             {
-                return row.PReferenceName;
+                return row.PCitationItemName;
             }
         }
 
@@ -303,19 +303,19 @@ public partial class PSituation
 
     private void PCitationHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (_pEditorLoading || PCitationList.SelectedValue is not string id)
+        if (_pScenarioLoading || PCitationList.SelectedValue is not string id)
         {
             return;
         }
 
-        _pEditorCitation = id;
+        _pScenarioCitation = id;
         PCitation.IsChecked = false;
         PCitationUpdate();
     }
 
     private void PCitationClearHandle(object sender, RoutedEventArgs e)
     {
-        _pEditorCitation = string.Empty;
+        _pScenarioCitation = string.Empty;
         PCitationList.SelectedValue = null;
         PCitation.IsChecked = false;
         PCitationUpdate();
@@ -323,82 +323,82 @@ public partial class PSituation
 
     private void PCitationUpdate()
     {
-        PCitationName.Text = _pEditorCitation.Length == 0
+        PCitationName.Text = _pScenarioCitation.Length == 0
             ? _pSituationHost.PLocalizationTextRead("Reference.Assign")
-            : PCitationNameRead(LStateValue.LStateValueCreate(_pEditorCitation));
+            : PCitationNameRead(LStateValue.LStateValueCreate(_pScenarioCitation));
     }
 
-    private void PEditorTitleHandle(object sender, TextChangedEventArgs e)
+    private void PScenarioTitleHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pEditorLoading)
+        if (_pScenarioLoading)
         {
             return;
         }
 
-        _pEditorTitleUnreadable = false;
-        PEditorTitle.Tag = string.Empty;
+        _pScenarioTitleUnreadable = false;
+        PScenarioTitle.Tag = string.Empty;
     }
 
-    private void PEditorKindHandle(object sender, TextChangedEventArgs e)
+    private void PScenarioKindHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pEditorLoading)
+        if (_pScenarioLoading)
         {
             return;
         }
 
-        _pEditorKindUnreadable = false;
-        PEditorKind.Tag = string.Empty;
+        _pScenarioKindUnreadable = false;
+        PScenarioKind.Tag = string.Empty;
     }
 
-    private void PEditorDescriptionHandle(object sender, TextChangedEventArgs e)
+    private void PScenarioDescriptionHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pEditorLoading)
+        if (_pScenarioLoading)
         {
             return;
         }
 
-        _pEditorDescriptionUnreadable = false;
-        PEditorDescription.Tag = string.Empty;
+        _pScenarioDescriptionUnreadable = false;
+        PScenarioDescription.Tag = string.Empty;
     }
 
-    private void PEditorApply(LSituation? situation)
+    private void PScenarioApply(LSituation? situation)
     {
-        _pEditorLoading = true;
+        _pScenarioLoading = true;
 
         string unreadable = _pSituationHost.PLocalizationTextRead("Display.Unreadable");
 
-        PEditorTitle.Text = situation?.LSituationTitle.LStateValueShow() ?? string.Empty;
-        PEditorKind.Text = situation?.LSituationKind.LStateValueShow() ?? string.Empty;
-        PEditorDescription.Text = situation?.LSituationDescription.LStateValueShow() ?? string.Empty;
+        PScenarioTitle.Text = situation?.LSituationTitle.LStateValueShow() ?? string.Empty;
+        PScenarioKind.Text = situation?.LSituationKind.LStateValueShow() ?? string.Empty;
+        PScenarioDescription.Text = situation?.LSituationDescription.LStateValueShow() ?? string.Empty;
 
-        _pEditorTitleUnreadable = situation?.LSituationTitle.LStateValueState == LState.LStateUnknown;
-        _pEditorKindUnreadable = situation?.LSituationKind.LStateValueState == LState.LStateUnknown;
-        _pEditorDescriptionUnreadable = situation?.LSituationDescription.LStateValueState == LState.LStateUnknown;
+        _pScenarioTitleUnreadable = situation?.LSituationTitle.LStateValueState == LState.LStateUnknown;
+        _pScenarioKindUnreadable = situation?.LSituationKind.LStateValueState == LState.LStateUnknown;
+        _pScenarioDescriptionUnreadable = situation?.LSituationDescription.LStateValueState == LState.LStateUnknown;
 
-        PEditorTitle.Tag = _pEditorTitleUnreadable ? unreadable : string.Empty;
-        PEditorKind.Tag = _pEditorKindUnreadable ? unreadable : string.Empty;
-        PEditorDescription.Tag = _pEditorDescriptionUnreadable ? unreadable : string.Empty;
+        PScenarioTitle.Tag = _pScenarioTitleUnreadable ? unreadable : string.Empty;
+        PScenarioKind.Tag = _pScenarioKindUnreadable ? unreadable : string.Empty;
+        PScenarioDescription.Tag = _pScenarioDescriptionUnreadable ? unreadable : string.Empty;
 
-        _pEditorCitation = situation?.LSituationSource.LStateValueShow() ?? string.Empty;
-        PCitationList.SelectedValue = _pEditorCitation.Length == 0 ? null : _pEditorCitation;
+        _pScenarioCitation = situation?.LSituationSource.LStateValueShow() ?? string.Empty;
+        PCitationList.SelectedValue = _pScenarioCitation.Length == 0 ? null : _pScenarioCitation;
         PCitationUpdate();
 
-        PRemoval.IsEnabled = situation is not null;
+        PScenarioRemoval.IsEnabled = situation is not null;
 
-        _pEditorLoading = false;
+        _pScenarioLoading = false;
     }
 
-    private LSituation PEditorRead()
+    private LSituation PScenarioRead()
     {
         return new LSituation(
-            _pEditorSituation?.LSituationId ?? string.Empty,
-            PEditorValueRead(PEditorTitle.Text, _pEditorTitleUnreadable),
-            PEditorValueRead(PEditorDescription.Text, _pEditorDescriptionUnreadable),
-            PEditorValueRead(PEditorKind.Text, _pEditorKindUnreadable),
-            PEditorValueRead(_pEditorCitation, false));
+            _pScenarioSituation?.LSituationId ?? string.Empty,
+            PScenarioValueRead(PScenarioTitle.Text, _pScenarioTitleUnreadable),
+            PScenarioValueRead(PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
+            PScenarioValueRead(PScenarioKind.Text, _pScenarioKindUnreadable),
+            PScenarioValueRead(_pScenarioCitation, false));
     }
 
-    private static LStateValue PEditorValueRead(string text, bool unreadable)
+    private static LStateValue PScenarioValueRead(string text, bool unreadable)
     {
         if (!string.IsNullOrWhiteSpace(text))
         {
@@ -408,10 +408,10 @@ public partial class PSituation
         return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueUnspecified;
     }
 
-    private bool PEditorChangeCheck()
+    private bool PScenarioChangeCheck()
     {
-        LSituation written = PEditorRead();
-        LSituation stored = _pEditorSituation ?? new LSituation(
+        LSituation written = PScenarioRead();
+        LSituation stored = _pScenarioSituation ?? new LSituation(
             string.Empty,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
@@ -421,7 +421,7 @@ public partial class PSituation
         return written != stored with { LSituationId = written.LSituationId };
     }
 
-    private void PFreshHandle(object sender, RoutedEventArgs e)
+    private void PSituationFreshHandle(object sender, RoutedEventArgs e)
     {
         if (!PSituationLeaveConfirm())
         {
@@ -429,26 +429,26 @@ public partial class PSituation
         }
 
         PSituationClear();
-        _pEditorSituation = null;
-        PEditorApply(null);
-        PScribe.IsEnabled = true;
-        PScribeShow(true);
+        _pScenarioSituation = null;
+        PScenarioApply(null);
+        PSituationScribe.IsEnabled = true;
+        PSituationScribeShow(true);
     }
 
-    private void PScribeHandle(object sender, RoutedEventArgs e)
+    private void PSituationScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PEditor.Visibility == Visibility.Visible)
+        if (PScenario.Visibility == Visibility.Visible)
         {
             if (!PSituationLeaveConfirm())
             {
                 return;
             }
 
-            PScribeShow(false);
+            PSituationScribeShow(false);
 
-            if (_pDisplaySituation is not null)
+            if (_pVignetteSituation is not null)
             {
-                PSituationShow(_pDisplaySituation);
+                PSituationShow(_pVignetteSituation);
                 return;
             }
 
@@ -456,39 +456,39 @@ public partial class PSituation
             return;
         }
 
-        if (_pDisplaySituation is null)
+        if (_pVignetteSituation is null)
         {
             return;
         }
 
-        PEditorApply(_pEditorSituation);
-        PScribeShow(true);
+        PScenarioApply(_pScenarioSituation);
+        PSituationScribeShow(true);
     }
 
-    private void PScribeShow(bool editing)
+    private void PSituationScribeShow(bool editing)
     {
-        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
-        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PScenario.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
+        PVignette.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
+        PSituationScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
     }
 
-    private void PDiscardHandle(object sender, RoutedEventArgs e)
+    private void PScenarioDiscardHandle(object sender, RoutedEventArgs e)
     {
         if (!PSituationLeaveConfirm())
         {
             return;
         }
 
-        PEditorApply(_pEditorSituation);
+        PScenarioApply(_pScenarioSituation);
     }
 
-    private void PStoreHandle(object sender, RoutedEventArgs e)
+    private void PScenarioStoreHandle(object sender, RoutedEventArgs e)
     {
-        LSituation written = PEditorRead();
+        LSituation written = PScenarioRead();
 
         try
         {
-            if (_pEditorSituation is null)
+            if (_pScenarioSituation is null)
             {
                 written = _lEngine.LEngineSituationCreate(written);
             }
@@ -503,23 +503,23 @@ public partial class PSituation
             return;
         }
 
-        _pEditorSituation = written;
-        _pDisplaySituation = written.LSituationId;
+        _pScenarioSituation = written;
+        _pVignetteSituation = written.LSituationId;
 
         PAtlasFind(PInquest.Text ?? string.Empty);
-        PScribeShow(false);
+        PSituationScribeShow(false);
         PSituationShow(written.LSituationId);
     }
 
-    private void PRemovalHandle(object sender, RoutedEventArgs e)
+    private void PScenarioRemovalHandle(object sender, RoutedEventArgs e)
     {
-        if (_pEditorSituation is null)
+        if (_pScenarioSituation is null)
         {
             return;
         }
 
-        string id = _pEditorSituation.LSituationId;
-        int usage = _pAtlasUsage.TryGetValue(id, out int count) ? count : 0;
+        string id = _pScenarioSituation.LSituationId;
+        int usage = _pAtlasCount.TryGetValue(id, out int count) ? count : 0;
 
         if (!_pSituationHost.PWindowRemovalConfirm(usage))
         {
@@ -536,7 +536,7 @@ public partial class PSituation
             return;
         }
 
-        PScribeShow(false);
+        PSituationScribeShow(false);
         PSituationClear();
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
@@ -548,14 +548,14 @@ public partial class PSituation
 
     private void PSituationClear()
     {
-        _pDisplaySituation = null;
-        _pEditorSituation = null;
-        _pUsageList.Clear();
+        _pVignetteSituation = null;
+        _pScenarioSituation = null;
+        _pOccurrenceList.Clear();
 
-        PDisplayBody.Visibility = Visibility.Collapsed;
-        PDisplayUnselected.Visibility = Visibility.Visible;
-        PEditorApply(null);
-        PScribeShow(false);
-        PScribe.IsEnabled = false;
+        PVignetteBody.Visibility = Visibility.Collapsed;
+        PVignetteUnselected.Visibility = Visibility.Visible;
+        PScenarioApply(null);
+        PSituationScribeShow(false);
+        PSituationScribe.IsEnabled = false;
     }
 }

@@ -17,7 +17,7 @@ Builds the row from the stored Example and the number of places quoting it.
 The Source arrives already resolved, because resolving it needs the shelf the panel holds.
 The two texts are handed in rather than read here, because a row is built while the list is being filled.
 
-## `public string PAnthologyItemUsage { get; }`
+## `public string PAnthologyItemCount { get; }`
 
 How many Entries, Meanings and Collocations quote this Example, as the row shows it.
 It is the figure that decides whether a delete is legal, so the catalog carries it and not only the display.

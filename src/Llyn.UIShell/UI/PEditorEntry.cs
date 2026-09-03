@@ -33,7 +33,7 @@ public partial class PEditor
         _pEditorEntry = id;
     }
 
-    private void PStoreHandle(object sender, RoutedEventArgs e)
+    private void PEditorStoreHandle(object sender, RoutedEventArgs e)
     {
         string? entry = _pEditorEntry;
 
@@ -63,7 +63,7 @@ public partial class PEditor
         PEditorStoreDispatcher?.Invoke(stored.LEntryId);
     }
 
-    private void PDiscardHandle(object sender, RoutedEventArgs e)
+    private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
     {
         PTranslationFreshDelete();
 

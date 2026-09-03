@@ -10,7 +10,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
     internal const string PCardUnreadableMark = "(?)";
 
     private readonly string _pCardPrefix;
-    private readonly ObservableCollection<PReference> _pCardReference;
+    private readonly ObservableCollection<PCitationItem> _pCardReference;
     private int _pCardOrder;
     private string _pTitle;
     private bool _pTitleUnreadable;
@@ -19,7 +19,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private string _pCardExpression;
     private bool _pCardExpressionUnreadable;
 
-    internal PCard(string prefix, int order, ObservableCollection<PReference> catalog)
+    internal PCard(string prefix, int order, ObservableCollection<PCitationItem> catalog)
     {
         _pCardPrefix = prefix;
         _pCardOrder = order;

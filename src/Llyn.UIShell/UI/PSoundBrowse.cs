@@ -162,7 +162,7 @@ public partial class PSound
         PEditor.PEditorEntryShow(_pDisplayEntry);
     }
 
-    private void PFreshHandle(object sender, RoutedEventArgs e)
+    private void PSoundFreshHandle(object sender, RoutedEventArgs e)
     {
         if (!PSoundLeaveConfirm())
         {
@@ -170,11 +170,11 @@ public partial class PSound
         }
 
         PSoundClear();
-        PScribe.IsEnabled = true;
-        PScribeShow(true);
+        PSoundScribe.IsEnabled = true;
+        PSoundScribeShow(true);
     }
 
-    private void PScribeHandle(object sender, RoutedEventArgs e)
+    private void PSoundScribeHandle(object sender, RoutedEventArgs e)
     {
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -183,7 +183,7 @@ public partial class PSound
                 return;
             }
 
-            PScribeShow(false);
+            PSoundScribeShow(false);
 
             if (_pDisplayEntry is not null)
             {
@@ -199,14 +199,14 @@ public partial class PSound
         }
 
         PEditor.PEditorEntryShow(_pDisplayEntry);
-        PScribeShow(true);
+        PSoundScribeShow(true);
     }
 
-    private void PScribeShow(bool editing)
+    private void PSoundScribeShow(bool editing)
     {
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PSoundScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
     }
 
     private bool PSoundLeaveConfirm()
@@ -217,7 +217,7 @@ public partial class PSound
     private void PSoundEntryShow(string id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
-        PScribe.IsEnabled = true;
+        PSoundScribe.IsEnabled = true;
     }
 
     private void PSoundClear()
@@ -225,7 +225,7 @@ public partial class PSound
         _pDisplayEntry = null;
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
-        PScribeShow(false);
-        PScribe.IsEnabled = false;
+        PSoundScribeShow(false);
+        PSoundScribe.IsEnabled = false;
     }
 }

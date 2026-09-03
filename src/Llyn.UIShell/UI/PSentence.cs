@@ -18,13 +18,13 @@ internal sealed class PSentence : INotifyPropertyChanged
     private string _pSentenceOrderText;
     private bool _pSentenceReferenceVisible;
 
-    internal PSentence(ObservableCollection<PReference> catalog)
+    internal PSentence(ObservableCollection<PCitationItem> catalog)
         : this(catalog, LStateValue.LStateValueUnspecified, string.Empty, LStateValue.LStateValueUnspecified)
     {
     }
 
     internal PSentence(
-        ObservableCollection<PReference> catalog,
+        ObservableCollection<PCitationItem> catalog,
         LStateValue text,
         string id,
         LStateValue reference)
@@ -43,7 +43,7 @@ internal sealed class PSentence : INotifyPropertyChanged
         _pSentenceOrderText = string.Empty;
     }
 
-    public ObservableCollection<PReference> PSentenceReferenceCatalog { get; }
+    public ObservableCollection<PCitationItem> PSentenceReferenceCatalog { get; }
 
     public string PSentenceId
     {
@@ -232,11 +232,11 @@ internal sealed class PSentence : INotifyPropertyChanged
             return string.Empty;
         }
 
-        foreach (PReference row in PSentenceReferenceCatalog)
+        foreach (PCitationItem row in PSentenceReferenceCatalog)
         {
-            if (string.Equals(row.PReferenceId, reference, StringComparison.Ordinal))
+            if (string.Equals(row.PCitationItemId, reference, StringComparison.Ordinal))
             {
-                return row.PReferenceName;
+                return row.PCitationItemName;
             }
         }
 

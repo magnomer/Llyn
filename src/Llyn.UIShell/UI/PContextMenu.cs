@@ -61,7 +61,7 @@ public partial class PEditor
             return;
         }
 
-        _pSentenceReference.Add(PReference.PReferenceCreate(created));
+        _pSentenceReference.Add(PCitationItem.PCitationItemCreate(created));
         row.PContextReferenceDraft = string.Empty;
         row.PContextReference = created.LReferenceId;
     }

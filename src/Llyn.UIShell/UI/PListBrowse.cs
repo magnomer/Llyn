@@ -149,7 +149,7 @@ public partial class PList
         PEditor.PEditorEntryShow(_pDisplayEntry);
     }
 
-    private void PFreshHandle(object sender, RoutedEventArgs e)
+    private void PListFreshHandle(object sender, RoutedEventArgs e)
     {
         if (!PListLeaveConfirm())
         {
@@ -157,11 +157,11 @@ public partial class PList
         }
 
         PListClear();
-        PScribe.IsEnabled = true;
-        PScribeShow(true);
+        PListScribe.IsEnabled = true;
+        PListScribeShow(true);
     }
 
-    private void PScribeHandle(object sender, RoutedEventArgs e)
+    private void PListScribeHandle(object sender, RoutedEventArgs e)
     {
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -170,7 +170,7 @@ public partial class PList
                 return;
             }
 
-            PScribeShow(false);
+            PListScribeShow(false);
 
             if (_pDisplayEntry is not null)
             {
@@ -186,14 +186,14 @@ public partial class PList
         }
 
         PEditor.PEditorEntryShow(_pDisplayEntry);
-        PScribeShow(true);
+        PListScribeShow(true);
     }
 
-    private void PScribeShow(bool editing)
+    private void PListScribeShow(bool editing)
     {
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PListScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
     }
 
     private bool PListLeaveConfirm()
@@ -204,7 +204,7 @@ public partial class PList
     private void PListEntryShow(string id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
-        PScribe.IsEnabled = true;
+        PListScribe.IsEnabled = true;
     }
 
     private void PListClear()
@@ -212,7 +212,7 @@ public partial class PList
         _pDisplayEntry = null;
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
-        PScribeShow(false);
-        PScribe.IsEnabled = false;
+        PListScribeShow(false);
+        PListScribe.IsEnabled = false;
     }
 }

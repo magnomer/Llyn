@@ -8,7 +8,7 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<PReference> _pSentenceReference = [];
+    private readonly ObservableCollection<PCitationItem> _pSentenceReference = [];
 
     internal void PSentenceLoad()
     {
@@ -26,7 +26,7 @@ public partial class PEditor
 
         foreach (LReference reference in references)
         {
-            _pSentenceReference.Add(PReference.PReferenceCreate(reference));
+            _pSentenceReference.Add(PCitationItem.PCitationItemCreate(reference));
         }
 
         PSentenceReferenceShow();
@@ -88,7 +88,7 @@ public partial class PEditor
             return;
         }
 
-        _pSentenceReference.Add(PReference.PReferenceCreate(created));
+        _pSentenceReference.Add(PCitationItem.PCitationItemCreate(created));
         row.PSentenceReferenceDraft = string.Empty;
         row.PSentenceReference = created.LReferenceId;
     }

@@ -218,7 +218,7 @@ public partial class PTag
         PEditor.PEditorEntryShow(_pDisplayEntry);
     }
 
-    private void PFreshHandle(object sender, RoutedEventArgs e)
+    private void PTagFreshHandle(object sender, RoutedEventArgs e)
     {
         if (!PTagLeaveConfirm())
         {
@@ -226,11 +226,11 @@ public partial class PTag
         }
 
         PTagClear();
-        PScribe.IsEnabled = true;
-        PScribeShow(true);
+        PTagScribe.IsEnabled = true;
+        PTagScribeShow(true);
     }
 
-    private void PScribeHandle(object sender, RoutedEventArgs e)
+    private void PTagScribeHandle(object sender, RoutedEventArgs e)
     {
         if (PEditor.Visibility == Visibility.Visible)
         {
@@ -239,7 +239,7 @@ public partial class PTag
                 return;
             }
 
-            PScribeShow(false);
+            PTagScribeShow(false);
 
             if (_pDisplayEntry is not null)
             {
@@ -255,14 +255,14 @@ public partial class PTag
         }
 
         PEditor.PEditorEntryShow(_pDisplayEntry);
-        PScribeShow(true);
+        PTagScribeShow(true);
     }
 
-    private void PScribeShow(bool editing)
+    private void PTagScribeShow(bool editing)
     {
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PTagScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
     }
 
     private bool PTagLeaveConfirm()
@@ -273,7 +273,7 @@ public partial class PTag
     private void PTagEntryShow(string id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
-        PScribe.IsEnabled = true;
+        PTagScribe.IsEnabled = true;
     }
 
     private void PTagClear()
@@ -281,7 +281,7 @@ public partial class PTag
         _pDisplayEntry = null;
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
-        PScribeShow(false);
-        PScribe.IsEnabled = false;
+        PTagScribeShow(false);
+        PTagScribe.IsEnabled = false;
     }
 }

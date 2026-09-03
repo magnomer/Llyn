@@ -33,7 +33,7 @@ public partial class PEditor
     private void PEditorChangeUpdate()
     {
         bool changed = PEditorChangeCheck();
-        PDiscard.IsEnabled = changed;
-        PStore.IsEnabled = changed;
+        PEditorDiscard.IsEnabled = changed;
+        PEditorStore.IsEnabled = changed;
     }
 }

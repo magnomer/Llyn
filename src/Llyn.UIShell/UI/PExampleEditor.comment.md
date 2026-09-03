@@ -9,13 +9,13 @@ Editing an Example means editing that Example, and a sentence meant for one card
 
 ## Inline notes
 
-### `private LExample? _pEditorExample;`
+### `private LExample? _pTranscriptExample;`
 
 The Example the editor stands on as the store knows it.
 It stands empty while the editor is open over an Example nothing has stored.
 Comparing the written fields against it is what says whether anything is unsaved.
 
-### `private bool _pEditorLoading;`
+### `private bool _pTranscriptLoading;`
 
 Set while fields are being filled from a stored Example.
 Filling a field raises the same change the user typing raises, and only the second may clear an unreadable mark.
@@ -46,27 +46,27 @@ The full Source structure is written in the sources panel, not here.
 Drops the citation.
 The Source is left standing, because clearing a pointer is not deleting what it pointed at.
 
-## `private void PEditorTranslationHandle(object sender, TextChangedEventArgs e)`
+## `private void PTranscriptTranslationHandle(object sender, TextChangedEventArgs e)`
 
 Clears the unreadable mark on the translation as soon as the user types over it.
 Typing is a recording, so what stood there as unreadable stops being that the moment it is written.
 
-## `private void PEditorApply(LExample? example)`
+## `private void PTranscriptApply(LExample? example)`
 
 Fills every field from the stored Example, or empties them for one being written for the first time.
 It is also the discard: what the store holds is written back over what the user typed.
 
-## `private bool PEditorChangeCheck()`
+## `private bool PTranscriptChangeCheck()`
 
 Whether the editor stands over modifications nothing has saved yet.
 The fields are compared one by one, so an Example read back from the store is judged against what stands in the editor.
 
-## `private void PStoreHandle(object sender, RoutedEventArgs e)`
+## `private void PTranscriptStoreHandle(object sender, RoutedEventArgs e)`
 
 Saves the written Example, creating one that has no id yet and rewriting one that has.
 Saving changes neither the identifier, nor what quotes the Example, nor the order it takes for any quoter.
 
-## `private void PRemovalHandle(object sender, RoutedEventArgs e)`
+## `private void PTranscriptRemovalHandle(object sender, RoutedEventArgs e)`
 
 Deletes the shown Example.
 An Example nothing quotes is simply deleted.

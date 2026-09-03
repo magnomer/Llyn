@@ -54,7 +54,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="PFresh" Margin="0,0,6,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="+" Visibility="Collapsed" />
+            <TextBlock x:Name="PTranslationMark" Margin="0,0,6,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="+" Visibility="Collapsed" />
             <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PTranslationItemHeadword}" TextTrimming="CharacterEllipsis" />
             <StackPanel Grid.Column="2" Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
                 <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PTranslationItemFlag}" Stretch="Uniform" />
@@ -63,7 +63,7 @@
         </Grid>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding PTranslationItemFresh}" Value="True">
-                <Setter TargetName="PFresh" Property="Visibility" Value="Visible" />
+                <Setter TargetName="PTranslationMark" Property="Visibility" Value="Visible" />
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>

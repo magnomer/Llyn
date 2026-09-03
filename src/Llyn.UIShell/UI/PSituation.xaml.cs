@@ -29,7 +29,7 @@ public partial class PSituation : UserControl
 
     internal bool PSituationChangeCheck()
     {
-        return PEditor.Visibility == Visibility.Visible && PEditorChangeCheck();
+        return PScenario.Visibility == Visibility.Visible && PScenarioChangeCheck();
     }
 
     internal void PSituationClose()

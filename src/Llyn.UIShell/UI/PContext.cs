@@ -18,13 +18,13 @@ internal sealed class PContext : INotifyPropertyChanged
     private string _pContextOrderText;
     private bool _pContextReferenceVisible;
 
-    internal PContext(ObservableCollection<PReference> catalog)
+    internal PContext(ObservableCollection<PCitationItem> catalog)
         : this(catalog, LStateValue.LStateValueUnspecified, string.Empty, LStateValue.LStateValueUnspecified)
     {
     }
 
     internal PContext(
-        ObservableCollection<PReference> catalog,
+        ObservableCollection<PCitationItem> catalog,
         LStateValue text,
         string id,
         LStateValue reference)
@@ -43,7 +43,7 @@ internal sealed class PContext : INotifyPropertyChanged
         _pContextOrderText = string.Empty;
     }
 
-    public ObservableCollection<PReference> PContextReferenceCatalog { get; }
+    public ObservableCollection<PCitationItem> PContextReferenceCatalog { get; }
 
     public string PContextId
     {
@@ -232,11 +232,11 @@ internal sealed class PContext : INotifyPropertyChanged
             return string.Empty;
         }
 
-        foreach (PReference row in PContextReferenceCatalog)
+        foreach (PCitationItem row in PContextReferenceCatalog)
         {
-            if (string.Equals(row.PReferenceId, reference, StringComparison.Ordinal))
+            if (string.Equals(row.PCitationItemId, reference, StringComparison.Ordinal))
             {
-                return row.PReferenceName;
+                return row.PCitationItemName;
             }
         }
 

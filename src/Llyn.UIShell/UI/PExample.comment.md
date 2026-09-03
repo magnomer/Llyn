@@ -15,7 +15,7 @@ An Example whose text is unwritten still has a place in every ordering, ordered 
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
 
 The action row of the panel.
-`PFresh` opens the editor on an Example nothing quotes yet.
+`PExampleFresh` opens the editor on an Example nothing quotes yet.
 This panel is the only place such an Example can arise, because elsewhere one is written from the card that quotes it.
 Export and print are mock-up controls and are not wired.
 
@@ -26,16 +26,16 @@ A row reads its sentence over its language and cited Source, with its usage coun
 That count is shown here and not only in the display, because it decides which delete the panel offers.
 The translation is not shown here: it is text of the sentence itself and says nothing about where the sentence is used.
 
-## `<Grid x:Name="PDisplay">`
+## `<Grid x:Name="PExcerpt">`
 
 The reading of one Example, and the sides quoting it beneath.
-`PDisplay` here stands on an Example rather than on an Entry.
-What it shares with the entry panels is the read-and-edit mechanism and the `PScribe` toggle, not the object.
+`PExcerpt` here stands on an Example rather than on an Entry.
+What it shares with the entry panels is the read-and-edit mechanism and the `PExampleScribe` toggle, not the object.
 Each field is drawn whether or not it holds anything.
 A field is stored data, so a hidden row would hide the difference between never written and written-but-unreadable.
 A row therefore reads its value, the unreadable mark, or the unrecorded mark in the muted colour.
 
-## `<ItemsControl x:Name="PUsage">`
+## `<ItemsControl x:Name="PQuotation">`
 
 Everything quoting the selected Example, one row per quoting side.
 A row names the Entry, Meaning or Collocation and the Entry it belongs to, so the relationship is never flattened.
@@ -43,7 +43,7 @@ Choosing a row leaves for that Entry in the list panel.
 The list is read-only: a reference is added or dropped on the card holding it, never here.
 An Example nothing quotes shows the empty state rather than hiding the region.
 
-## `<Grid x:Name="PEditor" Visibility="Collapsed">`
+## `<Grid x:Name="PTranscript" Visibility="Collapsed">`
 
 The editable view of the selected Example.
 The language stands first, because it is what the sentence beneath it is written in.
@@ -52,13 +52,13 @@ The sentence and the translation are both three-state, so an empty field says wh
 The translation is the sentence rendered in plain text and links nothing, unlike the Translation a Meaning carries.
 `PCitation` is the single Source the Example cites, a pointer that is cleared without touching the Source itself.
 
-## `<TextBlock x:Name="PEditorUsage" ...>`
+## `<TextBlock x:Name="PTranscriptCount" ...>`
 
 How many places quote the Example, kept visible while it is being edited.
 Rewriting an Example here rewrites what every one of them quotes.
 A user correcting a sentence must see how far the correction reaches without leaving the editor.
 
-## `<Button x:Name="PRemoval" ...>`
+## `<Button x:Name="PTranscriptRemoval" ...>`
 
 Deletes the shown Example.
 It stands with discard and save because it acts on the record rather than on the browsing beside it.

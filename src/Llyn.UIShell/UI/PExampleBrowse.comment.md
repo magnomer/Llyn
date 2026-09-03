@@ -4,12 +4,12 @@
 
 Browsing behavior of the Examples panel.
 `PAnthology` lists every Example the workspace holds, including one nothing quotes.
-A chosen row is read back and shown with everything quoting it, and `PScribe` swaps that reading for the editor.
+A chosen row is read back and shown with everything quoting it, and `PExampleScribe` swaps that reading for the editor.
 The panel answers two questions rather than one: what this sentence is, and where it is quoted.
 
 ## Inline notes
 
-### `private IReadOnlyDictionary<string, int> _pAnthologyUsage = new Dictionary<string, int>();`
+### `private IReadOnlyDictionary<string, int> _pAnthologyCount = new Dictionary<string, int>();`
 
 How many places quote each Example, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
@@ -39,22 +39,22 @@ Whether one Example answers the query, over its sentence, its translation and it
 Reads one Example back and shows it with the sides quoting it.
 An id the store no longer knows clears the selection and refills the catalog rather than failing.
 
-## `private void PDisplayValueShow(TextBlock field, LStateValue value, string? shown = null)`
+## `private void PExcerptValueShow(TextBlock field, LStateValue value, string? shown = null)`
 
 Writes one three-state field into the display.
 An unwritten value reads the unrecorded mark in the muted colour, so a blank row never stands for two facts.
 
-## `private void PUsageFind(string id)`
+## `private void PQuotationFind(string id)`
 
 Reads everything quoting the Example, and names each row by the kind of side it is.
 An Entry, a Meaning and a Collocation quote on their own terms, so the row says which.
 
-## `private void PUsageHandle(object sender, RoutedEventArgs e)`
+## `private void PQuotationHandle(object sender, RoutedEventArgs e)`
 
 Leaves for the Entry the chosen row belongs to.
 The panel asks the window for the switch, because navigation is never driven by the pointer alone.
 
-## `private void PScribeHandle(object sender, RoutedEventArgs e)`
+## `private void PExampleScribeHandle(object sender, RoutedEventArgs e)`
 
 Swaps the reading for the editor and back.
 Leaving the editor asks first, so unsaved wording is never lost silently.
@@ -62,4 +62,4 @@ Leaving the editor asks first, so unsaved wording is never lost silently.
 ## `private void PExampleClear()`
 
 Drops the selection and empties the reading, the usage and the editor together.
-`PScribe` is disabled with it, because there is nothing to edit while nothing is selected.
+`PExampleScribe` is disabled with it, because there is nothing to edit while nothing is selected.

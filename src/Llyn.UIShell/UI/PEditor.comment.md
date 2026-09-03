@@ -18,19 +18,19 @@ SvgViewbox has no foreground of its own, so the glyph is used as an opacity mask
 
 ## `<Rectangle Width="15" Height="15" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">`
 
-Phosphor floppy-disk.svg, tinted through an opacity mask (see PDiscard).
+Phosphor floppy-disk.svg, tinted through an opacity mask (see PEditorDiscard).
 
 ## `<Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">`
 
-Phosphor play.svg, tinted through an opacity mask (see PDiscard).
+Phosphor play.svg, tinted through an opacity mask (see PEditorDiscard).
 
 ## `<Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">`
 
-Phosphor magnifying-glass.svg, tinted through an opacity mask (see PDiscard).
+Phosphor magnifying-glass.svg, tinted through an opacity mask (see PEditorDiscard).
 
 ## `<Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">`
 
-Phosphor box-arrow-down.svg, tinted through an opacity mask (see PDiscard).
+Phosphor box-arrow-down.svg, tinted through an opacity mask (see PEditorDiscard).
 
 ## `<TextBlock`
 

@@ -13,15 +13,15 @@ public partial class PExample
 {
     private readonly ObservableCollection<PAnthologyItem> _pAnthologyList = [];
 
-    private readonly ObservableCollection<PUsageItem> _pUsageList = [];
+    private readonly ObservableCollection<PUsageItem> _pQuotationList = [];
 
-    private readonly ObservableCollection<PReference> _pCitationCatalog = [];
+    private readonly ObservableCollection<PCitationItem> _pCitationCatalog = [];
 
     private readonly ObservableCollection<PLangcodeItem> _pLangcodeItem = [];
 
-    private IReadOnlyDictionary<string, int> _pAnthologyUsage = new Dictionary<string, int>();
+    private IReadOnlyDictionary<string, int> _pAnthologyCount = new Dictionary<string, int>();
 
-    private string? _pDisplayExample;
+    private string? _pExcerptExample;
 
     private string _pRankChoice = "Text";
 
@@ -33,7 +33,7 @@ public partial class PExample
         }
 
         PAnthology.ItemsSource = _pAnthologyList;
-        PUsage.ItemsSource = _pUsageList;
+        PQuotation.ItemsSource = _pQuotationList;
         PCitationList.ItemsSource = _pCitationCatalog;
         PLangcodeList.ItemsSource = _pLangcodeItem;
 
@@ -69,15 +69,15 @@ public partial class PExample
                 example => example.LExampleLanguage, StringComparer.CurrentCultureIgnoreCase),
             "Source" => examples.OrderBy(
                 example => PCitationNameRead(example.LExampleSource), StringComparer.CurrentCultureIgnoreCase),
-            "Usage" => examples.OrderByDescending(PAnthologyUsageRead),
+            "Usage" => examples.OrderByDescending(PAnthologyCountRead),
             _ => examples.OrderBy(
                 example => example.LExampleText.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase)
         };
     }
 
-    private int PAnthologyUsageRead(LExample example)
+    private int PAnthologyCountRead(LExample example)
     {
-        return _pAnthologyUsage.TryGetValue(example.LExampleId, out int usage) ? usage : 0;
+        return _pAnthologyCount.TryGetValue(example.LExampleId, out int usage) ? usage : 0;
     }
 
     private void PAnthologyFind(string query)
@@ -88,7 +88,7 @@ public partial class PExample
         try
         {
             read = _lEngine.LEngineExampleRead();
-            _pAnthologyUsage = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
+            _pAnthologyCount = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
         }
         catch (Exception exception)
         {
@@ -108,10 +108,10 @@ public partial class PExample
                 continue;
             }
 
-            kept |= string.Equals(example.LExampleId, _pDisplayExample, StringComparison.Ordinal);
+            kept |= string.Equals(example.LExampleId, _pExcerptExample, StringComparison.Ordinal);
             _pAnthologyList.Add(new PAnthologyItem(
                 example,
-                PAnthologyUsageRead(example),
+                PAnthologyCountRead(example),
                 PCitationNameRead(example.LExampleSource),
                 unreadable,
                 unwritten));
@@ -119,7 +119,7 @@ public partial class PExample
 
         PAnthologyEmpty.Visibility = _pAnthologyList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        if (!kept && _pDisplayExample is not null && PEditor.Visibility != Visibility.Visible)
+        if (!kept && _pExcerptExample is not null && PTranscript.Visibility != Visibility.Visible)
         {
             PExampleClear();
         }
@@ -177,31 +177,31 @@ public partial class PExample
             return;
         }
 
-        _pDisplayExample = id;
-        _pEditorExample = example;
+        _pExcerptExample = id;
+        _pTranscriptExample = example;
 
-        PDisplayValueShow(PDisplayText, example.LExampleText);
-        PDisplayLanguage.Text = example.LExampleLanguage;
-        PDisplayFlag.Source = PLangcodeIndicator.PLangcodeIndicatorFind(example.LExampleLanguage);
-        PDisplayValueShow(PDisplayTranslation, example.LExampleTranslation);
-        PDisplayValueShow(
-            PDisplayCitation,
+        PExcerptValueShow(PExcerptText, example.LExampleText);
+        PExcerptLanguage.Text = example.LExampleLanguage;
+        PExcerptFlag.Source = PLangcodeIndicator.PLangcodeIndicatorFind(example.LExampleLanguage);
+        PExcerptValueShow(PExcerptTranslation, example.LExampleTranslation);
+        PExcerptValueShow(
+            PExcerptCitation,
             example.LExampleSource,
             PCitationNameRead(example.LExampleSource));
 
-        PUsageFind(id);
+        PQuotationFind(id);
 
-        PDisplayBody.Visibility = Visibility.Visible;
-        PDisplayUnselected.Visibility = Visibility.Collapsed;
-        PScribe.IsEnabled = true;
+        PExcerptBody.Visibility = Visibility.Visible;
+        PExcerptUnselected.Visibility = Visibility.Collapsed;
+        PExampleScribe.IsEnabled = true;
 
-        if (PEditor.Visibility == Visibility.Visible)
+        if (PTranscript.Visibility == Visibility.Visible)
         {
-            PEditorApply(example);
+            PTranscriptApply(example);
         }
     }
 
-    private void PDisplayValueShow(TextBlock field, LStateValue value, string? shown = null)
+    private void PExcerptValueShow(TextBlock field, LStateValue value, string? shown = null)
     {
         string? text = value.LStateValueState switch
         {
@@ -216,7 +216,7 @@ public partial class PExample
             text is null ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void PUsageFind(string id)
+    private void PQuotationFind(string id)
     {
         IReadOnlyList<LUsage> read;
         try
@@ -235,10 +235,10 @@ public partial class PExample
         string sense = _pExampleHost.PLocalizationTextRead("Example.Meaning");
         string collocation = _pExampleHost.PLocalizationTextRead("Example.Collocation");
 
-        _pUsageList.Clear();
+        _pQuotationList.Clear();
         foreach (LUsage usage in read)
         {
-            _pUsageList.Add(new PUsageItem(
+            _pQuotationList.Add(new PUsageItem(
                 usage,
                 usage.LUsageOwner switch
                 {
@@ -250,10 +250,10 @@ public partial class PExample
                 unnamed));
         }
 
-        PUsageEmpty.Visibility = _pUsageList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        PQuotationEmpty.Visibility = _pQuotationList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PUsageHandle(object sender, RoutedEventArgs e)
+    private void PQuotationHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement row || row.DataContext is not PUsageItem item)
         {
@@ -268,20 +268,20 @@ public partial class PExample
         _pExampleHost.PWindowEntryShow(item.PUsageItemEntry);
     }
 
-    private void PScribeHandle(object sender, RoutedEventArgs e)
+    private void PExampleScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PEditor.Visibility == Visibility.Visible)
+        if (PTranscript.Visibility == Visibility.Visible)
         {
             if (!PExampleLeaveConfirm())
             {
                 return;
             }
 
-            PScribeShow(false);
+            PExampleScribeShow(false);
 
-            if (_pDisplayExample is not null)
+            if (_pExcerptExample is not null)
             {
-                PExampleShow(_pDisplayExample);
+                PExampleShow(_pExcerptExample);
                 return;
             }
 
@@ -289,20 +289,20 @@ public partial class PExample
             return;
         }
 
-        if (_pDisplayExample is null)
+        if (_pExcerptExample is null)
         {
             return;
         }
 
-        PEditorApply(_pEditorExample);
-        PScribeShow(true);
+        PTranscriptApply(_pTranscriptExample);
+        PExampleScribeShow(true);
     }
 
-    private void PScribeShow(bool editing)
+    private void PExampleScribeShow(bool editing)
     {
-        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
-        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PTranscript.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
+        PExcerpt.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
+        PExampleScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
     }
 
     private bool PExampleLeaveConfirm()
@@ -312,14 +312,14 @@ public partial class PExample
 
     private void PExampleClear()
     {
-        _pDisplayExample = null;
-        _pEditorExample = null;
-        _pUsageList.Clear();
+        _pExcerptExample = null;
+        _pTranscriptExample = null;
+        _pQuotationList.Clear();
 
-        PDisplayBody.Visibility = Visibility.Collapsed;
-        PDisplayUnselected.Visibility = Visibility.Visible;
-        PEditorApply(null);
-        PScribeShow(false);
-        PScribe.IsEnabled = false;
+        PExcerptBody.Visibility = Visibility.Collapsed;
+        PExcerptUnselected.Visibility = Visibility.Visible;
+        PTranscriptApply(null);
+        PExampleScribeShow(false);
+        PExampleScribe.IsEnabled = false;
     }
 }

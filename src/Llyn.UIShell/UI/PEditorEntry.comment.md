@@ -67,7 +67,7 @@ A blank form still holding an id overwrote the first entry of a session with the
 
 A saved entry keeps every stub its links made, so the editor stops watching them.
 
-### `private void PDiscardHandle(object sender, RoutedEventArgs e)`
+### `private void PEditorDiscardHandle(object sender, RoutedEventArgs e)`
 
 A thrown-away edit takes its stubs with it, so they are dropped before the form is reset.
 Loading another entry throws the current edit away too, so it drops them the same way.

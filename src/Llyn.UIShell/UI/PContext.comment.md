@@ -17,17 +17,17 @@ The mark stands until the user writes over it or clears the row.
 So nothing unreadable is quietly turned into nothing at all.
 Writing in the row is the user saying what the wording is, which is why any edit ends the mark.
 
-## `internal PContext(ObservableCollection<PReference> catalog)`
+## `internal PContext(ObservableCollection<PCitationItem> catalog)`
 
 An empty row nothing has been written in.
 
-## `internal PContext(ObservableCollection<PReference> catalog, LStateValue text, string id, LStateValue reference)`
+## `internal PContext(ObservableCollection<PCitationItem> catalog, LStateValue text, string id, LStateValue reference)`
 
 The row for a stored Situation.
 It holds the wording and the Source it cites as the store knows them.
 Both stand under the id that names it.
 
-## `public ObservableCollection<PReference> PContextReferenceCatalog { get; }`
+## `public ObservableCollection<PCitationItem> PContextReferenceCatalog { get; }`
 
 The Sources the whole form offers, shared by every row.
 So a Source written on one row is on offer to the next without reloading anything.

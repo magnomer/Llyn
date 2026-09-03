@@ -114,7 +114,7 @@
                                 ItemsSource="{Binding PContextReferenceCatalog}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                 SelectedValue="{Binding PContextReference, Mode=TwoWay}"
-                                SelectedValuePath="PReferenceId" />
+                                SelectedValuePath="PCitationItemId" />
                             <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PContextReferenceClear" Foreground="{DynamicResource Theme.Muted}">
                                 <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
                             </Button>

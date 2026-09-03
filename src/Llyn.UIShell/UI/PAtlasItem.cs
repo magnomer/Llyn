@@ -9,7 +9,7 @@ internal sealed class PAtlasItem
         PAtlasItemId = situation.LSituationId;
         PAtlasItemTitle = PAtlasTextRead(situation.LSituationTitle, unreadable) ?? untitled;
         PAtlasItemKind = PAtlasTextRead(situation.LSituationKind, unreadable) ?? string.Empty;
-        PAtlasItemUsage = usage.ToString(System.Globalization.CultureInfo.CurrentCulture);
+        PAtlasItemCount = usage.ToString(System.Globalization.CultureInfo.CurrentCulture);
     }
 
     public string PAtlasItemId { get; }
@@ -18,7 +18,7 @@ internal sealed class PAtlasItem
 
     public string PAtlasItemKind { get; }
 
-    public string PAtlasItemUsage { get; }
+    public string PAtlasItemCount { get; }
 
     private static string? PAtlasTextRead(LStateValue value, string unreadable)
     {

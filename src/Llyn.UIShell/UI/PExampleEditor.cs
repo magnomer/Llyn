@@ -9,17 +9,17 @@ namespace Llyn.UIShell;
 
 public partial class PExample
 {
-    private LExample? _pEditorExample;
+    private LExample? _pTranscriptExample;
 
-    private string _pEditorCitation = string.Empty;
+    private string _pTranscriptCitation = string.Empty;
 
-    private string _pEditorLanguage = string.Empty;
+    private string _pTranscriptLanguage = string.Empty;
 
-    private bool _pEditorTextUnreadable;
+    private bool _pTranscriptTextUnreadable;
 
-    private bool _pEditorTranslationUnreadable;
+    private bool _pTranscriptTranslationUnreadable;
 
-    private bool _pEditorLoading;
+    private bool _pTranscriptLoading;
 
     private void PLangcodeLoad()
     {
@@ -40,9 +40,9 @@ public partial class PExample
                 language, PLangcodeIndicator.PLangcodeIndicatorFind(language)));
         }
 
-        if (_pEditorLanguage.Length == 0 && languages.Count > 0)
+        if (_pTranscriptLanguage.Length == 0 && languages.Count > 0)
         {
-            _pEditorLanguage = languages[0];
+            _pTranscriptLanguage = languages[0];
         }
 
         PLangcodeShow();
@@ -55,15 +55,15 @@ public partial class PExample
             return;
         }
 
-        _pEditorLanguage = item.PLangcodeItemName;
+        _pTranscriptLanguage = item.PLangcodeItemName;
         PLangcode.IsChecked = false;
         PLangcodeShow();
     }
 
     private void PLangcodeShow()
     {
-        PLangcodeName.Text = _pEditorLanguage;
-        PLangcodeFlag.Source = PLangcodeIndicator.PLangcodeIndicatorFind(_pEditorLanguage);
+        PLangcodeName.Text = _pTranscriptLanguage;
+        PLangcodeFlag.Source = PLangcodeIndicator.PLangcodeIndicatorFind(_pTranscriptLanguage);
     }
 
     private void PCitationFind()
@@ -82,7 +82,7 @@ public partial class PExample
         _pCitationCatalog.Clear();
         foreach (LReference reference in read)
         {
-            _pCitationCatalog.Add(PReference.PReferenceCreate(reference));
+            _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(reference));
         }
 
         PCitationEmpty.Visibility = _pCitationCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -96,11 +96,11 @@ public partial class PExample
             return string.Empty;
         }
 
-        foreach (PReference row in _pCitationCatalog)
+        foreach (PCitationItem row in _pCitationCatalog)
         {
-            if (string.Equals(row.PReferenceId, id, StringComparison.Ordinal))
+            if (string.Equals(row.PCitationItemId, id, StringComparison.Ordinal))
             {
-                return row.PReferenceName;
+                return row.PCitationItemName;
             }
         }
 
@@ -109,19 +109,19 @@ public partial class PExample
 
     private void PCitationHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (_pEditorLoading || PCitationList.SelectedValue is not string id)
+        if (_pTranscriptLoading || PCitationList.SelectedValue is not string id)
         {
             return;
         }
 
-        _pEditorCitation = id;
+        _pTranscriptCitation = id;
         PCitation.IsChecked = false;
         PCitationUpdate();
     }
 
     private void PCitationClearHandle(object sender, RoutedEventArgs e)
     {
-        _pEditorCitation = string.Empty;
+        _pTranscriptCitation = string.Empty;
         PCitationList.SelectedValue = null;
         PCitation.IsChecked = false;
         PCitationUpdate();
@@ -153,11 +153,11 @@ public partial class PExample
             return;
         }
 
-        _pCitationCatalog.Add(PReference.PReferenceCreate(created));
+        _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(created));
         PCitationEmpty.Visibility = Visibility.Collapsed;
         PCitationDraft.Text = string.Empty;
 
-        _pEditorCitation = created.LReferenceId;
+        _pTranscriptCitation = created.LReferenceId;
         PCitationList.SelectedValue = created.LReferenceId;
         PCitation.IsChecked = false;
         PCitationUpdate();
@@ -165,89 +165,89 @@ public partial class PExample
 
     private void PCitationUpdate()
     {
-        PCitationName.Text = _pEditorCitation.Length == 0
+        PCitationName.Text = _pTranscriptCitation.Length == 0
             ? _pExampleHost.PLocalizationTextRead("Reference.Assign")
-            : PCitationNameRead(LStateValue.LStateValueCreate(_pEditorCitation));
+            : PCitationNameRead(LStateValue.LStateValueCreate(_pTranscriptCitation));
     }
 
-    private void PEditorTextHandle(object sender, TextChangedEventArgs e)
+    private void PTranscriptTextHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pEditorLoading)
+        if (_pTranscriptLoading)
         {
             return;
         }
 
-        _pEditorTextUnreadable = false;
-        PEditorText.Tag = string.Empty;
+        _pTranscriptTextUnreadable = false;
+        PTranscriptText.Tag = string.Empty;
     }
 
-    private void PEditorTranslationHandle(object sender, TextChangedEventArgs e)
+    private void PTranscriptTranslationHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pEditorLoading)
+        if (_pTranscriptLoading)
         {
             return;
         }
 
-        _pEditorTranslationUnreadable = false;
-        PEditorTranslation.Tag = string.Empty;
+        _pTranscriptTranslationUnreadable = false;
+        PTranscriptTranslation.Tag = string.Empty;
     }
 
-    private void PEditorApply(LExample? example)
+    private void PTranscriptApply(LExample? example)
     {
-        _pEditorLoading = true;
+        _pTranscriptLoading = true;
 
         string unreadable = _pExampleHost.PLocalizationTextRead("Display.Unreadable");
 
-        PEditorText.Text = example?.LExampleText.LStateValueShow() ?? string.Empty;
-        _pEditorTextUnreadable = example?.LExampleText.LStateValueState == LState.LStateUnknown;
-        PEditorText.Tag = _pEditorTextUnreadable ? unreadable : string.Empty;
+        PTranscriptText.Text = example?.LExampleText.LStateValueShow() ?? string.Empty;
+        _pTranscriptTextUnreadable = example?.LExampleText.LStateValueState == LState.LStateUnknown;
+        PTranscriptText.Tag = _pTranscriptTextUnreadable ? unreadable : string.Empty;
 
-        PEditorTranslation.Text = example?.LExampleTranslation.LStateValueShow() ?? string.Empty;
-        _pEditorTranslationUnreadable =
+        PTranscriptTranslation.Text = example?.LExampleTranslation.LStateValueShow() ?? string.Empty;
+        _pTranscriptTranslationUnreadable =
             example?.LExampleTranslation.LStateValueState == LState.LStateUnknown;
-        PEditorTranslation.Tag = _pEditorTranslationUnreadable ? unreadable : string.Empty;
+        PTranscriptTranslation.Tag = _pTranscriptTranslationUnreadable ? unreadable : string.Empty;
 
         if (example is not null && example.LExampleLanguage.Length > 0)
         {
-            _pEditorLanguage = example.LExampleLanguage;
+            _pTranscriptLanguage = example.LExampleLanguage;
         }
 
         PLangcodeShow();
 
-        _pEditorCitation = example?.LExampleSource.LStateValueShow() ?? string.Empty;
-        PCitationList.SelectedValue = _pEditorCitation.Length == 0 ? null : _pEditorCitation;
+        _pTranscriptCitation = example?.LExampleSource.LStateValueShow() ?? string.Empty;
+        PCitationList.SelectedValue = _pTranscriptCitation.Length == 0 ? null : _pTranscriptCitation;
         PCitationUpdate();
 
-        PRemoval.IsEnabled = example is not null;
-        PEditorUsageShow(example);
+        PTranscriptRemoval.IsEnabled = example is not null;
+        PTranscriptCountShow(example);
 
-        _pEditorLoading = false;
+        _pTranscriptLoading = false;
     }
 
-    private void PEditorUsageShow(LExample? example)
+    private void PTranscriptCountShow(LExample? example)
     {
         if (example is null)
         {
-            PEditorUsage.Text = string.Empty;
+            PTranscriptCount.Text = string.Empty;
             return;
         }
 
-        int usage = _pAnthologyUsage.TryGetValue(example.LExampleId, out int count) ? count : 0;
-        PEditorUsage.Text = $"{_pExampleHost.PLocalizationTextRead("Example.DetachCount")} "
+        int usage = _pAnthologyCount.TryGetValue(example.LExampleId, out int count) ? count : 0;
+        PTranscriptCount.Text = $"{_pExampleHost.PLocalizationTextRead("Example.DetachCount")} "
             + usage.ToString(CultureInfo.CurrentCulture);
     }
 
-    private LExample PEditorRead()
+    private LExample PTranscriptRead()
     {
         return new LExample(
-            _pEditorExample?.LExampleId ?? string.Empty,
-            _pEditorLanguage,
-            PEditorValueRead(PEditorText.Text, _pEditorTextUnreadable),
-            PEditorValueRead(PEditorTranslation.Text, _pEditorTranslationUnreadable),
-            PEditorValueRead(_pEditorCitation, false));
+            _pTranscriptExample?.LExampleId ?? string.Empty,
+            _pTranscriptLanguage,
+            PTranscriptValueRead(PTranscriptText.Text, _pTranscriptTextUnreadable),
+            PTranscriptValueRead(PTranscriptTranslation.Text, _pTranscriptTranslationUnreadable),
+            PTranscriptValueRead(_pTranscriptCitation, false));
     }
 
-    private static LStateValue PEditorValueRead(string text, bool unreadable)
+    private static LStateValue PTranscriptValueRead(string text, bool unreadable)
     {
         if (!string.IsNullOrWhiteSpace(text))
         {
@@ -257,25 +257,25 @@ public partial class PExample
         return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueUnspecified;
     }
 
-    private bool PEditorChangeCheck()
+    private bool PTranscriptChangeCheck()
     {
-        LExample written = PEditorRead();
+        LExample written = PTranscriptRead();
 
-        if (_pEditorExample is null)
+        if (_pTranscriptExample is null)
         {
             return !written.LExampleText.LStateValueEmpty
                 || !written.LExampleTranslation.LStateValueEmpty
                 || !written.LExampleSource.LStateValueEmpty;
         }
 
-        return written.LExampleText != _pEditorExample.LExampleText
-            || written.LExampleTranslation != _pEditorExample.LExampleTranslation
-            || written.LExampleSource != _pEditorExample.LExampleSource
+        return written.LExampleText != _pTranscriptExample.LExampleText
+            || written.LExampleTranslation != _pTranscriptExample.LExampleTranslation
+            || written.LExampleSource != _pTranscriptExample.LExampleSource
             || !string.Equals(
-                written.LExampleLanguage, _pEditorExample.LExampleLanguage, StringComparison.Ordinal);
+                written.LExampleLanguage, _pTranscriptExample.LExampleLanguage, StringComparison.Ordinal);
     }
 
-    private void PFreshHandle(object sender, RoutedEventArgs e)
+    private void PExampleFreshHandle(object sender, RoutedEventArgs e)
     {
         if (!PExampleLeaveConfirm())
         {
@@ -283,29 +283,29 @@ public partial class PExample
         }
 
         PExampleClear();
-        _pEditorExample = null;
-        PEditorApply(null);
-        PScribe.IsEnabled = true;
-        PScribeShow(true);
+        _pTranscriptExample = null;
+        PTranscriptApply(null);
+        PExampleScribe.IsEnabled = true;
+        PExampleScribeShow(true);
     }
 
-    private void PDiscardHandle(object sender, RoutedEventArgs e)
+    private void PTranscriptDiscardHandle(object sender, RoutedEventArgs e)
     {
         if (!PExampleLeaveConfirm())
         {
             return;
         }
 
-        PEditorApply(_pEditorExample);
+        PTranscriptApply(_pTranscriptExample);
     }
 
-    private void PStoreHandle(object sender, RoutedEventArgs e)
+    private void PTranscriptStoreHandle(object sender, RoutedEventArgs e)
     {
-        LExample written = PEditorRead();
+        LExample written = PTranscriptRead();
 
         try
         {
-            if (_pEditorExample is null)
+            if (_pTranscriptExample is null)
             {
                 written = _lEngine.LEngineExampleCreate(written);
             }
@@ -320,23 +320,23 @@ public partial class PExample
             return;
         }
 
-        _pEditorExample = written;
-        _pDisplayExample = written.LExampleId;
+        _pTranscriptExample = written;
+        _pExcerptExample = written.LExampleId;
 
         PAnthologyFind(PQuery.Text ?? string.Empty);
-        PScribeShow(false);
+        PExampleScribeShow(false);
         PExampleShow(written.LExampleId);
     }
 
-    private void PRemovalHandle(object sender, RoutedEventArgs e)
+    private void PTranscriptRemovalHandle(object sender, RoutedEventArgs e)
     {
-        if (_pEditorExample is null)
+        if (_pTranscriptExample is null)
         {
             return;
         }
 
-        string id = _pEditorExample.LExampleId;
-        int usage = _pAnthologyUsage.TryGetValue(id, out int count) ? count : 0;
+        string id = _pTranscriptExample.LExampleId;
+        int usage = _pAnthologyCount.TryGetValue(id, out int count) ? count : 0;
 
         if (!_pExampleHost.PWindowRemovalConfirm(usage, "Example"))
         {
@@ -353,7 +353,7 @@ public partial class PExample
             return;
         }
 
-        PScribeShow(false);
+        PExampleScribeShow(false);
         PExampleClear();
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }

@@ -90,18 +90,18 @@
 
         <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" HorizontalAlignment="Right" Orientation="Horizontal">
             <Button
-                x:Name="PFresh"
+                x:Name="PSoundFresh"
                 Height="44"
                 Margin="0,0,8,0"
-                Click="PFreshHandle"
+                Click="PSoundFreshHandle"
                 Content="{DynamicResource Scribe.New}"
                 Style="{StaticResource Theme.Input.Pill}" />
             <Button
-                x:Name="PScribe"
+                x:Name="PSoundScribe"
                 Width="96"
                 Height="44"
                 Margin="0,0,8,0"
-                Click="PScribeHandle"
+                Click="PSoundScribeHandle"
                 Content="{DynamicResource Scribe.Edit}"
                 IsEnabled="False"
                 Style="{StaticResource Theme.Input.Pill}" />
