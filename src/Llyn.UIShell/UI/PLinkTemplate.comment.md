@@ -23,16 +23,9 @@ It shares the ordinary input style, so its placeholder behaves as every other fi
 But it carries no border of its own.
 The surface around the whole field is the border.
 
-## `Theme.Link.Candidate`
-
-One row of the dropdown offered when the typed word does not name one entry outright.
-It reads as the other headword lists do, so the same word means the same thing everywhere.
-A create row is marked with a leading plus, because it makes an entry rather than pointing at one.
-The row is a plain surface rather than a button, so the list beneath it keeps its own selection.
-
 ## `PLinkTemplate.xaml.cs`
 
 The dictionary forwards its events to the editor that owns the cards.
-The Example, Situation, Image, Video and Tag dictionaries do the same.
+The Example, Situation, Image, Video and Label dictionaries do the same.
 The templates are shared by both card kinds.
 So the handling belongs to the one editor above them rather than to a copy inside each.

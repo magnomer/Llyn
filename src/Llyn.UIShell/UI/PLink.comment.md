@@ -40,11 +40,6 @@ Anything else is left in the entry rather than opening a dropdown the user has a
 Puts the caret in the entry when the field's empty space is clicked.
 So the whole box behaves as the one input it looks like.
 
-## `internal void PLinkMenuHandle(object sender, MouseButtonEventArgs e)`
-
-Takes the row the pointer chose out of the dropdown and links it.
-The row is a plain surface rather than a button, so the list beneath it keeps its own selection.
-
 ## `internal void PLinkFlagUpdate()`
 
 Redraws every card's chips once the workspace's flags have finished loading.
@@ -61,17 +56,6 @@ A stub that will not delete is passed over rather than stopping the discard.
 
 ## Inline notes
 
-### `private bool PLinkMenuHandle(Key key)`
-
-The dropdown never takes focus, so the caret's key handler drives it.
-The arrows walk the selection and wrap at either end, and enter takes what is selected.
-Reports whether the dropdown used the key, so an unused one falls through to the field.
-
-### `private void PLinkMenuSelect(PLinkItem item)`
-
-Links the chosen row and closes the dropdown, making the stub Entry first when the row is a create row.
-A stub that will not be made raises a notice rather than leaving the field looking unanswered.
-
 ### `private bool PLinkResolve(PCard card, string text, bool offered)`
 
 One Entry whose whole headword is the word is not a choice, so it is linked without asking.
@@ -79,18 +63,6 @@ Anything else is a question, and a question is only asked when the user is still
 That is what `offered` says.
 An unasked question leaves the word standing in the entry, where the user can still see it.
 A search the workspace refuses raises a notice, because a silent nothing reads as no match.
-
-### `private void PLinkMenuShow(PCard card, string word, IReadOnlyList<LEntry> found)`
-
-The create row stands after the matches rather than among them.
-It carries the typed word untouched, because that word is what the stub Entry will be called.
-
-### `private IReadOnlyList<string> PLinkLanguageRead()`
-
-The stub is offered once per language the workspace holds, so the user picks rather than accepts.
-The language being edited comes last, because a link usually crosses into another one.
-The workspace's own list is asked, because a language it does not hold has no flag to draw.
-A list that has not loaded yet still names the language being edited, so a stub is always reachable.
 
 ### `private TextBox? PLinkBoxFind(PCard card)`
 

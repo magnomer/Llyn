@@ -20,6 +20,7 @@ public partial class PEditor : UserControl
         Resources.MergedDictionaries.Add(new PVideoTemplate(this));
         Resources.MergedDictionaries.Add(new PLabelTemplate(this));
         Resources.MergedDictionaries.Add(new PLinkTemplate(this));
+        Resources.MergedDictionaries.Add(new PProspectTemplate(this));
         Resources.MergedDictionaries.Add(new PSenseTemplate(this));
         Resources.MergedDictionaries.Add(new PCollocationTemplate(this));
         Resources.MergedDictionaries.Add(new PTongueTemplate(this));
@@ -33,7 +34,7 @@ public partial class PEditor : UserControl
         PPhoneticList.ItemsSource = _pPhoneticItem;
         PClipList.ItemsSource = _pClipItem;
         PTongueList.ItemsSource = _pTongueItem;
-        PLinkMenuList.ItemsSource = _pLinkItem;
+        PProspectList.ItemsSource = _pProspectItem;
         PCategoryList.ItemsSource = _pCategoryItem;
         PSpeechList.ItemsSource = _pSpeechChip;
         PHeadword.TextChanged += PHeadwordHandle;

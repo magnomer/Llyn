@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,11 +13,7 @@ public partial class PEditor
 {
     private const string PLinkFailureKey = "Input.TranslationFailed";
 
-    private readonly ObservableCollection<PLinkItem> _pLinkItem = [];
-
     private readonly List<string> _pLinkFresh = [];
-
-    private PCard? _pLinkCard;
 
     internal void PLinkAttach(PCard card)
     {
@@ -46,7 +41,7 @@ public partial class PEditor
             return;
         }
 
-        if (PLinkMenuChoice.IsOpen && PLinkMenuHandle(e.Key))
+        if (PProspect.IsOpen && PProspectHandle(e.Key))
         {
             e.Handled = true;
             return;
@@ -94,7 +89,7 @@ public partial class PEditor
 
     internal void PLinkCloseHandle(object sender, RoutedEventArgs e)
     {
-        if (PLinkMenuChoice.IsOpen ||
+        if (PProspect.IsOpen ||
             sender is not FrameworkElement { DataContext: PLinkCaret row })
         {
             return;
@@ -122,18 +117,6 @@ public partial class PEditor
 
         entry.Focus();
         entry.CaretIndex = entry.Text.Length;
-        e.Handled = true;
-    }
-
-    internal void PLinkMenuHandle(object sender, MouseButtonEventArgs e)
-    {
-        if (sender is not FrameworkElement { DataContext: PLinkItem item })
-        {
-            PLinkMenuHide();
-            return;
-        }
-
-        PLinkMenuSelect(item);
         e.Handled = true;
     }
 
@@ -172,75 +155,6 @@ public partial class PEditor
         _pLinkFresh.Clear();
     }
 
-    private bool PLinkMenuHandle(Key key)
-    {
-        if (key == Key.Escape)
-        {
-            PLinkMenuHide();
-            return true;
-        }
-
-        if (key == Key.Down || key == Key.Up)
-        {
-            int count = _pLinkItem.Count;
-            if (count == 0)
-            {
-                return false;
-            }
-
-            int step = key == Key.Down ? 1 : count - 1;
-            int chosen = PLinkMenuList.SelectedIndex < 0 ? 0 : PLinkMenuList.SelectedIndex;
-            PLinkMenuList.SelectedIndex = (chosen + step) % count;
-            PLinkMenuList.ScrollIntoView(PLinkMenuList.SelectedItem);
-            return true;
-        }
-
-        if (key == Key.Enter && PLinkMenuList.SelectedItem is PLinkItem item)
-        {
-            PLinkMenuSelect(item);
-            return true;
-        }
-
-        return false;
-    }
-
-    private void PLinkMenuSelect(PLinkItem item)
-    {
-        PCard? card = _pLinkCard;
-        if (card is null)
-        {
-            PLinkMenuHide();
-            return;
-        }
-
-        if (!item.PLinkItemFresh)
-        {
-            card.PCardLinkCommit(
-                item.PLinkItemId, item.PLinkItemHeadword, item.PLinkItemLanguage);
-            card.PCardLinkClear();
-            PLinkMenuHide();
-            return;
-        }
-
-        LEntry created;
-        try
-        {
-            created = _lEngine.LEngineTranslationCreate(
-                item.PLinkItemHeadword, item.PLinkItemLanguage);
-        }
-        catch (Exception exception)
-        {
-            PLinkMenuHide();
-            _pEditorHost.PWindowFailureShow(PLinkFailureKey, exception);
-            return;
-        }
-
-        _pLinkFresh.Add(created.LEntryId);
-        card.PCardLinkCommit(created.LEntryId, created.LEntryHeadword, created.LEntryLanguage);
-        card.PCardLinkClear();
-        PLinkMenuHide();
-    }
-
     private bool PLinkResolve(PCard card, string text, bool offered)
     {
         string word = (text ?? string.Empty).Trim();
@@ -270,53 +184,10 @@ public partial class PEditor
 
         if (offered)
         {
-            PLinkMenuShow(card, word, found);
+            PProspectShow(card, word, found);
         }
 
         return false;
-    }
-
-    private void PLinkMenuShow(PCard card, string word, IReadOnlyList<LEntry> found)
-    {
-        _pLinkItem.Clear();
-        foreach (LEntry entry in found)
-        {
-            _pLinkItem.Add(new PLinkItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
-        }
-
-        foreach (string language in PLinkLanguageRead())
-        {
-            _pLinkItem.Add(new PLinkItem(string.Empty, word, language, true));
-        }
-
-        _pLinkCard = card;
-        PLinkMenuChoice.PlacementTarget = PLinkBoxFind(card) ?? (UIElement)PContents;
-        PLinkMenuChoice.IsOpen = true;
-        PLinkMenuList.SelectedIndex = 0;
-    }
-
-    private void PLinkMenuHide()
-    {
-        PLinkMenuChoice.IsOpen = false;
-        PLinkMenuList.SelectedIndex = -1;
-        _pLinkItem.Clear();
-        _pLinkCard = null;
-    }
-
-    private IReadOnlyList<string> PLinkLanguageRead()
-    {
-        List<string> languages = [];
-        foreach (PTongueItem item in _pTongueItem)
-        {
-            if (!string.Equals(item.PTongueItemName, _pLanguageChoice, StringComparison.Ordinal))
-            {
-                languages.Add(item.PTongueItemName);
-            }
-        }
-
-        languages.Add(_pLanguageChoice);
-        return languages;
     }
 
     private TextBox? PLinkBoxFind(PCard card)

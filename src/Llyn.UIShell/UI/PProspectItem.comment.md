@@ -1,6 +1,6 @@
-# PLinkItem.cs
+# PProspectItem.cs
 
-## `internal sealed class PLinkItem`
+## `internal sealed class PProspectItem`
 
 One row of the dropdown that opens when typed text matches more than one Entry.
 Most rows stand for an Entry that already exists, so they carry its id.

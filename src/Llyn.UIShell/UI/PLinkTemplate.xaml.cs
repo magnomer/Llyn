@@ -32,9 +32,4 @@ public partial class PLinkTemplate : ResourceDictionary
     {
         _pLinkHost.PLinkFocusHandle(sender, e);
     }
-
-    private void PLinkMenuHandle(object sender, MouseButtonEventArgs e)
-    {
-        _pLinkHost.PLinkMenuHandle(sender, e);
-    }
 }
