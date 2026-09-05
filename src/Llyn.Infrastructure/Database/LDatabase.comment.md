@@ -1,4 +1,4 @@
-# LDatabase.cs
+﻿# LDatabase.cs
 
 ## `public sealed class LDatabase`
 
@@ -18,6 +18,11 @@ That is what the shell engine does with it.
 
 Binds this database to `root`, the resolved workspace folder that owns the database file.
 The file is not opened until a connection or a session is asked for.
+
+## `public string LDatabaseFile`
+
+The path of the database file this instance is bound to.
+`LDoctor` needs it to move an unusable database aside, which is work on the file rather than on its contents.
 
 ## `public SqliteConnection LDatabaseConnectionRead()`
 
@@ -54,6 +59,12 @@ Idempotent — running it against an already-initialized database creates nothin
 Clears the ambient session when the session that owns it ends.
 
 ## Inline notes
+
+### `catch`
+
+The connection is opened here but the pragmas run afterwards, and a file that is not a database fails on the first of them.
+An undisposed connection keeps the file open, and Windows refuses to move a file that is open.
+So a failed setup would leave `LDoctor` unable to set the broken database aside.
 
 ### `connection.CreateFunction<string?, string?>(`
 

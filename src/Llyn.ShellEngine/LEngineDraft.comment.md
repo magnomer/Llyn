@@ -12,7 +12,7 @@ Everything it writes shares one session, so an entry is written whole or not at 
 ## `public LEntry LEngineEntrySave(LEntryDraft draft)`
 
 Saves the whole input form as one new entry.
-That is the headword row and its senses and collocations in card order.
+That is the headword row and its meanings and collocations in card order.
 It is also its note and pronunciation when they carry text.
 It is also the revision recording the create.
 The workspace row is moved onto that revision and that entry.
@@ -29,7 +29,7 @@ The form keeps an empty card on screen to type into.
 It refuses to remove a list's last card.
 So it always hands over at least one Meaning card and one Collocation card.
 Deciding that a blank one is neither belongs here, not in the form.
-A headword saved on its own therefore gains no sense row and no collocation row.
+A headword saved on its own therefore gains no meaning row and no collocation row.
 A blank card between two filled ones leaves the two stored at positions 0 and 1.
 
 A recording the downloader saved is written as the pronunciation's audio row.
@@ -39,7 +39,7 @@ Because the row hangs off the pronunciation, a recording with no typed IPA still
 
 The Example and Situation text a card carries is written as independent data.
 Each value in those ordered sets becomes a new row of its own entity.
-The card's sense or collocation then references it at that value's position.
+The card's meaning or collocation then references it at that value's position.
 The entry owns none of them, so clearing a card would only detach what it points at.
 Tags are not that.
 A Tag is its own text, so the card's Tag line is written onto the card itself.
@@ -58,12 +58,12 @@ A part of speech a language pack has not thought of is still the one the user me
 An empty field writes no row at all.
 **Synonyms are not written**, and no card offers one to type.
 An `LSynonym` targets an Entry or a Meaning by id.
-A sense-card synonym is an `LRelation` with the same requirement.
+A meaning-card synonym is an `LRelation` with the same requirement.
 Free text is neither, and no picker exists to resolve it.
 So the field was removed from the form rather than left to discard what was typed.
 `LCardDraftSynonym` therefore arrives empty from both card kinds.
 Writing a link is its own seam, `LEngineRelationCreate` and `LEngineSynonymCreate`.
-Each takes a target the caller resolved through `LEngineEntryFind` or `LEngineSenseFind` first.
+Each takes a target the caller resolved through `LEngineEntryFind` or `LEngineMeaningFind` first.
 
 ## `private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)`
 
@@ -103,9 +103,9 @@ The part of speech is written with the entry rather than after it.
 It is an owned child row of the entry.
 The id it needs is the one LEntryCreate is about to assign.
 
-### `LSense sense = senses.LSenseCreate(new LSense(`
+### `LMeaning meaning = meanings.LMeaningCreate(new LMeaning(`
 
-Each sense is appended, so card order becomes stored position.
+Each meaning is appended, so card order becomes stored position.
 
 ### `if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) ||`
 
@@ -124,7 +124,7 @@ The form always hands over at least one card of each kind.
 It seeds one of each and refuses to remove a list's last card.
 An editor must keep an empty card to type into.
 So this is where an entry with nothing typed stops becoming rows.
-Those would be a sense row with no definition and a collocation row with no expression.
+Those would be a meaning row with no definition and a collocation row with no expression.
 Positions come from the stored sibling count.
 So skipping a card in the middle still leaves 0, 1, 2 over the cards that remain.
 

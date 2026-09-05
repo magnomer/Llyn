@@ -1,54 +1,38 @@
 using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-public sealed class PStateConverter : IValueConverter, IMultiValueConverter
+public sealed class PStateConverter : IMultiValueConverter
 {
-    private const string PStateConverterKey = "Display.Unreadable";
-
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is not LStateValue state)
-        {
-            return string.Empty;
-        }
-
-        return state.LStateValueState switch
-        {
-            LState.LStateSpecified => state.LStateValueShow(),
-            LState.LStateUnknown => PStateTextRead(),
-            _ => string.Empty,
-        };
-    }
-
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
         ArgumentNullException.ThrowIfNull(values);
 
-        if (values.Length > 0 && values[0] is true)
+        string mark = values.Length > 1 && values[1] is string marked ? marked : string.Empty;
+
+        if (values.Length > 0 && values[0] is LStateValue state)
         {
-            return PStateTextRead();
+            return state.LStateValueState switch
+            {
+                LState.LStateSpecified => state.LStateValueShow(),
+                LState.LStateUnknown => mark,
+                _ => string.Empty,
+            };
         }
 
-        return values.Length > 1 && values[1] is string hint ? hint : string.Empty;
-    }
+        if (values.Length > 0 && values[0] is true)
+        {
+            return mark;
+        }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotSupportedException();
+        return values.Length > 2 && values[2] is string hint ? hint : string.Empty;
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
     {
         throw new NotSupportedException();
-    }
-
-    private static string PStateTextRead()
-    {
-        return System.Windows.Application.Current?.TryFindResource(PStateConverterKey) as string ?? "Unreadable";
     }
 }

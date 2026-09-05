@@ -1,10 +1,32 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 
 namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
+    internal static bool TClaimArchiveCheck(string root, string draftId) =>
+        LClaimArchive.LClaimArchiveCheck(root, draftId);
+
+    internal static void TClaimArchiveDelete(string root, string draftId)
+    {
+        LClaimArchive.LClaimArchiveDelete(root, draftId);
+    }
+
+    internal static LClaim? TClaimArchiveRead(string root, string draftId) =>
+        LClaimArchive.LClaimArchiveRead(root, draftId);
+
+    internal static void TClaimArchiveSave(string root, LClaim claim)
+    {
+        LClaimArchive.LClaimArchiveSave(root, claim);
+    }
+
+    internal static IReadOnlyList<LClaim> TClaimArchiveScan(string root) =>
+        LClaimArchive.LClaimArchiveScan(root);
+
+    internal static LClaim TClaimCreate(string draftId, int process, DateTimeOffset moment) =>
+        new(draftId, process, moment);
+
     internal static LCollocationArchive TCollocationArchiveCreate(LDatabase database) =>
         new(database);
 
@@ -18,17 +40,8 @@ internal static partial class TInterface
         string entryId) =>
         collocationArchive.LCollocationRead(entryId);
 
-    internal static IReadOnlyList<LCourtLink> TCourtArchiveCancel(string root, string draftId) =>
-        LCourtArchive.LCourtArchiveCancel(root, draftId);
-
     internal static LCourtLink? TCourtArchiveRead(string root, string id) =>
         LCourtArchive.LCourtArchiveRead(root, id);
-
-    internal static IReadOnlyList<LCourtLink> TCourtArchiveResolve(
-        string root,
-        string draftId,
-        string realId) =>
-        LCourtArchive.LCourtArchiveResolve(root, draftId, realId);
 
     internal static void TCourtArchiveSave(string root, LCourtLink link)
     {
@@ -37,6 +50,14 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LCourtLink> TCourtArchiveScan(string root) =>
         LCourtArchive.LCourtArchiveScan(root);
+
+    internal static IReadOnlyList<LCourtLink> TCourtArchiveSettle(string root, string draftId) =>
+        LCourtArchive.LCourtArchiveSettle(root, draftId);
+
+    internal static void TCourtArchiveSweep(string root)
+    {
+        LCourtArchive.LCourtArchiveSweep(root);
+    }
 
     internal static void TDatabaseCreate(this LDatabase database)
     {
@@ -50,6 +71,9 @@ internal static partial class TInterface
 
     internal static LDatabaseSession TDatabaseSessionStart(this LDatabase database) =>
         database.LDatabaseSessionStart();
+
+    internal static LDoctorRescue TDoctorDatabaseCreate(LDatabase database) =>
+        LDoctor.LDoctorDatabaseCreate(database);
 
     internal static void TDraftArchiveDelete(string root, string id)
     {
@@ -66,6 +90,11 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LDraft> TDraftArchiveScan(string root) =>
         LDraftArchive.LDraftArchiveScan(root);
+
+    internal static void TDraftArchiveSweep(string root)
+    {
+        LDraftArchive.LDraftArchiveSweep(root);
+    }
 
     internal static LEntryArchive TEntryArchiveCreate(LDatabase database) =>
         new(database);
@@ -119,19 +148,19 @@ internal static partial class TInterface
     internal static LExample? TExampleRead(this LExampleArchive exampleArchive, string id) =>
         exampleArchive.LExampleRead(id);
 
-    internal static void TExampleSenseAttach(
+    internal static void TExampleMeaningAttach(
         this LExampleLink exampleLink,
-        string senseId,
+        string meaningId,
         string exampleId,
         int position)
     {
-        exampleLink.LExampleSenseAttach(senseId, exampleId, position);
+        exampleLink.LExampleMeaningAttach(meaningId, exampleId, position);
     }
 
-    internal static IReadOnlyList<LExample> TExampleSenseRead(
+    internal static IReadOnlyList<LExample> TExampleMeaningRead(
         this LExampleLink exampleLink,
-        string senseId) =>
-        exampleLink.LExampleSenseRead(senseId);
+        string meaningId) =>
+        exampleLink.LExampleMeaningRead(meaningId);
 
     internal static void TExampleUpdate(this LExampleArchive exampleArchive, LExample example)
     {
@@ -206,24 +235,24 @@ internal static partial class TInterface
     internal static LRevision? TRevisionLatestRead(this LRevisionArchive revisionArchive) =>
         revisionArchive.LRevisionLatestRead();
 
-    internal static LSenseArchive TSenseArchiveCreate(LDatabase database) =>
+    internal static LMeaningArchive TMeaningArchiveCreate(LDatabase database) =>
         new(database);
 
-    internal static LSense TSenseCreate(this LSenseArchive senseArchive, LSense sense) =>
-        senseArchive.LSenseCreate(sense);
+    internal static LMeaning TMeaningCreate(this LMeaningArchive meaningArchive, LMeaning meaning) =>
+        meaningArchive.LMeaningCreate(meaning);
 
-    internal static void TSenseDelete(this LSenseArchive senseArchive, string id)
+    internal static void TMeaningDelete(this LMeaningArchive meaningArchive, string id)
     {
-        senseArchive.LSenseDelete(id);
+        meaningArchive.LMeaningDelete(id);
     }
 
-    internal static void TSenseMove(this LSenseArchive senseArchive, string id, int position)
+    internal static void TMeaningMove(this LMeaningArchive meaningArchive, string id, int position)
     {
-        senseArchive.LSenseMove(id, position);
+        meaningArchive.LMeaningMove(id, position);
     }
 
-    internal static IReadOnlyList<LSense> TSenseRead(this LSenseArchive senseArchive, string entryId) =>
-        senseArchive.LSenseRead(entryId);
+    internal static IReadOnlyList<LMeaning> TMeaningRead(this LMeaningArchive meaningArchive, string entryId) =>
+        meaningArchive.LMeaningRead(entryId);
 
     internal static LSituationArchive TSituationArchiveCreate(LDatabase database) =>
         new(database);
@@ -233,10 +262,10 @@ internal static partial class TInterface
         string collocationId) =>
         situationArchive.LSituationCollocationRead(collocationId);
 
-    internal static IReadOnlyList<LSituation> TSituationSenseRead(
+    internal static IReadOnlyList<LSituation> TSituationMeaningRead(
         this LSituationArchive situationArchive,
-        string senseId) =>
-        situationArchive.LSituationSenseRead(senseId);
+        string meaningId) =>
+        situationArchive.LSituationMeaningRead(meaningId);
 
     internal static LTagArchive TTagArchiveCreate(LDatabase database) =>
         new(database);
@@ -246,12 +275,12 @@ internal static partial class TInterface
         string collocationId) =>
         tagArchive.LTagCollocationRead(collocationId);
 
-    internal static IReadOnlyList<LTag> TTagSenseRead(this LTagArchive tagArchive, string senseId) =>
-        tagArchive.LTagSenseRead(senseId);
+    internal static IReadOnlyList<LTag> TTagMeaningRead(this LTagArchive tagArchive, string meaningId) =>
+        tagArchive.LTagMeaningRead(meaningId);
 
-    internal static void TTagSenseSave(this LTagArchive tagArchive, string senseId, IReadOnlyList<LTag> tags)
+    internal static void TTagMeaningSave(this LTagArchive tagArchive, string meaningId, IReadOnlyList<LTag> tags)
     {
-        tagArchive.LTagSenseSave(senseId, tags);
+        tagArchive.LTagMeaningSave(meaningId, tags);
     }
 
     internal static LTranslationArchive TTranslationArchiveCreate(LDatabase database) =>
@@ -275,17 +304,17 @@ internal static partial class TInterface
         string entryId) =>
         translationArchive.LTranslationIncomingRead(entryId);
 
-    internal static IReadOnlyList<LTranslation> TTranslationSenseRead(
+    internal static IReadOnlyList<LTranslation> TTranslationMeaningRead(
         this LTranslationArchive translationArchive,
-        string senseId) =>
-        translationArchive.LTranslationSenseRead(senseId);
+        string meaningId) =>
+        translationArchive.LTranslationMeaningRead(meaningId);
 
-    internal static void TTranslationSenseSave(
+    internal static void TTranslationMeaningSave(
         this LTranslationArchive translationArchive,
-        string senseId,
+        string meaningId,
         IReadOnlyList<LTranslation> translations)
     {
-        translationArchive.LTranslationSenseSave(senseId, translations);
+        translationArchive.LTranslationMeaningSave(meaningId, translations);
     }
 
     internal static IReadOnlyList<LTranslationTarget> TTranslationTargetRead(
@@ -295,6 +324,9 @@ internal static partial class TInterface
 
     internal static LWorkspaceArchive TWorkspaceArchiveCreate(LDatabase database) =>
         new(database);
+
+    internal static string TWorkspaceCourtRead(string root) =>
+        LWorkspaceRoot.LWorkspaceCourtRead(root);
 
     internal static string TWorkspaceDraftRead(string root) =>
         LWorkspaceRoot.LWorkspaceDraftRead(root);

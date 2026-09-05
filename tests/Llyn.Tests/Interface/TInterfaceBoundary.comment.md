@@ -1,4 +1,4 @@
-# TInterfaceBoundary.cs
+﻿# TInterfaceBoundary.cs
 
 ## `public sealed class TInterfaceBoundary`
 
@@ -13,7 +13,7 @@ Matches a call on a production name, whether it is static or made on an instance
 
 Matches a production type constructed with `new`.
 
-## `public void TestsReachProductionOperationsOnlyThroughTheInterface()`
+## `public void InterfaceBoundary_ProductionCalls_GoThroughInterface()`
 
 Scans every test source outside `Interface` and reports each file that reaches production directly.
 The failure names the offending files so the missing relay is obvious.

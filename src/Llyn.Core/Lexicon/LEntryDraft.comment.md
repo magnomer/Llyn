@@ -14,7 +14,7 @@ A card's position is its place in its list, not a value it carries.
 - `LEntryDraftLanguage` — Language chosen in the language selector.
 - `LEntryDraftPronunciation` — Pronunciation text as typed or filled by a lookup.
 - `LEntryDraftNote` — Plain text of the note editor.
-- `LEntryDraftSenses` — Meaning cards in list order, whose Expression is always empty.
+- `LEntryDraftMeanings` — Meaning cards in list order, whose Expression is always empty.
 - `LEntryDraftCollocations` — Collocation cards in list order.
 - `LEntryDraftAudio` — Full path to the recording downloaded for this entry, or empty when none was chosen.
   The shell deals in full paths.

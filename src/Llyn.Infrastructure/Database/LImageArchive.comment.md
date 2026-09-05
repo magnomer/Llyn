@@ -29,7 +29,7 @@ The new Image is referenced by nothing until it is attached to a referrer.
 
 Reads the Image identified by `id`, or `null` when no such Image exists.
 
-## `public IReadOnlyList<LImage> LImageSenseRead(string senseId)`
+## `public IReadOnlyList<LImage> LImageMeaningRead(string meaningId)`
 
 Reads the Images a Meaning references, in the order that Meaning gives them.
 
@@ -52,7 +52,7 @@ It is what a delete asks before it refuses.
 Deletes the Image, refusing while any Meaning or Collocation still references it.
 So a live reference is never left pointing at a row that is gone.
 
-## `public void LImageSenseAttach(string senseId, string imageId, int position)`
+## `public void LImageMeaningAttach(string meaningId, string imageId, int position)`
 
 References the Image from a Meaning at the index named, renumbering that Meaning's other references around it.
 
@@ -60,7 +60,7 @@ References the Image from a Meaning at the index named, renumbering that Meaning
 
 References the Image from a Collocation at the index named, renumbering that Collocation's other references around it.
 
-## `public void LImageSenseDetach(string senseId, string imageId)`
+## `public void LImageMeaningDetach(string meaningId, string imageId)`
 
 Drops a Meaning's reference and closes the gap it leaves.
 The Image and every other reference stay.

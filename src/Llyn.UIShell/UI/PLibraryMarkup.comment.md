@@ -1,4 +1,4 @@
-# PMarkupImport.cs
+# PLibraryMarkup.cs
 
 ## `public partial class PLibrary`
 
@@ -10,7 +10,7 @@ It picks a file, passes its text on, and shows what came back.
 
 ## Inline notes
 
-### `internal async void PMarkupImportHandle(object sender, RoutedEventArgs e)`
+### `internal async void PLibraryMarkupHandle(object sender, RoutedEventArgs e)`
 
 The button's whole behavior.
 Import belongs on this panel rather than the editor.

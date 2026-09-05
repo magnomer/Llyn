@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TReference
 {
     [Fact]
-    public void AnEntryCitesReferencesInOrderAndAnExampleCitesAtMostOne()
+    public void ReferenceAttach_ExampleCitation_LimitsToOne()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -40,40 +40,7 @@ public sealed class TReference
     }
 
     [Fact]
-    public void ASituationCitesAtMostOneReferenceAndHoldsTheSourceFromBeingDeleted()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LReference dictionary = TReferenceCreate(engine, "A Dictionary");
-        LReference grammar = TReferenceCreate(engine, "A Grammar");
-
-        LSituation situation = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "in court", null, null, null));
-
-        engine.TEngineReferenceAttach(
-            situation.LSituationId, dictionary.LReferenceId, 0, LOwner.LOwnerSituation);
-        engine.TEngineReferenceAttach(
-            situation.LSituationId, grammar.LReferenceId, 0, LOwner.LOwnerSituation);
-
-        Assert.Equal(
-            grammar.LReferenceId,
-            Assert.Single(engine.TEngineReferenceRead(situation.LSituationId, LOwner.LOwnerSituation))
-                .LReferenceId);
-
-        Assert.Throws<InvalidOperationException>(() =>
-            engine.TEngineReferenceDelete(grammar.LReferenceId));
-
-        engine.TEngineReferenceDetach(
-            situation.LSituationId, grammar.LReferenceId, LOwner.LOwnerSituation);
-        Assert.Empty(engine.TEngineReferenceRead(situation.LSituationId, LOwner.LOwnerSituation));
-
-        engine.TEngineReferenceDelete(grammar.LReferenceId);
-        Assert.Null(engine.TEngineReferenceRead(grammar.LReferenceId));
-    }
-
-    [Fact]
-    public void ACitedReferenceIsNotDeletedUntilTheCitationsAreGone()
+    public void ReferenceDelete_CitedReference_RefusesUntilDetached()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -91,7 +58,7 @@ public sealed class TReference
     }
 
     [Fact]
-    public void AnAuthorIsCreditedOnReferencesAndOutlivesEveryCredit()
+    public void AuthorDelete_CreditedAuthor_RefusesUntilDetached()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

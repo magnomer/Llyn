@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -80,7 +80,7 @@ public sealed class TMarkupImport
         """;
 
     [Fact]
-    public void AFileOfTwoEntriesImportsAsTwoEntriesThatReadBackWithAllThreeStates()
+    public void MarkupImport_TwoEntries_StoresBothWithAllStates()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -95,9 +95,9 @@ public sealed class TMarkupImport
         Assert.Equal("English", kindle.LEntryDraftLanguage);
         Assert.Equal("/ˈkɪnd(ə)l/", kindle.LEntryDraftPronunciation);
         Assert.Equal("Chiefly literary in its figurative senses.", kindle.LEntryDraftNote);
-        Assert.Equal(2, kindle.LEntryDraftSenses.Count);
+        Assert.Equal(2, kindle.LEntryDraftMeanings.Count);
 
-        LCardDraft alight = kindle.LEntryDraftSenses[0];
+        LCardDraft alight = kindle.LEntryDraftMeanings[0];
         Assert.Equal("set alight", alight.LCardDraftTitle.TStateValueShow());
         Assert.Equal("to set something burning; to start a flame", alight.LCardDraftMeaning.TStateValueShow());
         Assert.Equal(["literal"], alight.LCardDraftTag);
@@ -111,7 +111,6 @@ public sealed class TMarkupImport
         LReference oed = Assert.Single(engine.TEngineReferenceRead(), reference =>
             reference.LReferenceTitle.TStateValueShow() == "Oxford English Dictionary");
         Assert.Equal(oed.LReferenceId, logs.LExampleDraftReference.TStateValueShow());
-        Assert.Equal(oed.LReferenceId, hearth.LSituationDraftReference.TStateValueShow());
         Assert.Equal("1928", oed.LReferenceYear.TStateValueShow());
         Assert.Equal(LState.LStateUnknown, oed.LReferenceProgram.LStateValueState);
         Assert.Equal(LState.LStateSpecified, oed.LReferenceAuthorState);
@@ -119,7 +118,7 @@ public sealed class TMarkupImport
             ["Murray, James"],
             engine.TEngineAuthorRead(oed.LReferenceId, LOwner.LOwnerReference).Select(author => author.LAuthorName));
 
-        LCardDraft rouse = kindle.LEntryDraftSenses[1];
+        LCardDraft rouse = kindle.LEntryDraftMeanings[1];
         Assert.Equal(["figurative"], rouse.LCardDraftTag);
         Assert.Equal(
             [LState.LStateUnspecified, LState.LStateUnknown],
@@ -133,13 +132,13 @@ public sealed class TMarkupImport
 
         LEntryDraft brook = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(imported[1].LEntryId));
         Assert.Equal("brook", brook.LEntryDraftHeadword);
-        Assert.Equal(2, brook.LEntryDraftSenses.Count);
+        Assert.Equal(2, brook.LEntryDraftMeanings.Count);
         Assert.Equal(
             ["formal", "usually negative"],
-            brook.LEntryDraftSenses[1].LCardDraftTag);
+            brook.LEntryDraftMeanings[1].LCardDraftTag);
         Assert.Equal(
             LState.LStateUnknown,
-            Assert.Single(brook.LEntryDraftSenses[1].LCardDraftSituation).LSituationDraftText.LStateValueState);
+            Assert.Single(brook.LEntryDraftMeanings[1].LCardDraftSituation).LSituationDraftText.LStateValueState);
 
         LReference field = Assert.Single(engine.TEngineReferenceRead(), reference =>
             reference.LReferenceTitle.TStateValueShow() == "A Field Guide to Rivers");
@@ -148,12 +147,12 @@ public sealed class TMarkupImport
         Assert.Empty(engine.TEngineAuthorRead(field.LReferenceId, LOwner.LOwnerReference));
         Assert.Equal(
             field.LReferenceId,
-            Assert.Single(brook.LEntryDraftSenses[0].LCardDraftExample)
+            Assert.Single(brook.LEntryDraftMeanings[0].LCardDraftExample)
                 .LExampleDraftReference.TStateValueShow());
     }
 
     [Fact]
-    public void OneSourceCitedByTwoExamplesBecomesOneReferenceRowCitedTwice()
+    public void MarkupImport_SourceCitedTwice_StoresOneReference()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -184,7 +183,7 @@ public sealed class TMarkupImport
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source;"));
 
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        IEnumerable<string> cited = draft.LEntryDraftSenses.Select(card =>
+        IEnumerable<string> cited = draft.LEntryDraftMeanings.Select(card =>
             Assert.Single(card.LCardDraftExample).LExampleDraftReference.TStateValueShow());
 
         Assert.Equal([oed.LReferenceId, oed.LReferenceId], cited);
@@ -194,7 +193,7 @@ public sealed class TMarkupImport
     }
 
     [Fact]
-    public void ASourceNoCitationNamesIsStillHeldByTheEntryThatDeclaresIt()
+    public void MarkupImport_UncitedSource_HoldsItUnderItsEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -225,7 +224,7 @@ public sealed class TMarkupImport
     }
 
     [Fact]
-    public void OneAuthorNamedByTwoSourcesBecomesOneAuthorRow()
+    public void MarkupImport_AuthorNamedTwice_StoresOneAuthor()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -252,7 +251,7 @@ public sealed class TMarkupImport
     }
 
     [Fact]
-    public void AnUnknownCitationInTheSecondEntryLeavesTheWorkspaceWithoutAnyEntry()
+    public void MarkupImport_UnknownCitation_StoresNoEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -4,7 +4,7 @@ public enum LOwner
 {
     LOwnerEntry,
 
-    LOwnerSense,
+    LOwnerMeaning,
 
     LOwnerCollocation,
 

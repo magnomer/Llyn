@@ -48,7 +48,7 @@
                 </Grid>
             </ToggleButton>
             <Popup
-                x:Name="PFunnelMenu"
+                x:Name="PFunnelDropdown"
                 Width="252"
                 AllowsTransparency="True"
                 IsOpen="{Binding IsChecked, ElementName=PFunnelBase}"

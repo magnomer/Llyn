@@ -7,7 +7,7 @@ namespace Llyn.UIShell;
 
 public partial class PLibrary
 {
-    internal async void PMarkupImportHandle(object sender, RoutedEventArgs e)
+    internal async void PLibraryMarkupHandle(object sender, RoutedEventArgs e)
     {
         Microsoft.Win32.OpenFileDialog dialog = new()
         {

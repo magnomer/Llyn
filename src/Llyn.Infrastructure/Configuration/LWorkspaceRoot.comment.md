@@ -36,3 +36,9 @@ The pronunciation cache under `temp` is a separate folder and is never reused fo
 The folder inside the drafts folder that holds one file per tentative link, created if needed.
 The court sits under `drafts` because a link is only meaningful while the draft it points at is still tentative.
 Its files are named after link ids, so a listing of the drafts folder itself never picks them up.
+
+## `public static string LWorkspaceClaimRead(string root)`
+
+The folder inside the drafts folder that holds one file per claim on a tentative record, created if needed.
+A claim sits under `drafts` because it means nothing once the draft it names is gone.
+Its files are named after draft ids, so a listing of the drafts folder itself never picks them up.

@@ -1,4 +1,4 @@
-<ResourceDictionary
+﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIShell"
@@ -59,13 +59,13 @@
     <Style x:Key="Theme.Sentence.Citation" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="FontSize" Value="12" />
-        <Setter Property="Text" Value="{Binding PSentenceReferenceName}" />
+        <Setter Property="Text" Value="{Binding PSentenceCitationName}" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PSentenceReferenceName}" Value="">
+            <DataTrigger Binding="{Binding PSentenceCitationName}" Value="">
                 <Setter Property="Text" Value="{DynamicResource Reference.Assign}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding PSentenceReferenceUnreadable}" Value="True">
+            <DataTrigger Binding="{Binding PSentenceCitationUnreadable}" Value="True">
                 <Setter Property="Text" Value="{DynamicResource Display.Unreadable}" />
             </DataTrigger>
         </Style.Triggers>
@@ -77,7 +77,7 @@
         <Setter Property="Foreground" Value="{DynamicResource Theme.Muted}" />
         <Setter Property="Visibility" Value="Collapsed" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PSentenceReferenceCatalog.Count}" Value="0">
+            <DataTrigger Binding="{Binding PSentenceCitationCatalog.Count}" Value="0">
                 <Setter Property="Visibility" Value="Visible" />
             </DataTrigger>
         </Style.Triggers>
@@ -97,7 +97,8 @@
                     <TextBox.Tag>
                         <MultiBinding Converter="{StaticResource Theme.State.Show}">
                             <Binding Path="PSentenceUnreadable" />
-                            <Binding Source="Add an example sentence" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Card.ExampleHint" />
                         </MultiBinding>
                     </TextBox.Tag>
                 </TextBox>
@@ -109,22 +110,23 @@
 
             <Grid Grid.Column="1" Margin="8,0,0,0">
                 <ToggleButton
-                    x:Name="PSentenceReference"
+                    x:Name="PSentenceCitation"
                     Width="104"
                     Height="42"
                     Padding="10,0"
                     Foreground="{DynamicResource Theme.Accent}"
-                    IsChecked="{Binding PSentenceReferenceVisible, Mode=TwoWay}"
+                    IsChecked="{Binding PSentenceCitationVisible, Mode=TwoWay}"
                     Style="{DynamicResource Theme.Input.ToggleAction}">
                     <TextBlock Style="{StaticResource Theme.Sentence.Citation}" />
                 </ToggleButton>
                 <Popup
+                    x:Name="PCitationDrawer"
                     Width="264"
                     Margin="0,6,0,0"
                     AllowsTransparency="True"
-                    IsOpen="{Binding PSentenceReferenceVisible, Mode=TwoWay}"
+                    IsOpen="{Binding PSentenceCitationVisible, Mode=TwoWay}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PSentenceReference}"
+                    PlacementTarget="{Binding ElementName=PSentenceCitation}"
                     StaysOpen="False">
                     <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
                         <StackPanel>
@@ -137,23 +139,13 @@
                                 IsSynchronizedWithCurrentItem="False"
                                 ItemContainerStyle="{StaticResource Theme.Reference.Item}"
                                 ItemTemplate="{StaticResource Theme.Reference.Row}"
-                                ItemsSource="{Binding PSentenceReferenceCatalog}"
+                                ItemsSource="{Binding PSentenceCitationCatalog}"
                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                SelectedValue="{Binding PSentenceReference, Mode=TwoWay}"
+                                SelectedValue="{Binding PSentenceCitation, Mode=TwoWay}"
                                 SelectedValuePath="PCitationItemId" />
-                            <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSentenceReferenceClear" Foreground="{DynamicResource Theme.Muted}">
+                            <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSentenceCitationClear" Foreground="{DynamicResource Theme.Muted}">
                                 <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
                             </Button>
-                            <Grid Margin="0,7,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox MinHeight="35" Padding="10,0" VerticalContentAlignment="Center" Style="{DynamicResource Theme.Input.Field}" Tag="{DynamicResource Reference.Name}" Text="{Binding PSentenceReferenceDraft, UpdateSourceTrigger=PropertyChanged}" />
-                                <Button Grid.Column="1" Height="35" Margin="7,0,0,0" Padding="14,0" Click="PSentenceReferenceCreate" Style="{DynamicResource Theme.Input.Pill}">
-                                    <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.Add}" />
-                                </Button>
-                            </Grid>
                         </StackPanel>
                     </Border>
                 </Popup>

@@ -1,6 +1,4 @@
-using System;
 using System.Windows;
-using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -10,7 +8,7 @@ public partial class PEditor
     {
         if (sender is FrameworkElement { DataContext: PContext row })
         {
-            PCardSituationFind(row)?.PCardSituationInsert(row);
+            PCardContextFind(row)?.PCardContextInsert(row);
         }
     }
 
@@ -18,80 +16,15 @@ public partial class PEditor
     {
         if (sender is FrameworkElement { DataContext: PContext row })
         {
-            PCardSituationFind(row)?.PCardSituationRemove(row);
+            PCardContextFind(row)?.PCardContextRemove(row);
         }
     }
 
-    internal void PContextReferenceClear(object sender, RoutedEventArgs e)
+    private PCard? PCardContextFind(PContext row)
     {
-        if (sender is FrameworkElement { DataContext: PContext row })
+        foreach (PCard card in _pMeaningList)
         {
-            row.PContextReference = string.Empty;
-        }
-    }
-
-    internal void PContextReferenceCreate(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { DataContext: PContext row })
-        {
-            return;
-        }
-
-        string name = row.PContextReferenceDraft.Trim();
-        if (name.Length == 0)
-        {
-            return;
-        }
-
-        LReference created;
-        try
-        {
-            created = _lEngine.LEngineReferenceCreate(new LReference(
-                string.Empty,
-                LStateValue.LStateValueCreate(name),
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LState.LStateUnspecified));
-        }
-        catch (Exception exception)
-        {
-            _pEditorHost.PWindowFailureShow("Reference.AddFailed", exception);
-            return;
-        }
-
-        _pSentenceReference.Add(PCitationItem.PCitationItemCreate(created));
-        row.PContextReferenceDraft = string.Empty;
-        row.PContextReference = created.LReferenceId;
-    }
-
-    private void PContextReferenceShow()
-    {
-        foreach (PCard card in _pSenseList)
-        {
-            PContextReferenceShow(card);
-        }
-
-        foreach (PCard card in _pCollocationList)
-        {
-            PContextReferenceShow(card);
-        }
-    }
-
-    private static void PContextReferenceShow(PCard card)
-    {
-        foreach (PContext row in card.PCardSituation)
-        {
-            row.PContextReferenceShow();
-        }
-    }
-
-    private PCard? PCardSituationFind(PContext row)
-    {
-        foreach (PCard card in _pSenseList)
-        {
-            if (card.PCardSituation.Contains(row))
+            if (card.PCardContext.Contains(row))
             {
                 return card;
             }
@@ -99,7 +32,7 @@ public partial class PEditor
 
         foreach (PCard card in _pCollocationList)
         {
-            if (card.PCardSituation.Contains(row))
+            if (card.PCardContext.Contains(row))
             {
                 return card;
             }

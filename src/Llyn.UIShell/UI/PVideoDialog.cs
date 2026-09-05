@@ -42,7 +42,7 @@ public partial class PEditor
 
     private PCard? PCardVideoFind(PVideo row)
     {
-        foreach (PCard card in _pSenseList)
+        foreach (PCard card in _pMeaningList)
         {
             if (card.PCardVideo.Contains(row))
             {

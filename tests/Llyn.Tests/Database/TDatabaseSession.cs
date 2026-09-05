@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Xunit;
 
@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TDatabaseSession
 {
     [Fact]
-    public void WorkInAnUncommittedSessionLeavesNothingBehind()
+    public void SessionStart_NeverCommitted_WritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -22,7 +22,7 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void WorkAcrossSeveralStoresLandsTogetherWhenTheSessionCommits()
+    public void SessionCommit_SeveralStores_LandsTogether()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -41,7 +41,7 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void AFailurePartWayThroughASessionRollsBackEverythingBeforeIt()
+    public void SessionCommit_FailurePartWay_RollsBackAll()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -58,82 +58,82 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void MovingAMeaningAmongItsSiblingsRenumbersTheWholeGroup()
+    public void MeaningMove_AmongSiblings_RenumbersGroup()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
-        LSense first = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
-        LSense second = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
-        LSense third = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
+        LMeaning first = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+        LMeaning second = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+        LMeaning third = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
 
-        Assert.Equal([0, 1, 2], senses.TSenseRead(entry.LEntryId).Select(sense => sense.LSensePosition));
+        Assert.Equal([0, 1, 2], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
 
-        senses.TSenseMove(third.LSenseId, 0);
+        meanings.TMeaningMove(third.LMeaningId, 0);
 
         Assert.Equal(
-            [third.LSenseId, first.LSenseId, second.LSenseId],
-            senses.TSenseRead(entry.LEntryId).Select(sense => sense.LSenseId));
-        Assert.Equal([0, 1, 2], senses.TSenseRead(entry.LEntryId).Select(sense => sense.LSensePosition));
+            [third.LMeaningId, first.LMeaningId, second.LMeaningId],
+            meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningId));
+        Assert.Equal([0, 1, 2], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
     }
 
     [Fact]
-    public void DeletingAMeaningClosesTheGapItLeaves()
+    public void MeaningDelete_MiddleRow_ClosesPositionGap()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
-        LSense first = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
-        senses.TSenseCreate(TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
-        senses.TSenseCreate(TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
+        LMeaning first = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+        meanings.TMeaningCreate(TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+        meanings.TMeaningCreate(TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
 
-        senses.TSenseDelete(first.LSenseId);
+        meanings.TMeaningDelete(first.LMeaningId);
 
-        Assert.Equal([0, 1], senses.TSenseRead(entry.LEntryId).Select(sense => sense.LSensePosition));
+        Assert.Equal([0, 1], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
     }
 
     [Fact]
-    public void WritingATagLineOverAnOlderOneLeavesTheNewOrderNumberedFromZero()
+    public void TagMeaningSave_OverOlderLine_NumbersFromZero()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         LTagArchive tags = TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
-        LSense sense = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, null, null, null, string.Empty));
+        LMeaning meaning = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, null, null, null, string.Empty));
 
-        tags.TTagSenseSave(
-            sense.LSenseId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("archaic"), TInterface.TTagCreate("rare")]);
+        tags.TTagMeaningSave(
+            meaning.LMeaningId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("archaic"), TInterface.TTagCreate("rare")]);
 
         Assert.Equal(
             ["formal", "archaic", "rare"],
-            tags.TTagSenseRead(sense.LSenseId).Select(tag => tag.LTagText));
+            tags.TTagMeaningRead(meaning.LMeaningId).Select(tag => tag.LTagText));
 
-        tags.TTagSenseSave(sense.LSenseId, [TInterface.TTagCreate("rare"), TInterface.TTagCreate("archaic")]);
+        tags.TTagMeaningSave(meaning.LMeaningId, [TInterface.TTagCreate("rare"), TInterface.TTagCreate("archaic")]);
 
         Assert.Equal(
             ["rare", "archaic"],
-            tags.TTagSenseRead(sense.LSenseId).Select(tag => tag.LTagText));
+            tags.TTagMeaningRead(meaning.LMeaningId).Select(tag => tag.LTagText));
         Assert.Equal(
             [0, 1],
-            TDatabasePositionRead(workspace, "sense_tag", "sense_id", sense.LSenseId));
+            TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaning.LMeaningId));
     }
 
     [Fact]
-    public void RemovingAnInflectionRenumbersTheSetAndCarriesItsFeatures()
+    public void InflectionDelete_MiddleRow_RenumbersKeepsFeatures()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -165,7 +165,7 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void AnExampleCarriesItsOwnTranslationThroughAnUpdate()
+    public void ExampleUpdate_WithTranslation_KeepsTranslation()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
@@ -182,7 +182,7 @@ public sealed class TDatabaseSession
     }
 
     [Fact]
-    public void IdentifiersAreDistinctAndLongEnoughToStayThatWay()
+    public void IdentityCreate_ManyCalls_ReturnsDistinctValues()
     {
         HashSet<string> identifiers = [];
         for (int count = 0; count < 5000; count++)

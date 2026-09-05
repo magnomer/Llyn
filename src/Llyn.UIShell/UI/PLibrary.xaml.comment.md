@@ -20,10 +20,11 @@ Nothing is selected, the editor is closed, and the index is re-read.
 A different workspace has its own database.
 So what the panel was showing came from one that is no longer open.
 
-## `internal void PLibraryDraftFinish(bool store)`
+## `internal bool PLibraryDraftFinish(bool store)`
 
 Carries the window's exit answer down to the editor this panel owns.
 The panel holds no draft of its own, so it only passes the answer along.
+What the editor answers is passed back up, because a store the engine refused must not close the window.
 
 ## `internal bool PLibraryChangeCheck()`
 

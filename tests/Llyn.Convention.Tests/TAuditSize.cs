@@ -1,4 +1,4 @@
-using Xunit;
+﻿using Xunit;
 using Xunit.Abstractions;
 
 namespace Llyn.Convention.Tests;
@@ -12,7 +12,7 @@ public sealed class TAuditSize
     public TAuditSize(ITestOutputHelper output) => TAuditOutput = output;
 
     [Fact]
-    public void SourceFiles_StayWithinTheAdvisoryLineLimit()
+    public void AuditSize_OversizeFile_ReportsAsAdvisory()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
         IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot);

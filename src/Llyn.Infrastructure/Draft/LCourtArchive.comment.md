@@ -33,18 +33,23 @@ One bad file must not hide the rest.
 Removes the file for `id`, which is how one link leaves the court on its own.
 A file already gone, or held open by the other copy of the program, is not an error.
 
-## `public static IReadOnlyList<LCourtLink> LCourtArchiveResolve(string root, string draftId, string realId)`
+## `public static IReadOnlyList<LCourtLink> LCourtArchiveSettle(string root, string draftId)`
 
-Settles every link pointing at `draftId` now that the draft has been saved as the real entry `realId`.
+Settles every link pointing at `draftId`, whether that draft became a real entry or was abandoned.
 The link files disappear and the links themselves are returned.
-Each returned link names the draft that owns it, so the caller can rewrite that draft's stored content to point at `realId`.
-Rewriting is not done here; job06 owns the draft file.
+Each returned link names the draft that owns it, so the caller can rewrite that draft's stored content.
+Rewriting is not done here, because the engine owns the draft file.
+Resolution and cancellation were two names for this one deletion.
+The real id one of them demanded was never stored anywhere.
+The caller already knows what to put in place of the tentative id.
 
-## `public static IReadOnlyList<LCourtLink> LCourtArchiveCancel(string root, string draftId)`
+## `public static void LCourtArchiveSweep(string root)`
 
-Settles every link pointing at `draftId` now that the draft has been abandoned.
-The link files disappear and the links themselves are returned, so the caller can strip them from their owners' content.
-It is the same settlement as resolution with nothing real to point at afterwards.
+Deletes every half-written `.json.tmp` in the court that is older than an hour.
+A save writes its pending file and then moves it over the target.
+A kill between the two leaves a file the listing rightly ignores and nothing collects.
+The hour keeps a file another copy of the program is writing out of reach.
+A missing folder is not an error, and neither is a file that vanishes mid-sweep.
 
 ## Inline notes
 
@@ -53,7 +58,7 @@ It is the same settlement as resolution with nothing real to point at afterwards
 A Windows search pattern can match a file whose extension merely starts with the one asked for.
 The half-written `.json.tmp` file must never be read as a link.
 
-### `realId` being checked but not stored
+### the age check inside the sweep
 
-The court file is deleted rather than rewritten, so the real id has nowhere to go here.
-It is still demanded, because a caller resolving against a blank id has lost the entry it just saved and must fail loudly.
+A pending file younger than the hour may belong to a save still in flight.
+Taking it would break a write the other copy of the program is in the middle of.

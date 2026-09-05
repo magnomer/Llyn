@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -8,20 +8,20 @@ namespace Llyn.Tests;
 public sealed class TTranslation
 {
     [Fact]
-    public void ACardHoldsItsLinksInTheOrderItGaveThem()
+    public void TranslationMeaningSave_CardWithLinks_ReadsBackInOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string senseId = TTranslationSenseCreate(workspace, source.LEntryId);
+        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
         LEntry third = TTranslationEntryCreate(entries, "부러뜨리다", "Korean");
 
-        translations.TTranslationSenseSave(
-            senseId,
+        translations.TTranslationMeaningSave(
+            meaningId,
             [
                 TInterface.TTranslationCreate(first.LEntryId, 0),
                 TInterface.TTranslationCreate(second.LEntryId, 0),
@@ -30,28 +30,28 @@ public sealed class TTranslation
 
         Assert.Equal(
             [first.LEntryId, second.LEntryId, third.LEntryId],
-            translations.TTranslationSenseRead(senseId)
+            translations.TTranslationMeaningRead(meaningId)
                 .Select(translation => translation.LTranslationEntryId));
         Assert.Equal(
             [0, 1, 2],
-            translations.TTranslationSenseRead(senseId)
+            translations.TTranslationMeaningRead(meaningId)
                 .Select(translation => translation.LTranslationPosition));
     }
 
     [Fact]
-    public void WritingTheSameEntryTwiceUnderOneCardKeepsOneLink()
+    public void TranslationMeaningSave_SameEntryTwice_KeepsOneLink()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string senseId = TTranslationSenseCreate(workspace, source.LEntryId);
+        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
 
-        translations.TTranslationSenseSave(
-            senseId,
+        translations.TTranslationMeaningSave(
+            meaningId,
             [
                 TInterface.TTranslationCreate(first.LEntryId, 0),
                 TInterface.TTranslationCreate(first.LEntryId, 0),
@@ -61,15 +61,15 @@ public sealed class TTranslation
 
         Assert.Equal(
             [first.LEntryId, second.LEntryId],
-            translations.TTranslationSenseRead(senseId)
+            translations.TTranslationMeaningRead(meaningId)
                 .Select(translation => translation.LTranslationEntryId));
         Assert.Equal(
             [0, 1],
-            TTranslationPositionRead(workspace, "sense_translation", "sense_id", senseId));
+            TTranslationPositionRead(workspace, "sense_translation", "sense_id", meaningId));
     }
 
     [Fact]
-    public void AShorterListDropsTheRemovedLinksAndRenumbersWhatIsLeft()
+    public void TranslationCollocationSave_ShorterList_Renumbers()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -103,32 +103,32 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void DeletingATargetTakesTheLinksPointingAtItAndLeavesTheCardStanding()
+    public void EntryDelete_LinkTarget_RemovesLinksKeepsCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string senseId = TTranslationSenseCreate(workspace, source.LEntryId);
+        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
 
-        translations.TTranslationSenseSave(
-            senseId,
+        translations.TTranslationMeaningSave(
+            meaningId,
             [TInterface.TTranslationCreate(first.LEntryId, 0), TInterface.TTranslationCreate(second.LEntryId, 0)]);
 
         entries.TEntryDelete(first.LEntryId);
 
         Assert.Equal(
             [second.LEntryId],
-            translations.TTranslationSenseRead(senseId)
+            translations.TTranslationMeaningRead(meaningId)
                 .Select(translation => translation.LTranslationEntryId));
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
     }
 
     [Fact]
-    public void ATargetReadNamesEveryStoredEntryAndPassesOverOneNothingAnswers()
+    public void TranslationTargetRead_UnknownId_PassesOverIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -152,26 +152,26 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void AnEntryFindsBothKindsOfCardThatPointsAtIt()
+    public void TranslationIncomingRead_EntryPointedAt_FindsBothCards()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string senseId = TTranslationSenseCreate(workspace, source.LEntryId);
+        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         string collocationId = TTranslationCollocationCreate(workspace, source.LEntryId);
         LEntry target = TTranslationEntryCreate(entries, "부수다", "Korean");
 
-        translations.TTranslationSenseSave(senseId, [TInterface.TTranslationCreate(target.LEntryId, 0)]);
+        translations.TTranslationMeaningSave(meaningId, [TInterface.TTranslationCreate(target.LEntryId, 0)]);
         translations.TTranslationCollocationSave(
             collocationId, [TInterface.TTranslationCreate(target.LEntryId, 0)]);
 
         IReadOnlyList<LUsage> incoming = translations.TTranslationIncomingRead(target.LEntryId);
 
-        Assert.Equal([senseId, collocationId], incoming.Select(usage => usage.LUsageId));
+        Assert.Equal([meaningId, collocationId], incoming.Select(usage => usage.LUsageId));
         Assert.Equal(
-            [LOwner.LOwnerSense, LOwner.LOwnerCollocation],
+            [LOwner.LOwnerMeaning, LOwner.LOwnerCollocation],
             incoming.Select(usage => usage.LUsageOwner));
         Assert.Equal(["break", "break"], incoming.Select(usage => usage.LUsageHeadword));
         Assert.Equal(
@@ -180,7 +180,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void ACardCarriesItsLinksThroughASaveAndComesBackHoldingThem()
+    public void EntrySave_CardWithLinks_ReadsBackWithLinks()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -201,14 +201,14 @@ public sealed class TTranslation
         Assert.NotNull(loaded);
         Assert.Equal(
             [first.LEntryId, second.LEntryId],
-            Assert.Single(loaded.LEntryDraftSenses).LCardDraftTranslation);
+            Assert.Single(loaded.LEntryDraftMeanings).LCardDraftTranslation);
         Assert.Equal(
             ["break"],
             engine.TEngineIncomingRead(first.LEntryId).Select(usage => usage.LUsageHeadword));
     }
 
     [Fact]
-    public void TakingOneLinkOffACardDropsThatRowAndLeavesTheOther()
+    public void EntryUpdate_OneLinkRemoved_DropsRowKeepsOther()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -229,10 +229,10 @@ public sealed class TTranslation
         Assert.NotNull(loaded);
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_translation;"));
 
-        LCardDraft card = loaded.LEntryDraftSenses[0];
+        LCardDraft card = loaded.LEntryDraftMeanings[0];
         engine.TEngineEntryUpdate(stored.LEntryId, loaded with
         {
-            LEntryDraftSenses = [card with { LCardDraftTranslation = [second.LEntryId] }],
+            LEntryDraftMeanings = [card with { LCardDraftTranslation = [second.LEntryId] }],
         });
 
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_translation;"));
@@ -242,11 +242,11 @@ public sealed class TTranslation
         Assert.NotNull(reloaded);
         Assert.Equal(
             second.LEntryId,
-            Assert.Single(Assert.Single(reloaded.LEntryDraftSenses).LCardDraftTranslation));
+            Assert.Single(Assert.Single(reloaded.LEntryDraftMeanings).LCardDraftTranslation));
     }
 
     [Fact]
-    public void ACardCarryingNothingButALinkIsStillStored()
+    public void EntrySave_CardWithOnlyALink_StoresCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -266,7 +266,7 @@ public sealed class TTranslation
         Assert.NotNull(loaded);
         Assert.Equal(
             target.LEntryId,
-            Assert.Single(Assert.Single(loaded.LEntryDraftSenses).LCardDraftTranslation));
+            Assert.Single(Assert.Single(loaded.LEntryDraftMeanings).LCardDraftTranslation));
     }
 
     private static LCardDraft TTranslationCardCreate(string meaning, IReadOnlyList<string> ids)
@@ -304,7 +304,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void ATypedWordResolvesOnlyToAHeadwordThatIsThatWholeWord()
+    public void TranslationResolve_TypedWord_MatchesWholeHeadword()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -324,7 +324,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void TwoEntriesSharingAHeadwordSettleNothingOnTheirOwn()
+    public void TranslationResolve_SharedHeadword_SettlesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -338,7 +338,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void TheEntryBeingEditedIsNeverOfferedAsItsOwnTranslation()
+    public void TranslationResolve_EntryBeingEdited_NeverOffersItself()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -352,7 +352,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void AStubMadeAndThenThrownAwayLeavesNothingBehind()
+    public void TranslationDelete_StubThrownAway_LeavesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -370,7 +370,7 @@ public sealed class TTranslation
     }
 
     [Fact]
-    public void AStubSomethingAlreadyLinksToSurvivesTheDiscard()
+    public void TranslationDelete_LinkedStub_KeepsIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -378,14 +378,14 @@ public sealed class TTranslation
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string senseId = TTranslationSenseCreate(workspace, source.LEntryId);
+        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry stub = engine.TEngineTranslationCreate("부수다", "Korean");
-        translations.TTranslationSenseSave(senseId, [TInterface.TTranslationCreate(stub.LEntryId, 0)]);
+        translations.TTranslationMeaningSave(meaningId, [TInterface.TTranslationCreate(stub.LEntryId, 0)]);
 
         engine.TEngineTranslationDelete(stub.LEntryId);
 
         Assert.NotNull(engine.TEngineEntryRead(stub.LEntryId));
-        Assert.Single(translations.TTranslationSenseRead(senseId));
+        Assert.Single(translations.TTranslationMeaningRead(meaningId));
     }
 
     private static LEntry TTranslationEntryCreate(
@@ -395,11 +395,11 @@ public sealed class TTranslation
             TInterface.TEntryCreate(string.Empty, headword, language, null, null, null, null), [], []);
     }
 
-    private static string TTranslationSenseCreate(TWorkspace workspace, string entryId)
+    private static string TTranslationMeaningCreate(TWorkspace workspace, string entryId)
     {
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
-        return senses.TSenseCreate(TInterface.TSenseCreate(
-            string.Empty, entryId, null, 0, null, "a meaning", null, null, string.Empty)).LSenseId;
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
+        return meanings.TMeaningCreate(TInterface.TMeaningCreate(
+            string.Empty, entryId, null, 0, null, "a meaning", null, null, string.Empty)).LMeaningId;
     }
 
     private static string TTranslationCollocationCreate(TWorkspace workspace, string entryId)

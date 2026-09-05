@@ -32,6 +32,11 @@ internal static partial class TInterface
     internal static LEntry TEngineDraftCommit(this LEngine engine, string id) =>
         engine.LEngineDraftCommit(id);
 
+    internal static void TEngineDraftDelete(this LEngine engine, string id)
+    {
+        engine.LEngineDraftDelete(id);
+    }
+
     internal static IReadOnlyList<LCardDraft> TEngineDraftMove(
         this LEngine engine,
         string id,
@@ -77,6 +82,11 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine) =>
         engine.LEngineLeftoverRead();
+
+    internal static void TEngineLeftoverSweep(this LEngine engine)
+    {
+        engine.LEngineLeftoverSweep();
+    }
 
     internal static IReadOnlyList<LEntry> TEngineMarkupImport(this LEngine engine, string text) =>
         engine.LEngineMarkupImport(text);

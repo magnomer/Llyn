@@ -11,12 +11,11 @@ internal sealed class PSentence : INotifyPropertyChanged
     private string _pSentenceId;
     private string _pSentenceText;
     private bool _pSentenceUnreadable;
-    private string _pSentenceReference;
-    private bool _pSentenceReferenceUnreadable;
-    private string _pSentenceReferenceName;
-    private string _pSentenceReferenceDraft;
+    private string _pSentenceCitation;
+    private bool _pSentenceCitationUnreadable;
+    private string _pSentenceCitationName;
     private string _pSentenceOrderText;
-    private bool _pSentenceReferenceVisible;
+    private bool _pSentenceCitationVisible;
 
     internal PSentence(ObservableCollection<PCitationItem> catalog)
         : this(catalog, LStateValue.LStateValueUnspecified, string.Empty, LStateValue.LStateValueUnspecified)
@@ -32,18 +31,17 @@ internal sealed class PSentence : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(reference);
 
-        PSentenceReferenceCatalog = catalog;
+        PSentenceCitationCatalog = catalog;
         _pSentenceId = id;
         _pSentenceText = text.LStateValueShow();
         _pSentenceUnreadable = text.LStateValueState == LState.LStateUnknown;
-        _pSentenceReference = reference.LStateValueShow();
-        _pSentenceReferenceUnreadable = reference.LStateValueState == LState.LStateUnknown;
-        _pSentenceReferenceName = PSentenceReferenceFind(_pSentenceReference);
-        _pSentenceReferenceDraft = string.Empty;
+        _pSentenceCitation = reference.LStateValueShow();
+        _pSentenceCitationUnreadable = reference.LStateValueState == LState.LStateUnknown;
+        _pSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
         _pSentenceOrderText = string.Empty;
     }
 
-    public ObservableCollection<PCitationItem> PSentenceReferenceCatalog { get; }
+    public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
 
     public string PSentenceId
     {
@@ -91,83 +89,68 @@ internal sealed class PSentence : INotifyPropertyChanged
         }
     }
 
-    public string PSentenceReference
+    public string PSentenceCitation
     {
-        get => _pSentenceReference;
+        get => _pSentenceCitation;
         set
         {
             string chosen = value ?? string.Empty;
-            if (string.Equals(_pSentenceReference, chosen, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceCitation, chosen, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pSentenceReference = chosen;
-            PSentenceReferenceUnreadable = false;
-            PSentenceRaise(nameof(PSentenceReference));
+            _pSentenceCitation = chosen;
+            PSentenceCitationUnreadable = false;
+            PSentenceRaise(nameof(PSentenceCitation));
 
-            PSentenceReferenceName = PSentenceReferenceFind(chosen);
-            PSentenceReferenceVisible = false;
+            PSentenceCitationName = PSentenceCitationFind(chosen);
+            PSentenceCitationVisible = false;
         }
     }
 
-    public bool PSentenceReferenceUnreadable
+    public bool PSentenceCitationUnreadable
     {
-        get => _pSentenceReferenceUnreadable;
+        get => _pSentenceCitationUnreadable;
         private set
         {
-            if (_pSentenceReferenceUnreadable == value)
+            if (_pSentenceCitationUnreadable == value)
             {
                 return;
             }
 
-            _pSentenceReferenceUnreadable = value;
-            PSentenceRaise(nameof(PSentenceReferenceUnreadable));
+            _pSentenceCitationUnreadable = value;
+            PSentenceRaise(nameof(PSentenceCitationUnreadable));
         }
     }
 
-    public string PSentenceReferenceName
+    public string PSentenceCitationName
     {
-        get => _pSentenceReferenceName;
+        get => _pSentenceCitationName;
         private set
         {
-            if (string.Equals(_pSentenceReferenceName, value, StringComparison.Ordinal))
+            if (string.Equals(_pSentenceCitationName, value, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pSentenceReferenceName = value;
-            PSentenceRaise(nameof(PSentenceReferenceName));
+            _pSentenceCitationName = value;
+            PSentenceRaise(nameof(PSentenceCitationName));
         }
     }
 
-    public string PSentenceReferenceDraft
+    public bool PSentenceCitationVisible
     {
-        get => _pSentenceReferenceDraft;
+        get => _pSentenceCitationVisible;
         set
         {
-            if (string.Equals(_pSentenceReferenceDraft, value, StringComparison.Ordinal))
+            if (_pSentenceCitationVisible == value)
             {
                 return;
             }
 
-            _pSentenceReferenceDraft = value;
-            PSentenceRaise(nameof(PSentenceReferenceDraft));
-        }
-    }
-
-    public bool PSentenceReferenceVisible
-    {
-        get => _pSentenceReferenceVisible;
-        set
-        {
-            if (_pSentenceReferenceVisible == value)
-            {
-                return;
-            }
-
-            _pSentenceReferenceVisible = value;
-            PSentenceRaise(nameof(PSentenceReferenceVisible));
+            _pSentenceCitationVisible = value;
+            PSentenceRaise(nameof(PSentenceCitationVisible));
         }
     }
 
@@ -193,11 +176,11 @@ internal sealed class PSentence : INotifyPropertyChanged
             : LStateValue.LStateValueRead(_pSentenceText);
     }
 
-    internal LStateValue PSentenceReferenceRead()
+    internal LStateValue PSentenceCitationRead()
     {
-        return _pSentenceReferenceUnreadable
+        return _pSentenceCitationUnreadable
             ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pSentenceReference);
+            : LStateValue.LStateValueRead(_pSentenceCitation);
     }
 
     internal void PSentenceIdentityApply()
@@ -214,25 +197,24 @@ internal sealed class PSentence : INotifyPropertyChanged
     {
         PSentenceText = string.Empty;
         PSentenceUnreadable = false;
-        PSentenceReference = string.Empty;
-        PSentenceReferenceUnreadable = false;
-        PSentenceReferenceDraft = string.Empty;
+        PSentenceCitation = string.Empty;
+        PSentenceCitationUnreadable = false;
         PSentenceId = string.Empty;
     }
 
-    internal void PSentenceReferenceShow()
+    internal void PSentenceCitationShow()
     {
-        PSentenceReferenceName = PSentenceReferenceFind(_pSentenceReference);
+        PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
     }
 
-    private string PSentenceReferenceFind(string reference)
+    private string PSentenceCitationFind(string reference)
     {
         if (string.IsNullOrWhiteSpace(reference))
         {
             return string.Empty;
         }
 
-        foreach (PCitationItem row in PSentenceReferenceCatalog)
+        foreach (PCitationItem row in PSentenceCitationCatalog)
         {
             if (string.Equals(row.PCitationItemId, reference, StringComparison.Ordinal))
             {

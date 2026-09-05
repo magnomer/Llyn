@@ -148,30 +148,6 @@ public sealed class LReferenceArchive
         return LReferenceSingleRead(connection, id);
     }
 
-    public LReference? LReferenceSituationRead(string situationId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
-
-        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        string id;
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "SELECT source_id FROM situation WHERE id = $situation;";
-            command.Parameters.AddWithValue("$situation", situationId);
-            using SqliteDataReader reader = command.ExecuteReader();
-            if (!reader.Read() || reader.IsDBNull(0))
-            {
-                return null;
-            }
-
-            id = reader.GetString(0);
-        }
-
-        return LReferenceSingleRead(connection, id);
-    }
-
     public void LReferenceUpdate(LReference reference)
     {
         ArgumentNullException.ThrowIfNull(reference);
@@ -220,8 +196,7 @@ public sealed class LReferenceArchive
                 """
                 SELECT
                     (SELECT COUNT(*) FROM entry_source WHERE source_id = $id)
-                    + (SELECT COUNT(*) FROM example WHERE source_id = $id)
-                    + (SELECT COUNT(*) FROM situation WHERE source_id = $id);
+                    + (SELECT COUNT(*) FROM example WHERE source_id = $id);
                 """;
             guard.Parameters.AddWithValue("$id", id);
             long citations = Convert.ToInt64(guard.ExecuteScalar());
@@ -301,39 +276,6 @@ public sealed class LReferenceArchive
             if (command.ExecuteNonQuery() == 0)
             {
                 throw new InvalidOperationException($"No Example carries the id '{exampleId}'.");
-            }
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
-    public void LReferenceSituationAttach(string situationId, string referenceId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
-
-        LReferenceSituationSave(situationId, LStateValue.LStateValueCreate(referenceId));
-    }
-
-    public void LReferenceSituationDetach(string situationId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
-
-        LReferenceSituationSave(situationId, LStateValue.LStateValueUnspecified);
-    }
-
-    private void LReferenceSituationSave(string situationId, LStateValue reference)
-    {
-        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            command.CommandText =
-                "UPDATE situation SET source_state = $referenceState, source_id = $reference WHERE id = $situation;";
-            LStateColumn.LStateColumnApply(command, "reference", reference);
-            command.Parameters.AddWithValue("$situation", situationId);
-            if (command.ExecuteNonQuery() == 0)
-            {
-                throw new InvalidOperationException($"No Situation carries the id '{situationId}'.");
             }
         }
 

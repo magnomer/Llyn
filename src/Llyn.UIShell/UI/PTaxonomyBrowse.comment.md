@@ -3,7 +3,7 @@
 ## `public partial class PTaxonomy`
 
 Browsing behavior of the taxonomy panel.
-The search field and the sorting menu refill the tag catalog.
+The search field and the sorting dropdown refill the tag catalog.
 A chosen tag refills the entries beside it, and a chosen entry is loaded back from the workspace.
 It is rendered read-only in the reader, which the mode toggle swaps for the editor.
 This is the same read half of the entry round trip the library panel offers, reached through a tag instead of a headword.
@@ -24,7 +24,7 @@ The reader may show it and the editor may be correcting it.
 ### `private string _pFunnelChoice = "Name";`
 
 Which ordering the tag catalog is listed in.
-It is the tag the chosen menu row carries, not the words that row showed.
+It is the tag the chosen dropdown row carries, not the words that row showed.
 The ordering is the same one whatever language names it.
 
 ### `private void PTaxonomyHandle(object sender, DependencyPropertyChangedEventArgs e)`

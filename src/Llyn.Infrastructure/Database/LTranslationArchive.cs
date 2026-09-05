@@ -16,9 +16,9 @@ public sealed class LTranslationArchive
         _lTranslationArchiveDatabase = database;
     }
 
-    public IReadOnlyList<LTranslation> LTranslationSenseRead(string senseId)
+    public IReadOnlyList<LTranslation> LTranslationMeaningRead(string meaningId)
     {
-        return LTranslationReferrerRead("sense_translation", "sense_id", senseId);
+        return LTranslationReferrerRead("sense_translation", "sense_id", meaningId);
     }
 
     public IReadOnlyList<LTranslation> LTranslationCollocationRead(string collocationId)
@@ -26,9 +26,9 @@ public sealed class LTranslationArchive
         return LTranslationReferrerRead("collocation_translation", "collocation_id", collocationId);
     }
 
-    public void LTranslationSenseSave(string senseId, IReadOnlyList<LTranslation> translations)
+    public void LTranslationMeaningSave(string meaningId, IReadOnlyList<LTranslation> translations)
     {
-        LTranslationReferrerSave("sense_translation", "sense_id", senseId, translations);
+        LTranslationReferrerSave("sense_translation", "sense_id", meaningId, translations);
     }
 
     public void LTranslationCollocationSave(
@@ -116,7 +116,7 @@ public sealed class LTranslationArchive
         usages.AddRange(LTranslationIncomingRead(
             connection,
             entryId,
-            LOwner.LOwnerSense,
+            LOwner.LOwnerMeaning,
             """
             SELECT link.sense_id, sense.entry_id, entry.headword, entry.language,
                    sense.title_state, sense.title,

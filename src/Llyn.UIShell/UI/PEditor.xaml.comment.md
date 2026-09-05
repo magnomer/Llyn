@@ -53,7 +53,7 @@ The window this editor sits in.
 An editor does not put up its own dialogs.
 A failure is the program speaking, so it is asked for through the window.
 
-### `Resources.MergedDictionaries.Add(new PSenseTemplate(this));`
+### `Resources.MergedDictionaries.Add(new PMeaningTemplate(this));`
 
 Each card and menu row is a template in a dictionary of its own.
 So this control's markup stays its own layout.

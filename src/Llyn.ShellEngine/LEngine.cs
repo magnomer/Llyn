@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -17,6 +17,7 @@ public sealed partial class LEngine : IDisposable
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
     private LDatabase _lEngineDatabase;
+    private LDoctorRescue _lEngineRescue;
 
     public LEngine()
         : this(LWorkspaceRoot.LWorkspaceRootRead())
@@ -31,7 +32,7 @@ public sealed partial class LEngine : IDisposable
         _lEngineSettings = LSettingsLoader.LSettingsLoaderLoad(_lEngineWorkspace);
 
         _lEngineDatabase = new LDatabase(_lEngineWorkspace);
-        _lEngineDatabase.LDatabaseCreate();
+        _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
 
         LEngineLanguageImport();
 
@@ -68,6 +69,11 @@ public sealed partial class LEngine : IDisposable
             .ConfigureAwait(false);
     }
 
+    public LDoctorRescue LEngineRescueRead()
+    {
+        return _lEngineRescue;
+    }
+
     public string LEngineWorkspaceRead()
     {
         return _lEngineWorkspace;
@@ -86,7 +92,7 @@ public sealed partial class LEngine : IDisposable
         LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
         _lEngineDatabase = new LDatabase(_lEngineWorkspace);
-        _lEngineDatabase.LDatabaseCreate();
+        _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
         LEngineLanguageImport();
     }
 
@@ -154,7 +160,7 @@ public sealed partial class LEngine : IDisposable
     {
         return owner switch
         {
-            LOwner.LOwnerSense => false,
+            LOwner.LOwnerMeaning => false,
             LOwner.LOwnerCollocation => true,
             _ => throw LEngineOwnerRaise(owner),
         };

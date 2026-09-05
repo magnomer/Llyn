@@ -4,7 +4,7 @@
 
 Persists the lexical relations a Meaning owns.
 Each relation is a stable-id row assigned an opaque id here on creation.
-It hangs from its origin sense and points at exactly one target.
+It hangs from its origin meaning and points at exactly one target.
 The target is an Entry or another Meaning.
 It is reached through a checked reference row in `relation_entry` XOR `relation_sense`.
 The single-target rule is enforced before anything is written.
@@ -28,9 +28,9 @@ Returns the stored relation with that id and its assigned position filled in.
 Exactly one of the target ids must be set.
 Naming both or neither throws an `InvalidOperationException` before anything is written.
 
-## `public IReadOnlyList<LRelation> LRelationRead(string senseId)`
+## `public IReadOnlyList<LRelation> LRelationRead(string meaningId)`
 
-Reads the relations originating from the Meaning identified by `senseId`, ordered by position.
+Reads the relations originating from the Meaning identified by `meaningId`, ordered by position.
 Each comes with its single target resolved to a target Entry id or a target Meaning id.
 
 ## `public void LRelationUpdate(LRelation relation)`
@@ -60,6 +60,6 @@ The relations left under the same origin Meaning are renumbered so their positio
 
 The Meaning a relation hangs from, or null when no relation carries the id.
 
-### `private static IReadOnlyList<string> LRelationSiblingRead(SqliteConnection connection, string senseId)`
+### `private static IReadOnlyList<string> LRelationSiblingRead(SqliteConnection connection, string meaningId)`
 
 The relations of one origin Meaning, in order.

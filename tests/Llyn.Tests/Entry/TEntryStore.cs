@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Xunit;
 
@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TEntryStore
 {
     [Fact]
-    public void AnEntryReadsBackWithItsFormsAndPartsOfSpeech()
+    public void EntryRead_StoredEntry_ReturnsFormsAndSpeeches()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -25,7 +25,7 @@ public sealed class TEntryStore
     }
 
     [Fact]
-    public void UpdatingAnEntryThatDoesNotExistThrows()
+    public void EntryUpdate_UnknownEntry_Throws()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
@@ -35,11 +35,11 @@ public sealed class TEntryStore
     }
 
     [Fact]
-    public void DeletingAnEntryTakesEverythingItOwnsAndNothingItOnlyReferences()
+    public void EntryDelete_OwnedAndReferencedRows_RemovesOnlyOwned()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
         LExampleLink links = TInterface.TExampleLinkCreate(workspace.TWorkspaceDatabase);
 
@@ -47,11 +47,11 @@ public sealed class TEntryStore
             TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null),
             [TInterface.TFormCreate(string.Empty, 0, "word", null, "headword")],
             []);
-        LSense sense = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
+        LMeaning meaning = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
         LExample example = examples.TExampleCreate(
             TInterface.TExampleCreate(string.Empty, "en", "a sentence", null, null));
-        links.TExampleSenseAttach(sense.LSenseId, example.LExampleId, 0);
+        links.TExampleMeaningAttach(meaning.LMeaningId, example.LExampleId, 0);
 
         entries.TEntryDelete(entry.LEntryId);
 
@@ -64,21 +64,21 @@ public sealed class TEntryStore
     }
 
     [Fact]
-    public void DeletingAnEntryAnotherEntryLinksToIsRefused()
+    public void EntryDelete_LinkedFromAnotherEntry_Throws()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         LRelationArchive relations = TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry target = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "target", "en", null, null, null, null), [], []);
         LEntry origin = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "origin", "en", null, null, null, null), [], []);
-        LSense sense = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, origin.LEntryId, null, 0, null, null, null, null, string.Empty));
+        LMeaning meaning = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, origin.LEntryId, null, 0, null, null, null, null, string.Empty));
         relations.TRelationCreate(
-            TInterface.TRelationCreate(string.Empty, sense.LSenseId, 0, "synonym", null, null, target.LEntryId, null));
+            TInterface.TRelationCreate(string.Empty, meaning.LMeaningId, 0, "synonym", null, null, target.LEntryId, null));
 
         InvalidOperationException error =
             Assert.Throws<InvalidOperationException>(() => entries.TEntryDelete(target.LEntryId));
@@ -88,21 +88,21 @@ public sealed class TEntryStore
     }
 
     [Fact]
-    public void DeletingAnEntryClearsTheLinksItOwnsIntoItself()
+    public void EntryDelete_LinksIntoItself_ClearsThem()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         LRelationArchive relations = TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
-        LSense first = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
-        LSense second = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+        LMeaning first = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+        LMeaning second = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
         relations.TRelationCreate(
-            TInterface.TRelationCreate(string.Empty, first.LSenseId, 0, "related", null, null, null, second.LSenseId));
+            TInterface.TRelationCreate(string.Empty, first.LMeaningId, 0, "related", null, null, null, second.LMeaningId));
 
         entries.TEntryDelete(entry.LEntryId);
 
@@ -111,7 +111,7 @@ public sealed class TEntryStore
     }
 
     [Fact]
-    public void AnAccentedHeadwordIsFoundTypedInTheOtherCase()
+    public void EntryFind_AccentedOtherCase_FindsEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);

@@ -21,10 +21,11 @@ The workspace folder can change while the window is up.
 A different folder is a different database.
 Whatever was typed against the old one is begun again here.
 
-## `internal void PInputDraftFinish(bool store)`
+## `internal bool PInputDraftFinish(bool store)`
 
 Carries the window's exit answer down to the editor this panel owns.
 The panel holds no draft of its own, so it only passes the answer along.
+What the editor answers is passed back up, because a store the engine refused must not close the window.
 
 ## `internal bool PInputChangeCheck()`
 

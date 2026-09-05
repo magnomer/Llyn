@@ -26,6 +26,8 @@ public sealed partial class LEngine
             DateTimeOffset.UtcNow);
 
         LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
+        LClaimArchive.LClaimArchiveSave(
+            _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
         _lEngineDraftHeld.Add(draft.LDraftId);
         return draft;
     }
@@ -47,12 +49,38 @@ public sealed partial class LEngine
         return LDraftArchive.LDraftArchiveScan(_lEngineWorkspace);
     }
 
+    public void LEngineLeftoverSweep()
+    {
+        LDraftArchive.LDraftArchiveSweep(_lEngineWorkspace);
+        LCourtArchive.LCourtArchiveSweep(_lEngineWorkspace);
+
+        foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
+        {
+            if (_lEngineDraftHeld.Contains(draft.LDraftId)
+                || LEngineClaimCheck(draft.LDraftId)
+                || string.IsNullOrWhiteSpace(draft.LDraftEntry))
+            {
+                continue;
+            }
+
+            LEntryDraft? stored = LEngineEntryLoad(draft.LDraftEntry);
+            if (stored is null || !LEngineDraftMatch(stored, draft.LDraftContent))
+            {
+                continue;
+            }
+
+            LEngineDraftCancel(draft.LDraftId);
+        }
+    }
+
     public IReadOnlyList<LDraft> LEngineLeftoverRead()
     {
         List<LDraft> leftovers = [];
         foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
         {
-            if (_lEngineDraftHeld.Contains(draft.LDraftId) || !LEngineDraftCheck(draft.LDraftId))
+            if (_lEngineDraftHeld.Contains(draft.LDraftId)
+                || !LEngineDraftCheck(draft.LDraftId)
+                || LEngineClaimCheck(draft.LDraftId))
             {
                 continue;
             }
@@ -66,7 +94,9 @@ public sealed partial class LEngine
     public void LEngineDraftDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LEngineCourtRemove(id);
         _lEngineDraftHeld.Remove(id);
+        LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
         LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
     }
 
@@ -76,7 +106,7 @@ public sealed partial class LEngine
         List<LCardDraft> cards = new(
             collocation
                 ? draft.LDraftContent.LEntryDraftCollocations
-                : draft.LDraftContent.LEntryDraftSenses);
+                : draft.LDraftContent.LEntryDraftMeanings);
 
         if (cards.Count != 0)
         {
@@ -95,7 +125,7 @@ public sealed partial class LEngine
 
         LEntryDraft content = collocation
             ? draft.LDraftContent with { LEntryDraftCollocations = cards }
-            : draft.LDraftContent with { LEntryDraftSenses = cards };
+            : draft.LDraftContent with { LEntryDraftMeanings = cards };
 
         LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftContent = content });
         return cards;
@@ -164,10 +194,10 @@ public sealed partial class LEngine
     public LEntry LEngineDraftCommit(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        return LEngineDraftCommit(id, []);
+        return LEngineDraftCommit(id, [], true);
     }
 
-    private LEntry LEngineDraftCommit(string id, HashSet<string> entered)
+    private LEntry LEngineDraftCommit(string id, HashSet<string> entered, bool held)
     {
         entered.Add(id);
 
@@ -179,24 +209,40 @@ public sealed partial class LEngine
                 continue;
             }
 
-            LEngineDraftCommit(link.LCourtLinkTarget, entered);
+            LEngineDraftCommit(
+                link.LCourtLinkTarget, entered, LEngineHoldCheck(link.LCourtLinkTarget));
         }
 
         LDraft draft = LEngineDraftLoad(id);
 
-        LEntry entry = string.IsNullOrWhiteSpace(draft.LDraftEntry)
-            ? LEngineEntrySave(draft.LDraftContent)
-            : LEngineEntryUpdate(draft.LDraftEntry, draft.LDraftContent);
+        LEntryDraft sending = LEngineTranslationSettle(draft.LDraftContent);
 
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftEntry = entry.LEntryId });
+        LEntry entry = string.IsNullOrWhiteSpace(draft.LDraftEntry)
+            || LEngineEntryLoad(draft.LDraftEntry) is null
+            ? LEngineEntrySave(sending)
+            : LEngineEntryUpdate(draft.LDraftEntry, sending);
+
+        LDraft settled = draft with { LDraftEntry = entry.LEntryId };
+        if (LEngineEntryLoad(entry.LEntryId) is LEntryDraft written)
+        {
+            settled = settled with { LDraftContent = written };
+        }
+
+        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, settled);
 
         foreach (LCourtLink link in
-            LCourtArchive.LCourtArchiveResolve(_lEngineWorkspace, id, entry.LEntryId))
+            LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
         {
             LEngineCourtUpdate(link, entry.LEntryId);
         }
 
+        if (!held)
+        {
+            return entry;
+        }
+
         _lEngineDraftHeld.Remove(id);
+        LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
         LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
         return entry;
     }
@@ -205,13 +251,31 @@ public sealed partial class LEngine
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        LDraft? cancelled = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
+        LEngineCourtRemove(id);
+
+        foreach (LCourtLink link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+        {
+            LEngineCourtUpdate(link, string.Empty);
+        }
+
+        _lEngineDraftHeld.Remove(id);
+        LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+        LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+    }
+
+    private void LEngineCourtRemove(string id)
+    {
         IReadOnlyList<LCourtLink> court = LCourtArchive.LCourtArchiveScan(_lEngineWorkspace);
 
         foreach (LCourtLink link in court)
         {
             if (!string.Equals(link.LCourtLinkOwner, id, StringComparison.Ordinal))
             {
+                if (LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkOwner) is null)
+                {
+                    LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtLinkId);
+                }
+
                 continue;
             }
 
@@ -236,20 +300,37 @@ public sealed partial class LEngine
 
             LDraft? target = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkTarget);
 
-            if (claimed
-                || target is null
-                || cancelled is null
-                || !string.Equals(target.LDraftOrigin, cancelled.LDraftOrigin, StringComparison.Ordinal))
+            if (claimed || target is null || !LEngineHoldCheck(link.LCourtLinkTarget))
             {
                 continue;
             }
 
+            _lEngineDraftHeld.Remove(link.LCourtLinkTarget);
+            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, link.LCourtLinkTarget);
             LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, link.LCourtLinkTarget);
         }
+    }
 
-        LCourtArchive.LCourtArchiveCancel(_lEngineWorkspace, id);
-        _lEngineDraftHeld.Remove(id);
-        LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+    private bool LEngineHoldCheck(string id)
+    {
+        LClaim? claim = LClaimArchive.LClaimArchiveCheck(_lEngineWorkspace, id)
+            ? LClaimArchive.LClaimArchiveRead(_lEngineWorkspace, id)
+            : null;
+
+        return claim is not null
+            && claim.LClaimProcess == Environment.ProcessId
+            && _lEngineDraftHeld.Contains(id);
+    }
+
+    private bool LEngineClaimCheck(string id)
+    {
+        if (!LClaimArchive.LClaimArchiveCheck(_lEngineWorkspace, id))
+        {
+            return false;
+        }
+
+        LClaim? claim = LClaimArchive.LClaimArchiveRead(_lEngineWorkspace, id);
+        return claim is not null && claim.LClaimProcess != Environment.ProcessId;
     }
 
     private static LEntryDraft LEngineDraftBlank =>
@@ -279,7 +360,7 @@ public sealed partial class LEngine
             && LEngineTextMatch(one.LEntryDraftSpeeches ?? [], other.LEntryDraftSpeeches ?? [])
             && string.Equals(one.LEntryDraftAudio, other.LEntryDraftAudio, StringComparison.Ordinal)
             && string.Equals(one.LEntryDraftSource, other.LEntryDraftSource, StringComparison.Ordinal)
-            && LEngineCardMatch(one.LEntryDraftSenses, other.LEntryDraftSenses)
+            && LEngineCardMatch(one.LEntryDraftMeanings, other.LEntryDraftMeanings)
             && LEngineCardMatch(one.LEntryDraftCollocations, other.LEntryDraftCollocations);
     }
 
@@ -375,8 +456,7 @@ public sealed partial class LEngine
         {
             if (one[index].LSituationDraftText != other[index].LSituationDraftText
                 || !string.Equals(
-                    one[index].LSituationDraftId, other[index].LSituationDraftId, StringComparison.Ordinal)
-                || one[index].LSituationDraftReference != other[index].LSituationDraftReference)
+                    one[index].LSituationDraftId, other[index].LSituationDraftId, StringComparison.Ordinal))
             {
                 return false;
             }
@@ -439,13 +519,42 @@ public sealed partial class LEngine
 
         LEntryDraft content = owner.LDraftContent with
         {
-            LEntryDraftSenses =
-                LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftSenses, link.LCourtLinkTarget, realId),
+            LEntryDraftMeanings =
+                LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftMeanings, link.LCourtLinkTarget, realId),
             LEntryDraftCollocations =
                 LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftCollocations, link.LCourtLinkTarget, realId),
         };
 
         LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, owner with { LDraftContent = content });
+    }
+
+    private LEntryDraft LEngineTranslationSettle(LEntryDraft content)
+    {
+        return content with
+        {
+            LEntryDraftMeanings = LEngineTranslationSettle(content.LEntryDraftMeanings),
+            LEntryDraftCollocations = LEngineTranslationSettle(content.LEntryDraftCollocations),
+        };
+    }
+
+    private IReadOnlyList<LCardDraft> LEngineTranslationSettle(IReadOnlyList<LCardDraft> cards)
+    {
+        List<LCardDraft> written = new(cards.Count);
+        foreach (LCardDraft card in cards)
+        {
+            List<string> translations = new(card.LCardDraftTranslation.Count);
+            foreach (string translation in card.LCardDraftTranslation)
+            {
+                if (!string.IsNullOrWhiteSpace(translation) && LEngineEntryLoad(translation) is not null)
+                {
+                    translations.Add(translation);
+                }
+            }
+
+            written.Add(card with { LCardDraftTranslation = translations });
+        }
+
+        return written;
     }
 
     private static IReadOnlyList<LCardDraft> LEngineTranslationUpdate(
@@ -457,8 +566,16 @@ public sealed partial class LEngine
             List<string> translations = new(card.LCardDraftTranslation.Count);
             foreach (string translation in card.LCardDraftTranslation)
             {
-                translations.Add(
-                    string.Equals(translation, draftId, StringComparison.Ordinal) ? realId : translation);
+                if (!string.Equals(translation, draftId, StringComparison.Ordinal))
+                {
+                    translations.Add(translation);
+                    continue;
+                }
+
+                if (realId.Length != 0)
+                {
+                    translations.Add(realId);
+                }
             }
 
             written.Add(card with { LCardDraftTranslation = translations });

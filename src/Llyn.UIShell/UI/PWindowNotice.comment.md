@@ -39,12 +39,15 @@ Saving commits every draft the window holds, discarding cancels every one of the
 Either answer that lets the window go empties the drafts folder of this window's files.
 A leftover would otherwise be reported at the next launch as work a crash cost, which a clean exit never did.
 A panel holding nothing unsaved is settled without a question, since its blank draft has nothing to lose either way.
+Saving that the engine refuses answers no, so the window stays open over the entry it failed to store.
 
-### `private void PWindowDraftFinish(bool store)`
+### `private bool PWindowDraftFinish(bool store)`
 
 Carries one answer to every editing panel the window owns.
 The four entry editors each hold their own draft under their own origin, so each is told separately.
 An unchanged draft is cancelled whatever the answer, because storing what matches its entry would rewrite the entry for nothing.
+Every panel is told before the answers are read, so one refusal does not leave the others still holding their drafts.
+The window may go only when all four are finished.
 
 ### `internal bool PWindowDiscardConfirm(bool unsaved)`
 

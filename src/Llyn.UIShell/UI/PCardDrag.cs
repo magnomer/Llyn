@@ -33,7 +33,7 @@ public partial class PEditor
             return;
         }
 
-        ItemsControl host = ReferenceEquals(list, _pSenseList) ? PSenseList : PCollocationList;
+        ItemsControl host = ReferenceEquals(list, _pMeaningList) ? PMeaningList : PCollocationList;
 
         if (host.ItemContainerGenerator.ContainerFromItem(card) is not FrameworkElement container)
         {

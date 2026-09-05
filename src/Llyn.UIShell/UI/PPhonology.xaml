@@ -53,7 +53,7 @@
                 </Grid>
             </ToggleButton>
             <Popup
-                x:Name="PSequenceMenu"
+                x:Name="PSequenceDropdown"
                 Width="252"
                 AllowsTransparency="True"
                 IsOpen="{Binding IsChecked, ElementName=PSequenceBase}"

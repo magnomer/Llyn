@@ -1,4 +1,10 @@
-# App.xaml.cs
+﻿# App.xaml.cs
+
+## `private void LBootstrapRescueShow(LDoctorRescue rescue)`
+
+Tells the user their database was set aside and a clean one started, and stays silent when it was not.
+The program launches either way, so without this the workspace would simply appear empty and the old data would look lost.
+The message names the file that was kept, so the user can see nothing was thrown away.
 
 ## Inline notes
 
@@ -11,8 +17,8 @@ It is the documented emergency fallback, shown only when the interface text is u
 
 The engine opens the workspace: settings, database file, and schema.
 So it is built here rather than in a field initializer of the window.
-An unwritable folder, a corrupt database, or a file from a newer build must reach the user.
-It must reach them as a message naming the folder, not as a crash inside a constructor.
+An unwritable folder must reach the user as a message naming the folder, not as a crash inside a constructor.
+A corrupt database or a file from a newer build no longer stops the launch at all: `LDoctor` sets it aside inside the engine and `LBootstrapRescueShow` reports it afterwards.
 
 ### `new PWindow(engine).Show();`
 

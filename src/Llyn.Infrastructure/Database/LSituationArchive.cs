@@ -33,16 +33,15 @@ public sealed class LSituationArchive
                 """
                 INSERT INTO situation (
                     id, title_state, title, description_state, description,
-                    kind_state, kind, source_state, source_id)
+                    kind_state, kind)
                 VALUES (
                     $id, $titleState, $title, $descriptionState, $description,
-                    $kindState, $kind, $sourceState, $source);
+                    $kindState, $kind);
                 """;
             command.Parameters.AddWithValue("$id", stored.LSituationId);
             LStateColumn.LStateColumnApply(command, "title", stored.LSituationTitle);
             LStateColumn.LStateColumnApply(command, "description", stored.LSituationDescription);
             LStateColumn.LStateColumnApply(command, "kind", stored.LSituationKind);
-            LStateColumn.LStateColumnApply(command, "source", stored.LSituationSource);
             command.ExecuteNonQuery();
         }
 
@@ -65,7 +64,7 @@ public sealed class LSituationArchive
         command.CommandText =
             """
             SELECT id, title_state, title, description_state, description,
-                   kind_state, kind, source_state, source_id
+                   kind_state, kind
             FROM situation
             ORDER BY rowid;
             """;
@@ -78,16 +77,15 @@ public sealed class LSituationArchive
                 reader.GetString(0),
                 LStateColumn.LStateColumnRead(reader, 1),
                 LStateColumn.LStateColumnRead(reader, 3),
-                LStateColumn.LStateColumnRead(reader, 5),
-                LStateColumn.LStateColumnRead(reader, 7)));
+                LStateColumn.LStateColumnRead(reader, 5)));
         }
 
         return situations;
     }
 
-    public IReadOnlyList<LSituation> LSituationSenseRead(string senseId)
+    public IReadOnlyList<LSituation> LSituationMeaningRead(string meaningId)
     {
-        return LSituationReferrerRead("sense_situation", "sense_id", senseId);
+        return LSituationReferrerRead("sense_situation", "sense_id", meaningId);
     }
 
     public IReadOnlyList<LSituation> LSituationCollocationRead(string collocationId)
@@ -108,14 +106,12 @@ public sealed class LSituationArchive
                 UPDATE situation
                 SET title_state = $titleState, title = $title,
                     description_state = $descriptionState, description = $description,
-                    kind_state = $kindState, kind = $kind,
-                    source_state = $sourceState, source_id = $source
+                    kind_state = $kindState, kind = $kind
                 WHERE id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", situation.LSituationTitle);
             LStateColumn.LStateColumnApply(command, "description", situation.LSituationDescription);
             LStateColumn.LStateColumnApply(command, "kind", situation.LSituationKind);
-            LStateColumn.LStateColumnApply(command, "source", situation.LSituationSource);
             command.Parameters.AddWithValue("$id", situation.LSituationId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -137,27 +133,6 @@ public sealed class LSituationArchive
             command.CommandText =
                 "UPDATE situation SET title_state = $titleState, title = $title WHERE id = $id;";
             LStateColumn.LStateColumnApply(command, "title", title);
-            command.Parameters.AddWithValue("$id", situationId);
-            if (command.ExecuteNonQuery() == 0)
-            {
-                throw new InvalidOperationException($"No Situation carries the id '{situationId}'.");
-            }
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
-    public void LSituationSourceUpdate(string situationId, LStateValue source)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
-        ArgumentNullException.ThrowIfNull(source);
-
-        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            command.CommandText =
-                "UPDATE situation SET source_state = $sourceState, source_id = $source WHERE id = $id;";
-            LStateColumn.LStateColumnApply(command, "source", source);
             command.Parameters.AddWithValue("$id", situationId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -211,7 +186,7 @@ public sealed class LSituationArchive
         usages.AddRange(LSituationUsageRead(
             connection,
             id,
-            LOwner.LOwnerSense,
+            LOwner.LOwnerMeaning,
             """
             SELECT link.sense_id, sense.entry_id, entry.headword, entry.language,
                    sense.title_state, sense.title,
@@ -358,9 +333,9 @@ public sealed class LSituationArchive
         }
     }
 
-    public void LSituationSenseAttach(string senseId, string situationId, int position)
+    public void LSituationMeaningAttach(string meaningId, string situationId, int position)
     {
-        LSituationReferenceAttach("sense_situation", "sense_id", senseId, situationId, position);
+        LSituationReferenceAttach("sense_situation", "sense_id", meaningId, situationId, position);
     }
 
     public void LSituationCollocationAttach(string collocationId, string situationId, int position)
@@ -368,9 +343,9 @@ public sealed class LSituationArchive
         LSituationReferenceAttach("collocation_situation", "collocation_id", collocationId, situationId, position);
     }
 
-    public void LSituationSenseDetach(string senseId, string situationId)
+    public void LSituationMeaningDetach(string meaningId, string situationId)
     {
-        LSituationReferenceDetach("sense_situation", "sense_id", senseId, situationId);
+        LSituationReferenceDetach("sense_situation", "sense_id", meaningId, situationId);
     }
 
     public void LSituationCollocationDetach(string collocationId, string situationId)
@@ -451,8 +426,7 @@ public sealed class LSituationArchive
             $"""
             SELECT situation.id, situation.title_state, situation.title,
                    situation.description_state, situation.description,
-                   situation.kind_state, situation.kind,
-                   situation.source_state, situation.source_id
+                   situation.kind_state, situation.kind
             FROM {table} link
             JOIN situation ON situation.id = link.situation_id
             WHERE link.{column} = $referrer
@@ -468,8 +442,7 @@ public sealed class LSituationArchive
                 reader.GetString(0),
                 LStateColumn.LStateColumnRead(reader, 1),
                 LStateColumn.LStateColumnRead(reader, 3),
-                LStateColumn.LStateColumnRead(reader, 5),
-                LStateColumn.LStateColumnRead(reader, 7)));
+                LStateColumn.LStateColumnRead(reader, 5)));
         }
 
         return situations;
@@ -481,7 +454,7 @@ public sealed class LSituationArchive
         command.CommandText =
             """
             SELECT title_state, title, description_state, description,
-                   kind_state, kind, source_state, source_id
+                   kind_state, kind
             FROM situation WHERE id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -495,7 +468,6 @@ public sealed class LSituationArchive
             id,
             LStateColumn.LStateColumnRead(reader, 0),
             LStateColumn.LStateColumnRead(reader, 2),
-            LStateColumn.LStateColumnRead(reader, 4),
-            LStateColumn.LStateColumnRead(reader, 6));
+            LStateColumn.LStateColumnRead(reader, 4));
     }
 }

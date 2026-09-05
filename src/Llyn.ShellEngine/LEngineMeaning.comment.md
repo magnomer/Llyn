@@ -1,4 +1,4 @@
-# LEngineSense.cs
+# LEngineMeaning.cs
 
 ## `public sealed partial class LEngine`
 
@@ -20,31 +20,31 @@ That link is a relation from outside the subtree, or any Collocation synonym.
 A link is a statement about a Meaning that exists.
 A cascade must not decide on its own to unmake someone else's statement.
 
-## `public LSense LEngineSenseCreate(LSense sense)`
+## `public LMeaning LEngineMeaningCreate(LMeaning meaning)`
 
-Creates `sense` at the end of its Entry's Meanings.
+Creates `meaning` at the end of its Entry's Meanings.
 When it names a parent, it goes at the end of that parent's subordinate Meanings.
 Returns it with its assigned id and position.
 
-## `public LSense? LEngineSenseRead(string id)`
+## `public LMeaning? LEngineMeaningRead(string id)`
 
 Reads the Meaning for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LSense> LEngineSenseRead(string ownerId, LOwner owner)`
+## `public IReadOnlyList<LMeaning> LEngineMeaningRead(string ownerId, LOwner owner)`
 
 Reads the Meanings of the Entry identified by `ownerId`, in stored order.
 
-## `public void LEngineSenseUpdate(LSense sense)`
+## `public void LEngineMeaningUpdate(LMeaning meaning)`
 
-Rewrites the fields of the Meaning `sense` identifies.
-Its place among its siblings is not touched here — `LEngineSenseMove` owns the order.
+Rewrites the fields of the Meaning `meaning` identifies.
+Its place among its siblings is not touched here — `LEngineMeaningMove` owns the order.
 
-## `public void LEngineSenseMove(string id, int position)`
+## `public void LEngineMeaningMove(string id, int position)`
 
 Moves the Meaning identified by `id` to `position` among its siblings, renumbering the group so the positions stay contiguous.
 A position outside the group is clamped into it.
 
-## `public void LEngineSenseDelete(string id)`
+## `public void LEngineMeaningDelete(string id)`
 
 Deletes the Meaning identified by `id` with everything it owns.
 That is its subordinate Meanings and the relations originating inside that subtree.

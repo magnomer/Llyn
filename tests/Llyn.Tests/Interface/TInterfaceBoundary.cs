@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 using Xunit;
 
@@ -15,7 +15,7 @@ public sealed class TInterfaceBoundary
         RegexOptions.Compiled);
 
     [Fact]
-    public void TestsReachProductionOperationsOnlyThroughTheInterface()
+    public void InterfaceBoundary_ProductionCalls_GoThroughInterface()
     {
         string projectRoot = TInterfaceRootRead();
         string[] offenders = Directory

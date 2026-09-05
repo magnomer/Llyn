@@ -20,9 +20,9 @@ public sealed class LExampleLink
         return LExampleReferrerRead("entry_example", "entry_id", entryId);
     }
 
-    public IReadOnlyList<LExample> LExampleSenseRead(string senseId)
+    public IReadOnlyList<LExample> LExampleMeaningRead(string meaningId)
     {
-        return LExampleReferrerRead("sense_example", "sense_id", senseId);
+        return LExampleReferrerRead("sense_example", "sense_id", meaningId);
     }
 
     public IReadOnlyList<LExample> LExampleCollocationRead(string collocationId)
@@ -35,9 +35,9 @@ public sealed class LExampleLink
         LExampleReferenceAttach("entry_example", "entry_id", entryId, exampleId, position);
     }
 
-    public void LExampleSenseAttach(string senseId, string exampleId, int position)
+    public void LExampleMeaningAttach(string meaningId, string exampleId, int position)
     {
-        LExampleReferenceAttach("sense_example", "sense_id", senseId, exampleId, position);
+        LExampleReferenceAttach("sense_example", "sense_id", meaningId, exampleId, position);
     }
 
     public void LExampleCollocationAttach(string collocationId, string exampleId, int position)
@@ -50,9 +50,9 @@ public sealed class LExampleLink
         LExampleReferenceDetach("entry_example", "entry_id", entryId, exampleId);
     }
 
-    public void LExampleSenseDetach(string senseId, string exampleId)
+    public void LExampleMeaningDetach(string meaningId, string exampleId)
     {
-        LExampleReferenceDetach("sense_example", "sense_id", senseId, exampleId);
+        LExampleReferenceDetach("sense_example", "sense_id", meaningId, exampleId);
     }
 
     public void LExampleCollocationDetach(string collocationId, string exampleId)
@@ -88,7 +88,7 @@ public sealed class LExampleLink
         usages.AddRange(LExampleUsageRead(
             connection,
             id,
-            LOwner.LOwnerSense,
+            LOwner.LOwnerMeaning,
             """
             SELECT link.sense_id, sense.entry_id, entry.headword, entry.language,
                    sense.title_state, sense.title,

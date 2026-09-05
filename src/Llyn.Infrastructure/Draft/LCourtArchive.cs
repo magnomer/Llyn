@@ -11,6 +11,8 @@ public static class LCourtArchive
     private const string LCourtArchiveExtension = ".json";
     private const string LCourtArchivePending = ".json.tmp";
 
+    private static readonly TimeSpan LCourtArchiveStale = TimeSpan.FromHours(1);
+
     private static readonly JsonSerializerOptions LCourtArchiveIndent = new() { WriteIndented = true };
 
     public static void LCourtArchiveSave(string root, LCourtLink link)
@@ -91,18 +93,7 @@ public static class LCourtArchive
         }
     }
 
-    public static IReadOnlyList<LCourtLink> LCourtArchiveResolve(string root, string draftId, string realId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(realId);
-        return LCourtArchiveRemove(root, draftId);
-    }
-
-    public static IReadOnlyList<LCourtLink> LCourtArchiveCancel(string root, string draftId)
-    {
-        return LCourtArchiveRemove(root, draftId);
-    }
-
-    private static IReadOnlyList<LCourtLink> LCourtArchiveRemove(string root, string draftId)
+    public static IReadOnlyList<LCourtLink> LCourtArchiveSettle(string root, string draftId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentException.ThrowIfNullOrWhiteSpace(draftId);
@@ -120,6 +111,52 @@ public static class LCourtArchive
         }
 
         return settled;
+    }
+
+    public static void LCourtArchiveSweep(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+
+        string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
+
+        string[] files;
+        try
+        {
+            files = Directory.GetFiles(folder, "*" + LCourtArchivePending);
+        }
+        catch (IOException)
+        {
+            return;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return;
+        }
+
+        DateTime edge = DateTime.UtcNow - LCourtArchiveStale;
+        foreach (string file in files)
+        {
+            if (!file.EndsWith(LCourtArchivePending, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            try
+            {
+                if (File.GetLastWriteTimeUtc(file) > edge)
+                {
+                    continue;
+                }
+
+                File.Delete(file);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+        }
     }
 
     private static LCourtLink? LCourtArchiveLoad(string path)

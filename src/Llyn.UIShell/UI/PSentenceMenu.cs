@@ -8,29 +8,29 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<PCitationItem> _pSentenceReference = [];
+    private readonly ObservableCollection<PCitationItem> _pEditorCitation = [];
 
     internal void PSentenceLoad()
     {
-        _pSentenceReference.Clear();
+        _pEditorCitation.Clear();
 
         IReadOnlyList<LReference> references;
         try
         {
             references = _lEngine.LEngineReferenceRead();
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _pEditorHost.PWindowFailureShow("Reference.LoadFailed", exception);
             references = [];
         }
 
         foreach (LReference reference in references)
         {
-            _pSentenceReference.Add(PCitationItem.PCitationItemCreate(reference));
+            _pEditorCitation.Add(PCitationItem.PCitationItemCreate(reference));
         }
 
-        PSentenceReferenceShow();
-        PContextReferenceShow();
+        PSentenceCitationShow();
     }
 
     internal void PSentenceAddHandle(object sender, RoutedEventArgs e)
@@ -49,74 +49,38 @@ public partial class PEditor
         }
     }
 
-    internal void PSentenceReferenceClear(object sender, RoutedEventArgs e)
+    internal void PSentenceCitationClear(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PSentence row })
         {
-            row.PSentenceReference = string.Empty;
+            row.PSentenceCitation = string.Empty;
         }
     }
 
-    internal void PSentenceReferenceCreate(object sender, RoutedEventArgs e)
+    private void PSentenceCitationShow()
     {
-        if (sender is not FrameworkElement { DataContext: PSentence row })
+        foreach (PCard card in _pMeaningList)
         {
-            return;
-        }
-
-        string name = row.PSentenceReferenceDraft.Trim();
-        if (name.Length == 0)
-        {
-            return;
-        }
-
-        LReference created;
-        try
-        {
-            created = _lEngine.LEngineReferenceCreate(new LReference(
-                string.Empty,
-                LStateValue.LStateValueCreate(name),
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LState.LStateUnspecified));
-        }
-        catch (Exception exception)
-        {
-            _pEditorHost.PWindowFailureShow("Reference.AddFailed", exception);
-            return;
-        }
-
-        _pSentenceReference.Add(PCitationItem.PCitationItemCreate(created));
-        row.PSentenceReferenceDraft = string.Empty;
-        row.PSentenceReference = created.LReferenceId;
-    }
-
-    private void PSentenceReferenceShow()
-    {
-        foreach (PCard card in _pSenseList)
-        {
-            PSentenceReferenceShow(card);
+            PSentenceCitationShow(card);
         }
 
         foreach (PCard card in _pCollocationList)
         {
-            PSentenceReferenceShow(card);
+            PSentenceCitationShow(card);
         }
     }
 
-    private static void PSentenceReferenceShow(PCard card)
+    private static void PSentenceCitationShow(PCard card)
     {
         foreach (PSentence row in card.PCardSentence)
         {
-            row.PSentenceReferenceShow();
+            row.PSentenceCitationShow();
         }
     }
 
     private PCard? PCardSentenceFind(PSentence row)
     {
-        foreach (PCard card in _pSenseList)
+        foreach (PCard card in _pMeaningList)
         {
             if (card.PCardSentence.Contains(row))
             {

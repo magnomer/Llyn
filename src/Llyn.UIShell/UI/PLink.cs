@@ -121,7 +121,7 @@ public partial class PEditor
 
     internal void PLinkFlagUpdate()
     {
-        foreach (PCard card in _pSenseList)
+        foreach (PCard card in _pMeaningList)
         {
             card.PCardFlagUpdate();
         }
@@ -276,7 +276,7 @@ public partial class PEditor
 
     private PCard? PCardLinkFind(object row)
     {
-        foreach (PCard card in _pSenseList)
+        foreach (PCard card in _pMeaningList)
         {
             if (card.PCardLink.Contains(row))
             {

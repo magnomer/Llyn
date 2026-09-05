@@ -268,42 +268,42 @@ internal static partial class TInterface
         engine.LEngineRelationMove(id, position);
     }
 
-    internal static IReadOnlyList<LRelation> TEngineRelationRead(this LEngine engine, string senseId) =>
-        engine.LEngineRelationRead(senseId);
+    internal static IReadOnlyList<LRelation> TEngineRelationRead(this LEngine engine, string meaningId) =>
+        engine.LEngineRelationRead(meaningId);
 
     internal static void TEngineRelationUpdate(this LEngine engine, LRelation relation)
     {
         engine.LEngineRelationUpdate(relation);
     }
 
-    internal static LSense TEngineSenseCreate(this LEngine engine, LSense sense) =>
-        engine.LEngineSenseCreate(sense);
+    internal static LMeaning TEngineMeaningCreate(this LEngine engine, LMeaning meaning) =>
+        engine.LEngineMeaningCreate(meaning);
 
-    internal static void TEngineSenseDelete(this LEngine engine, string id)
+    internal static void TEngineMeaningDelete(this LEngine engine, string id)
     {
-        engine.LEngineSenseDelete(id);
+        engine.LEngineMeaningDelete(id);
     }
 
-    internal static IReadOnlyList<LSense> TEngineSenseFind(this LEngine engine, string query) =>
-        engine.LEngineSenseFind(query);
+    internal static IReadOnlyList<LMeaning> TEngineMeaningFind(this LEngine engine, string query) =>
+        engine.LEngineMeaningFind(query);
 
-    internal static void TEngineSenseMove(this LEngine engine, string id, int position)
+    internal static void TEngineMeaningMove(this LEngine engine, string id, int position)
     {
-        engine.LEngineSenseMove(id, position);
+        engine.LEngineMeaningMove(id, position);
     }
 
-    internal static LSense? TEngineSenseRead(this LEngine engine, string id) =>
-        engine.LEngineSenseRead(id);
+    internal static LMeaning? TEngineMeaningRead(this LEngine engine, string id) =>
+        engine.LEngineMeaningRead(id);
 
-    internal static IReadOnlyList<LSense> TEngineSenseRead(
+    internal static IReadOnlyList<LMeaning> TEngineMeaningRead(
         this LEngine engine,
         string ownerId,
         LOwner owner) =>
-        engine.LEngineSenseRead(ownerId, owner);
+        engine.LEngineMeaningRead(ownerId, owner);
 
-    internal static void TEngineSenseUpdate(this LEngine engine, LSense sense)
+    internal static void TEngineMeaningUpdate(this LEngine engine, LMeaning meaning)
     {
-        engine.LEngineSenseUpdate(sense);
+        engine.LEngineMeaningUpdate(meaning);
     }
 
     internal static void TEngineSituationAttach(
@@ -362,14 +362,6 @@ internal static partial class TInterface
     internal static void TEngineSituationUpdate(this LEngine engine, LSituation situation)
     {
         engine.LEngineSituationUpdate(situation);
-    }
-
-    internal static void TEngineSituationUpdate(
-        this LEngine engine,
-        string situationId,
-        LStateValue reference)
-    {
-        engine.LEngineSituationUpdate(situationId, reference);
     }
 
     internal static void TEngineSpeechCreate(this LEngine engine, LSpeechValue value)

@@ -29,6 +29,7 @@ public partial class PWindow : Window
 
     private void PWindowAttach(LEngine engine)
     {
+        engine.LEngineLeftoverSweep();
         PWindowLeftover = engine.LEngineLeftoverRead().Count;
 
         PInput.PInputAttach(this, engine);
@@ -60,6 +61,7 @@ public partial class PWindow : Window
         PRepertoire.PRepertoireClose();
         PCorpus.PCorpusClose();
         PDuplex.PDuplexClose();
+        _lEngine.LEngineLeftoverSweep();
         _lEngine.Dispose();
     }
 }

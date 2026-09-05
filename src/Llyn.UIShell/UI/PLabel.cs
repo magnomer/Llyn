@@ -151,7 +151,7 @@ public partial class PEditor
 
     private PCard? PCardLabelFind(object row)
     {
-        foreach (PCard card in _pSenseList)
+        foreach (PCard card in _pMeaningList)
         {
             if (card.PCardLabel.Contains(row))
             {

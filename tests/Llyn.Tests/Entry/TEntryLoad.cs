@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -9,7 +9,7 @@ namespace Llyn.Tests;
 public sealed class TEntryLoad
 {
     [Fact]
-    public void EntriesAreFoundByHeadwordAndLoadedBackIntoTheDraftTheyWereSavedFrom()
+    public void EntryLoad_SavedEntry_ReturnsSavedDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,7 +56,7 @@ public sealed class TEntryLoad
         Assert.Equal(word.LEntryDraftPronunciation, loaded.LEntryDraftPronunciation);
         Assert.Equal(word.LEntryDraftNote, loaded.LEntryDraftNote);
 
-        TEntryCardMatch(word.LEntryDraftSenses, loaded.LEntryDraftSenses);
+        TEntryCardMatch(word.LEntryDraftMeanings, loaded.LEntryDraftMeanings);
         TEntryCardMatch(word.LEntryDraftCollocations, loaded.LEntryDraftCollocations);
     }
 
@@ -104,7 +104,7 @@ public sealed class TEntryLoad
     }
 
     [Fact]
-    public void ADownloadedRecordingIsStoredRelativeToTheWorkspaceAndLoadsBackAsAFullPath()
+    public void EntryLoad_DownloadedRecording_ReturnsResolvedPath()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -141,7 +141,7 @@ public sealed class TEntryLoad
     }
 
     [Fact]
-    public void AnEntrySavedWithNoRecordingLoadsBackWithNone()
+    public void EntryLoad_NoRecordingSaved_ReturnsNoRecording()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -158,7 +158,7 @@ public sealed class TEntryLoad
     }
 
     [Fact]
-    public void TheTitleTypedOnBothKindsOfCardLoadsBackOnTheCardItWasTypedOn()
+    public void EntryLoad_TitleOnBothCardKinds_KeepsThemApart()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -168,12 +168,12 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [TInterface.TCardDraftCreate("the plain sense", string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
+            [TInterface.TCardDraftCreate("the plain meaning", string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
             [TInterface.TCardDraftCreate(
                 "the set phrase", "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
 
-        LSense sense = Assert.Single(TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase).TSenseRead(stored.LEntryId));
-        Assert.Equal("the plain sense", sense.LSenseTitle);
+        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
+        Assert.Equal("the plain meaning", meaning.LMeaningTitle);
         LCollocation collocation = Assert.Single(
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(stored.LEntryId));
         Assert.Equal("the set phrase", collocation.LCollocationTitle);
@@ -181,14 +181,14 @@ public sealed class TEntryLoad
         LEntryDraft? loaded = engine.TEngineEntryLoad(stored.LEntryId);
 
         Assert.NotNull(loaded);
-        Assert.Equal("the plain sense", Assert.Single(loaded.LEntryDraftSenses).LCardDraftTitle);
+        Assert.Equal("the plain meaning", Assert.Single(loaded.LEntryDraftMeanings).LCardDraftTitle);
         Assert.Equal(
             "the set phrase",
             Assert.Single(loaded.LEntryDraftCollocations).LCardDraftTitle);
     }
 
     [Fact]
-    public void EveryExampleSituationAndTagACardReferencesLoadsBackInTheOrderItWasWritten()
+    public void EntryLoad_CardReferences_ReturnsWrittenOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -217,10 +217,10 @@ public sealed class TEntryLoad
                 string.Empty,
                 ["written", "idiom"], [], 1)]));
 
-        LSense sense = Assert.Single(TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase).TSenseRead(stored.LEntryId));
+        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
         Assert.Equal(
             ["verb", "formal", "spoken"],
-            TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase).TTagSenseRead(sense.LSenseId).Select(tag => tag.LTagText));
+            TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase).TTagMeaningRead(meaning.LMeaningId).Select(tag => tag.LTagText));
         Assert.Equal(
             [0L, 1L, 2L],
             workspace.TWorkspaceColumnRead("SELECT position FROM sense_tag ORDER BY position;"));
@@ -229,7 +229,7 @@ public sealed class TEntryLoad
 
         Assert.NotNull(loaded);
 
-        LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);
+        LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
         Assert.Equal(["verb", "formal", "spoken"], card.LCardDraftTag);
         Assert.Equal(
             ["he said a word", "not a word was spoken"],
@@ -243,7 +243,7 @@ public sealed class TEntryLoad
     }
 
     [Fact]
-    public void ACardFieldLeftEmptyReferencesNothingAndLoadsBackEmpty()
+    public void EntryLoad_EmptyCardField_ReturnsEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -262,14 +262,14 @@ public sealed class TEntryLoad
         LEntryDraft? loaded = engine.TEngineEntryLoad(stored.LEntryId);
 
         Assert.NotNull(loaded);
-        LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);
+        LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
         Assert.Empty(card.LCardDraftExample);
         Assert.Empty(card.LCardDraftSituation);
         Assert.Empty(card.LCardDraftTag);
     }
 
     [Fact]
-    public void ACardCarriesTheStoredPositionOfTheOrderItWasMovedInto()
+    public void EntryLoad_CardMoved_ReturnsStoredPosition()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -286,20 +286,20 @@ public sealed class TEntryLoad
             ],
             []));
 
-        IReadOnlyList<LSense> saved = engine.TEngineSenseRead(stored.LEntryId, LOwner.LOwnerEntry);
-        engine.TEngineSenseMove(saved[2].LSenseId, 0);
+        IReadOnlyList<LMeaning> saved = engine.TEngineMeaningRead(stored.LEntryId, LOwner.LOwnerEntry);
+        engine.TEngineMeaningMove(saved[2].LMeaningId, 0);
 
         LEntryDraft? loaded = engine.TEngineEntryLoad(stored.LEntryId);
 
         Assert.NotNull(loaded);
         Assert.Equal(
             ["third", "first", "second"],
-            loaded.LEntryDraftSenses.Select(card => card.LCardDraftMeaning.TStateValueShow()));
-        Assert.Equal([1, 2, 3], loaded.LEntryDraftSenses.Select(card => card.LCardDraftPosition));
+            loaded.LEntryDraftMeanings.Select(card => card.LCardDraftMeaning.TStateValueShow()));
+        Assert.Equal([1, 2, 3], loaded.LEntryDraftMeanings.Select(card => card.LCardDraftPosition));
     }
 
     [Fact]
-    public void AnIdNoEntryCarriesLoadsNothing()
+    public void EntryLoad_UnknownId_ReturnsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -12,7 +12,7 @@ public sealed partial class LEngine
         LTranslationArchive translations = new(_lEngineDatabase);
         return LEngineOwnerCheck(owner)
             ? translations.LTranslationCollocationRead(ownerId)
-            : translations.LTranslationSenseRead(ownerId);
+            : translations.LTranslationMeaningRead(ownerId);
     }
 
     public void LEngineTranslationSave(string ownerId, IReadOnlyList<string> ids, LOwner owner)

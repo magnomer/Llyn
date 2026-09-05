@@ -8,21 +8,21 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private readonly ObservableCollection<PCard> _pSenseList = [];
+    private readonly ObservableCollection<PCard> _pMeaningList = [];
     private readonly ObservableCollection<PCard> _pCollocationList = [];
 
-    private void PSenseHandle(object sender, RoutedEventArgs e)
+    private void PMeaningHandle(object sender, RoutedEventArgs e)
     {
-        PCard card = new("Meaning", _pSenseList.Count + 1, _pSentenceReference);
+        PCard card = new("Meaning", _pMeaningList.Count + 1, _pEditorCitation);
         PLinkAttach(card);
         PEditorChangeAttach(card);
-        _pSenseList.Add(card);
+        _pMeaningList.Add(card);
         PEditorChangeSave();
     }
 
     private void PCollocationHandle(object sender, RoutedEventArgs e)
     {
-        PCard card = new("Collocation", _pCollocationList.Count + 1, _pSentenceReference);
+        PCard card = new("Collocation", _pCollocationList.Count + 1, _pEditorCitation);
         PLinkAttach(card);
         PEditorChangeAttach(card);
         _pCollocationList.Add(card);
@@ -76,7 +76,7 @@ public partial class PEditor
 
     private ObservableCollection<PCard>? PCardListFind(PCard card)
     {
-        return _pSenseList.Contains(card) ? _pSenseList
+        return _pMeaningList.Contains(card) ? _pMeaningList
             : _pCollocationList.Contains(card) ? _pCollocationList
             : null;
     }

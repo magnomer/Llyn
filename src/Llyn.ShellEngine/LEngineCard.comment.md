@@ -25,7 +25,7 @@ The whole surviving set is renumbered afterwards in one pass.
 The unique (owner, position) index rejects a swap done row by row.
 That is what LDatabaseOrder exists for.
 
-### `if (row.LSenseParentId is not null)`
+### `if (row.LMeaningParentId is not null)`
 
 A sub-meaning belongs to its parent's group, not to the entry's card list, and no save writes one.
 Leaving it out keeps this over the cards the form actually shows.

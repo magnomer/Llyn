@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -7,24 +7,24 @@ namespace Llyn.Tests;
 public sealed class TTag
 {
     [Fact]
-    public void ATagIsItsOwnTextAndTheSameTextReadsBackFromBothCardKinds()
+    public void TagSave_SameTextOnBothCardKinds_ReadsBackFromEach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string senseId = engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
         string collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         engine.TEngineTagSave(
-            senseId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare")], LOwner.LOwnerSense);
+            meaningId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare")], LOwner.LOwnerMeaning);
         engine.TEngineTagSave(
             collocationId, [TInterface.TTagCreate("formal")], LOwner.LOwnerCollocation);
 
         Assert.Equal(
             ["formal", "rare"],
-            engine.TEngineTagRead(senseId, LOwner.LOwnerSense).Select(tag => tag.LTagText));
+            engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
         Assert.Equal(
             "formal",
             Assert.Single(engine.TEngineTagRead(collocationId, LOwner.LOwnerCollocation)).LTagText);
@@ -34,59 +34,59 @@ public sealed class TTag
     }
 
     [Fact]
-    public void ATagHoldsItsSpacingAndPunctuationExactlyAsItWasWritten()
+    public void TagSave_SpacingAndPunctuation_ReadsBackAsWritten()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string senseId = engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         engine.TEngineTagSave(
-            senseId,
+            meaningId,
             [TInterface.TTagCreate("  This is a new text  "), TInterface.TTagCreate("chiefly British"), TInterface.TTagCreate("   ")],
-            LOwner.LOwnerSense);
+            LOwner.LOwnerMeaning);
 
         Assert.Equal(
             ["This is a new text", "chiefly British"],
-            engine.TEngineTagRead(senseId, LOwner.LOwnerSense).Select(tag => tag.LTagText));
+            engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
     }
 
     [Fact]
-    public void WritingTheSameTextTwiceUnderOneCardKeepsOneTag()
+    public void TagSave_SameTextTwiceOnOneCard_KeepsOneTag()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string senseId = engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         engine.TEngineTagSave(
-            senseId,
+            meaningId,
             [TInterface.TTagCreate("formal"), TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare")],
-            LOwner.LOwnerSense);
+            LOwner.LOwnerMeaning);
 
         Assert.Equal(
             ["formal", "rare"],
-            engine.TEngineTagRead(senseId, LOwner.LOwnerSense).Select(tag => tag.LTagText));
+            engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
         Assert.Equal(
             [0, 1],
-            TDatabasePositionRead(workspace, "sense_tag", "sense_id", senseId));
+            TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
     }
 
     [Fact]
-    public void RenamingATagCarriesEveryCardThatWroteItAndFoldsAClash()
+    public void TagChange_RenamedTag_CarriesCardsAndFoldsClash()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string senseId = engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
         string collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         engine.TEngineTagSave(
-            senseId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare")], LOwner.LOwnerSense);
+            meaningId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare")], LOwner.LOwnerMeaning);
         engine.TEngineTagSave(
             collocationId, [TInterface.TTagCreate("formal")], LOwner.LOwnerCollocation);
 
@@ -94,38 +94,38 @@ public sealed class TTag
 
         Assert.Equal(
             ["rare"],
-            engine.TEngineTagRead(senseId, LOwner.LOwnerSense).Select(tag => tag.LTagText));
+            engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
         Assert.Equal(
             ["rare"],
             engine.TEngineTagRead(collocationId, LOwner.LOwnerCollocation).Select(tag => tag.LTagText));
-        Assert.Equal([0], TDatabasePositionRead(workspace, "sense_tag", "sense_id", senseId));
+        Assert.Equal([0], TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
     }
 
     [Fact]
-    public void DeletingATagTakesItOffEveryCardAndClosesTheGapItLeaves()
+    public void TagDelete_TagOnManyCards_RemovesItAndClosesGap()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string senseId = engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         engine.TEngineTagSave(
-            senseId,
+            meaningId,
             [TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare"), TInterface.TTagCreate("spoken")],
-            LOwner.LOwnerSense);
+            LOwner.LOwnerMeaning);
 
         engine.TEngineTagDelete("rare");
 
         Assert.Equal(
             ["formal", "spoken"],
-            engine.TEngineTagRead(senseId, LOwner.LOwnerSense).Select(tag => tag.LTagText));
-        Assert.Equal([0, 1], TDatabasePositionRead(workspace, "sense_tag", "sense_id", senseId));
+            engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
+        Assert.Equal([0, 1], TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
         Assert.Empty(engine.TEngineTagRead().Where(tag => tag.LTagText == "rare"));
     }
 
     [Fact]
-    public void ASideATagNeverHangsFromIsRefusedRatherThanGuessedAt()
+    public void TagSave_UnknownSide_Throws()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -21,7 +21,7 @@ internal sealed partial class PCard
         foreach (LExampleDraft draft in drafts)
         {
             PCardSentenceAdd(new PSentence(
-                _pCardReference,
+                _pCardCitation,
                 draft.LExampleDraftText,
                 draft.LExampleDraftId,
                 draft.LExampleDraftReference));
@@ -29,7 +29,7 @@ internal sealed partial class PCard
 
         if (PCardSentence.Count == 0)
         {
-            PCardSentenceAdd(new PSentence(_pCardReference));
+            PCardSentenceAdd(new PSentence(_pCardCitation));
         }
 
         PCardSentenceUpdate();
@@ -46,7 +46,7 @@ internal sealed partial class PCard
                 continue;
             }
 
-            drafts.Add(new LExampleDraft(text, row.PSentenceId, row.PSentenceReferenceRead()));
+            drafts.Add(new LExampleDraft(text, row.PSentenceId, row.PSentenceCitationRead()));
         }
 
         return drafts;
@@ -55,7 +55,7 @@ internal sealed partial class PCard
     internal void PCardSentenceInsert(PSentence row)
     {
         int index = PCardSentence.IndexOf(row);
-        PSentence opened = new(_pCardReference);
+        PSentence opened = new(_pCardCitation);
         opened.PropertyChanged += PCardSentenceChange;
         PCardSentence.Insert(index < 0 ? PCardSentence.Count : index + 1, opened);
         PCardSentenceUpdate();

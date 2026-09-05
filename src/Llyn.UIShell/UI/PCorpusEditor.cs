@@ -68,6 +68,8 @@ public partial class PCorpus
 
     private void PCitationFind()
     {
+        _pCitationCatalog.Clear();
+
         IReadOnlyList<LReference> read;
         try
         {
@@ -75,11 +77,10 @@ public partial class PCorpus
         }
         catch (Exception exception)
         {
-            _pCorpusHost.PWindowFailureShow("Example.LoadFailed", exception);
-            return;
+            _pCorpusHost.PWindowFailureShow("Reference.LoadFailed", exception);
+            read = [];
         }
 
-        _pCitationCatalog.Clear();
         foreach (LReference reference in read)
         {
             _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(reference));
@@ -123,42 +124,6 @@ public partial class PCorpus
     {
         _pTranscriptCitation = string.Empty;
         PCitationList.SelectedValue = null;
-        PCitation.IsChecked = false;
-        PCitationUpdate();
-    }
-
-    private void PCitationFreshHandle(object sender, RoutedEventArgs e)
-    {
-        string name = (PCitationDraft.Text ?? string.Empty).Trim();
-        if (name.Length == 0)
-        {
-            return;
-        }
-
-        LReference created;
-        try
-        {
-            created = _lEngine.LEngineReferenceCreate(new LReference(
-                string.Empty,
-                LStateValue.LStateValueCreate(name),
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LState.LStateUnspecified));
-        }
-        catch (Exception exception)
-        {
-            _pCorpusHost.PWindowFailureShow("Reference.AddFailed", exception);
-            return;
-        }
-
-        _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(created));
-        PCitationEmpty.Visibility = Visibility.Collapsed;
-        PCitationDraft.Text = string.Empty;
-
-        _pTranscriptCitation = created.LReferenceId;
-        PCitationList.SelectedValue = created.LReferenceId;
         PCitation.IsChecked = false;
         PCitationUpdate();
     }

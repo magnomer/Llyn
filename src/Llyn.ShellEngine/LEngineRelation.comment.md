@@ -18,14 +18,14 @@ A request is wrong when it names both targets, neither, or one not in this works
 **The engine never turns text into a target.**
 A card field holds free text and a link needs an id.
 So the two are bridged by a lookup the caller runs first.
-That is `LEngineEntryFind` for entries and `LEngineSenseFind` for meanings.
+That is `LEngineEntryFind` for entries and `LEngineMeaningFind` for meanings.
 The caller passes back the id it chose.
 Text that matched nothing has no id to pass.
 The write is refused with `LRefusal.LRefusalTarget`.
 It neither fabricates a target nor drops what was typed.
 A guess written here would be a link the user never made, pointing at a word they never chose.
 
-## `public IReadOnlyList<LSense> LEngineSenseFind(string query)`
+## `public IReadOnlyList<LMeaning> LEngineMeaningFind(string query)`
 
 Returns the Meanings whose owning entry's headword contains `query`.
 They are ordered by headword and then by each Meaning's place in its entry.
@@ -45,9 +45,9 @@ Naming both an Entry and a Meaning is refused with `LRefusal.LRefusalTarget`.
 So is naming neither, or naming one that is not stored.
 Nothing is written in either case.
 
-## `public IReadOnlyList<LRelation> LEngineRelationRead(string senseId)`
+## `public IReadOnlyList<LRelation> LEngineRelationRead(string meaningId)`
 
-Reads the relations originating from the Meaning identified by `senseId`, in stored order.
+Reads the relations originating from the Meaning identified by `meaningId`, in stored order.
 Each carries the single target it points at.
 
 ## `public void LEngineRelationUpdate(LRelation relation)`
@@ -99,7 +99,7 @@ The Entry or Meaning it pointed at is untouched.
 
 ## Inline notes
 
-### `private void LEngineTargetValidate(string? entryId, string? senseId)`
+### `private void LEngineTargetValidate(string? entryId, string? meaningId)`
 
 The one place a link's target is checked, for both kinds of link.
 Exactly one of the two ids is set.

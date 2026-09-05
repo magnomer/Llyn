@@ -49,7 +49,7 @@
                 </Grid>
             </ToggleButton>
             <Popup
-                x:Name="POrderMenu"
+                x:Name="POrderDropdown"
                 Width="252"
                 AllowsTransparency="True"
                 IsOpen="{Binding IsChecked, ElementName=POrderBase}"
@@ -78,7 +78,7 @@
             <Button
                 Grid.Column="4"
                 Height="44"
-                Click="PMarkupImportHandle"
+                Click="PLibraryMarkupHandle"
                 Content="{DynamicResource List.Import}"
                 Style="{StaticResource Theme.Input.Pill}" />
         </Grid>

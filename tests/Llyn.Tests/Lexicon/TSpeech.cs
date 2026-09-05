@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TSpeech
 {
     [Fact]
-    public void BindingToAWorkspaceWritesTheLanguagePacksVocabularyIntoIt()
+    public void WorkspaceEngineStart_NewWorkspace_WritesPackVocabulary()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -32,7 +32,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void WritingTheSameVocabularyRowAgainRewritesItRatherThanAddingOne()
+    public void SpeechCreate_SameRowAgain_RewritesNotAdds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -58,7 +58,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void AnEntrysInflectionsAreSetAppendedMovedAndDeleted()
+    public void InflectionSet_AppendedMovedDeleted_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -96,7 +96,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void APartOfSpeechNamingAPresetIsStoredAsThatPresetsIdAndReadsBackAsItsName()
+    public void EntrySave_SpeechNamingPreset_StoresIdReadsBackName()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -114,7 +114,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void APartOfSpeechNoPresetNamesIsStoredAsTypedAndReadsBackUnchanged()
+    public void EntrySave_SpeechWithoutPreset_StoresTextAsTyped()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -134,7 +134,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void AnEmptyPartOfSpeechFieldWritesNoAssignmentAtAll()
+    public void EntrySave_EmptySpeechField_WritesNoAssignment()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -146,7 +146,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void ChangingThePartOfSpeechReplacesTheAssignmentAndClearingItRemovesIt()
+    public void EntryUpdate_SpeechCleared_RemovesAssignment()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -182,7 +182,7 @@ public sealed class TSpeech
     }
 
     [Fact]
-    public void ManyPartsOfSpeechAreStoredInTheOrderTheyWereAdded()
+    public void EntrySave_ManySpeeches_StoresInAddedOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

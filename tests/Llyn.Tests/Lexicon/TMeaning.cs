@@ -1,46 +1,46 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
 namespace Llyn.Tests;
 
-public sealed class TSense
+public sealed class TMeaning
 {
     [Fact]
-    public void AMeaningIsCreatedMovedAndDeletedOneRowAtATime()
+    public void MeaningCreate_OneRowAtATime_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = TSenseEntryCreate(engine);
-        LSense first = Assert.Single(engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry));
+        LEntry entry = TMeaningEntryCreate(engine);
+        LMeaning first = Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry));
 
-        LSense second = engine.TEngineSenseCreate(TInterface.TSenseCreate(
+        LMeaning second = engine.TEngineMeaningCreate(TInterface.TMeaningCreate(
             string.Empty, entry.LEntryId, null, 0, null, null, null, "a second meaning", string.Empty));
-        Assert.Equal(1, second.LSensePosition);
-        Assert.Equal("a second meaning", engine.TEngineSenseRead(second.LSenseId)?.LSenseDefinition);
+        Assert.Equal(1, second.LMeaningPosition);
+        Assert.Equal("a second meaning", engine.TEngineMeaningRead(second.LMeaningId)?.LMeaningDefinition);
 
-        engine.TEngineSenseUpdate(second with { LSenseTitle = "the other one" });
-        Assert.Equal("the other one", engine.TEngineSenseRead(second.LSenseId)?.LSenseTitle);
+        engine.TEngineMeaningUpdate(second with { LMeaningTitle = "the other one" });
+        Assert.Equal("the other one", engine.TEngineMeaningRead(second.LMeaningId)?.LMeaningTitle);
 
-        engine.TEngineSenseMove(second.LSenseId, 0);
+        engine.TEngineMeaningMove(second.LMeaningId, 0);
         Assert.Equal(
-            [second.LSenseId, first.LSenseId],
-            engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry).Select(row => row.LSenseId));
+            [second.LMeaningId, first.LMeaningId],
+            engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry).Select(row => row.LMeaningId));
 
-        engine.TEngineSenseDelete(second.LSenseId);
-        LSense left = Assert.Single(engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry));
-        Assert.Equal(first.LSenseId, left.LSenseId);
-        Assert.Equal(0, left.LSensePosition);
+        engine.TEngineMeaningDelete(second.LMeaningId);
+        LMeaning left = Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry));
+        Assert.Equal(first.LMeaningId, left.LMeaningId);
+        Assert.Equal(0, left.LMeaningPosition);
     }
 
     [Fact]
-    public void ACollocationIsCreatedMovedAndDeletedOneRowAtATime()
+    public void CollocationCreate_OneRowAtATime_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = TSenseEntryCreate(engine);
+        LEntry entry = TMeaningEntryCreate(engine);
         LCollocation first =
             Assert.Single(engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry));
 
@@ -64,21 +64,21 @@ public sealed class TSense
     }
 
     [Fact]
-    public void ASideNeitherCardKindHangsFromIsRefused()
+    public void MeaningRead_UnknownSide_Throws()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = TSenseEntryCreate(engine);
-        string senseId = engine.TEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
+        LEntry entry = TMeaningEntryCreate(engine);
+        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            engine.TEngineSenseRead(senseId, LOwner.LOwnerSense));
+            engine.TEngineMeaningRead(meaningId, LOwner.LOwnerMeaning));
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            engine.TEngineCollocationRead(senseId, LOwner.LOwnerCollocation));
+            engine.TEngineCollocationRead(meaningId, LOwner.LOwnerCollocation));
     }
 
-    private static LEntry TSenseEntryCreate(LEngine engine)
+    private static LEntry TMeaningEntryCreate(LEngine engine)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "word",

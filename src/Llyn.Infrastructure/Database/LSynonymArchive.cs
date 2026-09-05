@@ -41,7 +41,7 @@ public sealed class LSynonymArchive
             command.Parameters.AddWithValue("$collocation", stored.LSynonymCollocationId);
             command.Parameters.AddWithValue("$position", stored.LSynonymPosition);
             command.Parameters.AddWithValue("$entry", (object?)stored.LSynonymTargetEntry ?? DBNull.Value);
-            command.Parameters.AddWithValue("$sense", (object?)stored.LSynonymTargetSense ?? DBNull.Value);
+            command.Parameters.AddWithValue("$sense", (object?)stored.LSynonymTargetMeaning ?? DBNull.Value);
             command.ExecuteNonQuery();
         }
 
@@ -94,7 +94,7 @@ public sealed class LSynonymArchive
                 WHERE id = $id;
                 """;
             command.Parameters.AddWithValue("$entry", (object?)synonym.LSynonymTargetEntry ?? DBNull.Value);
-            command.Parameters.AddWithValue("$sense", (object?)synonym.LSynonymTargetSense ?? DBNull.Value);
+            command.Parameters.AddWithValue("$sense", (object?)synonym.LSynonymTargetMeaning ?? DBNull.Value);
             command.Parameters.AddWithValue("$id", synonym.LSynonymId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -169,8 +169,8 @@ public sealed class LSynonymArchive
     private static void LSynonymTargetValidate(LSynonym synonym)
     {
         bool hasEntry = !string.IsNullOrWhiteSpace(synonym.LSynonymTargetEntry);
-        bool hasSense = !string.IsNullOrWhiteSpace(synonym.LSynonymTargetSense);
-        if (hasEntry == hasSense)
+        bool hasMeaning = !string.IsNullOrWhiteSpace(synonym.LSynonymTargetMeaning);
+        if (hasEntry == hasMeaning)
         {
             throw new InvalidOperationException(
                 "A collocation synonym must have exactly one target: a target Entry id XOR a target Meaning id.");

@@ -5,4 +5,4 @@ public sealed record LSynonym(
     string LSynonymCollocationId,
     int LSynonymPosition,
     string? LSynonymTargetEntry,
-    string? LSynonymTargetSense);
+    string? LSynonymTargetMeaning);

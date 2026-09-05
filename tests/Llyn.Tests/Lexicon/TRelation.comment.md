@@ -15,7 +15,7 @@ It covers the refusal that meets a target which resolved to nothing.
 The caller resolves first: typed text becomes the entry the user meant, and its id is what reaches the engine.
 Nothing about the text is handed over.
 
-### `LSense chosen = Assert.Single(engine.LEngineSenseFind("term"));`
+### `LMeaning chosen = Assert.Single(engine.LEngineMeaningFind("term"));`
 
 The meaning-level twin of the entry lookup.
 Text names the Meanings it could mean, and the caller picks one of them.
@@ -30,7 +30,7 @@ An id nobody carries, both targets at once, and neither target are one failure.
 The caller did not hand over a resolved target.
 All three are refused with the same stated reason.
 
-### `Assert.Empty(engine.LEngineRelationRead(senseId));`
+### `Assert.Empty(engine.LEngineRelationRead(meaningId));`
 
 A refused write leaves no row behind: the relation is not written half-resolved.
 
@@ -39,11 +39,11 @@ A refused write leaves no row behind: the relation is not written half-resolved.
 The link went.
 What it linked to did not.
 
-### `LSense chosen = Assert.Single(engine.LEngineSenseFind("term"));`
+### `LMeaning chosen = Assert.Single(engine.LEngineMeaningFind("term"));`
 
 Re-pointing resolves the new target on the same terms the create did.
 
-### `Assert.Equal("a summary", Assert.Single(engine.LEngineSenseFind("résumé")).LSenseDefinition);`
+### `Assert.Equal("a summary", Assert.Single(engine.LEngineMeaningFind("résumé")).LMeaningDefinition);`
 
 Folded over the whole of Unicode, the same as the entry lookup.
 So an accented headword is found typed in either case.
@@ -57,6 +57,6 @@ An empty query is every Meaning, ordered by the headword each one hangs from.
 One saved entry with a single Meaning card and a single Collocation card.
 That is the shape every test here needs an origin and a target to have.
 
-### `private static string TRelationSenseRead(TWorkspace workspace, string entryId)`
+### `private static string TRelationMeaningRead(TWorkspace workspace, string entryId)`
 
 The id of the entry's only Meaning.

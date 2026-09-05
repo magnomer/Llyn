@@ -6,7 +6,7 @@ One synonym interlink hanging from a Collocation.
 A collocation synonym is never Entry-owned text.
 It points at a lexical target through the same discriminated, checked target model.
 That model is the one job05 defined for `LRelation`.
-Exactly one of `LSynonymTargetEntry` and `LSynonymTargetSense` is set.
+Exactly one of `LSynonymTargetEntry` and `LSynonymTargetMeaning` is set.
 Both the store and the table's check constraint enforce that XOR.
 
 TODO: the precise targeting rules for a collocation synonym are not finalized.
@@ -22,4 +22,4 @@ Tighten it once the rules are decided.
 - `LSynonymCollocationId` — Origin Collocation id the synonym hangs from.
 - `LSynonymPosition` — Order among the origin Collocation's synonyms.
 - `LSynonymTargetEntry` — Target Entry id when the synonym points at an Entry, else `null`.
-- `LSynonymTargetSense` — Target Meaning id when the synonym points at a Meaning, else `null`.
+- `LSynonymTargetMeaning` — Target Meaning id when the synonym points at a Meaning, else `null`.

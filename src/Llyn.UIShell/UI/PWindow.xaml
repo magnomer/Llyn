@@ -39,7 +39,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <Grid x:Name="PLogo" Width="34" Height="34" VerticalAlignment="Center">
+                    <Grid x:Name="PLogo" Width="34" Height="34" VerticalAlignment="Center" Background="Transparent" Cursor="Hand" MouseLeftButtonDown="PLogoHandle">
                         <Border Background="{StaticResource Theme.Accent}" CornerRadius="10" />
                         <Path
                             Width="17"
@@ -53,8 +53,8 @@
                         <Popup x:Name="PHeadquarter" Placement="Bottom" StaysOpen="False">
                             <Border Width="180" Margin="0,8,0,0" Padding="8" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
                                 <StackPanel>
-                                    <TextBlock x:Name="PHeadquarterAbout" Padding="10,8" Text="{DynamicResource Headquarter.About}" />
-                                    <TextBlock x:Name="PHeadquarterExit" Padding="10,8" Foreground="{StaticResource Theme.Warning}" Text="{DynamicResource Headquarter.Exit}" />
+                                    <TextBlock x:Name="PHeadquarterAbout" Padding="10,8" Background="Transparent" Cursor="Hand" MouseLeftButtonDown="PHeadquarterAboutHandle" Text="{DynamicResource Headquarter.About}" />
+                                    <TextBlock x:Name="PHeadquarterExit" Padding="10,8" Background="Transparent" Cursor="Hand" Foreground="{StaticResource Theme.Warning}" MouseLeftButtonDown="PHeadquarterExitHandle" Text="{DynamicResource Headquarter.Exit}" />
                                 </StackPanel>
                             </Border>
                         </Popup>

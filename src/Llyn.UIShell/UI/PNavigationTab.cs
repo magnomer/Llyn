@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace Llyn.UIShell;
@@ -63,6 +63,11 @@ public partial class PWindow
 
     internal void PWindowEntryShow(string id)
     {
+        if (!PLibrary.PLibraryLeaveConfirm())
+        {
+            return;
+        }
+
         PNavigationHandle(PNavigationLibrary, new RoutedEventArgs());
         PLibrary.PIndexEntryShow(id);
     }

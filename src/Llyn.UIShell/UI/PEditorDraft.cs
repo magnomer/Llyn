@@ -18,7 +18,7 @@ public partial class PEditor
             _pSpeakerChoice,
             PPronunciation.Text ?? string.Empty,
             PEditorNoteRead(),
-            PCardRead(_pSenseList),
+            PCardRead(_pMeaningList),
             PCardRead(_pCollocationList),
             _pRecording ?? string.Empty,
             _pRecordingSource,
@@ -35,7 +35,7 @@ public partial class PEditor
         PEditorLanguageShow(draft.LEntryDraftLanguage);
 
         IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);
-        PCardShow(_pSenseList, "Meaning", draft.LEntryDraftSenses, targets);
+        PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets);
         PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets);
 
         PEditorNoteShow(draft.LEntryDraftNote);
@@ -50,7 +50,7 @@ public partial class PEditor
     private IReadOnlyDictionary<string, LTranslationTarget> PEditorTargetRead(LEntryDraft draft)
     {
         List<string> ids = [];
-        PEditorTargetRead(draft.LEntryDraftSenses, ids);
+        PEditorTargetRead(draft.LEntryDraftMeanings, ids);
         PEditorTargetRead(draft.LEntryDraftCollocations, ids);
 
         Dictionary<string, LTranslationTarget> targets = new(StringComparer.Ordinal);
@@ -112,7 +112,7 @@ public partial class PEditor
         cards.Clear();
         foreach (LCardDraft draft in drafts)
         {
-            PCard card = new(prefix, draft.LCardDraftPosition, _pSentenceReference)
+            PCard card = new(prefix, draft.LCardDraftPosition, _pEditorCitation)
             {
                 PCardId = draft.LCardDraftId
             };
@@ -121,7 +121,7 @@ public partial class PEditor
             card.PCardExpressionShow(draft.LCardDraftExpression);
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
             card.PCardSentenceShow(draft.LCardDraftExample);
-            card.PCardSituationShow(draft.LCardDraftSituation);
+            card.PCardContextShow(draft.LCardDraftSituation);
             card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
             PLinkAttach(card);
             PEditorChangeAttach(card);
@@ -132,7 +132,7 @@ public partial class PEditor
 
         if (cards.Count == 0)
         {
-            PCard card = new(prefix, 1, _pSentenceReference);
+            PCard card = new(prefix, 1, _pEditorCitation);
             PLinkAttach(card);
             PEditorChangeAttach(card);
             cards.Add(card);
@@ -142,7 +142,6 @@ public partial class PEditor
     private void PEditorNoteShow(string note)
     {
         PNoteContents.Text = note;
-        PNotePlaceholder.Visibility = note.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PEditorRecordingShow(LEntryDraft draft)
@@ -190,11 +189,10 @@ public partial class PEditor
         PRecordingClear();
         _pSpeakerEntry = false;
 
-        PCardShow(_pSenseList, "Meaning", [], PEditorTargetEmpty);
+        PCardShow(_pMeaningList, "Meaning", [], PEditorTargetEmpty);
         PCardShow(_pCollocationList, "Collocation", [], PEditorTargetEmpty);
 
         PNoteContents.Text = string.Empty;
-        PNotePlaceholder.Visibility = Visibility.Visible;
 
         _pEditorFill = false;
 
@@ -260,20 +258,20 @@ public partial class PEditor
         }
     }
 
-    internal void PEditorDraftFinish(bool store)
+    internal bool PEditorDraftFinish(bool store)
     {
         PEditorChangeStop();
 
         if (!store || !PEditorDraftCheck())
         {
             PEditorDraftCancel();
-            return;
+            return true;
         }
 
         string held = _pEditorDraft;
         if (held.Length == 0)
         {
-            return;
+            return true;
         }
 
         _pEditorDraft = string.Empty;
@@ -282,11 +280,15 @@ public partial class PEditor
         {
             _lEngine.LEngineDraftCommit(held);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
             _pEditorDraft = held;
-            PEditorDraftCancel();
+            string? entry = PEditorEntryRead();
+            _pEditorHost.PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
+            return false;
         }
+
+        return true;
     }
 
     private bool PEditorDraftCheck()
@@ -316,7 +318,7 @@ public partial class PEditor
                 card.PCardExpressionRead(),
                 card.PCardDefinitionRead(),
                 card.PCardSentenceRead(),
-                card.PCardSituationRead(),
+                card.PCardContextRead(),
                 card.PCardLinkRead(),
                 string.Empty,
                 card.PCardLabelRead(),

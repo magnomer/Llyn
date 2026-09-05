@@ -23,7 +23,7 @@ Binds the store to the workspace `database` it opens sessions through.
 
 Reads the Examples an Entry references, in the order that Entry gives them.
 
-## `public IReadOnlyList<LExample> LExampleSenseRead(string senseId)`
+## `public IReadOnlyList<LExample> LExampleMeaningRead(string meaningId)`
 
 Reads the Examples a Meaning references, in the order that Meaning gives them.
 
@@ -35,7 +35,7 @@ Reads the Examples a Collocation references, in the order that Collocation gives
 
 References an existing Example from an Entry at `position` in that Entry's order.
 
-## `public void LExampleSenseAttach(string senseId, string exampleId, int position)`
+## `public void LExampleMeaningAttach(string meaningId, string exampleId, int position)`
 
 References an existing Example from a Meaning at `position` in that Meaning's order.
 
@@ -48,7 +48,7 @@ References an existing Example from a Collocation at `position` in that Collocat
 Removes an Entry's reference to an Example.
 The Example and its other references survive.
 
-## `public void LExampleSenseDetach(string senseId, string exampleId)`
+## `public void LExampleMeaningDetach(string meaningId, string exampleId)`
 
 Removes a Meaning's reference to an Example.
 The Example and its other references survive.

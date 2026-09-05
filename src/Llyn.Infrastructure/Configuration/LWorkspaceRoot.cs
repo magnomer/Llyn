@@ -10,6 +10,7 @@ public static class LWorkspaceRoot
     private const string LWorkspaceRootDatabase = "llyn.db";
     private const string LWorkspaceRootDrafts = "drafts";
     private const string LWorkspaceRootCourt = "court";
+    private const string LWorkspaceRootClaim = "claim";
 
     public static string LWorkspaceRootRead()
     {
@@ -48,6 +49,15 @@ public static class LWorkspaceRoot
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
 
         string folder = Path.Combine(LWorkspaceDraftRead(root), LWorkspaceRootCourt);
+        Directory.CreateDirectory(folder);
+        return folder;
+    }
+
+    public static string LWorkspaceClaimRead(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+
+        string folder = Path.Combine(LWorkspaceDraftRead(root), LWorkspaceRootClaim);
         Directory.CreateDirectory(folder);
         return folder;
     }

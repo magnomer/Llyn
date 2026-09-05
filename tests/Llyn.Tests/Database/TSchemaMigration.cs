@@ -1,4 +1,4 @@
-using Llyn.Infrastructure;
+﻿using Llyn.Infrastructure;
 using Microsoft.Data.Sqlite;
 using Xunit;
 
@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TSchemaMigration
 {
     [Fact]
-    public void CreatingTheSchemaTwiceLeavesOneVersionRowAtTheCurrentVersion()
+    public void DatabaseCreate_RunTwice_LeavesOneVersionRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -21,7 +21,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void ForeignKeysAreEnforcedOnEveryConnection()
+    public void WorkspacePrepare_NewConnection_EnforcesForeignKeys()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -29,7 +29,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AnOlderDatabaseIsMigratedRatherThanRestamped()
+    public void DatabaseCreate_OlderDatabase_MigratesNotRestamps()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -63,7 +63,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void ADatabaseAtVersionThirteenGainsTheAudioTableWithoutLosingItsRows()
+    public void DatabaseCreate_VersionThirteen_AddsAudioTable()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -100,7 +100,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void ADatabaseAtVersionSixteenGainsTheSituationSourceColumnWithoutLosingItsRows()
+    public void DatabaseCreate_VersionSixteen_DropsSituationSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -116,7 +116,9 @@ public sealed class TSchemaMigration
                 id TEXT NOT NULL PRIMARY KEY,
                 title TEXT NOT NULL,
                 description TEXT,
-                kind TEXT
+                kind TEXT,
+                source_state TEXT NOT NULL DEFAULT 'unspecified',
+                source_id TEXT
             );
             INSERT INTO situation (id, title) VALUES ('kept', 'in court');
             """);
@@ -127,18 +129,18 @@ public sealed class TSchemaMigration
             LSchemaMigration.LSchemaMigrationVersion,
             workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
         Assert.Equal(
-            1,
+            0,
             workspace.TWorkspaceCountRead(
                 "SELECT COUNT(*) FROM pragma_table_info('situation') WHERE name = 'source_id';"));
         Assert.Equal(
-            1,
+            0,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM pragma_foreign_key_list('situation') WHERE \"table\" = 'source';"));
+                "SELECT COUNT(*) FROM pragma_table_info('situation') WHERE name = 'source_state';"));
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation WHERE id = 'kept';"));
     }
 
     [Fact]
-    public void DuplicatePositionsAreRenumberedBeforeTheUniqueIndexIsBuilt()
+    public void DatabaseCreate_DuplicatePositions_RenumbersBeforeIndex()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -182,7 +184,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AVersionEighteenDatabaseTradesTagIdentityForTagTextWithoutLosingALabel()
+    public void DatabaseCreate_VersionEighteen_TradesTagIdForText()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -244,7 +246,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AVersionTwentyDatabaseCarriesEachExampleTranslationOntoTheExampleRow()
+    public void DatabaseCreate_VersionTwenty_MovesTranslationToExample()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -312,7 +314,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AVersionNineteenDatabaseGainsBothTranslationLinkTables()
+    public void DatabaseCreate_VersionNineteen_AddsTranslationTables()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -349,7 +351,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AVersionTwelveDatabaseGainsTheCollocationMeaningWithoutLosingARow()
+    public void DatabaseCreate_VersionTwelve_AddsCollocationMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -401,7 +403,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AVersionFourteenDatabaseGainsBothTitleColumnsWithoutLosingARow()
+    public void DatabaseCreate_VersionFourteen_AddsTitleColumns()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -474,7 +476,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void AVersionFifteenDatabaseGainsTheCustomPartOfSpeechWithoutLosingAnAssignment()
+    public void DatabaseCreate_VersionFifteen_AddsCustomSpeech()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -525,7 +527,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void ADatabaseFromANewerBuildIsRefused()
+    public void DatabaseCreate_NewerBuild_Throws()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
@@ -538,7 +540,7 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void EveryChildForeignKeyColumnCarriesAnIndex()
+    public void DatabaseCreate_ChildForeignKeys_CarryAnIndex()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 

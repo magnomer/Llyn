@@ -7,7 +7,7 @@ public sealed record LEntryDraft(
     string LEntryDraftLanguage,
     string LEntryDraftPronunciation,
     string LEntryDraftNote,
-    IReadOnlyList<LCardDraft> LEntryDraftSenses,
+    IReadOnlyList<LCardDraft> LEntryDraftMeanings,
     IReadOnlyList<LCardDraft> LEntryDraftCollocations,
     string LEntryDraftAudio = "",
     string? LEntryDraftSource = null,

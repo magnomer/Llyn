@@ -24,7 +24,7 @@ So the accent styles below restate it as an implicit style of their own.
 ## `<Style x:Key="Theme.Choice.Row" TargetType="Button">`
 
 One row the user picks from.
-It is a whole row that takes the click, used by the entry index and by the ordering menu.
+It is a whole row that takes the click, used by the entry index and by the ordering dropdown.
 Keeping it templated avoids falling back to the platform's square, grey Button chrome.
 This is not a picker-popup row.
 Those carry no click of their own and offer their actions separately.

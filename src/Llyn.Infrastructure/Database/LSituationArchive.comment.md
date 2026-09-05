@@ -29,7 +29,7 @@ The new Situation is referenced by nothing until it is attached to a referrer.
 
 Reads the Situation identified by `id`, or `null` when no such Situation exists.
 
-## `public IReadOnlyList<LSituation> LSituationSenseRead(string senseId)`
+## `public IReadOnlyList<LSituation> LSituationMeaningRead(string meaningId)`
 
 Reads the Situations a Meaning references, in the order that Meaning gives them.
 
@@ -60,7 +60,7 @@ Detach every reference first.
 Deleting a Situation never deletes the rows that referenced it.
 The guard and the delete share one transaction, so nothing can attach the Situation between them.
 
-## `public void LSituationSenseAttach(string senseId, string situationId, int position)`
+## `public void LSituationMeaningAttach(string meaningId, string situationId, int position)`
 
 References an existing Situation from a Meaning at `position` in that Meaning's order.
 
@@ -68,7 +68,7 @@ References an existing Situation from a Meaning at `position` in that Meaning's 
 
 References an existing Situation from a Collocation at `position` in that Collocation's order.
 
-## `public void LSituationSenseDetach(string senseId, string situationId)`
+## `public void LSituationMeaningDetach(string meaningId, string situationId)`
 
 Removes a Meaning's reference to a Situation.
 The Situation and its other references survive.

@@ -34,9 +34,9 @@ public partial class PLibrary : UserControl
         PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
-    internal void PLibraryDraftFinish(bool store)
+    internal bool PLibraryDraftFinish(bool store)
     {
-        PEditor.PEditorDraftFinish(store);
+        return PEditor.PEditorDraftFinish(store);
     }
 
     internal bool PLibraryChangeCheck()

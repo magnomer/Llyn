@@ -7,40 +7,40 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LSense LEngineSenseCreate(LSense sense)
+    public LMeaning LEngineMeaningCreate(LMeaning meaning)
     {
-        ArgumentNullException.ThrowIfNull(sense);
-        return new LSenseArchive(_lEngineDatabase).LSenseCreate(sense);
+        ArgumentNullException.ThrowIfNull(meaning);
+        return new LMeaningArchive(_lEngineDatabase).LMeaningCreate(meaning);
     }
 
-    public LSense? LEngineSenseRead(string id)
+    public LMeaning? LEngineMeaningRead(string id)
     {
-        return new LSenseArchive(_lEngineDatabase).LSenseSingleRead(id);
+        return new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(id);
     }
 
-    public IReadOnlyList<LSense> LEngineSenseRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LMeaning> LEngineMeaningRead(string ownerId, LOwner owner)
     {
         if (owner != LOwner.LOwnerEntry)
         {
             throw LEngineOwnerRaise(owner);
         }
 
-        return new LSenseArchive(_lEngineDatabase).LSenseRead(ownerId);
+        return new LMeaningArchive(_lEngineDatabase).LMeaningRead(ownerId);
     }
 
-    public void LEngineSenseUpdate(LSense sense)
+    public void LEngineMeaningUpdate(LMeaning meaning)
     {
-        new LSenseArchive(_lEngineDatabase).LSenseUpdate(sense);
+        new LMeaningArchive(_lEngineDatabase).LMeaningUpdate(meaning);
     }
 
-    public void LEngineSenseMove(string id, int position)
+    public void LEngineMeaningMove(string id, int position)
     {
-        new LSenseArchive(_lEngineDatabase).LSenseMove(id, position);
+        new LMeaningArchive(_lEngineDatabase).LMeaningMove(id, position);
     }
 
-    public void LEngineSenseDelete(string id)
+    public void LEngineMeaningDelete(string id)
     {
-        new LSenseArchive(_lEngineDatabase).LSenseDelete(id);
+        new LMeaningArchive(_lEngineDatabase).LMeaningDelete(id);
     }
 
     public LCollocation LEngineCollocationCreate(LCollocation collocation)

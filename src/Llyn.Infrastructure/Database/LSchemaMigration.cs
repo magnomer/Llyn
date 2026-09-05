@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 21;
+    public const long LSchemaMigrationVersion = 22;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -65,11 +65,6 @@ public static class LSchemaMigration
             LSchemaSpeechNormalize(connection);
         }
 
-        if (stored < 17)
-        {
-            LSchemaSituationNormalize(connection);
-        }
-
         if (stored < 18)
         {
             LSchemaState.LSchemaStateNormalize(connection);
@@ -83,6 +78,11 @@ public static class LSchemaMigration
         if (stored < 21)
         {
             LSchemaTranslationNormalize(connection);
+        }
+
+        if (stored < 22)
+        {
+            LSchemaSituationNormalize(connection);
         }
 
         LSchemaVersionSave(connection);
@@ -341,20 +341,20 @@ public static class LSchemaMigration
 
     private static void LSchemaSituationNormalize(SqliteConnection connection)
     {
-        using (SqliteCommand check = connection.CreateCommand())
+        foreach (string column in new[] { "source_id", "source_state" })
         {
+            using SqliteCommand check = connection.CreateCommand();
             check.CommandText =
-                "SELECT COUNT(*) FROM pragma_table_info('situation') WHERE name = 'source_id';";
-            if (Convert.ToInt64(check.ExecuteScalar()) > 0)
+                $"SELECT COUNT(*) FROM pragma_table_info('situation') WHERE name = '{column}';";
+            if (Convert.ToInt64(check.ExecuteScalar()) == 0)
             {
-                return;
+                continue;
             }
-        }
 
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            "ALTER TABLE situation ADD COLUMN source_id TEXT REFERENCES source (id);";
-        command.ExecuteNonQuery();
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = $"ALTER TABLE situation DROP COLUMN {column};";
+            command.ExecuteNonQuery();
+        }
     }
 
     private static void LSchemaSpeechNormalize(SqliteConnection connection)

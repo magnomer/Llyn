@@ -55,10 +55,10 @@ The block is read in one pass.
 A nested block is handed whole to the reader that owns it.
 Those blocks are `<sense>`, `<collocation>` and `<source>`.
 The walk resumes after its leave token.
-So a `<title>` inside a sense is never mistaken for a field of the entry.
+So a `<title>` inside a meaning is never mistaken for a field of the entry.
 Everything else is a leaf tag read by name.
 An unrecognised one is ignored, as section 1 of the format spec requires.
-Senses, collocations and sources each keep the order they were written in, which section 7 makes meaningful.
+Meanings, collocations and sources each keep the order they were written in, which section 7 makes meaningful.
 
 Citations are checked only after the whole block has been read.
 A `<source>` may be written after the cards that cite it.

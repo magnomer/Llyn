@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -97,6 +97,8 @@ internal static class PLocalizationLoader
         {
             resources[key] = value;
         }
+
+        PLocalizationCatalog.PLocalizationCatalogUpdate();
     }
 
     private static void PLocalizationLoaderAdd(JsonProperty property, IDictionary<string, string> terms)

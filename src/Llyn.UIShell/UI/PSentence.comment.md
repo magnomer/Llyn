@@ -27,7 +27,7 @@ The row for a stored Example.
 It holds the sentence and the Source it cites as the store knows them.
 Both stand under the id that names it.
 
-## `public ObservableCollection<PCitationItem> PSentenceReferenceCatalog { get; }`
+## `public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }`
 
 The Sources the whole form offers, shared by every row.
 So a Source written on one row is on offer to the next without reloading anything.
@@ -36,7 +36,7 @@ So a Source written on one row is on offer to the next without reloading anythin
 
 What the row says its sentence is: nothing written, unreadable, or the text it shows.
 
-## `internal LStateValue PSentenceReferenceRead()`
+## `internal LStateValue PSentenceCitationRead()`
 
 What the row says about the Source it cites: none, unreadable, or the one it names.
 
@@ -50,6 +50,6 @@ An id, once given, stays with the row.
 Empties the row without dropping it, which is what removing the last row on a card leaves.
 An emptied row says nothing was written, because the user said so.
 
-## `internal void PSentenceReferenceShow()`
+## `internal void PSentenceCitationShow()`
 
 Reads the name of the cited Source again, for when the list of Sources changed underneath the row.

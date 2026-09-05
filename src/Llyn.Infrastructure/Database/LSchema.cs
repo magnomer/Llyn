@@ -387,13 +387,9 @@ public static class LSchema
                 description TEXT,
                 kind_state TEXT NOT NULL DEFAULT 'unspecified',
                 kind TEXT,
-                source_state TEXT NOT NULL DEFAULT 'unspecified',
-                source_id TEXT,
                 CHECK (title_state = 'specified' OR title IS NULL),
                 CHECK (description_state = 'specified' OR description IS NULL),
-                CHECK (kind_state = 'specified' OR kind IS NULL),
-                CHECK (source_state = 'specified' OR source_id IS NULL),
-                FOREIGN KEY (source_id) REFERENCES source (id)
+                CHECK (kind_state = 'specified' OR kind IS NULL)
             );
 
             CREATE TABLE IF NOT EXISTS sense_situation (

@@ -65,12 +65,12 @@ internal static partial class TInterface
         string language,
         string pronunciation,
         string note,
-        IReadOnlyList<LCardDraft> senses,
+        IReadOnlyList<LCardDraft> meanings,
         IReadOnlyList<LCardDraft> collocations,
         string audio = "",
         string? source = null,
         IReadOnlyList<string>? speeches = null) =>
-        new(headword, language, pronunciation, note, senses, collocations, audio, source, speeches);
+        new(headword, language, pronunciation, note, meanings, collocations, audio, source, speeches);
 
     internal static LExample TExampleCreate(
         string id,
@@ -155,16 +155,16 @@ internal static partial class TInterface
 
     internal static LRelation TRelationCreate(
         string id,
-        string senseId,
+        string meaningId,
         int position,
         string type,
         string? label,
         string? labels,
         string? targetEntry,
-        string? targetSense) =>
-        new(id, senseId, position, type, label, labels, targetEntry, targetSense);
+        string? targetMeaning) =>
+        new(id, meaningId, position, type, label, labels, targetEntry, targetMeaning);
 
-    internal static LSense TSenseCreate(
+    internal static LMeaning TMeaningCreate(
         string id,
         string entryId,
         string? parentId,
@@ -180,15 +180,11 @@ internal static partial class TInterface
         string id,
         LStateValue title,
         LStateValue description,
-        LStateValue kind,
-        LStateValue source) =>
-        new(id, title, description, kind, source);
+        LStateValue kind) =>
+        new(id, title, description, kind);
 
-    internal static LSituationDraft TSituationDraftCreate(
-        LStateValue text,
-        string id,
-        LStateValue reference) =>
-        new(text, id, reference);
+    internal static LSituationDraft TSituationDraftCreate(LStateValue text, string id) =>
+        new(text, id);
 
     internal static LSituationDraft TSituationDraftCreate(string text) =>
         LSituationDraft.LSituationDraftCreate(text);
@@ -214,8 +210,8 @@ internal static partial class TInterface
         string collocationId,
         int position,
         string? targetEntry,
-        string? targetSense) =>
-        new(id, collocationId, position, targetEntry, targetSense);
+        string? targetMeaning) =>
+        new(id, collocationId, position, targetEntry, targetMeaning);
 
     internal static LTag TTagCreate(string text) =>
         new(text);

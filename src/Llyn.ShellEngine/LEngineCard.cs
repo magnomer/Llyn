@@ -16,10 +16,10 @@ public sealed partial class LEngine
         bool collocation,
         List<LRevisionChange> changes)
     {
-        LSenseArchive senses = new(_lEngineDatabase);
+        LMeaningArchive meanings = new(_lEngineDatabase);
         LCollocationArchive collocations = new(_lEngineDatabase);
 
-        Dictionary<string, LSense> storedSenses = new(StringComparer.Ordinal);
+        Dictionary<string, LMeaning> storedMeanings = new(StringComparer.Ordinal);
         Dictionary<string, LCollocation> storedCollocations = new(StringComparer.Ordinal);
         List<string> storedOrder = [];
         if (collocation)
@@ -32,15 +32,15 @@ public sealed partial class LEngine
         }
         else
         {
-            foreach (LSense row in senses.LSenseRead(entryId))
+            foreach (LMeaning row in meanings.LMeaningRead(entryId))
             {
-                if (row.LSenseParentId is not null)
+                if (row.LMeaningParentId is not null)
                 {
                     continue;
                 }
 
-                storedSenses[row.LSenseId] = row;
-                storedOrder.Add(row.LSenseId);
+                storedMeanings[row.LMeaningId] = row;
+                storedOrder.Add(row.LMeaningId);
             }
         }
 
@@ -51,7 +51,7 @@ public sealed partial class LEngine
             kept.Add(card);
             bool known = collocation
                 ? storedCollocations.ContainsKey(card.LCardDraftId)
-                : storedSenses.ContainsKey(card.LCardDraftId);
+                : storedMeanings.ContainsKey(card.LCardDraftId);
             if (known)
             {
                 named.Add(card.LCardDraftId);
@@ -72,7 +72,7 @@ public sealed partial class LEngine
                 "delete",
                 collocation
                     ? storedCollocations[dropped].LCollocationExpression.LStateValueShow()
-                    : storedSenses[dropped].LSenseDefinition.LStateValueShow()));
+                    : storedMeanings[dropped].LMeaningDefinition.LStateValueShow()));
 
             if (collocation)
             {
@@ -80,7 +80,7 @@ public sealed partial class LEngine
             }
             else
             {
-                senses.LSenseDelete(dropped);
+                meanings.LMeaningDelete(dropped);
             }
         }
 
@@ -90,8 +90,8 @@ public sealed partial class LEngine
         {
             bool reuse = named.Contains(card.LCardDraftId) && applied.Add(card.LCardDraftId);
             string rowId = reuse
-                ? LEngineCardApply(senses, collocations, card, collocation, storedSenses, storedCollocations, changes)
-                : LEngineCardCreate(senses, collocations, entryId, card, collocation, changes);
+                ? LEngineCardApply(meanings, collocations, card, collocation, storedMeanings, storedCollocations, changes)
+                : LEngineCardCreate(meanings, collocations, entryId, card, collocation, changes);
 
             order.Add(rowId);
             LEngineCardSync(rowId, card, language, collocation);
@@ -109,11 +109,11 @@ public sealed partial class LEngine
     }
 
     private static string LEngineCardApply(
-        LSenseArchive senses,
+        LMeaningArchive meanings,
         LCollocationArchive collocations,
         LCardDraft card,
         bool collocation,
-        IReadOnlyDictionary<string, LSense> storedSenses,
+        IReadOnlyDictionary<string, LMeaning> storedMeanings,
         IReadOnlyDictionary<string, LCollocation> storedCollocations,
         List<LRevisionChange> changes)
     {
@@ -131,19 +131,19 @@ public sealed partial class LEngine
             return row.LCollocationId;
         }
 
-        LSense sense = storedSenses[card.LCardDraftId];
-        senses.LSenseUpdate(sense with
+        LMeaning meaning = storedMeanings[card.LCardDraftId];
+        meanings.LMeaningUpdate(meaning with
         {
-            LSenseTitle = card.LCardDraftTitle,
-            LSenseDefinition = card.LCardDraftMeaning,
+            LMeaningTitle = card.LCardDraftTitle,
+            LMeaningDefinition = card.LCardDraftMeaning,
         });
         changes.Add(new LRevisionChange(
-            0, sense.LSenseId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
-        return sense.LSenseId;
+            0, meaning.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
+        return meaning.LMeaningId;
     }
 
     private static string LEngineCardCreate(
-        LSenseArchive senses,
+        LMeaningArchive meanings,
         LCollocationArchive collocations,
         string entryId,
         LCardDraft card,
@@ -164,7 +164,7 @@ public sealed partial class LEngine
             return row.LCollocationId;
         }
 
-        LSense sense = senses.LSenseCreate(new LSense(
+        LMeaning meaning = meanings.LMeaningCreate(new LMeaning(
             string.Empty,
             entryId,
             null,
@@ -175,8 +175,8 @@ public sealed partial class LEngine
             card.LCardDraftMeaning,
             string.Empty));
         changes.Add(new LRevisionChange(
-            0, sense.LSenseId, "sense", "create", card.LCardDraftMeaning.LStateValueShow()));
-        return sense.LSenseId;
+            0, meaning.LMeaningId, "sense", "create", card.LCardDraftMeaning.LStateValueShow()));
+        return meaning.LMeaningId;
     }
 
     private void LEngineCardSync(string ownerId, LCardDraft card, string language, bool collocation)
@@ -190,7 +190,7 @@ public sealed partial class LEngine
         LImageArchive images = new(_lEngineDatabase);
         LEngineFieldSync(
             card.LCardDraftImage,
-            collocation ? images.LImageCollocationRead(ownerId) : images.LImageSenseRead(ownerId),
+            collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId),
             row => row.LImageId,
             row => row.LImageLocation,
             location => images.LImageCreate(new LImage(string.Empty, location)).LImageId,
@@ -202,7 +202,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                images.LImageSenseDetach(ownerId, rowId);
+                images.LImageMeaningDetach(ownerId, rowId);
             },
             (rowId, position) =>
             {
@@ -212,7 +212,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                images.LImageSenseAttach(ownerId, rowId, position);
+                images.LImageMeaningAttach(ownerId, rowId, position);
             });
     }
 
@@ -224,7 +224,7 @@ public sealed partial class LEngine
 
         IReadOnlyList<LExample> attached = collocation
             ? examples.LExampleCollocationRead(ownerId)
-            : examples.LExampleSenseRead(ownerId);
+            : examples.LExampleMeaningRead(ownerId);
 
         List<string> targets = [];
         HashSet<string> kept = new(StringComparer.Ordinal);
@@ -252,7 +252,7 @@ public sealed partial class LEngine
                 continue;
             }
 
-            examples.LExampleSenseDetach(ownerId, row.LExampleId);
+            examples.LExampleMeaningDetach(ownerId, row.LExampleId);
         }
 
         for (int position = 0; position < targets.Count; position++)
@@ -263,7 +263,7 @@ public sealed partial class LEngine
                 continue;
             }
 
-            examples.LExampleSenseAttach(ownerId, targets[position], position);
+            examples.LExampleMeaningAttach(ownerId, targets[position], position);
         }
     }
 
@@ -274,7 +274,7 @@ public sealed partial class LEngine
 
         IReadOnlyList<LSituation> attached = collocation
             ? situations.LSituationCollocationRead(ownerId)
-            : situations.LSituationSenseRead(ownerId);
+            : situations.LSituationMeaningRead(ownerId);
 
         List<string> targets = [];
         HashSet<string> kept = new(StringComparer.Ordinal);
@@ -302,7 +302,7 @@ public sealed partial class LEngine
                 continue;
             }
 
-            situations.LSituationSenseDetach(ownerId, row.LSituationId);
+            situations.LSituationMeaningDetach(ownerId, row.LSituationId);
         }
 
         for (int position = 0; position < targets.Count; position++)
@@ -313,7 +313,7 @@ public sealed partial class LEngine
                 continue;
             }
 
-            situations.LSituationSenseAttach(ownerId, targets[position], position);
+            situations.LSituationMeaningAttach(ownerId, targets[position], position);
         }
     }
 
@@ -332,7 +332,7 @@ public sealed partial class LEngine
             return;
         }
 
-        tags.LTagSenseSave(ownerId, written);
+        tags.LTagMeaningSave(ownerId, written);
     }
 
     private void LEngineTranslationSave(
@@ -351,7 +351,7 @@ public sealed partial class LEngine
             return;
         }
 
-        translations.LTranslationSenseSave(ownerId, written);
+        translations.LTranslationMeaningSave(ownerId, written);
     }
 
     private static void LEngineFieldSync<TRow>(

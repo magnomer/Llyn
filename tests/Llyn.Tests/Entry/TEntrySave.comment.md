@@ -10,9 +10,9 @@ The save is one unit of work or none.
 
 ## Inline notes
 
-### `IReadOnlyList<LSense> senses = new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(entry.LEntryId);`
+### `IReadOnlyList<LMeaning> meanings = new LMeaningArchive(workspace.TWorkspaceDatabase).LMeaningRead(entry.LEntryId);`
 
-The senses land in card order, each at the position its card held.
+The meanings land in card order, each at the position its card held.
 
 ### `LCollocation collocation = Assert.Single(`
 
@@ -28,7 +28,7 @@ Each field became a row of its own that the card now references, not a column on
 
 ### `Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));`
 
-The sense card's Synonym text is deliberately dropped.
+The meaning card's Synonym text is deliberately dropped.
 The relation it would become targets an Entry or a Meaning by id.
 The field holds free text, so nothing can resolve it yet.
 
@@ -62,5 +62,5 @@ The engine carries no sentence of its own.
 
 The revision is written after the entry and everything under it.
 So removing the table it needs fails the save at its last step.
-The entry, its sense, and its note are already written inside the session.
+The entry, its meaning, and its note are already written inside the session.
 The engine is built first, or creating it would restore the table.

@@ -3,7 +3,7 @@
 ## `public partial class PLibrary`
 
 Browsing behavior of the library panel.
-The search box and the ordering menu refill the entry index.
+The search box and the ordering dropdown refill the entry index.
 A chosen index row is loaded back from the workspace.
 It is rendered read-only in the display area, which the mode toggle swaps for the editor.
 This is the read half of the entry round trip.
@@ -20,7 +20,7 @@ Either way it is the one entry this panel is on.
 ### `private string _pOrderChoice = "Headword";`
 
 Which ordering the index is listed in.
-It is the tag the chosen menu row carries, not the words that row showed.
+It is the tag the chosen dropdown row carries, not the words that row showed.
 The ordering is the same one whatever language names it.
 
 ### `private void PLibraryHandle(object sender, DependencyPropertyChangedEventArgs e)`
@@ -37,7 +37,7 @@ An ordering says in which order the entries are offered, never which one is show
 
 ### `private IEnumerable<LEntry> POrderSort(IReadOnlyList<LEntry> entries)`
 
-The found entries in the order the menu asked for.
+The found entries in the order the dropdown asked for.
 The engine returns them by headword already, so that ordering is the one that costs nothing.
 A timestamp an entry does not carry sorts as empty.
 That puts an entry of unknown age at the end of a newest-first list.
@@ -104,11 +104,12 @@ So the display is filled from the store again rather than from what was on scree
 
 Which of the two halves the broader side shows, and what the toggle then offers.
 
-### `private bool PLibraryLeaveConfirm()`
+### `internal bool PLibraryLeaveConfirm()`
 
 The question put before the editing state is left.
 That is selecting another entry, or toggling back to the display.
 It is anything else that would leave typed corrections behind.
+The window asks it too, for a jump that lands on the library the user is already writing in.
 Nothing unsaved means nothing to ask about.
 
 ### `private void PLibraryEntryShow(string id, LEntryDraft draft)`

@@ -196,7 +196,7 @@ public partial class PLibrary
         PLibraryScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
     }
 
-    private bool PLibraryLeaveConfirm()
+    internal bool PLibraryLeaveConfirm()
     {
         return _pLibraryHost.PWindowDiscardConfirm(PLibraryChangeCheck());
     }

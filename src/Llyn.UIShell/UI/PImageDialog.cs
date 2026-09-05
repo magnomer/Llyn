@@ -42,7 +42,7 @@ public partial class PEditor
 
     private PCard? PCardImageFind(PImage row)
     {
-        foreach (PCard card in _pSenseList)
+        foreach (PCard card in _pMeaningList)
         {
             if (card.PCardImage.Contains(row))
             {

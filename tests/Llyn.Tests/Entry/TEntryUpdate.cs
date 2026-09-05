@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TEntryUpdate
 {
     [Fact]
-    public void AnUpdateKeepsTheCardsTheDraftStillNamesAndRecordsEveryChange()
+    public void EntryUpdate_DraftNamesItsCards_KeepsThemRecordsChanges()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -25,19 +25,19 @@ public sealed class TEntryUpdate
             ],
             []));
 
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
-        IReadOnlyList<LSense> saved = senses.TSenseRead(entry.LEntryId);
-        string firstId = saved[0].LSenseId;
-        string thirdId = saved[2].LSenseId;
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
+        IReadOnlyList<LMeaning> saved = meanings.TMeaningRead(entry.LEntryId);
+        string firstId = saved[0].LMeaningId;
+        string thirdId = saved[2].LMeaningId;
 
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
         LEntryDraft edited = loaded with
         {
-            LEntryDraftSenses =
+            LEntryDraftMeanings =
             [
-                loaded.LEntryDraftSenses[0] with { LCardDraftMeaning = "first, reworded" },
-                loaded.LEntryDraftSenses[2],
+                loaded.LEntryDraftMeanings[0] with { LCardDraftMeaning = "first, reworded" },
+                loaded.LEntryDraftMeanings[2],
                 TInterface.TCardDraftCreate(string.Empty, string.Empty, "fourth", [], [], [], string.Empty, [], [], 3),
             ],
         };
@@ -48,13 +48,13 @@ public sealed class TEntryUpdate
         Assert.Equal(entry.LEntryAddedUtc, updated.LEntryAddedUtc);
         Assert.NotEqual(entry.LEntryUpdatedUtc, updated.LEntryUpdatedUtc);
 
-        IReadOnlyList<LSense> stored = senses.TSenseRead(entry.LEntryId);
-        Assert.Equal(["first, reworded", "third", "fourth"], stored.Select(sense => sense.LSenseDefinition));
-        Assert.Equal([0, 1, 2], stored.Select(sense => sense.LSensePosition));
+        IReadOnlyList<LMeaning> stored = meanings.TMeaningRead(entry.LEntryId);
+        Assert.Equal(["first, reworded", "third", "fourth"], stored.Select(meaning => meaning.LMeaningDefinition));
+        Assert.Equal([0, 1, 2], stored.Select(meaning => meaning.LMeaningPosition));
 
-        Assert.Equal(firstId, stored[0].LSenseId);
-        Assert.Equal(thirdId, stored[1].LSenseId);
-        Assert.DoesNotContain(stored[2].LSenseId, new[] { firstId, thirdId });
+        Assert.Equal(firstId, stored[0].LMeaningId);
+        Assert.Equal(thirdId, stored[1].LMeaningId);
+        Assert.DoesNotContain(stored[2].LMeaningId, new[] { firstId, thirdId });
 
         LRevision revision = Assert.IsType<LRevision>(engine.TEngineRevisionRead());
         IReadOnlyList<LRevisionChange> changes = engine.TEngineChangeRead(revision.LRevisionId);
@@ -71,7 +71,7 @@ public sealed class TEntryUpdate
     }
 
     [Fact]
-    public void ACardsIndependentsAreReAttachedAndTheLastDetachLeavesTheRowStanding()
+    public void EntryUpdate_IndependentReAttached_KeepsRowOnLastDetach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -90,11 +90,11 @@ public sealed class TEntryUpdate
             []));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        LCardDraft card = loaded.LEntryDraftSenses[0];
+        LCardDraft card = loaded.LEntryDraftMeanings[0];
 
         engine.TEngineEntryUpdate(entry.LEntryId, loaded with
         {
-            LEntryDraftSenses =
+            LEntryDraftMeanings =
             [
                 card with
                 {
@@ -104,22 +104,22 @@ public sealed class TEntryUpdate
             ],
         });
 
-        LSense sense = Assert.Single(TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase).TSenseRead(entry.LEntryId));
+        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
         LExampleLink examples = TInterface.TExampleLinkCreate(workspace.TWorkspaceDatabase);
         Assert.Equal(
             ["two", "one"],
-            examples.TExampleSenseRead(sense.LSenseId).Select(example => example.LExampleText));
+            examples.TExampleMeaningRead(meaning.LMeaningId).Select(example => example.LExampleText));
 
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
 
         LTagArchive tags = TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase);
-        Assert.Equal(["kept"], tags.TTagSenseRead(sense.LSenseId).Select(tag => tag.LTagText));
+        Assert.Equal(["kept"], tags.TTagMeaningRead(meaning.LMeaningId).Select(tag => tag.LTagText));
 
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));
     }
 
     [Fact]
-    public void AnUpdateThatFailsPartWayLeavesTheStoredEntryExactlyAsItWas()
+    public void EntryUpdate_FailurePartWay_LeavesEntryUnchanged()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -135,16 +135,16 @@ public sealed class TEntryUpdate
             ],
             []));
 
-        LSenseArchive senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase);
-        IReadOnlyList<LSense> saved = senses.TSenseRead(entry.LEntryId);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
+        IReadOnlyList<LMeaning> saved = meanings.TMeaningRead(entry.LEntryId);
 
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LEntry origin = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "origin", "English", null, null, null, null), [], []);
-        LSense source = senses.TSenseCreate(
-            TInterface.TSenseCreate(string.Empty, origin.LEntryId, null, 0, null, null, null, "links", string.Empty));
+        LMeaning source = meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(string.Empty, origin.LEntryId, null, 0, null, null, null, "links", string.Empty));
         TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase).TRelationCreate(
-            TInterface.TRelationCreate(string.Empty, source.LSenseId, 0, "synonym", null, null, null, saved[1].LSenseId));
+            TInterface.TRelationCreate(string.Empty, source.LMeaningId, 0, "synonym", null, null, null, saved[1].LMeaningId));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LRevision? before = engine.TEngineRevisionRead();
@@ -155,7 +155,7 @@ public sealed class TEntryUpdate
             {
                 LEntryDraftHeadword = "rewritten",
                 LEntryDraftNote = "a different note",
-                LEntryDraftSenses = [loaded.LEntryDraftSenses[0] with { LCardDraftMeaning = "changed" }],
+                LEntryDraftMeanings = [loaded.LEntryDraftMeanings[0] with { LCardDraftMeaning = "changed" }],
             }));
 
         LEntry? stored = entries.TEntryRead(entry.LEntryId);
@@ -163,7 +163,7 @@ public sealed class TEntryUpdate
         Assert.Equal(entry.LEntryUpdatedUtc, stored?.LEntryUpdatedUtc);
         Assert.Equal(
             ["first", "second"],
-            senses.TSenseRead(entry.LEntryId).Select(sense => sense.LSenseDefinition));
+            meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningDefinition));
         Assert.Equal(
             "a note",
             TInterface.TNoteArchiveCreate(workspace.TWorkspaceDatabase).TNoteRead(entry.LEntryId)?.LNoteText);
@@ -172,7 +172,7 @@ public sealed class TEntryUpdate
     }
 
     [Fact]
-    public void AnUpdateOfAnEntryThatIsNoLongerStoredIsRefused()
+    public void EntryUpdate_EntryNoLongerStored_Refuses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

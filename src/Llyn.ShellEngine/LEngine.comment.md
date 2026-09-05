@@ -39,6 +39,13 @@ The pack declares only an ISO country code.
 The engine downloads the matching flag from the flag-icons set and caches it in the workspace.
 So the UI never reaches into the `languages/` folder itself.
 
+## `public LDoctorRescue LEngineRescueRead()`
+
+Reports what the workspace doctor had to do to the database this engine opened.
+A launch that found the database unusable started a clean one, and the user is owed that news before they look for work that is no longer there.
+The engine holds the answer rather than raising it, because the shell asks once the engine exists.
+The answer is replaced when `LEngineWorkspaceChange` opens another workspace.
+
 ## `public string LEngineWorkspaceRead()`
 
 Returns the current workspace folder — where the user's settings and database are stored.
@@ -98,6 +105,7 @@ Downloads the `recording` to a temporary file for playback and returns its path.
 Initialize the database once the workspace is known.
 So the store is ready before any UI request.
 The UI never opens the database itself.
+The doctor runs the initialization so a database this build can no longer read costs the user a launch rather than the program.
 
 ### `LEngineLanguageImport();`
 

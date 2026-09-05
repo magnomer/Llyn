@@ -18,7 +18,7 @@ public sealed class LRelationArchive
     public LRelation LRelationCreate(LRelation relation)
     {
         ArgumentNullException.ThrowIfNull(relation);
-        ArgumentException.ThrowIfNullOrWhiteSpace(relation.LRelationSenseId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(relation.LRelationMeaningId);
         ArgumentException.ThrowIfNullOrWhiteSpace(relation.LRelationType);
         LRelationTargetValidate(relation);
 
@@ -28,7 +28,7 @@ public sealed class LRelationArchive
         LRelation stored = relation with
         {
             LRelationId = LIdentity.LIdentityCreate(),
-            LRelationPosition = LRelationSiblingRead(connection, relation.LRelationSenseId).Count,
+            LRelationPosition = LRelationSiblingRead(connection, relation.LRelationMeaningId).Count,
         };
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -39,7 +39,7 @@ public sealed class LRelationArchive
                 VALUES ($id, $sense, $position, $type, $label, $labels);
                 """;
             command.Parameters.AddWithValue("$id", stored.LRelationId);
-            command.Parameters.AddWithValue("$sense", stored.LRelationSenseId);
+            command.Parameters.AddWithValue("$sense", stored.LRelationMeaningId);
             command.Parameters.AddWithValue("$position", stored.LRelationPosition);
             command.Parameters.AddWithValue("$type", stored.LRelationType);
             command.Parameters.AddWithValue("$label", (object?)stored.LRelationLabel ?? DBNull.Value);
@@ -53,9 +53,9 @@ public sealed class LRelationArchive
         return stored;
     }
 
-    public IReadOnlyList<LRelation> LRelationRead(string senseId)
+    public IReadOnlyList<LRelation> LRelationRead(string meaningId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(senseId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(meaningId);
 
         using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -69,7 +69,7 @@ public sealed class LRelationArchive
             WHERE r.sense_id = $sense
             ORDER BY r.position;
             """;
-        command.Parameters.AddWithValue("$sense", senseId);
+        command.Parameters.AddWithValue("$sense", meaningId);
 
         List<LRelation> relations = [];
         using SqliteDataReader reader = command.ExecuteReader();
@@ -124,16 +124,16 @@ public sealed class LRelationArchive
         using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string? senseId = LRelationHolderRead(connection, id);
-        if (senseId is null)
+        string? meaningId = LRelationHolderRead(connection, id);
+        if (meaningId is null)
         {
             return;
         }
 
         IReadOnlyList<string> order = LDatabaseOrder.LDatabaseOrderInsert(
-            LRelationSiblingRead(connection, senseId), id, position);
+            LRelationSiblingRead(connection, meaningId), id, position);
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "relation", "sense_id = $owner", senseId, "id", order);
+            connection, "relation", "sense_id = $owner", meaningId, "id", order);
 
         session.LDatabaseSessionCommit();
     }
@@ -145,7 +145,7 @@ public sealed class LRelationArchive
         using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string? senseId = LRelationHolderRead(connection, id);
+        string? meaningId = LRelationHolderRead(connection, id);
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -154,11 +154,11 @@ public sealed class LRelationArchive
             command.ExecuteNonQuery();
         }
 
-        if (senseId is not null)
+        if (meaningId is not null)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, "relation", "sense_id = $owner", senseId,
-                "id", LRelationSiblingRead(connection, senseId));
+                connection, "relation", "sense_id = $owner", meaningId,
+                "id", LRelationSiblingRead(connection, meaningId));
         }
 
         session.LDatabaseSessionCommit();
@@ -172,16 +172,16 @@ public sealed class LRelationArchive
         return command.ExecuteScalar() as string;
     }
 
-    private static IReadOnlyList<string> LRelationSiblingRead(SqliteConnection connection, string senseId)
+    private static IReadOnlyList<string> LRelationSiblingRead(SqliteConnection connection, string meaningId)
     {
-        return LDatabaseOrder.LDatabaseOrderRead(connection, "relation", "sense_id = $owner", senseId, "id");
+        return LDatabaseOrder.LDatabaseOrderRead(connection, "relation", "sense_id = $owner", meaningId, "id");
     }
 
     private static void LRelationTargetValidate(LRelation relation)
     {
         bool hasEntry = !string.IsNullOrWhiteSpace(relation.LRelationTargetEntry);
-        bool hasSense = !string.IsNullOrWhiteSpace(relation.LRelationTargetSense);
-        if (hasEntry == hasSense)
+        bool hasMeaning = !string.IsNullOrWhiteSpace(relation.LRelationTargetMeaning);
+        if (hasEntry == hasMeaning)
         {
             throw new InvalidOperationException(
                 "A relation must have exactly one target: a target Entry id XOR a target Meaning id.");
@@ -203,7 +203,7 @@ public sealed class LRelationArchive
             command.CommandText =
                 "INSERT INTO relation_sense (relation_id, sense_id) VALUES ($relation, $sense);";
             command.Parameters.AddWithValue("$relation", relation.LRelationId);
-            command.Parameters.AddWithValue("$sense", relation.LRelationTargetSense);
+            command.Parameters.AddWithValue("$sense", relation.LRelationTargetMeaning);
         }
 
         command.ExecuteNonQuery();

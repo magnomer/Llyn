@@ -1,4 +1,4 @@
-# PNavigationTab.cs
+﻿# PNavigationTab.cs
 
 ## `public partial class PWindow`
 
@@ -21,6 +21,8 @@ But the correction the user typed would sit out of sight until they came back.
 Switches to the library panel and opens one Entry there.
 It is the way a referring side listed under a shared record reaches the Entry holding it.
 Panel switching is the window's to do, so a panel asks for it rather than reaching into `PNavigation` itself.
+The library is asked first, because the tab guard above passes over a library that is already the target.
+Opening the entry would otherwise cancel the draft being written in that panel without a word.
 
 Every browse-style panel that holds an editor is asked the same question before the tab changes.
 The list stays one guard per panel rather than one loop, because each panel names its own check.

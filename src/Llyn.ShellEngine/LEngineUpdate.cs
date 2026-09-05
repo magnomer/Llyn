@@ -39,7 +39,7 @@ public sealed partial class LEngine
         LEngineCardUpdate(
             session.LDatabaseSessionConnection,
             id,
-            draft.LEntryDraftSenses,
+            draft.LEntryDraftMeanings,
             draft.LEntryDraftLanguage,
             collocation: false,
             changes);

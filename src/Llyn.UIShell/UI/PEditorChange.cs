@@ -28,7 +28,7 @@ public partial class PEditor
     {
         card.PropertyChanged += (_, _) => PEditorChangeDefer();
         card.PCardSentence.CollectionChanged += PEditorChangeHandle;
-        card.PCardSituation.CollectionChanged += PEditorChangeHandle;
+        card.PCardContext.CollectionChanged += PEditorChangeHandle;
         card.PCardLabel.CollectionChanged += PEditorChangeHandle;
         card.PCardImage.CollectionChanged += PEditorChangeHandle;
         card.PCardVideo.CollectionChanged += PEditorChangeHandle;

@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Microsoft.Data.Sqlite;
 using Xunit;
@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TPronunciation
 {
     [Fact]
-    public void APronunciationIsWrittenReadRewrittenAndDeletedThroughTheEngine()
+    public void PronunciationCreate_WholeRowLife_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -28,7 +28,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void AudioIsStoredRelativeToTheWorkspaceAndHandedBackResolved()
+    public void AudioSave_WorkspaceFile_StoresRelativeReadsResolved()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -52,7 +52,7 @@ public sealed class TPronunciation
     }
 
     [Fact]
-    public void AnEntryKeepsOneNoteThatASaveCreatesOrRewrites()
+    public void NoteSave_CreateOrRewrite_KeepsExactlyOneNote()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -1,4 +1,4 @@
-# TMarkupSyntax.cs
+﻿# TMarkupSyntax.cs
 
 ## `public sealed class TMarkupSyntax`
 
@@ -78,7 +78,7 @@ Section 5 declares a source once and cites it any number of times.
 Two citations of one `id` resolve to the one source, and the source is read once.
 This is what stops an import from making a second reference row for the second citation.
 
-### `AnIdIsMeaningfulOnlyInsideItsOwnEntry`
+### `MarkupEntryRead_SameIdInTwoEntries_KeepsThemApart`
 
 Section 5 scopes an `id` to its own `<entry>`.
 Two entries reusing the same key are independent.

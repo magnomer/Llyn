@@ -55,9 +55,9 @@ public partial class PDisplay : UserControl
         PDisplayIncomingShow(id);
 
         PDisplaySpeech.ItemsSource = draft.LEntryDraftSpeeches ?? [];
-        PDisplaySense.ItemsSource = draft.LEntryDraftSenses;
+        PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;
         PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
-        PDisplaySenseSection.Visibility = draft.LEntryDraftSenses.Count == 0
+        PDisplayMeaningSection.Visibility = draft.LEntryDraftMeanings.Count == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
         PDisplayCollocationSection.Visibility = draft.LEntryDraftCollocations.Count == 0
@@ -84,9 +84,9 @@ public partial class PDisplay : UserControl
         PDisplaySpeech.ItemsSource = null;
         _pDisplayIncoming.Clear();
         PDisplayTranslationRead().PLinkConverterClear();
-        PDisplaySense.ItemsSource = null;
+        PDisplayMeaning.ItemsSource = null;
         PDisplayCollocation.ItemsSource = null;
-        PDisplaySenseSection.Visibility = Visibility.Collapsed;
+        PDisplayMeaningSection.Visibility = Visibility.Collapsed;
         PDisplayCollocationSection.Visibility = Visibility.Collapsed;
         PDisplayNoteSection.Visibility = Visibility.Collapsed;
         PDisplayContents.Visibility = Visibility.Collapsed;
@@ -101,7 +101,7 @@ public partial class PDisplay : UserControl
     private void PDisplayTranslationShow(LEntryDraft draft)
     {
         List<string> ids = [];
-        PDisplayTranslationRead(draft.LEntryDraftSenses, ids);
+        PDisplayTranslationRead(draft.LEntryDraftMeanings, ids);
         PDisplayTranslationRead(draft.LEntryDraftCollocations, ids);
 
         PLinkConverter converter = PDisplayTranslationRead();
@@ -119,12 +119,12 @@ public partial class PDisplay : UserControl
 
     private void PDisplayCardUpdate()
     {
-        System.Collections.IEnumerable? senses = PDisplaySense.ItemsSource;
+        System.Collections.IEnumerable? meanings = PDisplayMeaning.ItemsSource;
         System.Collections.IEnumerable? collocations = PDisplayCollocation.ItemsSource;
 
-        PDisplaySense.ItemsSource = null;
+        PDisplayMeaning.ItemsSource = null;
         PDisplayCollocation.ItemsSource = null;
-        PDisplaySense.ItemsSource = senses;
+        PDisplayMeaning.ItemsSource = meanings;
         PDisplayCollocation.ItemsSource = collocations;
     }
 
@@ -162,14 +162,14 @@ public partial class PDisplay : UserControl
         }
 
         string unreadable = _pDisplayHost.PLocalizationTextRead("Display.Unreadable");
-        string sense = _pDisplayHost.PLocalizationTextRead("Display.SenseSingle");
+        string meaning = _pDisplayHost.PLocalizationTextRead("Display.MeaningSingle");
         string collocation = _pDisplayHost.PLocalizationTextRead("Display.CollocationSingle");
 
         foreach (LUsage usage in incoming)
         {
             _pDisplayIncoming.Add(new PUsageItem(
                 usage,
-                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : sense,
+                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
                 unreadable,
                 string.Empty));
         }

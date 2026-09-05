@@ -1,4 +1,4 @@
-<ResourceDictionary
+﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIShell"
@@ -30,38 +30,10 @@
         <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
-    <Style x:Key="Theme.Context.Citation" TargetType="TextBlock">
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Text" Value="{Binding PContextReferenceName}" />
-        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PContextReferenceName}" Value="">
-                <Setter Property="Text" Value="{DynamicResource Reference.Assign}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding PContextReferenceUnreadable}" Value="True">
-                <Setter Property="Text" Value="{DynamicResource Display.Unreadable}" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="Theme.Context.Notice" TargetType="TextBlock">
-        <Setter Property="Margin" Value="10,5,10,9" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="{DynamicResource Theme.Muted}" />
-        <Setter Property="Visibility" Value="Collapsed" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PContextReferenceCatalog.Count}" Value="0">
-                <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
     <DataTemplate x:Key="Theme.Context.Row">
         <Grid Margin="0,0,0,7">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -71,7 +43,8 @@
                     <TextBox.Tag>
                         <MultiBinding Converter="{StaticResource Theme.State.Show}">
                             <Binding Path="PContextUnreadable" />
-                            <Binding Source="Where or when is it used?" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Card.SituationHint" />
                         </MultiBinding>
                     </TextBox.Tag>
                 </TextBox>
@@ -81,62 +54,10 @@
                 <TextBlock Style="{StaticResource Theme.Context.Order}" Text="{Binding PContextOrderText}" />
             </Grid>
 
-            <Grid Grid.Column="1" Margin="8,0,0,0">
-                <ToggleButton
-                    x:Name="PContextReference"
-                    Width="104"
-                    Height="42"
-                    Padding="10,0"
-                    Foreground="{DynamicResource Theme.Accent}"
-                    IsChecked="{Binding PContextReferenceVisible, Mode=TwoWay}"
-                    Style="{DynamicResource Theme.Input.ToggleAction}">
-                    <TextBlock Style="{StaticResource Theme.Context.Citation}" />
-                </ToggleButton>
-                <Popup
-                    Width="264"
-                    Margin="0,6,0,0"
-                    AllowsTransparency="True"
-                    IsOpen="{Binding PContextReferenceVisible, Mode=TwoWay}"
-                    Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PContextReference}"
-                    StaysOpen="False">
-                    <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
-                        <StackPanel>
-                            <TextBlock Style="{DynamicResource Theme.Popup.Title}" Text="{DynamicResource Reference.Title}" />
-                            <TextBlock Style="{StaticResource Theme.Context.Notice}" Text="{DynamicResource Reference.Empty}" />
-                            <ListBox
-                                MaxHeight="220"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsSynchronizedWithCurrentItem="False"
-                                ItemContainerStyle="{DynamicResource Theme.Reference.Item}"
-                                ItemTemplate="{DynamicResource Theme.Reference.Row}"
-                                ItemsSource="{Binding PContextReferenceCatalog}"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                SelectedValue="{Binding PContextReference, Mode=TwoWay}"
-                                SelectedValuePath="PCitationItemId" />
-                            <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PContextReferenceClear" Foreground="{DynamicResource Theme.Muted}">
-                                <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
-                            </Button>
-                            <Grid Margin="0,7,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox MinHeight="35" Padding="10,0" VerticalContentAlignment="Center" Style="{DynamicResource Theme.Input.Field}" Tag="{DynamicResource Reference.Name}" Text="{Binding PContextReferenceDraft, UpdateSourceTrigger=PropertyChanged}" />
-                                <Button Grid.Column="1" Height="35" Margin="7,0,0,0" Padding="14,0" Click="PContextReferenceCreate" Style="{DynamicResource Theme.Input.Pill}">
-                                    <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.Add}" />
-                                </Button>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                </Popup>
-            </Grid>
-
-            <Button Grid.Column="2" Width="42" Height="42" Margin="8,0,0,0" Click="PContextAddHandle" Style="{DynamicResource Theme.Input.Action}">
+            <Button Grid.Column="1" Width="42" Height="42" Margin="8,0,0,0" Click="PContextAddHandle" Style="{DynamicResource Theme.Input.Action}">
                 <Path Width="12" Height="12" Data="M 6,1 L 6,11 M 1,6 L 11,6" Stroke="{DynamicResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
             </Button>
-            <Button Grid.Column="3" Width="42" Height="42" Margin="7,0,0,0" Click="PContextRemoveHandle" Style="{DynamicResource Theme.Input.Action}">
+            <Button Grid.Column="2" Width="42" Height="42" Margin="7,0,0,0" Click="PContextRemoveHandle" Style="{DynamicResource Theme.Input.Action}">
                 <Path Width="12" Height="12" Data="M 1,6 L 11,6" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
             </Button>
         </Grid>

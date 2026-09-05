@@ -49,7 +49,7 @@ public sealed partial class LEngine
         LEntryDraft draft = entry.LMarkupEntryDraft;
         LEntry stored = LEngineEntrySave(draft with
         {
-            LEntryDraftSenses = LEngineCardResolve(draft.LEntryDraftSenses, rows),
+            LEntryDraftMeanings = LEngineCardResolve(draft.LEntryDraftMeanings, rows),
             LEntryDraftCollocations = LEngineCardResolve(draft.LEntryDraftCollocations, rows),
         });
 
@@ -99,20 +99,9 @@ public sealed partial class LEngine
                 });
             }
 
-            List<LSituationDraft> situations = new List<LSituationDraft>();
-            foreach (LSituationDraft situation in card.LCardDraftSituation)
-            {
-                situations.Add(situation with
-                {
-                    LSituationDraftReference =
-                        LEngineReferenceResolve(situation.LSituationDraftReference, rows),
-                });
-            }
-
             resolved.Add(card with
             {
                 LCardDraftExample = examples,
-                LCardDraftSituation = situations,
             });
         }
 

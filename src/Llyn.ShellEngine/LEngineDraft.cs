@@ -31,10 +31,10 @@ public sealed partial class LEngine
             speeches: LEngineSpeechResolve(
                 string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
 
-        LSenseArchive senses = new(_lEngineDatabase);
-        foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftSenses))
+        LMeaningArchive meanings = new(_lEngineDatabase);
+        foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftMeanings))
         {
-            LSense sense = senses.LSenseCreate(new LSense(
+            LMeaning meaning = meanings.LMeaningCreate(new LMeaning(
                 string.Empty,
                 entry.LEntryId,
                 null,
@@ -45,7 +45,7 @@ public sealed partial class LEngine
                 card.LCardDraftMeaning,
                 string.Empty));
 
-            LEngineCardAttach(sense.LSenseId, card, draft.LEntryDraftLanguage, collocation: false);
+            LEngineCardAttach(meaning.LMeaningId, card, draft.LEntryDraftLanguage, collocation: false);
         }
 
         LCollocationArchive collocations = new(_lEngineDatabase);
@@ -124,7 +124,7 @@ public sealed partial class LEngine
             }
             else
             {
-                examples.LExampleSenseAttach(ownerId, exampleId, position);
+                examples.LExampleMeaningAttach(ownerId, exampleId, position);
             }
 
             position++;
@@ -147,7 +147,7 @@ public sealed partial class LEngine
             }
             else
             {
-                situations.LSituationSenseAttach(ownerId, situationId, position);
+                situations.LSituationMeaningAttach(ownerId, situationId, position);
             }
 
             position++;
@@ -167,7 +167,7 @@ public sealed partial class LEngine
             }
             else
             {
-                images.LImageSenseAttach(ownerId, image.LImageId, position);
+                images.LImageMeaningAttach(ownerId, image.LImageId, position);
             }
 
             position++;
@@ -283,11 +283,6 @@ public sealed partial class LEngine
                     situations.LSituationTitleUpdate(stored.LSituationId, draft.LSituationDraftText);
                 }
 
-                if (stored.LSituationSource != draft.LSituationDraftReference)
-                {
-                    situations.LSituationSourceUpdate(stored.LSituationId, draft.LSituationDraftReference);
-                }
-
                 return stored.LSituationId;
             }
         }
@@ -296,8 +291,7 @@ public sealed partial class LEngine
             draft.LSituationDraftId,
             draft.LSituationDraftText,
             LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            draft.LSituationDraftReference)).LSituationId;
+            LStateValue.LStateValueUnspecified)).LSituationId;
     }
 
     private static bool LEngineTagCheck(IReadOnlyList<string> texts)

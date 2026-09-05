@@ -34,7 +34,6 @@ public partial class PRepertoire : UserControl
 
     internal void PRepertoireClose()
     {
-        PCitationMenu.IsOpen = false;
-        PTierMenu.IsOpen = false;
+        PTierDropdown.IsOpen = false;
     }
 }

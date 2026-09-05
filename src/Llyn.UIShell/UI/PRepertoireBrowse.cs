@@ -15,7 +15,6 @@ public partial class PRepertoire
 
     private readonly ObservableCollection<PUsageItem> _pOccurrenceList = [];
 
-    private readonly ObservableCollection<PCitationItem> _pCitationCatalog = [];
 
     private IReadOnlyDictionary<string, int> _pAtlasCount = new Dictionary<string, int>();
 
@@ -25,7 +24,6 @@ public partial class PRepertoire
 
     private LSituation? _pScenarioSituation;
 
-    private string _pScenarioCitation = string.Empty;
 
     private bool _pScenarioTitleUnreadable;
 
@@ -44,11 +42,9 @@ public partial class PRepertoire
 
         PAtlas.ItemsSource = _pAtlasList;
         POccurrence.ItemsSource = _pOccurrenceList;
-        PCitationList.ItemsSource = _pCitationCatalog;
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PCitationFind();
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
 
@@ -75,8 +71,6 @@ public partial class PRepertoire
         {
             "Kind" => situations.OrderBy(
                 situation => situation.LSituationKind.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase),
-            "Source" => situations.OrderBy(
-                situation => PCitationNameRead(situation.LSituationSource), StringComparer.CurrentCultureIgnoreCase),
             "Usage" => situations.OrderByDescending(PAtlasCountRead),
             _ => situations.OrderBy(
                 situation => situation.LSituationTitle.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase)
@@ -132,8 +126,7 @@ public partial class PRepertoire
     {
         return PInquestMatch(situation.LSituationTitle.LStateValueShow(), query)
             || PInquestMatch(situation.LSituationDescription.LStateValueShow(), query)
-            || PInquestMatch(situation.LSituationKind.LStateValueShow(), query)
-            || PInquestMatch(PCitationNameRead(situation.LSituationSource), query);
+            || PInquestMatch(situation.LSituationKind.LStateValueShow(), query);
     }
 
     private static bool PInquestMatch(string text, string query)
@@ -182,11 +175,6 @@ public partial class PRepertoire
         PVignetteValueShow(PVignetteTitle, situation.LSituationTitle);
         PVignetteValueShow(PVignetteKind, situation.LSituationKind);
         PVignetteValueShow(PVignetteDescription, situation.LSituationDescription);
-        PVignetteValueShow(
-            PVignetteCitation,
-            situation.LSituationSource,
-            PCitationNameRead(situation.LSituationSource));
-
         POccurrenceFind(id);
 
         PVignetteBody.Visibility = Visibility.Visible;
@@ -229,7 +217,7 @@ public partial class PRepertoire
 
         string unreadable = _pRepertoireHost.PLocalizationTextRead("Display.Unreadable");
         string unnamed = _pRepertoireHost.PLocalizationTextRead("Situation.Unnamed");
-        string sense = _pRepertoireHost.PLocalizationTextRead("Situation.Meaning");
+        string meaning = _pRepertoireHost.PLocalizationTextRead("Situation.Meaning");
         string collocation = _pRepertoireHost.PLocalizationTextRead("Situation.Collocation");
 
         _pOccurrenceList.Clear();
@@ -237,7 +225,7 @@ public partial class PRepertoire
         {
             _pOccurrenceList.Add(new PUsageItem(
                 usage,
-                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : sense,
+                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
                 unreadable,
                 unnamed));
         }
@@ -258,74 +246,6 @@ public partial class PRepertoire
         }
 
         _pRepertoireHost.PWindowEntryShow(item.PUsageItemEntry);
-    }
-
-    private void PCitationFind()
-    {
-        IReadOnlyList<LReference> read;
-        try
-        {
-            read = _lEngine.LEngineReferenceRead();
-        }
-        catch (Exception exception)
-        {
-            _pRepertoireHost.PWindowFailureShow("Situation.LoadFailed", exception);
-            return;
-        }
-
-        _pCitationCatalog.Clear();
-        foreach (LReference reference in read)
-        {
-            _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(reference));
-        }
-
-        PCitationEmpty.Visibility = _pCitationCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private string PCitationNameRead(LStateValue source)
-    {
-        string id = source.LStateValueShow();
-        if (id.Length == 0)
-        {
-            return string.Empty;
-        }
-
-        foreach (PCitationItem row in _pCitationCatalog)
-        {
-            if (string.Equals(row.PCitationItemId, id, StringComparison.Ordinal))
-            {
-                return row.PCitationItemName;
-            }
-        }
-
-        return id;
-    }
-
-    private void PCitationHandle(object sender, SelectionChangedEventArgs e)
-    {
-        if (_pScenarioLoading || PCitationList.SelectedValue is not string id)
-        {
-            return;
-        }
-
-        _pScenarioCitation = id;
-        PCitation.IsChecked = false;
-        PCitationUpdate();
-    }
-
-    private void PCitationClearHandle(object sender, RoutedEventArgs e)
-    {
-        _pScenarioCitation = string.Empty;
-        PCitationList.SelectedValue = null;
-        PCitation.IsChecked = false;
-        PCitationUpdate();
-    }
-
-    private void PCitationUpdate()
-    {
-        PCitationName.Text = _pScenarioCitation.Length == 0
-            ? _pRepertoireHost.PLocalizationTextRead("Reference.Assign")
-            : PCitationNameRead(LStateValue.LStateValueCreate(_pScenarioCitation));
     }
 
     private void PScenarioTitleHandle(object sender, TextChangedEventArgs e)
@@ -379,10 +299,6 @@ public partial class PRepertoire
         PScenarioKind.Tag = _pScenarioKindUnreadable ? unreadable : string.Empty;
         PScenarioDescription.Tag = _pScenarioDescriptionUnreadable ? unreadable : string.Empty;
 
-        _pScenarioCitation = situation?.LSituationSource.LStateValueShow() ?? string.Empty;
-        PCitationList.SelectedValue = _pScenarioCitation.Length == 0 ? null : _pScenarioCitation;
-        PCitationUpdate();
-
         PScenarioRemoval.IsEnabled = situation is not null;
 
         _pScenarioLoading = false;
@@ -394,8 +310,7 @@ public partial class PRepertoire
             _pScenarioSituation?.LSituationId ?? string.Empty,
             PScenarioValueRead(PScenarioTitle.Text, _pScenarioTitleUnreadable),
             PScenarioValueRead(PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
-            PScenarioValueRead(PScenarioKind.Text, _pScenarioKindUnreadable),
-            PScenarioValueRead(_pScenarioCitation, false));
+            PScenarioValueRead(PScenarioKind.Text, _pScenarioKindUnreadable));
     }
 
     private static LStateValue PScenarioValueRead(string text, bool unreadable)
@@ -413,7 +328,6 @@ public partial class PRepertoire
         LSituation written = PScenarioRead();
         LSituation stored = _pScenarioSituation ?? new LSituation(
             string.Empty,
-            LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified);

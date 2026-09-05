@@ -23,7 +23,7 @@ A partial headword narrows it, case-insensitively, and matches anywhere in the h
 "word" is inside "sword" too.
 So a query that picks exactly one has to be one of its own.
 
-### `TEntryCardMatch(word.LEntryDraftSenses, loaded.LEntryDraftSenses);`
+### `TEntryCardMatch(word.LEntryDraftMeanings, loaded.LEntryDraftMeanings);`
 
 The cards are compared field by field.
 A draft holds its cards in lists, and a card holds its Examples, Situations and Tags in lists.
@@ -45,17 +45,17 @@ The file the downloader would have written: under the workspace, in its audio bu
 Stored relative, so a workspace that is moved or copied keeps its audio.
 The row is read through the archive rather than as SQL text, so the path separator stays the platform's.
 
-### `LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));`
+### `LMeaning meaning = Assert.Single(new LMeaningArchive(workspace.TWorkspaceDatabase).LMeaningRead(stored.LEntryId));`
 
 The titles are columns of the cards themselves, so they are on the rows before any load.
 
-### `LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));`
+### `LMeaning meaning = Assert.Single(new LMeaningArchive(workspace.TWorkspaceDatabase).LMeaningRead(stored.LEntryId));`
 
 The rows are stored at the positions the lists held.
 So nothing shares a position.
 The order is a fact of the store rather than of the read.
 
-### `LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);`
+### `LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);`
 
 Three tags and two examples on the one card, all five back in the order they were written.
 

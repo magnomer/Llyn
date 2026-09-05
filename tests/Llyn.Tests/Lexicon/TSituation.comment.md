@@ -1,4 +1,4 @@
-# TSituation.cs
+﻿# TSituation.cs
 
 ## `public sealed class TSituation`
 
@@ -7,19 +7,19 @@ A Situation is created, read, rewritten and referenced from both card kinds.
 It covers the difference between a detach and a remove.
 It covers the delete the references refuse.
 
-## `public void TheShelfListsEverySituationWithHowManyPlacesReferenceIt()`
+## `public void SituationRead_WorkspaceShelf_ReturnsReferenceCounts()`
 
 The panel browsing the shelf itself must see a Situation nothing references, which no card read can reach.
 It must also see the count on every row without asking once per row.
 A Situation nothing references is absent from the counts rather than present as zero.
 
-## `public void UsageNamesTheReferringSideAndTheEntryItBelongsTo()`
+## `public void UsageRead_SituationOnCard_NamesSideAndEntry()`
 
 A count says how many places carry a Situation.
 This says which Meaning or Collocation, and under which Entry, so the relationship is never flattened into the Entry alone.
 A Meaning is named by its gloss and a Collocation by its expression when neither carries a title.
 
-## `public void ADetachingDeleteDropsEveryReferenceAndRenumbersWhatEachCardHasLeft()`
+## `public void SituationDelete_DetachingDelete_DropsAndRenumbers()`
 
 The delete the user confirms after being told how far it reaches.
 Every reference goes with the row, on both association tables.

@@ -15,6 +15,8 @@ public sealed class LDatabase
         _lDatabaseFile = LWorkspaceRoot.LWorkspaceDatabaseRead(root);
     }
 
+    public string LDatabaseFile => _lDatabaseFile;
+
     public SqliteConnection LDatabaseConnectionRead()
     {
         SqliteConnectionStringBuilder builder = new()
@@ -24,20 +26,28 @@ public sealed class LDatabase
         };
 
         SqliteConnection connection = new(builder.ConnectionString);
-        connection.Open();
+        try
+        {
+            connection.Open();
 
-        using SqliteCommand pragma = connection.CreateCommand();
-        pragma.CommandText =
-            """
-            PRAGMA journal_mode = WAL;
-            PRAGMA busy_timeout = 5000;
-            PRAGMA synchronous = NORMAL;
-            PRAGMA foreign_keys = ON;
-            """;
-        pragma.ExecuteNonQuery();
+            using SqliteCommand pragma = connection.CreateCommand();
+            pragma.CommandText =
+                """
+                PRAGMA journal_mode = WAL;
+                PRAGMA busy_timeout = 5000;
+                PRAGMA synchronous = NORMAL;
+                PRAGMA foreign_keys = ON;
+                """;
+            pragma.ExecuteNonQuery();
 
-        connection.CreateFunction<string?, string?>(
-            "lfold", text => text?.ToLowerInvariant(), isDeterministic: true);
+            connection.CreateFunction<string?, string?>(
+                "lfold", text => text?.ToLowerInvariant(), isDeterministic: true);
+        }
+        catch
+        {
+            connection.Dispose();
+            throw;
+        }
 
         return connection;
     }

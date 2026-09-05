@@ -62,16 +62,16 @@ public partial class PWindow
             store = false;
         }
 
-        PWindowDraftFinish(store);
-        return true;
+        return PWindowDraftFinish(store);
     }
 
-    private void PWindowDraftFinish(bool store)
+    private bool PWindowDraftFinish(bool store)
     {
-        PInput.PInputDraftFinish(store);
-        PLibrary.PLibraryDraftFinish(store);
-        PPhonology.PPhonologyDraftFinish(store);
-        PTaxonomy.PTaxonomyDraftFinish(store);
+        bool finished = PInput.PInputDraftFinish(store);
+        finished &= PLibrary.PLibraryDraftFinish(store);
+        finished &= PPhonology.PPhonologyDraftFinish(store);
+        finished &= PTaxonomy.PTaxonomyDraftFinish(store);
+        return finished;
     }
 
     internal bool PWindowRemovalConfirm(int usage)

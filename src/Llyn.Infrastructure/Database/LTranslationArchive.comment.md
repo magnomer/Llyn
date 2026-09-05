@@ -21,7 +21,7 @@ Deleting an Entry takes its incoming rows with it, leaving the cards that pointe
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public IReadOnlyList<LTranslation> LTranslationSenseRead(string senseId)`
+## `public IReadOnlyList<LTranslation> LTranslationMeaningRead(string meaningId)`
 
 Reads the links a Meaning makes, in the order that Meaning gives them.
 
@@ -29,7 +29,7 @@ Reads the links a Meaning makes, in the order that Meaning gives them.
 
 Reads the links a Collocation makes, in the order that Collocation gives them.
 
-## `public void LTranslationSenseSave(string senseId, IReadOnlyList<LTranslation> translations)`
+## `public void LTranslationMeaningSave(string meaningId, IReadOnlyList<LTranslation> translations)`
 
 Writes a Meaning's whole Translation line, replacing whatever it carried.
 Ids are trimmed, blanks and repeats are dropped, and what survives is numbered from zero.

@@ -3,7 +3,7 @@
 ## `public partial class PEditor`
 
 Which cards the editor holds.
-That is the sense list and the collocation list.
+That is the meaning list and the collocation list.
 It is also the buttons that add and remove a card.
 The order the cards are in is the order they are saved in.
 The numbering that keeps each list reading 1, 2, 3 is the engine's now.

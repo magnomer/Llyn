@@ -33,14 +33,6 @@
             <Setter Property="Margin" Value="0,0,0,6" />
         </Style>
 
-        <DataTemplate x:Key="Theme.Citation.Row">
-            <TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding PCitationItemName}" TextTrimming="CharacterEllipsis" />
-        </DataTemplate>
-
-        <Style x:Key="Theme.Citation.Item" TargetType="ListBoxItem">
-            <Setter Property="Padding" Value="8,6" />
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
     </UserControl.Resources>
 
     <Grid Margin="34,20,34,38">
@@ -82,7 +74,7 @@
                 </Canvas>
             </ToggleButton>
             <Popup
-                x:Name="PTierMenu"
+                x:Name="PTierDropdown"
                 Width="238"
                 AllowsTransparency="True"
                 IsOpen="{Binding IsChecked, ElementName=PTierBase, Mode=TwoWay}"
@@ -94,7 +86,6 @@
                         <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Tier.Title}" />
                         <RadioButton GroupName="PTierChoice" IsChecked="True" Click="PTierHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Title" Content="{DynamicResource Tier.Name}" />
                         <RadioButton GroupName="PTierChoice" Click="PTierHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Kind" Content="{DynamicResource Tier.Kind}" />
-                        <RadioButton GroupName="PTierChoice" Click="PTierHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Source" Content="{DynamicResource Tier.Source}" />
                         <RadioButton GroupName="PTierChoice" Click="PTierHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Tier.Usage}" />
                     </StackPanel>
                 </Border>
@@ -180,9 +171,6 @@
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Description}" />
                             <TextBlock x:Name="PVignetteDescription" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Reference.Title}" />
-                            <TextBlock x:Name="PVignetteCitation" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
-
                             <TextBlock Margin="0,26,0,10" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Usage}" />
                             <ItemsControl x:Name="POccurrence">
                                 <ItemsControl.ItemTemplate>
@@ -265,62 +253,6 @@
                                 TextChanged="PScenarioDescriptionHandle"
                                 TextWrapping="Wrap"
                                 VerticalContentAlignment="Top" />
-
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Reference.Title}" />
-                            <Grid Margin="0,7,0,0" HorizontalAlignment="Left">
-                                <ToggleButton
-                                    x:Name="PCitation"
-                                    MinWidth="220"
-                                    Height="44"
-                                    Padding="12,0"
-                                    Foreground="{StaticResource Theme.Accent}"
-                                    Style="{StaticResource Theme.Input.ToggleAction}">
-                                    <TextBlock x:Name="PCitationName" VerticalAlignment="Center" FontSize="13" TextTrimming="CharacterEllipsis" />
-                                </ToggleButton>
-                                <Popup
-                                    x:Name="PCitationMenu"
-                                    Width="264"
-                                    AllowsTransparency="True"
-                                    IsOpen="{Binding IsChecked, ElementName=PCitation, Mode=TwoWay}"
-                                    Placement="Bottom"
-                                    PlacementTarget="{Binding ElementName=PCitation}"
-                                    StaysOpen="False">
-                                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Reference.Title}" />
-                                            <TextBlock
-                                                x:Name="PCitationEmpty"
-                                                Margin="10,5,10,9"
-                                                FontSize="12"
-                                                Foreground="{StaticResource Theme.Muted}"
-                                                Text="{DynamicResource Reference.Empty}"
-                                                Visibility="Collapsed" />
-                                            <ListBox
-                                                x:Name="PCitationList"
-                                                MaxHeight="220"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                IsSynchronizedWithCurrentItem="False"
-                                                ItemContainerStyle="{StaticResource Theme.Citation.Item}"
-                                                ItemTemplate="{StaticResource Theme.Citation.Row}"
-                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                SelectedValuePath="PCitationItemId"
-                                                SelectionChanged="PCitationHandle" />
-                                            <Button
-                                                x:Name="PCitationNone"
-                                                Height="31"
-                                                Padding="12,0"
-                                                HorizontalContentAlignment="Left"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Click="PCitationClearHandle"
-                                                Foreground="{StaticResource Theme.Muted}">
-                                                <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
-                                            </Button>
-                                        </StackPanel>
-                                    </Border>
-                                </Popup>
-                            </Grid>
                         </StackPanel>
                     </ScrollViewer>
 

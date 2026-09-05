@@ -1,11 +1,11 @@
-using Xunit;
+﻿using Xunit;
 
 namespace Llyn.Convention.Tests;
 
 public sealed class TAuditConvention
 {
     [Fact]
-    public void SourceNames_ConformToTheNamingRegistry()
+    public void AuditRun_AllSourceNames_ReportsNoViolation()
     {
         TAuditRegistry registry = TAuditRegistry.TAuditLoad();
         string repoRoot = TAuditSource.TAuditRootRead();

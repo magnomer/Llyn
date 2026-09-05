@@ -35,7 +35,7 @@ The author the source credited is its own row, attached to the reference in the 
 
 ### `Assert.Equal(`
 
-The second sense holds the three states side by side.
+The second meaning holds the three states side by side.
 There is a written tag and an empty one.
 There is an example citing nothing and one citing a source that cannot be read.
 

@@ -35,12 +35,6 @@ Nothing here creates, changes or deletes a Source.
 The name a cited Source is shown under, falling back to its id when it names itself nowhere.
 The catalog, the search and the display all read a Source through this, so all three agree.
 
-## `private void PCitationFreshHandle(object sender, RoutedEventArgs e)`
-
-Creates a Source under the typed name and cites it at once.
-The name becomes the Source title, exactly as the card row creates one.
-The full Source structure is written in the sources panel, not here.
-
 ## `private void PCitationClearHandle(object sender, RoutedEventArgs e)`
 
 Drops the citation.

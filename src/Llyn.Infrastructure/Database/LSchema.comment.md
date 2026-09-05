@@ -46,21 +46,21 @@ Lexical rows store only stable ids — display names live in morphology_value.
 ### `command.CommandText =`
 
 The Meaning tree an entry owns.
-Each sense is a stable-id node that may nest under another sense in the same entry.
+Each meaning is a stable-id node that may nest under another meaning in the same entry.
 It carries a single inline definition field.
-A sense cascades when its parent sense is deleted and when its Entry is deleted.
+A meaning cascades when its parent meaning is deleted and when its Entry is deleted.
 Sibling ordering is unique within a parent.
-The ifnull() expression index treats root senses (null parent) as one sibling group.
+The ifnull() expression index treats root meanings (null parent) as one sibling group.
 
 ### `command.CommandText =`
 
 Lexical relations originating from a Meaning.
-Each relation hangs from its origin sense and points at exactly one target.
+Each relation hangs from its origin meaning and points at exactly one target.
 The target is reached through a checked reference row.
 It is an Entry (relation_entry) XOR another Meaning (relation_sense).
 The relation_id primary key on each target table allows at most one target row per relation.
 The store enforces the XOR across the two tables.
-A relation cascades when its origin sense is deleted, and its target row cascades with it.
+A relation cascades when its origin meaning is deleted, and its target row cascades with it.
 The referenced Entry or Meaning is never touched.
 
 ### `command.CommandText =`
@@ -83,7 +83,7 @@ Children cascade when their pronunciation is deleted, and the pronunciation casc
 The collocations an entry owns and the single Note it owns.
 A collocation is a stable-id row ordered within its entry.
 It carries both an expression and the meaning that explains it, and the card has a field for each.
-A sense carries a definition instead.
+A meaning carries a definition instead.
 Reordering rewrites position only.
 A collocation's synonym is an interlink, not owned text.
 It uses the same discriminated target model as a job05 relation, an Entry XOR a Meaning.

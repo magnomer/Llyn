@@ -29,7 +29,7 @@ public sealed partial class LEngine
         return owner switch
         {
             LOwner.LOwnerEntry => examples.LExampleEntryRead(ownerId),
-            LOwner.LOwnerSense => examples.LExampleSenseRead(ownerId),
+            LOwner.LOwnerMeaning => examples.LExampleMeaningRead(ownerId),
             LOwner.LOwnerCollocation => examples.LExampleCollocationRead(ownerId),
             _ => throw LEngineOwnerRaise(owner),
         };
@@ -53,8 +53,8 @@ public sealed partial class LEngine
             case LOwner.LOwnerEntry:
                 examples.LExampleEntryAttach(ownerId, exampleId, position);
                 return;
-            case LOwner.LOwnerSense:
-                examples.LExampleSenseAttach(ownerId, exampleId, position);
+            case LOwner.LOwnerMeaning:
+                examples.LExampleMeaningAttach(ownerId, exampleId, position);
                 return;
             case LOwner.LOwnerCollocation:
                 examples.LExampleCollocationAttach(ownerId, exampleId, position);
@@ -72,8 +72,8 @@ public sealed partial class LEngine
             case LOwner.LOwnerEntry:
                 examples.LExampleEntryDetach(ownerId, exampleId);
                 return;
-            case LOwner.LOwnerSense:
-                examples.LExampleSenseDetach(ownerId, exampleId);
+            case LOwner.LOwnerMeaning:
+                examples.LExampleMeaningDetach(ownerId, exampleId);
                 return;
             case LOwner.LOwnerCollocation:
                 examples.LExampleCollocationDetach(ownerId, exampleId);

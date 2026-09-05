@@ -10,7 +10,7 @@ It also covers a side a Tag never hangs from.
 
 ## Inline notes
 
-### `engine.LEngineTagAttach(senseId, rare.LTagId, 0, LOwner.LOwnerSense);`
+### `engine.LEngineTagAttach(meaningId, rare.LTagId, 0, LOwner.LOwnerMeaning);`
 
 One row, referenced from both sides, each side holding its own order over what it references.
 
@@ -18,11 +18,11 @@ One row, referenced from both sides, each side holding its own order over what i
 
 A rename reaches every reference at once: a reference points at the row, never at its words.
 
-### `engine.LEngineTagDetach(senseId, tag.LTagId, LOwner.LOwnerSense);`
+### `engine.LEngineTagDetach(meaningId, tag.LTagId, LOwner.LOwnerMeaning);`
 
 Detaching is what editing a card does: the reference goes, the row other cards use stays.
 
-### `engine.LEngineTagAttach(senseId, tag.LTagId, 0, LOwner.LOwnerSense);`
+### `engine.LEngineTagAttach(meaningId, tag.LTagId, 0, LOwner.LOwnerMeaning);`
 
 Removing is the other intention, and it still leaves a Tag another card references.
 

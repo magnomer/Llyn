@@ -7,10 +7,10 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LSense> LEngineSenseFind(string query)
+    public IReadOnlyList<LMeaning> LEngineMeaningFind(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
-        return new LSenseArchive(_lEngineDatabase).LSenseFind(query);
+        return new LMeaningArchive(_lEngineDatabase).LMeaningFind(query);
     }
 
     public LRelation LEngineRelationCreate(LRelation relation)
@@ -18,7 +18,7 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(relation);
 
         using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-        LEngineTargetValidate(relation.LRelationTargetEntry, relation.LRelationTargetSense);
+        LEngineTargetValidate(relation.LRelationTargetEntry, relation.LRelationTargetMeaning);
 
         LRelation stored = new LRelationArchive(_lEngineDatabase).LRelationCreate(relation);
 
@@ -26,9 +26,9 @@ public sealed partial class LEngine
         return stored;
     }
 
-    public IReadOnlyList<LRelation> LEngineRelationRead(string senseId)
+    public IReadOnlyList<LRelation> LEngineRelationRead(string meaningId)
     {
-        return new LRelationArchive(_lEngineDatabase).LRelationRead(senseId);
+        return new LRelationArchive(_lEngineDatabase).LRelationRead(meaningId);
     }
 
     public void LEngineRelationUpdate(LRelation relation)
@@ -51,7 +51,7 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(synonym);
 
         using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-        LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetSense);
+        LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetMeaning);
 
         LSynonym stored = new LSynonymArchive(_lEngineDatabase).LSynonymCreate(synonym);
 
@@ -69,7 +69,7 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(synonym);
 
         using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-        LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetSense);
+        LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetMeaning);
 
         new LSynonymArchive(_lEngineDatabase).LSynonymUpdate(synonym);
 
@@ -86,18 +86,18 @@ public sealed partial class LEngine
         new LSynonymArchive(_lEngineDatabase).LSynonymDelete(id);
     }
 
-    private void LEngineTargetValidate(string? entryId, string? senseId)
+    private void LEngineTargetValidate(string? entryId, string? meaningId)
     {
         bool hasEntry = !string.IsNullOrWhiteSpace(entryId);
-        bool hasSense = !string.IsNullOrWhiteSpace(senseId);
-        if (hasEntry == hasSense)
+        bool hasMeaning = !string.IsNullOrWhiteSpace(meaningId);
+        if (hasEntry == hasMeaning)
         {
             throw new LRefusal(LRefusal.LRefusalTarget);
         }
 
         bool found = hasEntry
             ? new LEntryArchive(_lEngineDatabase).LEntryRead(entryId!) is not null
-            : new LSenseArchive(_lEngineDatabase).LSenseSingleRead(senseId!) is not null;
+            : new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(meaningId!) is not null;
         if (!found)
         {
             throw new LRefusal(LRefusal.LRefusalTarget);

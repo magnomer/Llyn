@@ -37,16 +37,16 @@ public sealed class LEntryLoader
             ? null
             : pronunciations.LPronunciationAudioRead(pronunciation.LPronunciationId);
 
-        List<LCardDraft> senseCards = [];
-        foreach (LSense sense in new LSenseArchive(_lEntryLoaderDatabase).LSenseRead(id))
+        List<LCardDraft> meaningCards = [];
+        foreach (LMeaning meaning in new LMeaningArchive(_lEntryLoaderDatabase).LMeaningRead(id))
         {
-            senseCards.Add(LEntryCardRead(
-                sense.LSenseId,
+            meaningCards.Add(LEntryCardRead(
+                meaning.LMeaningId,
                 collocation: false,
-                sense.LSensePosition + 1,
-                sense.LSenseTitle,
+                meaning.LMeaningPosition + 1,
+                meaning.LMeaningTitle,
                 LStateValue.LStateValueUnspecified,
-                sense.LSenseDefinition));
+                meaning.LMeaningDefinition));
         }
 
         List<LCardDraft> collocationCards = [];
@@ -66,7 +66,7 @@ public sealed class LEntryLoader
             entry.LEntryLanguage,
             pronunciation?.LPronunciationIpa ?? string.Empty,
             note?.LNoteText ?? string.Empty,
-            senseCards,
+            meaningCards,
             collocationCards,
             audio?.LPronunciationAudioFile ?? string.Empty,
             audio?.LPronunciationAudioSource,
@@ -111,18 +111,18 @@ public sealed class LEntryLoader
             expression,
             meaning,
             LEntryExampleRead(
-                collocation ? examples.LExampleCollocationRead(ownerId) : examples.LExampleSenseRead(ownerId)),
+                collocation ? examples.LExampleCollocationRead(ownerId) : examples.LExampleMeaningRead(ownerId)),
             LEntrySituationRead(
-                collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationSenseRead(ownerId)),
+                collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationMeaningRead(ownerId)),
             LEntryTranslationRead(
                 collocation
                     ? translations.LTranslationCollocationRead(ownerId)
-                    : translations.LTranslationSenseRead(ownerId)),
+                    : translations.LTranslationMeaningRead(ownerId)),
             string.Empty,
             LEntryTagRead(
-                collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId)),
+                collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagMeaningRead(ownerId)),
             LEntryImageRead(
-                collocation ? images.LImageCollocationRead(ownerId) : images.LImageSenseRead(ownerId)),
+                collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId)),
             position,
             ownerId);
     }
@@ -145,7 +145,7 @@ public sealed class LEntryLoader
         foreach (LSituation situation in situations)
         {
             drafts.Add(new LSituationDraft(
-                situation.LSituationTitle, situation.LSituationId, situation.LSituationSource));
+                situation.LSituationTitle, situation.LSituationId));
         }
 
         return drafts;

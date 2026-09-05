@@ -17,10 +17,11 @@ The panel fills itself the first time it is shown.
 Puts the panel back on the workspace open now.
 Nothing is selected, the editor is closed, and the inventory is re-read.
 
-## `internal void PPhonologyDraftFinish(bool store)`
+## `internal bool PPhonologyDraftFinish(bool store)`
 
 Carries the window's exit answer down to the editor this panel owns.
 The panel holds no draft of its own, so it only passes the answer along.
+What the editor answers is passed back up, because a store the engine refused must not close the window.
 
 ## `internal bool PPhonologyChangeCheck()`
 

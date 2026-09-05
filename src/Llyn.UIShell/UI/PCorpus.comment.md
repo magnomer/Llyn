@@ -6,7 +6,7 @@ The ordering button and the search field share the catalog column, so their comb
 The action row over the broader column stands in the same top row, as the repertoire panel arranges it.
 The catalog column is wider than the entry panels take, because it holds sentences rather than headwords.
 
-## `<Popup x:Name="PRankMenu" ...>`
+## `<Popup x:Name="PRankDropdown" ...>`
 
 The orderings the catalog may be listed in, one radio row each, carrying its choice in `Tag`.
 Ordering by recency is not offered, because the `example` row carries no creation or modification time.
@@ -63,10 +63,3 @@ A user correcting a sentence must see how far the correction reaches without lea
 Deletes the shown Example.
 It stands with discard and save because it acts on the record rather than on the browsing beside it.
 It is disabled while the editor stands on an Example nothing has stored yet.
-
-## `<Grid Margin="10,6,10,4">` inside `PCitationMenu`
-
-Writing a Source name and adding it, for a Source the shelf does not carry yet.
-The Example is pointed at the new Source in the same act, because that is why it was created here.
-Creating a Source from here creates it with the typed name as its title, as the card row does.
-

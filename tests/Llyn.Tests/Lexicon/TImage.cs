@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TImage
 {
     [Fact]
-    public void EveryImageACardReferencesLoadsBackInTheOrderItWasWritten()
+    public void EntryLoad_CardImages_ReturnsWrittenOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -45,14 +45,14 @@ public sealed class TImage
         Assert.NotNull(loaded);
         Assert.Equal(
             [@"D:\pictures\word.png", "https://example.com/word.png"],
-            Assert.Single(loaded.LEntryDraftSenses).LCardDraftImage.Select(image => image.TStateValueShow()));
+            Assert.Single(loaded.LEntryDraftMeanings).LCardDraftImage.Select(image => image.TStateValueShow()));
         Assert.Equal(
             "https://example.com/phrase.png",
             Assert.Single(Assert.Single(loaded.LEntryDraftCollocations).LCardDraftImage).TStateValueShow());
     }
 
     [Fact]
-    public void AnImageDroppedFromACardIsDetachedAndANewOneTakesItsPlace()
+    public void EntryUpdate_ImageReplaced_DetachesOldAttachesNew()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -71,9 +71,9 @@ public sealed class TImage
 
         engine.TEngineEntryUpdate(entry.LEntryId, loaded with
         {
-            LEntryDraftSenses =
+            LEntryDraftMeanings =
             [
-                loaded.LEntryDraftSenses[0] with { LCardDraftImage = [TInterface.TStateValueCreate("third.png")] },
+                loaded.LEntryDraftMeanings[0] with { LCardDraftImage = [TInterface.TStateValueCreate("third.png")] },
             ],
         });
 
@@ -81,13 +81,13 @@ public sealed class TImage
         Assert.NotNull(reloaded);
         Assert.Equal(
             "third.png",
-            Assert.Single(Assert.Single(reloaded.LEntryDraftSenses).LCardDraftImage).TStateValueShow());
+            Assert.Single(Assert.Single(reloaded.LEntryDraftMeanings).LCardDraftImage).TStateValueShow());
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_image WHERE 1 = 0;"));
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_image;"));
     }
 
     [Fact]
-    public void AnImageLeftEmptyIsNeitherWrittenNorLoadedBack()
+    public void EntrySave_EmptyImage_WritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -104,7 +104,7 @@ public sealed class TImage
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
 
         Assert.NotNull(loaded);
-        Assert.Empty(Assert.Single(loaded.LEntryDraftSenses).LCardDraftImage);
+        Assert.Empty(Assert.Single(loaded.LEntryDraftMeanings).LCardDraftImage);
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM image;"));
     }
 }

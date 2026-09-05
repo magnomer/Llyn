@@ -17,7 +17,6 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS relation_sense_origin ON relation (sense_id);
             CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_id);
             CREATE INDEX IF NOT EXISTS example_source ON example (source_id);
-            CREATE INDEX IF NOT EXISTS situation_source ON situation (source_id);
             """;
         command.ExecuteNonQuery();
 

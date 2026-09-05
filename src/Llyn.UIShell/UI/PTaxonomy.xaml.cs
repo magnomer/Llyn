@@ -35,9 +35,9 @@ public partial class PTaxonomy : UserControl
         PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 
-    internal void PTaxonomyDraftFinish(bool store)
+    internal bool PTaxonomyDraftFinish(bool store)
     {
-        PEditor.PEditorDraftFinish(store);
+        return PEditor.PEditorDraftFinish(store);
     }
 
     internal bool PTaxonomyChangeCheck()

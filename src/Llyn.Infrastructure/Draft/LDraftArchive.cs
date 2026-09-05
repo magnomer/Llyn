@@ -11,6 +11,8 @@ public static class LDraftArchive
     private const string LDraftArchiveExtension = ".json";
     private const string LDraftArchivePending = ".json.tmp";
 
+    private static readonly TimeSpan LDraftArchiveStale = TimeSpan.FromHours(1);
+
     private static readonly JsonSerializerOptions LDraftArchiveIndent = new() { WriteIndented = true };
 
     public static void LDraftArchiveSave(string root, LDraft draft)
@@ -88,6 +90,52 @@ public static class LDraftArchive
         }
         catch (UnauthorizedAccessException)
         {
+        }
+    }
+
+    public static void LDraftArchiveSweep(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+
+        string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
+
+        string[] files;
+        try
+        {
+            files = Directory.GetFiles(folder, "*" + LDraftArchivePending);
+        }
+        catch (IOException)
+        {
+            return;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return;
+        }
+
+        DateTime edge = DateTime.UtcNow - LDraftArchiveStale;
+        foreach (string file in files)
+        {
+            if (!file.EndsWith(LDraftArchivePending, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            try
+            {
+                if (File.GetLastWriteTimeUtc(file) > edge)
+                {
+                    continue;
+                }
+
+                File.Delete(file);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
         }
     }
 

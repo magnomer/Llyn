@@ -59,9 +59,9 @@ A pronunciation with no recording simply has no row.
 
 Version 15.
 Both card templates have always carried a Title field that nothing stored.
-The step gives sense and collocation the same title column.
+The step gives meaning and collocation the same title column.
 So the two cards end up the same shape for it.
-sense.gloss is left as it stands, unused by the input form.
+meaning.gloss is left as it stands, unused by the input form.
 
 ### `if (stored < 16)`
 

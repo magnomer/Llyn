@@ -23,7 +23,7 @@
             </Grid.ColumnDefinitions>
 
             <Grid Margin="0,0,16,0">
-                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="Headword">
+                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="{DynamicResource Input.Headword}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility" Value="Collapsed" />
@@ -36,7 +36,7 @@
                     </TextBlock.Style>
                 </TextBlock>
                 <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="{Binding Text, ElementName=PHeadword}" />
-                <TextBox x:Name="PHeadword" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="Headword" />
+                <TextBox x:Name="PHeadword" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="{DynamicResource Input.Headword}" />
             </Grid>
 
             <Grid Grid.Column="1">
@@ -92,7 +92,7 @@
                             </VisualBrush>
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                    <TextBlock VerticalAlignment="Center" Text="Discard" />
+                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource Input.Discard}" />
                 </StackPanel>
             </Button>
             <Button x:Name="PEditorStore" Grid.Column="4" Width="162" Height="51" Click="PEditorStoreHandle" IsEnabled="False" Style="{StaticResource Theme.Input.Primary}">
@@ -107,7 +107,7 @@
                             </VisualBrush>
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                    <TextBlock VerticalAlignment="Center" Text="Save entry" />
+                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource Input.Store}" />
                 </StackPanel>
             </Button>
         </Grid>
@@ -128,7 +128,7 @@
                         <ColumnDefinition Width="34" />
                     </Grid.ColumnDefinitions>
                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Text="[" />
-                    <TextBox x:Name="PPronunciation" Grid.Column="1" MaxWidth="292" MinHeight="40" Padding="4,0" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Pronunciation" VerticalContentAlignment="Center" />
+                    <TextBox x:Name="PPronunciation" Grid.Column="1" MaxWidth="292" MinHeight="40" Padding="4,0" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="{DynamicResource Input.Pronunciation}" VerticalContentAlignment="Center" />
                     <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Text="]" />
                 </Grid>
             </Border>
@@ -278,7 +278,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="PMarkerField" Width="212" MinHeight="33" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />
+                        <TextBox x:Name="PMarkerField" Width="212" MinHeight="33" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="{DynamicResource Speech.Title}" VerticalContentAlignment="Center" />
                         <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Width="38" Height="39" Padding="0" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Muted}" Style="{StaticResource Theme.Input.ToggleAction}">
                             <Path Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeThickness="1.5" />
                         </ToggleButton>
@@ -314,9 +314,9 @@
 
         <Border Grid.Row="3" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
             <StackPanel x:Name="PStack" Margin="29,0,0,0" Orientation="Horizontal">
-                <Button x:Name="PStackMeaning" Content="Meaning" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab.Selected}" />
-                <Button x:Name="PStackCollocation" Content="Collocation" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
-                <Button x:Name="PStackNote" Content="Note" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                <Button x:Name="PStackMeaning" Content="{DynamicResource Display.Meaning}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab.Selected}" />
+                <Button x:Name="PStackCollocation" Content="{DynamicResource Display.CollocationSingle}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                <Button x:Name="PStackNote" Content="{DynamicResource Display.Note}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
             </StackPanel>
         </Border>
 
@@ -324,9 +324,9 @@
             <Grid>
                 <ScrollViewer x:Name="PMeaning" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <ItemsControl x:Name="PSenseList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Sense.Card}" />
+                        <ItemsControl x:Name="PMeaningList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Meaning.Card}" />
 
-                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PSenseHandle">
+                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PMeaningHandle">
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
                                     <Grid>
@@ -334,7 +334,7 @@
                                         <Rectangle Width="1.5" Height="10" Fill="White" />
                                     </Grid>
                                 </Border>
-                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="Add another meaning" />
+                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="{DynamicResource Input.MeaningAdd}" />
                             </StackPanel>
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
@@ -360,7 +360,7 @@
                                         <Rectangle Width="1.5" Height="10" Fill="White" />
                                     </Grid>
                                 </Border>
-                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="Add another collocation" />
+                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="{DynamicResource Input.CollocationAdd}" />
                             </StackPanel>
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
@@ -381,14 +381,9 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
-                            <TextBlock Margin="22,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="Note" />
+                            <TextBlock Margin="22,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{DynamicResource Display.Note}" />
                         </Border>
-                        <Border Grid.Row="1" Margin="22,18,22,22" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="7">
-                            <Grid>
-                                <TextBlock x:Name="PNotePlaceholder" Margin="18,12,14,12" VerticalAlignment="Top" Foreground="{StaticResource Theme.Muted}" IsHitTestVisible="False" Opacity="0.56" Text="Write a note about this entry" />
-                                <TextBox x:Name="PNoteContents" Padding="14,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Ink}" CaretBrush="{StaticResource Theme.Ink}" TextChanged="PNoteContentsHandle" />
-                            </Grid>
-                        </Border>
+                        <TextBox x:Name="PNoteContents" Grid.Row="1" Margin="22,18,22,22" Padding="14,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource Theme.Input.Field}" Tag="{DynamicResource Input.NoteHint}" />
                     </Grid>
                 </Border>
             </Grid>

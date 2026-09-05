@@ -22,13 +22,6 @@ Opens a further Example row directly under the row the user asked from.
 
 Drops the Example row the user asked from, or empties it when it is the only one the card has.
 
-## `internal void PSentenceReferenceClear(object sender, RoutedEventArgs e)`
+## `internal void PSentenceCitationClear(object sender, RoutedEventArgs e)`
 
 Stops the row citing any Source.
-
-## `internal void PSentenceReferenceCreate(object sender, RoutedEventArgs e)`
-
-Stores the Source written into the row's list at once.
-An Example cites a Source by id.
-An id is only worth citing once something stands behind it.
-The row it was written on then cites it, and every other row on the form is offered it.

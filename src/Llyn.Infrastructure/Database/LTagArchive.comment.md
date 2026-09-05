@@ -27,7 +27,7 @@ Deleting closes the gap the removed text left in every card's order.
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public IReadOnlyList<LTag> LTagSenseRead(string senseId)`
+## `public IReadOnlyList<LTag> LTagMeaningRead(string meaningId)`
 
 Reads the Tags a Meaning carries, in the order that Meaning gives them.
 
@@ -35,7 +35,7 @@ Reads the Tags a Meaning carries, in the order that Meaning gives them.
 
 Reads the Tags a Collocation carries, in the order that Collocation gives them.
 
-## `public void LTagSenseSave(string senseId, IReadOnlyList<LTag> tags)`
+## `public void LTagMeaningSave(string meaningId, IReadOnlyList<LTag> tags)`
 
 Writes a Meaning's whole Tag line, replacing whatever it carried.
 Texts are trimmed, blanks and repeats are dropped, and what survives is numbered from zero in the order given.

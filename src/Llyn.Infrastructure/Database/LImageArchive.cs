@@ -43,9 +43,9 @@ public sealed class LImageArchive
         return LImageSingleRead(session.LDatabaseSessionConnection, id);
     }
 
-    public IReadOnlyList<LImage> LImageSenseRead(string senseId)
+    public IReadOnlyList<LImage> LImageMeaningRead(string meaningId)
     {
-        return LImageReferrerRead("sense_image", "sense_id", senseId);
+        return LImageReferrerRead("sense_image", "sense_id", meaningId);
     }
 
     public IReadOnlyList<LImage> LImageCollocationRead(string collocationId)
@@ -119,9 +119,9 @@ public sealed class LImageArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LImageSenseAttach(string senseId, string imageId, int position)
+    public void LImageMeaningAttach(string meaningId, string imageId, int position)
     {
-        LImageReferenceAttach("sense_image", "sense_id", senseId, imageId, position);
+        LImageReferenceAttach("sense_image", "sense_id", meaningId, imageId, position);
     }
 
     public void LImageCollocationAttach(string collocationId, string imageId, int position)
@@ -129,9 +129,9 @@ public sealed class LImageArchive
         LImageReferenceAttach("collocation_image", "collocation_id", collocationId, imageId, position);
     }
 
-    public void LImageSenseDetach(string senseId, string imageId)
+    public void LImageMeaningDetach(string meaningId, string imageId)
     {
-        LImageReferenceDetach("sense_image", "sense_id", senseId, imageId);
+        LImageReferenceDetach("sense_image", "sense_id", meaningId, imageId);
     }
 
     public void LImageCollocationDetach(string collocationId, string imageId)

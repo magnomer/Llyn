@@ -28,17 +28,12 @@ public sealed partial class LEngine
         LSituationArchive situations = new(_lEngineDatabase);
         return LEngineOwnerCheck(owner)
             ? situations.LSituationCollocationRead(ownerId)
-            : situations.LSituationSenseRead(ownerId);
+            : situations.LSituationMeaningRead(ownerId);
     }
 
     public void LEngineSituationUpdate(LSituation situation)
     {
         new LSituationArchive(_lEngineDatabase).LSituationUpdate(situation);
-    }
-
-    public void LEngineSituationUpdate(string situationId, LStateValue reference)
-    {
-        new LSituationArchive(_lEngineDatabase).LSituationSourceUpdate(situationId, reference);
     }
 
     public void LEngineSituationAttach(string ownerId, string situationId, int position, LOwner owner)
@@ -50,7 +45,7 @@ public sealed partial class LEngine
             return;
         }
 
-        situations.LSituationSenseAttach(ownerId, situationId, position);
+        situations.LSituationMeaningAttach(ownerId, situationId, position);
     }
 
     public void LEngineSituationDetach(string ownerId, string situationId, LOwner owner)
@@ -62,7 +57,7 @@ public sealed partial class LEngine
             return;
         }
 
-        situations.LSituationSenseDetach(ownerId, situationId);
+        situations.LSituationMeaningDetach(ownerId, situationId);
     }
 
     public void LEngineSituationRemove(string ownerId, string situationId, LOwner owner)

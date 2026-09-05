@@ -3,33 +3,33 @@ using System.Windows.Input;
 
 namespace Llyn.UIShell;
 
-public partial class PSenseTemplate : ResourceDictionary
+public partial class PMeaningTemplate : ResourceDictionary
 {
-    private readonly PEditor _pSenseHost;
+    private readonly PEditor _pMeaningHost;
 
-    internal PSenseTemplate(PEditor host)
+    internal PMeaningTemplate(PEditor host)
     {
-        _pSenseHost = host;
+        _pMeaningHost = host;
         InitializeComponent();
     }
 
     private void PCardHandle(object sender, RoutedEventArgs e)
     {
-        _pSenseHost.PCardHandle(sender, e);
+        _pMeaningHost.PCardHandle(sender, e);
     }
 
     private void PCardDragHandle(object sender, MouseButtonEventArgs e)
     {
-        _pSenseHost.PCardDragHandle(sender, e);
+        _pMeaningHost.PCardDragHandle(sender, e);
     }
 
     private void PImageAddHandle(object sender, RoutedEventArgs e)
     {
-        _pSenseHost.PImageAddHandle(sender, e);
+        _pMeaningHost.PImageAddHandle(sender, e);
     }
 
     private void PVideoAddHandle(object sender, RoutedEventArgs e)
     {
-        _pSenseHost.PVideoAddHandle(sender, e);
+        _pMeaningHost.PVideoAddHandle(sender, e);
     }
 }

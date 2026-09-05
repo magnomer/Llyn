@@ -15,9 +15,9 @@ public sealed class LTagArchive
         _lTagArchiveDatabase = database;
     }
 
-    public IReadOnlyList<LTag> LTagSenseRead(string senseId)
+    public IReadOnlyList<LTag> LTagMeaningRead(string meaningId)
     {
-        return LTagReferrerRead("sense_tag", "sense_id", senseId);
+        return LTagReferrerRead("sense_tag", "sense_id", meaningId);
     }
 
     public IReadOnlyList<LTag> LTagCollocationRead(string collocationId)
@@ -25,9 +25,9 @@ public sealed class LTagArchive
         return LTagReferrerRead("collocation_tag", "collocation_id", collocationId);
     }
 
-    public void LTagSenseSave(string senseId, IReadOnlyList<LTag> tags)
+    public void LTagMeaningSave(string meaningId, IReadOnlyList<LTag> tags)
     {
-        LTagReferrerSave("sense_tag", "sense_id", senseId, tags);
+        LTagReferrerSave("sense_tag", "sense_id", meaningId, tags);
     }
 
     public void LTagCollocationSave(string collocationId, IReadOnlyList<LTag> tags)

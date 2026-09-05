@@ -20,7 +20,7 @@ It also carries a card the user added, carrying no id of its own.
 
 The entry is the same record: same id, same creation stamp, a fresh modification stamp.
 
-### `Assert.Equal(firstId, stored[0].LSenseId);`
+### `Assert.Equal(firstId, stored[0].LMeaningId);`
 
 The cards the draft still named kept their rows.
 So anything pointing at them still points at the same Meaning.

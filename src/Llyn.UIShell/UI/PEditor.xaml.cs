@@ -24,7 +24,7 @@ public partial class PEditor : UserControl
         Resources.MergedDictionaries.Add(new PLabelTemplate(this));
         Resources.MergedDictionaries.Add(new PLinkTemplate(this));
         Resources.MergedDictionaries.Add(new PProspectTemplate(this));
-        Resources.MergedDictionaries.Add(new PSenseTemplate(this));
+        Resources.MergedDictionaries.Add(new PMeaningTemplate(this));
         Resources.MergedDictionaries.Add(new PCollocationTemplate(this));
         Resources.MergedDictionaries.Add(new PLanguageTemplate(this));
         Resources.MergedDictionaries.Add(new PMarkerTemplate(this));
@@ -32,7 +32,7 @@ public partial class PEditor : UserControl
         Resources.MergedDictionaries.Add(new PNotationTemplate(this));
         Resources.MergedDictionaries.Add(new PClipTemplate(this));
 
-        PSenseList.ItemsSource = _pSenseList;
+        PMeaningList.ItemsSource = _pMeaningList;
         PCollocationList.ItemsSource = _pCollocationList;
         PNotationList.ItemsSource = _pNotationItem;
         PClipList.ItemsSource = _pClipItem;

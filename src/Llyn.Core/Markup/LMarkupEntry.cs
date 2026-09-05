@@ -41,7 +41,7 @@ public static partial class LMarkup
         LMarkupToken? audio = null;
         LMarkupToken? speech = null;
         LMarkupToken? note = null;
-        List<LCardDraft> senses = new List<LCardDraft>();
+        List<LCardDraft> meanings = new List<LCardDraft>();
         List<LCardDraft> collocations = new List<LCardDraft>();
         List<LMarkupReference> sources = new List<LMarkupReference>();
 
@@ -57,7 +57,7 @@ public static partial class LMarkup
                 switch (token.LMarkupTokenName)
                 {
                     case "sense":
-                        senses.Add(LMarkupCardRead(block, senses.Count + 1));
+                        meanings.Add(LMarkupCardRead(block, meanings.Count + 1));
                         break;
                     case "collocation":
                         collocations.Add(LMarkupCardRead(block, collocations.Count + 1));
@@ -121,7 +121,7 @@ public static partial class LMarkup
             }
         }
 
-        LMarkupCitationCheck(senses, registry);
+        LMarkupCitationCheck(meanings, registry);
         LMarkupCitationCheck(collocations, registry);
 
         LEntryDraft draft = new LEntryDraft(
@@ -129,7 +129,7 @@ public static partial class LMarkup
             LMarkupStateRead(language).LStateValueShow(),
             LMarkupStateRead(pronunciation).LStateValueShow(),
             LMarkupStateRead(note).LStateValueShow(),
-            senses,
+            meanings,
             collocations,
             LMarkupStateRead(audio).LStateValueShow(),
             null,
@@ -146,11 +146,6 @@ public static partial class LMarkup
             foreach (LExampleDraft example in card.LCardDraftExample)
             {
                 LMarkupSourceCheck(example.LExampleDraftReference, registry);
-            }
-
-            foreach (LSituationDraft situation in card.LCardDraftSituation)
-            {
-                LMarkupSourceCheck(situation.LSituationDraftReference, registry);
             }
         }
     }

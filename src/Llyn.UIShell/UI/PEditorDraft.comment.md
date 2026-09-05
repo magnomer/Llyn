@@ -121,15 +121,10 @@ It does not belong to the empty form the next entry is typed into.
 An empty form stands on no entry, so its language is nobody's.
 The language menu may move it onto an installed pack.
 
-### `PCardShow(_pSenseList, "Meaning", [], PEditorTargetEmpty);`
+### `PCardShow(_pMeaningList, "Meaning", [], PEditorTargetEmpty);`
 
 No cards to show is the empty form, which is one empty card of each kind.
 An empty form links to nothing, so there is nothing to look words up for.
-
-### `PNotePlaceholder.Visibility = Visibility.Visible;`
-
-Clearing the box does not always route through the TextChanged handler.
-So the placeholder is put back explicitly rather than left hidden over an empty note.
 
 ### `private LDraft? PEditorDraftStart(string? entry)`
 
@@ -148,13 +143,15 @@ Copies what the controls hold into the held draft.
 The draft is read back first, because it carries the entry and the origin this form does not.
 A failed write is swallowed: a dialog per keystroke would be worse than a draft one word behind.
 
-### `internal void PEditorDraftFinish(bool store)`
+### `internal bool PEditorDraftFinish(bool store)`
 
 The window's exit answer applied to this form's own draft.
 Storing commits it, which is the same write the save button makes, so a word typed and never saved survives the exit that was meant to keep it.
 Discarding cancels it, and a draft matching its entry is cancelled either way because there is nothing in it to store.
-A refused commit falls back to cancelling, since the window is going and a blank or broken form cannot be shown the failure.
-Either way the form is left holding no draft, so the folder keeps no file for a window that closed cleanly.
+A refused commit keeps the draft and reports the refusal, the same way the save button does.
+The answer the user gave was to keep the word, so deleting it is the one thing that answer never asked for.
+What is returned is whether the form is finished, and a false answer holds the window open over work the store would not take.
+A settled form leaves the folder no file, so a clean exit is never reported as work a crash cost.
 
 ### `private bool PEditorDraftCheck()`
 
@@ -167,7 +164,7 @@ The one read path for both card lists.
 A Meaning card and a Collocation card are the same card.
 So they are read into the same value.
 A Meaning card's Expression stays empty.
-Its template has no Expression control, and no writer looks at the field for a sense.
+Its template has no Expression control, and no writer looks at the field for a meaning.
 The Translation line reads back the ids the card's link field holds.
 
 ### `card.PTitle,`
@@ -177,7 +174,7 @@ That one is the "Meaning 1" header the template shows as a placeholder over this
 
 ### `card.PCardDefinition,`
 
-The Meaning field of a collocation card and the Definition field of a sense card are one property.
+The Meaning field of a collocation card and the Definition field of a meaning card are one property.
 One card class serves both kinds, so the label differs and not the field.
 
 ### `string.Empty,`

@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Xunit;
 
 using LMarkupToken = Llyn.Core.LMarkup.LMarkupToken;
@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TMarkupSyntax
 {
     [Fact]
-    public void ATextTagBecomesOneTokenCarryingItsTrimmedText()
+    public void MarkupScan_TextTag_ReturnsTokenWithTrimmedText()
     {
         IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan("<meaning>  a unit of language  </meaning>");
 
@@ -23,7 +23,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnEmptyTagCarriesTheEmptyFlagInBothOfItsForms()
+    public void MarkupScan_EmptyTagBothForms_CarriesEmptyFlag()
     {
         IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan("<meaning></meaning><tag>\n  </tag><image/>");
 
@@ -37,7 +37,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnAbsentSourceAnEmptySourceAndANamedSourceStayApart()
+    public void MarkupScan_ThreeSourceForms_KeepsThemApart()
     {
         IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
             "<example>plain</example><example src=\"\">unknown</example><example src=\"oed\">cited</example>");
@@ -50,7 +50,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void TextIsTakenLiterallySoAmpersandsAndAnglesAreNeverInterpreted()
+    public void MarkupScan_AmpersandsAndAngles_TakesLiterally()
     {
         IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
             "<meaning>a mark ( & ) joining two clauses, as in a &amp; b < c</meaning>");
@@ -60,7 +60,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void ABlockTagIsBoundedByAnEnterAndALeaveToken()
+    public void MarkupScan_BlockTag_BoundsWithEnterAndLeave()
     {
         IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
             "<entry><headword>kindle</headword><source id=\"oed\"><year>1928</year></source></entry>");
@@ -80,7 +80,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void OrderIsKeptAcrossRepeatedTags()
+    public void MarkupScan_RepeatedTags_KeepsOrder()
     {
         IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
             "<sense><tag>literal</tag><tag></tag><tag>figurative</tag></sense>");
@@ -90,7 +90,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnUnclosedTextTagThrowsAFormatExceptionNamingItsPosition()
+    public void MarkupScan_UnclosedTextTag_ThrowsNamingPosition()
     {
         FormatException failure = Assert.Throws<FormatException>(
             () => TInterface.TMarkupScan("<entry><meaning>a unit of language</entry>"));
@@ -100,7 +100,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AStrayAngleThrowsAFormatExceptionNamingItsPosition()
+    public void MarkupScan_StrayAngle_ThrowsNamingPosition()
     {
         FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupScan("<sense>< </sense>"));
 
@@ -109,7 +109,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnUnclosedBlockThrowsAFormatExceptionNamingItsPosition()
+    public void MarkupScan_UnclosedBlock_ThrowsNamingPosition()
     {
         FormatException failure = Assert.Throws<FormatException>(
             () => TInterface.TMarkupScan("<entry><headword>kindle</headword>"));
@@ -119,13 +119,13 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AClosingTagWithNoOpenBlockThrowsAFormatException()
+    public void MarkupScan_ClosingTagNoOpenBlock_Throws()
     {
         Assert.Throws<FormatException>(() => TInterface.TMarkupScan("<entry></entry></sense>"));
     }
 
     [Fact]
-    public void ACardCarriesEveryTagItDeclaresInTheOrderItDeclaresThem()
+    public void MarkupCardRead_DeclaredTags_ReturnsDeclaredOrder()
     {
         LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
             """
@@ -158,11 +158,10 @@ public sealed class TMarkupSyntax
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftExample[1].LExampleDraftReference.LStateValueState);
         LSituationDraft situation = Assert.Single(card.LCardDraftSituation);
         Assert.Equal("around a hearth", situation.LSituationDraftText.TStateValueShow());
-        Assert.Equal(LState.LStateUnknown, situation.LSituationDraftReference.LStateValueState);
     }
 
     [Fact]
-    public void AnEmptyTagCarriesNoNameAndSoCarriesNoTag()
+    public void MarkupCardRead_EmptyTag_ReturnsNoTag()
     {
         LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
             "<sense><meaning></meaning><tag></tag></sense>"), 1);
@@ -178,7 +177,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnUnrecognisedTagInsideACardIsIgnored()
+    public void MarkupCardRead_UnrecognisedTag_IgnoresIt()
     {
         LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
             "<collocation><future>not a field</future><meaning>to cause interest</meaning></collocation>"), 1);
@@ -187,7 +186,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void ASourceKeepsItsIdAndItsKnownAndUnknownFieldsApart()
+    public void MarkupReferenceRead_MixedFields_KeepsThemApart()
     {
         LMarkupReference read = TInterface.TMarkupReferenceRead(TInterface.TMarkupScan(
             """
@@ -212,7 +211,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void ASourceWithoutAnIdIsRefused()
+    public void MarkupReferenceRead_SourceWithoutId_Throws()
     {
         FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupReferenceRead(
             TInterface.TMarkupScan("<source><title>A Field Guide to Rivers</title></source>")));
@@ -221,14 +220,14 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void ASourceWithAnEmptyIdIsRefused()
+    public void MarkupReferenceRead_SourceWithEmptyId_Throws()
     {
         Assert.Throws<FormatException>(() => TInterface.TMarkupReferenceRead(
             TInterface.TMarkupScan("<source id=\"\"><title>A Field Guide</title></source>")));
     }
 
     [Fact]
-    public void ASourceNestedInACardLeavesNoFieldOfItsOwnOnThatCard()
+    public void MarkupCardRead_NestedSource_LeavesNoFieldOnCard()
     {
         LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
             """
@@ -243,7 +242,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnIdAttributeOnAnExampleIsNotACitation()
+    public void MarkupCardRead_IdOnExample_ReadsAsNoCitation()
     {
         LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
             "<sense><example id=\"oed\">she knelt to kindle the damp logs</example></sense>"), 1);
@@ -254,7 +253,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnEntryThatDeclaresOneSourceIdTwiceIsRefused()
+    public void MarkupRead_SourceIdDeclaredTwice_Throws()
     {
         FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
             """
@@ -269,7 +268,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void ASourceCarriesItsAuthorNameBesideTheReferenceThatStatesIt()
+    public void MarkupReferenceRead_SourceWithAuthor_CarriesName()
     {
         LMarkupReference read = TInterface.TMarkupReferenceRead(TInterface.TMarkupScan(
             """
@@ -368,7 +367,7 @@ public sealed class TMarkupSyntax
         """;
 
     [Fact]
-    public void TheCompleteSampleReadsAsTwoEntriesCarryingEveryFieldItWrites()
+    public void MarkupRead_CompleteSample_ReturnsEveryField()
     {
         IReadOnlyList<LEntryDraft> entries = TInterface.TMarkupRead(TMarkupSample);
 
@@ -381,18 +380,17 @@ public sealed class TMarkupSyntax
         Assert.Equal("media/kindle.mp3", kindle.LEntryDraftAudio);
         Assert.Equal(["verb"], kindle.LEntryDraftSpeeches);
         Assert.Equal("Chiefly literary in its figurative senses.", kindle.LEntryDraftNote);
-        Assert.Equal(2, kindle.LEntryDraftSenses.Count);
+        Assert.Equal(2, kindle.LEntryDraftMeanings.Count);
         Assert.Equal("kindle interest", Assert.Single(kindle.LEntryDraftCollocations).LCardDraftExpression.TStateValueShow());
 
-        LCardDraft alight = kindle.LEntryDraftSenses[0];
+        LCardDraft alight = kindle.LEntryDraftMeanings[0];
         Assert.Equal("set alight", alight.LCardDraftTitle.TStateValueShow());
         Assert.Equal("ignite, light", alight.LCardDraftSynonym);
         Assert.Equal(["literal"], alight.LCardDraftTag);
         Assert.Equal(["media/kindle-hearth.jpg"], alight.LCardDraftImage.Select(image => image.TStateValueShow()));
         Assert.Equal("oed", Assert.Single(alight.LCardDraftExample).LExampleDraftReference.TStateValueShow());
-        Assert.Equal("oed", Assert.Single(alight.LCardDraftSituation).LSituationDraftReference.TStateValueShow());
 
-        LCardDraft rouse = kindle.LEntryDraftSenses[1];
+        LCardDraft rouse = kindle.LEntryDraftMeanings[1];
         Assert.Equal(["figurative"], rouse.LCardDraftTag);
         Assert.Equal(
             [LState.LStateUnspecified, LState.LStateUnknown],
@@ -403,14 +401,14 @@ public sealed class TMarkupSyntax
         Assert.Equal(["noun", "verb"], brook.LEntryDraftSpeeches);
         Assert.Equal(string.Empty, brook.LEntryDraftAudio);
         Assert.Equal(string.Empty, brook.LEntryDraftNote);
-        Assert.Equal("field", Assert.Single(brook.LEntryDraftSenses[0].LCardDraftExample).LExampleDraftReference.TStateValueShow());
+        Assert.Equal("field", Assert.Single(brook.LEntryDraftMeanings[0].LCardDraftExample).LExampleDraftReference.TStateValueShow());
         Assert.Equal(
             LState.LStateUnknown,
-            Assert.Single(brook.LEntryDraftSenses[1].LCardDraftSituation).LSituationDraftText.LStateValueState);
+            Assert.Single(brook.LEntryDraftMeanings[1].LCardDraftSituation).LSituationDraftText.LStateValueState);
     }
 
     [Fact]
-    public void ASharedSourceIsResolvedOnceAndCitedByEveryTagThatNamesIt()
+    public void MarkupEntryRead_SharedSource_ResolvesItOnce()
     {
         LMarkup.LMarkupEntry entry = Assert.Single(TInterface.TMarkupEntryRead(
             """
@@ -433,17 +431,14 @@ public sealed class TMarkupSyntax
         Assert.Equal(["Murray, James", "Bradley, Henry"], source.LMarkupReferenceAuthor);
         Assert.Equal(LState.LStateSpecified, source.LMarkupReferenceValue.LReferenceAuthorState);
 
-        LCardDraft card = Assert.Single(entry.LMarkupEntryDraft.LEntryDraftSenses);
+        LCardDraft card = Assert.Single(entry.LMarkupEntryDraft.LEntryDraftMeanings);
         Assert.Equal(
             source.LMarkupReferenceValue.LReferenceId,
             Assert.Single(card.LCardDraftExample).LExampleDraftReference.TStateValueShow());
-        Assert.Equal(
-            source.LMarkupReferenceValue.LReferenceId,
-            Assert.Single(card.LCardDraftSituation).LSituationDraftReference.TStateValueShow());
     }
 
     [Fact]
-    public void AnIdIsMeaningfulOnlyInsideItsOwnEntry()
+    public void MarkupEntryRead_SameIdInTwoEntries_KeepsThemApart()
     {
         IReadOnlyList<LMarkup.LMarkupEntry> entries = TInterface.TMarkupEntryRead(
             """
@@ -465,7 +460,7 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AMissingHeadwordThrowsAFormatExceptionNamingTheEntryIndex()
+    public void MarkupRead_MissingHeadword_ThrowsNamingEntryIndex()
     {
         FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
             "<entry><headword>kindle</headword></entry><entry><lang>English</lang></entry>"));
@@ -475,13 +470,13 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void AnEmptyHeadwordIsAsMissingAsAnAbsentOne()
+    public void MarkupRead_EmptyHeadword_ThrowsLikeMissing()
     {
         Assert.Throws<FormatException>(() => TInterface.TMarkupRead("<entry><headword></headword></entry>"));
     }
 
     [Fact]
-    public void AnUnknownSourceKeyThrowsAFormatExceptionNamingTheKey()
+    public void MarkupRead_UnknownSourceKey_ThrowsNamingKey()
     {
         FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
             """

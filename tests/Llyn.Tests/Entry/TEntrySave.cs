@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TEntrySave
 {
     [Fact]
-    public void AWholeDraftIsSavedAsOneEntryAndReadsBackRowForRow()
+    public void EntrySave_WholeDraft_ReadsBackRowForRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -33,11 +33,11 @@ public sealed class TEntrySave
         Assert.Equal("word", entries.TEntryRead(entry.LEntryId)?.LEntryHeadword);
         Assert.Equal("English", entries.TEntryRead(entry.LEntryId)?.LEntryLanguage);
 
-        IReadOnlyList<LSense> senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase).TSenseRead(entry.LEntryId);
+        IReadOnlyList<LMeaning> meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);
         Assert.Equal(
             ["the first meaning", "the second meaning"],
-            senses.Select(sense => sense.LSenseDefinition));
-        Assert.Equal([0, 1], senses.Select(sense => sense.LSensePosition));
+            meanings.Select(meaning => meaning.LMeaningDefinition));
+        Assert.Equal([0, 1], meanings.Select(meaning => meaning.LMeaningPosition));
 
         LCollocation collocation = Assert.Single(
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(entry.LEntryId));
@@ -63,7 +63,7 @@ public sealed class TEntrySave
     }
 
     [Fact]
-    public void ACardsExampleSituationAndTagAreWrittenAsIndependentRowsTheCardReferences()
+    public void EntrySave_CardIndependents_WritesReferencedRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -82,7 +82,7 @@ public sealed class TEntrySave
 
         LEntry entry = engine.TEngineEntrySave(draft);
 
-        LSense sense = Assert.Single(TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase).TSenseRead(entry.LEntryId));
+        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
         LCollocation collocation = Assert.Single(
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(entry.LEntryId));
 
@@ -92,11 +92,11 @@ public sealed class TEntrySave
 
         Assert.Equal(
             "he said a word",
-            Assert.Single(examples.TExampleSenseRead(sense.LSenseId)).LExampleText);
+            Assert.Single(examples.TExampleMeaningRead(meaning.LMeaningId)).LExampleText);
         Assert.Equal(
             "conversation",
-            Assert.Single(situations.TSituationSenseRead(sense.LSenseId)).LSituationTitle);
-        Assert.Equal("spoken", Assert.Single(tags.TTagSenseRead(sense.LSenseId)).LTagText);
+            Assert.Single(situations.TSituationMeaningRead(meaning.LMeaningId)).LSituationTitle);
+        Assert.Equal("spoken", Assert.Single(tags.TTagMeaningRead(meaning.LMeaningId)).LTagText);
 
         Assert.Equal(
             "in a word, no",
@@ -112,17 +112,17 @@ public sealed class TEntrySave
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_synonym;"));
 
         LEntry second = engine.TEngineEntrySave(draft);
-        LSense other = Assert.Single(TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase).TSenseRead(second.LEntryId));
+        LMeaning other = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(second.LEntryId));
 
         Assert.NotEqual(
-            Assert.Single(examples.TExampleSenseRead(sense.LSenseId)).LExampleId,
-            Assert.Single(examples.TExampleSenseRead(other.LSenseId)).LExampleId);
+            Assert.Single(examples.TExampleMeaningRead(meaning.LMeaningId)).LExampleId,
+            Assert.Single(examples.TExampleMeaningRead(other.LMeaningId)).LExampleId);
         Assert.NotEqual(
-            Assert.Single(situations.TSituationSenseRead(sense.LSenseId)).LSituationId,
-            Assert.Single(situations.TSituationSenseRead(other.LSenseId)).LSituationId);
+            Assert.Single(situations.TSituationMeaningRead(meaning.LMeaningId)).LSituationId,
+            Assert.Single(situations.TSituationMeaningRead(other.LMeaningId)).LSituationId);
         Assert.Equal(
-            Assert.Single(tags.TTagSenseRead(sense.LSenseId)).LTagText,
-            Assert.Single(tags.TTagSenseRead(other.LSenseId)).LTagText);
+            Assert.Single(tags.TTagMeaningRead(meaning.LMeaningId)).LTagText,
+            Assert.Single(tags.TTagMeaningRead(other.LMeaningId)).LTagText);
 
         Assert.Equal(4, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
         Assert.Equal(4, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation;"));
@@ -131,7 +131,7 @@ public sealed class TEntrySave
     }
 
     [Fact]
-    public void ADraftOfNothingButAHeadwordWritesNoSenseAndNoCollocation()
+    public void EntrySave_HeadwordOnly_WritesNoCards()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -148,12 +148,12 @@ public sealed class TEntrySave
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
         Assert.Equal("word", loaded.LEntryDraftHeadword);
-        Assert.Empty(loaded.LEntryDraftSenses);
+        Assert.Empty(loaded.LEntryDraftMeanings);
         Assert.Empty(loaded.LEntryDraftCollocations);
     }
 
     [Fact]
-    public void ABlankCardBetweenTwoFilledOnesLeavesTheRestAtContiguousPositions()
+    public void EntrySave_BlankCardBetween_KeepsPositionsContiguous()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -174,11 +174,11 @@ public sealed class TEntrySave
                 TInterface.TCardDraftCreate(string.Empty, "word for word", "exactly", [], [], [], string.Empty, [], [], 3),
             ]));
 
-        IReadOnlyList<LSense> senses = TInterface.TSenseArchiveCreate(workspace.TWorkspaceDatabase).TSenseRead(entry.LEntryId);
+        IReadOnlyList<LMeaning> meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);
         Assert.Equal(
             ["the first meaning", "the second meaning"],
-            senses.Select(sense => sense.LSenseDefinition));
-        Assert.Equal([0, 1], senses.Select(sense => sense.LSensePosition));
+            meanings.Select(meaning => meaning.LMeaningDefinition));
+        Assert.Equal([0, 1], meanings.Select(meaning => meaning.LMeaningPosition));
 
         IReadOnlyList<LCollocation> collocations =
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(entry.LEntryId);
@@ -189,7 +189,7 @@ public sealed class TEntrySave
     }
 
     [Fact]
-    public void ADraftWithNoHeadwordIsRefusedBeforeAnythingIsWritten()
+    public void EntrySave_NoHeadword_RefusesAndWritesNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -203,7 +203,7 @@ public sealed class TEntrySave
     }
 
     [Fact]
-    public void AFailurePartWayThroughASaveLeavesNoEntryBehind()
+    public void EntrySave_FailurePartWay_LeavesNoEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();

@@ -34,8 +34,8 @@ public partial class PCorpus : UserControl
 
     internal void PCorpusClose()
     {
-        PCitationMenu.IsOpen = false;
+        PCitationDrawer.IsOpen = false;
         PLanguage.IsOpen = false;
-        PRankMenu.IsOpen = false;
+        PRankDropdown.IsOpen = false;
     }
 }

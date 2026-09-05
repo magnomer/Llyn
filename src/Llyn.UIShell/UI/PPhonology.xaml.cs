@@ -36,9 +36,9 @@ public partial class PPhonology : UserControl
         PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
-    internal void PPhonologyDraftFinish(bool store)
+    internal bool PPhonologyDraftFinish(bool store)
     {
-        PEditor.PEditorDraftFinish(store);
+        return PEditor.PEditorDraftFinish(store);
     }
 
     internal bool PPhonologyChangeCheck()

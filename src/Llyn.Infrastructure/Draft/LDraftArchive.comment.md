@@ -32,9 +32,22 @@ One bad file must not hide the rest.
 Removes the file for `id`, which is how a draft ends once its record is saved or abandoned.
 A file already gone, or held open by the other copy of the program, is not an error.
 
+## `public static void LDraftArchiveSweep(string root)`
+
+Deletes every half-written `.json.tmp` in the drafts folder that is older than an hour.
+A save writes its pending file and then moves it over the target.
+A kill between the two leaves a file the listing rightly ignores and nothing collects.
+The hour keeps a file another copy of the program is writing out of reach.
+A missing folder is not an error, and neither is a file that vanishes mid-sweep.
+
 ## Inline notes
 
 ### the extension check inside the listing
 
 A Windows search pattern can match a file whose extension merely starts with the one asked for.
 The half-written `.json.tmp` file must never be read as a draft.
+
+### the age check inside the sweep
+
+A pending file younger than the hour may belong to a save still in flight.
+Taking it would break a write the other copy of the program is making.

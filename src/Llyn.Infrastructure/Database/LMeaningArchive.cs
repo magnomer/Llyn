@@ -5,30 +5,30 @@ using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
-public sealed class LSenseArchive
+public sealed class LMeaningArchive
 {
-    private readonly LDatabase _lSenseArchiveDatabase;
+    private readonly LDatabase _lMeaningArchiveDatabase;
 
-    public LSenseArchive(LDatabase database)
+    public LMeaningArchive(LDatabase database)
     {
         ArgumentNullException.ThrowIfNull(database);
-        _lSenseArchiveDatabase = database;
+        _lMeaningArchiveDatabase = database;
     }
 
-    public LSense LSenseCreate(LSense sense)
+    public LMeaning LMeaningCreate(LMeaning meaning)
     {
-        ArgumentNullException.ThrowIfNull(sense);
-        ArgumentException.ThrowIfNullOrWhiteSpace(sense.LSenseEntryId);
+        ArgumentNullException.ThrowIfNull(meaning);
+        ArgumentException.ThrowIfNullOrWhiteSpace(meaning.LMeaningEntryId);
 
-        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        LSenseParentValidate(connection, sense.LSenseEntryId, sense.LSenseParentId);
+        LMeaningParentValidate(connection, meaning.LMeaningEntryId, meaning.LMeaningParentId);
 
-        LSense stored = sense with
+        LMeaning stored = meaning with
         {
-            LSenseId = LIdentity.LIdentityCreate(),
-            LSensePosition = LSenseSiblingRead(connection, sense.LSenseEntryId, sense.LSenseParentId).Count,
+            LMeaningId = LIdentity.LIdentityCreate(),
+            LMeaningPosition = LMeaningSiblingRead(connection, meaning.LMeaningEntryId, meaning.LMeaningParentId).Count,
         };
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -42,15 +42,15 @@ public sealed class LSenseArchive
                     $id, $entry, $parent, $position, $titleState, $title, $gloss,
                     $language, $definitionState, $definition, $labels);
                 """;
-            command.Parameters.AddWithValue("$id", stored.LSenseId);
-            command.Parameters.AddWithValue("$entry", stored.LSenseEntryId);
-            command.Parameters.AddWithValue("$parent", (object?)stored.LSenseParentId ?? DBNull.Value);
-            command.Parameters.AddWithValue("$position", stored.LSensePosition);
-            LStateColumn.LStateColumnApply(command, "title", stored.LSenseTitle);
-            command.Parameters.AddWithValue("$gloss", (object?)stored.LSenseGloss ?? DBNull.Value);
-            command.Parameters.AddWithValue("$language", (object?)stored.LSenseDefinitionLanguage ?? DBNull.Value);
-            LStateColumn.LStateColumnApply(command, "definition", stored.LSenseDefinition);
-            command.Parameters.AddWithValue("$labels", stored.LSenseLabels);
+            command.Parameters.AddWithValue("$id", stored.LMeaningId);
+            command.Parameters.AddWithValue("$entry", stored.LMeaningEntryId);
+            command.Parameters.AddWithValue("$parent", (object?)stored.LMeaningParentId ?? DBNull.Value);
+            command.Parameters.AddWithValue("$position", stored.LMeaningPosition);
+            LStateColumn.LStateColumnApply(command, "title", stored.LMeaningTitle);
+            command.Parameters.AddWithValue("$gloss", (object?)stored.LMeaningGloss ?? DBNull.Value);
+            command.Parameters.AddWithValue("$language", (object?)stored.LMeaningDefinitionLanguage ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "definition", stored.LMeaningDefinition);
+            command.Parameters.AddWithValue("$labels", stored.LMeaningLabels);
             command.ExecuteNonQuery();
         }
 
@@ -58,11 +58,11 @@ public sealed class LSenseArchive
         return stored;
     }
 
-    public IReadOnlyList<LSense> LSenseRead(string entryId)
+    public IReadOnlyList<LMeaning> LMeaningRead(string entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
 
-        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
@@ -73,21 +73,21 @@ public sealed class LSenseArchive
             """;
         command.Parameters.AddWithValue("$entry", entryId);
 
-        List<LSense> senses = [];
+        List<LMeaning> meanings = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            senses.Add(LSenseRowRead(reader));
+            meanings.Add(LMeaningRowRead(reader));
         }
 
-        return senses;
+        return meanings;
     }
 
-    public LSense? LSenseSingleRead(string id)
+    public LMeaning? LMeaningSingleRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
@@ -98,15 +98,15 @@ public sealed class LSenseArchive
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
-        return reader.Read() ? LSenseRowRead(reader) : null;
+        return reader.Read() ? LMeaningRowRead(reader) : null;
     }
 
-    public IReadOnlyList<LSense> LSenseFind(string query)
+    public IReadOnlyList<LMeaning> LMeaningFind(string query)
     {
         ArgumentNullException.ThrowIfNull(query);
         query = query.Trim();
 
-        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
@@ -119,22 +119,22 @@ public sealed class LSenseArchive
             """;
         command.Parameters.AddWithValue("$query", query);
 
-        List<LSense> senses = [];
+        List<LMeaning> meanings = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            senses.Add(LSenseRowRead(reader));
+            meanings.Add(LMeaningRowRead(reader));
         }
 
-        return senses;
+        return meanings;
     }
 
-    public void LSenseUpdate(LSense sense)
+    public void LMeaningUpdate(LMeaning meaning)
     {
-        ArgumentNullException.ThrowIfNull(sense);
-        ArgumentException.ThrowIfNullOrWhiteSpace(sense.LSenseId);
+        ArgumentNullException.ThrowIfNull(meaning);
+        ArgumentException.ThrowIfNullOrWhiteSpace(meaning.LMeaningId);
 
-        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
@@ -145,52 +145,52 @@ public sealed class LSenseArchive
                     definition_state = $definitionState, definition = $definition, labels = $labels
                 WHERE id = $id;
                 """;
-            LStateColumn.LStateColumnApply(command, "title", sense.LSenseTitle);
-            command.Parameters.AddWithValue("$gloss", (object?)sense.LSenseGloss ?? DBNull.Value);
-            command.Parameters.AddWithValue("$language", (object?)sense.LSenseDefinitionLanguage ?? DBNull.Value);
-            LStateColumn.LStateColumnApply(command, "definition", sense.LSenseDefinition);
-            command.Parameters.AddWithValue("$labels", sense.LSenseLabels);
-            command.Parameters.AddWithValue("$id", sense.LSenseId);
+            LStateColumn.LStateColumnApply(command, "title", meaning.LMeaningTitle);
+            command.Parameters.AddWithValue("$gloss", (object?)meaning.LMeaningGloss ?? DBNull.Value);
+            command.Parameters.AddWithValue("$language", (object?)meaning.LMeaningDefinitionLanguage ?? DBNull.Value);
+            LStateColumn.LStateColumnApply(command, "definition", meaning.LMeaningDefinition);
+            command.Parameters.AddWithValue("$labels", meaning.LMeaningLabels);
+            command.Parameters.AddWithValue("$id", meaning.LMeaningId);
             if (command.ExecuteNonQuery() == 0)
             {
-                throw new InvalidOperationException($"No Meaning carries the id '{sense.LSenseId}'.");
+                throw new InvalidOperationException($"No Meaning carries the id '{meaning.LMeaningId}'.");
             }
         }
 
         session.LDatabaseSessionCommit();
     }
 
-    public void LSenseMove(string id, int position)
+    public void LMeaningMove(string id, int position)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        (string? entryId, string? parentId) = LSenseHolderRead(connection, id);
+        (string? entryId, string? parentId) = LMeaningHolderRead(connection, id);
         if (entryId is null)
         {
             return;
         }
 
-        IReadOnlyList<string> siblings = LSenseSiblingRead(connection, entryId, parentId);
+        IReadOnlyList<string> siblings = LMeaningSiblingRead(connection, entryId, parentId);
         IReadOnlyList<string> moved = LDatabaseOrder.LDatabaseOrderInsert(siblings, id, position);
-        LSenseSiblingNormalize(connection, entryId, parentId, moved);
+        LMeaningSiblingNormalize(connection, entryId, parentId, moved);
 
         session.LDatabaseSessionCommit();
     }
 
-    public void LSenseDelete(string id)
+    public void LMeaningDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
-        using LDatabaseSession session = _lSenseArchiveDatabase.LDatabaseSessionStart();
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        (string? entryId, string? parentId) = LSenseHolderRead(connection, id);
+        (string? entryId, string? parentId) = LMeaningHolderRead(connection, id);
 
-        LSenseLinkValidate(connection, id);
-        LSenseLinkClear(connection, id);
+        LMeaningLinkValidate(connection, id);
+        LMeaningLinkClear(connection, id);
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -201,13 +201,13 @@ public sealed class LSenseArchive
 
         if (entryId is not null)
         {
-            LSenseSiblingNormalize(connection, entryId, parentId, LSenseSiblingRead(connection, entryId, parentId));
+            LMeaningSiblingNormalize(connection, entryId, parentId, LMeaningSiblingRead(connection, entryId, parentId));
         }
 
         session.LDatabaseSessionCommit();
     }
 
-    private const string LSenseSubtreeQuery =
+    private const string LMeaningSubtreeQuery =
         """
         WITH RECURSIVE subtree(id) AS (
             SELECT id FROM sense WHERE id = $id
@@ -216,7 +216,7 @@ public sealed class LSenseArchive
         )
         """;
 
-    private static (string? Entry, string? Parent) LSenseHolderRead(SqliteConnection connection, string id)
+    private static (string? Entry, string? Parent) LMeaningHolderRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT entry_id, parent_id FROM sense WHERE id = $id;";
@@ -231,7 +231,7 @@ public sealed class LSenseArchive
         return (reader.GetString(0), reader.IsDBNull(1) ? null : reader.GetString(1));
     }
 
-    private static IReadOnlyList<string> LSenseSiblingRead(
+    private static IReadOnlyList<string> LMeaningSiblingRead(
         SqliteConnection connection, string entryId, string? parentId)
     {
         return parentId is null
@@ -241,7 +241,7 @@ public sealed class LSenseArchive
                 connection, "sense", "parent_id = $owner", parentId, "id");
     }
 
-    private static void LSenseSiblingNormalize(
+    private static void LMeaningSiblingNormalize(
         SqliteConnection connection, string entryId, string? parentId, IReadOnlyList<string> order)
     {
         if (parentId is null)
@@ -255,11 +255,11 @@ public sealed class LSenseArchive
             connection, "sense", "parent_id = $owner", parentId, "id", order);
     }
 
-    private static void LSenseLinkValidate(SqliteConnection connection, string id)
+    private static void LMeaningLinkValidate(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
-            LSenseSubtreeQuery +
+            LMeaningSubtreeQuery +
             """
 
             SELECT
@@ -279,14 +279,14 @@ public sealed class LSenseArchive
         }
     }
 
-    private static void LSenseLinkClear(SqliteConnection connection, string id)
+    private static void LMeaningLinkClear(SqliteConnection connection, string id)
     {
         string[] tables = ["relation_entry", "relation_sense"];
         foreach (string table in tables)
         {
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
-                LSenseSubtreeQuery +
+                LMeaningSubtreeQuery +
                 $"""
 
                 DELETE FROM {table} WHERE relation_id IN
@@ -297,7 +297,7 @@ public sealed class LSenseArchive
         }
     }
 
-    private static void LSenseParentValidate(SqliteConnection connection, string entryId, string? parentId)
+    private static void LMeaningParentValidate(SqliteConnection connection, string entryId, string? parentId)
     {
         if (parentId is null)
         {
@@ -312,13 +312,13 @@ public sealed class LSenseArchive
         if (found == 0)
         {
             throw new InvalidOperationException(
-                $"Parent sense '{parentId}' does not exist in entry '{entryId}'.");
+                $"Parent meaning '{parentId}' does not exist in entry '{entryId}'.");
         }
     }
 
-    private static LSense LSenseRowRead(SqliteDataReader reader)
+    private static LMeaning LMeaningRowRead(SqliteDataReader reader)
     {
-        return new LSense(
+        return new LMeaning(
             reader.GetString(0),
             reader.GetString(1),
             reader.IsDBNull(2) ? null : reader.GetString(2),

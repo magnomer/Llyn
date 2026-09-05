@@ -1,4 +1,4 @@
-# Llyn.Tests
+﻿# Llyn.Tests
 
 Test layout and policy for the behaviour-focused test suite.
 
@@ -19,7 +19,10 @@ It never reimplements production logic and never reports a success the productio
 ## Naming
 
 Name a test file and its class after the behaviour it covers, not after the production type it drives.
-Name a test method after the observable behaviour, such as `ADraftWithNoHeadwordIsRefusedBeforeAnythingIsWritten`.
+Name a test method `MethodUnderTest_Scenario_ExpectedResult`, such as `EntrySave_NoHeadword_RefusesAndWritesNothing`.
+The first part names the operation the test drives, the second the condition it sets up, and the third the observable outcome.
+
+`tests/RulesTestName.md` is the authoritative rule set, and it covers the length budget and the wording every part is held to.
 
 ## Layout
 

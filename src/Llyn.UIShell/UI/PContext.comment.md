@@ -17,28 +17,19 @@ The mark stands until the user writes over it or clears the row.
 So nothing unreadable is quietly turned into nothing at all.
 Writing in the row is the user saying what the wording is, which is why any edit ends the mark.
 
-## `internal PContext(ObservableCollection<PCitationItem> catalog)`
+## `internal PContext()`
 
 An empty row nothing has been written in.
 
-## `internal PContext(ObservableCollection<PCitationItem> catalog, LStateValue text, string id, LStateValue reference)`
+## `internal PContext(LStateValue text, string id)`
 
 The row for a stored Situation.
-It holds the wording and the Source it cites as the store knows them.
-Both stand under the id that names it.
-
-## `public ObservableCollection<PCitationItem> PContextReferenceCatalog { get; }`
-
-The Sources the whole form offers, shared by every row.
-So a Source written on one row is on offer to the next without reloading anything.
+It holds the wording as the store knows it, under the id that names it.
+A Situation cites nothing, because the user writes it rather than quoting it.
 
 ## `internal LStateValue PContextTextRead()`
 
 What the row says its wording is: nothing written, unreadable, or the text it shows.
-
-## `internal LStateValue PContextReferenceRead()`
-
-What the row says about the Source it cites: none, unreadable, or the one it names.
 
 ## `internal void PContextIdentityApply()`
 
@@ -49,7 +40,3 @@ An id, once given, stays with the row.
 
 Empties the row without dropping it, which is what removing the last row on a card leaves.
 An emptied row says nothing was written, because the user said so.
-
-## `internal void PContextReferenceShow()`
-
-Reads the name of the cited Source again, for when the list of Sources changed underneath the row.

@@ -21,14 +21,4 @@ public partial class PContextTemplate : ResourceDictionary
     {
         _pContextHost.PContextRemoveHandle(sender, e);
     }
-
-    private void PContextReferenceClear(object sender, RoutedEventArgs e)
-    {
-        _pContextHost.PContextReferenceClear(sender, e);
-    }
-
-    private void PContextReferenceCreate(object sender, RoutedEventArgs e)
-    {
-        _pContextHost.PContextReferenceCreate(sender, e);
-    }
 }

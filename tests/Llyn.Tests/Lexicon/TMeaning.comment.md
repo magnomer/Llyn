@@ -1,6 +1,6 @@
-# TSense.cs
+# TMeaning.cs
 
-## `public sealed class TSense`
+## `public sealed class TMeaning`
 
 Covers the engine's card seams.
 A Meaning and a Collocation are created, read, rewritten, moved among siblings and deleted.

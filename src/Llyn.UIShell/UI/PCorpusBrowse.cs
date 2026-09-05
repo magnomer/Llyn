@@ -232,7 +232,7 @@ public partial class PCorpus
         string unreadable = _pCorpusHost.PLocalizationTextRead("Display.Unreadable");
         string unnamed = _pCorpusHost.PLocalizationTextRead("Example.Unnamed");
         string entry = _pCorpusHost.PLocalizationTextRead("Example.Entry");
-        string sense = _pCorpusHost.PLocalizationTextRead("Example.Meaning");
+        string meaning = _pCorpusHost.PLocalizationTextRead("Example.Meaning");
         string collocation = _pCorpusHost.PLocalizationTextRead("Example.Collocation");
 
         _pQuotationList.Clear();
@@ -244,7 +244,7 @@ public partial class PCorpus
                 {
                     LOwner.LOwnerEntry => entry,
                     LOwner.LOwnerCollocation => collocation,
-                    _ => sense,
+                    _ => meaning,
                 },
                 unreadable,
                 unnamed));

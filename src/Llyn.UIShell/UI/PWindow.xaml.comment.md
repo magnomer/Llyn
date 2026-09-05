@@ -26,7 +26,14 @@ The count is held and nothing is shown yet, because the recovery dialog is not b
 ## `private void PWindowAttach(LEngine engine)`
 
 Puts every panel to work on the one engine.
-The leftovers are counted first, so the number describes the workspace as it was found.
+The workspace is swept first, so nothing already saved is counted as lost work.
+The leftovers are counted next, so the number describes the workspace as it was found.
+
+## `private void PWindowExitHandle(object? sender, EventArgs e)`
+
+Closes every panel, sweeps the workspace once more, and lets the engine go.
+Sweeping on the way out as well as on the way in bounds what a long session leaves behind.
+A copy of the program left open for days would otherwise collect nothing it wrote after it started.
 
 ## Inline notes
 

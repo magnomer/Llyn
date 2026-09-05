@@ -22,9 +22,9 @@ public partial class PInput : UserControl
         PEditor.PEditorReset();
     }
 
-    internal void PInputDraftFinish(bool store)
+    internal bool PInputDraftFinish(bool store)
     {
-        PEditor.PEditorDraftFinish(store);
+        return PEditor.PEditorDraftFinish(store);
     }
 
     internal bool PInputChangeCheck()

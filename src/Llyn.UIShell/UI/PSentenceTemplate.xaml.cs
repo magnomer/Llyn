@@ -22,13 +22,8 @@ public partial class PSentenceTemplate : ResourceDictionary
         _pSentenceHost.PSentenceRemoveHandle(sender, e);
     }
 
-    private void PSentenceReferenceClear(object sender, RoutedEventArgs e)
+    private void PSentenceCitationClear(object sender, RoutedEventArgs e)
     {
-        _pSentenceHost.PSentenceReferenceClear(sender, e);
-    }
-
-    private void PSentenceReferenceCreate(object sender, RoutedEventArgs e)
-    {
-        _pSentenceHost.PSentenceReferenceCreate(sender, e);
+        _pSentenceHost.PSentenceCitationClear(sender, e);
     }
 }

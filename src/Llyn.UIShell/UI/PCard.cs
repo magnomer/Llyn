@@ -10,7 +10,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
     internal const string PCardUnreadableMark = "(?)";
 
     private readonly string _pCardPrefix;
-    private readonly ObservableCollection<PCitationItem> _pCardReference;
+    private readonly ObservableCollection<PCitationItem> _pCardCitation;
     private int _pCardPosition;
     private string _pTitle;
     private bool _pTitleUnreadable;
@@ -23,16 +23,16 @@ internal sealed partial class PCard : INotifyPropertyChanged
     {
         _pCardPrefix = prefix;
         _pCardPosition = position;
-        _pCardReference = catalog;
+        _pCardCitation = catalog;
         _pTitle = string.Empty;
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;
         PCardSentence = [];
         PCardSentenceAdd(new PSentence(catalog));
         PCardSentenceUpdate();
-        PCardSituation = [];
-        PCardSituationAdd(new PContext(catalog));
-        PCardSituationUpdate();
+        PCardContext = [];
+        PCardContextAdd(new PContext());
+        PCardContextUpdate();
         PCardLinkStart();
         PCardLabelStart();
         PCardImage = [];

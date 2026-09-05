@@ -17,7 +17,7 @@ public sealed partial class LEngine
         LTagArchive tags = new(_lEngineDatabase);
         return LEngineOwnerCheck(owner)
             ? tags.LTagCollocationRead(ownerId)
-            : tags.LTagSenseRead(ownerId);
+            : tags.LTagMeaningRead(ownerId);
     }
 
     public void LEngineTagSave(string ownerId, IReadOnlyList<LTag> written, LOwner owner)
@@ -31,7 +31,7 @@ public sealed partial class LEngine
             return;
         }
 
-        tags.LTagSenseSave(ownerId, written);
+        tags.LTagMeaningSave(ownerId, written);
     }
 
     public void LEngineTagChange(string text, string renamed)

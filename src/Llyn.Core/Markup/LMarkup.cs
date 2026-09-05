@@ -159,10 +159,7 @@ public static partial class LMarkup
                         LMarkupStateRead(token.LMarkupTokenSource)));
                     break;
                 case "situation":
-                    situations.Add(new LSituationDraft(
-                        LMarkupStateRead(token),
-                        string.Empty,
-                        LMarkupStateRead(token.LMarkupTokenSource)));
+                    situations.Add(new LSituationDraft(LMarkupStateRead(token), string.Empty));
                     break;
                 default:
                     break;

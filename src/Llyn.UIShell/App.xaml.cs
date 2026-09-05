@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -44,9 +45,25 @@ public partial class LBootstrap : System.Windows.Application
             return;
         }
 
+        LBootstrapRescueShow(engine.LEngineRescueRead());
+
         base.OnStartup(e);
 
         new PWindow(engine).Show();
+    }
+
+    private void LBootstrapRescueShow(LDoctorRescue rescue)
+    {
+        if (!rescue.LDoctorRescueDone)
+        {
+            return;
+        }
+
+        MessageBox.Show(
+            $"{LBootstrapTextRead("Workspace.DatabaseReset")}\n\n{rescue.LDoctorRescueBackup}\n\n{rescue.LDoctorRescueReason}",
+            LBootstrapTextRead("Terms.Product"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
     }
 
     private string LBootstrapTextRead(string key)

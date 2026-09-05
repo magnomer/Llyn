@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -7,7 +7,7 @@ namespace Llyn.Tests;
 public sealed class TState
 {
     [Fact]
-    public void AnUnreadableFieldIsStoredAsUnreadableWhileAnEmptyOneIsStoredAsNothingRecorded()
+    public void EntrySave_UnreadableAndEmptyFields_StoresEachState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -23,8 +23,7 @@ public sealed class TState
                 TInterface.TStateValueCreate("a unit of language"),
                 [TInterface.TExampleDraftCreate(
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
-                [TInterface.TSituationDraftCreate(
-                    LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
+                [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, string.Empty)],
                 [],
                 string.Empty,
                 ["spoken"], [], 1)],
@@ -47,7 +46,7 @@ public sealed class TState
             workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
-        LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);
+        LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
 
         Assert.Equal(LStateValue.LStateValueUnknown, card.LCardDraftTitle);
         Assert.Equal(LStateValue.LStateValueUnspecified, card.LCardDraftExpression);
@@ -61,7 +60,7 @@ public sealed class TState
     }
 
     [Fact]
-    public void ARowWhoseFieldWasNeverWrittenIsNotStoredWhileAnUnreadableOneIs()
+    public void EntrySave_FieldNeverWritten_StoresNoRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -92,7 +91,7 @@ public sealed class TState
     }
 
     [Fact]
-    public void AnUnreadableCitationIsNotTheSameAsCitingNoSourceAtAll()
+    public void EntrySave_UnreadableCitation_DiffersFromNoSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -129,7 +128,7 @@ public sealed class TState
                 "SELECT COUNT(*) FROM example WHERE source_state = 'unspecified' AND source_id IS NULL;"));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
-        LCardDraft card = Assert.Single(loaded.LEntryDraftSenses);
+        LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
 
         Assert.Equal(
             LStateValue.LStateValueUnknown, card.LCardDraftExample[0].LExampleDraftReference);
@@ -138,7 +137,7 @@ public sealed class TState
     }
 
     [Fact]
-    public void RewritingAnUnreadableFieldReplacesItAndClearingItSaysNothingWasWritten()
+    public void EntryUpdate_ClearedUnreadableField_RecordsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -153,24 +152,23 @@ public sealed class TState
                 LStateValue.LStateValueUnspecified,
                 LStateValue.LStateValueUnknown,
                 [],
-                [TInterface.TSituationDraftCreate(
-                    LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
+                [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, string.Empty)],
                 [],
                 string.Empty,
                 [], [], 1)],
             []));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
-        LCardDraft card = loaded.LEntryDraftSenses[0];
+        LCardDraft card = loaded.LEntryDraftMeanings[0];
         string situationId = card.LCardDraftSituation[0].LSituationDraftId;
 
         engine.TEngineEntryUpdate(stored.LEntryId, loaded with
         {
-            LEntryDraftSenses =
+            LEntryDraftMeanings =
             [
                 card with
                 {
-                    LCardDraftTitle = TInterface.TStateValueCreate("the plain sense"),
+                    LCardDraftTitle = TInterface.TStateValueCreate("the plain meaning"),
                     LCardDraftMeaning = LStateValue.LStateValueUnspecified,
                     LCardDraftSituation =
                     [
@@ -184,9 +182,9 @@ public sealed class TState
         });
 
         LEntryDraft second = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
-        LCardDraft written = Assert.Single(second.LEntryDraftSenses);
+        LCardDraft written = Assert.Single(second.LEntryDraftMeanings);
 
-        Assert.Equal(TInterface.TStateValueCreate("the plain sense"), written.LCardDraftTitle);
+        Assert.Equal(TInterface.TStateValueCreate("the plain meaning"), written.LCardDraftTitle);
         Assert.Equal(LStateValue.LStateValueUnspecified, written.LCardDraftMeaning);
 
         LSituationDraft situation = Assert.Single(written.LCardDraftSituation);
