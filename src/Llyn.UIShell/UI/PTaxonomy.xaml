@@ -23,7 +23,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <ToggleButton
-                x:Name="PFunnelBase"
+                x:Name="PFunnelDropper"
                 Grid.Column="0"
                 Width="44"
                 Height="44"
@@ -51,9 +51,9 @@
                 x:Name="PFunnelDropdown"
                 Width="252"
                 AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=PFunnelBase}"
+                IsOpen="{Binding IsChecked, ElementName=PFunnelDropper}"
                 Placement="Bottom"
-                PlacementTarget="{Binding ElementName=PFunnelBase}"
+                PlacementTarget="{Binding ElementName=PFunnelDropper}"
                 StaysOpen="False"
                 VerticalOffset="6">
                 <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">

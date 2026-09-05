@@ -44,7 +44,7 @@ public partial class PPhonology
         }
 
         _pSequenceChoice = choice;
-        PSequenceBase.IsChecked = false;
+        PSequenceDropper.IsChecked = false;
         PInventoryFind(PProbe.Text ?? string.Empty);
     }
 

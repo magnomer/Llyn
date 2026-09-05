@@ -61,7 +61,7 @@ public partial class PRepertoire
         }
 
         _pTierChoice = choice;
-        PTierBase.IsChecked = false;
+        PTierDropper.IsChecked = false;
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
 

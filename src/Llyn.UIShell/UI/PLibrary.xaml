@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ToggleButton
-                x:Name="POrderBase"
+                x:Name="POrderDropper"
                 Grid.Column="0"
                 Width="44"
                 Height="44"
@@ -52,9 +52,9 @@
                 x:Name="POrderDropdown"
                 Width="252"
                 AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=POrderBase}"
+                IsOpen="{Binding IsChecked, ElementName=POrderDropper}"
                 Placement="Bottom"
-                PlacementTarget="{Binding ElementName=POrderBase}"
+                PlacementTarget="{Binding ElementName=POrderDropper}"
                 StaysOpen="False"
                 VerticalOffset="6">
                 <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">

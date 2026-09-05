@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ToggleButton
-                x:Name="PSequenceBase"
+                x:Name="PSequenceDropper"
                 Grid.Column="0"
                 Width="44"
                 Height="44"
@@ -56,9 +56,9 @@
                 x:Name="PSequenceDropdown"
                 Width="252"
                 AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=PSequenceBase}"
+                IsOpen="{Binding IsChecked, ElementName=PSequenceDropper}"
                 Placement="Bottom"
-                PlacementTarget="{Binding ElementName=PSequenceBase}"
+                PlacementTarget="{Binding ElementName=PSequenceDropper}"
                 StaysOpen="False"
                 VerticalOffset="6">
                 <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
@@ -80,7 +80,7 @@
                 Tag="{DynamicResource Sound.Search}"
                 TextChanged="PProbeHandle" />
             <ToggleButton
-                x:Name="PArticulationBase"
+                x:Name="PArticulationHelper"
                 Grid.Column="4"
                 Height="44"
                 Padding="16,0"
@@ -115,7 +115,7 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="0,0,0,18"
-            Visibility="{Binding IsChecked, ElementName=PArticulationBase, Converter={StaticResource Sound.Fold}}" />
+            Visibility="{Binding IsChecked, ElementName=PArticulationHelper, Converter={StaticResource Sound.Fold}}" />
 
         <Border Grid.Row="2" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
             <Grid>

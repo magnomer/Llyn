@@ -57,7 +57,7 @@ public partial class PCorpus
         }
 
         _pRankChoice = choice;
-        PRankBase.IsChecked = false;
+        PRankDropper.IsChecked = false;
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 

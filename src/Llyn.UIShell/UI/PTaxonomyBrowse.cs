@@ -49,7 +49,7 @@ public partial class PTaxonomy
         }
 
         _pFunnelChoice = choice;
-        PFunnelBase.IsChecked = false;
+        PFunnelDropper.IsChecked = false;
         PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 

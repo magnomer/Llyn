@@ -68,7 +68,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <ToggleButton
-                x:Name="PRankBase"
+                x:Name="PRankDropper"
                 Grid.Column="0"
                 Width="44"
                 Height="44"
@@ -93,9 +93,9 @@
                 x:Name="PRankDropdown"
                 Width="238"
                 AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=PRankBase, Mode=TwoWay}"
+                IsOpen="{Binding IsChecked, ElementName=PRankDropper, Mode=TwoWay}"
                 Placement="Bottom"
-                PlacementTarget="{Binding ElementName=PRankBase}"
+                PlacementTarget="{Binding ElementName=PRankDropper}"
                 StaysOpen="False">
                 <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                     <StackPanel>

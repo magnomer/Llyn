@@ -44,7 +44,7 @@ public partial class PLibrary
         }
 
         _pOrderChoice = choice;
-        POrderBase.IsChecked = false;
+        POrderDropper.IsChecked = false;
         PIndexFind(PInquiry.Text ?? string.Empty);
     }
 

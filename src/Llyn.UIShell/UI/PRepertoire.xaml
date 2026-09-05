@@ -52,7 +52,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <ToggleButton
-                x:Name="PTierBase"
+                x:Name="PTierDropper"
                 Grid.Column="0"
                 Width="44"
                 Height="44"
@@ -77,9 +77,9 @@
                 x:Name="PTierDropdown"
                 Width="238"
                 AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=PTierBase, Mode=TwoWay}"
+                IsOpen="{Binding IsChecked, ElementName=PTierDropper, Mode=TwoWay}"
                 Placement="Bottom"
-                PlacementTarget="{Binding ElementName=PTierBase}"
+                PlacementTarget="{Binding ElementName=PTierDropper}"
                 StaysOpen="False">
                 <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                     <StackPanel>

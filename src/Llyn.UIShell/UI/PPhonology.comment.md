@@ -6,7 +6,7 @@ The ordering button and the search field share the inventory column.
 So their combined edge is the same as the catalog below them.
 The library panel arranges its own two controls the same way.
 
-## `<ToggleButton x:Name="PArticulationBase" ... />`
+## `<ToggleButton x:Name="PArticulationHelper" ... />`
 
 The fold control of the input aid, standing beside the ordering and the search.
 The three controls that shape what the panel shows are read as one row.
