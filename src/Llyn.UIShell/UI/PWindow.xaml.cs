@@ -19,17 +19,26 @@ public partial class PWindow : Window
 
         PWindowStateRestore();
 
-        PInput.PInputAttach(this, engine);
-        PList.PListAttach(this, engine);
-        PSound.PSoundAttach(this, engine);
-        PTag.PTagAttach(this, engine);
-        PSituation.PSituationAttach(this, engine);
-        PExample.PExampleAttach(this, engine);
-        PDuplex.PDuplexAttach(this, engine);
-        PSettings.PSettingsAttach(this, engine);
+        PWindowAttach(engine);
 
         Closing += PWindowClosingHandle;
         Closed += PWindowExitHandle;
+    }
+
+    internal int PWindowLeftover { get; private set; }
+
+    private void PWindowAttach(LEngine engine)
+    {
+        PWindowLeftover = engine.LEngineLeftoverRead().Count;
+
+        PInput.PInputAttach(this, engine);
+        PLibrary.PLibraryAttach(this, engine);
+        PPhonology.PPhonologyAttach(this, engine);
+        PTaxonomy.PTaxonomyAttach(this, engine);
+        PRepertoire.PRepertoireAttach(this, engine);
+        PCorpus.PCorpusAttach(this, engine);
+        PDuplex.PDuplexAttach(this, engine);
+        PSettings.PSettingsAttach(this, engine);
     }
 
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)
@@ -45,11 +54,11 @@ public partial class PWindow : Window
     private void PWindowExitHandle(object? sender, EventArgs e)
     {
         PInput.PInputClose();
-        PList.PListClose();
-        PSound.PSoundClose();
-        PTag.PTagClose();
-        PSituation.PSituationClose();
-        PExample.PExampleClose();
+        PLibrary.PLibraryClose();
+        PPhonology.PPhonologyClose();
+        PTaxonomy.PTaxonomyClose();
+        PRepertoire.PRepertoireClose();
+        PCorpus.PCorpusClose();
         PDuplex.PDuplexClose();
         _lEngine.Dispose();
     }

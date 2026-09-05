@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -191,8 +191,8 @@ public sealed class TRelation
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, definition, [], [], [], string.Empty, [], [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [])]));
+            [new LCardDraft(string.Empty, string.Empty, definition, [], [], [], string.Empty, [], [], 1)],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
     }
 
     private static string TRelationSenseRead(TWorkspace workspace, string entryId)

@@ -41,7 +41,7 @@
 
             <Grid Grid.Column="1">
                 <ToggleButton
-                    x:Name="PLanguage"
+                    x:Name="PSpeaker"
                     Width="170"
                     Height="41"
                     Padding="17,0"
@@ -57,25 +57,25 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid Width="19" Height="14" VerticalAlignment="Center">
-                            <Image x:Name="PLanguageFlag" Stretch="Uniform" />
-                            <Ellipse x:Name="PLanguageGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                            <Image x:Name="PSpeakerFlag" Stretch="Uniform" />
+                            <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
                         </Grid>
-                        <TextBlock x:Name="PLanguageName" Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="English" />
+                        <TextBlock x:Name="PSpeakerName" Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="English" />
                         <Path Grid.Column="2" Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.5" />
                     </Grid>
                 </ToggleButton>
                 <Popup
-                    x:Name="PTongue"
+                    x:Name="PLanguage"
                     Width="190"
                     Margin="0,6,0,0"
                     AllowsTransparency="True"
-                    IsOpen="{Binding IsChecked, ElementName=PLanguage}"
+                    IsOpen="{Binding IsChecked, ElementName=PSpeaker}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PLanguage}"
+                    PlacementTarget="{Binding ElementName=PSpeaker}"
                     StaysOpen="False">
 
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <ItemsControl x:Name="PTongueList" ItemTemplate="{DynamicResource Theme.Tongue.Row}" />
+                        <ItemsControl x:Name="PLanguageList" ItemTemplate="{DynamicResource Theme.Language.Row}" />
                     </Border>
                 </Popup>
             </Grid>
@@ -147,7 +147,7 @@
             </Button>
 
             <Grid Grid.Column="2" Margin="14,0,0,0">
-                <ToggleButton x:Name="PLookup" Width="50" Height="49" Padding="0" Foreground="{StaticResource Theme.Accent}" Checked="PLookupCheckedHandle" Unchecked="PLookupUncheckedHandle" Style="{StaticResource Theme.Input.ToggleAction}">
+                <ToggleButton x:Name="PTranscriber" Width="50" Height="49" Padding="0" Foreground="{StaticResource Theme.Accent}" Checked="PTranscriberCheckedHandle" Unchecked="PTranscriberUncheckedHandle" Style="{StaticResource Theme.Input.ToggleAction}">
 
                     <Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
                         <Rectangle.OpacityMask>
@@ -160,18 +160,18 @@
                     </Rectangle>
                 </ToggleButton>
                 <Popup
-                    x:Name="PPhonetic"
+                    x:Name="PNotation"
                     Width="320"
                     Margin="0,6,0,0"
                     AllowsTransparency="True"
-                    IsOpen="{Binding IsChecked, ElementName=PLookup}"
+                    IsOpen="{Binding IsChecked, ElementName=PTranscriber}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PLookup}"
+                    PlacementTarget="{Binding ElementName=PTranscriber}"
                     StaysOpen="False">
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                         <StackPanel>
-                            <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Lookup.Title}" />
-                            <Border x:Name="PPhoneticProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
+                            <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Transcriber.Title}" />
+                            <Border x:Name="PNotationProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
                                 <Border Width="84" HorizontalAlignment="Left" Background="{StaticResource Theme.Accent}" CornerRadius="1">
                                     <Border.RenderTransform>
                                         <TranslateTransform X="-84" />
@@ -187,9 +187,9 @@
                                     </Border.Triggers>
                                 </Border>
                             </Border>
-                            <TextBlock x:Name="PPhoneticNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Lookup.Searching}" Visibility="Collapsed" />
+                            <TextBlock x:Name="PNotationNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Transcriber.Searching}" Visibility="Collapsed" />
                             <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="PPhoneticList" ItemTemplate="{DynamicResource Theme.Phonetic.Row}" Visibility="Collapsed">
+                                <ItemsControl x:Name="PNotationList" ItemTemplate="{DynamicResource Theme.Notation.Row}" Visibility="Collapsed">
                                     <ItemsControl.ItemContainerStyle>
                                         <Style TargetType="ContentPresenter">
                                             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -260,9 +260,9 @@
 
         </Grid>
 
-        <WrapPanel x:Name="PSpeech" Grid.Row="2" Margin="9,14,0,0" Orientation="Horizontal">
+        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="9,14,0,0" Orientation="Horizontal">
 
-            <ItemsControl x:Name="PSpeechList" MaxWidth="{Binding ActualWidth, ElementName=PSpeech}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Speech.Chip}">
+            <ItemsControl x:Name="PMarkerList" MaxWidth="{Binding ActualWidth, ElementName=PMarker}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -278,8 +278,8 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="PSpeechContents" Width="212" MinHeight="33" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />
-                        <ToggleButton x:Name="PSpeechBase" Grid.Column="1" Width="38" Height="39" Padding="0" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Muted}" Style="{StaticResource Theme.Input.ToggleAction}">
+                        <TextBox x:Name="PMarkerField" Width="212" MinHeight="33" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />
+                        <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Width="38" Height="39" Padding="0" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Muted}" Style="{StaticResource Theme.Input.ToggleAction}">
                             <Path Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeThickness="1.5" />
                         </ToggleButton>
                     </Grid>
@@ -289,9 +289,9 @@
                     Width="260"
                     Margin="0,6,0,0"
                     AllowsTransparency="True"
-                    IsOpen="{Binding IsChecked, ElementName=PSpeechBase}"
+                    IsOpen="{Binding IsChecked, ElementName=PMarkerSwitch}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PSpeechBase}"
+                    PlacementTarget="{Binding ElementName=PMarkerSwitch}"
                     StaysOpen="False">
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                         <StackPanel>

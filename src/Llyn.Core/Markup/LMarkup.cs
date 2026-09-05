@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -119,7 +119,7 @@ public static partial class LMarkup
         return tokens;
     }
 
-    internal static LCardDraft LMarkupCardRead(IReadOnlyList<LMarkupToken> tokens)
+    internal static LCardDraft LMarkupCardRead(IReadOnlyList<LMarkupToken> tokens, int position)
     {
         LMarkupToken? title = null;
         LMarkupToken? expression = null;
@@ -178,7 +178,8 @@ public static partial class LMarkup
             [],
             LMarkupStateRead(synonym).LStateValueShow(),
             tags,
-            images);
+            images,
+            position);
     }
 
     internal static LMarkupReference LMarkupReferenceRead(IReadOnlyList<LMarkupToken> tokens)

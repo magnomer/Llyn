@@ -19,4 +19,4 @@ A muted line stands in when nothing translates the entry.
 
 The entry as it reads, with nothing to type into.
 The panel that hosts this decides what is selected and when the editor takes its place.
-So the same view serves the list panel, the sound panel and the tag panel unchanged.
+So the same view serves the library panel, the phonology panel and the taxonomy panel unchanged.

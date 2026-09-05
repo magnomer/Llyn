@@ -1,4 +1,4 @@
-# PWindowNotice.cs
+﻿# PWindowNotice.cs
 
 ## `public partial class PWindow`
 
@@ -34,6 +34,17 @@ That is the shape of a failure nobody can act on.
 Asks before typed text is thrown away, and answers whether it may be.
 Every panel that edits an entry is asked whether it holds unsaved work.
 The window closing and the workspace changing take all of them with it.
+Unsaved work now offers three answers rather than two, because discarding was the only exit and a leaving user often means to keep the word.
+Saving commits every draft the window holds, discarding cancels every one of them, and the third answer leaves the window standing.
+Either answer that lets the window go empties the drafts folder of this window's files.
+A leftover would otherwise be reported at the next launch as work a crash cost, which a clean exit never did.
+A panel holding nothing unsaved is settled without a question, since its blank draft has nothing to lose either way.
+
+### `private void PWindowDraftFinish(bool store)`
+
+Carries one answer to every editing panel the window owns.
+The four entry editors each hold their own draft under their own origin, so each is told separately.
+An unchanged draft is cancelled whatever the answer, because storing what matches its entry would rewrite the entry for nothing.
 
 ### `internal bool PWindowDiscardConfirm(bool unsaved)`
 

@@ -1,4 +1,4 @@
-# LEngine.cs
+﻿# LEngine.cs
 
 ## `public sealed partial class LEngine : IDisposable`
 
@@ -54,6 +54,7 @@ So a workspace that fails to open can still be named in the message the user see
 Moves the workspace to `path`.
 It records the new folder and writes the current settings into it.
 So settings and database follow the workspace to its new location.
+The drafts this engine claimed are forgotten with the old folder, since a claim only means something against the folder the file sits in.
 
 ## `public LSettings LEngineSettingsRead()`
 

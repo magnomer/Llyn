@@ -6,7 +6,7 @@ namespace Llyn.UIShell;
 
 public partial class PSettings
 {
-    private void PWorkspaceBrowseHandle(object sender, RoutedEventArgs e)
+    private void PWorkspaceDialogHandle(object sender, RoutedEventArgs e)
     {
         Microsoft.Win32.OpenFolderDialog dialog = new()
         {
@@ -51,11 +51,11 @@ public partial class PSettings
         }
 
         _pSettingsHost.PInput.PInputReset();
-        _pSettingsHost.PList.PListReset();
-        _pSettingsHost.PSound.PSoundReset();
-        _pSettingsHost.PTag.PTagReset();
-        _pSettingsHost.PSituation.PSituationReset();
-        _pSettingsHost.PExample.PExampleReset();
+        _pSettingsHost.PLibrary.PLibraryReset();
+        _pSettingsHost.PPhonology.PPhonologyReset();
+        _pSettingsHost.PTaxonomy.PTaxonomyReset();
+        _pSettingsHost.PRepertoire.PRepertoireReset();
+        _pSettingsHost.PCorpus.PCorpusReset();
         _pSettingsHost.PDuplex.PDuplexReset();
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -43,6 +43,7 @@ public sealed class LEntryLoader
             senseCards.Add(LEntryCardRead(
                 sense.LSenseId,
                 collocation: false,
+                sense.LSensePosition + 1,
                 sense.LSenseTitle,
                 LStateValue.LStateValueUnspecified,
                 sense.LSenseDefinition));
@@ -54,6 +55,7 @@ public sealed class LEntryLoader
             collocationCards.Add(LEntryCardRead(
                 collocation.LCollocationId,
                 collocation: true,
+                collocation.LCollocationPosition + 1,
                 collocation.LCollocationTitle,
                 collocation.LCollocationExpression,
                 collocation.LCollocationMeaning));
@@ -93,6 +95,7 @@ public sealed class LEntryLoader
     private LCardDraft LEntryCardRead(
         string ownerId,
         bool collocation,
+        int position,
         LStateValue title,
         LStateValue expression,
         LStateValue meaning)
@@ -120,6 +123,7 @@ public sealed class LEntryLoader
                 collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagSenseRead(ownerId)),
             LEntryImageRead(
                 collocation ? images.LImageCollocationRead(ownerId) : images.LImageSenseRead(ownerId)),
+            position,
             ownerId);
     }
 

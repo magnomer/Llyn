@@ -1,4 +1,4 @@
-# LMarkup.cs
+﻿# LMarkup.cs
 
 ## `public static class LMarkup`
 
@@ -128,7 +128,7 @@ So the list is empty for a source with no `<author>`.
 It is also empty for one whose only `<author>` was empty.
 The two stay apart on the reference, which is where that distinction belongs.
 
-## `internal static LCardDraft LMarkupCardRead(IReadOnlyList<LMarkupToken> tokens)`
+## `internal static LCardDraft LMarkupCardRead(IReadOnlyList<LMarkupToken> tokens, int position)`
 
 Turns the tokens of one `<sense>` or `<collocation>` block into the card draft it describes.
 Both card kinds carry the same tags and differ only in the list they join.
@@ -171,6 +171,9 @@ The state survives resolution unchanged when the key does not.
 **Parameters**
 
 - `tokens` — Every token of one card block, in document order.
+- `position` — The number this card is shown by, counted from one.
+  A document gives no number, so the caller counts the card blocks it has read.
+  Cards of one entry therefore number one to n in the order the document writes them.
 
 **Returns** — The card as a draft, with no id, because an imported card has none until it is saved.
 

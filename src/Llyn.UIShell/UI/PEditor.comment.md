@@ -38,7 +38,7 @@ The part of speech as it stands, beside the field that sets it.
 The label is bound straight to the box.
 So it says what is typed while it is being typed, rather than after the entry is saved.
 
-## `<TextBox x:Name="PSpeechContents" Width="212" MinHeight="40" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />`
+## `<TextBox x:Name="PMarkerField" Width="212" MinHeight="40" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="Part of speech" VerticalContentAlignment="Center" />`
 
 Editable, not a chooser.
 The dropdown offers the language's presets and this box takes anything.

@@ -6,17 +6,18 @@ The editing form read as a value, filled from one, and reset to its opening stat
 This is the only place the shell walks its own controls.
 Everything on screen is copied into an `LEntryDraft` once.
 The engine is handed that value instead of the window.
-What is then done with that value — stored, or thrown away — is the file beside this one.
+The form keeps no copy of the entry it is editing.
+It keeps the id of the draft the engine holds for it, and writes into that.
+What is then done with that draft — committed, or thrown away — is the file beside this one.
 
 ## Inline notes
 
-### `private LEntryDraft? _pStateDraft;`
+### `private string _pEditorDraft = string.Empty;`
 
-The form as it stood when it was last filled.
-It is what a save would have written the moment the user was given the form.
-Everything typed since is the unsaved work.
-So this is the one thing needed to know whether closing would throw anything away.
-Changing the workspace raises the same question.
+Which held draft this form is editing.
+It is the form's only claim on anything outside itself.
+The draft carries the entry it was started from, so the form no longer remembers that.
+Empty means the engine refused to start one, and every write here is skipped.
 
 ### `_pRecording ?? string.Empty,`
 
@@ -24,7 +25,7 @@ The downloaded recording is form state like any field.
 It travels in the draft.
 So the save writes its row inside the same transaction as the rest of the entry.
 
-### `PSpeechContents.Text ?? string.Empty);`
+### `PMarkerField.Text ?? string.Empty);`
 
 Exactly what stands in the field, preset or not.
 Which of the two it is, the engine works out when it writes it.
@@ -41,15 +42,14 @@ Headword first, and the recording last.
 Typing into the headword clears the recording.
 So filling them the other way round would wipe the audio this entry was saved with.
 
-### `_pStateDraft = PEditorDraftRead();`
+### `_pEditorFill = false;`
 
-Read back rather than kept as handed in.
-A recording whose file is gone is not shown and so is not on the form.
-Comparing against what is on screen is what makes an untouched form count as untouched.
+Filling is over, so what the controls raise from here on is the user's.
 
 ### `private static void PCardShow(`
 
 The inverse of PCardRead, for either list.
+Each card takes the number the draft carries, not its place in the loop.
 An entry saved with no cards still shows one empty card.
 The panel is an editor.
 An editor with nothing to type into is not a state the form has.
@@ -70,6 +70,10 @@ An id the answer does not name is passed over, as a chip with no Entry has nothi
 
 Every card is given the way back to the editor before it is shown.
 A card resolves no typed word on its own.
+
+### `PEditorChangeAttach(card);`
+
+A card that cannot report its own edits would be typed into without ever being written.
 
 ### `PCardId = draft.LCardDraftId`
 
@@ -101,22 +105,18 @@ Editing the headword from here on leaves it alone.
 The language selector moved onto the entry's language, flag included.
 A language whose pack is no longer on disk is still shown: it is what the entry was written in.
 
-### `_pLanguageEntry = true;`
+### `_pSpeakerEntry = true;`
 
 Recorded even when the selector already stands on it.
 What matters to the language menu being built is that this language is an entry's.
 It does not matter that the selector had to move.
-
-### `_pEditorEntry = null;`
-
-An empty form stands on no entry.
 
 ### `PRecordingClear();`
 
 The saved recording belongs to the entry that was just written.
 It does not belong to the empty form the next entry is typed into.
 
-### `_pLanguageEntry = false;`
+### `_pSpeakerEntry = false;`
 
 An empty form stands on no entry, so its language is nobody's.
 The language menu may move it onto an installed pack.
@@ -131,34 +131,35 @@ An empty form links to nothing, so there is nothing to look words up for.
 Clearing the box does not always route through the TextChanged handler.
 So the placeholder is put back explicitly rather than left hidden over an empty note.
 
-### `_pStateDraft = PEditorDraftRead();`
+### `private LDraft? PEditorDraftStart(string? entry)`
 
-An empty form is the state it was last filled in, so nothing on it is unsaved work.
+Hands the current draft back and asks the engine for a new one.
+Everything the form shows from then on belongs to that draft.
+An entry that no longer loads is refused before a file is written, and the form comes up empty.
 
-### `internal bool PEditorChangeCheck()`
+### `private void PEditorDraftCancel()`
 
-Whether the form now differs from the form the user was given.
-It is true once anything has been typed, changed or cleared and not yet written.
-A form never filled counts as unchanged.
-That cannot happen once the window is up, since both filling paths record their state.
-A baseline that does not exist is no evidence that work would be lost.
+Throws the held draft away, links and all.
+The id is dropped first, so a failure to delete cannot leave the form writing into a dead draft.
 
-### `private static bool PEditorDraftMatch(LEntryDraft one, LEntryDraft other)`
+### `private void PEditorDraftSave()`
 
-Two forms compared as the user sees them.
-The generated record equality is no use here.
-A draft carries lists, and those compare by reference.
-So two drafts holding the same text are never equal to it.
+Copies what the controls hold into the held draft.
+The draft is read back first, because it carries the entry and the origin this form does not.
+A failed write is swallowed: a dialog per keystroke would be worse than a draft one word behind.
 
-### `private static bool PCardMatch(IReadOnlyList<LCardDraft> one, IReadOnlyList<LCardDraft> other)`
+### `internal void PEditorDraftFinish(bool store)`
 
-One list of cards against another, in order.
-A card moved is a change like any other.
-The order of the list is the order the entry is stored in.
+The window's exit answer applied to this form's own draft.
+Storing commits it, which is the same write the save button makes, so a word typed and never saved survives the exit that was meant to keep it.
+Discarding cancels it, and a draft matching its entry is cancelled either way because there is nothing in it to store.
+A refused commit falls back to cancelling, since the window is going and a blank or broken form cannot be shown the failure.
+Either way the form is left holding no draft, so the folder keeps no file for a window that closed cleanly.
 
-### `private static bool PEditorTextMatch(IReadOnlyList<string> one, IReadOnlyList<string> other)`
+### `private bool PEditorDraftCheck()`
 
-The ordered sets a card carries, compared element by element.
+Asks the engine whether the held draft differs from the entry it started from.
+A form with no draft has nothing to lose, so it answers no.
 
 ### `private IReadOnlyList<LCardDraft> PCardRead(IReadOnlyList<PCard> cards)`
 

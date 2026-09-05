@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -280,7 +280,8 @@ public sealed class TTranslation
             ids,
             string.Empty,
             [],
-            []);
+            [],
+            1);
     }
 
     private static IReadOnlyList<long> TTranslationPositionRead(

@@ -6,7 +6,6 @@
     xmlns:local="clr-namespace:Llyn.UIShell">
 
     <UserControl.Resources>
-        <local:PCardOrderConverter x:Key="Display.Card.Order" />
         <local:PStateConverter x:Key="Display.Card.State" />
         <local:PLinkConverter x:Key="Display.Card.Translation" />
 
@@ -129,7 +128,7 @@
                                     VerticalAlignment="Center"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource Theme.Accent}"
-                                    Text="{Binding (ItemsControl.AlternationIndex), Converter={StaticResource Display.Card.Order}, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" />
+                                    Text="{Binding LCardDraftPosition}" />
                             </Border>
                             <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}" Text="{Binding LCardDraftTitle, Converter={StaticResource Display.Card.State}}" />
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Display.SenseSingle}">
@@ -196,7 +195,7 @@
                                     VerticalAlignment="Center"
                                     FontWeight="SemiBold"
                                     Foreground="{StaticResource Theme.Accent}"
-                                    Text="{Binding (ItemsControl.AlternationIndex), Converter={StaticResource Display.Card.Order}, RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" />
+                                    Text="{Binding LCardDraftPosition}" />
                             </Border>
                             <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}" Text="{Binding LCardDraftTitle, Converter={StaticResource Display.Card.State}}" />
                             <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Display.CollocationSingle}">
@@ -334,12 +333,12 @@
 
                 <StackPanel x:Name="PDisplaySenseSection" Margin="0,34,0,0">
                     <TextBlock Margin="2,0,2,12" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Sense}" />
-                    <ItemsControl x:Name="PDisplaySense" AlternationCount="2147483647" ItemTemplate="{StaticResource Display.Sense.Card}" />
+                    <ItemsControl x:Name="PDisplaySense" ItemTemplate="{StaticResource Display.Sense.Card}" />
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplayCollocationSection" Margin="0,28,0,0">
                     <TextBlock Margin="2,0,2,12" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Collocation}" />
-                    <ItemsControl x:Name="PDisplayCollocation" AlternationCount="2147483647" ItemTemplate="{StaticResource Display.Collocation.Card}" />
+                    <ItemsControl x:Name="PDisplayCollocation" ItemTemplate="{StaticResource Display.Collocation.Card}" />
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplayIncomingSection" Margin="0,28,0,0">

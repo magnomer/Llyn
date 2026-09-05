@@ -19,12 +19,12 @@ public sealed class TEntrySave
             "wɜːd",
             "a note",
             [
-                new LCardDraft(string.Empty, string.Empty, "the first meaning", [], [], [], string.Empty, [], []),
-                new LCardDraft(string.Empty, string.Empty, "the second meaning", [], [], [], string.Empty, [], []),
+                new LCardDraft(string.Empty, string.Empty, "the first meaning", [], [], [], string.Empty, [], [], 1),
+                new LCardDraft(string.Empty, string.Empty, "the second meaning", [], [], [], string.Empty, [], [], 2),
             ],
             [
                 new LCardDraft(
-                    string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], []),
+                    string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1),
             ]));
 
         Assert.NotEmpty(entry.LEntryId);
@@ -75,10 +75,10 @@ public sealed class TEntrySave
             string.Empty,
             [new LCardDraft(
                 string.Empty, string.Empty, "a meaning", [LExampleDraft.LExampleDraftCreate("he said a word")], [LSituationDraft.LSituationDraftCreate("conversation")], [], "term",
-                ["spoken"], [])],
+                ["spoken"], [], 1)],
             [new LCardDraft(
                 string.Empty, "in a word", "briefly", [LExampleDraft.LExampleDraftCreate("in a word, no")], [LSituationDraft.LSituationDraftCreate("summary")], [], string.Empty,
-                ["written"], [])]);
+                ["written"], [], 1)]);
 
         LEntry entry = engine.LEngineEntrySave(draft);
 
@@ -137,7 +137,7 @@ public sealed class TEntrySave
         using LEngine engine = new(workspace.TWorkspaceFolder);
 
         LCardDraft blank = new(
-            string.Empty, string.Empty, string.Empty, [], [], [], string.Empty, [], []);
+            string.Empty, string.Empty, string.Empty, [], [], [], string.Empty, [], [], 1);
 
         LEntry entry = engine.LEngineEntrySave(new LEntryDraft(
             "word", "English", string.Empty, string.Empty, [blank], [blank]));
@@ -164,14 +164,14 @@ public sealed class TEntrySave
             string.Empty,
             string.Empty,
             [
-                new LCardDraft(string.Empty, string.Empty, "the first meaning", [], [], [], string.Empty, [], []),
-                new LCardDraft(string.Empty, string.Empty, "   ", [], [], [], string.Empty, ["  "], []),
-                new LCardDraft(string.Empty, string.Empty, "the second meaning", [], [], [], string.Empty, [], []),
+                new LCardDraft(string.Empty, string.Empty, "the first meaning", [], [], [], string.Empty, [], [], 1),
+                new LCardDraft(string.Empty, string.Empty, "   ", [], [], [], string.Empty, ["  "], [], 2),
+                new LCardDraft(string.Empty, string.Empty, "the second meaning", [], [], [], string.Empty, [], [], 3),
             ],
             [
-                new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], []),
-                new LCardDraft(string.Empty, string.Empty, string.Empty, [], [], [], string.Empty, [], []),
-                new LCardDraft(string.Empty, "word for word", "exactly", [], [], [], string.Empty, [], []),
+                new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1),
+                new LCardDraft(string.Empty, string.Empty, string.Empty, [], [], [], string.Empty, [], [], 2),
+                new LCardDraft(string.Empty, "word for word", "exactly", [], [], [], string.Empty, [], [], 3),
             ]));
 
         IReadOnlyList<LSense> senses = new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(entry.LEntryId);
@@ -215,7 +215,7 @@ public sealed class TEntrySave
             "English",
             string.Empty,
             "a note",
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
             [])));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));

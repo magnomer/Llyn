@@ -8,6 +8,8 @@ public static class LWorkspaceRoot
     private const string LWorkspaceRootFolder = "Llyn";
     private const string LWorkspaceRootPointer = "workspace.txt";
     private const string LWorkspaceRootDatabase = "llyn.db";
+    private const string LWorkspaceRootDrafts = "drafts";
+    private const string LWorkspaceRootCourt = "court";
 
     public static string LWorkspaceRootRead()
     {
@@ -30,6 +32,24 @@ public static class LWorkspaceRoot
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         return Path.Combine(root, LWorkspaceRootDatabase);
+    }
+
+    public static string LWorkspaceDraftRead(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+
+        string folder = Path.Combine(root, LWorkspaceRootDrafts);
+        Directory.CreateDirectory(folder);
+        return folder;
+    }
+
+    public static string LWorkspaceCourtRead(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+
+        string folder = Path.Combine(LWorkspaceDraftRead(root), LWorkspaceRootCourt);
+        Directory.CreateDirectory(folder);
+        return folder;
     }
 
     private static string LWorkspaceDefaultRead()

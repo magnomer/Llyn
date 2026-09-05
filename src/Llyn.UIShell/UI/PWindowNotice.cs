@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using Llyn.Core;
@@ -36,9 +36,42 @@ public partial class PWindow
 
     internal bool PWindowDiscardConfirm()
     {
-        return PWindowDiscardConfirm(PInput.PInputChangeCheck() || PList.PListChangeCheck() || PSound.PSoundChangeCheck()
-            || PTag.PTagChangeCheck() || PSituation.PSituationChangeCheck()
-            || PExample.PExampleChangeCheck());
+        bool unsaved = PInput.PInputChangeCheck() || PLibrary.PLibraryChangeCheck() || PPhonology.PPhonologyChangeCheck()
+            || PTaxonomy.PTaxonomyChangeCheck() || PRepertoire.PRepertoireChangeCheck()
+            || PCorpus.PCorpusChangeCheck();
+
+        bool store;
+        if (unsaved)
+        {
+            MessageBoxResult answer = MessageBox.Show(
+                this,
+                PLocalizationTextRead("Input.ExitConfirm"),
+                PLocalizationTextRead("Terms.Product"),
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            if (answer == MessageBoxResult.Cancel)
+            {
+                return false;
+            }
+
+            store = answer == MessageBoxResult.Yes;
+        }
+        else
+        {
+            store = false;
+        }
+
+        PWindowDraftFinish(store);
+        return true;
+    }
+
+    private void PWindowDraftFinish(bool store)
+    {
+        PInput.PInputDraftFinish(store);
+        PLibrary.PLibraryDraftFinish(store);
+        PPhonology.PPhonologyDraftFinish(store);
+        PTaxonomy.PTaxonomyDraftFinish(store);
     }
 
     internal bool PWindowRemovalConfirm(int usage)

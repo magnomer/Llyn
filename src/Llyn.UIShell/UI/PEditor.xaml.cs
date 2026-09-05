@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -9,6 +10,8 @@ public partial class PEditor : UserControl
     private PWindow _pEditorHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private string _pEditorOrigin = string.Empty;
 
     public PEditor()
     {
@@ -23,32 +26,34 @@ public partial class PEditor : UserControl
         Resources.MergedDictionaries.Add(new PProspectTemplate(this));
         Resources.MergedDictionaries.Add(new PSenseTemplate(this));
         Resources.MergedDictionaries.Add(new PCollocationTemplate(this));
-        Resources.MergedDictionaries.Add(new PTongueTemplate(this));
-        Resources.MergedDictionaries.Add(new PSpeechTemplate(this));
+        Resources.MergedDictionaries.Add(new PLanguageTemplate(this));
+        Resources.MergedDictionaries.Add(new PMarkerTemplate(this));
         Resources.MergedDictionaries.Add(new PCategoryTemplate(this));
-        Resources.MergedDictionaries.Add(new PPhoneticTemplate(this));
+        Resources.MergedDictionaries.Add(new PNotationTemplate(this));
         Resources.MergedDictionaries.Add(new PClipTemplate(this));
 
         PSenseList.ItemsSource = _pSenseList;
         PCollocationList.ItemsSource = _pCollocationList;
-        PPhoneticList.ItemsSource = _pPhoneticItem;
+        PNotationList.ItemsSource = _pNotationItem;
         PClipList.ItemsSource = _pClipItem;
-        PTongueList.ItemsSource = _pTongueItem;
+        PLanguageList.ItemsSource = _pLanguageItem;
         PProspectList.ItemsSource = _pProspectItem;
         PCategoryList.ItemsSource = _pCategoryItem;
-        PSpeechList.ItemsSource = _pSpeechChip;
+        PMarkerList.ItemsSource = _pMarkerChip;
         PHeadword.TextChanged += PHeadwordHandle;
-        PSpeechContents.KeyDown += PSpeechContentsHandle;
+        PMarkerField.KeyDown += PMarkerFieldHandle;
+        AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
     }
 
     internal Action<string>? PEditorStoreDispatcher { get; set; }
 
     internal Action? PEditorDiscardDispatcher { get; set; }
 
-    internal void PEditorAttach(PWindow host, LEngine engine, string? entry)
+    internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)
     {
         _pEditorHost = host;
         _lEngine = engine;
+        _pEditorOrigin = origin;
 
         PSentenceLoad();
 
@@ -61,16 +66,14 @@ public partial class PEditor : UserControl
             PEditorEntryShow(entry);
         }
 
-        PLanguageLoad();
+        PSpeakerLoad();
         PCategoryLoad();
-
-        PEditorChangeStart();
     }
 
     internal void PEditorClose()
     {
         PEditorChangeStop();
-        PPhoneticCancel();
+        PNotationCancel();
         PClipCancel();
         PVideoClose();
         _pDownloaderPlayer.Close();

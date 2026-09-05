@@ -7,7 +7,8 @@ The card is dragged by its header.
 A ghost of it follows the pointer while the card itself stays on screen.
 The list rearranges under that ghost as the pointer crosses the middle of a neighbour.
 So the order is already the new order when the button comes up.
-The list order is the saved order, so nothing else has to be told.
+The engine is told each move as it happens, and hands back the numbering.
+The list order is the stored order, so no drag is left for the store to discover.
 
 ## Inline notes
 
@@ -54,6 +55,11 @@ Its leading edge is what crosses a neighbour.
 That is the top of it on the way up and the bottom of it on the way down.
 So either direction swaps at the same half-card.
 It is the same half-card whatever the grip was.
+
+### `PEditorChangeSave();`
+
+The cards are written in the order they are still in, and the move is handed over after.
+Writing them already moved would ask the engine to move them a second time.
 
 ### `if (index < current && top < middle)`
 

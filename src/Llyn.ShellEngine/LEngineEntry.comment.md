@@ -31,7 +31,7 @@ So an accented headword is found typed in either case.
 
 Returns the entries carrying `tag`, ordered by headword.
 An empty tag text stands for no tag chosen and returns every entry.
-That is the list the tag panel shows beside its tag catalog.
+That is the list the taxonomy panel shows beside its tag catalog.
 The overload takes a tag rather than text so the two searches cannot be confused.
 
 ## `public LEntryDraft? LEngineEntryLoad(string id)`

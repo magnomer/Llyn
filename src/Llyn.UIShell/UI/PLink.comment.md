@@ -44,17 +44,19 @@ So the whole box behaves as the one input it looks like.
 
 Redraws every card's chips once the workspace's flags have finished loading.
 
-## `internal void PLinkFreshClear()`
-
-Forgets the stubs made while editing, because a saved entry keeps every stub it linked.
-
-## `internal void PLinkFreshDelete()`
-
-Drops the stubs made while editing when the edit is thrown away.
-A stub something else already links to is left standing.
-A stub that will not delete is passed over rather than stopping the discard.
-
 ## Inline notes
+
+### `private void PLinkChipChange(object? sender, NotifyCollectionChangedEventArgs e)`
+
+Every path that takes a chip off a card arrives here, whatever key or button did it.
+A chip standing for an entry that does not exist yet takes its tentative entry with it.
+Nothing is dropped while the form is being filled, since a chip cleared then was never the user's.
+
+### `private void PLinkCourtDelete(string id)`
+
+A chip naming a stored entry has no court row, and nothing happens.
+A chip naming a tentative one drops the row and the entry it was holding.
+No other draft can name that entry, because it was made for this chip.
 
 ### `private bool PLinkResolve(PCard card, string text, bool offered)`
 
@@ -63,6 +65,7 @@ Anything else is a question, and a question is only asked when the user is still
 That is what `offered` says.
 An unasked question leaves the word standing in the entry, where the user can still see it.
 A search the workspace refuses raises a notice, because a silent nothing reads as no match.
+The entry being edited is asked of the draft, so a form never offers itself as its own translation.
 
 ### `private TextBox? PLinkBoxFind(PCard card)`
 

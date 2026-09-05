@@ -75,11 +75,30 @@ public partial class PEditor
             return;
         }
 
-        LEntry created;
+        if (_pEditorDraft.Length == 0)
+        {
+            PProspectHide();
+            return;
+        }
+
+        LDraft target;
         try
         {
-            created = _lEngine.LEngineTranslationCreate(
-                item.PProspectItemHeadword, item.PProspectItemLanguage);
+            target = _lEngine.LEngineDraftStart(_pEditorOrigin, null);
+            _lEngine.LEngineDraftSave(target with
+            {
+                LDraftContent = target.LDraftContent with
+                {
+                    LEntryDraftHeadword = item.PProspectItemHeadword,
+                    LEntryDraftLanguage = item.PProspectItemLanguage,
+                },
+            });
+
+            _lEngine.LEngineCourtSave(
+                _pEditorDraft,
+                target.LDraftId,
+                item.PProspectItemHeadword,
+                item.PProspectItemLanguage);
         }
         catch (Exception exception)
         {
@@ -88,8 +107,8 @@ public partial class PEditor
             return;
         }
 
-        _pLinkFresh.Add(created.LEntryId);
-        card.PCardLinkCommit(created.LEntryId, created.LEntryHeadword, created.LEntryLanguage);
+        card.PCardLinkCommit(
+            target.LDraftId, item.PProspectItemHeadword, item.PProspectItemLanguage);
         card.PCardLinkClear();
         PProspectHide();
     }
@@ -125,15 +144,15 @@ public partial class PEditor
     private IReadOnlyList<string> PProspectLanguageRead()
     {
         List<string> languages = [];
-        foreach (PTongueItem item in _pTongueItem)
+        foreach (PLanguageItem item in _pLanguageItem)
         {
-            if (!string.Equals(item.PTongueItemName, _pLanguageChoice, StringComparison.Ordinal))
+            if (!string.Equals(item.PLanguageItemName, _pSpeakerChoice, StringComparison.Ordinal))
             {
-                languages.Add(item.PTongueItemName);
+                languages.Add(item.PLanguageItemName);
             }
         }
 
-        languages.Add(_pLanguageChoice);
+        languages.Add(_pSpeakerChoice);
         return languages;
     }
 }

@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -164,7 +164,7 @@ public sealed class TTag
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [])]));
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
     }
 }

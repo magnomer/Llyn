@@ -1,8 +1,8 @@
 # PMarkupImport.cs
 
-## `public partial class PList`
+## `public partial class PLibrary`
 
-The list panel's import action.
+The library panel's import action.
 A markup file chosen by the reader is handed to the engine whole.
 The index is re-read from what the workspace then holds.
 The panel does no parsing and writes nothing itself.
@@ -22,7 +22,7 @@ So the catalog is what changes.
 The format's own extension is offered first, with everything else still reachable.
 Markup is plain text, so a file that carries it under another name is still importable.
 
-### `if (dialog.ShowDialog(_pListHost) != true)`
+### `if (dialog.ShowDialog(_pLibraryHost) != true)`
 
 A cancelled pick is not a failure and leaves the workspace exactly as it was.
 
@@ -39,7 +39,7 @@ A long file is scanned and written away from the panel's own thread.
 So the window keeps drawing while the work runs.
 What follows the await is back where the controls live, which is where the index may be touched.
 
-### `_pListHost.PWindowFailureShow("List.ImportFailed", exception);`
+### `_pLibraryHost.PWindowFailureShow("List.ImportFailed", exception);`
 
 Nothing is added on failure, and nothing needs undoing here.
 The engine imports every entry or none.

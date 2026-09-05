@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Xunit;
 
 using LMarkupToken = Llyn.Core.LMarkup.LMarkupToken;
@@ -142,7 +142,7 @@ public sealed class TMarkup
               <image>media/one.jpg</image>
               <image>media/two.jpg</image>
             </sense>
-            """));
+            """), 1);
 
         Assert.Equal("set alight", card.LCardDraftTitle.LStateValueShow());
         Assert.Equal("kindle a fire", card.LCardDraftExpression.LStateValueShow());
@@ -165,7 +165,7 @@ public sealed class TMarkup
     public void AnEmptyTagCarriesNoNameAndSoCarriesNoTag()
     {
         LCardDraft card = LMarkup.LMarkupCardRead(LMarkup.LMarkupScan(
-            "<sense><meaning></meaning><tag></tag></sense>"));
+            "<sense><meaning></meaning><tag></tag></sense>"), 1);
 
         Assert.Equal(LState.LStateUnknown, card.LCardDraftMeaning.LStateValueState);
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
@@ -181,7 +181,7 @@ public sealed class TMarkup
     public void AnUnrecognisedTagInsideACardIsIgnored()
     {
         LCardDraft card = LMarkup.LMarkupCardRead(LMarkup.LMarkupScan(
-            "<collocation><future>not a field</future><meaning>to cause interest</meaning></collocation>"));
+            "<collocation><future>not a field</future><meaning>to cause interest</meaning></collocation>"), 1);
 
         Assert.Equal("to cause interest", card.LCardDraftMeaning.LStateValueShow());
     }
@@ -236,7 +236,7 @@ public sealed class TMarkup
               <meaning>to set something burning</meaning>
               <source id="oed"><title>Oxford English Dictionary</title></source>
             </sense>
-            """));
+            """), 1);
 
         Assert.Equal("to set something burning", card.LCardDraftMeaning.LStateValueShow());
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
@@ -246,7 +246,7 @@ public sealed class TMarkup
     public void AnIdAttributeOnAnExampleIsNotACitation()
     {
         LCardDraft card = LMarkup.LMarkupCardRead(LMarkup.LMarkupScan(
-            "<sense><example id=\"oed\">she knelt to kindle the damp logs</example></sense>"));
+            "<sense><example id=\"oed\">she knelt to kindle the damp logs</example></sense>"), 1);
 
         Assert.Equal(
             LState.LStateUnspecified,

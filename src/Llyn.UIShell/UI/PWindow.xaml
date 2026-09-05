@@ -91,11 +91,11 @@
 
                         <StackPanel>
                             <Button x:Name="PNavigationInput" Style="{StaticResource Theme.Navigation.Selected}" Content="{DynamicResource Navigation.Input}" Click="PNavigationHandle" />
-                            <Button x:Name="PNavigationList" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.List}" Click="PNavigationHandle" />
-                            <Button x:Name="PNavigationSound" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Sound}" Click="PNavigationHandle" />
-                            <Button x:Name="PNavigationTag" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Tag}" Click="PNavigationHandle" />
-                            <Button x:Name="PNavigationSituation" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Situation}" Click="PNavigationHandle" />
-                            <Button x:Name="PNavigationExample" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Example}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationLibrary" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Library}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationPhonology" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Phonology}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationTaxonomy" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Taxonomy}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationRepertoire" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Repertoire}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationCorpus" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Corpus}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationFavorite" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Favorite}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationDuplex" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.DualPanel}" Click="PNavigationHandle" />
                         </StackPanel>
@@ -106,11 +106,11 @@
 
                 <Grid x:Name="PPanel" Grid.Column="1" Background="{StaticResource Theme.Surface}">
                     <local:PInput x:Name="PInput" />
-                    <local:PList x:Name="PList" Visibility="Collapsed" />
-                    <local:PSound x:Name="PSound" Visibility="Collapsed" />
-                    <local:PTag x:Name="PTag" Visibility="Collapsed" />
-                    <local:PSituation x:Name="PSituation" Visibility="Collapsed" />
-                    <local:PExample x:Name="PExample" Visibility="Collapsed" />
+                    <local:PLibrary x:Name="PLibrary" Visibility="Collapsed" />
+                    <local:PPhonology x:Name="PPhonology" Visibility="Collapsed" />
+                    <local:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
+                    <local:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />
+                    <local:PCorpus x:Name="PCorpus" Visibility="Collapsed" />
                     <Grid x:Name="PFavorite" Visibility="Collapsed" />
                     <local:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
                     <local:PSettings x:Name="PSettings" Visibility="Collapsed" />

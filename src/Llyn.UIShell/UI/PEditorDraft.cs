@@ -9,27 +9,29 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private LEntryDraft? _pStateDraft;
+    private string _pEditorDraft = string.Empty;
 
     private LEntryDraft PEditorDraftRead()
     {
         return new LEntryDraft(
             PHeadword.Text ?? string.Empty,
-            _pLanguageChoice,
+            _pSpeakerChoice,
             PPronunciation.Text ?? string.Empty,
             PEditorNoteRead(),
             PCardRead(_pSenseList),
             PCardRead(_pCollocationList),
             _pRecording ?? string.Empty,
             _pRecordingSource,
-            PSpeechRead());
+            PMarkerRead());
     }
 
     private void PEditorDraftShow(LEntryDraft draft)
     {
+        _pEditorFill = true;
+
         PHeadword.Text = draft.LEntryDraftHeadword;
         PPronunciation.Text = draft.LEntryDraftPronunciation;
-        PSpeechShow(draft.LEntryDraftSpeeches);
+        PMarkerShow(draft.LEntryDraftSpeeches);
         PEditorLanguageShow(draft.LEntryDraftLanguage);
 
         IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);
@@ -39,7 +41,7 @@ public partial class PEditor
         PEditorNoteShow(draft.LEntryDraftNote);
         PEditorRecordingShow(draft);
 
-        _pStateDraft = PEditorDraftRead();
+        _pEditorFill = false;
     }
 
     private static IReadOnlyDictionary<string, LTranslationTarget> PEditorTargetEmpty =>
@@ -110,7 +112,7 @@ public partial class PEditor
         cards.Clear();
         foreach (LCardDraft draft in drafts)
         {
-            PCard card = new(prefix, cards.Count + 1, _pSentenceReference)
+            PCard card = new(prefix, draft.LCardDraftPosition, _pSentenceReference)
             {
                 PCardId = draft.LCardDraftId
             };
@@ -122,6 +124,7 @@ public partial class PEditor
             card.PCardSituationShow(draft.LCardDraftSituation);
             card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
             PLinkAttach(card);
+            PEditorChangeAttach(card);
             card.PCardLabelShow(draft.LCardDraftTag);
             card.PCardImageShow(draft.LCardDraftImage);
             cards.Add(card);
@@ -131,6 +134,7 @@ public partial class PEditor
         {
             PCard card = new(prefix, 1, _pSentenceReference);
             PLinkAttach(card);
+            PEditorChangeAttach(card);
             cards.Add(card);
         }
     }
@@ -162,27 +166,29 @@ public partial class PEditor
             return;
         }
 
-        _pLanguageEntry = true;
+        _pSpeakerEntry = true;
 
-        if (string.Equals(_pLanguageChoice, language, StringComparison.Ordinal))
+        if (string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
         {
             return;
         }
 
-        _pLanguageChoice = language;
-        PLanguageName.Text = language;
-        PLanguageFlagUpdate();
+        _pSpeakerChoice = language;
+        PSpeakerName.Text = language;
+        PSpeakerFlagUpdate();
     }
 
     internal void PEditorReset()
     {
-        _pEditorEntry = null;
+        PEditorDraftStart(null);
+
+        _pEditorFill = true;
 
         PHeadword.Text = string.Empty;
         PPronunciation.Text = string.Empty;
-        PSpeechShow(null);
+        PMarkerShow(null);
         PRecordingClear();
-        _pLanguageEntry = false;
+        _pSpeakerEntry = false;
 
         PCardShow(_pSenseList, "Meaning", [], PEditorTargetEmpty);
         PCardShow(_pCollocationList, "Collocation", [], PEditorTargetEmpty);
@@ -190,145 +196,114 @@ public partial class PEditor
         PNoteContents.Text = string.Empty;
         PNotePlaceholder.Visibility = Visibility.Visible;
 
-        _pStateDraft = PEditorDraftRead();
+        _pEditorFill = false;
+
+        PEditorChangeUpdate();
     }
 
-    private void PEditorStateUpdate()
+    private LDraft? PEditorDraftStart(string? entry)
     {
-        if (_pStateDraft is null)
+        PEditorChangeStop();
+        PEditorDraftCancel();
+
+        try
+        {
+            LDraft started = _lEngine.LEngineDraftStart(_pEditorOrigin, entry);
+            _pEditorDraft = started.LDraftId;
+            return started;
+        }
+        catch (Exception)
+        {
+            _pEditorDraft = string.Empty;
+            return null;
+        }
+    }
+
+    private void PEditorDraftCancel()
+    {
+        if (_pEditorDraft.Length == 0)
         {
             return;
         }
 
-        _pStateDraft = _pStateDraft with { LEntryDraftLanguage = _pLanguageChoice };
+        string held = _pEditorDraft;
+        _pEditorDraft = string.Empty;
+
+        try
+        {
+            _lEngine.LEngineDraftCancel(held);
+        }
+        catch (Exception)
+        {
+        }
     }
 
-    internal bool PEditorChangeCheck()
+    private void PEditorDraftSave()
     {
-        return _pStateDraft is not null && !PEditorDraftMatch(_pStateDraft, PEditorDraftRead());
+        if (_pEditorDraft.Length == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            LDraft? held = _lEngine.LEngineDraftRead(_pEditorDraft);
+            if (held is null)
+            {
+                return;
+            }
+
+            _lEngine.LEngineDraftSave(held with { LDraftContent = PEditorDraftRead() });
+        }
+        catch (Exception)
+        {
+        }
     }
 
-    private static bool PEditorDraftMatch(LEntryDraft one, LEntryDraft other)
+    internal void PEditorDraftFinish(bool store)
     {
-        return string.Equals(one.LEntryDraftHeadword, other.LEntryDraftHeadword, StringComparison.Ordinal)
-            && string.Equals(one.LEntryDraftLanguage, other.LEntryDraftLanguage, StringComparison.Ordinal)
-            && string.Equals(
-                one.LEntryDraftPronunciation, other.LEntryDraftPronunciation, StringComparison.Ordinal)
-            && string.Equals(one.LEntryDraftNote, other.LEntryDraftNote, StringComparison.Ordinal)
-            && PEditorTextMatch(one.LEntryDraftSpeeches ?? [], other.LEntryDraftSpeeches ?? [])
-            && string.Equals(one.LEntryDraftAudio, other.LEntryDraftAudio, StringComparison.Ordinal)
-            && string.Equals(one.LEntryDraftSource, other.LEntryDraftSource, StringComparison.Ordinal)
-            && PCardMatch(one.LEntryDraftSenses, other.LEntryDraftSenses)
-            && PCardMatch(one.LEntryDraftCollocations, other.LEntryDraftCollocations);
+        PEditorChangeStop();
+
+        if (!store || !PEditorDraftCheck())
+        {
+            PEditorDraftCancel();
+            return;
+        }
+
+        string held = _pEditorDraft;
+        if (held.Length == 0)
+        {
+            return;
+        }
+
+        _pEditorDraft = string.Empty;
+
+        try
+        {
+            _lEngine.LEngineDraftCommit(held);
+        }
+        catch (Exception)
+        {
+            _pEditorDraft = held;
+            PEditorDraftCancel();
+        }
     }
 
-    private static bool PCardMatch(IReadOnlyList<LCardDraft> one, IReadOnlyList<LCardDraft> other)
+    private bool PEditorDraftCheck()
     {
-        if (one.Count != other.Count)
+        if (_pEditorDraft.Length == 0)
         {
             return false;
         }
 
-        for (int index = 0; index < one.Count; index++)
+        try
         {
-            LCardDraft first = one[index];
-            LCardDraft second = other[index];
-            if (first.LCardDraftTitle != second.LCardDraftTitle
-                || first.LCardDraftExpression != second.LCardDraftExpression
-                || first.LCardDraftMeaning != second.LCardDraftMeaning
-                || !string.Equals(first.LCardDraftId, second.LCardDraftId, StringComparison.Ordinal)
-                || !PEditorExampleMatch(first.LCardDraftExample, second.LCardDraftExample)
-                || !PEditorSituationMatch(first.LCardDraftSituation, second.LCardDraftSituation)
-                || !PEditorTextMatch(first.LCardDraftTranslation, second.LCardDraftTranslation)
-                || !PEditorTextMatch(first.LCardDraftTag, second.LCardDraftTag)
-                || !PEditorValueMatch(first.LCardDraftImage, second.LCardDraftImage))
-            {
-                return false;
-            }
+            return _lEngine.LEngineDraftCheck(_pEditorDraft);
         }
-
-        return true;
-    }
-
-    private static bool PEditorExampleMatch(
-        IReadOnlyList<LExampleDraft> one, IReadOnlyList<LExampleDraft> other)
-    {
-        if (one.Count != other.Count)
+        catch (Exception)
         {
             return false;
         }
-
-        for (int index = 0; index < one.Count; index++)
-        {
-            if (one[index].LExampleDraftText != other[index].LExampleDraftText
-                || !string.Equals(
-                    one[index].LExampleDraftId, other[index].LExampleDraftId, StringComparison.Ordinal)
-                || one[index].LExampleDraftReference != other[index].LExampleDraftReference)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static bool PEditorSituationMatch(
-        IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)
-    {
-        if (one.Count != other.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < one.Count; index++)
-        {
-            if (one[index].LSituationDraftText != other[index].LSituationDraftText
-                || !string.Equals(
-                    one[index].LSituationDraftId, other[index].LSituationDraftId, StringComparison.Ordinal)
-                || one[index].LSituationDraftReference != other[index].LSituationDraftReference)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static bool PEditorValueMatch(
-        IReadOnlyList<LStateValue> one, IReadOnlyList<LStateValue> other)
-    {
-        if (one.Count != other.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < one.Count; index++)
-        {
-            if (one[index] != other[index])
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static bool PEditorTextMatch(IReadOnlyList<string> one, IReadOnlyList<string> other)
-    {
-        if (one.Count != other.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < one.Count; index++)
-        {
-            if (!string.Equals(one[index], other[index], StringComparison.Ordinal))
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private IReadOnlyList<LCardDraft> PCardRead(IReadOnlyList<PCard> cards)
@@ -346,6 +321,7 @@ public partial class PEditor
                 string.Empty,
                 card.PCardLabelRead(),
                 card.PCardImageRead(),
+                card.PCardPosition,
                 card.PCardId));
         }
 

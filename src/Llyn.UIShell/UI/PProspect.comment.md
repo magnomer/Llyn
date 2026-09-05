@@ -25,13 +25,16 @@ Reports whether the dropdown used the key, so an unused one falls through to the
 
 ### `private void PProspectSelect(PProspectItem item)`
 
-Links the chosen row and closes the dropdown, making the stub Entry first when the row is a create row.
-A stub that will not be made raises a notice rather than leaving the field looking unanswered.
+Links the chosen row and closes the dropdown, starting a tentative entry first on a create row.
+No database row is written for it, so an edit thrown away leaves nothing behind.
+The tentative entry carries the typed word and the chosen language, ready to be stored.
+A court row ties it to this draft, and storing this draft stores it too.
+A stub that cannot be started raises a notice rather than leaving the field looking unanswered.
 
 ### `private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found)`
 
 The create row stands after the matches rather than among them.
-It carries the typed word untouched, because that word is what the stub Entry will be called.
+It carries the typed word untouched, because that word is what the tentative entry will be called.
 
 ### `private IReadOnlyList<string> PProspectLanguageRead()`
 

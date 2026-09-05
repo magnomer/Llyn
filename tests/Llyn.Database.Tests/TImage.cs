@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -26,7 +26,8 @@ public sealed class TImage
                 [],
                 string.Empty,
                 [],
-                [@"D:\pictures\word.png", "https://example.com/word.png"])],
+                [@"D:\pictures\word.png", "https://example.com/word.png"],
+                1)],
             [new LCardDraft(
                 string.Empty,
                 "in a word",
@@ -36,7 +37,8 @@ public sealed class TImage
                 [],
                 string.Empty,
                 [],
-                ["https://example.com/phrase.png"])]));
+                ["https://example.com/phrase.png"],
+                1)]));
 
         LEntryDraft? loaded = engine.LEngineEntryLoad(stored.LEntryId);
 
@@ -61,7 +63,7 @@ public sealed class TImage
             string.Empty,
             string.Empty,
             [new LCardDraft(
-                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], ["first.png", "second.png"])],
+                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], ["first.png", "second.png"], 1)],
             []));
 
         LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);
@@ -96,7 +98,7 @@ public sealed class TImage
             string.Empty,
             string.Empty,
             [new LCardDraft(
-                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], ["   "])],
+                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], ["   "], 1)],
             []));
 
         LEntryDraft? loaded = engine.LEngineEntryLoad(entry.LEntryId);

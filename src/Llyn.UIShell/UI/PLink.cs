@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,8 +13,6 @@ namespace Llyn.UIShell;
 public partial class PEditor
 {
     private const string PLinkFailureKey = "Input.TranslationFailed";
-
-    private readonly List<string> _pLinkFresh = [];
 
     internal void PLinkAttach(PCard card)
     {
@@ -133,26 +132,48 @@ public partial class PEditor
         }
     }
 
-    internal void PLinkFreshClear()
+    private void PLinkChipChange(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        _pLinkFresh.Clear();
-    }
-
-    internal void PLinkFreshDelete()
-    {
-        foreach (string id in _pLinkFresh)
+        if (_pEditorFill)
         {
-            try
+            return;
+        }
+
+        if (e.OldItems is not null)
+        {
+            foreach (object row in e.OldItems)
             {
-                _lEngine.LEngineTranslationDelete(id);
-            }
-            catch (Exception)
-            {
-                continue;
+                if (row is PLinkChip chip)
+                {
+                    PLinkCourtDelete(chip.PLinkChipId);
+                }
             }
         }
 
-        _pLinkFresh.Clear();
+        PEditorChangeDefer();
+    }
+
+    private void PLinkCourtDelete(string id)
+    {
+        if (_pEditorDraft.Length == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            LCourtLink? link = _lEngine.LEngineCourtFind(_pEditorDraft, id);
+            if (link is null)
+            {
+                return;
+            }
+
+            _lEngine.LEngineCourtDelete(link.LCourtLinkId);
+            _lEngine.LEngineDraftDelete(id);
+        }
+        catch (Exception)
+        {
+        }
     }
 
     private bool PLinkResolve(PCard card, string text, bool offered)
@@ -167,8 +188,9 @@ public partial class PEditor
         IReadOnlyList<LEntry> found;
         try
         {
-            single = _lEngine.LEngineTranslationResolve(word, _pEditorEntry);
-            found = single is null ? _lEngine.LEngineTranslationFind(word, _pEditorEntry) : [];
+            string? entry = PEditorEntryRead();
+            single = _lEngine.LEngineTranslationResolve(word, entry);
+            found = single is null ? _lEngine.LEngineTranslationFind(word, entry) : [];
         }
         catch (Exception exception)
         {

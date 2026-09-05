@@ -6,43 +6,56 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private string? _pEditorEntry;
-
     internal void PEditorEntryShow(string id)
     {
-        _pEditorEntry = null;
-        PLinkFreshDelete();
+        LDraft? started = PEditorDraftStart(id);
 
-        LEntryDraft? draft;
-        try
-        {
-            draft = _lEngine.LEngineEntryLoad(id);
-        }
-        catch (Exception)
-        {
-            draft = null;
-        }
-
-        if (draft is null)
+        if (started is null)
         {
             PEditorReset();
             return;
         }
 
-        PEditorDraftShow(draft);
-        _pEditorEntry = id;
+        PEditorDraftShow(started.LDraftContent);
+        PEditorChangeUpdate();
+    }
+
+    private string? PEditorEntryRead()
+    {
+        if (_pEditorDraft.Length == 0)
+        {
+            return null;
+        }
+
+        LDraft? held;
+        try
+        {
+            held = _lEngine.LEngineDraftRead(_pEditorDraft);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+        return string.IsNullOrWhiteSpace(held?.LDraftEntry) ? null : held.LDraftEntry;
     }
 
     private void PEditorStoreHandle(object sender, RoutedEventArgs e)
     {
-        string? entry = _pEditorEntry;
+        PEditorChangeSave();
+
+        string held = _pEditorDraft;
+        if (held.Length == 0)
+        {
+            return;
+        }
+
+        string? entry = PEditorEntryRead();
 
         LEntry stored;
         try
         {
-            stored = entry is null
-                ? _lEngine.LEngineEntrySave(PEditorDraftRead())
-                : _lEngine.LEngineEntryUpdate(entry, PEditorDraftRead());
+            stored = _lEngine.LEngineDraftCommit(held);
         }
         catch (Exception exception)
         {
@@ -50,7 +63,7 @@ public partial class PEditor
             return;
         }
 
-        PLinkFreshClear();
+        _pEditorDraft = string.Empty;
 
         if (entry is not null)
         {
@@ -65,7 +78,8 @@ public partial class PEditor
 
     private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
     {
-        PLinkFreshDelete();
+        PEditorChangeStop();
+        PEditorDraftCancel();
 
         if (PEditorDiscardDispatcher is not null)
         {

@@ -1,4 +1,4 @@
-# LEntryLoader.cs
+﻿# LEntryLoader.cs
 
 ## `public sealed class LEntryLoader`
 
@@ -63,6 +63,8 @@ A Meaning card and a Collocation card hold Examples, Situations, Tags and Transl
 So which owner side is being read is the only thing that differs.
 The collocation flag says which side ownerId names.
 The card's own columns are handed in already read off its row.
+The position is handed in the same way, raised by one before it arrives.
+Both archives keep their positions contiguous from zero, so the one place that adds the one is here.
 
 ### `string.Empty,`
 

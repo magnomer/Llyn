@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -12,7 +12,7 @@ public partial class PInput : UserControl
 
     internal void PInputAttach(PWindow host, LEngine engine)
     {
-        PEditor.PEditorAttach(host, engine, null);
+        PEditor.PEditorAttach(host, engine, "Input", null);
 
         PEditor.PEditorDiscardDispatcher = PEditor.PEditorReset;
     }
@@ -20,6 +20,11 @@ public partial class PInput : UserControl
     internal void PInputReset()
     {
         PEditor.PEditorReset();
+    }
+
+    internal void PInputDraftFinish(bool store)
+    {
+        PEditor.PEditorDraftFinish(store);
     }
 
     internal bool PInputChangeCheck()

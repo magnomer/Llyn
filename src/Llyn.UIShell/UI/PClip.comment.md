@@ -12,7 +12,7 @@ So every arrival is marshalled onto the dispatcher here.
 
 ## Inline notes
 
-### `await _lEngine.LEngineRecordingFind(word, _pLanguageChoice, this, _pClipCancellation.Token);`
+### `await _lEngine.LEngineRecordingFind(word, _pSpeakerChoice, this, _pClipCancellation.Token);`
 
 The panel asks and then listens.
 The search is over when the listener is told it is, never when this call returns.

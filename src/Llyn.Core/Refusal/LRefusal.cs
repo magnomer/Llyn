@@ -10,6 +10,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalTarget = "Refusal.TargetMissing";
 
+    public const string LRefusalDraft = "Refusal.DraftMissing";
+
     public LRefusal(string reason)
         : base(reason)
     {

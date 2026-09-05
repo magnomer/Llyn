@@ -1,4 +1,4 @@
-# PWindow.xaml.cs
+﻿# PWindow.xaml.cs
 
 ## `public partial class PWindow : Window`
 
@@ -15,6 +15,18 @@ Opening the workspace can fail.
 A failure in a window constructor has nowhere to be shown.
 `LBootstrap` builds it and hands it over.
 The window owns it from here and disposes it when it closes.
+
+## `internal int PWindowLeftover { get; private set; }`
+
+How many held drafts the workspace carried that no open window claims.
+It is read once as the window attaches, before any panel starts a draft of its own.
+Reading it later would count this session's own work, which no one needs offering back.
+The count is held and nothing is shown yet, because the recovery dialog is not built.
+
+## `private void PWindowAttach(LEngine engine)`
+
+Puts every panel to work on the one engine.
+The leftovers are counted first, so the number describes the workspace as it was found.
 
 ## Inline notes
 

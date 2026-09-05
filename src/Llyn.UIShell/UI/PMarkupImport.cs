@@ -5,7 +5,7 @@ using System.Windows;
 
 namespace Llyn.UIShell;
 
-public partial class PList
+public partial class PLibrary
 {
     internal async void PMarkupImportHandle(object sender, RoutedEventArgs e)
     {
@@ -16,7 +16,7 @@ public partial class PList
             CheckFileExists = true,
         };
 
-        if (dialog.ShowDialog(_pListHost) != true)
+        if (dialog.ShowDialog(_pLibraryHost) != true)
         {
             return;
         }
@@ -29,7 +29,7 @@ public partial class PList
         }
         catch (Exception exception)
         {
-            _pListHost.PWindowFailureShow("List.ImportFailed", exception);
+            _pLibraryHost.PWindowFailureShow("List.ImportFailed", exception);
             return;
         }
 

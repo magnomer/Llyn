@@ -1,4 +1,4 @@
-# LDatabaseOrder.cs
+﻿# LDatabaseOrder.cs
 
 ## `public static class LDatabaseOrder`
 
@@ -34,12 +34,6 @@ The members listed in `identifiers` take positions `0 … n-1` in that order.
 Every row in the scope must appear in the list.
 `memberColumn` is the column that names a member.
 It is `id` for a stable-id table, and the member column for an association table.
-
-## `public static IReadOnlyList<string> LDatabaseOrderMove(`
-
-Moves the member at `from` in `identifiers` to `target`, clamping the target into the list.
-Returns the rearranged order for a normalize call.
-The order is returned unchanged when the source index is outside the list.
 
 ## `public static IReadOnlyList<string> LDatabaseOrderInsert(`
 

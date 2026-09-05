@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
 
@@ -60,25 +60,6 @@ public static class LDatabaseOrder
             command.Parameters.AddWithValue("$member", identifiers[position]);
             command.ExecuteNonQuery();
         }
-    }
-
-    public static IReadOnlyList<string> LDatabaseOrderMove(
-        IReadOnlyList<string> identifiers,
-        int from,
-        int target)
-    {
-        ArgumentNullException.ThrowIfNull(identifiers);
-
-        if (from < 0 || from >= identifiers.Count)
-        {
-            return identifiers;
-        }
-
-        List<string> moved = new(identifiers);
-        string member = moved[from];
-        moved.RemoveAt(from);
-        moved.Insert(Math.Clamp(target, 0, moved.Count), member);
-        return moved;
     }
 
     public static IReadOnlyList<string> LDatabaseOrderInsert(

@@ -22,13 +22,13 @@ public sealed class TEntryLoad
             [
                 new LCardDraft(
                     string.Empty, string.Empty, "a unit of language",
-                    [LExampleDraft.LExampleDraftCreate("he said a word")], [LSituationDraft.LSituationDraftCreate("conversation")], [], string.Empty, ["spoken"], []),
-                new LCardDraft(string.Empty, string.Empty, "a promise", [], [], [], string.Empty, [], []),
+                    [LExampleDraft.LExampleDraftCreate("he said a word")], [LSituationDraft.LSituationDraftCreate("conversation")], [], string.Empty, ["spoken"], [], 1),
+                new LCardDraft(string.Empty, string.Empty, "a promise", [], [], [], string.Empty, [], [], 2),
             ],
             [
                 new LCardDraft(
                     string.Empty, "in a word", "briefly", [LExampleDraft.LExampleDraftCreate("in a word, no")], [LSituationDraft.LSituationDraftCreate("summary")], [], string.Empty,
-                    ["written"], []),
+                    ["written"], [], 1),
             ]);
 
         LEntryDraft sword = new(
@@ -36,7 +36,7 @@ public sealed class TEntryLoad
             "English",
             "sɔːd",
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a bladed weapon", [], [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, string.Empty, "a bladed weapon", [], [], [], string.Empty, [], [], 1)],
             []);
 
         LEntry stored = engine.LEngineEntrySave(word);
@@ -168,9 +168,9 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft("the plain sense", string.Empty, "a meaning", [], [], [], string.Empty, [], [])],
+            [new LCardDraft("the plain sense", string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
             [new LCardDraft(
-                "the set phrase", "in a word", "briefly", [], [], [], string.Empty, [], [])]));
+                "the set phrase", "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
 
         LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));
         Assert.Equal("the plain sense", sense.LSenseTitle);
@@ -206,7 +206,7 @@ public sealed class TEntryLoad
                 [LSituationDraft.LSituationDraftCreate("conversation")],
                 [],
                 string.Empty,
-                ["verb", "formal", "spoken"], [])],
+                ["verb", "formal", "spoken"], [], 1)],
             [new LCardDraft(
                 string.Empty,
                 "in a word",
@@ -215,7 +215,7 @@ public sealed class TEntryLoad
                 [LSituationDraft.LSituationDraftCreate("summary"), LSituationDraft.LSituationDraftCreate("writing")],
                 [],
                 string.Empty,
-                ["written", "idiom"], [])]));
+                ["written", "idiom"], [], 1)]));
 
         LSense sense = Assert.Single(new LSenseArchive(workspace.TWorkspaceDatabase).LSenseRead(stored.LEntryId));
         Assert.Equal(
@@ -253,7 +253,7 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [LExampleDraft.LExampleDraftCreate("  ")], [], [], string.Empty, [], [])],
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [LExampleDraft.LExampleDraftCreate("  ")], [], [], string.Empty, [], [], 1)],
             []));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
@@ -266,6 +266,36 @@ public sealed class TEntryLoad
         Assert.Empty(card.LCardDraftExample);
         Assert.Empty(card.LCardDraftSituation);
         Assert.Empty(card.LCardDraftTag);
+    }
+
+    [Fact]
+    public void ACardCarriesTheStoredPositionOfTheOrderItWasMovedInto()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = new(workspace.TWorkspaceFolder);
+
+        LEntry stored = engine.LEngineEntrySave(new LEntryDraft(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                new LCardDraft(string.Empty, string.Empty, "first", [], [], [], string.Empty, [], [], 1),
+                new LCardDraft(string.Empty, string.Empty, "second", [], [], [], string.Empty, [], [], 2),
+                new LCardDraft(string.Empty, string.Empty, "third", [], [], [], string.Empty, [], [], 3),
+            ],
+            []));
+
+        IReadOnlyList<LSense> saved = engine.LEngineSenseRead(stored.LEntryId, LOwner.LOwnerEntry);
+        engine.LEngineSenseMove(saved[2].LSenseId, 0);
+
+        LEntryDraft? loaded = engine.LEngineEntryLoad(stored.LEntryId);
+
+        Assert.NotNull(loaded);
+        Assert.Equal(
+            ["third", "first", "second"],
+            loaded.LEntryDraftSenses.Select(card => card.LCardDraftMeaning.LStateValueShow()));
+        Assert.Equal([1, 2, 3], loaded.LEntryDraftSenses.Select(card => card.LCardDraftPosition));
     }
 
     [Fact]

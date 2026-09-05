@@ -3,75 +3,73 @@
 ## `public partial class PEditor`
 
 Which entry the editor stands on, and the two buttons that end an edit of it.
-A form standing on an entry modifies that entry.
-A form standing on none writes a new one.
-It is one decision, made from one field.
+The form no longer remembers that entry itself.
+The draft it is editing carries it, and the draft is the engine's.
+A draft started from an entry modifies that entry.
+A draft started from nothing writes a new one.
+It is one decision, and the engine already holds it.
 That is why a session that opened on an entry no longer saves a second copy of it.
 What a store and a discard leave behind afterwards differs by host.
 So each is handed on rather than assumed here.
 
 ## `internal void PEditorEntryShow(string id)`
 
-Opens the form on one entry and leaves it standing on that entry.
+Starts a draft on one entry and fills the form from it.
 That is what makes the next store a modification of it rather than a copy of it.
+The controls are filled from the draft rather than from a second read of the entry.
 An entry that no longer loads leaves the form empty.
 An id that has gone stale is a normal cost of remembering one, not an error.
 
 ## Inline notes
 
-### `private string? _pEditorEntry;`
+### `private string? PEditorEntryRead()`
 
-Id of the entry the form stands on, or null when it stands on none.
-It is the whole difference between a store that creates and a store that modifies.
-A host that mounts the editor over an entry it loaded sets it through PEditorEntryShow.
-A form that was never put on one creates.
-That is the input panel's form, and any form left blank by a store.
+The entry the held draft was started from, or null when it was started from nothing.
+It is asked of the engine rather than kept, so the two can never disagree.
 
-### `string? entry = _pEditorEntry;`
+### `PEditorChangeSave();`
 
-The form already knows which entry it was opened on, and that is the whole decision.
-A form standing on an entry is an edit of it.
-A form standing on nothing is a new entry.
-Saving unconditionally wrote a second entry with the same headword on every ordinary session.
-Such a session is launch, correct a typo, press Save.
+Everything typed reaches the draft before the draft is committed.
+A store within a keystroke of the last change would otherwise write the form as it stood before it.
 
-### `stored = entry is null`
+### `stored = _lEngine.LEngineDraftCommit(held);`
 
 The write is deliberately synchronous.
 LDatabase keeps its ambient session in a plain instance field.
 LEngine is built on the UI thread, so it stays on it.
+Committing settles the tentative entries this draft links to before writing it.
 
 ### `_pEditorHost.PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);`
 
-A refused write leaves the form exactly as typed.
+A refused write leaves the form exactly as typed, and the draft file where it was.
 So the missing field can be filled in and the write repeated.
 An update whose entry vanished between load and save is reported as that.
 It is never quietly turned back into a create.
+
+### `_pEditorDraft = string.Empty;`
+
+A committed draft has no file left, so the form stops naming it.
+The next line starts the draft the form goes on with.
 
 ### `PEditorEntryShow(stored.LEntryId);`
 
 The user corrected an entry, and did not finish one.
 So the form stays on it rather than resetting.
-It is filled from the store again rather than left as typed.
+It is filled from a fresh draft of the stored entry rather than left as typed.
 The cards this update created carry stored ids now.
 A form still holding none would create them a second time on the next save.
 
 ### `PEditorReset();`
 
-An entry was finished, so the form comes up empty and standing on nothing.
+An entry was finished, so the form comes up empty on a new draft.
 The next thing typed here is the next entry, not a rewrite of the one just written.
-PEditorReset detaches it, and nothing puts it back on.
-A blank form still holding an id overwrote the first entry of a session with the second.
-
-### `PLinkFreshClear();`
-
-A saved entry keeps every stub its links made, so the editor stops watching them.
 
 ### `private void PEditorDiscardHandle(object sender, RoutedEventArgs e)`
 
-A thrown-away edit takes its stubs with it, so they are dropped before the form is reset.
-Loading another entry throws the current edit away too, so it drops them the same way.
-What a discard means is the host's.
+A thrown-away edit takes its draft and its tentative entries with it.
+The pending write is called off first, so nothing lands after the draft is gone.
+What a discard means afterwards is the host's.
 An input form comes up empty.
 A browse-style panel puts the selected entry back as it is stored.
 A host that says nothing gets the form it was given back.
+Each of those paths starts the next draft, so the form is never left without one.

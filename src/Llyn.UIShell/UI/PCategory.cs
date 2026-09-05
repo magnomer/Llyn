@@ -17,7 +17,7 @@ public partial class PEditor
         IReadOnlyList<LSpeechValue> values;
         try
         {
-            values = _lEngine.LEngineSpeechRead(_pLanguageChoice);
+            values = _lEngine.LEngineSpeechRead(_pSpeakerChoice);
         }
         catch (Exception)
         {
@@ -39,7 +39,7 @@ public partial class PEditor
             return;
         }
 
-        PSpeechAdd(name);
-        PSpeechBase.IsChecked = false;
+        PMarkerAdd(name);
+        PMarkerSwitch.IsChecked = false;
     }
 }

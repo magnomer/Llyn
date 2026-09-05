@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -159,8 +159,9 @@ public partial class PEditor
             return;
         }
 
+        PEditorChangeSave();
         list.Move(current, target);
-        PCardOrderUpdate(list);
+        PCardOrderApply(list, current, target);
     }
 
     private void PCardDragReset()

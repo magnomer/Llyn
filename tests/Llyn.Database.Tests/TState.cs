@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -27,7 +27,7 @@ public sealed class TState
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
                 [],
                 string.Empty,
-                ["spoken"], [])],
+                ["spoken"], [], 1)],
             []));
 
         Assert.Equal(
@@ -84,7 +84,7 @@ public sealed class TState
                 [],
                 [],
                 string.Empty,
-                [], [])],
+                [], [], 1)],
             []));
 
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
@@ -116,7 +116,7 @@ public sealed class TState
                 [],
                 [],
                 string.Empty,
-                [], [])],
+                [], [], 1)],
             []));
 
         Assert.Equal(
@@ -157,7 +157,7 @@ public sealed class TState
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
                 [],
                 string.Empty,
-                [], [])],
+                [], [], 1)],
             []));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.LEngineEntryLoad(stored.LEntryId));

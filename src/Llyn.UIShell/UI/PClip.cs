@@ -41,7 +41,7 @@ public partial class PEditor : LListener
 
         try
         {
-            await _lEngine.LEngineRecordingFind(word, _pLanguageChoice, this, _pClipCancellation.Token);
+            await _lEngine.LEngineRecordingFind(word, _pSpeakerChoice, this, _pClipCancellation.Token);
         }
         catch (OperationCanceledException)
         {
@@ -109,7 +109,7 @@ public partial class PEditor : LListener
             return;
         }
 
-        string language = _pLanguageChoice;
+        string language = _pSpeakerChoice;
 
         recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");
         recording.PClipItemReady = false;
@@ -120,7 +120,7 @@ public partial class PEditor : LListener
             recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Saved");
 
             if (!string.Equals(PHeadword.Text?.Trim(), word, StringComparison.Ordinal) ||
-                !string.Equals(_pLanguageChoice, language, StringComparison.Ordinal))
+                !string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
             {
                 return;
             }

@@ -11,7 +11,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     private readonly string _pCardPrefix;
     private readonly ObservableCollection<PCitationItem> _pCardReference;
-    private int _pCardOrder;
+    private int _pCardPosition;
     private string _pTitle;
     private bool _pTitleUnreadable;
     private string _pCardDefinition;
@@ -19,10 +19,10 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private string _pCardExpression;
     private bool _pCardExpressionUnreadable;
 
-    internal PCard(string prefix, int order, ObservableCollection<PCitationItem> catalog)
+    internal PCard(string prefix, int position, ObservableCollection<PCitationItem> catalog)
     {
         _pCardPrefix = prefix;
-        _pCardOrder = order;
+        _pCardPosition = position;
         _pCardReference = catalog;
         _pTitle = string.Empty;
         _pCardDefinition = string.Empty;
@@ -41,23 +41,23 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     public string PCardId { get; set; } = string.Empty;
 
-    public int PCardOrder
+    public int PCardPosition
     {
-        get => _pCardOrder;
+        get => _pCardPosition;
         set
         {
-            if (_pCardOrder == value)
+            if (_pCardPosition == value)
             {
                 return;
             }
 
-            _pCardOrder = value;
-            PCardRaise(nameof(PCardOrder));
+            _pCardPosition = value;
+            PCardRaise(nameof(PCardPosition));
             PCardRaise(nameof(PCardTitle));
         }
     }
 
-    public string PCardTitle => $"{_pCardPrefix} {_pCardOrder}";
+    public string PCardTitle => $"{_pCardPrefix} {_pCardPosition}";
 
     public string PTitle
     {

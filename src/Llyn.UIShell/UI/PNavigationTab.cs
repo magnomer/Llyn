@@ -12,29 +12,29 @@ public partial class PWindow
             return;
         }
 
-        if (PList.IsVisible && selectedButton != PNavigationList && !PWindowDiscardConfirm(PList.PListChangeCheck()))
+        if (PLibrary.IsVisible && selectedButton != PNavigationLibrary && !PWindowDiscardConfirm(PLibrary.PLibraryChangeCheck()))
         {
             return;
         }
 
-        if (PSound.IsVisible && selectedButton != PNavigationSound && !PWindowDiscardConfirm(PSound.PSoundChangeCheck()))
+        if (PPhonology.IsVisible && selectedButton != PNavigationPhonology && !PWindowDiscardConfirm(PPhonology.PPhonologyChangeCheck()))
         {
             return;
         }
 
-        if (PTag.IsVisible && selectedButton != PNavigationTag && !PWindowDiscardConfirm(PTag.PTagChangeCheck()))
+        if (PTaxonomy.IsVisible && selectedButton != PNavigationTaxonomy && !PWindowDiscardConfirm(PTaxonomy.PTaxonomyChangeCheck()))
         {
             return;
         }
 
-        if (PSituation.IsVisible && selectedButton != PNavigationSituation
-            && !PWindowDiscardConfirm(PSituation.PSituationChangeCheck()))
+        if (PRepertoire.IsVisible && selectedButton != PNavigationRepertoire
+            && !PWindowDiscardConfirm(PRepertoire.PRepertoireChangeCheck()))
         {
             return;
         }
 
-        if (PExample.IsVisible && selectedButton != PNavigationExample
-            && !PWindowDiscardConfirm(PExample.PExampleChangeCheck()))
+        if (PCorpus.IsVisible && selectedButton != PNavigationCorpus
+            && !PWindowDiscardConfirm(PCorpus.PCorpusChangeCheck()))
         {
             return;
         }
@@ -42,11 +42,11 @@ public partial class PWindow
         (Button Button, FrameworkElement Panel)[] tabs =
         [
             (PNavigationInput, PInput),
-            (PNavigationList, PList),
-            (PNavigationSound, PSound),
-            (PNavigationTag, PTag),
-            (PNavigationSituation, PSituation),
-            (PNavigationExample, PExample),
+            (PNavigationLibrary, PLibrary),
+            (PNavigationPhonology, PPhonology),
+            (PNavigationTaxonomy, PTaxonomy),
+            (PNavigationRepertoire, PRepertoire),
+            (PNavigationCorpus, PCorpus),
             (PNavigationFavorite, PFavorite),
             (PNavigationDuplex, PDuplex),
             (PNavigationSettings, PSettings)
@@ -63,7 +63,7 @@ public partial class PWindow
 
     internal void PWindowEntryShow(string id)
     {
-        PNavigationHandle(PNavigationList, new RoutedEventArgs());
-        PList.PIndexEntryShow(id);
+        PNavigationHandle(PNavigationLibrary, new RoutedEventArgs());
+        PLibrary.PIndexEntryShow(id);
     }
 }

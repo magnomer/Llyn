@@ -31,10 +31,12 @@ An input form throws the typing away and comes up empty.
 A browse-style panel puts the selected entry back as it is stored.
 So neither is assumed here.
 
-## `internal void PEditorAttach(PWindow host, LEngine engine, string? entry)`
+## `internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)`
 
 Puts the editor to work on `engine`, the workspace the window opened.
-It opens it on `entry`, the entry the host wants edited.
+`origin` names the surface this form sits on, and every draft it starts records it.
+Two panels editing at once are told apart by it, and a recovered draft says where it came from.
+It opens the form on `entry`, the entry the host wants edited.
 That is nothing at all for a form that creates one.
 The entry is shown before the language menu is built.
 So the language it carries is already the chosen one when that menu decides on a fallback.
@@ -64,6 +66,11 @@ The Translation dropdown is one popup for the whole editor rather than one per c
 Only one caret is typed into at a time, so only one list of candidates is ever open.
 It hangs off the caret it was opened from, which is why the markup names no placement target.
 
-### `PSpeechLoad();`
+### `PMarkerLoad();`
 
 After the language is settled, because the presets on offer are that language's.
+
+### `AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));`
+
+Every text box in the editor reports through one handler, caught as the event bubbles.
+Cards and their rows come and go, and none of them has to be subscribed to by hand.

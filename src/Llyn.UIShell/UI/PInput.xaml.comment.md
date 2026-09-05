@@ -1,4 +1,4 @@
-# PInput.xaml.cs
+﻿# PInput.xaml.cs
 
 ## `public partial class PInput : UserControl`
 
@@ -21,6 +21,11 @@ The workspace folder can change while the window is up.
 A different folder is a different database.
 Whatever was typed against the old one is begun again here.
 
+## `internal void PInputDraftFinish(bool store)`
+
+Carries the window's exit answer down to the editor this panel owns.
+The panel holds no draft of its own, so it only passes the answer along.
+
 ## `internal bool PInputChangeCheck()`
 
 Whether the form differs from the one the user was given.
@@ -32,9 +37,10 @@ Stops the panel: the editor is shut down.
 
 ## Inline notes
 
-### `PEditor.PEditorAttach(host, engine, null);`
+### `PEditor.PEditorAttach(host, engine, "Input", null);`
 
 No entry: this panel creates them.
+The origin names this panel, so its held work is told apart from the library's.
 A form that stood on one would turn the next store into an update of it.
 That is how a session's second entry used to overwrite its first.
 

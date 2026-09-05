@@ -1,4 +1,4 @@
-# LCardDraft.cs
+﻿# LCardDraft.cs
 
 ## `public sealed record LCardDraft(`
 
@@ -14,9 +14,9 @@ It carries the typed text exactly as it stands on screen.
 It also carries the id of the row it was loaded from when it came from one.
 There is no state, and no database concern beyond saying which stored card it is.
 Empty fields stay empty strings rather than `null`, because "nothing was typed" is what the form means.
-The card's position is not carried.
-It is the order of the list the card sits in.
-The save reads it off that order and the load writes it back.
+The card carries the number it is shown by, so no view has to count the list itself.
+The save still ignores it and rewrites every position from the order of the list.
+The load fills it from the stored position, which is the same order read back.
 
 Example, Situation, Translation, Tag and Image are ordered sets, because the store models them as many-per-card.
 A card may reference any number of each.
@@ -58,6 +58,11 @@ A comparison that means "the same card" walks the lists itself.
   Each also carries what is known about that location.
   A Video the form also carries is not here and never reaches the store.
   A video is watched while the entry is being written, not kept with it.
+- `LCardDraftPosition` — The number this card is shown by, counted from one.
+  It is the reader's number and never the offset the store keeps.
+  The store counts from zero, so the load adds one on the way out.
+  There is no default, so every caller states the number the card stands at.
+  A card the engine saves has its number rewritten from the order of the list it sits in.
 - `LCardDraftId` — Id of the stored row this card was loaded from.
   It is empty for a card that has never been stored.
   It is the one member that is not typed text, and it exists only for the update.

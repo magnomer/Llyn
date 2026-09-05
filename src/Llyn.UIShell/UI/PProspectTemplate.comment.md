@@ -10,4 +10,4 @@ The row is a plain surface rather than a button, so the list beneath it keeps it
 ## `PProspectTemplate.xaml.cs`
 
 The dictionary forwards the row's click to the editor that owns the popup.
-The Category, Phonetic and Clip dictionaries do the same for their own rows.
+The Category, Notation and Clip dictionaries do the same for their own rows.

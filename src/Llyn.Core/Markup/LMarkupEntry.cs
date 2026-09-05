@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -57,10 +57,10 @@ public static partial class LMarkup
                 switch (token.LMarkupTokenName)
                 {
                     case "sense":
-                        senses.Add(LMarkupCardRead(block));
+                        senses.Add(LMarkupCardRead(block, senses.Count + 1));
                         break;
                     case "collocation":
-                        collocations.Add(LMarkupCardRead(block));
+                        collocations.Add(LMarkupCardRead(block, collocations.Count + 1));
                         break;
                     case "source":
                         sources.Add(LMarkupReferenceRead(block));

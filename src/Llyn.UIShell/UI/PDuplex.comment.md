@@ -19,7 +19,7 @@ An empty card would otherwise sit above the Entry with nothing in it.
 ## `<local:PDisplay x:Name="PLeftDisplay" />`
 
 The read-only entry view is shared, so it is a control rather than markup written here.
-Both sides read an Entry the same way the list panel does.
+Both sides read an Entry the same way the library panel does.
 Comparison is what differs, not how an Entry reads.
 
 ## `<ItemsControl x:Name="PRightIndex" Visibility="Collapsed">`

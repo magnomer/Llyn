@@ -126,7 +126,7 @@ public sealed class TExample
                 [],
                 [],
                 string.Empty,
-                [], [])],
+                [], [], 1)],
             []));
 
         string senseId = engine.LEngineSenseRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LSenseId;
@@ -262,7 +262,7 @@ public sealed class TExample
             "English",
             string.Empty,
             string.Empty,
-            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [])],
-            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [])]));
+            [new LCardDraft(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
+            [new LCardDraft(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
     }
 }

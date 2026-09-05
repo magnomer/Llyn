@@ -37,7 +37,7 @@
                             <Ellipse Width="3" Height="3" Fill="{DynamicResource Theme.Muted}" />
                         </UniformGrid>
                         <Border Grid.Column="1" Width="28" Height="28" Background="{DynamicResource Theme.AccentSoft}" CornerRadius="14">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding PCardOrder}" />
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding PCardPosition}" />
                         </Border>
                         <TextBox
                             Grid.Column="2"

@@ -59,7 +59,7 @@ One row of a picker popup.
 It carries no border and no fill of its own.
 A row can offer more than one action, so every action is its own button.
 The row itself takes no click.
-Lookup and downloader rows are the same row.
+Transcriber and downloader rows are the same row.
 
 ## `<Style x:Key="Theme.Popup.RowAction" TargetType="Button">`
 

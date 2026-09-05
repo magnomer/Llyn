@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -82,6 +82,7 @@ public sealed partial class LEngine : IDisposable
     {
         LWorkspaceRoot.LWorkspaceRootChange(path);
         _lEngineWorkspace = path;
+        _lEngineDraftHeld.Clear();
         LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
         _lEngineDatabase = new LDatabase(_lEngineWorkspace);

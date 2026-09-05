@@ -1,4 +1,4 @@
-# PCard.cs
+﻿# PCard.cs
 
 ## Inline notes
 
@@ -8,3 +8,9 @@ Id of the stored row this card was loaded from, empty for a card typed into an e
 No control shows it and nothing on screen changes with it.
 It travels with the card so a saved form can say which stored row each card is.
 That is what lets an update change the row a card came from instead of writing it again.
+
+### `public int PCardPosition`
+
+The number this card is shown by, counted from one.
+It is stored rather than derived, so the card carries the same number the draft was saved with.
+Changing it retitles the card, because the header reads the prefix and this number.
