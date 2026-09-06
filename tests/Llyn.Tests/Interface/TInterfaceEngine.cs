@@ -127,4 +127,80 @@ internal static partial class TInterface
 
     internal static LWorkspaceState TEngineStateRead(this LEngine engine) =>
         engine.LEngineStateRead();
+
+    internal static LSettings TEngineSettingsRead(this LEngine engine) =>
+        engine.LEngineSettingsRead();
+
+    internal static void TEngineLocalizationSave(this LEngine engine, string language)
+    {
+        engine.LEngineLocalizationSave(language);
+    }
+
+    internal static void TEngineWindowSave(this LEngine engine, LWindowState window)
+    {
+        engine.LEngineWindowSave(window);
+    }
+
+    internal static LWindowState TWindowStateCreate(
+        double left,
+        double top,
+        double width,
+        double height,
+        bool maximized) =>
+        new(left, top, width, height, maximized);
+
+    internal static void TEngineLeftSave(this LEngine engine, string? id)
+    {
+        engine.LEngineLeftSave(id);
+    }
+
+    internal static void TEngineRightSave(this LEngine engine, string? id)
+    {
+        engine.LEngineRightSave(id);
+    }
+
+    internal static void TEngineModeSave(this LEngine engine, string mode)
+    {
+        engine.LEngineModeSave(mode);
+    }
+
+    internal static void TEngineSplitSave(this LEngine engine, bool split)
+    {
+        engine.LEngineSplitSave(split);
+    }
+
+    internal static void TEngineOrderSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineOrderSave(order);
+    }
+
+    internal static void TEngineSequenceSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineSequenceSave(order);
+    }
+
+    internal static void TEngineSeriesSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineSeriesSave(order);
+    }
+
+    internal static void TEngineFunnelSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineFunnelSave(order);
+    }
+
+    internal static void TEngineTierSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineTierSave(order);
+    }
+
+    internal static void TEngineGradeSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineGradeSave(order);
+    }
+
+    internal static void TEngineRankSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineRankSave(order);
+    }
 }

@@ -28,6 +28,8 @@ The count is held and nothing is shown yet, because the recovery dialog is not b
 Puts every panel to work on the one engine.
 The workspace is swept first, so nothing already saved is counted as lost work.
 The leftovers are counted next, so the number describes the workspace as it was found.
+The stored view state is read once here and applied after every panel is attached.
+Reading it once is what keeps the panels from each asking the workspace the same question.
 
 ## `private void PWindowExitHandle(object? sender, EventArgs e)`
 

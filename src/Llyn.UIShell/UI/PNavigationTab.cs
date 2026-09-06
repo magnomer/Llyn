@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -51,27 +53,50 @@ public partial class PWindow
             return;
         }
 
-        (Button Button, FrameworkElement Panel)[] tabs =
-        [
-            (PNavigationInput, PInput),
-            (PNavigationLibrary, PLibrary),
-            (PNavigationPhonology, PPhonology),
-            (PNavigationTaxonomy, PTaxonomy),
-            (PNavigationRepertoire, PRepertoire),
-            (PNavigationCorpus, PCorpus),
-            (PNavigationSource, PReference),
-            (PNavigationFavorite, PFavorite),
-            (PNavigationDuplex, PDuplex),
-            (PNavigationSettings, PSettings)
-        ];
-
-        foreach ((Button button, FrameworkElement panel) in tabs)
+        foreach ((string mode, Button button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
         {
             bool isSelected = button == selectedButton;
             button.Style = (Style)FindResource(
                 isSelected ? "Theme.Navigation.Selected" : "Theme.Navigation.Button");
             panel.Visibility = isSelected ? Visibility.Visible : Visibility.Collapsed;
+
+            if (isSelected)
+            {
+                _lEngine.LEngineModeSave(mode);
+            }
         }
+    }
+
+    internal void PNavigationRestore(LWorkspaceState state)
+    {
+        foreach ((string mode, Button button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
+        {
+            if (!string.Equals(mode, state.LWorkspaceStateMode, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            PNavigationHandle(button, new RoutedEventArgs());
+            scribe?.Invoke(state.LWorkspaceStateSplit);
+            return;
+        }
+    }
+
+    private (string Mode, Button Button, FrameworkElement Panel, Action<bool>? Scribe)[] PNavigationTabRead()
+    {
+        return
+        [
+            ("Input", PNavigationInput, PInput, null),
+            ("Library", PNavigationLibrary, PLibrary, PLibrary.PLibraryScribeRestore),
+            ("Phonology", PNavigationPhonology, PPhonology, PPhonology.PPhonologyScribeRestore),
+            ("Taxonomy", PNavigationTaxonomy, PTaxonomy, PTaxonomy.PTaxonomyScribeRestore),
+            ("Repertoire", PNavigationRepertoire, PRepertoire, PRepertoire.PRepertoireScribeRestore),
+            ("Corpus", PNavigationCorpus, PCorpus, PCorpus.PCorpusScribeRestore),
+            ("Reference", PNavigationSource, PReference, PReference.PReferenceScribeRestore),
+            ("Favorite", PNavigationFavorite, PFavorite, PFavorite.PFavoriteScribeRestore),
+            ("Duplex", PNavigationDuplex, PDuplex, null),
+            ("Settings", PNavigationSettings, PSettings, null)
+        ];
     }
 
     internal void PWindowEntryShow(string id)

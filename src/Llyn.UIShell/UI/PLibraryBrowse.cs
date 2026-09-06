@@ -13,7 +13,7 @@ public partial class PLibrary
 
     private string? _pDisplayEntry;
 
-    private LCatalogOrder _pOrderChoice = LCatalogOrder.LCatalogOrderHeadword;
+    private LCatalogOrder _pOrderChoice;
 
     private async void PLibraryHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -41,9 +41,16 @@ public partial class PLibrary
             return;
         }
 
-        _pOrderChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderHeadword);
+        _pOrderChoice = LCatalog.LCatalogOrderParse(choice, _pOrderChoice);
+        _lEngine.LEngineOrderSave(_pOrderChoice);
         POrderDropper.IsChecked = false;
         PIndexFind(PInquiry.Text ?? string.Empty);
+    }
+
+    internal void POrderRestore(LCatalogOrder order)
+    {
+        _pOrderChoice = order;
+        PChoice.PChoiceOrderApply(POrderDropdown, order);
     }
 
     private void PIndexFind(string query)
@@ -175,9 +182,21 @@ public partial class PLibrary
 
     private void PLibraryScribeShow(bool editing)
     {
+        _lEngine.LEngineSplitSave(editing);
+
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PLibraryScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+    }
+
+    internal void PLibraryScribeRestore(bool editing)
+    {
+        if (editing)
+        {
+            PLibraryScribe.IsEnabled = true;
+        }
+
+        PLibraryScribeShow(editing);
     }
 
     internal bool PLibraryLeaveConfirm()

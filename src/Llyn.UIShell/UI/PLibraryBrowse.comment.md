@@ -17,9 +17,10 @@ The entry the right-hand side stands on, or null when none is selected.
 The display may show it and the editor may be correcting it.
 Either way it is the one entry this panel is on.
 
-### `private LCatalogOrder _pOrderChoice = LCatalogOrder.LCatalogOrderHeadword;`
+### `private LCatalogOrder _pOrderChoice;`
 
 Which ordering the index is listed in, held as one of the orderings the engine supports.
+It starts as whatever the workspace stored, which the window applies before the panel is first shown.
 The dropdown tag is read into that set, so the panel offers nothing the engine cannot do.
 The ordering is the same one whatever language names it.
 
@@ -96,6 +97,7 @@ So the display is filled from the store again rather than from what was on scree
 ### `private void PLibraryScribeShow(bool editing)`
 
 Which of the two halves the broader side shows, and what the toggle then offers.
+The half chosen is pushed downstream as it changes, so the panel opens on it next time.
 
 ### `internal bool PLibraryLeaveConfirm()`
 
@@ -115,3 +117,13 @@ An entry is selected now, so it can be written as well as read.
 The panel must not assume an entry is selected.
 With none chosen the display shows only its prompt.
 There is nothing to write, so the editor is closed and the toggle offers nothing.
+
+### `internal void POrderRestore(LCatalogOrder order)`
+
+Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
+The window calls it once on attach, so the panel never reads the stored state for itself.
+
+### `internal void PLibraryScribeRestore(bool editing)`
+
+Puts the panel back on the side it was left standing on.
+The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.

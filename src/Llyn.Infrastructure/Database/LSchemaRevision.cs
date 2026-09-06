@@ -47,6 +47,13 @@ public static class LSchemaRevision
                 mode TEXT,
                 split TEXT,
                 revision TEXT,
+                library_order TEXT,
+                phonology_order TEXT,
+                favorite_order TEXT,
+                taxonomy_order TEXT,
+                repertoire_order TEXT,
+                reference_order TEXT,
+                corpus_order TEXT,
                 FOREIGN KEY (left_entry) REFERENCES entry (id) ON DELETE SET NULL,
                 FOREIGN KEY (right_entry) REFERENCES entry (id) ON DELETE SET NULL,
                 FOREIGN KEY (revision) REFERENCES revision (id) ON DELETE SET NULL

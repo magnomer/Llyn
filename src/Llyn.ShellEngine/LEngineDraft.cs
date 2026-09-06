@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -96,11 +96,7 @@ public sealed partial class LEngine
 
             LWorkspaceArchive workspace = new(_lEngineDatabase);
             LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with
-            {
-                LWorkspaceStateLeft = entry.LEntryId,
-                LWorkspaceStateRevision = revision.LRevisionId,
-            });
+            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             session.LDatabaseSessionCommit();
             return entry;

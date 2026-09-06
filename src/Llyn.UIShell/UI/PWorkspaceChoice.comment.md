@@ -23,6 +23,11 @@ Permission and invalid characters are such faults.
 Restore the field so it keeps showing the folder actually in use.
 The fault is reported as well, because a field that reverts on its own tells the user nothing about why.
 
+### `_pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());`
+
+The new workspace carries its own view state, so the shell is put onto it before the panels are emptied.
+The orderings are in place by the time each panel re-reads its catalog.
+
 ### `_pSettingsHost.PInput.PInputReset();`
 
 The new workspace has its own database.

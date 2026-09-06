@@ -13,7 +13,7 @@ public partial class PPhonology
 
     private string? _pDisplayEntry;
 
-    private LCatalogOrder _pSequenceChoice = LCatalogOrder.LCatalogOrderHeadword;
+    private LCatalogOrder _pSequenceChoice;
 
     private async void PPhonologyHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -41,9 +41,16 @@ public partial class PPhonology
             return;
         }
 
-        _pSequenceChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderHeadword);
+        _pSequenceChoice = LCatalog.LCatalogOrderParse(choice, _pSequenceChoice);
+        _lEngine.LEngineSequenceSave(_pSequenceChoice);
         PSequenceDropper.IsChecked = false;
         PInventoryFind(PProbe.Text ?? string.Empty);
+    }
+
+    internal void PSequenceRestore(LCatalogOrder order)
+    {
+        _pSequenceChoice = order;
+        PChoice.PChoiceOrderApply(PSequenceDropdown, order);
     }
 
     private void PInventoryFind(string query)
@@ -179,9 +186,21 @@ public partial class PPhonology
 
     private void PPhonologyScribeShow(bool editing)
     {
+        _lEngine.LEngineSplitSave(editing);
+
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PPhonologyScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+    }
+
+    internal void PPhonologyScribeRestore(bool editing)
+    {
+        if (editing)
+        {
+            PPhonologyScribe.IsEnabled = true;
+        }
+
+        PPhonologyScribeShow(editing);
     }
 
     private bool PPhonologyLeaveConfirm()

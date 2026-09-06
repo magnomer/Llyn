@@ -15,7 +15,7 @@ Saves the whole input form as one new entry.
 That is the headword row and its meanings and collocations in card order.
 It is also its note and pronunciation when they carry text.
 It is also the revision recording the create.
-The workspace row is moved onto that revision and that entry.
+The workspace row is moved onto that revision.
 Returns the stored entry with its assigned id and timestamps.
 
 A blank headword is refused before any connection opens, so a save that cannot be made costs nothing.

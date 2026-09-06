@@ -130,30 +130,24 @@ public sealed partial class LEngine : IDisposable
         }
     }
 
-    public void LEngineSettingsSave(LSettings settings)
+    public void LEngineLocalizationSave(string language)
     {
-        lock (_lEngineGate)
-        {
-            ArgumentNullException.ThrowIfNull(settings);
-            _lEngineSettings = settings;
-            LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, settings);
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+        LEngineSettingsChange(settings => settings with { LSettingsLocalization = language });
     }
 
-    public LWorkspaceState LEngineStateRead()
+    public void LEngineWindowSave(LWindowState window)
     {
-        lock (_lEngineGate)
-        {
-            return new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead();
-        }
+        ArgumentNullException.ThrowIfNull(window);
+        LEngineSettingsChange(settings => settings with { LSettingsWindow = window });
     }
 
-    public void LEngineStateSave(LWorkspaceState state)
+    private void LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(state);
-            new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateSave(state);
+            _lEngineSettings = change(_lEngineSettings);
+            LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
         }
     }
 

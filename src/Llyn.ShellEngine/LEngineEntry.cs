@@ -102,7 +102,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return new LRevisionArchive(_lEngineDatabase).LRevisionLatestRead();
+            string? id = new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead().LWorkspaceStateRevision;
+            return id is null ? null : new LRevisionArchive(_lEngineDatabase).LRevisionRead(id);
         }
     }
 

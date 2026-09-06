@@ -21,6 +21,8 @@ Setting the startup location to manual is required, since the designed default c
 ## `private void PWindowStateSave()`
 
 Runs on closing, once the user has confirmed and the window is still up.
+The geometry alone is handed downstream, never the whole settings record.
+A language chosen during the same session therefore survives the close.
 The restored rectangle is stored, never the maximized one, so restoring returns to a usable size.
 `RestoreBounds` supplies it whenever the window is maximized or minimized.
 An empty or degenerate rectangle is dropped, leaving the previous geometry in place.

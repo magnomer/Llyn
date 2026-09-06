@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -32,6 +33,8 @@ public partial class PWindow : Window
         engine.LEngineLeftoverSweep();
         PWindowLeftover = engine.LEngineLeftoverRead().Count;
 
+        LWorkspaceState state = engine.LEngineStateRead();
+
         PInput.PInputAttach(this, engine);
         PLibrary.PLibraryAttach(this, engine);
         PPhonology.PPhonologyAttach(this, engine);
@@ -42,6 +45,8 @@ public partial class PWindow : Window
         PFavorite.PFavoriteAttach(this, engine);
         PDuplex.PDuplexAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
+
+        PWindowViewRestore(state);
     }
 
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)

@@ -1,4 +1,4 @@
-﻿# LEngine.cs
+# LEngine.cs
 
 ## `public sealed partial class LEngine : IDisposable`
 
@@ -76,18 +76,21 @@ The cached source lists go too, because a language keeps whichever list the work
 
 Returns the user's persisted settings.
 
-## `public void LEngineSettingsSave(LSettings settings)`
+## `public void LEngineLocalizationSave(string language)`
 
-Persists `settings` into the current workspace and keeps them current.
+Persists the chosen interface language and keeps it current.
+Only that field is written, so a window geometry saved by another part of the shell survives the change.
 
-## `public LWorkspaceState LEngineStateRead()`
+## `public void LEngineWindowSave(LWindowState window)`
 
-Opens the workspace row, creating it on first use so the UI always receives a state.
-The row holds which Entry each pane shows, the display mode, the split, and the current revision.
+Persists the window geometry of the run that is ending and keeps it current.
+Only that field is written, so an interface language chosen during the same session survives the change.
 
-## `public void LEngineStateSave(LWorkspaceState state)`
+## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
-Writes `state` back into the workspace row.
+Applies `change` to the settings held here and writes the result out, under the engine gate.
+The read and the write are one step, so one writer never overwrites what another wrote between them.
+The shell therefore never reads settings, changes a field and hands the whole record back.
 
 ## `public Task LEnginePronunciationFind(string word, string language, LReceiver receiver, CancellationToken cancellation)`
 

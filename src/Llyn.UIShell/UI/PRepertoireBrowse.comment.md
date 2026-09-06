@@ -74,3 +74,13 @@ Deletes the shown Situation.
 A Situation nothing references is deleted outright.
 One something references is deleted only after the user is told how many places that reaches and says yes.
 The detaching and the delete are one operation in the store, because between two steps the count can change.
+
+### `internal void PTierRestore(LCatalogOrder order)`
+
+Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
+The window calls it once on attach, so the panel never reads the stored state for itself.
+
+### `internal void PRepertoireScribeRestore(bool editing)`
+
+Puts the panel back on the side it was left standing on.
+The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.

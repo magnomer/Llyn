@@ -19,7 +19,7 @@ public partial class PRepertoire
 
     private string? _pVignetteSituation;
 
-    private LCatalogOrder _pTierChoice = LCatalogOrder.LCatalogOrderName;
+    private LCatalogOrder _pTierChoice;
 
     private bool _pScenarioTitleUnreadable;
 
@@ -56,9 +56,16 @@ public partial class PRepertoire
             return;
         }
 
-        _pTierChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderName);
+        _pTierChoice = LCatalog.LCatalogOrderParse(choice, _pTierChoice);
+        _lEngine.LEngineTierSave(_pTierChoice);
         PTierDropper.IsChecked = false;
         PAtlasFind(PInquest.Text ?? string.Empty);
+    }
+
+    internal void PTierRestore(LCatalogOrder order)
+    {
+        _pTierChoice = order;
+        PChoice.PChoiceOrderApply(PTierDropdown, order);
     }
 
     private void PAtlasFind(string query)
@@ -343,9 +350,21 @@ public partial class PRepertoire
 
     private void PRepertoireScribeShow(bool editing)
     {
+        _lEngine.LEngineSplitSave(editing);
+
         PScenario.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PVignette.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PRepertoireScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+    }
+
+    internal void PRepertoireScribeRestore(bool editing)
+    {
+        if (editing)
+        {
+            PRepertoireScribe.IsEnabled = true;
+        }
+
+        PRepertoireScribeShow(editing);
     }
 
     private void PScenarioDiscardHandle(object sender, RoutedEventArgs e)

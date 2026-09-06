@@ -12,12 +12,13 @@ Puts the panel to work on `engine`, the workspace the window opened.
 Nothing is read yet.
 Each side fills itself once a query is typed into it.
 
-## `internal void PDuplexReset()`
+## `internal void PDuplexRestore(LWorkspaceState state)`
 
-Puts the panel back on the workspace open now.
-Both queries are emptied and both sides stand on nothing.
+Puts the panel back on the workspace open now, standing on the Entries `state` names.
+Both queries are emptied and both sides are cleared first.
 A different workspace has its own database.
-So the Entries the panel was comparing came from one that is no longer open.
+So the Entries the panel was comparing came from one that is no longer open, and the ones it stands on come from the one that is.
+A side the state names nothing for stays empty.
 
 ## `internal void PDuplexClose()`
 

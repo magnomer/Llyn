@@ -27,6 +27,7 @@ The first part names the operation the test drives, the second the condition it 
 ## Layout
 
 - `Interface/` — the relay layer and the boundary guard.
+- `Configuration/` — the view state and the settings a workspace carries between runs.
 - `Database/` — schema migration and session behaviour.
 - `Entry/` — saving, loading, updating, and deleting an entry.
 - `Draft/` — held drafts and the tentative links waiting on them.

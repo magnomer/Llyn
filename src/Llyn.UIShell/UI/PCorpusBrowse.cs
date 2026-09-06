@@ -22,7 +22,7 @@ public partial class PCorpus
 
     private string? _pExcerptExample;
 
-    private LCatalogOrder _pRankChoice = LCatalogOrder.LCatalogOrderText;
+    private LCatalogOrder _pRankChoice;
 
     private async void PCorpusHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -55,9 +55,16 @@ public partial class PCorpus
             return;
         }
 
-        _pRankChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderText);
+        _pRankChoice = LCatalog.LCatalogOrderParse(choice, _pRankChoice);
+        _lEngine.LEngineRankSave(_pRankChoice);
         PRankDropper.IsChecked = false;
         PAnthologyFind(PQuery.Text ?? string.Empty);
+    }
+
+    internal void PRankRestore(LCatalogOrder order)
+    {
+        _pRankChoice = order;
+        PChoice.PChoiceOrderApply(PRankDropdown, order);
     }
 
     private void PAnthologyFind(string query)
@@ -259,9 +266,21 @@ public partial class PCorpus
 
     private void PCorpusScribeShow(bool editing)
     {
+        _lEngine.LEngineSplitSave(editing);
+
         PTranscript.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PExcerpt.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PCorpusScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+    }
+
+    internal void PCorpusScribeRestore(bool editing)
+    {
+        if (editing)
+        {
+            PCorpusScribe.IsEnabled = true;
+        }
+
+        PCorpusScribeShow(editing);
     }
 
     internal bool PCorpusLeaveConfirm()

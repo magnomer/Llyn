@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 25;
+    public const long LSchemaMigrationVersion = 26;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -98,6 +98,11 @@ public static class LSchemaMigration
         if (stored < 25)
         {
             LSchemaSentenceNormalize(connection, "collocation_example", "collocation_id", "collocation");
+        }
+
+        if (stored < 26)
+        {
+            LSchemaWorkspace.LSchemaWorkspaceNormalize(connection);
         }
 
         LSchemaVersionSave(connection);

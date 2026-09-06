@@ -64,3 +64,13 @@ Held work is started on entering and discarded on leaving, so no draft outlives 
 Drops the selection and empties the reading, the citing list and the edit area together.
 Held work is discarded first, because the panel is leaving behind everything the draft was opened on.
 `PReferenceScribe` is disabled with it, because there is nothing to edit while nothing is selected.
+
+### `internal void PGradeRestore(LCatalogOrder order)`
+
+Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
+The window calls it once on attach, so the panel never reads the stored state for itself.
+
+### `internal void PReferenceScribeRestore(bool editing)`
+
+Puts the panel back on the side it was left standing on.
+The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.

@@ -61,11 +61,7 @@ public sealed partial class LEngine
 
             LWorkspaceArchive workspace = new(_lEngineDatabase);
             LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with
-            {
-                LWorkspaceStateLeft = id,
-                LWorkspaceStateRevision = revision.LRevisionId,
-            });
+            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             LEntry updated = entries.LEntryRead(id) ?? stored;
             session.LDatabaseSessionCommit();

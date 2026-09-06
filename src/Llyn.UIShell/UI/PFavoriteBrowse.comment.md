@@ -60,6 +60,7 @@ Leaving the editor asks about unsaved changes first, then reloads the entry as s
 ## `private void PFavoriteScribeShow(bool editing)`
 
 Shows one of the two views and relabels the button with what the next click does.
+The side chosen is pushed downstream as it changes, so the panel opens on it next time.
 
 ## `internal bool PFavoriteLeaveConfirm()`
 
@@ -73,3 +74,13 @@ Fills the display and enables the mode toggle, which is dead while nothing is se
 ## `private void PFavoriteClear()`
 
 Returns the panel to nothing selected, reading, and no editor open.
+
+## `internal void PSeriesRestore(LCatalogOrder order)`
+
+Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
+The window calls it once on attach, so the panel never reads the stored state for itself.
+
+## `internal void PFavoriteScribeRestore(bool editing)`
+
+Puts the panel back on the side it was left standing on.
+The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.

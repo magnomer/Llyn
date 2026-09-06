@@ -23,7 +23,7 @@ public partial class PReference
 
     private string? _pColophonReference;
 
-    private LCatalogOrder _pGradeChoice = LCatalogOrder.LCatalogOrderName;
+    private LCatalogOrder _pGradeChoice;
 
     private void PReferenceHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -53,9 +53,16 @@ public partial class PReference
             return;
         }
 
-        _pGradeChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderName);
+        _pGradeChoice = LCatalog.LCatalogOrderParse(choice, _pGradeChoice);
+        _lEngine.LEngineGradeSave(_pGradeChoice);
         PGradeDropper.IsChecked = false;
         PShelfFind(PSurvey.Text ?? string.Empty);
+    }
+
+    internal void PGradeRestore(LCatalogOrder order)
+    {
+        _pGradeChoice = order;
+        PChoice.PChoiceOrderApply(PGradeDropdown, order);
     }
 
     private IReadOnlyList<LAuthor> PShelfCreditRead(string id)
@@ -276,9 +283,21 @@ public partial class PReference
 
     private void PReferenceScribeShow(bool editing)
     {
+        _lEngine.LEngineSplitSave(editing);
+
         PImprint.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PColophon.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PReferenceScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+    }
+
+    internal void PReferenceScribeRestore(bool editing)
+    {
+        if (editing)
+        {
+            PReferenceScribe.IsEnabled = true;
+        }
+
+        PReferenceScribeShow(editing);
     }
 
     internal bool PReferenceLeaveConfirm()

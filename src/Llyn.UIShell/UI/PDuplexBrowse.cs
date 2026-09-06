@@ -43,7 +43,7 @@ public partial class PDuplex
         }
 
         PLeftIndex.Visibility = Visibility.Collapsed;
-        PDuplexEntryShow(item.PIndexItemId, PLeftDisplay);
+        _lEngine.LEngineLeftSave(PDuplexEntryShow(item.PIndexItemId, PLeftDisplay) ? item.PIndexItemId : null);
     }
 
     private void PRightIndexHandle(object sender, RoutedEventArgs e)
@@ -54,7 +54,7 @@ public partial class PDuplex
         }
 
         PRightIndex.Visibility = Visibility.Collapsed;
-        PDuplexEntryShow(item.PIndexItemId, PRightDisplay);
+        _lEngine.LEngineRightSave(PDuplexEntryShow(item.PIndexItemId, PRightDisplay) ? item.PIndexItemId : null);
     }
 
     private void PDuplexIndexFind(string query, ObservableCollection<PIndexItem> catalog, ItemsControl index)
@@ -72,7 +72,7 @@ public partial class PDuplex
         index.Visibility = catalog.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
     }
 
-    private void PDuplexEntryShow(string id, PDisplay display)
+    private bool PDuplexEntryShow(string id, PDisplay display)
     {
         LEntryDraft? draft;
         try
@@ -82,15 +82,16 @@ public partial class PDuplex
         catch (Exception exception)
         {
             _pDuplexHost.PWindowFailureShow("Duplex.LoadFailed", exception);
-            return;
+            return false;
         }
 
         if (draft is null)
         {
             display.PDisplayClear();
-            return;
+            return false;
         }
 
         display.PDisplayShow(id, draft);
+        return true;
     }
 }

@@ -14,7 +14,7 @@ public partial class PFavorite
 
     private string? _pRosterEntry;
 
-    private LCatalogOrder _pSeriesChoice = LCatalogOrder.LCatalogOrderHeadword;
+    private LCatalogOrder _pSeriesChoice;
 
     private async void PFavoriteHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -42,9 +42,16 @@ public partial class PFavorite
             return;
         }
 
-        _pSeriesChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderHeadword);
+        _pSeriesChoice = LCatalog.LCatalogOrderParse(choice, _pSeriesChoice);
+        _lEngine.LEngineSeriesSave(_pSeriesChoice);
         PSeriesDropper.IsChecked = false;
         PRosterFind(PRecall.Text ?? string.Empty);
+    }
+
+    internal void PSeriesRestore(LCatalogOrder order)
+    {
+        _pSeriesChoice = order;
+        PChoice.PChoiceOrderApply(PSeriesDropdown, order);
     }
 
     private void PRosterFind(string query)
@@ -183,9 +190,21 @@ public partial class PFavorite
 
     private void PFavoriteScribeShow(bool editing)
     {
+        _lEngine.LEngineSplitSave(editing);
+
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PFavoriteScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+    }
+
+    internal void PFavoriteScribeRestore(bool editing)
+    {
+        if (editing)
+        {
+            PFavoriteScribe.IsEnabled = true;
+        }
+
+        PFavoriteScribeShow(editing);
     }
 
     internal bool PFavoriteLeaveConfirm()

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -23,13 +24,23 @@ public partial class PDuplex : UserControl
         PRightDisplay.PDisplayAttach(host, engine);
     }
 
-    internal void PDuplexReset()
+    internal void PDuplexRestore(LWorkspaceState state)
     {
         PLeftQuery.Text = string.Empty;
         PRightQuery.Text = string.Empty;
 
         PLeftDisplay.PDisplayClear();
         PRightDisplay.PDisplayClear();
+
+        if (state.LWorkspaceStateLeft is string left)
+        {
+            PDuplexEntryShow(left, PLeftDisplay);
+        }
+
+        if (state.LWorkspaceStateRight is string right)
+        {
+            PDuplexEntryShow(right, PRightDisplay);
+        }
     }
 
     internal void PDuplexClose()

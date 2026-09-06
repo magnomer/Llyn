@@ -21,9 +21,10 @@ It is the whole workspace, which is what the panel shows before anything is pick
 The entry the right-hand side stands on, or null when none is selected.
 The reader may show it and the editor may be correcting it.
 
-### `private LCatalogOrder _pFunnelChoice = LCatalogOrder.LCatalogOrderName;`
+### `private LCatalogOrder _pFunnelChoice;`
 
 Which ordering the tag catalog is listed in, held as one of the orderings the engine supports.
+It starts as whatever the workspace stored, which the window applies before the panel is first shown.
 The dropdown tag is read into that set, so the panel offers nothing the engine cannot do.
 The ordering is the same one whatever language names it.
 
@@ -54,3 +55,13 @@ That is how the panel is put back on the whole workspace without a separate cont
 
 A store is answered by re-reading the catalog rather than the entry list alone.
 Storing may have written a tag no other card carries, or taken away the last card that carried one.
+
+### `internal void PFunnelRestore(LCatalogOrder order)`
+
+Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
+The window calls it once on attach, so the panel never reads the stored state for itself.
+
+### `internal void PTaxonomyScribeRestore(bool editing)`
+
+Puts the panel back on the side it was left standing on.
+The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.

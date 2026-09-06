@@ -18,7 +18,7 @@ That requires foreign-key enforcement to be off.
 Enforcement cannot be changed inside a transaction.
 So the runner is called with a plain connection, before any session is open.
 
-## `public const long LSchemaMigrationVersion = 24;`
+## `public const long LSchemaMigrationVersion = 26;`
 
 The schema version this build produces.
 A later change to an existing table raises it.
@@ -109,6 +109,12 @@ A Collocation's hold on an Example takes the shape a Meaning's already has, so `
 The same rebuild serves both, because the two tables differ only in their name and their owner column.
 Every older row is carried over with its Example and its place, stating no frame and no rewrite.
 The editor already drew the frame fields on a Collocation card, and the store dropped them until now.
+
+### `if (stored < 26)`
+
+Version 26.
+The workspace row gains one ordering column per browse panel, so the shell's own view state outlives the process.
+`LSchemaWorkspace` adds only the columns that are missing, and carries every row over untouched.
 
 ### `private static void LSchemaSentenceRebuild(`
 

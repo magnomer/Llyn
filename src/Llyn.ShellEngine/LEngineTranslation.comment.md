@@ -51,6 +51,7 @@ The row carries a headword and a language and nothing else.
 The language is the one the caller chose, because a typed word does not name its own.
 A stub is a real Entry and is opened and filled in like any other later.
 So its making is recorded as a revision, exactly as any other new Entry is.
+The workspace row is moved onto that revision, so the pointer names the current revision whichever path opened it.
 
 ## `public void LEngineTranslationDelete(string id)`
 

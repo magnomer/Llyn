@@ -100,7 +100,11 @@ public sealed partial class LEngine
                 speeches: []);
 
             LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
-            new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+            LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+
+            LWorkspaceArchive workspace = new(_lEngineDatabase);
+            LWorkspaceState state = workspace.LWorkspaceStateRead();
+            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             session.LDatabaseSessionCommit();
             return entry;

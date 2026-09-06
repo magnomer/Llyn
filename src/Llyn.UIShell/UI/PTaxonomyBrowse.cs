@@ -18,7 +18,7 @@ public partial class PTaxonomy
 
     private string? _pDisplayEntry;
 
-    private LCatalogOrder _pFunnelChoice = LCatalogOrder.LCatalogOrderName;
+    private LCatalogOrder _pFunnelChoice;
 
     private async void PTaxonomyHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -47,9 +47,16 @@ public partial class PTaxonomy
             return;
         }
 
-        _pFunnelChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderName);
+        _pFunnelChoice = LCatalog.LCatalogOrderParse(choice, _pFunnelChoice);
+        _lEngine.LEngineFunnelSave(_pFunnelChoice);
         PFunnelDropper.IsChecked = false;
         PDirectoryFind(PExploration.Text ?? string.Empty);
+    }
+
+    internal void PFunnelRestore(LCatalogOrder order)
+    {
+        _pFunnelChoice = order;
+        PChoice.PChoiceOrderApply(PFunnelDropdown, order);
     }
 
     private void PDirectoryReset()
@@ -240,9 +247,21 @@ public partial class PTaxonomy
 
     private void PTaxonomyScribeShow(bool editing)
     {
+        _lEngine.LEngineSplitSave(editing);
+
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PTaxonomyScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+    }
+
+    internal void PTaxonomyScribeRestore(bool editing)
+    {
+        if (editing)
+        {
+            PTaxonomyScribe.IsEnabled = true;
+        }
+
+        PTaxonomyScribeShow(editing);
     }
 
     private bool PTaxonomyLeaveConfirm()

@@ -50,14 +50,11 @@ public partial class PWindow
             return;
         }
 
-        _lEngine.LEngineSettingsSave(_lEngine.LEngineSettingsRead() with
-        {
-            LSettingsWindow = new LWindowState(
-                bounds.Left,
-                bounds.Top,
-                bounds.Width,
-                bounds.Height,
-                WindowState == WindowState.Maximized)
-        });
+        _lEngine.LEngineWindowSave(new LWindowState(
+            bounds.Left,
+            bounds.Top,
+            bounds.Width,
+            bounds.Height,
+            WindowState == WindowState.Maximized));
     }
 }

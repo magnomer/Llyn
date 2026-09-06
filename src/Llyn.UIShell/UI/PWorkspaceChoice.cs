@@ -51,6 +51,8 @@ public partial class PSettings
             return;
         }
 
+        _pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());
+
         _pSettingsHost.PInput.PInputReset();
         _pSettingsHost.PLibrary.PLibraryReset();
         _pSettingsHost.PPhonology.PPhonologyReset();
@@ -59,6 +61,5 @@ public partial class PSettings
         _pSettingsHost.PCorpus.PCorpusReset();
         _pSettingsHost.PReference.PReferenceReset();
         _pSettingsHost.PFavorite.PFavoriteReset();
-        _pSettingsHost.PDuplex.PDuplexReset();
     }
 }
