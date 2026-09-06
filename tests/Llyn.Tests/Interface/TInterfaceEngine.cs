@@ -13,6 +13,23 @@ internal static partial class TInterface
     internal static LCourtLink? TEngineCourtFind(this LEngine engine, string ownerId, string targetId) =>
         engine.LEngineCourtFind(ownerId, targetId);
 
+    internal static LCourtLink TEngineCourtStart(
+        this LEngine engine,
+        string ownerId,
+        string origin,
+        string headword,
+        string language) =>
+        engine.LEngineCourtStart(ownerId, origin, headword, language);
+
+    internal static string TEngineCardCreate(this LEngine engine) =>
+        engine.LEngineCardCreate();
+
+    internal static IReadOnlyList<LCardDraft> TEngineDraftNormalize(
+        this LEngine engine,
+        string id,
+        bool collocation) =>
+        engine.LEngineDraftNormalize(id, collocation);
+
     internal static LCourtLink TEngineCourtSave(
         this LEngine engine,
         string ownerId,
@@ -48,10 +65,8 @@ internal static partial class TInterface
     internal static LDraft? TEngineDraftRead(this LEngine engine, string id) =>
         engine.LEngineDraftRead(id);
 
-    internal static void TEngineDraftSave(this LEngine engine, LDraft draft)
-    {
+    internal static LEntryDraft TEngineDraftSave(this LEngine engine, LDraft draft) =>
         engine.LEngineDraftSave(draft);
-    }
 
     internal static IReadOnlyList<LDraft> TEngineDraftScan(this LEngine engine) =>
         engine.LEngineDraftScan();

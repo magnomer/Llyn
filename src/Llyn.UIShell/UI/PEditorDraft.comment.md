@@ -46,11 +46,13 @@ So filling them the other way round would wipe the audio this entry was saved wi
 
 Filling is over, so what the controls raise from here on is the user's.
 
-### `private static void PCardShow(`
+### `private void PCardShow(`
 
 The inverse of PCardRead, for either list.
 Each card takes the number the draft carries, not its place in the loop.
+Each card takes the id the draft carries too, which is how a later answer names it back.
 An entry saved with no cards still shows one empty card.
+That card is minted like any other the form adds, so it is named before anything is typed into it.
 The panel is an editor.
 An editor with nothing to type into is not a state the form has.
 
@@ -131,6 +133,19 @@ An empty form links to nothing, so there is nothing to look words up for.
 Hands the current draft back and asks the engine for a new one.
 Everything the form shows from then on belongs to that draft.
 An entry that no longer loads is refused before a file is written, and the form comes up empty.
+A refusal is reported and the form is suspended, because a control may buffer keystrokes only while a draft waits for them.
+A draft that starts lifts a suspension, since the downstream the form lost is back.
+
+### `private void PEditorHoldSuspend(Exception exception)`
+
+Puts the form into a held-nothing state and says why once.
+The whole editor is disabled, so no further keystroke is taken into a buffer that has nowhere to push.
+Only the first failure is reported, because a reset after one raises the same failure again.
+
+### `private void PEditorHoldResume()`
+
+Gives the form back to the user once a draft is holding its keystrokes again.
+It does nothing to a form that was never suspended, so an ordinary start touches no control.
 
 ### `private void PEditorDraftCancel()`
 
@@ -139,13 +154,27 @@ The id is dropped first, so a failure to delete cannot leave the form writing in
 
 ### `private void PEditorDraftSave()`
 
-Copies what the controls hold into the held draft.
+Copies what the controls hold into the held draft, and shows back whatever was stored instead.
 The draft is read back first, because it carries the entry and the origin this form does not.
-A failed write is swallowed: a dialog per keystroke would be worse than a draft one word behind.
+A draft that reads back null is gone, which is an ordinary answer and leaves the form alone.
+A write that fails is not, so the form is suspended and the failure reported.
+The engine may correct what it was sent.
+A form that assumed otherwise would drift from the draft with no way to notice.
+The content handed back is the content that went in whenever nothing was corrected, so the ordinary keystroke redraws nothing.
+Filling from the answer is guarded as any other fill is, so showing it starts no further write.
+
+### `private void PEditorDraftRestore()`
+
+Fills the form back from the draft as stored.
+This is what a form does when it can no longer tell whether what it shows is what is held.
+A draft that reads back null leaves the form alone, since there is nothing left to agree with.
 
 ### `internal bool PEditorDraftFinish(bool store)`
 
 The window's exit answer applied to this form's own draft.
+A write still waiting on the typing pause is made before the wait is dropped.
+So a form closed between two keystrokes carries the last of them out with it.
+The caller is not trusted to have asked the form for changes first.
 Storing commits it, which is the same write the save button makes, so a word typed and never saved survives the exit that was meant to keep it.
 Discarding cancels it, and a draft matching its entry is cancelled either way because there is nothing in it to store.
 A refused commit keeps the draft and reports the refusal, the same way the save button does.
@@ -157,6 +186,7 @@ A settled form leaves the folder no file, so a clean exit is never reported as w
 
 Asks the engine whether the held draft differs from the entry it started from.
 A form with no draft has nothing to lose, so it answers no.
+A question the engine cannot answer at all suspends the form, because the draft behind it can no longer be trusted.
 
 ### `private IReadOnlyList<LCardDraft> PCardRead(IReadOnlyList<PCard> cards)`
 

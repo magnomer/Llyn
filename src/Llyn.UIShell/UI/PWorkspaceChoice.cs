@@ -44,9 +44,10 @@ public partial class PSettings
         {
             _lEngine.LEngineWorkspaceChange(path);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
             PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+            _pSettingsHost.PWindowFailureShow("Workspace.OpenFailed", exception);
             return;
         }
 

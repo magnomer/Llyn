@@ -7,6 +7,8 @@ The shell references `Llyn.Core` and `Llyn.ShellEngine` only, and the archives l
 Every call here reaches the workspace root the engine already holds, so a moved workspace moves the drafts with it.
 Held work is one file per draft, which is why a crash costs at most the last keystrokes.
 It stays apart from `LEngineDraft.cs`, which owns the database write and knows nothing of files.
+An id raised here belongs to the workspace that raised it, so a workspace change marks every held id stale.
+Every call naming an id is checked against that mark, because a shell can keep an id the engine has already left behind.
 
 ## `public LDraft LEngineDraftStart(string origin, string? entryId)`
 
@@ -17,16 +19,21 @@ An entry that is gone is refused before a file is written, so no draft can point
 `origin` records which surface opened the work, so a recovered draft can say where it came from.
 A claim naming this process is written beside the draft, so another launch reading the folder knows the work is live.
 
-## `public void LEngineDraftSave(LDraft draft)`
+## `public LEntryDraft LEngineDraftSave(LDraft draft)`
 
-Overwrites that one file with the content given.
+Overwrites that one file with the content given, and hands back the content it stored.
 The write goes through a pending file and a move, so a reader never sees half a draft.
 The moment is the caller's, because only the caller knows whether this write was a real edit.
+What is stored is not always what was sent, so the caller renders the answer rather than its own copy.
+A card arriving without an id is named here, which is what a draft written by an older launch carries.
+The content that came in is handed straight back when nothing needed naming.
+So the caller can tell a settled write from a corrected one without comparing field by field.
 
 ## `public LDraft? LEngineDraftRead(string id)`
 
 Reads one held draft, or null when its file is gone or unreadable.
 A missing file is an ordinary answer here, unlike the calls that go on to act on the draft.
+An id from a closed workspace is not a missing file and is refused rather than answered null.
 
 ## `public IReadOnlyList<LDraft> LEngineDraftScan()`
 
@@ -74,11 +81,41 @@ This is the only place card order is computed, so the form no longer keeps its o
 Both ends are clamped into range, because a drag can land past the last card.
 An empty list is written back untouched.
 
+## `public IReadOnlyList<LCardDraft> LEngineDraftNormalize(string id, bool collocation)`
+
+Renumbers one card list without moving anything, and hands the whole list back.
+A removed card leaves a gap in the numbering that nothing else closes.
+Asking for a move of nothing said the same thing by accident, and read as a reorder that never happened.
+
+## `public string LEngineCardCreate()`
+
+Mints one card id for a card the form has just added.
+The form cannot mint one itself, because identity is the workspace's to give.
+An id given at the moment a card appears is what lets a later answer name that card back.
+
+## `private IReadOnlyList<LCardDraft> LEngineCardApply(LDraft draft, bool collocation, List<LCardDraft> cards)`
+
+Writes one card list onto a held draft, numbered from `1` and named throughout.
+Positions are rewritten so they stay contiguous whatever the caller did to the list.
+This is the only place card order is computed, so the form no longer keeps its own count.
+A card still carrying no id is named here too.
+The answer is about to be matched by id.
+Both the move and the renumber end here, so the two cannot drift apart.
+
 ## `public LCourtLink LEngineCourtSave(string ownerId, string targetId, string headword, string language)`
 
 Writes one court row: a link from a held draft to a target that is not an entry yet.
 The headword and language travel with it, because the chip is shown long before the target is real.
 Returns the row so the caller can drop it again by id.
+
+## `public LCourtLink LEngineCourtStart(string ownerId, string origin, string headword, string language)`
+
+Starts a tentative target and records the row naming it, as one call.
+The word and the language are written into the target before the row is made.
+A caller doing this in three calls could fail on the last and leave a draft nothing points at.
+Such a draft is invisible: no chip names it, and no commit or cancel ever reaches it.
+A failure anywhere after the target is started cancels it before the refusal leaves.
+So the workspace holds either the target with its row or neither.
 
 ## `public void LEngineCourtDelete(string linkId)`
 
@@ -182,6 +219,18 @@ A live claim naming this very process is one this engine already knows about thr
 So only another process's claim answers true, which is the case an in-memory set can say nothing about.
 A stale claim is swept by the check itself and answers false.
 
+## `private static LEntryDraft LEngineDraftNormalize(LEntryDraft content)`
+
+The same content with every card named.
+The content that came in is returned itself when both lists were already named.
+That sameness is the answer the form reads to know nothing was corrected.
+
+## `private static IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)`
+
+The same cards with an id minted for each one carrying none.
+The list that came in is returned itself when every card was already named.
+A copy is taken only from the first unnamed card, because a settled list is the ordinary case.
+
 ## `private static LEntryDraft LEngineDraftBlank`
 
 What a draft carrying no entry is measured against.
@@ -229,6 +278,12 @@ Whether two value lists match, keeping an unreadable field apart from an empty o
 ## `private static bool LEngineTextMatch(IReadOnlyList<string> one, IReadOnlyList<string> other)`
 
 Whether two text lists match exactly, order included.
+
+## `private void LEngineDraftValidate(string id)`
+
+Refuses an id raised in a workspace this engine no longer holds.
+The folder such an id names is gone, so a read would answer null and a write would land in the wrong workspace.
+A caller holding one is told so rather than being handed either silence.
 
 ## `private LDraft LEngineDraftLoad(string id)`
 

@@ -12,6 +12,16 @@ public partial class PWindow
         return TryFindResource(key) as string ?? key;
     }
 
+    internal void PWindowFailureShow(string key)
+    {
+        MessageBox.Show(
+            this,
+            PLocalizationTextRead(key),
+            PLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
+    }
+
     internal void PWindowFailureShow(string key, Exception exception)
     {
         MessageBox.Show(
@@ -34,11 +44,27 @@ public partial class PWindow
             : $"{exception.Message}\n{PWindowDetailRead(exception.InnerException)}";
     }
 
+    private (Func<bool> Check, Func<bool, bool> Finish)[] PWindowEditorRead()
+    {
+        return
+        [
+            (PInput.PInputChangeCheck, PInput.PInputDraftFinish),
+            (PLibrary.PLibraryChangeCheck, PLibrary.PLibraryDraftFinish),
+            (PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
+            (PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
+            (PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish)
+        ];
+    }
+
     internal bool PWindowDiscardConfirm()
     {
-        bool unsaved = PInput.PInputChangeCheck() || PLibrary.PLibraryChangeCheck() || PPhonology.PPhonologyChangeCheck()
-            || PTaxonomy.PTaxonomyChangeCheck() || PRepertoire.PRepertoireChangeCheck()
-            || PCorpus.PCorpusChangeCheck() || PReference.PReferenceChangeCheck();
+        (Func<bool> Check, Func<bool, bool> Finish)[] editors = PWindowEditorRead();
+
+        bool unsaved = false;
+        foreach ((Func<bool> check, Func<bool, bool> _) in editors)
+        {
+            unsaved |= check();
+        }
 
         bool store;
         if (unsaved)
@@ -62,16 +88,17 @@ public partial class PWindow
             store = false;
         }
 
-        return PWindowDraftFinish(store);
+        return PWindowDraftFinish(editors, store);
     }
 
-    private bool PWindowDraftFinish(bool store)
+    private bool PWindowDraftFinish((Func<bool> Check, Func<bool, bool> Finish)[] editors, bool store)
     {
-        bool finished = PInput.PInputDraftFinish(store);
-        finished &= PLibrary.PLibraryDraftFinish(store);
-        finished &= PPhonology.PPhonologyDraftFinish(store);
-        finished &= PTaxonomy.PTaxonomyDraftFinish(store);
-        finished &= PFavorite.PFavoriteDraftFinish(store);
+        bool finished = true;
+        foreach ((Func<bool> _, Func<bool, bool> finish) in editors)
+        {
+            finished &= finish(store);
+        }
+
         return finished;
     }
 

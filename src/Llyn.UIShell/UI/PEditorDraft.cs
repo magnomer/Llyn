@@ -11,6 +11,8 @@ public partial class PEditor
 {
     private string _pEditorDraft = string.Empty;
 
+    private bool _pEditorHalted;
+
     private LEntryDraft PEditorDraftRead()
     {
         return new LEntryDraft(
@@ -137,11 +139,7 @@ public partial class PEditor
 
         if (cards.Count == 0)
         {
-            PCard card = new(prefix, 1, _pEditorCitation);
-            card.PCardSentenceApply(_pEditorSentenceOrder);
-            PLinkAttach(card);
-            PEditorChangeAttach(card);
-            cards.Add(card);
+            cards.Add(PCardCreate(prefix, 1));
         }
     }
 
@@ -214,13 +212,38 @@ public partial class PEditor
         {
             LDraft started = _lEngine.LEngineDraftStart(_pEditorOrigin, entry);
             _pEditorDraft = started.LDraftId;
+            PEditorHoldResume();
             return started;
         }
-        catch (Exception)
+        catch (Exception exception)
         {
             _pEditorDraft = string.Empty;
+            PEditorHoldSuspend(exception);
             return null;
         }
+    }
+
+    private void PEditorHoldSuspend(Exception exception)
+    {
+        if (_pEditorHalted)
+        {
+            return;
+        }
+
+        _pEditorHalted = true;
+        IsEnabled = false;
+        _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
+    }
+
+    private void PEditorHoldResume()
+    {
+        if (!_pEditorHalted)
+        {
+            return;
+        }
+
+        _pEditorHalted = false;
+        IsEnabled = true;
     }
 
     private void PEditorDraftCancel()
@@ -257,16 +280,46 @@ public partial class PEditor
                 return;
             }
 
-            _lEngine.LEngineDraftSave(held with { LDraftContent = PEditorDraftRead() });
+            LEntryDraft sent = PEditorDraftRead();
+            LEntryDraft stored = _lEngine.LEngineDraftSave(held with { LDraftContent = sent });
+
+            if (!ReferenceEquals(stored, sent))
+            {
+                PEditorDraftShow(stored);
+            }
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            PEditorHoldSuspend(exception);
+        }
+    }
+
+    private void PEditorDraftRestore()
+    {
+        if (_pEditorDraft.Length == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            if (_lEngine.LEngineDraftRead(_pEditorDraft) is LDraft held)
+            {
+                PEditorDraftShow(held.LDraftContent);
+            }
+        }
+        catch (Exception exception)
+        {
+            PEditorHoldSuspend(exception);
         }
     }
 
     internal bool PEditorDraftFinish(bool store)
     {
-        PEditorChangeStop();
+        if (_pEditorPending is not null)
+        {
+            PEditorChangeSave();
+        }
 
         if (!store || !PEditorDraftCheck())
         {
@@ -308,8 +361,9 @@ public partial class PEditor
         {
             return _lEngine.LEngineDraftCheck(_pEditorDraft);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            PEditorHoldSuspend(exception);
             return false;
         }
     }

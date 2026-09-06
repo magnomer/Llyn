@@ -88,7 +88,14 @@ public sealed partial class LEngine : IDisposable
     {
         LWorkspaceRoot.LWorkspaceRootChange(path);
         _lEngineWorkspace = path;
+
+        foreach (string held in _lEngineDraftHeld)
+        {
+            _lEngineDraftStale.Add(held);
+        }
+
         _lEngineDraftHeld.Clear();
+        _lEngineSources.Clear();
         LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
         _lEngineDatabase = new LDatabase(_lEngineWorkspace);

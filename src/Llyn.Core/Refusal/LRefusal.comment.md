@@ -32,6 +32,11 @@ Or the request may name both an Entry and a Meaning, or neither.
 Reason key for tentative work whose held file is no longer in the drafts folder.
 Another window may have stored or discarded it already.
 
+## `public const string LRefusalStale = "Refusal.DraftStale";`
+
+Reason key for tentative work whose id was raised in a workspace no longer open.
+The id names nothing here, and a write under it would land in the wrong place.
+
 ## `public LRefusal(string reason)`
 
 Refuses a request for `reason`, a localization key.

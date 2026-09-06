@@ -1,4 +1,4 @@
-# PEditorChange.cs
+﻿# PEditorChange.cs
 
 ## `public partial class PEditor`
 
@@ -49,3 +49,4 @@ A refusal or a locked file reaches the window instead of vanishing into a droppe
 
 The one place control values reach the held draft outside a store.
 It also settles the buttons, so a write and what the buttons say never drift apart.
+A suspended form writes nothing, because its draft is the thing that failed.

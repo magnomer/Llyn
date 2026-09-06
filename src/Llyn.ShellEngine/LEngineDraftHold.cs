@@ -9,6 +9,8 @@ public sealed partial class LEngine
 {
     private readonly HashSet<string> _lEngineDraftHeld = new(StringComparer.Ordinal);
 
+    private readonly HashSet<string> _lEngineDraftStale = new(StringComparer.Ordinal);
+
     public LDraft LEngineDraftStart(string origin, string? entryId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(origin);
@@ -32,15 +34,20 @@ public sealed partial class LEngine
         return draft;
     }
 
-    public void LEngineDraftSave(LDraft draft)
+    public LEntryDraft LEngineDraftSave(LDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
+        LEngineDraftValidate(draft.LDraftId);
+
+        LEntryDraft content = LEngineDraftNormalize(draft.LDraftContent);
+        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftContent = content });
+        return content;
     }
 
     public LDraft? LEngineDraftRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LEngineDraftValidate(id);
         return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
     }
 
@@ -94,6 +101,7 @@ public sealed partial class LEngine
     public void LEngineDraftDelete(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LEngineDraftValidate(id);
         LEngineCourtRemove(id);
         _lEngineDraftHeld.Remove(id);
         LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
@@ -102,6 +110,7 @@ public sealed partial class LEngine
 
     public IReadOnlyList<LCardDraft> LEngineDraftMove(string id, bool collocation, int from, int target)
     {
+        LEngineDraftValidate(id);
         LDraft draft = LEngineDraftLoad(id);
         List<LCardDraft> cards = new(
             collocation
@@ -116,11 +125,41 @@ public sealed partial class LEngine
             LCardDraft moved = cards[origin];
             cards.RemoveAt(origin);
             cards.Insert(landing, moved);
+        }
 
-            for (int index = 0; index < cards.Count; index++)
+        return LEngineCardApply(draft, collocation, cards);
+    }
+
+    public IReadOnlyList<LCardDraft> LEngineDraftNormalize(string id, bool collocation)
+    {
+        LEngineDraftValidate(id);
+        LDraft draft = LEngineDraftLoad(id);
+        List<LCardDraft> cards = new(
+            collocation
+                ? draft.LDraftContent.LEntryDraftCollocations
+                : draft.LDraftContent.LEntryDraftMeanings);
+
+        return LEngineCardApply(draft, collocation, cards);
+    }
+
+    public string LEngineCardCreate()
+    {
+        return LIdentity.LIdentityCreate();
+    }
+
+    private IReadOnlyList<LCardDraft> LEngineCardApply(
+        LDraft draft, bool collocation, List<LCardDraft> cards)
+    {
+        for (int index = 0; index < cards.Count; index++)
+        {
+            LCardDraft card = cards[index];
+            cards[index] = card with
             {
-                cards[index] = cards[index] with { LCardDraftPosition = index + 1 };
-            }
+                LCardDraftPosition = index + 1,
+                LCardDraftId = card.LCardDraftId.Length == 0
+                    ? LIdentity.LIdentityCreate()
+                    : card.LCardDraftId,
+            };
         }
 
         LEntryDraft content = collocation
@@ -147,6 +186,36 @@ public sealed partial class LEngine
 
         LCourtArchive.LCourtArchiveSave(_lEngineWorkspace, link);
         return link;
+    }
+
+    public LCourtLink LEngineCourtStart(
+        string ownerId, string origin, string headword, string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(headword);
+        LEngineDraftValidate(ownerId);
+
+        string named = language ?? string.Empty;
+        LDraft target = LEngineDraftStart(origin, null);
+
+        try
+        {
+            LEngineDraftSave(target with
+            {
+                LDraftContent = target.LDraftContent with
+                {
+                    LEntryDraftHeadword = headword,
+                    LEntryDraftLanguage = named,
+                },
+            });
+
+            return LEngineCourtSave(ownerId, target.LDraftId, headword, named);
+        }
+        catch (Exception)
+        {
+            LEngineDraftCancel(target.LDraftId);
+            throw;
+        }
     }
 
     public void LEngineCourtDelete(string linkId)
@@ -178,6 +247,8 @@ public sealed partial class LEngine
             return false;
         }
 
+        LEngineDraftValidate(id);
+
         LDraft? draft = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
         if (draft is null)
         {
@@ -194,6 +265,7 @@ public sealed partial class LEngine
     public LEntry LEngineDraftCommit(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LEngineDraftValidate(id);
         return LEngineDraftCommit(id, [], true);
     }
 
@@ -250,6 +322,7 @@ public sealed partial class LEngine
     public void LEngineDraftCancel(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        LEngineDraftValidate(id);
 
         LEngineCourtRemove(id);
 
@@ -331,6 +404,47 @@ public sealed partial class LEngine
 
         LClaim? claim = LClaimArchive.LClaimArchiveRead(_lEngineWorkspace, id);
         return claim is not null && claim.LClaimProcess != Environment.ProcessId;
+    }
+
+    private static LEntryDraft LEngineDraftNormalize(LEntryDraft content)
+    {
+        IReadOnlyList<LCardDraft> meanings = LEngineCardNormalize(content.LEntryDraftMeanings);
+        IReadOnlyList<LCardDraft> collocations = LEngineCardNormalize(content.LEntryDraftCollocations);
+
+        return ReferenceEquals(meanings, content.LEntryDraftMeanings)
+            && ReferenceEquals(collocations, content.LEntryDraftCollocations)
+            ? content
+            : content with
+            {
+                LEntryDraftMeanings = meanings,
+                LEntryDraftCollocations = collocations,
+            };
+    }
+
+    private static IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)
+    {
+        List<LCardDraft>? named = null;
+        for (int index = 0; index < cards.Count; index++)
+        {
+            if (cards[index].LCardDraftId.Length != 0)
+            {
+                named?.Add(cards[index]);
+                continue;
+            }
+
+            if (named is null)
+            {
+                named = new List<LCardDraft>(cards.Count);
+                for (int earlier = 0; earlier < index; earlier++)
+                {
+                    named.Add(cards[earlier]);
+                }
+            }
+
+            named.Add(cards[index] with { LCardDraftId = LIdentity.LIdentityCreate() });
+        }
+
+        return named ?? cards;
     }
 
     private static LEntryDraft LEngineDraftBlank =>
@@ -499,6 +613,14 @@ public sealed partial class LEngine
         }
 
         return true;
+    }
+
+    private void LEngineDraftValidate(string id)
+    {
+        if (_lEngineDraftStale.Contains(id))
+        {
+            throw new LRefusal(LRefusal.LRefusalStale);
+        }
     }
 
     private LDraft LEngineDraftLoad(string id)

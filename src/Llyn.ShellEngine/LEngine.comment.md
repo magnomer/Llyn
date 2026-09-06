@@ -62,6 +62,8 @@ Moves the workspace to `path`.
 It records the new folder and writes the current settings into it.
 So settings and database follow the workspace to its new location.
 The drafts this engine claimed are forgotten with the old folder, since a claim only means something against the folder the file sits in.
+Each forgotten id is marked stale rather than simply dropped, so a shell still holding one is refused instead of writing here.
+The cached source lists go too, because a language keeps whichever list the workspace it was read from declared.
 
 ## `public LSettings LEngineSettingsRead()`
 

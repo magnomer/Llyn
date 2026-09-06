@@ -1,4 +1,4 @@
-# PWorkspaceChoice.cs
+﻿# PWorkspaceChoice.cs
 
 ## `public partial class PSettings`
 
@@ -21,6 +21,7 @@ Tabbing past it must not cost the user what they typed.
 An unusable path leaves the previous workspace in place.
 Permission and invalid characters are such faults.
 Restore the field so it keeps showing the folder actually in use.
+The fault is reported as well, because a field that reverts on its own tells the user nothing about why.
 
 ### `_pSettingsHost.PInput.PInputReset();`
 

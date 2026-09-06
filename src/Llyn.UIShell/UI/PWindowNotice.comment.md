@@ -9,6 +9,12 @@ Those are a request that failed, and the question asked before work is thrown aw
 
 ## Inline notes
 
+### `internal void PWindowFailureShow(string key)`
+
+Presents a request that failed with nothing further to say about why.
+A disagreement the program noticed itself carries no refusal and no fault.
+The headline alone is the whole answer, and an empty detail line under it would read as a missing message.
+
 ### `internal void PWindowFailureShow(string key, Exception exception)`
 
 Presents a request that failed, under the localized headline the given key names.
@@ -29,10 +35,17 @@ A refusal at any depth resolves through the catalog like one at the top.
 Showing only the outermost message would leave the user holding a position with no reason.
 That is the shape of a failure nobody can act on.
 
+### `private (Func<bool> Check, Func<bool, bool> Finish)[] PWindowEditorRead()`
+
+The editors the window closes over, each paired with its own two answers.
+Asking and finishing read the same list, so a panel cannot be asked about work the exit would not carry.
+A panel whose edits have no store path yet belongs in neither, because a prompt that promises a save is worse than no prompt.
+
 ### `internal bool PWindowDiscardConfirm()`
 
 Asks before typed text is thrown away, and answers whether it may be.
-Every panel that edits an entry is asked whether it holds unsaved work.
+Every editor on the list is asked whether it holds unsaved work.
+Each is asked even after one has answered yes, because the asking is what writes a pause-held keystroke down.
 The window closing and the workspace changing take all of them with it.
 Unsaved work now offers three answers rather than two, because discarding was the only exit and a leaving user often means to keep the word.
 Saving commits every draft the window holds, discarding cancels every one of them, and the third answer leaves the window standing.
@@ -41,13 +54,13 @@ A leftover would otherwise be reported at the next launch as work a crash cost, 
 A panel holding nothing unsaved is settled without a question, since its blank draft has nothing to lose either way.
 Saving that the engine refuses answers no, so the window stays open over the entry it failed to store.
 
-### `private bool PWindowDraftFinish(bool store)`
+### `private bool PWindowDraftFinish((Func<bool> Check, Func<bool, bool> Finish)[] editors, bool store)`
 
-Carries one answer to every editing panel the window owns.
-The four entry editors each hold their own draft under their own origin, so each is told separately.
+Carries one answer to every editor on the list the question was put over.
+Each holds its own draft under its own origin, so each is told separately.
 An unchanged draft is cancelled whatever the answer, because storing what matches its entry would rewrite the entry for nothing.
-Every panel is told before the answers are read, so one refusal does not leave the others still holding their drafts.
-The window may go only when all four are finished.
+Every editor is told before the answers are read, so one refusal does not leave the others still holding their drafts.
+The window may go only when all of them are finished.
 
 ### `internal bool PWindowDiscardConfirm(bool unsaved)`
 

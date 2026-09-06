@@ -12,6 +12,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalDraft = "Refusal.DraftMissing";
 
+    public const string LRefusalStale = "Refusal.DraftStale";
+
     public LRefusal(string reason)
         : base(reason)
     {

@@ -81,22 +81,12 @@ public partial class PEditor
             return;
         }
 
-        LDraft target;
+        LCourtLink link;
         try
         {
-            target = _lEngine.LEngineDraftStart(_pEditorOrigin, null);
-            _lEngine.LEngineDraftSave(target with
-            {
-                LDraftContent = target.LDraftContent with
-                {
-                    LEntryDraftHeadword = item.PProspectItemHeadword,
-                    LEntryDraftLanguage = item.PProspectItemLanguage,
-                },
-            });
-
-            _lEngine.LEngineCourtSave(
+            link = _lEngine.LEngineCourtStart(
                 _pEditorDraft,
-                target.LDraftId,
+                _pEditorOrigin,
                 item.PProspectItemHeadword,
                 item.PProspectItemLanguage);
         }
@@ -108,7 +98,7 @@ public partial class PEditor
         }
 
         card.PCardLinkCommit(
-            target.LDraftId, item.PProspectItemHeadword, item.PProspectItemLanguage);
+            link.LCourtLinkTarget, item.PProspectItemHeadword, item.PProspectItemLanguage);
         card.PCardLinkClear();
         PProspectHide();
     }

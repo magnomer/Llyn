@@ -29,6 +29,9 @@ Links the chosen row and closes the dropdown, starting a tentative entry first o
 No database row is written for it, so an edit thrown away leaves nothing behind.
 The tentative entry carries the typed word and the chosen language, ready to be stored.
 A court row ties it to this draft, and storing this draft stores it too.
+The entry and its row are asked for in one call.
+A stub half made is a draft nothing points at.
+The chip is named from the row that came back, not from an id the form guessed.
 A stub that cannot be started raises a notice rather than leaving the field looking unanswered.
 
 ### `private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found)`

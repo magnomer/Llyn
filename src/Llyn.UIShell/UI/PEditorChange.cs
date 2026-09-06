@@ -47,7 +47,7 @@ public partial class PEditor
 
     private void PEditorChangeDefer()
     {
-        if (_pEditorFill || _pEditorDraft.Length == 0)
+        if (_pEditorFill || _pEditorHalted || _pEditorDraft.Length == 0)
         {
             return;
         }
@@ -85,7 +85,7 @@ public partial class PEditor
     {
         PEditorChangeStop();
 
-        if (_pEditorFill || _pEditorDraft.Length == 0)
+        if (_pEditorFill || _pEditorHalted || _pEditorDraft.Length == 0)
         {
             return;
         }
