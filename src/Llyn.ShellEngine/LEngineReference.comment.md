@@ -1,4 +1,4 @@
-# LEngineReference.cs
+﻿# LEngineReference.cs
 
 ## `public sealed partial class LEngine`
 
@@ -64,9 +64,19 @@ Creates `author` and returns it with its assigned id.
 
 Reads the Author for `id`, or `null` when none has that id.
 
+## `public IReadOnlyList<LAuthor> LEngineAuthorRead()`
+
+Reads every Author the workspace holds, by name.
+The Sources panel offers the whole shelf for crediting, so it asks for it once.
+
 ## `public IReadOnlyList<LAuthor> LEngineAuthorRead(string ownerId, LOwner owner)`
 
 Reads the Authors credited on the Reference identified by `ownerId`, in that Reference's own author order.
+
+## `public IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> LEngineAuthorRead(LOwner owner)`
+
+Reads the credits of every Reference at once, each in that Reference's own order.
+`LOwner` names the kind being asked about, as the usage seam does, and only a Reference has credits.
 
 ## `public void LEngineAuthorUpdate(LAuthor author)`
 
@@ -83,6 +93,16 @@ The Author row stays available to every other Reference.
 Removes one Reference's credit for an Author.
 The Author and its other credits survive.
 An Author is deliberate data, so losing a credit is not a reason to delete the person.
+
+## `public void LEngineReferenceDelete(string id, bool detach)`
+
+The same delete, with `detach` clearing every citation first.
+The detaching, the count, and the delete stand in one store session.
+
+## `public void LEngineAuthorDelete(string id, bool detach)`
+
+The same delete, with `detach` dropping every credit first.
+Deleting an Author never deletes a Reference.
 
 ## `public void LEngineAuthorDelete(string id)`
 

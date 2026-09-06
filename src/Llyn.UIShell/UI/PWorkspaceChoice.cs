@@ -56,6 +56,7 @@ public partial class PSettings
         _pSettingsHost.PTaxonomy.PTaxonomyReset();
         _pSettingsHost.PRepertoire.PRepertoireReset();
         _pSettingsHost.PCorpus.PCorpusReset();
+        _pSettingsHost.PReference.PReferenceReset();
         _pSettingsHost.PDuplex.PDuplexReset();
     }
 }

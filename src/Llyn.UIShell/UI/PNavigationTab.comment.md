@@ -24,5 +24,11 @@ Panel switching is the window's to do, so a panel asks for it rather than reachi
 The library is asked first, because the tab guard above passes over a library that is already the target.
 Opening the entry would otherwise cancel the draft being written in that panel without a word.
 
+## `internal void PWindowExampleShow(string id)`
+
+Switches to the corpus panel and opens one Example there.
+A Source citing row names an Example rather than an Entry, so it needs the counterpart of the entry switch.
+The corpus panel is asked first, for the same reason the library is.
+
 Every browse-style panel that holds an editor is asked the same question before the tab changes.
 The list stays one guard per panel rather than one loop, because each panel names its own check.

@@ -39,6 +39,12 @@ public partial class PWindow
             return;
         }
 
+        if (PReference.IsVisible && selectedButton != PNavigationSource
+            && !PWindowDiscardConfirm(PReference.PReferenceChangeCheck()))
+        {
+            return;
+        }
+
         (Button Button, FrameworkElement Panel)[] tabs =
         [
             (PNavigationInput, PInput),
@@ -47,6 +53,7 @@ public partial class PWindow
             (PNavigationTaxonomy, PTaxonomy),
             (PNavigationRepertoire, PRepertoire),
             (PNavigationCorpus, PCorpus),
+            (PNavigationSource, PReference),
             (PNavigationFavorite, PFavorite),
             (PNavigationDuplex, PDuplex),
             (PNavigationSettings, PSettings)
@@ -70,5 +77,16 @@ public partial class PWindow
 
         PNavigationHandle(PNavigationLibrary, new RoutedEventArgs());
         PLibrary.PIndexEntryShow(id);
+    }
+
+    internal void PWindowExampleShow(string id)
+    {
+        if (!PCorpus.PCorpusLeaveConfirm())
+        {
+            return;
+        }
+
+        PNavigationHandle(PNavigationCorpus, new RoutedEventArgs());
+        PCorpus.PAnthologyExampleShow(id);
     }
 }

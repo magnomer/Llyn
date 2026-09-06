@@ -80,6 +80,11 @@ public sealed partial class LEngine
         new LReferenceArchive(_lEngineDatabase).LReferenceDelete(id);
     }
 
+    public void LEngineReferenceDelete(string id, bool detach)
+    {
+        new LReferenceArchive(_lEngineDatabase).LReferenceDelete(id, detach);
+    }
+
     public LAuthor LEngineAuthorCreate(LAuthor author)
     {
         ArgumentNullException.ThrowIfNull(author);
@@ -91,6 +96,11 @@ public sealed partial class LEngine
         return new LAuthorArchive(_lEngineDatabase).LAuthorRead(id);
     }
 
+    public IReadOnlyList<LAuthor> LEngineAuthorRead()
+    {
+        return new LAuthorArchive(_lEngineDatabase).LAuthorAllRead();
+    }
+
     public IReadOnlyList<LAuthor> LEngineAuthorRead(string ownerId, LOwner owner)
     {
         if (owner != LOwner.LOwnerReference)
@@ -99,6 +109,16 @@ public sealed partial class LEngine
         }
 
         return new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead(ownerId);
+    }
+
+    public IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> LEngineAuthorRead(LOwner owner)
+    {
+        if (owner != LOwner.LOwnerReference)
+        {
+            throw LEngineOwnerRaise(owner);
+        }
+
+        return new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
     }
 
     public void LEngineAuthorUpdate(LAuthor author)
@@ -119,5 +139,10 @@ public sealed partial class LEngine
     public void LEngineAuthorDelete(string id)
     {
         new LAuthorArchive(_lEngineDatabase).LAuthorDelete(id);
+    }
+
+    public void LEngineAuthorDelete(string id, bool detach)
+    {
+        new LAuthorArchive(_lEngineDatabase).LAuthorDelete(id, detach);
     }
 }

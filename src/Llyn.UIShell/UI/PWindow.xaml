@@ -96,6 +96,7 @@
                             <Button x:Name="PNavigationTaxonomy" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Taxonomy}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationRepertoire" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Repertoire}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationCorpus" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Corpus}" Click="PNavigationHandle" />
+                            <Button x:Name="PNavigationSource" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Source}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationFavorite" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.Favorite}" Click="PNavigationHandle" />
                             <Button x:Name="PNavigationDuplex" Style="{StaticResource Theme.Navigation.Button}" Content="{DynamicResource Navigation.DualPanel}" Click="PNavigationHandle" />
                         </StackPanel>
@@ -111,6 +112,7 @@
                     <local:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
                     <local:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />
                     <local:PCorpus x:Name="PCorpus" Visibility="Collapsed" />
+                    <local:PReference x:Name="PReference" Visibility="Collapsed" />
                     <Grid x:Name="PFavorite" Visibility="Collapsed" />
                     <local:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
                     <local:PSettings x:Name="PSettings" Visibility="Collapsed" />

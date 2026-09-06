@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -154,10 +154,10 @@ public partial class PCorpus
             return;
         }
 
-        PCorpusShow(item.PAnthologyItemId);
+        PAnthologyExampleShow(item.PAnthologyItemId);
     }
 
-    private void PCorpusShow(string id)
+    internal void PAnthologyExampleShow(string id)
     {
         LExample? example;
         try
@@ -281,7 +281,7 @@ public partial class PCorpus
 
             if (_pExcerptExample is not null)
             {
-                PCorpusShow(_pExcerptExample);
+                PAnthologyExampleShow(_pExcerptExample);
                 return;
             }
 
@@ -305,7 +305,7 @@ public partial class PCorpus
         PCorpusScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
     }
 
-    private bool PCorpusLeaveConfirm()
+    internal bool PCorpusLeaveConfirm()
     {
         return _pCorpusHost.PWindowDiscardConfirm(PCorpusChangeCheck());
     }

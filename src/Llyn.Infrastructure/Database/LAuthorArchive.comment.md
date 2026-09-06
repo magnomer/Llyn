@@ -31,11 +31,27 @@ Reads the Author identified by `id`, or `null` when none exists.
 Reads the Authors a Reference credits, in the order that Reference gives them.
 Another Reference crediting the same Authors may order them differently — the order lives on the association row.
 
+## `public IReadOnlyList<LAuthor> LAuthorAllRead()`
+
+Reads every Author the workspace holds, by name.
+The Sources panel offers them for crediting, so it asks for the whole shelf at once.
+
+## `public IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> LAuthorReferenceRead()`
+
+Reads the credits of every Reference at once, each in that Reference's own order.
+A catalog showing credits on every row would otherwise run one query per row.
+
 ## `public void LAuthorUpdate(LAuthor author)`
 
 Rewrites the name of the Author identified by `author`'s id.
 The id and every Reference crediting it are untouched, so a rename never changes where the Author appears.
 Throws when no Author carries that id.
+
+## `public void LAuthorDelete(string id, bool detach)`
+
+The same delete, with `detach` dropping every credit first.
+Dropping a credit renumbers that Reference's remaining credits, because the order is a unique index.
+Deleting an Author never deletes a Reference.
 
 ## `public void LAuthorDelete(string id)`
 

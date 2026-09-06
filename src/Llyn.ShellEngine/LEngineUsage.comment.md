@@ -3,9 +3,10 @@
 ## `public sealed partial class LEngine`
 
 The usage half of the engine, over every object a card references rather than owns.
-An Example and a Situation are both independent data quoted from any number of cards.
-Both are browsed by a panel that must say how often one is quoted and by what.
-So the question is asked once here for either kind, rather than twice under two names.
+An Example, a Situation, and a Reference are all independent data cited from any number of places.
+Each is browsed by a panel that must say how often one is cited and by what.
+So the question is asked once here for every kind, rather than once under each name.
+A Reference is cited by Entries and Examples, which is a different citing side from the other two.
 
 `LOwner` names the kind being asked about, not the referring side.
 The referring sides come back inside the answer.
@@ -19,6 +20,6 @@ Reading it once per catalog fill costs one statement rather than one per row.
 ## `public IReadOnlyList<LUsage> LEngineUsageRead(string id, LOwner owner)`
 
 Where one object is used, itemized.
-A count says how many, this says which Entry, Meaning or Collocation, and under which Entry.
+A count says how many, this says which side cites it, and which id the row is followed by.
 The relationship is what the shell must keep.
 An Example reached through one Meaning is not a property of the whole Entry.

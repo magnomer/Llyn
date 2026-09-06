@@ -58,6 +58,13 @@ Guarded: while any Entry or Example still cites the Reference, nothing is delete
 An `InvalidOperationException` is thrown instead.
 Remove those citations first.
 The Authors it credited survive.
+
+## `public void LReferenceDelete(string id, bool detach)`
+
+The same delete, with `detach` clearing every citation first.
+The detaching, the count, and the delete stand in one session.
+Between any two steps the answer to whether anything still cites it can change.
+An Example is not deleted with the Reference, so its citation is cleared back to Unspecified.
 Only the links between them and this Reference go.
 The guard and the delete share one transaction, so nothing can cite the Reference between them.
 

@@ -38,7 +38,7 @@ public partial class PWindow
     {
         bool unsaved = PInput.PInputChangeCheck() || PLibrary.PLibraryChangeCheck() || PPhonology.PPhonologyChangeCheck()
             || PTaxonomy.PTaxonomyChangeCheck() || PRepertoire.PRepertoireChangeCheck()
-            || PCorpus.PCorpusChangeCheck();
+            || PCorpus.PCorpusChangeCheck() || PReference.PReferenceChangeCheck();
 
         bool store;
         if (unsaved)

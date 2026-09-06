@@ -34,10 +34,11 @@ An open editor keeps its selection either way, because the row may be the one be
 
 Whether one Example answers the query, over its sentence, its translation and its Source name.
 
-## `private void PCorpusShow(string id)`
+## `internal void PAnthologyExampleShow(string id)`
 
 Reads one Example back and shows it with the sides quoting it.
 An id the store no longer knows clears the selection and refills the catalog rather than failing.
+The window calls it so a Source citing row can land on the Example it names.
 
 ## `private void PExcerptValueShow(TextBlock field, LStateValue value, string? shown = null)`
 

@@ -1,0 +1,26 @@
+# PShelfItem.cs
+
+## `internal sealed class PShelfItem`
+
+Presentation item for one Source row in `PShelf`.
+Carries the resolved name, the credited authors, the year, and the citation count.
+The id is identity and never displayed.
+A Source is shown by the first field it actually states, then by its id if it names itself nowhere.
+It is never offered as a blank row the reader could not tell from the next one.
+`Untitled` is a stated title and shows as one, and `Anonymous` is a credited Author.
+
+## `internal PShelfItem(LReference reference, IReadOnlyList<LAuthor> credits, int usage, string unreadable, string unset)`
+
+Builds the row from the stored Source, its credits, and the number of places citing it.
+The credits arrive already read, because reading them per row is one query per row.
+The two texts are handed in rather than read here, because a row is built while the list is being filled.
+
+## `internal static string PShelfCreditRead(LReference reference, IReadOnlyList<LAuthor> credits, string unreadable, string unset)`
+
+Names the credits in the Source's own order, or shows the author state where there are none.
+The read area shows the same line, so the rule lives here rather than twice.
+
+## `public string PShelfItemCount { get; }`
+
+How many Entries and Examples cite this Source, as the row shows it.
+It is the figure that decides whether a delete is legal, so the catalog carries it and not only the editor.

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
@@ -290,7 +290,7 @@ public partial class PCorpus
 
         PAnthologyFind(PQuery.Text ?? string.Empty);
         PCorpusScribeShow(false);
-        PCorpusShow(written.LExampleId);
+        PAnthologyExampleShow(written.LExampleId);
     }
 
     private void PTranscriptRemovalHandle(object sender, RoutedEventArgs e)

@@ -185,26 +185,26 @@ public sealed class LReferenceArchive
 
     public void LReferenceDelete(string id)
     {
+        LReferenceDelete(id, false);
+    }
+
+    public void LReferenceDelete(string id, bool detach)
+    {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        using (SqliteCommand guard = connection.CreateCommand())
+        if (detach)
         {
-            guard.CommandText =
-                """
-                SELECT
-                    (SELECT COUNT(*) FROM entry_source WHERE source_id = $id)
-                    + (SELECT COUNT(*) FROM example WHERE source_id = $id);
-                """;
-            guard.Parameters.AddWithValue("$id", id);
-            long citations = Convert.ToInt64(guard.ExecuteScalar());
-            if (citations > 0)
-            {
-                throw new InvalidOperationException(
-                    $"Reference {id} is still cited {citations} time(s); remove every citation before deleting it.");
-            }
+            LReferenceUsage.LReferenceUsageClear(connection, id);
+        }
+
+        int citations = LReferenceUsage.LReferenceUsageRead(connection, id);
+        if (citations > 0)
+        {
+            throw new InvalidOperationException(
+                $"Reference {id} is still cited {citations} time(s); remove every citation before deleting it.");
         }
 
         using (SqliteCommand command = connection.CreateCommand())
