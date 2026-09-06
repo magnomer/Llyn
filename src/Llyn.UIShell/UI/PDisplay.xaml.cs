@@ -108,11 +108,17 @@ public partial class PDisplay : UserControl
         PDisplayPronunciationSurface.Visibility = draft.LEntryDraftPronunciation.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
+        PDisplayPlayback.Margin = draft.LEntryDraftPronunciation.Length == 0
+            ? new Thickness(0)
+            : new Thickness(10, 0, 0, 0);
 
         PDisplayTranslationShow(draft);
         PDisplayIncomingShow(id);
 
         PDisplaySpeech.ItemsSource = draft.LEntryDraftSpeeches ?? [];
+        PDisplaySpeechSection.Visibility = draft.LEntryDraftSpeeches is null || draft.LEntryDraftSpeeches.Count == 0
+            ? Visibility.Collapsed
+            : Visibility.Visible;
         PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;
         PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
         PDisplayMeaningSection.Visibility = draft.LEntryDraftMeanings.Count == 0
@@ -142,6 +148,7 @@ public partial class PDisplay : UserControl
         PDisplayPlayback.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
         PDisplaySpeech.ItemsSource = null;
+        PDisplaySpeechSection.Visibility = Visibility.Collapsed;
         _pDisplayIncoming.Clear();
         PDisplayTranslationRead().PLinkConverterClear();
         PDisplayMeaning.ItemsSource = null;

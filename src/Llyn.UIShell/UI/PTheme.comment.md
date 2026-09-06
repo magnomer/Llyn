@@ -55,6 +55,11 @@ The one line the popup says while it has no rows to show: searching, or nothing 
 
 The search running, as a hairline under the title rather than a box of its own.
 
+## `<Style x:Key="Theme.Popup.ProgressBar" TargetType="Border">`
+
+The sliding bar inside that hairline.
+The transcriber and the downloader run the same search, so they share one bar rather than declaring two.
+
 ## `<Style x:Key="Theme.Popup.RowSurface" TargetType="Border">`
 
 One row of a picker popup.
@@ -79,6 +84,35 @@ So the label is bound back to the button and follows its enabled and hover state
 A row's second action, carrying an icon instead of a word.
 Same quiet-until-pointed-at treatment as the taking button beside it.
 
+## `<Style x:Key="Theme.Pronunciation.Surface" TargetType="Border">`
+
+The bracketed chip a pronunciation is read and written in.
+The reading view and the editor wear the same box, so the chip neither moves nor changes colour when the mode changes.
+It is drawn in the surface and the line the rest of the chrome uses, with no tint of its own.
+
+## `<Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">`
+
+The pronunciation as it reads.
+It holds a floor width, because the chip beside it would otherwise be a different width in each mode.
+
+## `<Style x:Key="Theme.Pronunciation.Field" TargetType="TextBox">`
+
+The same pronunciation with a caret in it.
+Its leading margin answers the two pixels a WPF text box keeps for that caret.
+So the typed text starts where the read text starts.
+
+## `<Style x:Key="Theme.Pronunciation.Action" TargetType="Button">`
+
+The play button beside the chip, at the chip's own height.
+It is a command tray of one, so it carries the tray's frame and inset icon and takes its fill only under the pointer.
+Both views draw it, because a recording is played where it is heard and where it is chosen.
+
+## `<Style x:Key="Theme.Speech.Chip" TargetType="Border">`
+
+One part of speech as it reads.
+It matches the editor's marker chip apart from the removal button that chip carries.
+The parts of speech take a row of their own, below the pronunciation rather than beside it.
+
 ## `<Style x:Key="Theme.Language.Chip" TargetType="Border">`
 
 The blue pill an entry's language is named on.
@@ -96,6 +130,11 @@ The border is transparent until pointed at or opened, which is the only hint of 
 The tray a panel's commands sit in, and the same tray the input header's pair sits in.
 One surface holds them, so a row of actions reads as one thing rather than five.
 The shadow stays when the tray is disabled, because a tray that drops it looks like a different control.
+
+## `<Style x:Key="Theme.Command.IconToggle" TargetType="ToggleButton">`
+
+A command inside the tray that carries an icon alone and holds a menu open.
+It is tinted while its menu stands open, so the tray says which picker is showing.
 
 ## `<ControlTemplate x:Key="Theme.Command.Segment.Template" TargetType="ButtonBase">`
 

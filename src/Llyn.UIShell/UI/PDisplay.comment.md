@@ -26,3 +26,13 @@ A filled star says the entry is marked.
 The entry as it reads, with nothing to type into.
 The panel that hosts this decides what is selected and when the editor takes its place.
 So the same view serves the library panel, the phonology panel and the taxonomy panel unchanged.
+
+## `<Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" ...>`
+
+The pronunciation chip the editor also wears, defined once in the theme.
+The chip collapses when the entry carries no pronunciation, and the play button then takes its place at the margin.
+
+## `<StackPanel x:Name="PDisplaySpeechSection" Margin="0,14,0,0" ...>`
+
+The parts of speech stand on a row of their own, as they do in the editor.
+Sharing the pronunciation row put them beside a chip that the editor puts a button beside.

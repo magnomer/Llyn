@@ -387,29 +387,30 @@
                         </Path>
                     </ToggleButton>
                 </Grid>
-                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
-                    <Border x:Name="PDisplayPronunciationSurface" Padding="13,7" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="10" Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock FontSize="15" Text="[" />
-                            <TextBlock x:Name="PDisplayPronunciation" Margin="4,0" VerticalAlignment="Center" FontSize="15" />
-                            <TextBlock FontSize="15" Text="]" />
+                <StackPanel Margin="0,12,0,0" Orientation="Horizontal">
+                    <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
+                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                            <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
+                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                         </StackPanel>
                     </Border>
 
-                    <Button x:Name="PDisplayPlayback" Width="42" Height="42" Margin="10,0,0,0" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Foreground="{StaticResource Theme.Accent}" Click="PDisplayPlaybackHandle" Style="{StaticResource Theme.Input.Action}" Visibility="Collapsed">
-
-                        <Rectangle Width="11" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                    <Button x:Name="PDisplayPlayback" Click="PDisplayPlaybackHandle" Style="{StaticResource Theme.Pronunciation.Action}" Visibility="Collapsed">
+                        <Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Uniform">
                                     <VisualBrush.Visual>
-                                        <svgc:SvgViewbox Width="11" Height="13" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
+                                        <svgc:SvgViewbox Width="13" Height="15" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
                                     </VisualBrush.Visual>
                                 </VisualBrush>
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </Button>
+                </StackPanel>
 
-                    <ItemsControl x:Name="PDisplaySpeech" Margin="10,0,0,0" VerticalAlignment="Center">
+                <StackPanel x:Name="PDisplaySpeechSection" Margin="0,14,0,0" Visibility="Collapsed">
+                    <ItemsControl x:Name="PDisplaySpeech">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel Orientation="Horizontal" />
@@ -417,8 +418,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Margin="0,0,8,0" Padding="13,7" VerticalAlignment="Center" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
-                                    <TextBlock VerticalAlignment="Center" FontSize="15" Text="{Binding}" />
+                                <Border Style="{StaticResource Theme.Speech.Chip}">
+                                    <TextBlock Style="{StaticResource Theme.Speech.Name}" Text="{Binding}" />
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

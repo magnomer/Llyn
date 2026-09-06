@@ -39,3 +39,15 @@ So it says what is typed while it is being typed, rather than after the entry is
 Editable, not a chooser.
 The dropdown offers the language's presets and this box takes anything.
 So a part of speech no pack declares can still be written down.
+
+## `<StackPanel Grid.Row="1" Margin="0,12,0,0" HorizontalAlignment="Left" Orientation="Horizontal">`
+
+The pronunciation row, laid out as the reading view lays it out.
+Chip and play button carry the theme's shared styles, so switching mode moves neither of them.
+The row starts at the headword's own margin, because an indent here read as a different position.
+
+## `<Border Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">`
+
+Lookup and audio download both fetch what the chip beside them holds, so one tray holds the pair.
+It is the tray discard and store sit in, at the height of the chip and the play button.
+Only the editor draws it, because nothing is fetched into a view that cannot be typed into.
