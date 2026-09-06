@@ -154,17 +154,17 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     internal LStateValue PCardTitleRead()
     {
-        return PCardValueRead(_pTitleUnreadable, _pTitle);
+        return LStateValue.LStateValueResolve(_pTitle, _pTitleUnreadable);
     }
 
     internal LStateValue PCardDefinitionRead()
     {
-        return PCardValueRead(_pCardDefinitionUnreadable, _pCardDefinition);
+        return LStateValue.LStateValueResolve(_pCardDefinition, _pCardDefinitionUnreadable);
     }
 
     internal LStateValue PCardExpressionRead()
     {
-        return PCardValueRead(_pCardExpressionUnreadable, _pCardExpression);
+        return LStateValue.LStateValueResolve(_pCardExpression, _pCardExpressionUnreadable);
     }
 
     internal void PCardTitleShow(LStateValue value)
@@ -192,11 +192,6 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pCardExpression = value.LStateValueShow();
         PCardRaise(nameof(PCardExpression));
         PCardExpressionUnreadable = value.LStateValueState == LState.LStateUnknown;
-    }
-
-    private static LStateValue PCardValueRead(bool unreadable, string text)
-    {
-        return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueRead(text);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -23,9 +22,9 @@ public partial class PLibrary
 
         try
         {
-            string text = await File.ReadAllTextAsync(dialog.FileName);
+            string path = dialog.FileName;
 
-            await Task.Run(() => _lEngine.LEngineMarkupImport(text));
+            await Task.Run(() => _lEngine.LEngineMarkupImport(path));
 
             PIndexFind(PInquiry.Text ?? string.Empty);
         }

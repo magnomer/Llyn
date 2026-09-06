@@ -28,6 +28,11 @@ Creates an empty workspace folder whose database has not been initialized yet.
 
 Creates a workspace folder whose database is initialized and ready to use.
 
+## `public string TWorkspaceMarkupSave(string text)`
+
+Writes markup text into the workspace folder and returns the path it stands at.
+The engine imports from a path, so a test with a document in hand needs a file to hand over.
+
 ## `public LEngine TWorkspaceEngineStart()`
 
 Binds an engine to this workspace folder, so a test never constructs one itself.

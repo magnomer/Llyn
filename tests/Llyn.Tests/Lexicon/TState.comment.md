@@ -27,3 +27,15 @@ The two read back apart.
 Writing over an unreadable field states it.
 Clearing one says nothing is written there.
 A Situation rewritten this way keeps the id it was stored under.
+
+## `StateValueResolve_TextAndMark_MapsOneStateEach`
+
+The one rule maps every pair a form can hand it.
+A marked field is unknown and keeps no text.
+An unmarked field holding nothing, or nothing but whitespace, is unspecified.
+Any other text states itself.
+
+## `StateValueResolve_WhitespaceRoundTrip_ReportsNoChange`
+
+A field holding only whitespace is stored, loaded, and mapped again by the same rule.
+What comes back maps to what was sent, so the editor holding it is not dirty.

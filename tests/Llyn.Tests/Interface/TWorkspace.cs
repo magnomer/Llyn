@@ -36,6 +36,13 @@ internal sealed class TWorkspace : IDisposable
         return workspace;
     }
 
+    public string TWorkspaceMarkupSave(string text)
+    {
+        string path = Path.Combine(_tWorkspaceRoot, "import.llx");
+        File.WriteAllText(path, text);
+        return path;
+    }
+
     public LEngine TWorkspaceEngineStart()
     {
         return new LEngine(_tWorkspaceRoot);

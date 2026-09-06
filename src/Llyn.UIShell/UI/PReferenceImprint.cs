@@ -159,23 +159,18 @@ public partial class PReference
     {
         return held with
         {
-            LReferenceTitle = PImprintValueRead(PImprintTitle.Text, _pImprintTitleUnreadable),
-            LReferenceProgram = PImprintValueRead(PImprintProgram.Text, _pImprintProgramUnreadable),
-            LReferenceChannel = PImprintValueRead(PImprintChannel.Text, _pImprintChannelUnreadable),
-            LReferenceYear = PImprintValueRead(PImprintYear.Text, _pImprintYearUnreadable),
-            LReferenceUrl = PImprintValueRead(PImprintUrl.Text, _pImprintUrlUnreadable),
+            LReferenceTitle =
+                LStateValue.LStateValueResolve(PImprintTitle.Text, _pImprintTitleUnreadable),
+            LReferenceProgram =
+                LStateValue.LStateValueResolve(PImprintProgram.Text, _pImprintProgramUnreadable),
+            LReferenceChannel =
+                LStateValue.LStateValueResolve(PImprintChannel.Text, _pImprintChannelUnreadable),
+            LReferenceYear =
+                LStateValue.LStateValueResolve(PImprintYear.Text, _pImprintYearUnreadable),
+            LReferenceUrl =
+                LStateValue.LStateValueResolve(PImprintUrl.Text, _pImprintUrlUnreadable),
             LReferenceAuthorState = _pAuthorState,
         };
-    }
-
-    private static LStateValue PImprintValueRead(string text, bool unreadable)
-    {
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            return LStateValue.LStateValueCreate(text);
-        }
-
-        return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueUnspecified;
     }
 
     private void PReferenceFreshHandle(object sender, RoutedEventArgs e)

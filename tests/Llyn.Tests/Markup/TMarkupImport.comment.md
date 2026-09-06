@@ -53,3 +53,8 @@ Two examples citing one `id` share one reference row rather than each declaring 
 The second entry cites a source no entry declares.
 The first entry is perfectly good and is still not stored.
 An import is one unit of work, so a file either imports whole or not at all.
+
+## `MarkupImport_PathThatDoesNotExist_ImportsNothing`
+
+The engine is given a path naming no file.
+It fails there rather than importing an empty document, and the workspace holds nothing after.

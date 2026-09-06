@@ -11,10 +11,14 @@ The only work that belongs here is what neither of those can do alone.
 That is turning the sources a document declares into the reference rows its citations must name.
 It is also holding the whole file inside one transaction.
 
-## `public IReadOnlyList<LEntry> LEngineMarkupImport(string text)`
+## `public IReadOnlyList<LEntry> LEngineMarkupImport(string path)`
 
 Imports a whole Llyn Markup document, adding every entry it declares to the workspace.
+Takes the path of the file, which it opens itself.
 Returns the stored entries in the order the file wrote them.
+
+File access belongs to the engine, and a caller hands over a path rather than a string it read.
+A path naming no file fails with a `FileNotFoundException` before anything is read or written.
 
 The document is read before anything is written.
 A file that is malformed anywhere therefore fails with a `FormatException`.

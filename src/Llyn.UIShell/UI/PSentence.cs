@@ -337,37 +337,27 @@ internal sealed class PSentence : INotifyPropertyChanged
 
     internal LStateValue PSentenceParticleRead()
     {
-        return _pSentenceParticleUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pSentenceParticle);
+        return LStateValue.LStateValueResolve(_pSentenceParticle, _pSentenceParticleUnreadable);
     }
 
     internal LStateValue PSentenceDependenceRead()
     {
-        return _pSentenceDependenceUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pSentenceDependence);
+        return LStateValue.LStateValueResolve(_pSentenceDependence, _pSentenceDependenceUnreadable);
     }
 
     internal LStateValue PSentenceRevisionRead()
     {
-        return _pSentenceRevisionUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pSentenceRevision);
+        return LStateValue.LStateValueResolve(_pSentenceRevision, _pSentenceRevisionUnreadable);
     }
 
     internal LStateValue PSentenceTextRead()
     {
-        return _pSentenceUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pSentenceText);
+        return LStateValue.LStateValueResolve(_pSentenceText, _pSentenceUnreadable);
     }
 
     internal LStateValue PSentenceCitationRead()
     {
-        return _pSentenceCitationUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pSentenceCitation);
+        return LStateValue.LStateValueResolve(_pSentenceCitation, _pSentenceCitationUnreadable);
     }
 
     internal void PSentenceIdentityApply()

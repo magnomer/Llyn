@@ -287,21 +287,13 @@ public partial class PRepertoire
     {
         return held with
         {
-            LSituationTitle = PScenarioValueRead(PScenarioTitle.Text, _pScenarioTitleUnreadable),
-            LSituationDescription =
-                PScenarioValueRead(PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
-            LSituationKind = PScenarioValueRead(PScenarioKind.Text, _pScenarioKindUnreadable),
+            LSituationTitle =
+                LStateValue.LStateValueResolve(PScenarioTitle.Text, _pScenarioTitleUnreadable),
+            LSituationDescription = LStateValue.LStateValueResolve(
+                PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
+            LSituationKind =
+                LStateValue.LStateValueResolve(PScenarioKind.Text, _pScenarioKindUnreadable),
         };
-    }
-
-    private static LStateValue PScenarioValueRead(string text, bool unreadable)
-    {
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            return LStateValue.LStateValueCreate(text);
-        }
-
-        return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueUnspecified;
     }
 
     private void PRepertoireFreshHandle(object sender, RoutedEventArgs e)

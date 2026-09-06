@@ -119,8 +119,8 @@ internal static partial class TInterface
         engine.LEngineLeftoverSweep();
     }
 
-    internal static IReadOnlyList<LEntry> TEngineMarkupImport(this LEngine engine, string text) =>
-        engine.LEngineMarkupImport(text);
+    internal static IReadOnlyList<LEntry> TEngineMarkupImport(this LEngine engine, string path) =>
+        engine.LEngineMarkupImport(path);
 
     internal static LRevision? TEngineRevisionRead(this LEngine engine) =>
         engine.LEngineRevisionRead();

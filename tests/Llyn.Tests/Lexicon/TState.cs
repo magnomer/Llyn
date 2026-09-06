@@ -1,4 +1,5 @@
 ﻿using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -190,5 +191,95 @@ public sealed class TState
         LSituationDraft situation = Assert.Single(written.LCardDraftSituation);
         Assert.Equal(situationId, situation.LSituationDraftId);
         Assert.Equal(TInterface.TStateValueCreate("in court"), situation.LSituationDraftText);
+    }
+
+    [Theory]
+    [InlineData("a unit of language", false)]
+    [InlineData("a unit of language", true)]
+    [InlineData("", false)]
+    [InlineData("", true)]
+    [InlineData("   ", false)]
+    [InlineData("   ", true)]
+    [InlineData(null, false)]
+    [InlineData(null, true)]
+    public void StateValueResolve_TextAndMark_MapsOneStateEach(string? text, bool unreadable)
+    {
+        LStateValue resolved = TInterface.TStateValueResolve(text, unreadable);
+
+        if (unreadable)
+        {
+            Assert.Equal(LStateValue.LStateValueUnknown, resolved);
+            Assert.Null(resolved.LStateValueText);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            Assert.Equal(LStateValue.LStateValueUnspecified, resolved);
+            return;
+        }
+
+        Assert.Equal(TInterface.TStateValueCreate(text), resolved);
+    }
+
+    [Fact]
+    public void StateValueResolve_WhitespaceRoundTrip_ReportsNoChange()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LDraft started = engine.TEngineDraftStart("editor", null);
+        engine.TEngineDraftSave(started with
+        {
+            LDraftContent = TInterface.TEntryDraftCreate(
+                "word",
+                "English",
+                string.Empty,
+                string.Empty,
+                [TInterface.TCardDraftCreate(
+                    TInterface.TStateValueResolve(string.Empty, true),
+                    TInterface.TStateValueResolve("   ", false),
+                    TInterface.TStateValueResolve("a unit of language", false),
+                    [],
+                    [],
+                    [],
+                    string.Empty,
+                    [],
+                    [],
+                    0)],
+                []),
+        });
+
+        LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
+        LDraft opened = engine.TEngineDraftStart("editor", stored.LEntryId);
+        LCardDraft card = Assert.Single(opened.LDraftContent.LEntryDraftMeanings);
+
+        Assert.Equal(LStateValue.LStateValueUnknown, card.LCardDraftTitle);
+        Assert.Equal(LStateValue.LStateValueUnspecified, card.LCardDraftExpression);
+        Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
+
+        engine.TEngineDraftSave(opened with
+        {
+            LDraftContent = opened.LDraftContent with
+            {
+                LEntryDraftMeanings =
+                [
+                    card with
+                    {
+                        LCardDraftTitle = TInterface.TStateValueResolve(
+                            card.LCardDraftTitle.TStateValueShow(),
+                            card.LCardDraftTitle.LStateValueState == LState.LStateUnknown),
+                        LCardDraftExpression = TInterface.TStateValueResolve(
+                            card.LCardDraftExpression.TStateValueShow(),
+                            card.LCardDraftExpression.LStateValueState == LState.LStateUnknown),
+                        LCardDraftMeaning = TInterface.TStateValueResolve(
+                            card.LCardDraftMeaning.TStateValueShow(),
+                            card.LCardDraftMeaning.LStateValueState == LState.LStateUnknown),
+                    },
+                ],
+            },
+        });
+
+        Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
     }
 }

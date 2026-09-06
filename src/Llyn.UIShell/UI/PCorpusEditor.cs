@@ -213,21 +213,12 @@ public partial class PCorpus
         return held with
         {
             LExampleLanguage = _pTranscriptLanguage,
-            LExampleText = PTranscriptValueRead(PTranscriptText.Text, _pTranscriptTextUnreadable),
-            LExampleTranslation =
-                PTranscriptValueRead(PTranscriptTranslation.Text, _pTranscriptTranslationUnreadable),
-            LExampleSource = PTranscriptValueRead(_pTranscriptCitation, false),
+            LExampleText =
+                LStateValue.LStateValueResolve(PTranscriptText.Text, _pTranscriptTextUnreadable),
+            LExampleTranslation = LStateValue.LStateValueResolve(
+                PTranscriptTranslation.Text, _pTranscriptTranslationUnreadable),
+            LExampleSource = LStateValue.LStateValueRead(_pTranscriptCitation),
         };
-    }
-
-    private static LStateValue PTranscriptValueRead(string text, bool unreadable)
-    {
-        if (!string.IsNullOrWhiteSpace(text))
-        {
-            return LStateValue.LStateValueCreate(text);
-        }
-
-        return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueUnspecified;
     }
 
     private void PCorpusFreshHandle(object sender, RoutedEventArgs e)

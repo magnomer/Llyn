@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -7,13 +8,19 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LEntry> LEngineMarkupImport(string text)
+    public IReadOnlyList<LEntry> LEngineMarkupImport(string path)
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(text);
+            ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
-            IReadOnlyList<LMarkup.LMarkupEntry> entries = LMarkup.LMarkupEntryRead(text);
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("No markup file stands at the chosen path.", path);
+            }
+
+            IReadOnlyList<LMarkup.LMarkupEntry> entries =
+                LMarkup.LMarkupEntryRead(File.ReadAllText(path));
             List<LEntry> saved = new List<LEntry>();
             Dictionary<string, string> writers = new Dictionary<string, string>(StringComparer.Ordinal);
 

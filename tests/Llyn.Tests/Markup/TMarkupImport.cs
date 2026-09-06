@@ -85,7 +85,7 @@ public sealed class TMarkupImport
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        IReadOnlyList<LEntry> imported = engine.TEngineMarkupImport(TMarkupSample);
+        IReadOnlyList<LEntry> imported = engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(TMarkupSample));
 
         Assert.Equal(["kindle", "brook"], imported.Select(entry => entry.LEntryHeadword));
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
@@ -157,7 +157,7 @@ public sealed class TMarkupImport
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(
+        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
             """
             <entry>
               <headword>kindle</headword>
@@ -177,7 +177,7 @@ public sealed class TMarkupImport
                 <title>Oxford English Dictionary</title>
               </source>
             </entry>
-            """));
+            """)));
 
         LReference oed = Assert.Single(engine.TEngineReferenceRead());
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source;"));
@@ -198,7 +198,7 @@ public sealed class TMarkupImport
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(
+        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
             """
             <entry>
               <headword>kindle</headword>
@@ -212,7 +212,7 @@ public sealed class TMarkupImport
               <source id="oed"><title>Oxford English Dictionary</title></source>
               <source id="field"><title>A Field Guide to Rivers</title></source>
             </entry>
-            """));
+            """)));
 
         Assert.Equal(
             ["Oxford English Dictionary", "A Field Guide to Rivers"],
@@ -229,7 +229,7 @@ public sealed class TMarkupImport
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        engine.TEngineMarkupImport(
+        engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
             """
             <entry>
               <headword>kindle</headword>
@@ -244,7 +244,7 @@ public sealed class TMarkupImport
                 <author>Murray, James</author>
               </source>
             </entry>
-            """);
+            """));
 
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM author;"));
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source_author;"));
@@ -256,7 +256,7 @@ public sealed class TMarkupImport
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        Assert.Throws<FormatException>(() => engine.TEngineMarkupImport(
+        Assert.Throws<FormatException>(() => engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
             """
             <entry>
               <headword>kindle</headword>
@@ -276,7 +276,7 @@ public sealed class TMarkupImport
                 <example src="field">the path followed a shallow brook</example>
               </sense>
             </entry>
-            """));
+            """)));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
@@ -289,7 +289,7 @@ public sealed class TMarkupImport
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(
+        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
             """
             <entry>
               <headword>wait</headword>
@@ -307,7 +307,7 @@ public sealed class TMarkupImport
                 <title>Oxford English Dictionary</title>
               </source>
             </entry>
-            """));
+            """)));
 
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LCardDraft card = Assert.Single(draft.LEntryDraftMeanings);
@@ -334,7 +334,7 @@ public sealed class TMarkupImport
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(
+        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
             """
             <entry>
               <headword>wait</headword>
@@ -345,7 +345,7 @@ public sealed class TMarkupImport
                 <example>he waited for her</example>
               </sense>
             </entry>
-            """));
+            """)));
 
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LExampleDraft example = Assert.Single(Assert.Single(draft.LEntryDraftMeanings).LCardDraftExample);
@@ -353,5 +353,17 @@ public sealed class TMarkupImport
         Assert.Equal(LState.LStateUnspecified, example.LExampleDraftParticle.LStateValueState);
         Assert.Equal(LState.LStateUnspecified, example.LExampleDraftDependence.LStateValueState);
         Assert.Null(example.LExampleDraftRevision);
+    }
+
+    [Fact]
+    public void MarkupImport_PathThatDoesNotExist_ImportsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        string path = Path.Combine(workspace.TWorkspaceFolder, "absent.llx");
+
+        Assert.Throws<FileNotFoundException>(() => engine.TEngineMarkupImport(path));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
     }
 }

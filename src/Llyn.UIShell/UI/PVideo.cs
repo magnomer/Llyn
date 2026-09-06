@@ -139,9 +139,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
     internal LStateValue PVideoLocationRead()
     {
-        return _pVideoUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pVideoLocation);
+        return LStateValue.LStateValueResolve(_pVideoLocation, _pVideoUnreadable);
     }
 
     private void PVideoTimestampApply(string timestamp)

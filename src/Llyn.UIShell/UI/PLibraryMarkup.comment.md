@@ -3,10 +3,10 @@
 ## `public partial class PLibrary`
 
 The library panel's import action.
-A markup file chosen by the reader is handed to the engine whole.
+The path of a markup file chosen by the reader is handed to the engine.
 The index is re-read from what the workspace then holds.
-The panel does no parsing and writes nothing itself.
-It picks a file, passes its text on, and shows what came back.
+The panel does no parsing, opens no file, and writes nothing itself.
+It picks a file, passes its path on, and shows what came back.
 
 ## Inline notes
 
@@ -26,16 +26,17 @@ Markup is plain text, so a file that carries it under another name is still impo
 
 A cancelled pick is not a failure and leaves the workspace exactly as it was.
 
-### `string text = await File.ReadAllTextAsync(dialog.FileName);`
+### `string path = dialog.FileName;`
 
-The file goes across as one string.
-Reading it and importing it stand inside the same attempt.
+Only the path crosses to the engine, which opens the file itself.
+The workspace is the engine's to read, and this panel holds no part of it.
+
+### `await Task.Run(() => _lEngine.LEngineMarkupImport(path));`
+
+Opening the file and importing it stand inside the same attempt.
 An unreadable file and an unusable one are the same thing to the reader.
 The import did not happen.
-
-### `await Task.Run(() => _lEngine.LEngineMarkupImport(text));`
-
-A long file is scanned and written away from the panel's own thread.
+A long file is read and written away from the panel's own thread.
 So the window keeps drawing while the work runs.
 What follows the await is back where the controls live, which is where the index may be touched.
 

@@ -90,9 +90,7 @@ internal sealed class PContext : INotifyPropertyChanged
 
     internal LStateValue PContextTextRead()
     {
-        return _pContextUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pContextText);
+        return LStateValue.LStateValueResolve(_pContextText, _pContextUnreadable);
     }
 
     internal void PContextIdentityApply()

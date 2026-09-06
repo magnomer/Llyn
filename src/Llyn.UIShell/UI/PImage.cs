@@ -77,9 +77,7 @@ internal sealed class PImage : INotifyPropertyChanged
 
     internal LStateValue PImageLocationRead()
     {
-        return _pImageUnreadable
-            ? LStateValue.LStateValueUnknown
-            : LStateValue.LStateValueRead(_pImageLocation);
+        return LStateValue.LStateValueResolve(_pImageLocation, _pImageUnreadable);
     }
 
     internal static Uri? PImageAddressRead(string location)
