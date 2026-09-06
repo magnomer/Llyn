@@ -26,13 +26,10 @@ Filling a field raises the same change the user typing raises, and only the seco
 
 ## `private void PAtlasFind(string query)`
 
-Refills the catalog from the workspace under the current ordering and query.
+Refills the catalog with the rows the engine returns, already matched and already ordered.
+What a title, a description or a kind answers is decided below the shell.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open editor keeps its selection either way, because the row may be the one being written.
-
-## `private bool PInquestMatch(LSituation situation, string query)`
-
-Whether one Situation answers the query, over its title, description, kind, and the resolved name of the Source it cites.
 
 ## `private void PRepertoireShow(string id)`
 

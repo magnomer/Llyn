@@ -32,6 +32,36 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            query = query.Trim();
+
+            IReadOnlyList<LReference> read = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> credits =
+                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+            IReadOnlyDictionary<string, int> usage =
+                new LReferenceUsage(_lEngineDatabase).LReferenceUsageRead();
+
+            List<LCatalogReference> rows = [];
+            foreach (LReference reference in read)
+            {
+                credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited);
+                usage.TryGetValue(reference.LReferenceId, out int counted);
+
+                LCatalogReference row = LCatalogReference.LCatalogReferenceCreate(reference, credited, counted);
+                if (row.LCatalogReferenceMatch(query))
+                {
+                    rows.Add(row);
+                }
+            }
+
+            return LCatalogReference.LCatalogReferenceSort(rows, order);
+        }
+    }
+
     public IReadOnlyList<LReference> LEngineReferenceRead(string ownerId, LOwner owner)
     {
         lock (_lEngineGate)

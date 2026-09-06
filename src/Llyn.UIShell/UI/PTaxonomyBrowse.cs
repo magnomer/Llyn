@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -19,7 +18,7 @@ public partial class PTaxonomy
 
     private string? _pDisplayEntry;
 
-    private string _pFunnelChoice = "Name";
+    private LCatalogOrder _pFunnelChoice = LCatalogOrder.LCatalogOrderName;
 
     private async void PTaxonomyHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -48,20 +47,9 @@ public partial class PTaxonomy
             return;
         }
 
-        _pFunnelChoice = choice;
+        _pFunnelChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderName);
         PFunnelDropper.IsChecked = false;
         PDirectoryFind(PExploration.Text ?? string.Empty);
-    }
-
-    private IEnumerable<LTag> PFunnelSort(IReadOnlyList<LTag> tags)
-    {
-        return _pFunnelChoice switch
-        {
-            "Reverse" => tags.OrderByDescending(
-                tag => tag.LTagText, StringComparer.CurrentCultureIgnoreCase),
-            _ => tags.OrderBy(
-                tag => tag.LTagText, StringComparer.CurrentCultureIgnoreCase)
-        };
     }
 
     private void PDirectoryReset()
@@ -71,12 +59,10 @@ public partial class PTaxonomy
 
     private void PDirectoryFind(string query)
     {
-        query = query.Trim();
-
         IReadOnlyList<LTag> read;
         try
         {
-            read = _lEngine.LEngineTagRead();
+            read = _lEngine.LEngineTagFind(query, _pFunnelChoice);
         }
         catch (Exception exception)
         {
@@ -86,14 +72,8 @@ public partial class PTaxonomy
 
         _pDirectoryList.Clear();
         bool kept = false;
-        foreach (LTag tag in PFunnelSort(read))
+        foreach (LTag tag in read)
         {
-            if (query.Length > 0 &&
-                tag.LTagText.IndexOf(query, StringComparison.CurrentCultureIgnoreCase) < 0)
-            {
-                continue;
-            }
-
             bool chosen = string.Equals(tag.LTagText, _pDirectoryChoice, StringComparison.Ordinal);
             kept |= chosen;
             _pDirectoryList.Add(new PDirectoryItem(tag.LTagText, chosen));

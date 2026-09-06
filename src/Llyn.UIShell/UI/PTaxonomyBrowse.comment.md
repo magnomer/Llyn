@@ -21,10 +21,10 @@ It is the whole workspace, which is what the panel shows before anything is pick
 The entry the right-hand side stands on, or null when none is selected.
 The reader may show it and the editor may be correcting it.
 
-### `private string _pFunnelChoice = "Name";`
+### `private LCatalogOrder _pFunnelChoice = LCatalogOrder.LCatalogOrderName;`
 
-Which ordering the tag catalog is listed in.
-It is the tag the chosen dropdown row carries, not the words that row showed.
+Which ordering the tag catalog is listed in, held as one of the orderings the engine supports.
+The dropdown tag is read into that set, so the panel offers nothing the engine cannot do.
 The ordering is the same one whatever language names it.
 
 ### `private void PTaxonomyHandle(object sender, DependencyPropertyChangedEventArgs e)`
@@ -33,15 +33,10 @@ The panel opens with whatever the database already holds.
 So a tag written in the input panel is there the moment the tab is switched to.
 Rebinding is idempotent, which keeps the binding out of the window constructor and beside the code that owns it.
 
-### `private IEnumerable<LTag> PFunnelSort(IReadOnlyList<LTag> tags)`
-
-The sorting acts on the tag catalog alone.
-The entries under a tag stay in headword order, which the database already gives them.
-A tag is read as a word, so the comparison is the reader's culture and not an ordinal one.
-
 ### `private void PDirectoryFind(string query)`
 
-The search filters the catalog by a contains over the tag text.
+The engine returns the tags answering the query, already in the chosen ordering.
+The entries under a tag stay in headword order, which the database already gives them.
 The chosen tag is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
 A chosen tag that the workspace no longer holds is dropped, and the panel falls back to every entry.
 

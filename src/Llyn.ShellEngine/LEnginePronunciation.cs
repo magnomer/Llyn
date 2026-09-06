@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -20,6 +21,25 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return new LPronunciationArchive(_lEngineDatabase).LPronunciationRead(entryId);
+        }
+    }
+
+    public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            LPronunciationArchive pronunciations = new(_lEngineDatabase);
+
+            List<LCatalogPronunciation> rows = [];
+            foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(query))
+            {
+                LPronunciation? pronunciation = pronunciations.LPronunciationRead(entry.LEntryId);
+                rows.Add(LCatalogPronunciation.LCatalogPronunciationCreate(
+                    entry,
+                    pronunciation?.LPronunciationIpa));
+            }
+
+            return LCatalogPronunciation.LCatalogPronunciationSort(rows, order);
         }
     }
 

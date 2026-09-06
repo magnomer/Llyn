@@ -19,3 +19,8 @@ Marking changes no lexical data and keeps the entry's identity.
 
 Unmarks the entry.
 The entry stands, still reachable through the entry catalog.
+
+## `public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)`
+
+The marked entries answering `query`, in `order`.
+The mark carries its own stamp, so ordering by the mark is not ordering by the entry.

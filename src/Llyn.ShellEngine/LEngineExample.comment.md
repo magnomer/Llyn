@@ -84,3 +84,13 @@ Without `detach` it is the refusing delete above.
 With it the detaching, the count and the delete are one operation rather than a sequence a caller composes.
 Between any two steps the answer to what still quotes this can change.
 
+## `public IReadOnlyList<LCatalogExample> LEngineExampleFind(string query, LCatalogOrder order)`
+
+The Examples answering `query`, in `order`, as rows already carrying their cited name and quotation count.
+An Example is matched over its sentence, its translation and the name of the Source it cites.
+The name is resolved here, because matching on an id the reader never sees would answer the wrong question.
+
+## `public IReadOnlyDictionary<string, string> LEngineCitationRead()`
+
+The name every stored Source is shown under, by id.
+One read serves a whole catalog fill, because resolving a name per row would be one query per row.

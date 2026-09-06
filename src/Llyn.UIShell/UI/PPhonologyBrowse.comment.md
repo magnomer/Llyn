@@ -15,20 +15,14 @@ This is the same round trip the library panel makes, entered through the pronunc
 The entry the right-hand side stands on, or null when none is selected.
 The display may show it and the editor may be correcting it.
 
-### `private string _pSequenceChoice = "Headword";`
+### `private LCatalogOrder _pSequenceChoice = LCatalogOrder.LCatalogOrderHeadword;`
 
-Which ordering the inventory is listed in.
-It is the tag the chosen dropdown row carries, not the words that row showed.
+Which ordering the inventory is listed in, held as one of the orderings the engine supports.
+The dropdown tag is read into that set, so the panel offers nothing the engine cannot do.
 The ordering is the same one whatever language names it.
-
-### `private IEnumerable<PInventoryItem> PSequenceSort(...)`
-
-The orderings are read off the items rather than off the entries.
-A pronunciation ordering needs the pronunciation, and the entry row does not carry one.
-An entry with no pronunciation sorts last under a pronunciation ordering.
-It sorts first under the ordering that looks for what is still missing.
 
 ### `private void PInventoryFind(string query)`
 
-Every matching entry is asked for its pronunciation, because the row shows it.
-The list is built whole and then ordered, so the ordering may read what the rows show.
+The engine returns each matching entry already carrying the pronunciation stored for it.
+An entry with no pronunciation sorts last under a pronunciation ordering.
+It sorts first under the ordering that looks for what is still missing.

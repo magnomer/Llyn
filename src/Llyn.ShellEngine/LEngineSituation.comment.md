@@ -69,3 +69,8 @@ With it the detaching and the delete are one operation rather than a sequence a 
 
 The usage seams that once stood here now live in `LEngineUsage.cs`.
 An Example is browsed the same way a Situation is, so the two share one seam rather than each carrying its own.
+
+## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)`
+
+The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
+A Situation is matched over its title, its description and its kind.

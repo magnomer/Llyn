@@ -16,20 +16,6 @@ internal sealed class PCitationItem
 
     internal static PCitationItem PCitationItemCreate(LReference reference)
     {
-        return new PCitationItem(
-            reference.LReferenceId,
-            PCitationTextRead(reference.LReferenceTitle)
-                ?? PCitationTextRead(reference.LReferenceProgram)
-                ?? PCitationTextRead(reference.LReferenceChannel)
-                ?? PCitationTextRead(reference.LReferenceUrl)
-                ?? reference.LReferenceId);
-    }
-
-    private static string? PCitationTextRead(LStateValue value)
-    {
-        return value.LStateValueState == LState.LStateSpecified
-            && !string.IsNullOrWhiteSpace(value.LStateValueText)
-                ? value.LStateValueText
-                : null;
+        return new PCitationItem(reference.LReferenceId, reference.LReferenceNameRead());
     }
 }

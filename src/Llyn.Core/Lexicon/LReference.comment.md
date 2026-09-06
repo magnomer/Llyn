@@ -26,3 +26,12 @@ So a specified authorship may name one Author, several, or the specified Author 
 - `LReferenceYear` — Publication or release year.
 - `LReferenceUrl` — Address the material was found at.
 - `LReferenceAuthorState` — Whether the authorship is unspecified, unknown, or specified by attached Authors.
+
+## `public string LReferenceNameRead()`
+
+The name the Reference is shown under, which is the first field it actually states.
+That is title, then program, then channel, then url.
+Every field may stand unspecified or unknown, so none of them is guaranteed.
+A Reference that names itself nowhere is shown under its id.
+It is never shown as a blank the reader could not tell from the next one.
+The rule lives on the record because the catalog, the row and the citation list all need the same answer.

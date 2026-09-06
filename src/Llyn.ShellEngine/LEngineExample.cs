@@ -33,6 +33,62 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogExample> LEngineExampleFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            query = query.Trim();
+
+            IReadOnlyList<LExample> read = new LExampleArchive(_lEngineDatabase).LExampleRead();
+            IReadOnlyDictionary<string, int> usage =
+                new LExampleArchive(_lEngineDatabase).LExampleReferenceRead();
+            IReadOnlyDictionary<string, string> cited = LEngineCitationRead();
+
+            List<LCatalogExample> rows = [];
+            foreach (LExample example in read)
+            {
+                usage.TryGetValue(example.LExampleId, out int counted);
+
+                LCatalogExample row = LCatalogExample.LCatalogExampleCreate(
+                    example,
+                    LEngineCitationRead(cited, example.LExampleSource),
+                    counted);
+                if (row.LCatalogExampleMatch(query))
+                {
+                    rows.Add(row);
+                }
+            }
+
+            return LCatalogExample.LCatalogExampleSort(rows, order);
+        }
+    }
+
+    public IReadOnlyDictionary<string, string> LEngineCitationRead()
+    {
+        lock (_lEngineGate)
+        {
+            Dictionary<string, string> named = new(StringComparer.Ordinal);
+            foreach (LReference reference in new LReferenceArchive(_lEngineDatabase).LReferenceAllRead())
+            {
+                named[reference.LReferenceId] = reference.LReferenceNameRead();
+            }
+
+            return named;
+        }
+    }
+
+    private static string LEngineCitationRead(IReadOnlyDictionary<string, string> named, LStateValue source)
+    {
+        string id = source.LStateValueShow();
+        if (id.Length == 0)
+        {
+            return string.Empty;
+        }
+
+        return named.TryGetValue(id, out string? name) ? name : id;
+    }
+
     public IReadOnlyList<LExample> LEngineExampleRead(string ownerId, LOwner owner)
     {
         lock (_lEngineGate)

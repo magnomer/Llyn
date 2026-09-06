@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -20,7 +19,7 @@ public partial class PRepertoire
 
     private string? _pVignetteSituation;
 
-    private string _pTierChoice = "Title";
+    private LCatalogOrder _pTierChoice = LCatalogOrder.LCatalogOrderName;
 
     private bool _pScenarioTitleUnreadable;
 
@@ -57,36 +56,17 @@ public partial class PRepertoire
             return;
         }
 
-        _pTierChoice = choice;
+        _pTierChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderName);
         PTierDropper.IsChecked = false;
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
 
-    private IEnumerable<LSituation> PAtlasSort(IReadOnlyList<LSituation> situations)
-    {
-        return _pTierChoice switch
-        {
-            "Kind" => situations.OrderBy(
-                situation => situation.LSituationKind.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase),
-            "Usage" => situations.OrderByDescending(PAtlasCountRead),
-            _ => situations.OrderBy(
-                situation => situation.LSituationTitle.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase)
-        };
-    }
-
-    private int PAtlasCountRead(LSituation situation)
-    {
-        return _pAtlasCount.TryGetValue(situation.LSituationId, out int usage) ? usage : 0;
-    }
-
     private void PAtlasFind(string query)
     {
-        query = query.Trim();
-
-        IReadOnlyList<LSituation> read;
+        IReadOnlyList<LCatalogSituation> read;
         try
         {
-            read = _lEngine.LEngineSituationRead();
+            read = _lEngine.LEngineSituationFind(query, _pTierChoice);
             _pAtlasCount = _lEngine.LEngineUsageRead(LOwner.LOwnerSituation);
         }
         catch (Exception exception)
@@ -100,15 +80,17 @@ public partial class PRepertoire
 
         _pAtlasList.Clear();
         bool kept = false;
-        foreach (LSituation situation in PAtlasSort(read))
+        foreach (LCatalogSituation row in read)
         {
-            if (query.Length > 0 && !PInquestMatch(situation, query))
-            {
-                continue;
-            }
-
-            kept |= string.Equals(situation.LSituationId, _pVignetteSituation, StringComparison.Ordinal);
-            _pAtlasList.Add(new PAtlasItem(situation, PAtlasCountRead(situation), unreadable, untitled));
+            kept |= string.Equals(
+                row.LCatalogSituationStored.LSituationId,
+                _pVignetteSituation,
+                StringComparison.Ordinal);
+            _pAtlasList.Add(new PAtlasItem(
+                row.LCatalogSituationStored,
+                row.LCatalogSituationUsage,
+                unreadable,
+                untitled));
         }
 
         PAtlasEmpty.Visibility = _pAtlasList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -117,18 +99,6 @@ public partial class PRepertoire
         {
             PRepertoireClear();
         }
-    }
-
-    private bool PInquestMatch(LSituation situation, string query)
-    {
-        return PInquestMatch(situation.LSituationTitle.LStateValueShow(), query)
-            || PInquestMatch(situation.LSituationDescription.LStateValueShow(), query)
-            || PInquestMatch(situation.LSituationKind.LStateValueShow(), query);
-    }
-
-    private static bool PInquestMatch(string text, string query)
-    {
-        return text.Length > 0 && text.IndexOf(query, StringComparison.CurrentCultureIgnoreCase) >= 0;
     }
 
     private void PAtlasHandle(object sender, RoutedEventArgs e)

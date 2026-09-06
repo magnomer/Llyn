@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,7 +13,7 @@ public partial class PLibrary
 
     private string? _pDisplayEntry;
 
-    private string _pOrderChoice = "Headword";
+    private LCatalogOrder _pOrderChoice = LCatalogOrder.LCatalogOrderHeadword;
 
     private async void PLibraryHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -43,29 +41,15 @@ public partial class PLibrary
             return;
         }
 
-        _pOrderChoice = choice;
+        _pOrderChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderHeadword);
         POrderDropper.IsChecked = false;
         PIndexFind(PInquiry.Text ?? string.Empty);
-    }
-
-    private IEnumerable<LEntry> POrderSort(IReadOnlyList<LEntry> entries)
-    {
-        return _pOrderChoice switch
-        {
-            "Reverse" => entries.OrderByDescending(
-                entry => entry.LEntryHeadword, StringComparer.CurrentCultureIgnoreCase),
-            "Recent" => entries.OrderByDescending(
-                entry => entry.LEntryAddedUtc ?? string.Empty, StringComparer.Ordinal),
-            "Earliest" => entries.OrderBy(
-                entry => entry.LEntryAddedUtc ?? string.Empty, StringComparer.Ordinal),
-            _ => entries
-        };
     }
 
     private void PIndexFind(string query)
     {
         _pIndexList.Clear();
-        foreach (LEntry entry in POrderSort(_lEngine.LEngineEntryFind(query)))
+        foreach (LEntry entry in _lEngine.LEngineEntryFind(query, _pOrderChoice))
         {
             _pIndexList.Add(new PIndexItem(entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
         }

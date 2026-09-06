@@ -24,6 +24,33 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            query = query.Trim();
+
+            LSituationArchive situations = new(_lEngineDatabase);
+            IReadOnlyList<LSituation> read = situations.LSituationRead();
+            IReadOnlyDictionary<string, int> usage = situations.LSituationReferenceRead();
+
+            List<LCatalogSituation> rows = [];
+            foreach (LSituation situation in read)
+            {
+                usage.TryGetValue(situation.LSituationId, out int counted);
+
+                LCatalogSituation row = LCatalogSituation.LCatalogSituationCreate(situation, counted);
+                if (row.LCatalogSituationMatch(query))
+                {
+                    rows.Add(row);
+                }
+            }
+
+            return LCatalogSituation.LCatalogSituationSort(rows, order);
+        }
+    }
+
     public LSituation? LEngineSituationRead(string id)
     {
         lock (_lEngineGate)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -24,7 +23,7 @@ public partial class PReference
 
     private string? _pColophonReference;
 
-    private string _pGradeChoice = "Name";
+    private LCatalogOrder _pGradeChoice = LCatalogOrder.LCatalogOrderName;
 
     private void PReferenceHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -54,7 +53,7 @@ public partial class PReference
             return;
         }
 
-        _pGradeChoice = choice;
+        _pGradeChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderName);
         PGradeDropper.IsChecked = false;
         PShelfFind(PSurvey.Text ?? string.Empty);
     }
@@ -69,35 +68,12 @@ public partial class PReference
         return _pShelfCount.TryGetValue(id, out int usage) ? usage : 0;
     }
 
-    private IEnumerable<LReference> PShelfSort(IReadOnlyList<LReference> references)
-    {
-        return _pGradeChoice switch
-        {
-            "Year" => references
-                .OrderBy(reference => reference.LReferenceYear.LStateValueState)
-                .ThenBy(reference => reference.LReferenceYear.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase),
-            "Author" => references
-                .OrderBy(reference => PShelfCreditRead(reference.LReferenceId).Count == 0
-                    ? reference.LReferenceAuthorState
-                    : LState.LStateSpecified)
-                .ThenBy(
-                    reference => PShelfCreditRead(reference.LReferenceId).FirstOrDefault()?.LAuthorName ?? string.Empty,
-                    StringComparer.CurrentCultureIgnoreCase),
-            "Usage" => references.OrderByDescending(reference => PShelfCountRead(reference.LReferenceId)),
-            _ => references.OrderBy(
-                reference => PCitationItem.PCitationItemCreate(reference).PCitationItemName,
-                StringComparer.CurrentCultureIgnoreCase),
-        };
-    }
-
     private void PShelfFind(string query)
     {
-        query = query.Trim();
-
-        IReadOnlyList<LReference> read;
+        IReadOnlyList<LCatalogReference> read;
         try
         {
-            read = _lEngine.LEngineReferenceRead();
+            read = _lEngine.LEngineReferenceFind(query, _pGradeChoice);
             _pShelfCount = _lEngine.LEngineUsageRead(LOwner.LOwnerReference);
             _pShelfCredit = _lEngine.LEngineAuthorRead(LOwner.LOwnerReference);
         }
@@ -112,21 +88,13 @@ public partial class PReference
 
         _pShelfList.Clear();
         bool kept = false;
-        foreach (LReference reference in PShelfSort(read))
+        foreach (LCatalogReference row in read)
         {
-            IReadOnlyList<LAuthor> credits = PShelfCreditRead(reference.LReferenceId);
-            if (query.Length > 0 && !PSurveyMatch(reference, credits, query))
-            {
-                continue;
-            }
-
-            kept |= string.Equals(reference.LReferenceId, _pColophonReference, StringComparison.Ordinal);
-            _pShelfList.Add(new PShelfItem(
-                reference,
-                credits,
-                PShelfCountRead(reference.LReferenceId),
-                unreadable,
-                unset));
+            kept |= string.Equals(
+                row.LCatalogReferenceStored.LReferenceId,
+                _pColophonReference,
+                StringComparison.Ordinal);
+            _pShelfList.Add(new PShelfItem(row, unreadable, unset));
         }
 
         PShelfEmpty.Visibility = _pShelfList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -135,32 +103,6 @@ public partial class PReference
         {
             PReferenceClear();
         }
-    }
-
-    private static bool PSurveyMatch(LReference reference, IReadOnlyList<LAuthor> credits, string query)
-    {
-        if (PSurveyMatch(reference.LReferenceTitle.LStateValueShow(), query)
-            || PSurveyMatch(reference.LReferenceProgram.LStateValueShow(), query)
-            || PSurveyMatch(reference.LReferenceChannel.LStateValueShow(), query)
-            || PSurveyMatch(reference.LReferenceUrl.LStateValueShow(), query))
-        {
-            return true;
-        }
-
-        foreach (LAuthor author in credits)
-        {
-            if (PSurveyMatch(author.LAuthorName, query))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool PSurveyMatch(string text, string query)
-    {
-        return text.Length > 0 && text.IndexOf(query, StringComparison.CurrentCultureIgnoreCase) >= 0;
     }
 
     private void PShelfHandle(object sender, RoutedEventArgs e)

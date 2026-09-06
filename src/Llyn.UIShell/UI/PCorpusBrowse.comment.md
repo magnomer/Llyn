@@ -19,20 +19,12 @@ It also decides which delete the panel offers, so it is held rather than asked f
 Binds the sources and reads the workspace when the panel becomes visible.
 The flags are loaded before the first fill, so no row is built without the flag it shows.
 
-## `private IEnumerable<LExample> PAnthologySort(IReadOnlyList<LExample> examples)`
-
-Orders the catalog under the current choice.
-Ordering by Source orders by the resolved name rather than the id, because the id is never shown.
-
 ## `private void PAnthologyFind(string query)`
 
-Refills the catalog from the workspace under the current ordering and query.
+Refills the catalog with the rows the engine returns, already matched and already ordered.
+The panel names the ordering and the query and decides nothing else about either.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open editor keeps its selection either way, because the row may be the one being written.
-
-## `private bool PQueryMatch(LExample example, string query)`
-
-Whether one Example answers the query, over its sentence, its translation and its Source name.
 
 ## `internal void PAnthologyExampleShow(string id)`
 

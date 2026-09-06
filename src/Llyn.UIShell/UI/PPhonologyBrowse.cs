@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,7 +13,7 @@ public partial class PPhonology
 
     private string? _pDisplayEntry;
 
-    private string _pSequenceChoice = "Headword";
+    private LCatalogOrder _pSequenceChoice = LCatalogOrder.LCatalogOrderHeadword;
 
     private async void PPhonologyHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -43,44 +41,21 @@ public partial class PPhonology
             return;
         }
 
-        _pSequenceChoice = choice;
+        _pSequenceChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderHeadword);
         PSequenceDropper.IsChecked = false;
         PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
-    private IEnumerable<PInventoryItem> PSequenceSort(IReadOnlyList<PInventoryItem> items)
-    {
-        return _pSequenceChoice switch
-        {
-            "Reverse" => items.OrderByDescending(
-                item => item.PInventoryItemHeadword, StringComparer.CurrentCultureIgnoreCase),
-            "Sound" => items
-                .OrderBy(item => item.PInventoryItemSound.Length == 0)
-                .ThenBy(item => item.PInventoryItemSound, StringComparer.Ordinal),
-            "Pending" => items
-                .OrderByDescending(item => item.PInventoryItemSound.Length == 0)
-                .ThenBy(item => item.PInventoryItemHeadword, StringComparer.CurrentCultureIgnoreCase),
-            _ => items
-        };
-    }
-
     private void PInventoryFind(string query)
     {
-        List<PInventoryItem> found = [];
-        foreach (LEntry entry in _lEngine.LEngineEntryFind(query))
-        {
-            LPronunciation? pronunciation = _lEngine.LEnginePronunciationRead(entry.LEntryId);
-            found.Add(new PInventoryItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
-                pronunciation?.LPronunciationIpa ?? string.Empty));
-        }
-
         _pInventoryList.Clear();
-        foreach (PInventoryItem item in PSequenceSort(found))
+        foreach (LCatalogPronunciation row in _lEngine.LEnginePronunciationFind(query, _pSequenceChoice))
         {
-            _pInventoryList.Add(item);
+            _pInventoryList.Add(new PInventoryItem(
+                row.LCatalogPronunciationEntry.LEntryId,
+                row.LCatalogPronunciationEntry.LEntryHeadword,
+                row.LCatalogPronunciationEntry.LEntryLanguage,
+                row.LCatalogPronunciationSound));
         }
 
         PInventoryEmpty.Visibility = _pInventoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;

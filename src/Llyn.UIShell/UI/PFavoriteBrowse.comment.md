@@ -20,15 +20,10 @@ Typing selects nothing and marks nothing.
 Takes the chosen ordering from the clicked row and closes the dropdown.
 The roster is read again rather than reordered in place.
 
-## `private IEnumerable<LFavorite> PSeriesSort(IReadOnlyList<LFavorite> favorites)`
-
-Orders the marked entries by the current choice.
-Headword order is what the engine already returns, so that choice reorders nothing.
-`Marked` orders by when the mark was made, never by when the entry was written.
-
 ## `private void PRosterFind(string query)`
 
-Reads the marked entries carrying the query and rebuilds the rows in the chosen order.
+Reads the marked entries the engine returns for the query and the chosen ordering.
+Ordering by the mark reads when the mark was made, never when the entry was written.
 An unreadable workspace leaves the roster empty and tells the user why.
 The empty line is shown only while no row stands.
 

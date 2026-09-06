@@ -15,6 +15,16 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            return LCatalogFavorite.LCatalogFavoriteSort(
+                new LFavoriteArchive(_lEngineDatabase).LFavoriteFind(query),
+                order);
+        }
+    }
+
     public bool LEngineFavoriteCheck(string entryId)
     {
         lock (_lEngineGate)

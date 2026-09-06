@@ -109,3 +109,9 @@ Deleting an Author never deletes a Reference.
 Deletes the Author identified by `id`.
 Refused while any Reference still credits the Author — detach every credit first.
 Deleting an Author never deletes a Reference.
+
+## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(string query, LCatalogOrder order)`
+
+The Sources answering `query`, in `order`, as rows already carrying their name, credits and citation count.
+The credits and the counts are read whole rather than one Source at a time.
+Both are needed to order and to match, so the browsing panel decides neither.

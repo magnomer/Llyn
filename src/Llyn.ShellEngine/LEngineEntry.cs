@@ -32,6 +32,16 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            return LCatalogEntry.LCatalogEntrySort(
+                new LEntryArchive(_lEngineDatabase).LEntryFind(query),
+                order);
+        }
+    }
+
     public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag)
     {
         lock (_lEngineGate)

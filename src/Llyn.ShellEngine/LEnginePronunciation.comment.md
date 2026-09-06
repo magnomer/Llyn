@@ -65,3 +65,8 @@ Reads the note the Entry identified by `entryId` keeps, or `null` when it keeps 
 ## `public void LEngineNoteDelete(string entryId)`
 
 Deletes the note of the Entry identified by `entryId`, if it has one.
+
+## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order)`
+
+The entries answering `query`, in `order`, each already carrying the pronunciation stored for it.
+The sound is read here because the phonology catalog orders by it and shows it.

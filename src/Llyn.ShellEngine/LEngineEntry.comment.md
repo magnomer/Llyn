@@ -85,3 +85,8 @@ Reads the changes recorded under `revisionId`, in the order recorded.
 Stored relative, handed out full.
 The shell plays a file, so it never has to know the workspace folder.
 The same entry opened from a moved workspace still resolves.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order)`
+
+The entries answering `query`, in `order`.
+The store answers which entries match, and the ordering is applied over what it returned.

@@ -17,10 +17,10 @@ The entry the right-hand side stands on, or null when none is selected.
 The display may show it and the editor may be correcting it.
 Either way it is the one entry this panel is on.
 
-### `private string _pOrderChoice = "Headword";`
+### `private LCatalogOrder _pOrderChoice = LCatalogOrder.LCatalogOrderHeadword;`
 
-Which ordering the index is listed in.
-It is the tag the chosen dropdown row carries, not the words that row showed.
+Which ordering the index is listed in, held as one of the orderings the engine supports.
+The dropdown tag is read into that set, so the panel offers nothing the engine cannot do.
 The ordering is the same one whatever language names it.
 
 ### `private void PLibraryHandle(object sender, DependencyPropertyChangedEventArgs e)`
@@ -35,16 +35,9 @@ A chosen ordering renames the button and re-lists the index.
 Nothing about the selected entry changes.
 An ordering says in which order the entries are offered, never which one is shown.
 
-### `private IEnumerable<LEntry> POrderSort(IReadOnlyList<LEntry> entries)`
-
-The found entries in the order the dropdown asked for.
-The engine returns them by headword already, so that ordering is the one that costs nothing.
-A timestamp an entry does not carry sorts as empty.
-That puts an entry of unknown age at the end of a newest-first list.
-
 ### `private void PIndexFind(string query)`
 
-Refills the index with the entries matching the typed text.
+Refills the index with the entries the engine returns for the query and the ordering.
 An empty box lists everything.
 The display is not touched: the search says which entries are offered, never which one is shown.
 

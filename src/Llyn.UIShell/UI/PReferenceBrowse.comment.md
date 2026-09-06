@@ -24,22 +24,13 @@ The catalog, the ordering, and the search all need them, so a per-row read would
 Binds the collections and reads the workspace when the panel becomes visible.
 The authors are read before the first fill, so no menu is offered empty while the store holds some.
 
-## `private IEnumerable<LReference> PShelfSort(IReadOnlyList<LReference> references)`
-
-Orders the shelf under the current choice.
-Ordering by name uses the resolved name, so a Source naming itself by its programme is ordered under what is shown.
-Ordering by author uses the first credit, because the credit order belongs to the Source.
-
 ## `private void PShelfFind(string query)`
 
-Refills the shelf from the workspace under the current ordering and query.
+Refills the shelf with the rows the engine returns, already matched and already ordered.
+Each row carries its own name, credits and citation count, so the panel derives none of them.
+The held counts and credits are read again with it, because the read area and the editor also stand on them.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open edit area keeps its selection either way, because the row may be the one being written.
-
-## `private static bool PSurveyMatch(LReference reference, IReadOnlyList<LAuthor> credits, string query)`
-
-Whether one Source answers the query, over its four texts and its credited names.
-Only a field standing Specified carries text, so an Unknown field matches nothing.
 
 ## `private void PReferenceShow(string id)`
 

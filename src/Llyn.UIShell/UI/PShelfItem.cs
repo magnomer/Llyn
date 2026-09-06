@@ -6,18 +6,15 @@ namespace Llyn.UIShell;
 
 internal sealed class PShelfItem
 {
-    internal PShelfItem(
-        LReference reference,
-        IReadOnlyList<LAuthor> credits,
-        int usage,
-        string unreadable,
-        string unset)
+    internal PShelfItem(LCatalogReference row, string unreadable, string unset)
     {
+        LReference reference = row.LCatalogReferenceStored;
+
         PShelfItemId = reference.LReferenceId;
-        PShelfItemName = PCitationItem.PCitationItemCreate(reference).PCitationItemName;
-        PShelfItemAuthor = PShelfCreditRead(reference, credits, unreadable, unset);
+        PShelfItemName = row.LCatalogReferenceName;
+        PShelfItemAuthor = PShelfCreditRead(reference, row.LCatalogReferenceCredit, unreadable, unset);
         PShelfItemYear = PShelfValueRead(reference.LReferenceYear, unreadable) ?? unset;
-        PShelfItemCount = usage.ToString(CultureInfo.CurrentCulture);
+        PShelfItemCount = row.LCatalogReferenceUsage.ToString(CultureInfo.CurrentCulture);
     }
 
     public string PShelfItemId { get; }

@@ -9,10 +9,10 @@ A Source is shown by the first field it actually states, then by its id if it na
 It is never offered as a blank row the reader could not tell from the next one.
 `Untitled` is a stated title and shows as one, and `Anonymous` is a credited Author.
 
-## `internal PShelfItem(LReference reference, IReadOnlyList<LAuthor> credits, int usage, string unreadable, string unset)`
+## `internal PShelfItem(LCatalogReference row, string unreadable, string unset)`
 
-Builds the row from the stored Source, its credits, and the number of places citing it.
-The credits arrive already read, because reading them per row is one query per row.
+Builds the row from the catalog row the engine returned.
+The name, the credits and the citation count arrive with it, so nothing is derived or read again here.
 The two texts are handed in rather than read here, because a row is built while the list is being filled.
 
 ## `internal static string PShelfCreditRead(LReference reference, IReadOnlyList<LAuthor> credits, string unreadable, string unset)`

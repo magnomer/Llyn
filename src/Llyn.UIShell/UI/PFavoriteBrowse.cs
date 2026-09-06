@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -15,7 +14,7 @@ public partial class PFavorite
 
     private string? _pRosterEntry;
 
-    private string _pSeriesChoice = "Headword";
+    private LCatalogOrder _pSeriesChoice = LCatalogOrder.LCatalogOrderHeadword;
 
     private async void PFavoriteHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -43,23 +42,9 @@ public partial class PFavorite
             return;
         }
 
-        _pSeriesChoice = choice;
+        _pSeriesChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderHeadword);
         PSeriesDropper.IsChecked = false;
         PRosterFind(PRecall.Text ?? string.Empty);
-    }
-
-    private IEnumerable<LFavorite> PSeriesSort(IReadOnlyList<LFavorite> favorites)
-    {
-        return _pSeriesChoice switch
-        {
-            "Reverse" => favorites.OrderByDescending(
-                favorite => favorite.LFavoriteEntry.LEntryHeadword, StringComparer.CurrentCultureIgnoreCase),
-            "Language" => favorites.OrderBy(
-                favorite => favorite.LFavoriteEntry.LEntryLanguage, StringComparer.CurrentCultureIgnoreCase),
-            "Marked" => favorites.OrderByDescending(
-                favorite => favorite.LFavoriteMarkedUtc, StringComparer.Ordinal),
-            _ => favorites
-        };
     }
 
     private void PRosterFind(string query)
@@ -67,7 +52,7 @@ public partial class PFavorite
         IReadOnlyList<LFavorite> favorites;
         try
         {
-            favorites = _lEngine.LEngineFavoriteFind(query);
+            favorites = _lEngine.LEngineFavoriteFind(query, _pSeriesChoice);
         }
         catch (Exception exception)
         {
@@ -76,7 +61,7 @@ public partial class PFavorite
         }
 
         _pRosterList.Clear();
-        foreach (LFavorite favorite in PSeriesSort(favorites))
+        foreach (LFavorite favorite in favorites)
         {
             _pRosterList.Add(new PRosterItem(
                 favorite.LFavoriteEntry.LEntryId,

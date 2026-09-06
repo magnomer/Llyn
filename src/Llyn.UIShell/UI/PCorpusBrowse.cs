@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -23,7 +22,7 @@ public partial class PCorpus
 
     private string? _pExcerptExample;
 
-    private string _pRankChoice = "Text";
+    private LCatalogOrder _pRankChoice = LCatalogOrder.LCatalogOrderText;
 
     private async void PCorpusHandle(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -56,38 +55,17 @@ public partial class PCorpus
             return;
         }
 
-        _pRankChoice = choice;
+        _pRankChoice = LCatalog.LCatalogOrderParse(choice, LCatalogOrder.LCatalogOrderText);
         PRankDropper.IsChecked = false;
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 
-    private IEnumerable<LExample> PAnthologySort(IReadOnlyList<LExample> examples)
-    {
-        return _pRankChoice switch
-        {
-            "Language" => examples.OrderBy(
-                example => example.LExampleLanguage, StringComparer.CurrentCultureIgnoreCase),
-            "Source" => examples.OrderBy(
-                example => PCitationNameRead(example.LExampleSource), StringComparer.CurrentCultureIgnoreCase),
-            "Usage" => examples.OrderByDescending(PAnthologyCountRead),
-            _ => examples.OrderBy(
-                example => example.LExampleText.LStateValueShow(), StringComparer.CurrentCultureIgnoreCase)
-        };
-    }
-
-    private int PAnthologyCountRead(LExample example)
-    {
-        return _pAnthologyCount.TryGetValue(example.LExampleId, out int usage) ? usage : 0;
-    }
-
     private void PAnthologyFind(string query)
     {
-        query = query.Trim();
-
-        IReadOnlyList<LExample> read;
+        IReadOnlyList<LCatalogExample> read;
         try
         {
-            read = _lEngine.LEngineExampleRead();
+            read = _lEngine.LEngineExampleFind(query, _pRankChoice);
             _pAnthologyCount = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
         }
         catch (Exception exception)
@@ -101,18 +79,16 @@ public partial class PCorpus
 
         _pAnthologyList.Clear();
         bool kept = false;
-        foreach (LExample example in PAnthologySort(read))
+        foreach (LCatalogExample row in read)
         {
-            if (query.Length > 0 && !PQueryMatch(example, query))
-            {
-                continue;
-            }
-
-            kept |= string.Equals(example.LExampleId, _pExcerptExample, StringComparison.Ordinal);
+            kept |= string.Equals(
+                row.LCatalogExampleStored.LExampleId,
+                _pExcerptExample,
+                StringComparison.Ordinal);
             _pAnthologyList.Add(new PAnthologyItem(
-                example,
-                PAnthologyCountRead(example),
-                PCitationNameRead(example.LExampleSource),
+                row.LCatalogExampleStored,
+                row.LCatalogExampleUsage,
+                row.LCatalogExampleSource,
                 unreadable,
                 unwritten));
         }
@@ -123,23 +99,6 @@ public partial class PCorpus
         {
             PCorpusClear();
         }
-    }
-
-    private bool PQueryMatch(LExample example, string query)
-    {
-        if (PQueryMatch(example.LExampleText.LStateValueShow(), query)
-            || PQueryMatch(example.LExampleTranslation.LStateValueShow(), query)
-            || PQueryMatch(PCitationNameRead(example.LExampleSource), query))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private static bool PQueryMatch(string text, string query)
-    {
-        return text.Length > 0 && text.IndexOf(query, StringComparison.CurrentCultureIgnoreCase) >= 0;
     }
 
     private void PAnthologyHandle(object sender, RoutedEventArgs e)

@@ -31,6 +31,7 @@ The first part names the operation the test drives, the second the condition it 
 - `Entry/` — saving, loading, updating, and deleting an entry.
 - `Draft/` — held drafts and the tentative links waiting on them.
 - `Lexicon/` — the records an entry owns or refers to.
+- `Catalog/` — the orderings and matches a browsed catalog is listed under.
 - `Markup/` — the markup reader and its import into a workspace.
 
 Convention tests live in `tests/Llyn.Convention.Tests` and audit source names directly.
