@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -153,7 +152,7 @@ public partial class PRepertoire
 
         PVignetteBody.Visibility = Visibility.Visible;
         PVignetteUnselected.Visibility = Visibility.Collapsed;
-        PRepertoireScribe.IsEnabled = true;
+        PRepertoireMode.IsEnabled = true;
 
         if (PScenario.Visibility == Visibility.Visible)
         {
@@ -307,15 +306,22 @@ public partial class PRepertoire
         PRepertoireClear();
         PRepertoireScribeShow(true);
         PScenarioDraftShow(PScenarioDraftStart(null));
-        PRepertoireScribe.IsEnabled = true;
+        PRepertoireMode.IsEnabled = true;
     }
 
     private void PRepertoireScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PScenario.Visibility == Visibility.Visible)
+        bool editing = ReferenceEquals(sender, PRepertoireScribe);
+        if (editing == (PScenario.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
         {
             if (!PRepertoireLeaveConfirm())
             {
+                PRepertoireScribeShow(true);
                 return;
             }
 
@@ -334,6 +340,7 @@ public partial class PRepertoire
 
         if (_pVignetteSituation is null)
         {
+            PRepertoireClear();
             return;
         }
 
@@ -347,14 +354,15 @@ public partial class PRepertoire
 
         PScenario.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PVignette.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PRepertoireScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PRepertoireViewer.IsChecked = !editing;
+        PRepertoireScribe.IsChecked = editing;
     }
 
     internal void PRepertoireScribeRestore(bool editing)
     {
         if (editing)
         {
-            PRepertoireScribe.IsEnabled = true;
+            PRepertoireMode.IsEnabled = true;
         }
 
         PRepertoireScribeShow(editing);
@@ -444,6 +452,6 @@ public partial class PRepertoire
         PVignetteUnselected.Visibility = Visibility.Visible;
         PScenarioApply(null);
         PRepertoireScribeShow(false);
-        PRepertoireScribe.IsEnabled = false;
+        PRepertoireMode.IsEnabled = false;
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -158,7 +157,7 @@ public partial class PReference
 
         PColophonBody.Visibility = Visibility.Visible;
         PColophonUnselected.Visibility = Visibility.Collapsed;
-        PReferenceScribe.IsEnabled = true;
+        PReferenceMode.IsEnabled = true;
 
         if (PImprint.Visibility == Visibility.Visible)
         {
@@ -250,10 +249,17 @@ public partial class PReference
 
     private void PReferenceScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PImprint.Visibility == Visibility.Visible)
+        bool editing = ReferenceEquals(sender, PReferenceScribe);
+        if (editing == (PImprint.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
         {
             if (!PReferenceLeaveConfirm())
             {
+                PReferenceScribeShow(true);
                 return;
             }
 
@@ -272,6 +278,7 @@ public partial class PReference
 
         if (_pColophonReference is null)
         {
+            PReferenceClear();
             return;
         }
 
@@ -285,14 +292,15 @@ public partial class PReference
 
         PImprint.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PColophon.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PReferenceScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PReferenceViewer.IsChecked = !editing;
+        PReferenceScribe.IsChecked = editing;
     }
 
     internal void PReferenceScribeRestore(bool editing)
     {
         if (editing)
         {
-            PReferenceScribe.IsEnabled = true;
+            PReferenceMode.IsEnabled = true;
         }
 
         PReferenceScribeShow(editing);
@@ -314,6 +322,6 @@ public partial class PReference
         PColophonUnselected.Visibility = Visibility.Visible;
         PImprintApply(null);
         PReferenceScribeShow(false);
-        PReferenceScribe.IsEnabled = false;
+        PReferenceMode.IsEnabled = false;
     }
 }

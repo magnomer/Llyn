@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -163,10 +162,17 @@ public partial class PFavorite
 
     private void PFavoriteScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PEditor.Visibility == Visibility.Visible)
+        bool editing = ReferenceEquals(sender, PFavoriteScribe);
+        if (editing == (PEditor.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
         {
             if (!PFavoriteLeaveConfirm())
             {
+                PFavoriteScribeShow(true);
                 return;
             }
 
@@ -175,13 +181,16 @@ public partial class PFavorite
             if (_pRosterEntry is not null)
             {
                 PRosterEntryShow(_pRosterEntry);
+                return;
             }
 
+            PFavoriteClear();
             return;
         }
 
         if (_pRosterEntry is null)
         {
+            PFavoriteClear();
             return;
         }
 
@@ -195,14 +204,15 @@ public partial class PFavorite
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PFavoriteScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PFavoriteViewer.IsChecked = !editing;
+        PFavoriteScribe.IsChecked = editing;
     }
 
     internal void PFavoriteScribeRestore(bool editing)
     {
         if (editing)
         {
-            PFavoriteScribe.IsEnabled = true;
+            PFavoriteMode.IsEnabled = true;
         }
 
         PFavoriteScribeShow(editing);
@@ -216,7 +226,7 @@ public partial class PFavorite
     private void PFavoriteEntryShow(string id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
-        PFavoriteScribe.IsEnabled = true;
+        PFavoriteMode.IsEnabled = true;
     }
 
     private void PFavoriteClear()
@@ -225,7 +235,7 @@ public partial class PFavorite
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PFavoriteScribeShow(false);
-        PFavoriteScribe.IsEnabled = false;
+        PFavoriteMode.IsEnabled = false;
         PFavoriteBin.IsEnabled = false;
     }
 

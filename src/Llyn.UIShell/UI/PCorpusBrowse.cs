@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -159,7 +158,7 @@ public partial class PCorpus
 
         PExcerptBody.Visibility = Visibility.Visible;
         PExcerptUnselected.Visibility = Visibility.Collapsed;
-        PCorpusScribe.IsEnabled = true;
+        PCorpusMode.IsEnabled = true;
 
         if (PTranscript.Visibility == Visibility.Visible)
         {
@@ -236,10 +235,17 @@ public partial class PCorpus
 
     private void PCorpusScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PTranscript.Visibility == Visibility.Visible)
+        bool editing = ReferenceEquals(sender, PCorpusScribe);
+        if (editing == (PTranscript.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
         {
             if (!PCorpusLeaveConfirm())
             {
+                PCorpusScribeShow(true);
                 return;
             }
 
@@ -258,6 +264,7 @@ public partial class PCorpus
 
         if (_pExcerptExample is null)
         {
+            PCorpusClear();
             return;
         }
 
@@ -271,14 +278,15 @@ public partial class PCorpus
 
         PTranscript.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PExcerpt.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PCorpusScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PCorpusViewer.IsChecked = !editing;
+        PCorpusScribe.IsChecked = editing;
     }
 
     internal void PCorpusScribeRestore(bool editing)
     {
         if (editing)
         {
-            PCorpusScribe.IsEnabled = true;
+            PCorpusMode.IsEnabled = true;
         }
 
         PCorpusScribeShow(editing);
@@ -300,6 +308,6 @@ public partial class PCorpus
         PExcerptUnselected.Visibility = Visibility.Visible;
         PTranscriptApply(null);
         PCorpusScribeShow(false);
-        PCorpusScribe.IsEnabled = false;
+        PCorpusMode.IsEnabled = false;
     }
 }

@@ -58,6 +58,11 @@ Nothing selected leaves the editor empty.
 Swaps the read view for the editor, and back.
 Leaving the editor asks about unsaved changes first, then reloads the entry as stored.
 
+
+## `if (editing == (PEditor.Visibility == Visibility.Visible))`
+
+Both segments answer here, so the click is read off which one was pressed.
+The segment already standing for what is on screen changes nothing.
 ## `private void PFavoriteScribeShow(bool editing)`
 
 Shows one of the two views and relabels the button with what the next click does.

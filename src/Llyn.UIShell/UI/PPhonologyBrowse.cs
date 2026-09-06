@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -158,16 +157,23 @@ public partial class PPhonology
         }
 
         PPhonologyClear();
-        PPhonologyScribe.IsEnabled = true;
+        PPhonologyMode.IsEnabled = true;
         PPhonologyScribeShow(true);
     }
 
     private void PPhonologyScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PEditor.Visibility == Visibility.Visible)
+        bool editing = ReferenceEquals(sender, PPhonologyScribe);
+        if (editing == (PEditor.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
         {
             if (!PPhonologyLeaveConfirm())
             {
+                PPhonologyScribeShow(true);
                 return;
             }
 
@@ -176,13 +182,16 @@ public partial class PPhonology
             if (_pDisplayEntry is not null)
             {
                 PInventoryEntryShow(_pDisplayEntry);
+                return;
             }
 
+            PPhonologyClear();
             return;
         }
 
         if (_pDisplayEntry is null)
         {
+            PPhonologyClear();
             return;
         }
 
@@ -196,14 +205,15 @@ public partial class PPhonology
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PPhonologyScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PPhonologyViewer.IsChecked = !editing;
+        PPhonologyScribe.IsChecked = editing;
     }
 
     internal void PPhonologyScribeRestore(bool editing)
     {
         if (editing)
         {
-            PPhonologyScribe.IsEnabled = true;
+            PPhonologyMode.IsEnabled = true;
         }
 
         PPhonologyScribeShow(editing);
@@ -217,7 +227,7 @@ public partial class PPhonology
     private void PPhonologyEntryShow(string id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
-        PPhonologyScribe.IsEnabled = true;
+        PPhonologyMode.IsEnabled = true;
     }
 
     private void PPhonologyClear()
@@ -226,7 +236,7 @@ public partial class PPhonology
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PPhonologyScribeShow(false);
-        PPhonologyScribe.IsEnabled = false;
+        PPhonologyMode.IsEnabled = false;
         PPhonologyBin.IsEnabled = false;
     }
 

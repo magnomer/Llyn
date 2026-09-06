@@ -90,6 +90,11 @@ The origin is what a leftover reports itself by, which is how recovery can say w
 The mode toggle: reading becomes writing on the selected entry, and writing goes back to reading what is actually stored.
 Leaving the editor is what the unsaved question stands in front of.
 
+
+### `if (editing == (PEditor.Visibility == Visibility.Visible))`
+
+Both segments answer here, so the click is read off which one was pressed.
+The segment already standing for what is on screen changes nothing.
 ### `if (_pDisplayEntry is not null)`
 
 A correction that was given up leaves the editor holding text the store never took.
@@ -97,7 +102,7 @@ So the display is filled from the store again rather than from what was on scree
 
 ### `private void PLibraryScribeShow(bool editing)`
 
-Which of the two halves the broader side shows, and what the toggle then offers.
+Which of the two halves the broader side shows, and which segment the toggle marks.
 The half chosen is pushed downstream as it changes, so the panel opens on it next time.
 
 ### `internal bool PLibraryLeaveConfirm()`

@@ -5,13 +5,13 @@
 The same floating ground the other pickers stand on.
 It is not a white box of its own that no theme reaches.
 
-## `<Button`
+## `<Border x:Name="PEditorCommand"`
 
-Discard and store answer one unsaved edit, so they are built alike and separated by their fill alone.
-Both are a surface inside a hairline, the shape every other button in this window is drawn as.
+Discard and store answer one unsaved edit, so they share one group and are separated by their fill alone.
+The group is the command bar the browsing panels carry, so the two surfaces read as one language.
 A borderless tint is what this window gives a language pill and an open tab, not a button.
-They stand at 40 pixels, under the headword they act on rather than over it.
-Neither carries an icon.
+They stand at 38 pixels inside the group, beside the headword they act on rather than over it.
+Each carries the icon its panel twin carries, a plus for a fresh form and a disk for a store.
 A bin of one size and a diskette of another, beside labels of two lengths, left the pair looking lopsided.
 Both take the width of their label, so a longer language does not clip.
 

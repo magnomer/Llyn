@@ -23,27 +23,6 @@ Text search is off and the drop stays open while typing, so the list never overw
 WPF requires the editing box to be named "PART_EditableTextBox" and the drop "PART_Popup".
 Both are template contracts and are held out of the audited XAML naming surface.
 
-## `<Style x:Key="Theme.Text.Inverse" TargetType="TextBlock">`
-
-Text inside an accent button.
-The button's white Foreground only reaches content by inheritance.
-The app-wide implicit TextBlock style (Theme.Ink) outranks that.
-So the accent styles below restate it as an implicit style of their own.
-
-## `<Style x:Key="Theme.Input.Second" TargetType="Button">`
-
-The way out of an unsaved edit, and the shape both halves of the pair are cut from.
-A surface inside a hairline is what this window already means by a button.
-The label is a TextBlock the template owns, holding its colour as a local value.
-The app-wide TextBlock style outranks anything inherited, so a presenter's own text would come out ink on accent.
-
-## `<Style x:Key="Theme.Input.First" TargetType="Button">`
-
-The one button that commits what has been written, and the only filled accent in its row.
-It borrows the whole construction above and changes only what fills it.
-Neither half dims to an opacity when it cannot be pressed.
-Both drop their fill instead, keeping a faint edge and a faint label, so an idle header carries no weight.
-
 ## `<Style x:Key="Theme.Choice.Row" TargetType="Button">`
 
 One row the user picks from.
@@ -111,3 +90,28 @@ Both are defined here, so the two views cannot drift apart.
 The editor's language pill, drawn as the reading view's pill is drawn.
 It stays a toggle, because a language is chosen here and only reported there.
 The border is transparent until pointed at or opened, which is the only hint of the menu it holds.
+
+## `<Style x:Key="Theme.Command.Group" TargetType="Border">`
+
+The tray a panel's commands sit in, and the same tray the input header's pair sits in.
+One surface holds them, so a row of actions reads as one thing rather than five.
+The shadow stays when the tray is disabled, because a tray that drops it looks like a different control.
+
+## `<ControlTemplate x:Key="Theme.Command.Segment.Template" TargetType="ButtonBase">`
+
+One command inside the tray, drawn for a button and for a mode radio alike.
+The icon is the button's Tag, masked into a rectangle that takes its colour from Foreground.
+A command with no Tag collapses the icon and keeps its word alone.
+The label is a TextBlock the template owns, because the app-wide TextBlock style outranks an inherited colour.
+State is set on the button rather than on the surface, so a style below can overrule it.
+
+## `<Style x:Key="Theme.Command.Primary" TargetType="Button">`
+
+The one command in a tray that commits, filled so the eye finds it without reading.
+It drops to the quiet treatment when it cannot be pressed, because a filled slab reads as pressable.
+
+## `<Style x:Key="Theme.Command.Mode" TargetType="RadioButton">`
+
+The two halves of the reading and writing switch, which is a choice rather than two commands.
+The chosen half is tinted, so the panel says which half it is on before it is asked.
+A disabled switch keeps that tint, because the mode it stands on is still true.

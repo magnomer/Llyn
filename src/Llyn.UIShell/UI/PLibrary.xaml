@@ -21,8 +21,6 @@
                 <ColumnDefinition Width="44" />
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <ToggleButton
                 x:Name="POrderDropper"
@@ -76,12 +74,6 @@
                 Style="{StaticResource Theme.Input.Field}"
                 Tag="{DynamicResource List.Search}"
                 TextChanged="PInquiryHandle" />
-            <Button
-                Grid.Column="4"
-                Height="44"
-                Click="PLibraryMarkupHandle"
-                Content="{DynamicResource List.Import}"
-                Style="{StaticResource Theme.Input.Pill}" />
         </Grid>
 
         <Border Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
@@ -119,34 +111,64 @@
             </Grid>
         </Border>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button
-                x:Name="PLibraryFresh"
-                Height="44"
-                Margin="0,0,8,0"
-                Click="PLibraryFreshHandle"
-                Content="{DynamicResource Scribe.New}"
-                Style="{StaticResource Theme.Input.Pill}" />
-            <Button
-                x:Name="PLibraryStore"
-                Height="44"
-                Margin="0,0,8,0"
-                Click="PLibraryStoreHandle"
-                Content="{DynamicResource Scribe.Save}"
+        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="PLibraryFresh"
+                        Click="PLibraryFreshHandle"
+                        Content="{DynamicResource Scribe.New}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="pack://application:,,,/Llyn;component/icons/plus.svg" />
+                    <Button
+                        x:Name="PLibraryStore"
+                        Click="PLibraryStoreHandle"
+                        Content="{DynamicResource Scribe.Save}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Primary}"
+                        Tag="pack://application:,,,/Llyn;component/icons/floppy-disk.svg" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        Click="PLibraryMarkupHandle"
+                        Content="{DynamicResource List.Import}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="pack://application:,,,/Llyn;component/icons/download-simple.svg" />
+                    <Button
+                        Content="{DynamicResource Scribe.Export}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="pack://application:,,,/Llyn;component/icons/upload-simple.svg" />
+                    <Button
+                        Content="{DynamicResource Scribe.Print}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="pack://application:,,,/Llyn;component/icons/printer.svg" />
+                </StackPanel>
+            </Border>
+            <Border
+                x:Name="PLibraryMode"
+                HorizontalAlignment="Right"
                 IsEnabled="False"
-                Style="{StaticResource Theme.Input.Pill}" />
-            <Button
-                x:Name="PLibraryScribe"
-                Width="96"
-                Height="44"
-                Margin="0,0,8,0"
-                Click="PLibraryScribeHandle"
-                Content="{DynamicResource Scribe.Edit}"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Input.Pill}" />
-            <Button Height="44" Margin="0,0,8,0" Content="{DynamicResource Scribe.Export}" Style="{StaticResource Theme.Input.Pill}" />
-            <Button Height="44" Content="{DynamicResource Scribe.Print}" Style="{StaticResource Theme.Input.Pill}" />
-        </StackPanel>
+                Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="PLibraryViewer"
+                        Click="PLibraryScribeHandle"
+                        Content="{DynamicResource Scribe.View}"
+                        GroupName="PLibraryMode"
+                        IsChecked="True"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="pack://application:,,,/Llyn;component/icons/eye.svg" />
+                    <RadioButton
+                        x:Name="PLibraryScribe"
+                        Click="PLibraryScribeHandle"
+                        Content="{DynamicResource Scribe.Edit}"
+                        GroupName="PLibraryMode"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
+                </StackPanel>
+            </Border>
+        </Grid>
 
         <Border Grid.Row="1" Grid.Column="1" ClipToBounds="True" Style="{StaticResource Theme.Input.Card}">
             <Grid>

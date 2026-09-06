@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -154,16 +153,23 @@ public partial class PLibrary
         }
 
         PLibraryClear();
-        PLibraryScribe.IsEnabled = true;
+        PLibraryMode.IsEnabled = true;
         PLibraryScribeShow(true);
     }
 
     private void PLibraryScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PEditor.Visibility == Visibility.Visible)
+        bool editing = ReferenceEquals(sender, PLibraryScribe);
+        if (editing == (PEditor.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
         {
             if (!PLibraryLeaveConfirm())
             {
+                PLibraryScribeShow(true);
                 return;
             }
 
@@ -172,13 +178,16 @@ public partial class PLibrary
             if (_pDisplayEntry is not null)
             {
                 PIndexEntryShow(_pDisplayEntry);
+                return;
             }
 
+            PLibraryClear();
             return;
         }
 
         if (_pDisplayEntry is null)
         {
+            PLibraryClear();
             return;
         }
 
@@ -192,14 +201,15 @@ public partial class PLibrary
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PLibraryScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PLibraryViewer.IsChecked = !editing;
+        PLibraryScribe.IsChecked = editing;
     }
 
     internal void PLibraryScribeRestore(bool editing)
     {
         if (editing)
         {
-            PLibraryScribe.IsEnabled = true;
+            PLibraryMode.IsEnabled = true;
         }
 
         PLibraryScribeShow(editing);
@@ -213,7 +223,7 @@ public partial class PLibrary
     private void PLibraryEntryShow(string id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
-        PLibraryScribe.IsEnabled = true;
+        PLibraryMode.IsEnabled = true;
     }
 
     private void PLibraryClear()
@@ -222,7 +232,7 @@ public partial class PLibrary
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PLibraryScribeShow(false);
-        PLibraryScribe.IsEnabled = false;
+        PLibraryMode.IsEnabled = false;
         PLibraryBin.IsEnabled = false;
     }
 

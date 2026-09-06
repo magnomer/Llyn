@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -218,16 +217,23 @@ public partial class PTaxonomy
         }
 
         PTaxonomyClear();
-        PTaxonomyScribe.IsEnabled = true;
+        PTaxonomyMode.IsEnabled = true;
         PTaxonomyScribeShow(true);
     }
 
     private void PTaxonomyScribeHandle(object sender, RoutedEventArgs e)
     {
-        if (PEditor.Visibility == Visibility.Visible)
+        bool editing = ReferenceEquals(sender, PTaxonomyScribe);
+        if (editing == (PEditor.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
         {
             if (!PTaxonomyLeaveConfirm())
             {
+                PTaxonomyScribeShow(true);
                 return;
             }
 
@@ -236,13 +242,16 @@ public partial class PTaxonomy
             if (_pDisplayEntry is not null)
             {
                 PMembershipEntryShow(_pDisplayEntry);
+                return;
             }
 
+            PTaxonomyClear();
             return;
         }
 
         if (_pDisplayEntry is null)
         {
+            PTaxonomyClear();
             return;
         }
 
@@ -256,14 +265,15 @@ public partial class PTaxonomy
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PTaxonomyScribe.SetResourceReference(ButtonBase.ContentProperty, editing ? "Scribe.Read" : "Scribe.Edit");
+        PTaxonomyViewer.IsChecked = !editing;
+        PTaxonomyScribe.IsChecked = editing;
     }
 
     internal void PTaxonomyScribeRestore(bool editing)
     {
         if (editing)
         {
-            PTaxonomyScribe.IsEnabled = true;
+            PTaxonomyMode.IsEnabled = true;
         }
 
         PTaxonomyScribeShow(editing);
@@ -277,7 +287,7 @@ public partial class PTaxonomy
     private void PTaxonomyEntryShow(string id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
-        PTaxonomyScribe.IsEnabled = true;
+        PTaxonomyMode.IsEnabled = true;
     }
 
     private void PTaxonomyClear()
@@ -286,7 +296,7 @@ public partial class PTaxonomy
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PTaxonomyScribeShow(false);
-        PTaxonomyScribe.IsEnabled = false;
+        PTaxonomyMode.IsEnabled = false;
         PTaxonomyBin.IsEnabled = false;
     }
 

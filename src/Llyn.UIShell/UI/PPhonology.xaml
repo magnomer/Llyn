@@ -89,34 +89,59 @@
                 Style="{StaticResource Theme.Input.TogglePill}" />
         </Grid>
 
-        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,18" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button
-                x:Name="PPhonologyFresh"
-                Height="44"
-                Margin="0,0,8,0"
-                Click="PPhonologyFreshHandle"
-                Content="{DynamicResource Scribe.New}"
-                Style="{StaticResource Theme.Input.Pill}" />
-            <Button
-                x:Name="PPhonologyStore"
-                Height="44"
-                Margin="0,0,8,0"
-                Click="PPhonologyStoreHandle"
-                Content="{DynamicResource Scribe.Save}"
+        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <Button
+                        x:Name="PPhonologyFresh"
+                        Click="PPhonologyFreshHandle"
+                        Content="{DynamicResource Scribe.New}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="pack://application:,,,/Llyn;component/icons/plus.svg" />
+                    <Button
+                        x:Name="PPhonologyStore"
+                        Click="PPhonologyStoreHandle"
+                        Content="{DynamicResource Scribe.Save}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Primary}"
+                        Tag="pack://application:,,,/Llyn;component/icons/floppy-disk.svg" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        Content="{DynamicResource Scribe.Export}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="pack://application:,,,/Llyn;component/icons/upload-simple.svg" />
+                    <Button
+                        Content="{DynamicResource Scribe.Print}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="pack://application:,,,/Llyn;component/icons/printer.svg" />
+                </StackPanel>
+            </Border>
+            <Border
+                x:Name="PPhonologyMode"
+                HorizontalAlignment="Right"
                 IsEnabled="False"
-                Style="{StaticResource Theme.Input.Pill}" />
-            <Button
-                x:Name="PPhonologyScribe"
-                Width="96"
-                Height="44"
-                Margin="0,0,8,0"
-                Click="PPhonologyScribeHandle"
-                Content="{DynamicResource Scribe.Edit}"
-                IsEnabled="False"
-                Style="{StaticResource Theme.Input.Pill}" />
-            <Button Height="44" Margin="0,0,8,0" Content="{DynamicResource Scribe.Export}" Style="{StaticResource Theme.Input.Pill}" />
-            <Button Height="44" Content="{DynamicResource Scribe.Print}" Style="{StaticResource Theme.Input.Pill}" />
-        </StackPanel>
+                Style="{StaticResource Theme.Command.Group}">
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="PPhonologyViewer"
+                        Click="PPhonologyScribeHandle"
+                        Content="{DynamicResource Scribe.View}"
+                        GroupName="PPhonologyMode"
+                        IsChecked="True"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="pack://application:,,,/Llyn;component/icons/eye.svg" />
+                    <RadioButton
+                        x:Name="PPhonologyScribe"
+                        Click="PPhonologyScribeHandle"
+                        Content="{DynamicResource Scribe.Edit}"
+                        GroupName="PPhonologyMode"
+                        Style="{StaticResource Theme.Command.Mode}"
+                        Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
+                </StackPanel>
+            </Border>
+        </Grid>
 
         <local:PArticulation
             x:Name="PArticulation"

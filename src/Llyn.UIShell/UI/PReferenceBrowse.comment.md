@@ -61,6 +61,11 @@ Swaps the reading for the edit area and back.
 Leaving the edit area asks first, so unsaved wording is never lost silently.
 Held work is started on entering and discarded on leaving, so no draft outlives the area that fills it.
 
+
+## `if (editing == (PImprint.Visibility == Visibility.Visible))`
+
+Both segments answer here, so the click is read off which one was pressed.
+The segment already standing for what is on screen changes nothing.
 ## `private void PReferenceClear()`
 
 Drops the selection and empties the reading, the citing list and the edit area together.

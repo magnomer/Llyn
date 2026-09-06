@@ -55,6 +55,11 @@ Swaps the reading for the editor and back.
 Entering the editor starts a draft on the selected Example, and leaving it discards that draft.
 Leaving the editor asks first, so unsaved wording is never lost silently.
 
+
+## `if (editing == (PTranscript.Visibility == Visibility.Visible))`
+
+Both segments answer here, so the click is read off which one was pressed.
+The segment already standing for what is on screen changes nothing.
 ## `private void PCorpusClear()`
 
 Drops the selection and empties the reading, the usage and the editor together.

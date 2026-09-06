@@ -55,8 +55,7 @@ public partial class PEditor : UserControl
         Visibility owned = string.Equals(origin, "Input", StringComparison.Ordinal)
             ? Visibility.Visible
             : Visibility.Collapsed;
-        PEditorDiscard.Visibility = owned;
-        PEditorStore.Visibility = owned;
+        PEditorCommand.Visibility = owned;
 
         PSentenceLoad();
 

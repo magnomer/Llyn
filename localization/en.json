@@ -87,7 +87,7 @@
     "Scribe.Edit": "Edit",
     "Scribe.Export": "Export",
     "Scribe.Print": "Print",
-    "Scribe.Read": "Read",
+    "Scribe.View": "View",
     "Scribe.Save": "Save",
     "Scribe.Delete": "Delete",
     "Scribe.DeleteConfirm": "Delete this entry? It cannot be undone.",
