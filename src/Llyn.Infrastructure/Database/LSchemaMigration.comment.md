@@ -102,7 +102,15 @@ Every older row is carried over with its Example and its place, stating no frame
 Nothing is dropped, because an older row said nothing that the new shape cannot hold.
 The video tables arrive in the same version through `LSchema`, which creates what is missing.
 
-### `private static void LSchemaSentenceRebuild(SqliteConnection connection)`
+### `if (stored < 25)`
+
+Version 25.
+A Collocation's hold on an Example takes the shape a Meaning's already has, so `collocation_example` is rebuilt.
+The same rebuild serves both, because the two tables differ only in their name and their owner column.
+Every older row is carried over with its Example and its place, stating no frame and no rewrite.
+The editor already drew the frame fields on a Collocation card, and the store dropped them until now.
+
+### `private static void LSchemaSentenceRebuild(`
 
 SQLite cannot add a primary key or a foreign key to a table that stands, so the table is rebuilt beside itself.
 Enforcement is off for the rebuild, because the carried rows are copied before their parents are checked.

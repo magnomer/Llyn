@@ -332,12 +332,22 @@ public static class LSchema
                 ON sense_example (sense_id, position);
 
             CREATE TABLE IF NOT EXISTS collocation_example (
+                id TEXT NOT NULL PRIMARY KEY,
                 collocation_id TEXT NOT NULL,
                 example_id TEXT NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, example_id),
+                revision_state TEXT NOT NULL DEFAULT 'unspecified',
+                revision_id TEXT,
+                particle_state TEXT NOT NULL DEFAULT 'unspecified',
+                particle TEXT,
+                dependence_state TEXT NOT NULL DEFAULT 'unspecified',
+                dependence TEXT,
+                CHECK (revision_state = 'specified' OR revision_id IS NULL),
+                CHECK (particle_state = 'specified' OR particle IS NULL),
+                CHECK (dependence_state = 'specified' OR dependence IS NULL),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_id) REFERENCES example (id)
+                FOREIGN KEY (example_id) REFERENCES example (id),
+                FOREIGN KEY (revision_id) REFERENCES example (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_example_position

@@ -249,12 +249,6 @@ public sealed partial class LEngine
     {
         LExampleArchive exampleRows = new(_lEngineDatabase);
 
-        if (collocation)
-        {
-            LEngineExampleSync(exampleRows, ownerId, drafts, language);
-            return;
-        }
-
         List<LSentence> rows = [];
         foreach (LExampleDraft draft in LEngineExampleRead(drafts))
         {
@@ -268,40 +262,14 @@ public sealed partial class LEngine
                 draft.LExampleDraftDependence));
         }
 
-        new LSentenceArchive(_lEngineDatabase).LSentenceMeaningSave(ownerId, rows);
-    }
-
-    private void LEngineExampleSync(
-        LExampleArchive exampleRows, string ownerId, IReadOnlyList<LExampleDraft> drafts, string language)
-    {
-        LExampleLink examples = new(_lEngineDatabase);
-        IReadOnlyList<LExample> attached = examples.LExampleCollocationRead(ownerId);
-
-        List<string> targets = [];
-        HashSet<string> kept = new(StringComparer.Ordinal);
-        foreach (LExampleDraft draft in LEngineExampleRead(drafts))
+        LSentenceArchive sentences = new(_lEngineDatabase);
+        if (collocation)
         {
-            string id = LEngineExampleResolve(exampleRows, draft, language).LExampleId;
-            if (!kept.Add(id))
-            {
-                continue;
-            }
-
-            targets.Add(id);
+            sentences.LSentenceCollocationSave(ownerId, rows);
+            return;
         }
 
-        foreach (LExample row in attached)
-        {
-            if (!kept.Contains(row.LExampleId))
-            {
-                examples.LExampleCollocationDetach(ownerId, row.LExampleId);
-            }
-        }
-
-        for (int position = 0; position < targets.Count; position++)
-        {
-            examples.LExampleCollocationAttach(ownerId, targets[position], position);
-        }
+        sentences.LSentenceMeaningSave(ownerId, rows);
     }
 
     private void LEngineSituationSync(

@@ -87,7 +87,6 @@ public sealed class TEntrySave
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(entry.LEntryId));
 
         LSentenceArchive examples = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
-        LExampleLink links = TInterface.TExampleLinkCreate(workspace.TWorkspaceDatabase);
         LSituationArchive situations = TInterface.TSituationArchiveCreate(workspace.TWorkspaceDatabase);
         LTagArchive tags = TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase);
 
@@ -101,7 +100,8 @@ public sealed class TEntrySave
 
         Assert.Equal(
             "in a word, no",
-            Assert.Single(links.TExampleCollocationRead(collocation.LCollocationId)).LExampleText);
+            Assert.Single(examples.TSentenceCollocationRead(collocation.LCollocationId))
+                .LSentenceExample.LExampleText);
         Assert.Equal(
             "summary",
             Assert.Single(situations.TSituationCollocationRead(collocation.LCollocationId)).LSituationTitle);

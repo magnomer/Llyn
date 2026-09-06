@@ -407,6 +407,72 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_VersionTwentyFour_RebuildsCollocationExampleWithItsFrame()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 24);
+
+            CREATE TABLE collocation_example (
+                collocation_id TEXT NOT NULL,
+                example_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (collocation_id, example_id)
+            );
+            INSERT INTO collocation_example (collocation_id, example_id, position) VALUES ('c1', 'x1', 0);
+            INSERT INTO collocation_example (collocation_id, example_id, position) VALUES ('c1', 'x2', 1);
+            """);
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('collocation_example') WHERE name = 'id';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('collocation_example') WHERE name = 'particle';"));
+        Assert.Equal(
+            2,
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_example WHERE length(id) > 0;"));
+        Assert.Equal(
+            2,
+            workspace.TWorkspaceCountRead(
+                """
+                SELECT COUNT(*) FROM collocation_example
+                WHERE particle_state = 'unspecified' AND revision_id IS NULL;
+                """));
+        Assert.Equal(
+            2,
+            workspace.TWorkspaceCountRead(
+                """
+                SELECT COUNT(*) FROM collocation_example
+                WHERE (example_id = 'x1' AND position = 0) OR (example_id = 'x2' AND position = 1);
+                """));
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'collocation_example_carried';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                """
+                SELECT COUNT(*) FROM sqlite_master
+                WHERE type = 'index' AND name = 'collocation_example_position';
+                """));
+    }
+
+    [Fact]
     public void DatabaseCreate_VersionTwelve_AddsCollocationMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

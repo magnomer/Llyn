@@ -100,13 +100,13 @@ internal static partial class TInterface
 
     internal static LSentence TSentenceCreate(
         string id,
-        string meaningId,
+        string ownerId,
         int position,
         LExample example,
         LExample? revision,
         LStateValue particle,
         LStateValue dependence) =>
-        new(id, meaningId, position, example, revision, particle, dependence);
+        new(id, ownerId, position, example, revision, particle, dependence);
 
     internal static LExampleDraft TExampleDraftCreate(string text) =>
         LExampleDraft.LExampleDraftCreate(text);

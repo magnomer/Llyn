@@ -147,6 +147,118 @@ public sealed class TSentence
         Assert.Equal(stated.LExampleId, read.LSentenceExample.LExampleId);
     }
 
+    [Fact]
+    public void SentenceSave_CollocationFrame_ReadsItBack()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
+        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
+
+        string collocationId = TSentenceCollocationCreate(workspace);
+        LExample stated = examples.TExampleCreate(
+            TInterface.TExampleCreate(string.Empty, "en", "in a word, no", null, null));
+        LExample rewritten = examples.TExampleCreate(
+            TInterface.TExampleCreate(string.Empty, "en", "in short, no", null, null));
+
+        sentences.TSentenceCollocationSave(
+            collocationId,
+            [TInterface.TSentenceCreate(string.Empty, collocationId, 0, stated, rewritten, "in", "Manner")]);
+
+        LSentence read = Assert.Single(sentences.TSentenceCollocationRead(collocationId));
+        Assert.Equal(stated.LExampleId, read.LSentenceExample.LExampleId);
+        Assert.Equal("in short, no", read.LSentenceRevision?.LExampleText.TStateValueShow());
+        Assert.Equal("in", read.LSentenceParticle.TStateValueShow());
+        Assert.Equal("Manner", read.LSentenceDependence.TStateValueShow());
+        Assert.NotEmpty(read.LSentenceId);
+    }
+
+    [Fact]
+    public void SentenceSave_SharedExample_KeepsBothOwnersFrames()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
+        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
+
+        string meaningId = TSentenceMeaningCreate(workspace);
+        string collocationId = TSentenceCollocationCreate(workspace);
+        LExample shared = examples.TExampleCreate(
+            TInterface.TExampleCreate(string.Empty, "en", "she ran", null, null));
+
+        sentences.TSentenceMeaningSave(
+            meaningId, [TInterface.TSentenceCreate(string.Empty, meaningId, 0, shared, null, "to", "Goal")]);
+        sentences.TSentenceCollocationSave(
+            collocationId,
+            [TInterface.TSentenceCreate(string.Empty, collocationId, 0, shared, null, "from", "Source")]);
+
+        Assert.Equal(
+            "to", Assert.Single(sentences.TSentenceMeaningRead(meaningId)).LSentenceParticle.TStateValueShow());
+        Assert.Equal(
+            "from",
+            Assert.Single(sentences.TSentenceCollocationRead(collocationId)).LSentenceParticle.TStateValueShow());
+    }
+
+    [Fact]
+    public void CollocationDelete_HeldSentences_LeavesNoRows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
+        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
+        LCollocationArchive collocations = TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase);
+
+        string collocationId = TSentenceCollocationCreate(workspace);
+        LExample example = examples.TExampleCreate(
+            TInterface.TExampleCreate(string.Empty, "en", "a sentence", null, null));
+        sentences.TSentenceCollocationAttach(collocationId, example.LExampleId, 0);
+
+        collocations.TCollocationDelete(collocationId);
+
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_example;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
+    }
+
+    [Fact]
+    public void SentenceDetach_CollocationMiddleRow_ClosesTheOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
+        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
+
+        string collocationId = TSentenceCollocationCreate(workspace);
+        for (int position = 0; position < 3; position++)
+        {
+            LExample example = examples.TExampleCreate(
+                TInterface.TExampleCreate(string.Empty, "en", $"sentence {position}", null, null));
+            sentences.TSentenceCollocationAttach(collocationId, example.LExampleId, position);
+        }
+
+        string middle = sentences.TSentenceCollocationRead(collocationId)[1].LSentenceExample.LExampleId;
+        sentences.TSentenceCollocationDetach(collocationId, middle);
+
+        Assert.Equal(
+            [0, 1],
+            sentences.TSentenceCollocationRead(collocationId).Select(sentence => sentence.LSentencePosition));
+    }
+
+    private static string TSentenceCollocationCreate(TWorkspace workspace, string expression = "in a word")
+    {
+        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
+        LCollocationArchive collocations = TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase);
+
+        LEntry entry = entries.TEntryCreate(
+            TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null),
+            [TInterface.TFormCreate(string.Empty, 0, "word", null, "headword")],
+            []);
+
+        return collocations.TCollocationCreate(
+            TInterface.TCollocationCreate(
+                string.Empty,
+                entry.LEntryId,
+                0,
+                LStateValue.LStateValueUnspecified,
+                TInterface.TStateValueCreate(expression),
+                LStateValue.LStateValueUnspecified)).LCollocationId;
+    }
+
     private static string TSentenceMeaningCreate(TWorkspace workspace, string definition = "a meaning")
     {
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);

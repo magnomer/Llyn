@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 24;
+    public const long LSchemaMigrationVersion = 25;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -92,7 +92,12 @@ public static class LSchemaMigration
 
         if (stored < 24)
         {
-            LSchemaSentenceNormalize(connection);
+            LSchemaSentenceNormalize(connection, "sense_example", "sense_id", "sense");
+        }
+
+        if (stored < 25)
+        {
+            LSchemaSentenceNormalize(connection, "collocation_example", "collocation_id", "collocation");
         }
 
         LSchemaVersionSave(connection);
@@ -216,9 +221,10 @@ public static class LSchemaMigration
         return Convert.ToInt64(command.ExecuteScalar()) > 0;
     }
 
-    private static void LSchemaSentenceNormalize(SqliteConnection connection)
+    private static void LSchemaSentenceNormalize(
+        SqliteConnection connection, string table, string column, string owner)
     {
-        if (LSchemaColumnFind(connection, "sense_example", "id"))
+        if (LSchemaColumnFind(connection, table, "id"))
         {
             return;
         }
@@ -231,7 +237,7 @@ public static class LSchemaMigration
 
         try
         {
-            LSchemaSentenceRebuild(connection);
+            LSchemaSentenceRebuild(connection, table, column, owner);
         }
         finally
         {
@@ -241,21 +247,22 @@ public static class LSchemaMigration
         }
     }
 
-    private static void LSchemaSentenceRebuild(SqliteConnection connection)
+    private static void LSchemaSentenceRebuild(
+        SqliteConnection connection, string table, string column, string owner)
     {
         using SqliteTransaction rebuild = connection.BeginTransaction();
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
-            """
-            ALTER TABLE sense_example RENAME TO sense_example_carried;
+            $"""
+            ALTER TABLE {table} RENAME TO {table}_carried;
 
-            DROP INDEX IF EXISTS sense_example_position;
+            DROP INDEX IF EXISTS {table}_position;
 
-            DROP INDEX IF EXISTS sense_example_member;
+            DROP INDEX IF EXISTS {table}_member;
 
-            CREATE TABLE sense_example (
+            CREATE TABLE {table} (
                 id TEXT NOT NULL PRIMARY KEY,
-                sense_id TEXT NOT NULL,
+                {column} TEXT NOT NULL,
                 example_id TEXT NOT NULL,
                 position INTEGER NOT NULL,
                 revision_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -267,18 +274,18 @@ public static class LSchemaMigration
                 CHECK (revision_state = 'specified' OR revision_id IS NULL),
                 CHECK (particle_state = 'specified' OR particle IS NULL),
                 CHECK (dependence_state = 'specified' OR dependence IS NULL),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
+                FOREIGN KEY ({column}) REFERENCES {owner} (id) ON DELETE CASCADE,
                 FOREIGN KEY (example_id) REFERENCES example (id),
                 FOREIGN KEY (revision_id) REFERENCES example (id)
             );
 
-            INSERT INTO sense_example (id, sense_id, example_id, position)
-            SELECT lower(hex(randomblob(6))), sense_id, example_id, position FROM sense_example_carried;
+            INSERT INTO {table} (id, {column}, example_id, position)
+            SELECT lower(hex(randomblob(6))), {column}, example_id, position FROM {table}_carried;
 
-            DROP TABLE sense_example_carried;
+            DROP TABLE {table}_carried;
 
-            CREATE UNIQUE INDEX IF NOT EXISTS sense_example_position
-                ON sense_example (sense_id, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS {table}_position
+                ON {table} ({column}, position);
             """;
         command.ExecuteNonQuery();
         rebuild.Commit();

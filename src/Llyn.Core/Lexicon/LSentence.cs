@@ -2,7 +2,7 @@ namespace Llyn.Core;
 
 public sealed record LSentence(
     string LSentenceId,
-    string LSentenceMeaningId,
+    string LSentenceOwnerId,
     int LSentencePosition,
     LExample LSentenceExample,
     LExample? LSentenceRevision,

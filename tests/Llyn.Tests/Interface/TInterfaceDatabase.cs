@@ -40,6 +40,11 @@ internal static partial class TInterface
         string entryId) =>
         collocationArchive.LCollocationRead(entryId);
 
+    internal static void TCollocationDelete(this LCollocationArchive collocationArchive, string id)
+    {
+        collocationArchive.LCollocationDelete(id);
+    }
+
     internal static LCourtLink? TCourtArchiveRead(string root, string id) =>
         LCourtArchive.LCourtArchiveRead(root, id);
 
@@ -131,16 +136,8 @@ internal static partial class TInterface
     internal static LExampleArchive TExampleArchiveCreate(LDatabase database) =>
         new(database);
 
-    internal static IReadOnlyList<LExample> TExampleCollocationRead(
-        this LExampleLink exampleLink,
-        string collocationId) =>
-        exampleLink.LExampleCollocationRead(collocationId);
-
     internal static LExample TExampleCreate(this LExampleArchive exampleArchive, LExample example) =>
         exampleArchive.LExampleCreate(example);
-
-    internal static LExampleLink TExampleLinkCreate(LDatabase database) =>
-        new(database);
 
     internal static IReadOnlyList<LExample> TExampleRead(this LExampleArchive exampleArchive) =>
         exampleArchive.LExampleRead();
@@ -185,6 +182,36 @@ internal static partial class TInterface
         this LSentenceArchive sentenceArchive,
         string meaningId) =>
         sentenceArchive.LSentenceMeaningRead(meaningId);
+
+    internal static void TSentenceCollocationAttach(
+        this LSentenceArchive sentenceArchive,
+        string collocationId,
+        string exampleId,
+        int position)
+    {
+        sentenceArchive.LSentenceCollocationAttach(collocationId, exampleId, position);
+    }
+
+    internal static void TSentenceCollocationDetach(
+        this LSentenceArchive sentenceArchive,
+        string collocationId,
+        string exampleId)
+    {
+        sentenceArchive.LSentenceCollocationDetach(collocationId, exampleId);
+    }
+
+    internal static void TSentenceCollocationSave(
+        this LSentenceArchive sentenceArchive,
+        string collocationId,
+        IReadOnlyList<LSentence> sentences)
+    {
+        sentenceArchive.LSentenceCollocationSave(collocationId, sentences);
+    }
+
+    internal static IReadOnlyList<LSentence> TSentenceCollocationRead(
+        this LSentenceArchive sentenceArchive,
+        string collocationId) =>
+        sentenceArchive.LSentenceCollocationRead(collocationId);
 
     internal static void TExampleUpdate(this LExampleArchive exampleArchive, LExample example)
     {

@@ -30,8 +30,8 @@ public sealed partial class LEngine
         return owner switch
         {
             LOwner.LOwnerEntry => examples.LExampleEntryRead(ownerId),
-            LOwner.LOwnerMeaning => [.. LEngineSentenceRead(ownerId).Select(sentence => sentence.LSentenceExample)],
-            LOwner.LOwnerCollocation => examples.LExampleCollocationRead(ownerId),
+            LOwner.LOwnerMeaning or LOwner.LOwnerCollocation =>
+                [.. LEngineSentenceRead(ownerId, owner).Select(sentence => sentence.LSentenceExample)],
             _ => throw LEngineOwnerRaise(owner),
         };
     }
@@ -39,6 +39,17 @@ public sealed partial class LEngine
     public IReadOnlyList<LSentence> LEngineSentenceRead(string meaningId)
     {
         return new LSentenceArchive(_lEngineDatabase).LSentenceMeaningRead(meaningId);
+    }
+
+    public IReadOnlyList<LSentence> LEngineSentenceRead(string ownerId, LOwner owner)
+    {
+        LSentenceArchive sentences = new(_lEngineDatabase);
+        return owner switch
+        {
+            LOwner.LOwnerMeaning => sentences.LSentenceMeaningRead(ownerId),
+            LOwner.LOwnerCollocation => sentences.LSentenceCollocationRead(ownerId),
+            _ => throw LEngineOwnerRaise(owner),
+        };
     }
 
     public void LEngineExampleUpdate(LExample example)
@@ -63,7 +74,7 @@ public sealed partial class LEngine
                 new LSentenceArchive(_lEngineDatabase).LSentenceMeaningAttach(ownerId, exampleId, position);
                 return;
             case LOwner.LOwnerCollocation:
-                examples.LExampleCollocationAttach(ownerId, exampleId, position);
+                new LSentenceArchive(_lEngineDatabase).LSentenceCollocationAttach(ownerId, exampleId, position);
                 return;
             default:
                 throw LEngineOwnerRaise(owner);
@@ -82,7 +93,7 @@ public sealed partial class LEngine
                 new LSentenceArchive(_lEngineDatabase).LSentenceMeaningDetach(ownerId, exampleId);
                 return;
             case LOwner.LOwnerCollocation:
-                examples.LExampleCollocationDetach(ownerId, exampleId);
+                new LSentenceArchive(_lEngineDatabase).LSentenceCollocationDetach(ownerId, exampleId);
                 return;
             default:
                 throw LEngineOwnerRaise(owner);

@@ -100,7 +100,6 @@ public sealed class LEntryLoader
         LStateValue expression,
         LStateValue meaning)
     {
-        LExampleLink examples = new(_lEntryLoaderDatabase);
         LSituationArchive situations = new(_lEntryLoaderDatabase);
         LTagArchive tags = new(_lEntryLoaderDatabase);
         LTranslationArchive translations = new(_lEntryLoaderDatabase);
@@ -112,9 +111,10 @@ public sealed class LEntryLoader
             title,
             expression,
             meaning,
-            collocation
-                ? LEntryExampleRead(examples.LExampleCollocationRead(ownerId))
-                : LEntrySentenceRead(sentences.LSentenceMeaningRead(ownerId)),
+            LEntrySentenceRead(
+                collocation
+                    ? sentences.LSentenceCollocationRead(ownerId)
+                    : sentences.LSentenceMeaningRead(ownerId)),
             LEntrySituationRead(
                 collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationMeaningRead(ownerId)),
             LEntryTranslationRead(
@@ -130,23 +130,6 @@ public sealed class LEntryLoader
                 collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId)),
             position,
             ownerId);
-    }
-
-    private static IReadOnlyList<LExampleDraft> LEntryExampleRead(IReadOnlyList<LExample> examples)
-    {
-        List<LExampleDraft> drafts = new(examples.Count);
-        foreach (LExample example in examples)
-        {
-            drafts.Add(new LExampleDraft(
-                example.LExampleText,
-                example.LExampleId,
-                example.LExampleSource,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                null));
-        }
-
-        return drafts;
     }
 
     private static IReadOnlyList<LExampleDraft> LEntrySentenceRead(IReadOnlyList<LSentence> sentences)

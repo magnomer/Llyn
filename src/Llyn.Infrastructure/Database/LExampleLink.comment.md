@@ -2,14 +2,14 @@
 
 ## `public sealed class LExampleLink`
 
-Owns the association tables that reach an Example from an Entry or a Collocation.
-A Meaning reaches its Examples through `LSentenceArchive` instead, because that association carries data.
+Owns the association table that reaches an Example from an Entry.
+A Meaning and a Collocation reach their Examples through `LSentenceArchive`, because that association carries data.
 It lives beside `LExampleArchive` rather than inside it.
 Attaching is a different responsibility from storing.
 Nothing here creates, changes, or deletes an Example.
 Every method writes only the rows that link one to a referrer.
 
-Each association carries the position the Example takes *for that referrer*.
+The association carries the position the Example takes *for that referrer*.
 So the same Example may be first under an Entry and third under a Meaning.
 That order is a unique index.
 So attaching, detaching, and moving all renumber the referrer's whole set through `LDatabaseOrder`.
@@ -24,35 +24,21 @@ Binds the store to the workspace `database` it opens sessions through.
 
 Reads the Examples an Entry references, in the order that Entry gives them.
 
-## `public IReadOnlyList<LExample> LExampleCollocationRead(string collocationId)`
-
-Reads the Examples a Collocation references, in the order that Collocation gives them.
-
 ## `public void LExampleEntryAttach(string entryId, string exampleId, int position)`
 
 References an existing Example from an Entry at `position` in that Entry's order.
-
-## `public void LExampleCollocationAttach(string collocationId, string exampleId, int position)`
-
-References an existing Example from a Collocation at `position` in that Collocation's order.
 
 ## `public void LExampleEntryDetach(string entryId, string exampleId)`
 
 Removes an Entry's reference to an Example.
 The Example and its other references survive.
 
-## `public void LExampleCollocationDetach(string collocationId, string exampleId)`
-
-Removes a Collocation's reference to an Example.
-The Example and its other references survive.
-
 ## Inline notes
 
 ### `private void LExampleReferenceAttach(`
 
-The association tables here differ only in their name and their referrer column.
-So the reference operations share one implementation each.
-Both identifiers are store-owned literals chosen by the methods above, never caller input.
+The table and the referrer column are store-owned literals chosen by the methods above.
+They are never caller input.
 So composing them into the statement text opens no injection seam.
 Every value still travels as a parameter.
 
@@ -70,7 +56,7 @@ A referring side with no wording of its own falls back to the definition or expr
 ## `internal static void LExampleLinkClear(SqliteConnection connection, string exampleId)`
 
 Drops every reference to one Example from every association table.
-The Meaning side is handed to `LSentenceArchive`, which also clears the Example where it stands as a revision.
+The Meaning and Collocation sides are handed to `LSentenceArchive`, which also clears it where it stands as a revision.
 Each referrer whose set lost a row is renumbered, so no order keeps a gap.
 It takes the caller's connection, so the clearing and the delete that follows commit together.
 

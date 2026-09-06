@@ -20,29 +20,14 @@ public sealed class LExampleLink
         return LExampleReferrerRead("entry_example", "entry_id", entryId);
     }
 
-    public IReadOnlyList<LExample> LExampleCollocationRead(string collocationId)
-    {
-        return LExampleReferrerRead("collocation_example", "collocation_id", collocationId);
-    }
-
     public void LExampleEntryAttach(string entryId, string exampleId, int position)
     {
         LExampleReferenceAttach("entry_example", "entry_id", entryId, exampleId, position);
     }
 
-    public void LExampleCollocationAttach(string collocationId, string exampleId, int position)
-    {
-        LExampleReferenceAttach("collocation_example", "collocation_id", collocationId, exampleId, position);
-    }
-
     public void LExampleEntryDetach(string entryId, string exampleId)
     {
         LExampleReferenceDetach("entry_example", "entry_id", entryId, exampleId);
-    }
-
-    public void LExampleCollocationDetach(string collocationId, string exampleId)
-    {
-        LExampleReferenceDetach("collocation_example", "collocation_id", collocationId, exampleId);
     }
 
     public IReadOnlyList<LUsage> LExampleUsageRead(string id)
@@ -139,7 +124,6 @@ public sealed class LExampleLink
     {
         LExampleLinkClear(connection, "entry_example", "entry_id", exampleId);
         LSentenceArchive.LSentenceExampleClear(connection, exampleId);
-        LExampleLinkClear(connection, "collocation_example", "collocation_id", exampleId);
     }
 
     private static void LExampleLinkClear(
