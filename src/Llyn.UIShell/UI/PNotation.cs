@@ -95,7 +95,7 @@ public partial class PEditor : LReceiver
 
     void LReceiver.LReceiverCandidateAdd(LCandidate candidate)
     {
-        Dispatcher.Invoke(() =>
+        Dispatcher.BeginInvoke(() =>
         {
             _pNotationItem.Add(new PNotationItem(candidate, candidate.LCandidateSource));
             PNotationUpdate();
@@ -104,7 +104,7 @@ public partial class PEditor : LReceiver
 
     void LReceiver.LReceiverLookupFinish()
     {
-        Dispatcher.Invoke(() =>
+        Dispatcher.BeginInvoke(() =>
         {
             _pNotationSearching = false;
             PNotationUpdate();

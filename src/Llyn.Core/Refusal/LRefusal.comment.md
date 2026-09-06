@@ -1,4 +1,4 @@
-# LRefusal.cs
+﻿# LRefusal.cs
 
 ## `public sealed class LRefusal : Exception`
 
@@ -26,6 +26,18 @@ Reason key for an update whose entry is not in the workspace.
 Reason key for a relation or synonym whose target is not one lexical row of this workspace.
 The text may have resolved to nothing.
 Or the request may name both an Entry and a Meaning, or neither.
+
+## `public const string LRefusalExample = "Refusal.ExampleMissing";`
+
+Reason key for a sentence draft opened on an example that is not in the workspace.
+
+## `public const string LRefusalSituation = "Refusal.SituationMissing";`
+
+Reason key for a situation draft opened on a Situation that is not in the workspace.
+
+## `public const string LRefusalReference = "Refusal.ReferenceMissing";`
+
+Reason key for a source draft opened on a Reference that is not in the workspace.
 
 ## `public const string LRefusalDraft = "Refusal.DraftMissing";`
 

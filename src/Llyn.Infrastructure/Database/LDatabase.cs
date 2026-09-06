@@ -7,7 +7,11 @@ public sealed class LDatabase
 {
     private readonly string _lDatabaseFile;
 
+    private readonly object _lDatabaseGate = new();
+
     private LDatabaseSession? _lDatabaseSession;
+
+    private int _lDatabaseThread;
 
     public LDatabase(string root)
     {
@@ -54,14 +58,24 @@ public sealed class LDatabase
 
     public LDatabaseSession LDatabaseSessionStart()
     {
-        if (_lDatabaseSession is not null)
+        lock (_lDatabaseGate)
         {
-            return new LDatabaseSession(_lDatabaseSession);
-        }
+            if (_lDatabaseSession is not null)
+            {
+                if (_lDatabaseThread != Environment.CurrentManagedThreadId)
+                {
+                    throw new InvalidOperationException(
+                        "This database already has a session open on another thread.");
+                }
 
-        LDatabaseSession session = new(this, LDatabaseConnectionRead());
-        _lDatabaseSession = session;
-        return session;
+                return new LDatabaseSession(_lDatabaseSession);
+            }
+
+            LDatabaseSession session = new(this, LDatabaseConnectionRead());
+            _lDatabaseSession = session;
+            _lDatabaseThread = Environment.CurrentManagedThreadId;
+            return session;
+        }
     }
 
     public void LDatabaseCreate()
@@ -72,9 +86,13 @@ public sealed class LDatabase
 
     internal void LDatabaseSessionClear(LDatabaseSession session)
     {
-        if (ReferenceEquals(_lDatabaseSession, session))
+        lock (_lDatabaseGate)
         {
-            _lDatabaseSession = null;
+            if (ReferenceEquals(_lDatabaseSession, session))
+            {
+                _lDatabaseSession = null;
+                _lDatabaseThread = 0;
+            }
         }
     }
 }

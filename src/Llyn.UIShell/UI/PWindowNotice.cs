@@ -52,7 +52,10 @@ public partial class PWindow
             (PLibrary.PLibraryChangeCheck, PLibrary.PLibraryDraftFinish),
             (PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
             (PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
-            (PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish)
+            (PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish),
+            (PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
+            (PRepertoire.PRepertoireChangeCheck, PRepertoire.PRepertoireDraftFinish),
+            (PReference.PReferenceChangeCheck, PReference.PReferenceDraftFinish)
         ];
     }
 

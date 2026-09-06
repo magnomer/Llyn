@@ -13,138 +13,201 @@ public sealed partial class LEngine
 
     public LDraft LEngineDraftStart(string origin, string? entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(origin);
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(origin);
 
-        string entry = string.IsNullOrWhiteSpace(entryId) ? string.Empty : entryId;
-        LEntryDraft content = entry.Length == 0
-            ? new LEntryDraft(string.Empty, string.Empty, string.Empty, string.Empty, [], [])
-            : LEngineEntryLoad(entry) ?? throw new LRefusal(LRefusal.LRefusalEntry);
+            string entry = string.IsNullOrWhiteSpace(entryId) ? string.Empty : entryId;
+            LEntryDraft content = entry.Length == 0
+                ? new LEntryDraft(string.Empty, string.Empty, string.Empty, string.Empty, [], [])
+                : LEngineEntryLoad(entry) ?? throw new LRefusal(LRefusal.LRefusalEntry);
 
-        LDraft draft = new(
-            LIdentity.LIdentityCreate(),
-            origin,
-            entry,
-            content,
-            DateTimeOffset.UtcNow);
+            LDraft draft = new(
+                LIdentity.LIdentityCreate(),
+                origin,
+                entry,
+                content,
+                DateTimeOffset.UtcNow);
 
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
-        LClaimArchive.LClaimArchiveSave(
-            _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
-        _lEngineDraftHeld.Add(draft.LDraftId);
-        return draft;
+            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
+            LClaimArchive.LClaimArchiveSave(
+                _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
+            _lEngineDraftHeld.Add(draft.LDraftId);
+            return draft;
+        }
     }
 
     public LEntryDraft LEngineDraftSave(LDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(draft);
-        LEngineDraftValidate(draft.LDraftId);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(draft);
+            LEngineDraftValidate(draft.LDraftId);
 
-        LEntryDraft content = LEngineDraftNormalize(draft.LDraftContent);
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftContent = content });
-        return content;
+            LEntryDraft content = LEngineDraftNormalize(draft.LDraftContent);
+            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftContent = content });
+            return content;
+        }
     }
 
     public LDraft? LEngineDraftRead(string id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        LEngineDraftValidate(id);
-        return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            LEngineDraftValidate(id);
+            return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
+        }
     }
 
     public IReadOnlyList<LDraft> LEngineDraftScan()
     {
-        return LDraftArchive.LDraftArchiveScan(_lEngineWorkspace);
+        lock (_lEngineGate)
+        {
+            return LDraftArchive.LDraftArchiveScan(_lEngineWorkspace);
+        }
     }
 
     public void LEngineLeftoverSweep()
     {
-        LDraftArchive.LDraftArchiveSweep(_lEngineWorkspace);
-        LCourtArchive.LCourtArchiveSweep(_lEngineWorkspace);
-
-        foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
+        lock (_lEngineGate)
         {
-            if (_lEngineDraftHeld.Contains(draft.LDraftId)
-                || LEngineClaimCheck(draft.LDraftId)
-                || string.IsNullOrWhiteSpace(draft.LDraftEntry))
-            {
-                continue;
-            }
+            LDraftArchive.LDraftArchiveSweep(_lEngineWorkspace);
+            LCourtArchive.LCourtArchiveSweep(_lEngineWorkspace);
 
-            LEntryDraft? stored = LEngineEntryLoad(draft.LDraftEntry);
-            if (stored is null || !LEngineDraftMatch(stored, draft.LDraftContent))
+            foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
             {
-                continue;
-            }
+                if (_lEngineDraftHeld.Contains(draft.LDraftId)
+                    || LEngineClaimCheck(draft.LDraftId)
+                    || string.IsNullOrWhiteSpace(draft.LDraftEntry))
+                {
+                    continue;
+                }
 
-            LEngineDraftCancel(draft.LDraftId);
+                if (draft.LDraftExample is LExample sentence)
+                {
+                    if (LEngineExampleRead(draft.LDraftEntry) is LExample kept
+                        && LEngineExampleMatch(kept, sentence))
+                    {
+                        LEngineDraftCancel(draft.LDraftId);
+                    }
+
+                    continue;
+                }
+
+                if (draft.LDraftSituation is LSituation situation)
+                {
+                    if (LEngineSituationRead(draft.LDraftEntry) is LSituation standing
+                        && LEngineSituationMatch(standing, situation))
+                    {
+                        LEngineDraftCancel(draft.LDraftId);
+                    }
+
+                    continue;
+                }
+
+                if (draft.LDraftReference is LReference reference)
+                {
+                    if (LEngineReferenceRead(draft.LDraftEntry) is LReference cited
+                        && LEngineReferenceMatch(cited, reference))
+                    {
+                        LEngineDraftCancel(draft.LDraftId);
+                    }
+
+                    continue;
+                }
+
+                LEntryDraft? stored = LEngineEntryLoad(draft.LDraftEntry);
+                if (stored is null || !LEngineDraftMatch(stored, draft.LDraftContent))
+                {
+                    continue;
+                }
+
+                LEngineDraftCancel(draft.LDraftId);
+            }
         }
     }
 
     public IReadOnlyList<LDraft> LEngineLeftoverRead()
     {
-        List<LDraft> leftovers = [];
-        foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
+        lock (_lEngineGate)
         {
-            if (_lEngineDraftHeld.Contains(draft.LDraftId)
-                || !LEngineDraftCheck(draft.LDraftId)
-                || LEngineClaimCheck(draft.LDraftId))
+            List<LDraft> leftovers = [];
+            foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
             {
-                continue;
+                if (_lEngineDraftHeld.Contains(draft.LDraftId)
+                    || !LEngineDraftCheck(draft.LDraftId)
+                    || LEngineClaimCheck(draft.LDraftId))
+                {
+                    continue;
+                }
+
+                leftovers.Add(draft);
             }
 
-            leftovers.Add(draft);
+            return leftovers;
         }
-
-        return leftovers;
     }
 
     public void LEngineDraftDelete(string id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        LEngineDraftValidate(id);
-        LEngineCourtRemove(id);
-        _lEngineDraftHeld.Remove(id);
-        LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
-        LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            LEngineDraftValidate(id);
+            LEngineCourtRemove(id);
+            _lEngineDraftHeld.Remove(id);
+            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+        }
     }
 
     public IReadOnlyList<LCardDraft> LEngineDraftMove(string id, bool collocation, int from, int target)
     {
-        LEngineDraftValidate(id);
-        LDraft draft = LEngineDraftLoad(id);
-        List<LCardDraft> cards = new(
-            collocation
-                ? draft.LDraftContent.LEntryDraftCollocations
-                : draft.LDraftContent.LEntryDraftMeanings);
-
-        if (cards.Count != 0)
+        lock (_lEngineGate)
         {
-            int origin = Math.Clamp(from, 0, cards.Count - 1);
-            int landing = Math.Clamp(target, 0, cards.Count - 1);
+            LEngineDraftValidate(id);
+            LDraft draft = LEngineDraftLoad(id);
+            List<LCardDraft> cards = new(
+                collocation
+                    ? draft.LDraftContent.LEntryDraftCollocations
+                    : draft.LDraftContent.LEntryDraftMeanings);
 
-            LCardDraft moved = cards[origin];
-            cards.RemoveAt(origin);
-            cards.Insert(landing, moved);
+            if (cards.Count != 0)
+            {
+                int origin = Math.Clamp(from, 0, cards.Count - 1);
+                int landing = Math.Clamp(target, 0, cards.Count - 1);
+
+                LCardDraft moved = cards[origin];
+                cards.RemoveAt(origin);
+                cards.Insert(landing, moved);
+            }
+
+            return LEngineCardApply(draft, collocation, cards);
         }
-
-        return LEngineCardApply(draft, collocation, cards);
     }
 
     public IReadOnlyList<LCardDraft> LEngineDraftNormalize(string id, bool collocation)
     {
-        LEngineDraftValidate(id);
-        LDraft draft = LEngineDraftLoad(id);
-        List<LCardDraft> cards = new(
-            collocation
-                ? draft.LDraftContent.LEntryDraftCollocations
-                : draft.LDraftContent.LEntryDraftMeanings);
+        lock (_lEngineGate)
+        {
+            LEngineDraftValidate(id);
+            LDraft draft = LEngineDraftLoad(id);
+            List<LCardDraft> cards = new(
+                collocation
+                    ? draft.LDraftContent.LEntryDraftCollocations
+                    : draft.LDraftContent.LEntryDraftMeanings);
 
-        return LEngineCardApply(draft, collocation, cards);
+            return LEngineCardApply(draft, collocation, cards);
+        }
     }
 
     public string LEngineCardCreate()
     {
-        return LIdentity.LIdentityCreate();
+        lock (_lEngineGate)
+        {
+            return LIdentity.LIdentityCreate();
+        }
     }
 
     private IReadOnlyList<LCardDraft> LEngineCardApply(
@@ -173,100 +236,133 @@ public sealed partial class LEngine
     public LCourtLink LEngineCourtSave(
         string ownerId, string targetId, string headword, string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(targetId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(headword);
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+            ArgumentException.ThrowIfNullOrWhiteSpace(targetId);
+            ArgumentException.ThrowIfNullOrWhiteSpace(headword);
 
-        LCourtLink link = new(
-            LIdentity.LIdentityCreate(),
-            ownerId,
-            targetId,
-            headword,
-            language ?? string.Empty);
+            LCourtLink link = new(
+                LIdentity.LIdentityCreate(),
+                ownerId,
+                targetId,
+                headword,
+                language ?? string.Empty);
 
-        LCourtArchive.LCourtArchiveSave(_lEngineWorkspace, link);
-        return link;
+            LCourtArchive.LCourtArchiveSave(_lEngineWorkspace, link);
+            return link;
+        }
     }
 
     public LCourtLink LEngineCourtStart(
         string ownerId, string origin, string headword, string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(headword);
-        LEngineDraftValidate(ownerId);
-
-        string named = language ?? string.Empty;
-        LDraft target = LEngineDraftStart(origin, null);
-
-        try
+        lock (_lEngineGate)
         {
-            LEngineDraftSave(target with
+            ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+            ArgumentException.ThrowIfNullOrWhiteSpace(headword);
+            LEngineDraftValidate(ownerId);
+
+            string named = language ?? string.Empty;
+            LDraft target = LEngineDraftStart(origin, null);
+
+            try
             {
-                LDraftContent = target.LDraftContent with
+                LEngineDraftSave(target with
                 {
-                    LEntryDraftHeadword = headword,
-                    LEntryDraftLanguage = named,
-                },
-            });
+                    LDraftContent = target.LDraftContent with
+                    {
+                        LEntryDraftHeadword = headword,
+                        LEntryDraftLanguage = named,
+                    },
+                });
 
-            return LEngineCourtSave(ownerId, target.LDraftId, headword, named);
-        }
-        catch (Exception)
-        {
-            LEngineDraftCancel(target.LDraftId);
-            throw;
+                return LEngineCourtSave(ownerId, target.LDraftId, headword, named);
+            }
+            catch (Exception)
+            {
+                LEngineDraftCancel(target.LDraftId);
+                throw;
+            }
         }
     }
 
     public void LEngineCourtDelete(string linkId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(linkId);
-        LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, linkId);
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(linkId);
+            LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, linkId);
+        }
     }
 
     public LCourtLink? LEngineCourtFind(string ownerId, string targetId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(targetId);
-
-        foreach (LCourtLink link in LEngineCourtScan(ownerId))
+        lock (_lEngineGate)
         {
-            if (string.Equals(link.LCourtLinkTarget, targetId, StringComparison.Ordinal))
-            {
-                return link;
-            }
-        }
+            ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+            ArgumentException.ThrowIfNullOrWhiteSpace(targetId);
 
-        return null;
+            foreach (LCourtLink link in LEngineCourtScan(ownerId))
+            {
+                if (string.Equals(link.LCourtLinkTarget, targetId, StringComparison.Ordinal))
+                {
+                    return link;
+                }
+            }
+
+            return null;
+        }
     }
 
     public bool LEngineDraftCheck(string id)
     {
-        if (string.IsNullOrWhiteSpace(id))
+        lock (_lEngineGate)
         {
-            return false;
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return false;
+            }
+
+            LEngineDraftValidate(id);
+
+            LDraft? draft = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
+            if (draft is null)
+            {
+                return false;
+            }
+
+            if (draft.LDraftExample is LExample sentence)
+            {
+                return LEngineExampleCheck(draft, sentence);
+            }
+
+            if (draft.LDraftSituation is LSituation situation)
+            {
+                return LEngineSituationCheck(draft, situation);
+            }
+
+            if (draft.LDraftReference is LReference reference)
+            {
+                return LEngineReferenceCheck(draft, reference);
+            }
+
+            LEntryDraft origin = string.IsNullOrWhiteSpace(draft.LDraftEntry)
+                ? LEngineDraftBlank
+                : LEngineEntryLoad(draft.LDraftEntry) ?? LEngineDraftBlank;
+
+            return !LEngineDraftMatch(origin, draft.LDraftContent);
         }
-
-        LEngineDraftValidate(id);
-
-        LDraft? draft = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
-        if (draft is null)
-        {
-            return false;
-        }
-
-        LEntryDraft origin = string.IsNullOrWhiteSpace(draft.LDraftEntry)
-            ? LEngineDraftBlank
-            : LEngineEntryLoad(draft.LDraftEntry) ?? LEngineDraftBlank;
-
-        return !LEngineDraftMatch(origin, draft.LDraftContent);
     }
 
     public LEntry LEngineDraftCommit(string id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        LEngineDraftValidate(id);
-        return LEngineDraftCommit(id, [], true);
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            LEngineDraftValidate(id);
+            return LEngineDraftCommit(id, [], true);
+        }
     }
 
     private LEntry LEngineDraftCommit(string id, HashSet<string> entered, bool held)
@@ -321,19 +417,22 @@ public sealed partial class LEngine
 
     public void LEngineDraftCancel(string id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        LEngineDraftValidate(id);
-
-        LEngineCourtRemove(id);
-
-        foreach (LCourtLink link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+        lock (_lEngineGate)
         {
-            LEngineCourtUpdate(link, string.Empty);
-        }
+            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            LEngineDraftValidate(id);
 
-        _lEngineDraftHeld.Remove(id);
-        LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
-        LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+            LEngineCourtRemove(id);
+
+            foreach (LCourtLink link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+            {
+                LEngineCourtUpdate(link, string.Empty);
+            }
+
+            _lEngineDraftHeld.Remove(id);
+            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
+            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
+        }
     }
 
     private void LEngineCourtRemove(string id)

@@ -9,6 +9,13 @@ All logic lives behind this engine.
 That is loading language packs, source fan-out, fetching, parsing, and saving.
 So none of it sits in the UI shell.
 
+The engine is serialised behind one gate.
+Every public entry point holds a single lock for the whole of its work, so one call at a time touches the workspace, the settings, the database, the rescue report, the cached sources, and the two draft sets.
+The lock is reentrant, which is what lets an entry point call another one.
+A single-writer queue would have kept reads parallel, but reads here run inside database sessions that are themselves single-threaded, so parallel reads would have bought nothing and cost a second concurrency model.
+The five entry points that return a `Task` hold the gate only long enough to take what they need from the engine.
+They then run the fetch outside it, because a lock held across an await would stall the shell for the length of a network call.
+
 This class is also the composition root.
 It owns the shared `HttpClient`.
 It loads each language pack on first use through `LLanguageLoader`.

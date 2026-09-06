@@ -1,4 +1,3 @@
-using System.Windows;
 using System.Windows.Controls;
 using Llyn.ShellEngine;
 
@@ -29,7 +28,7 @@ public partial class PRepertoire : UserControl
 
     internal bool PRepertoireChangeCheck()
     {
-        return PScenario.Visibility == Visibility.Visible && PScenarioChangeCheck();
+        return PScenarioChangeCheck();
     }
 
     internal void PRepertoireClose()

@@ -9,99 +9,102 @@ public sealed partial class LEngine
 {
     public LEntry LEngineEntrySave(LEntryDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(draft);
-
-        if (string.IsNullOrWhiteSpace(draft.LEntryDraftHeadword))
+        lock (_lEngineGate)
         {
-            throw new LRefusal(LRefusal.LRefusalHeadword);
-        }
+            ArgumentNullException.ThrowIfNull(draft);
 
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-
-        LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
-            new LEntry(
-                string.Empty,
-                draft.LEntryDraftHeadword,
-                draft.LEntryDraftLanguage,
-                null,
-                null,
-                null,
-                null),
-            forms: [],
-            speeches: LEngineSpeechResolve(
-                string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
-
-        LMeaningArchive meanings = new(_lEngineDatabase);
-        foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftMeanings))
-        {
-            LMeaning meaning = meanings.LMeaningCreate(new LMeaning(
-                string.Empty,
-                entry.LEntryId,
-                null,
-                0,
-                card.LCardDraftTitle,
-                null,
-                null,
-                card.LCardDraftMeaning,
-                string.Empty));
-
-            LEngineCardAttach(meaning.LMeaningId, card, draft.LEntryDraftLanguage, collocation: false);
-        }
-
-        LCollocationArchive collocations = new(_lEngineDatabase);
-        foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftCollocations))
-        {
-            LCollocation collocation = collocations.LCollocationCreate(new LCollocation(
-                string.Empty,
-                entry.LEntryId,
-                0,
-                card.LCardDraftTitle,
-                card.LCardDraftExpression,
-                card.LCardDraftMeaning));
-
-            LEngineCardAttach(
-                collocation.LCollocationId, card, draft.LEntryDraftLanguage, collocation: true);
-        }
-
-        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftNote))
-        {
-            new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, draft.LEntryDraftNote));
-        }
-
-        if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) ||
-            !string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
-        {
-            LPronunciationArchive pronunciations = new(_lEngineDatabase);
-            LPronunciation pronunciation = pronunciations.LPronunciationCreate(new LPronunciation(
-                string.Empty,
-                entry.LEntryId,
-                null,
-                draft.LEntryDraftPronunciation,
-                [],
-                []));
-
-            if (!string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+            if (string.IsNullOrWhiteSpace(draft.LEntryDraftHeadword))
             {
-                pronunciations.LPronunciationAudioSave(
-                    pronunciation.LPronunciationId,
-                    LEngineRecordingFormat(draft.LEntryDraftAudio),
-                    draft.LEntryDraftSource);
+                throw new LRefusal(LRefusal.LRefusalHeadword);
             }
+
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+
+            LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
+                new LEntry(
+                    string.Empty,
+                    draft.LEntryDraftHeadword,
+                    draft.LEntryDraftLanguage,
+                    null,
+                    null,
+                    null,
+                    null),
+                forms: [],
+                speeches: LEngineSpeechResolve(
+                    string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
+
+            LMeaningArchive meanings = new(_lEngineDatabase);
+            foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftMeanings))
+            {
+                LMeaning meaning = meanings.LMeaningCreate(new LMeaning(
+                    string.Empty,
+                    entry.LEntryId,
+                    null,
+                    0,
+                    card.LCardDraftTitle,
+                    null,
+                    null,
+                    card.LCardDraftMeaning,
+                    string.Empty));
+
+                LEngineCardAttach(meaning.LMeaningId, card, draft.LEntryDraftLanguage, collocation: false);
+            }
+
+            LCollocationArchive collocations = new(_lEngineDatabase);
+            foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftCollocations))
+            {
+                LCollocation collocation = collocations.LCollocationCreate(new LCollocation(
+                    string.Empty,
+                    entry.LEntryId,
+                    0,
+                    card.LCardDraftTitle,
+                    card.LCardDraftExpression,
+                    card.LCardDraftMeaning));
+
+                LEngineCardAttach(
+                    collocation.LCollocationId, card, draft.LEntryDraftLanguage, collocation: true);
+            }
+
+            if (!string.IsNullOrWhiteSpace(draft.LEntryDraftNote))
+            {
+                new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, draft.LEntryDraftNote));
+            }
+
+            if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) ||
+                !string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+            {
+                LPronunciationArchive pronunciations = new(_lEngineDatabase);
+                LPronunciation pronunciation = pronunciations.LPronunciationCreate(new LPronunciation(
+                    string.Empty,
+                    entry.LEntryId,
+                    null,
+                    draft.LEntryDraftPronunciation,
+                    [],
+                    []));
+
+                if (!string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+                {
+                    pronunciations.LPronunciationAudioSave(
+                        pronunciation.LPronunciationId,
+                        LEngineRecordingFormat(draft.LEntryDraftAudio),
+                        draft.LEntryDraftSource);
+                }
+            }
+
+            LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
+            LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
+
+            LWorkspaceArchive workspace = new(_lEngineDatabase);
+            LWorkspaceState state = workspace.LWorkspaceStateRead();
+            workspace.LWorkspaceStateSave(state with
+            {
+                LWorkspaceStateLeft = entry.LEntryId,
+                LWorkspaceStateRevision = revision.LRevisionId,
+            });
+
+            session.LDatabaseSessionCommit();
+            return entry;
         }
-
-        LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
-        LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
-
-        LWorkspaceArchive workspace = new(_lEngineDatabase);
-        LWorkspaceState state = workspace.LWorkspaceStateRead();
-        workspace.LWorkspaceStateSave(state with
-        {
-            LWorkspaceStateLeft = entry.LEntryId,
-            LWorkspaceStateRevision = revision.LRevisionId,
-        });
-
-        session.LDatabaseSessionCommit();
-        return entry;
     }
 
     private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)

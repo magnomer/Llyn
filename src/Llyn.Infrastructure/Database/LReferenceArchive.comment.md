@@ -1,4 +1,4 @@
-# LReferenceArchive.cs
+﻿# LReferenceArchive.cs
 
 ## `public sealed class LReferenceArchive`
 
@@ -27,7 +27,9 @@ Binds the store to the workspace `database` it opens sessions through.
 
 ## `public LReference LReferenceCreate(LReference reference)`
 
-Inserts `reference` with a fresh opaque id and returns the stored Reference with that id filled in.
+Inserts `reference` and returns the stored Reference with its id filled in.
+A Reference carrying no id is given a fresh opaque one.
+A Reference already carrying one keeps it, because a held source is named before the record it becomes exists.
 Each field is written as its state plus, for a specified field alone, its value.
 The new Reference is cited by nothing and credits no Author until one is attached.
 

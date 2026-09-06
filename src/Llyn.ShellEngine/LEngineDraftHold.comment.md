@@ -10,6 +10,16 @@ It stays apart from `LEngineDraft.cs`, which owns the database write and knows n
 An id raised here belongs to the workspace that raised it, so a workspace change marks every held id stale.
 Every call naming an id is checked against that mark, because a shell can keep an id the engine has already left behind.
 
+A held draft carries an entry, a sentence, a situation or a source.
+The kind is a further content field rather than a tag beside one.
+`LDraftExample` carries the sentence, `LDraftSituation` the context and `LDraftReference` the source, each null for the kinds that are not its own.
+A tag would be a second statement of the same fact, and two statements can disagree after a bad write.
+The alternative was one content field of a union type, which would have rewritten every entry call for a case none of them has.
+The source followed this rule rather than inventing a second one: one nullable content field, null for every kind but its own.
+The sentence calls live in `LEngineDraftExample.cs`, the situation calls in `LEngineDraftSituation.cs` and the source calls in `LEngineDraftReference.cs`.
+Only the shared calls belong here.
+Start, save and commit differ per kind, while the claim, the sweep, the recovery and the discard are one for all of them.
+
 ## `public LDraft LEngineDraftStart(string origin, string? entryId)`
 
 Mints an id, writes the first file, and returns the held draft.
@@ -47,6 +57,9 @@ Clears what the drafts folder keeps forever, before anything counts what is left
 A draft committed just before a kill kept its file, because the commit names the stored entry first.
 Its content then matches that entry, so nothing offers it back and nothing deletes it either.
 Such a draft is dropped here with its claim and its court rows.
+A sentence draft is measured the same way, against the Example it names rather than the entry.
+A situation draft is measured against the Situation it names.
+A source draft is measured against the Reference it names.
 A draft naming no entry, or an entry since deleted, is left for recovery to offer back.
 So is one whose content differs from the entry it names, which is work the user would lose.
 A draft this engine holds, or another running copy claims, is passed over untouched.
@@ -129,8 +142,11 @@ An ordinary translation to a stored entry answers null, because it never had a r
 
 ## `public bool LEngineDraftCheck(string id)`
 
-Whether held work differs from the entry it was started from.
+Whether held work differs from the record it was started from.
 This is the question the shell used to answer by holding a second copy of the form.
+A sentence draft is answered by `LEngineExampleCheck`, which measures it against the Example it names.
+A situation draft is answered by `LEngineSituationCheck` the same way.
+A source draft is answered by `LEngineReferenceCheck`, which measures it against the Reference it names.
 A draft carrying no entry id is measured against a blank entry.
 So a new word counts as changed the moment anything is typed into it.
 A draft whose entry has since gone is measured against blank too.

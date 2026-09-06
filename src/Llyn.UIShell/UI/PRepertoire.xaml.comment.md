@@ -17,8 +17,9 @@ Drops the selection and reads the catalog again, for when the workspace undernea
 
 ## `internal bool PRepertoireChangeCheck()`
 
-Whether the editor is open over modifications nothing has saved yet.
+Whether the panel holds a draft the engine says differs from what is stored.
 The window asks before anything can leave the panel.
+The answer is the engine's, so the panel decides nothing about what counts as a change.
 
 ## `internal void PRepertoireClose()`
 

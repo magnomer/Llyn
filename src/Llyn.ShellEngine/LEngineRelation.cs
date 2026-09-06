@@ -9,81 +9,114 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<LMeaning> LEngineMeaningFind(string query)
     {
-        ArgumentNullException.ThrowIfNull(query);
-        return new LMeaningArchive(_lEngineDatabase).LMeaningFind(query);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+            return new LMeaningArchive(_lEngineDatabase).LMeaningFind(query);
+        }
     }
 
     public LRelation LEngineRelationCreate(LRelation relation)
     {
-        ArgumentNullException.ThrowIfNull(relation);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(relation);
 
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-        LEngineTargetValidate(relation.LRelationTargetEntry, relation.LRelationTargetMeaning);
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            LEngineTargetValidate(relation.LRelationTargetEntry, relation.LRelationTargetMeaning);
 
-        LRelation stored = new LRelationArchive(_lEngineDatabase).LRelationCreate(relation);
+            LRelation stored = new LRelationArchive(_lEngineDatabase).LRelationCreate(relation);
 
-        session.LDatabaseSessionCommit();
-        return stored;
+            session.LDatabaseSessionCommit();
+            return stored;
+        }
     }
 
     public IReadOnlyList<LRelation> LEngineRelationRead(string meaningId)
     {
-        return new LRelationArchive(_lEngineDatabase).LRelationRead(meaningId);
+        lock (_lEngineGate)
+        {
+            return new LRelationArchive(_lEngineDatabase).LRelationRead(meaningId);
+        }
     }
 
     public void LEngineRelationUpdate(LRelation relation)
     {
-        new LRelationArchive(_lEngineDatabase).LRelationUpdate(relation);
+        lock (_lEngineGate)
+        {
+            new LRelationArchive(_lEngineDatabase).LRelationUpdate(relation);
+        }
     }
 
     public void LEngineRelationMove(string id, int position)
     {
-        new LRelationArchive(_lEngineDatabase).LRelationMove(id, position);
+        lock (_lEngineGate)
+        {
+            new LRelationArchive(_lEngineDatabase).LRelationMove(id, position);
+        }
     }
 
     public void LEngineRelationDelete(string id)
     {
-        new LRelationArchive(_lEngineDatabase).LRelationDelete(id);
+        lock (_lEngineGate)
+        {
+            new LRelationArchive(_lEngineDatabase).LRelationDelete(id);
+        }
     }
 
     public LSynonym LEngineSynonymCreate(LSynonym synonym)
     {
-        ArgumentNullException.ThrowIfNull(synonym);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(synonym);
 
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-        LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetMeaning);
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetMeaning);
 
-        LSynonym stored = new LSynonymArchive(_lEngineDatabase).LSynonymCreate(synonym);
+            LSynonym stored = new LSynonymArchive(_lEngineDatabase).LSynonymCreate(synonym);
 
-        session.LDatabaseSessionCommit();
-        return stored;
+            session.LDatabaseSessionCommit();
+            return stored;
+        }
     }
 
     public IReadOnlyList<LSynonym> LEngineSynonymRead(string collocationId)
     {
-        return new LSynonymArchive(_lEngineDatabase).LSynonymRead(collocationId);
+        lock (_lEngineGate)
+        {
+            return new LSynonymArchive(_lEngineDatabase).LSynonymRead(collocationId);
+        }
     }
 
     public void LEngineSynonymUpdate(LSynonym synonym)
     {
-        ArgumentNullException.ThrowIfNull(synonym);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(synonym);
 
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-        LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetMeaning);
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            LEngineTargetValidate(synonym.LSynonymTargetEntry, synonym.LSynonymTargetMeaning);
 
-        new LSynonymArchive(_lEngineDatabase).LSynonymUpdate(synonym);
+            new LSynonymArchive(_lEngineDatabase).LSynonymUpdate(synonym);
 
-        session.LDatabaseSessionCommit();
+            session.LDatabaseSessionCommit();
+        }
     }
 
     public void LEngineSynonymMove(string id, int position)
     {
-        new LSynonymArchive(_lEngineDatabase).LSynonymMove(id, position);
+        lock (_lEngineGate)
+        {
+            new LSynonymArchive(_lEngineDatabase).LSynonymMove(id, position);
+        }
     }
 
     public void LEngineSynonymDelete(string id)
     {
-        new LSynonymArchive(_lEngineDatabase).LSynonymDelete(id);
+        lock (_lEngineGate)
+        {
+            new LSynonymArchive(_lEngineDatabase).LSynonymDelete(id);
+        }
     }
 
     private void LEngineTargetValidate(string? entryId, string? meaningId)

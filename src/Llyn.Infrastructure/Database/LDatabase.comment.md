@@ -11,8 +11,9 @@ It also holds the *ambient session*: the unit of work an operation runs in.
 A store asks for a session rather than a connection (`LDatabaseSessionStart`).
 So several stores called one after another share one connection and one transaction.
 Either all of them land or none do.
-The ambient session is a plain field, so a single `LDatabase` instance belongs to one thread.
-That is what the shell engine does with it.
+The ambient session is guarded by a gate and belongs to the thread that opened it.
+A start from another thread while one is open is refused rather than silently joined.
+Two overlapping units of work would otherwise share a connection and a transaction, and the first to finish would close it under the second.
 
 ## `public LDatabase(string root)`
 
@@ -42,10 +43,12 @@ Foreign keys are per connection and must be enabled on every one of them.
 Starts the unit of work a store operation runs in.
 With no session open this opens a connection and begins a transaction.
 It then becomes the ambient session.
-While one is already open this returns a nested session.
+While one is already open on the same thread this returns a nested session.
 The nested session shares that connection and transaction.
 Its commit and disposal do nothing.
 So the outermost session alone decides whether the work lands.
+A start from any other thread while one is open throws instead.
+Nesting is how one operation composes several stores, and that only ever happens on the thread running it.
 
 ## `public void LDatabaseCreate()`
 
@@ -56,7 +59,7 @@ Idempotent — running it against an already-initialized database creates nothin
 
 ## `internal void LDatabaseSessionClear(LDatabaseSession session)`
 
-Clears the ambient session when the session that owns it ends.
+Clears the ambient session and the thread that owned it when the session that owns it ends.
 
 ## Inline notes
 

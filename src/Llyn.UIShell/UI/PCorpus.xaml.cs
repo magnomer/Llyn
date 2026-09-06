@@ -29,7 +29,7 @@ public partial class PCorpus : UserControl
 
     internal bool PCorpusChangeCheck()
     {
-        return PTranscript.Visibility == Visibility.Visible && PTranscriptChangeCheck();
+        return PTranscriptChangeCheck();
     }
 
     internal void PCorpusClose()

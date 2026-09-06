@@ -9,28 +9,31 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<LEntry> LEngineMarkupImport(string text)
     {
-        ArgumentNullException.ThrowIfNull(text);
-
-        IReadOnlyList<LMarkup.LMarkupEntry> entries = LMarkup.LMarkupEntryRead(text);
-        List<LEntry> saved = new List<LEntry>();
-        Dictionary<string, string> writers = new Dictionary<string, string>(StringComparer.Ordinal);
-
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-
-        for (int place = 0; place < entries.Count; place++)
+        lock (_lEngineGate)
         {
-            try
-            {
-                saved.Add(LEngineMarkupSave(entries[place], writers));
-            }
-            catch (Exception exception)
-            {
-                throw new FormatException($"Entry {place + 1} could not be imported.", exception);
-            }
-        }
+            ArgumentNullException.ThrowIfNull(text);
 
-        session.LDatabaseSessionCommit();
-        return saved;
+            IReadOnlyList<LMarkup.LMarkupEntry> entries = LMarkup.LMarkupEntryRead(text);
+            List<LEntry> saved = new List<LEntry>();
+            Dictionary<string, string> writers = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+
+            for (int place = 0; place < entries.Count; place++)
+            {
+                try
+                {
+                    saved.Add(LEngineMarkupSave(entries[place], writers));
+                }
+                catch (Exception exception)
+                {
+                    throw new FormatException($"Entry {place + 1} could not be imported.", exception);
+                }
+            }
+
+            session.LDatabaseSessionCommit();
+            return saved;
+        }
     }
 
     private LEntry LEngineMarkupSave(

@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -86,6 +86,15 @@ internal static partial class TInterface
     {
         engine.LEngineExampleAttach(ownerId, exampleId, position, owner);
     }
+
+    internal static LExample TEngineExampleCommit(this LEngine engine, string id) =>
+        engine.LEngineExampleCommit(id);
+
+    internal static LDraft TEngineExampleStart(this LEngine engine, string origin, string? exampleId) =>
+        engine.LEngineExampleStart(origin, exampleId);
+
+    internal static LExample TEngineExampleSave(this LEngine engine, LDraft draft) =>
+        engine.LEngineExampleSave(draft);
 
     internal static LExample TEngineExampleCreate(this LEngine engine, LExample example) =>
         engine.LEngineExampleCreate(example);
@@ -226,8 +235,17 @@ internal static partial class TInterface
         engine.LEngineReferenceAttach(ownerId, referenceId, position, owner);
     }
 
+    internal static LReference TEngineReferenceCommit(this LEngine engine, string id) =>
+        engine.LEngineReferenceCommit(id);
+
     internal static LReference TEngineReferenceCreate(this LEngine engine, LReference reference) =>
         engine.LEngineReferenceCreate(reference);
+
+    internal static LDraft TEngineReferenceStart(this LEngine engine, string origin, string? referenceId) =>
+        engine.LEngineReferenceStart(origin, referenceId);
+
+    internal static LReference TEngineReferenceSave(this LEngine engine, LDraft draft) =>
+        engine.LEngineReferenceSave(draft);
 
     internal static void TEngineReferenceDelete(this LEngine engine, string id)
     {
@@ -316,8 +334,17 @@ internal static partial class TInterface
         engine.LEngineSituationAttach(ownerId, situationId, position, owner);
     }
 
+    internal static LSituation TEngineSituationCommit(this LEngine engine, string id) =>
+        engine.LEngineSituationCommit(id);
+
     internal static LSituation TEngineSituationCreate(this LEngine engine, LSituation situation) =>
         engine.LEngineSituationCreate(situation);
+
+    internal static LDraft TEngineSituationStart(this LEngine engine, string origin, string? situationId) =>
+        engine.LEngineSituationStart(origin, situationId);
+
+    internal static LSituation TEngineSituationSave(this LEngine engine, LDraft draft) =>
+        engine.LEngineSituationSave(draft);
 
     internal static void TEngineSituationDelete(this LEngine engine, string id)
     {

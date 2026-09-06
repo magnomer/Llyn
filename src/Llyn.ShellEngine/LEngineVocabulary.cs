@@ -9,23 +9,35 @@ public sealed partial class LEngine
 {
     public void LEngineSpeechCreate(LSpeechValue value)
     {
-        ArgumentNullException.ThrowIfNull(value);
-        new LSpeechArchive(_lEngineDatabase).LSpeechValueCreate(value);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            new LSpeechArchive(_lEngineDatabase).LSpeechValueCreate(value);
+        }
     }
 
     public string? LEngineSpeechRead(string language, string valueId)
     {
-        return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(language, valueId);
+        lock (_lEngineGate)
+        {
+            return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(language, valueId);
+        }
     }
 
     public IReadOnlyList<LSpeechValue> LEngineSpeechRead(string language)
     {
-        return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(language);
+        lock (_lEngineGate)
+        {
+            return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(language);
+        }
     }
 
     public string? LEngineSpeechFind(string language, string name)
     {
-        return new LSpeechArchive(_lEngineDatabase).LSpeechValueFind(language, name);
+        lock (_lEngineGate)
+        {
+            return new LSpeechArchive(_lEngineDatabase).LSpeechValueFind(language, name);
+        }
     }
 
     private IReadOnlyList<LSpeech> LEngineSpeechResolve(
@@ -60,20 +72,29 @@ public sealed partial class LEngine
 
     public void LEngineMorphologyCreate(LMorphology morphology)
     {
-        ArgumentNullException.ThrowIfNull(morphology);
-        new LMorphologyArchive(_lEngineDatabase).LMorphologyCreate(morphology);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(morphology);
+            new LMorphologyArchive(_lEngineDatabase).LMorphologyCreate(morphology);
+        }
     }
 
     public LMorphology? LEngineMorphologyRead(
         string language, string speechId, string featureId, string valueId)
     {
-        return new LMorphologyArchive(_lEngineDatabase)
-            .LMorphologyRead(language, speechId, featureId, valueId);
+        lock (_lEngineGate)
+        {
+            return new LMorphologyArchive(_lEngineDatabase)
+                .LMorphologyRead(language, speechId, featureId, valueId);
+        }
     }
 
     public LSentenceOrder LEngineOrderRead(string language)
     {
-        return LSentenceLoader.LSentenceLoaderLoad(language);
+        lock (_lEngineGate)
+        {
+            return LSentenceLoader.LSentenceLoaderLoad(language);
+        }
     }
 
     private void LEngineLanguageImport()

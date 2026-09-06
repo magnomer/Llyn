@@ -26,13 +26,12 @@ public partial class PLibrary
             string text = await File.ReadAllTextAsync(dialog.FileName);
 
             await Task.Run(() => _lEngine.LEngineMarkupImport(text));
+
+            PIndexFind(PInquiry.Text ?? string.Empty);
         }
         catch (Exception exception)
         {
             _pLibraryHost.PWindowFailureShow("List.ImportFailed", exception);
-            return;
         }
-
-        PIndexFind(PInquiry.Text ?? string.Empty);
     }
 }

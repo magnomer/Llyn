@@ -12,6 +12,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine : IDisposable
 {
+    private readonly object _lEngineGate = new();
     private readonly HttpClient _lEngineClient;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineSources = new(StringComparer.Ordinal);
     private string _lEngineWorkspace;
@@ -51,7 +52,10 @@ public sealed partial class LEngine : IDisposable
 
     public IReadOnlyList<string> LEngineLanguageRead()
     {
-        return LLanguageLoader.LLanguageLoaderScan();
+        lock (_lEngineGate)
+        {
+            return LLanguageLoader.LLanguageLoaderScan();
+        }
     }
 
     public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)
@@ -64,19 +68,31 @@ public sealed partial class LEngine : IDisposable
             return null;
         }
 
+        string workspace;
+        lock (_lEngineGate)
+        {
+            workspace = _lEngineWorkspace;
+        }
+
         return await LWorkspace
-            .LWorkspaceFlagRead(code, _lEngineWorkspace, _lEngineClient, cancellation)
+            .LWorkspaceFlagRead(code, workspace, _lEngineClient, cancellation)
             .ConfigureAwait(false);
     }
 
     public LDoctorRescue LEngineRescueRead()
     {
-        return _lEngineRescue;
+        lock (_lEngineGate)
+        {
+            return _lEngineRescue;
+        }
     }
 
     public string LEngineWorkspaceRead()
     {
-        return _lEngineWorkspace;
+        lock (_lEngineGate)
+        {
+            return _lEngineWorkspace;
+        }
     }
 
     public static string LEngineWorkspaceResolve()
@@ -86,44 +102,59 @@ public sealed partial class LEngine : IDisposable
 
     public void LEngineWorkspaceChange(string path)
     {
-        LWorkspaceRoot.LWorkspaceRootChange(path);
-        _lEngineWorkspace = path;
-
-        foreach (string held in _lEngineDraftHeld)
+        lock (_lEngineGate)
         {
-            _lEngineDraftStale.Add(held);
+            LWorkspaceRoot.LWorkspaceRootChange(path);
+            _lEngineWorkspace = path;
+
+            foreach (string held in _lEngineDraftHeld)
+            {
+                _lEngineDraftStale.Add(held);
+            }
+
+            _lEngineDraftHeld.Clear();
+            _lEngineSources.Clear();
+            LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
+
+            _lEngineDatabase = new LDatabase(_lEngineWorkspace);
+            _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
+            LEngineLanguageImport();
         }
-
-        _lEngineDraftHeld.Clear();
-        _lEngineSources.Clear();
-        LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
-
-        _lEngineDatabase = new LDatabase(_lEngineWorkspace);
-        _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
-        LEngineLanguageImport();
     }
 
     public LSettings LEngineSettingsRead()
     {
-        return _lEngineSettings;
+        lock (_lEngineGate)
+        {
+            return _lEngineSettings;
+        }
     }
 
     public void LEngineSettingsSave(LSettings settings)
     {
-        ArgumentNullException.ThrowIfNull(settings);
-        _lEngineSettings = settings;
-        LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, settings);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(settings);
+            _lEngineSettings = settings;
+            LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, settings);
+        }
     }
 
     public LWorkspaceState LEngineStateRead()
     {
-        return new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead();
+        lock (_lEngineGate)
+        {
+            return new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead();
+        }
     }
 
     public void LEngineStateSave(LWorkspaceState state)
     {
-        ArgumentNullException.ThrowIfNull(state);
-        new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateSave(state);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(state);
+            new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateSave(state);
+        }
     }
 
     private string LEngineRecordingFormat(string path)
@@ -142,25 +173,53 @@ public sealed partial class LEngine : IDisposable
     public Task LEnginePronunciationFind(string word, string language, LReceiver receiver, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(receiver);
-        return new LLookup(LEngineSourcesRead(language)).LSeekerStart(word, receiver, cancellation);
+
+        IReadOnlyList<LSource> sources;
+        lock (_lEngineGate)
+        {
+            sources = LEngineSourcesRead(language);
+        }
+
+        return new LLookup(sources).LSeekerStart(word, receiver, cancellation);
     }
 
     public Task LEngineRecordingFind(string word, string language, LListener listener, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(listener);
-        return new LHarvest(LEngineSourcesRead(language)).LHarvestStart(word, listener, cancellation);
+
+        IReadOnlyList<LSource> sources;
+        lock (_lEngineGate)
+        {
+            sources = LEngineSourcesRead(language);
+        }
+
+        return new LHarvest(sources).LHarvestStart(word, listener, cancellation);
     }
 
     public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(recording);
-        return LWorkspace.LWorkspaceRecordingSave(recording, word, language, _lEngineWorkspace, _lEngineClient, cancellation);
+
+        string workspace;
+        lock (_lEngineGate)
+        {
+            workspace = _lEngineWorkspace;
+        }
+
+        return LWorkspace.LWorkspaceRecordingSave(recording, word, language, workspace, _lEngineClient, cancellation);
     }
 
     public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(recording);
-        return LWorkspace.LWorkspaceRecordingPrepare(recording, _lEngineWorkspace, _lEngineClient, cancellation);
+
+        string workspace;
+        lock (_lEngineGate)
+        {
+            workspace = _lEngineWorkspace;
+        }
+
+        return LWorkspace.LWorkspaceRecordingPrepare(recording, workspace, _lEngineClient, cancellation);
     }
 
     private static bool LEngineOwnerCheck(LOwner owner)
@@ -195,6 +254,9 @@ public sealed partial class LEngine : IDisposable
 
     public void Dispose()
     {
-        _lEngineClient.Dispose();
+        lock (_lEngineGate)
+        {
+            _lEngineClient.Dispose();
+        }
     }
 }

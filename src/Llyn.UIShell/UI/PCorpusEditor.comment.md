@@ -6,19 +6,16 @@ Editing behavior of the Corpus panel.
 An Example is quoted by any number of cards, so rewriting it here rewrites what every one of them quotes.
 The panel offers no way to fork an Example while editing it.
 Editing an Example means editing that Example, and a sentence meant for one card alone is a new Example on that card.
+What the controls hold is pushed to a draft the engine keeps, so a crash costs the last keystrokes rather than the sentence.
+The panel keeps no copy of a stored Example, and asks the engine what counts as a change.
 
 ## Inline notes
 
-### `private LExample? _pTranscriptExample;`
-
-The Example the editor stands on as the store knows it.
-It stands empty while the editor is open over an Example nothing has stored.
-Comparing the written fields against it is what says whether anything is unsaved.
-
 ### `private bool _pTranscriptLoading;`
 
-Set while fields are being filled from a stored Example.
+Set while fields are being filled from the held sentence.
 Filling a field raises the same change the user typing raises, and only the second may clear an unreadable mark.
+It also holds the push back, so a fill never writes what it has just read.
 
 ## `private void PSpeakerLoad()`
 
@@ -47,21 +44,33 @@ Typing is a recording, so what stood there as unreadable stops being that the mo
 
 ## `private void PTranscriptApply(LExample? example)`
 
-Fills every field from the stored Example, or empties them for one being written for the first time.
-It is also the discard: what the store holds is written back over what the user typed.
+Fills every field from the held sentence, or empties them when no draft stands.
+The delete control and the usage count follow the stored id the draft names, not the sentence being written.
+A sentence the engine has not stored yet can be deleted from nothing, so the control stays off until it names one.
 
-## `private bool PTranscriptChangeCheck()`
+## `private LExample PTranscriptRead(LExample held)`
 
-Whether the editor stands over modifications nothing has saved yet.
-The fields are compared one by one, so an Example read back from the store is judged against what stands in the editor.
+The held sentence with the control values written over it.
+Identity travels on the record given, so the panel never mints or carries an id of its own.
+
+## `private void PCorpusFreshHandle(object sender, RoutedEventArgs e)`
+
+Opens the editor on a sentence nothing has stored, by starting a draft naming no Example.
+
+## `private void PTranscriptDiscardHandle(object sender, RoutedEventArgs e)`
+
+Throws the held sentence away and starts again from the Example it opened on.
+Discarding is a new draft rather than a refill, so what was typed leaves the workspace with it.
 
 ## `private void PTranscriptStoreHandle(object sender, RoutedEventArgs e)`
 
-Saves the written Example, creating one that has no id yet and rewriting one that has.
+Commits the held sentence, creating an Example the draft names none of and rewriting the one it names.
+Anything still waiting to be pushed is pushed first, so the commit carries the last keystroke.
 Saving changes neither the identifier, nor what quotes the Example, nor the order it takes for any quoter.
 
 ## `private void PTranscriptRemovalHandle(object sender, RoutedEventArgs e)`
 
-Deletes the shown Example.
+Deletes the Example the held draft was opened on.
+A draft naming none stands over nothing stored, so there is nothing to delete.
 An Example nothing quotes is simply deleted.
 One something quotes is named to the user first, and only then detached and deleted in one operation.

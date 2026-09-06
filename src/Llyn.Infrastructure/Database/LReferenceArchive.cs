@@ -19,7 +19,12 @@ public sealed class LReferenceArchive
     {
         ArgumentNullException.ThrowIfNull(reference);
 
-        LReference stored = reference with { LReferenceId = LIdentity.LIdentityCreate() };
+        LReference stored = reference with
+        {
+            LReferenceId = string.IsNullOrWhiteSpace(reference.LReferenceId)
+                ? LIdentity.LIdentityCreate()
+                : reference.LReferenceId,
+        };
 
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())

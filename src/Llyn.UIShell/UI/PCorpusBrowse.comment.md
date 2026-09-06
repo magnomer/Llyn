@@ -37,6 +37,7 @@ Whether one Example answers the query, over its sentence, its translation and it
 ## `internal void PAnthologyExampleShow(string id)`
 
 Reads one Example back and shows it with the sides quoting it.
+An open editor is restarted on the Example chosen, so what it writes into is the draft for that sentence.
 An id the store no longer knows clears the selection and refills the catalog rather than failing.
 The window calls it so a Source citing row can land on the Example it names.
 
@@ -58,9 +59,11 @@ The panel asks the window for the switch, because navigation is never driven by 
 ## `private void PCorpusScribeHandle(object sender, RoutedEventArgs e)`
 
 Swaps the reading for the editor and back.
+Entering the editor starts a draft on the selected Example, and leaving it discards that draft.
 Leaving the editor asks first, so unsaved wording is never lost silently.
 
 ## `private void PCorpusClear()`
 
 Drops the selection and empties the reading, the usage and the editor together.
+The held draft goes first, because nothing may write into a draft the panel no longer stands on.
 `PCorpusScribe` is disabled with it, because there is nothing to edit while nothing is selected.

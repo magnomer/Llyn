@@ -1,4 +1,4 @@
-# PReference.xaml.cs
+﻿# PReference.xaml.cs
 
 ## `public partial class PReference : UserControl`
 
@@ -18,8 +18,9 @@ Drops the selection and reads the shelf again, for when the workspace underneath
 
 ## `internal bool PReferenceChangeCheck()`
 
-Whether the edit area is open over modifications nothing has saved yet.
+Whether the panel holds work nothing has saved yet.
 The window asks before anything can leave the panel.
+The engine answers it, so the panel decides nothing about what counts as a change.
 Credits are not compared, because they are written when they are made rather than on save.
 
 ## `internal void PReferenceClose()`

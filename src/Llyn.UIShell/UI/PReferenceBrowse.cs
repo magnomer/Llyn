@@ -199,7 +199,6 @@ public partial class PReference
         }
 
         _pColophonReference = id;
-        _pImprintReference = reference;
 
         PColophonValueShow(PColophonTitle, reference.LReferenceTitle);
         PColophonValueShow(PColophonProgram, reference.LReferenceProgram);
@@ -216,7 +215,7 @@ public partial class PReference
 
         if (PImprint.Visibility == Visibility.Visible)
         {
-            PImprintApply(reference);
+            PImprintDraftShow(PImprintDraftStart(id));
         }
     }
 
@@ -311,6 +310,7 @@ public partial class PReference
                 return;
             }
 
+            PImprintDraftCancel();
             PReferenceScribeShow(false);
 
             if (_pColophonReference is not null)
@@ -328,8 +328,8 @@ public partial class PReference
             return;
         }
 
-        PImprintApply(_pImprintReference);
         PReferenceScribeShow(true);
+        PImprintDraftShow(PImprintDraftStart(_pColophonReference));
     }
 
     private void PReferenceScribeShow(bool editing)
@@ -346,8 +346,9 @@ public partial class PReference
 
     private void PReferenceClear()
     {
+        PImprintDraftCancel();
+
         _pColophonReference = null;
-        _pImprintReference = null;
         _pFootnoteList.Clear();
 
         PColophonBody.Visibility = Visibility.Collapsed;

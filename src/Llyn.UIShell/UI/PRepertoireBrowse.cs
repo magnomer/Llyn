@@ -22,9 +22,6 @@ public partial class PRepertoire
 
     private string _pTierChoice = "Title";
 
-    private LSituation? _pScenarioSituation;
-
-
     private bool _pScenarioTitleUnreadable;
 
     private bool _pScenarioKindUnreadable;
@@ -170,7 +167,6 @@ public partial class PRepertoire
         }
 
         _pVignetteSituation = id;
-        _pScenarioSituation = situation;
 
         PVignetteValueShow(PVignetteTitle, situation.LSituationTitle);
         PVignetteValueShow(PVignetteKind, situation.LSituationKind);
@@ -183,7 +179,7 @@ public partial class PRepertoire
 
         if (PScenario.Visibility == Visibility.Visible)
         {
-            PScenarioApply(situation);
+            PScenarioDraftShow(PScenarioDraftStart(id));
         }
     }
 
@@ -257,6 +253,7 @@ public partial class PRepertoire
 
         _pScenarioTitleUnreadable = false;
         PScenarioTitle.Tag = string.Empty;
+        PScenarioChangeDefer();
     }
 
     private void PScenarioKindHandle(object sender, TextChangedEventArgs e)
@@ -268,6 +265,7 @@ public partial class PRepertoire
 
         _pScenarioKindUnreadable = false;
         PScenarioKind.Tag = string.Empty;
+        PScenarioChangeDefer();
     }
 
     private void PScenarioDescriptionHandle(object sender, TextChangedEventArgs e)
@@ -279,6 +277,7 @@ public partial class PRepertoire
 
         _pScenarioDescriptionUnreadable = false;
         PScenarioDescription.Tag = string.Empty;
+        PScenarioChangeDefer();
     }
 
     private void PScenarioApply(LSituation? situation)
@@ -299,18 +298,23 @@ public partial class PRepertoire
         PScenarioKind.Tag = _pScenarioKindUnreadable ? unreadable : string.Empty;
         PScenarioDescription.Tag = _pScenarioDescriptionUnreadable ? unreadable : string.Empty;
 
-        PScenarioRemoval.IsEnabled = situation is not null;
+        string? stored = PScenarioSituationRead();
+        PScenarioRemoval.IsEnabled = stored is not null;
 
         _pScenarioLoading = false;
+
+        PScenarioChangeUpdate();
     }
 
-    private LSituation PScenarioRead()
+    private LSituation PScenarioRead(LSituation held)
     {
-        return new LSituation(
-            _pScenarioSituation?.LSituationId ?? string.Empty,
-            PScenarioValueRead(PScenarioTitle.Text, _pScenarioTitleUnreadable),
-            PScenarioValueRead(PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
-            PScenarioValueRead(PScenarioKind.Text, _pScenarioKindUnreadable));
+        return held with
+        {
+            LSituationTitle = PScenarioValueRead(PScenarioTitle.Text, _pScenarioTitleUnreadable),
+            LSituationDescription =
+                PScenarioValueRead(PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
+            LSituationKind = PScenarioValueRead(PScenarioKind.Text, _pScenarioKindUnreadable),
+        };
     }
 
     private static LStateValue PScenarioValueRead(string text, bool unreadable)
@@ -323,18 +327,6 @@ public partial class PRepertoire
         return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueUnspecified;
     }
 
-    private bool PScenarioChangeCheck()
-    {
-        LSituation written = PScenarioRead();
-        LSituation stored = _pScenarioSituation ?? new LSituation(
-            string.Empty,
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified);
-
-        return written != stored with { LSituationId = written.LSituationId };
-    }
-
     private void PRepertoireFreshHandle(object sender, RoutedEventArgs e)
     {
         if (!PRepertoireLeaveConfirm())
@@ -343,10 +335,9 @@ public partial class PRepertoire
         }
 
         PRepertoireClear();
-        _pScenarioSituation = null;
-        PScenarioApply(null);
-        PRepertoireScribe.IsEnabled = true;
         PRepertoireScribeShow(true);
+        PScenarioDraftShow(PScenarioDraftStart(null));
+        PRepertoireScribe.IsEnabled = true;
     }
 
     private void PRepertoireScribeHandle(object sender, RoutedEventArgs e)
@@ -358,6 +349,7 @@ public partial class PRepertoire
                 return;
             }
 
+            PScenarioDraftCancel();
             PRepertoireScribeShow(false);
 
             if (_pVignetteSituation is not null)
@@ -375,8 +367,8 @@ public partial class PRepertoire
             return;
         }
 
-        PScenarioApply(_pScenarioSituation);
         PRepertoireScribeShow(true);
+        PScenarioDraftShow(PScenarioDraftStart(_pVignetteSituation));
     }
 
     private void PRepertoireScribeShow(bool editing)
@@ -393,23 +385,23 @@ public partial class PRepertoire
             return;
         }
 
-        PScenarioApply(_pScenarioSituation);
+        PScenarioDraftShow(PScenarioDraftStart(PScenarioSituationRead()));
     }
 
     private void PScenarioStoreHandle(object sender, RoutedEventArgs e)
     {
-        LSituation written = PScenarioRead();
+        PScenarioChangeSave();
 
+        string held = _pScenarioDraft;
+        if (held.Length == 0)
+        {
+            return;
+        }
+
+        LSituation stored;
         try
         {
-            if (_pScenarioSituation is null)
-            {
-                written = _lEngine.LEngineSituationCreate(written);
-            }
-            else
-            {
-                _lEngine.LEngineSituationUpdate(written);
-            }
+            stored = _lEngine.LEngineSituationCommit(held);
         }
         catch (Exception exception)
         {
@@ -417,22 +409,21 @@ public partial class PRepertoire
             return;
         }
 
-        _pScenarioSituation = written;
-        _pVignetteSituation = written.LSituationId;
+        _pScenarioDraft = string.Empty;
+        _pVignetteSituation = stored.LSituationId;
 
         PAtlasFind(PInquest.Text ?? string.Empty);
         PRepertoireScribeShow(false);
-        PRepertoireShow(written.LSituationId);
+        PRepertoireShow(stored.LSituationId);
     }
 
     private void PScenarioRemovalHandle(object sender, RoutedEventArgs e)
     {
-        if (_pScenarioSituation is null)
+        if (PScenarioSituationRead() is not string id)
         {
             return;
         }
 
-        string id = _pScenarioSituation.LSituationId;
         int usage = _pAtlasCount.TryGetValue(id, out int count) ? count : 0;
 
         if (!_pRepertoireHost.PWindowRemovalConfirm(usage))
@@ -462,8 +453,9 @@ public partial class PRepertoire
 
     private void PRepertoireClear()
     {
+        PScenarioDraftCancel();
+
         _pVignetteSituation = null;
-        _pScenarioSituation = null;
         _pOccurrenceList.Clear();
 
         PVignetteBody.Visibility = Visibility.Collapsed;

@@ -14,11 +14,10 @@ The panel answers two questions rather than one: what this Situation is, and whe
 How many places reference each Situation, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
-### `private LSituation? _pScenarioSituation;`
+### `private string? _pVignetteSituation;`
 
-The Situation the editor stands on as the store knows it.
-It stands empty while the editor is open over a Situation no card references yet and nothing has stored.
-Comparing the written fields against it is what says whether anything is unsaved.
+The Situation the reading stands on, held as an id and never as a record.
+Every showing reads it back, so nothing stale is drawn and no comparison is made against a cached copy.
 
 ### `private bool _pScenarioLoading;`
 
@@ -39,6 +38,7 @@ Whether one Situation answers the query, over its title, description, kind, and 
 
 Reads one Situation back and shows it with the sides referencing it.
 A Situation that is gone leaves the panel unselected rather than showing a stale reading.
+An open editor is restarted on the Situation shown, so the held draft and the reading never name different records.
 
 ## `private void PVignetteValueShow(TextBlock field, LStateValue value, string? shown = null)`
 
@@ -57,20 +57,18 @@ An empty result is shown rather than hidden: a Situation nothing references is r
 Reads the whole shelf of Sources the editor offers.
 A Source is referenced, never owned, so nothing here creates or changes one.
 
-## `private LSituation PScenarioRead()`
+## `private LSituation PScenarioRead(LSituation held)`
 
-What the editor says the Situation is.
+What the editor says the Situation is, written onto the Situation the engine holds.
+Identity comes from the held draft rather than from the panel, because the panel mints nothing.
 A field standing empty says nothing was recorded, unless it still carries the mark it was loaded with.
 Then it says instead that something was recorded that cannot be read back.
 
-## `private bool PScenarioChangeCheck()`
-
-Compares the written Situation against the stored one, ignoring the id.
-A fresh Situation is compared against an empty one, so opening the editor and typing nothing is not a change.
-
 ## `private void PScenarioStoreHandle(object sender, RoutedEventArgs e)`
 
-Stores the editor over the selected Situation, or creates one nothing references yet.
+Commits the held Situation, which stores it over the selected one or creates one nothing references yet.
+Typing still waiting to be written is written first, so the commit carries the last keystroke.
+Whether this is a create or a rewrite is the engine's reading of the draft, not the panel's.
 Saving does not change the id, what references it, or the order it takes for any referrer.
 
 ## `private void PScenarioRemovalHandle(object sender, RoutedEventArgs e)`

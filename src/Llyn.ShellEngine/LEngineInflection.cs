@@ -9,28 +9,43 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<LInflection> LEngineInflectionRead(string entryId)
     {
-        return new LInflectionArchive(_lEngineDatabase).LInflectionRead(entryId);
+        lock (_lEngineGate)
+        {
+            return new LInflectionArchive(_lEngineDatabase).LInflectionRead(entryId);
+        }
     }
 
     public void LEngineInflectionSet(string entryId, IReadOnlyList<LInflection> inflections)
     {
-        ArgumentNullException.ThrowIfNull(inflections);
-        new LInflectionArchive(_lEngineDatabase).LInflectionSet(entryId, inflections);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(inflections);
+            new LInflectionArchive(_lEngineDatabase).LInflectionSet(entryId, inflections);
+        }
     }
 
     public void LEngineInflectionAppend(string entryId, IReadOnlyList<LInflection> inflections)
     {
-        ArgumentNullException.ThrowIfNull(inflections);
-        new LInflectionArchive(_lEngineDatabase).LInflectionAppend(entryId, inflections);
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(inflections);
+            new LInflectionArchive(_lEngineDatabase).LInflectionAppend(entryId, inflections);
+        }
     }
 
     public void LEngineInflectionMove(string entryId, int position, int target)
     {
-        new LInflectionArchive(_lEngineDatabase).LInflectionMove(entryId, position, target);
+        lock (_lEngineGate)
+        {
+            new LInflectionArchive(_lEngineDatabase).LInflectionMove(entryId, position, target);
+        }
     }
 
     public void LEngineInflectionDelete(string entryId, int position)
     {
-        new LInflectionArchive(_lEngineDatabase).LInflectionDelete(entryId, position);
+        lock (_lEngineGate)
+        {
+            new LInflectionArchive(_lEngineDatabase).LInflectionDelete(entryId, position);
+        }
     }
 }

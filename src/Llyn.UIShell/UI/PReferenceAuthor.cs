@@ -48,17 +48,19 @@ public partial class PReference
     {
         _pAuthorState = reference?.LReferenceAuthorState ?? LState.LStateUnspecified;
         PAuthorUnknown.IsChecked = _pAuthorState == LState.LStateUnknown;
-        PAuthorSwitch.IsEnabled = reference is not null;
-        PAuthorCreditFind(reference);
+
+        string? stored = PImprintReferenceRead();
+        PAuthorSwitch.IsEnabled = stored is not null;
+        PAuthorCreditFind(stored);
     }
 
-    private void PAuthorCreditFind(LReference? reference)
+    private void PAuthorCreditFind(string? stored)
     {
         _pAuthorCredit.Clear();
 
-        if (reference is not null)
+        if (stored is not null)
         {
-            IReadOnlyList<LAuthor> credits = PShelfCreditRead(reference.LReferenceId);
+            IReadOnlyList<LAuthor> credits = PShelfCreditRead(stored);
             for (int index = 0; index < credits.Count; index++)
             {
                 _pAuthorCredit.Add(new PAuthorItem(credits[index], index, credits.Count));
@@ -68,7 +70,7 @@ public partial class PReference
         PAuthorNotice.Visibility = _pAuthorCredit.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         PAuthorNotice.SetResourceReference(
             TextBlock.TextProperty,
-            reference is null ? "Source.AuthorUnsaved" : "Source.AuthorNone");
+            stored is null ? "Source.AuthorUnsaved" : "Source.AuthorNone");
     }
 
     private void PAuthorUpdate()
@@ -83,13 +85,13 @@ public partial class PReference
             return;
         }
 
-        PAuthorCreditFind(_pImprintReference);
+        PAuthorCreditFind(PImprintReferenceRead());
         PShelfFind(PSurvey.Text ?? string.Empty);
     }
 
     private void PAuthorHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (_pAuthorLoading || _pImprintReference is null || PAuthorList.SelectedValue is not string id)
+        if (_pAuthorLoading || PImprintReferenceRead() is null || PAuthorList.SelectedValue is not string id)
         {
             return;
         }
@@ -101,7 +103,7 @@ public partial class PReference
 
     private void PAuthorAttach(string id)
     {
-        if (_pImprintReference is null)
+        if (PImprintReferenceRead() is not string stored)
         {
             return;
         }
@@ -116,7 +118,7 @@ public partial class PReference
 
         try
         {
-            _lEngine.LEngineAuthorAttach(_pImprintReference.LReferenceId, id, _pAuthorCredit.Count);
+            _lEngine.LEngineAuthorAttach(stored, id, _pAuthorCredit.Count);
         }
         catch (Exception exception)
         {
@@ -131,7 +133,7 @@ public partial class PReference
     private void PAuthorFreshHandle(object sender, RoutedEventArgs e)
     {
         string name = PAuthorName.Text.Trim();
-        if (name.Length == 0 || _pImprintReference is null)
+        if (name.Length == 0 || PImprintReferenceRead() is null)
         {
             return;
         }
@@ -155,14 +157,15 @@ public partial class PReference
 
     private void PAuthorRemoveHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PAuthorItem item } || _pImprintReference is null)
+        if (sender is not FrameworkElement { DataContext: PAuthorItem item }
+            || PImprintReferenceRead() is not string stored)
         {
             return;
         }
 
         try
         {
-            _lEngine.LEngineAuthorDetach(_pImprintReference.LReferenceId, item.PAuthorItemId);
+            _lEngine.LEngineAuthorDetach(stored, item.PAuthorItemId);
         }
         catch (Exception exception)
         {
@@ -185,7 +188,8 @@ public partial class PReference
 
     private void PAuthorMove(object sender, int step)
     {
-        if (sender is not FrameworkElement { DataContext: PAuthorItem item } || _pImprintReference is null)
+        if (sender is not FrameworkElement { DataContext: PAuthorItem item }
+            || PImprintReferenceRead() is not string stored)
         {
             return;
         }
@@ -193,7 +197,7 @@ public partial class PReference
         try
         {
             _lEngine.LEngineAuthorAttach(
-                _pImprintReference.LReferenceId, item.PAuthorItemId, item.PAuthorItemPosition + step);
+                stored, item.PAuthorItemId, item.PAuthorItemPosition + step);
         }
         catch (Exception exception)
         {
@@ -281,5 +285,6 @@ public partial class PReference
 
         _pAuthorState = state;
         PAuthorUnknown.IsChecked = state == LState.LStateUnknown;
+        PImprintChangeDefer();
     }
 }

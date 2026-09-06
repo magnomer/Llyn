@@ -9,65 +9,68 @@ public sealed partial class LEngine
 {
     public LEntry LEngineEntryUpdate(string id, LEntryDraft draft)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
-        ArgumentNullException.ThrowIfNull(draft);
-
-        if (string.IsNullOrWhiteSpace(draft.LEntryDraftHeadword))
+        lock (_lEngineGate)
         {
-            throw new LRefusal(LRefusal.LRefusalHeadword);
+            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentNullException.ThrowIfNull(draft);
+
+            if (string.IsNullOrWhiteSpace(draft.LEntryDraftHeadword))
+            {
+                throw new LRefusal(LRefusal.LRefusalHeadword);
+            }
+
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+
+            LEntryArchive entries = new(_lEngineDatabase);
+            LEntry stored = entries.LEntryRead(id) ?? throw new LRefusal(LRefusal.LRefusalEntry);
+
+            List<LRevisionChange> changes = [];
+
+            entries.LEntryUpdate(stored with
+            {
+                LEntryHeadword = draft.LEntryDraftHeadword,
+                LEntryLanguage = draft.LEntryDraftLanguage,
+            });
+
+            if (!string.Equals(stored.LEntryHeadword, draft.LEntryDraftHeadword, StringComparison.Ordinal) ||
+                !string.Equals(stored.LEntryLanguage, draft.LEntryDraftLanguage, StringComparison.Ordinal))
+            {
+                changes.Add(new LRevisionChange(0, id, "entry", "update", draft.LEntryDraftHeadword));
+            }
+
+            LEngineCardUpdate(
+                session.LDatabaseSessionConnection,
+                id,
+                draft.LEntryDraftMeanings,
+                draft.LEntryDraftLanguage,
+                collocation: false,
+                changes);
+            LEngineCardUpdate(
+                session.LDatabaseSessionConnection,
+                id,
+                draft.LEntryDraftCollocations,
+                draft.LEntryDraftLanguage,
+                collocation: true,
+                changes);
+
+            LEngineSpeechUpdate(entries, id, draft, changes);
+            LEngineNoteUpdate(id, draft, changes);
+            LEnginePronunciationUpdate(id, draft, changes);
+
+            LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord(changes);
+
+            LWorkspaceArchive workspace = new(_lEngineDatabase);
+            LWorkspaceState state = workspace.LWorkspaceStateRead();
+            workspace.LWorkspaceStateSave(state with
+            {
+                LWorkspaceStateLeft = id,
+                LWorkspaceStateRevision = revision.LRevisionId,
+            });
+
+            LEntry updated = entries.LEntryRead(id) ?? stored;
+            session.LDatabaseSessionCommit();
+            return updated;
         }
-
-        using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
-
-        LEntryArchive entries = new(_lEngineDatabase);
-        LEntry stored = entries.LEntryRead(id) ?? throw new LRefusal(LRefusal.LRefusalEntry);
-
-        List<LRevisionChange> changes = [];
-
-        entries.LEntryUpdate(stored with
-        {
-            LEntryHeadword = draft.LEntryDraftHeadword,
-            LEntryLanguage = draft.LEntryDraftLanguage,
-        });
-
-        if (!string.Equals(stored.LEntryHeadword, draft.LEntryDraftHeadword, StringComparison.Ordinal) ||
-            !string.Equals(stored.LEntryLanguage, draft.LEntryDraftLanguage, StringComparison.Ordinal))
-        {
-            changes.Add(new LRevisionChange(0, id, "entry", "update", draft.LEntryDraftHeadword));
-        }
-
-        LEngineCardUpdate(
-            session.LDatabaseSessionConnection,
-            id,
-            draft.LEntryDraftMeanings,
-            draft.LEntryDraftLanguage,
-            collocation: false,
-            changes);
-        LEngineCardUpdate(
-            session.LDatabaseSessionConnection,
-            id,
-            draft.LEntryDraftCollocations,
-            draft.LEntryDraftLanguage,
-            collocation: true,
-            changes);
-
-        LEngineSpeechUpdate(entries, id, draft, changes);
-        LEngineNoteUpdate(id, draft, changes);
-        LEnginePronunciationUpdate(id, draft, changes);
-
-        LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord(changes);
-
-        LWorkspaceArchive workspace = new(_lEngineDatabase);
-        LWorkspaceState state = workspace.LWorkspaceStateRead();
-        workspace.LWorkspaceStateSave(state with
-        {
-            LWorkspaceStateLeft = id,
-            LWorkspaceStateRevision = revision.LRevisionId,
-        });
-
-        LEntry updated = entries.LEntryRead(id) ?? stored;
-        session.LDatabaseSessionCommit();
-        return updated;
     }
 
     private void LEngineSpeechUpdate(

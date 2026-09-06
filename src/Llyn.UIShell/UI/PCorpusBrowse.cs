@@ -178,7 +178,6 @@ public partial class PCorpus
         }
 
         _pExcerptExample = id;
-        _pTranscriptExample = example;
 
         PExcerptValueShow(PExcerptText, example.LExampleText);
         PExcerptLanguage.Text = example.LExampleLanguage;
@@ -197,7 +196,7 @@ public partial class PCorpus
 
         if (PTranscript.Visibility == Visibility.Visible)
         {
-            PTranscriptApply(example);
+            PTranscriptDraftShow(PTranscriptDraftStart(id));
         }
     }
 
@@ -277,6 +276,7 @@ public partial class PCorpus
                 return;
             }
 
+            PTranscriptDraftCancel();
             PCorpusScribeShow(false);
 
             if (_pExcerptExample is not null)
@@ -294,8 +294,8 @@ public partial class PCorpus
             return;
         }
 
-        PTranscriptApply(_pTranscriptExample);
         PCorpusScribeShow(true);
+        PTranscriptDraftShow(PTranscriptDraftStart(_pExcerptExample));
     }
 
     private void PCorpusScribeShow(bool editing)
@@ -312,8 +312,9 @@ public partial class PCorpus
 
     private void PCorpusClear()
     {
+        PTranscriptDraftCancel();
+
         _pExcerptExample = null;
-        _pTranscriptExample = null;
         _pQuotationList.Clear();
 
         PExcerptBody.Visibility = Visibility.Collapsed;

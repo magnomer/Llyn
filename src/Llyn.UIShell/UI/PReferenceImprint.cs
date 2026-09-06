@@ -9,8 +9,6 @@ namespace Llyn.UIShell;
 
 public partial class PReference
 {
-    private LReference? _pImprintReference;
-
     private bool _pImprintTitleUnreadable;
 
     private bool _pImprintProgramUnreadable;
@@ -58,6 +56,7 @@ public partial class PReference
         unreadable = false;
         field.Tag = string.Empty;
         mark.IsChecked = false;
+        PImprintChangeDefer();
     }
 
     private void PImprintUnknownHandle(object sender, RoutedEventArgs e)
@@ -97,6 +96,8 @@ public partial class PReference
         field.Tag = unreadable ? _pReferenceHost.PLocalizationTextRead("Display.Unreadable") : string.Empty;
 
         _pImprintLoading = false;
+
+        PImprintChangeDefer();
     }
 
     private void PImprintApply(LReference? reference)
@@ -123,10 +124,13 @@ public partial class PReference
 
         PAuthorApply(reference);
 
-        PImprintRemoval.IsEnabled = reference is not null;
-        PImprintCountShow(reference);
+        string? stored = PImprintReferenceRead();
+        PImprintRemoval.IsEnabled = stored is not null;
+        PImprintCountShow(stored);
 
         _pImprintLoading = false;
+
+        PImprintChangeUpdate();
     }
 
     private static void PImprintFieldShow(
@@ -138,29 +142,30 @@ public partial class PReference
         mark.IsChecked = held;
     }
 
-    private void PImprintCountShow(LReference? reference)
+    private void PImprintCountShow(string? stored)
     {
-        if (reference is null)
+        if (stored is null)
         {
             PImprintCount.Text = string.Empty;
             return;
         }
 
-        int usage = PShelfCountRead(reference.LReferenceId);
+        int usage = PShelfCountRead(stored);
         PImprintCount.Text = $"{_pReferenceHost.PLocalizationTextRead("Source.DetachCount")} "
             + usage.ToString(CultureInfo.CurrentCulture);
     }
 
-    private LReference PImprintRead()
+    private LReference PImprintRead(LReference held)
     {
-        return new LReference(
-            _pImprintReference?.LReferenceId ?? string.Empty,
-            PImprintValueRead(PImprintTitle.Text, _pImprintTitleUnreadable),
-            PImprintValueRead(PImprintProgram.Text, _pImprintProgramUnreadable),
-            PImprintValueRead(PImprintChannel.Text, _pImprintChannelUnreadable),
-            PImprintValueRead(PImprintYear.Text, _pImprintYearUnreadable),
-            PImprintValueRead(PImprintUrl.Text, _pImprintUrlUnreadable),
-            _pAuthorState);
+        return held with
+        {
+            LReferenceTitle = PImprintValueRead(PImprintTitle.Text, _pImprintTitleUnreadable),
+            LReferenceProgram = PImprintValueRead(PImprintProgram.Text, _pImprintProgramUnreadable),
+            LReferenceChannel = PImprintValueRead(PImprintChannel.Text, _pImprintChannelUnreadable),
+            LReferenceYear = PImprintValueRead(PImprintYear.Text, _pImprintYearUnreadable),
+            LReferenceUrl = PImprintValueRead(PImprintUrl.Text, _pImprintUrlUnreadable),
+            LReferenceAuthorState = _pAuthorState,
+        };
     }
 
     private static LStateValue PImprintValueRead(string text, bool unreadable)
@@ -173,27 +178,6 @@ public partial class PReference
         return unreadable ? LStateValue.LStateValueUnknown : LStateValue.LStateValueUnspecified;
     }
 
-    private bool PImprintChangeCheck()
-    {
-        LReference written = PImprintRead();
-
-        if (_pImprintReference is null)
-        {
-            return !written.LReferenceTitle.LStateValueEmpty
-                || !written.LReferenceProgram.LStateValueEmpty
-                || !written.LReferenceChannel.LStateValueEmpty
-                || !written.LReferenceYear.LStateValueEmpty
-                || !written.LReferenceUrl.LStateValueEmpty;
-        }
-
-        return written.LReferenceTitle != _pImprintReference.LReferenceTitle
-            || written.LReferenceProgram != _pImprintReference.LReferenceProgram
-            || written.LReferenceChannel != _pImprintReference.LReferenceChannel
-            || written.LReferenceYear != _pImprintReference.LReferenceYear
-            || written.LReferenceUrl != _pImprintReference.LReferenceUrl
-            || written.LReferenceAuthorState != _pImprintReference.LReferenceAuthorState;
-    }
-
     private void PReferenceFreshHandle(object sender, RoutedEventArgs e)
     {
         if (!PReferenceLeaveConfirm())
@@ -202,10 +186,9 @@ public partial class PReference
         }
 
         PReferenceClear();
-        _pImprintReference = null;
-        PImprintApply(null);
-        PReferenceScribe.IsEnabled = true;
         PReferenceScribeShow(true);
+        PImprintDraftShow(PImprintDraftStart(null));
+        PReferenceScribe.IsEnabled = true;
     }
 
     private void PImprintDiscardHandle(object sender, RoutedEventArgs e)
@@ -215,23 +198,23 @@ public partial class PReference
             return;
         }
 
-        PImprintApply(_pImprintReference);
+        PImprintDraftShow(PImprintDraftStart(PImprintReferenceRead()));
     }
 
     private void PImprintStoreHandle(object sender, RoutedEventArgs e)
     {
-        LReference written = PImprintRead();
+        PImprintChangeSave();
 
+        string held = _pImprintDraft;
+        if (held.Length == 0)
+        {
+            return;
+        }
+
+        LReference stored;
         try
         {
-            if (_pImprintReference is null)
-            {
-                written = _lEngine.LEngineReferenceCreate(written);
-            }
-            else
-            {
-                _lEngine.LEngineReferenceUpdate(written);
-            }
+            stored = _lEngine.LEngineReferenceCommit(held);
         }
         catch (Exception exception)
         {
@@ -239,22 +222,21 @@ public partial class PReference
             return;
         }
 
-        _pImprintReference = written;
-        _pColophonReference = written.LReferenceId;
+        _pImprintDraft = string.Empty;
+        _pColophonReference = stored.LReferenceId;
 
         PShelfFind(PSurvey.Text ?? string.Empty);
         PReferenceScribeShow(false);
-        PReferenceShow(written.LReferenceId);
+        PReferenceShow(stored.LReferenceId);
     }
 
     private void PImprintRemovalHandle(object sender, RoutedEventArgs e)
     {
-        if (_pImprintReference is null)
+        if (PImprintReferenceRead() is not string id)
         {
             return;
         }
 
-        string id = _pImprintReference.LReferenceId;
         int usage = PShelfCountRead(id);
 
         if (!_pReferenceHost.PWindowRemovalConfirm(usage, "Source"))

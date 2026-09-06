@@ -1,0 +1,268 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Llyn.Core;
+
+namespace Llyn.UIShell;
+
+public partial class PRepertoire
+{
+    private const int PScenarioChangeDelay = 250;
+
+    private const string PScenarioOrigin = "Repertoire";
+
+    private CancellationTokenSource? _pScenarioPending;
+
+    private string _pScenarioDraft = string.Empty;
+
+    private bool _pScenarioHalted;
+
+    internal bool PRepertoireDraftFinish(bool store)
+    {
+        if (_pScenarioPending is not null)
+        {
+            PScenarioChangeSave();
+        }
+
+        if (!store || !PScenarioDraftCheck())
+        {
+            PScenarioDraftCancel();
+            return true;
+        }
+
+        string held = _pScenarioDraft;
+        if (held.Length == 0)
+        {
+            return true;
+        }
+
+        _pScenarioDraft = string.Empty;
+
+        try
+        {
+            _lEngine.LEngineSituationCommit(held);
+        }
+        catch (Exception exception)
+        {
+            _pScenarioDraft = held;
+            _pRepertoireHost.PWindowFailureShow("Situation.SaveFailed", exception);
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool PScenarioChangeCheck()
+    {
+        if (_pScenarioPending is not null)
+        {
+            PScenarioChangeSave();
+        }
+
+        return PScenarioDraftCheck();
+    }
+
+    private void PScenarioChangeDefer()
+    {
+        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft.Length == 0)
+        {
+            return;
+        }
+
+        PScenarioChangeStop();
+
+        CancellationTokenSource pending = new();
+        _pScenarioPending = pending;
+
+        _ = PScenarioChangeRun(pending.Token);
+    }
+
+    private async Task PScenarioChangeRun(CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(PScenarioChangeDelay, token).ConfigureAwait(true);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        try
+        {
+            PScenarioChangeSave();
+        }
+        catch (Exception exception)
+        {
+            _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
+        }
+    }
+
+    private void PScenarioChangeSave()
+    {
+        PScenarioChangeStop();
+
+        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft.Length == 0)
+        {
+            return;
+        }
+
+        PScenarioDraftSave();
+        PScenarioChangeUpdate();
+    }
+
+    private void PScenarioChangeStop()
+    {
+        CancellationTokenSource? pending = _pScenarioPending;
+        _pScenarioPending = null;
+
+        if (pending is null)
+        {
+            return;
+        }
+
+        pending.Cancel();
+        pending.Dispose();
+    }
+
+    private void PScenarioChangeUpdate()
+    {
+        bool changed = PScenarioDraftCheck();
+        PScenarioDiscard.IsEnabled = changed;
+        PScenarioStore.IsEnabled = changed;
+    }
+
+    private LDraft? PScenarioDraftStart(string? situation)
+    {
+        PScenarioChangeStop();
+        PScenarioDraftCancel();
+
+        try
+        {
+            LDraft started = _lEngine.LEngineSituationStart(PScenarioOrigin, situation);
+            _pScenarioDraft = started.LDraftId;
+            PScenarioHoldResume();
+            return started;
+        }
+        catch (Exception exception)
+        {
+            _pScenarioDraft = string.Empty;
+            PScenarioHoldSuspend(exception);
+            return null;
+        }
+    }
+
+    private void PScenarioDraftShow(LDraft? started)
+    {
+        PScenarioApply(started?.LDraftSituation);
+    }
+
+    private void PScenarioDraftSave()
+    {
+        if (_pScenarioDraft.Length == 0)
+        {
+            return;
+        }
+
+        try
+        {
+            LDraft? held = _lEngine.LEngineDraftRead(_pScenarioDraft);
+            if (held?.LDraftSituation is not LSituation content)
+            {
+                return;
+            }
+
+            LSituation sent = PScenarioRead(content);
+            LSituation stored = _lEngine.LEngineSituationSave(held with { LDraftSituation = sent });
+
+            if (!ReferenceEquals(stored, sent))
+            {
+                PScenarioApply(stored);
+            }
+        }
+        catch (Exception exception)
+        {
+            PScenarioHoldSuspend(exception);
+        }
+    }
+
+    private void PScenarioDraftCancel()
+    {
+        if (_pScenarioDraft.Length == 0)
+        {
+            return;
+        }
+
+        string held = _pScenarioDraft;
+        _pScenarioDraft = string.Empty;
+
+        try
+        {
+            _lEngine.LEngineDraftCancel(held);
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private bool PScenarioDraftCheck()
+    {
+        if (_pScenarioDraft.Length == 0)
+        {
+            return false;
+        }
+
+        try
+        {
+            return _lEngine.LEngineDraftCheck(_pScenarioDraft);
+        }
+        catch (Exception exception)
+        {
+            PScenarioHoldSuspend(exception);
+            return false;
+        }
+    }
+
+    private string? PScenarioSituationRead()
+    {
+        if (_pScenarioDraft.Length == 0)
+        {
+            return null;
+        }
+
+        LDraft? held;
+        try
+        {
+            held = _lEngine.LEngineDraftRead(_pScenarioDraft);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+        return string.IsNullOrWhiteSpace(held?.LDraftEntry) ? null : held.LDraftEntry;
+    }
+
+    private void PScenarioHoldSuspend(Exception exception)
+    {
+        if (_pScenarioHalted)
+        {
+            return;
+        }
+
+        _pScenarioHalted = true;
+        PScenario.IsEnabled = false;
+        _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
+    }
+
+    private void PScenarioHoldResume()
+    {
+        if (!_pScenarioHalted)
+        {
+            return;
+        }
+
+        _pScenarioHalted = false;
+        PScenario.IsEnabled = true;
+    }
+}

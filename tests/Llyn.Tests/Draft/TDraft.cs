@@ -590,6 +590,64 @@ public sealed class TDraft
         Assert.Empty(TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder));
     }
 
+    [Fact]
+    public void DraftSave_EveryCardNamed_ReturnsTheContentSent()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LDraft started = engine.TEngineDraftStart("editor", null);
+        LEntryDraft sent = TDraftCreate("editor", "kindle").LDraftContent with
+        {
+            LEntryDraftMeanings = [TDraftCardCreate("set alight", TInterface.TIdentityCreate())],
+        };
+
+        LEntryDraft stored = engine.TEngineDraftSave(started with { LDraftContent = sent });
+
+        Assert.Same(sent, stored);
+    }
+
+    [Fact]
+    public void DraftSave_UnnamedCard_ReturnsFreshContentWithEveryCardNamed()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LDraft started = engine.TEngineDraftStart("editor", null);
+        LEntryDraft sent = TDraftCreate("editor", "kindle").LDraftContent with
+        {
+            LEntryDraftMeanings = [TDraftCardCreate("set alight", TInterface.TIdentityCreate())],
+            LEntryDraftCollocations = [TDraftCardCreate("kindle a hope")],
+        };
+
+        LEntryDraft stored = engine.TEngineDraftSave(started with { LDraftContent = sent });
+
+        Assert.NotSame(sent, stored);
+        Assert.Same(sent.LEntryDraftMeanings, stored.LEntryDraftMeanings);
+        Assert.All(
+            stored.LEntryDraftMeanings,
+            card => Assert.NotEqual(string.Empty, card.LCardDraftId));
+        Assert.All(
+            stored.LEntryDraftCollocations,
+            card => Assert.NotEqual(string.Empty, card.LCardDraftId));
+    }
+
+    private static LCardDraft TDraftCardCreate(string title, string id)
+    {
+        return TInterface.TCardDraftCreate(
+            TInterface.TStateValueCreate(title),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            [],
+            [],
+            [],
+            string.Empty,
+            [],
+            [],
+            0,
+            id);
+    }
+
     private static LCardDraft TDraftCardCreate(string title)
     {
         return TInterface.TCardDraftCreate(

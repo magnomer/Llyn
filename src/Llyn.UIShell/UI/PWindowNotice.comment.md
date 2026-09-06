@@ -40,6 +40,9 @@ That is the shape of a failure nobody can act on.
 The editors the window closes over, each paired with its own two answers.
 Asking and finishing read the same list, so a panel cannot be asked about work the exit would not carry.
 A panel whose edits have no store path yet belongs in neither, because a prompt that promises a save is worse than no prompt.
+The corpus panel is on the list now that its sentence editor holds a draft it can commit.
+The repertoire panel joins it on the same terms, its situation editor holding one too.
+The reference panel completes the list, so every editor in the shell is both asked and finished.
 
 ### `internal bool PWindowDiscardConfirm()`
 

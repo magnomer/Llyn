@@ -1,4 +1,4 @@
-# PReferenceBrowse.cs
+﻿# PReferenceBrowse.cs
 
 ## `public partial class PReference`
 
@@ -45,6 +45,7 @@ Only a field standing Specified carries text, so an Unknown field matches nothin
 
 Reads one Source back and shows it with the sides citing it.
 An id the store no longer knows clears the selection and refills the shelf rather than failing.
+A selection made while the edit area is open starts held work on the Source shown.
 
 ## `private void PColophonValueShow(TextBlock field, LStateValue value)`
 
@@ -65,8 +66,10 @@ The panel asks the window for the switch, because navigation is never driven by 
 
 Swaps the reading for the edit area and back.
 Leaving the edit area asks first, so unsaved wording is never lost silently.
+Held work is started on entering and discarded on leaving, so no draft outlives the area that fills it.
 
 ## `private void PReferenceClear()`
 
 Drops the selection and empties the reading, the citing list and the edit area together.
+Held work is discarded first, because the panel is leaving behind everything the draft was opened on.
 `PReferenceScribe` is disabled with it, because there is nothing to edit while nothing is selected.

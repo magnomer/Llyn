@@ -1,4 +1,4 @@
-# PReferenceAuthor.cs
+﻿# PReferenceAuthor.cs
 
 ## `public partial class PReference`
 
@@ -19,10 +19,11 @@ It is a column on the `source` row, so it is saved with the five fields rather t
 Reads every Author the workspace holds for the crediting menu.
 A workspace holding none shows that state rather than an empty list.
 
-## `private void PAuthorCreditFind(LReference? reference)`
+## `private void PAuthorCreditFind(string? stored)`
 
 Fills the credits from the map the shelf already holds, in the Source's own order.
 A Source not yet stored can carry no credit, because a credit is a row against a stored id.
+The stored id comes from the held draft, which is the only thing that knows whether one exists.
 
 ## `private void PAuthorUpdate()`
 
@@ -65,3 +66,4 @@ The figure comes from the credit map the panel already holds.
 
 Records that the authorship is unknown, or takes that record back.
 `Anonymous` is a credited Author and not a substitute for either state.
+The state is a field of the Source, so changing it pushes to the held draft as any typed field does.

@@ -10,6 +10,12 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalTarget = "Refusal.TargetMissing";
 
+    public const string LRefusalExample = "Refusal.ExampleMissing";
+
+    public const string LRefusalSituation = "Refusal.SituationMissing";
+
+    public const string LRefusalReference = "Refusal.ReferenceMissing";
+
     public const string LRefusalDraft = "Refusal.DraftMissing";
 
     public const string LRefusalStale = "Refusal.DraftStale";

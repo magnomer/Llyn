@@ -1,4 +1,3 @@
-using System.Windows;
 using System.Windows.Controls;
 using Llyn.ShellEngine;
 
@@ -29,7 +28,7 @@ public partial class PReference : UserControl
 
     internal bool PReferenceChangeCheck()
     {
-        return PImprint.Visibility == Visibility.Visible && PImprintChangeCheck();
+        return PImprintChangeCheck();
     }
 
     internal void PReferenceClose()

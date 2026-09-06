@@ -1,0 +1,96 @@
+# PRepertoireHold.cs
+
+## `public partial class PRepertoire`
+
+When what the user typed into the situation editor reaches the draft the engine holds.
+The panel no longer keeps a copy of the stored Situation to compare itself against.
+It writes what it holds instead, and asks the engine whether that differs.
+Typing is written once the user stops, because a write per keystroke is a write per keystroke.
+This mirrors `PCorpusHold.cs` field for field, so the three editors cannot drift apart.
+
+## `internal bool PRepertoireDraftFinish(bool store)`
+
+Ends the held Situation when the window closes, committing it or discarding it.
+Typing still waiting to be written is written first, whatever the answer was.
+A refused commit puts the id back and answers false, so the window stays open over work still on disk.
+
+## `private bool PScenarioChangeCheck()`
+
+Whether the editor holds work a host would be sorry to lose.
+Typing still waiting to be written is written first.
+Otherwise a window closing within a keystroke of the last change would call it unchanged.
+
+## `private void PScenarioChangeDefer()`
+
+Restarts the wait that ends in a write, for every edit the controls report.
+A filling panel, a suspended one, and one holding no draft each write nothing.
+
+## `private async Task PScenarioChangeRun(CancellationToken token)`
+
+Waits out the quiet and then writes, unless another edit cancels the wait first.
+The wait is not awaited, because the keystroke that started it must return at once.
+Its continuation comes back on the UI thread, which is where the engine is used.
+Nobody is left to observe the task, so the write it ends with is guarded inside it.
+
+## `private void PScenarioChangeSave()`
+
+The one place control values reach the held Situation outside a commit.
+It also settles the buttons, so a write and what the buttons say never drift apart.
+
+## `private void PScenarioChangeUpdate()`
+
+Settles the discard and store controls against the engine's answer.
+Both read the same answer the closing warning reads, so the three cannot disagree.
+
+## `private LDraft? PScenarioDraftStart(string? situation)`
+
+Starts a held Situation, on a stored one or on nothing, and hands back what was started.
+Whatever was held before is discarded first, so the panel never holds two.
+A refusal suspends the editor rather than leaving it typing into an id the engine never gave.
+
+## `private void PScenarioDraftShow(LDraft? started)`
+
+Fills the controls from a draft just started, or empties them when none was.
+
+## `private void PScenarioDraftSave()`
+
+Writes the control values onto the held Situation and renders what was stored.
+The engine hands back what it stored, which is not always what was sent.
+The controls are rebuilt only when those differ, or every keystroke would rebuild them under the caret.
+A draft the engine no longer holds is left alone rather than recreated.
+
+## `private void PScenarioDraftCancel()`
+
+Discards the held Situation and forgets its id.
+The id is dropped before the call, so a failing discard cannot leave the panel writing into it.
+A failure here is swallowed, because the caller is already leaving the work behind.
+
+## `private bool PScenarioDraftCheck()`
+
+The engine's answer to whether the held Situation differs from the one it opened on.
+A panel holding no draft has nothing to lose and answers false.
+
+## `private string? PScenarioSituationRead()`
+
+The stored Situation the held work was opened on, or null for one nothing has stored.
+The delete control and the discard both read identity through this.
+
+## `private void PScenarioHoldSuspend(Exception exception)`
+
+Stops the editor when the push breaks, and says so once.
+Editing on would collect keystrokes nothing is holding, which is the loss the draft exists to prevent.
+
+## `private void PScenarioHoldResume()`
+
+Gives the editor back once a draft is held again.
+
+## Inline notes
+
+### `private const int PScenarioChangeDelay = 250;`
+
+Long enough that ordinary typing writes once rather than once per letter.
+Short enough that a crash costs a word, not a description.
+
+### `private const string PScenarioOrigin = "Repertoire";`
+
+The surface a recovered Situation says it came from.
