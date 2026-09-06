@@ -402,7 +402,7 @@
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Uniform">
                                     <VisualBrush.Visual>
-                                        <svgc:SvgViewbox Width="11" Height="13" Source="icons/play.svg" />
+                                        <svgc:SvgViewbox Width="11" Height="13" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
                                     </VisualBrush.Visual>
                                 </VisualBrush>
                             </Rectangle.OpacityMask>

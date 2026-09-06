@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
 
-    <Grid Margin="{Binding Padding, RelativeSource={RelativeSource AncestorType=UserControl}}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -13,7 +13,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Height="51" Margin="9,0,-8,0">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid Margin="0,0,16,0">
+            <Grid Margin="0,0,10,0">
                 <TextBlock x:Name="PHeadwordHint" Margin="0,0,4,0" Opacity="0" IsHitTestVisible="False" Text="{DynamicResource Input.Headword}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">
@@ -36,7 +36,7 @@
                     </TextBlock.Style>
                 </TextBlock>
                 <TextBlock x:Name="PHeadwordGhost" Margin="0,0,4,0" Opacity="0" IsHitTestVisible="False" Style="{StaticResource Theme.Text.Headword}" Text="{Binding Text, ElementName=PHeadword}" />
-                <TextBox x:Name="PHeadword" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="{DynamicResource Input.Headword}" />
+                <TextBox x:Name="PHeadword" Margin="-2,0,0,0" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="{DynamicResource Input.Headword}" />
             </Grid>
 
             <Grid Grid.Column="1">
@@ -78,7 +78,7 @@
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
                                 <VisualBrush.Visual>
-                                    <svgc:SvgViewbox Width="14" Height="16" Source="icons/trash.svg" />
+                                    <svgc:SvgViewbox Width="14" Height="16" Source="pack://application:,,,/Llyn;component/icons/trash.svg" />
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Rectangle.OpacityMask>
@@ -93,7 +93,7 @@
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
                                 <VisualBrush.Visual>
-                                    <svgc:SvgViewbox Width="15" Height="15" Source="icons/floppy-disk.svg" />
+                                    <svgc:SvgViewbox Width="15" Height="15" Source="pack://application:,,,/Llyn;component/icons/floppy-disk.svg" />
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Rectangle.OpacityMask>
@@ -130,7 +130,7 @@
                     <Rectangle.OpacityMask>
                         <VisualBrush Stretch="Uniform">
                             <VisualBrush.Visual>
-                                <svgc:SvgViewbox Width="13" Height="15" Source="icons/play.svg" />
+                                <svgc:SvgViewbox Width="13" Height="15" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
                             </VisualBrush.Visual>
                         </VisualBrush>
                     </Rectangle.OpacityMask>
@@ -144,7 +144,7 @@
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
                                 <VisualBrush.Visual>
-                                    <svgc:SvgViewbox Width="15" Height="15" Source="icons/magnifying-glass.svg" />
+                                    <svgc:SvgViewbox Width="15" Height="15" Source="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Rectangle.OpacityMask>
@@ -200,7 +200,7 @@
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
                                 <VisualBrush.Visual>
-                                    <svgc:SvgViewbox Width="15" Height="15" Source="icons/box-arrow-down.svg" />
+                                    <svgc:SvgViewbox Width="15" Height="15" Source="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" />
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Rectangle.OpacityMask>

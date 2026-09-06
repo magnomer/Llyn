@@ -1,10 +1,4 @@
-# PEditor.xaml
-
-## `<Grid Margin="{Binding Padding, RelativeSource={RelativeSource AncestorType=UserControl}}">`
-
-The margin is the host panel's.
-The input panel gives the editor the whole tab.
-A browse-style panel gives it the card beside its catalog.
+﻿# PEditor.xaml
 
 ## `<Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">`
 

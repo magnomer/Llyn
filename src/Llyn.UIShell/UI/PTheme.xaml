@@ -14,6 +14,7 @@
     <SolidColorBrush x:Key="Theme.AccentSoft" Color="{DynamicResource Theme.AccentSoft.Color}" />
     <SolidColorBrush x:Key="Theme.Warning" Color="{DynamicResource Theme.Warning.Color}" />
     <SolidColorBrush x:Key="Theme.WarningSoft" Color="{DynamicResource Theme.WarningSoft.Color}" />
+    <SolidColorBrush x:Key="Theme.WarningStrong" Color="{DynamicResource Theme.WarningStrong.Color}" />
 
     <FontFamily x:Key="Theme.Font">Segoe UI Variable, Segoe UI</FontFamily>
 
@@ -74,12 +75,26 @@
     </Style>
 
     <Style x:Key="Theme.Caption.Close" TargetType="Button" BasedOn="{StaticResource Theme.Caption.Button}">
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Theme.WarningSoft}" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Warning}" />
-            </Trigger>
-        </Style.Triggers>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="PSurface" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.WarningStrong}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.WarningStrong}" />
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="Theme.Navigation.Button" TargetType="Button">

@@ -170,7 +170,7 @@
             <Grid>
                 <local:PDisplay x:Name="PDisplay" />
 
-                <local:PEditor x:Name="PEditor" Padding="20,22,20,20" Visibility="Collapsed" />
+                <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
             </Grid>
         </Border>
     </Grid>

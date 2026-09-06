@@ -11,6 +11,7 @@
     "accent": "#2F6FED",
     "accentSoft": "#E7EFFD",
     "warning": "#C43D4D",
-    "warningSoft": "#FDECEF"
+    "warningSoft": "#FDECEF",
+    "warningStrong": "#E81123"
   }
 }

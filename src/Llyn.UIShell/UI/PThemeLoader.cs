@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -26,7 +26,8 @@ internal static class PThemeLoader
             ["accent"] = "Theme.Accent.Color",
             ["accentSoft"] = "Theme.AccentSoft.Color",
             ["warning"] = "Theme.Warning.Color",
-            ["warningSoft"] = "Theme.WarningSoft.Color"
+            ["warningSoft"] = "Theme.WarningSoft.Color",
+            ["warningStrong"] = "Theme.WarningStrong.Color"
         };
 
     internal static void PThemeLoaderApply(ResourceDictionary resources)
