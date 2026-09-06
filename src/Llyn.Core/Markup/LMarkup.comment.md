@@ -54,6 +54,12 @@ The format gives each name to one kind only.
 A text tag written with an `id` therefore carries nothing.
 So does a block tag written with an `src`.
 That is what an attribute the format does not define there must amount to.
+
+`LMarkupTokenParticle` and `LMarkupTokenDependence` are the `par` and the `dep` of a text tag.
+They are the two halves of the frame an example states.
+They are scanned on every text tag and read only off an `<example>`.
+Keeping them on the token lets the scanner stay ignorant of which tag may state a frame.
+A block tag never carries either, because the format writes a frame on an example alone.
 `LMarkupTokenText` is the literal inner text with leading and trailing whitespace trimmed.
 Everything inside it is untouched.
 `&`, `<` and quotes are ordinary characters, as section 6 of the format spec requires.
@@ -79,7 +85,7 @@ The scan walks the text once.
 Outside a tag, anything that is not `<` is skipped.
 So whitespace and stray prose between blocks are insignificant rather than an error.
 At a `<`, the tag name is read, then its attributes.
-Only the `src` of a text tag and the `id` of a block tag are kept.
+Only `src`, `id`, `par` and `dep` are kept.
 The rest are dropped.
 An unrecognised attribute, like an unrecognised tag, must not break an older file.
 A block tag emits an enter token and, at its `</name>`, a leave token.
@@ -142,7 +148,7 @@ A block written where the format does not allow one is skipped whole for the sam
 A `<source>` inside a `<sense>` is such a block.
 So its `<title>` can never be mistaken for the card's.
 Everything else is read by tag name in one pass.
-So `<tag>`, `<example>`, `<situation>` and `<image>` keep the order the document writes them in.
+So `<tag>`, `<example>`, `<situation>`, `<image>` and `<video>` keep the order the document writes them in.
 Section 7 makes that order meaningful.
 
 The card comes back holding no Translation, because the format writes none.
@@ -168,6 +174,15 @@ It is stored as an `LStateValue` because the raw key already carries the three s
 No `src` is unspecified, `src=""` is unknown, and a named `src` is specified.
 The state survives resolution unchanged when the key does not.
 
+The `par` and the `dep` of an example are read the same way and kept as they were written.
+Nothing here knows what a marker or a role may hold, because nothing ships either.
+The format states where the two are written and never what they may say.
+A language pack orders the two fields in the editor and has no say over a document.
+Markup is read in tag order, so no pack can reorder what a file wrote.
+
+A `<rewrite>` binds to the example above it rather than standing on its own.
+It is read in the same pass, so the example it belongs to is the last one added.
+
 **Parameters**
 
 - `tokens` — Every token of one card block, in document order.
@@ -176,6 +191,28 @@ The state survives resolution unchanged when the key does not.
   Cards of one entry therefore number one to n in the order the document writes them.
 
 **Returns** — The card as a draft, with no id, because an imported card has none until it is saved.
+
+## `private static void LMarkupRevisionRead(List<LExampleDraft> examples, LMarkupToken token)`
+
+Hangs one `<rewrite>` off the example it rewrites.
+A rewrite has no place of its own in a card, because a card stores no rewrites.
+It is a second sentence carried by the example whose form it rewrites.
+So the tag binds to the last example read rather than to the card.
+
+A rewrite written before any example in its card is dropped.
+There is nothing for it to rewrite, and inventing an empty example to hold it would invent a sentence.
+A second rewrite bound to an example that already has one is dropped for the same reason.
+An example carries one rewrite, so the extra tag names a slot that does not exist.
+Both cases follow section 1 and are ignored rather than an error.
+
+The rewrite is built as an example draft, because that is the shape a stored rewrite has.
+It carries no citation and no frame, and its own rewrite is always `null`.
+A rewrite of a rewrite is a shape the record does not allow.
+
+**Parameters**
+
+- `examples` — The examples of the card read so far, in document order.
+- `token` — The `<rewrite>` tag as scanned.
 
 ## `internal static LMarkupReference LMarkupReferenceRead(IReadOnlyList<LMarkupToken> tokens)`
 

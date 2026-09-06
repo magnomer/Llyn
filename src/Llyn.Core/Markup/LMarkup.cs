@@ -18,6 +18,8 @@ public static partial class LMarkup
         LMarkupTokenKind LMarkupTokenKind,
         string LMarkupTokenName,
         string? LMarkupTokenSource,
+        string? LMarkupTokenParticle,
+        string? LMarkupTokenDependence,
         string LMarkupTokenText,
         bool LMarkupTokenEmpty);
 
@@ -72,23 +74,23 @@ public static partial class LMarkup
 
                 blocks.Pop();
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenLeave, closed, null, string.Empty, false));
+                    LMarkupTokenKind.LMarkupTokenLeave, closed, null, null, null, string.Empty, false));
                 continue;
             }
 
             string name = LMarkupNameRead(text, ref position, start);
-            (string? cited, string? named, bool closing) =
+            (string? cited, string? named, string? marked, string? filled, bool closing) =
                 LMarkupHeadRead(text, ref position, start, name);
 
             if (LMarkupBlockList.Contains(name))
             {
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenEnter, name, named, string.Empty, closing));
+                    LMarkupTokenKind.LMarkupTokenEnter, name, named, null, null, string.Empty, closing));
 
                 if (closing)
                 {
                     tokens.Add(new LMarkupToken(
-                        LMarkupTokenKind.LMarkupTokenLeave, name, null, string.Empty, false));
+                        LMarkupTokenKind.LMarkupTokenLeave, name, null, null, null, string.Empty, false));
                 }
                 else
                 {
@@ -101,13 +103,13 @@ public static partial class LMarkup
             if (closing)
             {
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenText, name, cited, string.Empty, true));
+                    LMarkupTokenKind.LMarkupTokenText, name, cited, marked, filled, string.Empty, true));
                 continue;
             }
 
             string inner = LMarkupTextRead(text, ref position, start, name);
             tokens.Add(new LMarkupToken(
-                LMarkupTokenKind.LMarkupTokenText, name, cited, inner, inner.Length == 0));
+                LMarkupTokenKind.LMarkupTokenText, name, cited, marked, filled, inner, inner.Length == 0));
         }
 
         if (blocks.Count > 0)
@@ -161,9 +163,12 @@ public static partial class LMarkup
                         LMarkupStateRead(token),
                         string.Empty,
                         LMarkupStateRead(token.LMarkupTokenSource),
-                        LStateValue.LStateValueUnspecified,
-                        LStateValue.LStateValueUnspecified,
+                        LMarkupStateRead(token.LMarkupTokenParticle),
+                        LMarkupStateRead(token.LMarkupTokenDependence),
                         null));
+                    break;
+                case "rewrite":
+                    LMarkupRevisionRead(examples, token);
                     break;
                 case "situation":
                     situations.Add(new LSituationDraft(LMarkupStateRead(token), string.Empty));
@@ -286,6 +291,31 @@ public static partial class LMarkup
         }
     }
 
+    private static void LMarkupRevisionRead(List<LExampleDraft> examples, LMarkupToken token)
+    {
+        if (examples.Count == 0)
+        {
+            return;
+        }
+
+        LExampleDraft example = examples[^1];
+        if (example.LExampleDraftRevision is not null)
+        {
+            return;
+        }
+
+        examples[^1] = example with
+        {
+            LExampleDraftRevision = new LExampleDraft(
+                LMarkupStateRead(token),
+                string.Empty,
+                LStateValue.LStateValueUnspecified,
+                LStateValue.LStateValueUnspecified,
+                LStateValue.LStateValueUnspecified,
+                null),
+        };
+    }
+
     private static void LMarkupTagRead(List<string> tags, LMarkupToken token)
     {
         if (token.LMarkupTokenEmpty)
@@ -336,11 +366,13 @@ public static partial class LMarkup
         return text[first..position];
     }
 
-    private static (string? Cited, string? Named, bool Closing) LMarkupHeadRead(
-        string text, ref int position, int start, string name)
+    private static (string? Cited, string? Named, string? Marked, string? Filled, bool Closing)
+        LMarkupHeadRead(string text, ref int position, int start, string name)
     {
         string? cited = null;
         string? named = null;
+        string? marked = null;
+        string? filled = null;
 
         while (true)
         {
@@ -357,7 +389,7 @@ public static partial class LMarkup
             if (text[position] == '>')
             {
                 position++;
-                return (cited, named, false);
+                return (cited, named, marked, filled, false);
             }
 
             if (text[position] == '/')
@@ -369,7 +401,7 @@ public static partial class LMarkup
                 }
 
                 position++;
-                return (cited, named, true);
+                return (cited, named, marked, filled, true);
             }
 
             int first = position;
@@ -394,6 +426,14 @@ public static partial class LMarkup
             else if (string.Equals(attribute, "id", StringComparison.Ordinal))
             {
                 named = value;
+            }
+            else if (string.Equals(attribute, "par", StringComparison.Ordinal))
+            {
+                marked = value;
+            }
+            else if (string.Equals(attribute, "dep", StringComparison.Ordinal))
+            {
+                filled = value;
             }
         }
     }

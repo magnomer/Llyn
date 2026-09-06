@@ -282,4 +282,76 @@ public sealed class TMarkupImport
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source;"));
     }
+
+    [Fact]
+    public void MarkupImport_FrameAndRewrite_StoresEveryField()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = Assert.Single(engine.TEngineMarkupImport(
+            """
+            <entry>
+              <headword>wait</headword>
+              <lang>English</lang>
+
+              <sense>
+                <meaning>to stay until something happens</meaning>
+                <example src="oed" par="for" dep="Agent">he waited for her</example>
+                <rewrite>she was waited for by him</rewrite>
+                <example par="" dep="Recipient">the class waited</example>
+                <video>media/wait.mp4</video>
+              </sense>
+
+              <source id="oed">
+                <title>Oxford English Dictionary</title>
+              </source>
+            </entry>
+            """));
+
+        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        LCardDraft card = Assert.Single(draft.LEntryDraftMeanings);
+
+        Assert.Equal(["media/wait.mp4"], card.LCardDraftVideo.Select(video => video.TStateValueShow()));
+        Assert.Equal(2, card.LCardDraftExample.Count);
+
+        LExampleDraft waited = card.LCardDraftExample[0];
+        Assert.Equal("for", waited.LExampleDraftParticle.TStateValueShow());
+        Assert.Equal("Agent", waited.LExampleDraftDependence.TStateValueShow());
+        LExampleDraft revision = Assert.IsType<LExampleDraft>(waited.LExampleDraftRevision);
+        Assert.Equal("she was waited for by him", revision.LExampleDraftText.TStateValueShow());
+        Assert.Null(revision.LExampleDraftRevision);
+
+        LExampleDraft classes = card.LCardDraftExample[1];
+        Assert.Equal(LState.LStateUnknown, classes.LExampleDraftParticle.LStateValueState);
+        Assert.Equal("Recipient", classes.LExampleDraftDependence.TStateValueShow());
+        Assert.Null(classes.LExampleDraftRevision);
+    }
+
+    [Fact]
+    public void MarkupImport_FileWrittenBefore_StoresNoFrameAndNoRewrite()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = Assert.Single(engine.TEngineMarkupImport(
+            """
+            <entry>
+              <headword>wait</headword>
+              <lang>English</lang>
+
+              <sense>
+                <meaning>to stay until something happens</meaning>
+                <example>he waited for her</example>
+              </sense>
+            </entry>
+            """));
+
+        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        LExampleDraft example = Assert.Single(Assert.Single(draft.LEntryDraftMeanings).LCardDraftExample);
+
+        Assert.Equal(LState.LStateUnspecified, example.LExampleDraftParticle.LStateValueState);
+        Assert.Equal(LState.LStateUnspecified, example.LExampleDraftDependence.LStateValueState);
+        Assert.Null(example.LExampleDraftRevision);
+    }
 }

@@ -186,6 +186,122 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
+    public void MarkupCardRead_ExampleFrame_ReadsMarkerAndRole()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            """
+            <sense>
+              <example par="for" dep="Agent">he waited for her</example>
+            </sense>
+            """), 1);
+
+        LExampleDraft example = Assert.Single(card.LCardDraftExample);
+        Assert.Equal("for", example.LExampleDraftParticle.TStateValueShow());
+        Assert.Equal("Agent", example.LExampleDraftDependence.TStateValueShow());
+    }
+
+    [Fact]
+    public void MarkupCardRead_FrameAttributeForms_KeepsThreeStates()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            """
+            <sense>
+              <example>plain</example>
+              <example par="" dep="">unknown</example>
+              <example par="for" dep="Agent">named</example>
+            </sense>
+            """), 1);
+
+        Assert.Equal(
+            [LState.LStateUnspecified, LState.LStateUnknown, LState.LStateSpecified],
+            card.LCardDraftExample.Select(example => example.LExampleDraftParticle.LStateValueState));
+        Assert.Equal(
+            [LState.LStateUnspecified, LState.LStateUnknown, LState.LStateSpecified],
+            card.LCardDraftExample.Select(example => example.LExampleDraftDependence.LStateValueState));
+    }
+
+    [Fact]
+    public void MarkupCardRead_Rewrite_BindsToExampleAbove()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            """
+            <sense>
+              <example src="oed" par="for" dep="Agent">he waited for her</example>
+              <rewrite>she was waited for by him</rewrite>
+              <example>a second example</example>
+            </sense>
+            """), 1);
+
+        Assert.Equal(2, card.LCardDraftExample.Count);
+        LExampleDraft revision = Assert.IsType<LExampleDraft>(card.LCardDraftExample[0].LExampleDraftRevision);
+        Assert.Equal("she was waited for by him", revision.LExampleDraftText.TStateValueShow());
+        Assert.Equal(string.Empty, revision.LExampleDraftId);
+        Assert.Equal(LState.LStateUnspecified, revision.LExampleDraftReference.LStateValueState);
+        Assert.Equal(LState.LStateUnspecified, revision.LExampleDraftParticle.LStateValueState);
+        Assert.Equal(LState.LStateUnspecified, revision.LExampleDraftDependence.LStateValueState);
+        Assert.Null(revision.LExampleDraftRevision);
+        Assert.Null(card.LCardDraftExample[1].LExampleDraftRevision);
+    }
+
+    [Fact]
+    public void MarkupCardRead_EmptyRewrite_ReadsAsUnknown()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            "<sense><example>he waited for her</example><rewrite></rewrite></sense>"), 1);
+
+        LExampleDraft revision = Assert.IsType<LExampleDraft>(
+            Assert.Single(card.LCardDraftExample).LExampleDraftRevision);
+        Assert.Equal(LState.LStateUnknown, revision.LExampleDraftText.LStateValueState);
+    }
+
+    [Fact]
+    public void MarkupCardRead_UnboundAndRepeatedRewrite_IgnoresThem()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            """
+            <sense>
+              <rewrite>nothing above me</rewrite>
+              <example>he waited for her</example>
+              <rewrite>she was waited for by him</rewrite>
+              <rewrite>a second rewrite</rewrite>
+            </sense>
+            """), 1);
+
+        LExampleDraft example = Assert.Single(card.LCardDraftExample);
+        Assert.Equal("he waited for her", example.LExampleDraftText.TStateValueShow());
+        LExampleDraft revision = Assert.IsType<LExampleDraft>(example.LExampleDraftRevision);
+        Assert.Equal("she was waited for by him", revision.LExampleDraftText.TStateValueShow());
+    }
+
+    [Fact]
+    public void MarkupCardRead_Video_ReadsIntoCard()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            """
+            <sense>
+              <video>media/one.mp4</video>
+              <video></video>
+            </sense>
+            """), 1);
+
+        Assert.Equal(
+            [LState.LStateSpecified, LState.LStateUnknown],
+            card.LCardDraftVideo.Select(video => video.LStateValueState));
+        Assert.Equal("media/one.mp4", card.LCardDraftVideo[0].TStateValueShow());
+    }
+
+    [Fact]
+    public void MarkupCardRead_UnrecognisedAttribute_IgnoresIt()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            "<sense><example mood=\"wry\" par=\"for\">he waited for her</example></sense>"), 1);
+
+        LExampleDraft example = Assert.Single(card.LCardDraftExample);
+        Assert.Equal("he waited for her", example.LExampleDraftText.TStateValueShow());
+        Assert.Equal("for", example.LExampleDraftParticle.TStateValueShow());
+    }
+
+    [Fact]
     public void MarkupReferenceRead_MixedFields_KeepsThemApart()
     {
         LMarkupReference read = TInterface.TMarkupReferenceRead(TInterface.TMarkupScan(
