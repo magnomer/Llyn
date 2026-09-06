@@ -1,4 +1,4 @@
-﻿# PTaxonomy.xaml.cs
+# PTaxonomy.xaml.cs
 
 ## `public partial class PTaxonomy : UserControl`
 
@@ -9,9 +9,9 @@ That is the tag search, the tag ordering, the tag catalog, the entries under a t
 ## `internal void PTaxonomyAttach(PWindow host, LEngine engine)`
 
 Puts the panel to work on `engine`, the workspace the window opened.
-Nothing is read yet.
-The panel fills itself the first time it is shown.
-So a session that never opens the tag tab never queries the database.
+It binds its lists and subscribes to the engine, and reads nothing yet.
+The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
+So the panel is current whether or not its tab is the one in front.
 
 ## `internal void PTaxonomyReset()`
 
@@ -54,13 +54,9 @@ It is given the workspace because it fetches the flag of the language it shows.
 The editor opens on no entry: this panel puts it on one when the reader asks to write.
 The origin names this panel, so its held work is told apart from the other panels'.
 
-### `PEditor.PEditorStoreDispatcher = PMembershipEntryUpdate;`
+### `_pTaxonomyObserver = new PObserver(this, PTaxonomyBulletinHandle);`
 
 A store may have changed the tags the entry carries and the headword the membership row lists.
-So the catalog and the entries under it are read again from what was written.
+The engine announces it, so the catalog and the entries under it are read again from what was written.
 An entry can leave the chosen tag by being stored, and the panel must show that it did.
-
-### `PEditor.PEditorDiscardDispatcher = PEditorEntryRestore;`
-
-Discarding here is not emptying a form.
-The entry stays selected and comes back as it is stored.
+An entry stored in another tab moves the same way, which is why the announcement is listened to rather than a sibling panel.

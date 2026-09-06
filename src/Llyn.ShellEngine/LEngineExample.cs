@@ -212,6 +212,8 @@ public sealed partial class LEngine
         {
             new LExampleArchive(_lEngineDatabase).LExampleDelete(id);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectExample, id);
     }
 
     public void LEngineExampleDelete(string id, bool detach)
@@ -220,5 +222,7 @@ public sealed partial class LEngine
         {
             new LExampleArchive(_lEngineDatabase).LExampleDelete(id, detach);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectExample, id);
     }
 }

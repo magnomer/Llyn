@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -67,6 +67,7 @@ public sealed partial class LEngine
 
     public LRevision LEngineEntryDelete(string id)
     {
+        LRevision recorded;
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -86,8 +87,11 @@ public sealed partial class LEngine
             workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             session.LDatabaseSessionCommit();
-            return revision;
+            recorded = revision;
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectEntry, id);
+        return recorded;
     }
 
     public LTombstone? LEngineTombstoneRead(string entryId)

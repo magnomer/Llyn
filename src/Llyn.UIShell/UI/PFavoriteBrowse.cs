@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -16,18 +16,16 @@ public partial class PFavorite
 
     private LCatalogOrder _pSeriesChoice;
 
-    private async void PFavoriteHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private async void PFavoriteBulletinHandle(LBulletin bulletin)
     {
-        if (!IsVisible)
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
+            await PEnsign.PEnsignLoad(_lEngine);
+            PFavoriteReset();
             return;
         }
 
-        PRoster.ItemsSource = _pRosterList;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PRosterFind(PRecall.Text ?? string.Empty);
+        PRosterEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PRecallHandle(object sender, TextChangedEventArgs e)
@@ -48,10 +46,14 @@ public partial class PFavorite
         PRosterFind(PRecall.Text ?? string.Empty);
     }
 
-    internal void PSeriesRestore(LCatalogOrder order)
+    internal async void PSeriesRestore(LCatalogOrder order)
     {
         _pSeriesChoice = order;
         PChoice.PChoiceOrderApply(PSeriesDropdown, order);
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PRosterFind(PRecall.Text ?? string.Empty);
     }
 
     private void PRosterFind(string query)
@@ -77,11 +79,6 @@ public partial class PFavorite
         }
 
         PRosterEmpty.Visibility = _pRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void PRosterUpdate()
-    {
-        PRosterFind(PRecall.Text ?? string.Empty);
     }
 
     private void PRosterHandle(object sender, RoutedEventArgs e)
@@ -130,34 +127,36 @@ public partial class PFavorite
 
     private void PRosterEntryUpdate(string id)
     {
-        _pRosterEntry = id;
+        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        {
+            _pRosterEntry = id;
+        }
+
         PRosterFind(PRecall.Text ?? string.Empty);
+
+        if (_pRosterEntry is not string shown
+            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        {
+            return;
+        }
 
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            draft = _lEngine.LEngineEntryLoad(shown);
         }
         catch (Exception)
         {
             return;
         }
 
-        if (draft is not null)
+        if (draft is null)
         {
-            PFavoriteEntryShow(id, draft);
-        }
-    }
-
-    private void PEditorEntryRestore()
-    {
-        if (_pRosterEntry is null)
-        {
-            PEditor.PEditorReset();
+            PFavoriteClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pRosterEntry);
+        PFavoriteEntryShow(shown, draft);
     }
 
     private void PFavoriteScribeHandle(object sender, RoutedEventArgs e)

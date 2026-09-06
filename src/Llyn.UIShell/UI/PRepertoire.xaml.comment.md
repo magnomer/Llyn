@@ -10,6 +10,9 @@ The browsing behavior lives in `PRepertoireBrowse.cs`, one file per responsibili
 ## `internal void PRepertoireAttach(PWindow host, LEngine engine)`
 
 Binds the panel to the window it asks for confirmations and panel switches through.
+It binds its lists and subscribes to the engine, and reads nothing yet.
+The window fills the situation catalog when it restores the stored ordering.
+Every change after that arrives as an announcement, so the panel is current whether or not its tab is in front.
 
 ## `internal void PRepertoireReset()`
 
@@ -23,4 +26,5 @@ The answer is the engine's, so the panel decides nothing about what counts as a 
 
 ## `internal void PRepertoireClose()`
 
+Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so neither outlives the window.

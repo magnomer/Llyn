@@ -1,4 +1,4 @@
-﻿# PDisplay.xaml.cs
+# PDisplay.xaml.cs
 
 ## `public partial class PDisplay : UserControl`
 
@@ -26,11 +26,14 @@ That id is what the incoming cards are looked up by.
 Empties the view and leaves the unselected notice in its place.
 Playback stops, because what it was playing belonged to the entry that was shown.
 
-## `internal Action? PDisplayFavoriteDispatcher { get; set; }`
+## `private void PDisplayBulletinHandle(LBulletin bulletin)`
 
-Told to the panel hosting the view whenever a mark or an unmark lands.
-The favorites panel re-reads its roster on it, so an unmarked row leaves at once.
-A panel that shows no favorite catalog sets nothing and hears nothing.
+What the view does when the engine announces that stored data changed.
+It answers only for the entry it stands on, and ignores every announcement about another.
+A mark set from another tab moves the star.
+A headword written elsewhere is read back and redrawn, so two views of one entry never disagree.
+An entry that is gone leaves the unselected notice, because there is nothing left to show.
+A workspace that moved empties the view, since the id it stood on means nothing in the new database.
 
 ## `internal void PDisplayClose()`
 

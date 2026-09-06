@@ -10,6 +10,12 @@ This is the same round trip the library panel makes, entered through the pronunc
 
 ## Inline notes
 
+### `private async void PPhonologyBulletinHandle(LBulletin bulletin)`
+
+The panel answers the engine rather than its own visibility.
+So a pronunciation corrected in another tab is in the inventory at once, with no tab switch to trigger it.
+A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
+
 ### `private string? _pDisplayEntry;`
 
 The entry the right-hand side stands on, or null when none is selected.

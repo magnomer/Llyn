@@ -5,6 +5,8 @@
 The shell engine: the single boundary the UI shell talks to.
 The UI sends a request here.
 It subscribes through an `LReceiver` for pronunciation or an `LListener` for audio.
+It subscribes through an `LObserver` to learn that stored data changed, which `LEngineObserver.cs` owns.
+The first two stream one answer to the caller that asked; the third announces a change to everyone.
 All logic lives behind this engine.
 That is loading language packs, source fan-out, fetching, parsing, and saving.
 So none of it sits in the UI shell.
@@ -71,6 +73,9 @@ So settings and database follow the workspace to its new location.
 The drafts this engine claimed are forgotten with the old folder, since a claim only means something against the folder the file sits in.
 Each forgotten id is marked stale rather than simply dropped, so a shell still holding one is refused instead of writing here.
 The cached source lists go too, because a language keeps whichever list the workspace it was read from declared.
+The move is then announced, so every surface holding a stored record learns that all of it is stale.
+One announcement replaces the list of panels the settings panel used to reset by name.
+A panel added later is current without that list being edited.
 
 ## `public LSettings LEngineSettingsRead()`
 

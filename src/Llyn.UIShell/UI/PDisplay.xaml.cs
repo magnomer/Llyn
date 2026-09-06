@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -25,18 +25,69 @@ public partial class PDisplay : UserControl
 
     private string? _pDisplayEntry;
 
+    private PObserver? _pDisplayObserver;
+
     public PDisplay()
     {
         InitializeComponent();
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
     }
 
-    internal Action? PDisplayFavoriteDispatcher { get; set; }
-
     internal void PDisplayAttach(PWindow host, LEngine engine)
     {
         _pDisplayHost = host;
         _lEngine = engine;
+
+        _pDisplayObserver = new PObserver(this, PDisplayBulletinHandle);
+        engine.LEngineObserverAttach(_pDisplayObserver);
+    }
+
+    private void PDisplayBulletinHandle(LBulletin bulletin)
+    {
+        if (_pDisplayEntry is not string shown)
+        {
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectFavorite)
+        {
+            if (string.Equals(shown, bulletin.LBulletinId, StringComparison.Ordinal))
+            {
+                PDisplayFavoriteShow(shown);
+            }
+
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
+        {
+            PDisplayClear();
+            return;
+        }
+
+        if (bulletin.LBulletinId.Length > 0
+            && !string.Equals(shown, bulletin.LBulletinId, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        LEntryDraft? draft;
+        try
+        {
+            draft = _lEngine.LEngineEntryLoad(shown);
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
+        if (draft is null)
+        {
+            PDisplayClear();
+            return;
+        }
+
+        PDisplayShow(shown, draft);
     }
 
     internal void PDisplayShow(string id, LEntryDraft draft)
@@ -104,6 +155,12 @@ public partial class PDisplay : UserControl
 
     internal void PDisplayClose()
     {
+        if (_pDisplayObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pDisplayObserver);
+            _pDisplayObserver = null;
+        }
+
         _pDisplayPlayer.Close();
     }
 
@@ -250,7 +307,6 @@ public partial class PDisplay : UserControl
             return;
         }
 
-        PDisplayFavoriteDispatcher?.Invoke();
     }
 
     private void PDisplayPlaybackHandle(object sender, RoutedEventArgs e)

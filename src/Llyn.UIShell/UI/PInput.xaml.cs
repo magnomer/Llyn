@@ -1,10 +1,15 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PInput : UserControl
 {
+    private LEngine _lEngine = null!;
+
+    private PObserver? _pInputObserver;
+
     public PInput()
     {
         InitializeComponent();
@@ -12,9 +17,22 @@ public partial class PInput : UserControl
 
     internal void PInputAttach(PWindow host, LEngine engine)
     {
+        _lEngine = engine;
+
         PEditor.PEditorAttach(host, engine, "Input", null);
 
-        PEditor.PEditorDiscardDispatcher = PEditor.PEditorReset;
+        _pInputObserver = new PObserver(this, PInputBulletinHandle);
+        engine.LEngineObserverAttach(_pInputObserver);
+    }
+
+    private void PInputBulletinHandle(LBulletin bulletin)
+    {
+        if (bulletin.LBulletinSubject != LSubject.LSubjectWorkspace)
+        {
+            return;
+        }
+
+        PInputReset();
     }
 
     internal void PInputReset()
@@ -34,6 +52,12 @@ public partial class PInput : UserControl
 
     internal void PInputClose()
     {
+        if (_pInputObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pInputObserver);
+            _pInputObserver = null;
+        }
+
         PEditor.PEditorClose();
     }
 }

@@ -5,10 +5,11 @@
 Browsing the marked entries: the search, the ordering, the roster, and the switch between reading and editing.
 The panel shell lives in the file beside this one.
 
-## `private async void PFavoriteHandle(object sender, DependencyPropertyChangedEventArgs e)`
+## `private async void PFavoriteBulletinHandle(LBulletin bulletin)`
 
-Fills the roster the first time the tab is shown, and again on every later showing.
-The flags are loaded before the rows are built, so a row never renders a flag it could have had.
+Re-reads the roster whenever the engine announces a change, wherever it was made.
+A mark set from another tab puts its row here without the tab being opened.
+A workspace that moved empties the panel first, and its flags are loaded before the rows are built.
 
 ## `private void PRecallHandle(object sender, TextChangedEventArgs e)`
 

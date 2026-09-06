@@ -132,6 +132,8 @@ public sealed partial class LEngine
         {
             new LReferenceArchive(_lEngineDatabase).LReferenceDelete(id);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectReference, id);
     }
 
     public void LEngineReferenceDelete(string id, bool detach)
@@ -140,15 +142,21 @@ public sealed partial class LEngine
         {
             new LReferenceArchive(_lEngineDatabase).LReferenceDelete(id, detach);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectReference, id);
     }
 
     public LAuthor LEngineAuthorCreate(LAuthor author)
     {
+        LAuthor created;
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(author);
-            return new LAuthorArchive(_lEngineDatabase).LAuthorCreate(author);
+            created = new LAuthorArchive(_lEngineDatabase).LAuthorCreate(author);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, created.LAuthorId);
+        return created;
     }
 
     public LAuthor? LEngineAuthorRead(string id)
@@ -199,6 +207,8 @@ public sealed partial class LEngine
         {
             new LAuthorArchive(_lEngineDatabase).LAuthorUpdate(author);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, author.LAuthorId);
     }
 
     public void LEngineAuthorAttach(string referenceId, string authorId, int position)
@@ -207,6 +217,8 @@ public sealed partial class LEngine
         {
             new LReferenceArchive(_lEngineDatabase).LReferenceAuthorAttach(referenceId, authorId, position);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
     }
 
     public void LEngineAuthorDetach(string referenceId, string authorId)
@@ -215,6 +227,8 @@ public sealed partial class LEngine
         {
             new LReferenceArchive(_lEngineDatabase).LReferenceAuthorDetach(referenceId, authorId);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, authorId);
     }
 
     public void LEngineAuthorDelete(string id)
@@ -223,6 +237,8 @@ public sealed partial class LEngine
         {
             new LAuthorArchive(_lEngineDatabase).LAuthorDelete(id);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
     }
 
     public void LEngineAuthorDelete(string id, bool detach)
@@ -231,5 +247,7 @@ public sealed partial class LEngine
         {
             new LAuthorArchive(_lEngineDatabase).LAuthorDelete(id, detach);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectAuthor, id);
     }
 }

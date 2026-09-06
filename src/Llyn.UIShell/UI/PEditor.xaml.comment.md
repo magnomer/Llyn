@@ -1,4 +1,4 @@
-﻿# PEditor.xaml.cs
+# PEditor.xaml.cs
 
 ## `public partial class PEditor : UserControl`
 
@@ -14,22 +14,9 @@ That is a form that only creates them.
 A browse-style panel mounts it over an entry it loaded.
 That is a form that modifies that one.
 What differs between them is not the editing structure.
-It is what a store and a discard mean afterwards.
-Each host says that through the two seams below.
-
-## `internal Action<string>? PEditorStoreDispatcher { get; set; }`
-
-What the host does once an entry has been stored, given the id it was stored under.
-A browse-style panel re-reads its catalog, since a headword it lists may have just changed.
-The input panel has nothing to do, since its form is already empty for the next entry.
-
-## `internal Action? PEditorDiscardDispatcher { get; set; }`
-
-What the host does when the discard button is pressed.
-Discarding is the one decision the two kinds of host answer differently.
-An input form throws the typing away and comes up empty.
-A browse-style panel puts the selected entry back as it is stored.
-So neither is assumed here.
+It is only which entry the form was opened on, which the editor already knows from its own draft.
+A store is announced by the engine, so no host is wired to hear about it here.
+A discard falls back on the entry the draft named, which is nothing at all for a form that creates one.
 
 ## `internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)`
 

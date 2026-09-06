@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -20,19 +20,16 @@ public partial class PTaxonomy
 
     private LCatalogOrder _pFunnelChoice;
 
-    private async void PTaxonomyHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private async void PTaxonomyBulletinHandle(LBulletin bulletin)
     {
-        if (!IsVisible)
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
+            await PEnsign.PEnsignLoad(_lEngine);
+            PTaxonomyReset();
             return;
         }
 
-        PDirectory.ItemsSource = _pDirectoryList;
-        PMembership.ItemsSource = _pMembershipList;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PDirectoryFind(PExploration.Text ?? string.Empty);
+        PMembershipEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PExplorationHandle(object sender, TextChangedEventArgs e)
@@ -53,10 +50,14 @@ public partial class PTaxonomy
         PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 
-    internal void PFunnelRestore(LCatalogOrder order)
+    internal async void PFunnelRestore(LCatalogOrder order)
     {
         _pFunnelChoice = order;
         PChoice.PChoiceOrderApply(PFunnelDropdown, order);
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 
     private void PDirectoryReset()
@@ -175,34 +176,36 @@ public partial class PTaxonomy
 
     private void PMembershipEntryUpdate(string id)
     {
-        _pDisplayEntry = id;
+        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        {
+            _pDisplayEntry = id;
+        }
+
         PDirectoryFind(PExploration.Text ?? string.Empty);
+
+        if (_pDisplayEntry is not string shown
+            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        {
+            return;
+        }
 
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            draft = _lEngine.LEngineEntryLoad(shown);
         }
         catch (Exception)
         {
             return;
         }
 
-        if (draft is not null)
+        if (draft is null)
         {
-            PTaxonomyEntryShow(id, draft);
-        }
-    }
-
-    private void PEditorEntryRestore()
-    {
-        if (_pDisplayEntry is null)
-        {
-            PEditor.PEditorReset();
+            PTaxonomyClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry);
+        PTaxonomyEntryShow(shown, draft);
     }
 
     private void PTaxonomyFreshHandle(object sender, RoutedEventArgs e)

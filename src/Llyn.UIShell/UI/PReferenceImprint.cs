@@ -220,7 +220,6 @@ public partial class PReference
         _pImprintDraft = string.Empty;
         _pColophonReference = stored.LReferenceId;
 
-        PShelfFind(PSurvey.Text ?? string.Empty);
         PReferenceScribeShow(false);
         PReferenceShow(stored.LReferenceId);
     }
@@ -251,6 +250,5 @@ public partial class PReference
 
         PReferenceScribeShow(false);
         PReferenceClear();
-        PShelfFind(PSurvey.Text ?? string.Empty);
     }
 }

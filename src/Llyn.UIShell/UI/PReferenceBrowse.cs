@@ -25,17 +25,12 @@ public partial class PReference
 
     private LCatalogOrder _pGradeChoice;
 
-    private void PReferenceHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private void PReferenceBulletinHandle(LBulletin bulletin)
     {
-        if (!IsVisible)
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
-            return;
+            PReferenceReset();
         }
-
-        PShelf.ItemsSource = _pShelfList;
-        PFootnote.ItemsSource = _pFootnoteList;
-        PAuthorCredit.ItemsSource = _pAuthorCredit;
-        PAuthorList.ItemsSource = _pAuthorCatalog;
 
         PAuthorFind();
         PShelfFind(PSurvey.Text ?? string.Empty);
@@ -63,6 +58,9 @@ public partial class PReference
     {
         _pGradeChoice = order;
         PChoice.PChoiceOrderApply(PGradeDropdown, order);
+
+        PAuthorFind();
+        PShelfFind(PSurvey.Text ?? string.Empty);
     }
 
     private IReadOnlyList<LAuthor> PShelfCreditRead(string id)

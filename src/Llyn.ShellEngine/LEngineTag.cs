@@ -69,6 +69,8 @@ public sealed partial class LEngine
         {
             new LTagArchive(_lEngineDatabase).LTagChange(text, renamed);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectTag, string.Empty);
     }
 
     public void LEngineTagDelete(string text)
@@ -77,5 +79,7 @@ public sealed partial class LEngine
         {
             new LTagArchive(_lEngineDatabase).LTagDelete(text);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectTag, string.Empty);
     }
 }

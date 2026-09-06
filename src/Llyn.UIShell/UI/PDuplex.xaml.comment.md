@@ -9,8 +9,9 @@ That is the two queries, their matches, and the Entry each side stands on.
 ## `internal void PDuplexAttach(PWindow host, LEngine engine)`
 
 Puts the panel to work on `engine`, the workspace the window opened.
-Nothing is read yet.
+It binds both match lists and reads nothing yet.
 Each side fills itself once a query is typed into it.
+Neither side subscribes: the display on each is its own subscriber, and it is the display that must stay current.
 
 ## `internal void PDuplexRestore(LWorkspaceState state)`
 

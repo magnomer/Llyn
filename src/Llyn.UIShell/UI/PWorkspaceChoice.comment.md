@@ -1,4 +1,4 @@
-﻿# PWorkspaceChoice.cs
+# PWorkspaceChoice.cs
 
 ## `public partial class PSettings`
 
@@ -6,6 +6,8 @@ The workspace folder the user picks in the settings panel.
 That is the path field and its browse button.
 A change to that path costs a different database.
 So the form, the list, and the display all move onto the new workspace.
+The engine announces the move, and each panel puts itself back on its own.
+This file names no panel, so a panel added later moves with the rest and nothing here is edited.
 Otherwise the change is called off.
 
 ## Inline notes
@@ -25,12 +27,13 @@ The fault is reported as well, because a field that reverts on its own tells the
 
 ### `_pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());`
 
-The new workspace carries its own view state, so the shell is put onto it before the panels are emptied.
-The orderings are in place by the time each panel re-reads its catalog.
+The new workspace carries its own view state, so the shell is put onto it as well as onto its database.
+Restoring an ordering re-lists the catalog it orders, so each panel ends on the new workspace's order rather than the old one's.
+That is all this handler does after the change: emptying and re-reading is the engine's announcement, not a list kept here.
 
-### `_pSettingsHost.PInput.PInputReset();`
+### `_lEngine.LEngineWorkspaceChange(path);`
 
 The new workspace has its own database.
 So everything on screen came from a database that is no longer open.
 It carries ids that mean nothing here.
-The input form is emptied, and the list and display are re-read from the new workspace.
+The engine says so once, and every panel empties its form, its list, and its display on hearing it.

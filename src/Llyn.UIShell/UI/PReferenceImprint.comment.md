@@ -1,4 +1,4 @@
-﻿# PReferenceImprint.cs
+# PReferenceImprint.cs
 
 ## `public partial class PReference`
 
@@ -60,7 +60,8 @@ Restarting rather than refilling leaves nothing of the discarded work on disk.
 
 Commits the held Source and returns to the reading over what was stored.
 Typing still waiting to be pushed is pushed first, so the commit carries the last keystrokes.
-The shelf is read again before the reading is shown, so the stored Source refreshes its own citation figure.
+The engine announces the commit, and the shelf is read again on that, so the stored Source refreshes its own citation figure.
+The panel no longer re-reads straight after its own commit, because it hears about the commit like everything else.
 Saving changes neither the identifier nor where the Source is cited.
 
 ## `private void PImprintRemovalHandle(object sender, RoutedEventArgs e)`

@@ -14,4 +14,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+
+    <Content Include="..\..\languages\**\*.json" Link="languages\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

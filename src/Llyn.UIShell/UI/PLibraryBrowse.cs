@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,18 +15,16 @@ public partial class PLibrary
 
     private LCatalogOrder _pOrderChoice;
 
-    private async void PLibraryHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private async void PLibraryBulletinHandle(LBulletin bulletin)
     {
-        if (!IsVisible)
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
+            await PEnsign.PEnsignLoad(_lEngine);
+            PLibraryReset();
             return;
         }
 
-        PIndex.ItemsSource = _pIndexList;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        PIndexEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PInquiryHandle(object sender, TextChangedEventArgs e)
@@ -47,10 +45,14 @@ public partial class PLibrary
         PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
-    internal void POrderRestore(LCatalogOrder order)
+    internal async void POrderRestore(LCatalogOrder order)
     {
         _pOrderChoice = order;
         PChoice.PChoiceOrderApply(POrderDropdown, order);
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
     private void PIndexFind(string query)
@@ -110,34 +112,36 @@ public partial class PLibrary
 
     private void PIndexEntryUpdate(string id)
     {
-        _pDisplayEntry = id;
+        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        {
+            _pDisplayEntry = id;
+        }
+
         PIndexFind(PInquiry.Text ?? string.Empty);
+
+        if (_pDisplayEntry is not string shown
+            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        {
+            return;
+        }
 
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            draft = _lEngine.LEngineEntryLoad(shown);
         }
         catch (Exception)
         {
             return;
         }
 
-        if (draft is not null)
+        if (draft is null)
         {
-            PLibraryEntryShow(id, draft);
-        }
-    }
-
-    private void PEditorEntryRestore()
-    {
-        if (_pDisplayEntry is null)
-        {
-            PEditor.PEditorReset();
+            PLibraryClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry);
+        PLibraryEntryShow(shown, draft);
     }
 
     private void PLibraryFreshHandle(object sender, RoutedEventArgs e)

@@ -1,9 +1,9 @@
-﻿<UserControl
+<UserControl
     x:Class="Llyn.UIShell.PTaxonomy"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIShell"
-    IsVisibleChanged="PTaxonomyHandle">
+    >
 
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>

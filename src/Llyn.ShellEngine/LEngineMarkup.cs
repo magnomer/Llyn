@@ -10,6 +10,7 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<LEntry> LEngineMarkupImport(string path)
     {
+        IReadOnlyList<LEntry> imported;
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(path);
@@ -39,8 +40,11 @@ public sealed partial class LEngine
             }
 
             session.LDatabaseSessionCommit();
-            return saved;
+            imported = saved;
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectEntry, string.Empty);
+        return imported;
     }
 
     private LEntry LEngineMarkupSave(

@@ -50,6 +50,7 @@ public sealed partial class LEngine
 
     public LSituation LEngineSituationCommit(string id)
     {
+        LSituation settled;
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -78,8 +79,11 @@ public sealed partial class LEngine
             _lEngineDraftHeld.Remove(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
             LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
-            return stored;
+            settled = stored;
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectSituation, settled.LSituationId);
+        return settled;
     }
 
     private bool LEngineSituationCheck(LDraft draft, LSituation held)

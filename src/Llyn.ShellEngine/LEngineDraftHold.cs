@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -357,12 +357,16 @@ public sealed partial class LEngine
 
     public LEntry LEngineDraftCommit(string id)
     {
+        LEntry stored;
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(id);
             LEngineDraftValidate(id);
-            return LEngineDraftCommit(id, [], true);
+            stored = LEngineDraftCommit(id, [], true);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectEntry, stored.LEntryId);
+        return stored;
     }
 
     private LEntry LEngineDraftCommit(string id, HashSet<string> entered, bool held)

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Xml;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using SharpVectors.Converters;
 using SharpVectors.Renderers.Wpf;
@@ -15,6 +16,31 @@ namespace Llyn.UIShell;
 internal static class PEnsign
 {
     private static readonly Dictionary<string, ImageSource?> PEnsignStore = [];
+
+    private static readonly SemaphoreSlim PEnsignGate = new(1, 1);
+
+    private static int _pEnsignAge;
+
+    internal static void PEnsignAttach(LEngine engine)
+    {
+        ArgumentNullException.ThrowIfNull(engine);
+
+        engine.LEngineObserverAttach(new PObserver(PEnsignBulletinHandle));
+    }
+
+    private static void PEnsignBulletinHandle(LBulletin bulletin)
+    {
+        if (bulletin.LBulletinSubject != LSubject.LSubjectWorkspace)
+        {
+            return;
+        }
+
+        lock (PEnsignStore)
+        {
+            _pEnsignAge++;
+            PEnsignStore.Clear();
+        }
+    }
 
     internal static DrawingImage? PEnsignResolve(string path)
     {
@@ -39,23 +65,45 @@ internal static class PEnsign
 
     internal static async Task PEnsignLoad(LEngine engine)
     {
-        string[] missing = engine.LEngineLanguageRead()
-            .Where(language => !PEnsignStore.ContainsKey(language))
-            .ToArray();
-
-        if (missing.Length == 0)
+        await PEnsignGate.WaitAsync().ConfigureAwait(true);
+        try
         {
-            return;
+            int age;
+            string[] missing;
+            lock (PEnsignStore)
+            {
+                age = _pEnsignAge;
+                missing = engine.LEngineLanguageRead()
+                    .Where(language => !PEnsignStore.ContainsKey(language))
+                    .ToArray();
+            }
+
+            if (missing.Length == 0)
+            {
+                return;
+            }
+
+            string?[] paths = await Task.WhenAll(missing.Select(language => PEnsignRead(engine, language)));
+
+            lock (PEnsignStore)
+            {
+                if (age != _pEnsignAge)
+                {
+                    return;
+                }
+
+                for (int index = 0; index < missing.Length; index++)
+                {
+                    string? path = paths[index];
+                    PEnsignStore[missing[index]] = path is not null && File.Exists(path)
+                        ? PEnsignResolve(path)
+                        : null;
+                }
+            }
         }
-
-        string?[] paths = await Task.WhenAll(missing.Select(language => PEnsignRead(engine, language)));
-
-        for (int index = 0; index < missing.Length; index++)
+        finally
         {
-            string? path = paths[index];
-            PEnsignStore[missing[index]] = path is not null && File.Exists(path)
-                ? PEnsignResolve(path)
-                : null;
+            PEnsignGate.Release();
         }
     }
 
@@ -73,6 +121,9 @@ internal static class PEnsign
 
     internal static ImageSource? PEnsignFind(string language)
     {
-        return PEnsignStore.TryGetValue(language, out ImageSource? flag) ? flag : null;
+        lock (PEnsignStore)
+        {
+            return PEnsignStore.TryGetValue(language, out ImageSource? flag) ? flag : null;
+        }
     }
 }

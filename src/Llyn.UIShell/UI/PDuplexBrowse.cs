@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,19 +11,6 @@ public partial class PDuplex
     private readonly ObservableCollection<PIndexItem> _pLeftIndex = [];
 
     private readonly ObservableCollection<PIndexItem> _pRightIndex = [];
-
-    private async void PDuplexHandle(object sender, DependencyPropertyChangedEventArgs e)
-    {
-        if (!IsVisible)
-        {
-            return;
-        }
-
-        PLeftIndex.ItemsSource = _pLeftIndex;
-        PRightIndex.ItemsSource = _pRightIndex;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-    }
 
     private void PLeftQueryHandle(object sender, TextChangedEventArgs e)
     {

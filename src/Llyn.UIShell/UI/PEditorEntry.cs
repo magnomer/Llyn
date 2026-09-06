@@ -68,25 +68,25 @@ public partial class PEditor
         if (entry is not null)
         {
             PEditorEntryShow(stored.LEntryId);
-            PEditorStoreDispatcher?.Invoke(stored.LEntryId);
             return;
         }
 
         PEditorReset();
-        PEditorStoreDispatcher?.Invoke(stored.LEntryId);
     }
 
     private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
     {
+        string? entry = PEditorEntryRead();
+
         PEditorChangeStop();
         PEditorDraftCancel();
 
-        if (PEditorDiscardDispatcher is not null)
+        if (entry is null)
         {
-            PEditorDiscardDispatcher();
+            PEditorReset();
             return;
         }
 
-        PEditorReset();
+        PEditorEntryShow(entry);
     }
 }

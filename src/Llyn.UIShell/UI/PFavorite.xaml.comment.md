@@ -9,11 +9,11 @@ That is the search, the ordering, the roster, the read-only display and the edit
 ## `internal void PFavoriteAttach(PWindow host, LEngine engine)`
 
 Puts the panel to work on `engine`, the workspace the window opened.
-Nothing is read yet.
-The panel fills itself the first time it is shown.
-So a session that never opens the favorites tab never queries the database.
+It binds its lists and subscribes to the engine, and reads nothing yet.
+The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
+So the panel is current whether or not its tab is the one in front.
 
-The display reports every mark and unmark back through its dispatcher.
+Every mark and unmark is announced by the engine, wherever the star was clicked.
 That is how a row leaves the roster the moment the entry it stands on is unmarked.
 
 ## `internal void PFavoriteReset()`

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using Llyn.Core;
@@ -30,6 +30,8 @@ public partial class PWindow : Window
 
     private void PWindowAttach(LEngine engine)
     {
+        PEnsign.PEnsignAttach(engine);
+
         engine.LEngineLeftoverSweep();
         PWindowLeftover = engine.LEngineLeftoverRead().Count;
 

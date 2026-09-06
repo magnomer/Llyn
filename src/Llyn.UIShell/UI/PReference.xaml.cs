@@ -9,6 +9,8 @@ public partial class PReference : UserControl
 
     private LEngine _lEngine = null!;
 
+    private PObserver? _pReferenceObserver;
+
     public PReference()
     {
         InitializeComponent();
@@ -18,6 +20,14 @@ public partial class PReference : UserControl
     {
         _pReferenceHost = host;
         _lEngine = engine;
+
+        PShelf.ItemsSource = _pShelfList;
+        PFootnote.ItemsSource = _pFootnoteList;
+        PAuthorCredit.ItemsSource = _pAuthorCredit;
+        PAuthorList.ItemsSource = _pAuthorCatalog;
+
+        _pReferenceObserver = new PObserver(this, PReferenceBulletinHandle);
+        engine.LEngineObserverAttach(_pReferenceObserver);
     }
 
     internal void PReferenceReset()
@@ -33,6 +43,12 @@ public partial class PReference : UserControl
 
     internal void PReferenceClose()
     {
+        if (_pReferenceObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pReferenceObserver);
+            _pReferenceObserver = null;
+        }
+
         PAuthorMenu.IsOpen = false;
         PGradeDropdown.IsOpen = false;
     }

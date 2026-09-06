@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -8,6 +8,8 @@ public partial class PTaxonomy : UserControl
     private PWindow _pTaxonomyHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private PObserver? _pTaxonomyObserver;
 
     public PTaxonomy()
     {
@@ -19,13 +21,15 @@ public partial class PTaxonomy : UserControl
         _pTaxonomyHost = host;
         _lEngine = engine;
 
+        PDirectory.ItemsSource = _pDirectoryList;
+        PMembership.ItemsSource = _pMembershipList;
+
+        _pTaxonomyObserver = new PObserver(this, PTaxonomyBulletinHandle);
+        engine.LEngineObserverAttach(_pTaxonomyObserver);
+
         PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, "Taxonomy", null);
-
-        PEditor.PEditorStoreDispatcher = PMembershipEntryUpdate;
-
-        PEditor.PEditorDiscardDispatcher = PEditorEntryRestore;
     }
 
     internal void PTaxonomyReset()
@@ -47,6 +51,12 @@ public partial class PTaxonomy : UserControl
 
     internal void PTaxonomyClose()
     {
+        if (_pTaxonomyObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pTaxonomyObserver);
+            _pTaxonomyObserver = null;
+        }
+
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }

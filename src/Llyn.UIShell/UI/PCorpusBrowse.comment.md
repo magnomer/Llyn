@@ -14,10 +14,11 @@ The panel answers two questions rather than one: what this sentence is, and wher
 How many places quote each Example, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
-## `private async void PCorpusHandle(object sender, DependencyPropertyChangedEventArgs e)`
+## `private async void PCorpusBulletinHandle(LBulletin bulletin)`
 
-Binds the sources and reads the workspace when the panel becomes visible.
-The flags are loaded before the first fill, so no row is built without the flag it shows.
+Re-reads the workspace whenever the engine announces a change, wherever it was made.
+The citations are read with the catalog, because a Source stored elsewhere is what a row cites.
+A workspace that moved reloads the flags and the language menu first, since neither belongs to the old folder's rows.
 
 ## `private void PAnthologyFind(string query)`
 

@@ -9,6 +9,8 @@ public partial class PRepertoire : UserControl
 
     private LEngine _lEngine = null!;
 
+    private PObserver? _pRepertoireObserver;
+
     public PRepertoire()
     {
         InitializeComponent();
@@ -18,6 +20,12 @@ public partial class PRepertoire : UserControl
     {
         _pRepertoireHost = host;
         _lEngine = engine;
+
+        PAtlas.ItemsSource = _pAtlasList;
+        POccurrence.ItemsSource = _pOccurrenceList;
+
+        _pRepertoireObserver = new PObserver(this, PRepertoireBulletinHandle);
+        engine.LEngineObserverAttach(_pRepertoireObserver);
     }
 
     internal void PRepertoireReset()
@@ -33,6 +41,12 @@ public partial class PRepertoire : UserControl
 
     internal void PRepertoireClose()
     {
+        if (_pRepertoireObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pRepertoireObserver);
+            _pRepertoireObserver = null;
+        }
+
         PTierDropdown.IsOpen = false;
     }
 }

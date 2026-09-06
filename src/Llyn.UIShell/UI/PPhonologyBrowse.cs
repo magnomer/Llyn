@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,18 +15,16 @@ public partial class PPhonology
 
     private LCatalogOrder _pSequenceChoice;
 
-    private async void PPhonologyHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private async void PPhonologyBulletinHandle(LBulletin bulletin)
     {
-        if (!IsVisible)
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
+            await PEnsign.PEnsignLoad(_lEngine);
+            PPhonologyReset();
             return;
         }
 
-        PInventory.ItemsSource = _pInventoryList;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PInventoryFind(PProbe.Text ?? string.Empty);
+        PInventoryEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PProbeHandle(object sender, TextChangedEventArgs e)
@@ -47,10 +45,14 @@ public partial class PPhonology
         PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
-    internal void PSequenceRestore(LCatalogOrder order)
+    internal async void PSequenceRestore(LCatalogOrder order)
     {
         _pSequenceChoice = order;
         PChoice.PChoiceOrderApply(PSequenceDropdown, order);
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
     private void PInventoryFind(string query)
@@ -114,34 +116,36 @@ public partial class PPhonology
 
     private void PInventoryEntryUpdate(string id)
     {
-        _pDisplayEntry = id;
+        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        {
+            _pDisplayEntry = id;
+        }
+
         PInventoryFind(PProbe.Text ?? string.Empty);
+
+        if (_pDisplayEntry is not string shown
+            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        {
+            return;
+        }
 
         LEntryDraft? draft;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(id);
+            draft = _lEngine.LEngineEntryLoad(shown);
         }
         catch (Exception)
         {
             return;
         }
 
-        if (draft is not null)
+        if (draft is null)
         {
-            PPhonologyEntryShow(id, draft);
-        }
-    }
-
-    private void PEditorEntryRestore()
-    {
-        if (_pDisplayEntry is null)
-        {
-            PEditor.PEditorReset();
+            PPhonologyClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry);
+        PPhonologyEntryShow(shown, draft);
     }
 
     private void PPhonologyFreshHandle(object sender, RoutedEventArgs e)

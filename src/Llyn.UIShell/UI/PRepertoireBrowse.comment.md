@@ -9,6 +9,12 @@ The panel answers two questions rather than one: what this Situation is, and whe
 
 ## Inline notes
 
+### `private async void PRepertoireBulletinHandle(LBulletin bulletin)`
+
+The panel answers the engine rather than its own visibility.
+An entry stored in another tab may reference a Situation, so the catalog and its reference figures are read again.
+A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
+
 ### `private IReadOnlyDictionary<string, int> _pAtlasCount = new Dictionary<string, int>();`
 
 How many places reference each Situation, read once per catalog fill rather than once per row.

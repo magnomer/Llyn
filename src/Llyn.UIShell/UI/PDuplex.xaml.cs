@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -20,12 +20,17 @@ public partial class PDuplex : UserControl
         _pDuplexHost = host;
         _lEngine = engine;
 
+        PLeftIndex.ItemsSource = _pLeftIndex;
+        PRightIndex.ItemsSource = _pRightIndex;
+
         PLeftDisplay.PDisplayAttach(host, engine);
         PRightDisplay.PDisplayAttach(host, engine);
     }
 
-    internal void PDuplexRestore(LWorkspaceState state)
+    internal async void PDuplexRestore(LWorkspaceState state)
     {
+        await PEnsign.PEnsignLoad(_lEngine);
+
         PLeftQuery.Text = string.Empty;
         PRightQuery.Text = string.Empty;
 

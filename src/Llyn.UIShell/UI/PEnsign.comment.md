@@ -3,8 +3,20 @@
 ## `internal static class PEnsign`
 
 Resolves a language pack's cached SVG flag into a frozen drawing, and keeps the resolved flags.
+It subscribes to the engine for one announcement only, the workspace moving, and throws the kept flags away on it.
 The editor's language picker, the read-only entry display, and every catalog row use it.
 A malformed or unreadable flag becomes no image, which lets each surface show its neutral globe fallback.
+
+## `internal static void PEnsignAttach(LEngine engine)`
+
+Subscribes the flag store to `engine`, once, for the whole program.
+It owns no control, so its answer runs on the thread that announced rather than on the shell's.
+
+## `private static void PEnsignBulletinHandle(LBulletin bulletin)`
+
+Throws every kept flag away when the workspace moves, and answers nothing else.
+A flag file is cached inside the workspace, so the path each drawing was read from is gone with the folder.
+The surfaces reload on the same announcement, and this store is the first subscriber, so it is empty before they ask.
 
 ## `internal static DrawingImage? PEnsignResolve(string path)`
 
@@ -32,8 +44,21 @@ The flag kept for `language`, or null when none was resolved for it.
 ### `private static readonly Dictionary<string, ImageSource?> PEnsignStore = [];`
 
 The flags are held for the program rather than for one panel.
-A flag belongs to a language pack, not to a workspace, so reopening a workspace does not change it.
 Every tab lists the same languages, and each would otherwise read the same files again.
+The store is the lock as well, because it is what every reader and writer touches.
+
+### `private static readonly SemaphoreSlim PEnsignGate = new(1, 1);`
+
+One fill runs at a time.
+Several panels ask on the same announcement, and each fill is a set of downloads.
+Without this they would each start their own, and the same file would be fetched several times over.
+The gate is never held by a plain wait on the shell's thread, so a fill awaiting the shell can always finish.
+
+### `private static int _pEnsignAge;`
+
+Which generation of the store a fill started under.
+A workspace may move while a fill is in flight, and its results then name files in a folder no longer open.
+A fill that comes back under a newer generation throws its results away rather than putting them back.
 
 ### `string?[] paths = await Task.WhenAll(missing.Select(language => PEnsignRead(engine, language)));`
 

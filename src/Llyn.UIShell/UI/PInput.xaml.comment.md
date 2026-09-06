@@ -1,4 +1,4 @@
-﻿# PInput.xaml.cs
+# PInput.xaml.cs
 
 ## `public partial class PInput : UserControl`
 
@@ -45,8 +45,8 @@ The origin names this panel, so its held work is told apart from the library's.
 A form that stood on one would turn the next store into an update of it.
 That is how a session's second entry used to overwrite its first.
 
-### `PEditor.PEditorDiscardDispatcher = PEditor.PEditorReset;`
+### `_pInputObserver = new PObserver(this, PInputBulletinHandle);`
 
-Discarding empties the form.
-This panel is where an entry is begun, not where a stored one is corrected.
-So the typing is what is thrown away rather than reverted.
+The panel listens for the workspace moving and for nothing else.
+It lists nothing, so a stored record elsewhere is none of its business.
+A form standing on the old workspace holds a draft in a folder no longer open, so it is emptied.

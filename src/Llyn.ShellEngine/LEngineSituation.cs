@@ -134,6 +134,8 @@ public sealed partial class LEngine
         {
             new LSituationArchive(_lEngineDatabase).LSituationDelete(id);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectSituation, id);
     }
 
     public void LEngineSituationDelete(string id, bool detach)
@@ -142,5 +144,7 @@ public sealed partial class LEngine
         {
             new LSituationArchive(_lEngineDatabase).LSituationDelete(id, detach);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectSituation, id);
     }
 }

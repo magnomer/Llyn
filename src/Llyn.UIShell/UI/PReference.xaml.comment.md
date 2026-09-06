@@ -1,4 +1,4 @@
-﻿# PReference.xaml.cs
+# PReference.xaml.cs
 
 ## `public partial class PReference : UserControl`
 
@@ -11,6 +11,9 @@ The browsing lives in `PReferenceBrowse.cs`, the editing in `PReferenceImprint.c
 ## `internal void PReferenceAttach(PWindow host, LEngine engine)`
 
 Binds the panel to the window it asks for confirmations and panel switches through.
+It binds its lists and subscribes to the engine, and reads nothing yet.
+The window fills the source shelf when it restores the stored ordering.
+Every change after that arrives as an announcement, so the panel is current whether or not its tab is in front.
 
 ## `internal void PReferenceReset()`
 
@@ -25,4 +28,5 @@ Credits are not compared, because they are written when they are made rather tha
 
 ## `internal void PReferenceClose()`
 
+Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so none outlives the window.

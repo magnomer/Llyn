@@ -29,17 +29,14 @@ public partial class PRepertoire
 
     private bool _pScenarioLoading;
 
-    private async void PRepertoireHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private async void PRepertoireBulletinHandle(LBulletin bulletin)
     {
-        if (!IsVisible)
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
+            await PEnsign.PEnsignLoad(_lEngine);
+            PRepertoireReset();
             return;
         }
-
-        PAtlas.ItemsSource = _pAtlasList;
-        POccurrence.ItemsSource = _pOccurrenceList;
-
-        await PEnsign.PEnsignLoad(_lEngine);
 
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
@@ -62,10 +59,14 @@ public partial class PRepertoire
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
 
-    internal void PTierRestore(LCatalogOrder order)
+    internal async void PTierRestore(LCatalogOrder order)
     {
         _pTierChoice = order;
         PChoice.PChoiceOrderApply(PTierDropdown, order);
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PAtlasFind(PInquest.Text ?? string.Empty);
     }
 
     private void PAtlasFind(string query)

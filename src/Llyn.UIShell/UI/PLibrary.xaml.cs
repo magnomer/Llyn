@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -8,6 +8,8 @@ public partial class PLibrary : UserControl
     private PWindow _pLibraryHost = null!;
 
     private LEngine _lEngine = null!;
+
+    private PObserver? _pLibraryObserver;
 
     public PLibrary()
     {
@@ -19,13 +21,14 @@ public partial class PLibrary : UserControl
         _pLibraryHost = host;
         _lEngine = engine;
 
+        PIndex.ItemsSource = _pIndexList;
+
+        _pLibraryObserver = new PObserver(this, PLibraryBulletinHandle);
+        engine.LEngineObserverAttach(_pLibraryObserver);
+
         PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, "Library", null);
-
-        PEditor.PEditorStoreDispatcher = PIndexEntryUpdate;
-
-        PEditor.PEditorDiscardDispatcher = PEditorEntryRestore;
     }
 
     internal void PLibraryReset()
@@ -46,6 +49,12 @@ public partial class PLibrary : UserControl
 
     internal void PLibraryClose()
     {
+        if (_pLibraryObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pLibraryObserver);
+            _pLibraryObserver = null;
+        }
+
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }

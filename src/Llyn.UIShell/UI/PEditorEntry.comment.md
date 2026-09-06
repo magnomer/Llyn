@@ -67,9 +67,9 @@ The next thing typed here is the next entry, not a rewrite of the one just writt
 ### `private void PEditorDiscardHandle(object sender, RoutedEventArgs e)`
 
 A thrown-away edit takes its draft and its tentative entries with it.
-The pending write is called off first, so nothing lands after the draft is gone.
-What a discard means afterwards is the host's.
-An input form comes up empty.
-A browse-style panel puts the selected entry back as it is stored.
-A host that says nothing gets the form it was given back.
-Each of those paths starts the next draft, so the form is never left without one.
+The entry the draft stood on is read before that, because the draft is what names it.
+The pending write is called off next, so nothing lands after the draft is gone.
+A form that was correcting an entry comes back to it as it is stored.
+A form that was creating one comes up empty, since there is nothing stored to come back to.
+Either path starts the next draft, so the form is never left without one.
+No host is asked what a discard means, because the draft already says which of the two it was.

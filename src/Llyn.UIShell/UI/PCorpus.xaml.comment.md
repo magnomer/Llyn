@@ -11,6 +11,9 @@ The held draft the editor writes into lives in `PCorpusHold.cs`, apart from the 
 ## `internal void PCorpusAttach(PWindow host, LEngine engine)`
 
 Binds the panel to the window it asks for confirmations and panel switches through.
+It binds its lists and subscribes to the engine, and reads nothing yet.
+The window fills the example catalog when it restores the stored ordering.
+Every change after that arrives as an announcement, so the panel is current whether or not its tab is in front.
 
 ## `internal void PCorpusReset()`
 
@@ -25,4 +28,5 @@ No visibility test guards it, because a draft is held only while the editor is o
 
 ## `internal void PCorpusClose()`
 
+Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so none outlives the window.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -24,21 +24,16 @@ public partial class PCorpus
 
     private LCatalogOrder _pRankChoice;
 
-    private async void PCorpusHandle(object sender, DependencyPropertyChangedEventArgs e)
+    private async void PCorpusBulletinHandle(LBulletin bulletin)
     {
-        if (!IsVisible)
+        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
+            await PEnsign.PEnsignLoad(_lEngine);
+            PSpeakerLoad();
+            PCorpusReset();
             return;
         }
 
-        PAnthology.ItemsSource = _pAnthologyList;
-        PQuotation.ItemsSource = _pQuotationList;
-        PCitationList.ItemsSource = _pCitationCatalog;
-        PLanguageList.ItemsSource = _pLanguageItem;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PSpeakerLoad();
         PCitationFind();
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
@@ -61,10 +56,16 @@ public partial class PCorpus
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 
-    internal void PRankRestore(LCatalogOrder order)
+    internal async void PRankRestore(LCatalogOrder order)
     {
         _pRankChoice = order;
         PChoice.PChoiceOrderApply(PRankDropdown, order);
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PSpeakerLoad();
+        PCitationFind();
+        PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 
     private void PAnthologyFind(string query)

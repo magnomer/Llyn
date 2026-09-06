@@ -9,6 +9,8 @@ public partial class PFavorite : UserControl
 
     private LEngine _lEngine = null!;
 
+    private PObserver? _pFavoriteObserver;
+
     public PFavorite()
     {
         InitializeComponent();
@@ -19,15 +21,14 @@ public partial class PFavorite : UserControl
         _pFavoriteHost = host;
         _lEngine = engine;
 
+        PRoster.ItemsSource = _pRosterList;
+
+        _pFavoriteObserver = new PObserver(this, PFavoriteBulletinHandle);
+        engine.LEngineObserverAttach(_pFavoriteObserver);
+
         PDisplay.PDisplayAttach(host, engine);
 
-        PDisplay.PDisplayFavoriteDispatcher = PRosterUpdate;
-
         PEditor.PEditorAttach(host, engine, "Favorite", null);
-
-        PEditor.PEditorStoreDispatcher = PRosterEntryUpdate;
-
-        PEditor.PEditorDiscardDispatcher = PEditorEntryRestore;
     }
 
     internal void PFavoriteReset()
@@ -48,6 +49,12 @@ public partial class PFavorite : UserControl
 
     internal void PFavoriteClose()
     {
+        if (_pFavoriteObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pFavoriteObserver);
+            _pFavoriteObserver = null;
+        }
+
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
     }

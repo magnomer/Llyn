@@ -10,6 +10,8 @@ public partial class PCorpus : UserControl
 
     private LEngine _lEngine = null!;
 
+    private PObserver? _pCorpusObserver;
+
     public PCorpus()
     {
         InitializeComponent();
@@ -19,6 +21,14 @@ public partial class PCorpus : UserControl
     {
         _pCorpusHost = host;
         _lEngine = engine;
+
+        PAnthology.ItemsSource = _pAnthologyList;
+        PQuotation.ItemsSource = _pQuotationList;
+        PCitationList.ItemsSource = _pCitationCatalog;
+        PLanguageList.ItemsSource = _pLanguageItem;
+
+        _pCorpusObserver = new PObserver(this, PCorpusBulletinHandle);
+        engine.LEngineObserverAttach(_pCorpusObserver);
     }
 
     internal void PCorpusReset()
@@ -34,6 +44,12 @@ public partial class PCorpus : UserControl
 
     internal void PCorpusClose()
     {
+        if (_pCorpusObserver is not null)
+        {
+            _lEngine.LEngineObserverDetach(_pCorpusObserver);
+            _pCorpusObserver = null;
+        }
+
         PCitationDrawer.IsOpen = false;
         PLanguage.IsOpen = false;
         PRankDropdown.IsOpen = false;

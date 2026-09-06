@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.ShellEngine;
@@ -44,10 +44,6 @@ public partial class PEditor : UserControl
         PMarkerField.KeyDown += PMarkerFieldHandle;
         AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
     }
-
-    internal Action<string>? PEditorStoreDispatcher { get; set; }
-
-    internal Action? PEditorDiscardDispatcher { get; set; }
 
     internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)
     {

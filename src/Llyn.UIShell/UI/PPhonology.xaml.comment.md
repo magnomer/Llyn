@@ -1,4 +1,4 @@
-﻿# PPhonology.xaml.cs
+# PPhonology.xaml.cs
 
 ## `public partial class PPhonology : UserControl`
 
@@ -9,8 +9,9 @@ That is the search, the ordering, the inventory, the read-only display and the e
 ## `internal void PPhonologyAttach(PWindow host, LEngine engine)`
 
 Puts the panel to work on `engine`, the workspace the window opened.
-Nothing is read yet.
-The panel fills itself the first time it is shown.
+It binds its lists and subscribes to the engine, and reads nothing yet.
+The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
+So the panel is current whether or not its tab is the one in front.
 
 ## `internal void PPhonologyReset()`
 

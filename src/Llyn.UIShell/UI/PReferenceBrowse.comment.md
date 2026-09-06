@@ -1,4 +1,4 @@
-﻿# PReferenceBrowse.cs
+# PReferenceBrowse.cs
 
 ## `public partial class PReference`
 
@@ -19,10 +19,12 @@ It also decides which delete the panel offers, so it is held rather than asked f
 The credits of every Source, read whole rather than one Source at a time.
 The catalog, the ordering, and the search all need them, so a per-row read would be one query per row.
 
-## `private void PReferenceHandle(object sender, DependencyPropertyChangedEventArgs e)`
+## `private void PReferenceBulletinHandle(LBulletin bulletin)`
 
-Binds the collections and reads the workspace when the panel becomes visible.
-The authors are read before the first fill, so no menu is offered empty while the store holds some.
+Re-reads the shelf and the authors whenever the engine announces a change, wherever it was made.
+The usage count beside a row and the credits under it are read with the shelf, so a stored Source updates its own row.
+That is what the panel used to do by re-reading straight after its own commit.
+A workspace that moved empties the panel before the same re-read runs.
 
 ## `private void PShelfFind(string query)`
 

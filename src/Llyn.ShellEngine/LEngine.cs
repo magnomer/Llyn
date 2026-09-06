@@ -120,6 +120,8 @@ public sealed partial class LEngine : IDisposable
             _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
             LEngineLanguageImport();
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectWorkspace, string.Empty);
     }
 
     public LSettings LEngineSettingsRead()

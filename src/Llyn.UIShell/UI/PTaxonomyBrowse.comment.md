@@ -28,11 +28,11 @@ It starts as whatever the workspace stored, which the window applies before the 
 The dropdown tag is read into that set, so the panel offers nothing the engine cannot do.
 The ordering is the same one whatever language names it.
 
-### `private void PTaxonomyHandle(object sender, DependencyPropertyChangedEventArgs e)`
+### `private async void PTaxonomyBulletinHandle(LBulletin bulletin)`
 
-The panel opens with whatever the database already holds.
-So a tag written in the input panel is there the moment the tab is switched to.
-Rebinding is idempotent, which keeps the binding out of the window constructor and beside the code that owns it.
+The panel answers the engine rather than its own visibility.
+So a tag written in the input panel is in the catalog at once, with no tab switch to trigger it.
+A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
 
 ### `private void PDirectoryFind(string query)`
 

@@ -14,11 +14,6 @@ The panel never writes, so there is no editor and nothing to discard.
 The matches the left query found, held per side because the sides are peers.
 Changing one side leaves the other where it was.
 
-### `private async void PDuplexHandle(object sender, DependencyPropertyChangedEventArgs e)`
-
-The first time the panel is shown it binds both match lists and loads the flags.
-A session that never opens the duplex tab never touches either.
-
 ## `private void PDuplexIndexFind(string query, ObservableCollection<PIndexItem> catalog, ItemsControl index)`
 
 Refills one side's matches from its query.

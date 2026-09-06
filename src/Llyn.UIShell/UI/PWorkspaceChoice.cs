@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -52,14 +52,5 @@ public partial class PSettings
         }
 
         _pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());
-
-        _pSettingsHost.PInput.PInputReset();
-        _pSettingsHost.PLibrary.PLibraryReset();
-        _pSettingsHost.PPhonology.PPhonologyReset();
-        _pSettingsHost.PTaxonomy.PTaxonomyReset();
-        _pSettingsHost.PRepertoire.PRepertoireReset();
-        _pSettingsHost.PCorpus.PCorpusReset();
-        _pSettingsHost.PReference.PReferenceReset();
-        _pSettingsHost.PFavorite.PFavoriteReset();
     }
 }

@@ -41,6 +41,8 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
             new LFavoriteArchive(_lEngineDatabase).LFavoriteSave(entryId);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
     }
 
     public void LEngineFavoriteDelete(string entryId)
@@ -50,5 +52,7 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
             new LFavoriteArchive(_lEngineDatabase).LFavoriteDelete(entryId);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
     }
 }

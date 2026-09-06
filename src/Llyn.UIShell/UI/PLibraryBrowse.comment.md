@@ -1,4 +1,4 @@
-﻿# PLibraryBrowse.cs
+# PLibraryBrowse.cs
 
 ## `public partial class PLibrary`
 
@@ -24,11 +24,12 @@ It starts as whatever the workspace stored, which the window applies before the 
 The dropdown tag is read into that set, so the panel offers nothing the engine cannot do.
 The ordering is the same one whatever language names it.
 
-### `private void PLibraryHandle(object sender, DependencyPropertyChangedEventArgs e)`
+### `private async void PLibraryBulletinHandle(LBulletin bulletin)`
 
-The panel opens with whatever the database already holds.
-So a save made in the input panel is visible the moment the tab is switched to.
-Rebinding is idempotent, which keeps the binding out of the window constructor and beside the code that owns it.
+The panel answers the engine rather than its own visibility.
+So a save made in the input panel lands here at once, with no tab switch to trigger it.
+A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
+Every other announcement re-lists the index and refreshes the entry this panel stands on.
 
 ### `private void POrderHandle(object sender, RoutedEventArgs e)`
 
