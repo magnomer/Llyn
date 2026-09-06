@@ -106,29 +106,9 @@ public sealed partial class LEngine
 
     private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)
     {
-        LExampleArchive exampleRows = new(_lEngineDatabase);
-        LExampleLink examples = new(_lEngineDatabase);
-        int position = 0;
-        HashSet<string> attachedExamples = new(StringComparer.Ordinal);
-        foreach (LExampleDraft draft in LEngineExampleRead(card.LCardDraftExample))
-        {
-            string exampleId = LEngineExampleResolve(exampleRows, draft, language);
-            if (!attachedExamples.Add(exampleId))
-            {
-                continue;
-            }
+        LEngineSentenceSync(ownerId, card.LCardDraftExample, language, collocation);
 
-            if (collocation)
-            {
-                examples.LExampleCollocationAttach(ownerId, exampleId, position);
-            }
-            else
-            {
-                examples.LExampleMeaningAttach(ownerId, exampleId, position);
-            }
-
-            position++;
-        }
+        int position;
 
         LSituationArchive situations = new(_lEngineDatabase);
         position = 0;
@@ -172,6 +152,23 @@ public sealed partial class LEngine
 
             position++;
         }
+
+        LVideoArchive videos = new(_lEngineDatabase);
+        position = 0;
+        foreach (LStateValue location in LEngineFieldRead(card.LCardDraftVideo))
+        {
+            LVideo video = videos.LVideoCreate(new LVideo(string.Empty, location));
+            if (collocation)
+            {
+                videos.LVideoCollocationAttach(ownerId, video.LVideoId, position);
+            }
+            else
+            {
+                videos.LVideoMeaningAttach(ownerId, video.LVideoId, position);
+            }
+
+            position++;
+        }
     }
 
     private static IEnumerable<LCardDraft> LEngineCardRead(IReadOnlyList<LCardDraft> cards)
@@ -186,7 +183,8 @@ public sealed partial class LEngine
                 LEngineSituationCheck(card.LCardDraftSituation) ||
                 LEngineTagCheck(card.LCardDraftTag) ||
                 LEngineTranslationCheck(card.LCardDraftTranslation) ||
-                LEngineFieldCheck(card.LCardDraftImage))
+                LEngineFieldCheck(card.LCardDraftImage) ||
+                LEngineFieldCheck(card.LCardDraftVideo))
             {
                 yield return card;
             }
@@ -217,34 +215,64 @@ public sealed partial class LEngine
         }
     }
 
-    private static string LEngineExampleResolve(
+    private static LExample LEngineExampleResolve(
         LExampleArchive examples, LExampleDraft draft, string language)
     {
-        if (!string.IsNullOrWhiteSpace(draft.LExampleDraftId))
+        return LEngineExampleResolve(
+            examples,
+            draft.LExampleDraftId,
+            draft.LExampleDraftText,
+            draft.LExampleDraftReference,
+            language);
+    }
+
+    private static LExample? LEngineRevisionResolve(
+        LExampleArchive examples, LExampleDraft draft, string language)
+    {
+        LExampleDraft? revision = draft.LExampleDraftRevision;
+        if (revision is null || revision.LExampleDraftText.LStateValueEmpty)
         {
-            LExample? stored = examples.LExampleRead(draft.LExampleDraftId);
+            return null;
+        }
+
+        return LEngineExampleResolve(
+            examples,
+            revision.LExampleDraftId,
+            revision.LExampleDraftText,
+            LStateValue.LStateValueUnspecified,
+            language);
+    }
+
+    private static LExample LEngineExampleResolve(
+        LExampleArchive examples,
+        string id,
+        LStateValue text,
+        LStateValue reference,
+        string language)
+    {
+        if (!string.IsNullOrWhiteSpace(id))
+        {
+            LExample? stored = examples.LExampleRead(id);
             if (stored is not null)
             {
-                if (stored.LExampleText != draft.LExampleDraftText)
+                if (stored.LExampleText != text)
                 {
-                    examples.LExampleTextUpdate(stored.LExampleId, draft.LExampleDraftText);
+                    examples.LExampleTextUpdate(stored.LExampleId, text);
+                    stored = stored with { LExampleText = text };
                 }
 
-                if (stored.LExampleSource != draft.LExampleDraftReference)
+                if (stored.LExampleSource != reference)
                 {
-                    examples.LExampleSourceUpdate(stored.LExampleId, draft.LExampleDraftReference);
+                    examples.LExampleSourceUpdate(stored.LExampleId, reference);
+                    stored = stored with { LExampleSource = reference };
                 }
 
-                return stored.LExampleId;
+                return stored;
             }
         }
 
         return examples.LExampleCreate(new LExample(
-            draft.LExampleDraftId,
-            language,
-            draft.LExampleDraftText,
-            LStateValue.LStateValueUnspecified,
-            draft.LExampleDraftReference)).LExampleId;
+            id, language, text, LStateValue.LStateValueUnspecified, reference));
     }
 
     private static bool LEngineSituationCheck(IReadOnlyList<LSituationDraft> drafts)

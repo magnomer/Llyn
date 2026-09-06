@@ -85,6 +85,10 @@
 
     <DataTemplate x:Key="Theme.Sentence.Row">
         <Grid Margin="0,0,0,7">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -149,6 +153,44 @@
                         </StackPanel>
                     </Border>
                 </Popup>
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.ColumnSpan="4" Margin="0,7,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="{Binding PSentenceParticleColumn}" Width="124" MinHeight="36" Margin="0,0,7,0" Padding="12,5" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PSentenceParticle, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.Tag>
+                        <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                            <Binding Path="PSentenceParticleUnreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Card.ParticleHint" />
+                        </MultiBinding>
+                    </TextBox.Tag>
+                </TextBox>
+
+                <TextBox Grid.Column="{Binding PSentenceDependenceColumn}" Width="124" MinHeight="36" Margin="0,0,7,0" Padding="12,5" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PSentenceDependence, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.Tag>
+                        <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                            <Binding Path="PSentenceDependenceUnreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Card.DependenceHint" />
+                        </MultiBinding>
+                    </TextBox.Tag>
+                </TextBox>
+
+                <TextBox Grid.Column="2" MinHeight="36" Padding="12,5" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PSentenceRevision, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.Tag>
+                        <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                            <Binding Path="PSentenceRevisionUnreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Card.RevisionHint" />
+                        </MultiBinding>
+                    </TextBox.Tag>
+                </TextBox>
             </Grid>
 
             <Button Grid.Column="2" Width="42" Height="42" Margin="8,0,0,0" Click="PSentenceAddHandle" Style="{DynamicResource Theme.Input.Action}">

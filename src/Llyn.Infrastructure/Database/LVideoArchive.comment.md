@@ -1,0 +1,9 @@
+# LVideoArchive.cs
+
+## `public sealed class LVideoArchive`
+
+Stores the independent Video and the references that reach it from a Meaning or a Collocation.
+It mirrors `LImageArchive` row for row, because a Video is kept exactly as an Image is.
+A Video is owned by nothing, so a reference is a link and never containment.
+The order a Video appears in lives on each reference, and every write renumbers that referrer's set.
+A Video is refused deletion while anything still points at it, so no reference is ever left dangling.

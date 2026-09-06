@@ -105,13 +105,16 @@ public sealed class LEntryLoader
         LTagArchive tags = new(_lEntryLoaderDatabase);
         LTranslationArchive translations = new(_lEntryLoaderDatabase);
         LImageArchive images = new(_lEntryLoaderDatabase);
+        LVideoArchive videos = new(_lEntryLoaderDatabase);
+        LSentenceArchive sentences = new(_lEntryLoaderDatabase);
 
         return new LCardDraft(
             title,
             expression,
             meaning,
-            LEntryExampleRead(
-                collocation ? examples.LExampleCollocationRead(ownerId) : examples.LExampleMeaningRead(ownerId)),
+            collocation
+                ? LEntryExampleRead(examples.LExampleCollocationRead(ownerId))
+                : LEntrySentenceRead(sentences.LSentenceMeaningRead(ownerId)),
             LEntrySituationRead(
                 collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationMeaningRead(ownerId)),
             LEntryTranslationRead(
@@ -123,6 +126,8 @@ public sealed class LEntryLoader
                 collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagMeaningRead(ownerId)),
             LEntryImageRead(
                 collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId)),
+            LEntryVideoRead(
+                collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId)),
             position,
             ownerId);
     }
@@ -133,7 +138,29 @@ public sealed class LEntryLoader
         foreach (LExample example in examples)
         {
             drafts.Add(new LExampleDraft(
-                example.LExampleText, example.LExampleId, example.LExampleSource));
+                example.LExampleText,
+                example.LExampleId,
+                example.LExampleSource,
+                LStateValue.LStateValueUnspecified,
+                LStateValue.LStateValueUnspecified,
+                null));
+        }
+
+        return drafts;
+    }
+
+    private static IReadOnlyList<LExampleDraft> LEntrySentenceRead(IReadOnlyList<LSentence> sentences)
+    {
+        List<LExampleDraft> drafts = new(sentences.Count);
+        foreach (LSentence sentence in sentences)
+        {
+            drafts.Add(new LExampleDraft(
+                sentence.LSentenceExample.LExampleText,
+                sentence.LSentenceExample.LExampleId,
+                sentence.LSentenceExample.LExampleSource,
+                sentence.LSentenceParticle,
+                sentence.LSentenceDependence,
+                LEntryRevisionRead(sentence.LSentenceRevision)));
         }
 
         return drafts;
@@ -151,12 +178,39 @@ public sealed class LEntryLoader
         return drafts;
     }
 
+    private static LExampleDraft? LEntryRevisionRead(LExample? revision)
+    {
+        if (revision is null)
+        {
+            return null;
+        }
+
+        return new LExampleDraft(
+            revision.LExampleText,
+            revision.LExampleId,
+            revision.LExampleSource,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            null);
+    }
+
     private static IReadOnlyList<LStateValue> LEntryImageRead(IReadOnlyList<LImage> images)
     {
         List<LStateValue> locations = new(images.Count);
         foreach (LImage image in images)
         {
             locations.Add(image.LImageLocation);
+        }
+
+        return locations;
+    }
+
+    private static IReadOnlyList<LStateValue> LEntryVideoRead(IReadOnlyList<LVideo> videos)
+    {
+        List<LStateValue> locations = new(videos.Count);
+        foreach (LVideo video in videos)
+        {
+            locations.Add(video.LVideoLocation);
         }
 
         return locations;

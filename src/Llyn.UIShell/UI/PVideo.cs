@@ -1,17 +1,46 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
 internal sealed class PVideo : INotifyPropertyChanged
 {
     private string _pVideoLocation = string.Empty;
+    private bool _pVideoUnreadable;
     private string _pVideoTimestamp = string.Empty;
     private Uri? _pVideoPreview;
     private TimeSpan _pVideoFrom = TimeSpan.Zero;
     private TimeSpan? _pVideoUntil;
     private bool _pVideoPlaying = true;
+
+    internal PVideo()
+    {
+    }
+
+    internal PVideo(LStateValue location)
+    {
+        ArgumentNullException.ThrowIfNull(location);
+
+        PVideoLocation = location.LStateValueShow();
+        PVideoUnreadable = location.LStateValueState == LState.LStateUnknown;
+    }
+
+    public bool PVideoUnreadable
+    {
+        get => _pVideoUnreadable;
+        private set
+        {
+            if (_pVideoUnreadable == value)
+            {
+                return;
+            }
+
+            _pVideoUnreadable = value;
+            PVideoRaise(nameof(PVideoUnreadable));
+        }
+    }
 
     public string PVideoLocation
     {
@@ -25,6 +54,7 @@ internal sealed class PVideo : INotifyPropertyChanged
             }
 
             _pVideoLocation = chosen;
+            PVideoUnreadable = false;
             PVideoRaise(nameof(PVideoLocation));
             PVideoPreview = PImage.PImageAddressRead(chosen);
         }
@@ -105,6 +135,13 @@ internal sealed class PVideo : INotifyPropertyChanged
             _pVideoPlaying = value;
             PVideoRaise(nameof(PVideoPlaying));
         }
+    }
+
+    internal LStateValue PVideoLocationRead()
+    {
+        return _pVideoUnreadable
+            ? LStateValue.LStateValueUnknown
+            : LStateValue.LStateValueRead(_pVideoLocation);
     }
 
     private void PVideoTimestampApply(string timestamp)

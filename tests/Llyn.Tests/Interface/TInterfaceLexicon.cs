@@ -22,8 +22,11 @@ internal static partial class TInterface
         IReadOnlyList<string> tag,
         IReadOnlyList<LStateValue> image,
         int position,
-        string id = "") =>
-        new(title, expression, meaning, example, situation, translation, synonym, tag, image, position, id);
+        string id = "",
+        IReadOnlyList<LStateValue>? video = null) =>
+        new(
+            title, expression, meaning, example, situation, translation, synonym, tag, image,
+            video ?? [], position, id);
 
     internal static LCollocation TCollocationCreate(
         string id,
@@ -80,8 +83,30 @@ internal static partial class TInterface
         LStateValue source) =>
         new(id, language, text, translation, source);
 
-    internal static LExampleDraft TExampleDraftCreate(LStateValue text, string id, LStateValue reference) =>
-        new(text, id, reference);
+    internal static LExampleDraft TExampleDraftCreate(
+        LStateValue text,
+        string id,
+        LStateValue reference,
+        LStateValue? particle = null,
+        LStateValue? dependence = null,
+        LExampleDraft? revision = null) =>
+        new(
+            text,
+            id,
+            reference,
+            particle ?? LStateValue.LStateValueUnspecified,
+            dependence ?? LStateValue.LStateValueUnspecified,
+            revision);
+
+    internal static LSentence TSentenceCreate(
+        string id,
+        string meaningId,
+        int position,
+        LExample example,
+        LExample? revision,
+        LStateValue particle,
+        LStateValue dependence) =>
+        new(id, meaningId, position, example, revision, particle, dependence);
 
     internal static LExampleDraft TExampleDraftCreate(string text) =>
         LExampleDraft.LExampleDraftCreate(text);

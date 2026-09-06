@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -29,10 +30,15 @@ public sealed partial class LEngine
         return owner switch
         {
             LOwner.LOwnerEntry => examples.LExampleEntryRead(ownerId),
-            LOwner.LOwnerMeaning => examples.LExampleMeaningRead(ownerId),
+            LOwner.LOwnerMeaning => [.. LEngineSentenceRead(ownerId).Select(sentence => sentence.LSentenceExample)],
             LOwner.LOwnerCollocation => examples.LExampleCollocationRead(ownerId),
             _ => throw LEngineOwnerRaise(owner),
         };
+    }
+
+    public IReadOnlyList<LSentence> LEngineSentenceRead(string meaningId)
+    {
+        return new LSentenceArchive(_lEngineDatabase).LSentenceMeaningRead(meaningId);
     }
 
     public void LEngineExampleUpdate(LExample example)
@@ -54,7 +60,7 @@ public sealed partial class LEngine
                 examples.LExampleEntryAttach(ownerId, exampleId, position);
                 return;
             case LOwner.LOwnerMeaning:
-                examples.LExampleMeaningAttach(ownerId, exampleId, position);
+                new LSentenceArchive(_lEngineDatabase).LSentenceMeaningAttach(ownerId, exampleId, position);
                 return;
             case LOwner.LOwnerCollocation:
                 examples.LExampleCollocationAttach(ownerId, exampleId, position);
@@ -73,7 +79,7 @@ public sealed partial class LEngine
                 examples.LExampleEntryDetach(ownerId, exampleId);
                 return;
             case LOwner.LOwnerMeaning:
-                examples.LExampleMeaningDetach(ownerId, exampleId);
+                new LSentenceArchive(_lEngineDatabase).LSentenceMeaningDetach(ownerId, exampleId);
                 return;
             case LOwner.LOwnerCollocation:
                 examples.LExampleCollocationDetach(ownerId, exampleId);

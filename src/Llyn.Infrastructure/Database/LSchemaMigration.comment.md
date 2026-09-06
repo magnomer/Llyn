@@ -18,7 +18,7 @@ That requires foreign-key enforcement to be off.
 Enforcement cannot be changed inside a transaction.
 So the runner is called with a plain connection, before any session is open.
 
-## `public const long LSchemaMigrationVersion = 23;`
+## `public const long LSchemaMigrationVersion = 24;`
 
 The schema version this build produces.
 A later change to an existing table raises it.
@@ -92,6 +92,21 @@ A Situation carries no Source field, so the two columns holding one are dropped.
 Version 23.
 The favorite table arrives, so an upgraded workspace gains it too.
 No older row carries a mark, so nothing is copied into it.
+
+### `if (stored < 24)`
+
+Version 24.
+A Meaning's hold on an Example becomes a row with data of its own, so `sense_example` is rebuilt.
+It gains its own id, the frame the Meaning reads the Example under, and the rewrite it keeps.
+Every older row is carried over with its Example and its place, stating no frame and no rewrite.
+Nothing is dropped, because an older row said nothing that the new shape cannot hold.
+The video tables arrive in the same version through `LSchema`, which creates what is missing.
+
+### `private static void LSchemaSentenceRebuild(SqliteConnection connection)`
+
+SQLite cannot add a primary key or a foreign key to a table that stands, so the table is rebuilt beside itself.
+Enforcement is off for the rebuild, because the carried rows are copied before their parents are checked.
+A row an older build left pointing at nothing therefore blocks nothing here.
 
 ### `private static void LSchemaSpeechNormalize(SqliteConnection connection)`
 

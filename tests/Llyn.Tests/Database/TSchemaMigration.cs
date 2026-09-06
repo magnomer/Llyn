@@ -351,6 +351,62 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_VersionTwentyThree_RebuildsSenseExampleWithItsFrame()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 23);
+
+            CREATE TABLE sense_example (
+                sense_id TEXT NOT NULL,
+                example_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (sense_id, example_id)
+            );
+            INSERT INTO sense_example (sense_id, example_id, position) VALUES ('s1', 'x1', 0);
+            INSERT INTO sense_example (sense_id, example_id, position) VALUES ('s1', 'x2', 1);
+            """);
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM pragma_table_info('sense_example') WHERE name = 'id';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('sense_example') WHERE name = 'particle';"));
+        Assert.Equal(
+            2,
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example WHERE length(id) > 0;"));
+        Assert.Equal(
+            2,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sense_example WHERE particle_state = 'unspecified' AND revision_id IS NULL;"));
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'sense_example_carried';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'video';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'sense_video';"));
+    }
+
+    [Fact]
     public void DatabaseCreate_VersionTwelve_AddsCollocationMeaning()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

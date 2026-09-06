@@ -105,10 +105,11 @@ public sealed class TEntryUpdate
         });
 
         LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
-        LExampleLink examples = TInterface.TExampleLinkCreate(workspace.TWorkspaceDatabase);
+        LSentenceArchive examples = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
         Assert.Equal(
             ["two", "one"],
-            examples.TExampleMeaningRead(meaning.LMeaningId).Select(example => example.LExampleText));
+            examples.TSentenceMeaningRead(meaning.LMeaningId)
+                .Select(sentence => sentence.LSentenceExample.LExampleText));
 
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
 

@@ -148,19 +148,43 @@ internal static partial class TInterface
     internal static LExample? TExampleRead(this LExampleArchive exampleArchive, string id) =>
         exampleArchive.LExampleRead(id);
 
-    internal static void TExampleMeaningAttach(
-        this LExampleLink exampleLink,
+    internal static void TExampleDelete(this LExampleArchive exampleArchive, string id, bool detach)
+    {
+        exampleArchive.LExampleDelete(id, detach);
+    }
+
+    internal static LSentenceArchive TSentenceArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static void TSentenceMeaningAttach(
+        this LSentenceArchive sentenceArchive,
         string meaningId,
         string exampleId,
         int position)
     {
-        exampleLink.LExampleMeaningAttach(meaningId, exampleId, position);
+        sentenceArchive.LSentenceMeaningAttach(meaningId, exampleId, position);
     }
 
-    internal static IReadOnlyList<LExample> TExampleMeaningRead(
-        this LExampleLink exampleLink,
+    internal static void TSentenceMeaningDetach(
+        this LSentenceArchive sentenceArchive,
+        string meaningId,
+        string exampleId)
+    {
+        sentenceArchive.LSentenceMeaningDetach(meaningId, exampleId);
+    }
+
+    internal static void TSentenceMeaningSave(
+        this LSentenceArchive sentenceArchive,
+        string meaningId,
+        IReadOnlyList<LSentence> sentences)
+    {
+        sentenceArchive.LSentenceMeaningSave(meaningId, sentences);
+    }
+
+    internal static IReadOnlyList<LSentence> TSentenceMeaningRead(
+        this LSentenceArchive sentenceArchive,
         string meaningId) =>
-        exampleLink.LExampleMeaningRead(meaningId);
+        sentenceArchive.LSentenceMeaningRead(meaningId);
 
     internal static void TExampleUpdate(this LExampleArchive exampleArchive, LExample example)
     {

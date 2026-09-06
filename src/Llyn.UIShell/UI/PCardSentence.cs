@@ -8,7 +8,18 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard
 {
+    private LSentenceOrder _pCardSentenceOrder = LSentenceOrder.LSentenceOrderDefault;
+
     public ObservableCollection<PSentence> PCardSentence { get; }
+
+    internal void PCardSentenceApply(LSentenceOrder order)
+    {
+        _pCardSentenceOrder = order ?? LSentenceOrder.LSentenceOrderDefault;
+        foreach (PSentence row in PCardSentence)
+        {
+            row.PSentenceOrderApply(_pCardSentenceOrder);
+        }
+    }
 
     internal void PCardSentenceShow(IReadOnlyList<LExampleDraft> drafts)
     {
@@ -20,11 +31,7 @@ internal sealed partial class PCard
         PCardSentence.Clear();
         foreach (LExampleDraft draft in drafts)
         {
-            PCardSentenceAdd(new PSentence(
-                _pCardCitation,
-                draft.LExampleDraftText,
-                draft.LExampleDraftId,
-                draft.LExampleDraftReference));
+            PCardSentenceAdd(new PSentence(_pCardCitation, draft));
         }
 
         if (PCardSentence.Count == 0)
@@ -40,13 +47,12 @@ internal sealed partial class PCard
         List<LExampleDraft> drafts = [];
         foreach (PSentence row in PCardSentence)
         {
-            LStateValue text = row.PSentenceTextRead();
-            if (text.LStateValueEmpty)
+            if (row.PSentenceTextRead().LStateValueEmpty)
             {
                 continue;
             }
 
-            drafts.Add(new LExampleDraft(text, row.PSentenceId, row.PSentenceCitationRead()));
+            drafts.Add(row.PSentenceDraftRead());
         }
 
         return drafts;
@@ -56,6 +62,7 @@ internal sealed partial class PCard
     {
         int index = PCardSentence.IndexOf(row);
         PSentence opened = new(_pCardCitation);
+        opened.PSentenceOrderApply(_pCardSentenceOrder);
         opened.PropertyChanged += PCardSentenceChange;
         PCardSentence.Insert(index < 0 ? PCardSentence.Count : index + 1, opened);
         PCardSentenceUpdate();
@@ -87,6 +94,7 @@ internal sealed partial class PCard
 
     private void PCardSentenceAdd(PSentence row)
     {
+        row.PSentenceOrderApply(_pCardSentenceOrder);
         row.PropertyChanged += PCardSentenceChange;
         PCardSentence.Add(row);
     }

@@ -20,11 +20,6 @@ public sealed class LExampleLink
         return LExampleReferrerRead("entry_example", "entry_id", entryId);
     }
 
-    public IReadOnlyList<LExample> LExampleMeaningRead(string meaningId)
-    {
-        return LExampleReferrerRead("sense_example", "sense_id", meaningId);
-    }
-
     public IReadOnlyList<LExample> LExampleCollocationRead(string collocationId)
     {
         return LExampleReferrerRead("collocation_example", "collocation_id", collocationId);
@@ -35,11 +30,6 @@ public sealed class LExampleLink
         LExampleReferenceAttach("entry_example", "entry_id", entryId, exampleId, position);
     }
 
-    public void LExampleMeaningAttach(string meaningId, string exampleId, int position)
-    {
-        LExampleReferenceAttach("sense_example", "sense_id", meaningId, exampleId, position);
-    }
-
     public void LExampleCollocationAttach(string collocationId, string exampleId, int position)
     {
         LExampleReferenceAttach("collocation_example", "collocation_id", collocationId, exampleId, position);
@@ -48,11 +38,6 @@ public sealed class LExampleLink
     public void LExampleEntryDetach(string entryId, string exampleId)
     {
         LExampleReferenceDetach("entry_example", "entry_id", entryId, exampleId);
-    }
-
-    public void LExampleMeaningDetach(string meaningId, string exampleId)
-    {
-        LExampleReferenceDetach("sense_example", "sense_id", meaningId, exampleId);
     }
 
     public void LExampleCollocationDetach(string collocationId, string exampleId)
@@ -153,7 +138,7 @@ public sealed class LExampleLink
     internal static void LExampleLinkClear(SqliteConnection connection, string exampleId)
     {
         LExampleLinkClear(connection, "entry_example", "entry_id", exampleId);
-        LExampleLinkClear(connection, "sense_example", "sense_id", exampleId);
+        LSentenceArchive.LSentenceExampleClear(connection, exampleId);
         LExampleLinkClear(connection, "collocation_example", "collocation_id", exampleId);
     }
 

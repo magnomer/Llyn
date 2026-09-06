@@ -124,6 +124,11 @@ It is reached through the three association tables below, one per referrer kind.
 Each association carries the position the Example takes *for that referrer*.
 So one Example may be first under an Entry and third under a Meaning.
 The unique index per referrer keeps those orderings free of duplicates.
+sense_example is the one association with data of its own, so it carries its own opaque id.
+It holds the frame the Meaning reads the Example under, a marker and a role, each with what is known about it.
+It also holds the revision, which is a second Example row standing for the rewritten sentence.
+Both live on the association and never on the Example.
+So two Meanings citing one Example keep their own frame and their own rewrite.
 Deleting a referrer removes only its own association rows, by ON DELETE CASCADE on that side.
 The example_id foreign keys deliberately have no cascade.
 So an Example survives every detach.
@@ -155,6 +160,14 @@ It carries its own opaque id, and its visible data is never identity.
 It is reached only through the association table below.
 That table's situation_id foreign key deliberately has no cascade.
 So the row survives every detach.
+
+### `CREATE TABLE IF NOT EXISTS video (`
+
+The independent Video and the two associations that reach it.
+It is shaped exactly like the image block above, because a Video is kept exactly like an Image.
+It carries its own opaque id and the location it plays from, and nothing about it is identity.
+The association cascades with the card and never with the Video.
+So a Video survives every detach, and the store refuses to delete one anything still points at.
 
 ### `CREATE TABLE IF NOT EXISTS favorite (`
 

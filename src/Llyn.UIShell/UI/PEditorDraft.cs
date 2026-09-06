@@ -25,9 +25,12 @@ public partial class PEditor
             PMarkerRead());
     }
 
+    private LSentenceOrder _pEditorSentenceOrder = LSentenceOrder.LSentenceOrderDefault;
+
     private void PEditorDraftShow(LEntryDraft draft)
     {
         _pEditorFill = true;
+        _pEditorSentenceOrder = _lEngine.LEngineOrderRead(draft.LEntryDraftLanguage);
 
         PHeadword.Text = draft.LEntryDraftHeadword;
         PPronunciation.Text = draft.LEntryDraftPronunciation;
@@ -117,6 +120,7 @@ public partial class PEditor
                 PCardId = draft.LCardDraftId
             };
 
+            card.PCardSentenceApply(_pEditorSentenceOrder);
             card.PCardTitleShow(draft.LCardDraftTitle);
             card.PCardExpressionShow(draft.LCardDraftExpression);
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
@@ -127,12 +131,14 @@ public partial class PEditor
             PEditorChangeAttach(card);
             card.PCardLabelShow(draft.LCardDraftTag);
             card.PCardImageShow(draft.LCardDraftImage);
+            card.PCardVideoShow(draft.LCardDraftVideo);
             cards.Add(card);
         }
 
         if (cards.Count == 0)
         {
             PCard card = new(prefix, 1, _pEditorCitation);
+            card.PCardSentenceApply(_pEditorSentenceOrder);
             PLinkAttach(card);
             PEditorChangeAttach(card);
             cards.Add(card);
@@ -323,6 +329,7 @@ public partial class PEditor
                 string.Empty,
                 card.PCardLabelRead(),
                 card.PCardImageRead(),
+                card.PCardVideoRead(),
                 card.PCardPosition,
                 card.PCardId));
         }

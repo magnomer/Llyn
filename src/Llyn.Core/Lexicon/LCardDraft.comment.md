@@ -56,8 +56,10 @@ A comparison that means "the same card" walks the lists itself.
 - `LCardDraftImage` — The Images the card references, in the order they are shown.
   Each carries the location it is loaded from, a file on this machine or a web address.
   Each also carries what is known about that location.
-  A Video the form also carries is not here and never reaches the store.
-  A video is watched while the entry is being written, not kept with it.
+- `LCardDraftVideo` — The Videos the card references, in the order they are shown.
+  Each carries the location it is loaded from, a file on this machine or a web address.
+  Each also carries what is known about that location.
+  A Video is kept with the card exactly as an Image is.
 - `LCardDraftPosition` — The number this card is shown by, counted from one.
   It is the reader's number and never the offset the store keeps.
   The store counts from zero, so the load adds one on the way out.

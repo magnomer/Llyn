@@ -41,7 +41,7 @@ public sealed class TEntryStore
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
-        LExampleLink links = TInterface.TExampleLinkCreate(workspace.TWorkspaceDatabase);
+        LSentenceArchive links = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null),
@@ -51,7 +51,7 @@ public sealed class TEntryStore
             TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
         LExample example = examples.TExampleCreate(
             TInterface.TExampleCreate(string.Empty, "en", "a sentence", null, null));
-        links.TExampleMeaningAttach(meaning.LMeaningId, example.LExampleId, 0);
+        links.TSentenceMeaningAttach(meaning.LMeaningId, example.LExampleId, 0);
 
         entries.TEntryDelete(entry.LEntryId);
 

@@ -17,20 +17,50 @@ The mark stands until the user writes over it or clears the row.
 So nothing unreadable is quietly turned into nothing at all.
 Writing in the row is the user saying what the sentence is, which is why any edit ends the mark.
 
+The row also carries the frame the card reads the sentence under, a marker and a role.
+Nothing offers a value for either, because nothing ships one.
+Which of the two is written first is the language pack's to say and never the row's.
+The row is told the two places and puts each field where it was told.
+
+The revision is the sentence rewritten, and it is an Example of its own once stored.
+So the row keeps the id that rewrite is stored under, beside the id of the sentence itself.
+
 ## `internal PSentence(ObservableCollection<PCitationItem> catalog)`
 
 An empty row nothing has been written in.
 
-## `internal PSentence(ObservableCollection<PCitationItem> catalog, LStateValue text, string id, LStateValue reference)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog, LExampleDraft draft)`
 
 The row for a stored Example.
-It holds the sentence and the Source it cites as the store knows them.
-Both stand under the id that names it.
+It holds the sentence, the Source it cites, the frame, and the rewrite as the store knows them.
+All of it stands under the id that names it.
 
 ## `public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }`
 
 The Sources the whole form offers, shared by every row.
 So a Source written on one row is on offer to the next without reloading anything.
+
+## `internal void PSentenceOrderApply(LSentenceOrder order)`
+
+Puts the marker and the role in the places the language pack states.
+The row states no order of its own, so it holds only what it was told.
+
+## `internal LExampleDraft PSentenceDraftRead()`
+
+What the row says its Example is, frame and rewrite included.
+The rewrite is read as a row of the same shape, and is nothing at all when none was written.
+
+## `internal LStateValue PSentenceParticleRead()`
+
+What the row says its marker is: nothing written, unreadable, or the text it shows.
+
+## `internal LStateValue PSentenceDependenceRead()`
+
+What the row says its role is: nothing written, unreadable, or the text it shows.
+
+## `internal LStateValue PSentenceRevisionRead()`
+
+What the row says its rewrite is: nothing written, unreadable, or the text it shows.
 
 ## `internal LStateValue PSentenceTextRead()`
 

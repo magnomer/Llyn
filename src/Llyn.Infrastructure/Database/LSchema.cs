@@ -310,12 +310,22 @@ public static class LSchema
                 ON entry_example (entry_id, position);
 
             CREATE TABLE IF NOT EXISTS sense_example (
+                id TEXT NOT NULL PRIMARY KEY,
                 sense_id TEXT NOT NULL,
                 example_id TEXT NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, example_id),
+                revision_state TEXT NOT NULL DEFAULT 'unspecified',
+                revision_id TEXT,
+                particle_state TEXT NOT NULL DEFAULT 'unspecified',
+                particle TEXT,
+                dependence_state TEXT NOT NULL DEFAULT 'unspecified',
+                dependence TEXT,
+                CHECK (revision_state = 'specified' OR revision_id IS NULL),
+                CHECK (particle_state = 'specified' OR particle IS NULL),
+                CHECK (dependence_state = 'specified' OR dependence IS NULL),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_id) REFERENCES example (id)
+                FOREIGN KEY (example_id) REFERENCES example (id),
+                FOREIGN KEY (revision_id) REFERENCES example (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_example_position
@@ -450,6 +460,41 @@ public static class LSchema
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_image_position
                 ON collocation_image (collocation_id, position);
+            """;
+        command.ExecuteNonQuery();
+
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS video (
+                id TEXT NOT NULL PRIMARY KEY,
+                location_state TEXT NOT NULL DEFAULT 'unspecified',
+                location TEXT,
+                CHECK (location_state = 'specified' OR location IS NULL)
+            );
+
+            CREATE TABLE IF NOT EXISTS sense_video (
+                sense_id TEXT NOT NULL,
+                video_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (sense_id, video_id),
+                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
+                FOREIGN KEY (video_id) REFERENCES video (id)
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS sense_video_position
+                ON sense_video (sense_id, position);
+
+            CREATE TABLE IF NOT EXISTS collocation_video (
+                collocation_id TEXT NOT NULL,
+                video_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (collocation_id, video_id),
+                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
+                FOREIGN KEY (video_id) REFERENCES video (id)
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS collocation_video_position
+                ON collocation_video (collocation_id, position);
             """;
         command.ExecuteNonQuery();
 

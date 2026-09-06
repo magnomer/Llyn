@@ -2,12 +2,17 @@
 
 ## `internal sealed partial class PCard`
 
-The Video rows a card carries while it is being written.
-They are not part of what the card says it is.
-A Video is never read from a draft and never written into one.
-So it is neither loaded with the card nor stored with it.
-It lives only as long as the form.
-A card that is saved and opened again shows no videos.
+The Video rows a card carries.
+A Video is kept with the card exactly as an Image is.
+A card that is saved and opened again shows the videos it was saved with.
+
+## `internal void PCardVideoShow(IReadOnlyList<LStateValue> locations)`
+
+Fills the rows from a stored card, one row per location, in the order given.
+
+## `internal IReadOnlyList<LStateValue> PCardVideoRead()`
+
+The locations the rows state, skipping every row nothing was written in.
 
 ## `internal void PCardVideoAdd()`
 

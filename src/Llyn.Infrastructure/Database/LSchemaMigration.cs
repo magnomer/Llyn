@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 23;
+    public const long LSchemaMigrationVersion = 24;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -88,6 +88,11 @@ public static class LSchemaMigration
         if (stored < 23)
         {
             LSchemaFavoriteCreate(connection);
+        }
+
+        if (stored < 24)
+        {
+            LSchemaSentenceNormalize(connection);
         }
 
         LSchemaVersionSave(connection);
@@ -209,6 +214,74 @@ public static class LSchemaMigration
             $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = $column;";
         command.Parameters.AddWithValue("$column", column);
         return Convert.ToInt64(command.ExecuteScalar()) > 0;
+    }
+
+    private static void LSchemaSentenceNormalize(SqliteConnection connection)
+    {
+        if (LSchemaColumnFind(connection, "sense_example", "id"))
+        {
+            return;
+        }
+
+        using (SqliteCommand off = connection.CreateCommand())
+        {
+            off.CommandText = "PRAGMA foreign_keys = OFF;";
+            off.ExecuteNonQuery();
+        }
+
+        try
+        {
+            LSchemaSentenceRebuild(connection);
+        }
+        finally
+        {
+            using SqliteCommand on = connection.CreateCommand();
+            on.CommandText = "PRAGMA foreign_keys = ON;";
+            on.ExecuteNonQuery();
+        }
+    }
+
+    private static void LSchemaSentenceRebuild(SqliteConnection connection)
+    {
+        using SqliteTransaction rebuild = connection.BeginTransaction();
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            ALTER TABLE sense_example RENAME TO sense_example_carried;
+
+            DROP INDEX IF EXISTS sense_example_position;
+
+            DROP INDEX IF EXISTS sense_example_member;
+
+            CREATE TABLE sense_example (
+                id TEXT NOT NULL PRIMARY KEY,
+                sense_id TEXT NOT NULL,
+                example_id TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                revision_state TEXT NOT NULL DEFAULT 'unspecified',
+                revision_id TEXT,
+                particle_state TEXT NOT NULL DEFAULT 'unspecified',
+                particle TEXT,
+                dependence_state TEXT NOT NULL DEFAULT 'unspecified',
+                dependence TEXT,
+                CHECK (revision_state = 'specified' OR revision_id IS NULL),
+                CHECK (particle_state = 'specified' OR particle IS NULL),
+                CHECK (dependence_state = 'specified' OR dependence IS NULL),
+                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
+                FOREIGN KEY (example_id) REFERENCES example (id),
+                FOREIGN KEY (revision_id) REFERENCES example (id)
+            );
+
+            INSERT INTO sense_example (id, sense_id, example_id, position)
+            SELECT lower(hex(randomblob(6))), sense_id, example_id, position FROM sense_example_carried;
+
+            DROP TABLE sense_example_carried;
+
+            CREATE UNIQUE INDEX IF NOT EXISTS sense_example_position
+                ON sense_example (sense_id, position);
+            """;
+        command.ExecuteNonQuery();
+        rebuild.Commit();
     }
 
     private static void LSchemaFavoriteCreate(SqliteConnection connection)

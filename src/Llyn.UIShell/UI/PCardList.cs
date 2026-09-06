@@ -14,6 +14,7 @@ public partial class PEditor
     private void PMeaningHandle(object sender, RoutedEventArgs e)
     {
         PCard card = new("Meaning", _pMeaningList.Count + 1, _pEditorCitation);
+        card.PCardSentenceApply(_pEditorSentenceOrder);
         PLinkAttach(card);
         PEditorChangeAttach(card);
         _pMeaningList.Add(card);
@@ -23,6 +24,7 @@ public partial class PEditor
     private void PCollocationHandle(object sender, RoutedEventArgs e)
     {
         PCard card = new("Collocation", _pCollocationList.Count + 1, _pEditorCitation);
+        card.PCardSentenceApply(_pEditorSentenceOrder);
         PLinkAttach(card);
         PEditorChangeAttach(card);
         _pCollocationList.Add(card);

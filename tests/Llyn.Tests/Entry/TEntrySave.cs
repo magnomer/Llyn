@@ -86,13 +86,14 @@ public sealed class TEntrySave
         LCollocation collocation = Assert.Single(
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(entry.LEntryId));
 
-        LExampleLink examples = TInterface.TExampleLinkCreate(workspace.TWorkspaceDatabase);
+        LSentenceArchive examples = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
+        LExampleLink links = TInterface.TExampleLinkCreate(workspace.TWorkspaceDatabase);
         LSituationArchive situations = TInterface.TSituationArchiveCreate(workspace.TWorkspaceDatabase);
         LTagArchive tags = TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase);
 
         Assert.Equal(
             "he said a word",
-            Assert.Single(examples.TExampleMeaningRead(meaning.LMeaningId)).LExampleText);
+            Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample.LExampleText);
         Assert.Equal(
             "conversation",
             Assert.Single(situations.TSituationMeaningRead(meaning.LMeaningId)).LSituationTitle);
@@ -100,7 +101,7 @@ public sealed class TEntrySave
 
         Assert.Equal(
             "in a word, no",
-            Assert.Single(examples.TExampleCollocationRead(collocation.LCollocationId)).LExampleText);
+            Assert.Single(links.TExampleCollocationRead(collocation.LCollocationId)).LExampleText);
         Assert.Equal(
             "summary",
             Assert.Single(situations.TSituationCollocationRead(collocation.LCollocationId)).LSituationTitle);
@@ -115,8 +116,8 @@ public sealed class TEntrySave
         LMeaning other = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(second.LEntryId));
 
         Assert.NotEqual(
-            Assert.Single(examples.TExampleMeaningRead(meaning.LMeaningId)).LExampleId,
-            Assert.Single(examples.TExampleMeaningRead(other.LMeaningId)).LExampleId);
+            Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample.LExampleId,
+            Assert.Single(examples.TSentenceMeaningRead(other.LMeaningId)).LSentenceExample.LExampleId);
         Assert.NotEqual(
             Assert.Single(situations.TSituationMeaningRead(meaning.LMeaningId)).LSituationId,
             Assert.Single(situations.TSituationMeaningRead(other.LMeaningId)).LSituationId);

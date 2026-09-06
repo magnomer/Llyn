@@ -71,6 +71,11 @@ public sealed partial class LEngine
             .LMorphologyRead(language, speechId, featureId, valueId);
     }
 
+    public LSentenceOrder LEngineOrderRead(string language)
+    {
+        return LSentenceLoader.LSentenceLoaderLoad(language);
+    }
+
     private void LEngineLanguageImport()
     {
         using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();

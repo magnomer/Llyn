@@ -181,7 +181,7 @@ public sealed partial class LEngine
 
     private void LEngineCardSync(string ownerId, LCardDraft card, string language, bool collocation)
     {
-        LEngineExampleSync(ownerId, card.LCardDraftExample, language, collocation);
+        LEngineSentenceSync(ownerId, card.LCardDraftExample, language, collocation);
         LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation);
 
         LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
@@ -214,23 +214,74 @@ public sealed partial class LEngine
 
                 images.LImageMeaningAttach(ownerId, rowId, position);
             });
+
+        LVideoArchive videos = new(_lEngineDatabase);
+        LEngineFieldSync(
+            card.LCardDraftVideo,
+            collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId),
+            row => row.LVideoId,
+            row => row.LVideoLocation,
+            location => videos.LVideoCreate(new LVideo(string.Empty, location)).LVideoId,
+            rowId =>
+            {
+                if (collocation)
+                {
+                    videos.LVideoCollocationDetach(ownerId, rowId);
+                    return;
+                }
+
+                videos.LVideoMeaningDetach(ownerId, rowId);
+            },
+            (rowId, position) =>
+            {
+                if (collocation)
+                {
+                    videos.LVideoCollocationAttach(ownerId, rowId, position);
+                    return;
+                }
+
+                videos.LVideoMeaningAttach(ownerId, rowId, position);
+            });
     }
 
-    private void LEngineExampleSync(
+    private void LEngineSentenceSync(
         string ownerId, IReadOnlyList<LExampleDraft> drafts, string language, bool collocation)
     {
         LExampleArchive exampleRows = new(_lEngineDatabase);
-        LExampleLink examples = new(_lEngineDatabase);
 
-        IReadOnlyList<LExample> attached = collocation
-            ? examples.LExampleCollocationRead(ownerId)
-            : examples.LExampleMeaningRead(ownerId);
+        if (collocation)
+        {
+            LEngineExampleSync(exampleRows, ownerId, drafts, language);
+            return;
+        }
+
+        List<LSentence> rows = [];
+        foreach (LExampleDraft draft in LEngineExampleRead(drafts))
+        {
+            rows.Add(new LSentence(
+                string.Empty,
+                ownerId,
+                rows.Count,
+                LEngineExampleResolve(exampleRows, draft, language),
+                LEngineRevisionResolve(exampleRows, draft, language),
+                draft.LExampleDraftParticle,
+                draft.LExampleDraftDependence));
+        }
+
+        new LSentenceArchive(_lEngineDatabase).LSentenceMeaningSave(ownerId, rows);
+    }
+
+    private void LEngineExampleSync(
+        LExampleArchive exampleRows, string ownerId, IReadOnlyList<LExampleDraft> drafts, string language)
+    {
+        LExampleLink examples = new(_lEngineDatabase);
+        IReadOnlyList<LExample> attached = examples.LExampleCollocationRead(ownerId);
 
         List<string> targets = [];
         HashSet<string> kept = new(StringComparer.Ordinal);
         foreach (LExampleDraft draft in LEngineExampleRead(drafts))
         {
-            string id = LEngineExampleResolve(exampleRows, draft, language);
+            string id = LEngineExampleResolve(exampleRows, draft, language).LExampleId;
             if (!kept.Add(id))
             {
                 continue;
@@ -241,29 +292,15 @@ public sealed partial class LEngine
 
         foreach (LExample row in attached)
         {
-            if (kept.Contains(row.LExampleId))
-            {
-                continue;
-            }
-
-            if (collocation)
+            if (!kept.Contains(row.LExampleId))
             {
                 examples.LExampleCollocationDetach(ownerId, row.LExampleId);
-                continue;
             }
-
-            examples.LExampleMeaningDetach(ownerId, row.LExampleId);
         }
 
         for (int position = 0; position < targets.Count; position++)
         {
-            if (collocation)
-            {
-                examples.LExampleCollocationAttach(ownerId, targets[position], position);
-                continue;
-            }
-
-            examples.LExampleMeaningAttach(ownerId, targets[position], position);
+            examples.LExampleCollocationAttach(ownerId, targets[position], position);
         }
     }
 
