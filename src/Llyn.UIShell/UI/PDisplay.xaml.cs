@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -257,6 +257,7 @@ public partial class PDisplay : UserControl
     {
         PDisplayLanguage.Text = language;
         PDisplayLanguageFlag.Source = null;
+        PFont.PFontApply(_lEngine, language, PDisplayHeadword);
 
         await PEnsign.PEnsignLoad(_lEngine);
 

@@ -226,3 +226,8 @@ Splitting a sentence would be guessing where one example ends.
 The inverse, for a stored card: one box shows one value, so a card that references several shows the first.
 The rest stay in the store — a save writes a new entry, so nothing is overwritten.
 
+
+### `PHeadwordFontApply(language);`
+
+An entry is shown in the typography its own language declares, not the panel's last choice.
+This runs before the equality check, because a reopened form may hold another pack's typography.

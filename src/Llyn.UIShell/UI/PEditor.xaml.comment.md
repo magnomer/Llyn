@@ -61,3 +61,8 @@ After the language is settled, because the presets on offer are that language's.
 
 Every text box in the editor reports through one handler, caught as the event bubbles.
 Cards and their rows come and go, and none of them has to be subscribed to by hand.
+
+### `<ToggleButton x:Name="PSpeaker" Style="{StaticResource Theme.Language.Toggle}">`
+
+The language pill is drawn as the reading view draws it, so one entry reads the same in both.
+The toggle keeps its arrow and its menu, because here the language is chosen rather than reported.

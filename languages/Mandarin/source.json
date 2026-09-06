@@ -1,6 +1,10 @@
 {
   "language": "Mandarin",
   "flag": "cn",
+  "font": {
+    "family": "Microsoft YaHei",
+    "size": 40
+  },
   "note": "Language selector pack for Mandarin. Pronunciation and audio sources can be added without changing the application.",
   "sources": []
 }

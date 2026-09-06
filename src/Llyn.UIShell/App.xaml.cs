@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -15,6 +15,7 @@ public partial class LBootstrap : System.Windows.Application
             PThemeLoader.PThemeLoaderApply(Resources);
             PField.PFieldApply(Resources);
             PIndicator.PIndicatorApply(Resources);
+            PCaret.PCaretHook();
         }
         catch (Exception exception)
         {

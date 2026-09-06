@@ -23,9 +23,9 @@
             </Grid.ColumnDefinitions>
 
             <Grid Margin="0,0,16,0">
-                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="{DynamicResource Input.Headword}">
+                <TextBlock x:Name="PHeadwordHint" Margin="0,0,4,0" Opacity="0" IsHitTestVisible="False" Text="{DynamicResource Input.Headword}">
                     <TextBlock.Style>
-                        <Style TargetType="TextBlock">
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">
                             <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Text, ElementName=PHeadword}" Value="">
@@ -35,33 +35,24 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                <TextBlock Margin="0,0,4,0" FontSize="40" FontWeight="Bold" Opacity="0" IsHitTestVisible="False" Text="{Binding Text, ElementName=PHeadword}" />
+                <TextBlock x:Name="PHeadwordGhost" Margin="0,0,4,0" Opacity="0" IsHitTestVisible="False" Style="{StaticResource Theme.Text.Headword}" Text="{Binding Text, ElementName=PHeadword}" />
                 <TextBox x:Name="PHeadword" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="{DynamicResource Input.Headword}" />
             </Grid>
 
             <Grid Grid.Column="1">
-                <ToggleButton
-                    x:Name="PSpeaker"
-                    Width="170"
-                    Height="41"
-                    Padding="17,0"
-                    HorizontalContentAlignment="Stretch"
-                    Background="{StaticResource Theme.Surface}"
-                    BorderBrush="{StaticResource Theme.Line}"
-                    BorderThickness="1"
-                    Style="{StaticResource Theme.Input.TogglePill}">
+                <ToggleButton x:Name="PSpeaker" Style="{StaticResource Theme.Language.Toggle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid Width="19" Height="14" VerticalAlignment="Center">
                             <Image x:Name="PSpeakerFlag" Stretch="Uniform" />
-                            <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                            <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
                         </Grid>
-                        <TextBlock x:Name="PSpeakerName" Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="English" />
-                        <Path Grid.Column="2" Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.5" />
+                        <TextBlock x:Name="PSpeakerName" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" Text="English" />
+                        <Path Grid.Column="2" Width="8" Height="4" Margin="8,0,0,0" VerticalAlignment="Center" Data="M 0,0 L 4,3 L 8,0" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.5" />
                     </Grid>
                 </ToggleButton>
                 <Popup

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -168,6 +168,7 @@ public partial class PEditor
         }
 
         _pSpeakerEntry = true;
+        PHeadwordFontApply(language);
 
         if (string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
         {
@@ -190,6 +191,7 @@ public partial class PEditor
         PMarkerShow(null);
         PRecordingClear();
         _pSpeakerEntry = false;
+        PHeadwordFontApply(_pSpeakerChoice);
         PSentenceFrameLoad(_pSpeakerChoice);
 
         PCardShow(_pMeaningList, "Meaning", [], PEditorTargetEmpty);

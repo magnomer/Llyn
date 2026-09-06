@@ -71,3 +71,8 @@ A pack that is gone from disk fails inside `PEnsign` rather than here.
 
 The choice may have changed while the flags loaded.
 Only paint the still-current one.
+
+### `PHeadwordFontApply(_pSpeakerChoice);`
+
+The headword is drawn in the typography of the language it is written in.
+A language chosen by hand changes that typography at once.

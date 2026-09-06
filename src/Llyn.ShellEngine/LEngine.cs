@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -56,6 +56,13 @@ public sealed partial class LEngine : IDisposable
         {
             return LLanguageLoader.LLanguageLoaderScan();
         }
+    }
+
+    public LFont LEngineFontRead(string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        return LLanguageLoader.LLanguageLoaderLoad(language).LLanguageFont;
     }
 
     public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)

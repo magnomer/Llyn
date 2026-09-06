@@ -34,6 +34,7 @@ public partial class PEditor
         }
 
         PSpeakerName.Text = _pSpeakerChoice;
+        PHeadwordFontApply(_pSpeakerChoice);
         PSpeakerFlagUpdate();
         PLinkFlagUpdate();
         PCategoryLoad();
@@ -57,6 +58,7 @@ public partial class PEditor
             PEditorChangeDefer();
         }
         PSpeakerName.Text = language;
+        PHeadwordFontApply(language);
         PSpeakerFlagUpdate();
         PSpeaker.IsChecked = false;
     }

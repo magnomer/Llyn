@@ -342,8 +342,8 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Center" FontSize="40" FontWeight="Bold" TextWrapping="Wrap" />
-                    <Border Grid.Column="1" Margin="14,0,0,0" Padding="10,5" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="12">
+                    <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Center" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
+                    <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
                         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                             <Grid Width="19" Height="14" VerticalAlignment="Center">
                                 <Image x:Name="PDisplayLanguageFlag" Stretch="Uniform">
@@ -369,7 +369,7 @@
                                     </Ellipse.Style>
                                 </Ellipse>
                             </Grid>
-                            <TextBlock x:Name="PDisplayLanguage" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Accent}" />
+                            <TextBlock x:Name="PDisplayLanguage" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" />
                         </StackPanel>
                     </Border>
                     <ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" VerticalAlignment="Center" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Click="PDisplayFavoriteHandle" Style="{StaticResource Theme.Input.ToggleAction}" ToolTip="{DynamicResource Favorite.Mark}">

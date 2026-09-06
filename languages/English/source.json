@@ -1,6 +1,10 @@
 {
   "language": "English",
   "flag": "gb",
+  "font": {
+    "family": "Segoe UI",
+    "size": 40
+  },
   "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities.",
   "sources": [
     {

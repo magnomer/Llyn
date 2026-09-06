@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -56,7 +56,7 @@ public static class LLanguageLoader
         string path = Path.Combine(folder, LLanguageLoaderFile);
         if (!File.Exists(path))
         {
-            return new LLanguage(language, null, Array.Empty<LSourceSpec>());
+            return new LLanguage(language, null, LLanguageFontBlank, Array.Empty<LSourceSpec>());
         }
 
         try
@@ -67,7 +67,7 @@ public static class LLanguageLoader
         }
         catch (Exception exception) when (exception is IOException or JsonException or UnauthorizedAccessException)
         {
-            return new LLanguage(language, null, Array.Empty<LSourceSpec>());
+            return new LLanguage(language, null, LLanguageFontBlank, Array.Empty<LSourceSpec>());
         }
     }
 
@@ -90,7 +90,24 @@ public static class LLanguageLoader
             }
         }
 
-        return new LLanguage(language, flag, specs);
+        return new LLanguage(language, flag, LLanguageFontRead(root), specs);
+    }
+
+    private static LFont LLanguageFontBlank => new(null, 0);
+
+    private static LFont LLanguageFontRead(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("font", out JsonElement font) ||
+            font.ValueKind != JsonValueKind.Object)
+        {
+            return LLanguageFontBlank;
+        }
+
+        string? family = LLanguageTextRead(font, "family");
+        double size = LLanguageMeasureRead(font, "size");
+
+        return new LFont(string.IsNullOrWhiteSpace(family) ? null : family, size);
     }
 
     private static LSourceSpec? LLanguageSourceRead(JsonElement source)
@@ -192,6 +209,16 @@ public static class LLanguageLoader
             && value.ValueKind == JsonValueKind.Number
             && value.TryGetInt32(out int number)
             ? number
+            : 0;
+    }
+
+    private static double LLanguageMeasureRead(JsonElement element, string key)
+    {
+        return element.TryGetProperty(key, out JsonElement value)
+            && value.ValueKind == JsonValueKind.Number
+            && value.TryGetDouble(out double measure)
+            && measure > 0
+            ? measure
             : 0;
     }
 

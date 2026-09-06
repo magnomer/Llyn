@@ -75,3 +75,8 @@ Marking creates no entry and changes no lexical data.
 The flag comes from `PEnsign`, which every tab holding a display reads too.
 The first call may await a fetch, so a later entry may be shown before it arrives.
 The language shown now is compared before the image is set.
+
+### `PFont.PFontApply(_lEngine, language, PDisplayHeadword);`
+
+The reading view draws a headword exactly as the editor does.
+Both ask the same pack, so the two views never differ in family or size.
