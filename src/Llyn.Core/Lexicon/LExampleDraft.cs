@@ -5,8 +5,7 @@ public sealed record LExampleDraft(
     string LExampleDraftId,
     LStateValue LExampleDraftReference,
     LStateValue LExampleDraftParticle,
-    LStateValue LExampleDraftDependence,
-    LExampleDraft? LExampleDraftRevision)
+    LStateValue LExampleDraftDependence)
 {
     public LStateValue LExampleDraftText { get; init; } =
         LExampleDraftText ?? LStateValue.LStateValueUnspecified;
@@ -27,7 +26,6 @@ public sealed record LExampleDraft(
             string.Empty,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            null);
+            LStateValue.LStateValueUnspecified);
     }
 }

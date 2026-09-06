@@ -282,6 +282,7 @@ An open form always shows one such card, and offering it is not an edit.
 
 Whether two example lists say the same thing in the same order.
 The citation each names counts, so retagging a sentence is a change.
+The frame counts too, so writing a marker or a role and nothing else is a change and is saved rather than cancelled.
 
 ## `private static bool LEngineSituationMatch(IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)`
 

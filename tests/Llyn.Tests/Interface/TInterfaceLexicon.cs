@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 
 using LMarkupEntry = Llyn.Core.LMarkup.LMarkupEntry;
 using LMarkupReference = Llyn.Core.LMarkup.LMarkupReference;
@@ -88,25 +88,28 @@ internal static partial class TInterface
         string id,
         LStateValue reference,
         LStateValue? particle = null,
-        LStateValue? dependence = null,
-        LExampleDraft? revision = null) =>
+        LStateValue? dependence = null) =>
         new(
             text,
             id,
             reference,
             particle ?? LStateValue.LStateValueUnspecified,
-            dependence ?? LStateValue.LStateValueUnspecified,
-            revision);
+            dependence ?? LStateValue.LStateValueUnspecified);
 
     internal static LSentence TSentenceCreate(
         string id,
         string ownerId,
         int position,
-        LExample example,
-        LExample? revision,
-        LStateValue particle,
-        LStateValue dependence) =>
-        new(id, ownerId, position, example, revision, particle, dependence);
+        LExample? example,
+        LStateValue? particle,
+        LStateValue? dependence) =>
+        new(
+            id,
+            ownerId,
+            position,
+            example,
+            particle ?? LStateValue.LStateValueUnspecified,
+            dependence ?? LStateValue.LStateValueUnspecified);
 
     internal static LExampleDraft TExampleDraftCreate(string text) =>
         LExampleDraft.LExampleDraftCreate(text);

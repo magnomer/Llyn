@@ -11,6 +11,8 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     private readonly string _pCardPrefix;
     private readonly ObservableCollection<PCitationItem> _pCardCitation;
+    private readonly ObservableCollection<string> _pCardParticle;
+    private readonly ObservableCollection<string> _pCardDependence;
     private int _pCardPosition;
     private string _pTitle;
     private bool _pTitleUnreadable;
@@ -19,17 +21,23 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private string _pCardExpression;
     private bool _pCardExpressionUnreadable;
 
-    internal PCard(string prefix, int position, ObservableCollection<PCitationItem> catalog)
+    internal PCard(
+        string prefix,
+        int position,
+        ObservableCollection<PCitationItem> catalog,
+        ObservableCollection<string> particles,
+        ObservableCollection<string> dependences)
     {
         _pCardPrefix = prefix;
         _pCardPosition = position;
         _pCardCitation = catalog;
+        _pCardParticle = particles;
+        _pCardDependence = dependences;
         _pTitle = string.Empty;
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;
         PCardSentence = [];
-        PCardSentenceAdd(new PSentence(catalog));
-        PCardSentenceUpdate();
+        PCardSentenceAdd(new PSentence(catalog, particles, dependences));
         PCardContext = [];
         PCardContextAdd(new PContext());
         PCardContextUpdate();

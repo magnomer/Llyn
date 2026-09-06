@@ -1,6 +1,11 @@
-# TAuditName.cs
+﻿# TAuditName.cs
 
 ## Inline notes
+
+### `if (nameAttribute.Value.StartsWith(TAuditTemplatePart, StringComparison.Ordinal))`
+
+A control template names its parts by strings WPF looks up itself, all of them beginning `PART_`.
+Those names are externally fixed, exactly as a framework interface's member names are, so they are skipped rather than judged.
 
 ### `bool anyTestPrefixed = candidates.Any(candidate =>`
 

@@ -18,22 +18,23 @@ The headline alone is the whole answer, and an empty detail line under it would 
 ### `internal void PWindowFailureShow(string key, Exception exception)`
 
 Presents a request that failed, under the localized headline the given key names.
-A deliberate refusal carries a reason key.
-It resolves through the same catalog as the rest of the interface.
-Anything unexpected is a fault rather than a refusal, so it keeps its own message.
-That message stays diagnosable even though it is not translated.
+A deliberate refusal carries a reason key and resolves through the same catalog as the rest of the interface.
 
 ### `private string PWindowDetailRead(Exception exception)`
 
-Reads the detail line out of a failure, following it down to what actually went wrong.
+Reads the detail line out of a failure.
 
-A failure that wraps another says where the work stopped, not why it stopped.
-An import that names the entry it broke on carries the broken tag inside it.
-So each wrapper's own message is kept and the one it wraps is read after it.
-That goes down to the innermost.
-A refusal at any depth resolves through the catalog like one at the top.
-Showing only the outermost message would leave the user holding a position with no reason.
-That is the shape of a failure nobody can act on.
+A refusal is a position the user can act on, so its reason is what they are shown.
+Anything else is a fault, and a fault's own message is written for whoever fixes the program, not for whoever is using it.
+A column name and an ordinal tell the user nothing they can do anything about, so the box says plainly that something unexpected went wrong.
+The fault itself is written to the workspace's audit log and the box names the file.
+So nothing diagnosable is lost, and nobody is handed a stack trace they did not ask for.
+
+### `private string? PWindowRefusalRead(Exception exception)`
+
+Whether a refusal stands anywhere inside the failure, and the reason it names.
+A refusal is often wrapped by the step that was running when it was raised.
+Reading only the outermost exception would turn a stated position into an unexplained fault.
 
 ### `private (Func<bool> Check, Func<bool, bool> Finish)[] PWindowEditorRead()`
 

@@ -1,4 +1,4 @@
-# PTheme.xaml
+﻿# PTheme.xaml
 
 ## `<Style TargetType="ScrollBar">`
 
@@ -13,6 +13,15 @@ That name must stay out of the audited XAML naming surface.
 
 The TextBox content host must be named "PART_ContentHost" (a WPF template contract).
 That name is authored in code (PField) so it stays out of the audited XAML surface.
+
+## `<Style x:Key="Theme.Input.Choice" TargetType="ComboBox">`
+
+A field typed into that also offers what has been saved before it.
+It reads as a plain field, because a value nothing ships is written far more often than it is picked.
+The arrow is hidden while nothing has been saved, so an empty list never offers an empty menu.
+Text search is off and the drop stays open while typing, so the list never overwrites what is being written.
+WPF requires the editing box to be named "PART_EditableTextBox" and the drop "PART_Popup".
+Both are template contracts and are held out of the audited XAML naming surface.
 
 ## `<Style x:Key="Theme.Text.Inverse" TargetType="TextBlock">`
 

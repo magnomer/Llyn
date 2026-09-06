@@ -138,12 +138,11 @@ public sealed class LEntryLoader
         foreach (LSentence sentence in sentences)
         {
             drafts.Add(new LExampleDraft(
-                sentence.LSentenceExample.LExampleText,
-                sentence.LSentenceExample.LExampleId,
-                sentence.LSentenceExample.LExampleSource,
+                sentence.LSentenceExample?.LExampleText ?? LStateValue.LStateValueUnspecified,
+                sentence.LSentenceExample?.LExampleId ?? string.Empty,
+                sentence.LSentenceExample?.LExampleSource ?? LStateValue.LStateValueUnspecified,
                 sentence.LSentenceParticle,
-                sentence.LSentenceDependence,
-                LEntryRevisionRead(sentence.LSentenceRevision)));
+                sentence.LSentenceDependence));
         }
 
         return drafts;
@@ -159,22 +158,6 @@ public sealed class LEntryLoader
         }
 
         return drafts;
-    }
-
-    private static LExampleDraft? LEntryRevisionRead(LExample? revision)
-    {
-        if (revision is null)
-        {
-            return null;
-        }
-
-        return new LExampleDraft(
-            revision.LExampleText,
-            revision.LExampleId,
-            revision.LExampleSource,
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            null);
     }
 
     private static IReadOnlyList<LStateValue> LEntryImageRead(IReadOnlyList<LImage> images)

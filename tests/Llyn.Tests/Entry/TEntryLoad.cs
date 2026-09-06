@@ -9,6 +9,39 @@ namespace Llyn.Tests;
 public sealed class TEntryLoad
 {
     [Fact]
+    public void EntryLoad_FrameWithNoExample_KeepsTheFrame()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "wait",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardDraftCreate(
+                    string.Empty, string.Empty, "to stay until something happens",
+                    [TInterface.TExampleDraftCreate(
+                        LStateValue.LStateValueUnspecified, string.Empty,
+                        LStateValue.LStateValueUnspecified, "for", "Patient")],
+                    [], [], string.Empty, [], [], 1),
+            ],
+            []));
+
+        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        LExampleDraft example = Assert.Single(
+            Assert.Single(draft.LEntryDraftMeanings).LCardDraftExample);
+
+        Assert.Equal("for", example.LExampleDraftParticle.TStateValueShow());
+        Assert.Equal("Patient", example.LExampleDraftDependence.TStateValueShow());
+        Assert.True(example.LExampleDraftText.LStateValueEmpty);
+        Assert.Empty(example.LExampleDraftId);
+
+        Assert.Empty(engine.TEngineUsageRead(LOwner.LOwnerExample));
+    }
+
+    [Fact]
     public void EntryLoad_SavedEntry_ReturnsSavedDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

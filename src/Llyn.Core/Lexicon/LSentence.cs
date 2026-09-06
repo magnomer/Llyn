@@ -1,11 +1,10 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSentence(
     string LSentenceId,
     string LSentenceOwnerId,
     int LSentencePosition,
-    LExample LSentenceExample,
-    LExample? LSentenceRevision,
+    LExample? LSentenceExample,
     LStateValue LSentenceParticle,
     LStateValue LSentenceDependence)
 {

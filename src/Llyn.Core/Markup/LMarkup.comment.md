@@ -180,9 +180,6 @@ The format states where the two are written and never what they may say.
 A language pack orders the two fields in the editor and has no say over a document.
 Markup is read in tag order, so no pack can reorder what a file wrote.
 
-A `<rewrite>` binds to the example above it rather than standing on its own.
-It is read in the same pass, so the example it belongs to is the last one added.
-
 **Parameters**
 
 - `tokens` — Every token of one card block, in document order.
@@ -191,28 +188,6 @@ It is read in the same pass, so the example it belongs to is the last one added.
   Cards of one entry therefore number one to n in the order the document writes them.
 
 **Returns** — The card as a draft, with no id, because an imported card has none until it is saved.
-
-## `private static void LMarkupRevisionRead(List<LExampleDraft> examples, LMarkupToken token)`
-
-Hangs one `<rewrite>` off the example it rewrites.
-A rewrite has no place of its own in a card, because a card stores no rewrites.
-It is a second sentence carried by the example whose form it rewrites.
-So the tag binds to the last example read rather than to the card.
-
-A rewrite written before any example in its card is dropped.
-There is nothing for it to rewrite, and inventing an empty example to hold it would invent a sentence.
-A second rewrite bound to an example that already has one is dropped for the same reason.
-An example carries one rewrite, so the extra tag names a slot that does not exist.
-Both cases follow section 1 and are ignored rather than an error.
-
-The rewrite is built as an example draft, because that is the shape a stored rewrite has.
-It carries no citation and no frame, and its own rewrite is always `null`.
-A rewrite of a rewrite is a shape the record does not allow.
-
-**Parameters**
-
-- `examples` — The examples of the card read so far, in document order.
-- `token` — The `<rewrite>` tag as scanned.
 
 ## `internal static LMarkupReference LMarkupReferenceRead(IReadOnlyList<LMarkupToken> tokens)`
 

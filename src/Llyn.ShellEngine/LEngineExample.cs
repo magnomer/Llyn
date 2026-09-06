@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
@@ -98,7 +98,9 @@ public sealed partial class LEngine
             {
                 LOwner.LOwnerEntry => examples.LExampleEntryRead(ownerId),
                 LOwner.LOwnerMeaning or LOwner.LOwnerCollocation =>
-                    [.. LEngineSentenceRead(ownerId, owner).Select(sentence => sentence.LSentenceExample)],
+                    [.. LEngineSentenceRead(ownerId, owner)
+                        .Select(sentence => sentence.LSentenceExample)
+                        .OfType<LExample>()],
                 _ => throw LEngineOwnerRaise(owner),
             };
         }

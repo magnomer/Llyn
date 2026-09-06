@@ -1,4 +1,4 @@
-# TEntryLoad.cs
+﻿# TEntryLoad.cs
 
 ## `public sealed class TEntryLoad`
 
@@ -10,6 +10,12 @@ So what a test writes through `LEngineEntrySave` is exactly what comes back.
 That is headword, language, pronunciation and note.
 It is also every card with its definition.
 It is also the whole ordered set of Examples, Situations and Tags it references.
+
+## `public void EntryLoad_FrameWithNoExample_KeepsTheFrame()`
+
+An Example row carrying a frame and no sentence survives a save and a load.
+The frame is the card's own, so nothing about it may wait on a sentence being written first.
+The row comes back naming no Example, because none was ever stored.
 
 ## Inline notes
 

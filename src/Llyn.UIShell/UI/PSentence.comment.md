@@ -1,4 +1,4 @@
-# PSentence.cs
+﻿# PSentence.cs
 
 ## `internal sealed class PSentence`
 
@@ -22,23 +22,33 @@ Nothing offers a value for either, because nothing ships one.
 Which of the two is written first is the language pack's to say and never the row's.
 The row is told the two places and puts each field where it was told.
 
-The revision is the sentence rewritten, and it is an Example of its own once stored.
-So the row keeps the id that rewrite is stored under, beside the id of the sentence itself.
+Each of the two frame fields offers what has already been saved for the language.
+Nothing is shipped, so an empty store offers nothing and the field is a plain box until something is written in it.
 
-## `internal PSentence(ObservableCollection<PCitationItem> catalog)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences)`
 
 An empty row nothing has been written in.
 
-## `internal PSentence(ObservableCollection<PCitationItem> catalog, LExampleDraft draft)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, LExampleDraft draft)`
 
 The row for a stored Example.
-It holds the sentence, the Source it cites, the frame, and the rewrite as the store knows them.
+It holds the sentence, the Source it cites, and the frame as the store knows them.
 All of it stands under the id that names it.
 
 ## `public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }`
 
 The Sources the whole form offers, shared by every row.
 So a Source written on one row is on offer to the next without reloading anything.
+
+## `public ObservableCollection<string> PSentenceParticleCatalog { get; }`
+
+The markers already saved for the language, shared by every row.
+Nothing ships one, so the list is empty until a user writes and saves one.
+
+## `public ObservableCollection<string> PSentenceDependenceCatalog { get; }`
+
+The roles already saved for the language, shared by every row.
+Nothing ships one, so the list is empty until a user writes and saves one.
 
 ## `internal void PSentenceOrderApply(LSentenceOrder order)`
 
@@ -47,8 +57,7 @@ The row states no order of its own, so it holds only what it was told.
 
 ## `internal LExampleDraft PSentenceDraftRead()`
 
-What the row says its Example is, frame and rewrite included.
-The rewrite is read as a row of the same shape, and is nothing at all when none was written.
+What the row says its Example is, frame included.
 
 ## `internal LStateValue PSentenceParticleRead()`
 
@@ -58,10 +67,6 @@ What the row says its marker is: nothing written, unreadable, or the text it sho
 
 What the row says its role is: nothing written, unreadable, or the text it shows.
 
-## `internal LStateValue PSentenceRevisionRead()`
-
-What the row says its rewrite is: nothing written, unreadable, or the text it shows.
-
 ## `internal LStateValue PSentenceTextRead()`
 
 What the row says its sentence is: nothing written, unreadable, or the text it shows.
@@ -70,10 +75,16 @@ What the row says its sentence is: nothing written, unreadable, or the text it s
 
 What the row says about the Source it cites: none, unreadable, or the one it names.
 
+## `internal bool PSentenceCheck()`
+
+Whether the row says anything at all: a sentence, a marker, or a role.
+A frame written on a row with no sentence still stands, so the row is read rather than dropped.
+
 ## `internal void PSentenceIdentityApply()`
 
 Gives the row the id its Example will be stored under, once the row holds a sentence.
-An id, once given, stays with the row.
+An id, once given, stays with the row while the sentence does.
+Emptying the sentence takes the id with it, because the row then holds a frame and no Example to name.
 
 ## `internal void PSentenceClear()`
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -55,10 +55,57 @@ public sealed class LSentenceArchive
         LSentenceOwnerDetach("collocation_example", "collocation_id", collocationId, exampleId);
     }
 
+    public IReadOnlyList<string> LSentenceParticleRead(string language)
+    {
+        return LSentenceFrameRead("particle", language);
+    }
+
+    public IReadOnlyList<string> LSentenceDependenceRead(string language)
+    {
+        return LSentenceFrameRead("dependence", language);
+    }
+
     internal static void LSentenceExampleClear(SqliteConnection connection, string exampleId)
     {
         LSentenceTableClear(connection, "sense_example", "sense_id", exampleId);
         LSentenceTableClear(connection, "collocation_example", "collocation_id", exampleId);
+    }
+
+    private IReadOnlyList<string> LSentenceFrameRead(string column, string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        using LDatabaseSession session = _lSentenceArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            $"""
+            SELECT DISTINCT link.{column}
+            FROM (
+                SELECT hold.{column}, hold.{column}_state, sense.entry_id
+                FROM sense_example hold
+                JOIN sense ON sense.id = hold.sense_id
+                UNION ALL
+                SELECT hold.{column}, hold.{column}_state, collocation.entry_id
+                FROM collocation_example hold
+                JOIN collocation ON collocation.id = hold.collocation_id
+            ) link
+            JOIN entry ON entry.id = link.entry_id
+            WHERE entry.language = $language
+              AND link.{column}_state = 'specified'
+              AND link.{column} IS NOT NULL
+              AND trim(link.{column}) <> ''
+            ORDER BY link.{column};
+            """;
+        command.Parameters.AddWithValue("$language", language);
+
+        List<string> values = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            values.Add(reader.GetString(0));
+        }
+
+        return values;
     }
 
     private static string LSentenceScopeCreate(string column)
@@ -76,15 +123,10 @@ public sealed class LSentenceArchive
                    example.id, example.language, example.text_state, example.text,
                    example.translation_state, example.translation,
                    example.source_state, example.source_id,
-                   link.revision_state, revision.id, revision.language,
-                   revision.text_state, revision.text,
-                   revision.translation_state, revision.translation,
-                   revision.source_state, revision.source_id,
                    link.particle_state, link.particle,
                    link.dependence_state, link.dependence
             FROM {table} link
-            JOIN example ON example.id = link.example_id
-            LEFT JOIN example revision ON revision.id = link.revision_id
+            LEFT JOIN example ON example.id = link.example_id
             WHERE link.{column} = $owner
             ORDER BY link.position;
             """;
@@ -98,10 +140,9 @@ public sealed class LSentenceArchive
                 reader.GetString(0),
                 reader.GetString(1),
                 reader.GetInt32(2),
-                LSentenceExampleRead(reader, 3),
-                reader.IsDBNull(12) ? null : LSentenceExampleRead(reader, 12),
-                LStateColumn.LStateColumnRead(reader, 20),
-                LStateColumn.LStateColumnRead(reader, 22)));
+                reader.IsDBNull(3) ? null : LSentenceExampleRead(reader, 3),
+                LStateColumn.LStateColumnRead(reader, 11),
+                LStateColumn.LStateColumnRead(reader, 13)));
         }
 
         return sentences;
@@ -123,7 +164,7 @@ public sealed class LSentenceArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                $"SELECT DISTINCT {column} FROM {table} WHERE example_id = $example OR revision_id = $example;";
+                $"SELECT DISTINCT {column} FROM {table} WHERE example_id = $example;";
             command.Parameters.AddWithValue("$example", exampleId);
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -135,17 +176,6 @@ public sealed class LSentenceArchive
         if (owners.Count == 0)
         {
             return;
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText =
-                $"""
-                UPDATE {table} SET revision_state = 'unspecified', revision_id = NULL
-                WHERE revision_id = $example;
-                """;
-            command.Parameters.AddWithValue("$example", exampleId);
-            command.ExecuteNonQuery();
         }
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -174,12 +204,10 @@ public sealed class LSentenceArchive
             $"""
             INSERT INTO {table} (
                 id, {column}, example_id, position,
-                revision_state, revision_id,
                 particle_state, particle,
                 dependence_state, dependence)
             VALUES (
                 $id, $owner, $example, $position,
-                $revisionState, $revision,
                 $particleState, $particle,
                 $dependenceState, $dependence);
             """;
@@ -187,12 +215,9 @@ public sealed class LSentenceArchive
             "$id",
             string.IsNullOrWhiteSpace(sentence.LSentenceId) ? LIdentity.LIdentityCreate() : sentence.LSentenceId);
         command.Parameters.AddWithValue("$owner", ownerId);
-        command.Parameters.AddWithValue("$example", sentence.LSentenceExample.LExampleId);
+        command.Parameters.AddWithValue(
+            "$example", (object?)sentence.LSentenceExample?.LExampleId ?? DBNull.Value);
         command.Parameters.AddWithValue("$position", position);
-        command.Parameters.AddWithValue(
-            "$revisionState", sentence.LSentenceRevision is null ? "unspecified" : "specified");
-        command.Parameters.AddWithValue(
-            "$revision", (object?)sentence.LSentenceRevision?.LExampleId ?? DBNull.Value);
         LStateColumn.LStateColumnApply(command, "particle", sentence.LSentenceParticle);
         LStateColumn.LStateColumnApply(command, "dependence", sentence.LSentenceDependence);
         command.ExecuteNonQuery();

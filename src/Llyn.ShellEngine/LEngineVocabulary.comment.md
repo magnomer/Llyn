@@ -1,4 +1,4 @@
-# LEngineVocabulary.cs
+﻿# LEngineVocabulary.cs
 
 ## `public sealed partial class LEngine`
 
@@ -57,6 +57,21 @@ It carries the display names and order those hold.
 
 Resolves one morphology vocabulary row, the feature and value display names and their order.
 It returns `null` when the language declares no such row.
+
+## `public LSentenceOrder LEngineOrderRead(string language)`
+
+Reads which of the two Example frame fields `language` writes first, from that language's pack.
+A language naming neither, or naming no pack at all, reads back the marker first.
+
+## `public IReadOnlyList<string> LEngineParticleRead(string language)`
+
+Reads the markers already saved under Entries written in `language`.
+Nothing ships a marker, so an untouched workspace offers none and the field is a plain box.
+An unnamed language reads back nothing rather than every marker of every language.
+
+## `public IReadOnlyList<string> LEngineDependenceRead(string language)`
+
+Reads the roles already saved under Entries written in `language`, on the same terms as a marker.
 
 ## Inline notes
 

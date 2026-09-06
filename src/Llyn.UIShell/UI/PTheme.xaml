@@ -542,6 +542,141 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Choice.Item" TargetType="ComboBoxItem">
+        <Setter Property="Height" Value="31" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="PChoiceSurface" Padding="{TemplateBinding Padding}" Background="Transparent" CornerRadius="7">
+                        <ContentPresenter VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PChoiceSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="PChoiceSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.Choice" TargetType="ComboBox">
+        <Setter Property="IsEditable" Value="True" />
+        <Setter Property="IsTextSearchEnabled" Value="False" />
+        <Setter Property="StaysOpenOnEdit" Value="True" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="12,7" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="ItemContainerStyle" Value="{StaticResource Theme.Choice.Item}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <Border
+                            x:Name="PChoiceField"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    x:Name="PART_EditableTextBox"
+                                    Margin="{TemplateBinding Padding}"
+                                    VerticalContentAlignment="Center"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    CaretBrush="{StaticResource Theme.Ink}"
+                                    FontSize="{TemplateBinding FontSize}"
+                                    Foreground="{TemplateBinding Foreground}" />
+                                <TextBlock
+                                    x:Name="PChoiceHint"
+                                    Margin="{TemplateBinding Padding}"
+                                    Padding="2,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="{TemplateBinding FontSize}"
+                                    Foreground="{StaticResource Theme.Muted}"
+                                    IsHitTestVisible="False"
+                                    Opacity="0.56"
+                                    Text="{TemplateBinding Tag}"
+                                    TextTrimming="CharacterEllipsis"
+                                    Visibility="Collapsed" />
+                                <ToggleButton
+                                    x:Name="PChoiceSwitch"
+                                    Grid.Column="1"
+                                    Width="24"
+                                    Background="Transparent"
+                                    ClickMode="Press"
+                                    Focusable="False"
+                                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Border Background="Transparent">
+                                                <Path
+                                                    Width="9"
+                                                    Height="5"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Data="M 0,0 L 4.5,5 L 9,0"
+                                                    Stroke="{StaticResource Theme.Muted}"
+                                                    StrokeEndLineCap="Round"
+                                                    StrokeThickness="1.5" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                            </Grid>
+                        </Border>
+                        <Popup
+                            x:Name="PART_Popup"
+                            MinWidth="{Binding ActualWidth, ElementName=PChoiceField}"
+                            AllowsTransparency="True"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PlacementTarget="{Binding ElementName=PChoiceField}"
+                            PopupAnimation="Fade">
+                            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                                <ScrollViewer MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter TargetName="PChoiceHint" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="PChoiceSwitch" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="PChoiceField" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PChoiceHint" Property="Opacity" Value="0.36" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PChoiceField" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="Theme.Input.Card" TargetType="Border">
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />

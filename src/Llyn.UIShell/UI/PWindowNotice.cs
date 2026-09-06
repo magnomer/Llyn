@@ -34,14 +34,27 @@ public partial class PWindow
 
     private string PWindowDetailRead(Exception exception)
     {
+        if (PWindowRefusalRead(exception) is string refused)
+        {
+            return refused;
+        }
+
+        string unexpected = PLocalizationTextRead("Notice.Unexpected");
+        string? recorded = _lEngine.LEngineAuditRecord(exception);
+
+        return recorded is null
+            ? unexpected
+            : $"{unexpected}\n\n{PLocalizationTextRead("Notice.Recorded")}\n{recorded}";
+    }
+
+    private string? PWindowRefusalRead(Exception exception)
+    {
         if (exception is LRefusal refusal)
         {
             return PLocalizationTextRead(refusal.LRefusalReason);
         }
 
-        return exception.InnerException is null
-            ? exception.Message
-            : $"{exception.Message}\n{PWindowDetailRead(exception.InnerException)}";
+        return exception.InnerException is null ? null : PWindowRefusalRead(exception.InnerException);
     }
 
     private (Func<bool> Check, Func<bool, bool> Finish)[] PWindowEditorRead()

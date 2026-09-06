@@ -153,6 +153,9 @@ internal static partial class TInterface
     internal static LSentenceArchive TSentenceArchiveCreate(LDatabase database) =>
         new(database);
 
+    internal static LSentenceOrder TSentenceOrderLoad(string language) =>
+        LSentenceLoader.LSentenceLoaderLoad(language);
+
     internal static void TSentenceMeaningAttach(
         this LSentenceArchive sentenceArchive,
         string meaningId,
@@ -182,6 +185,16 @@ internal static partial class TInterface
         this LSentenceArchive sentenceArchive,
         string meaningId) =>
         sentenceArchive.LSentenceMeaningRead(meaningId);
+
+    internal static IReadOnlyList<string> TSentenceParticleRead(
+        this LSentenceArchive sentenceArchive,
+        string language) =>
+        sentenceArchive.LSentenceParticleRead(language);
+
+    internal static IReadOnlyList<string> TSentenceDependenceRead(
+        this LSentenceArchive sentenceArchive,
+        string language) =>
+        sentenceArchive.LSentenceDependenceRead(language);
 
     internal static void TSentenceCollocationAttach(
         this LSentenceArchive sentenceArchive,

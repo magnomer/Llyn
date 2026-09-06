@@ -1,4 +1,4 @@
-# LSentence.cs
+﻿# LSentence.cs
 
 ## `public sealed record LSentence(`
 
@@ -14,10 +14,8 @@ Neither is ever shipped with a value: nothing in the program or a language pack 
 A language pack states only which of the two is written first.
 So English writes the marker before the role, and a language with postpositions writes the role first.
 
-`LSentenceRevision` is a second Example standing for the rewritten sentence.
-It is a full Example row, not text, so it can be cited and translated like any other.
-Nothing is revised when it is absent.
-A revision belongs to this owner alone, so revising here never rewrites what another owner shows.
+A Sentence may state a frame and no Example at all.
+The frame belongs to the owner, not to the Example, so a marker written before any sentence is not the Example's to lose.
 
 The owner is a Meaning or a Collocation, and the two hold an Example on identical terms.
 The row itself does not say which kind it is, because the store it was read from already does.
@@ -27,7 +25,6 @@ The row itself does not say which kind it is, because the store it was read from
 - `LSentenceId` — Opaque, program-generated stable id of this owner's hold on the Example.
 - `LSentenceOwnerId` — The Meaning or Collocation holding the Example.
 - `LSentencePosition` — Where the row sits among the owner's Sentences, counted from zero.
-- `LSentenceExample` — The Example the row shows.
-- `LSentenceRevision` — The rewritten Example, and `null` when the sentence stands unrevised.
+- `LSentenceExample` — The Example the row shows, and `null` when the row states a frame and no sentence.
 - `LSentenceParticle` — The frame's grammatical marker, and what is known about it.
 - `LSentenceDependence` — The role the frame fills, and what is known about it.

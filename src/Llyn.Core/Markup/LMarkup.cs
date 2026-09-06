@@ -164,11 +164,7 @@ public static partial class LMarkup
                         string.Empty,
                         LMarkupStateRead(token.LMarkupTokenSource),
                         LMarkupStateRead(token.LMarkupTokenParticle),
-                        LMarkupStateRead(token.LMarkupTokenDependence),
-                        null));
-                    break;
-                case "rewrite":
-                    LMarkupRevisionRead(examples, token);
+                        LMarkupStateRead(token.LMarkupTokenDependence)));
                     break;
                 case "situation":
                     situations.Add(new LSituationDraft(LMarkupStateRead(token), string.Empty));
@@ -289,31 +285,6 @@ public static partial class LMarkup
                     break;
             }
         }
-    }
-
-    private static void LMarkupRevisionRead(List<LExampleDraft> examples, LMarkupToken token)
-    {
-        if (examples.Count == 0)
-        {
-            return;
-        }
-
-        LExampleDraft example = examples[^1];
-        if (example.LExampleDraftRevision is not null)
-        {
-            return;
-        }
-
-        examples[^1] = example with
-        {
-            LExampleDraftRevision = new LExampleDraft(
-                LMarkupStateRead(token),
-                string.Empty,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                LStateValue.LStateValueUnspecified,
-                null),
-        };
     }
 
     private static void LMarkupTagRead(List<string> tags, LMarkupToken token)

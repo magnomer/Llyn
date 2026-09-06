@@ -37,6 +37,7 @@ public partial class PEditor
         PSpeakerFlagUpdate();
         PLinkFlagUpdate();
         PCategoryLoad();
+        PSentenceFrameLoad(_pSpeakerChoice);
     }
 
     internal void PSpeakerHandle(object sender, RoutedEventArgs e)
@@ -52,6 +53,7 @@ public partial class PEditor
             _pSpeakerChoice = language;
             _pSpeakerEntry = false;
             PCategoryLoad();
+            PSentenceFrameLoad(language);
             PEditorChangeDefer();
         }
         PSpeakerName.Text = language;

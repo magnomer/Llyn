@@ -25,7 +25,7 @@ public partial class PEditor
 
     private PCard PCardCreate(string prefix, int position)
     {
-        PCard card = new(prefix, position, _pEditorCitation)
+        PCard card = new(prefix, position, _pEditorCitation, _pEditorParticle, _pEditorDependence)
         {
             PCardId = _lEngine.LEngineCardCreate()
         };

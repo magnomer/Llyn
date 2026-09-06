@@ -1,4 +1,4 @@
-# PCardSentence.cs
+﻿# PCardSentence.cs
 
 ## `internal sealed partial class PCard`
 
@@ -22,6 +22,7 @@ So a card always offers somewhere to write.
 
 What the card says its Examples are.
 A row nothing was written in is left out rather than read as an empty Example.
+A row stating a frame and no sentence is kept, because the frame is the card's own and is lost nowhere else.
 
 ## `internal void PCardSentenceInsert(PSentence row)`
 
@@ -33,8 +34,3 @@ So a sentence is added where they were reading.
 Drops the row, except when it is the last one.
 The last row is emptied instead.
 A card with no row to write in offers nothing.
-
-## `internal void PCardSentenceUpdate()`
-
-Numbers the rows while there is more than one.
-It numbers nothing while there is only one, because a single Example needs no ordinal.

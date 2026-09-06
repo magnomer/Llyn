@@ -312,20 +312,19 @@ public static class LSchema
             CREATE TABLE IF NOT EXISTS sense_example (
                 id TEXT NOT NULL PRIMARY KEY,
                 sense_id TEXT NOT NULL,
-                example_id TEXT NOT NULL,
+                example_id TEXT,
                 position INTEGER NOT NULL,
-                revision_state TEXT NOT NULL DEFAULT 'unspecified',
-                revision_id TEXT,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
                 particle TEXT,
                 dependence_state TEXT NOT NULL DEFAULT 'unspecified',
                 dependence TEXT,
-                CHECK (revision_state = 'specified' OR revision_id IS NULL),
                 CHECK (particle_state = 'specified' OR particle IS NULL),
                 CHECK (dependence_state = 'specified' OR dependence IS NULL),
+                CHECK (example_id IS NOT NULL
+                       OR particle_state <> 'unspecified'
+                       OR dependence_state <> 'unspecified'),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_id) REFERENCES example (id),
-                FOREIGN KEY (revision_id) REFERENCES example (id)
+                FOREIGN KEY (example_id) REFERENCES example (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_example_position
@@ -334,20 +333,19 @@ public static class LSchema
             CREATE TABLE IF NOT EXISTS collocation_example (
                 id TEXT NOT NULL PRIMARY KEY,
                 collocation_id TEXT NOT NULL,
-                example_id TEXT NOT NULL,
+                example_id TEXT,
                 position INTEGER NOT NULL,
-                revision_state TEXT NOT NULL DEFAULT 'unspecified',
-                revision_id TEXT,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
                 particle TEXT,
                 dependence_state TEXT NOT NULL DEFAULT 'unspecified',
                 dependence TEXT,
-                CHECK (revision_state = 'specified' OR revision_id IS NULL),
                 CHECK (particle_state = 'specified' OR particle IS NULL),
                 CHECK (dependence_state = 'specified' OR dependence IS NULL),
+                CHECK (example_id IS NOT NULL
+                       OR particle_state <> 'unspecified'
+                       OR dependence_state <> 'unspecified'),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_id) REFERENCES example (id),
-                FOREIGN KEY (revision_id) REFERENCES example (id)
+                FOREIGN KEY (example_id) REFERENCES example (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_example_position

@@ -1,4 +1,4 @@
-# LExampleDraft.cs
+﻿# LExampleDraft.cs
 
 ## `public sealed record LExampleDraft(`
 
@@ -14,11 +14,6 @@ The row also carries the frame the card reads the sentence under.
 A marker and a role are written by hand, because nothing ships either of them.
 A language pack states only which of the two the form writes first.
 
-A revision is a second sentence standing for the rewritten form of the first.
-It is stored as its own Example, so it is carried here as a row of the same shape.
-A revision never carries a revision of its own.
-No revision at all means the sentence stands unrevised.
-
 **Parameters**
 
 - `LExampleDraftText` — The sentence the row shows, and what is known about it.
@@ -26,9 +21,8 @@ No revision at all means the sentence stands unrevised.
 - `LExampleDraftReference` — The Source the sentence cites, and what is known about it.
 - `LExampleDraftParticle` — The frame's grammatical marker, and what is known about it.
 - `LExampleDraftDependence` — The role the frame fills, and what is known about it.
-- `LExampleDraftRevision` — The rewritten sentence as a row of its own, and `null` when nothing rewrites it.
 
 ## `public static LExampleDraft LExampleDraftCreate(string text)`
 
 A sentence written with nothing else said about it.
-It has no id yet, no Source cited, no frame, and no revision.
+It has no id yet, no Source cited, and no frame.

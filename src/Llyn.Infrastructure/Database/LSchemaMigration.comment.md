@@ -1,4 +1,4 @@
-# LSchemaMigration.cs
+﻿# LSchemaMigration.cs
 
 ## `public static class LSchemaMigration`
 
@@ -97,8 +97,8 @@ No older row carries a mark, so nothing is copied into it.
 
 Version 24.
 A Meaning's hold on an Example becomes a row with data of its own, so `sense_example` is rebuilt.
-It gains its own id, the frame the Meaning reads the Example under, and the rewrite it keeps.
-Every older row is carried over with its Example and its place, stating no frame and no rewrite.
+It gains its own id and the frame the Meaning reads the Example under.
+Every older row is carried over with its Example and its place, stating no frame.
 Nothing is dropped, because an older row said nothing that the new shape cannot hold.
 The video tables arrive in the same version through `LSchema`, which creates what is missing.
 
@@ -107,7 +107,7 @@ The video tables arrive in the same version through `LSchema`, which creates wha
 Version 25.
 A Collocation's hold on an Example takes the shape a Meaning's already has, so `collocation_example` is rebuilt.
 The same rebuild serves both, because the two tables differ only in their name and their owner column.
-Every older row is carried over with its Example and its place, stating no frame and no rewrite.
+Every older row is carried over with its Example and its place, stating no frame.
 The editor already drew the frame fields on a Collocation card, and the store dropped them until now.
 
 ### `if (stored < 26)`
@@ -115,6 +115,23 @@ The editor already drew the frame fields on a Collocation card, and the store dr
 Version 26.
 The workspace row gains one ordering column per browse panel, so the shell's own view state outlives the process.
 `LSchemaWorkspace` adds only the columns that are missing, and carries every row over untouched.
+
+### `if (stored < 27)`
+
+Version 27.
+A frame is the owner's, not the Example's, so an owner may state one before any sentence is written.
+Both hold tables are rebuilt with a nullable `example_id` for it, because SQLite cannot drop a NOT NULL from a table that stands.
+Every older row is carried over whole, id and frame included, since each one already cites an Example.
+
+### `private static void LSchemaFrameNormalize(`
+
+The rebuild runs with foreign keys off and back on, exactly as the version 24 rebuild does.
+The two hold tables differ only in their name and their owner column, so one rebuild serves both.
+
+### `private static void LSchemaFrameRebuild(`
+
+The carried rows keep their own ids rather than being handed new ones.
+A hold's id is what a saved draft names, so reissuing it would orphan what points at it.
 
 ### `private static void LSchemaSentenceRebuild(`
 

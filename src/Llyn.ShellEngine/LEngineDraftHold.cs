@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -652,7 +652,9 @@ public sealed partial class LEngine
             if (one[index].LExampleDraftText != other[index].LExampleDraftText
                 || !string.Equals(
                     one[index].LExampleDraftId, other[index].LExampleDraftId, StringComparison.Ordinal)
-                || one[index].LExampleDraftReference != other[index].LExampleDraftReference)
+                || one[index].LExampleDraftReference != other[index].LExampleDraftReference
+                || one[index].LExampleDraftParticle != other[index].LExampleDraftParticle
+                || one[index].LExampleDraftDependence != other[index].LExampleDraftDependence)
             {
                 return false;
             }

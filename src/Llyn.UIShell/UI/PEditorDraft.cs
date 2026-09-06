@@ -27,12 +27,10 @@ public partial class PEditor
             PMarkerRead());
     }
 
-    private LSentenceOrder _pEditorSentenceOrder = LSentenceOrder.LSentenceOrderDefault;
-
     private void PEditorDraftShow(LEntryDraft draft)
     {
         _pEditorFill = true;
-        _pEditorSentenceOrder = _lEngine.LEngineOrderRead(draft.LEntryDraftLanguage);
+        PSentenceFrameLoad(draft.LEntryDraftLanguage);
 
         PHeadword.Text = draft.LEntryDraftHeadword;
         PPronunciation.Text = draft.LEntryDraftPronunciation;
@@ -117,7 +115,7 @@ public partial class PEditor
         cards.Clear();
         foreach (LCardDraft draft in drafts)
         {
-            PCard card = new(prefix, draft.LCardDraftPosition, _pEditorCitation)
+            PCard card = new(prefix, draft.LCardDraftPosition, _pEditorCitation, _pEditorParticle, _pEditorDependence)
             {
                 PCardId = draft.LCardDraftId
             };
@@ -192,6 +190,7 @@ public partial class PEditor
         PMarkerShow(null);
         PRecordingClear();
         _pSpeakerEntry = false;
+        PSentenceFrameLoad(_pSpeakerChoice);
 
         PCardShow(_pMeaningList, "Meaning", [], PEditorTargetEmpty);
         PCardShow(_pCollocationList, "Collocation", [], PEditorTargetEmpty);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -31,15 +31,13 @@ internal sealed partial class PCard
         PCardSentence.Clear();
         foreach (LExampleDraft draft in drafts)
         {
-            PCardSentenceAdd(new PSentence(_pCardCitation, draft));
+            PCardSentenceAdd(new PSentence(_pCardCitation, _pCardParticle, _pCardDependence, draft));
         }
 
         if (PCardSentence.Count == 0)
         {
-            PCardSentenceAdd(new PSentence(_pCardCitation));
+            PCardSentenceAdd(new PSentence(_pCardCitation, _pCardParticle, _pCardDependence));
         }
-
-        PCardSentenceUpdate();
     }
 
     internal IReadOnlyList<LExampleDraft> PCardSentenceRead()
@@ -47,7 +45,7 @@ internal sealed partial class PCard
         List<LExampleDraft> drafts = [];
         foreach (PSentence row in PCardSentence)
         {
-            if (row.PSentenceTextRead().LStateValueEmpty)
+            if (!row.PSentenceCheck())
             {
                 continue;
             }
@@ -61,11 +59,10 @@ internal sealed partial class PCard
     internal void PCardSentenceInsert(PSentence row)
     {
         int index = PCardSentence.IndexOf(row);
-        PSentence opened = new(_pCardCitation);
+        PSentence opened = new(_pCardCitation, _pCardParticle, _pCardDependence);
         opened.PSentenceOrderApply(_pCardSentenceOrder);
         opened.PropertyChanged += PCardSentenceChange;
         PCardSentence.Insert(index < 0 ? PCardSentence.Count : index + 1, opened);
-        PCardSentenceUpdate();
     }
 
     internal void PCardSentenceRemove(PSentence row)
@@ -78,18 +75,6 @@ internal sealed partial class PCard
 
         row.PropertyChanged -= PCardSentenceChange;
         PCardSentence.Remove(row);
-        PCardSentenceUpdate();
-    }
-
-    internal void PCardSentenceUpdate()
-    {
-        bool numbered = PCardSentence.Count > 1;
-        for (int index = 0; index < PCardSentence.Count; index++)
-        {
-            PCardSentence[index].PSentenceOrderText = numbered
-                ? $"({index + 1})"
-                : string.Empty;
-        }
     }
 
     private void PCardSentenceAdd(PSentence row)

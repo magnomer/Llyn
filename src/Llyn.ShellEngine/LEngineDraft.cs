@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -194,7 +194,7 @@ public sealed partial class LEngine
     {
         foreach (LExampleDraft draft in drafts)
         {
-            if (!draft.LExampleDraftText.LStateValueEmpty)
+            if (LEngineExampleCheck(draft))
             {
                 return true;
             }
@@ -207,38 +207,33 @@ public sealed partial class LEngine
     {
         foreach (LExampleDraft draft in drafts)
         {
-            if (!draft.LExampleDraftText.LStateValueEmpty)
+            if (LEngineExampleCheck(draft))
             {
                 yield return draft;
             }
         }
     }
 
-    private static LExample LEngineExampleResolve(
-        LExampleArchive examples, LExampleDraft draft, string language)
+    private static bool LEngineExampleCheck(LExampleDraft draft)
     {
-        return LEngineExampleResolve(
-            examples,
-            draft.LExampleDraftId,
-            draft.LExampleDraftText,
-            draft.LExampleDraftReference,
-            language);
+        return !draft.LExampleDraftText.LStateValueEmpty
+            || !draft.LExampleDraftParticle.LStateValueEmpty
+            || !draft.LExampleDraftDependence.LStateValueEmpty;
     }
 
-    private static LExample? LEngineRevisionResolve(
+    private static LExample? LEngineExampleResolve(
         LExampleArchive examples, LExampleDraft draft, string language)
     {
-        LExampleDraft? revision = draft.LExampleDraftRevision;
-        if (revision is null || revision.LExampleDraftText.LStateValueEmpty)
+        if (draft.LExampleDraftText.LStateValueEmpty)
         {
             return null;
         }
 
         return LEngineExampleResolve(
             examples,
-            revision.LExampleDraftId,
-            revision.LExampleDraftText,
-            LStateValue.LStateValueUnspecified,
+            draft.LExampleDraftId,
+            draft.LExampleDraftText,
+            draft.LExampleDraftReference,
             language);
     }
 

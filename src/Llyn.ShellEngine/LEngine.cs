@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -92,6 +92,14 @@ public sealed partial class LEngine : IDisposable
         lock (_lEngineGate)
         {
             return _lEngineWorkspace;
+        }
+    }
+
+    public string? LEngineAuditRecord(Exception exception)
+    {
+        lock (_lEngineGate)
+        {
+            return LAuditWriter.LAuditWriterRecord(_lEngineWorkspace, exception);
         }
     }
 

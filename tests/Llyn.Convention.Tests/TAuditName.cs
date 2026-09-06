@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -31,6 +31,8 @@ internal static class TAuditName
     private static readonly Regex TAuditComponentPattern = new(
         "[A-Z]+(?=[A-Z][a-z]|[0-9]|$)|[A-Z]?[a-z]+|[0-9]+",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private const string TAuditTemplatePart = "PART_";
 
     private static readonly HashSet<string> TAuditMethodKinds =
         new(StringComparer.Ordinal) { "Method", "LocalFunction" };
@@ -173,6 +175,11 @@ internal static class TAuditName
                  attribute.Name.NamespaceName == "http://schemas.microsoft.com/winfx/2006/xaml"));
 
             if (nameAttribute is null || string.IsNullOrWhiteSpace(nameAttribute.Value))
+            {
+                continue;
+            }
+
+            if (nameAttribute.Value.StartsWith(TAuditTemplatePart, StringComparison.Ordinal))
             {
                 continue;
             }

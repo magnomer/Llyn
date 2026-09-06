@@ -391,7 +391,7 @@ public sealed class TSchemaMigration
         Assert.Equal(
             2,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM sense_example WHERE particle_state = 'unspecified' AND revision_id IS NULL;"));
+                "SELECT COUNT(*) FROM sense_example WHERE particle_state = 'unspecified';"));
         Assert.Equal(
             0,
             workspace.TWorkspaceCountRead(
@@ -450,7 +450,7 @@ public sealed class TSchemaMigration
             workspace.TWorkspaceCountRead(
                 """
                 SELECT COUNT(*) FROM collocation_example
-                WHERE particle_state = 'unspecified' AND revision_id IS NULL;
+                WHERE particle_state = 'unspecified';
                 """));
         Assert.Equal(
             2,

@@ -10,6 +10,12 @@ public partial class PEditor
 {
     private readonly ObservableCollection<PCitationItem> _pEditorCitation = [];
 
+    private readonly ObservableCollection<string> _pEditorParticle = [];
+
+    private readonly ObservableCollection<string> _pEditorDependence = [];
+
+    private LSentenceOrder _pEditorSentenceOrder = LSentenceOrder.LSentenceOrderDefault;
+
     internal void PSentenceLoad()
     {
         _pEditorCitation.Clear();
@@ -31,6 +37,58 @@ public partial class PEditor
         }
 
         PSentenceCitationShow();
+    }
+
+    internal void PSentenceFrameLoad(string language)
+    {
+        string chosen = string.IsNullOrWhiteSpace(language) ? _pSpeakerChoice : language;
+
+        _pEditorSentenceOrder = _lEngine.LEngineOrderRead(chosen);
+        PSentenceFrameShow(_pEditorParticle, PSentenceParticleRead(chosen));
+        PSentenceFrameShow(_pEditorDependence, PSentenceDependenceRead(chosen));
+
+        foreach (PCard card in _pMeaningList)
+        {
+            card.PCardSentenceApply(_pEditorSentenceOrder);
+        }
+
+        foreach (PCard card in _pCollocationList)
+        {
+            card.PCardSentenceApply(_pEditorSentenceOrder);
+        }
+    }
+
+    private IReadOnlyList<string> PSentenceParticleRead(string language)
+    {
+        try
+        {
+            return _lEngine.LEngineParticleRead(language);
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    private IReadOnlyList<string> PSentenceDependenceRead(string language)
+    {
+        try
+        {
+            return _lEngine.LEngineDependenceRead(language);
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
+
+    private static void PSentenceFrameShow(ObservableCollection<string> catalog, IReadOnlyList<string> values)
+    {
+        catalog.Clear();
+        foreach (string value in values)
+        {
+            catalog.Add(value);
+        }
     }
 
     internal void PSentenceAddHandle(object sender, RoutedEventArgs e)

@@ -284,7 +284,7 @@ public sealed class TMarkupImport
     }
 
     [Fact]
-    public void MarkupImport_FrameAndRewrite_StoresEveryField()
+    public void MarkupImport_Frame_StoresEveryField()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -298,7 +298,6 @@ public sealed class TMarkupImport
               <sense>
                 <meaning>to stay until something happens</meaning>
                 <example src="oed" par="for" dep="Agent">he waited for her</example>
-                <rewrite>she was waited for by him</rewrite>
                 <example par="" dep="Recipient">the class waited</example>
                 <video>media/wait.mp4</video>
               </sense>
@@ -318,18 +317,14 @@ public sealed class TMarkupImport
         LExampleDraft waited = card.LCardDraftExample[0];
         Assert.Equal("for", waited.LExampleDraftParticle.TStateValueShow());
         Assert.Equal("Agent", waited.LExampleDraftDependence.TStateValueShow());
-        LExampleDraft revision = Assert.IsType<LExampleDraft>(waited.LExampleDraftRevision);
-        Assert.Equal("she was waited for by him", revision.LExampleDraftText.TStateValueShow());
-        Assert.Null(revision.LExampleDraftRevision);
 
         LExampleDraft classes = card.LCardDraftExample[1];
         Assert.Equal(LState.LStateUnknown, classes.LExampleDraftParticle.LStateValueState);
         Assert.Equal("Recipient", classes.LExampleDraftDependence.TStateValueShow());
-        Assert.Null(classes.LExampleDraftRevision);
     }
 
     [Fact]
-    public void MarkupImport_FileWrittenBefore_StoresNoFrameAndNoRewrite()
+    public void MarkupImport_FileWrittenBefore_StoresNoFrame()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -352,7 +347,6 @@ public sealed class TMarkupImport
 
         Assert.Equal(LState.LStateUnspecified, example.LExampleDraftParticle.LStateValueState);
         Assert.Equal(LState.LStateUnspecified, example.LExampleDraftDependence.LStateValueState);
-        Assert.Null(example.LExampleDraftRevision);
     }
 
     [Fact]

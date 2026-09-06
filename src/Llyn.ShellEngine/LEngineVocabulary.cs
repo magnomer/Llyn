@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -94,6 +94,26 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return LSentenceLoader.LSentenceLoaderLoad(language);
+        }
+    }
+
+    public IReadOnlyList<string> LEngineParticleRead(string language)
+    {
+        lock (_lEngineGate)
+        {
+            return string.IsNullOrWhiteSpace(language)
+                ? []
+                : new LSentenceArchive(_lEngineDatabase).LSentenceParticleRead(language);
+        }
+    }
+
+    public IReadOnlyList<string> LEngineDependenceRead(string language)
+    {
+        lock (_lEngineGate)
+        {
+            return string.IsNullOrWhiteSpace(language)
+                ? []
+                : new LSentenceArchive(_lEngineDatabase).LSentenceDependenceRead(language);
         }
     }
 

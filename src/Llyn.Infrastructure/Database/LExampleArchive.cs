@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -196,9 +196,9 @@ public sealed class LExampleArchive
             SELECT example_id, COUNT(*) FROM (
                 SELECT example_id FROM entry_example
                 UNION ALL
-                SELECT example_id FROM sense_example
+                SELECT example_id FROM sense_example WHERE example_id IS NOT NULL
                 UNION ALL
-                SELECT example_id FROM collocation_example
+                SELECT example_id FROM collocation_example WHERE example_id IS NOT NULL
             )
             GROUP BY example_id;
             """;

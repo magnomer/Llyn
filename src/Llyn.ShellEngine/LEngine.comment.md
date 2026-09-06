@@ -1,4 +1,4 @@
-# LEngine.cs
+﻿# LEngine.cs
 
 ## `public sealed partial class LEngine : IDisposable`
 
@@ -58,6 +58,12 @@ The answer is replaced when `LEngineWorkspaceChange` opens another workspace.
 ## `public string LEngineWorkspaceRead()`
 
 Returns the current workspace folder — where the user's settings and database are stored.
+
+## `public string? LEngineAuditRecord(Exception exception)`
+
+Writes one unexpected fault into the open workspace's audit log and answers with the file it went to.
+The shell shows the user a plain sentence rather than a stack trace, so the trace has to be kept somewhere it can still be read.
+It answers `null` when nothing could be written, and the shell then says only the plain sentence.
 
 ## `public static string LEngineWorkspaceResolve()`
 

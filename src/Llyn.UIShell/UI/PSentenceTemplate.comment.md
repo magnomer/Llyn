@@ -1,13 +1,17 @@
-# PSentenceTemplate.xaml
+﻿# PSentenceTemplate.xaml
 
 ## `Theme.Sentence.Row`
 
-The Example row as the card shows it.
-That is the sentence field, with the id the row will be stored under at its right.
-It is also the number the row takes while the card carries more than one.
+The Example row as the card shows it, on one line.
+That is the two frame fields, then the sentence field with the id the row will be stored under at its right.
 It is also the Source button and the buttons that open and drop rows.
-The field's hint reads the unreadable mark when the row holds a sentence it cannot read back.
+Each field's hint reads the unreadable mark when the row holds something it cannot read back.
 So an empty-looking field says which kind of empty it is.
+
+The two frame fields sit in the first two columns and each is placed by the column the row was told to take.
+So a language writing the role first draws the role first, and nothing about the row itself changes.
+Both are typed into and both offer what the workspace has already saved for the language.
+Neither offers anything on a workspace that has saved none, because nothing ships a marker or a role.
 
 ## `Theme.Reference.Row`, `Theme.Reference.Item`
 
@@ -18,12 +22,6 @@ That is why they live in this dictionary rather than beside a single template.
 ## `Theme.Sentence.Identity`
 
 The box the row's id stands in, hidden until the row has an id.
-
-## `Theme.Sentence.Order`
-
-The number stands ahead of the field, in the label column's gutter.
-So an Example field starts exactly where every other field on the card does.
-That holds whether or not the rows are numbered.
 
 ## `Theme.Sentence.Citation`
 

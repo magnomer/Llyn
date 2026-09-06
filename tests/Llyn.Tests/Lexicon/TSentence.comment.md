@@ -3,14 +3,26 @@
 ## `public sealed class TSentence`
 
 Covers the association a Meaning or a Collocation holds over an Example.
-That association carries data, so what is tested is the frame and the rewrite surviving a write and a read.
+That association carries data, so what is tested is the frame surviving a write and a read.
 It covers the order the owner gives its rows and the renumbering a detach forces.
 It covers what deleting an owner and deleting a cited Example each reach.
 
-## `public void SentenceSave_FrameAndRevision_ReadsThemBack()`
+## `public void SentenceSave_Frame_ReadsItBack()`
 
 The whole row round-trips, because a frame the store drops is a frame the editor offered for nothing.
 The stored id is not empty, since a row handed in without one is only identity once it is written.
+
+## `public void SentenceSave_FrameWithNoExample_ReadsItBack()`
+
+A frame belongs to the owner, so it is storable before any sentence is.
+Requiring an Example first would lose what the user wrote for no reason the data model gives.
+
+## `public void SentenceFrameRead_SavedRows_OffersWhatTheLanguageHolds()`
+
+Nothing ships a marker or a role, so what a store has already been given is the only list the editor can offer.
+An untouched store offers nothing, which is what an empty dropdown on a fresh workspace means.
+Each language is asked separately, because a Japanese particle is no offer to make on an English row.
+The rows here cite no Example, so a frame saved before any sentence was written still reaches the field that offers it.
 
 ## `public void SentenceSave_SharedExample_KeepsEachMeaningsFrame()`
 

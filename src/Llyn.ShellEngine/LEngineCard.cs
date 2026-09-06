@@ -257,7 +257,6 @@ public sealed partial class LEngine
                 ownerId,
                 rows.Count,
                 LEngineExampleResolve(exampleRows, draft, language),
-                LEngineRevisionResolve(exampleRows, draft, language),
                 draft.LExampleDraftParticle,
                 draft.LExampleDraftDependence));
         }
