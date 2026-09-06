@@ -1,4 +1,4 @@
-﻿{
+{
   "terms.product": "Llyn",
   "terms.exit": "exit",
   "terms.minimize": "minimize",
@@ -49,8 +49,8 @@
     "Input.ExitConfirm": "The entry has unsaved changes. Save them before closing?",
     "Input.Headword": "Headword",
     "Input.Pronunciation": "Pronunciation",
-    "Input.Discard": "Discard",
-    "Input.Store": "Save entry",
+    "Input.Discard": "New",
+    "Input.Store": "Save",
     "Input.MeaningAdd": "Add another meaning",
     "Input.CollocationAdd": "Add another collocation",
     "Input.NoteHint": "Write a note about this entry",
@@ -88,6 +88,10 @@
     "Scribe.Export": "Export",
     "Scribe.Print": "Print",
     "Scribe.Read": "Read",
+    "Scribe.Save": "Save",
+    "Scribe.Delete": "Delete",
+    "Scribe.DeleteConfirm": "Delete this entry? It cannot be undone.",
+    "Scribe.DeleteFailed": "The entry could not be deleted.",
     "Sound.Search": "Search pronunciations",
     "Sound.Empty": "No entries yet",
     "Sound.LoadFailed": "The entry could not be opened.",

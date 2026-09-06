@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -30,6 +30,7 @@ public partial class PTaxonomy : UserControl
         PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, "Taxonomy", null);
+        PEditor.PEditorChangeNotice = changed => PTaxonomyStore.IsEnabled = changed;
     }
 
     internal void PTaxonomyReset()

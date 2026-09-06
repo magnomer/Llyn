@@ -1,4 +1,4 @@
-﻿{
+{
   "terms.product": "Llyn",
   "terms.exit": "종료",
   "terms.minimize": "최소화",
@@ -49,8 +49,8 @@
     "Input.ExitConfirm": "저장하지 않은 변경 사항이 있습니다. 닫기 전에 저장하겠습니까?",
     "Input.Headword": "표제어",
     "Input.Pronunciation": "발음",
-    "Input.Discard": "버리기",
-    "Input.Store": "항목 저장",
+    "Input.Discard": "새로 만들기",
+    "Input.Store": "저장",
     "Input.MeaningAdd": "뜻 추가",
     "Input.CollocationAdd": "연어 추가",
     "Input.NoteHint": "이 항목에 대한 메모를 쓰세요",
@@ -88,6 +88,10 @@
     "Scribe.Export": "내보내기",
     "Scribe.Print": "인쇄",
     "Scribe.Read": "읽기",
+    "Scribe.Save": "저장",
+    "Scribe.Delete": "삭제",
+    "Scribe.DeleteConfirm": "이 항목을 삭제할까요? 되돌릴 수 없습니다.",
+    "Scribe.DeleteFailed": "항목을 삭제하지 못했습니다.",
     "Sound.Search": "발음 검색",
     "Sound.Empty": "아직 항목이 없습니다",
     "Sound.LoadFailed": "항목을 열 수 없습니다.",

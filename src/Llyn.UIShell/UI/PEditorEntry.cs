@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using Llyn.Core;
 
@@ -41,6 +41,11 @@ public partial class PEditor
     }
 
     private void PEditorStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PEditorEntrySave();
+    }
+
+    internal void PEditorEntrySave()
     {
         PEditorChangeSave();
 

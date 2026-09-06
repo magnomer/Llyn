@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -117,6 +117,7 @@ public partial class PFavorite
         }
 
         _pRosterEntry = id;
+        PFavoriteBin.IsEnabled = true;
         PFavoriteEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -130,6 +131,7 @@ public partial class PFavorite
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pRosterEntry = id;
+        PFavoriteBin.IsEnabled = true;
         }
 
         PRosterFind(PRecall.Text ?? string.Empty);
@@ -224,5 +226,36 @@ public partial class PFavorite
         PEditor.PEditorReset();
         PFavoriteScribeShow(false);
         PFavoriteScribe.IsEnabled = false;
+        PFavoriteBin.IsEnabled = false;
+    }
+
+    private void PFavoriteStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PEditorEntrySave();
+    }
+
+    private void PFavoriteBinHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pRosterEntry is not string id)
+        {
+            return;
+        }
+
+        if (!_pFavoriteHost.PWindowDeleteConfirm())
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineEntryDelete(id);
+        }
+        catch (Exception exception)
+        {
+            _pFavoriteHost.PWindowFailureShow("Scribe.DeleteFailed", exception);
+            return;
+        }
+
+        PFavoriteClear();
     }
 }

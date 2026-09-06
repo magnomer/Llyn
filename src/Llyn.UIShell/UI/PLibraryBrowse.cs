@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -102,6 +102,7 @@ public partial class PLibrary
         }
 
         _pDisplayEntry = id;
+        PLibraryBin.IsEnabled = true;
         PLibraryEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -115,6 +116,7 @@ public partial class PLibrary
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
+        PLibraryBin.IsEnabled = true;
         }
 
         PIndexFind(PInquiry.Text ?? string.Empty);
@@ -221,5 +223,36 @@ public partial class PLibrary
         PEditor.PEditorReset();
         PLibraryScribeShow(false);
         PLibraryScribe.IsEnabled = false;
+        PLibraryBin.IsEnabled = false;
+    }
+
+    private void PLibraryStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PEditorEntrySave();
+    }
+
+    private void PLibraryBinHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pDisplayEntry is not string id)
+        {
+            return;
+        }
+
+        if (!_pLibraryHost.PWindowDeleteConfirm())
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineEntryDelete(id);
+        }
+        catch (Exception exception)
+        {
+            _pLibraryHost.PWindowFailureShow("Scribe.DeleteFailed", exception);
+            return;
+        }
+
+        PLibraryClear();
     }
 }

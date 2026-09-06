@@ -140,6 +140,16 @@ public partial class PWindow
             MessageBoxImage.Question) == MessageBoxResult.Yes;
     }
 
+    internal bool PWindowDeleteConfirm()
+    {
+        return MessageBox.Show(
+            this,
+            PLocalizationTextRead("Scribe.DeleteConfirm"),
+            PLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning) == MessageBoxResult.Yes;
+    }
+
     internal bool PWindowDiscardConfirm(bool unsaved)
     {
         if (!unsaved)

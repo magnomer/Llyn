@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +13,8 @@ public partial class PEditor
     private CancellationTokenSource? _pEditorPending;
 
     private bool _pEditorFill;
+
+    internal Action<bool>? PEditorChangeNotice;
 
     internal bool PEditorChangeCheck()
     {
@@ -113,5 +115,6 @@ public partial class PEditor
         bool changed = PEditorDraftCheck();
         PEditorDiscard.IsEnabled = changed;
         PEditorStore.IsEnabled = changed;
+        PEditorChangeNotice?.Invoke(changed);
     }
 }

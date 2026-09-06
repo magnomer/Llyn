@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -29,6 +29,7 @@ public partial class PFavorite : UserControl
         PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, "Favorite", null);
+        PEditor.PEditorChangeNotice = changed => PFavoriteStore.IsEnabled = changed;
     }
 
     internal void PFavoriteReset()

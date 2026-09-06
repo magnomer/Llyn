@@ -71,36 +71,23 @@
                 </Popup>
             </Grid>
 
-            <Button x:Name="PEditorDiscard" Grid.Column="3" Width="144" Height="51" Margin="0,0,14,0" Click="PEditorDiscardHandle" IsEnabled="False" Style="{StaticResource Theme.Input.Pill}">
-                <StackPanel Orientation="Horizontal">
-
-                    <Rectangle Width="14" Height="16" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform">
-                                <VisualBrush.Visual>
-                                    <svgc:SvgViewbox Width="14" Height="16" Source="pack://application:,,,/Llyn;component/icons/trash.svg" />
-                                </VisualBrush.Visual>
-                            </VisualBrush>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource Input.Discard}" />
-                </StackPanel>
-            </Button>
-            <Button x:Name="PEditorStore" Grid.Column="4" Width="162" Height="51" Click="PEditorStoreHandle" IsEnabled="False" Style="{StaticResource Theme.Input.Primary}">
-                <StackPanel Orientation="Horizontal">
-
-                    <Rectangle Width="15" Height="15" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform">
-                                <VisualBrush.Visual>
-                                    <svgc:SvgViewbox Width="15" Height="15" Source="pack://application:,,,/Llyn;component/icons/floppy-disk.svg" />
-                                </VisualBrush.Visual>
-                            </VisualBrush>
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource Input.Store}" />
-                </StackPanel>
-            </Button>
+            <Button
+                x:Name="PEditorDiscard"
+                Grid.Column="3"
+                Margin="0,0,8,0"
+                VerticalAlignment="Center"
+                Click="PEditorDiscardHandle"
+                Content="{DynamicResource Input.Discard}"
+                IsEnabled="False"
+                Style="{StaticResource Theme.Input.Second}" />
+            <Button
+                x:Name="PEditorStore"
+                Grid.Column="4"
+                VerticalAlignment="Center"
+                Click="PEditorStoreHandle"
+                Content="{DynamicResource Input.Store}"
+                IsEnabled="False"
+                Style="{StaticResource Theme.Input.First}" />
         </Grid>
 
         <Grid Grid.Row="1" Height="49" Margin="9,20,0,0" HorizontalAlignment="Left">

@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -29,6 +29,7 @@ public partial class PPhonology : UserControl
         PDisplay.PDisplayAttach(host, engine);
 
         PEditor.PEditorAttach(host, engine, "Phonology", null);
+        PEditor.PEditorChangeNotice = changed => PPhonologyStore.IsEnabled = changed;
 
         PArticulation.PArticulationAttach(PEditor.PPronunciation);
     }

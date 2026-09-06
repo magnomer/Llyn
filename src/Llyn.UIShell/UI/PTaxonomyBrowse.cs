@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -166,6 +166,7 @@ public partial class PTaxonomy
         }
 
         _pDisplayEntry = id;
+        PTaxonomyBin.IsEnabled = true;
         PTaxonomyEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -179,6 +180,7 @@ public partial class PTaxonomy
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
+        PTaxonomyBin.IsEnabled = true;
         }
 
         PDirectoryFind(PExploration.Text ?? string.Empty);
@@ -285,5 +287,36 @@ public partial class PTaxonomy
         PEditor.PEditorReset();
         PTaxonomyScribeShow(false);
         PTaxonomyScribe.IsEnabled = false;
+        PTaxonomyBin.IsEnabled = false;
+    }
+
+    private void PTaxonomyStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PEditorEntrySave();
+    }
+
+    private void PTaxonomyBinHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pDisplayEntry is not string id)
+        {
+            return;
+        }
+
+        if (!_pTaxonomyHost.PWindowDeleteConfirm())
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineEntryDelete(id);
+        }
+        catch (Exception exception)
+        {
+            _pTaxonomyHost.PWindowFailureShow("Scribe.DeleteFailed", exception);
+            return;
+        }
+
+        PTaxonomyClear();
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -106,6 +106,7 @@ public partial class PPhonology
         }
 
         _pDisplayEntry = id;
+        PPhonologyBin.IsEnabled = true;
         PPhonologyEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -119,6 +120,7 @@ public partial class PPhonology
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
+        PPhonologyBin.IsEnabled = true;
         }
 
         PInventoryFind(PProbe.Text ?? string.Empty);
@@ -225,5 +227,36 @@ public partial class PPhonology
         PEditor.PEditorReset();
         PPhonologyScribeShow(false);
         PPhonologyScribe.IsEnabled = false;
+        PPhonologyBin.IsEnabled = false;
+    }
+
+    private void PPhonologyStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PEditorEntrySave();
+    }
+
+    private void PPhonologyBinHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pDisplayEntry is not string id)
+        {
+            return;
+        }
+
+        if (!_pPhonologyHost.PWindowDeleteConfirm())
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineEntryDelete(id);
+        }
+        catch (Exception exception)
+        {
+            _pPhonologyHost.PWindowFailureShow("Scribe.DeleteFailed", exception);
+            return;
+        }
+
+        PPhonologyClear();
     }
 }

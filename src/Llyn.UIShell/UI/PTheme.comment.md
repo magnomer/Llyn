@@ -30,6 +30,20 @@ The button's white Foreground only reaches content by inheritance.
 The app-wide implicit TextBlock style (Theme.Ink) outranks that.
 So the accent styles below restate it as an implicit style of their own.
 
+## `<Style x:Key="Theme.Input.Second" TargetType="Button">`
+
+The way out of an unsaved edit, and the shape both halves of the pair are cut from.
+A surface inside a hairline is what this window already means by a button.
+The label is a TextBlock the template owns, holding its colour as a local value.
+The app-wide TextBlock style outranks anything inherited, so a presenter's own text would come out ink on accent.
+
+## `<Style x:Key="Theme.Input.First" TargetType="Button">`
+
+The one button that commits what has been written, and the only filled accent in its row.
+It borrows the whole construction above and changes only what fills it.
+Neither half dims to an opacity when it cannot be pressed.
+Both drop their fill instead, keeping a faint edge and a faint label, so an idle header carries no weight.
+
 ## `<Style x:Key="Theme.Choice.Row" TargetType="Button">`
 
 One row the user picks from.

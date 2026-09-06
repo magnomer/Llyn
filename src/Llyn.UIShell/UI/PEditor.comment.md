@@ -5,26 +5,28 @@
 The same floating ground the other pickers stand on.
 It is not a white box of its own that no theme reaches.
 
-## `<Rectangle Width="14" Height="16" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">`
+## `<Button`
 
-Phosphor trash.svg.
-SvgViewbox has no foreground of its own, so the glyph is used as an opacity mask over the button's foreground.
-
-## `<Rectangle Width="15" Height="15" Margin="0,0,9,0" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">`
-
-Phosphor floppy-disk.svg, tinted through an opacity mask (see PEditorDiscard).
+Discard and store answer one unsaved edit, so they are built alike and separated by their fill alone.
+Both are a surface inside a hairline, the shape every other button in this window is drawn as.
+A borderless tint is what this window gives a language pill and an open tab, not a button.
+They stand at 40 pixels, under the headword they act on rather than over it.
+Neither carries an icon.
+A bin of one size and a diskette of another, beside labels of two lengths, left the pair looking lopsided.
+Both take the width of their label, so a longer language does not clip.
 
 ## `<Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">`
 
-Phosphor play.svg, tinted through an opacity mask (see PEditorDiscard).
+Phosphor play.svg.
+SvgViewbox has no foreground of its own, so the glyph is used as an opacity mask over the button's foreground.
 
 ## `<Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">`
 
-Phosphor magnifying-glass.svg, tinted through an opacity mask (see PEditorDiscard).
+Phosphor magnifying-glass.svg, tinted through an opacity mask (see PPlayback).
 
 ## `<Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">`
 
-Phosphor box-arrow-down.svg, tinted through an opacity mask (see PEditorDiscard).
+Phosphor box-arrow-down.svg, tinted through an opacity mask (see PPlayback).
 
 ## `<TextBlock`
 

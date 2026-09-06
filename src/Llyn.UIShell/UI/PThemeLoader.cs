@@ -23,11 +23,17 @@ internal static class PThemeLoader
             ["surface"] = "Theme.Surface.Color",
             ["surfaceRaised"] = "Theme.SurfaceRaised.Color",
             ["line"] = "Theme.Line.Color",
+            ["lineStrong"] = "Theme.LineStrong.Color",
             ["accent"] = "Theme.Accent.Color",
+            ["accentHover"] = "Theme.AccentHover.Color",
+            ["accentPress"] = "Theme.AccentPress.Color",
+            ["accentEdge"] = "Theme.AccentEdge.Color",
             ["accentSoft"] = "Theme.AccentSoft.Color",
             ["warning"] = "Theme.Warning.Color",
             ["warningSoft"] = "Theme.WarningSoft.Color",
-            ["warningStrong"] = "Theme.WarningStrong.Color"
+            ["warningStrong"] = "Theme.WarningStrong.Color",
+            ["disabledLine"] = "Theme.DisabledLine.Color",
+            ["disabledInk"] = "Theme.DisabledInk.Color"
         };
 
     internal static void PThemeLoaderApply(ResourceDictionary resources)

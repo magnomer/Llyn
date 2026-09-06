@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Llyn.ShellEngine;
@@ -50,6 +51,12 @@ public partial class PEditor : UserControl
         _pEditorHost = host;
         _lEngine = engine;
         _pEditorOrigin = origin;
+
+        Visibility owned = string.Equals(origin, "Input", StringComparison.Ordinal)
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        PEditorDiscard.Visibility = owned;
+        PEditorStore.Visibility = owned;
 
         PSentenceLoad();
 

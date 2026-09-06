@@ -8,10 +8,16 @@
     "surface": "#FFFFFF",
     "surfaceRaised": "#EAF0F7",
     "line": "#D7E0EC",
+    "lineStrong": "#C3D0E0",
     "accent": "#2F6FED",
+    "accentHover": "#245FD0",
+    "accentPress": "#1D50B5",
+    "accentEdge": "#2A63D6",
     "accentSoft": "#E7EFFD",
     "warning": "#C43D4D",
     "warningSoft": "#FDECEF",
-    "warningStrong": "#E81123"
+    "warningStrong": "#E81123",
+    "disabledLine": "#E8EDF4",
+    "disabledInk": "#C2CCD9"
   }
 }

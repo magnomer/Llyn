@@ -10,11 +10,17 @@
     <SolidColorBrush x:Key="Theme.Surface" Color="{DynamicResource Theme.Surface.Color}" />
     <SolidColorBrush x:Key="Theme.SurfaceRaised" Color="{DynamicResource Theme.SurfaceRaised.Color}" />
     <SolidColorBrush x:Key="Theme.Line" Color="{DynamicResource Theme.Line.Color}" />
+    <SolidColorBrush x:Key="Theme.LineStrong" Color="{DynamicResource Theme.LineStrong.Color}" />
     <SolidColorBrush x:Key="Theme.Accent" Color="{DynamicResource Theme.Accent.Color}" />
+    <SolidColorBrush x:Key="Theme.AccentHover" Color="{DynamicResource Theme.AccentHover.Color}" />
+    <SolidColorBrush x:Key="Theme.AccentPress" Color="{DynamicResource Theme.AccentPress.Color}" />
+    <SolidColorBrush x:Key="Theme.AccentEdge" Color="{DynamicResource Theme.AccentEdge.Color}" />
     <SolidColorBrush x:Key="Theme.AccentSoft" Color="{DynamicResource Theme.AccentSoft.Color}" />
     <SolidColorBrush x:Key="Theme.Warning" Color="{DynamicResource Theme.Warning.Color}" />
     <SolidColorBrush x:Key="Theme.WarningSoft" Color="{DynamicResource Theme.WarningSoft.Color}" />
     <SolidColorBrush x:Key="Theme.WarningStrong" Color="{DynamicResource Theme.WarningStrong.Color}" />
+    <SolidColorBrush x:Key="Theme.DisabledLine" Color="{DynamicResource Theme.DisabledLine.Color}" />
+    <SolidColorBrush x:Key="Theme.DisabledInk" Color="{DynamicResource Theme.DisabledInk.Color}" />
 
     <FontFamily x:Key="Theme.Font">Segoe UI Variable, Segoe UI</FontFamily>
 
@@ -246,6 +252,139 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="PSurface" Property="Opacity" Value="0.4" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.Second" TargetType="Button">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="PSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8">
+                        <TextBlock
+                            x:Name="PLabel"
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            Foreground="{TemplateBinding Foreground}"
+                            Text="{TemplateBinding Content}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Canvas}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.LineStrong}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.LineStrong}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PSurface" Property="Background" Value="Transparent" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.DisabledLine}" />
+                            <Setter TargetName="PLabel" Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.First" TargetType="Button" BasedOn="{StaticResource Theme.Input.Second}">
+        <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
+        <Setter Property="Background" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentEdge}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="PSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8">
+                        <TextBlock
+                            x:Name="PLabel"
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            Foreground="{TemplateBinding Foreground}"
+                            Text="{TemplateBinding Content}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentHover}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.AccentHover}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentPress}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.AccentPress}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PSurface" Property="Background" Value="Transparent" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.DisabledLine}" />
+                            <Setter TargetName="PLabel" Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Input.Bin" TargetType="Button" BasedOn="{StaticResource Theme.Input.Action}">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="PSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.WarningSoft}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Warning}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Warning}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.WarningSoft}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.WarningStrong}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.WarningStrong}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PSurface" Property="Background" Value="Transparent" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.DisabledLine}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
                             <Setter Property="Cursor" Value="Arrow" />
                         </Trigger>
                     </ControlTemplate.Triggers>
