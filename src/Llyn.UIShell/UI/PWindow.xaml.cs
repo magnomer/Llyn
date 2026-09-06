@@ -39,6 +39,7 @@ public partial class PWindow : Window
         PRepertoire.PRepertoireAttach(this, engine);
         PCorpus.PCorpusAttach(this, engine);
         PReference.PReferenceAttach(this, engine);
+        PFavorite.PFavoriteAttach(this, engine);
         PDuplex.PDuplexAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
     }
@@ -62,6 +63,7 @@ public partial class PWindow : Window
         PRepertoire.PRepertoireClose();
         PCorpus.PCorpusClose();
         PReference.PReferenceClose();
+        PFavorite.PFavoriteClose();
         PDuplex.PDuplexClose();
         _lEngine.LEngineLeftoverSweep();
         _lEngine.Dispose();

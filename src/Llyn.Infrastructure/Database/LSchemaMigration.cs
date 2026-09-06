@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 22;
+    public const long LSchemaMigrationVersion = 23;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -83,6 +83,11 @@ public static class LSchemaMigration
         if (stored < 22)
         {
             LSchemaSituationNormalize(connection);
+        }
+
+        if (stored < 23)
+        {
+            LSchemaFavoriteCreate(connection);
         }
 
         LSchemaVersionSave(connection);
@@ -204,6 +209,22 @@ public static class LSchemaMigration
             $"SELECT COUNT(*) FROM pragma_table_info('{table}') WHERE name = $column;";
         command.Parameters.AddWithValue("$column", column);
         return Convert.ToInt64(command.ExecuteScalar()) > 0;
+    }
+
+    private static void LSchemaFavoriteCreate(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            CREATE TABLE IF NOT EXISTS favorite (
+                entry_id TEXT NOT NULL PRIMARY KEY,
+                marked_utc TEXT NOT NULL,
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+            );
+
+            CREATE INDEX IF NOT EXISTS favorite_marked ON favorite (marked_utc);
+            """;
+        command.ExecuteNonQuery();
     }
 
     private static void LSchemaTranslationCreate(SqliteConnection connection)

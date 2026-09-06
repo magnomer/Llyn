@@ -71,6 +71,7 @@ public partial class PWindow
         finished &= PLibrary.PLibraryDraftFinish(store);
         finished &= PPhonology.PPhonologyDraftFinish(store);
         finished &= PTaxonomy.PTaxonomyDraftFinish(store);
+        finished &= PFavorite.PFavoriteDraftFinish(store);
         return finished;
     }
 

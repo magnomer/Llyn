@@ -45,6 +45,12 @@ public partial class PWindow
             return;
         }
 
+        if (PFavorite.IsVisible && selectedButton != PNavigationFavorite
+            && !PWindowDiscardConfirm(PFavorite.PFavoriteChangeCheck()))
+        {
+            return;
+        }
+
         (Button Button, FrameworkElement Panel)[] tabs =
         [
             (PNavigationInput, PInput),

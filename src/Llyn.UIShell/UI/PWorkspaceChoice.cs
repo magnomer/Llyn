@@ -57,6 +57,7 @@ public partial class PSettings
         _pSettingsHost.PRepertoire.PRepertoireReset();
         _pSettingsHost.PCorpus.PCorpusReset();
         _pSettingsHost.PReference.PReferenceReset();
+        _pSettingsHost.PFavorite.PFavoriteReset();
         _pSettingsHost.PDuplex.PDuplexReset();
     }
 }

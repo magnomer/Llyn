@@ -113,7 +113,7 @@
                     <local:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />
                     <local:PCorpus x:Name="PCorpus" Visibility="Collapsed" />
                     <local:PReference x:Name="PReference" Visibility="Collapsed" />
-                    <Grid x:Name="PFavorite" Visibility="Collapsed" />
+                    <local:PFavorite x:Name="PFavorite" Visibility="Collapsed" />
                     <local:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
                     <local:PSettings x:Name="PSettings" Visibility="Collapsed" />
                 </Grid>

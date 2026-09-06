@@ -156,6 +156,13 @@ It is reached only through the association table below.
 That table's situation_id foreign key deliberately has no cascade.
 So the row survives every detach.
 
+### `CREATE TABLE IF NOT EXISTS favorite (`
+
+The favorite marks, one row per marked Entry.
+The mark is no lexical object, so it holds nothing but the entry it stands on and its stamp.
+The cascade drops the mark with the entry it marks.
+The stamp is indexed because the favorites panel orders by it.
+
 ### `LSchemaRevision.LSchemaRevisionCreate(connection);`
 
 The operational and history tables close the schema.

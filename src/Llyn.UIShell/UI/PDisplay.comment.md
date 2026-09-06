@@ -15,6 +15,12 @@ A card lists its own links, so the entry it points at would otherwise say nothin
 Each row opens the entry that carries it, because that is where such a link is edited.
 A muted line stands in when nothing translates the entry.
 
+## `<ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" ...>`
+
+The star stands beside the headword, so the mark is made where the entry is read.
+Every entry-browsing tab carries it, because the mark belongs to the entry and not to one panel.
+A filled star says the entry is marked.
+
 ## `<Grid>`
 
 The entry as it reads, with nothing to type into.

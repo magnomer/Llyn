@@ -80,6 +80,22 @@ internal static partial class TInterface
     internal static LEntry TEngineEntryUpdate(this LEngine engine, string id, LEntryDraft draft) =>
         engine.LEngineEntryUpdate(id, draft);
 
+    internal static bool TEngineFavoriteCheck(this LEngine engine, string entryId) =>
+        engine.LEngineFavoriteCheck(entryId);
+
+    internal static void TEngineFavoriteDelete(this LEngine engine, string entryId)
+    {
+        engine.LEngineFavoriteDelete(entryId);
+    }
+
+    internal static IReadOnlyList<LFavorite> TEngineFavoriteFind(this LEngine engine, string query) =>
+        engine.LEngineFavoriteFind(query);
+
+    internal static void TEngineFavoriteSave(this LEngine engine, string entryId)
+    {
+        engine.LEngineFavoriteSave(entryId);
+    }
+
     internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine) =>
         engine.LEngineLeftoverRead();
 

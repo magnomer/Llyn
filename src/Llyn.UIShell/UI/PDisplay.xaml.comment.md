@@ -26,6 +26,12 @@ That id is what the incoming cards are looked up by.
 Empties the view and leaves the unselected notice in its place.
 Playback stops, because what it was playing belonged to the entry that was shown.
 
+## `internal Action? PDisplayFavoriteDispatcher { get; set; }`
+
+Told to the panel hosting the view whenever a mark or an unmark lands.
+The favorites panel re-reads its roster on it, so an unmarked row leaves at once.
+A panel that shows no favorite catalog sets nothing and hears nothing.
+
 ## `internal void PDisplayClose()`
 
 Releases this view's own playback.
@@ -49,6 +55,17 @@ A player shared across panels made one panel's clearing stop another panel's sou
 
 Full path of the audio the shown entry owns, or null when it has none.
 That is what the play button plays.
+
+### `private void PDisplayFavoriteShow(string id)`
+
+Reads whether the shown entry is marked and sets the star to match.
+An unreadable mark leaves the star empty rather than claiming the entry is marked.
+
+### `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
+
+Marks or unmarks the shown entry, following the state the click left on the star.
+A refused write puts the star back where it stood, so it never shows a mark the workspace does not hold.
+Marking creates no entry and changes no lexical data.
 
 ### `private async void PDisplayLanguageShow(string language)`
 

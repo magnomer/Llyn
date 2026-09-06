@@ -18,7 +18,7 @@ That requires foreign-key enforcement to be off.
 Enforcement cannot be changed inside a transaction.
 So the runner is called with a plain connection, before any session is open.
 
-## `public const long LSchemaMigrationVersion = 21;`
+## `public const long LSchemaMigrationVersion = 23;`
 
 The schema version this build produces.
 A later change to an existing table raises it.
@@ -81,6 +81,17 @@ The card-to-entry link tables arrive, so an upgraded workspace gains them too.
 Version 21.
 An Example carries one translation of its sentence, on the Example row itself.
 The step stands last because the older steps still name the owned-text table it retires.
+
+### `if (stored < 22)`
+
+Version 22.
+A Situation carries no Source field, so the two columns holding one are dropped.
+
+### `if (stored < 23)`
+
+Version 23.
+The favorite table arrives, so an upgraded workspace gains it too.
+No older row carries a mark, so nothing is copied into it.
 
 ### `private static void LSchemaSpeechNormalize(SqliteConnection connection)`
 

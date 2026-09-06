@@ -23,11 +23,15 @@ public partial class PDisplay : UserControl
 
     private string? _pDisplayRecording;
 
+    private string? _pDisplayEntry;
+
     public PDisplay()
     {
         InitializeComponent();
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
     }
+
+    internal Action? PDisplayFavoriteDispatcher { get; set; }
 
     internal void PDisplayAttach(PWindow host, LEngine engine)
     {
@@ -38,6 +42,9 @@ public partial class PDisplay : UserControl
     internal void PDisplayShow(string id, LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
+
+        _pDisplayEntry = id;
+        PDisplayFavoriteShow(id);
 
         _pDisplayRecording = draft.LEntryDraftAudio.Length > 0 && File.Exists(draft.LEntryDraftAudio)
             ? draft.LEntryDraftAudio
@@ -75,6 +82,8 @@ public partial class PDisplay : UserControl
 
     internal void PDisplayClear()
     {
+        _pDisplayEntry = null;
+        PDisplayFavorite.IsChecked = false;
         _pDisplayRecording = null;
         _pDisplayPlayer.Stop();
         PDisplayLanguage.Text = string.Empty;
@@ -200,6 +209,48 @@ public partial class PDisplay : UserControl
         }
 
         PDisplayLanguageFlag.Source = PEnsign.PEnsignFind(language);
+    }
+
+    private void PDisplayFavoriteShow(string id)
+    {
+        try
+        {
+            PDisplayFavorite.IsChecked = _lEngine.LEngineFavoriteCheck(id);
+        }
+        catch (Exception)
+        {
+            PDisplayFavorite.IsChecked = false;
+        }
+    }
+
+    private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pDisplayEntry is null)
+        {
+            PDisplayFavorite.IsChecked = false;
+            return;
+        }
+
+        bool marked = PDisplayFavorite.IsChecked == true;
+        try
+        {
+            if (marked)
+            {
+                _lEngine.LEngineFavoriteSave(_pDisplayEntry);
+            }
+            else
+            {
+                _lEngine.LEngineFavoriteDelete(_pDisplayEntry);
+            }
+        }
+        catch (Exception exception)
+        {
+            PDisplayFavorite.IsChecked = !marked;
+            _pDisplayHost.PWindowFailureShow("Favorite.MarkFailed", exception);
+            return;
+        }
+
+        PDisplayFavoriteDispatcher?.Invoke();
     }
 
     private void PDisplayPlaybackHandle(object sender, RoutedEventArgs e)
