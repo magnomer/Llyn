@@ -14,6 +14,11 @@ A missing or unreadable file yields defaults so the program always starts.
 
 Persisted keys are a data contract, so they stay lowercase and independent of member names.
 
+### `Math.Clamp(level.GetDouble(), 0, LSettingsLoaderLoudest)`
+
+A volume read from the file is clamped, because a hand-edited number outside the range would otherwise reach the player.
+A missing number means full, so a workspace written before this setting existed plays as loudly as it did.
+
 ### `if (settings.LSettingsWindow is LWindowState window)`
 
 A window block is written only once a window has closed and reported its geometry.

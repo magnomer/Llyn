@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
@@ -157,6 +157,12 @@ public sealed partial class LEngine : IDisposable
     {
         ArgumentNullException.ThrowIfNull(window);
         LEngineSettingsChange(settings => settings with { LSettingsWindow = window });
+    }
+
+    public void LEngineVolumeSave(double volume)
+    {
+        double level = Math.Clamp(volume, 0, 1);
+        LEngineSettingsChange(settings => settings with { LSettingsVolume = level });
     }
 
     private void LEngineSettingsChange(Func<LSettings, LSettings> change)

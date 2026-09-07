@@ -8,6 +8,24 @@ Playing it back belongs here too.
 The downloader attaches one and the entry loader attaches one.
 This is where it lives, plays, and is let go of.
 
+## `private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)`
+
+Plays at the level the grip stands at, from the moment it is moved there.
+
+## `private void PVolumeSave(object sender, RoutedEventArgs e)`
+
+Writes the level down once the hand comes off the grip.
+The level belongs to the workspace rather than to the form, so it outlives the entry being edited.
+
+## `internal void PVolumeAttach()`
+
+Listens for the three gestures that end a change of volume: a finished drag, a click on the track, and a released key.
+A drag that wrote on every step would put a file write behind every pixel of it.
+
+## `internal void PVolumeLoad()`
+
+Puts the workspace's volume on the grip when the form is attached.
+
 ## Inline notes
 
 ### `private bool _pRecordingStored;`

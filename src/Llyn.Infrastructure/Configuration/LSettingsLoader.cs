@@ -11,7 +11,9 @@ public static class LSettingsLoader
     private const string LSettingsLoaderFile = "settings.json";
     private const string LSettingsLoaderLocalization = "localization";
     private const string LSettingsLoaderWindow = "window";
+    private const string LSettingsLoaderVolume = "volume";
     private const string LSettingsLoaderDefault = "en";
+    private const double LSettingsLoaderLoudest = 1;
 
     public static LSettings LSettingsLoaderLoad(string root)
     {
@@ -41,7 +43,13 @@ public static class LSettingsLoader
                 ? LWindowLoader.LWindowLoaderRead(block)
                 : null;
 
-            return new LSettings(localization, window);
+            double volume =
+                document.RootElement.TryGetProperty(LSettingsLoaderVolume, out JsonElement level) &&
+                level.ValueKind == JsonValueKind.Number
+                    ? Math.Clamp(level.GetDouble(), 0, LSettingsLoaderLoudest)
+                    : LSettingsLoaderLoudest;
+
+            return new LSettings(localization, window, volume);
         }
         catch (JsonException)
         {
@@ -62,7 +70,8 @@ public static class LSettingsLoader
 
         Dictionary<string, object> payload = new(StringComparer.Ordinal)
         {
-            [LSettingsLoaderLocalization] = settings.LSettingsLocalization
+            [LSettingsLoaderLocalization] = settings.LSettingsLocalization,
+            [LSettingsLoaderVolume] = Math.Clamp(settings.LSettingsVolume, 0, LSettingsLoaderLoudest)
         };
 
         if (settings.LSettingsWindow is LWindowState window)

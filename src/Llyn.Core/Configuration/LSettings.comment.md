@@ -12,3 +12,4 @@ It is kept in a small fixed pointer outside the workspace.
 
 - `LSettingsLocalization` — The chosen interface-language code, for example `"en"`.
 - `LSettingsWindow` — The window geometry from the last run, or nothing before a first close.
+- `LSettingsVolume` — How loud a stored pronunciation is played, from silence at zero to full at one.

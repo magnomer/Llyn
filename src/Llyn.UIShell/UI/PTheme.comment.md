@@ -101,11 +101,27 @@ The same pronunciation with a caret in it.
 Its leading margin answers the two pixels a WPF text box keeps for that caret.
 So the typed text starts where the read text starts.
 
-## `<Style x:Key="Theme.Pronunciation.Action" TargetType="Button">`
+## `<Style x:Key="Theme.Playback.Action" TargetType="Button">`
 
-The play button beside the chip, at the chip's own height.
-It is a command tray of one, so it carries the tray's frame and inset icon and takes its fill only under the pointer.
+The play button, drawn as a command inside the playback tray rather than as a control of its own.
+It is the icon toggle's treatment without the held state, because playing is done the moment it is asked for.
 Both views draw it, because a recording is played where it is heard and where it is chosen.
+
+## `<Style x:Key="Theme.Volume.Rail" TargetType="RepeatButton">`
+
+The two halves of the volume track, the taken one filled in the accent and the remaining one left clear.
+They are repeat buttons because that is what a WPF track is built from, and a click on either walks the volume toward it.
+
+## `<Style x:Key="Theme.Volume.Thumb" TargetType="Thumb">`
+
+The grip the volume is carried by: a ring of the accent around the surface, filling as it is pointed at and solid while it is dragged.
+It is a ring rather than a dot, so the track it sits on stays readable underneath it.
+
+## `<Style x:Key="Theme.Volume.Slider" TargetType="Slider">`
+
+The volume of a played recording, from silence to full over its own width.
+It runs zero to one, which is the range a media player takes, so nothing between the grip and the sound rescales it.
+A click anywhere on the track moves the grip there, because a volume is chosen by where it should be rather than nudged toward it.
 
 ## `<Style x:Key="Theme.Speech.Chip" TargetType="Border">`
 

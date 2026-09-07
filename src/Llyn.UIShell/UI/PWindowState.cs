@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Windows;
+using System.Windows.Threading;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -7,6 +8,32 @@ namespace Llyn.UIShell;
 public partial class PWindow
 {
     private const double PWindowStateShare = 0.8;
+
+    private DispatcherTimer? _pWindowStateTimer;
+
+    private void PWindowStateAttach()
+    {
+        _pWindowStateTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(700)
+        };
+        _pWindowStateTimer.Tick += (_, _) => PWindowStateSave();
+
+        LocationChanged += (_, _) => PWindowStateDefer();
+        SizeChanged += (_, _) => PWindowStateDefer();
+        StateChanged += (_, _) => PWindowStateDefer();
+    }
+
+    private void PWindowStateDefer()
+    {
+        if (_pWindowStateTimer is not DispatcherTimer timer || !IsLoaded)
+        {
+            return;
+        }
+
+        timer.Stop();
+        timer.Start();
+    }
 
     private void PWindowStateRestore()
     {
@@ -41,6 +68,8 @@ public partial class PWindow
 
     private void PWindowStateSave()
     {
+        _pWindowStateTimer?.Stop();
+
         Rect bounds = WindowState == WindowState.Normal
             ? new Rect(Left, Top, Width, Height)
             : RestoreBounds;

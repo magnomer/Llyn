@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Windows;
 using Llyn.Core;
@@ -19,6 +19,7 @@ public partial class PWindow : Window
         InitializeComponent();
 
         PWindowStateRestore();
+        PWindowStateAttach();
 
         PWindowAttach(engine);
 

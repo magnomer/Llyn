@@ -10,6 +10,17 @@ The workspace settings file holds it, so a workspace opens the way its owner lef
 The share of the work area a first launch fills.
 A designed pixel size cannot fit every desktop, so the default is measured against the screen.
 
+## `private void PWindowStateAttach()`
+
+Listens for the window being moved, resized, or maximized, so geometry is written down while the program runs rather than only as it closes.
+A run that ends without closing — a killed process, a launcher window shut, a machine turned off — used to leave the last geometry unwritten.
+
+## `private void PWindowStateDefer()`
+
+Restarts the short wait that stands between a change and the write it causes.
+A drag raises a change for every pixel, and one write per pixel would be a file write per pixel.
+Nothing is written before the window is loaded, so the restore does not save what it has just read.
+
 ## `private void PWindowStateRestore()`
 
 Runs before the window is shown, while position and size can still be set.
@@ -20,7 +31,7 @@ Setting the startup location to manual is required, since the designed default c
 
 ## `private void PWindowStateSave()`
 
-Runs on closing, once the user has confirmed and the window is still up.
+Runs on closing, once the user has confirmed and the window is still up, and whenever the window has come to rest after a move.
 The geometry alone is handed downstream, never the whole settings record.
 A language chosen during the same session therefore survives the close.
 The restored rectangle is stored, never the maximized one, so restoring returns to a usable size.

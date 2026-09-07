@@ -183,6 +183,7 @@
     "Downloader.Searching": "검색 중…",
     "Downloader.Empty": "오디오를 찾을 수 없습니다",
     "Downloader.Play": "재생",
+    "Downloader.Volume": "음량",
     "Downloader.Use": "{Terms.use}",
     "Downloader.Saving": "저장 중…",
     "Downloader.Saved": "저장됨",

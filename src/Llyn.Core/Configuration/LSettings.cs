@@ -2,4 +2,5 @@ namespace Llyn.Core;
 
 public sealed record LSettings(
     string LSettingsLocalization,
-    LWindowState? LSettingsWindow = null);
+    LWindowState? LSettingsWindow = null,
+    double LSettingsVolume = 1);

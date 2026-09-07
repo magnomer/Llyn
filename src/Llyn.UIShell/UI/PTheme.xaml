@@ -550,51 +550,121 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
-    <Style x:Key="Theme.Pronunciation.Action" TargetType="Button">
-        <Setter Property="Width" Value="41" />
-        <Setter Property="Height" Value="41" />
-        <Setter Property="Padding" Value="3" />
-        <Setter Property="Margin" Value="10,0,0,0" />
-        <Setter Property="VerticalAlignment" Value="Top" />
+    <Style x:Key="Theme.Playback.Action" TargetType="Button">
+        <Setter Property="Width" Value="42" />
+        <Setter Property="Height" Value="33" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
-        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border
-                        x:Name="PFrame"
-                        Padding="{TemplateBinding Padding}"
+                        x:Name="PSurface"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="11"
+                        BorderThickness="1"
+                        CornerRadius="8"
                         SnapsToDevicePixels="True">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="9" Direction="270" Opacity="0.035" ShadowDepth="1" />
-                        </Border.Effect>
-                        <Border x:Name="PSurface" Background="Transparent" CornerRadius="8" SnapsToDevicePixels="True">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter TargetName="PFrame" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
                             <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PFrame" Property="BorderBrush" Value="{StaticResource Theme.DisabledLine}" />
                             <Setter Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
                             <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Volume.Rail" TargetType="RepeatButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border
+                        Height="4"
+                        VerticalAlignment="Center"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="2"
+                        SnapsToDevicePixels="True" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Volume.Thumb" TargetType="Thumb">
+        <Setter Property="Width" Value="13" />
+        <Setter Property="Height" Value="13" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border
+                        x:Name="PSurface"
+                        Background="{StaticResource Theme.Surface}"
+                        BorderBrush="{StaticResource Theme.Accent}"
+                        BorderThickness="2"
+                        CornerRadius="7"
+                        SnapsToDevicePixels="True" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                        </Trigger>
+                        <Trigger Property="IsDragging" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Volume.Slider" TargetType="Slider">
+        <Setter Property="Width" Value="92" />
+        <Setter Property="Height" Value="33" />
+        <Setter Property="Padding" Value="9,0" />
+        <Setter Property="Minimum" Value="0" />
+        <Setter Property="Maximum" Value="1" />
+        <Setter Property="SmallChange" Value="0.05" />
+        <Setter Property="LargeChange" Value="0.1" />
+        <Setter Property="IsMoveToPointEnabled" Value="True" />
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid x:Name="PSurface" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" Background="Transparent">
+                        <Border Height="4" VerticalAlignment="Center" Background="{StaticResource Theme.Line}" CornerRadius="2" SnapsToDevicePixels="True" />
+                        <Track x:Name="PART_Track">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Background="{StaticResource Theme.Accent}" Command="Slider.DecreaseLarge" Style="{StaticResource Theme.Volume.Rail}" />
+                            </Track.DecreaseRepeatButton>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Background="Transparent" Command="Slider.IncreaseLarge" Style="{StaticResource Theme.Volume.Rail}" />
+                            </Track.IncreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource Theme.Volume.Thumb}" />
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.45" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

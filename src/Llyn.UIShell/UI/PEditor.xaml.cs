@@ -44,6 +44,7 @@ public partial class PEditor : UserControl
         PHeadword.TextChanged += PHeadwordHandle;
         PMarkerField.KeyDown += PMarkerFieldHandle;
         AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
+        PVolumeAttach();
     }
 
     internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)
@@ -70,6 +71,7 @@ public partial class PEditor : UserControl
 
         PSpeakerLoad();
         PCategoryLoad();
+        PVolumeLoad();
     }
 
     internal void PEditorClose()

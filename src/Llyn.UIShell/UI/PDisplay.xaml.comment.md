@@ -17,7 +17,8 @@ The window is held because an incoming row opens the entry it names.
 
 Draws `draft` as the entry being read.
 A field the draft left empty collapses instead of standing as a blank line.
-The play button appears only when the entry owns a recording that is still on disk.
+The playback tray appears only when the entry owns a recording that is still on disk.
+The volume is read from the workspace on every show, so a level the editor set is the level this view plays at.
 The id is taken as well as the draft, because a draft does not say which entry it is.
 That id is what the incoming cards are looked up by.
 
@@ -58,6 +59,12 @@ A player shared across panels made one panel's clearing stop another panel's sou
 
 Full path of the audio the shown entry owns, or null when it has none.
 That is what the play button plays.
+
+### `PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));`
+
+The level is played as the grip moves but written down only when the hand comes off it.
+Writing on every step of a drag would put a file write behind every pixel, and would also write back the level the view had just loaded.
+A track click and an arrow key are gestures of their own, so each ends with a write too.
 
 ### `private void PDisplayFavoriteShow(string id)`
 

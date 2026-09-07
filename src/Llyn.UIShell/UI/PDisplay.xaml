@@ -396,17 +396,25 @@
                         </StackPanel>
                     </Border>
 
-                    <Button x:Name="PDisplayPlayback" Click="PDisplayPlaybackHandle" Style="{StaticResource Theme.Pronunciation.Action}" Visibility="Collapsed">
-                        <Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Uniform">
-                                    <VisualBrush.Visual>
-                                        <svgc:SvgViewbox Width="13" Height="15" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
+                    <Border x:Name="PPlayback" Height="41" Style="{StaticResource Theme.Command.Group}" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
+                                <Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Uniform">
+                                            <VisualBrush.Visual>
+                                                <svgc:SvgViewbox Width="13" Height="15" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </Button>
+
+                            <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+
+                            <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplaySpeechSection" Margin="0,14,0,0" Visibility="Collapsed">

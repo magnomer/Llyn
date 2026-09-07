@@ -97,6 +97,12 @@ Only that field is written, so a window geometry saved by another part of the sh
 Persists the window geometry of the run that is ending and keeps it current.
 Only that field is written, so an interface language chosen during the same session survives the change.
 
+## `public void LEngineVolumeSave(double volume)`
+
+Persists how loud a pronunciation is played and keeps it current.
+The level is clamped here as well as on the way in from the file, so no caller can write a volume the player cannot take.
+Every view plays through the same level, so a change made in one is the level the next one opens at.
+
 ## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
 Applies `change` to the settings held here and writes the result out, under the engine gate.

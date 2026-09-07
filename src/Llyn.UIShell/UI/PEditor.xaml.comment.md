@@ -27,6 +27,7 @@ It opens the form on `entry`, the entry the host wants edited.
 That is nothing at all for a form that creates one.
 The entry is shown before the language menu is built.
 So the language it carries is already the chosen one when that menu decides on a fallback.
+The workspace's volume is put on the grip last, once there is a form for it to sit on.
 
 ## `internal void PEditorClose()`
 

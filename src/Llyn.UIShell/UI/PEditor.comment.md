@@ -43,11 +43,17 @@ So a part of speech no pack declares can still be written down.
 ## `<StackPanel Grid.Row="1" Margin="0,12,0,0" HorizontalAlignment="Left" Orientation="Horizontal">`
 
 The pronunciation row, laid out as the reading view lays it out.
-Chip and play button carry the theme's shared styles, so switching mode moves neither of them.
+Chip and playback tray carry the theme's shared styles, so switching mode moves neither of them.
 The row starts at the headword's own margin, because an indent here read as a different position.
+
+## `<Border x:Name="PPlayback" Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}" ...>`
+
+The playback tray: the play button and the volume it is played at, the same tray the reading view draws.
+It appears with a recording and goes with it, so the volume is offered only while there is something to hear.
+The volume it shows is the workspace's own, so a level set here is the level the reading view opens at.
 
 ## `<Border Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">`
 
 Lookup and audio download both fetch what the chip beside them holds, so one tray holds the pair.
-It is the tray discard and store sit in, at the height of the chip and the play button.
+It is the tray discard and store sit in, at the height of the chip and the playback tray.
 Only the editor draws it, because nothing is fetched into a view that cannot be typed into.

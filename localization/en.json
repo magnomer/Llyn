@@ -183,6 +183,7 @@
     "Downloader.Searching": "Searching…",
     "Downloader.Empty": "No audio found",
     "Downloader.Play": "Play",
+    "Downloader.Volume": "Volume",
     "Downloader.Use": "{Terms.use}",
     "Downloader.Saving": "Saving…",
     "Downloader.Saved": "Saved",

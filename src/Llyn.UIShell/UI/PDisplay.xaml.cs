@@ -5,6 +5,8 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -31,6 +33,10 @@ public partial class PDisplay : UserControl
     {
         InitializeComponent();
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
+
+        PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
+        PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
+        PVolume.AddHandler(KeyUpEvent, new KeyEventHandler(PVolumeSave), true);
     }
 
     internal void PDisplayAttach(PWindow host, LEngine engine)
@@ -40,6 +46,8 @@ public partial class PDisplay : UserControl
 
         _pDisplayObserver = new PObserver(this, PDisplayBulletinHandle);
         engine.LEngineObserverAttach(_pDisplayObserver);
+
+        PVolumeLoad();
     }
 
     private void PDisplayBulletinHandle(LBulletin bulletin)
@@ -100,7 +108,8 @@ public partial class PDisplay : UserControl
         _pDisplayRecording = draft.LEntryDraftAudio.Length > 0 && File.Exists(draft.LEntryDraftAudio)
             ? draft.LEntryDraftAudio
             : null;
-        PDisplayPlayback.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;
+        PPlayback.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;
+        PVolumeLoad();
 
         PDisplayHeadword.Text = draft.LEntryDraftHeadword;
         PDisplayLanguageShow(draft.LEntryDraftLanguage);
@@ -108,7 +117,7 @@ public partial class PDisplay : UserControl
         PDisplayPronunciationSurface.Visibility = draft.LEntryDraftPronunciation.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
-        PDisplayPlayback.Margin = draft.LEntryDraftPronunciation.Length == 0
+        PPlayback.Margin = draft.LEntryDraftPronunciation.Length == 0
             ? new Thickness(0)
             : new Thickness(10, 0, 0, 0);
 
@@ -145,7 +154,7 @@ public partial class PDisplay : UserControl
         _pDisplayPlayer.Stop();
         PDisplayLanguage.Text = string.Empty;
         PDisplayLanguageFlag.Source = null;
-        PDisplayPlayback.Visibility = Visibility.Collapsed;
+        PPlayback.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
         PDisplaySpeech.ItemsSource = null;
         PDisplaySpeechSection.Visibility = Visibility.Collapsed;
@@ -317,7 +326,7 @@ public partial class PDisplay : UserControl
 
     }
 
-    private void PDisplayPlaybackHandle(object sender, RoutedEventArgs e)
+    private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
         if (_pDisplayRecording is null)
         {
@@ -326,5 +335,25 @@ public partial class PDisplay : UserControl
 
         _pDisplayPlayer.Open(new Uri(_pDisplayRecording));
         _pDisplayPlayer.Play();
+    }
+
+    private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        _pDisplayPlayer.Volume = e.NewValue;
+    }
+
+    private void PVolumeSave(object sender, RoutedEventArgs e)
+    {
+        if (PVolume.Value == _lEngine.LEngineSettingsRead().LSettingsVolume)
+        {
+            return;
+        }
+
+        _lEngine.LEngineVolumeSave(PVolume.Value);
+    }
+
+    private void PVolumeLoad()
+    {
+        PVolume.Value = _lEngine.LEngineSettingsRead().LSettingsVolume;
     }
 }
