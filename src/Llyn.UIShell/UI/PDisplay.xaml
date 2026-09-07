@@ -396,14 +396,14 @@
                         </StackPanel>
                     </Border>
 
-                    <Border x:Name="PPlayback" Height="41" Style="{StaticResource Theme.Command.Group}" Visibility="Collapsed">
+                    <Border x:Name="PPlayback" Height="37" Style="{StaticResource Theme.Command.Group}" Visibility="Collapsed">
                         <StackPanel Orientation="Horizontal">
                             <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
-                                <Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                                <Rectangle Width="12" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                                     <Rectangle.OpacityMask>
                                         <VisualBrush Stretch="Uniform">
                                             <VisualBrush.Visual>
-                                                <svgc:SvgViewbox Width="13" Height="15" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
+                                                <svgc:SvgViewbox Width="12" Height="13" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
                                             </VisualBrush.Visual>
                                         </VisualBrush>
                                     </Rectangle.OpacityMask>

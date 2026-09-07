@@ -284,6 +284,11 @@ public partial class PCorpus
 
     internal void PCorpusScribeRestore(bool editing)
     {
+        if (editing && _pExcerptExample is null)
+        {
+            return;
+        }
+
         if (editing)
         {
             PCorpusMode.IsEnabled = true;

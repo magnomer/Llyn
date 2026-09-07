@@ -211,6 +211,11 @@ public partial class PPhonology
 
     internal void PPhonologyScribeRestore(bool editing)
     {
+        if (editing && _pDisplayEntry is null)
+        {
+            return;
+        }
+
         if (editing)
         {
             PPhonologyMode.IsEnabled = true;

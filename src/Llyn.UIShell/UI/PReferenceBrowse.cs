@@ -298,6 +298,11 @@ public partial class PReference
 
     internal void PReferenceScribeRestore(bool editing)
     {
+        if (editing && _pColophonReference is null)
+        {
+            return;
+        }
+
         if (editing)
         {
             PReferenceMode.IsEnabled = true;

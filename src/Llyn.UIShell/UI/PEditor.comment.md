@@ -43,8 +43,13 @@ So a part of speech no pack declares can still be written down.
 ## `<StackPanel Grid.Row="1" Margin="0,12,0,0" HorizontalAlignment="Left" Orientation="Horizontal">`
 
 The pronunciation row, laid out as the reading view lays it out.
-Chip and playback tray carry the theme's shared styles, so switching mode moves neither of them.
+Pronunciation and playback tray carry the theme's shared styles, so switching mode moves neither of them.
 The row starts at the headword's own margin, because an indent here read as a different position.
+
+## `<Grid Margin="3,0,1,0">`
+
+The field and the unseen twin that measures it, stacked on the same cell.
+The twin decides the cell's width, so the brackets close on the text instead of on a fixed box.
 
 ## `<Border x:Name="PPlayback" Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}" ...>`
 

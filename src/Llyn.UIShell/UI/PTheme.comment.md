@@ -86,20 +86,33 @@ Same quiet-until-pointed-at treatment as the taking button beside it.
 
 ## `<Style x:Key="Theme.Pronunciation.Surface" TargetType="Border">`
 
-The bracketed chip a pronunciation is read and written in.
-The reading view and the editor wear the same box, so the chip neither moves nor changes colour when the mode changes.
-It is drawn in the surface and the line the rest of the chrome uses, with no tint of its own.
+The row a pronunciation is read and written in.
+It carries no border and no fill, so the brackets stand alone against the page.
+Its height matches the playback group beside it, so the two sit on one line.
+Without a box the reading has to hold the eye on its own, so it is set larger than the buttons around it.
+
+## `<Style x:Key="Theme.Pronunciation.Bracket" TargetType="TextBlock">`
+
+The two brackets that hold the reading.
+They are set in the muted ink, so they frame the reading without competing with it.
 
 ## `<Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">`
 
 The pronunciation as it reads.
-It holds a floor width, because the chip beside it would otherwise be a different width in each mode.
+It takes exactly the width its text needs, up to a ceiling that keeps a long reading from pushing the row wide.
+
+## `<Style x:Key="Theme.Pronunciation.Measure" TargetType="TextBlock">`
+
+An unseen twin of the field, carrying the same text in the same face.
+The field is sized by this twin, so the box grows and shrinks with what is typed.
+When nothing is typed the twin carries the placeholder instead, so the empty field is still wide enough to read it.
 
 ## `<Style x:Key="Theme.Pronunciation.Field" TargetType="TextBox">`
 
 The same pronunciation with a caret in it.
-Its leading margin answers the two pixels a WPF text box keeps for that caret.
-So the typed text starts where the read text starts.
+It holds no floor width and fills the width its unseen twin measures.
+It carries the read size and is pulled a pixel left, because a WPF text box keeps that pixel for the caret.
+So a reading sits in the same place whether it is being read or being typed.
 
 ## `<Style x:Key="Theme.Playback.Action" TargetType="Button">`
 

@@ -360,6 +360,11 @@ public partial class PRepertoire
 
     internal void PRepertoireScribeRestore(bool editing)
     {
+        if (editing && _pVignetteSituation is null)
+        {
+            return;
+        }
+
         if (editing)
         {
             PRepertoireMode.IsEnabled = true;

@@ -101,19 +101,33 @@
             <Border Style="{StaticResource Theme.Pronunciation.Surface}">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                    <TextBox x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
+                    <Grid Margin="3,0,1,0">
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style BasedOn="{StaticResource Theme.Pronunciation.Measure}" TargetType="TextBlock">
+                                    <Setter Property="Text" Value="{Binding Text, ElementName=PPronunciation}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=PPronunciation}" Value="">
+                                            <Setter Property="Text" Value="{Binding Tag, ElementName=PPronunciation}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
+                    </Grid>
                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                 </StackPanel>
             </Border>
 
-            <Border x:Name="PPlayback" Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}" Visibility="Collapsed">
+            <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
-                        <Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Rectangle Width="12" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Uniform">
                                     <VisualBrush.Visual>
-                                        <svgc:SvgViewbox Width="13" Height="15" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
+                                        <svgc:SvgViewbox Width="12" Height="13" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
                                     </VisualBrush.Visual>
                                 </VisualBrush>
                             </Rectangle.OpacityMask>
@@ -126,16 +140,16 @@
                 </StackPanel>
             </Border>
 
-            <Border Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">
+            <Border Height="37" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
 
                     <Grid>
                         <ToggleButton x:Name="PTranscriber" Checked="PTranscriberCheckedHandle" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Transcriber.Title}" Unchecked="PTranscriberUncheckedHandle">
-                            <Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+                            <Rectangle Width="13" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Uniform">
                                         <VisualBrush.Visual>
-                                            <svgc:SvgViewbox Width="15" Height="15" Source="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
+                                            <svgc:SvgViewbox Width="13" Height="13" Source="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
                                         </VisualBrush.Visual>
                                     </VisualBrush>
                                 </Rectangle.OpacityMask>
@@ -175,11 +189,11 @@
 
                     <Grid>
                         <ToggleButton x:Name="PDownloader" Checked="PDownloaderCheckedHandle" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Downloader.Title}" Unchecked="PDownloaderUncheckedHandle">
-                            <Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+                            <Rectangle Width="13" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Uniform">
                                         <VisualBrush.Visual>
-                                            <svgc:SvgViewbox Width="15" Height="15" Source="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" />
+                                            <svgc:SvgViewbox Width="13" Height="13" Source="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" />
                                         </VisualBrush.Visual>
                                     </VisualBrush>
                                 </Rectangle.OpacityMask>

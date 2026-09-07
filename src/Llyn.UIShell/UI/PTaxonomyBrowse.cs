@@ -271,6 +271,11 @@ public partial class PTaxonomy
 
     internal void PTaxonomyScribeRestore(bool editing)
     {
+        if (editing && _pDisplayEntry is null)
+        {
+            return;
+        }
+
         if (editing)
         {
             PTaxonomyMode.IsEnabled = true;

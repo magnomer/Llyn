@@ -207,6 +207,11 @@ public partial class PLibrary
 
     internal void PLibraryScribeRestore(bool editing)
     {
+        if (editing && _pDisplayEntry is null)
+        {
+            return;
+        }
+
         if (editing)
         {
             PLibraryMode.IsEnabled = true;

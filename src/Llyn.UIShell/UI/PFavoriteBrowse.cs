@@ -210,6 +210,11 @@ public partial class PFavorite
 
     internal void PFavoriteScribeRestore(bool editing)
     {
+        if (editing && _pRosterEntry is null)
+        {
+            return;
+        }
+
         if (editing)
         {
             PFavoriteMode.IsEnabled = true;

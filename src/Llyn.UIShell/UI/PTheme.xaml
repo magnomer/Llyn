@@ -511,48 +511,55 @@
     </Style>
 
     <Style x:Key="Theme.Pronunciation.Surface" TargetType="Border">
-        <Setter Property="Height" Value="41" />
-        <Setter Property="Padding" Value="12,0" />
-        <Setter Property="CornerRadius" Value="9" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
-        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
-        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 
     <Style x:Key="Theme.Pronunciation.Bracket" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="15" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="FontSize" Value="19" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">
-        <Setter Property="Margin" Value="4,0" />
-        <Setter Property="MinWidth" Value="118" />
+        <Setter Property="Margin" Value="3,0" />
         <Setter Property="MaxWidth" Value="292" />
-        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontSize" Value="19" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
 
     <Style x:Key="Theme.Pronunciation.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">
-        <Setter Property="Margin" Value="2,0,4,0" />
-        <Setter Property="MinWidth" Value="120" />
+        <Setter Property="Margin" Value="-1,0,1,0" />
         <Setter Property="MaxWidth" Value="294" />
         <Setter Property="MinHeight" Value="0" />
-        <Setter Property="Height" Value="39" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontSize" Value="19" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
+    <Style x:Key="Theme.Pronunciation.Measure" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0,0,2,0" />
+        <Setter Property="MaxWidth" Value="294" />
+        <Setter Property="FontSize" Value="19" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Visibility" Value="Hidden" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style x:Key="Theme.Playback.Action" TargetType="Button">
-        <Setter Property="Width" Value="42" />
-        <Setter Property="Height" Value="33" />
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -636,8 +643,8 @@
 
     <Style x:Key="Theme.Volume.Slider" TargetType="Slider">
         <Setter Property="Width" Value="92" />
-        <Setter Property="Height" Value="33" />
-        <Setter Property="Padding" Value="9,0" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="8,0" />
         <Setter Property="Minimum" Value="0" />
         <Setter Property="Maximum" Value="1" />
         <Setter Property="SmallChange" Value="0.05" />
@@ -1009,14 +1016,14 @@
 
     <Style x:Key="Theme.Command.Divider" TargetType="Rectangle">
         <Setter Property="Width" Value="1" />
-        <Setter Property="Margin" Value="5,7" />
+        <Setter Property="Margin" Value="5,6" />
         <Setter Property="Fill" Value="{StaticResource Theme.Line}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
     </Style>
 
     <Style x:Key="Theme.Command.IconToggle" TargetType="ToggleButton">
-        <Setter Property="Width" Value="42" />
-        <Setter Property="Height" Value="33" />
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
