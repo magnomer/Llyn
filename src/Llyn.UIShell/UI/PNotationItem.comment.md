@@ -17,7 +17,7 @@ The one line a row without a transcription says: searching, no entry, or failed 
 
 ## `public bool PNotationItemReady`
 
-Whether the row carries a transcription the user can take.
+Whether the row carries a transcription the user can take now, which is what `PClipItemReady` means on an audio row.
 It is what the template switches the reading and the taking button on.
 
 ## `internal void PNotationItemShow(LCandidate candidate, string missing, string broken)`

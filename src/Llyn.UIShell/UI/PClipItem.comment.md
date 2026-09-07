@@ -21,10 +21,12 @@ The one line a row without a recording says: searching, no entry, or failed to r
 
 Whether the source offered a recording at all.
 It is what the template switches the preview and taking buttons on.
+A pronunciation row needs no such flag, because there a reading is the whole of what can be taken.
 
 ## `public bool PClipItemReady`
 
-Whether the row's taking button still offers a download: false while one runs, and after one has been saved.
+Whether the row carries a recording the user can take now, which is what `PNotationItemReady` means on a pronunciation row.
+Here that is the narrower state: false while a download runs, and false once one has been saved.
 
 ## `internal LRecording PClipItemModel`
 

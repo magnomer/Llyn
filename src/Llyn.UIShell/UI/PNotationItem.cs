@@ -38,16 +38,7 @@ internal sealed class PNotationItem : INotifyPropertyChanged
     public bool PNotationItemReady
     {
         get => _pNotationItemReady;
-        private set
-        {
-            if (_pNotationItemReady == value)
-            {
-                return;
-            }
-
-            _pNotationItemReady = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PNotationItemReady)));
-        }
+        private set => PNotationItemChange(ref _pNotationItemReady, value, nameof(PNotationItemReady));
     }
 
     internal void PNotationItemShow(LCandidate candidate, string missing, string broken)
@@ -68,6 +59,17 @@ internal sealed class PNotationItem : INotifyPropertyChanged
     private void PNotationItemChange(ref string held, string value, string name)
     {
         if (string.Equals(held, value, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        held = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    private void PNotationItemChange(ref bool held, bool value, string name)
+    {
+        if (held == value)
         {
             return;
         }

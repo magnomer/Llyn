@@ -165,7 +165,7 @@ public partial class PEditor : LListener
 
     void LListener.LListenerSourceStart(string source, int order)
     {
-        Dispatcher.Invoke(() =>
+        Dispatcher.BeginInvoke(() =>
         {
             PClipPlace(source, order);
             PClipUpdate();
@@ -174,7 +174,7 @@ public partial class PEditor : LListener
 
     void LListener.LListenerRecordingAdd(LRecording recording)
     {
-        Dispatcher.Invoke(() =>
+        Dispatcher.BeginInvoke(() =>
         {
             PClipPlace(recording.LRecordingSource, recording.LRecordingOrder).PClipItemShow(
                 recording,
@@ -186,7 +186,7 @@ public partial class PEditor : LListener
 
     void LListener.LListenerFinish()
     {
-        Dispatcher.Invoke(() =>
+        Dispatcher.BeginInvoke(() =>
         {
             _pClipSearching = false;
             PClipUpdate();
