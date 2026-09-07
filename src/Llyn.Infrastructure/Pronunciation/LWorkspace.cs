@@ -30,13 +30,15 @@ public static class LWorkspace
         ArgumentException.ThrowIfNullOrWhiteSpace(word);
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        ArgumentException.ThrowIfNullOrWhiteSpace(recording.LRecordingAddress);
 
-        byte[] audio = await client.GetByteArrayAsync(recording.LRecordingAddress, cancellation).ConfigureAwait(false);
+        string address = recording.LRecordingAddress;
+        byte[] audio = await client.GetByteArrayAsync(address, cancellation).ConfigureAwait(false);
 
         string directory = Path.Combine(root, LWorkspaceBucket, LWorkspaceNormalize(language));
         Directory.CreateDirectory(directory);
 
-        string path = Path.Combine(directory, LWorkspaceNormalize(word) + LWorkspaceExtensionRead(recording.LRecordingAddress));
+        string path = Path.Combine(directory, LWorkspaceNormalize(word) + LWorkspaceExtensionRead(address));
         await File.WriteAllBytesAsync(path, audio, cancellation).ConfigureAwait(false);
         return path;
     }
@@ -50,13 +52,15 @@ public static class LWorkspace
         ArgumentNullException.ThrowIfNull(recording);
         ArgumentNullException.ThrowIfNull(client);
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        ArgumentException.ThrowIfNullOrWhiteSpace(recording.LRecordingAddress);
 
-        byte[] audio = await client.GetByteArrayAsync(recording.LRecordingAddress, cancellation).ConfigureAwait(false);
+        string address = recording.LRecordingAddress;
+        byte[] audio = await client.GetByteArrayAsync(address, cancellation).ConfigureAwait(false);
 
         string directory = Path.Combine(root, LWorkspaceCache);
         Directory.CreateDirectory(directory);
 
-        string path = Path.Combine(directory, LWorkspaceNameRead(recording.LRecordingAddress));
+        string path = Path.Combine(directory, LWorkspaceNameRead(address));
         await File.WriteAllBytesAsync(path, audio, cancellation).ConfigureAwait(false);
         return path;
     }

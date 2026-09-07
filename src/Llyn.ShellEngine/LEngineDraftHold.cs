@@ -157,6 +157,7 @@ public sealed partial class LEngine
             LEngineDraftValidate(id);
             LEngineCourtRemove(id);
             _lEngineDraftHeld.Remove(id);
+            _lEngineTrove.LTroveClear(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
             LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
         }
@@ -363,6 +364,7 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(id);
             LEngineDraftValidate(id);
             stored = LEngineDraftCommit(id, [], true);
+            _lEngineTrove.LTroveClear(id);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectEntry, stored.LEntryId);
@@ -434,6 +436,7 @@ public sealed partial class LEngine
             }
 
             _lEngineDraftHeld.Remove(id);
+            _lEngineTrove.LTroveClear(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
             LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
         }

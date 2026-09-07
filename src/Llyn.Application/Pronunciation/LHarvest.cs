@@ -8,6 +8,8 @@ namespace Llyn.Application;
 
 public sealed class LHarvest
 {
+    private static readonly TimeSpan LHarvestDeadline = TimeSpan.FromMinutes(1);
+
     private readonly IReadOnlyList<LSource> _lHarvestSources;
 
     public LHarvest(IReadOnlyList<LSource> sources)
@@ -15,14 +17,18 @@ public sealed class LHarvest
         _lHarvestSources = sources ?? throw new ArgumentNullException(nameof(sources));
     }
 
-    public async Task LHarvestStart(string word, LListener listener, CancellationToken cancellation)
+    public async Task<IReadOnlyList<LRecording>> LHarvestStart(
+        string word,
+        LListener listener,
+        CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(listener);
 
+        List<LRecording> found = [];
         List<Task> pending = new(_lHarvestSources.Count);
         for (int order = 0; order < _lHarvestSources.Count; order++)
         {
-            pending.Add(LHarvestSourceRun(_lHarvestSources[order], order, word, listener, cancellation));
+            pending.Add(LHarvestSourceRun(_lHarvestSources[order], order, word, listener, found, cancellation));
         }
 
         try
@@ -36,6 +42,9 @@ public sealed class LHarvest
                 listener.LListenerFinish();
             }
         }
+
+        found.Sort(static (one, other) => one.LRecordingOrder.CompareTo(other.LRecordingOrder));
+        return found;
     }
 
     private static async Task LHarvestSourceRun(
@@ -43,27 +52,42 @@ public sealed class LHarvest
         int order,
         string word,
         LListener listener,
+        List<LRecording> found,
         CancellationToken cancellation)
     {
-        listener.LListenerSourceStart(source.LSourceName);
+        listener.LListenerSourceStart(source.LSourceName, order);
 
-        string? address;
+        LAnswer answer = await LHarvestAnswerRead(source, word, cancellation).ConfigureAwait(false);
+        cancellation.ThrowIfCancellationRequested();
+
+        LRecording recording = new(source.LSourceName, answer.LAnswerValue, order, answer.LAnswerReached);
+        lock (found)
+        {
+            found.Add(recording);
+        }
+
+        listener.LListenerRecordingAdd(recording);
+    }
+
+    private static async Task<LAnswer> LHarvestAnswerRead(
+        LSource source,
+        string word,
+        CancellationToken cancellation)
+    {
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
+        deadline.CancelAfter(LHarvestDeadline);
+
         try
         {
-            address = await source.LSourceFind(word, cancellation).ConfigureAwait(false);
+            return await source.LSourceFind(word, deadline.Token).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
             throw;
         }
         catch
         {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(address) && !cancellation.IsCancellationRequested)
-        {
-            listener.LListenerRecordingAdd(new LRecording(source.LSourceName, address, order));
+            return LAnswer.LAnswerLost;
         }
     }
 }

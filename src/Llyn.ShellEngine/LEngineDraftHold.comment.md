@@ -202,6 +202,7 @@ The draft it keeps names a stored entry, so the editor's own commit updates that
 ## `public void LEngineDraftCancel(string id)`
 
 Discards held work: the court first, the file second.
+It also drops what this draft's lookups and audio searches found, because closing is what frees a trove.
 Links go first because a link outliving its target would point at a record that will never arrive.
 The rows this draft owns are settled by `LEngineCourtRemove`, and the rows pointing at it are settled here.
 Each row pointing at it also has its tentative id struck from the draft that held it.

@@ -7,5 +7,5 @@ public interface LSource
 {
     string LSourceName { get; }
 
-    Task<string?> LSourceFind(string word, CancellationToken cancellation);
+    Task<LAnswer> LSourceFind(string word, CancellationToken cancellation);
 }

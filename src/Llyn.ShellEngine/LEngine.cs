@@ -16,6 +16,7 @@ public sealed partial class LEngine : IDisposable
     private readonly HttpClient _lEngineClient;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineHarvestSources = new(StringComparer.Ordinal);
+    private readonly LTrove _lEngineTrove = new();
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
     private LDatabase _lEngineDatabase;
@@ -131,6 +132,7 @@ public sealed partial class LEngine : IDisposable
             _lEngineDraftHeld.Clear();
             _lEngineLookupSources.Clear();
             _lEngineHarvestSources.Clear();
+            _lEngineTrove.LTroveClear();
             LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
             _lEngineDatabase = new LDatabase(_lEngineWorkspace);
@@ -189,30 +191,104 @@ public sealed partial class LEngine : IDisposable
         return Path.IsPathRooted(file) ? file : Path.Combine(_lEngineWorkspace, file);
     }
 
-    public Task LEnginePronunciationFind(string word, string language, LReceiver receiver, CancellationToken cancellation)
+    public Task LEnginePronunciationFind(
+        string session,
+        string word,
+        string language,
+        LReceiver receiver,
+        CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(receiver);
 
+        IReadOnlyList<LCandidate>? held;
         IReadOnlyList<LSource> sources;
         lock (_lEngineGate)
         {
-            sources = LEngineLookupRead(language);
+            held = _lEngineTrove.LTroveCandidateRead(session, word, language);
+            sources = held is null ? LEngineLookupRead(language) : [];
         }
 
-        return new LLookup(sources).LSeekerStart(word, receiver, cancellation);
+        return held is null
+            ? LEngineCandidateScan(session, word, language, sources, receiver, cancellation)
+            : LEngineCandidatePublish(held, receiver);
     }
 
-    public Task LEngineRecordingFind(string word, string language, LListener listener, CancellationToken cancellation)
+    public Task LEngineRecordingFind(
+        string session,
+        string word,
+        string language,
+        LListener listener,
+        CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(listener);
 
+        IReadOnlyList<LRecording>? held;
         IReadOnlyList<LSource> sources;
         lock (_lEngineGate)
         {
-            sources = LEngineHarvestRead(language);
+            held = _lEngineTrove.LTroveRecordingRead(session, word, language);
+            sources = held is null ? LEngineHarvestRead(language) : [];
         }
 
-        return new LHarvest(sources).LHarvestStart(word, listener, cancellation);
+        return held is null
+            ? LEngineRecordingScan(session, word, language, sources, listener, cancellation)
+            : LEngineRecordingPublish(held, listener);
+    }
+
+    private async Task LEngineCandidateScan(
+        string session,
+        string word,
+        string language,
+        IReadOnlyList<LSource> sources,
+        LReceiver receiver,
+        CancellationToken cancellation)
+    {
+        IReadOnlyList<LCandidate> found =
+            await new LLookup(sources).LSeekerStart(word, receiver, cancellation).ConfigureAwait(false);
+
+        lock (_lEngineGate)
+        {
+            _lEngineTrove.LTroveCandidateSave(session, word, language, found);
+        }
+    }
+
+    private async Task LEngineRecordingScan(
+        string session,
+        string word,
+        string language,
+        IReadOnlyList<LSource> sources,
+        LListener listener,
+        CancellationToken cancellation)
+    {
+        IReadOnlyList<LRecording> found =
+            await new LHarvest(sources).LHarvestStart(word, listener, cancellation).ConfigureAwait(false);
+
+        lock (_lEngineGate)
+        {
+            _lEngineTrove.LTroveRecordingSave(session, word, language, found);
+        }
+    }
+
+    private static Task LEngineCandidatePublish(IReadOnlyList<LCandidate> held, LReceiver receiver)
+    {
+        foreach (LCandidate candidate in held)
+        {
+            receiver.LReceiverCandidateAdd(candidate);
+        }
+
+        receiver.LReceiverLookupFinish();
+        return Task.CompletedTask;
+    }
+
+    private static Task LEngineRecordingPublish(IReadOnlyList<LRecording> held, LListener listener)
+    {
+        foreach (LRecording recording in held)
+        {
+            listener.LListenerRecordingAdd(recording);
+        }
+
+        listener.LListenerFinish();
+        return Task.CompletedTask;
     }
 
     public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)

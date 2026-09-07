@@ -41,7 +41,8 @@ public partial class PEditor : LListener
 
         try
         {
-            await _lEngine.LEngineRecordingFind(word, _pSpeakerChoice, this, _pClipCancellation.Token);
+            await _lEngine.LEngineRecordingFind(
+                _pEditorDraft, word, _pSpeakerChoice, this, _pClipCancellation.Token);
         }
         catch (OperationCanceledException)
         {
@@ -60,16 +61,27 @@ public partial class PEditor : LListener
         _pClipCancellation = null;
     }
 
-    private void PClipPlace(PClipItem recording)
+    private PClipItem PClipPlace(string source, int order)
     {
         int position = 0;
         while (position < _pClipItem.Count &&
-            _pClipItem[position].PClipItemOrder <= recording.PClipItemOrder)
+            _pClipItem[position].PClipItemOrder < order)
         {
             position++;
         }
 
-        _pClipItem.Insert(position, recording);
+        if (position < _pClipItem.Count && _pClipItem[position].PClipItemOrder == order)
+        {
+            return _pClipItem[position];
+        }
+
+        PClipItem row = new(
+            source,
+            order,
+            _pEditorHost.PLocalizationTextRead("Downloader.Use"),
+            _pEditorHost.PLocalizationTextRead("Downloader.Searching"));
+        _pClipItem.Insert(position, row);
+        return row;
     }
 
     private void PClipUpdate()
@@ -92,7 +104,7 @@ public partial class PEditor : LListener
 
     internal async void PClipPreviewHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PClipItem recording })
+        if (sender is not FrameworkElement { DataContext: PClipItem recording } || !recording.PClipItemFound)
         {
             return;
         }
@@ -110,7 +122,7 @@ public partial class PEditor : LListener
 
     internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PClipItem recording })
+        if (sender is not FrameworkElement { DataContext: PClipItem recording } || !recording.PClipItemFound)
         {
             return;
         }
@@ -151,17 +163,23 @@ public partial class PEditor : LListener
         }
     }
 
-    void LListener.LListenerSourceStart(string source)
+    void LListener.LListenerSourceStart(string source, int order)
     {
+        Dispatcher.Invoke(() =>
+        {
+            PClipPlace(source, order);
+            PClipUpdate();
+        });
     }
 
     void LListener.LListenerRecordingAdd(LRecording recording)
     {
         Dispatcher.Invoke(() =>
         {
-            PClipPlace(new PClipItem(
+            PClipPlace(recording.LRecordingSource, recording.LRecordingOrder).PClipItemShow(
                 recording,
-                _pEditorHost.PLocalizationTextRead("Downloader.Use")));
+                _pEditorHost.PLocalizationTextRead("Downloader.Missing"),
+                _pEditorHost.PLocalizationTextRead("Downloader.Broken"));
             PClipUpdate();
         });
     }

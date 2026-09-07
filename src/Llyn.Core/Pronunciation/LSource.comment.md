@@ -7,16 +7,15 @@ Which of the two it is comes from the list the language pack declared it in, not
 The provider is language-agnostic.
 What it searches and how it extracts a value are supplied by a language pack (see `LSourceSpec`).
 Nothing is hardcoded here.
-It returns the bare extracted value as a string.
-That is a phonetic form for a pronunciation source, or an audio URL for an audio source.
-It returns `null` when the source has none.
+It returns an `LAnswer`, which carries the extracted value and whether the source was reached.
 
 ## `string LSourceName { get; }`
 
 The source's declared name, for example `"Cambridge"`.
 
-## `Task<string?> LSourceFind(string word, CancellationToken cancellation);`
+## `Task<LAnswer> LSourceFind(string word, CancellationToken cancellation);`
 
-Finds a value for `word`, returning `null` when the source has none.
+Finds a value for `word`.
 Implementations must not throw for an ordinary "not found" or network failure.
-They return `null`, so one failing source never fails the whole search.
+They report it in the answer, so one failing source never fails the whole search.
+`LAnswerBlank` means the source answered and had nothing, `LAnswerLost` that it was never reached.

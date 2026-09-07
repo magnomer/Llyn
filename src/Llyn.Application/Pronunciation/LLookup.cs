@@ -8,6 +8,8 @@ namespace Llyn.Application;
 
 public sealed class LLookup : LSeeker
 {
+    private static readonly TimeSpan LLookupDeadline = TimeSpan.FromMinutes(1);
+
     private readonly IReadOnlyList<LSource> _lLookupSources;
 
     public LLookup(IReadOnlyList<LSource> sources)
@@ -15,14 +17,18 @@ public sealed class LLookup : LSeeker
         _lLookupSources = sources ?? throw new ArgumentNullException(nameof(sources));
     }
 
-    public async Task LSeekerStart(string word, LReceiver receiver, CancellationToken cancellation)
+    public async Task<IReadOnlyList<LCandidate>> LSeekerStart(
+        string word,
+        LReceiver receiver,
+        CancellationToken cancellation)
     {
         ArgumentNullException.ThrowIfNull(receiver);
 
+        List<LCandidate> found = [];
         List<Task> pending = new(_lLookupSources.Count);
         for (int order = 0; order < _lLookupSources.Count; order++)
         {
-            pending.Add(LLookupSourceRun(_lLookupSources[order], order, word, receiver, cancellation));
+            pending.Add(LLookupSourceRun(_lLookupSources[order], order, word, receiver, found, cancellation));
         }
 
         try
@@ -36,6 +42,9 @@ public sealed class LLookup : LSeeker
                 receiver.LReceiverLookupFinish();
             }
         }
+
+        found.Sort(static (one, other) => one.LCandidateOrder.CompareTo(other.LCandidateOrder));
+        return found;
     }
 
     private static async Task LLookupSourceRun(
@@ -43,27 +52,42 @@ public sealed class LLookup : LSeeker
         int order,
         string word,
         LReceiver receiver,
+        List<LCandidate> found,
         CancellationToken cancellation)
     {
-        receiver.LReceiverSourceStart(source.LSourceName);
+        receiver.LReceiverSourceStart(source.LSourceName, order);
 
-        string? phonetic;
+        LAnswer answer = await LLookupAnswerRead(source, word, cancellation).ConfigureAwait(false);
+        cancellation.ThrowIfCancellationRequested();
+
+        LCandidate candidate = new(source.LSourceName, answer.LAnswerValue, order, answer.LAnswerReached);
+        lock (found)
+        {
+            found.Add(candidate);
+        }
+
+        receiver.LReceiverCandidateAdd(candidate);
+    }
+
+    private static async Task<LAnswer> LLookupAnswerRead(
+        LSource source,
+        string word,
+        CancellationToken cancellation)
+    {
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
+        deadline.CancelAfter(LLookupDeadline);
+
         try
         {
-            phonetic = await source.LSourceFind(word, cancellation).ConfigureAwait(false);
+            return await source.LSourceFind(word, deadline.Token).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
             throw;
         }
         catch
         {
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(phonetic) && !cancellation.IsCancellationRequested)
-        {
-            receiver.LReceiverCandidateAdd(new LCandidate(source.LSourceName, phonetic, order));
+            return LAnswer.LAnswerLost;
         }
     }
 }

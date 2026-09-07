@@ -13,14 +13,21 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemSource}" TextTrimming="CharacterEllipsis" />
                 <TextBlock x:Name="PNotationReading" Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"><Run Foreground="{DynamicResource Theme.Muted}" Text="[" /><Run Foreground="{DynamicResource Theme.Ink}" Text="{Binding PNotationItemReading, Mode=OneWay}" /><Run Foreground="{DynamicResource Theme.Muted}" Text="]" /></TextBlock>
+                <TextBlock x:Name="PNotationNote" Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center" FontSize="11" FontStyle="Italic" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemNotice}" TextTrimming="CharacterEllipsis" Visibility="Collapsed" />
                 <Button x:Name="PNotationSelector" Grid.Column="2" VerticalAlignment="Center" Click="PNotationSelectorHandle" Content="{DynamicResource Transcriber.Use}" Style="{DynamicResource Theme.Popup.RowChoice}" />
             </Grid>
         </Border>
         <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding PNotationItemReady}" Value="False">
+                <Setter TargetName="PNotationReading" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="PNotationSelector" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="PNotationNote" Property="Visibility" Value="Visible" />
+            </DataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding IsMouseOver, ElementName=PNotationRow}" Value="True" />
                     <Condition Binding="{Binding IsMouseOver, ElementName=PNotationSelector}" Value="False" />
+                    <Condition Binding="{Binding PNotationItemReady}" Value="True" />
                 </MultiDataTrigger.Conditions>
                 <Setter TargetName="PNotationSelector" Property="Foreground" Value="{DynamicResource Theme.Accent}" />
                 <Setter TargetName="PNotationSelector" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />

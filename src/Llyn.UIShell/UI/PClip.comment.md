@@ -12,9 +12,10 @@ So every arrival is marshalled onto the dispatcher here.
 
 ## Inline notes
 
-### `await _lEngine.LEngineRecordingFind(word, _pSpeakerChoice, this, _pClipCancellation.Token);`
+### `await _lEngine.LEngineRecordingFind(`
 
 The panel asks and then listens.
+It passes the draft it is editing, so the engine can hand back what that draft already found.
 The search is over when the listener is told it is, never when this call returns.
 The engine reports the end through LListenerFinish.
 Reading completion off the awaited task gave the menu a second opinion.
@@ -31,11 +32,12 @@ A discovery that could not be started reports no end of its own.
 So the menu is taken out of its searching state here.
 It is not left running under a search that never began.
 
-### `private void PClipPlace(PClipItem recording)`
+### `private PClipItem PClipPlace(string source, int order)`
 
-Puts an arriving recording where the language pack put its source, not where the network put it.
+Finds the row one source owns, creating it at its declared position when it has none yet.
+Rows stand where the language pack put the source, not where the network put it.
 Every source is asked at once, so a fast one would otherwise head a list the user did not order.
-Equal positions cannot occur, because a source answers once.
+A new row opens saying it is searching, so every declared source is visible before any of them answers.
 
 ### `private void PClipUpdate()`
 
@@ -87,4 +89,5 @@ A failed download leaves the row offering another try.
 
 ### `void LListener.LListenerRecordingAdd(LRecording recording)`
 
-Handled the same way as lookup: the running line already covers the whole search.
+Handled the same way as lookup: one answer per source, resolved into the row that source owns.
+A source that was reached and had nothing reads differently from one that was never reached.

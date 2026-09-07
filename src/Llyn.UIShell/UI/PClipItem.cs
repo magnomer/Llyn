@@ -6,17 +6,19 @@ namespace Llyn.UIShell;
 
 internal sealed class PClipItem : INotifyPropertyChanged
 {
-    private readonly LRecording _lRecording;
+    private LRecording? _lRecording;
 
     private string _pClipItemAction;
+    private string _pClipItemNotice;
+    private bool _pClipItemFound;
     private bool _pClipItemReady = true;
 
-    internal PClipItem(LRecording recording, string action)
+    internal PClipItem(string sourceLabel, int order, string action, string notice)
     {
-        _lRecording = recording;
+        PClipItemSource = sourceLabel;
+        PClipItemOrder = order;
         _pClipItemAction = action;
-        PClipItemSource = recording.LRecordingSource;
-        PClipItemOrder = recording.LRecordingOrder;
+        _pClipItemNotice = notice;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -28,32 +30,63 @@ internal sealed class PClipItem : INotifyPropertyChanged
     public string PClipItemAction
     {
         get => _pClipItemAction;
-        set
-        {
-            if (string.Equals(_pClipItemAction, value, StringComparison.Ordinal))
-            {
-                return;
-            }
+        set => PClipItemChange(ref _pClipItemAction, value, nameof(PClipItemAction));
+    }
 
-            _pClipItemAction = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipItemAction)));
-        }
+    public string PClipItemNotice
+    {
+        get => _pClipItemNotice;
+        private set => PClipItemChange(ref _pClipItemNotice, value, nameof(PClipItemNotice));
+    }
+
+    public bool PClipItemFound
+    {
+        get => _pClipItemFound;
+        private set => PClipItemChange(ref _pClipItemFound, value, nameof(PClipItemFound));
     }
 
     public bool PClipItemReady
     {
         get => _pClipItemReady;
-        set
-        {
-            if (_pClipItemReady == value)
-            {
-                return;
-            }
-
-            _pClipItemReady = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipItemReady)));
-        }
+        set => PClipItemChange(ref _pClipItemReady, value, nameof(PClipItemReady));
     }
 
-    internal LRecording PClipItemModel => _lRecording;
+    internal LRecording PClipItemModel => _lRecording ?? throw new InvalidOperationException();
+
+    internal void PClipItemShow(LRecording recording, string missing, string broken)
+    {
+        if (!string.IsNullOrEmpty(recording.LRecordingAddress))
+        {
+            _lRecording = recording;
+            PClipItemNotice = string.Empty;
+            PClipItemFound = true;
+            return;
+        }
+
+        _lRecording = null;
+        PClipItemNotice = recording.LRecordingReached ? missing : broken;
+        PClipItemFound = false;
+    }
+
+    private void PClipItemChange(ref string held, string value, string name)
+    {
+        if (string.Equals(held, value, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        held = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+
+    private void PClipItemChange(ref bool held, bool value, string name)
+    {
+        if (held == value)
+        {
+            return;
+        }
+
+        held = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
 }

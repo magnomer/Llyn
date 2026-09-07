@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Llyn.Core;
 
 namespace Llyn.Infrastructure;
 
@@ -11,25 +12,28 @@ internal static class LSourceReader
 {
     private const int LSourceReaderRetry = 2;
 
-    public static async Task<string?> LSourceReaderRead(
+    public static async Task<LAnswer> LSourceReaderRead(
         HttpClient client,
         IReadOnlyList<string> urls,
         IReadOnlyDictionary<string, string>? headers,
         CancellationToken cancellation)
     {
+        bool reached = false;
         foreach (string url in urls)
         {
-            string? body = await LSourceReaderLoad(client, url, headers, cancellation).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(body))
+            LAnswer answer = await LSourceReaderLoad(client, url, headers, cancellation).ConfigureAwait(false);
+            if (!answer.LAnswerEmpty)
             {
-                return body;
+                return answer;
             }
+
+            reached |= answer.LAnswerReached;
         }
 
-        return null;
+        return reached ? LAnswer.LAnswerBlank : LAnswer.LAnswerLost;
     }
 
-    private static async Task<string?> LSourceReaderLoad(
+    private static async Task<LAnswer> LSourceReaderLoad(
         HttpClient client,
         string url,
         IReadOnlyDictionary<string, string>? headers,
@@ -37,7 +41,6 @@ internal static class LSourceReader
     {
         for (int attempt = 0; ; attempt++)
         {
-            bool retryable;
             try
             {
                 using HttpRequestMessage request = new(HttpMethod.Get, url);
@@ -54,10 +57,14 @@ internal static class LSourceReader
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadAsStringAsync(cancellation).ConfigureAwait(false);
+                    string body = await response.Content.ReadAsStringAsync(cancellation).ConfigureAwait(false);
+                    return string.IsNullOrEmpty(body) ? LAnswer.LAnswerBlank : LAnswer.LAnswerCreate(body);
                 }
 
-                retryable = LSourceReaderConfirm(response.StatusCode);
+                if (!LSourceReaderConfirm(response.StatusCode))
+                {
+                    return LAnswer.LAnswerBlank;
+                }
             }
             catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
             {
@@ -65,16 +72,14 @@ internal static class LSourceReader
             }
             catch (OperationCanceledException)
             {
-                retryable = true;
             }
             catch (HttpRequestException)
             {
-                retryable = true;
             }
 
-            if (!retryable || attempt >= LSourceReaderRetry)
+            if (attempt >= LSourceReaderRetry)
             {
-                return null;
+                return LAnswer.LAnswerLost;
             }
 
             await Task.Delay(TimeSpan.FromMilliseconds(250 * (attempt + 1)), cancellation).ConfigureAwait(false);

@@ -26,27 +26,30 @@ public sealed class LSourceGeneric : LSource
 
     public string LSourceName => _lSourceGenericSpec.LSourceSpecName;
 
-    public async Task<string?> LSourceFind(string word, CancellationToken cancellation)
+    public async Task<LAnswer> LSourceFind(string word, CancellationToken cancellation)
     {
         if (string.IsNullOrWhiteSpace(word))
         {
-            return null;
+            return LAnswer.LAnswerBlank;
         }
 
         string trimmed = word.Trim();
+        bool reached = false;
         foreach (LSourceAttempt attempt in _lSourceGenericSpec.LSourceSpecAttempts)
         {
-            string? value = await LSourceAttemptRun(attempt, trimmed, cancellation).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(value))
+            LAnswer answer = await LSourceAttemptRun(attempt, trimmed, cancellation).ConfigureAwait(false);
+            if (!answer.LAnswerEmpty)
             {
-                return value;
+                return answer;
             }
+
+            reached |= answer.LAnswerReached;
         }
 
-        return null;
+        return reached ? LAnswer.LAnswerBlank : LAnswer.LAnswerLost;
     }
 
-    private async Task<string?> LSourceAttemptRun(
+    private async Task<LAnswer> LSourceAttemptRun(
         LSourceAttempt attempt,
         string word,
         CancellationToken cancellation)
@@ -58,12 +61,17 @@ public sealed class LSourceGeneric : LSource
             urls[index] = attempt.LSourceAttemptUrls[index].Replace(LSourceGenericToken, escaped, StringComparison.Ordinal);
         }
 
-        string? body = await LSourceReader
+        LAnswer fetched = await LSourceReader
             .LSourceReaderRead(_lSourceGenericClient, urls, attempt.LSourceAttemptHeaders, cancellation)
             .ConfigureAwait(false);
-        if (body is null || !LSourceConfirm(attempt, body, word))
+        if (fetched.LAnswerValue is not string body)
         {
-            return null;
+            return fetched;
+        }
+
+        if (!LSourceConfirm(attempt, body, word))
+        {
+            return LAnswer.LAnswerBlank;
         }
 
         string? value = attempt.LSourceAttemptStrategy switch
@@ -74,7 +82,8 @@ public sealed class LSourceGeneric : LSource
             _ => null
         };
 
-        return LSourceAddressResolve(attempt, value);
+        string? address = LSourceAddressResolve(attempt, value);
+        return string.IsNullOrEmpty(address) ? LAnswer.LAnswerBlank : LAnswer.LAnswerCreate(address);
     }
 
     private static string? LSourceAddressResolve(LSourceAttempt attempt, string? value)

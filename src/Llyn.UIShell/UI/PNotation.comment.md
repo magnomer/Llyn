@@ -10,18 +10,22 @@ This is the shell side of `LReceiver`.
 The engine calls back on a worker thread.
 So every arrival is marshalled onto the dispatcher here.
 
-## `private void PNotationPlace(PNotationItem candidate)`
+## `private PNotationItem PNotationPlace(string source, int order)`
 
-Puts an arriving candidate where the language pack put its source, not where the network put it.
+Finds the row one source owns, creating it at its declared position when it has none yet.
+Rows stand where the language pack put the source, not where the network put it.
 Every source is asked at once, so a fast one would otherwise head a list the user did not order.
 The list is short and already sorted, so a walk to the insertion point costs nothing worth avoiding.
-Equal positions cannot occur, because a source answers once.
+The same call serves the start and the answer, so a replayed search that reports no start still lands its rows correctly.
+A new row opens saying it is searching, which is what makes every declared source visible before any of them answers.
 
 ## Inline notes
 
-### `await _lEngine.LEnginePronunciationFind(word, _pSpeakerChoice, this, _pNotationCancellation.Token);`
+### `await _lEngine.LEnginePronunciationFind(`
 
 The panel asks and then listens.
+It passes the draft it is editing, so the engine can hand back what that draft already found.
+Whether a search runs at all is the engine's answer, not the menu's.
 The search is over when the receiver is told it is, never when this call returns.
 The two are not the same moment.
 The engine reports the end through LReceiverLookupFinish.
@@ -55,6 +59,12 @@ With rows on screen it says nothing.
 
 ### `void LReceiver.LReceiverCandidateAdd(LCandidate candidate)`
 
-Each source's arrival is surfaced through LReceiverCandidateAdd.
-The running line is already shown for the whole search.
-So no per-source update is needed here.
+Each source answers exactly once here, whether it found a reading or not.
+The row is resolved in place rather than replaced, so it never jumps under the pointer.
+A source that was reached and had nothing reads differently from one that was never reached.
+Silence would have said a word is missing from a dictionary that was in fact down.
+
+### `if (!candidate.PNotationItemReady)`
+
+A row with no reading carries nothing to take.
+Its taking button is hidden, so this only guards a click the template should never have offered.

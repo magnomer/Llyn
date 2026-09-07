@@ -30,6 +30,11 @@ public partial class PEditor : LReceiver
             return;
         }
 
+        if (!candidate.PNotationItemReady)
+        {
+            return;
+        }
+
         PPronunciation.Text = candidate.PNotationItemReading;
         PTranscriber.IsChecked = false;
     }
@@ -52,7 +57,8 @@ public partial class PEditor : LReceiver
 
         try
         {
-            await _lEngine.LEnginePronunciationFind(word, _pSpeakerChoice, this, _pNotationCancellation.Token);
+            await _lEngine.LEnginePronunciationFind(
+                _pEditorDraft, word, _pSpeakerChoice, this, _pNotationCancellation.Token);
         }
         catch (OperationCanceledException)
         {
@@ -71,16 +77,23 @@ public partial class PEditor : LReceiver
         _pNotationCancellation = null;
     }
 
-    private void PNotationPlace(PNotationItem candidate)
+    private PNotationItem PNotationPlace(string source, int order)
     {
         int position = 0;
         while (position < _pNotationItem.Count &&
-            _pNotationItem[position].PNotationItemOrder <= candidate.PNotationItemOrder)
+            _pNotationItem[position].PNotationItemOrder < order)
         {
             position++;
         }
 
-        _pNotationItem.Insert(position, candidate);
+        if (position < _pNotationItem.Count && _pNotationItem[position].PNotationItemOrder == order)
+        {
+            return _pNotationItem[position];
+        }
+
+        PNotationItem row = new(source, order, _pEditorHost.PLocalizationTextRead("Transcriber.Searching"));
+        _pNotationItem.Insert(position, row);
+        return row;
     }
 
     private void PNotationUpdate()
@@ -101,15 +114,23 @@ public partial class PEditor : LReceiver
         PNotationNotice.Visibility = Visibility.Visible;
     }
 
-    void LReceiver.LReceiverSourceStart(string source)
+    void LReceiver.LReceiverSourceStart(string source, int order)
     {
+        Dispatcher.BeginInvoke(() =>
+        {
+            PNotationPlace(source, order);
+            PNotationUpdate();
+        });
     }
 
     void LReceiver.LReceiverCandidateAdd(LCandidate candidate)
     {
         Dispatcher.BeginInvoke(() =>
         {
-            PNotationPlace(new PNotationItem(candidate, candidate.LCandidateSource));
+            PNotationPlace(candidate.LCandidateSource, candidate.LCandidateOrder).PNotationItemShow(
+                candidate,
+                _pEditorHost.PLocalizationTextRead("Transcriber.Missing"),
+                _pEditorHost.PLocalizationTextRead("Transcriber.Broken"));
             PNotationUpdate();
         });
     }

@@ -110,15 +110,39 @@ Applies `change` to the settings held here and writes the result out, under the 
 The read and the write are one step, so one writer never overwrites what another wrote between them.
 The shell therefore never reads settings, changes a field and hands the whole record back.
 
-## `public Task LEnginePronunciationFind(string word, string language, LReceiver receiver, CancellationToken cancellation)`
+## `public Task LEnginePronunciationFind(string session, string word, string language, LReceiver receiver, CancellationToken cancellation)`
 
 Starts a pronunciation lookup for `word` in `language` and streams results to `receiver`.
 The task completes when every source finishes.
+`session` is the draft the asking editor holds, and it names the trove the answer is kept in.
+A lookup already answered under that draft is replayed instead of searched again.
+So reopening the menu on an unchanged headword costs no network at all.
 
-## `public Task LEngineRecordingFind(string word, string language, LListener listener, CancellationToken cancellation)`
+## `public Task LEngineRecordingFind(string session, string word, string language, LListener listener, CancellationToken cancellation)`
 
 Starts an audio-recording discovery for `word` in `language` and streams results to `listener`.
 The task completes when every source finishes.
+It reuses what the same draft already found, exactly as the lookup does.
+
+## `private async Task LEngineCandidateScan(string session, string word, string language, IReadOnlyList<LSource> sources, LReceiver receiver, CancellationToken cancellation)`
+
+Runs a real lookup and keeps what it returned in the trove under `session`.
+The receiver still sees each candidate stream in, because the search is unchanged.
+Nothing is kept when the search is cancelled, since the task then ends by throwing.
+
+## `private async Task LEngineRecordingScan(string session, string word, string language, IReadOnlyList<LSource> sources, LListener listener, CancellationToken cancellation)`
+
+The recording counterpart of `LEngineCandidateScan`.
+
+## `private static Task LEngineCandidatePublish(IReadOnlyList<LCandidate> held, LReceiver receiver)`
+
+Hands a kept answer to the receiver in one pass, then reports the search finished.
+The receiver cannot tell a replay from a search, so the menu needs no second path.
+The task is already complete, because nothing was awaited.
+
+## `private static Task LEngineRecordingPublish(IReadOnlyList<LRecording> held, LListener listener)`
+
+The recording counterpart of `LEngineCandidatePublish`.
 
 ## `public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
