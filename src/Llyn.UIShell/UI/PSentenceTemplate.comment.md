@@ -33,3 +33,18 @@ It reads the unreadable mark when the citation cannot be read back.
 ## `Theme.Sentence.Notice`
 
 The line shown in the Source list while the workspace holds no Sources at all.
+
+## `Theme.Sentence.Frame`
+
+The frame is written where it is read: `(+marker role)` in front of the sentence, in the sentence's own face.
+Fields of its own, sitting above or beside the line, would say the frame is a property of the row.
+It is not; it is the opening of the sentence, and the reading view has always drawn it as one.
+
+A row carrying no frame shows none, so its sentence begins where the reading view begins it.
+The card offers one instead, from the strip kept clear beside the row.
+
+## `Theme.Sentence.Control`
+
+Everything a writer needs and a reader does not is laid out whether or not it is being shown, and faded rather than hidden.
+Hiding it would give the row one height under the pointer and another away from it.
+A card that moves while it is being pointed at cannot be read as the card it will become.

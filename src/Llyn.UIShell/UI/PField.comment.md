@@ -16,3 +16,11 @@ Registered by PFieldApply under the key the "Theme.Input.Field" style binds its 
 No Margin binding here: WPF already offsets the editable text by TextBox.Padding internally.
 Binding the host's Margin to Padding too would apply it twice.
 The caret would be pushed right and down while the placeholder, padded once, stayed put.
+
+### `private static ControlTemplate PFieldBareBuild()`
+
+Builds the field a card uses while it is being edited.
+A card must read the same in both modes, so the text sits where the reading side draws it.
+Padding would move it, so the frame is a sibling drawn behind with a negative margin instead.
+The frame therefore grows outward on hover and focus and never shifts the text by a pixel.
+It is registered under "Theme.Input.Field.Bare", which the "Theme.Input.Bare" style binds to.

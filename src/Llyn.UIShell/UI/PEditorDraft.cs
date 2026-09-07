@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -163,6 +164,8 @@ public partial class PEditor
 
     private void PEditorLanguageShow(string language)
     {
+        PEditorExampleShow(language);
+
         if (language.Length == 0)
         {
             return;
@@ -179,6 +182,29 @@ public partial class PEditor
         _pSpeakerChoice = language;
         PSpeakerName.Text = language;
         PSpeakerFlagUpdate();
+    }
+
+    private void PEditorExampleShow(string language)
+    {
+        LFont font = PFont.PFontExampleRead(_lEngine, language);
+
+        if (font.LFontFamily is string named)
+        {
+            Resources["Theme.Card.ExampleFamily"] = new FontFamily(named);
+        }
+        else
+        {
+            Resources.Remove("Theme.Card.ExampleFamily");
+        }
+
+        if (font.LFontSize > 0)
+        {
+            Resources["Theme.Card.ExampleSize"] = font.LFontSize;
+        }
+        else
+        {
+            Resources.Remove("Theme.Card.ExampleSize");
+        }
     }
 
     internal void PEditorReset()

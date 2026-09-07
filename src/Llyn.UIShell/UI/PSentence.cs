@@ -21,6 +21,7 @@ internal sealed class PSentence : INotifyPropertyChanged
     private bool _pSentenceDependenceUnreadable;
     private int _pSentenceParticleColumn;
     private int _pSentenceDependenceColumn = 1;
+    private bool _pSentenceFrameVisible;
 
     internal PSentence(
         ObservableCollection<PCitationItem> catalog,
@@ -184,6 +185,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             _pSentenceParticle = chosen;
             PSentenceParticleUnreadable = false;
             PSentenceRaise(nameof(PSentenceParticle));
+            PSentenceRaise(nameof(PSentenceFrameVisible));
         }
     }
 
@@ -216,6 +218,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             _pSentenceDependence = chosen;
             PSentenceDependenceUnreadable = false;
             PSentenceRaise(nameof(PSentenceDependence));
+            PSentenceRaise(nameof(PSentenceFrameVisible));
         }
     }
 
@@ -231,6 +234,20 @@ internal sealed class PSentence : INotifyPropertyChanged
 
             _pSentenceDependenceUnreadable = value;
             PSentenceRaise(nameof(PSentenceDependenceUnreadable));
+        }
+    }
+
+    public bool PSentenceFrameVisible
+    {
+        get => _pSentenceFrameVisible
+            || _pSentenceParticle.Length > 0
+            || _pSentenceDependence.Length > 0
+            || _pSentenceParticleUnreadable
+            || _pSentenceDependenceUnreadable;
+        set
+        {
+            _pSentenceFrameVisible = value;
+            PSentenceRaise(nameof(PSentenceFrameVisible));
         }
     }
 

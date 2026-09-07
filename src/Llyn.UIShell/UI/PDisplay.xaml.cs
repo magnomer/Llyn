@@ -252,20 +252,20 @@ public partial class PDisplay : UserControl
 
         if (font.LFontFamily is string named)
         {
-            Resources["Display.Card.ExampleFamily"] = new FontFamily(named);
+            Resources["Theme.Card.ExampleFamily"] = new FontFamily(named);
         }
         else
         {
-            Resources.Remove("Display.Card.ExampleFamily");
+            Resources.Remove("Theme.Card.ExampleFamily");
         }
 
         if (font.LFontSize > 0)
         {
-            Resources["Display.Card.ExampleSize"] = font.LFontSize;
+            Resources["Theme.Card.ExampleSize"] = font.LFontSize;
         }
         else
         {
-            Resources.Remove("Display.Card.ExampleSize");
+            Resources.Remove("Theme.Card.ExampleSize");
         }
     }
 

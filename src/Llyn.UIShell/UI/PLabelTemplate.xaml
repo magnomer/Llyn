@@ -5,14 +5,14 @@
     x:Class="Llyn.UIShell.PLabelTemplate">
 
     <DataTemplate x:Key="Theme.Label.Chip">
-        <Border Height="28" Margin="0,3,6,3" Padding="10,0,4,0" Background="{DynamicResource Theme.AccentSoft}" BorderBrush="{DynamicResource Theme.Line}" BorderThickness="1" CornerRadius="7">
+        <Border Padding="10,4,5,4" Style="{DynamicResource Theme.Card.Badge}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PLabelChipName}" />
-                <Button Width="18" Height="18" Margin="7,0,0,0" Padding="0" Click="PLabelChipHandle">
+                <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLabelChipName}" />
+                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Click="PLabelChipHandle">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">
-                                <Path Width="8" Height="8" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0,0 L 8,8 M 8,0 L 0,8" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.4" />
+                                <Path Width="7" Height="7" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0,0 L 7,7 M 7,0 L 0,7" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.4" />
                             </Grid>
                         </ControlTemplate>
                     </Button.Template>
@@ -24,20 +24,16 @@
     <DataTemplate x:Key="Theme.Label.Entry">
         <TextBox
             MinWidth="96"
-            Height="28"
-            MinHeight="28"
-            Margin="0,3,0,3"
-            Padding="2,0"
-            Background="Transparent"
-            BorderThickness="0"
-            FontSize="13"
+            Margin="0,0,7,7"
+            Padding="0,4"
+            VerticalContentAlignment="Center"
+            FontSize="12"
             Foreground="{DynamicResource Theme.Ink}"
             KeyDown="PLabelCaretHandle"
             LostKeyboardFocus="PLabelCloseHandle"
-            Style="{DynamicResource Theme.Input.Field}"
+            Style="{DynamicResource Theme.Input.Bare}"
             Tag="{Binding PLabelCaretHint}"
-            Text="{Binding PLabelCaretText, UpdateSourceTrigger=PropertyChanged}"
-            VerticalContentAlignment="Center" />
+            Text="{Binding PLabelCaretText, UpdateSourceTrigger=PropertyChanged}" />
     </DataTemplate>
 
     <local:PLabelSelector
@@ -47,8 +43,7 @@
 
     <Style x:Key="Theme.Label.Field" TargetType="ItemsControl">
         <Setter Property="ItemTemplateSelector" Value="{StaticResource Theme.Label.Item}" />
-        <Setter Property="MinHeight" Value="42" />
-        <Setter Property="Padding" Value="8,3" />
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.TagMargin}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -59,26 +54,9 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ItemsControl">
-                    <Border
-                        x:Name="PSurface"
-                        MinHeight="{TemplateBinding MinHeight}"
-                        Padding="{TemplateBinding Padding}"
-                        Background="{DynamicResource Theme.Surface}"
-                        BorderBrush="{DynamicResource Theme.Line}"
-                        BorderThickness="1"
-                        CornerRadius="7"
-                        Cursor="IBeam"
-                        MouseLeftButtonDown="PLabelFocusHandle">
-                        <ItemsPresenter VerticalAlignment="Center" />
+                    <Border Background="Transparent" Cursor="IBeam" MouseLeftButtonDown="PLabelFocusHandle">
+                        <ItemsPresenter />
                     </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

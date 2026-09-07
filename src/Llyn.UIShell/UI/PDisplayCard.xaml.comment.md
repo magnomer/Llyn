@@ -1,4 +1,4 @@
-# PDisplayCard.xaml
+﻿# PDisplayCard.xaml
 
 ## `ResourceDictionary`
 
@@ -20,11 +20,11 @@ The definition is the sentence the card exists for, so it is set at the weight o
 No label stands over it.
 A label naming what a reader can already see only pushes the reading down the card.
 
-### `<FontFamily x:Key="Display.Card.ExampleFamily">`
+### `FontFamily="{DynamicResource Theme.Card.ExampleFamily}"`
 
 Examples are drawn in the typography the language pack declares for them.
-These two keys hold what the reading view sets for the entry now shown.
-The values written here are the fallback for a pack that declares none.
+Both modes read the same two keys, and each sets them on itself for the entry it shows.
+The fallback for a pack that declares none is written once, with the rest of a card's measurements.
 
 ### `<DataTemplate x:Key="Display.Card.TranslationChip">`
 
@@ -34,3 +34,13 @@ Tags take an outlined chip instead, so the two rows of chips are never read as o
 ### `<Style x:Key="Display.Card.Example" TargetType="Border">`
 
 Examples are indented behind a rule, because they are evidence for the definition rather than a field of their own.
+
+### `<Style x:Key="Display.Card.Picture" TargetType="ItemsControl">`
+
+Pictures a card carries are drawn here, in the frame the writing side gives them.
+A card whose picture only appeared while it was being written would be a card the reader was never shown.
+
+### `<ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />`
+
+The reading view reserves the strip the writing view puts its handles in, and leaves it empty.
+A line must break at the same word in both modes, and it only can if it is given the same width in both.

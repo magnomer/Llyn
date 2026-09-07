@@ -7,39 +7,23 @@
     <local:PStateConverter x:Key="Theme.State.Show" />
 
     <DataTemplate x:Key="Theme.Collocation.Card">
-        <Border Margin="0,0,0,15" Style="{DynamicResource Theme.Input.Card}">
+        <Border Style="{DynamicResource Theme.Card.Shell}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="55" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Border
-                    Background="{DynamicResource Theme.Surface}"
-                    BorderBrush="{DynamicResource Theme.Line}"
-                    BorderThickness="0,0,0,1"
-                    CornerRadius="12,12,0,0"
-                    Cursor="SizeAll"
-                    MouseLeftButtonDown="PCardDragHandle">
-                    <Grid Margin="22,0,10,0">
+
+                <Border Style="{DynamicResource Theme.Card.Header}" Cursor="SizeAll" MouseLeftButtonDown="PCardDragHandle">
+                    <Grid Style="{DynamicResource Theme.Card.Crown}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="28" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="38" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="28" Height="28" Background="{DynamicResource Theme.AccentSoft}" CornerRadius="14">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding PCardPosition}" />
+                        <Border Style="{DynamicResource Theme.Card.Position}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PCardPosition}" />
                         </Border>
-                        <TextBox
-                            Grid.Column="1"
-                            Margin="10,0,8,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            FontSize="16"
-                            FontWeight="SemiBold"
-                            Style="{DynamicResource Theme.Input.Field}"
-                            Text="{Binding PTitle, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox Grid.Column="1" Margin="0,0,34,0" Style="{DynamicResource Theme.Card.Title}" Text="{Binding PTitle, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.Tag>
                                 <MultiBinding Converter="{StaticResource Theme.State.Show}">
                                     <Binding Path="PTitleUnreadable" />
@@ -47,79 +31,67 @@
                                 </MultiBinding>
                             </TextBox.Tag>
                         </TextBox>
-                        <Button Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Click="PCardHandle" Style="{DynamicResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
+                        <Button
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="PCardHandle"
+                            Style="{DynamicResource Theme.Card.Handle}">
                             <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
                         </Button>
                     </Grid>
                 </Border>
-                <Grid Grid.Row="1" Margin="40,25,40,25">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+
+                <Grid Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="142" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Expression}" />
-                    <TextBox Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PCardExpression, UpdateSourceTrigger=PropertyChanged}">
-                        <TextBox.Tag>
-                            <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                <Binding Path="PCardExpressionUnreadable" />
-                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                <local:PLocalizationBinder PLocalizationBinderKey="Card.ExpressionHint" />
-                            </MultiBinding>
-                        </TextBox.Tag>
-                    </TextBox>
-                    <TextBlock Grid.Row="1" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Meaning}" />
-                    <TextBox Grid.Row="1" Grid.Column="1" MinHeight="42" Margin="0,0,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PCardDefinition, UpdateSourceTrigger=PropertyChanged}">
-                        <TextBox.Tag>
-                            <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                <Binding Path="PCardDefinitionUnreadable" />
-                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                <local:PLocalizationBinder PLocalizationBinderKey="Card.MeaningHint" />
-                            </MultiBinding>
-                        </TextBox.Tag>
-                    </TextBox>
-                    <TextBlock Grid.Row="2" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Situation}" />
-                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Context.Row}" ItemsSource="{Binding PCardContext}" />
-                    <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Card.Translation}" />
-                    <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardLink}" Style="{DynamicResource Theme.Link.Field}" />
-                    <TextBlock Grid.Row="4" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Example}" />
-                    <ItemsControl Grid.Row="4" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Sentence.Row}" ItemsSource="{Binding PCardSentence}" />
-                    <TextBlock Grid.Row="5" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Tags}" />
-                    <ItemsControl Grid.Row="5" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardLabel}" Style="{DynamicResource Theme.Label.Field}" />
-                    <Grid Grid.Row="6" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Image.Section}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="142" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Card.Image}" />
-                        <ItemsControl Grid.Column="1" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Image.Row}" ItemsSource="{Binding PCardImage}" />
-                    </Grid>
-                    <Grid Grid.Row="7" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Video.Section}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="142" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Card.Video}" />
-                        <ItemsControl Grid.Column="1" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Video.Row}" ItemsSource="{Binding PCardVideo}" />
-                    </Grid>
-                    <TextBlock Grid.Row="8" Margin="0,10,0,0" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Card.Extra}" />
-                    <StackPanel Grid.Row="8" Grid.Column="1" VerticalAlignment="Top" Orientation="Horizontal">
-                        <Button Height="42" Padding="14,0" Click="PImageAddHandle" Style="{DynamicResource Theme.Input.Pill}">
-                            <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Card.ImageAdd}" />
-                        </Button>
-                        <Button Height="42" Margin="8,0,0,0" Padding="14,0" Click="PVideoAddHandle" Style="{DynamicResource Theme.Input.Pill}">
-                            <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Card.VideoAdd}" />
-                        </Button>
+
+                    <StackPanel>
+                        <TextBox Style="{DynamicResource Theme.Card.Expression}" Text="{Binding PCardExpression, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.Tag>
+                                <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                    <Binding Path="PCardExpressionUnreadable" />
+                                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                                    <local:PLocalizationBinder PLocalizationBinderKey="Card.ExpressionHint" />
+                                </MultiBinding>
+                            </TextBox.Tag>
+                        </TextBox>
+
+                        <TextBox Style="{DynamicResource Theme.Card.Meaning}" Text="{Binding PCardDefinition, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.Tag>
+                                <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                    <Binding Path="PCardDefinitionUnreadable" />
+                                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                                    <local:PLocalizationBinder PLocalizationBinderKey="Card.MeaningHint" />
+                                </MultiBinding>
+                            </TextBox.Tag>
+                        </TextBox>
+
+                        <ItemsControl ItemTemplate="{DynamicResource Theme.Context.Row}" ItemsSource="{Binding PCardContext}" Style="{DynamicResource Theme.Card.Situation}" />
+
+                        <ItemsControl ItemsSource="{Binding PCardLink}" Style="{DynamicResource Theme.Link.Field}" />
+
+                        <Border Style="{DynamicResource Theme.Card.Example}">
+                            <ItemsControl ItemTemplate="{DynamicResource Theme.Sentence.Row}" ItemsSource="{Binding PCardSentence}" />
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding PCardLabel}" Style="{DynamicResource Theme.Label.Field}" />
+
+                        <ItemsControl ItemTemplate="{DynamicResource Theme.Image.Row}" ItemsSource="{Binding PCardImage}" Style="{DynamicResource Theme.Card.Media}" />
+
+                        <ItemsControl ItemTemplate="{DynamicResource Theme.Video.Row}" ItemsSource="{Binding PCardVideo}" Style="{DynamicResource Theme.Card.Media}" />
+
+                        <StackPanel Margin="0,16,0,0" Orientation="Horizontal">
+                            <Button Height="31" Padding="12,0" Click="PImageAddHandle" Style="{DynamicResource Theme.Input.Pill}">
+                                <TextBlock VerticalAlignment="Center" FontSize="12" Text="{DynamicResource Card.ImageAdd}" />
+                            </Button>
+                            <Button Height="31" Margin="7,0,0,0" Padding="12,0" Click="PVideoAddHandle" Style="{DynamicResource Theme.Input.Pill}">
+                                <TextBlock VerticalAlignment="Center" FontSize="12" Text="{DynamicResource Card.VideoAdd}" />
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </Grid>

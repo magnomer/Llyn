@@ -6,6 +6,33 @@
 
     <local:PStateConverter x:Key="Theme.State.Show" />
 
+    <Style x:Key="Theme.Sentence.Control" TargetType="FrameworkElement">
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Sentence.Frame" TargetType="StackPanel">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PSentenceFrameVisible}" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Sentence.Hint" TargetType="TextBlock" BasedOn="{StaticResource Theme.Card.Ghost}">
+        <Setter Property="Visibility" Value="Collapsed" />
+    </Style>
+
     <DataTemplate x:Key="Theme.Reference.Row">
         <TextBlock Margin="12,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PCitationItemName}" TextTrimming="CharacterEllipsis" />
     </DataTemplate>
@@ -33,13 +60,11 @@
     </Style>
 
     <Style x:Key="Theme.Sentence.Identity" TargetType="Border">
-        <Setter Property="Margin" Value="0,0,11,0" />
-        <Setter Property="Padding" Value="8,2" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="7,0,0,0" />
+        <Setter Property="Padding" Value="7,1" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
-        <Setter Property="CornerRadius" Value="7" />
-        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="CornerRadius" Value="6" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding PSentenceId}" Value="">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -49,7 +74,7 @@
 
     <Style x:Key="Theme.Sentence.Citation" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="Text" Value="{Binding PSentenceCitationName}" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Style.Triggers>
@@ -75,114 +100,161 @@
     </Style>
 
     <DataTemplate x:Key="Theme.Sentence.Row">
-        <Grid Margin="0,0,0,7">
+        <Grid Style="{DynamicResource Theme.Card.Reach}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />
             </Grid.ColumnDefinitions>
 
-            <ComboBox
-                Grid.Column="{Binding PSentenceParticleColumn}"
-                Width="124"
-                Height="42"
-                Margin="0,0,7,0"
-                Style="{DynamicResource Theme.Input.Choice}"
-                ItemsSource="{Binding PSentenceParticleCatalog}"
-                Text="{Binding PSentenceParticle, UpdateSourceTrigger=PropertyChanged}">
-                <ComboBox.Tag>
-                    <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                        <Binding Path="PSentenceParticleUnreadable" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Card.ParticleHint" />
-                    </MultiBinding>
-                </ComboBox.Tag>
-            </ComboBox>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <ComboBox
-                Grid.Column="{Binding PSentenceDependenceColumn}"
-                Width="124"
-                Height="42"
-                Margin="0,0,7,0"
-                Style="{DynamicResource Theme.Input.Choice}"
-                ItemsSource="{Binding PSentenceDependenceCatalog}"
-                Text="{Binding PSentenceDependence, UpdateSourceTrigger=PropertyChanged}">
-                <ComboBox.Tag>
-                    <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                        <Binding Path="PSentenceDependenceUnreadable" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Card.DependenceHint" />
-                    </MultiBinding>
-                </ComboBox.Tag>
-            </ComboBox>
+                <StackPanel Orientation="Horizontal" Style="{StaticResource Theme.Sentence.Frame}">
+                    <TextBlock Style="{DynamicResource Theme.Card.Frame}" Text="(+" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="2">
-                <TextBox MinHeight="42" Padding="12,7,124,7" Style="{DynamicResource Theme.Input.Field}" Text="{Binding PSentenceText, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.Tag>
-                        <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                            <Binding Path="PSentenceUnreadable" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Card.ExampleHint" />
-                        </MultiBinding>
-                    </TextBox.Tag>
-                </TextBox>
-                <Border Style="{StaticResource Theme.Sentence.Identity}">
-                    <TextBlock FontFamily="Consolas, Cascadia Mono, Courier New" FontSize="11" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PSentenceId}" />
-                </Border>
+                        <Grid Grid.Column="{Binding PSentenceParticleColumn}" Margin="0,0,5,0">
+                            <TextBlock Style="{DynamicResource Theme.Card.Ghost}" Text="{Binding PSentenceParticle}" />
+                            <TextBlock Text="{Binding Tag, ElementName=PSentenceParticle}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Sentence.Hint}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PSentenceParticle}" Value="">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <ComboBox
+                                x:Name="PSentenceParticle"
+                                Style="{DynamicResource Theme.Choice.Bare}"
+                                ItemsSource="{Binding PSentenceParticleCatalog}"
+                                Text="{Binding PSentenceParticle, UpdateSourceTrigger=PropertyChanged}">
+                                <ComboBox.Tag>
+                                    <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                        <Binding Path="PSentenceParticleUnreadable" />
+                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                                        <local:PLocalizationBinder PLocalizationBinderKey="Card.ParticleHint" />
+                                    </MultiBinding>
+                                </ComboBox.Tag>
+                            </ComboBox>
+                        </Grid>
+
+                        <Grid Grid.Column="{Binding PSentenceDependenceColumn}" Margin="0,0,5,0">
+                            <TextBlock Style="{DynamicResource Theme.Card.Ghost}" Text="{Binding PSentenceDependence}" />
+                            <TextBlock Text="{Binding Tag, ElementName=PSentenceDependence}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Sentence.Hint}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PSentenceDependence}" Value="">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <ComboBox
+                                x:Name="PSentenceDependence"
+                                Style="{DynamicResource Theme.Choice.Bare}"
+                                ItemsSource="{Binding PSentenceDependenceCatalog}"
+                                Text="{Binding PSentenceDependence, UpdateSourceTrigger=PropertyChanged}">
+                                <ComboBox.Tag>
+                                    <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                        <Binding Path="PSentenceDependenceUnreadable" />
+                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                                        <local:PLocalizationBinder PLocalizationBinderKey="Card.DependenceHint" />
+                                    </MultiBinding>
+                                </ComboBox.Tag>
+                            </ComboBox>
+                        </Grid>
+                    </Grid>
+                    <TextBlock Margin="-5,0,0,0" Style="{DynamicResource Theme.Card.Frame}" Text=") " />
+                </StackPanel>
+
+                <Grid Grid.Column="1">
+                    <TextBox Style="{DynamicResource Theme.Card.Instance}" Text="{Binding PSentenceText, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.Tag>
+                            <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                <Binding Path="PSentenceUnreadable" />
+                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                                <local:PLocalizationBinder PLocalizationBinderKey="Card.ExampleHint" />
+                            </MultiBinding>
+                        </TextBox.Tag>
+                    </TextBox>
+
+                    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Sentence.Control}" />
+                        </StackPanel.Style>
+                        <ToggleButton
+                            x:Name="PSentenceCitation"
+                            MaxWidth="124"
+                            Height="20"
+                            Padding="8,0"
+                            Foreground="{DynamicResource Theme.Accent}"
+                            IsChecked="{Binding PSentenceCitationVisible, Mode=TwoWay}"
+                            Style="{DynamicResource Theme.Input.ToggleAction}">
+                            <TextBlock Style="{StaticResource Theme.Sentence.Citation}" />
+                        </ToggleButton>
+                        <Popup
+                            x:Name="PCitationDrawer"
+                            Width="264"
+                            Margin="0,6,0,0"
+                            AllowsTransparency="True"
+                            IsOpen="{Binding PSentenceCitationVisible, Mode=TwoWay}"
+                            Placement="Bottom"
+                            PlacementTarget="{Binding ElementName=PSentenceCitation}"
+                            StaysOpen="False">
+                            <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
+                                <StackPanel>
+                                    <TextBlock Style="{DynamicResource Theme.Popup.Title}" Text="{DynamicResource Reference.Title}" />
+                                    <TextBlock Style="{StaticResource Theme.Sentence.Notice}" Text="{DynamicResource Reference.Empty}" />
+                                    <ListBox
+                                        MaxHeight="220"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        IsSynchronizedWithCurrentItem="False"
+                                        ItemContainerStyle="{StaticResource Theme.Reference.Item}"
+                                        ItemTemplate="{StaticResource Theme.Reference.Row}"
+                                        ItemsSource="{Binding PSentenceCitationCatalog}"
+                                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                        SelectedValue="{Binding PSentenceCitation, Mode=TwoWay}"
+                                        SelectedValuePath="PCitationItemId" />
+                                    <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSentenceCitationClear" Foreground="{DynamicResource Theme.Muted}">
+                                        <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </Popup>
+                        <Border Style="{StaticResource Theme.Sentence.Identity}">
+                            <TextBlock FontFamily="Consolas, Cascadia Mono, Courier New" FontSize="10" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PSentenceId}" />
+                        </Border>
+                    </StackPanel>
+                </Grid>
             </Grid>
 
-            <Grid Grid.Column="3" Margin="8,0,0,0">
-                <ToggleButton
-                    x:Name="PSentenceCitation"
-                    Width="104"
-                    Height="42"
-                    Padding="10,0"
-                    Foreground="{DynamicResource Theme.Accent}"
-                    IsChecked="{Binding PSentenceCitationVisible, Mode=TwoWay}"
-                    Style="{DynamicResource Theme.Input.ToggleAction}">
-                    <TextBlock Style="{StaticResource Theme.Sentence.Citation}" />
+            <StackPanel Grid.Column="1" Margin="8,1,0,0" VerticalAlignment="Top" Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Sentence.Control}" />
+                </StackPanel.Style>
+                <ToggleButton IsChecked="{Binding PSentenceFrameVisible, Mode=TwoWay}" Style="{DynamicResource Theme.Card.Switch}">
+                    <TextBlock VerticalAlignment="Center" FontSize="10" Foreground="{DynamicResource Theme.Muted}" Text="(+" />
                 </ToggleButton>
-                <Popup
-                    x:Name="PCitationDrawer"
-                    Width="264"
-                    Margin="0,6,0,0"
-                    AllowsTransparency="True"
-                    IsOpen="{Binding PSentenceCitationVisible, Mode=TwoWay}"
-                    Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PSentenceCitation}"
-                    StaysOpen="False">
-                    <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
-                        <StackPanel>
-                            <TextBlock Style="{DynamicResource Theme.Popup.Title}" Text="{DynamicResource Reference.Title}" />
-                            <TextBlock Style="{StaticResource Theme.Sentence.Notice}" Text="{DynamicResource Reference.Empty}" />
-                            <ListBox
-                                MaxHeight="220"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                IsSynchronizedWithCurrentItem="False"
-                                ItemContainerStyle="{StaticResource Theme.Reference.Item}"
-                                ItemTemplate="{StaticResource Theme.Reference.Row}"
-                                ItemsSource="{Binding PSentenceCitationCatalog}"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                SelectedValue="{Binding PSentenceCitation, Mode=TwoWay}"
-                                SelectedValuePath="PCitationItemId" />
-                            <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSentenceCitationClear" Foreground="{DynamicResource Theme.Muted}">
-                                <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
-                            </Button>
-                        </StackPanel>
-                    </Border>
-                </Popup>
-            </Grid>
-
-            <Button Grid.Column="4" Width="42" Height="42" Margin="8,0,0,0" Click="PSentenceAddHandle" Style="{DynamicResource Theme.Input.Action}">
-                <Path Width="12" Height="12" Data="M 6,1 L 6,11 M 1,6 L 11,6" Stroke="{DynamicResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
-            </Button>
-            <Button Grid.Column="5" Width="42" Height="42" Margin="7,0,0,0" Click="PSentenceRemoveHandle" Style="{DynamicResource Theme.Input.Action}">
-                <Path Width="12" Height="12" Data="M 1,6 L 11,6" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
-            </Button>
+                <Button Margin="4,0,0,0" Click="PSentenceAddHandle" Style="{DynamicResource Theme.Card.Handle}">
+                    <Path Width="9" Height="9" Data="M 4.5,0 L 4.5,9 M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                </Button>
+                <Button Margin="4,0,0,0" Click="PSentenceRemoveHandle" Style="{DynamicResource Theme.Card.Handle}">
+                    <Path Width="9" Height="9" Data="M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                </Button>
+            </StackPanel>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

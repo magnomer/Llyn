@@ -94,3 +94,9 @@ An emptied row says nothing was written, because the user said so.
 ## `internal void PSentenceCitationShow()`
 
 Reads the name of the cited Source again, for when the list of Sources changed underneath the row.
+
+## `public bool PSentenceFrameVisible`
+
+Whether the row shows its frame at all.
+A row that carries a marker or a role always shows one, because the reading view draws it.
+A row carrying neither shows none, for the same reason, and the card is asked for one instead.
