@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -153,6 +153,7 @@ public partial class PEditor : LListener
             _pRecordingSource = recording.PClipItemSource;
             _pRecordingStored = false;
             PPlayback.Visibility = Visibility.Visible;
+            PVolumeLoad();
 
             PDownloader.IsChecked = false;
         }

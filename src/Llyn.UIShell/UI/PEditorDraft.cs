@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -158,6 +158,7 @@ public partial class PEditor
         _pRecordingSource = draft.LEntryDraftSource;
         _pRecordingStored = true;
         PPlayback.Visibility = Visibility.Visible;
+        PVolumeLoad();
     }
 
     private void PEditorLanguageShow(string language)

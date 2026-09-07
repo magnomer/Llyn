@@ -234,7 +234,7 @@
 
         </StackPanel>
 
-        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,0" Orientation="Horizontal">
+        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,4" Orientation="Horizontal">
 
             <ItemsControl x:Name="PMarkerList" MaxWidth="{Binding ActualWidth, ElementName=PMarker}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
                 <ItemsControl.ItemsPanel>
