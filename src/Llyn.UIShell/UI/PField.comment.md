@@ -24,3 +24,9 @@ A card must read the same in both modes, so the text sits where the reading side
 Padding would move it, so the frame is a sibling drawn behind with a negative margin instead.
 The frame therefore grows outward on hover and focus and never shifts the text by a pixel.
 It is registered under "Theme.Input.Field.Bare", which the "Theme.Input.Bare" style binds to.
+
+### `pContent.SetValue(FrameworkElement.MarginProperty, new Thickness(-2, 0, 0, 0));`
+
+WPF insets an editable text host two pixels from the left even when the padding is zero.
+A reading view draws the same words with a TextBlock, which has no such inset.
+Pulling the host back by those two pixels lands the written word on the read word exactly.

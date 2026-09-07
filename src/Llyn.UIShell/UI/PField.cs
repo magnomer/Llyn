@@ -39,6 +39,7 @@ internal static class PField
         pPlaceholder.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
 
         var pContent = new FrameworkElementFactory(typeof(ScrollViewer), "PART_ContentHost");
+        pContent.SetValue(FrameworkElement.MarginProperty, new Thickness(-2, 0, 0, 0));
 
         pRoot.AppendChild(pSurface);
         pRoot.AppendChild(pPlaceholder);

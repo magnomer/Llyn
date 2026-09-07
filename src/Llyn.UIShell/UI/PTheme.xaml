@@ -1393,11 +1393,8 @@
 
     <sys:Double x:Key="Theme.Card.TitleSize">16</sys:Double>
     <sys:Double x:Key="Theme.Card.DefinitionSize">16</sys:Double>
-    <sys:Double x:Key="Theme.Card.DefinitionHeight">25</sys:Double>
     <sys:Double x:Key="Theme.Card.SituationSize">13</sys:Double>
-    <sys:Double x:Key="Theme.Card.SituationHeight">19</sys:Double>
     <sys:Double x:Key="Theme.Card.ExampleSize">15</sys:Double>
-    <sys:Double x:Key="Theme.Card.ExampleHeight">23</sys:Double>
     <FontFamily x:Key="Theme.Card.ExampleFamily">Georgia, Segoe UI</FontFamily>
 
     <Thickness x:Key="Theme.Card.ExpressionMargin">0,0,0,7</Thickness>
@@ -1588,7 +1585,6 @@
         <Setter Property="IsHitTestVisible" Value="False" />
         <Setter Property="FontFamily" Value="{StaticResource Theme.Card.ExampleFamily}" />
         <Setter Property="FontSize" Value="{StaticResource Theme.Card.ExampleSize}" />
-        <Setter Property="LineHeight" Value="{StaticResource Theme.Card.ExampleHeight}" />
     </Style>
 
     <Style x:Key="Theme.Choice.Bare" TargetType="ComboBox">
@@ -1628,7 +1624,7 @@
                             Visibility="Collapsed" />
                         <TextBox
                             x:Name="PART_EditableTextBox"
-                            Margin="0"
+                            Margin="-2,0,0,0"
                             Padding="0"
                             VerticalContentAlignment="Top"
                             Background="Transparent"

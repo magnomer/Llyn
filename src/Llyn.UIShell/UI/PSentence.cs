@@ -20,7 +20,7 @@ internal sealed class PSentence : INotifyPropertyChanged
     private string _pSentenceDependence;
     private bool _pSentenceDependenceUnreadable;
     private int _pSentenceParticleColumn;
-    private int _pSentenceDependenceColumn = 1;
+    private int _pSentenceDependenceColumn = 2;
     private bool _pSentenceFrameVisible;
 
     internal PSentence(
@@ -186,6 +186,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             PSentenceParticleUnreadable = false;
             PSentenceRaise(nameof(PSentenceParticle));
             PSentenceRaise(nameof(PSentenceFrameVisible));
+            PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
 
@@ -201,6 +202,7 @@ internal sealed class PSentence : INotifyPropertyChanged
 
             _pSentenceParticleUnreadable = value;
             PSentenceRaise(nameof(PSentenceParticleUnreadable));
+            PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
 
@@ -219,6 +221,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             PSentenceDependenceUnreadable = false;
             PSentenceRaise(nameof(PSentenceDependence));
             PSentenceRaise(nameof(PSentenceFrameVisible));
+            PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
 
@@ -234,6 +237,7 @@ internal sealed class PSentence : INotifyPropertyChanged
 
             _pSentenceDependenceUnreadable = value;
             PSentenceRaise(nameof(PSentenceDependenceUnreadable));
+            PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
 
@@ -248,6 +252,16 @@ internal sealed class PSentence : INotifyPropertyChanged
         {
             _pSentenceFrameVisible = value;
             PSentenceRaise(nameof(PSentenceFrameVisible));
+        }
+    }
+
+    public string PSentenceFrameGap
+    {
+        get
+        {
+            bool particle = _pSentenceParticle.Length > 0 || _pSentenceParticleUnreadable;
+            bool dependence = _pSentenceDependence.Length > 0 || _pSentenceDependenceUnreadable;
+            return particle && dependence ? " " : string.Empty;
         }
     }
 
@@ -285,8 +299,8 @@ internal sealed class PSentence : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(order);
 
-        PSentenceParticleColumn = order.LSentenceOrderParticle;
-        PSentenceDependenceColumn = order.LSentenceOrderDependence;
+        PSentenceParticleColumn = order.LSentenceOrderParticle * 2;
+        PSentenceDependenceColumn = order.LSentenceOrderDependence * 2;
     }
 
     internal LExampleDraft PSentenceDraftRead()

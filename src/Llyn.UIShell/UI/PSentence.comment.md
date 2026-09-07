@@ -100,3 +100,8 @@ Reads the name of the cited Source again, for when the list of Sources changed u
 Whether the row shows its frame at all.
 A row that carries a marker or a role always shows one, because the reading view draws it.
 A row carrying neither shows none, for the same reason, and the card is asked for one instead.
+
+## `public string PSentenceFrameGap`
+
+The separator drawn between the marker and the role inside the frame.
+It is one space when both are written and nothing otherwise, so the writing view spaces the frame exactly as the reading view does.
