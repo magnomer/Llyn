@@ -101,7 +101,7 @@
             <Border Style="{StaticResource Theme.Pronunciation.Surface}">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                    <Grid Margin="3,0,1,0">
+                    <Grid Margin="3,0">
                         <TextBlock>
                             <TextBlock.Style>
                                 <Style BasedOn="{StaticResource Theme.Pronunciation.Measure}" TargetType="TextBlock">
@@ -120,7 +120,7 @@
                 </StackPanel>
             </Border>
 
-            <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}" Visibility="Collapsed">
+            <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
                         <Rectangle Width="12" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">

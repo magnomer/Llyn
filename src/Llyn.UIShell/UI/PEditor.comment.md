@@ -51,9 +51,9 @@ The row starts at the headword's own margin, because an indent here read as a di
 The field and the unseen twin that measures it, stacked on the same cell.
 The twin decides the cell's width, so the brackets close on the text instead of on a fixed box.
 
-## `<Border x:Name="PPlayback" Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}" ...>`
+## `<Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Background="Transparent" BorderThickness="0" ...>`
 
-The playback tray: the play button and the volume it is played at, the same tray the reading view draws.
+The playback row: the play button and the volume it is played at, the same bare row the reading view draws.
 It appears with a recording and goes with it, so the volume is offered only while there is something to hear.
 The volume it shows is the workspace's own, so a level set here is the level the reading view opens at.
 

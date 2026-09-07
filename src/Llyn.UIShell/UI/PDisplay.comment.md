@@ -32,9 +32,10 @@ So the same view serves the library panel, the phonology panel and the taxonomy 
 The pronunciation chip the editor also wears, defined once in the theme.
 The chip collapses when the entry carries no pronunciation, and the playback tray then takes its place at the margin.
 
-## `<Border x:Name="PPlayback" Height="41" Style="{StaticResource Theme.Command.Group}" ...>`
+## `<Border x:Name="PPlayback" Height="37" Background="Transparent" BorderThickness="0" ...>`
 
-The playback tray: the play button and the volume it is played at, in the tray the panel's commands sit in.
+The playback row: the play button and the volume it is played at, drawn bare.
+It wears no surface or border, so the controls read as part of the pronunciation row.
 The whole tray hides when the entry owns no recording, because a volume with nothing to play is a control that does nothing.
 The editor draws the same tray, so a recording is played the same way where it is read and where it is chosen.
 
