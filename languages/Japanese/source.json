@@ -5,6 +5,10 @@
     "family": "Yu Gothic UI",
     "size": 40
   },
+  "example": {
+    "family": "Yu Mincho, Yu Gothic UI",
+    "size": 16
+  },
   "note": "Language selector pack for Japanese. Pronunciation and audio sources are listed separately and can be added without changing the application.",
   "pronunciation": [],
   "audio": []

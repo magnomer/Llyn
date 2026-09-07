@@ -1,0 +1,8 @@
+namespace Llyn.Core;
+
+public enum LFontRole
+{
+    LFontRoleHeadword,
+
+    LFontRoleExample,
+}

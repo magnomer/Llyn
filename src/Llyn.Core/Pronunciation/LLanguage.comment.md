@@ -17,6 +17,9 @@ Everything language-specific arrives through this record.
   It caches the flag in the workspace.
 - `LLanguageFont` — The typography the pack declares for its own words, held as an [LFont](LFont.comment.md).
   A pack that declares none carries a blank record, and the theme's own typography stands.
+- `LLanguageExample` — The typography the pack declares for example sentences, held as an [LFont](LFont.comment.md).
+  It stands apart from the headword typography, because a headword is read as a specimen and an example as prose.
+  A pack that declares none carries a blank record, and the reading view's own typography stands.
 - `LLanguageLookupSources` — The sources the pack declares for reading transcriptions.
 - `LLanguageHarvestSources` — The sources the pack declares for finding downloadable recordings.
   The two lists are independent.

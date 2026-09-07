@@ -5,7 +5,11 @@
     "family": "Segoe UI",
     "size": 40
   },
-  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. The 'pronunciation' and 'audio' lists are independent: a site listed for transcriptions need not be listed for recordings, and either list may stand empty. Each list is shown in the order it is written here, whatever order the answers arrive in, so reordering a list reorders the menu. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities. 'prefix' = made absolute when the captured address is site-relative.",
+  "example": {
+    "family": "Georgia, Segoe UI",
+    "size": 15
+  },
+  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. The 'pronunciation' and 'audio' lists are independent: a site listed for transcriptions need not be listed for recordings, and either list may stand empty. Each list is shown in the order it is written here, whatever order the answers arrive in, so reordering a list reorders the menu. The 'font' block is the typography a headword is drawn in; the 'example' block is the typography example sentences are drawn in. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities. 'prefix' = made absolute when the captured address is site-relative.",
   "pronunciation": [
     {
       "name": "Longman",

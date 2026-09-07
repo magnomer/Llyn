@@ -62,9 +62,16 @@ public sealed partial class LEngine : IDisposable
 
     public LFont LEngineFontRead(string language)
     {
+        return LEngineFontRead(language, LFontRole.LFontRoleHeadword);
+    }
+
+    public LFont LEngineFontRead(string language, LFontRole role)
+    {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
-        return LLanguageLoader.LLanguageLoaderLoad(language).LLanguageFont;
+        LLanguage pack = LLanguageLoader.LLanguageLoaderLoad(language);
+
+        return role == LFontRole.LFontRoleExample ? pack.LLanguageExample : pack.LLanguageFont;
     }
 
     public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)

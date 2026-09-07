@@ -5,6 +5,10 @@
     "family": "Microsoft YaHei",
     "size": 40
   },
+  "example": {
+    "family": "SimSun, Microsoft YaHei",
+    "size": 16
+  },
   "note": "Language selector pack for Mandarin. Pronunciation and audio sources are listed separately and can be added without changing the application.",
   "pronunciation": [],
   "audio": []

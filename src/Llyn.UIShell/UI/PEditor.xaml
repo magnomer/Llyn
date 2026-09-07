@@ -234,7 +234,7 @@
 
         </StackPanel>
 
-        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,4" Orientation="Horizontal">
+        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,0" Orientation="Horizontal">
 
             <ItemsControl x:Name="PMarkerList" MaxWidth="{Binding ActualWidth, ElementName=PMarker}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
                 <ItemsControl.ItemsPanel>
@@ -287,12 +287,19 @@
             </Grid>
         </WrapPanel>
 
-        <Border Grid.Row="3" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
-            <StackPanel x:Name="PStack" Margin="29,0,0,0" Orientation="Horizontal">
-                <Button x:Name="PStackMeaning" Content="{DynamicResource Display.Meaning}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab.Selected}" />
-                <Button x:Name="PStackCollocation" Content="{DynamicResource Display.CollocationSingle}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
-                <Button x:Name="PStackNote" Content="{DynamicResource Display.Note}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
-            </StackPanel>
+        <Border Grid.Row="3" Padding="0,0,0,8" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
+            <Grid x:Name="PStack" Margin="27,0,0,0" HorizontalAlignment="Left" Loaded="PStackPillHandle">
+                <Border x:Name="PStackPill" Width="0" Height="34" HorizontalAlignment="Left" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="9" IsHitTestVisible="False">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="PStackPillOffset" />
+                    </Border.RenderTransform>
+                </Border>
+                <StackPanel x:Name="PStackTabs" Orientation="Horizontal" SizeChanged="PStackSizeHandle">
+                    <Button x:Name="PStackMeaning" Tag="Selected" Content="{DynamicResource Display.Meaning}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                    <Button x:Name="PStackCollocation" Content="{DynamicResource Display.CollocationSingle}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                    <Button x:Name="PStackNote" Content="{DynamicResource Display.Note}" Click="PStackHandle" Style="{StaticResource Theme.Input.Tab}" />
+                </StackPanel>
+            </Grid>
         </Border>
 
         <Border x:Name="PContents" Grid.Row="4" Padding="0,22,0,0" Background="Transparent">

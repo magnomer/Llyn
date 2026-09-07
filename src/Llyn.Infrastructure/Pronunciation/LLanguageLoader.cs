@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -13,6 +13,8 @@ public static class LLanguageLoader
     private const string LLanguageLoaderPrimary = "English";
     private const string LLanguageLoaderLookup = "pronunciation";
     private const string LLanguageLoaderHarvest = "audio";
+    private const string LLanguageLoaderFont = "font";
+    private const string LLanguageLoaderExample = "example";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -76,7 +78,12 @@ public static class LLanguageLoader
     private static LLanguage LLanguageBlankCreate(string language)
     {
         return new LLanguage(
-            language, null, LLanguageFontBlank, Array.Empty<LSourceSpec>(), Array.Empty<LSourceSpec>());
+            language,
+            null,
+            LLanguageFontBlank,
+            LLanguageFontBlank,
+            Array.Empty<LSourceSpec>(),
+            Array.Empty<LSourceSpec>());
     }
 
     private static LLanguage LLanguageRead(string language, JsonElement root)
@@ -86,7 +93,8 @@ public static class LLanguageLoader
         return new LLanguage(
             language,
             flag,
-            LLanguageFontRead(root),
+            LLanguageFontRead(root, LLanguageLoaderFont),
+            LLanguageFontRead(root, LLanguageLoaderExample),
             LLanguageSourceScan(root, LLanguageLoaderLookup),
             LLanguageSourceScan(root, LLanguageLoaderHarvest));
     }
@@ -115,10 +123,10 @@ public static class LLanguageLoader
 
     private static LFont LLanguageFontBlank => new(null, 0);
 
-    private static LFont LLanguageFontRead(JsonElement root)
+    private static LFont LLanguageFontRead(JsonElement root, string key)
     {
         if (root.ValueKind != JsonValueKind.Object ||
-            !root.TryGetProperty("font", out JsonElement font) ||
+            !root.TryGetProperty(key, out JsonElement font) ||
             font.ValueKind != JsonValueKind.Object)
         {
             return LLanguageFontBlank;

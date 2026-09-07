@@ -11,6 +11,12 @@ A pack that declares nothing clears the local value, so the theme's own family a
 Takes any element that carries text, because a text box and a text block share the same font properties.
 Both read them from `TextElement`, so one attached property serves either.
 
+### `internal static LFont PFontExampleRead(LEngine engine, string language)`
+
+Reads the typography a pack declares for its example sentences.
+It is handed back rather than applied, because example lines are drawn inside item templates.
+Those lines take their family and size from card resources the reading view sets.
+
 ### `private static LFont PFontRead(LEngine engine, string language)`
 
 A pack that is missing or unreadable must not stop a headword from being drawn.

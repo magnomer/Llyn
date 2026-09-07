@@ -20,27 +20,18 @@
                     CornerRadius="12,12,0,0"
                     Cursor="SizeAll"
                     MouseLeftButtonDown="PCardDragHandle">
-                    <Grid Margin="14,0,10,0">
+                    <Grid Margin="22,0,10,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="38" />
-                            <ColumnDefinition Width="34" />
+                            <ColumnDefinition Width="28" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="38" />
                         </Grid.ColumnDefinitions>
-                        <UniformGrid Width="13" Height="19" HorizontalAlignment="Left" VerticalAlignment="Center" Columns="2" Rows="3">
-                            <Ellipse Width="3" Height="3" Fill="{DynamicResource Theme.Muted}" />
-                            <Ellipse Width="3" Height="3" Fill="{DynamicResource Theme.Muted}" />
-                            <Ellipse Width="3" Height="3" Fill="{DynamicResource Theme.Muted}" />
-                            <Ellipse Width="3" Height="3" Fill="{DynamicResource Theme.Muted}" />
-                            <Ellipse Width="3" Height="3" Fill="{DynamicResource Theme.Muted}" />
-                            <Ellipse Width="3" Height="3" Fill="{DynamicResource Theme.Muted}" />
-                        </UniformGrid>
-                        <Border Grid.Column="1" Width="28" Height="28" Background="{DynamicResource Theme.AccentSoft}" CornerRadius="14">
+                        <Border Width="28" Height="28" Background="{DynamicResource Theme.AccentSoft}" CornerRadius="14">
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource Theme.Accent}" FontWeight="SemiBold" Text="{Binding PCardPosition}" />
                         </Border>
                         <TextBox
-                            Grid.Column="2"
-                            Margin="23,0,8,0"
+                            Grid.Column="1"
+                            Margin="10,0,8,0"
                             Padding="0"
                             VerticalAlignment="Center"
                             Background="Transparent"
@@ -56,7 +47,7 @@
                                 </MultiBinding>
                             </TextBox.Tag>
                         </TextBox>
-                        <Button Grid.Column="0" Grid.ColumnSpan="4" HorizontalAlignment="Right" Click="PCardHandle" Style="{DynamicResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
+                        <Button Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Click="PCardHandle" Style="{DynamicResource Theme.Input.Action}" BorderThickness="0" Background="Transparent">
                             <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
                         </Button>
                     </Grid>
@@ -97,12 +88,12 @@
                             </MultiBinding>
                         </TextBox.Tag>
                     </TextBox>
-                    <TextBlock Grid.Row="2" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Card.Translation}" />
-                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardLink}" Style="{DynamicResource Theme.Link.Field}" />
-                    <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Example}" />
-                    <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Sentence.Row}" ItemsSource="{Binding PCardSentence}" />
-                    <TextBlock Grid.Row="4" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Situation}" />
-                    <ItemsControl Grid.Row="4" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Context.Row}" ItemsSource="{Binding PCardContext}" />
+                    <TextBlock Grid.Row="2" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Situation}" />
+                    <ItemsControl Grid.Row="2" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Context.Row}" ItemsSource="{Binding PCardContext}" />
+                    <TextBlock Grid.Row="3" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Card.Translation}" />
+                    <ItemsControl Grid.Row="3" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardLink}" Style="{DynamicResource Theme.Link.Field}" />
+                    <TextBlock Grid.Row="4" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Example}" />
+                    <ItemsControl Grid.Row="4" Grid.Column="1" Margin="0,0,0,12" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Sentence.Row}" ItemsSource="{Binding PCardSentence}" />
                     <TextBlock Grid.Row="5" Margin="0,10,0,19" VerticalAlignment="Top" Style="{DynamicResource Theme.Input.Label}" Text="{DynamicResource Display.Tags}" />
                     <ItemsControl Grid.Row="5" Grid.Column="1" Margin="0,0,0,19" VerticalAlignment="Top" ItemsSource="{Binding PCardLabel}" Style="{DynamicResource Theme.Label.Field}" />
                     <Grid Grid.Row="6" Grid.ColumnSpan="2" Margin="0,0,0,19" Style="{DynamicResource Theme.Image.Section}">

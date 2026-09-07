@@ -2,9 +2,9 @@
 
 ## `<UserControl.Resources>`
 
-The read-only card shapes.
-A Meaning card and a Collocation card are one card (LCardDraft).
-So the two templates below differ in one element, the Collocation's Expression.
+The read-only card shapes are merged in from [PDisplayCard.xaml](PDisplayCard.xaml.comment.md).
+A Meaning card and a Collocation card are one card (LCardDraft), so the two templates share their tail.
+They are kept apart from this file because the card is its own shape, not part of the page around it.
 Every member the loaded draft carries is drawn.
 A field the card left empty collapses rather than leaving a blank line.
 

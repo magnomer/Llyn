@@ -1018,45 +1018,34 @@
     </Style>
 
     <Style x:Key="Theme.Input.Tab" TargetType="Button">
-        <Setter Property="Width" Value="145" />
-        <Setter Property="Height" Value="37" />
-        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Padding" Value="17,0" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Tag" Value="Idle" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="PSurface" Background="{TemplateBinding Background}" />
+                    <Border x:Name="PSurface" Padding="{TemplateBinding Padding}" Background="Transparent" CornerRadius="9">
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}" />
-                        <Border x:Name="PIndicator" Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" CornerRadius="3,3,0,0" />
-                    </Grid>
+                    </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="Tag" Value="Idle" />
+                            </MultiTrigger.Conditions>
                             <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Surface}" />
                             <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+                        </MultiTrigger>
+                        <Trigger Property="Tag" Value="Selected">
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="Theme.Input.Tab.Selected" TargetType="Button" BasedOn="{StaticResource Theme.Input.Tab}">
-        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border Background="{TemplateBinding Background}" />
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}" />
-                        <Border Width="148" Height="5" Margin="-5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="{StaticResource Theme.Accent}" CornerRadius="3,3,0,0" />
-                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

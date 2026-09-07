@@ -6,325 +6,15 @@
     xmlns:local="clr-namespace:Llyn.UIShell">
 
     <UserControl.Resources>
-        <local:PStateConverter x:Key="Display.Card.State" />
-        <local:PLinkConverter x:Key="Display.Card.Translation" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PDisplayCard.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="Display.Card.Title" TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-            <Style.Triggers>
-                <DataTrigger Value="">
-                    <DataTrigger.Binding>
-                        <MultiBinding Converter="{StaticResource Display.Card.State}">
-                            <Binding Path="LCardDraftTitle" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                        </MultiBinding>
-                    </DataTrigger.Binding>
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="Display.Card.Expression" TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,0,0,18" />
-            <Style.Triggers>
-                <DataTrigger Value="">
-                    <DataTrigger.Binding>
-                        <MultiBinding Converter="{StaticResource Display.Card.State}">
-                            <Binding Path="LCardDraftExpression" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                        </MultiBinding>
-                    </DataTrigger.Binding>
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="Display.Card.Meaning" TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,0,0,18" />
-            <Style.Triggers>
-                <DataTrigger Value="">
-                    <DataTrigger.Binding>
-                        <MultiBinding Converter="{StaticResource Display.Card.State}">
-                            <Binding Path="LCardDraftMeaning" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                        </MultiBinding>
-                    </DataTrigger.Binding>
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="Display.Card.Value" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="LineHeight" Value="21" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-        </Style>
-
-        <Style x:Key="Display.Card.TranslationEmpty" TargetType="TextBlock">
-            <Setter Property="Margin" Value="0,3,0,0" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding LCardDraftTranslation.Count}" Value="0">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="Theme.Usage.Row" TargetType="Button" BasedOn="{StaticResource Theme.Choice.Row}">
-            <Setter Property="Margin" Value="0,0,0,6" />
-        </Style>
-
-        <Style x:Key="Display.Card.Example" TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,0,0,18" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding LCardDraftExample.Count}" Value="0">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="Display.Card.Situation" TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,0,0,18" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding LCardDraftSituation.Count}" Value="0">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="Display.Card.Tag" TargetType="StackPanel">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding LCardDraftTag.Count}" Value="0">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <DataTemplate x:Key="Display.Card.SituationLine">
-            <TextBlock Margin="0,3,0,0" FontSize="14" LineHeight="20" TextWrapping="Wrap">
-                <TextBlock.Text>
-                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                        <Binding Path="LSituationDraftText" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </DataTemplate>
-
-        <DataTemplate x:Key="Display.Card.ExampleLine">
-            <TextBlock Margin="0,3,0,0" FontSize="14" LineHeight="20" TextWrapping="Wrap">
-                <TextBlock.Text>
-                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                        <Binding Path="LExampleDraftText" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </DataTemplate>
-
-        <DataTemplate x:Key="Display.Card.TranslationLine">
-            <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
-                <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PLinkChipFlag}" Stretch="Uniform" />
-                <TextBlock VerticalAlignment="Center" FontSize="14" Text="{Binding PLinkChipHeadword}" />
-                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PLinkChipLanguage}" />
-            </StackPanel>
-        </DataTemplate>
-
-        <DataTemplate x:Key="Display.Card.TagPill">
-            <Border Margin="0,4,7,0" Padding="9,4" Background="{StaticResource Theme.AccentSoft}" CornerRadius="10">
-                <TextBlock FontSize="12" Foreground="{StaticResource Theme.Accent}" Text="{Binding}" />
-            </Border>
-        </DataTemplate>
-
-        <DataTemplate x:Key="Display.Meaning.Card">
-            <Border Margin="0,0,0,15" Style="{StaticResource Theme.Input.Card}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="55" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
-                        <Grid Margin="22,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border Width="28" Height="28" Margin="0,0,12,0" Background="{StaticResource Theme.AccentSoft}" CornerRadius="14">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Theme.Accent}"
-                                    Text="{Binding LCardDraftPosition}" />
-                            </Border>
-                            <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                        <Binding Path="LCardDraftTitle" />
-                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Display.MeaningSingle}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Value="">
-                                                <DataTrigger.Binding>
-                                                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                                        <Binding Path="LCardDraftTitle" />
-                                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                                    </MultiBinding>
-                                                </DataTrigger.Binding>
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
-                    <StackPanel Grid.Row="1" Margin="30,23,30,26">
-                        <StackPanel Style="{StaticResource Display.Card.Meaning}">
-                            <TextBlock Margin="0,0,0,7" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Definition}" />
-                            <TextBlock Style="{StaticResource Display.Card.Value}">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                        <Binding Path="LCardDraftMeaning" />
-                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,18">
-                            <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Card.Translation}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.TranslationLine}" ItemsSource="{Binding LCardDraftTranslation, Converter={StaticResource Display.Card.Translation}}" />
-                            <TextBlock Style="{StaticResource Display.Card.TranslationEmpty}" Text="{DynamicResource Card.TranslationEmpty}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource Display.Card.Example}">
-                            <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Example}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleLine}" ItemsSource="{Binding LCardDraftExample}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource Display.Card.Situation}">
-                            <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Situation}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.SituationLine}" ItemsSource="{Binding LCardDraftSituation}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource Display.Card.Tag}">
-                            <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Tags}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.TagPill}" ItemsSource="{Binding LCardDraftTag}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
-
-        <DataTemplate x:Key="Display.Collocation.Card">
-            <Border Margin="0,0,0,15" Style="{StaticResource Theme.Input.Card}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="55" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
-                        <Grid Margin="22,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border Width="28" Height="28" Margin="0,0,12,0" Background="{StaticResource Theme.AccentSoft}" CornerRadius="14">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontWeight="SemiBold"
-                                    Foreground="{StaticResource Theme.Accent}"
-                                    Text="{Binding LCardDraftPosition}" />
-                            </Border>
-                            <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                        <Binding Path="LCardDraftTitle" />
-                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Display.CollocationSingle}">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                        <Style.Triggers>
-                                            <DataTrigger Value="">
-                                                <DataTrigger.Binding>
-                                                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                                        <Binding Path="LCardDraftTitle" />
-                                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                                    </MultiBinding>
-                                                </DataTrigger.Binding>
-                                                <Setter Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
-                    <StackPanel Grid.Row="1" Margin="30,23,30,26">
-                        <StackPanel Style="{StaticResource Display.Card.Expression}">
-                            <TextBlock Margin="0,0,0,7" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Expression}" />
-                            <TextBlock Style="{StaticResource Display.Card.Value}">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                        <Binding Path="LCardDraftExpression" />
-                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource Display.Card.Meaning}">
-                            <TextBlock Margin="0,0,0,7" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Meaning}" />
-                            <TextBlock Style="{StaticResource Display.Card.Value}">
-                                <TextBlock.Text>
-                                    <MultiBinding Converter="{StaticResource Display.Card.State}">
-                                        <Binding Path="LCardDraftMeaning" />
-                                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,18">
-                            <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Card.Translation}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.TranslationLine}" ItemsSource="{Binding LCardDraftTranslation, Converter={StaticResource Display.Card.Translation}}" />
-                            <TextBlock Style="{StaticResource Display.Card.TranslationEmpty}" Text="{DynamicResource Card.TranslationEmpty}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource Display.Card.Example}">
-                            <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Example}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleLine}" ItemsSource="{Binding LCardDraftExample}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource Display.Card.Situation}">
-                            <TextBlock Margin="0,0,0,4" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Situation}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.SituationLine}" ItemsSource="{Binding LCardDraftSituation}" />
-                        </StackPanel>
-                        <StackPanel Style="{StaticResource Display.Card.Tag}">
-                            <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Display.Tags}" />
-                            <ItemsControl ItemTemplate="{StaticResource Display.Card.TagPill}" ItemsSource="{Binding LCardDraftTag}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
+            <Style x:Key="Theme.Usage.Row" TargetType="Button" BasedOn="{StaticResource Theme.Choice.Row}">
+                <Setter Property="Margin" Value="0,0,0,6" />
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -434,18 +124,18 @@
                     </ItemsControl>
                 </StackPanel>
 
-                <StackPanel x:Name="PDisplayMeaningSection" Margin="0,34,0,0">
-                    <TextBlock Margin="2,0,2,12" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />
+                <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
+                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />
                     <ItemsControl x:Name="PDisplayMeaning" ItemTemplate="{StaticResource Display.Meaning.Card}" />
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplayCollocationSection" Margin="0,28,0,0">
-                    <TextBlock Margin="2,0,2,12" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Collocation}" />
+                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Collocation}" />
                     <ItemsControl x:Name="PDisplayCollocation" ItemTemplate="{StaticResource Display.Collocation.Card}" />
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplayIncomingSection" Margin="0,28,0,0">
-                    <TextBlock Margin="2,0,2,12" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Translated}" />
+                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Translated}" />
                     <Border Padding="26,22" Style="{StaticResource Theme.Input.Card}">
                         <StackPanel>
                             <ItemsControl x:Name="PDisplayIncoming">
@@ -483,7 +173,7 @@
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplayNoteSection" Margin="0,28,0,0">
-                    <TextBlock Margin="2,0,2,12" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Note}" />
+                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Note}" />
                     <Border Padding="26,22" Style="{StaticResource Theme.Input.Card}">
                         <TextBlock x:Name="PDisplayNote" FontSize="14" LineHeight="21" TextWrapping="Wrap" />
                     </Border>

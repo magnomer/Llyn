@@ -5,6 +5,10 @@
     "family": "Microsoft JhengHei",
     "size": 40
   },
+  "example": {
+    "family": "PMingLiU, Microsoft JhengHei",
+    "size": 16
+  },
   "note": "Language selector pack for Cantonese. Pronunciation and audio sources are listed separately and can be added without changing the application.",
   "pronunciation": [],
   "audio": []

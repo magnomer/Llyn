@@ -31,6 +31,12 @@ The pack declares its sources under `pronunciation` and `audio`, and this reads 
 Neither list is required, and a missing one simply reads as empty.
 A source declares no kind, because the list it sits in already says what it is for.
 
+### `private static LFont LLanguageFontRead(JsonElement root, string key)`
+
+One reader serves both typography blocks the pack declares, `font` for the word and `example` for the sentence.
+The two blocks carry the same shape, so a second reader would only repeat this one.
+A block the pack omits reads as blank, and the theme's own typography stands.
+
 ### `string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag") : null;`
 
 The flag is declared in the pack as an ISO 3166-1 alpha-2 country code.

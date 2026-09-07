@@ -66,6 +66,12 @@ The level is played as the grip moves but written down only when the hand comes 
 Writing on every step of a drag would put a file write behind every pixel, and would also write back the level the view had just loaded.
 A track click and an arrow key are gestures of their own, so each ends with a write too.
 
+### `private void PDisplayExampleShow(string language)`
+
+Example lines are drawn inside card templates, where no code can reach one line at a time.
+So the pack's example typography is put into two view resources the templates read.
+A pack that declares none has its keys removed, and the card's own fallback typography stands.
+
 ### `private void PDisplayFavoriteShow(string id)`
 
 Reads whether the shown entry is marked and sets the star to match.

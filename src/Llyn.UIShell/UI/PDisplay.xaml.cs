@@ -121,6 +121,8 @@ public partial class PDisplay : UserControl
             ? new Thickness(0)
             : new Thickness(10, 0, 0, 0);
 
+        PDisplayFrameShow(draft.LEntryDraftLanguage);
+        PDisplayExampleShow(draft.LEntryDraftLanguage);
         PDisplayTranslationShow(draft);
         PDisplayIncomingShow(id);
 
@@ -227,6 +229,44 @@ public partial class PDisplay : UserControl
     private PLinkConverter PDisplayTranslationRead()
     {
         return (PLinkConverter)Resources["Display.Card.Translation"];
+    }
+
+    private void PDisplayFrameShow(string language)
+    {
+        LSentenceOrder order;
+        try
+        {
+            order = _lEngine.LEngineOrderRead(language);
+        }
+        catch (Exception)
+        {
+            order = LSentenceOrder.LSentenceOrderDefault;
+        }
+
+        ((PSentenceConverter)Resources["Display.Card.Frame"]).PSentenceConverterApply(order);
+    }
+
+    private void PDisplayExampleShow(string language)
+    {
+        LFont font = PFont.PFontExampleRead(_lEngine, language);
+
+        if (font.LFontFamily is string named)
+        {
+            Resources["Display.Card.ExampleFamily"] = new FontFamily(named);
+        }
+        else
+        {
+            Resources.Remove("Display.Card.ExampleFamily");
+        }
+
+        if (font.LFontSize > 0)
+        {
+            Resources["Display.Card.ExampleSize"] = font.LFontSize;
+        }
+        else
+        {
+            Resources.Remove("Display.Card.ExampleSize");
+        }
     }
 
     private void PDisplayIncomingShow(string id)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -21,6 +21,25 @@ internal static class PFont
         {
             PFontSet(surface, TextElement.FontFamilyProperty, family);
             PFontSet(surface, TextElement.FontSizeProperty, font.LFontSize > 0 ? font.LFontSize : null);
+        }
+    }
+
+    internal static LFont PFontExampleRead(LEngine engine, string language)
+    {
+        ArgumentNullException.ThrowIfNull(engine);
+
+        if (string.IsNullOrWhiteSpace(language))
+        {
+            return new LFont(null, 0);
+        }
+
+        try
+        {
+            return engine.LEngineFontRead(language, LFontRole.LFontRoleExample);
+        }
+        catch (Exception)
+        {
+            return new LFont(null, 0);
         }
     }
 
