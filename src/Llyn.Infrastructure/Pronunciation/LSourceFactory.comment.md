@@ -2,7 +2,8 @@
 
 ## `public static class LSourceFactory`
 
-Builds the live `LSource` set for a language pack.
+Builds a live `LSource` set from the source definitions it is handed.
+It is called once per list, so a transcription set and a recording set never mix.
 Every ordinary source becomes a data-driven `LSourceGeneric`.
 This is the seam where a future source needing logic a pack cannot express would be wired.
 Such a source would go to a hand-written handler instead.

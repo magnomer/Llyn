@@ -4,6 +4,7 @@
 
 Presentation item for one downloadable recording shown in `PClip`.
 Wraps the domain `LRecording` with the source label the row shows.
+It also carries the recording's declared position, which is what the menu sorts the row by.
 It also wraps that row's own download state.
 So the menu can report a save on the row that was taken.
 It need not report it on the one status line the search owns.

@@ -26,8 +26,6 @@ public sealed class LSourceGeneric : LSource
 
     public string LSourceName => _lSourceGenericSpec.LSourceSpecName;
 
-    public string LSourceKind => _lSourceGenericSpec.LSourceSpecKind;
-
     public async Task<string?> LSourceFind(string word, CancellationToken cancellation)
     {
         if (string.IsNullOrWhiteSpace(word))

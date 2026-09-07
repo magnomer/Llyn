@@ -14,7 +14,8 @@ public sealed partial class LEngine : IDisposable
 {
     private readonly object _lEngineGate = new();
     private readonly HttpClient _lEngineClient;
-    private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineSources = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineHarvestSources = new(StringComparer.Ordinal);
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
     private LDatabase _lEngineDatabase;
@@ -128,7 +129,8 @@ public sealed partial class LEngine : IDisposable
             }
 
             _lEngineDraftHeld.Clear();
-            _lEngineSources.Clear();
+            _lEngineLookupSources.Clear();
+            _lEngineHarvestSources.Clear();
             LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
             _lEngineDatabase = new LDatabase(_lEngineWorkspace);
@@ -194,7 +196,7 @@ public sealed partial class LEngine : IDisposable
         IReadOnlyList<LSource> sources;
         lock (_lEngineGate)
         {
-            sources = LEngineSourcesRead(language);
+            sources = LEngineLookupRead(language);
         }
 
         return new LLookup(sources).LSeekerStart(word, receiver, cancellation);
@@ -207,7 +209,7 @@ public sealed partial class LEngine : IDisposable
         IReadOnlyList<LSource> sources;
         lock (_lEngineGate)
         {
-            sources = LEngineSourcesRead(language);
+            sources = LEngineHarvestRead(language);
         }
 
         return new LHarvest(sources).LHarvestStart(word, listener, cancellation);
@@ -255,15 +257,29 @@ public sealed partial class LEngine : IDisposable
             nameof(owner), owner, "This entity has no reference from that kind of row.");
     }
 
-    private IReadOnlyList<LSource> LEngineSourcesRead(string language)
+    private IReadOnlyList<LSource> LEngineLookupRead(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
-        if (!_lEngineSources.TryGetValue(language, out IReadOnlyList<LSource>? sources))
+        if (!_lEngineLookupSources.TryGetValue(language, out IReadOnlyList<LSource>? sources))
         {
             LLanguage pack = LLanguageLoader.LLanguageLoaderLoad(language);
-            sources = LSourceFactory.LSourceFactoryCreate(pack, _lEngineClient);
-            _lEngineSources[language] = sources;
+            sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageLookupSources, _lEngineClient);
+            _lEngineLookupSources[language] = sources;
+        }
+
+        return sources;
+    }
+
+    private IReadOnlyList<LSource> LEngineHarvestRead(string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        if (!_lEngineHarvestSources.TryGetValue(language, out IReadOnlyList<LSource>? sources))
+        {
+            LLanguage pack = LLanguageLoader.LLanguageLoaderLoad(language);
+            sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageHarvestSources, _lEngineClient);
+            _lEngineHarvestSources[language] = sources;
         }
 
         return sources;

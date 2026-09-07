@@ -2,7 +2,9 @@
 
 ## `public sealed class LLookup : LSeeker`
 
-Fans a pronunciation request out to every configured pronunciation source at once.
+Fans a pronunciation request out to every source it was given at once.
+It runs the whole set, because the caller hands it the transcription sources alone.
+Each candidate carries the position its source holds in that set, so a slow source keeps its declared place.
 Streams each result back to the receiver as it arrives.
 One slow or failing source never blocks or fails the others.
 The lookup reports complete once all sources have finished.

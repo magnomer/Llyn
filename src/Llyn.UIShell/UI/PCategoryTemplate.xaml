@@ -3,9 +3,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PCategoryTemplate">
 
+    <BooleanToVisibilityConverter x:Key="Theme.Category.Fold" />
+
     <DataTemplate x:Key="Theme.Category.Row">
-        <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PCategoryHandle" Foreground="{DynamicResource Theme.Ink}">
-            <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PCategoryItemName}" TextTrimming="CharacterEllipsis" />
+        <Button Click="PCategoryHandle" Style="{DynamicResource Theme.Category.Item}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{DynamicResource Theme.Ink}"
+                    Text="{Binding PCategoryItemName}"
+                    TextTrimming="CharacterEllipsis" />
+
+                <Path
+                    Grid.Column="1"
+                    Width="10"
+                    Height="8"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Data="M 0,4 L 3.6,7.5 L 10,0.6"
+                    Stroke="{DynamicResource Theme.Accent}"
+                    StrokeEndLineCap="Round"
+                    StrokeStartLineCap="Round"
+                    StrokeThickness="1.7"
+                    Visibility="{Binding PCategoryItemTaken, Converter={StaticResource Theme.Category.Fold}}" />
+            </Grid>
         </Button>
     </DataTemplate>
 </ResourceDictionary>

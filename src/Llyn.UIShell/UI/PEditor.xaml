@@ -244,34 +244,35 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
 
-            <Grid Margin="0,0,0,6" VerticalAlignment="Top">
-                <Border Height="41" VerticalAlignment="Top" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
+            <Grid VerticalAlignment="Top">
+                <Border x:Name="PMarkerSurface" Style="{StaticResource Theme.Marker.Field}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="PMarkerField" Width="212" MinHeight="33" Padding="12,0" Background="Transparent" BorderThickness="0" FontSize="15" Foreground="{StaticResource Theme.Ink}" Style="{StaticResource Theme.Input.Field}" Tag="{DynamicResource Speech.Title}" VerticalContentAlignment="Center" />
-                        <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Width="38" Height="39" Padding="0" Background="Transparent" BorderThickness="0" Foreground="{StaticResource Theme.Muted}" Style="{StaticResource Theme.Input.ToggleAction}">
-                            <Path Width="8" Height="4" Data="M 0,0 L 4,3 L 8,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeThickness="1.5" />
+                        <TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />
+                        <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Style="{StaticResource Theme.Marker.Switch}">
+                            <Path Width="7" Height="3.5" Data="M 0,0 L 3.5,3.5 L 7,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeThickness="1.4" />
                         </ToggleButton>
                     </Grid>
                 </Border>
                 <Popup
                     x:Name="PCategory"
-                    Width="260"
-                    Margin="0,6,0,0"
                     AllowsTransparency="True"
-                    IsOpen="{Binding IsChecked, ElementName=PMarkerSwitch}"
+                    HorizontalOffset="-8"
+                    IsOpen="{Binding IsChecked, ElementName=PMarkerSwitch, Mode=TwoWay}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PMarkerSwitch}"
-                    StaysOpen="False">
-                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                    PlacementTarget="{Binding ElementName=PMarkerSurface}"
+                    PopupAnimation="Fade"
+                    StaysOpen="False"
+                    VerticalOffset="-4">
+                    <Border MinWidth="190" MaxWidth="320" Margin="8" Style="{StaticResource Theme.Marker.Menu}">
                         <StackPanel>
-                            <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Speech.Title}" />
                             <TextBlock x:Name="PCategoryNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Empty}" Visibility="Collapsed" />
-                            <ScrollViewer MaxHeight="300" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="PCategoryAbsent" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Absent}" Visibility="Collapsed" />
+                            <ScrollViewer MaxHeight="252" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                                 <ItemsControl x:Name="PCategoryList" ItemTemplate="{DynamicResource Theme.Category.Row}">
                                     <ItemsControl.ItemContainerStyle>
                                         <Style TargetType="ContentPresenter">

@@ -21,7 +21,8 @@ They then run the fetch outside it, because a lock held across an await would st
 This class is also the composition root.
 It owns the shared `HttpClient`.
 It loads each language pack on first use through `LLanguageLoader`.
-It builds that language's sources through `LSourceFactory`.
+It builds that language's transcription and recording sources separately through `LSourceFactory`.
+The two sets are cached apart, so a lookup never reaches an audio source and a download never reaches a transcription one.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
 
 ## `public LEngine()`
@@ -78,7 +79,7 @@ It records the new folder and writes the current settings into it.
 So settings and database follow the workspace to its new location.
 The drafts this engine claimed are forgotten with the old folder, since a claim only means something against the folder the file sits in.
 Each forgotten id is marked stale rather than simply dropped, so a shell still holding one is refused instead of writing here.
-The cached source lists go too, because a language keeps whichever list the workspace it was read from declared.
+The cached source lists go too, because a language keeps whichever lists the workspace it was read from declared.
 The move is then announced, so every surface holding a stored record learns that all of it is stale.
 One announcement replaces the list of panels the settings panel used to reset by name.
 A panel added later is current without that list being edited.

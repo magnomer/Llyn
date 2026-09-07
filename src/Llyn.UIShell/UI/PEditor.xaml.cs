@@ -43,6 +43,7 @@ public partial class PEditor : UserControl
         PMarkerList.ItemsSource = _pMarkerChip;
         PHeadword.TextChanged += PHeadwordHandle;
         PMarkerField.KeyDown += PMarkerFieldHandle;
+        PMarkerField.TextChanged += PMarkerTextHandle;
         AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
         PVolumeAttach();
     }

@@ -16,11 +16,14 @@ internal sealed class PClipItem : INotifyPropertyChanged
         _lRecording = recording;
         _pClipItemAction = action;
         PClipItemSource = recording.LRecordingSource;
+        PClipItemOrder = recording.LRecordingOrder;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public string PClipItemSource { get; }
+
+    internal int PClipItemOrder { get; }
 
     public string PClipItemAction
     {

@@ -3,6 +3,7 @@
 ## `public interface LSource`
 
 A single pronunciation or audio source.
+Which of the two it is comes from the list the language pack declared it in, not from the source itself.
 The provider is language-agnostic.
 What it searches and how it extracts a value are supplied by a language pack (see `LSourceSpec`).
 Nothing is hardcoded here.
@@ -13,10 +14,6 @@ It returns `null` when the source has none.
 ## `string LSourceName { get; }`
 
 The source's declared name, for example `"Cambridge"`.
-
-## `string LSourceKind { get; }`
-
-The kind of value this source yields: `"pronunciation"` or `"audio"`.
 
 ## `Task<string?> LSourceFind(string word, CancellationToken cancellation);`
 

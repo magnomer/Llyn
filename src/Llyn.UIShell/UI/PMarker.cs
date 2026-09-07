@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Llyn.UIShell;
@@ -15,11 +16,19 @@ public partial class PEditor
         if (sender is FrameworkElement { DataContext: PMarkerChip chip })
         {
             _pMarkerChip.Remove(chip);
+            PCategoryUpdate();
         }
     }
 
     private void PMarkerFieldHandle(object sender, KeyEventArgs e)
     {
+        if (e.Key == Key.Escape)
+        {
+            PMarkerSwitch.IsChecked = false;
+            e.Handled = true;
+            return;
+        }
+
         if (e.Key != Key.Enter)
         {
             return;
@@ -29,17 +38,36 @@ public partial class PEditor
         e.Handled = true;
     }
 
+    private void PMarkerTextHandle(object sender, TextChangedEventArgs e)
+    {
+        if (_pEditorFill)
+        {
+            return;
+        }
+
+        PCategoryUpdate();
+
+        string typed = (PMarkerField.Text ?? string.Empty).Trim();
+        PMarkerSwitch.IsChecked = typed.Length > 0 && _pCategoryItem.Count > 0;
+    }
+
     private void PMarkerAdd(string name)
     {
         string typed = name.Trim();
         PMarkerField.Text = string.Empty;
 
-        if (typed.Length == 0 || PMarkerFind(typed))
+        if (typed.Length == 0)
         {
             return;
         }
 
-        _pMarkerChip.Add(new PMarkerChip(typed));
+        if (!PMarkerFind(typed))
+        {
+            _pMarkerChip.Add(new PMarkerChip(typed));
+        }
+
+        PCategoryAdd(typed);
+        PCategoryUpdate();
     }
 
     private bool PMarkerFind(string name)
@@ -77,18 +105,18 @@ public partial class PEditor
         _pMarkerChip.Clear();
         PMarkerField.Text = string.Empty;
 
-        if (names is null)
+        if (names is not null)
         {
-            return;
-        }
-
-        foreach (string name in names)
-        {
-            string typed = name.Trim();
-            if (typed.Length > 0 && !PMarkerFind(typed))
+            foreach (string name in names)
             {
-                _pMarkerChip.Add(new PMarkerChip(typed));
+                string typed = name.Trim();
+                if (typed.Length > 0 && !PMarkerFind(typed))
+                {
+                    _pMarkerChip.Add(new PMarkerChip(typed));
+                }
             }
         }
+
+        PCategoryUpdate();
     }
 }

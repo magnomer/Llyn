@@ -7,13 +7,14 @@ namespace Llyn.Infrastructure;
 
 public static class LSourceFactory
 {
-    public static IReadOnlyList<LSource> LSourceFactoryCreate(LLanguage language, HttpClient client)
+    public static IReadOnlyList<LSource> LSourceFactoryCreate(
+        IReadOnlyList<LSourceSpec> specs, HttpClient client)
     {
-        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(specs);
         ArgumentNullException.ThrowIfNull(client);
 
-        List<LSource> sources = new(language.LLanguageSources.Count);
-        foreach (LSourceSpec spec in language.LLanguageSources)
+        List<LSource> sources = new(specs.Count);
+        foreach (LSourceSpec spec in specs)
         {
             sources.Add(new LSourceGeneric(spec, client));
         }

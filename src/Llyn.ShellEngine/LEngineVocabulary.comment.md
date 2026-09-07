@@ -41,6 +41,15 @@ A language whose pack declares none returns an empty list.
 The field is still editable.
 Nothing to choose from is a language to type into, not a failure.
 
+## `public LSpeechValue? LEngineSpeechAdd(string language, string name)`
+
+Takes a part of speech no preset declares and makes it one of `language`'s presets.
+A name a preset already carries is returned as it stands rather than declared twice.
+Matching is on the trimmed name, without case, because the field is typed into by hand.
+A new preset is given a stable id derived from the name and the next free order.
+It returns the preset the name now stands for, or `null` when either argument is blank.
+This is what lets the dropdown grow with what a user writes.
+
 ## `public string? LEngineSpeechFind(string language, string name)`
 
 Resolves the display `name` of a part of speech back to the stable id `language` declares.
@@ -74,6 +83,17 @@ An unnamed language reads back nothing rather than every marker of every languag
 Reads the roles already saved under Entries written in `language`, on the same terms as a marker.
 
 ## Inline notes
+
+### `private static string LEngineSpeechNormalize(string name)`
+
+A typed name as the stable id its preset is keyed by, letters and digits kept and lowered.
+The `custom_` prefix keeps a user's preset out of the id space a language pack owns.
+So reimporting a pack rewrites its own rows and leaves what the user declared alone.
+
+### `id = $"{id}_{position + 1}"`
+
+Two different names can wear down to the same id.
+The order the preset takes is unique, so it is what separates them.
 
 ### `private IReadOnlyList<LSpeech> LEngineSpeechResolve(string entryId, string language, string text)`
 

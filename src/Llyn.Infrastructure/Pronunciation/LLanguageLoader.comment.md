@@ -5,7 +5,7 @@
 Loads a language pack from `languages//source.json`.
 It is resolved against the application's base directory, so packs are drop-in.
 Adding or editing a language needs no recompile.
-A missing or malformed pack yields a language with no sources rather than throwing.
+A missing or malformed pack yields a language with both source lists empty rather than throwing.
 So one bad pack never breaks the app.
 This is the only place source.json is read.
 The loaded `LLanguage` carries every language-specific fact onward.
@@ -24,6 +24,12 @@ English always heads the language list.
 Every other pack follows in ordinal order.
 The order is a rule about the language set, not a detail of one menu.
 So it is settled here, not in the UI.
+
+### `private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(JsonElement root, string key)`
+
+The pack declares its sources under `pronunciation` and `audio`, and this reads one of those lists.
+Neither list is required, and a missing one simply reads as empty.
+A source declares no kind, because the list it sits in already says what it is for.
 
 ### `string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag") : null;`
 

@@ -31,6 +31,12 @@ A discovery that could not be started reports no end of its own.
 So the menu is taken out of its searching state here.
 It is not left running under a search that never began.
 
+### `private void PClipPlace(PClipItem recording)`
+
+Puts an arriving recording where the language pack put its source, not where the network put it.
+Every source is asked at once, so a fast one would otherwise head a list the user did not order.
+Equal positions cannot occur, because a source answers once.
+
 ### `private void PClipUpdate()`
 
 What the menu shows, from the two things it knows.

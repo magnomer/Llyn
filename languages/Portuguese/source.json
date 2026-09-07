@@ -5,6 +5,7 @@
     "family": "Segoe UI",
     "size": 40
   },
-  "note": "Language selector pack for Portuguese. Pronunciation and audio sources can be added without changing the application.",
-  "sources": []
+  "note": "Language selector pack for Portuguese. Pronunciation and audio sources are listed separately and can be added without changing the application.",
+  "pronunciation": [],
+  "audio": []
 }

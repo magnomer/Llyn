@@ -6,4 +6,5 @@ public sealed record LLanguage(
     string LLanguageName,
     string? LLanguageFlag,
     LFont LLanguageFont,
-    IReadOnlyList<LSourceSpec> LLanguageSources);
+    IReadOnlyList<LSourceSpec> LLanguageLookupSources,
+    IReadOnlyList<LSourceSpec> LLanguageHarvestSources);

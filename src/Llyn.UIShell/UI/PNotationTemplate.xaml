@@ -4,17 +4,28 @@
     x:Class="Llyn.UIShell.PNotationTemplate">
 
     <DataTemplate x:Key="Theme.Notation.Row">
-        <Border Style="{DynamicResource Theme.Popup.RowSurface}">
+        <Border x:Name="PNotationRow" Style="{DynamicResource Theme.Popup.RowSurface}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="92" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock MaxWidth="88" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemSource}" TextTrimming="CharacterEllipsis" />
-                <TextBlock x:Name="PNotationReading" Grid.Column="1" Margin="10,0,8,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"><Run Foreground="{DynamicResource Theme.Muted}" Text="[" /><Run Foreground="{DynamicResource Theme.Ink}" Text="{Binding PNotationItemReading, Mode=OneWay}" /><Run Foreground="{DynamicResource Theme.Muted}" Text="]" /></TextBlock>
-                <Button x:Name="PNotationSelector" Grid.Column="2" VerticalAlignment="Center" Click="PNotationSelectorHandle" Content="{DynamicResource Transcriber.Use}" Style="{DynamicResource Theme.Popup.RowAction}" />
+                <TextBlock VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemSource}" TextTrimming="CharacterEllipsis" />
+                <TextBlock x:Name="PNotationReading" Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"><Run Foreground="{DynamicResource Theme.Muted}" Text="[" /><Run Foreground="{DynamicResource Theme.Ink}" Text="{Binding PNotationItemReading, Mode=OneWay}" /><Run Foreground="{DynamicResource Theme.Muted}" Text="]" /></TextBlock>
+                <Button x:Name="PNotationSelector" Grid.Column="2" VerticalAlignment="Center" Click="PNotationSelectorHandle" Content="{DynamicResource Transcriber.Use}" Style="{DynamicResource Theme.Popup.RowChoice}" />
             </Grid>
         </Border>
+        <DataTemplate.Triggers>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding IsMouseOver, ElementName=PNotationRow}" Value="True" />
+                    <Condition Binding="{Binding IsMouseOver, ElementName=PNotationSelector}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter TargetName="PNotationSelector" Property="Foreground" Value="{DynamicResource Theme.Accent}" />
+                <Setter TargetName="PNotationSelector" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
+                <Setter TargetName="PNotationSelector" Property="BorderBrush" Value="{DynamicResource Theme.AccentEdge}" />
+            </MultiDataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
 </ResourceDictionary>

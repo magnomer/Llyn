@@ -8,9 +8,12 @@ internal sealed class PNotationItem
     {
         PNotationItemSource = sourceLabel;
         PNotationItemReading = candidate.LCandidatePhonetic;
+        PNotationItemOrder = candidate.LCandidateOrder;
     }
 
     public string PNotationItemSource { get; }
 
     public string PNotationItemReading { get; }
+
+    internal int PNotationItemOrder { get; }
 }

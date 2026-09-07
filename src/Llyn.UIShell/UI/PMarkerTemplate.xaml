@@ -4,17 +4,18 @@
     x:Class="Llyn.UIShell.PMarkerTemplate">
 
     <DataTemplate x:Key="Theme.Marker.Chip">
-        <Border Height="41" Margin="0,0,8,6" Padding="13,0,7,0" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Line}" BorderThickness="1" CornerRadius="9">
+        <Border Style="{DynamicResource Theme.Marker.Surface}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PMarkerChipName}" />
-                <Button Width="20" Height="20" Margin="9,0,0,0" Padding="0" Click="PMarkerChipHandle">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Grid Background="Transparent">
-                                <Rectangle Width="9" Height="1.5" Fill="{DynamicResource Theme.Muted}" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Button.Template>
+                <TextBlock Style="{DynamicResource Theme.Marker.Name}" Text="{Binding PMarkerChipName}" />
+                <Button Click="PMarkerChipHandle" Style="{DynamicResource Theme.Marker.Remove}">
+                    <Path
+                        Width="7"
+                        Height="7"
+                        Data="M 0,0 L 7,7 M 7,0 L 0,7"
+                        Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                        StrokeEndLineCap="Round"
+                        StrokeStartLineCap="Round"
+                        StrokeThickness="1.5" />
                 </Button>
             </StackPanel>
         </Border>

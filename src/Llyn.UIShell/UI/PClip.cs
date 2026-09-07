@@ -60,6 +60,18 @@ public partial class PEditor : LListener
         _pClipCancellation = null;
     }
 
+    private void PClipPlace(PClipItem recording)
+    {
+        int position = 0;
+        while (position < _pClipItem.Count &&
+            _pClipItem[position].PClipItemOrder <= recording.PClipItemOrder)
+        {
+            position++;
+        }
+
+        _pClipItem.Insert(position, recording);
+    }
+
     private void PClipUpdate()
     {
         bool recordings = _pClipItem.Count > 0;
@@ -147,7 +159,7 @@ public partial class PEditor : LListener
     {
         Dispatcher.Invoke(() =>
         {
-            _pClipItem.Add(new PClipItem(
+            PClipPlace(new PClipItem(
                 recording,
                 _pEditorHost.PLocalizationTextRead("Downloader.Use")));
             PClipUpdate();

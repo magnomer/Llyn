@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -32,12 +33,62 @@ public sealed partial class LEngine
         }
     }
 
+    public LSpeechValue? LEngineSpeechAdd(string language, string name)
+    {
+        lock (_lEngineGate)
+        {
+            if (string.IsNullOrWhiteSpace(language) || string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
+
+            string typed = name.Trim();
+            LSpeechArchive values = new(_lEngineDatabase);
+
+            IReadOnlyList<LSpeechValue> stored = values.LSpeechValueRead(language);
+            HashSet<string> taken = new(StringComparer.Ordinal);
+            int position = 0;
+            foreach (LSpeechValue held in stored)
+            {
+                if (string.Equals(held.LSpeechValueName.Trim(), typed, StringComparison.OrdinalIgnoreCase))
+                {
+                    return held;
+                }
+
+                taken.Add(held.LSpeechValueId);
+                position = Math.Max(position, held.LSpeechValuePosition);
+            }
+
+            string id = LEngineSpeechNormalize(typed);
+            if (taken.Contains(id))
+            {
+                id = $"{id}_{position + 1}";
+            }
+
+            LSpeechValue created = new(language, id, typed, position + 1);
+            values.LSpeechValueCreate(created);
+            return created;
+        }
+    }
+
     public string? LEngineSpeechFind(string language, string name)
     {
         lock (_lEngineGate)
         {
             return new LSpeechArchive(_lEngineDatabase).LSpeechValueFind(language, name);
         }
+    }
+
+    private static string LEngineSpeechNormalize(string name)
+    {
+        StringBuilder built = new(name.Length + 7);
+        built.Append("custom_");
+        foreach (char letter in name)
+        {
+            built.Append(char.IsLetterOrDigit(letter) ? char.ToLowerInvariant(letter) : '_');
+        }
+
+        return built.ToString();
     }
 
     private IReadOnlyList<LSpeech> LEngineSpeechResolve(

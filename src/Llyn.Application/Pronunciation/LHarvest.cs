@@ -8,8 +8,6 @@ namespace Llyn.Application;
 
 public sealed class LHarvest
 {
-    private const string LHarvestKind = "audio";
-
     private readonly IReadOnlyList<LSource> _lHarvestSources;
 
     public LHarvest(IReadOnlyList<LSource> sources)
@@ -22,12 +20,9 @@ public sealed class LHarvest
         ArgumentNullException.ThrowIfNull(listener);
 
         List<Task> pending = new(_lHarvestSources.Count);
-        foreach (LSource source in _lHarvestSources)
+        for (int order = 0; order < _lHarvestSources.Count; order++)
         {
-            if (string.Equals(source.LSourceKind, LHarvestKind, StringComparison.Ordinal))
-            {
-                pending.Add(LHarvestSourceRun(source, word, listener, cancellation));
-            }
+            pending.Add(LHarvestSourceRun(_lHarvestSources[order], order, word, listener, cancellation));
         }
 
         try
@@ -45,6 +40,7 @@ public sealed class LHarvest
 
     private static async Task LHarvestSourceRun(
         LSource source,
+        int order,
         string word,
         LListener listener,
         CancellationToken cancellation)
@@ -67,7 +63,7 @@ public sealed class LHarvest
 
         if (!string.IsNullOrEmpty(address) && !cancellation.IsCancellationRequested)
         {
-            listener.LListenerRecordingAdd(new LRecording(source.LSourceName, address));
+            listener.LListenerRecordingAdd(new LRecording(source.LSourceName, address, order));
         }
     }
 }

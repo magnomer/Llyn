@@ -2,7 +2,9 @@
 
 ## `public sealed class LHarvest`
 
-Fans an audio request out to every configured audio source at once.
+Fans an audio request out to every source it was given at once.
+It runs the whole set, because the caller hands it the recording sources alone.
+Each recording carries the position its source holds in that set, so a slow source keeps its declared place.
 Streams each downloadable recording back to the listener as it arrives.
 The download counterpart to `LLookup`.
 One slow or failing source never blocks or fails the others.

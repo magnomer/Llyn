@@ -71,6 +71,18 @@ public partial class PEditor : LReceiver
         _pNotationCancellation = null;
     }
 
+    private void PNotationPlace(PNotationItem candidate)
+    {
+        int position = 0;
+        while (position < _pNotationItem.Count &&
+            _pNotationItem[position].PNotationItemOrder <= candidate.PNotationItemOrder)
+        {
+            position++;
+        }
+
+        _pNotationItem.Insert(position, candidate);
+    }
+
     private void PNotationUpdate()
     {
         bool candidates = _pNotationItem.Count > 0;
@@ -97,7 +109,7 @@ public partial class PEditor : LReceiver
     {
         Dispatcher.BeginInvoke(() =>
         {
-            _pNotationItem.Add(new PNotationItem(candidate, candidate.LCandidateSource));
+            PNotationPlace(new PNotationItem(candidate, candidate.LCandidateSource));
             PNotationUpdate();
         });
     }

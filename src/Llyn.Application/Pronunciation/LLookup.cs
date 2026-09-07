@@ -8,8 +8,6 @@ namespace Llyn.Application;
 
 public sealed class LLookup : LSeeker
 {
-    private const string LLookupKind = "pronunciation";
-
     private readonly IReadOnlyList<LSource> _lLookupSources;
 
     public LLookup(IReadOnlyList<LSource> sources)
@@ -22,12 +20,9 @@ public sealed class LLookup : LSeeker
         ArgumentNullException.ThrowIfNull(receiver);
 
         List<Task> pending = new(_lLookupSources.Count);
-        foreach (LSource source in _lLookupSources)
+        for (int order = 0; order < _lLookupSources.Count; order++)
         {
-            if (string.Equals(source.LSourceKind, LLookupKind, StringComparison.Ordinal))
-            {
-                pending.Add(LLookupSourceRun(source, word, receiver, cancellation));
-            }
+            pending.Add(LLookupSourceRun(_lLookupSources[order], order, word, receiver, cancellation));
         }
 
         try
@@ -45,6 +40,7 @@ public sealed class LLookup : LSeeker
 
     private static async Task LLookupSourceRun(
         LSource source,
+        int order,
         string word,
         LReceiver receiver,
         CancellationToken cancellation)
@@ -67,7 +63,7 @@ public sealed class LLookup : LSeeker
 
         if (!string.IsNullOrEmpty(phonetic) && !cancellation.IsCancellationRequested)
         {
-            receiver.LReceiverCandidateAdd(new LCandidate(source.LSourceName, phonetic));
+            receiver.LReceiverCandidateAdd(new LCandidate(source.LSourceName, phonetic, order));
         }
     }
 }

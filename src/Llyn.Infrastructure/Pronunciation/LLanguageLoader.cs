@@ -11,6 +11,8 @@ public static class LLanguageLoader
     private const string LLanguageLoaderFolder = "languages";
     private const string LLanguageLoaderFile = "source.json";
     private const string LLanguageLoaderPrimary = "English";
+    private const string LLanguageLoaderLookup = "pronunciation";
+    private const string LLanguageLoaderHarvest = "audio";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -56,7 +58,7 @@ public static class LLanguageLoader
         string path = Path.Combine(folder, LLanguageLoaderFile);
         if (!File.Exists(path))
         {
-            return new LLanguage(language, null, LLanguageFontBlank, Array.Empty<LSourceSpec>());
+            return LLanguageBlankCreate(language);
         }
 
         try
@@ -67,30 +69,48 @@ public static class LLanguageLoader
         }
         catch (Exception exception) when (exception is IOException or JsonException or UnauthorizedAccessException)
         {
-            return new LLanguage(language, null, LLanguageFontBlank, Array.Empty<LSourceSpec>());
+            return LLanguageBlankCreate(language);
         }
+    }
+
+    private static LLanguage LLanguageBlankCreate(string language)
+    {
+        return new LLanguage(
+            language, null, LLanguageFontBlank, Array.Empty<LSourceSpec>(), Array.Empty<LSourceSpec>());
     }
 
     private static LLanguage LLanguageRead(string language, JsonElement root)
     {
         string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag") : null;
 
-        List<LSourceSpec> specs = new();
-        if (root.ValueKind == JsonValueKind.Object &&
-            root.TryGetProperty("sources", out JsonElement sources) &&
-            sources.ValueKind == JsonValueKind.Array)
+        return new LLanguage(
+            language,
+            flag,
+            LLanguageFontRead(root),
+            LLanguageSourceScan(root, LLanguageLoaderLookup),
+            LLanguageSourceScan(root, LLanguageLoaderHarvest));
+    }
+
+    private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(JsonElement root, string key)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(key, out JsonElement sources) ||
+            sources.ValueKind != JsonValueKind.Array)
         {
-            foreach (JsonElement source in sources.EnumerateArray())
+            return Array.Empty<LSourceSpec>();
+        }
+
+        List<LSourceSpec> specs = new();
+        foreach (JsonElement source in sources.EnumerateArray())
+        {
+            LSourceSpec? spec = LLanguageSourceRead(source);
+            if (spec is not null)
             {
-                LSourceSpec? spec = LLanguageSourceRead(source);
-                if (spec is not null)
-                {
-                    specs.Add(spec);
-                }
+                specs.Add(spec);
             }
         }
 
-        return new LLanguage(language, flag, LLanguageFontRead(root), specs);
+        return specs;
     }
 
     private static LFont LLanguageFontBlank => new(null, 0);
@@ -118,8 +138,7 @@ public static class LLanguageLoader
         }
 
         string name = LLanguageTextRead(source, "name") ?? string.Empty;
-        string kind = LLanguageTextRead(source, "kind") ?? string.Empty;
-        if (name.Length == 0 || kind.Length == 0)
+        if (name.Length == 0)
         {
             return null;
         }
@@ -137,7 +156,7 @@ public static class LLanguageLoader
             }
         }
 
-        return attempts.Count == 0 ? null : new LSourceSpec(name, kind, attempts);
+        return attempts.Count == 0 ? null : new LSourceSpec(name, attempts);
     }
 
     private static LSourceAttempt? LLanguageAttemptRead(JsonElement row)

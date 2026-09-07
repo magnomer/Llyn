@@ -1,3 +1,3 @@
 namespace Llyn.Core;
 
-public sealed record LRecording(string LRecordingSource, string LRecordingAddress);
+public sealed record LRecording(string LRecordingSource, string LRecordingAddress, int LRecordingOrder);

@@ -2,7 +2,7 @@
 
 ## `public sealed record LLanguage(`
 
-A loaded language pack: the language's name and the source definitions declared for it.
+A loaded language pack: the language's name and the two source lists declared for it.
 Loaded from `languages//source.json`.
 The engine holds no language-specific facts of its own.
 Everything language-specific arrives through this record.
@@ -17,4 +17,7 @@ Everything language-specific arrives through this record.
   It caches the flag in the workspace.
 - `LLanguageFont` — The typography the pack declares for its own words, held as an [LFont](LFont.comment.md).
   A pack that declares none carries a blank record, and the theme's own typography stands.
-- `LLanguageSources` — The source definitions declared for the language.
+- `LLanguageLookupSources` — The sources the pack declares for reading transcriptions.
+- `LLanguageHarvestSources` — The sources the pack declares for finding downloadable recordings.
+  The two lists are independent.
+  A site good for transcriptions need not serve audio, and either list may stand empty.

@@ -1,4 +1,4 @@
-{
+﻿{
   "terms.product": "Llyn",
   "terms.exit": "exit",
   "terms.minimize": "minimize",
@@ -168,6 +168,7 @@
     "Display.Unselected": "Select an entry to read it",
     "Speech.Title": "Part of speech",
     "Speech.Empty": "This language declares no parts of speech",
+    "Speech.Absent": "No part of speech matches what you typed",
     "Reference.LoadFailed": "The sources could not be read.",
     "Reference.Title": "Source",
     "Reference.Empty": "No sources yet",
@@ -177,7 +178,7 @@
     "Transcriber.Searching": "Searching…",
     "Transcriber.Empty": "No pronunciations found",
     "Transcriber.Use": "{Terms.use}",
-    "Transcriber.SourceWikipedia": "Wikipedia",
+    "Transcriber.SourceWiktionary": "Wiktionary",
     "Transcriber.SourceCambridge": "Cambridge",
     "Downloader.Title": "Audio",
     "Downloader.Searching": "Searching…",

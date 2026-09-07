@@ -5,11 +5,23 @@
     "family": "Segoe UI",
     "size": 40
   },
-  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities.",
-  "sources": [
+  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. The 'pronunciation' and 'audio' lists are independent: a site listed for transcriptions need not be listed for recordings, and either list may stand empty. Each list is shown in the order it is written here, whatever order the answers arrive in, so reordering a list reorders the menu. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities. 'prefix' = made absolute when the captured address is site-relative.",
+  "pronunciation": [
     {
-      "name": "Wikipedia",
-      "kind": "pronunciation",
+      "name": "Longman",
+      "note": "Longman Dictionary of Contemporary English. The class is upper-case PRON and the reader is case-sensitive. An unknown word returns a results page with no PRON span, so the attempt simply yields nothing.",
+      "attempts": [
+        {
+          "urls": [
+            "https://www.ldoceonline.com/dictionary/{word}"
+          ],
+          "strategy": "span",
+          "match": "<span[^>]*class=\"[^\"]*\\bPRON\\b[^\"]*\"[^>]*>"
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
       "attempts": [
         {
           "urls": [
@@ -34,7 +46,6 @@
     },
     {
       "name": "Cambridge",
-      "kind": "pronunciation",
       "attempts": [
         {
           "urls": [
@@ -48,8 +59,81 @@
       ]
     },
     {
+      "name": "Oxford",
+      "note": "Oxford Learner's Dictionaries. The headword British transcription is the first <span class=\"phon\">; the page 404s on an unknown word, so no confirm guard is needed.",
+      "attempts": [
+        {
+          "urls": [
+            "https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
+          ],
+          "strategy": "span",
+          "match": "<span[^>]*class=\"[^\"]*\\bphon\\b[^\"]*\"[^>]*>"
+        }
+      ]
+    },
+    {
+      "name": "Dictionary.com",
+      "note": "Dictionary.com prints US and British transcriptions in <span class=\"txt-ipa\">, comma-separated when a headword has variants.",
+      "attempts": [
+        {
+          "urls": [
+            "https://www.dictionary.com/browse/{word}"
+          ],
+          "strategy": "span",
+          "match": "<span[^>]*class=\"[^\"]*\\btxt-ipa\\b[^\"]*\"[^>]*>"
+        }
+      ]
+    },
+    {
+      "name": "Free Dictionary",
+      "note": "dictionaryapi.dev returns a JSON array, which the 'json' strategy cannot walk, so the transcription is read straight off the response body with a regex.",
+      "attempts": [
+        {
+          "urls": [
+            "https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+          ],
+          "strategy": "regex",
+          "match": "\"text\"\\s*:\\s*\"(/[^\"]+/)\"",
+          "group": 1,
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "note": "Naver English dictionary search API. The audio URL is the opaque, token-bearing 'symbolFile' of the first phonetic symbol (e.g. .../009123.mp3?_lsu_sa_=...). The API returns an empty body without a Referer header, so one is declared here.",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.dict.naver.com/api3/enko/search?query={word}&m=pc&range=word&page=1"
+          ],
+          "headers": {
+            "Referer": "https://en.dict.naver.com/"
+          },
+          "strategy": "regex",
+          "match": "\"symbolFile\":\"(https?://[^\"]+)\"",
+          "group": 1
+        }
+      ]
+    },
+    {
+      "name": "Longman",
+      "note": "Longman appends a cache-busting query to each mp3, which the workspace ignores when it names the saved file.",
+      "attempts": [
+        {
+          "urls": [
+            "https://www.ldoceonline.com/dictionary/{word}"
+          ],
+          "strategy": "regex",
+          "match": "data-src-mp3=\"(https://[^\"]+\\.mp3[^\"]*)\"",
+          "group": 1
+        }
+      ]
+    },
+    {
       "name": "Cambridge",
-      "kind": "audio",
       "note": "Cambridge serves per-entry mp3 audio via site-relative <source> src attributes; 'prefix' makes them absolute. The first audio/mpeg source is the headword pronunciation.",
       "attempts": [
         {
@@ -64,17 +148,54 @@
       ]
     },
     {
-      "name": "Naver",
-      "kind": "audio",
-      "note": "Naver English dictionary search API. The audio URL is the opaque, token-bearing 'symbolFile' of the first phonetic symbol (e.g. .../009123.mp3?_lsu_sa_=...). The API returns an empty body without a Referer header, so one is declared here.",
+      "name": "Oxford",
+      "note": "Oxford exposes absolute mp3 addresses in data-src-mp3; the first one is the British headword recording.",
       "attempts": [
         {
           "urls": [
-            "https://en.dict.naver.com/api3/enko/search?query={word}&m=pc&range=word&page=1"
+            "https://www.oxfordlearnersdictionaries.com/definition/english/{word}"
           ],
-          "headers": { "Referer": "https://en.dict.naver.com/" },
           "strategy": "regex",
-          "match": "\"symbolFile\":\"(https?://[^\"]+)\"",
+          "match": "data-src-mp3=\"(https://[^\"]+\\.mp3)\"",
+          "group": 1
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "note": "Wiktionary embeds Commons recordings as protocol-relative addresses, so 'prefix' supplies the scheme. Only the transcoded mp3 rendition is taken, because the original is Ogg Vorbis or WAV. The first attempt takes an En- filename, the second a Lingua Libre LL-Q1860_%28eng%29- one, and both prefixes mark the recording as English.",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/En-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q1860_%28eng%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    },
+    {
+      "name": "Dictionary.com",
+      "attempts": [
+        {
+          "urls": [
+            "https://www.dictionary.com/browse/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(https://audio\\.dictionary\\.com/[^\"]+\\.mp3)",
           "group": 1
         }
       ]

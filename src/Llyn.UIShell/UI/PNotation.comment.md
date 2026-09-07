@@ -10,6 +10,13 @@ This is the shell side of `LReceiver`.
 The engine calls back on a worker thread.
 So every arrival is marshalled onto the dispatcher here.
 
+## `private void PNotationPlace(PNotationItem candidate)`
+
+Puts an arriving candidate where the language pack put its source, not where the network put it.
+Every source is asked at once, so a fast one would otherwise head a list the user did not order.
+The list is short and already sorted, so a walk to the insertion point costs nothing worth avoiding.
+Equal positions cannot occur, because a source answers once.
+
 ## Inline notes
 
 ### `await _lEngine.LEnginePronunciationFind(word, _pSpeakerChoice, this, _pNotationCancellation.Token);`
