@@ -266,3 +266,5 @@ An inline field has to be measured this way; left to itself a drop-down takes th
 
 The frame fields of an Example: typed into like text, offering what the language has saved, and framed only under the pointer.
 The frame is drawn outward, so a field being pointed at or written in never moves the sentence beside it.
+Its frame is measured by "PFieldConverter", the same measure a written text field is framed by.
+A marker and the sentence beside it are therefore framed at one height though they are written at different faces.

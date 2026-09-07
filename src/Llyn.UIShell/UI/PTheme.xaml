@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIShell"
     xmlns:sys="clr-namespace:System;assembly=System.Runtime"
     xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
 
@@ -1587,6 +1588,8 @@
         <Setter Property="FontSize" Value="{StaticResource Theme.Card.ExampleSize}" />
     </Style>
 
+    <local:PFieldConverter x:Key="Theme.Field.Inset" />
+
     <Style x:Key="Theme.Choice.Bare" TargetType="ComboBox">
         <Setter Property="IsEditable" Value="True" />
         <Setter Property="IsTextSearchEnabled" Value="False" />
@@ -1606,12 +1609,19 @@
                     <Grid x:Name="PChoiceField">
                         <Border
                             x:Name="PChoiceRing"
-                            Margin="-6,-3,-6,-3"
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="1"
-                            CornerRadius="6"
-                            IsHitTestVisible="False" />
+                            CornerRadius="7"
+                            IsHitTestVisible="False">
+                            <Border.Margin>
+                                <MultiBinding Converter="{StaticResource Theme.Field.Inset}">
+                                    <Binding Path="FontFamily" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    <Binding Path="FontSize" RelativeSource="{RelativeSource TemplatedParent}" />
+                                    <Binding Path="Padding" RelativeSource="{RelativeSource TemplatedParent}" />
+                                </MultiBinding>
+                            </Border.Margin>
+                        </Border>
                         <TextBlock
                             x:Name="PChoiceHint"
                             VerticalAlignment="Top"

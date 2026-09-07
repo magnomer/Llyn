@@ -23,6 +23,8 @@ Builds the field a card uses while it is being edited.
 A card must read the same in both modes, so the text sits where the reading side draws it.
 Padding would move it, so the frame is a sibling drawn behind with a negative margin instead.
 The frame therefore grows outward on hover and focus and never shifts the text by a pixel.
+How far outward is measured by "PFieldConverter" rather than fixed, since a card writes its fields at several faces.
+A fixed measure framed each face at its own height, and the card showed a different box on every line.
 It is registered under "Theme.Input.Field.Bare", which the "Theme.Input.Bare" style binds to.
 
 ### `pContent.SetValue(FrameworkElement.MarginProperty, new Thickness(-2, 0, 0, 0));`

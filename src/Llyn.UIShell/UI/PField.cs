@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
@@ -15,6 +16,15 @@ internal static class PField
         resources[PFieldBareKey] = PFieldBareBuild();
     }
 
+    private static MultiBinding PFieldInsetBuild()
+    {
+        var pInset = new MultiBinding { Converter = new PFieldConverter() };
+        pInset.Bindings.Add(new Binding(nameof(Control.FontFamily)) { RelativeSource = RelativeSource.TemplatedParent });
+        pInset.Bindings.Add(new Binding(nameof(Control.FontSize)) { RelativeSource = RelativeSource.TemplatedParent });
+        pInset.Bindings.Add(new Binding(nameof(Control.Padding)) { RelativeSource = RelativeSource.TemplatedParent });
+        return pInset;
+    }
+
     private static ControlTemplate PFieldBareBuild()
     {
         var pTemplate = new ControlTemplate(typeof(TextBox));
@@ -22,7 +32,7 @@ internal static class PField
         var pRoot = new FrameworkElementFactory(typeof(Grid));
 
         var pSurface = new FrameworkElementFactory(typeof(Border), "PSurface");
-        pSurface.SetValue(FrameworkElement.MarginProperty, new Thickness(-9, -5, -9, -5));
+        pSurface.SetBinding(FrameworkElement.MarginProperty, PFieldInsetBuild());
         pSurface.SetValue(Border.BackgroundProperty, Brushes.Transparent);
         pSurface.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
         pSurface.SetValue(Border.BorderThicknessProperty, new Thickness(1));
