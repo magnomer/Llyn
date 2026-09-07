@@ -96,7 +96,7 @@
             </Border>
         </Grid>
 
-        <StackPanel Grid.Row="1" Margin="0,12,0,0" HorizontalAlignment="Left" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left" Orientation="Horizontal">
 
             <Border Style="{StaticResource Theme.Pronunciation.Surface}">
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
@@ -123,11 +123,11 @@
             <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
-                        <Rectangle Width="12" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Rectangle Width="13" Height="14" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                             <Rectangle.OpacityMask>
                                 <VisualBrush Stretch="Uniform">
                                     <VisualBrush.Visual>
-                                        <svgc:SvgViewbox Width="12" Height="13" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
+                                        <svgc:SvgViewbox Width="13" Height="14" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
                                     </VisualBrush.Visual>
                                 </VisualBrush>
                             </Rectangle.OpacityMask>
@@ -234,7 +234,7 @@
 
         </StackPanel>
 
-        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="0,14,0,0" Orientation="Horizontal">
+        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,0" Orientation="Horizontal">
 
             <ItemsControl x:Name="PMarkerList" MaxWidth="{Binding ActualWidth, ElementName=PMarker}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
                 <ItemsControl.ItemsPanel>

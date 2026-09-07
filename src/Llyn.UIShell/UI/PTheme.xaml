@@ -611,33 +611,32 @@
     </Style>
 
     <Style x:Key="Theme.Playback.Action" TargetType="Button">
-        <Setter Property="Width" Value="38" />
-        <Setter Property="Height" Value="30" />
+        <Setter Property="Width" Value="26" />
+        <Setter Property="Height" Value="26" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border
-                        x:Name="PSurface"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        SnapsToDevicePixels="True">
+                    <Border x:Name="PSurface" Background="Transparent" SnapsToDevicePixels="True">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSurface" Property="Opacity" Value="1" />
+                            <Setter TargetName="PSurface" Property="RenderTransformOrigin" Value="0.5,0.5" />
+                            <Setter TargetName="PSurface" Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0.88" ScaleY="0.88" />
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
