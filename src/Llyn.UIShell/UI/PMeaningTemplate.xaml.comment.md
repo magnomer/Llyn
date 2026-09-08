@@ -21,3 +21,11 @@ A label naming what a writer can read off the field only pushes the card down an
 
 The title keeps the reading side's place, and the mark that drops the card is laid over the strip beside it.
 Given a column of its own it would narrow the title, and the same title would then wrap in one mode and not the other.
+
+### `<Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{DynamicResource Theme.Command.Group}">`
+
+The pair takes the icon cluster the pronunciation lookup and the audio download already carry.
+An outlined pill of muted text read as one more tag chip beside the tags above it.
+Phosphor image.svg and video-camera.svg, tinted through an opacity mask (see PPlayback).
+The tooltip carries the label the icon drops.
+The negative margin cancels the gutter column, so the cluster centres on the whole card body.

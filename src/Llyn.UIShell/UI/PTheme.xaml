@@ -1265,6 +1265,45 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Command.Icon" TargetType="Button">
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="PSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource Theme.DisabledInk}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <ControlTemplate x:Key="Theme.Command.Segment.Template" TargetType="ButtonBase">
         <Border
             x:Name="PSurface"
@@ -1411,7 +1450,7 @@
     <Thickness x:Key="Theme.Card.ExampleMargin">0,16,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ExamplePadding">14,1,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ExampleLineMargin">0,0,0,7</Thickness>
-    <Thickness x:Key="Theme.Card.MediaMargin">0,16,0,0</Thickness>
+    <Thickness x:Key="Theme.Card.MediaMargin">14,16,0,0</Thickness>
 
     <Style x:Key="Theme.Card.Shell" TargetType="Border" BasedOn="{StaticResource Theme.Input.Card}">
         <Setter Property="Margin" Value="0,0,0,15" />
@@ -1471,6 +1510,21 @@
 
     <Style x:Key="Theme.Card.Media" TargetType="ItemsControl">
         <Setter Property="Margin" Value="{StaticResource Theme.Card.MediaMargin}" />
+    </Style>
+
+    <Style x:Key="Theme.Card.Control" TargetType="FrameworkElement">
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Card.Preview" TargetType="Border">

@@ -22,41 +22,50 @@
     </Style>
 
     <DataTemplate x:Key="Theme.Image.Row">
-        <StackPanel>
-            <Border Style="{StaticResource Theme.Image.Preview}">
-                <Image MaxWidth="320" MaxHeight="200" Source="{Binding PImagePreview}" Stretch="Uniform" />
-            </Border>
+        <Grid Style="{DynamicResource Theme.Card.Reach}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />
+            </Grid.ColumnDefinitions>
 
-            <Grid Margin="0,0,0,7">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+            <StackPanel>
+                <Border Style="{StaticResource Theme.Image.Preview}">
+                    <Image MaxWidth="320" MaxHeight="200" Source="{Binding PImagePreview}" Stretch="Uniform" />
+                </Border>
 
-                <TextBox
-                    Margin="0,6,8,0"
-                    VerticalAlignment="Center"
-                    FontSize="12"
-                    Foreground="{DynamicResource Theme.Muted}"
-                    Style="{DynamicResource Theme.Input.Bare}"
-                    Text="{Binding PImageLocation, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.Tag>
-                        <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                            <Binding Path="PImageUnreadable" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Card.LocationHint" />
-                        </MultiBinding>
-                    </TextBox.Tag>
-                </TextBox>
+                <Grid Margin="0,0,0,7">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="1" Height="31" Padding="12,0" Click="PImageOpenHandle" Style="{DynamicResource Theme.Input.Pill}">
-                    <TextBlock VerticalAlignment="Center" FontSize="12" Text="{DynamicResource Card.Browse}" />
-                </Button>
-                <Button Grid.Column="2" Margin="7,0,0,0" Click="PImageRemoveHandle" Style="{DynamicResource Theme.Card.Handle}">
+                    <TextBox
+                        Margin="0,6,16,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource Theme.Muted}"
+                        Style="{DynamicResource Theme.Input.Bare}"
+                        Text="{Binding PImageLocation, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.Tag>
+                            <MultiBinding Converter="{StaticResource Theme.State.Show}">
+                                <Binding Path="PImageUnreadable" />
+                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                                <local:PLocalizationBinder PLocalizationBinderKey="Card.LocationHint" />
+                            </MultiBinding>
+                        </TextBox.Tag>
+                    </TextBox>
+
+                    <Button Grid.Column="1" Height="20" Padding="8,0" Click="PImageOpenHandle" Foreground="{DynamicResource Theme.Accent}" Style="{DynamicResource Theme.Input.Pill}">
+                        <TextBlock VerticalAlignment="Center" FontSize="11" Text="{DynamicResource Card.Browse}" />
+                    </Button>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="30,1,0,0" VerticalAlignment="Top" Orientation="Horizontal" Style="{DynamicResource Theme.Card.Control}">
+                <Button Click="PImageRemoveHandle" Style="{DynamicResource Theme.Card.Handle}">
                     <Path Width="9" Height="9" Data="M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
                 </Button>
-            </Grid>
-        </StackPanel>
+            </StackPanel>
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>
