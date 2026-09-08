@@ -5,6 +5,7 @@
     xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
     xmlns:local="clr-namespace:Llyn.UIShell"
     Title="{DynamicResource Terms.Product}"
+    Icon="pack://application:,,,/brand/icon.png"
     Width="1485"
     Height="1001"
     MinWidth="980"
@@ -40,16 +41,13 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid x:Name="PLogo" Width="34" Height="34" VerticalAlignment="Center" Background="Transparent" Cursor="Hand" MouseLeftButtonDown="PLogoHandle">
-                        <Border Background="{StaticResource Theme.Accent}" CornerRadius="10" />
-                        <Path
-                            Width="17"
-                            Height="17"
-                            Data="M 2,2 L 2,15 L 15,15 M 6,2 L 6,11 L 15,11"
-                            Stretch="Fill"
-                            Stroke="{StaticResource Theme.Ink}"
-                            StrokeEndLineCap="Round"
-                            StrokeLineJoin="Round"
-                            StrokeThickness="2.3" />
+                        <Image
+                            Width="30"
+                            Height="30"
+                            VerticalAlignment="Center"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/brand/icon.png"
+                            Stretch="Uniform" />
                         <Popup x:Name="PHeadquarter" Placement="Bottom" StaysOpen="False">
                             <Border Width="180" Margin="0,8,0,0" Padding="8" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
                                 <StackPanel>

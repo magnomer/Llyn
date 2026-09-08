@@ -699,7 +699,7 @@
     </Style>
 
     <Style x:Key="Theme.Volume.Slider" TargetType="Slider">
-        <Setter Property="Width" Value="92" />
+        <Setter Property="Width" Value="138" />
         <Setter Property="Height" Value="30" />
         <Setter Property="Padding" Value="8,0" />
         <Setter Property="Minimum" Value="0" />
@@ -760,7 +760,7 @@
         <Setter Property="Padding" Value="11,0,4,0" />
         <Setter Property="CornerRadius" Value="14" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentSoft}" />
         <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -927,10 +927,10 @@
     </Style>
 
     <Style x:Key="Theme.Language.Toggle" TargetType="ToggleButton">
-        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="Padding" Value="9,4" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentSoft}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
@@ -1483,7 +1483,7 @@
     </Style>
 
     <Style x:Key="Theme.Card.Pellet" TargetType="Border">
-        <Setter Property="Margin" Value="0,0,7,7" />
+        <Setter Property="Margin" Value="0,0,9,7" />
         <Setter Property="Padding" Value="10,5" />
         <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
         <Setter Property="CornerRadius" Value="13" />
@@ -1499,7 +1499,7 @@
     </Style>
 
     <Style x:Key="Theme.Card.Situation" TargetType="Border">
-        <Setter Property="Margin" Value="0,0,7,7" />
+        <Setter Property="Margin" Value="0,0,9,7" />
         <Setter Property="Padding" Value="10,4" />
         <Setter Property="Background" Value="{StaticResource Theme.SituationSoft}" />
         <Setter Property="BorderBrush" Value="{StaticResource Theme.SituationEdge}" />

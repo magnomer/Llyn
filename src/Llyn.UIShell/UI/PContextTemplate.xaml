@@ -7,7 +7,7 @@
     <local:PStateConverter x:Key="Theme.State.Show" />
 
     <DataTemplate x:Key="Theme.Context.Chip">
-        <Border Margin="0,0,12,7" Padding="10,4,5,4" Cursor="Arrow" Style="{DynamicResource Theme.Card.Situation}">
+        <Border Margin="0,0,9,7" Padding="10,4,5,4" Cursor="Arrow" Style="{DynamicResource Theme.Card.Situation}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Situation}">
                     <TextBlock.Text>
@@ -34,7 +34,7 @@
     <DataTemplate x:Key="Theme.Context.Entry">
         <TextBox
             MinWidth="128"
-            Margin="9,0,12,7"
+            Margin="9,0,9,7"
             Padding="0,5"
             VerticalContentAlignment="Center"
             FontSize="{DynamicResource Theme.Card.SituationSize}"

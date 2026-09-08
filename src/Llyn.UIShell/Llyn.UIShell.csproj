@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Llyn</AssemblyName>
     <RootNamespace>Llyn.UIShell</RootNamespace>
+    <ApplicationIcon>..\..\assets\brand\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
   <ItemGroup>
 
     <Resource Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Resource Include="..\..\assets\brand\icon.png" Link="brand\icon.png" />
   </ItemGroup>
 
   <ItemGroup>

@@ -24,7 +24,7 @@
     <DataTemplate x:Key="Theme.Label.Entry">
         <TextBox
             MinWidth="96"
-            Margin="0,0,7,7"
+            Margin="9,0,9,7"
             Padding="0,4"
             VerticalContentAlignment="Center"
             FontSize="12"
