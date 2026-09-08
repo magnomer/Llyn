@@ -32,3 +32,8 @@ It is registered under "Theme.Input.Field.Bare", which the "Theme.Input.Bare" st
 WPF insets an editable text host two pixels from the left even when the padding is zero.
 A reading view draws the same words with a TextBlock, which has no such inset.
 Pulling the host back by those two pixels lands the written word on the read word exactly.
+
+## `internal const string PFieldSurfaceName`
+
+The frame is named for the template's own triggers and for whatever must hang off it from outside.
+The Situation dropdown is placed against it, so the name is shared rather than written twice.

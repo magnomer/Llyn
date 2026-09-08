@@ -228,15 +228,16 @@ Reserving the strip in both modes makes a line wrap identically whether or not t
 A row inside the body reaching back out into that strip.
 The row's text keeps the body's width and its handles hang in the gutter beside it.
 
-## `<Style x:Key="Theme.Card.Situation" TargetType="ItemsControl">`
-
-Where each field sits under the one above it.
-The reading side collapses a field it has nothing for; the writing side keeps it, since a field is where writing begins.
-
 ## `<Style x:Key="Theme.Card.Pellet" TargetType="Border">`
 
-A translation and a tag as chips.
-A translation is tinted and a tag outlined, so two rows of chips are never read as one kind.
+A translation, a situation and a tag as chips.
+A translation is tinted blue, a situation tinted amber and a tag outlined.
+A row of chips is therefore never read as the wrong kind.
+
+## `<Style x:Key="Theme.Card.Situation" TargetType="Border">`
+
+A situation chip in its own amber, on the reading and the writing side alike.
+Amber is warm against the blue a translation takes and carries none of the meaning green or red would.
 
 ## `<Style x:Key="Theme.Input.Bare" TargetType="TextBox">`
 

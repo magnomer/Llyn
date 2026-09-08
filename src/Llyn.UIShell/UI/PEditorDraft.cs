@@ -129,6 +129,7 @@ public partial class PEditor
             card.PCardContextShow(draft.LCardDraftSituation);
             card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
             PLinkAttach(card);
+            PContextAttach(card);
             PEditorChangeAttach(card);
             card.PCardLabelShow(draft.LCardDraftTag);
             card.PCardImageShow(draft.LCardDraftImage);

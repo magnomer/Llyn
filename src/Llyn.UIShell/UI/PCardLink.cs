@@ -17,6 +17,8 @@ internal sealed partial class PCard
 
     internal Func<string, bool, bool>? PCardLinkDispatcher { get; set; }
 
+    internal Action<string>? PCardLinkNotice { get; set; }
+
     internal void PCardLinkShow(IReadOnlyList<LTranslationTarget> targets)
     {
         ArgumentNullException.ThrowIfNull(targets);
@@ -168,32 +170,32 @@ internal sealed partial class PCard
         }
 
         string written = _pCardLinkCaret.PLinkCaretText;
-        if (written.IndexOf(',', StringComparison.Ordinal) < 0)
+        if (written.IndexOf(',', StringComparison.Ordinal) >= 0)
         {
-            return;
-        }
-
-        _pCardLinkBusy = true;
-        string[] parts = written.Split(',');
-        List<string> unresolved = [];
-        for (int index = 0; index < parts.Length - 1; index++)
-        {
-            string part = parts[index].Trim();
-            if (part.Length == 0)
+            _pCardLinkBusy = true;
+            string[] parts = written.Split(',');
+            List<string> unresolved = [];
+            for (int index = 0; index < parts.Length - 1; index++)
             {
-                continue;
+                string part = parts[index].Trim();
+                if (part.Length == 0)
+                {
+                    continue;
+                }
+
+                if (PCardLinkDispatcher?.Invoke(part, false) != true)
+                {
+                    unresolved.Add(part);
+                }
             }
 
-            if (PCardLinkDispatcher?.Invoke(part, false) != true)
-            {
-                unresolved.Add(part);
-            }
+            unresolved.Add(parts[^1].TrimStart());
+            _pCardLinkCaret.PLinkCaretText = string.Join(", ", unresolved);
+            _pCardLinkBusy = false;
+            PCardLinkUpdate();
         }
 
-        unresolved.Add(parts[^1].TrimStart());
-        _pCardLinkCaret.PLinkCaretText = string.Join(", ", unresolved);
-        _pCardLinkBusy = false;
-        PCardLinkUpdate();
+        PCardLinkNotice?.Invoke(_pCardLinkCaret.PLinkCaretText);
     }
 
     private static string PCardHintRead()

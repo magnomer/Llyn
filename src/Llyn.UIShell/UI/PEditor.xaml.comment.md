@@ -54,6 +54,16 @@ The Translation dropdown is one popup for the whole editor rather than one per c
 Only one caret is typed into at a time, so only one list of candidates is ever open.
 It hangs off the caret it was opened from, which is why the markup names no placement target.
 
+### `PCandidate`
+
+The Situation dropdown hangs under the frame of the caret it was opened from, not under the caret itself.
+The frame is the edge a reader sees, and it is drawn outward of the caret it belongs to.
+Where it lands is settled in code rather than by an edge and two offsets, because the surface keeps a gutter for its shadow and that gutter must be taken back exactly.
+It is at least as wide as the frame and no wider than the translation dropdown, so a short caret still carries a readable list.
+Its rows, its corners and its shadow are cut down from the translation dropdown's, which is drawn against a field several times this one's size.
+A row carries the wording at the size the chip will carry it, so what is offered is read as what will be taken.
+It carries no line around it, because the shadow already says where it ends and a line as well made it a second card.
+
 ### `PMarkerLoad();`
 
 After the language is settled, because the presets on offer are that language's.

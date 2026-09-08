@@ -81,6 +81,13 @@
 
     <Style x:Key="Display.Card.Situation" TargetType="ItemsControl">
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.SituationMargin}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <DataTrigger Binding="{Binding LCardDraftSituation.Count}" Value="0">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -141,20 +148,17 @@
         </Style.Triggers>
     </Style>
 
-    <DataTemplate x:Key="Display.Card.SituationLine">
-        <TextBlock
-            Margin="{DynamicResource Theme.Card.SituationLineMargin}"
-            FontSize="{DynamicResource Theme.Card.SituationSize}"
-            FontStyle="Italic"
-            Foreground="{DynamicResource Theme.Muted}"
-            TextWrapping="Wrap">
-            <TextBlock.Text>
-                <MultiBinding Converter="{StaticResource Display.Card.State}">
-                    <Binding Path="LSituationDraftText" />
-                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+    <DataTemplate x:Key="Display.Card.SituationChip">
+        <Border Style="{DynamicResource Theme.Card.Situation}">
+            <TextBlock FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Situation}">
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource Display.Card.State}">
+                        <Binding Path="LSituationDraftText" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="Display.Card.ExampleLine">
@@ -198,7 +202,7 @@
 
     <DataTemplate x:Key="Display.Card.Body">
         <StackPanel>
-            <ItemsControl ItemTemplate="{StaticResource Display.Card.SituationLine}" ItemsSource="{Binding LCardDraftSituation}" Style="{StaticResource Display.Card.Situation}" />
+            <ItemsControl ItemTemplate="{StaticResource Display.Card.SituationChip}" ItemsSource="{Binding LCardDraftSituation}" Style="{StaticResource Display.Card.Situation}" />
             <ItemsControl
                 ItemTemplate="{StaticResource Display.Card.TranslationChip}"
                 ItemsSource="{Binding LCardDraftTranslation, Converter={StaticResource Display.Card.Translation}}"

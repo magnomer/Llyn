@@ -42,7 +42,9 @@ public partial class PEditor
             }
 
             int step = key == Key.Down ? 1 : count - 1;
-            int chosen = PProspectList.SelectedIndex < 0 ? 0 : PProspectList.SelectedIndex;
+            int chosen = PProspectList.SelectedIndex < 0
+                ? (key == Key.Down ? count - 1 : 0)
+                : PProspectList.SelectedIndex;
             PProspectList.SelectedIndex = (chosen + step) % count;
             PProspectList.ScrollIntoView(PProspectList.SelectedItem);
             return true;
@@ -105,6 +107,11 @@ public partial class PEditor
 
     private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found)
     {
+        PProspectShow(card, word, found, true);
+    }
+
+    private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)
+    {
         _pProspectItem.Clear();
         foreach (LEntry entry in found)
         {
@@ -120,7 +127,7 @@ public partial class PEditor
         _pProspectCard = card;
         PProspect.PlacementTarget = PLinkBoxFind(card) ?? (UIElement)PContents;
         PProspect.IsOpen = true;
-        PProspectList.SelectedIndex = 0;
+        PProspectList.SelectedIndex = chosen ? 0 : -1;
     }
 
     private void PProspectHide()

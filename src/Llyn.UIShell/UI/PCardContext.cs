@@ -8,91 +8,205 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard
 {
-    public ObservableCollection<PContext> PCardContext { get; }
+    private const string PCardContextHint = "Card.SituationHint";
+
+    private readonly PContextCaret _pCardContextCaret = new();
+    private bool _pCardContextBusy;
+
+    public ObservableCollection<object> PCardContext { get; } = [];
+
+    internal Action<string>? PCardContextNotice { get; set; }
+
+    internal string PCardContextText => _pCardContextCaret.PContextCaretText;
 
     internal void PCardContextShow(IReadOnlyList<LSituationDraft> drafts)
     {
-        foreach (PContext row in PCardContext)
-        {
-            row.PropertyChanged -= PCardContextChange;
-        }
-
         PCardContext.Clear();
         foreach (LSituationDraft draft in drafts)
         {
-            PCardContextAdd(new PContext(draft.LSituationDraftText, draft.LSituationDraftId));
+            PContext chip = new(draft.LSituationDraftText, draft.LSituationDraftId);
+            if (chip.PContextTextRead().LStateValueEmpty || PCardContextCheck(chip.PContextText))
+            {
+                continue;
+            }
+
+            PCardContext.Add(chip);
         }
 
-        if (PCardContext.Count == 0)
-        {
-            PCardContextAdd(new PContext());
-        }
-
+        _pCardContextCaret.PContextCaretText = string.Empty;
+        PCardContext.Add(_pCardContextCaret);
         PCardContextUpdate();
     }
 
     internal IReadOnlyList<LSituationDraft> PCardContextRead()
     {
         List<LSituationDraft> drafts = [];
-        foreach (PContext row in PCardContext)
+        foreach (object row in PCardContext)
         {
-            LStateValue text = row.PContextTextRead();
-            if (text.LStateValueEmpty)
+            if (row is PContext chip)
             {
+                drafts.Add(new LSituationDraft(chip.PContextTextRead(), chip.PContextId));
                 continue;
             }
 
-            drafts.Add(new LSituationDraft(text, row.PContextId));
+            string written = _pCardContextCaret.PContextCaretText.Trim();
+            if (written.Length != 0 && !PCardContextCheck(written))
+            {
+                drafts.Add(LSituationDraft.LSituationDraftCreate(written));
+            }
         }
 
         return drafts;
     }
 
-    internal void PCardContextInsert(PContext row)
+    internal void PCardContextRemove(PContext chip)
     {
-        int index = PCardContext.IndexOf(row);
-        PContext opened = new();
-        opened.PropertyChanged += PCardContextChange;
-        PCardContext.Insert(index < 0 ? PCardContext.Count : index + 1, opened);
+        PCardContext.Remove(chip);
         PCardContextUpdate();
     }
 
-    internal void PCardContextRemove(PContext row)
+    internal void PCardContextRemove(int step)
     {
-        if (PCardContext.Count <= 1)
+        int index = PCardContext.IndexOf(_pCardContextCaret);
+        int target = index + step;
+        if (index < 0 || target < 0 || target >= PCardContext.Count || PCardContext[target] is not PContext chip)
         {
-            row.PContextClear();
             return;
         }
 
-        row.PropertyChanged -= PCardContextChange;
-        PCardContext.Remove(row);
+        PCardContextRemove(chip);
+    }
+
+    internal bool PCardContextMove(int step)
+    {
+        int index = PCardContext.IndexOf(_pCardContextCaret);
+        int target = index + step;
+        if (index < 0 || target < 0 || target >= PCardContext.Count)
+        {
+            return false;
+        }
+
+        PCardContext.Move(index, target);
+        return true;
+    }
+
+    internal void PCardContextCommit()
+    {
+        PCardContextCommit(_pCardContextCaret.PContextCaretText);
+        PCardContextClear();
+    }
+
+    internal bool PCardContextCommit(string id, string title)
+    {
+        string written = (title ?? string.Empty).Trim();
+        if (written.Length == 0 || PCardContextMatch(id) || PCardContextCheck(written))
+        {
+            return false;
+        }
+
+        int index = PCardContext.IndexOf(_pCardContextCaret);
+        PCardContext.Insert(
+            index < 0 ? PCardContext.Count : index,
+            new PContext(LStateValue.LStateValueRead(written), id));
+        PCardContextUpdate();
+        return true;
+    }
+
+    internal void PCardContextClear()
+    {
+        _pCardContextBusy = true;
+        _pCardContextCaret.PContextCaretText = string.Empty;
+        _pCardContextBusy = false;
         PCardContextUpdate();
     }
 
-    internal void PCardContextUpdate()
+    internal bool PCardContextMatch(string id)
     {
-        bool numbered = PCardContext.Count > 1;
-        for (int index = 0; index < PCardContext.Count; index++)
+        if (string.IsNullOrEmpty(id))
         {
-            PCardContext[index].PContextOrderText = numbered
-                ? $"({index + 1})"
-                : string.Empty;
+            return false;
         }
+
+        foreach (object row in PCardContext)
+        {
+            if (row is PContext chip &&
+                string.Equals(chip.PContextId, id, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    private void PCardContextAdd(PContext row)
+    private void PCardContextStart()
     {
-        row.PropertyChanged += PCardContextChange;
-        PCardContext.Add(row);
+        _pCardContextCaret.PropertyChanged += PCardContextChange;
+        PCardContext.Add(_pCardContextCaret);
+        PCardContextUpdate();
     }
 
     private void PCardContextChange(object? sender, PropertyChangedEventArgs arguments)
     {
-        if (sender is PContext row &&
-            string.Equals(arguments.PropertyName, nameof(PContext.PContextText), StringComparison.Ordinal))
+        if (_pCardContextBusy ||
+            !string.Equals(arguments.PropertyName, nameof(PContextCaret.PContextCaretText), StringComparison.Ordinal))
         {
-            row.PContextIdentityApply();
+            return;
         }
+
+        string written = _pCardContextCaret.PContextCaretText;
+        if (written.IndexOf(',', StringComparison.Ordinal) >= 0)
+        {
+            _pCardContextBusy = true;
+            string[] parts = written.Split(',');
+            for (int index = 0; index < parts.Length - 1; index++)
+            {
+                PCardContextCommit(parts[index]);
+            }
+
+            _pCardContextCaret.PContextCaretText = parts[^1].TrimStart();
+            _pCardContextBusy = false;
+            PCardContextUpdate();
+        }
+
+        PCardContextNotice?.Invoke(_pCardContextCaret.PContextCaretText);
+    }
+
+    private void PCardContextCommit(string text)
+    {
+        string written = (text ?? string.Empty).Trim();
+        if (written.Length == 0 || PCardContextCheck(written))
+        {
+            return;
+        }
+
+        int index = PCardContext.IndexOf(_pCardContextCaret);
+        PCardContext.Insert(index < 0 ? PCardContext.Count : index, new PContext(written));
+    }
+
+    private bool PCardContextCheck(string text)
+    {
+        if (text.Length == 0)
+        {
+            return false;
+        }
+
+        foreach (object row in PCardContext)
+        {
+            if (row is PContext chip &&
+                string.Equals(chip.PContextText, text, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void PCardContextUpdate()
+    {
+        _pCardContextCaret.PContextCaretHint = PCardContext.Count > 1
+            ? string.Empty
+            : PLocalizationCatalog.PLocalizationCatalogCurrent[PCardContextHint];
     }
 }

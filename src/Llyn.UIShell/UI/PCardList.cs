@@ -32,6 +32,7 @@ public partial class PEditor
 
         card.PCardSentenceApply(_pEditorSentenceOrder);
         PLinkAttach(card);
+        PContextAttach(card);
         PEditorChangeAttach(card);
         return card;
     }

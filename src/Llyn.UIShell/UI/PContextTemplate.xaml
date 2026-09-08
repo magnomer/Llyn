@@ -6,79 +6,69 @@
 
     <local:PStateConverter x:Key="Theme.State.Show" />
 
-    <Style x:Key="Theme.Context.Control" TargetType="FrameworkElement">
-        <Setter Property="Opacity" Value="0" />
-        <Setter Property="IsHitTestVisible" Value="False" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
-                <Setter Property="Opacity" Value="1" />
-                <Setter Property="IsHitTestVisible" Value="True" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
-                <Setter Property="Opacity" Value="1" />
-                <Setter Property="IsHitTestVisible" Value="True" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="Theme.Context.Identity" TargetType="Border" BasedOn="{StaticResource Theme.Context.Control}">
-        <Setter Property="Margin" Value="0,0,4,0" />
-        <Setter Property="Padding" Value="8,2" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
-        <Setter Property="CornerRadius" Value="7" />
-        <Setter Property="IsHitTestVisible" Value="False" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PContextId}" Value="">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="Theme.Context.Order" TargetType="TextBlock">
-        <Setter Property="Margin" Value="-22,0,0,0" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="Foreground" Value="{DynamicResource Theme.Muted}" />
-        <Setter Property="IsHitTestVisible" Value="False" />
-    </Style>
-
-    <DataTemplate x:Key="Theme.Context.Row">
-        <Grid Style="{DynamicResource Theme.Card.Reach}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />
-            </Grid.ColumnDefinitions>
-
-            <Grid>
-                <TextBox Style="{DynamicResource Theme.Card.Setting}" Text="{Binding PContextText, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.Tag>
+    <DataTemplate x:Key="Theme.Context.Chip">
+        <Border Margin="0,0,12,7" Padding="10,4,5,4" Cursor="Arrow" Style="{DynamicResource Theme.Card.Situation}">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Situation}">
+                    <TextBlock.Text>
                         <MultiBinding Converter="{StaticResource Theme.State.Show}">
                             <Binding Path="PContextUnreadable" />
                             <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Card.SituationHint" />
+                            <Binding Path="PContextText" />
                         </MultiBinding>
-                    </TextBox.Tag>
-                </TextBox>
-                <Border Style="{StaticResource Theme.Context.Identity}">
-                    <TextBlock FontFamily="Consolas, Cascadia Mono, Courier New" FontSize="11" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PContextId}" />
-                </Border>
-                <TextBlock Style="{StaticResource Theme.Context.Order}" Text="{Binding PContextOrderText}" />
-            </Grid>
-
-            <StackPanel Grid.Column="1" Margin="8,3,0,0" VerticalAlignment="Top" Orientation="Horizontal">
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Context.Control}" />
-                </StackPanel.Style>
-                <Button Click="PContextAddHandle" Style="{DynamicResource Theme.Card.Handle}">
-                    <Path Width="9" Height="9" Data="M 4.5,0 L 4.5,9 M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
-                </Button>
-                <Button Margin="4,0,0,0" Click="PContextRemoveHandle" Style="{DynamicResource Theme.Card.Handle}">
-                    <Path Width="9" Height="9" Data="M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                    </TextBlock.Text>
+                </TextBlock>
+                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PContextChipHandle">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="Transparent">
+                                <Path Width="7" Height="7" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0,0 L 7,7 M 7,0 L 0,7" Stroke="{DynamicResource Theme.Situation}" StrokeEndLineCap="Round" StrokeThickness="1.4" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
             </StackPanel>
-        </Grid>
+        </Border>
     </DataTemplate>
+
+    <DataTemplate x:Key="Theme.Context.Entry">
+        <TextBox
+            MinWidth="128"
+            Margin="9,0,12,7"
+            Padding="0,5"
+            VerticalContentAlignment="Center"
+            FontSize="{DynamicResource Theme.Card.SituationSize}"
+            Foreground="{DynamicResource Theme.Ink}"
+            LostKeyboardFocus="PContextCloseHandle"
+            PreviewKeyDown="PContextCaretHandle"
+            Style="{DynamicResource Theme.Input.Bare}"
+            Tag="{Binding PContextCaretHint}"
+            Text="{Binding PContextCaretText, UpdateSourceTrigger=PropertyChanged}" />
+    </DataTemplate>
+
+    <local:PContextSelector
+        x:Key="Theme.Context.Item"
+        PContextSelectorChip="{StaticResource Theme.Context.Chip}"
+        PContextSelectorCaret="{StaticResource Theme.Context.Entry}" />
+
+    <Style x:Key="Theme.Context.Field" TargetType="ItemsControl">
+        <Setter Property="ItemTemplateSelector" Value="{StaticResource Theme.Context.Item}" />
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.SituationMargin}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ItemsControl">
+                    <Border Background="Transparent" Cursor="IBeam" MouseLeftButtonDown="PContextFocusHandle">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

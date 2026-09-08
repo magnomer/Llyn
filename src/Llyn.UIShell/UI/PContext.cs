@@ -1,19 +1,16 @@
 using System;
-using System.ComponentModel;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-internal sealed class PContext : INotifyPropertyChanged
+internal sealed class PContext
 {
-    private string _pContextId;
-    private string _pContextText;
-    private bool _pContextUnreadable;
-    private string _pContextOrderText;
+    private readonly string _pContextText;
+    private readonly bool _pContextUnreadable;
 
-    internal PContext()
-        : this(LStateValue.LStateValueUnspecified, string.Empty)
+    internal PContext(string text)
+        : this(LStateValue.LStateValueRead(text), LEngine.LEngineIdentityCreate())
     {
     }
 
@@ -21,99 +18,19 @@ internal sealed class PContext : INotifyPropertyChanged
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        _pContextId = id;
         _pContextText = text.LStateValueShow();
         _pContextUnreadable = text.LStateValueState == LState.LStateUnknown;
-        _pContextOrderText = string.Empty;
+        PContextId = id;
     }
 
-    public string PContextId
-    {
-        get => _pContextId;
-        private set
-        {
-            if (string.Equals(_pContextId, value, StringComparison.Ordinal))
-            {
-                return;
-            }
+    public string PContextId { get; }
 
-            _pContextId = value;
-            PContextRaise(nameof(PContextId));
-        }
-    }
+    public string PContextText => _pContextText;
 
-    public string PContextText
-    {
-        get => _pContextText;
-        set
-        {
-            if (string.Equals(_pContextText, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pContextText = value;
-            PContextUnreadable = false;
-            PContextRaise(nameof(PContextText));
-        }
-    }
-
-    public bool PContextUnreadable
-    {
-        get => _pContextUnreadable;
-        private set
-        {
-            if (_pContextUnreadable == value)
-            {
-                return;
-            }
-
-            _pContextUnreadable = value;
-            PContextRaise(nameof(PContextUnreadable));
-        }
-    }
-
-    public string PContextOrderText
-    {
-        get => _pContextOrderText;
-        set
-        {
-            if (string.Equals(_pContextOrderText, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pContextOrderText = value;
-            PContextRaise(nameof(PContextOrderText));
-        }
-    }
+    public bool PContextUnreadable => _pContextUnreadable;
 
     internal LStateValue PContextTextRead()
     {
         return LStateValue.LStateValueResolve(_pContextText, _pContextUnreadable);
-    }
-
-    internal void PContextIdentityApply()
-    {
-        if (_pContextId.Length != 0 || PContextTextRead().LStateValueEmpty)
-        {
-            return;
-        }
-
-        PContextId = LEngine.LEngineIdentityCreate();
-    }
-
-    internal void PContextClear()
-    {
-        PContextText = string.Empty;
-        PContextUnreadable = false;
-        PContextId = string.Empty;
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void PContextRaise(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

@@ -1,35 +1,39 @@
 # PContextTemplate.xaml
 
-## `Theme.Context.Row`
+## `Theme.Context.Field`
 
-The Situation row as the card shows it, built the way an Example row is.
-That is the wording field, with the id the row will be stored under at its right.
-It is also the number the row takes while the card carries more than one.
-It is also the Source button and the buttons that open and drop rows.
-The field's hint reads the unreadable mark when the row holds a wording it cannot read back.
-So an empty-looking field says which kind of empty it is.
+The Situation field: a wrapping run of boxed Situations with the open entry after them.
+The height is not fixed.
+The run wraps and the field grows with it.
+So a card that carries many Situations shows all of them instead of hiding them behind a scroll.
+A Situation is a chip on both sides of the card, so writing one looks like reading one.
 
-The Source list itself is the one the Example rows offer.
-This dictionary names those styles rather than declaring its own.
-So a Source written on either kind of row is on offer to both.
+The surface is the field, not the entry.
+A click on empty space inside it reaches the caret.
 
-## `Theme.Context.Identity`
+## `Theme.Context.Chip`
 
-The box the row's id stands in, hidden until the row has an id.
+One committed Situation: its wording and the button that closes it.
+The wording reads the unreadable mark when the store could not read it back.
+So a chip showing nothing else says which kind of empty it is.
+The chip carries its own cursor, so the field text cursor stops at its edge.
+A committed Situation is not text to edit, and its close button points at a click.
 
-## `Theme.Context.Order`
+## `Theme.Context.Entry`
 
-The number stands ahead of the field, in the label column's gutter.
-So a Situation field starts exactly where every other field on the card does.
-That holds whether or not the rows are numbered.
+The caret at the end of the run.
+It shares the ordinary input style, so its placeholder behaves as every other field's does.
+It carries no border of its own, because the field around it is the border.
+Its keys are read before the box reads them.
+The box would otherwise swallow the arrows for its own caret and the suggestion list would never see them.
+Its frame is drawn outward, so the entry is inset by that same amount.
+Its own room stands as tall as a chip stands, counting the line a chip is drawn with and the entry is not.
+Otherwise the run grew by that line the moment a first Situation was committed, and the whole card below stepped down with it.
+That way it opens where a chip opens and keeps a chip-wide gap after the run.
 
-## `Theme.Context.Citation`
+## `PContextTemplate.xaml.cs`
 
-What the Source button reads.
-It reads the cited Source's name.
-It reads the invitation to assign one when the row cites none.
-It reads the unreadable mark when the citation cannot be read back.
-
-## `Theme.Context.Notice`
-
-The line shown in the Source list while the workspace holds no Sources at all.
+The dictionary forwards its events to the editor that owns the cards.
+The Tag, Example, Image and Video dictionaries do the same.
+The templates are shared by both card kinds.
+So the handling belongs to the one editor above them rather than to a copy inside each.

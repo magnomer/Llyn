@@ -1,4 +1,4 @@
-# PLink.cs
+﻿# PLink.cs
 
 ## `public partial class PEditor`
 
@@ -14,6 +14,12 @@ A card holds ids and knows nothing about how a word becomes one.
 
 Gives a card the way back to the editor its typed words are resolved through.
 Every card the editor builds is attached, whether it was loaded or added by hand.
+
+## `internal void PLinkProspectShow(PCard card, string text)`
+
+Offers the Entries a half-typed translation matches, as it is typed.
+Nothing is selected in the dropdown while it merely stands open, so enter still resolves the typed word.
+The user reaches the list with the arrows, and only then does enter take a row.
 
 ## `internal void PLinkChipHandle(object sender, RoutedEventArgs e)`
 

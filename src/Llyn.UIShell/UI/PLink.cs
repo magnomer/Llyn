@@ -17,6 +17,30 @@ public partial class PEditor
     internal void PLinkAttach(PCard card)
     {
         card.PCardLinkDispatcher = (text, offered) => PLinkResolve(card, text, offered);
+        card.PCardLinkNotice = text => PLinkProspectShow(card, text);
+    }
+
+    private void PLinkProspectShow(PCard card, string text)
+    {
+        string word = (text ?? string.Empty).Trim();
+        if (word.Length == 0)
+        {
+            PProspectHide();
+            return;
+        }
+
+        IReadOnlyList<LEntry> found;
+        try
+        {
+            found = _lEngine.LEngineTranslationFind(word, PEditorEntryRead());
+        }
+        catch (Exception)
+        {
+            PProspectHide();
+            return;
+        }
+
+        PProspectShow(card, word, found, false);
     }
 
     internal void PLinkChipHandle(object sender, RoutedEventArgs e)
@@ -88,11 +112,12 @@ public partial class PEditor
 
     internal void PLinkCloseHandle(object sender, RoutedEventArgs e)
     {
-        if (PProspect.IsOpen ||
-            sender is not FrameworkElement { DataContext: PLinkCaret row })
+        if (sender is not FrameworkElement { DataContext: PLinkCaret row })
         {
             return;
         }
+
+        PProspectHide();
 
         PCard? card = PCardLinkFind(row);
         if (card is not null && PLinkResolve(card, row.PLinkCaretText, false))
@@ -200,6 +225,7 @@ public partial class PEditor
 
         if (single is not null)
         {
+            PProspectHide();
             return card.PCardLinkCommit(
                 single.LEntryId, single.LEntryHeadword, single.LEntryLanguage);
         }

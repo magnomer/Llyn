@@ -38,9 +38,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pCardExpression = string.Empty;
         PCardSentence = [];
         PCardSentenceAdd(new PSentence(catalog, particles, dependences));
-        PCardContext = [];
-        PCardContextAdd(new PContext());
-        PCardContextUpdate();
+        PCardContextStart();
         PCardLinkStart();
         PCardLabelStart();
         PCardImage = [];

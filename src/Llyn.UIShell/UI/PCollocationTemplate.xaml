@@ -70,7 +70,7 @@
                             </TextBox.Tag>
                         </TextBox>
 
-                        <ItemsControl ItemTemplate="{DynamicResource Theme.Context.Row}" ItemsSource="{Binding PCardContext}" Style="{DynamicResource Theme.Card.Situation}" />
+                        <ItemsControl ItemsSource="{Binding PCardContext}" Style="{DynamicResource Theme.Context.Field}" />
 
                         <ItemsControl ItemsSource="{Binding PCardLink}" Style="{DynamicResource Theme.Link.Field}" />
 

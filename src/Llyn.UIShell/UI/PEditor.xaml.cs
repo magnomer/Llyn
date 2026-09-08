@@ -25,6 +25,7 @@ public partial class PEditor : UserControl
         Resources.MergedDictionaries.Add(new PLabelTemplate(this));
         Resources.MergedDictionaries.Add(new PLinkTemplate(this));
         Resources.MergedDictionaries.Add(new PProspectTemplate(this));
+        Resources.MergedDictionaries.Add(new PCandidateTemplate(this));
         Resources.MergedDictionaries.Add(new PMeaningTemplate(this));
         Resources.MergedDictionaries.Add(new PCollocationTemplate(this));
         Resources.MergedDictionaries.Add(new PLanguageTemplate(this));
@@ -39,6 +40,8 @@ public partial class PEditor : UserControl
         PClipList.ItemsSource = _pClipItem;
         PLanguageList.ItemsSource = _pLanguageItem;
         PProspectList.ItemsSource = _pProspectItem;
+        PCandidateList.ItemsSource = _pCandidateItem;
+        PCandidate.CustomPopupPlacementCallback = PCandidatePlace;
         PCategoryList.ItemsSource = _pCategoryItem;
         PMarkerList.ItemsSource = _pMarkerChip;
         PHeadword.TextChanged += PHeadwordHandle;

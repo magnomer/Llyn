@@ -34,7 +34,10 @@ A stub half made is a draft nothing points at.
 The chip is named from the row that came back, not from an id the form guessed.
 A stub that cannot be started raises a notice rather than leaving the field looking unanswered.
 
-### `private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found)`
+### `private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)`
+
+A dropdown opened while the user types selects nothing, so enter still means what was typed.
+One opened because a committed word was ambiguous selects its first row, since the user must choose.
 
 The create row stands after the matches rather than among them.
 It carries the typed word untouched, because that word is what the tentative entry will be called.

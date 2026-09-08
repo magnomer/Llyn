@@ -19,6 +19,9 @@
     <SolidColorBrush x:Key="Theme.AccentPress" Color="{DynamicResource Theme.AccentPress.Color}" />
     <SolidColorBrush x:Key="Theme.AccentEdge" Color="{DynamicResource Theme.AccentEdge.Color}" />
     <SolidColorBrush x:Key="Theme.AccentSoft" Color="{DynamicResource Theme.AccentSoft.Color}" />
+    <SolidColorBrush x:Key="Theme.Situation" Color="{DynamicResource Theme.Situation.Color}" />
+    <SolidColorBrush x:Key="Theme.SituationSoft" Color="{DynamicResource Theme.SituationSoft.Color}" />
+    <SolidColorBrush x:Key="Theme.SituationEdge" Color="{DynamicResource Theme.SituationEdge.Color}" />
     <SolidColorBrush x:Key="Theme.Warning" Color="{DynamicResource Theme.Warning.Color}" />
     <SolidColorBrush x:Key="Theme.WarningSoft" Color="{DynamicResource Theme.WarningSoft.Color}" />
     <SolidColorBrush x:Key="Theme.WarningStrong" Color="{DynamicResource Theme.WarningStrong.Color}" />
@@ -1399,8 +1402,7 @@
     <FontFamily x:Key="Theme.Card.ExampleFamily">Georgia, Segoe UI</FontFamily>
 
     <Thickness x:Key="Theme.Card.ExpressionMargin">0,0,0,7</Thickness>
-    <Thickness x:Key="Theme.Card.SituationMargin">0,9,0,0</Thickness>
-    <Thickness x:Key="Theme.Card.SituationLineMargin">0,4,0,0</Thickness>
+    <Thickness x:Key="Theme.Card.SituationMargin">0,18,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ChipMargin">0,15,0,0</Thickness>
     <Thickness x:Key="Theme.Card.TagMargin">0,13,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ExampleMargin">3,16,0,0</Thickness>
@@ -1442,10 +1444,6 @@
 
     <Style x:Key="Theme.Card.Reach" TargetType="Grid">
         <Setter Property="Margin" Value="0,0,-76,0" />
-    </Style>
-
-    <Style x:Key="Theme.Card.Situation" TargetType="ItemsControl">
-        <Setter Property="Margin" Value="{StaticResource Theme.Card.SituationMargin}" />
     </Style>
 
     <Style x:Key="Theme.Card.Chips" TargetType="ItemsControl">
@@ -1500,6 +1498,15 @@
         <Setter Property="CornerRadius" Value="11" />
     </Style>
 
+    <Style x:Key="Theme.Card.Situation" TargetType="Border">
+        <Setter Property="Margin" Value="0,0,7,7" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Background" Value="{StaticResource Theme.SituationSoft}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.SituationEdge}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="11" />
+    </Style>
+
     <Style x:Key="Theme.Input.Bare" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="Padding" Value="0" />
@@ -1527,13 +1534,6 @@
     <Style x:Key="Theme.Card.Expression" TargetType="TextBox" BasedOn="{StaticResource Theme.Card.Meaning}">
         <Setter Property="Margin" Value="{StaticResource Theme.Card.ExpressionMargin}" />
         <Setter Property="FontWeight" Value="SemiBold" />
-    </Style>
-
-    <Style x:Key="Theme.Card.Setting" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
-        <Setter Property="Margin" Value="{StaticResource Theme.Card.SituationLineMargin}" />
-        <Setter Property="FontSize" Value="{StaticResource Theme.Card.SituationSize}" />
-        <Setter Property="FontStyle" Value="Italic" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
     </Style>
 
     <Style x:Key="Theme.Card.Instance" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">

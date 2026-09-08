@@ -26,6 +26,11 @@ Examples are drawn in the typography the language pack declares for them.
 Both modes read the same two keys, and each sets them on itself for the entry it shows.
 The fallback for a pack that declares none is written once, with the rest of a card's measurements.
 
+### `<DataTemplate x:Key="Display.Card.SituationChip">`
+
+A situation names where or when the entry is used, so it is a chip rather than a line of prose.
+It is the same chip the writing side is typed into, so the field does not change shape between modes.
+
 ### `<DataTemplate x:Key="Display.Card.TranslationChip">`
 
 A translation is a word in another language, so it is drawn as a chip and not as a line of prose.
