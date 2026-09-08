@@ -137,7 +137,7 @@
                         </TextBlock>
                     </ToggleButton>
 
-                    <StackPanel Orientation="Horizontal" Style="{StaticResource Theme.Sentence.Frame}">
+                    <StackPanel VerticalAlignment="Top" Orientation="Horizontal" Style="{StaticResource Theme.Sentence.Frame}">
                         <TextBlock x:Name="PSentenceLead" Style="{DynamicResource Theme.Card.Frame}" Text="(+" />
                         <Grid>
                             <Grid.ColumnDefinitions>

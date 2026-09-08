@@ -44,6 +44,9 @@ The frame is written where it is read: `(+marker role)` in front of the sentence
 Fields of its own, sitting above or beside the line, would say the frame is a property of the row.
 It is not; it is the opening of the sentence, and the reading view has always drawn it as one.
 
+The frame stands at the top of the row rather than filling it.
+A row is as tall as the sentence it carries, and a field filling it would be framed far below the line it opens.
+
 A row carrying no frame shows none, so its sentence begins where the reading view begins it.
 The card offers one instead, from the strip kept clear beside the row.
 

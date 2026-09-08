@@ -272,8 +272,8 @@ It is not hit tested, because it is punctuation and not a place to write.
 ## `<Style x:Key="Theme.Card.Frame" TargetType="TextBlock">`
 
 The parentheses a frame is written inside, set bold in the interface face and the accent colour.
-The room kept after it clears the ring a written field is framed by, which is drawn outside the text it holds.
-The ring is left the room it asks for rather than being closed onto the line, because a field's own room is what moves its text.
+No room is kept for the ring a written field is framed by, because the reading view keeps none either.
+A frame the writing view widened would set the sentence further along than the card reads it.
 The example keeps the reading face and its own weight, so the frame is never read as part of the sentence.
 The invisible copies behind the written fields carry the same weight, or a bold field would outgrow the room measured for it.
 
@@ -281,5 +281,5 @@ The invisible copies behind the written fields carry the same weight, or a bold 
 
 The frame fields of an Example: typed into like text, offering what the language has saved, and framed only under the pointer.
 The frame is drawn outward, so a field being pointed at or written in never moves the sentence beside it.
-Its frame is measured by "PFieldConverter", the same measure a written text field is framed by.
-A marker and the sentence beside it are therefore framed at one height though they are written at different faces.
+The frame is closed onto the text it rings, clearing it by a hairline and no more.
+A marker and a role are parted by one space, so a frame drawn outward crosses the word beside it.

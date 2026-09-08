@@ -1600,8 +1600,6 @@
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
-    <local:PFieldConverter x:Key="Theme.Field.Inset" />
-
     <Style x:Key="Theme.Choice.Bare" TargetType="ComboBox">
         <Setter Property="IsEditable" Value="True" />
         <Setter Property="IsTextSearchEnabled" Value="False" />
@@ -1622,19 +1620,12 @@
                     <Grid x:Name="PChoiceField">
                         <Border
                             x:Name="PChoiceRing"
+                            Margin="-1"
                             Background="Transparent"
                             BorderBrush="Transparent"
                             BorderThickness="1"
-                            CornerRadius="7"
-                            IsHitTestVisible="False">
-                            <Border.Margin>
-                                <MultiBinding Converter="{StaticResource Theme.Field.Inset}">
-                                    <Binding Path="FontFamily" RelativeSource="{RelativeSource TemplatedParent}" />
-                                    <Binding Path="FontSize" RelativeSource="{RelativeSource TemplatedParent}" />
-                                    <Binding Path="Padding" RelativeSource="{RelativeSource TemplatedParent}" />
-                                </MultiBinding>
-                            </Border.Margin>
-                        </Border>
+                            CornerRadius="5"
+                            IsHitTestVisible="False" />
                         <TextBlock
                             x:Name="PChoiceHint"
                             Padding="4,0,0,0"
