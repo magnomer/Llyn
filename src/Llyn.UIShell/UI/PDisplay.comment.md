@@ -14,7 +14,11 @@ A field the card left empty collapses rather than leaving a blank line.
 What other entries point at this one.
 A card lists its own links, so the entry it points at would otherwise say nothing about them.
 Each row opens the entry that carries it, because that is where such a link is edited.
-A muted line stands in when nothing translates the entry.
+The heading says "Links here": it names the direction without claiming that the whole source entry is a translation.
+Each source is a standalone link card rather than a choice row nested inside a form card.
+An arrow establishes direction, the source headword leads, and the referring Meaning or Collocation is a compact badge.
+The side's title and source language remain secondary context.
+When no entry links here, the whole section collapses; an empty relationship does not occupy the page.
 
 ## `<ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" ...>`
 

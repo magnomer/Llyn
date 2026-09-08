@@ -39,8 +39,8 @@
         </Style>
     </UserControl.Resources>
 
-    <Border Padding="18,14" Style="{StaticResource Theme.Input.Card}">
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+    <Border Padding="18,14" Style="{StaticResource Theme.Panel.Surface}">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Disabled">
             <StackPanel>
                 <TextBlock Style="{StaticResource Articulation.Heading}" Text="{DynamicResource Articulation.Vowel}" />
                 <Grid x:Name="PVowel" HorizontalAlignment="Left" />

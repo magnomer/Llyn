@@ -61,6 +61,10 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Theme.Scroll.Gutter" TargetType="ScrollViewer">
+        <Setter Property="Template" Value="{DynamicResource Theme.Scroll.Gutter.Template}" />
+    </Style>
+
     <Style x:Key="Theme.Caption.Button" TargetType="Button">
         <Setter Property="Width" Value="44" />
         <Setter Property="Height" Value="40" />
@@ -446,45 +450,6 @@
                 <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
             </Trigger>
         </Style.Triggers>
-    </Style>
-
-    <Style x:Key="Theme.Popup.RowAction" TargetType="Button">
-
-        <Style.Resources>
-            <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
-            </Style>
-        </Style.Resources>
-        <Setter Property="Height" Value="26" />
-        <Setter Property="Padding" Value="9,0" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border x:Name="PSurface" Background="{TemplateBinding Background}" CornerRadius="7">
-                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="PSurface" Property="Background" Value="Transparent" />
-                            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                            <Setter Property="Cursor" Value="Arrow" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
     </Style>
 
     <Style x:Key="Theme.Popup.RowChoice" TargetType="Button">
@@ -1015,6 +980,29 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Favorite.Mark" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="PSurface" Background="Transparent">
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="Theme.Input.Label" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
@@ -1081,116 +1069,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="Theme.Input.Choice" TargetType="ComboBox">
-        <Setter Property="IsEditable" Value="True" />
-        <Setter Property="IsTextSearchEnabled" Value="False" />
-        <Setter Property="StaysOpenOnEdit" Value="True" />
-        <Setter Property="MinHeight" Value="40" />
-        <Setter Property="Padding" Value="12,7" />
-        <Setter Property="FontSize" Value="13" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="ItemContainerStyle" Value="{StaticResource Theme.Choice.Item}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ComboBox">
-                    <Grid>
-                        <Border
-                            x:Name="PChoiceField"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="7">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox
-                                    x:Name="PART_EditableTextBox"
-                                    Margin="{TemplateBinding Padding}"
-                                    VerticalContentAlignment="Center"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    CaretBrush="{StaticResource Theme.Ink}"
-                                    FontSize="{TemplateBinding FontSize}"
-                                    Foreground="{TemplateBinding Foreground}" />
-                                <TextBlock
-                                    x:Name="PChoiceHint"
-                                    Margin="{TemplateBinding Padding}"
-                                    Padding="2,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="{TemplateBinding FontSize}"
-                                    Foreground="{StaticResource Theme.Muted}"
-                                    IsHitTestVisible="False"
-                                    Opacity="0.56"
-                                    Text="{TemplateBinding Tag}"
-                                    TextTrimming="CharacterEllipsis"
-                                    Visibility="Collapsed" />
-                                <ToggleButton
-                                    x:Name="PChoiceSwitch"
-                                    Grid.Column="1"
-                                    Width="24"
-                                    Background="Transparent"
-                                    ClickMode="Press"
-                                    Focusable="False"
-                                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
-                                    <ToggleButton.Template>
-                                        <ControlTemplate TargetType="ToggleButton">
-                                            <Border Background="Transparent">
-                                                <Path
-                                                    Width="9"
-                                                    Height="5"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Data="M 0,0 L 4.5,5 L 9,0"
-                                                    Stroke="{StaticResource Theme.Muted}"
-                                                    StrokeEndLineCap="Round"
-                                                    StrokeThickness="1.5" />
-                                            </Border>
-                                        </ControlTemplate>
-                                    </ToggleButton.Template>
-                                </ToggleButton>
-                            </Grid>
-                        </Border>
-                        <Popup
-                            x:Name="PART_Popup"
-                            MinWidth="{Binding ActualWidth, ElementName=PChoiceField}"
-                            AllowsTransparency="True"
-                            IsOpen="{TemplateBinding IsDropDownOpen}"
-                            Placement="Bottom"
-                            PlacementTarget="{Binding ElementName=PChoiceField}"
-                            PopupAnimation="Fade">
-                            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                                <ScrollViewer MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
-                                    <ItemsPresenter />
-                                </ScrollViewer>
-                            </Border>
-                        </Popup>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="Text" Value="">
-                            <Setter TargetName="PChoiceHint" Property="Visibility" Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="HasItems" Value="False">
-                            <Setter TargetName="PChoiceSwitch" Property="Visibility" Value="Collapsed" />
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="PChoiceField" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PChoiceHint" Property="Opacity" Value="0.36" />
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PChoiceField" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="Theme.Input.Card" TargetType="Border">
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
@@ -1199,22 +1077,47 @@
         <Setter Property="CornerRadius" Value="12" />
     </Style>
 
-    <Style x:Key="Theme.Command.Group" TargetType="Border">
+    <Style x:Key="Theme.Panel.Surface" TargetType="Border">
+        <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+    <Style x:Key="Theme.Panel.SeamRow" TargetType="Rectangle">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Fill" Value="{StaticResource Theme.Line}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
+    <Style x:Key="Theme.Panel.SeamColumn" TargetType="local:PSeam">
+        <Setter Property="Width" Value="12" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Panel.ZIndex" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:PSeam">
+                    <Grid Background="Transparent">
+                        <Rectangle Width="1" HorizontalAlignment="Center" Fill="{StaticResource Theme.Line}" SnapsToDevicePixels="True" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Command.Group" TargetType="Border">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="11" />
         <Setter Property="Padding" Value="3" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect BlurRadius="9" Direction="270" Opacity="0.035" ShadowDepth="1" />
-            </Setter.Value>
-        </Setter>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="BorderBrush" Value="{StaticResource Theme.DisabledLine}" />
+                <Setter Property="Opacity" Value="0.55" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -1473,7 +1376,46 @@
         <Setter Property="Margin" Value="0,0,12,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="14" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PCardPositionActive}" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Input.Bare" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+        <Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Bare}" />
+    </Style>
+
+    <Style x:Key="Theme.Card.Ordinal" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+        <Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Plain}" />
+        <Setter Property="Padding" Value="2,0,0,0" />
+        <Setter Property="MaxLength" Value="3" />
+        <Setter Property="AcceptsReturn" Value="False" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="CaretBrush" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PCardPositionActive}" Value="True">
+                <Setter Property="IsReadOnly" Value="False" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Card.Body" TargetType="Grid">
@@ -1560,17 +1502,6 @@
         <Setter Property="BorderBrush" Value="{StaticResource Theme.SituationEdge}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="11" />
-    </Style>
-
-    <Style x:Key="Theme.Input.Bare" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">
-        <Setter Property="MinHeight" Value="0" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="AcceptsReturn" Value="True" />
-        <Setter Property="VerticalContentAlignment" Value="Top" />
-        <Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Bare}" />
     </Style>
 
     <Style x:Key="Theme.Card.Title" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
@@ -1740,13 +1671,13 @@
         <Setter Property="Height" Value="46" />
         <Setter Property="Padding" Value="5,0,8,0" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="13" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="{StaticResource Theme.LineStrong}" />
+                <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                 <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
@@ -1805,6 +1736,30 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
+    <Thickness x:Key="Theme.Catalog.HeaderMargin">-28,0,22,18</Thickness>
+
+    <Style x:Key="Theme.Catalog.Frame" TargetType="Grid">
+        <Setter Property="Margin" Value="-28,14,16,0" />
+    </Style>
+
+    <Style x:Key="Theme.Catalog.Middle" TargetType="Grid" BasedOn="{StaticResource Theme.Catalog.Frame}">
+        <Setter Property="Margin" Value="-10,14,16,0" />
+    </Style>
+
+    <Style x:Key="Theme.Catalog.Scroll" TargetType="ScrollViewer">
+        <Style.Resources>
+            <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
+                <Setter Property="Width" Value="6" />
+                <Setter Property="MinWidth" Value="6" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Template" Value="{DynamicResource Theme.ScrollBar.Catalog.Template}" />
+            </Style>
+        </Style.Resources>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="Template" Value="{DynamicResource Theme.Scroll.Catalog.Template}" />
+    </Style>
+
     <Style x:Key="Theme.Catalog.Row" TargetType="Button">
         <Setter Property="Margin" Value="0,0,0,3" />
         <Setter Property="Padding" Value="12,9" />
@@ -1824,12 +1779,25 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="11">
-                        <ContentPresenter
-                            Margin="{TemplateBinding Padding}"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="Center" />
+                        <Grid>
+                            <Border
+                                x:Name="PCatalogRail"
+                                Width="3"
+                                Margin="0,7"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource Theme.Accent}"
+                                CornerRadius="2"
+                                Visibility="Collapsed" />
+                            <ContentPresenter
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="Center" />
+                        </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="Tag" Value="Chosen">
+                            <Setter TargetName="PCatalogRail" Property="Visibility" Value="Visible" />
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
                         </Trigger>

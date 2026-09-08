@@ -1,8 +1,15 @@
-﻿# PCorpus.xaml
+# PCorpus.xaml
+
+## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
+
+The seams that part the example catalog from the example it opens.
+The row seam runs under the ordering bar and the command row, bled past the panel margin so it meets the navigation's own edge.
+The column seam sits in the middle of the gutter and reaches the foot of the window.
+Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
 
 ## `<Border x:Name="PRank" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The ordering button and the search field are one bordered control over the catalog column.
+The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the repertoire panel arranges it.
 The catalog column is wider than the entry panels take, because it holds sentences rather than headwords.
 
@@ -65,3 +72,9 @@ A user correcting a sentence must see how far the correction reaches without lea
 Deletes the shown Example.
 It stands with discard and save because it acts on the record rather than on the browsing beside it.
 It is disabled while the editor stands on an Example nothing has stored yet.
+
+## Catalog spacing
+
+The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
+Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.

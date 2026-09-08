@@ -349,7 +349,7 @@ public sealed partial class LEngine
             }
 
             LEntryDraft origin = string.IsNullOrWhiteSpace(draft.LDraftEntry)
-                ? LEngineDraftBlank
+                ? LEngineDraftBlank with { LEntryDraftLanguage = draft.LDraftContent.LEntryDraftLanguage }
                 : LEngineEntryLoad(draft.LDraftEntry) ?? LEngineDraftBlank;
 
             return !LEngineDraftMatch(origin, draft.LDraftContent);

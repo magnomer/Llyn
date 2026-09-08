@@ -12,10 +12,11 @@
     "Membership", "Morphology", "Navigation", "Notation", "Note", "Observer", "Occurrence", "Order", "Owner", "Panel",
     "Phonology", "Playback", "Probe", "Pronunciation", "Prospect", "Query", "Quotation", "Rank", "Recall", "Receiver",
     "Recording", "Reference", "Refusal", "Relation", "Repertoire", "Representation", "Revision", "Right", "Roof", "Roster",
-    "Scenario", "Schema", "Screen", "Seeker", "Sentence", "Sequence", "Series", "Settings", "Shelf", "Situation",
-    "Source", "Speaker", "Specimen", "Speech", "Stack", "State", "Subject", "Surface", "Survey", "Syllable",
-    "Synonym", "Tag", "Target", "Taxonomy", "Theme", "Tier", "Title", "Tombstone", "Transcriber", "Transcript",
-    "Translation", "Trove", "Usage", "Video", "Vignette", "Violation", "Volume", "Vowel", "Window", "Workspace"
+    "Scenario", "Schema", "Screen", "Seam", "Seeker", "Sentence", "Sequence", "Series", "Settings", "Shelf",
+    "Situation", "Slate", "Source", "Speaker", "Specimen", "Speech", "Stack", "State", "Subject", "Surface",
+    "Survey", "Syllable", "Synonym", "Tag", "Target", "Taxonomy", "Theme", "Tier", "Title", "Tombstone",
+    "Transcriber", "Transcript", "Translation", "Trove", "Usage", "Video", "Vignette", "Violation", "Volume", "Vowel",
+    "Window", "Workspace"
   ],
   "verbs": [
     "Accept", "Add", "Adjust", "Append", "Apply", "Attach", "Build", "Cancel", "Change", "Check",

@@ -1,4 +1,4 @@
-# PCardLabel.cs
+﻿# PCardLabel.cs
 
 ## `internal sealed partial class PCard`
 
@@ -40,10 +40,25 @@ Steps the entry one place along the field, past the Tag on that side.
 A Tag is passed over as a single character would be.
 Reports whether there was anywhere left to go.
 
+## `internal Action<string>? PCardLabelNotice { get; set; }`
+
+What the card says when the entry's text changes.
+The card does not know what listens, so the dropdown of stored tags can be wired above it.
+
 ## `internal void PCardLabelCommit()`
 
 Closes what is standing in the entry into a Tag and clears the entry.
 That is what leaving the field or pressing enter means.
+
+## `internal void PCardLabelCommit(string text)`
+
+Closes one given word into a Tag before the entry.
+That is what a comma in the text, and a row taken from the dropdown, both reach for.
+
+## `internal void PCardLabelClear()`
+
+Empties the entry without announcing it as typing.
+Otherwise clearing after a commit would reopen the dropdown on the text just filed.
 
 ## Inline notes
 
@@ -57,6 +72,8 @@ That is what makes the field reactive as it is typed into.
 
 The guard around the rewrite is there because the rewrite sets the property being answered.
 Without it the handler would answer itself.
+
+The notice is sent after the commas are settled, so what is announced is what the entry now holds.
 
 ### `private void PCardLabelUpdate()`
 

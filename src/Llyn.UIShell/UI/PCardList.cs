@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -33,6 +37,7 @@ public partial class PEditor
         card.PCardSentenceApply(_pEditorSentenceOrder);
         PLinkAttach(card);
         PContextAttach(card);
+        PLabelAttach(card);
         PEditorChangeAttach(card);
         return card;
     }
@@ -54,6 +59,98 @@ public partial class PEditor
         list.Remove(card);
         PEditorChangeSave();
         PCardOrderApply(list);
+    }
+
+    internal void PCardPositionHandle(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount < 2 || sender is not FrameworkElement { DataContext: PCard card } badge)
+        {
+            return;
+        }
+
+        ObservableCollection<PCard>? list = PCardListFind(card);
+
+        if (list is null || list.Count <= 1)
+        {
+            return;
+        }
+
+        e.Handled = true;
+        card.PCardPositionActive = true;
+
+        badge.Dispatcher.BeginInvoke(
+            DispatcherPriority.Input,
+            () =>
+            {
+                if (PEditorCaretFind(badge) is not TextBox box || box.DataContext != card)
+                {
+                    return;
+                }
+
+                box.Focus();
+                box.SelectAll();
+            });
+    }
+
+    internal void PCardPositionAccept(object sender, KeyEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PCard card })
+        {
+            return;
+        }
+
+        if (e.Key is Key.Enter)
+        {
+            e.Handled = true;
+            PCardPositionApply(card);
+            return;
+        }
+
+        if (e.Key is Key.Escape)
+        {
+            e.Handled = true;
+            card.PCardPositionHide();
+        }
+    }
+
+    internal void PCardPositionCommit(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: PCard card } && card.PCardPositionActive)
+        {
+            PCardPositionApply(card);
+        }
+    }
+
+    private void PCardPositionApply(PCard card)
+    {
+        string written = card.PCardPositionText;
+        card.PCardPositionHide();
+
+        ObservableCollection<PCard>? list = PCardListFind(card);
+
+        if (list is null || list.Count <= 1)
+        {
+            return;
+        }
+
+        int current = list.IndexOf(card);
+
+        if (current < 0 ||
+            !int.TryParse(written, NumberStyles.Integer, CultureInfo.InvariantCulture, out int wanted))
+        {
+            return;
+        }
+
+        int target = wanted < 1 ? 0 : wanted > list.Count ? list.Count - 1 : wanted - 1;
+
+        if (target == current)
+        {
+            return;
+        }
+
+        PEditorChangeSave();
+        list.Move(current, target);
+        PCardOrderApply(list, current, target);
     }
 
     private void PCardOrderApply(ObservableCollection<PCard> list, int from, int target)

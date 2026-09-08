@@ -33,3 +33,8 @@ An outlined pill of muted text read as one more tag chip beside the tags above i
 Phosphor image.svg and video-camera.svg, tinted through an opacity mask (see PPlayback).
 The tooltip carries the label the icon drops.
 The negative margin cancels the gutter column, so the cluster centres on the whole card body.
+
+### `<Border Style="{DynamicResource Theme.Card.Position}" MouseLeftButtonDown="PCardPositionHandle">`
+
+The badge is a field rather than a label, so the number a card carries can be written over.
+Reordering by number reaches a place a drag has to scroll to.

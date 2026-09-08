@@ -9,7 +9,63 @@
     "family": "PMingLiU, Microsoft JhengHei",
     "size": 16
   },
-  "note": "Language selector pack for Cantonese. Pronunciation and audio sources are listed separately and can be added without changing the application.",
-  "pronunciation": [],
-  "audio": []
+  "note": "Language pack for Cantonese. Every URL and extraction rule is data — edit here, no recompile. The 'pronunciation' and 'audio' lists are independent and each is shown in the order written here. Cantonese transcriptions are read as IPA, not as Jyutping, so the sources listed are the ones that publish IPA. Every source is read from an ordinary article page rather than a machine API, because the article hosts impose no request ceiling while the REST endpoints reject bursts with 429, which the reader would report as an unreachable source.",
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "note": "The Chinese pronunciation table of an entry carries one row per variety. Only the Cantonese row links its IPA key to the Cantonese phonology article, so that link anchors the reader to the right row and keeps Mandarin, Hakka and Min readings out. The span strategy is required because the transcription nests tone-note spans inside the IPA span, which a flat pattern would truncate. An entry with no Cantonese section carries no anchor, so the attempt simply yields nothing.",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.m.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "title=\"w:Cantonese phonology\"[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">"
+        }
+      ]
+    },
+    {
+      "name": "Chinese Wiktionary",
+      "note": "The Chinese Wiktionary prints the same transcription behind a Chinese anchor, where the key of the Cantonese row links to the 粵語音系 article and the label reads 幫助. Its coverage of colloquial Cantonese headwords is thinner than the English one, so it stands second.",
+      "attempts": [
+        {
+          "urls": [
+            "https://zh.wiktionary.org/wiki/{word}",
+            "https://zh.m.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "title=\"w:粵語音系\"[^>]*>幫助</a>\\)</sup></small>：<span class=\"IPA\">"
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Wiktionary",
+      "note": "Wiktionary embeds Commons recordings as protocol-relative addresses, so 'prefix' supplies the scheme. Only the transcoded mp3 rendition is taken, because the original is WAV or Opus. The first attempt takes a Lingua Libre LL-Q9186_%28yue%29- filename and the second a Zh-yue- one, and both prefixes mark the recording as Cantonese rather than Mandarin.",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.m.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q9186_%28yue%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.m.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Zh-yue-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ]
 }

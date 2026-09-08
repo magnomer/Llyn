@@ -12,9 +12,7 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding PShelfItemChosen}" Value="True">
                     <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                    <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                    <Setter Property="BorderThickness" Value="3,0,0,0" />
-                    <Setter Property="Padding" Value="9,9,12,9" />
+                    <Setter Property="Tag" Value="Chosen" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -69,11 +67,14 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <local:PSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
         <Border
             x:Name="PGrade"
             Grid.Row="0"
             Grid.Column="0"
-            Margin="0,0,20,18"
+            Margin="{StaticResource Theme.Catalog.HeaderMargin}"
             Style="{StaticResource Theme.Search.Bar}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -86,7 +87,7 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Grade.Title}">
-                    <Canvas Width="16" Height="13">
+                    <Canvas Width="16" Height="14">
                         <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                         <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                         <Rectangle Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
@@ -168,9 +169,9 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="PShelf" Margin="0,0,4,0">
+        <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PShelf">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Click="PShelfHandle" Style="{StaticResource Theme.Shelf.Row}">
@@ -201,10 +202,10 @@
                 Text="{DynamicResource Source.Empty}" />
         </Grid>
 
-        <Border Grid.Row="1" Grid.Column="1" ClipToBounds="True" Style="{StaticResource Theme.Input.Card}">
+        <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>
                 <Grid x:Name="PColophon">
-                    <ScrollViewer Padding="24,22,24,20" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Padding="24,22,0,20" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="PColophonBody" Visibility="Collapsed">
                             <TextBlock Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.TitleField}" />
                             <TextBlock x:Name="PColophonTitle" Margin="0,5,0,0" FontSize="20" TextWrapping="Wrap" />
@@ -275,7 +276,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <ScrollViewer Padding="24,22,24,10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Padding="24,22,0,10" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.TitleField}" />
                             <Grid Margin="0,7,0,0">

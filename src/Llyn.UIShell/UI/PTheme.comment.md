@@ -9,19 +9,19 @@ The two control templates are registered by PIndicator.
 WPF requires a PART_Track name.
 That name must stay out of the audited XAML naming surface.
 
+## `<Style x:Key="Theme.Scroll.Gutter" TargetType="ScrollViewer">`
+
+Every scrolling page of the app reserves the lane its rail needs.
+The lane is there before the page is long enough to scroll.
+A page therefore never reflows when its content grows past one screen.
+The rail lands beside the page instead of over it.
+Dropdowns and popups keep the plain scroll viewer, where a held lane would only look empty.
+PIndicator registers the template.
+
 ## `<Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Template}" />`
 
 The TextBox content host must be named "PART_ContentHost" (a WPF template contract).
 That name is authored in code (PField) so it stays out of the audited XAML surface.
-
-## `<Style x:Key="Theme.Input.Choice" TargetType="ComboBox">`
-
-A field typed into that also offers what has been saved before it.
-It reads as a plain field, because a value nothing ships is written far more often than it is picked.
-The arrow is hidden while nothing has been saved, so an empty list never offers an empty menu.
-Text search is off and the drop stays open while typing, so the list never overwrites what is being written.
-WPF requires the editing box to be named "PART_EditableTextBox" and the drop "PART_Popup".
-Both are template contracts and are held out of the audited XAML naming surface.
 
 ## `<Style x:Key="Theme.Choice.Row" TargetType="Button">`
 
@@ -67,17 +67,6 @@ It carries no border and no fill of its own.
 A row can offer more than one action, so every action is its own button.
 The row itself takes no click.
 Transcriber and downloader rows are the same row.
-
-## `<Style x:Key="Theme.Popup.RowAction" TargetType="Button">`
-
-The action that takes a row's offer.
-One of these sits on every row, so it is quiet until it is pointed at.
-It is text alone, tinted only on hover.
-
-## `<Style.Resources>`
-
-The app-wide implicit TextBlock style outranks the button's inherited Foreground.
-So the label is bound back to the button and follows its enabled and hover states.
 
 ## `<Style x:Key="Theme.Popup.IconAction" TargetType="Button">`
 
@@ -184,11 +173,37 @@ The editor's language pill, drawn as the reading view's pill is drawn.
 It stays a toggle, because a language is chosen here and only reported there.
 The border is transparent until pointed at or opened, which is the only hint of the menu it holds.
 
+## `<Style x:Key="Theme.Favorite.Mark" TargetType="ToggleButton">`
+
+The star carries the mark alone, with no surface or border behind it.
+A framed button would read as a control among the headword's own text.
+Hover and press dim it instead, so the button still answers the pointer.
+
+## `<Style x:Key="Theme.Panel.Surface" TargetType="Border">`
+
+The region a panel gives a whole screen of its own, drawn on nothing.
+It carries no outline, because a region is not an object and an outline at one pixel could not say that it was.
+The outline it once carried was the only thing marking the region, which is why the region read as unfinished.
+What separates one region from the next is a seam, not a box drawn round each of them.
+
+## `<Style x:Key="Theme.Panel.SeamRow" TargetType="Rectangle">`
+
+The hairline laid across a panel where its controls end and its contents begin.
+It is drawn at the foot of the row it belongs to and bled past the panel's own margin, so it runs the width of the window.
+A seam marks a division between two regions, never an enclosure around one.
+
+## `<Style x:Key="Theme.Panel.SeamColumn" TargetType="Rectangle">`
+
+The hairline laid down the gutter between two columns of a panel.
+It is set against the leading edge of the right column and pulled back into the middle of the gutter.
+It is bled past the panel's foot so it reaches the bottom of the window, as the row seam reaches both sides.
+
 ## `<Style x:Key="Theme.Command.Group" TargetType="Border">`
 
 The tray a panel's commands sit in, and the same tray the input header's pair sits in.
-One surface holds them, so a row of actions reads as one thing rather than five.
-The shadow stays when the tray is disabled, because a tray that drops it looks like a different control.
+It has no ground, no edge and no shadow of its own, so the commands read as commands rather than as a boxed group.
+Each command keeps its own hover and press, which is where a button says it is a button.
+A disabled tray is dimmed whole, there being no edge left to pale.
 
 ## `<Style x:Key="Theme.Command.IconToggle" TargetType="ToggleButton">`
 
@@ -260,6 +275,13 @@ Each of a card's written fields at the size, weight and face the reading side gi
 A writer therefore sees the card as it will be read.
 Handles are added rather than a form put in its place.
 
+## `<Style x:Key="Theme.Card.Ordinal" TargetType="TextBox">`
+
+The number in a card's badge, written into rather than only read.
+It stands read-only and untouched by the pointer until a double click opens it.
+The badge above it therefore keeps taking the drag that moves the card.
+The badge takes an accent ring while it is open, because a number being written must read as one.
+
 ## `<Style x:Key="Theme.Card.Handle" TargetType="Button">`
 
 The small marks that add and drop a row, sized to sit in the gutter without pushing the line down.
@@ -305,8 +327,8 @@ A marker and a role are parted by one space, so a frame drawn outward crosses th
 ## `<Style x:Key="Theme.Search.Bar" TargetType="Border">`
 
 The ground every panel's ordering control and search field stand on together.
-One outline rings both, so the pair reads as one control rather than a button beside a box.
-The outline answers the keyboard focus of whatever is inside it, because the field itself is drawn bare.
+The outline is clear at rest and appears under the pointer or on keyboard focus, so an edge marks what the control is doing rather than that it exists.
+It is held at one pixel throughout, so a bar that gains its edge does not shift the row beneath it.
 The bar is the placement target of the ordering dropdown, so the dropdown falls from the whole control.
 
 ## `<Style x:Key="Theme.Search.Dropper" TargetType="ToggleButton">`
@@ -326,8 +348,9 @@ The bar around it already frames the dropper, the divider and the field as one c
 One row of a panel's catalog, drawn on nothing until it is pointed at.
 The catalogs carry no card of their own, so a bordered row would stack a frame inside a frame.
 A row shows its subject over a quieter line of what tells it apart.
-The row the panel stands on is painted by the panel, which adds an accent edge along its leading side.
-That edge is a border rather than a bar, so the row is marked without another element inside it.
+The row the panel stands on is painted by the panel, which tags it as chosen.
+The tag raises a straight accent rail inset along the leading side.
+A left border would bend around the rounded corners and read as a curved tip.
 
 ## `<Style x:Key="Theme.Catalog.Pellet" TargetType="Border">`
 
@@ -338,3 +361,13 @@ It is muted rather than accented, because the accent is what marks the chosen ro
 
 The line that says a catalog holds nothing, lying over the rows that are not there.
 It never takes the pointer, so a click through it still reaches the catalog.
+
+## Catalog frame and scrolling styles
+
+Theme.Catalog.HeaderMargin brings each catalog's sort and search row to the same horizontal edges as its list rows.
+It offsets the panel's 34-pixel inset, leaving the shared 6-pixel outer gutter, and ends where the row surface ends before the scroll rail.
+Theme.Catalog.Frame offsets the 34-pixel panel margin to leave a 6-pixel left gutter.
+Theme.Catalog.Middle offsets the seam 16 pixels before an interior column to leave the same 6-pixel gutter.
+Both end at the next seam; Theme.Catalog.Scroll reserves the final 6 pixels for its compact vertical rail.
+Library, Sound, Tags (including matching entries), Situations, Examples, Sources and Favorites share these styles.
+The document and editor scroll viewers retain their wider lanes.

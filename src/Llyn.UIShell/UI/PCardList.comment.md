@@ -31,6 +31,29 @@ So no answer can arrive naming a card the form cannot find.
 Removing the last card would leave the tab with nothing to type into, so a list of one keeps it.
 The shorter list is written before the renumber, so the engine closes the gap in the cards it now holds.
 
+### `internal void PCardPositionHandle(object sender, MouseButtonEventArgs e)`
+
+Opens the badge for writing on a double click, and stops that click from starting a drag.
+A single card cannot be reordered, so its badge never opens.
+The box is focused after the layout runs, because it is not hit tested until then.
+
+### `internal void PCardPositionAccept(object sender, KeyEventArgs e)`
+
+Enter takes the typed number and Escape drops it.
+
+### `internal void PCardPositionCommit(object sender, RoutedEventArgs e)`
+
+Leaving the badge takes the typed number, as leaving any field here takes what it holds.
+The open badge is checked, so a badge closed by Escape is not read again.
+
+### `private void PCardPositionApply(PCard card)`
+
+Moves the card to the place the typed number names, counting from one.
+A number above the count lands the card last and a number below one lands it first.
+That is the answer a writer means by "9 of 3", rather than a refusal.
+Anything unreadable as a number changes no order at all.
+The move is then handed to the engine exactly as a drag is.
+
 ### `private void PCardOrderApply(ObservableCollection<PCard> list, int from, int target)`
 
 Hands one reorder to the engine and shows the order it answers with.

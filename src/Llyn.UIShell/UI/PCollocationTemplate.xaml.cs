@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 
 namespace Llyn.UIShell;
@@ -31,5 +31,20 @@ public partial class PCollocationTemplate : ResourceDictionary
     private void PVideoAddHandle(object sender, RoutedEventArgs e)
     {
         _pCollocationHost.PVideoAddHandle(sender, e);
+    }
+
+    private void PCardPositionHandle(object sender, MouseButtonEventArgs e)
+    {
+        _pCollocationHost.PCardPositionHandle(sender, e);
+    }
+
+    private void PCardPositionAccept(object sender, KeyEventArgs e)
+    {
+        _pCollocationHost.PCardPositionAccept(sender, e);
+    }
+
+    private void PCardPositionCommit(object sender, RoutedEventArgs e)
+    {
+        _pCollocationHost.PCardPositionCommit(sender, e);
     }
 }

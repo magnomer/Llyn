@@ -160,7 +160,8 @@ A draft carrying no entry id is measured against a blank entry.
 So a new word counts as changed the moment anything is typed into it.
 A draft whose entry has since gone is measured against blank too.
 A missing draft file answers false, because there is nothing to lose.
-Language counts, because the tongue an entry is filed under is part of the entry.
+Language counts against a standing entry, because the tongue it is filed under is part of it.
+A new word carries the tongue the shell already chose, so that alone leaves the draft unchanged.
 Cards holding nothing at all are left out too.
 The form always offers one empty card, and an empty card is not work.
 

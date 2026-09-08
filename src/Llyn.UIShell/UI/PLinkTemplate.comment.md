@@ -21,6 +21,8 @@ A committed link is not text to edit, and its close button points at a click.
 ## `Theme.Link.Entry`
 
 The caret at the end of the run.
+It answers the key before the text box does, because a text box keeps the arrow keys for itself.
+Otherwise the down arrow could never reach the dropdown of offered entries.
 It shares the ordinary input style, so its placeholder behaves as every other field's does.
 But it carries no border of its own.
 The surface around the whole field is the border.

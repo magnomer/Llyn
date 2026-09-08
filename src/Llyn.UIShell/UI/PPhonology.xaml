@@ -13,9 +13,7 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding PInventoryItemChosen}" Value="True">
                     <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                    <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                    <Setter Property="BorderThickness" Value="3,0,0,0" />
-                    <Setter Property="Padding" Value="9,9,12,9" />
+                    <Setter Property="Tag" Value="Chosen" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -32,7 +30,11 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" Visibility="{Binding IsChecked, ElementName=PArticulationHelper, Converter={StaticResource Sound.Fold}}" />
+        <local:PSeam Grid.Row="2" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+
+        <Grid Grid.Row="0" Grid.Column="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="8" />
@@ -159,9 +161,9 @@
             Margin="0,0,0,18"
             Visibility="{Binding IsChecked, ElementName=PArticulationHelper, Converter={StaticResource Sound.Fold}}" />
 
-        <Grid Grid.Row="2" Grid.Column="0" Margin="0,0,20,0">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="PInventory" Margin="0,0,4,0">
+        <Grid Grid.Row="2" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PInventory">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Click="PInventoryHandle" Style="{StaticResource Theme.Inventory.Row}">
@@ -190,7 +192,7 @@
                 Text="{DynamicResource Sound.Empty}" />
         </Grid>
 
-        <Border Grid.Row="2" Grid.Column="1" ClipToBounds="True" Style="{StaticResource Theme.Input.Card}">
+        <Border Grid.Row="2" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>
                 <local:PDisplay x:Name="PDisplay" />
 
@@ -198,7 +200,7 @@
 
                 <Button
                     x:Name="PPhonologyBin"
-                    Margin="0,14,14,0"
+                    Margin="0,14,40,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     Click="PPhonologyBinHandle"

@@ -113,6 +113,15 @@ public partial class PTaxonomy
         PDirectoryFind(string.Empty);
     }
 
+    private void PMembershipSelect(string? id)
+    {
+        foreach (PMembershipItem item in _pMembershipList)
+        {
+            item.PMembershipItemChosen = id is not null
+                && string.Equals(item.PMembershipItemId, id, StringComparison.Ordinal);
+        }
+    }
+
     private void PMembershipFind()
     {
         IReadOnlyList<LEntry> read;
@@ -134,6 +143,8 @@ public partial class PTaxonomy
         }
 
         PMembershipEmpty.Visibility = _pMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PMembershipSelect(_pDisplayEntry);
     }
 
     private void PMembershipHandle(object sender, RoutedEventArgs e)
@@ -172,6 +183,7 @@ public partial class PTaxonomy
         }
 
         _pDisplayEntry = id;
+        PMembershipSelect(id);
         PTaxonomyBin.IsEnabled = true;
         PTaxonomyEntryShow(id, draft);
 
@@ -186,7 +198,8 @@ public partial class PTaxonomy
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
-        PTaxonomyBin.IsEnabled = true;
+            PMembershipSelect(id);
+            PTaxonomyBin.IsEnabled = true;
         }
 
         PDirectoryFind(PExploration.Text ?? string.Empty);
@@ -305,6 +318,7 @@ public partial class PTaxonomy
     private void PTaxonomyClear()
     {
         _pDisplayEntry = null;
+        PMembershipSelect(null);
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PTaxonomyScribeShow(false);

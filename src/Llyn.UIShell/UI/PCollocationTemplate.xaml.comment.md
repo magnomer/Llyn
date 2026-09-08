@@ -13,3 +13,8 @@ The fields stand in the order the reading view draws them: expression, meaning, 
 A writer fills a card in the order a reader will meet it.
 Nothing has to be moved in the head.
 No field is labelled, for the same reason the meaning card labels none.
+
+### `<Border Style="{DynamicResource Theme.Card.Position}" MouseLeftButtonDown="PCardPositionHandle">`
+
+The badge is a field rather than a label, so the number a card carries can be written over.
+Reordering by number reaches a place a drag has to scroll to.

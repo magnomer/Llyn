@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -14,6 +15,8 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private readonly ObservableCollection<string> _pCardParticle;
     private readonly ObservableCollection<string> _pCardDependence;
     private int _pCardPosition;
+    private string _pCardPositionText;
+    private bool _pCardPositionActive;
     private string _pTitle;
     private bool _pTitleUnreadable;
     private string _pCardDefinition;
@@ -30,6 +33,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
     {
         _pCardPrefix = prefix;
         _pCardPosition = position;
+        _pCardPositionText = position.ToString(CultureInfo.InvariantCulture);
         _pCardCitation = catalog;
         _pCardParticle = particles;
         _pCardDependence = dependences;
@@ -58,9 +62,46 @@ internal sealed partial class PCard : INotifyPropertyChanged
             }
 
             _pCardPosition = value;
+            PCardPositionText = value.ToString(CultureInfo.InvariantCulture);
             PCardRaise(nameof(PCardPosition));
             PCardRaise(nameof(PCardTitle));
         }
+    }
+
+    public string PCardPositionText
+    {
+        get => _pCardPositionText;
+        set
+        {
+            if (string.Equals(_pCardPositionText, value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _pCardPositionText = value;
+            PCardRaise(nameof(PCardPositionText));
+        }
+    }
+
+    public bool PCardPositionActive
+    {
+        get => _pCardPositionActive;
+        set
+        {
+            if (_pCardPositionActive == value)
+            {
+                return;
+            }
+
+            _pCardPositionActive = value;
+            PCardRaise(nameof(PCardPositionActive));
+        }
+    }
+
+    internal void PCardPositionHide()
+    {
+        PCardPositionActive = false;
+        PCardPositionText = _pCardPosition.ToString(CultureInfo.InvariantCulture);
     }
 
     public string PCardTitle => $"{_pCardPrefix} {_pCardPosition}";

@@ -31,7 +31,7 @@
             VerticalContentAlignment="Center"
             FontSize="13"
             Foreground="{DynamicResource Theme.Ink}"
-            KeyDown="PLinkCaretHandle"
+            PreviewKeyDown="PLinkCaretHandle"
             LostKeyboardFocus="PLinkCloseHandle"
             Style="{DynamicResource Theme.Input.Bare}"
             Tag="{Binding PLinkCaretHint}"

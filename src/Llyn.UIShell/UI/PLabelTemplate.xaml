@@ -29,7 +29,7 @@
             VerticalContentAlignment="Center"
             FontSize="12"
             Foreground="{DynamicResource Theme.Ink}"
-            KeyDown="PLabelCaretHandle"
+            PreviewKeyDown="PLabelCaretHandle"
             LostKeyboardFocus="PLabelCloseHandle"
             Style="{DynamicResource Theme.Input.Bare}"
             Tag="{Binding PLabelCaretHint}"

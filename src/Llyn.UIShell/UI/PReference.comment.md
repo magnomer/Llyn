@@ -1,8 +1,15 @@
-﻿# PReference.xaml
+# PReference.xaml
+
+## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
+
+The seams that part the source catalog from the source it opens.
+The row seam runs under the ordering bar and the command row, bled past the panel margin so it meets the navigation's own edge.
+The column seam sits in the middle of the gutter and reaches the foot of the window.
+Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
 
 ## `<Border x:Name="PGrade" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The ordering button and the search field are one bordered control over the catalog column.
+The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the corpus panel arranges it.
 The catalog column takes 380, because a row carries a name over an author-and-year line.
 
@@ -55,3 +62,9 @@ The ordered credits and the workspace's authors offered for crediting.
 
 The usage figure stays visible while editing, because one correction reaches every place citing the Source.
 `PImprintRemoval` offers a plain delete at zero and a detach-and-delete otherwise.
+
+## Catalog spacing
+
+The catalog uses the shared Theme.Catalog.Frame and Theme.Catalog.Scroll styles.
+Rows keep 6 device-independent pixels on both sides, with a reserved scrollbar lane so their width stays stable.
+The shared Theme.Catalog.Row preserves the same rounded shape, internal padding and row spacing across browse panels.

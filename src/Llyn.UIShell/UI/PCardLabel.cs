@@ -14,6 +14,8 @@ internal sealed partial class PCard
 
     public ObservableCollection<object> PCardLabel { get; } = [];
 
+    internal Action<string>? PCardLabelNotice { get; set; }
+
     internal void PCardLabelShow(IReadOnlyList<string> texts)
     {
         PCardLabel.Clear();
@@ -88,7 +90,14 @@ internal sealed partial class PCard
     internal void PCardLabelCommit()
     {
         PCardLabelCommit(_pCardLabelCaret.PLabelCaretText);
+        PCardLabelClear();
+    }
+
+    internal void PCardLabelClear()
+    {
+        _pCardLabelBusy = true;
         _pCardLabelCaret.PLabelCaretText = string.Empty;
+        _pCardLabelBusy = false;
         PCardLabelUpdate();
     }
 
@@ -108,24 +117,24 @@ internal sealed partial class PCard
         }
 
         string written = _pCardLabelCaret.PLabelCaretText;
-        if (written.IndexOf(',', StringComparison.Ordinal) < 0)
+        if (written.IndexOf(',', StringComparison.Ordinal) >= 0)
         {
-            return;
+            _pCardLabelBusy = true;
+            string[] parts = written.Split(',');
+            for (int index = 0; index < parts.Length - 1; index++)
+            {
+                PCardLabelCommit(parts[index]);
+            }
+
+            _pCardLabelCaret.PLabelCaretText = parts[^1].TrimStart();
+            _pCardLabelBusy = false;
+            PCardLabelUpdate();
         }
 
-        _pCardLabelBusy = true;
-        string[] parts = written.Split(',');
-        for (int index = 0; index < parts.Length - 1; index++)
-        {
-            PCardLabelCommit(parts[index]);
-        }
-
-        _pCardLabelCaret.PLabelCaretText = parts[^1].TrimStart();
-        _pCardLabelBusy = false;
-        PCardLabelUpdate();
+        PCardLabelNotice?.Invoke(_pCardLabelCaret.PLabelCaretText);
     }
 
-    private void PCardLabelCommit(string text)
+    internal void PCardLabelCommit(string text)
     {
         string written = (text ?? string.Empty).Trim();
         if (written.Length == 0 || PCardLabelCheck(written))
@@ -137,7 +146,7 @@ internal sealed partial class PCard
         PCardLabel.Insert(index < 0 ? PCardLabel.Count : index, new PLabelChip(written));
     }
 
-    private bool PCardLabelCheck(string text)
+    internal bool PCardLabelCheck(string text)
     {
         foreach (object row in PCardLabel)
         {

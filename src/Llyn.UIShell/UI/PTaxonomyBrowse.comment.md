@@ -51,6 +51,12 @@ That is how a tag chip read on a card reaches this panel.
 The query is emptied first.
 A tag left out by the standing query would be chosen and dropped in the same breath.
 
+### `private void PMembershipSelect(string? id)`
+
+Marks the entry row the reader stands on and clears the mark from every other row.
+A null id leaves no row marked, which is what a cleared panel shows.
+It is called wherever the shown entry changes, so the mark and the reader never disagree.
+
 ### `PMembershipFind();`
 
 The entry list is never refilled on its own.

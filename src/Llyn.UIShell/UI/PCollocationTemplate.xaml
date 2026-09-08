@@ -21,8 +21,12 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border Style="{DynamicResource Theme.Card.Position}">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PCardPosition}" />
+                        <Border Style="{DynamicResource Theme.Card.Position}" ToolTip="{DynamicResource Card.PositionHint}" MouseLeftButtonDown="PCardPositionHandle">
+                            <TextBox
+                                KeyDown="PCardPositionAccept"
+                                LostFocus="PCardPositionCommit"
+                                Style="{DynamicResource Theme.Card.Ordinal}"
+                                Text="{Binding PCardPositionText, UpdateSourceTrigger=PropertyChanged}" />
                         </Border>
                         <TextBox Grid.Column="1" Margin="0,0,34,0" Style="{DynamicResource Theme.Card.Title}" Text="{Binding PTitle, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.Tag>

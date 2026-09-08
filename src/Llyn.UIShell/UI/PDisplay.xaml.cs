@@ -161,6 +161,7 @@ public partial class PDisplay : UserControl
         PDisplaySpeech.ItemsSource = null;
         PDisplaySpeechSection.Visibility = Visibility.Collapsed;
         _pDisplayIncoming.Clear();
+        PDisplayIncomingSection.Visibility = Visibility.Collapsed;
         PDisplayTranslationRead().PLinkConverterClear();
         PDisplayMeaning.ItemsSource = null;
         PDisplayCollocation.ItemsSource = null;
@@ -296,9 +297,9 @@ public partial class PDisplay : UserControl
                 string.Empty));
         }
 
-        PDisplayIncomingEmpty.Visibility = _pDisplayIncoming.Count == 0
-            ? Visibility.Visible
-            : Visibility.Collapsed;
+        PDisplayIncomingSection.Visibility = _pDisplayIncoming.Count == 0
+            ? Visibility.Collapsed
+            : Visibility.Visible;
     }
 
     private void PDisplayCardHandle(object sender, RoutedEventArgs e)

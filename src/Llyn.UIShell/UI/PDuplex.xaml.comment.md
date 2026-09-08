@@ -1,5 +1,11 @@
 # PDuplex.xaml.cs
 
+## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
+
+The seams that part the two search fields from the pair of entries below them, and one side from the other.
+The candidate list each side shows takes a seam of its own rather than a box, and appears and goes with the list it closes.
+Neither side is a card here, so nothing is enclosed and the two entries read as two pages side by side.
+
 ## `public partial class PDuplex : UserControl`
 
 The duplex panel as a control: what it is made of, and when it starts and stops.

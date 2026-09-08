@@ -6,7 +6,7 @@ One glyph is one small square button, and one header is one quiet label.
 The glyph is not focusable, so pressing it leaves the caret where the reader put it.
 That is what lets the character land at the caret rather than at the end.
 
-## `<Border Padding="18,14" Style="{StaticResource Theme.Input.Card}">`
+## `<Border Padding="18,14" Style="{StaticResource Theme.Panel.Surface}">`
 
 The aid is shown and hidden whole by the panel that hosts it.
 It holds no fold control of its own, because folding it is the panel's layout decision.

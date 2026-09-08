@@ -300,6 +300,22 @@ public sealed class TDraft
     }
 
     [Fact]
+    public void DraftCheck_NewDraftCarryingLanguage_ReportsUnchanged()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LDraft opened = engine.TEngineDraftStart("editor", null);
+
+        engine.TEngineDraftSave(opened with
+        {
+            LDraftContent = opened.LDraftContent with { LEntryDraftLanguage = "Korean" },
+        });
+
+        Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
+    }
+
+    [Fact]
     public void DraftCommit_DraftsPointingAtEachOther_NoRecursion()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

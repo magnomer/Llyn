@@ -65,6 +65,11 @@ A card given nothing but a video reads as changed against the entry it was opene
 The comparison decides whether the editor offers to store at all.
 A field it skips is a field the user cannot save.
 
+## `public void DraftCheck_NewDraftCarryingLanguage_ReportsUnchanged()`
+
+A fresh draft holding nothing but the tongue the shell chose is not changed work.
+The editor writes that tongue on its own, so counting it would warn about edits the user never made.
+
 ## `public void LeftoverRead_DraftStillHeldOpen_PassesOverIt()`
 
 An engine never offers back the drafts it started itself.

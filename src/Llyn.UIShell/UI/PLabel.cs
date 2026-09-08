@@ -6,6 +6,11 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
+    internal void PLabelAttach(PCard card)
+    {
+        card.PCardLabelNotice = text => PSlateShow(card, text);
+    }
+
     internal void PLabelChipHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PLabelChip chip })
@@ -27,8 +32,15 @@ public partial class PEditor
             return;
         }
 
+        if (PSlate.IsOpen && PSlateHandle(e.Key))
+        {
+            e.Handled = true;
+            return;
+        }
+
         if (e.Key == Key.Enter)
         {
+            PSlateHide();
             card.PCardLabelCommit();
             e.Handled = true;
             return;
@@ -69,6 +81,8 @@ public partial class PEditor
 
     internal void PLabelCloseHandle(object sender, RoutedEventArgs e)
     {
+        PSlateHide();
+
         if (sender is FrameworkElement { DataContext: PLabelCaret row })
         {
             PCardLabelFind(row)?.PCardLabelCommit();

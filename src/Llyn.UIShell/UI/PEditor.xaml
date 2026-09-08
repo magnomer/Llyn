@@ -71,7 +71,7 @@
                 </Popup>
             </Grid>
 
-            <ToggleButton x:Name="PEditorFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Click="PEditorFavoriteHandle" Style="{StaticResource Theme.Input.ToggleAction}" ToolTip="{DynamicResource Favorite.Mark}">
+            <ToggleButton x:Name="PEditorFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="PEditorFavoriteHandle" Style="{StaticResource Theme.Favorite.Mark}" ToolTip="{DynamicResource Favorite.Mark}">
                 <Path Width="17" Height="16" Stretch="Uniform" Stroke="{StaticResource Theme.Accent}" StrokeLineJoin="Round" StrokeThickness="1.4" Data="M 8,0.7 L 10.06,5.62 15.4,6.05 11.34,9.55 12.58,14.75 8,11.95 3.42,14.75 4.66,9.55 0.6,6.05 5.94,5.62 Z">
                     <Path.Style>
                         <Style TargetType="Path">
@@ -317,9 +317,9 @@
             </Grid>
         </Border>
 
-        <Border x:Name="PContents" Grid.Row="4" Padding="0,22,0,0" Background="Transparent">
+        <Border x:Name="PContents" Grid.Row="4" Margin="0,0,-30,0" Padding="0,22,0,0" Background="Transparent">
             <Grid>
-                <ScrollViewer x:Name="PMeaning" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer x:Name="PMeaning" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
                         <ItemsControl x:Name="PMeaningList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Meaning.Card}" />
 
@@ -345,7 +345,7 @@
                     </StackPanel>
                 </ScrollViewer>
 
-                <ScrollViewer x:Name="PCollocation" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                <ScrollViewer x:Name="PCollocation" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
                     <StackPanel>
                         <ItemsControl x:Name="PCollocationList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Collocation.Card}" />
 
@@ -451,6 +451,55 @@
                     BorderThickness="0"
                     Focusable="False"
                     ItemTemplate="{DynamicResource Theme.Candidate.Row}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    SelectionMode="Single">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Focusable" Value="False" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="PSurface" MinHeight="28" Padding="8,0" Background="Transparent" CornerRadius="6">
+                                            <ContentPresenter VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
+            </Border>
+        </Popup>
+
+        <Popup
+            x:Name="PSlate"
+            Grid.Row="4"
+            MaxWidth="320"
+            AllowsTransparency="True"
+            Placement="Custom"
+            StaysOpen="False">
+            <Border MinWidth="{Binding ElementName=PSlate, Path=PlacementTarget.ActualWidth}" Margin="10" Padding="4" BorderThickness="0" CornerRadius="10" Style="{StaticResource Theme.Popup.Surface}">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="16" Direction="270" Opacity="0.10" ShadowDepth="4" />
+                </Border.Effect>
+                <ListBox
+                    x:Name="PSlateList"
+                    MaxHeight="232"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Focusable="False"
+                    ItemTemplate="{DynamicResource Theme.Slate.Row}"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     SelectionMode="Single">
