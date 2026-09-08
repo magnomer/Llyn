@@ -256,12 +256,26 @@ The small marks that add and drop a row, sized to sit in the gutter without push
 ## `<Style x:Key="Theme.Card.Switch" TargetType="ToggleButton">`
 
 The mark that opens a frame on an Example row that carries none.
-It sits in the gutter with the row's other handles, so opening a frame costs the line nothing until one is opened.
+It carries a glyph rather than a drawing, and holds no size of its own, so it stands on the line's baseline as the text beside it does.
+A drawn mark of a fixed size sits where the row puts it, which is never quite where the eye reads the line.
 
 ## `<Style x:Key="Theme.Card.Ghost" TargetType="TextBlock">`
 
 A copy of what a field holds, drawn invisibly behind it so the field is exactly as wide as its text.
 An inline field has to be measured this way; left to itself a drop-down takes the width of its widest offer.
+
+## `<Style x:Key="Theme.Card.Dot" TargetType="TextBlock">`
+
+The mark an example line opens with, drawn in the interface face it shares a baseline with.
+It is not hit tested, because it is punctuation and not a place to write.
+
+## `<Style x:Key="Theme.Card.Frame" TargetType="TextBlock">`
+
+The parentheses a frame is written inside, set bold in the interface face and the accent colour.
+The room kept after it clears the ring a written field is framed by, which is drawn outside the text it holds.
+The ring is left the room it asks for rather than being closed onto the line, because a field's own room is what moves its text.
+The example keeps the reading face and its own weight, so the frame is never read as part of the sentence.
+The invisible copies behind the written fields carry the same weight, or a bold field would outgrow the room measured for it.
 
 ## `<Style x:Key="Theme.Choice.Bare" TargetType="ComboBox">`
 

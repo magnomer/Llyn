@@ -19,10 +19,6 @@ One Source in the list a row cites from, and the row it sits in.
 Both are offered to the Situation rows as well.
 That is why they live in this dictionary rather than beside a single template.
 
-## `Theme.Sentence.Identity`
-
-The box the row's id stands in, hidden until the row has an id.
-
 ## `Theme.Sentence.Citation`
 
 What the Source button reads.
@@ -34,6 +30,14 @@ It reads the unreadable mark when the citation cannot be read back.
 
 The line shown in the Source list while the workspace holds no Sources at all.
 
+## `Theme.Sentence.Opening`
+
+The switch that opens a frame stands in the place the frame will be written, right after the dot.
+Standing in the gutter, it asked to be read as a handle on the row rather than as the opening of a sentence.
+It is drawn as the plus the card's other openings are drawn as, because what it means is where it is.
+It gives way as soon as the frame carries a marker or a role, since a written frame is closed by clearing it.
+An opened frame holding nothing keeps it, and reads as a minus while it stands open, because closing the frame is all it can do then.
+
 ## `Theme.Sentence.Frame`
 
 The frame is written where it is read: `(+marker role)` in front of the sentence, in the sentence's own face.
@@ -42,6 +46,21 @@ It is not; it is the opening of the sentence, and the reading view has always dr
 
 A row carrying no frame shows none, so its sentence begins where the reading view begins it.
 The card offers one instead, from the strip kept clear beside the row.
+
+## `<Canvas>`
+
+The two frame fields are laid out where they cannot widen the line they open.
+A canvas asks for no room, so the invisible copies beside it alone say how wide a field is.
+Each field is then given the width those copies settled on.
+Left to measure itself, a written field asks for a little more room than its text needs.
+The sentence would then sit further along in the writing view than in the reading view.
+
+## `<StackPanel Grid.Column="3">`
+
+What a row cites stands in a column of its own, clear of the field it is read beside.
+The id a row is kept under is not drawn at all, because it is the store's word for the row and not the writer's.
+Laid over the written line, it covered the end of a sentence long enough to reach it.
+A writer cannot revise what a mark is sitting on.
 
 ## `Theme.Sentence.Control`
 

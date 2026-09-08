@@ -11,6 +11,8 @@ internal static class PField
 
     private const string PFieldPlaceholderName = "PPlaceholder";
 
+    private static readonly Thickness PFieldPlaceholderInset = new(4, 0, 0, 0);
+
     private const string PFieldTemplateKey = "Theme.Input.Field.Template";
     private const string PFieldBareKey = "Theme.Input.Field.Bare";
 
@@ -44,6 +46,8 @@ internal static class PField
         pSurface.SetValue(UIElement.IsHitTestVisibleProperty, false);
 
         var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), PFieldPlaceholderName);
+        pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
+        pPlaceholder.SetValue(TextBlock.PaddingProperty, PFieldPlaceholderInset);
         pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
@@ -91,7 +95,7 @@ internal static class PField
 
         var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), PFieldPlaceholderName);
         pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
-        pPlaceholder.SetValue(TextBlock.PaddingProperty, new Thickness(4, 0, 0, 0));
+        pPlaceholder.SetValue(TextBlock.PaddingProperty, PFieldPlaceholderInset);
         pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);

@@ -186,6 +186,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             PSentenceParticleUnreadable = false;
             PSentenceRaise(nameof(PSentenceParticle));
             PSentenceRaise(nameof(PSentenceFrameVisible));
+            PSentenceRaise(nameof(PSentenceFrameWritten));
             PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
@@ -202,6 +203,8 @@ internal sealed class PSentence : INotifyPropertyChanged
 
             _pSentenceParticleUnreadable = value;
             PSentenceRaise(nameof(PSentenceParticleUnreadable));
+            PSentenceRaise(nameof(PSentenceFrameVisible));
+            PSentenceRaise(nameof(PSentenceFrameWritten));
             PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
@@ -221,6 +224,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             PSentenceDependenceUnreadable = false;
             PSentenceRaise(nameof(PSentenceDependence));
             PSentenceRaise(nameof(PSentenceFrameVisible));
+            PSentenceRaise(nameof(PSentenceFrameWritten));
             PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
@@ -237,23 +241,27 @@ internal sealed class PSentence : INotifyPropertyChanged
 
             _pSentenceDependenceUnreadable = value;
             PSentenceRaise(nameof(PSentenceDependenceUnreadable));
+            PSentenceRaise(nameof(PSentenceFrameVisible));
+            PSentenceRaise(nameof(PSentenceFrameWritten));
             PSentenceRaise(nameof(PSentenceFrameGap));
         }
     }
 
     public bool PSentenceFrameVisible
     {
-        get => _pSentenceFrameVisible
-            || _pSentenceParticle.Length > 0
-            || _pSentenceDependence.Length > 0
-            || _pSentenceParticleUnreadable
-            || _pSentenceDependenceUnreadable;
+        get => _pSentenceFrameVisible || PSentenceFrameWritten;
         set
         {
             _pSentenceFrameVisible = value;
             PSentenceRaise(nameof(PSentenceFrameVisible));
         }
     }
+
+    public bool PSentenceFrameWritten =>
+        _pSentenceParticle.Length > 0
+        || _pSentenceDependence.Length > 0
+        || _pSentenceParticleUnreadable
+        || _pSentenceDependenceUnreadable;
 
     public string PSentenceFrameGap
     {

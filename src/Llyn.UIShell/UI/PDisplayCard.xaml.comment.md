@@ -38,7 +38,16 @@ Tags take an outlined chip instead, so the two rows of chips are never read as o
 
 ### `<Style x:Key="Display.Card.Example" TargetType="Border">`
 
-Examples are indented behind a rule, because they are evidence for the definition rather than a field of their own.
+Examples are indented as a block, because they are evidence for the definition rather than a field of their own.
+Each line opens with a dot, so a reader counts examples without reading them.
+
+### `<TextBlock x:Name="PExampleFrame">`
+
+The frame is drawn in the interface face and the accent colour the example beside it never takes.
+A reader tells at a glance what the card writes and what the card only marks.
+It stands beside the example rather than inside it, as it does on the writing side.
+A row carrying no frame drops it whole, so its example begins where an unframed example begins on the writing side.
+A line set the same way in both views is a line that does not move when a reader begins to write.
 
 ### `<Style x:Key="Display.Card.Picture" TargetType="ItemsControl">`
 

@@ -6,6 +6,8 @@
     <local:PStateConverter x:Key="Display.Card.State" />
     <local:PLinkConverter x:Key="Display.Card.Translation" />
     <local:PSentenceConverter x:Key="Display.Card.Frame" />
+
+    <local:PFontConverter x:Key="Display.Card.Inset" />
     <local:PImageConverter x:Key="Display.Card.Preview" />
 
     <Style x:Key="Display.Card.Title" TargetType="TextBlock">
@@ -96,7 +98,7 @@
     </Style>
 
     <Style x:Key="Display.Card.Chips" TargetType="ItemsControl">
-        <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipMargin}" />
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipTightMargin}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -105,6 +107,9 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <DataTrigger Binding="{Binding LCardDraftSituation.Count}" Value="0">
+                <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipMargin}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding LCardDraftTranslation.Count}" Value="0">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
@@ -130,8 +135,6 @@
     <Style x:Key="Display.Card.Example" TargetType="Border">
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.ExampleMargin}" />
         <Setter Property="Padding" Value="{DynamicResource Theme.Card.ExamplePadding}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Theme.AccentSoft}" />
-        <Setter Property="BorderThickness" Value="2,0,0,0" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding LCardDraftExample.Count}" Value="0">
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -161,21 +164,59 @@
         </Border>
     </DataTemplate>
 
+    <Style x:Key="Display.Card.ExampleFrame" TargetType="TextBlock" BasedOn="{StaticResource Theme.Card.Frame}">
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.FrameMargin}" />
+        <Style.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <DataTemplate x:Key="Display.Card.ExampleLine">
-        <TextBlock
-            Margin="{DynamicResource Theme.Card.ExampleLineMargin}"
-            FontFamily="{DynamicResource Theme.Card.ExampleFamily}"
-            FontSize="{DynamicResource Theme.Card.ExampleSize}"
-            TextWrapping="Wrap">
-            <TextBlock.Text>
-                <MultiBinding Converter="{StaticResource Display.Card.Frame}">
-                    <Binding Path="LExampleDraftParticle" />
-                    <Binding Path="LExampleDraftDependence" />
-                    <Binding Path="LExampleDraftText" />
-                    <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
+        <Grid Margin="{DynamicResource Theme.Card.ExampleLineMargin}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Style="{DynamicResource Theme.Card.Dot}" />
+
+            <TextBlock x:Name="PExampleFrame" Grid.Column="1" Style="{StaticResource Display.Card.ExampleFrame}">
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource Display.Card.Frame}" ConverterParameter="Head">
+                        <Binding Path="LExampleDraftParticle" />
+                        <Binding Path="LExampleDraftDependence" />
+                        <Binding Path="LExampleDraftText" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock
+                Grid.Column="2"
+                FontFamily="{DynamicResource Theme.Card.ExampleFamily}"
+                FontSize="{DynamicResource Theme.Card.ExampleSize}"
+                TextWrapping="Wrap">
+                <TextBlock.Margin>
+                    <MultiBinding Converter="{StaticResource Display.Card.Inset}">
+                        <Binding Path="FontFamily" ElementName="PExampleFrame" />
+                        <Binding Path="FontSize" ElementName="PExampleFrame" />
+                        <Binding Path="FontFamily" RelativeSource="{RelativeSource Self}" />
+                        <Binding Path="FontSize" RelativeSource="{RelativeSource Self}" />
+                    </MultiBinding>
+                </TextBlock.Margin>
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource Display.Card.Frame}" ConverterParameter="Text">
+                        <Binding Path="LExampleDraftParticle" />
+                        <Binding Path="LExampleDraftDependence" />
+                        <Binding Path="LExampleDraftText" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="Display.Card.PictureLine">

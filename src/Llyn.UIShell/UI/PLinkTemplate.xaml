@@ -45,7 +45,7 @@
 
     <Style x:Key="Theme.Link.Field" TargetType="ItemsControl">
         <Setter Property="ItemTemplateSelector" Value="{StaticResource Theme.Link.Item}" />
-        <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipMargin}" />
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipTightMargin}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>

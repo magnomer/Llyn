@@ -1399,14 +1399,17 @@
     <sys:Double x:Key="Theme.Card.DefinitionSize">16</sys:Double>
     <sys:Double x:Key="Theme.Card.SituationSize">13</sys:Double>
     <sys:Double x:Key="Theme.Card.ExampleSize">15</sys:Double>
+    <sys:Double x:Key="Theme.Card.FrameSize">15</sys:Double>
+    <Thickness x:Key="Theme.Card.FrameMargin">0,0,16,0</Thickness>
     <FontFamily x:Key="Theme.Card.ExampleFamily">Georgia, Segoe UI</FontFamily>
 
     <Thickness x:Key="Theme.Card.ExpressionMargin">0,0,0,7</Thickness>
     <Thickness x:Key="Theme.Card.SituationMargin">0,18,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ChipMargin">0,15,0,0</Thickness>
-    <Thickness x:Key="Theme.Card.TagMargin">0,13,0,0</Thickness>
-    <Thickness x:Key="Theme.Card.ExampleMargin">3,16,0,0</Thickness>
-    <Thickness x:Key="Theme.Card.ExamplePadding">16,1,0,0</Thickness>
+    <Thickness x:Key="Theme.Card.ChipTightMargin">0,6,0,0</Thickness>
+    <Thickness x:Key="Theme.Card.TagMargin">0,24,0,0</Thickness>
+    <Thickness x:Key="Theme.Card.ExampleMargin">0,16,0,0</Thickness>
+    <Thickness x:Key="Theme.Card.ExamplePadding">14,1,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ExampleLineMargin">0,0,0,7</Thickness>
     <Thickness x:Key="Theme.Card.MediaMargin">0,16,0,0</Thickness>
 
@@ -1464,8 +1467,6 @@
     <Style x:Key="Theme.Card.Example" TargetType="Border">
         <Setter Property="Margin" Value="{StaticResource Theme.Card.ExampleMargin}" />
         <Setter Property="Padding" Value="{StaticResource Theme.Card.ExamplePadding}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentSoft}" />
-        <Setter Property="BorderThickness" Value="2,0,0,0" />
     </Style>
 
     <Style x:Key="Theme.Card.Media" TargetType="ItemsControl">
@@ -1550,14 +1551,12 @@
     </Style>
 
     <Style x:Key="Theme.Card.Switch" TargetType="ToggleButton">
-        <Setter Property="Width" Value="18" />
-        <Setter Property="Height" Value="18" />
-        <Setter Property="Padding" Value="0" />
+        <Setter Property="Padding" Value="4,0" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Border x:Name="PCardSurface" Background="Transparent" CornerRadius="6">
+                    <Border x:Name="PCardSurface" Padding="{TemplateBinding Padding}" Background="Transparent" CornerRadius="6">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -1577,15 +1576,28 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsHitTestVisible" Value="False" />
         <Setter Property="Opacity" Value="0" />
-        <Setter Property="FontFamily" Value="{StaticResource Theme.Card.ExampleFamily}" />
-        <Setter Property="FontSize" Value="{StaticResource Theme.Card.ExampleSize}" />
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="{StaticResource Theme.Card.FrameSize}" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style x:Key="Theme.Card.Dot" TargetType="TextBlock">
+        <Setter Property="Text" Value="•" />
+        <Setter Property="Margin" Value="0,0,9,0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="{StaticResource Theme.Card.FrameSize}" />
     </Style>
 
     <Style x:Key="Theme.Card.Frame" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="IsHitTestVisible" Value="False" />
-        <Setter Property="FontFamily" Value="{StaticResource Theme.Card.ExampleFamily}" />
-        <Setter Property="FontSize" Value="{StaticResource Theme.Card.ExampleSize}" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="{StaticResource Theme.Card.FrameSize}" />
+        <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
     <local:PFieldConverter x:Key="Theme.Field.Inset" />
@@ -1598,9 +1610,10 @@
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-        <Setter Property="FontFamily" Value="{StaticResource Theme.Card.ExampleFamily}" />
-        <Setter Property="FontSize" Value="{StaticResource Theme.Card.ExampleSize}" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="{StaticResource Theme.Card.FrameSize}" />
+        <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="VerticalContentAlignment" Value="Top" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource Theme.Choice.Item}" />
         <Setter Property="Template">
@@ -1624,9 +1637,11 @@
                         </Border>
                         <TextBlock
                             x:Name="PChoiceHint"
+                            Padding="4,0,0,0"
                             VerticalAlignment="Top"
                             FontFamily="{TemplateBinding FontFamily}"
                             FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
                             Foreground="{StaticResource Theme.Muted}"
                             IsHitTestVisible="False"
                             Opacity="0.56"
@@ -1642,6 +1657,7 @@
                             CaretBrush="{StaticResource Theme.Ink}"
                             FontFamily="{TemplateBinding FontFamily}"
                             FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
                             Foreground="{TemplateBinding Foreground}" />
                         <Popup
                             x:Name="PART_Popup"

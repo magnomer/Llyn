@@ -17,7 +17,13 @@ No Margin binding here: WPF already offsets the editable text by TextBox.Padding
 Binding the host's Margin to Padding too would apply it twice.
 The caret would be pushed right and down while the placeholder, padded once, stayed put.
 
-### `private static ControlTemplate PFieldBareBuild()`
+## `private static readonly Thickness PFieldPlaceholderInset`
+
+The room a placeholder is held off the caret by, the same in a bare field as in a framed one.
+A placeholder starting where the text starts is written under the caret, and a writer reads the caret as part of the word.
+Both templates hold their placeholder off by this much, so a field in a card sits as the headword does.
+
+## `private static ControlTemplate PFieldBareBuild()`
 
 Builds the field a card uses while it is being edited.
 A card must read the same in both modes, so the text sits where the reading side draws it.

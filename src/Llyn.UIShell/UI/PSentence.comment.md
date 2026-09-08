@@ -101,6 +101,12 @@ Whether the row shows its frame at all.
 A row that carries a marker or a role always shows one, because the reading view draws it.
 A row carrying neither shows none, for the same reason, and the card is asked for one instead.
 
+## `public bool PSentenceFrameWritten`
+
+Whether the frame stands on what the row holds rather than on the card being asked for one.
+The card's switch stands down while it does, because a frame already written cannot be opened or closed by asking.
+It gives its room back rather than keeping it, so the handles beside it are not read across a gap that holds nothing.
+
 ## `public string PSentenceFrameGap`
 
 The separator drawn between the marker and the role inside the frame.

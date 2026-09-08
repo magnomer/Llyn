@@ -7,6 +7,10 @@ namespace Llyn.UIShell;
 
 internal sealed class PSentenceConverter : IMultiValueConverter
 {
+    private const string PSentenceConverterHead = "Head";
+
+    private const string PSentenceConverterText = "Text";
+
     private LSentenceOrder _pSentenceConverterOrder = LSentenceOrder.LSentenceOrderDefault;
 
     internal void PSentenceConverterApply(LSentenceOrder order)
@@ -29,12 +33,21 @@ internal sealed class PSentenceConverter : IMultiValueConverter
             ? first + second
             : first + " " + second;
 
-        if (frame.Length == 0)
+        string part = parameter as string ?? string.Empty;
+
+        if (part == PSentenceConverterText)
         {
             return text;
         }
 
-        return text.Length == 0 ? "(+" + frame + ")" : "(+" + frame + ") " + text;
+        string head = frame.Length == 0 ? string.Empty : "(+" + frame + ")";
+
+        if (part == PSentenceConverterHead)
+        {
+            return head;
+        }
+
+        return head.Length == 0 || text.Length == 0 ? head + text : head + " " + text;
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
