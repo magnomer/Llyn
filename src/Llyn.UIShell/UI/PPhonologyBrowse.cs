@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,6 +54,15 @@ public partial class PPhonology
         PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
+    private void PInventorySelect(string? id)
+    {
+        foreach (PInventoryItem item in _pInventoryList)
+        {
+            item.PInventoryItemChosen = id is not null
+                && string.Equals(item.PInventoryItemId, id, StringComparison.Ordinal);
+        }
+    }
+
     private void PInventoryFind(string query)
     {
         _pInventoryList.Clear();
@@ -67,6 +76,8 @@ public partial class PPhonology
         }
 
         PInventoryEmpty.Visibility = _pInventoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PInventorySelect(_pDisplayEntry);
     }
 
     private void PInventoryHandle(object sender, RoutedEventArgs e)
@@ -105,6 +116,7 @@ public partial class PPhonology
         }
 
         _pDisplayEntry = id;
+        PInventorySelect(id);
         PPhonologyBin.IsEnabled = true;
         PPhonologyEntryShow(id, draft);
 
@@ -119,6 +131,7 @@ public partial class PPhonology
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
+            PInventorySelect(id);
         PPhonologyBin.IsEnabled = true;
         }
 
@@ -238,6 +251,7 @@ public partial class PPhonology
     private void PPhonologyClear()
     {
         _pDisplayEntry = null;
+        PInventorySelect(null);
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PPhonologyScribeShow(false);

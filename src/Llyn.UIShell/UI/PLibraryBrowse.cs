@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,6 +54,15 @@ public partial class PLibrary
         PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
+    private void PIndexSelect(string? id)
+    {
+        foreach (PIndexItem item in _pIndexList)
+        {
+            item.PIndexItemChosen = id is not null
+                && string.Equals(item.PIndexItemId, id, StringComparison.Ordinal);
+        }
+    }
+
     private void PIndexFind(string query)
     {
         _pIndexList.Clear();
@@ -63,6 +72,8 @@ public partial class PLibrary
         }
 
         PIndexEmpty.Visibility = _pIndexList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PIndexSelect(_pDisplayEntry);
     }
 
     private void PIndexHandle(object sender, RoutedEventArgs e)
@@ -101,6 +112,7 @@ public partial class PLibrary
         }
 
         _pDisplayEntry = id;
+        PIndexSelect(id);
         PLibraryBin.IsEnabled = true;
         PLibraryEntryShow(id, draft);
 
@@ -115,6 +127,7 @@ public partial class PLibrary
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
+            PIndexSelect(id);
         PLibraryBin.IsEnabled = true;
         }
 
@@ -234,6 +247,7 @@ public partial class PLibrary
     private void PLibraryClear()
     {
         _pDisplayEntry = null;
+        PIndexSelect(null);
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PLibraryScribeShow(false);

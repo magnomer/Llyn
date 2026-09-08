@@ -72,6 +72,15 @@ public partial class PReference
         return _pShelfCount.TryGetValue(id, out int usage) ? usage : 0;
     }
 
+    private void PShelfSelect(string? id)
+    {
+        foreach (PShelfItem item in _pShelfList)
+        {
+            item.PShelfItemChosen = id is not null
+                && string.Equals(item.PShelfItemId, id, StringComparison.Ordinal);
+        }
+    }
+
     private void PShelfFind(string query)
     {
         IReadOnlyList<LCatalogReference> read;
@@ -102,6 +111,8 @@ public partial class PReference
         }
 
         PShelfEmpty.Visibility = _pShelfList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PShelfSelect(_pColophonReference);
 
         if (!kept && _pColophonReference is not null && PImprint.Visibility != Visibility.Visible)
         {
@@ -145,6 +156,7 @@ public partial class PReference
         }
 
         _pColophonReference = id;
+        PShelfSelect(id);
 
         PColophonValueShow(PColophonTitle, reference.LReferenceTitle);
         PColophonValueShow(PColophonProgram, reference.LReferenceProgram);
@@ -321,6 +333,7 @@ public partial class PReference
         PImprintDraftCancel();
 
         _pColophonReference = null;
+        PShelfSelect(null);
         _pFootnoteList.Clear();
 
         PColophonBody.Visibility = Visibility.Collapsed;

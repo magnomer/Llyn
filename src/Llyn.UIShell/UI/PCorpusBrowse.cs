@@ -67,6 +67,15 @@ public partial class PCorpus
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 
+    private void PAnthologySelect(string? id)
+    {
+        foreach (PAnthologyItem item in _pAnthologyList)
+        {
+            item.PAnthologyItemChosen = id is not null
+                && string.Equals(item.PAnthologyItemId, id, StringComparison.Ordinal);
+        }
+    }
+
     private void PAnthologyFind(string query)
     {
         IReadOnlyList<LCatalogExample> read;
@@ -101,6 +110,8 @@ public partial class PCorpus
         }
 
         PAnthologyEmpty.Visibility = _pAnthologyList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PAnthologySelect(_pExcerptExample);
 
         if (!kept && _pExcerptExample is not null && PTranscript.Visibility != Visibility.Visible)
         {
@@ -144,6 +155,7 @@ public partial class PCorpus
         }
 
         _pExcerptExample = id;
+        PAnthologySelect(id);
 
         PExcerptValueShow(PExcerptText, example.LExampleText);
         PExcerptLanguage.Text = example.LExampleLanguage;
@@ -307,6 +319,7 @@ public partial class PCorpus
         PTranscriptDraftCancel();
 
         _pExcerptExample = null;
+        PAnthologySelect(null);
         _pQuotationList.Clear();
 
         PExcerptBody.Visibility = Visibility.Collapsed;

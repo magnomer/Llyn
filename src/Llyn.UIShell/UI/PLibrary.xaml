@@ -6,110 +6,108 @@
     xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf"
     >
 
+    <UserControl.Resources>
+        <Style x:Key="Theme.Index.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PIndexItemChosen}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                    <Setter Property="BorderThickness" Value="3,0,0,0" />
+                    <Setter Property="Padding" Value="9,9,12,9" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="320" />
+            <ColumnDefinition Width="360" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="POrder" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="44" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <ToggleButton
-                x:Name="POrderDropper"
-                Grid.Column="0"
-                Width="44"
-                Height="44"
-                Padding="0"
-                ToolTip="{DynamicResource Order.Title}">
-                <ToggleButton.Style>
-                    <Style BasedOn="{StaticResource Theme.Input.ToggleAction}" TargetType="ToggleButton">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-                <Grid Width="16" Height="14">
-
+        <Border
+            x:Name="POrder"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="0,0,20,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton
+                    x:Name="POrderDropper"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Order.Title}">
                     <Canvas Width="16" Height="14">
                         <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                         <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                         <Rectangle Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                     </Canvas>
-                </Grid>
-            </ToggleButton>
-            <Popup
-                x:Name="POrderDropdown"
-                Width="252"
-                AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=POrderDropper}"
-                Placement="Bottom"
-                PlacementTarget="{Binding ElementName=POrderDropper}"
-                StaysOpen="False"
-                VerticalOffset="6">
-                <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                    <StackPanel>
-                        <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Order.Title}" />
+                </ToggleButton>
+                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                <TextBox
+                    x:Name="PInquiry"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource List.Search}"
+                    TextChanged="PInquiryHandle" />
+                <Popup
+                    x:Name="POrderDropdown"
+                    Width="252"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=POrderDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=POrder}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Order.Title}" />
 
-                        <RadioButton GroupName="POrderChoice" IsChecked="True" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Headword" Content="{DynamicResource Order.Headword}" />
-                        <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Order.Reverse}" />
-                        <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Recent" Content="{DynamicResource Order.Recent}" />
-                        <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Earliest" Content="{DynamicResource Order.Earliest}" />
-                    </StackPanel>
-                </Border>
-            </Popup>
-            <TextBox
-                x:Name="PInquiry"
-                Grid.Column="2"
-                Height="44"
-                Style="{StaticResource Theme.Input.Field}"
-                Tag="{DynamicResource List.Search}"
-                TextChanged="PInquiryHandle" />
-        </Grid>
-
-        <Border Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
-            <Grid>
-                <ScrollViewer Margin="10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl x:Name="PIndex">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="0,0,0,6" Click="PIndexHandle" Style="{StaticResource Theme.Choice.Row}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold" Text="{Binding PIndexItemHeadword}" TextTrimming="CharacterEllipsis" />
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                                            <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PIndexItemFlag}" Stretch="Uniform" />
-                                            <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PIndexItemLanguage}" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-                <TextBlock
-                    x:Name="PIndexEmpty"
-                    Margin="22"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Foreground="{StaticResource Theme.Muted}"
-                    IsHitTestVisible="False"
-                    Text="{DynamicResource List.Empty}"
-                    TextWrapping="Wrap" />
+                            <RadioButton GroupName="POrderChoice" IsChecked="True" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Headword" Content="{DynamicResource Order.Headword}" />
+                            <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Order.Reverse}" />
+                            <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Recent" Content="{DynamicResource Order.Recent}" />
+                            <RadioButton GroupName="POrderChoice" Click="POrderHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Earliest" Content="{DynamicResource Order.Earliest}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
             </Grid>
         </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="PIndex" Margin="0,0,4,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PIndexHandle" Style="{StaticResource Theme.Index.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PIndexItemFlag}" Stretch="Uniform" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PIndexItemHeadword}" />
+                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding PIndexItemLanguage}" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PIndexEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource List.Empty}" />
+        </Grid>
 
         <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
             <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">

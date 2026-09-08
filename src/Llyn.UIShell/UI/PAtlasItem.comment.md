@@ -1,4 +1,4 @@
-# PAtlasItem.cs
+﻿# PAtlasItem.cs
 
 ## `internal sealed class PAtlasItem`
 
@@ -22,3 +22,9 @@ A row is built while the list is being filled.
 How many Meanings and Collocations reference this Situation, as the row shows it.
 It is the figure that decides whether a delete is legal.
 The catalog carries it and not only the display.
+
+## `public bool PAtlasItemChosen`
+
+Whether this row is the one the panel stands on, which the row template paints an accent edge for.
+It is the only value of the row that changes after the row is built.
+The panel sets it instead of refilling the list, so the catalog keeps its scroll position.

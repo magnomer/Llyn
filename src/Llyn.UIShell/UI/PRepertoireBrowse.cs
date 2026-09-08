@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -68,6 +68,15 @@ public partial class PRepertoire
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
 
+    private void PAtlasSelect(string? id)
+    {
+        foreach (PAtlasItem item in _pAtlasList)
+        {
+            item.PAtlasItemChosen = id is not null
+                && string.Equals(item.PAtlasItemId, id, StringComparison.Ordinal);
+        }
+    }
+
     private void PAtlasFind(string query)
     {
         IReadOnlyList<LCatalogSituation> read;
@@ -101,6 +110,8 @@ public partial class PRepertoire
         }
 
         PAtlasEmpty.Visibility = _pAtlasList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PAtlasSelect(_pVignetteSituation);
 
         if (!kept && _pVignetteSituation is not null && PScenario.Visibility != Visibility.Visible)
         {
@@ -149,6 +160,7 @@ public partial class PRepertoire
         }
 
         _pVignetteSituation = id;
+        PAtlasSelect(id);
 
         PVignetteValueShow(PVignetteTitle, situation.LSituationTitle);
         PVignetteValueShow(PVignetteKind, situation.LSituationKind);
@@ -411,6 +423,7 @@ public partial class PRepertoire
 
         _pScenarioDraft = string.Empty;
         _pVignetteSituation = stored.LSituationId;
+        PAtlasSelect(stored.LSituationId);
 
         PAtlasFind(PInquest.Text ?? string.Empty);
         PRepertoireScribeShow(false);
@@ -456,6 +469,7 @@ public partial class PRepertoire
         PScenarioDraftCancel();
 
         _pVignetteSituation = null;
+        PAtlasSelect(null);
         _pOccurrenceList.Clear();
 
         PVignetteBody.Visibility = Visibility.Collapsed;

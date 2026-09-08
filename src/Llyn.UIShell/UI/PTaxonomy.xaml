@@ -6,110 +6,99 @@
     xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf"
     >
 
+    <UserControl.Resources>
+        <Style x:Key="Theme.Directory.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PDirectoryItemChosen}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                    <Setter Property="BorderThickness" Value="3,0,0,0" />
+                    <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                    <Setter Property="Padding" Value="9,9,12,9" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="PFunnel" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="44" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <ToggleButton
-                x:Name="PFunnelDropper"
-                Grid.Column="0"
-                Width="44"
-                Height="44"
-                Padding="0"
-                ToolTip="{DynamicResource Funnel.Title}">
-                <ToggleButton.Style>
-                    <Style BasedOn="{StaticResource Theme.Input.ToggleAction}" TargetType="ToggleButton">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-                <Grid Width="16" Height="14">
-
+        <Border
+            x:Name="PFunnel"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="0,0,20,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton
+                    x:Name="PFunnelDropper"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Funnel.Title}">
                     <Canvas Width="16" Height="14">
                         <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                         <Rectangle Canvas.Left="2.5" Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                         <Rectangle Canvas.Left="5" Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                     </Canvas>
-                </Grid>
-            </ToggleButton>
-            <Popup
-                x:Name="PFunnelDropdown"
-                Width="252"
-                AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=PFunnelDropper}"
-                Placement="Bottom"
-                PlacementTarget="{Binding ElementName=PFunnelDropper}"
-                StaysOpen="False"
-                VerticalOffset="6">
-                <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
-                    <StackPanel>
-                        <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Funnel.Title}" />
+                </ToggleButton>
+                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                <TextBox
+                    x:Name="PExploration"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource Tag.Search}"
+                    TextChanged="PExplorationHandle" />
+                <Popup
+                    x:Name="PFunnelDropdown"
+                    Width="252"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PFunnelDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PFunnel}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Padding="8" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Funnel.Title}" />
 
-                        <RadioButton GroupName="PFunnelChoice" IsChecked="True" Click="PFunnelHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name" Content="{DynamicResource Funnel.Name}" />
-                        <RadioButton GroupName="PFunnelChoice" Click="PFunnelHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Funnel.Reverse}" />
-                    </StackPanel>
-                </Border>
-            </Popup>
-            <TextBox
-                x:Name="PExploration"
-                Grid.Column="2"
-                Height="44"
-                Style="{StaticResource Theme.Input.Field}"
-                Tag="{DynamicResource Tag.Search}"
-                TextChanged="PExplorationHandle" />
-        </Grid>
-
-        <Border Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
-            <Grid>
-                <ScrollViewer Margin="10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl x:Name="PDirectory">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="0,0,0,6" Click="PDirectoryHandle">
-                                    <Button.Style>
-                                        <Style BasedOn="{StaticResource Theme.Choice.Row}" TargetType="Button">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding PDirectoryItemChosen}" Value="True">
-                                                    <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                                                    <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
-                                                    <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                    <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold" Text="{Binding PDirectoryItemText}" TextTrimming="CharacterEllipsis" />
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-                <TextBlock
-                    x:Name="PDirectoryEmpty"
-                    Margin="22"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Foreground="{StaticResource Theme.Muted}"
-                    IsHitTestVisible="False"
-                    Text="{DynamicResource Tag.Empty}"
-                    TextWrapping="Wrap" />
+                            <RadioButton GroupName="PFunnelChoice" IsChecked="True" Click="PFunnelHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name" Content="{DynamicResource Funnel.Name}" />
+                            <RadioButton GroupName="PFunnelChoice" Click="PFunnelHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Funnel.Reverse}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
             </Grid>
         </Border>
+
+        <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="PDirectory" Margin="0,0,4,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PDirectoryHandle" Style="{StaticResource Theme.Directory.Row}">
+                                <TextBlock Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PDirectoryItemText}" />
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PDirectoryEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Tag.Empty}" />
+        </Grid>
 
         <Border Grid.Row="1" Grid.Column="1" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
             <Grid>

@@ -6,11 +6,17 @@
     >
 
     <UserControl.Resources>
-        <Style x:Key="Theme.Shelf.Meta" TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Style x:Key="Theme.Shelf.Meta" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}" />
+
+        <Style x:Key="Theme.Shelf.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PShelfItemChosen}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                    <Setter Property="BorderThickness" Value="3,0,0,0" />
+                    <Setter Property="Padding" Value="9,9,12,9" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="Theme.Colophon.Label" TargetType="TextBlock">
@@ -59,64 +65,61 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="420" />
+            <ColumnDefinition Width="380" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="PGrade" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="44" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <ToggleButton
-                x:Name="PGradeDropper"
-                Grid.Column="0"
-                Width="44"
-                Height="44"
-                Padding="0"
-                ToolTip="{DynamicResource Grade.Title}">
-                <ToggleButton.Style>
-                    <Style BasedOn="{StaticResource Theme.Input.ToggleAction}" TargetType="ToggleButton">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
-                <Canvas Width="16" Height="13">
-                    <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                    <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                    <Rectangle Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                </Canvas>
-            </ToggleButton>
-            <Popup
-                x:Name="PGradeDropdown"
-                Width="238"
-                AllowsTransparency="True"
-                IsOpen="{Binding IsChecked, ElementName=PGradeDropper, Mode=TwoWay}"
-                Placement="Bottom"
-                PlacementTarget="{Binding ElementName=PGradeDropper}"
-                StaysOpen="False">
-                <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                    <StackPanel>
-                        <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Grade.Title}" />
-                        <RadioButton GroupName="PGradeChoice" IsChecked="True" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name" Content="{DynamicResource Grade.Name}" />
-                        <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Year" Content="{DynamicResource Grade.Year}" />
-                        <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Author" Content="{DynamicResource Grade.Author}" />
-                        <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Grade.Usage}" />
-                    </StackPanel>
-                </Border>
-            </Popup>
-            <TextBox
-                x:Name="PSurvey"
-                Grid.Column="2"
-                Height="44"
-                Style="{StaticResource Theme.Input.Field}"
-                Tag="{DynamicResource Source.Search}"
-                TextChanged="PSurveyHandle" />
-        </Grid>
+        <Border
+            x:Name="PGrade"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="0,0,20,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ToggleButton
+                    x:Name="PGradeDropper"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Grade.Title}">
+                    <Canvas Width="16" Height="13">
+                        <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
+                        <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
+                        <Rectangle Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
+                    </Canvas>
+                </ToggleButton>
+                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                <TextBox
+                    x:Name="PSurvey"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource Source.Search}"
+                    TextChanged="PSurveyHandle" />
+                <Popup
+                    x:Name="PGradeDropdown"
+                    Width="238"
+                    AllowsTransparency="True"
+                    IsOpen="{Binding IsChecked, ElementName=PGradeDropper, Mode=TwoWay}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PGrade}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Grade.Title}" />
+                            <RadioButton GroupName="PGradeChoice" IsChecked="True" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name" Content="{DynamicResource Grade.Name}" />
+                            <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Year" Content="{DynamicResource Grade.Year}" />
+                            <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Author" Content="{DynamicResource Grade.Author}" />
+                            <RadioButton GroupName="PGradeChoice" Click="PGradeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Grade.Usage}" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
 
         <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
             <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
@@ -165,45 +168,38 @@
             </Border>
         </Grid>
 
-        <Border Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
-            <Grid>
-                <ScrollViewer Margin="10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl x:Name="PShelf">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="0,0,0,6" Click="PShelfHandle" Style="{StaticResource Theme.Choice.Row}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel>
-                                            <TextBlock FontSize="15" Text="{Binding PShelfItemName}" TextTrimming="CharacterEllipsis" />
-                                            <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
-                                                <TextBlock MaxWidth="240" Style="{StaticResource Theme.Shelf.Meta}" Text="{Binding PShelfItemAuthor}" />
-                                                <TextBlock Margin="9,0,0,0" Style="{StaticResource Theme.Shelf.Meta}" Text="{Binding PShelfItemYear}" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                        <Border Grid.Column="1" Margin="10,0,0,0" Padding="8,2" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="7">
-                                            <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PShelfItemCount}" />
-                                        </Border>
-                                    </Grid>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-                <TextBlock
-                    x:Name="PShelfEmpty"
-                    Margin="22"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Foreground="{StaticResource Theme.Muted}"
-                    IsHitTestVisible="False"
-                    Text="{DynamicResource Source.Empty}"
-                    TextWrapping="Wrap" />
-            </Grid>
-        </Border>
+        <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="PShelf" Margin="0,0,4,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PShelfHandle" Style="{StaticResource Theme.Shelf.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PShelfItemName}" />
+                                    <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                                        <TextBlock MaxWidth="220" Style="{StaticResource Theme.Shelf.Meta}" Text="{Binding PShelfItemAuthor}" />
+                                        <TextBlock Style="{StaticResource Theme.Catalog.Dot}" />
+                                        <TextBlock Style="{StaticResource Theme.Shelf.Meta}" Text="{Binding PShelfItemYear}" />
+                                    </StackPanel>
+                                    <Border Grid.Column="2" Style="{StaticResource Theme.Catalog.Pellet}">
+                                        <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PShelfItemCount}" />
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PShelfEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Source.Empty}" />
+        </Grid>
 
         <Border Grid.Row="1" Grid.Column="1" ClipToBounds="True" Style="{StaticResource Theme.Input.Card}">
             <Grid>

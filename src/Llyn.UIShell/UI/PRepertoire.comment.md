@@ -1,8 +1,8 @@
-# PRepertoire.xaml
+﻿# PRepertoire.xaml
 
-## `<Grid x:Name="PTier" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
+## `<Border x:Name="PTier" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The ordering button and the search field share the catalog column, so their combined edge is the catalog's.
+The ordering button and the search field are one bordered control over the catalog column.
 The action row over the broader column stands in the same top row, as the library panel arranges it.
 
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`

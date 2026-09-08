@@ -1,10 +1,10 @@
-# PReference.xaml
+﻿# PReference.xaml
 
-## `<Grid x:Name="PGrade" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
+## `<Border x:Name="PGrade" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The ordering button and the search field share the catalog column, so their combined edge is the catalog's.
+The ordering button and the search field are one bordered control over the catalog column.
 The action row over the broader column stands in the same top row, as the corpus panel arranges it.
-The catalog column takes 420, because a row carries a name over an author-and-year line.
+The catalog column takes 380, because a row carries a name over an author-and-year line.
 
 ## `<Popup x:Name="PGradeDropdown" ...>`
 

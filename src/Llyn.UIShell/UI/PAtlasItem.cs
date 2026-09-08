@@ -1,9 +1,12 @@
+﻿using System.ComponentModel;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-internal sealed class PAtlasItem
+internal sealed class PAtlasItem : INotifyPropertyChanged
 {
+    private bool _pAtlasItemChosen;
+
     internal PAtlasItem(LSituation situation, int usage, string unreadable, string untitled)
     {
         PAtlasItemId = situation.LSituationId;
@@ -28,5 +31,23 @@ internal sealed class PAtlasItem
             LState.LStateUnknown => unreadable,
             _ => null,
         };
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public bool PAtlasItemChosen
+    {
+        get => _pAtlasItemChosen;
+
+        set
+        {
+            if (_pAtlasItemChosen == value)
+            {
+                return;
+            }
+
+            _pAtlasItemChosen = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PAtlasItemChosen)));
+        }
     }
 }

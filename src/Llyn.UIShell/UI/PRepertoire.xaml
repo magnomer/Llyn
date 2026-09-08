@@ -6,14 +6,21 @@
     >
 
     <UserControl.Resources>
-        <Style x:Key="Theme.Atlas.Kind" TargetType="TextBlock">
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Style x:Key="Theme.Atlas.Kind" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding PAtlasItemKind}" Value="">
                     <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Theme.Atlas.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PAtlasItemChosen}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                    <Setter Property="BorderThickness" Value="3,0,0,0" />
+                    <Setter Property="Padding" Value="9,9,12,9" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -41,46 +48,43 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="320" />
+            <ColumnDefinition Width="360" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="PTier" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">
+        <Border
+            x:Name="PTier"
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="0,0,20,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="44" />
-                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <ToggleButton
                 x:Name="PTierDropper"
                 Grid.Column="0"
-                Width="44"
-                Height="44"
-                Padding="0"
+                Style="{StaticResource Theme.Search.Dropper}"
                 ToolTip="{DynamicResource Tier.Title}">
-                <ToggleButton.Style>
-                    <Style BasedOn="{StaticResource Theme.Input.ToggleAction}" TargetType="ToggleButton">
-                        <Style.Triggers>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ToggleButton.Style>
                 <Canvas Width="16" Height="13">
                     <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                     <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                     <Rectangle Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
                 </Canvas>
             </ToggleButton>
+            <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
             <Popup
                 x:Name="PTierDropdown"
                 Width="238"
                 AllowsTransparency="True"
                 IsOpen="{Binding IsChecked, ElementName=PTierDropper, Mode=TwoWay}"
                 Placement="Bottom"
-                PlacementTarget="{Binding ElementName=PTierDropper}"
-                StaysOpen="False">
+                PlacementTarget="{Binding ElementName=PTier}"
+                StaysOpen="False"
+                VerticalOffset="6">
                 <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                     <StackPanel>
                         <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Tier.Title}" />
@@ -93,11 +97,11 @@
             <TextBox
                 x:Name="PInquest"
                 Grid.Column="2"
-                Height="44"
-                Style="{StaticResource Theme.Input.Field}"
+                Style="{StaticResource Theme.Search.Field}"
                 Tag="{DynamicResource Situation.Search}"
                 TextChanged="PInquestHandle" />
-        </Grid>
+            </Grid>
+        </Border>
 
         <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
             <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
@@ -146,42 +150,34 @@
             </Border>
         </Grid>
 
-        <Border Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Style="{StaticResource Theme.Input.Card}">
-            <Grid>
-                <ScrollViewer Margin="10" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl x:Name="PAtlas">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="0,0,0,6" Click="PAtlasHandle" Style="{StaticResource Theme.Choice.Row}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <StackPanel>
-                                            <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PAtlasItemTitle}" TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Margin="0,2,0,0" Style="{StaticResource Theme.Atlas.Kind}" Text="{Binding PAtlasItemKind}" />
-                                        </StackPanel>
-                                        <Border Grid.Column="1" Margin="10,0,0,0" Padding="8,2" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="7">
-                                            <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PAtlasItemCount}" />
-                                        </Border>
-                                    </Grid>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-                <TextBlock
-                    x:Name="PAtlasEmpty"
-                    Margin="22"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Foreground="{StaticResource Theme.Muted}"
-                    IsHitTestVisible="False"
-                    Text="{DynamicResource Situation.Empty}"
-                    TextWrapping="Wrap" />
-            </Grid>
-        </Border>
+        <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,20,0">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="PAtlas" Margin="0,0,4,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PAtlasHandle" Style="{StaticResource Theme.Atlas.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PAtlasItemTitle}" />
+                                    <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Atlas.Kind}" Text="{Binding PAtlasItemKind}" />
+                                    <Border Grid.Column="2" Style="{StaticResource Theme.Catalog.Pellet}">
+                                        <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PAtlasItemCount}" />
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PAtlasEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Situation.Empty}" />
+        </Grid>
 
         <Border Grid.Row="1" Grid.Column="1" ClipToBounds="True" Style="{StaticResource Theme.Input.Card}">
             <Grid>

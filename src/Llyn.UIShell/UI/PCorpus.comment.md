@@ -1,8 +1,8 @@
-# PCorpus.xaml
+﻿# PCorpus.xaml
 
-## `<Grid x:Name="PRank" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
+## `<Border x:Name="PRank" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The ordering button and the search field share the catalog column, so their combined edge is the catalog's.
+The ordering button and the search field are one bordered control over the catalog column.
 The action row over the broader column stands in the same top row, as the repertoire panel arranges it.
 The catalog column is wider than the entry panels take, because it holds sentences rather than headwords.
 

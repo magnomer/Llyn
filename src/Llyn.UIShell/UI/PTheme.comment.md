@@ -1,4 +1,4 @@
-﻿# PTheme.xaml
+# PTheme.xaml
 
 ## `<Style TargetType="ScrollBar">`
 
@@ -301,3 +301,40 @@ They offer what the language has saved and are framed only under the pointer.
 The frame is drawn outward, so a field being pointed at or written in never moves the sentence beside it.
 The frame is closed onto the text it rings, clearing it by a hairline and no more.
 A marker and a role are parted by one space, so a frame drawn outward crosses the word beside it.
+
+## `<Style x:Key="Theme.Search.Bar" TargetType="Border">`
+
+The ground every panel's ordering control and search field stand on together.
+One outline rings both, so the pair reads as one control rather than a button beside a box.
+The outline answers the keyboard focus of whatever is inside it, because the field itself is drawn bare.
+The bar is the placement target of the ordering dropdown, so the dropdown falls from the whole control.
+
+## `<Style x:Key="Theme.Search.Dropper" TargetType="ToggleButton">`
+
+The ordering button as it stands inside the bar, with no frame and no ground of its own.
+It takes a soft ground only under the pointer or while its dropdown is open.
+It is unfocusable, so tabbing into the bar reaches the field the user came to type in.
+
+## `<Style x:Key="Theme.Search.Field" TargetType="TextBox">`
+
+The search field inside the bar, on one line and without a frame.
+It takes the plain template, which draws the placeholder but no frame of its own.
+The bar around it already frames the dropper, the divider and the field as one control.
+
+## `<Style x:Key="Theme.Catalog.Row" TargetType="Button">`
+
+One row of a panel's catalog, drawn on nothing until it is pointed at.
+The catalogs carry no card of their own, so a bordered row would stack a frame inside a frame.
+A row shows its subject over a quieter line of what tells it apart.
+The row the panel stands on is painted by the panel, which adds an accent edge along its leading side.
+That edge is a border rather than a bar, so the row is marked without another element inside it.
+
+## `<Style x:Key="Theme.Catalog.Pellet" TargetType="Border">`
+
+The count at the far end of a catalog row, held in a quiet capsule.
+It is muted rather than accented, because the accent is what marks the chosen row.
+
+## `<Style x:Key="Theme.Catalog.Empty" TargetType="TextBlock">`
+
+The line that says a catalog holds nothing, lying over the rows that are not there.
+It never takes the pointer, so a click through it still reaches the catalog.

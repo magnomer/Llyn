@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -55,6 +55,15 @@ public partial class PFavorite
         PRosterFind(PRecall.Text ?? string.Empty);
     }
 
+    private void PRosterSelect(string? id)
+    {
+        foreach (PRosterItem item in _pRosterList)
+        {
+            item.PRosterItemChosen = id is not null
+                && string.Equals(item.PRosterItemId, id, StringComparison.Ordinal);
+        }
+    }
+
     private void PRosterFind(string query)
     {
         IReadOnlyList<LFavorite> favorites;
@@ -78,6 +87,8 @@ public partial class PFavorite
         }
 
         PRosterEmpty.Visibility = _pRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PRosterSelect(_pRosterEntry);
     }
 
     private void PRosterHandle(object sender, RoutedEventArgs e)
@@ -116,6 +127,7 @@ public partial class PFavorite
         }
 
         _pRosterEntry = id;
+        PRosterSelect(id);
         PFavoriteBin.IsEnabled = true;
         PFavoriteEntryShow(id, draft);
 
@@ -130,6 +142,7 @@ public partial class PFavorite
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pRosterEntry = id;
+            PRosterSelect(id);
         PFavoriteBin.IsEnabled = true;
         }
 
@@ -237,6 +250,7 @@ public partial class PFavorite
     private void PFavoriteClear()
     {
         _pRosterEntry = null;
+        PRosterSelect(null);
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PFavoriteScribeShow(false);

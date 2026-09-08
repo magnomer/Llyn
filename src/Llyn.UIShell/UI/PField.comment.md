@@ -45,3 +45,12 @@ Pulling the host back by those two pixels lands the written word on the read wor
 
 The frame is named for the template's own triggers and for whatever must hang off it from outside.
 The Situation dropdown is placed against it, so the name is shared rather than written twice.
+
+## `private static ControlTemplate PFieldPlainBuild()`
+
+Builds the field a search bar writes into.
+A search bar already draws its own frame around the dropper, the divider and the field together.
+The bare template would draw a second frame inside that one on hover and focus.
+The reader saw a blue box nested in a blue box and read it as two controls.
+So this template carries the placeholder and the text host alone and leaves the framing to the bar.
+It is registered under "Theme.Input.Field.Plain", which the "Theme.Search.Field" style binds to.

@@ -1,8 +1,9 @@
-# PFavorite.xaml
+﻿# PFavorite.xaml
 
-## `<Grid x:Name="PSeries" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
+## `<Border x:Name="PSeries" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The sort control and the search field share the roster column, so their edge matches the catalog below.
+The sort control and the search field are one bordered control over the roster column.
+Its edge matches the catalog below, and the outline around both is drawn once.
 The panel has no new-record button, because an entry is written in the input tab and never here.
 
 ## `<local:PDisplay x:Name="PDisplay" />`

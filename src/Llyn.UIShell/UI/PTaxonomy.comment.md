@@ -1,4 +1,4 @@
-# PTaxonomy.xaml
+﻿# PTaxonomy.xaml
 
 ## `<Grid Margin="34,20,34,38">`
 
@@ -7,10 +7,10 @@ The library panel asks for an entry by its headword.
 This panel asks for it by a label somebody put on one of its cards.
 So the catalog here is a tag, and the entry list beside it is what that tag holds.
 
-## `<Grid x:Name="PFunnel" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
+## `<Border x:Name="PFunnel" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The sorting button and the search field share the tag column.
-Their combined edge is the same as the catalog below.
+The sorting button and the search field are one bordered control over the tag column.
+Their shared edge is the same as the catalog below.
 Both act on the tag catalog and nothing else.
 The membership list has no toolbar because it is not searched.
 It is what the chosen tag decides it is.

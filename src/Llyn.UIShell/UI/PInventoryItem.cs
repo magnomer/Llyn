@@ -1,9 +1,12 @@
+﻿using System.ComponentModel;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
 
-internal sealed class PInventoryItem
+internal sealed class PInventoryItem : INotifyPropertyChanged
 {
+    private bool _pInventoryItemChosen;
+
     internal PInventoryItem(string id, string headword, string language, string sound)
     {
         PInventoryItemId = id;
@@ -25,4 +28,22 @@ internal sealed class PInventoryItem
     public string PInventoryItemPronunciation { get; }
 
     public ImageSource? PInventoryItemFlag { get; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public bool PInventoryItemChosen
+    {
+        get => _pInventoryItemChosen;
+
+        set
+        {
+            if (_pInventoryItemChosen == value)
+            {
+                return;
+            }
+
+            _pInventoryItemChosen = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PInventoryItemChosen)));
+        }
+    }
 }

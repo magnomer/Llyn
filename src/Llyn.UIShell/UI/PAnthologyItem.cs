@@ -1,11 +1,14 @@
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-internal sealed class PAnthologyItem
+internal sealed class PAnthologyItem : INotifyPropertyChanged
 {
+    private bool _pAnthologyItemChosen;
+
     internal PAnthologyItem(LExample example, int usage, string source, string unreadable, string unwritten)
     {
         PAnthologyItemId = example.LExampleId;
@@ -36,5 +39,23 @@ internal sealed class PAnthologyItem
             LState.LStateUnknown => unreadable,
             _ => null,
         };
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public bool PAnthologyItemChosen
+    {
+        get => _pAnthologyItemChosen;
+
+        set
+        {
+            if (_pAnthologyItemChosen == value)
+            {
+                return;
+            }
+
+            _pAnthologyItemChosen = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PAnthologyItemChosen)));
+        }
     }
 }

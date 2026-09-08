@@ -94,3 +94,9 @@ An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.
+
+### `private void PRosterSelect(string? id)`
+
+Marks the catalog row the panel stands on and clears the mark from every other row.
+A null id leaves no row marked, which is what a cleared panel shows.
+It is called wherever the shown entry changes, so the mark and the right-hand side never disagree.

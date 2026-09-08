@@ -1,8 +1,10 @@
-# PLibrary.xaml
+﻿# PLibrary.xaml
 
-## `<Grid x:Name="POrder" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
+## `<Border x:Name="POrder" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The two controls share the index column, so their combined edge is the same as the catalog below.
+The ordering button and the search field are one bordered control rather than two boxes.
+The bar owns the ground, the outline and the focus ring, so both children are drawn bare.
+Its width is the index column's, so its edge is the same as the catalog below.
 The viewer deliberately has no control in this row.
 
 ## `<local:PDisplay x:Name="PDisplay" />`

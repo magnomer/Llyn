@@ -1,4 +1,4 @@
-# PShelfItem.cs
+﻿# PShelfItem.cs
 
 ## `internal sealed class PShelfItem`
 
@@ -26,3 +26,9 @@ The read area shows the same line, so the rule lives here rather than twice.
 How many Entries and Examples cite this Source, as the row shows it.
 It is the figure that decides whether a delete is legal.
 The catalog carries it and not only the editor.
+
+## `public bool PShelfItemChosen`
+
+Whether this row is the one the panel stands on, which the row template paints an accent edge for.
+It is the only value of the row that changes after the row is built.
+The panel sets it instead of refilling the list, so the catalog keeps its scroll position.

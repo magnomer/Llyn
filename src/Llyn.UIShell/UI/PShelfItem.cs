@@ -1,11 +1,14 @@
+﻿using System.ComponentModel;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-internal sealed class PShelfItem
+internal sealed class PShelfItem : INotifyPropertyChanged
 {
+    private bool _pShelfItemChosen;
+
     internal PShelfItem(LCatalogReference row, string unreadable, string unset)
     {
         LReference reference = row.LCatalogReferenceStored;
@@ -55,5 +58,23 @@ internal sealed class PShelfItem
             LState.LStateUnknown => unreadable,
             _ => null,
         };
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public bool PShelfItemChosen
+    {
+        get => _pShelfItemChosen;
+
+        set
+        {
+            if (_pShelfItemChosen == value)
+            {
+                return;
+            }
+
+            _pShelfItemChosen = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PShelfItemChosen)));
+        }
     }
 }

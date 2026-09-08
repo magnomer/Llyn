@@ -1,10 +1,10 @@
-# PPhonology.xaml
+﻿# PPhonology.xaml
 
-## `<Grid x:Name="PSequence" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
+## `<Border x:Name="PSequence" ... Style="{StaticResource Theme.Search.Bar}">`
 
-The ordering button and the search field share the inventory column.
-So their combined edge is the same as the catalog below them.
-The library panel arranges its own two controls the same way.
+The ordering button and the search field are one bordered control over the inventory column.
+The library panel joins its own two controls the same way.
+The articulation fold stands outside this bar, because it shapes the editor rather than the catalog.
 
 ## `<ToggleButton x:Name="PArticulationHelper" ... />`
 

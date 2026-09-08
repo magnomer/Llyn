@@ -15,11 +15,13 @@ internal static class PField
 
     private const string PFieldTemplateKey = "Theme.Input.Field.Template";
     private const string PFieldBareKey = "Theme.Input.Field.Bare";
+    private const string PFieldPlainKey = "Theme.Input.Field.Plain";
 
     internal static void PFieldApply(ResourceDictionary resources)
     {
         resources[PFieldTemplateKey] = PFieldTemplateBuild();
         resources[PFieldBareKey] = PFieldBareBuild();
+        resources[PFieldPlainKey] = PFieldPlainBuild();
     }
 
     private static MultiBinding PFieldInsetBuild()
@@ -74,6 +76,42 @@ internal static class PField
 
         var pFocusTrigger = new Trigger { Property = UIElement.IsKeyboardFocusedProperty, Value = true };
         pFocusTrigger.Setters.Add(new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Accent"), PFieldSurfaceName));
+        pFocusTrigger.Setters.Add(new Setter(UIElement.OpacityProperty, 0.36, PFieldPlaceholderName));
+        pTemplate.Triggers.Add(pFocusTrigger);
+
+        pTemplate.Seal();
+        return pTemplate;
+    }
+
+    private static ControlTemplate PFieldPlainBuild()
+    {
+        var pTemplate = new ControlTemplate(typeof(TextBox));
+
+        var pRoot = new FrameworkElementFactory(typeof(Grid));
+
+        var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), PFieldPlaceholderName);
+        pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
+        pPlaceholder.SetValue(TextBlock.PaddingProperty, PFieldPlaceholderInset);
+        pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
+        pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
+        pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
+        pPlaceholder.SetValue(UIElement.OpacityProperty, 0.56);
+        pPlaceholder.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(FrameworkElement.TagProperty));
+        pPlaceholder.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
+        pPlaceholder.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
+
+        var pContent = new FrameworkElementFactory(typeof(ScrollViewer), "PART_ContentHost");
+        pContent.SetValue(FrameworkElement.MarginProperty, new Thickness(-2, 0, 0, 0));
+
+        pRoot.AppendChild(pPlaceholder);
+        pRoot.AppendChild(pContent);
+        pTemplate.VisualTree = pRoot;
+
+        var pEmptyTrigger = new Trigger { Property = TextBox.TextProperty, Value = string.Empty };
+        pEmptyTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible, PFieldPlaceholderName));
+        pTemplate.Triggers.Add(pEmptyTrigger);
+
+        var pFocusTrigger = new Trigger { Property = UIElement.IsKeyboardFocusedProperty, Value = true };
         pFocusTrigger.Setters.Add(new Setter(UIElement.OpacityProperty, 0.36, PFieldPlaceholderName));
         pTemplate.Triggers.Add(pFocusTrigger);
 
