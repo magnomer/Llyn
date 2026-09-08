@@ -311,7 +311,7 @@ public sealed class TMarkupImport
         LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LCardDraft card = Assert.Single(draft.LEntryDraftMeanings);
 
-        Assert.Equal(["media/wait.mp4"], card.LCardDraftVideo.Select(video => video.TStateValueShow()));
+        Assert.Equal(["media/wait.mp4"], card.LCardDraftVideo.Select(video => video.LVideoDraftLocation.TStateValueShow()));
         Assert.Equal(2, card.LCardDraftExample.Count);
 
         LExampleDraft waited = card.LCardDraftExample[0];

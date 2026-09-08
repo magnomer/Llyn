@@ -56,6 +56,11 @@ A blank headword is refused, and that is the moment the user most needs what the
 Moving one card reorders the list and renumbers every position contiguously from `1`.
 The renumbered cards are both returned to the caller and written to the file, so the form and the folder never disagree.
 
+## `public void DraftCheck_OnlyVideoAdded_ReportsChanged()`
+
+A card given nothing but a video reads as changed against the entry it was opened from.
+The comparison decides whether the editor offers to store at all, so a field it skips is a field the user cannot save.
+
 ## `public void LeftoverRead_DraftStillHeldOpen_PassesOverIt()`
 
 An engine never offers back the drafts it started itself, and a fresh engine over the same folder offers every one that was left changed.

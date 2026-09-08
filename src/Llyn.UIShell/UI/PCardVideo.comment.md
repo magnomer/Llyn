@@ -1,4 +1,4 @@
-# PCardVideo.cs
+﻿# PCardVideo.cs
 
 ## `internal sealed partial class PCard`
 
@@ -6,13 +6,14 @@ The Video rows a card carries.
 A Video is kept with the card exactly as an Image is.
 A card that is saved and opened again shows the videos it was saved with.
 
-## `internal void PCardVideoShow(IReadOnlyList<LStateValue> locations)`
+## `internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows)`
 
-Fills the rows from a stored card, one row per location, in the order given.
+Fills the rows from a stored card, one row per video, in the order given.
 
-## `internal IReadOnlyList<LStateValue> PCardVideoRead()`
+## `internal IReadOnlyList<LVideoDraft> PCardVideoRead()`
 
-The locations the rows state, skipping every row nothing was written in.
+What the rows state, skipping every row that names no video.
+A span without a location points at nothing, so it never keeps a row alive.
 
 ## `internal void PCardVideoAdd()`
 

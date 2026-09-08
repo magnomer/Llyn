@@ -154,9 +154,10 @@ public sealed partial class LEngine
 
         LVideoArchive videos = new(_lEngineDatabase);
         position = 0;
-        foreach (LStateValue location in LEngineFieldRead(card.LCardDraftVideo))
+        foreach (LVideoDraft row in LEngineVideoRead(card.LCardDraftVideo))
         {
-            LVideo video = videos.LVideoCreate(new LVideo(string.Empty, location));
+            LVideo video = videos.LVideoCreate(
+                new LVideo(string.Empty, row.LVideoDraftLocation, row.LVideoDraftSpan));
             if (collocation)
             {
                 videos.LVideoCollocationAttach(ownerId, video.LVideoId, position);
@@ -183,7 +184,7 @@ public sealed partial class LEngine
                 LEngineTagCheck(card.LCardDraftTag) ||
                 LEngineTranslationCheck(card.LCardDraftTranslation) ||
                 LEngineFieldCheck(card.LCardDraftImage) ||
-                LEngineFieldCheck(card.LCardDraftVideo))
+                LEngineVideoCheck(card.LCardDraftVideo))
             {
                 yield return card;
             }
@@ -340,6 +341,30 @@ public sealed partial class LEngine
         }
 
         return false;
+    }
+
+    private static bool LEngineVideoCheck(IReadOnlyList<LVideoDraft> rows)
+    {
+        foreach (LVideoDraft row in rows)
+        {
+            if (!row.LVideoDraftEmpty)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    internal static IEnumerable<LVideoDraft> LEngineVideoRead(IReadOnlyList<LVideoDraft> rows)
+    {
+        foreach (LVideoDraft row in rows)
+        {
+            if (!row.LVideoDraftEmpty)
+            {
+                yield return row;
+            }
+        }
     }
 
     private static bool LEngineFieldCheck(IReadOnlyList<LStateValue> texts)

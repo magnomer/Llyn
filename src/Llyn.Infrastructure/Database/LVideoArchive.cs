@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -25,9 +25,13 @@ public sealed class LVideoArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "INSERT INTO video (id, location_state, location) VALUES ($id, $locationState, $location);";
+                """
+                INSERT INTO video (id, location_state, location, span_state, span)
+                VALUES ($id, $locationState, $location, $spanState, $span);
+                """;
             command.Parameters.AddWithValue("$id", stored.LVideoId);
             LStateColumn.LStateColumnApply(command, "location", stored.LVideoLocation);
+            LStateColumn.LStateColumnApply(command, "span", stored.LVideoSpan);
             command.ExecuteNonQuery();
         }
 
@@ -62,8 +66,14 @@ public sealed class LVideoArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE video SET location_state = $locationState, location = $location WHERE id = $id;";
+                """
+                UPDATE video
+                SET location_state = $locationState, location = $location,
+                    span_state = $spanState, span = $span
+                WHERE id = $id;
+                """;
             LStateColumn.LStateColumnApply(command, "location", video.LVideoLocation);
+            LStateColumn.LStateColumnApply(command, "span", video.LVideoSpan);
             command.Parameters.AddWithValue("$id", video.LVideoId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -204,7 +214,7 @@ public sealed class LVideoArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT video.id, video.location_state, video.location
+            SELECT video.id, video.location_state, video.location, video.span_state, video.span
             FROM {table} link
             JOIN video ON video.id = link.video_id
             WHERE link.{column} = $referrer
@@ -216,7 +226,10 @@ public sealed class LVideoArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            videos.Add(new LVideo(reader.GetString(0), LStateColumn.LStateColumnRead(reader, 1)));
+            videos.Add(new LVideo(
+                reader.GetString(0),
+                LStateColumn.LStateColumnRead(reader, 1),
+                LStateColumn.LStateColumnRead(reader, 3)));
         }
 
         return videos;
@@ -225,7 +238,7 @@ public sealed class LVideoArchive
     private static LVideo? LVideoSingleRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT location_state, location FROM video WHERE id = $id;";
+        command.CommandText = "SELECT location_state, location, span_state, span FROM video WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
         if (!reader.Read())
@@ -233,6 +246,7 @@ public sealed class LVideoArchive
             return null;
         }
 
-        return new LVideo(id, LStateColumn.LStateColumnRead(reader, 0));
+        return new LVideo(
+            id, LStateColumn.LStateColumnRead(reader, 0), LStateColumn.LStateColumnRead(reader, 2));
     }
 }

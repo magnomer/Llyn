@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 27;
+    public const long LSchemaMigrationVersion = 28;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -111,7 +111,29 @@ public static class LSchemaMigration
             LSchemaFrameNormalize(connection, "collocation_example", "collocation_id", "collocation");
         }
 
+        if (stored < 28)
+        {
+            LSchemaVideoNormalize(connection);
+        }
+
         LSchemaVersionSave(connection);
+    }
+
+    private static void LSchemaVideoNormalize(SqliteConnection connection)
+    {
+        if (LSchemaColumnFind(connection, "video", "span"))
+        {
+            return;
+        }
+
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            ALTER TABLE video ADD COLUMN span_state TEXT NOT NULL DEFAULT 'unspecified';
+
+            ALTER TABLE video ADD COLUMN span TEXT;
+            """;
+        command.ExecuteNonQuery();
     }
 
     private static void LSchemaTranslationNormalize(SqliteConnection connection)

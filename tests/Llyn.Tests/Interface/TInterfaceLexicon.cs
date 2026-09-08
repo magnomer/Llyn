@@ -23,10 +23,13 @@ internal static partial class TInterface
         IReadOnlyList<LStateValue> image,
         int position,
         string id = "",
-        IReadOnlyList<LStateValue>? video = null) =>
+        IReadOnlyList<LVideoDraft>? video = null) =>
         new(
             title, expression, meaning, example, situation, translation, synonym, tag, image,
             video ?? [], position, id);
+
+    internal static LVideoDraft TVideoDraftCreate(string location, string span = "") =>
+        new(LStateValue.LStateValueRead(location), LStateValue.LStateValueRead(span));
 
     internal static LCollocation TCollocationCreate(
         string id,

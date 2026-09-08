@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 using Llyn.Core;
@@ -9,22 +9,25 @@ internal sealed class PVideo : INotifyPropertyChanged
 {
     private string _pVideoLocation = string.Empty;
     private bool _pVideoUnreadable;
+    private bool _pVideoUnwritten;
     private string _pVideoTimestamp = string.Empty;
     private Uri? _pVideoPreview;
     private TimeSpan _pVideoFrom = TimeSpan.Zero;
     private TimeSpan? _pVideoUntil;
-    private bool _pVideoPlaying = true;
+    private bool _pVideoPlaying;
 
     internal PVideo()
     {
     }
 
-    internal PVideo(LStateValue location)
+    internal PVideo(LVideoDraft written)
     {
-        ArgumentNullException.ThrowIfNull(location);
+        ArgumentNullException.ThrowIfNull(written);
 
-        PVideoLocation = location.LStateValueShow();
-        PVideoUnreadable = location.LStateValueState == LState.LStateUnknown;
+        PVideoLocation = written.LVideoDraftLocation.LStateValueShow();
+        PVideoUnreadable = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
+        PVideoTimestamp = written.LVideoDraftSpan.LStateValueShow();
+        _pVideoUnwritten = written.LVideoDraftSpan.LStateValueState == LState.LStateUnknown;
     }
 
     public bool PVideoUnreadable
@@ -72,6 +75,7 @@ internal sealed class PVideo : INotifyPropertyChanged
             }
 
             _pVideoTimestamp = chosen;
+            _pVideoUnwritten = false;
             PVideoRaise(nameof(PVideoTimestamp));
             PVideoTimestampApply(chosen);
         }
@@ -137,9 +141,11 @@ internal sealed class PVideo : INotifyPropertyChanged
         }
     }
 
-    internal LStateValue PVideoLocationRead()
+    internal LVideoDraft PVideoDraftRead()
     {
-        return LStateValue.LStateValueResolve(_pVideoLocation, _pVideoUnreadable);
+        return new LVideoDraft(
+            LStateValue.LStateValueResolve(_pVideoLocation, _pVideoUnreadable),
+            LStateValue.LStateValueResolve(_pVideoTimestamp, _pVideoUnwritten));
     }
 
     private void PVideoTimestampApply(string timestamp)

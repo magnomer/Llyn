@@ -477,7 +477,10 @@ public static class LSchema
                 id TEXT NOT NULL PRIMARY KEY,
                 location_state TEXT NOT NULL DEFAULT 'unspecified',
                 location TEXT,
-                CHECK (location_state = 'specified' OR location IS NULL)
+                span_state TEXT NOT NULL DEFAULT 'unspecified',
+                span TEXT,
+                CHECK (location_state = 'specified' OR location IS NULL),
+                CHECK (span_state = 'specified' OR span IS NULL)
             );
 
             CREATE TABLE IF NOT EXISTS sense_video (

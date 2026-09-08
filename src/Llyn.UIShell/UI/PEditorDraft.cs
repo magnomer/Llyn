@@ -230,6 +230,7 @@ public partial class PEditor
         _pEditorFill = false;
 
         PEditorChangeUpdate();
+        PEditorFavoriteShow();
     }
 
     private LDraft? PEditorDraftStart(string? entry)

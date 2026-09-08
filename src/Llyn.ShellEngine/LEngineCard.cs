@@ -189,7 +189,7 @@ public sealed partial class LEngine
 
         LImageArchive images = new(_lEngineDatabase);
         LEngineFieldSync(
-            card.LCardDraftImage,
+            LEngineFieldRead(card.LCardDraftImage),
             collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId),
             row => row.LImageId,
             row => row.LImageLocation,
@@ -217,11 +217,12 @@ public sealed partial class LEngine
 
         LVideoArchive videos = new(_lEngineDatabase);
         LEngineFieldSync(
-            card.LCardDraftVideo,
+            LEngineVideoRead(card.LCardDraftVideo),
             collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId),
             row => row.LVideoId,
-            row => row.LVideoLocation,
-            location => videos.LVideoCreate(new LVideo(string.Empty, location)).LVideoId,
+            row => new LVideoDraft(row.LVideoLocation, row.LVideoSpan),
+            written => videos.LVideoCreate(
+                new LVideo(string.Empty, written.LVideoDraftLocation, written.LVideoDraftSpan)).LVideoId,
             rowId =>
             {
                 if (collocation)
@@ -358,23 +359,24 @@ public sealed partial class LEngine
         translations.LTranslationMeaningSave(ownerId, written);
     }
 
-    private static void LEngineFieldSync<TRow>(
-        IReadOnlyList<LStateValue> texts,
+    private static void LEngineFieldSync<TRow, TWritten>(
+        IEnumerable<TWritten> written,
         IReadOnlyList<TRow> attached,
         Func<TRow, string> identify,
-        Func<TRow, LStateValue> read,
-        Func<LStateValue, string> create,
+        Func<TRow, TWritten> read,
+        Func<TWritten, string> create,
         Action<string> detach,
         Action<string, int> attach)
     {
         List<string> targets = [];
         HashSet<string> kept = new(StringComparer.Ordinal);
-        foreach (LStateValue text in LEngineFieldRead(texts))
+        foreach (TWritten text in written)
         {
             string? found = null;
             foreach (TRow row in attached)
             {
-                if (!kept.Contains(identify(row)) && read(row) == text)
+                if (!kept.Contains(identify(row))
+                    && EqualityComparer<TWritten>.Default.Equals(read(row), text))
                 {
                     found = identify(row);
                     break;

@@ -32,6 +32,7 @@ public partial class PEditor
     private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         _pDownloaderPlayer.Volume = e.NewValue;
+        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
     }
 
     private void PVolumeSave(object sender, RoutedEventArgs e)
@@ -54,6 +55,7 @@ public partial class PEditor
     internal void PVolumeLoad()
     {
         PVolume.Value = _lEngine.LEngineSettingsRead().LSettingsVolume;
+        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
     }
 
     private void PHeadwordHandle(object sender, TextChangedEventArgs e)

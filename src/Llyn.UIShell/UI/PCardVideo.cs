@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Llyn.Core;
 
@@ -8,30 +8,30 @@ internal sealed partial class PCard
 {
     public ObservableCollection<PVideo> PCardVideo { get; }
 
-    internal void PCardVideoShow(IReadOnlyList<LStateValue> locations)
+    internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows)
     {
         PCardVideo.Clear();
-        foreach (LStateValue location in locations)
+        foreach (LVideoDraft row in rows)
         {
-            PCardVideo.Add(new PVideo(location));
+            PCardVideo.Add(new PVideo(row));
         }
     }
 
-    internal IReadOnlyList<LStateValue> PCardVideoRead()
+    internal IReadOnlyList<LVideoDraft> PCardVideoRead()
     {
-        List<LStateValue> locations = [];
+        List<LVideoDraft> rows = [];
         foreach (PVideo row in PCardVideo)
         {
-            LStateValue location = row.PVideoLocationRead();
-            if (location.LStateValueEmpty)
+            LVideoDraft written = row.PVideoDraftRead();
+            if (written.LVideoDraftEmpty)
             {
                 continue;
             }
 
-            locations.Add(location);
+            rows.Add(written);
         }
 
-        return locations;
+        return rows;
     }
 
     internal void PCardVideoAdd()

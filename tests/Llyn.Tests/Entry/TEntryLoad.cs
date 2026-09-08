@@ -42,6 +42,36 @@ public sealed class TEntryLoad
     }
 
     [Fact]
+    public void EntryLoad_VideoWithSpan_ReturnsBothLocationAndSpan()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "kindle",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardDraftCreate(
+                    string.Empty, string.Empty, "to set alight",
+                    [], [], [], string.Empty, [], [], 1,
+                    video:
+                    [
+                        TInterface.TVideoDraftCreate(
+                            "https://www.youtube.com/watch?v=IDw0RmBtOho", "00:30 - 02:30"),
+                    ]),
+            ],
+            []));
+
+        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        LVideoDraft video = Assert.Single(Assert.Single(draft.LEntryDraftMeanings).LCardDraftVideo);
+
+        Assert.Equal("https://www.youtube.com/watch?v=IDw0RmBtOho", video.LVideoDraftLocation.TStateValueShow());
+        Assert.Equal("00:30 - 02:30", video.LVideoDraftSpan.TStateValueShow());
+    }
+
+    [Fact]
     public void EntryLoad_SavedEntry_ReturnsSavedDraft()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

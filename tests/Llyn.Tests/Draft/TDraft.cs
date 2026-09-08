@@ -233,6 +233,45 @@ public sealed class TDraft
     }
 
     [Fact]
+    public void DraftCheck_OnlyVideoAdded_ReportsChanged()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LDraft first = engine.TEngineDraftStart("editor", null);
+        engine.TEngineDraftSave(first with
+        {
+            LDraftContent = TDraftCreate("editor", "kindle").LDraftContent with
+            {
+                LEntryDraftMeanings = [TDraftCardCreate("set alight")],
+            },
+        });
+
+        LEntry stored = engine.TEngineDraftCommit(first.LDraftId);
+        LDraft opened = engine.TEngineDraftStart("editor", stored.LEntryId);
+
+        Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
+
+        LCardDraft card = opened.LDraftContent.LEntryDraftMeanings[0];
+
+        engine.TEngineDraftSave(opened with
+        {
+            LDraftContent = opened.LDraftContent with
+            {
+                LEntryDraftMeanings =
+                [
+                    card with
+                    {
+                        LCardDraftVideo = [TInterface.TVideoDraftCreate("https://example.com/reel.mp4")],
+                    },
+                ],
+            },
+        });
+
+        Assert.True(engine.TEngineDraftCheck(opened.LDraftId));
+    }
+
+    [Fact]
     public void DraftCheck_OnlyLanguageChanged_ReportsChanged()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

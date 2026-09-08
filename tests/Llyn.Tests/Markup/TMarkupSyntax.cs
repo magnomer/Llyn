@@ -233,8 +233,8 @@ public sealed class TMarkupSyntax
 
         Assert.Equal(
             [LState.LStateSpecified, LState.LStateUnknown],
-            card.LCardDraftVideo.Select(video => video.LStateValueState));
-        Assert.Equal("media/one.mp4", card.LCardDraftVideo[0].TStateValueShow());
+            card.LCardDraftVideo.Select(video => video.LVideoDraftLocation.LStateValueState));
+        Assert.Equal("media/one.mp4", card.LCardDraftVideo[0].LVideoDraftLocation.TStateValueShow());
     }
 
     [Fact]

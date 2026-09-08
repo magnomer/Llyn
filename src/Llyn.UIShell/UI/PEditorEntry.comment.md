@@ -20,7 +20,22 @@ The controls are filled from the draft rather than from a second read of the ent
 An entry that no longer loads leaves the form empty.
 An id that has gone stale is a normal cost of remembering one, not an error.
 
+## `internal void PEditorFavoriteShow()`
+
+Puts the star on the mark the entry already carries, so the editor opens showing what the view showed.
+The entry is read off the draft rather than kept, exactly as every other entry question here is.
+A form standing on nothing has no entry to mark, so the star is shown disabled rather than hidden.
+Hiding it would move the controls beside it, and the star is meant to sit still across the two modes.
+A favourite that cannot be read is shown unmarked, since a star is not worth failing an open over.
+
 ## Inline notes
+
+### `private void PEditorFavoriteHandle(object sender, RoutedEventArgs e)`
+
+The mark is written straight to the engine rather than into the draft.
+A favourite is not part of the entry being edited, so it neither waits for a store nor falls with a discard.
+A refused write puts the star back, because the toggle had already moved itself before this was called.
+The engine announces the change, so the view showing the same entry follows without being told here.
 
 ### `private string? PEditorEntryRead()`
 

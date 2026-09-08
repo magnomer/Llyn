@@ -129,7 +129,7 @@ public static partial class LMarkup
         LMarkupToken? synonym = null;
         List<string> tags = new List<string>();
         List<LStateValue> images = new List<LStateValue>();
-        List<LStateValue> videos = new List<LStateValue>();
+        List<LVideoDraft> videos = new List<LVideoDraft>();
         List<LExampleDraft> examples = new List<LExampleDraft>();
         List<LSituationDraft> situations = new List<LSituationDraft>();
 
@@ -156,7 +156,7 @@ public static partial class LMarkup
                     images.Add(LMarkupStateRead(token));
                     break;
                 case "video":
-                    videos.Add(LMarkupStateRead(token));
+                    videos.Add(LVideoDraft.LVideoDraftCreate(LMarkupStateRead(token)));
                     break;
                 case "example":
                     examples.Add(new LExampleDraft(

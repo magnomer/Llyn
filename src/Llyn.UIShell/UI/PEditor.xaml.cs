@@ -83,7 +83,6 @@ public partial class PEditor : UserControl
         PEditorChangeStop();
         PNotationCancel();
         PClipCancel();
-        PVideoClose();
         _pDownloaderPlayer.Close();
     }
 }

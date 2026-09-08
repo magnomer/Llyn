@@ -123,6 +123,17 @@ A frame is the owner's, not the Example's, so an owner may state one before any 
 Both hold tables are rebuilt with a nullable `example_id` for it, because SQLite cannot drop a NOT NULL from a table that stands.
 Every older row is carried over whole, id and frame included, since each one already cites an Example.
 
+### `if (stored < 28)`
+
+Version 28.
+A Video now carries the span of it worth watching, so the table gains a state column and a text column for it.
+The columns are added rather than the table rebuilt, since nothing already stored has to move.
+
+### `private static void LSchemaVideoNormalize(SqliteConnection connection)`
+
+A database already carrying the span column is left alone.
+`ALTER TABLE` has no `IF NOT EXISTS`, so the check is the guard.
+
 ### `private static void LSchemaFrameNormalize(`
 
 The rebuild runs with foreign keys off and back on, exactly as the version 24 rebuild does.

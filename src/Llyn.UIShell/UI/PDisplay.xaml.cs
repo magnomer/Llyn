@@ -404,6 +404,7 @@ public partial class PDisplay : UserControl
     private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         _pDisplayPlayer.Volume = e.NewValue;
+        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
     }
 
     private void PVolumeSave(object sender, RoutedEventArgs e)
@@ -419,5 +420,6 @@ public partial class PDisplay : UserControl
     private void PVolumeLoad()
     {
         PVolume.Value = _lEngine.LEngineSettingsRead().LSettingsVolume;
+        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
     }
 }

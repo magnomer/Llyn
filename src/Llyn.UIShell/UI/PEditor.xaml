@@ -71,6 +71,21 @@
                 </Popup>
             </Grid>
 
+            <ToggleButton x:Name="PEditorFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" Click="PEditorFavoriteHandle" Style="{StaticResource Theme.Input.ToggleAction}" ToolTip="{DynamicResource Favorite.Mark}">
+                <Path Width="17" Height="16" Stretch="Uniform" Stroke="{StaticResource Theme.Accent}" StrokeLineJoin="Round" StrokeThickness="1.4" Data="M 8,0.7 L 10.06,5.62 15.4,6.05 11.34,9.55 12.58,14.75 8,11.95 3.42,14.75 4.66,9.55 0.6,6.05 5.94,5.62 Z">
+                    <Path.Style>
+                        <Style TargetType="Path">
+                            <Setter Property="Fill" Value="Transparent" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsChecked, ElementName=PEditorFavorite}" Value="True">
+                                    <Setter Property="Fill" Value="{StaticResource Theme.Accent}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Path.Style>
+                </Path>
+            </ToggleButton>
+
             <Border
                 x:Name="PEditorCommand"
                 Grid.Column="3"

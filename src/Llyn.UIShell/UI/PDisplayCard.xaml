@@ -9,6 +9,7 @@
 
     <local:PFontConverter x:Key="Display.Card.Inset" />
     <local:PImageConverter x:Key="Display.Card.Preview" />
+    <local:PVideoConverter x:Key="Display.Card.Reel" />
 
     <Style x:Key="Display.Card.Title" TargetType="TextBlock">
         <Setter Property="Margin" Value="0,0,34,0" />
@@ -151,6 +152,15 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Display.Card.Video" TargetType="ItemsControl">
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.MediaMargin}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding LCardDraftVideo.Count}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="Display.Card.SituationLink" TargetType="Button">
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Focusable" Value="False" />
@@ -241,9 +251,20 @@
         </Grid>
     </DataTemplate>
 
+    <DataTemplate x:Key="Display.Card.VideoLine">
+        <Border HorizontalAlignment="Stretch" Style="{DynamicResource Theme.Card.Preview}">
+            <local:PScreen
+                PScreenFrom="{Binding PVideoFrom}"
+                PScreenLocation="{Binding PVideoLocation}"
+                PScreenPlaying="{Binding PVideoPlaying, Mode=TwoWay}"
+                PScreenUntil="{Binding PVideoUntil}"
+                PScreenVolume="{Binding PVolumeCatalogLevel, Source={x:Static local:PVolumeCatalog.PVolumeCatalogCurrent}}" />
+        </Border>
+    </DataTemplate>
+
     <DataTemplate x:Key="Display.Card.PictureLine">
         <Border Style="{DynamicResource Theme.Card.Preview}">
-            <Image MaxWidth="320" MaxHeight="200" Source="{Binding PImagePreview}" Stretch="Uniform" />
+            <Image Source="{Binding PImagePreview}" Stretch="Uniform" StretchDirection="DownOnly" />
         </Border>
     </DataTemplate>
 
@@ -322,6 +343,10 @@
                 ItemTemplate="{StaticResource Display.Card.PictureLine}"
                 ItemsSource="{Binding LCardDraftImage, Converter={StaticResource Display.Card.Preview}}"
                 Style="{StaticResource Display.Card.Picture}" />
+            <ItemsControl
+                ItemTemplate="{StaticResource Display.Card.VideoLine}"
+                ItemsSource="{Binding LCardDraftVideo, Converter={StaticResource Display.Card.Reel}}"
+                Style="{StaticResource Display.Card.Video}" />
         </StackPanel>
     </DataTemplate>
 

@@ -607,7 +607,26 @@ public sealed partial class LEngine
                 || !LEngineSituationMatch(written.LCardDraftSituation, held.LCardDraftSituation)
                 || !LEngineTextMatch(written.LCardDraftTranslation, held.LCardDraftTranslation)
                 || !LEngineTextMatch(written.LCardDraftTag, held.LCardDraftTag)
-                || !LEngineValueMatch(written.LCardDraftImage, held.LCardDraftImage))
+                || !LEngineValueMatch(written.LCardDraftImage, held.LCardDraftImage)
+                || !LEngineVideoMatch(written.LCardDraftVideo, held.LCardDraftVideo))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool LEngineVideoMatch(IReadOnlyList<LVideoDraft> one, IReadOnlyList<LVideoDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index] != other[index])
             {
                 return false;
             }
@@ -639,7 +658,8 @@ public sealed partial class LEngine
             && card.LCardDraftSituation.Count == 0
             && card.LCardDraftTranslation.Count == 0
             && card.LCardDraftTag.Count == 0
-            && card.LCardDraftImage.Count == 0;
+            && card.LCardDraftImage.Count == 0
+            && card.LCardDraftVideo.Count == 0;
     }
 
     private static bool LEngineExampleMatch(

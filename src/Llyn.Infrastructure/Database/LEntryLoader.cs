@@ -171,15 +171,15 @@ public sealed class LEntryLoader
         return locations;
     }
 
-    private static IReadOnlyList<LStateValue> LEntryVideoRead(IReadOnlyList<LVideo> videos)
+    private static IReadOnlyList<LVideoDraft> LEntryVideoRead(IReadOnlyList<LVideo> videos)
     {
-        List<LStateValue> locations = new(videos.Count);
+        List<LVideoDraft> rows = new(videos.Count);
         foreach (LVideo video in videos)
         {
-            locations.Add(video.LVideoLocation);
+            rows.Add(new LVideoDraft(video.LVideoLocation, video.LVideoSpan));
         }
 
-        return locations;
+        return rows;
     }
 
     private static IReadOnlyList<string> LEntryTranslationRead(

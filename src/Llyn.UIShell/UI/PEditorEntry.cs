@@ -18,6 +18,59 @@ public partial class PEditor
 
         PEditorDraftShow(started.LDraftContent);
         PEditorChangeUpdate();
+        PEditorFavoriteShow();
+    }
+
+    internal void PEditorFavoriteShow()
+    {
+        string? entry = PEditorEntryRead();
+
+        if (entry is null)
+        {
+            PEditorFavorite.IsEnabled = false;
+            PEditorFavorite.IsChecked = false;
+            return;
+        }
+
+        PEditorFavorite.IsEnabled = true;
+
+        try
+        {
+            PEditorFavorite.IsChecked = _lEngine.LEngineFavoriteCheck(entry);
+        }
+        catch (Exception)
+        {
+            PEditorFavorite.IsChecked = false;
+        }
+    }
+
+    private void PEditorFavoriteHandle(object sender, RoutedEventArgs e)
+    {
+        string? entry = PEditorEntryRead();
+
+        if (entry is null)
+        {
+            PEditorFavorite.IsChecked = false;
+            return;
+        }
+
+        bool marked = PEditorFavorite.IsChecked == true;
+        try
+        {
+            if (marked)
+            {
+                _lEngine.LEngineFavoriteSave(entry);
+            }
+            else
+            {
+                _lEngine.LEngineFavoriteDelete(entry);
+            }
+        }
+        catch (Exception exception)
+        {
+            PEditorFavorite.IsChecked = !marked;
+            _pEditorHost.PWindowFailureShow("Favorite.MarkFailed", exception);
+        }
     }
 
     private string? PEditorEntryRead()
