@@ -301,6 +301,30 @@ public partial class PDisplay : UserControl
             : Visibility.Collapsed;
     }
 
+    private void PDisplayCardHandle(object sender, RoutedEventArgs e)
+    {
+        if (e.OriginalSource is not FrameworkElement chip)
+        {
+            return;
+        }
+
+        switch (chip.DataContext)
+        {
+            case LSituationDraft situation when situation.LSituationDraftId.Length != 0:
+                e.Handled = true;
+                _pDisplayHost.PWindowSituationShow(situation.LSituationDraftId);
+                break;
+            case PLinkChip link when link.PLinkChipId.Length != 0:
+                e.Handled = true;
+                _pDisplayHost.PWindowEntryShow(link.PLinkChipId);
+                break;
+            case string tag when tag.Length != 0:
+                e.Handled = true;
+                _pDisplayHost.PWindowTagShow(tag);
+                break;
+        }
+    }
+
     private void PDisplayIncomingHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement row && row.DataContext is PUsageItem item)

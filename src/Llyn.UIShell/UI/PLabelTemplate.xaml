@@ -5,10 +5,10 @@
     x:Class="Llyn.UIShell.PLabelTemplate">
 
     <DataTemplate x:Key="Theme.Label.Chip">
-        <Border Padding="10,4,5,4" Style="{DynamicResource Theme.Card.Badge}">
+        <Border Padding="10,4,5,4" Cursor="Arrow" Style="{DynamicResource Theme.Card.Badge}">
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLabelChipName}" />
-                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Click="PLabelChipHandle">
+                <Button Width="16" Height="16" Margin="7,0,0,0" Padding="0" Cursor="Hand" Click="PLabelChipHandle">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">

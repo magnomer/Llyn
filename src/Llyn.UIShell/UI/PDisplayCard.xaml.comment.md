@@ -30,11 +30,32 @@ The fallback for a pack that declares none is written once, with the rest of a c
 
 A situation names where or when the entry is used, so it is a chip rather than a line of prose.
 It is the same chip the writing side is typed into, so the field does not change shape between modes.
+The reading chip is a button, so the panel holding the situation it names is one click away.
+The click is caught by the list the card sits in, because this dictionary is shared and holds no window of its own.
+The chip carries no id of its own, because what was clicked already stands for the situation it was drawn from.
+Translations and tags are read the same way, so no chip on a card is a dead end.
+
+### `<Style x:Key="Display.Card.SituationLink" TargetType="Button">`
+
+Wears the chip border of the writing side, so a chip that leads somewhere is still read as the same chip.
+The edge lights on hover and the chip dims while pressed, which is the only sign the reading side gives that a chip is a link.
+The translation and tag chips take the same treatment over their own shells, so the three read as one kind of link.
+
+### `<Style x:Key="Display.Card.TranslationLink" TargetType="Button">`
+
+The translation pellet carries no edge of its own, so hovering draws one rather than repainting the fill.
+Repainting would put the chip in the colour a selected chip wears elsewhere.
+The edge is there in every state and only its colour changes, because an edge appearing on hover would widen the chip and shove the row it sits in.
 
 ### `<DataTemplate x:Key="Display.Card.TranslationChip">`
 
 A translation is a word in another language, so it is drawn as a chip and not as a line of prose.
 Tags take an outlined chip instead, so the two rows of chips are never read as one kind.
+A translation chip opens the Entry it points at, and a tag chip opens the taxonomy browsing by that tag.
+
+### `<Style x:Key="Display.Card.TagLink" TargetType="Button">`
+
+A tag is its own text and holds no id, so the chip is what the taxonomy is later asked to browse by.
 
 ### `<Style x:Key="Display.Card.Example" TargetType="Border">`
 

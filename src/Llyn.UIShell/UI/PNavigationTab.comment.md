@@ -37,6 +37,18 @@ Panel switching is the window's to do, so a panel asks for it rather than reachi
 The library is asked first, because the tab guard above passes over a library that is already the target.
 Opening the entry would otherwise cancel the draft being written in that panel without a word.
 
+## `internal void PWindowSituationShow(string id)`
+
+Switches to the repertoire panel and opens one Situation there.
+It is the way a situation chip read on a card reaches the record it names.
+The repertoire is asked first, for the reason the library is asked above.
+
+## `internal void PWindowTagShow(string text)`
+
+Switches to the taxonomy panel and browses by one tag.
+A tag is its own text, so the panel is given the text and not an id.
+The taxonomy is asked first, for the reason the library is asked above.
+
 ## `internal void PWindowExampleShow(string id)`
 
 Switches to the corpus panel and opens one Example there.

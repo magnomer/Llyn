@@ -1,4 +1,4 @@
-# PTaxonomyBrowse.cs
+﻿# PTaxonomyBrowse.cs
 
 ## `public partial class PTaxonomy`
 
@@ -40,6 +40,11 @@ The engine returns the tags answering the query, already in the chosen ordering.
 The entries under a tag stay in headword order, which the database already gives them.
 The chosen tag is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
 A chosen tag that the workspace no longer holds is dropped, and the panel falls back to every entry.
+
+### `internal void PDirectoryTagShow(string text)`
+
+Browses by one tag for a caller outside the panel, which is how a tag chip read on a card reaches this panel.
+The query is emptied first, because a tag left out by the standing query would be chosen and dropped in the same breath.
 
 ### `PMembershipFind();`
 

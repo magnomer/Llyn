@@ -1,4 +1,4 @@
-# PLabelTemplate.xaml
+﻿# PLabelTemplate.xaml
 
 ## `Theme.Label.Field`
 
@@ -14,6 +14,8 @@ A click on empty space inside it reaches the caret.
 ## `Theme.Label.Chip`
 
 One committed Tag: its text and the button that closes it.
+The chip carries its own cursor, so the field text cursor stops at its edge.
+A committed Tag is not text to edit, and its close button points at a click.
 
 ## `Theme.Label.Entry`
 

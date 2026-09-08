@@ -1,4 +1,4 @@
-# PDisplay.xaml.cs
+﻿# PDisplay.xaml.cs
 
 ## `public partial class PDisplay : UserControl`
 
@@ -76,6 +76,14 @@ A pack that declares none has its keys removed, and the card's own fallback typo
 
 Reads whether the shown entry is marked and sets the star to match.
 An unreadable mark leaves the star empty rather than claiming the entry is marked.
+
+### `private void PDisplayCardHandle(object sender, RoutedEventArgs e)`
+
+Every chip on a card names a record kept in some other panel, so reading it there is one click away.
+What was clicked stands for the record it was drawn from, and the record decides the panel: a situation opens the repertoire, a translation the library, a tag the taxonomy.
+One handler serves all three, because the chips are drawn from a shared dictionary that knows no window and reaches the cards only through the two lists this sits on.
+The chip is read off what was clicked rather than off the click's source, because a click leaving a template is re-sourced to the presenter that drew it.
+A chip naming a record the card never saved leads nowhere.
 
 ### `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
 

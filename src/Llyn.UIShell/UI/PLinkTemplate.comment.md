@@ -1,4 +1,4 @@
-# PLinkTemplate.xaml
+﻿# PLinkTemplate.xaml
 
 ## `Theme.Link.Field`
 
@@ -15,6 +15,8 @@ A click on empty space inside it reaches the caret.
 
 One committed link: the target's flag, its headword, its language and the button that closes it.
 The language rides beside the headword because a link crosses languages.
+The chip carries its own cursor, so the field text cursor stops at its edge.
+A committed link is not text to edit, and its close button points at a click.
 
 ## `Theme.Link.Entry`
 

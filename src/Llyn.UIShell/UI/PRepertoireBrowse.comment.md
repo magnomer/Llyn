@@ -1,4 +1,4 @@
-# PRepertoireBrowse.cs
+﻿# PRepertoireBrowse.cs
 
 ## `public partial class PRepertoire`
 
@@ -36,6 +36,11 @@ Refills the catalog with the rows the engine returns, already matched and alread
 What a title, a description or a kind answers is decided below the shell.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open editor keeps its selection either way, because the row may be the one being written.
+
+## `internal void PAtlasSituationShow(string id)`
+
+Opens one Situation for a caller outside the panel, which is how a chip elsewhere reaches this reading.
+The guard belongs to the caller, because the panel is left before the tab is switched, not after.
 
 ## `private void PRepertoireShow(string id)`
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -121,6 +121,11 @@ public partial class PRepertoire
         }
 
         PRepertoireShow(item.PAtlasItemId);
+    }
+
+    internal void PAtlasSituationShow(string id)
+    {
+        PRepertoireShow(id);
     }
 
     private void PRepertoireShow(string id)
@@ -441,7 +446,7 @@ public partial class PRepertoire
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
 
-    private bool PRepertoireLeaveConfirm()
+    internal bool PRepertoireLeaveConfirm()
     {
         return _pRepertoireHost.PWindowDiscardConfirm(PRepertoireChangeCheck());
     }

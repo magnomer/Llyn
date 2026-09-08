@@ -106,6 +106,13 @@ public partial class PTaxonomy
         PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 
+    internal void PDirectoryTagShow(string text)
+    {
+        _pDirectoryChoice = text;
+        PExploration.Text = string.Empty;
+        PDirectoryFind(string.Empty);
+    }
+
     private void PMembershipFind()
     {
         IReadOnlyList<LEntry> read;
@@ -284,7 +291,7 @@ public partial class PTaxonomy
         PTaxonomyScribeShow(editing);
     }
 
-    private bool PTaxonomyLeaveConfirm()
+    internal bool PTaxonomyLeaveConfirm()
     {
         return _pTaxonomyHost.PWindowDiscardConfirm(PTaxonomyChangeCheck());
     }

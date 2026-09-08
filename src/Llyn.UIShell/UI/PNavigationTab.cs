@@ -110,6 +110,28 @@ public partial class PWindow
         PLibrary.PIndexEntryShow(id);
     }
 
+    internal void PWindowSituationShow(string id)
+    {
+        if (!PRepertoire.PRepertoireLeaveConfirm())
+        {
+            return;
+        }
+
+        PNavigationHandle(PNavigationRepertoire, new RoutedEventArgs());
+        PRepertoire.PAtlasSituationShow(id);
+    }
+
+    internal void PWindowTagShow(string text)
+    {
+        if (!PTaxonomy.PTaxonomyLeaveConfirm())
+        {
+            return;
+        }
+
+        PNavigationHandle(PNavigationTaxonomy, new RoutedEventArgs());
+        PTaxonomy.PDirectoryTagShow(text);
+    }
+
     internal void PWindowExampleShow(string id)
     {
         if (!PCorpus.PCorpusLeaveConfirm())
