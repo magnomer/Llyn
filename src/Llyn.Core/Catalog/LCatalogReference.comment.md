@@ -23,7 +23,8 @@ A Source with no credits carries an empty list rather than nothing, so no reader
 Orders the rows under one ordering, and under the name where the ordering is not one a Source answers to.
 Ordering by year puts the states in order first, so an unstated year is never read as an early one.
 Ordering by author reads the first credit, because the credit order belongs to the Source.
-A Source with no credits is ordered by the authorship state it states, which is not the same as being credited.
+A Source with no credits is ordered by the authorship state it states.
+That is not the same as being credited.
 
 ## `public bool LCatalogReferenceMatch(string query)`
 

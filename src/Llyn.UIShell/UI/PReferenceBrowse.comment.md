@@ -4,7 +4,8 @@
 
 Browsing behavior of the Source panel.
 `PShelf` lists every Source the workspace holds, including one nothing cites.
-A chosen row is read back and shown with everything citing it, and `PReferenceScribe` swaps that reading for the edit area.
+A chosen row is read back and shown with everything citing it.
+`PReferenceScribe` swaps that reading for the edit area.
 An uncited Source is reachable only through this panel, so it is never hidden.
 
 ## Inline notes
@@ -22,7 +23,8 @@ The catalog, the ordering, and the search all need them, so a per-row read would
 ## `private void PReferenceBulletinHandle(LBulletin bulletin)`
 
 Re-reads the shelf and the authors whenever the engine announces a change, wherever it was made.
-The usage count beside a row and the credits under it are read with the shelf, so a stored Source updates its own row.
+The usage count beside a row and the credits under it are read with the shelf.
+A stored Source updates its own row.
 That is what the panel used to do by re-reading straight after its own commit.
 A workspace that moved empties the panel before the same re-read runs.
 
@@ -30,7 +32,8 @@ A workspace that moved empties the panel before the same re-read runs.
 
 Refills the shelf with the rows the engine returns, already matched and already ordered.
 Each row carries its own name, credits and citation count, so the panel derives none of them.
-The held counts and credits are read again with it, because the read area and the editor also stand on them.
+The held counts and credits are read again with it.
+The read area and the editor also stand on them.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open edit area keeps its selection either way, because the row may be the one being written.
 
@@ -80,7 +83,8 @@ The window calls it once on attach, so the panel never reads the stored state fo
 ### `internal void PReferenceScribeRestore(bool editing)`
 
 Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.
+The button is enabled first when the editor is the side restored.
+An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.

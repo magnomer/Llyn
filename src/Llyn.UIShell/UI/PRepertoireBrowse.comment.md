@@ -13,7 +13,8 @@ The panel answers two questions rather than one: what this Situation is, and whe
 
 The panel answers the engine rather than its own visibility.
 An entry stored in another tab may reference a Situation, so the catalog and its reference figures are read again.
-A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
+A workspace that moved is the one announcement that empties the panel first.
+Its flags are reloaded before any row is built.
 
 ### `private IReadOnlyDictionary<string, int> _pAtlasCount = new Dictionary<string, int>();`
 
@@ -94,7 +95,8 @@ The window calls it once on attach, so the panel never reads the stored state fo
 ### `internal void PRepertoireScribeRestore(bool editing)`
 
 Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.
+The button is enabled first when the editor is the side restored.
+An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.

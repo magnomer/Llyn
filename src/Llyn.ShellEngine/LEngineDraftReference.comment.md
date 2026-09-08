@@ -9,14 +9,16 @@ Only starting, saving and committing differ by kind, and only those live here.
 The shared claim, sweep, recovery and discard read `LDraftReference` and branch where the kinds part.
 This follows `LEngineDraftSituation.cs` call for call, so the fourth kind cannot invent a fourth protocol.
 The Authors a Reference credits are attached to the stored record and never held here.
-A source nothing has stored yet credits nobody, which is why the panel offers that control only on a stored one.
+A source nothing has stored yet credits nobody.
+The panel offers that control only on a stored one.
 
 ## `public LDraft LEngineReferenceStart(string origin, string? referenceId)`
 
 Mints a draft id, writes the first file, and returns the held Reference.
 With no Reference the content is blank under an id minted for it, which is a source being written first.
 With a Reference the content is that Reference read back, which is an edit.
-The Reference id is given here rather than at the store, so a recovered draft names the same source it always did.
+The Reference id is given here rather than at the store.
+A recovered draft names the same source it always did.
 A Reference that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 

@@ -23,7 +23,8 @@ Which of the two is written first is the language pack's to say and never the ro
 The row is told the two places and puts each field where it was told.
 
 Each of the two frame fields offers what has already been saved for the language.
-Nothing is shipped, so an empty store offers nothing and the field is a plain box until something is written in it.
+Nothing is shipped, so an empty store offers nothing.
+The field is a plain box until something is written in it.
 
 ## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences)`
 
@@ -105,9 +106,11 @@ A row carrying neither shows none, for the same reason, and the card is asked fo
 
 Whether the frame stands on what the row holds rather than on the card being asked for one.
 The card's switch stands down while it does, because a frame already written cannot be opened or closed by asking.
-It gives its room back rather than keeping it, so the handles beside it are not read across a gap that holds nothing.
+It gives its room back rather than keeping it.
+The handles beside it are not read across a gap that holds nothing.
 
 ## `public string PSentenceFrameGap`
 
 The separator drawn between the marker and the role inside the frame.
-It is one space when both are written and nothing otherwise, so the writing view spaces the frame exactly as the reading view does.
+It is one space when both are written and nothing otherwise.
+The writing view spaces the frame exactly as the reading view does.

@@ -125,7 +125,8 @@ Each association carries the position the Example takes *for that referrer*.
 So one Example may be first under an Entry and third under a Meaning.
 The unique index per referrer keeps those orderings free of duplicates.
 sense_example and collocation_example carry data of their own, so each row carries its own opaque id.
-A row holds the frame its owner reads the Example under, a marker and a role, each with what is known about it.
+A row holds the frame its owner reads the Example under, a marker and a role.
+Each carries what is known about it.
 The frame lives on the association and never on the Example.
 So two owners citing one Example keep their own frame.
 Its example_id is nullable, so a row may state a frame and cite no Example at all.

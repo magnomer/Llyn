@@ -22,7 +22,8 @@ So a card always offers somewhere to write.
 
 What the card says its Examples are.
 A row nothing was written in is left out rather than read as an empty Example.
-A row stating a frame and no sentence is kept, because the frame is the card's own and is lost nowhere else.
+A row stating a frame and no sentence is kept.
+The frame is the card's own and is lost nowhere else.
 
 ## `internal void PCardSentenceInsert(PSentence row)`
 

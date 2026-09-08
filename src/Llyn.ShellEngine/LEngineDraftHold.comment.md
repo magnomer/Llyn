@@ -8,17 +8,22 @@ Every call here reaches the workspace root the engine already holds, so a moved 
 Held work is one file per draft, which is why a crash costs at most the last keystrokes.
 It stays apart from `LEngineDraft.cs`, which owns the database write and knows nothing of files.
 An id raised here belongs to the workspace that raised it, so a workspace change marks every held id stale.
-Every call naming an id is checked against that mark, because a shell can keep an id the engine has already left behind.
+Every call naming an id is checked against that mark.
+A shell can keep an id the engine has already left behind.
 
 A held draft carries an entry, a sentence, a situation or a source.
 The kind is a further content field rather than a tag beside one.
-`LDraftExample` carries the sentence, `LDraftSituation` the context and `LDraftReference` the source, each null for the kinds that are not its own.
+`LDraftExample` carries the sentence, `LDraftSituation` the context and `LDraftReference` the source.
+Each is null for the kinds that are not its own.
 A tag would be a second statement of the same fact, and two statements can disagree after a bad write.
-The alternative was one content field of a union type, which would have rewritten every entry call for a case none of them has.
-The source followed this rule rather than inventing a second one: one nullable content field, null for every kind but its own.
+The alternative was one content field of a union type.
+That would have rewritten every entry call for a case none of them has.
+The source followed this rule rather than inventing a second one.
+Each kind gets one nullable content field, null for every other kind.
 The sentence calls live in `LEngineDraftExample.cs`, the situation calls in `LEngineDraftSituation.cs` and the source calls in `LEngineDraftReference.cs`.
 Only the shared calls belong here.
-Start, save and commit differ per kind, while the claim, the sweep, the recovery and the discard are one for all of them.
+Start, save and commit differ per kind.
+The claim, the sweep, the recovery and the discard are one for all kinds.
 
 ## `public LDraft LEngineDraftStart(string origin, string? entryId)`
 
@@ -27,7 +32,8 @@ With no entry the content is blank, which is a new word being typed.
 With an entry the content is that entry loaded back into form shape, which is an edit.
 An entry that is gone is refused before a file is written, so no draft can point at nothing.
 `origin` records which surface opened the work, so a recovered draft can say where it came from.
-A claim naming this process is written beside the draft, so another launch reading the folder knows the work is live.
+A claim naming this process is written beside the draft.
+Another launch reading the folder then knows the work is live.
 
 ## `public LEntryDraft LEngineDraftSave(LDraft draft)`
 
@@ -70,10 +76,13 @@ Nothing here throws on a folder that is missing or unreadable.
 ## `public IReadOnlyList<LDraft> LEngineLeftoverRead()`
 
 The held drafts nothing is still working on and that differ from the entry they opened from.
-A draft this engine started is claimed by an open window, so offering it back would fight the window still typing into it.
-A draft another running copy of the program claims is passed over too, told apart by the claim file that copy wrote.
+A draft this engine started is claimed by an open window.
+Offering it back would fight the window still typing into it.
+A draft another running copy of the program claims is passed over too.
+The claim file that copy wrote tells it apart.
 Two copies may run on one workspace, and an in-memory set cannot see across them.
-A claim naming a process that is gone is what a crash leaves behind, and the draft under it is exactly what recovery is for.
+A claim naming a process that is gone is what a crash leaves behind.
+The draft under it is exactly what recovery is for.
 A draft matching its origin carries nothing worth recovering, which is what an untouched panel leaves behind.
 What remains is what a forced shutdown cost, counted at launch.
 
@@ -166,22 +175,27 @@ A draft carrying no entry id is a create, one carrying an entry id is an update.
 An entry id naming a record since deleted is a create as well, because there is nothing left to update.
 Such a draft is otherwise trapped: it reports itself unsaved forever and every commit is refused.
 A translation naming no stored entry is struck from the content before it is sent.
-Such an id is left by a target that was discarded, or by a draft an earlier launch wrote, and the database has no row for it to point at.
-Sending it raises a foreign-key failure from the store rather than a refusal, which reaches the reader as a crash and not as an answer.
+Such an id is left by a discarded target or by a draft an earlier launch wrote.
+The database has no row for it to point at.
+Sending it raises a foreign-key failure from the store rather than a refusal.
+That reaches the reader as a crash and not as an answer.
 The database write runs first and whole.
 A refusal from it therefore leaves the file on disk exactly as it was, so nothing typed is lost.
 The draft file is rewritten with the stored entry id the moment the database write returns.
-A kill between the two writes would otherwise leave the entry stored and the file still blank, and recommitting that file would store the word twice.
+A kill between the two writes would otherwise leave the entry stored and the file blank.
+Recommitting that file would store the word twice.
 Naming what it already became turns the leftover into an update, and it also stops the draft reporting itself unsaved.
 The stored entry is written back into the file as well, not the content that was sent.
 The database mints its own card ids, so the content that went in never matches the entry that came out.
-A leftover carrying the sent content therefore reads as changed forever: the sweep passes it over and every launch offers work that was already saved.
+A leftover carrying the sent content therefore reads as changed forever.
+The sweep passes it over and every launch offers work that was already saved.
 Reading the entry back makes the leftover match, which is what lets the sweep collect it.
 Only after the entry exists is the court settled and each owner draft rewritten.
 Rewriting means the tentative id sitting in a translation list becomes the real entry id.
 An owner whose file has since gone is passed over rather than recreated.
 The held file is deleted last, so a failure anywhere above leaves the work recoverable.
-The id leaves the claimed set with the file and the claim file goes with it, so no launch counts the draft again.
+The id leaves the claimed set with the file, and the claim file goes too.
+No launch counts the draft again.
 The caller asking for this commit owns its own draft, so the walk opens holding it.
 
 ## `private LEntry LEngineDraftCommit(string id, HashSet<string> entered, bool held)`
@@ -191,13 +205,19 @@ Two drafts naming each other would otherwise recurse until the stack died, which
 A target already in the set is passed over, since the walk is settling it further up.
 The id is added before its targets are visited, so the draft cannot reach itself through them.
 A target is held only when a live claim names this process and this engine started it.
-A target claimed by another process, by an editor this engine never started, or by nothing at all is entered without being held.
-Nothing at all counts as another's, because a file left with no claim is more likely an earlier launch's work than this frame's to delete.
-A frame that does not hold its draft stores the entry, names it in the file, and settles the court as any other does.
-It leaves the file, the claim, and the claimed set alone, so the editor still typing into that draft keeps it.
-The content it leaves is that draft's own words as the database now holds them, which is what the editor sent a moment earlier.
+A target claimed by another process or by an editor this engine never started is entered without being held.
+A target claimed by nothing at all is entered the same way.
+Nothing at all counts as another's.
+A file left with no claim is more likely an earlier launch's work than this frame's.
+A frame that does not hold its draft stores the entry and names it in the file.
+It settles the court as any other frame does.
+It leaves the file, the claim and the claimed set alone.
+The editor still typing into that draft keeps it.
+The content it leaves is that draft's own words as the database now holds them.
+That is what the editor sent a moment earlier.
 Taking the file away would leave that editor saving into nothing, and every later keystroke would be dropped in silence.
-The draft it keeps names a stored entry, so the editor's own commit updates that entry rather than storing the word twice.
+The draft it keeps names a stored entry.
+The editor's own commit updates that entry rather than storing the word twice.
 
 ## `public void LEngineDraftCancel(string id)`
 
@@ -206,17 +226,23 @@ It also drops what this draft's lookups and audio searches found, because closin
 Links go first because a link outliving its target would point at a record that will never arrive.
 The rows this draft owns are settled by `LEngineCourtRemove`, and the rows pointing at it are settled here.
 Each row pointing at it also has its tentative id struck from the draft that held it.
-That id will never become an entry now, so a chip left carrying it would be stored as a translation of a record that never existed.
+That id will never become an entry now.
+A chip left carrying it would be stored as a translation of a record that never existed.
 
 ## `private void LEngineCourtRemove(string id)`
 
 Drops every court row one draft owns, and the tentative target each row named when nothing else wants it.
 A tentative target goes only when this draft is the last thing holding it.
 A target another draft still links to stays, because that draft's chip would otherwise point at nothing.
-A target goes only while this engine owns it: a live claim naming this process, for a draft this engine started.
-A target another window or another copy of the program is editing therefore stays, because taking it would empty an open editor.
-A target whose claim is gone was left by an earlier launch, and sweeping it here would delete work its own recovery is about to offer back.
-The panel a draft names cannot answer that: it is a kind of surface, not a window, and both copies of the program name the same ones.
+A target goes only while this engine owns it.
+Ownership means a live claim naming this process for a draft this engine started.
+A target another window or another copy of the program is editing therefore stays.
+Taking it would empty an open editor.
+A target whose claim is gone was left by an earlier launch.
+Sweeping it here would delete work its own recovery is about to offer back.
+The panel a draft names cannot answer that.
+A panel is a kind of surface, not a window.
+Both copies of the program name the same ones.
 The target's claim is dropped with its file, so nothing outlives the draft it named.
 A row whose owner draft is gone is dropped as well, wherever the sweep meets one.
 Such a row can no longer be reached by owner or by target, so nothing else would ever collect it.
@@ -225,8 +251,10 @@ Cancelling and deleting share this, because both end a draft and both leave its 
 ## `private bool LEngineHoldCheck(string id)`
 
 Whether this engine may take a draft away.
-It may only when a live claim names this very process and its own set holds the id, which together mean this engine started the draft and still has it.
-A claim naming another process, a draft another editor in this process started, and a draft with no claim at all each answer no.
+It may only when a live claim names this process and its own set holds the id.
+Those two together mean this engine started the draft and still has it.
+A claim naming another process answers no.
+So does a draft another editor in this process started, or one with no claim.
 Commit and cancel both ask this before deleting a file, so neither can empty an editor it does not own.
 
 ## `private bool LEngineClaimCheck(string id)`
@@ -283,7 +311,8 @@ An open form always shows one such card, and offering it is not an edit.
 
 Whether two example lists say the same thing in the same order.
 The citation each names counts, so retagging a sentence is a change.
-The frame counts too, so writing a marker or a role and nothing else is a change and is saved rather than cancelled.
+The frame counts too.
+Writing a marker or a role and nothing else is a change and is saved.
 
 ## `private static bool LEngineSituationMatch(IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)`
 
@@ -300,7 +329,8 @@ Whether two text lists match exactly, order included.
 ## `private void LEngineDraftValidate(string id)`
 
 Refuses an id raised in a workspace this engine no longer holds.
-The folder such an id names is gone, so a read would answer null and a write would land in the wrong workspace.
+The folder such an id names is gone.
+A read would answer null and a write would land in the wrong workspace.
 A caller holding one is told so rather than being handed either silence.
 
 ## `private LDraft LEngineDraftLoad(string id)`
@@ -320,10 +350,12 @@ Both card lists are settled, because a chip can sit on a meaning or on a colloca
 ## `private IReadOnlyList<LCardDraft> LEngineTranslationSettle(IReadOnlyList<LCardDraft> cards)`
 
 Keeps only the translations that still load as an entry.
-An id that loads nothing points at a record that was discarded or never arrived, so there is nothing left to store it against.
+An id that loads nothing points at a record that was discarded or never arrived.
+There is nothing left to store it against.
 
 ## `private static IReadOnlyList<LCardDraft> LEngineTranslationUpdate(IReadOnlyList<LCardDraft> cards, string draftId, string realId)`
 
 Swaps the tentative id for the real one wherever a card's translations name it.
-An empty real id drops the tentative one instead, which is how a cancelled target leaves the drafts that pointed at it.
+An empty real id drops the tentative one instead.
+That is how a cancelled target leaves the drafts that pointed at it.
 Every other translation is copied through unchanged.

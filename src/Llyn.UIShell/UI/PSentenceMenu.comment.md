@@ -7,8 +7,10 @@ The rows themselves hold no engine.
 So every request a row makes arrives here.
 The card that owns the row is found and the engine is called.
 One list of Sources serves every row on the form, Example and Situation alike.
-The frame the rows read a sentence under is settled here too: the order its two fields take, and what each has already been saved holding.
-Both follow the language the entry is written in, so switching language redraws every row rather than leaving one language's order standing over another's.
+The frame the rows read a sentence under is settled here too.
+That is the order its two fields take and what each has been saved holding.
+Both follow the language the entry is written in.
+Switching language redraws every row rather than leaving one language's order over another's.
 
 ## `internal void PSentenceLoad()`
 
@@ -19,8 +21,10 @@ A workspace that cannot be read leaves the list empty rather than failing the fo
 ## `internal void PSentenceFrameLoad(string language)`
 
 Settles the Example frame for `language`: which of its two fields is written first, and what each offers.
-The order comes from the language pack and is handed to every card on the form, so a row never keeps the order of the language it was drawn in.
-The two lists come from what the workspace has already saved for that language, because nothing ships a marker or a role.
+The order comes from the language pack and is handed to every card on the form.
+A row never keeps the order of the language it was drawn in.
+The two lists come from what the workspace has already saved for that language.
+Nothing ships a marker or a role.
 A workspace that cannot be read leaves a list empty rather than failing the form.
 An unnamed language is the one the speaker field currently shows.
 

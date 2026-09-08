@@ -3,9 +3,12 @@
 ## `public sealed partial class LEngine`
 
 The shell's own view state as the engine keeps it.
-The shell reads the whole state once when a window attaches, and pushes one field back each time the user changes it.
-Every push is a field of its own, so two panels changing two different things in one session both keep their change.
-A shell that read the state, changed a field and wrote the whole record back would lose whatever another panel had written in between.
+The shell reads the whole state once when a window attaches.
+It pushes one field back each time the user changes it.
+Every push is a field of its own.
+Two panels changing two different things in one session both keep their change.
+A shell that read the state, changed a field and wrote the whole record back would lose work.
+Whatever another panel had written in between would be gone.
 
 ## `public LWorkspaceState LEngineStateRead()`
 
@@ -59,4 +62,5 @@ Stores the ordering the corpus panel lists examples in.
 ## `private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)`
 
 Reads the stored state, applies `change` to it, and writes it back, all under the engine gate.
-The read and the write are one step, so a field pushed from one panel never overwrites a field pushed from another.
+The read and the write are one step.
+A field pushed from one panel never overwrites a field pushed from another.

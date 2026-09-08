@@ -4,7 +4,8 @@
 
 Presentation item for one referring side in `PUsage`.
 Carries the Entry the referring side belongs to, what names that side, and which of the two kinds it is.
-The relationship is kept rather than flattened: the row says a Meaning or a Collocation carries the Situation, never the whole Entry.
+The relationship is kept rather than flattened.
+The row says a Meaning or a Collocation carries the Situation, never the whole Entry.
 The Entry id is the way from this row to the panel holding that Entry.
 The flag is resolved once for the language and handed to the row, as an index row is given one.
 

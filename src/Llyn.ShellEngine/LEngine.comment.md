@@ -6,23 +6,31 @@ The shell engine: the single boundary the UI shell talks to.
 The UI sends a request here.
 It subscribes through an `LReceiver` for pronunciation or an `LListener` for audio.
 It subscribes through an `LObserver` to learn that stored data changed, which `LEngineObserver.cs` owns.
-The first two stream one answer to the caller that asked; the third announces a change to everyone.
+The first two stream one answer to the caller that asked.
+The third announces a change to everyone.
 All logic lives behind this engine.
 That is loading language packs, source fan-out, fetching, parsing, and saving.
 So none of it sits in the UI shell.
 
 The engine is serialised behind one gate.
-Every public entry point holds a single lock for the whole of its work, so one call at a time touches the workspace, the settings, the database, the rescue report, the cached sources, and the two draft sets.
+Every public entry point holds a single lock for the whole of its work.
+One call at a time touches the workspace, the settings, the database and the rescue report.
+The cached sources and the two draft sets are held the same way.
 The lock is reentrant, which is what lets an entry point call another one.
-A single-writer queue would have kept reads parallel, but reads here run inside database sessions that are themselves single-threaded, so parallel reads would have bought nothing and cost a second concurrency model.
-The five entry points that return a `Task` hold the gate only long enough to take what they need from the engine.
-They then run the fetch outside it, because a lock held across an await would stall the shell for the length of a network call.
+A single-writer queue would have kept reads parallel.
+Reads here run inside database sessions that are themselves single-threaded.
+Parallel reads would have bought nothing and cost a second concurrency model.
+The five entry points that return a `Task` hold the gate briefly.
+They take only what they need from the engine.
+They then run the fetch outside the gate.
+A lock held across an await would stall the shell for a whole network call.
 
 This class is also the composition root.
 It owns the shared `HttpClient`.
 It loads each language pack on first use through `LLanguageLoader`.
 It builds that language's transcription and recording sources separately through `LSourceFactory`.
-The two sets are cached apart, so a lookup never reaches an audio source and a download never reaches a transcription one.
+The two sets are cached apart.
+A lookup never reaches an audio source and a download never reaches a transcription one.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
 
 ## `public LEngine()`
@@ -52,7 +60,8 @@ So the UI never reaches into the `languages/` folder itself.
 ## `public LDoctorRescue LEngineRescueRead()`
 
 Reports what the workspace doctor had to do to the database this engine opened.
-A launch that found the database unusable started a clean one, and the user is owed that news before they look for work that is no longer there.
+A launch that found the database unusable started a clean one.
+The user is owed that news before looking for work that is no longer there.
 The engine holds the answer rather than raising it, because the shell asks once the engine exists.
 The answer is replaced when `LEngineWorkspaceChange` opens another workspace.
 
@@ -63,7 +72,8 @@ Returns the current workspace folder — where the user's settings and database 
 ## `public string? LEngineAuditRecord(Exception exception)`
 
 Writes one unexpected fault into the open workspace's audit log and answers with the file it went to.
-The shell shows the user a plain sentence rather than a stack trace, so the trace has to be kept somewhere it can still be read.
+The shell shows the user a plain sentence rather than a stack trace.
+The trace has to be kept somewhere it can still be read.
 It answers `null` when nothing could be written, and the shell then says only the plain sentence.
 
 ## `public static string LEngineWorkspaceResolve()`
@@ -77,8 +87,10 @@ So a workspace that fails to open can still be named in the message the user see
 Moves the workspace to `path`.
 It records the new folder and writes the current settings into it.
 So settings and database follow the workspace to its new location.
-The drafts this engine claimed are forgotten with the old folder, since a claim only means something against the folder the file sits in.
-Each forgotten id is marked stale rather than simply dropped, so a shell still holding one is refused instead of writing here.
+The drafts this engine claimed are forgotten with the old folder.
+A claim only means something against the folder the file sits in.
+Each forgotten id is marked stale rather than simply dropped.
+A shell still holding one is refused instead of writing here.
 The cached source lists go too, because a language keeps whichever lists the workspace it was read from declared.
 The move is then announced, so every surface holding a stored record learns that all of it is stale.
 One announcement replaces the list of panels the settings panel used to reset by name.
@@ -101,8 +113,10 @@ Only that field is written, so an interface language chosen during the same sess
 ## `public void LEngineVolumeSave(double volume)`
 
 Persists how loud a pronunciation is played and keeps it current.
-The level is clamped here as well as on the way in from the file, so no caller can write a volume the player cannot take.
-Every view plays through the same level, so a change made in one is the level the next one opens at.
+The level is clamped here as well as on the way in from the file.
+No caller can write a volume the player cannot take.
+Every view plays through the same level.
+A change made in one is the level the next one opens at.
 
 ## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
@@ -159,7 +173,8 @@ Downloads the `recording` to a temporary file for playback and returns its path.
 Initialize the database once the workspace is known.
 So the store is ready before any UI request.
 The UI never opens the database itself.
-The doctor runs the initialization so a database this build can no longer read costs the user a launch rather than the program.
+The doctor runs the initialization.
+A database this build can no longer read costs the user a launch rather than the program.
 
 ### `LEngineLanguageImport();`
 

@@ -58,7 +58,8 @@ The row written is always this store's single one, whatever id the state carries
 
 Reads one text column, returning nothing for a column that was never written.
 An ordering column read this way is parsed against the ordering its panel opens on.
-So a workspace written before the column existed, or naming an ordering this build no longer offers, lists as it always did.
+So a workspace written before the column existed lists as it always did.
+So does one naming an ordering this build no longer offers.
 
 ## Inline notes
 

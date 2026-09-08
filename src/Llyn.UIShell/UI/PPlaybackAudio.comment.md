@@ -19,7 +19,8 @@ The level belongs to the workspace rather than to the form, so it outlives the e
 
 ## `internal void PVolumeAttach()`
 
-Listens for the three gestures that end a change of volume: a finished drag, a click on the track, and a released key.
+Listens for the three gestures that end a change of volume.
+Those are a finished drag, a click on the track and a released key.
 A drag that wrote on every step would put a file write behind every pixel of it.
 
 ## `internal void PVolumeLoad()`

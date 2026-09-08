@@ -74,7 +74,8 @@ The window calls it once on attach, so the panel never reads the stored state fo
 ### `internal void PCorpusScribeRestore(bool editing)`
 
 Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.
+The button is enabled first when the editor is the side restored.
+An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.

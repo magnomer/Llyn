@@ -7,7 +7,9 @@ The stored view state is read once and applied from here, so no panel reads it f
 
 ## `internal void PWindowViewRestore(LWorkspaceState state)`
 
-Applies `state` across the shell: the ordering each browse panel lists by, the Entry each duplex side stands on, the tab standing open, and whether that tab shows its editor.
+Applies `state` across the shell.
+That is the ordering each browse panel lists by and the Entry each duplex side stands on.
+It is also the tab standing open and whether that tab shows its editor.
 The orderings are applied before the tab, so the panel that opens lists in the ordering it was left in.
 A state naming no tab leaves the window on the tab it opens with.
 

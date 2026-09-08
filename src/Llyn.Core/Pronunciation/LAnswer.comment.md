@@ -5,7 +5,8 @@
 What one source gave back for a word.
 It separates a source that answered with nothing from one that never answered at all.
 A menu can then say "No entry" where it means that, and "Failed to retrieve" where a host was unreachable.
-Returning a bare string could not tell the two apart, and a dead source read as a word no dictionary carries.
+Returning a bare string could not tell the two apart.
+A dead source read as a word no dictionary carries.
 The same record serves the reader below it, where the value is a page body rather than a transcription.
 
 **Parameters**

@@ -133,7 +133,8 @@ An empty form links to nothing, so there is nothing to look words up for.
 Hands the current draft back and asks the engine for a new one.
 Everything the form shows from then on belongs to that draft.
 An entry that no longer loads is refused before a file is written, and the form comes up empty.
-A refusal is reported and the form is suspended, because a control may buffer keystrokes only while a draft waits for them.
+A refusal is reported and the form is suspended.
+A control may buffer keystrokes only while a draft waits for them.
 A draft that starts lifts a suspension, since the downstream the form lost is back.
 
 ### `private void PEditorHoldSuspend(Exception exception)`
@@ -175,18 +176,23 @@ The window's exit answer applied to this form's own draft.
 A write still waiting on the typing pause is made before the wait is dropped.
 So a form closed between two keystrokes carries the last of them out with it.
 The caller is not trusted to have asked the form for changes first.
-Storing commits it, which is the same write the save button makes, so a word typed and never saved survives the exit that was meant to keep it.
-Discarding cancels it, and a draft matching its entry is cancelled either way because there is nothing in it to store.
+Storing commits it, which is the same write the save button makes.
+A word typed and never saved survives the exit that was meant to keep it.
+Discarding cancels it.
+A draft matching its entry is cancelled either way, since there is nothing in it to store.
 A refused commit keeps the draft and reports the refusal, the same way the save button does.
-The answer the user gave was to keep the word, so deleting it is the one thing that answer never asked for.
-What is returned is whether the form is finished, and a false answer holds the window open over work the store would not take.
+The answer the user gave was to keep the word.
+Deleting it is the one thing that answer never asked for.
+What is returned is whether the form is finished.
+A false answer holds the window open over work the store would not take.
 A settled form leaves the folder no file, so a clean exit is never reported as work a crash cost.
 
 ### `private bool PEditorDraftCheck()`
 
 Asks the engine whether the held draft differs from the entry it started from.
 A form with no draft has nothing to lose, so it answers no.
-A question the engine cannot answer at all suspends the form, because the draft behind it can no longer be trusted.
+A question the engine cannot answer at all suspends the form.
+The draft behind it can no longer be trusted.
 
 ### `private IReadOnlyList<LCardDraft> PCardRead(IReadOnlyList<PCard> cards)`
 

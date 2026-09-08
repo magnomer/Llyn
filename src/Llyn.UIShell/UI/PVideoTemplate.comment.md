@@ -4,5 +4,6 @@
 
 The video row of a card as a template.
 It has its location field, its timestamp field, and the Screen above them.
-It hands the two events the row raises back to the editor that owns them, the file chooser and the drop.
+It hands the two events the row raises back to the editor that owns them.
+Those are the file chooser and the drop.
 The Screen answers for playing itself, so nothing about playing passes through here.

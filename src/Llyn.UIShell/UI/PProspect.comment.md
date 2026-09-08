@@ -3,7 +3,8 @@
 ## `public partial class PEditor`
 
 The dropdown of Entries a typed translation may link to, and the rows it offers.
-It is one popup the editor owns rather than one per card, because only one card is being typed into at a time.
+It is one popup the editor owns rather than one per card.
+Only one card is being typed into at a time.
 So it is retargeted at the caret it was opened from and remembers which card asked for it.
 A card built at runtime could not declare a popup of its own anyway.
 

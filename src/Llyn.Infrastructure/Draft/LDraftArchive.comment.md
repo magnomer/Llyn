@@ -6,14 +6,16 @@ Keeps tentative records as plain files in the workspace `drafts` folder, one fil
 Nothing here reaches SQLite.
 A record the user has not committed must never appear in the database.
 Files are the cheapest store that survives a forced shutdown, and a folder listing is all recovery needs.
-Two copies of the program may run against one workspace, so every operation touches a single named file and holds nothing open.
+Two copies of the program may run against one workspace.
+Every operation touches a single named file and holds nothing open.
 The folder is never locked and a file this process did not write is never removed.
 
 ## `public static void LDraftArchiveSave(string root, LDraft draft)`
 
 Writes `draft` to `drafts/<LDraftId>.json`, replacing whatever was there.
 The text goes to a `.json.tmp` file first and is then moved over the target.
-A move is atomic, so a reader never sees a half-written draft and a crash mid-write leaves the previous file intact.
+A move is atomic, so a reader never sees a half-written draft.
+A crash mid-write leaves the previous file intact.
 
 ## `public static LDraft? LDraftArchiveRead(string root, string id)`
 

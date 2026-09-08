@@ -18,4 +18,5 @@ A commit that kept its file would offer saved work back at every launch.
 ## `public void LeftoverSweep_ReferenceMatchingStoredReference_SweepsIt()`
 
 A draft matching the Reference it names is collected, and one differing from its own is kept.
-A kill just after a commit leaves such a file, and only the sweep can tell it from work the user would lose.
+A kill just after a commit leaves such a file.
+Only the sweep can tell it from work the user would lose.

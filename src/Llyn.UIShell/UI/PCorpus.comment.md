@@ -16,7 +16,8 @@ An Example whose text is unwritten still has a place in every ordering, ordered 
 
 The action row of the panel.
 `PCorpusFresh` opens the editor on an Example nothing quotes yet.
-This panel is the only place such an Example can arise, because elsewhere one is written from the card that quotes it.
+This panel is the only place such an Example can arise.
+Elsewhere one is written from the card that quotes it.
 Export and print are mock-up controls and are not wired.
 
 ## `<ItemsControl x:Name="PAnthology">`
@@ -24,7 +25,8 @@ Export and print are mock-up controls and are not wired.
 The catalog of every Example the workspace holds, including one nothing quotes.
 A row reads its sentence over its language and cited Source, with its usage count at the far end.
 That count is shown here and not only in the display, because it decides which delete the panel offers.
-The translation is not shown here: it is text of the sentence itself and says nothing about where the sentence is used.
+The translation is not shown here.
+It is text of the sentence itself and says nothing about where the sentence is used.
 
 ## `<Grid x:Name="PExcerpt">`
 

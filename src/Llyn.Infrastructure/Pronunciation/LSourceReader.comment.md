@@ -5,7 +5,8 @@
 Resilient page reader for HTML pronunciation sources.
 Tries each candidate URL in turn and, per URL, retries transient failures (timeout, 408, 429, 5xx) with a short backoff.
 Non-transient responses (403, 404) fall through to the next URL rather than being retried.
-It returns an `LAnswer`, so a caller can tell a page that answered with nothing from a host that never answered.
+It returns an `LAnswer`.
+A caller can tell a page that answered with nothing from a host that never answered.
 A 404 is an answer: the site is up and has no such word.
 An exhausted 5xx or timeout is not, and that is what a menu reports as a failure to retrieve.
 

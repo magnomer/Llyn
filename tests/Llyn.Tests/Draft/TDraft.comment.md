@@ -8,7 +8,8 @@ It also covers the court beneath it, the register of links pointing at records t
 ## `public void DraftArchiveSave_WholeDraft_ReadsBackAsWritten()`
 
 A saved draft comes back field for field, nested content included.
-The record holds lists and state values, so a shallow round trip would pass while losing the part the user typed.
+The record holds lists and state values.
+A shallow round trip would pass while losing the part the user typed.
 
 ## `public void DraftArchiveScan_HeldDrafts_ListsAll()`
 
@@ -44,7 +45,8 @@ The headword and language are stored because they are shown before the target is
 ## `public void DraftCommit_HeldDraft_StoresEntryAndDeletesFile()`
 
 Held work that reaches the database leaves the drafts folder empty and the entry stored.
-A commit that wrote the entry but kept the file would offer the same work back as unfinished on the next session.
+A commit that wrote the entry but kept the file would offer the same work back.
+The next session would read it as unfinished.
 
 ## `public void DraftCommit_WriteRefused_KeepsDraftFile()`
 
@@ -54,17 +56,21 @@ A blank headword is refused, and that is the moment the user most needs what the
 ## `public void DraftMove_CardMoved_RenumbersAllCards()`
 
 Moving one card reorders the list and renumbers every position contiguously from `1`.
-The renumbered cards are both returned to the caller and written to the file, so the form and the folder never disagree.
+The renumbered cards are returned to the caller and written to the file.
+The form and the folder never disagree.
 
 ## `public void DraftCheck_OnlyVideoAdded_ReportsChanged()`
 
 A card given nothing but a video reads as changed against the entry it was opened from.
-The comparison decides whether the editor offers to store at all, so a field it skips is a field the user cannot save.
+The comparison decides whether the editor offers to store at all.
+A field it skips is a field the user cannot save.
 
 ## `public void LeftoverRead_DraftStillHeldOpen_PassesOverIt()`
 
-An engine never offers back the drafts it started itself, and a fresh engine over the same folder offers every one that was left changed.
-That is the shape of a crash: the process that held the files is gone, and only the next launch can see them as leftovers.
+An engine never offers back the drafts it started itself.
+A fresh engine over the same folder offers every one that was left changed.
+That is the shape of a crash.
+The process that held the files is gone, and only the next launch sees them as leftovers.
 The untouched draft the third panel started is not counted, because a blank form costs nothing to lose.
 
 ## `public void LeftoverSweep_DraftMatchingStoredEntry_SweepsIt()`
@@ -77,7 +83,8 @@ A draft holding work the entry does not have survives the sweep and is still off
 ## `public void LeftoverSweep_StalePendingFile_RemovesIt()`
 
 A half-written `.json.tmp` older than an hour is deleted from the drafts folder and from the court.
-One written a moment ago is left, because a save in the other copy of the program may still be in flight.
+One written a moment ago is left.
+A save in the other copy of the program may still be in flight.
 
 ## `public void DraftCommit_NamesStoredEntry_UpdatesIt()`
 
@@ -93,9 +100,12 @@ Taking the update branch would refuse it forever, and the work would sit unsaved
 ## `public void DraftCommit_TargetAnotherEditorHolds_KeepsTargetFile()`
 
 A commit that reaches a target another editor is holding stores that target and leaves its file where it is.
-Deleting it would pull the file out from under the panel typing into it, and every later keystroke would be lost.
-The file it leaves names the entry it became, so the holder's own commit updates that entry instead of storing the word twice.
-The chip still lands on a real id, because the court row is settled exactly as a held target's would be.
+Deleting it would pull the file out from under the panel typing into it.
+Every later keystroke would be lost.
+The file it leaves names the entry it became.
+The holder's own commit updates that entry instead of storing the word twice.
+The chip still lands on a real id.
+The court row is settled exactly as a held target's would be.
 
 ## `public void DraftDelete_DraftOwningLinks_DropsThem()`
 

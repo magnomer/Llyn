@@ -67,7 +67,8 @@ Each takes a target the caller resolved through `LEngineEntryFind` or `LEngineMe
 
 ## `private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)`
 
-Writes the Example and Situation a card typed, points the stored card at them, and writes its Tag and Translation lines.
+Writes the Example and Situation a card typed and points the stored card at them.
+Writes its Tag and Translation lines.
 Each non-empty Example and Situation field creates a row of its own.
 That row is independent data the card references rather than owns.
 An empty field writes nothing at all.

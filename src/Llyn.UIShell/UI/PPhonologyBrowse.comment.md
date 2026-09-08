@@ -14,7 +14,8 @@ This is the same round trip the library panel makes, entered through the pronunc
 
 The panel answers the engine rather than its own visibility.
 So a pronunciation corrected in another tab is in the inventory at once, with no tab switch to trigger it.
-A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
+A workspace that moved is the one announcement that empties the panel first.
+Its flags are reloaded before any row is built.
 
 ### `private string? _pDisplayEntry;`
 
@@ -42,7 +43,8 @@ The window calls it once on attach, so the panel never reads the stored state fo
 ### `internal void PPhonologyScribeRestore(bool editing)`
 
 Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.
+The button is enabled first when the editor is the side restored.
+An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.

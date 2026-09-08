@@ -12,8 +12,10 @@ A designed pixel size cannot fit every desktop, so the default is measured again
 
 ## `private void PWindowStateAttach()`
 
-Listens for the window being moved, resized, or maximized, so geometry is written down while the program runs rather than only as it closes.
-A run that ends without closing — a killed process, a launcher window shut, a machine turned off — used to leave the last geometry unwritten.
+Listens for the window being moved, resized or maximized.
+Geometry is written down while the program runs rather than only as it closes.
+A run that ends without closing used to leave the last geometry unwritten.
+A killed process, a launcher window shut and a machine turned off all end that way.
 
 ## `private void PWindowStateDefer()`
 
@@ -31,7 +33,8 @@ Setting the startup location to manual is required, since the designed default c
 
 ## `private void PWindowStateSave()`
 
-Runs on closing, once the user has confirmed and the window is still up, and whenever the window has come to rest after a move.
+Runs on closing, once the user has confirmed and the window is still up.
+Runs again whenever the window has come to rest after a move.
 The geometry alone is handed downstream, never the whole settings record.
 A language chosen during the same session therefore survives the close.
 The restored rectangle is stored, never the maximized one, so restoring returns to a usable size.

@@ -23,7 +23,8 @@ A Meaning is named by its gloss and a Collocation by its expression when neither
 
 The delete the user confirms after being told how far it reaches.
 Every reference goes with the row, on both association tables.
-What each card has left is renumbered, because a gap in a card's positions is the next attach failing on the unique index.
+What each card has left is renumbered.
+A gap in a card's positions is the next attach failing on the unique index.
 
 ## Inline notes
 

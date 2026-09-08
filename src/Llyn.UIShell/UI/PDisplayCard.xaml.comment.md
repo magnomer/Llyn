@@ -16,7 +16,8 @@ A meaning card adds its definition above it, and a collocation card its expressi
 
 ### `<Style x:Key="Display.Card.Definition" TargetType="TextBlock">`
 
-The definition is the sentence the card exists for, so it is set at the weight of a title, not of a field value.
+The definition is the sentence the card exists for.
+It is set at the weight of a title, not of a field value.
 No label stands over it.
 A label naming what a reader can already see only pushes the reading down the card.
 
@@ -28,34 +29,43 @@ The fallback for a pack that declares none is written once, with the rest of a c
 
 ### `<DataTemplate x:Key="Display.Card.SituationChip">`
 
-A situation names where or when the entry is used, so it is a chip rather than a line of prose.
+A situation names where or when the entry is used.
+It is a chip rather than a line of prose.
 It is the same chip the writing side is typed into, so the field does not change shape between modes.
 The reading chip is a button, so the panel holding the situation it names is one click away.
-The click is caught by the list the card sits in, because this dictionary is shared and holds no window of its own.
-The chip carries no id of its own, because what was clicked already stands for the situation it was drawn from.
+The click is caught by the list the card sits in.
+This dictionary is shared and holds no window of its own.
+The chip carries no id of its own.
+What was clicked already stands for the situation it was drawn from.
 Translations and tags are read the same way, so no chip on a card is a dead end.
 
 ### `<Style x:Key="Display.Card.SituationLink" TargetType="Button">`
 
-Wears the chip border of the writing side, so a chip that leads somewhere is still read as the same chip.
-The edge lights on hover and the chip dims while pressed, which is the only sign the reading side gives that a chip is a link.
-The translation and tag chips take the same treatment over their own shells, so the three read as one kind of link.
+Wears the chip border of the writing side.
+A chip that leads somewhere is still read as the same chip.
+The edge lights on hover and the chip dims while pressed.
+That is the only sign the reading side gives that a chip is a link.
+The translation and tag chips take the same treatment over their own shells.
+The three read as one kind of link.
 
 ### `<Style x:Key="Display.Card.TranslationLink" TargetType="Button">`
 
 The translation pellet carries no edge of its own, so hovering draws one rather than repainting the fill.
 Repainting would put the chip in the colour a selected chip wears elsewhere.
-The edge is there in every state and only its colour changes, because an edge appearing on hover would widen the chip and shove the row it sits in.
+The edge is there in every state and only its colour changes.
+An edge appearing on hover would widen the chip and shove its row.
 
 ### `<DataTemplate x:Key="Display.Card.TranslationChip">`
 
-A translation is a word in another language, so it is drawn as a chip and not as a line of prose.
+A translation is a word in another language.
+It is drawn as a chip and not as a line of prose.
 Tags take an outlined chip instead, so the two rows of chips are never read as one kind.
 A translation chip opens the Entry it points at, and a tag chip opens the taxonomy browsing by that tag.
 
 ### `<Style x:Key="Display.Card.TagLink" TargetType="Button">`
 
-A tag is its own text and holds no id, so the chip is what the taxonomy is later asked to browse by.
+A tag is its own text and holds no id.
+The chip is what the taxonomy is later asked to browse by.
 
 ### `<Style x:Key="Display.Card.Example" TargetType="Border">`
 
@@ -67,8 +77,10 @@ Each line opens with a dot, so a reader counts examples without reading them.
 The frame is drawn in the interface face and the accent colour the example beside it never takes.
 A reader tells at a glance what the card writes and what the card only marks.
 It stands beside the example rather than inside it, as it does on the writing side.
-A row carrying no frame drops it whole, so its example begins where an unframed example begins on the writing side.
-A line set the same way in both views is a line that does not move when a reader begins to write.
+A row carrying no frame drops it whole.
+Its example begins where an unframed example begins on the writing side.
+A line set the same way in both views does not move.
+A reader who begins to write finds it unchanged.
 
 ### `<Style x:Key="Display.Card.Picture" TargetType="ItemsControl">`
 
@@ -78,4 +90,5 @@ A card whose picture only appeared while it was being written would be a card th
 ### `<ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />`
 
 The reading view reserves the strip the writing view puts its handles in, and leaves it empty.
-A line must break at the same word in both modes, and it only can if it is given the same width in both.
+A line must break at the same word in both modes.
+It only can if it is given the same width in both.

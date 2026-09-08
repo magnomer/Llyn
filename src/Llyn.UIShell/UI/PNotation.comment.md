@@ -16,8 +16,10 @@ Finds the row one source owns, creating it at its declared position when it has 
 Rows stand where the language pack put the source, not where the network put it.
 Every source is asked at once, so a fast one would otherwise head a list the user did not order.
 The list is short and already sorted, so a walk to the insertion point costs nothing worth avoiding.
-The same call serves the start and the answer, so a replayed search that reports no start still lands its rows correctly.
-A new row opens saying it is searching, which is what makes every declared source visible before any of them answers.
+The same call serves the start and the answer.
+A replayed search that reports no start still lands its rows correctly.
+A new row opens saying it is searching.
+That makes every declared source visible before any of them answers.
 
 ## Inline notes
 

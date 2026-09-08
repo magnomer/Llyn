@@ -3,7 +3,8 @@
 ## `public sealed class TDraftExample`
 
 Covers the sentence side of the drafts folder, the held work the corpus panel pushes into.
-A sentence draft carries an Example where an entry draft carries a form, and the folder holds both the same way.
+A sentence draft carries an Example where an entry draft carries a form.
+The folder holds both the same way.
 
 ## `public void ExampleSave_HeldSentence_SurvivesScan()`
 
@@ -18,4 +19,5 @@ A commit that kept its file would offer saved work back at every launch.
 ## `public void LeftoverSweep_SentenceMatchingStoredExample_SweepsIt()`
 
 A draft matching the Example it names is collected, and one differing from its own is kept.
-A kill just after a commit leaves such a file, and only the sweep can tell it from work the user would lose.
+A kill just after a commit leaves such a file.
+Only the sweep can tell it from work the user would lose.

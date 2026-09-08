@@ -5,7 +5,8 @@
 One Video row on a card.
 The row carries where the video plays from and the span of it worth watching.
 It also carries the address the screen beside it plays.
-Both the location and the span are kept with the card, because both are what the card says about the video.
+Both the location and the span are kept with the card.
+Both are what the card says about the video.
 The address is not: it is read off the location whenever the location changes.
 
 A location standing empty is not one thing.
@@ -24,7 +25,8 @@ The row for a stored Video, holding the location and the span as the store knows
 
 ## `internal LVideoDraft PVideoDraftRead()`
 
-What the row says it is: the location and the span, each as nothing written, unreadable, or the text it shows.
+What the row says it is, the location and the span.
+Each reads as nothing written, unreadable, or the text it shows.
 
 ## `public string PVideoTimestamp { get; set; }`
 
@@ -47,4 +49,5 @@ It is the row's own state rather than the player's.
 So it survives the preview being taken down and put back as the card scrolls.
 
 A row begins stopped, in both modes.
-Opening a card is not asking to hear it, and a card carrying several videos would otherwise all speak at once.
+Opening a card is not asking to hear it.
+A card carrying several videos would otherwise all speak at once.

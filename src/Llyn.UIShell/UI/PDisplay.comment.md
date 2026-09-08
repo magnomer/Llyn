@@ -4,7 +4,8 @@
 
 The read-only card shapes are merged in from [PDisplayCard.xaml](PDisplayCard.xaml.comment.md).
 A Meaning card and a Collocation card are one card (LCardDraft), so the two templates share their tail.
-They are kept apart from this file because the card is its own shape, not part of the page around it.
+They are kept apart from this file.
+The card is its own shape, not part of the page around it.
 Every member the loaded draft carries is drawn.
 A field the card left empty collapses rather than leaving a blank line.
 
@@ -36,8 +37,10 @@ The chip collapses when the entry carries no pronunciation, and the playback tra
 
 The playback row: the play button and the volume it is played at, drawn bare.
 It wears no surface or border, so the controls read as part of the pronunciation row.
-The whole tray hides when the entry owns no recording, because a volume with nothing to play is a control that does nothing.
-The editor draws the same tray, so a recording is played the same way where it is read and where it is chosen.
+The whole tray hides when the entry owns no recording.
+A volume with nothing to play is a control that does nothing.
+The editor draws the same tray.
+A recording is played the same way where it is read and where it is chosen.
 
 ## `<StackPanel x:Name="PDisplaySpeechSection" Margin="0,14,0,0" ...>`
 

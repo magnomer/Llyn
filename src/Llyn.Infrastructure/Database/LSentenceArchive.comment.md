@@ -52,7 +52,8 @@ References an existing Example from a Collocation at `position` in that Collocat
 ## `public IReadOnlyList<string> LSentenceParticleRead(string language)`
 
 Reads every marker already saved under an Entry written in `language`, without duplicates.
-Nothing ships a marker, so this is the only list the shell has to offer, and a store holding none returns none.
+Nothing ships a marker, so this is the only list the shell has to offer.
+A store holding none returns none.
 
 ## `public IReadOnlyList<string> LSentenceDependenceRead(string language)`
 
@@ -79,7 +80,9 @@ It takes the caller's connection, so the clearing and the delete that follows co
 
 Both owner tables are read at once, because a marker written on a Collocation is a marker the language uses.
 The language is the owning Entry's, not the cited Example's.
-A frame may stand with no Example at all, and reading the language off the Example would hide exactly those rows from the field that has to offer them.
+A frame may stand with no Example at all.
+Reading the language off the Example would hide exactly those rows.
+The field that has to offer them would never see them.
 Only rows stating a value are offered, so an unreadable or an unwritten field adds nothing to the list.
 The column name is a store-owned literal named by the two methods above and never caller input.
 

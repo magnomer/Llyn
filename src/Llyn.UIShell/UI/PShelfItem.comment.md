@@ -13,7 +13,8 @@ It is never offered as a blank row the reader could not tell from the next one.
 
 Builds the row from the catalog row the engine returned.
 The name, the credits and the citation count arrive with it, so nothing is derived or read again here.
-The two texts are handed in rather than read here, because a row is built while the list is being filled.
+The two texts are handed in rather than read here.
+A row is built while the list is being filled.
 
 ## `internal static string PShelfCreditRead(LReference reference, IReadOnlyList<LAuthor> credits, string unreadable, string unset)`
 
@@ -23,4 +24,5 @@ The read area shows the same line, so the rule lives here rather than twice.
 ## `public string PShelfItemCount { get; }`
 
 How many Entries and Examples cite this Source, as the row shows it.
-It is the figure that decides whether a delete is legal, so the catalog carries it and not only the editor.
+It is the figure that decides whether a delete is legal.
+The catalog carries it and not only the editor.

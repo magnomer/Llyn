@@ -15,8 +15,10 @@ It owns no control, so its answer runs on the thread that announced rather than 
 ## `private static void PEnsignBulletinHandle(LBulletin bulletin)`
 
 Throws every kept flag away when the workspace moves, and answers nothing else.
-A flag file is cached inside the workspace, so the path each drawing was read from is gone with the folder.
-The surfaces reload on the same announcement, and this store is the first subscriber, so it is empty before they ask.
+A flag file is cached inside the workspace.
+The path each drawing was read from is gone with the folder.
+The surfaces reload on the same announcement, and this store is the first subscriber.
+It is empty before they ask.
 
 ## `internal static DrawingImage? PEnsignResolve(string path)`
 
@@ -52,12 +54,14 @@ The store is the lock as well, because it is what every reader and writer touche
 One fill runs at a time.
 Several panels ask on the same announcement, and each fill is a set of downloads.
 Without this they would each start their own, and the same file would be fetched several times over.
-The gate is never held by a plain wait on the shell's thread, so a fill awaiting the shell can always finish.
+The gate is never held by a plain wait on the shell's thread.
+A fill awaiting the shell can always finish.
 
 ### `private static int _pEnsignAge;`
 
 Which generation of the store a fill started under.
-A workspace may move while a fill is in flight, and its results then name files in a folder no longer open.
+A workspace may move while a fill is in flight.
+Its results then name files in a folder no longer open.
 A fill that comes back under a newer generation throws its results away rather than putting them back.
 
 ### `string?[] paths = await Task.WhenAll(missing.Select(language => PEnsignRead(engine, language)));`

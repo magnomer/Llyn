@@ -6,7 +6,8 @@ Browsing behavior of the taxonomy panel.
 The search field and the sorting dropdown refill the tag catalog.
 A chosen tag refills the entries beside it, and a chosen entry is loaded back from the workspace.
 It is rendered read-only in the reader, which the mode toggle swaps for the editor.
-This is the same read half of the entry round trip the library panel offers, reached through a tag instead of a headword.
+This is the same read half of the entry round trip the library panel offers.
+It is reached through a tag instead of a headword.
 
 ## Inline notes
 
@@ -31,8 +32,10 @@ The ordering is the same one whatever language names it.
 ### `private async void PTaxonomyBulletinHandle(LBulletin bulletin)`
 
 The panel answers the engine rather than its own visibility.
-So a tag written in the input panel is in the catalog at once, with no tab switch to trigger it.
-A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
+So a tag written in the input panel is in the catalog at once.
+No tab switch is needed to trigger it.
+A workspace that moved is the one announcement that empties the panel first.
+Its flags are reloaded before any row is built.
 
 ### `private void PDirectoryFind(string query)`
 
@@ -43,8 +46,10 @@ A chosen tag that the workspace no longer holds is dropped, and the panel falls 
 
 ### `internal void PDirectoryTagShow(string text)`
 
-Browses by one tag for a caller outside the panel, which is how a tag chip read on a card reaches this panel.
-The query is emptied first, because a tag left out by the standing query would be chosen and dropped in the same breath.
+Browses by one tag for a caller outside the panel.
+That is how a tag chip read on a card reaches this panel.
+The query is emptied first.
+A tag left out by the standing query would be chosen and dropped in the same breath.
 
 ### `PMembershipFind();`
 
@@ -69,7 +74,8 @@ The window calls it once on attach, so the panel never reads the stored state fo
 ### `internal void PTaxonomyScribeRestore(bool editing)`
 
 Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.
+The button is enabled first when the editor is the side restored.
+An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.

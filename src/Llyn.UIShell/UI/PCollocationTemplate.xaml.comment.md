@@ -10,5 +10,6 @@ Like every template dictionary here, it only hands its events back to the panel.
 ### `<Grid Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">`
 
 The fields stand in the order the reading view draws them: expression, meaning, situation, translations, examples, tags.
-A writer fills a card in the order a reader will meet it, so nothing has to be moved in the head.
+A writer fills a card in the order a reader will meet it.
+Nothing has to be moved in the head.
 No field is labelled, for the same reason the meaning card labels none.

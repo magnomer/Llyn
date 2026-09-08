@@ -3,7 +3,8 @@
 ## `internal sealed class PCaret : Adorner`
 
 The text cursor every input field is typed against.
-WPF draws its own, but only its color can be set — its width comes from a Windows-wide setting and its blink is a hard on-off.
+WPF draws its own, but only its color can be set.
+Its width comes from a Windows-wide setting and its blink is a hard on-off.
 So the framework caret is made transparent and this one is drawn over the field instead.
 It is two pixels wide with rounded ends, painted in the theme accent, and it fades rather than snaps.
 
@@ -33,7 +34,8 @@ It fires often, so the position is compared first and nothing is redrawn when it
 
 A caret that jumps is hard to follow, so a move along one line is slid instead.
 The offset starts at where the caret was and eases to zero, which is where it now belongs.
-A move to another line, or a long jump, is not slid — the eye loses a caret that travels too far.
+A move to another line, or a long jump, is not slid.
+The eye loses a caret that travels too far.
 
 ### `if (typed || moved || !_pCaretBlink)`
 

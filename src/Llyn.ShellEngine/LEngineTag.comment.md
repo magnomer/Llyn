@@ -46,4 +46,5 @@ Nothing but the Tag goes: the cards stay exactly as they were, one label shorter
 ## `public IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order)`
 
 The tags answering `query`, in `order`.
-The tag catalog is held whole rather than searched in the store, so the match is made over what was read.
+The tag catalog is held whole rather than searched in the store.
+The match is made over what was read.

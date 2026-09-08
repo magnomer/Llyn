@@ -3,12 +3,15 @@
 ## `public partial class PScreen : UserControl`
 
 The surface one Video plays on, used by the form and the reading view alike.
-A video row means the same thing in both modes, so one Screen answers for both rather than two players drifting apart.
+A video row means the same thing in both modes.
+One Screen answers for both rather than two players drifting apart.
 
 A location is one of two different things, and the Screen decides which.
 A file on this machine is handed to the machine's own player, which opens it directly and costs nothing.
-A web address is handed to an embedded browser page, because a page address is not a film and no local player can resolve one.
-A YouTube address is played through YouTube's own embedded player, which is the only way that site allows and the only way that keeps its terms.
+A web address is handed to an embedded browser page.
+A page address is not a film and no local player can resolve one.
+A YouTube address is played through YouTube's own embedded player.
+That is the only way the site allows and the only way that keeps its terms.
 
 The span is enforced wherever the film is playing.
 A file is watched by a clock that sends it back to the start when it passes the end.
@@ -16,10 +19,12 @@ A page is given the span before it loads, so the site's own player never plays o
 An unreadable span is no span at all, and the film plays whole.
 
 The Screen fills the width it is given and takes the height that keeps a film's shape.
-A card is read at the width of the window, and a film boxed to a corner of it is smaller than the reader asked for.
+A card is read at the width of the window.
+A film boxed to a corner of it is smaller than the reader asked for.
 
 The Screen owns the switch beneath it rather than the row that holds the Screen.
-Play is a thing the surface does, and a row that had to relay it would know how the surface works.
+Play is a thing the surface does.
+A row that had to relay it would know how the surface works.
 
 ## `public string PScreenLocation { get; set; }`
 
@@ -35,7 +40,8 @@ Where play returns to the start, or `null` for a film played out.
 
 ## `public bool PScreenPlaying { get; set; }`
 
-Whether the film should be running, held by the row so it survives the Screen being taken down and put back.
+Whether the film should be running, held by the row.
+It survives the Screen being taken down and put back.
 
 ## `public double PScreenVolume { get; set; }`
 
@@ -63,7 +69,8 @@ Only a width change is answered, because the answer is a height change and answe
 ### `private async Task PScreenPageShow()`
 
 The browser environment is made once for the whole program and shared by every Screen.
-It is started with autoplay allowed, because the user has already asked by the time we call play, and the page cannot see that they did.
+It is started with autoplay allowed.
+The user has already asked by the time play is called, and the page cannot see that.
 
 A machine without the browser runtime is told so rather than shown an empty box.
 The stored environment is dropped on that failure so a later attempt is a real attempt.
@@ -74,7 +81,8 @@ The paper it was built for is compared, because typing quickly starts more loads
 ### `private void PScreenPaperHandle(object? sender, CoreWebView2WebResourceRequestedEventArgs e)`
 
 The page is answered from memory rather than written to a file.
-It still needs a real address to be answered at, because the embedded player refuses to run for a page that has no origin.
+It still needs a real address to be answered at.
+The embedded player refuses to run for a page that has no origin.
 
 ### `internal static string? PScreenFilmRead(Uri address)`
 

@@ -11,9 +11,11 @@ The shared claim, sweep, recovery and discard read `LDraftExample` and branch wh
 ## `public LDraft LEngineExampleStart(string origin, string? exampleId)`
 
 Mints a draft id, writes the first file, and returns the held sentence.
-With no Example the content is blank under an id minted for it, which is a sentence being written for the first time.
+With no Example the content is blank under an id minted for it.
+That is a sentence being written for the first time.
 With an Example the content is that Example read back, which is an edit.
-The sentence id is given here rather than at the store, so a recovered draft names the same sentence it always did.
+The sentence id is given here rather than at the store.
+A recovered draft names the same sentence it always did.
 An Example that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 
@@ -40,7 +42,8 @@ Nothing settles a court here, because a sentence links to no tentative record.
 
 Whether a held sentence differs from the Example it was started from.
 A draft naming no Example is measured against an empty sentence in the language the draft already carries.
-The language a new sentence opens in was chosen for it rather than typed, so it is not by itself an edit.
+The language a new sentence opens in was chosen for it rather than typed.
+It is not by itself an edit.
 A draft whose Example has since gone is measured against that same empty sentence.
 
 ## `private static LExample LEngineExampleNormalize(LExample content)`

@@ -12,4 +12,5 @@ It is plain data and knows nothing of files or of the operating system.
 - `LClaimDraft` — Id of the draft this claim holds.
 - `LClaimProcess` — Operating-system process id of the program holding it.
 - `LClaimMoment` — Instant that process started.
-  An id is reused once its process is gone, so the start time is what tells the holder from its successor.
+  An id is reused once its process is gone.
+  The start time is what tells the holder from its successor.

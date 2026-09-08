@@ -12,7 +12,8 @@ The order belongs to the Source alone, because another Source may order the same
 ### `private LState _pAuthorState = LState.LStateUnspecified;`
 
 Whether the authorship is unknown as against never having been filled in.
-It is a column on the `source` row, so it is saved with the five fields rather than when a credit is made.
+It is a column on the `source` row.
+It is saved with the five fields rather than when a credit is made.
 
 ## `private void PAuthorFind()`
 
@@ -66,4 +67,5 @@ The figure comes from the credit map the panel already holds.
 
 Records that the authorship is unknown, or takes that record back.
 `Anonymous` is a credited Author and not a substitute for either state.
-The state is a field of the Source, so changing it pushes to the held draft as any typed field does.
+The state is a field of the Source.
+Changing it pushes to the held draft as any typed field does.

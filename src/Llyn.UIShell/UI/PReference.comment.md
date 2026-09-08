@@ -30,7 +30,8 @@ The row shows the resolved name over its credits and year, with the citation cou
 
 The read area, this panel's own rather than the Entry-shaped `PDisplay`.
 Every field is shown, including one standing Unspecified, so a reader learns what the Source does not state.
-The mode toggle is not in here, because it sits in the action row as it does in every built panel.
+The mode toggle is not in here.
+It sits in the action row as it does in every built panel.
 
 ## `<ItemsControl x:Name="PFootnote">`
 

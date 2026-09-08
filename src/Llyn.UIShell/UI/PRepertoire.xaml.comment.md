@@ -12,7 +12,8 @@ The browsing behavior lives in `PRepertoireBrowse.cs`, one file per responsibili
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
 The window fills the situation catalog when it restores the stored ordering.
-Every change after that arrives as an announcement, so the panel is current whether or not its tab is in front.
+Every change after that arrives as an announcement.
+The panel is current whether or not its tab is in front.
 
 ## `internal void PRepertoireReset()`
 

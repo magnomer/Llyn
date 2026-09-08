@@ -120,13 +120,15 @@ The workspace row gains one ordering column per browse panel, so the shell's own
 
 Version 27.
 A frame is the owner's, not the Example's, so an owner may state one before any sentence is written.
-Both hold tables are rebuilt with a nullable `example_id` for it, because SQLite cannot drop a NOT NULL from a table that stands.
+Both hold tables are rebuilt with a nullable `example_id` for it.
+SQLite cannot drop a NOT NULL from a table that stands.
 Every older row is carried over whole, id and frame included, since each one already cites an Example.
 
 ### `if (stored < 28)`
 
 Version 28.
-A Video now carries the span of it worth watching, so the table gains a state column and a text column for it.
+A Video now carries the span of it worth watching.
+The table gains a state column and a text column for it.
 The columns are added rather than the table rebuilt, since nothing already stored has to move.
 
 ### `private static void LSchemaVideoNormalize(SqliteConnection connection)`
@@ -146,7 +148,8 @@ A hold's id is what a saved draft names, so reissuing it would orphan what point
 
 ### `private static void LSchemaSentenceRebuild(`
 
-SQLite cannot add a primary key or a foreign key to a table that stands, so the table is rebuilt beside itself.
+SQLite cannot add a primary key or a foreign key to a table that stands.
+The table is rebuilt beside itself.
 Enforcement is off for the rebuild, because the carried rows are copied before their parents are checked.
 A row an older build left pointing at nothing therefore blocks nothing here.
 
@@ -241,5 +244,6 @@ The rebuild is skipped when that column is gone, and the retired tables are drop
 
 The expression that decides what each Example's single translation becomes.
 The hand-written local text wins, because a person wrote it for that sentence.
-The first owned row stands in when no local text was written, so an upgraded workspace keeps one translation instead of none.
+The first owned row stands in when no local text was written.
+An upgraded workspace keeps one translation instead of none.
 The table it reads is named example_rendition or example_translation depending on how old the file is.

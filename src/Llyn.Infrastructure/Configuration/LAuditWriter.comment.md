@@ -15,7 +15,8 @@ Where the log stands for the workspace at `root`.
 Appends one fault, stamped in UTC, and answers with the file it was written to.
 
 The whole exception is written rather than its message alone.
-A fault is read later by someone who was not there, so the type and the stack are the part worth keeping.
+A fault is read later by someone who was not there.
+The type and the stack are the part worth keeping.
 
 It answers `null` when the log cannot be written.
 A workspace on a read-only disk is a workspace that still has to report its faults.

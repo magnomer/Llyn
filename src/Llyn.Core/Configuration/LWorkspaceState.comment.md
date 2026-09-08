@@ -3,7 +3,9 @@
 ## `public sealed record LWorkspaceState(`
 
 The shell's own view state for one workspace.
-It holds which Entry each duplex side shows, which tab stands open, whether that tab shows its editor, the ordering each browse panel lists by, and the session revision.
+It holds which Entry each duplex side shows and which tab stands open.
+It also holds whether that tab shows its editor and the ordering each browse panel lists by.
+The session revision is held with them.
 This is session data, not lexical data.
 It owns nothing and defines no ownership, so clearing it loses no dictionary content.
 Deleting an Entry simply empties whichever duplex side was showing it.
@@ -11,7 +13,8 @@ Deleting an Entry simply empties whichever duplex side was showing it.
 **Where view state lives**
 
 State that names this workspace's data or its panels is stored here, in the workspace database.
-The Entry a duplex side stands on names a row of this database, and an ordering names a catalog of this workspace's records.
+The Entry a duplex side stands on names a row of this database.
+An ordering names a catalog of this workspace's records.
 The open tab and its split name panels over that same data, so they are stored here too.
 State tied to the installation rather than to any workspace is stored in [`LSettings`](LSettings.comment.md) instead.
 That is the interface language and the window geometry, which mean the same thing whichever workspace is open.

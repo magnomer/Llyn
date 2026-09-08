@@ -4,7 +4,8 @@
 
 The taxonomy panel as a control: what it is made of, and when it starts and stops.
 Browsing itself lives in the file beside this one.
-That is the tag search, the tag ordering, the tag catalog, the entries under a tag, and the reader and editor beside them.
+That is the tag search, the tag ordering, the tag catalog and the entries under a tag.
+The reader and editor stand beside them.
 
 ## `internal void PTaxonomyAttach(PWindow host, LEngine engine)`
 
@@ -59,4 +60,5 @@ The origin names this panel, so its held work is told apart from the other panel
 A store may have changed the tags the entry carries and the headword the membership row lists.
 The engine announces it, so the catalog and the entries under it are read again from what was written.
 An entry can leave the chosen tag by being stored, and the panel must show that it did.
-An entry stored in another tab moves the same way, which is why the announcement is listened to rather than a sibling panel.
+An entry stored in another tab moves the same way.
+The announcement is listened to rather than a sibling panel.

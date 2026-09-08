@@ -41,8 +41,11 @@ The revision it was deleted under is a real reference that must exist.
 ### `command.CommandText =`
 
 The workspace row is operational state.
-It holds which Entry each duplex side shows, the tab standing open, whether that tab shows its editor, the ordering each browse panel lists by, and the session revision.
-Its ordering columns hold the stored name of an ordering, so a build that adds one still reads back what an earlier one wrote.
+It holds which Entry each duplex side shows and the tab standing open.
+It also holds whether that tab shows its editor and the ordering each browse panel lists by.
+The session revision is held with them.
+Its ordering columns hold the stored name of an ordering.
+A build that adds one still reads back what an earlier one wrote.
 It owns nothing lexical.
 Its entry columns are ON DELETE SET NULL, so deleting an Entry empties the duplex side that showed it.
 It neither blocks the delete nor drags the workspace row down with it.

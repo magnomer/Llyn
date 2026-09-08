@@ -106,7 +106,8 @@ It includes one nothing references, which is reachable nowhere else.
 ## `public IReadOnlyDictionary<string, int> LSituationReferenceRead()`
 
 How many places reference each Situation, the whole shelf in one statement.
-A panel listing the catalog needs the figure on every row, and one query per row is a query per row.
+A panel listing the catalog needs the figure on every row.
+One query per row is a query per row.
 A Situation nothing references is absent rather than present as zero.
 
 ## `public IReadOnlyList<LUsage> LSituationUsageRead(string id)`

@@ -50,7 +50,8 @@ A position that is already taken is no longer a unique-index failure to work aro
 
 Every side quoting one Example, itemized rather than counted.
 An Entry row names itself, and a Meaning or Collocation row names the Entry it belongs to.
-A row carries the entry id it is followed through, so it stays followable after the text it shows is edited.
+A row carries the entry id it is followed through.
+It stays followable after the text it shows is edited.
 A referring side with no wording of its own falls back to the definition or expression beneath it.
 
 ## `internal static void LExampleLinkClear(SqliteConnection connection, string exampleId)`

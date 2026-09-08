@@ -73,7 +73,8 @@ Reads the tombstone left by deleting the Entry identified by `entryId`, or `null
 ## `public LRevision? LEngineRevisionRead()`
 
 Reads the revision the workspace row points at, or `null` when the workspace has none yet.
-The pointer is what every save and delete moves, so the current revision is read from where it is recorded rather than guessed from the newest row.
+The pointer is what every save and delete moves.
+The current revision is read from where it is recorded rather than guessed from the newest row.
 
 ## `public IReadOnlyList<LRevisionChange> LEngineChangeRead(string revisionId)`
 

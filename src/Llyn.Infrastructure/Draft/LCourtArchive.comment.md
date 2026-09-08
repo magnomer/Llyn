@@ -8,13 +8,15 @@ Writing a real row and deleting it on discard leaks rows whenever the program di
 A link waits here instead until the record it points at becomes real or is dropped.
 A link to an entry that already exists is never written here, because an ordinary id needs no register.
 Nothing here reaches SQLite and nothing here edits a draft file.
-Two copies of the program may run against one workspace, so every operation touches a single named file and holds nothing open.
+Two copies of the program may run against one workspace.
+Every operation touches a single named file and holds nothing open.
 
 ## `public static void LCourtArchiveSave(string root, LCourtLink link)`
 
 Writes `link` to `drafts/court/<LCourtLinkId>.json`, replacing whatever was there.
 The text goes to a `.json.tmp` file first and is then moved over the target.
-A move is atomic, so a reader never sees a half-written link and a crash mid-write leaves the previous file intact.
+A move is atomic, so a reader never sees a half-written link.
+A crash mid-write leaves the previous file intact.
 
 ## `public static LCourtLink? LCourtArchiveRead(string root, string id)`
 

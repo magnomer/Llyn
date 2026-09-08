@@ -13,7 +13,8 @@ The folder is never locked and nothing is held open, since two copies of the pro
 
 A claim on `draftId` naming the process running this code and the instant it started.
 The start time travels with the id because the operating system hands a freed id to the next program.
-It is stored as the universal instant, not the local one, so a workspace read across a daylight-saving change still recognises its own claims.
+It is stored as the universal instant, not the local one.
+A workspace read across a daylight-saving change still recognises its own claims.
 Nothing is written here, so a caller can compose a claim without touching the workspace.
 
 ## `public static void LClaimArchiveSave(string root, LClaim claim)`
@@ -42,14 +43,16 @@ A file already gone, or held open by the other copy of the program, is not an er
 
 Whether a running program still holds `draftId`.
 True demands all three: a claim exists, its process is running, and that process started when the claim says.
-A claim whose process is gone, or whose id now belongs to a later program, is what a crash leaves behind.
+A claim whose process is gone is what a crash leaves behind.
+So is one whose id now belongs to a later program.
 Such a claim is deleted here rather than left to be re-examined at every launch.
 So the answer doubles as the sweep, and a stale hold never outlives the first question asked about it.
 
 ## `private static bool LClaimArchiveMatch(LClaim claim)`
 
 Whether the process a claim names is the one that wrote it.
-The start times are compared with a second of slack, because the operating system reports them at coarser resolution than they are stored.
+The start times are compared with a second of slack.
+The operating system reports them at coarser resolution than they are stored.
 Both sides are taken as universal instants, so the comparison does not move when the clock the machine shows does.
 A process that cannot be found, has exited, or refuses to say when it started answers no.
 Refusing to answer counts as gone: a claim nothing can confirm must not hold work back forever.

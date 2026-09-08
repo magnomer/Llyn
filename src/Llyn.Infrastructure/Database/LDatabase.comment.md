@@ -13,7 +13,8 @@ So several stores called one after another share one connection and one transact
 Either all of them land or none do.
 The ambient session is guarded by a gate and belongs to the thread that opened it.
 A start from another thread while one is open is refused rather than silently joined.
-Two overlapping units of work would otherwise share a connection and a transaction, and the first to finish would close it under the second.
+Two overlapping units of work would otherwise share a connection and a transaction.
+The first to finish would close it under the second.
 
 ## `public LDatabase(string root)`
 
@@ -65,7 +66,8 @@ Clears the ambient session and the thread that owned it when the session that ow
 
 ### `catch`
 
-The connection is opened here but the pragmas run afterwards, and a file that is not a database fails on the first of them.
+The connection is opened here but the pragmas run afterwards.
+A file that is not a database fails on the first of them.
 An undisposed connection keeps the file open, and Windows refuses to move a file that is open.
 So a failed setup would leave `LDoctor` unable to set the broken database aside.
 

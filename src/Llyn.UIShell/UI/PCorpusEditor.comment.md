@@ -5,8 +5,10 @@
 Editing behavior of the Corpus panel.
 An Example is quoted by any number of cards, so rewriting it here rewrites what every one of them quotes.
 The panel offers no way to fork an Example while editing it.
-Editing an Example means editing that Example, and a sentence meant for one card alone is a new Example on that card.
-What the controls hold is pushed to a draft the engine keeps, so a crash costs the last keystrokes rather than the sentence.
+Editing an Example means editing that Example.
+A sentence meant for one card alone is a new Example on that card.
+What the controls hold is pushed to a draft the engine keeps.
+A crash costs the last keystrokes rather than the sentence.
 The panel keeps no copy of a stored Example, and asks the engine what counts as a change.
 
 ## Inline notes
@@ -46,7 +48,8 @@ Typing is a recording, so what stood there as unreadable stops being that the mo
 
 Fills every field from the held sentence, or empties them when no draft stands.
 The delete control and the usage count follow the stored id the draft names, not the sentence being written.
-A sentence the engine has not stored yet can be deleted from nothing, so the control stays off until it names one.
+A sentence the engine has not stored yet can be deleted from nothing.
+The control stays off until it names one.
 
 ## `private LExample PTranscriptRead(LExample held)`
 

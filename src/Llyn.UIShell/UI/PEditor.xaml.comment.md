@@ -16,7 +16,8 @@ That is a form that modifies that one.
 What differs between them is not the editing structure.
 It is only which entry the form was opened on, which the editor already knows from its own draft.
 A store is announced by the engine, so no host is wired to hear about it here.
-A discard falls back on the entry the draft named, which is nothing at all for a form that creates one.
+A discard falls back on the entry the draft named.
+That is nothing at all for a form that creates one.
 
 ## `internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)`
 
@@ -58,11 +59,17 @@ It hangs off the caret it was opened from, which is why the markup names no plac
 
 The Situation dropdown hangs under the frame of the caret it was opened from, not under the caret itself.
 The frame is the edge a reader sees, and it is drawn outward of the caret it belongs to.
-Where it lands is settled in code rather than by an edge and two offsets, because the surface keeps a gutter for its shadow and that gutter must be taken back exactly.
-It is at least as wide as the frame and no wider than the translation dropdown, so a short caret still carries a readable list.
-Its rows, its corners and its shadow are cut down from the translation dropdown's, which is drawn against a field several times this one's size.
-A row carries the wording at the size the chip will carry it, so what is offered is read as what will be taken.
-It carries no line around it, because the shadow already says where it ends and a line as well made it a second card.
+Where it lands is settled in code rather than by an edge and two offsets.
+The surface keeps a gutter for its shadow.
+That gutter must be taken back exactly.
+It is at least as wide as the frame and no wider than the translation dropdown.
+A short caret still carries a readable list.
+Its rows, its corners and its shadow are cut down from the translation dropdown's.
+That one is drawn against a field several times this one's size.
+A row carries the wording at the size the chip will carry it.
+What is offered is read as what will be taken.
+It carries no line around it, because the shadow already says where it ends.
+A line as well made it a second card.
 
 ### `PMarkerLoad();`
 

@@ -4,7 +4,8 @@
 
 Covers the claim files, the record on disk of which running program holds which tentative draft.
 An in-memory set answers that for one copy of the program only, and two copies may run on one workspace.
-The tests spawn a real child process, because a claim is only worth anything if the operating system agrees the holder is alive.
+The tests spawn a real child process.
+A claim is only worth anything if the operating system agrees the holder is alive.
 
 ## `public void ClaimArchiveCheck_ProcessRunning_HoldsDraft()`
 
@@ -19,7 +20,8 @@ This is what a forced shutdown leaves, and the draft under it is what recovery e
 ## `public void ClaimArchiveCheck_ProcessIdTakenOver_SweepsClaim()`
 
 A claim naming a live process that started at another time is stale too.
-The operating system hands a freed id to the next program, so the id alone would let an unrelated program hold work hostage forever.
+The operating system hands a freed id to the next program.
+The id alone would let an unrelated program hold work hostage forever.
 
 ## `public void ClaimArchiveCheck_DraftNothingClaims_AnswersFalse()`
 
@@ -27,8 +29,10 @@ A draft nobody claims reports nothing held.
 
 ## `public void LeftoverRead_ClaimHeldByAnotherProcess_PassesOverIt()`
 
-A draft another running copy of the program claims is not offered as a leftover, and becomes one the moment that copy is gone.
-This is the whole point of writing the claim down: the first copy's live work must not be shown to the second as wreckage.
+A draft another running copy of the program claims is not offered as a leftover.
+It becomes one the moment that copy is gone.
+This is the whole point of writing the claim down.
+The first copy's live work must not be shown to the second as wreckage.
 
 ## `public void DraftCommit_StoredDraft_DropsItsClaim()`
 
@@ -42,7 +46,8 @@ Cancelling a draft removes its claim too.
 ## `private static string TClaimDraftCreate(TWorkspace workspace)`
 
 Starts a draft through an engine that is then closed, leaving held work behind with content worth recovering.
-An untouched draft is not a leftover whatever claims it, so the content has to differ from the entry it opened from.
+An untouched draft is not a leftover whatever claims it.
+The content has to differ from the entry it opened from.
 
 ## `private static Process TClaimProcessStart()`
 
@@ -52,4 +57,5 @@ Its input is redirected so it waits rather than reading the test runner's consol
 ## `private static void TClaimProcessStop(Process held)`
 
 Kills that child and waits for the operating system to release its id.
-Reading the start time before the kill is what gives the tests a process that certainly existed and certainly does not now.
+Reading the start time before the kill gives the tests a process that certainly existed.
+That process certainly does not exist now.

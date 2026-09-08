@@ -50,7 +50,8 @@ So no reader can lose the distinction by accident.
 
 ## `public static LStateValue LStateValueResolve(string? text, bool unreadable)`
 
-Reads a form field as a value, from the text it holds and the mark that says it cannot be read.
+Reads a form field as a value.
+The text it holds and the mark that says it cannot be read are both used.
 This is the one rule for the three states, and every editor asks it rather than deciding for itself.
 
 The mark decides first.

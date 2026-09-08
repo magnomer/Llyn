@@ -18,7 +18,8 @@ The window is held because an incoming row opens the entry it names.
 Draws `draft` as the entry being read.
 A field the draft left empty collapses instead of standing as a blank line.
 The playback tray appears only when the entry owns a recording that is still on disk.
-The volume is read from the workspace on every show, so a level the editor set is the level this view plays at.
+The volume is read from the workspace on every show.
+A level the editor set is the level this view plays at.
 The id is taken as well as the draft, because a draft does not say which entry it is.
 That id is what the incoming cards are looked up by.
 
@@ -63,7 +64,8 @@ That is what the play button plays.
 ### `PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));`
 
 The level is played as the grip moves but written down only when the hand comes off it.
-Writing on every step of a drag would put a file write behind every pixel, and would also write back the level the view had just loaded.
+Writing on every step of a drag would put a file write behind every pixel.
+It would also write back the level the view had just loaded.
 A track click and an arrow key are gestures of their own, so each ends with a write too.
 
 ### `private void PDisplayExampleShow(string language)`
@@ -79,16 +81,23 @@ An unreadable mark leaves the star empty rather than claiming the entry is marke
 
 ### `private void PDisplayCardHandle(object sender, RoutedEventArgs e)`
 
-Every chip on a card names a record kept in some other panel, so reading it there is one click away.
-What was clicked stands for the record it was drawn from, and the record decides the panel: a situation opens the repertoire, a translation the library, a tag the taxonomy.
-One handler serves all three, because the chips are drawn from a shared dictionary that knows no window and reaches the cards only through the two lists this sits on.
-The chip is read off what was clicked rather than off the click's source, because a click leaving a template is re-sourced to the presenter that drew it.
+Every chip on a card names a record kept in some other panel.
+Reading it there is one click away.
+What was clicked stands for the record it was drawn from.
+The record decides the panel.
+A situation opens the repertoire, a translation the library, a tag the taxonomy.
+One handler serves all three.
+The chips are drawn from a shared dictionary that knows no window.
+It reaches the cards only through the two lists this sits on.
+The chip is read off what was clicked rather than off the click's source.
+A click leaving a template is re-sourced to the presenter that drew it.
 A chip naming a record the card never saved leads nowhere.
 
 ### `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
 
 Marks or unmarks the shown entry, following the state the click left on the star.
-A refused write puts the star back where it stood, so it never shows a mark the workspace does not hold.
+A refused write puts the star back where it stood.
+It never shows a mark the workspace does not hold.
 Marking creates no entry and changes no lexical data.
 
 ### `private async void PDisplayLanguageShow(string language)`

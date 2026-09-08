@@ -28,7 +28,8 @@ The ordering is the same one whatever language names it.
 
 The panel answers the engine rather than its own visibility.
 So a save made in the input panel lands here at once, with no tab switch to trigger it.
-A workspace that moved is the one announcement that empties the panel first, and its flags are reloaded before any row is built.
+A workspace that moved is the one announcement that empties the panel first.
+Its flags are reloaded before any row is built.
 Every other announcement re-lists the index and refreshes the entry this panel stands on.
 
 ### `private void POrderHandle(object sender, RoutedEventArgs e)`
@@ -81,9 +82,11 @@ With no entry selected there is nothing stored to come back to, so the form is e
 
 The new-entry command: the selection is dropped and the editor opens on a blank form.
 Nothing selected means the discard falls back to an empty form, so the writer stays in the new entry.
-The blank form starts a draft of its own under the `Library` origin, so a new word here and a new word in the input panel are two tentative entries and not one.
+The blank form starts a draft of its own under the `Library` origin.
+A new word here and a new word in the input panel are two tentative entries.
 Each carries its own id and its own file, so neither answer to the exit question can reach the other.
-The origin is what a leftover reports itself by, which is how recovery can say where the work was being typed.
+The origin is what a leftover reports itself by.
+That is how recovery can say where the work was being typed.
 
 ### `private void PLibraryScribeHandle(object sender, RoutedEventArgs e)`
 
@@ -132,7 +135,8 @@ The window calls it once on attach, so the panel never reads the stored state fo
 ### `internal void PLibraryScribeRestore(bool editing)`
 
 Puts the panel back on the side it was left standing on.
-The button is enabled first when the editor is the side restored, because an empty editor is the state a new record is written in.
+The button is enabled first when the editor is the side restored.
+An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.

@@ -89,7 +89,8 @@ Same quiet-until-pointed-at treatment as the taking button beside it.
 The row a pronunciation is read and written in.
 It carries no border and no fill, so the brackets stand alone against the page.
 Its height matches the playback group beside it, so the two sit on one line.
-Without a box the reading has to hold the eye on its own, so it is set larger than the buttons around it.
+Without a box the reading has to hold the eye on its own.
+It is set larger than the buttons around it.
 
 ## `<Style x:Key="Theme.Pronunciation.Bracket" TargetType="TextBlock">`
 
@@ -99,19 +100,22 @@ They are set in the muted ink, so they frame the reading without competing with 
 ## `<Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">`
 
 The pronunciation as it reads.
-It takes exactly the width its text needs, up to a ceiling that keeps a long reading from pushing the row wide.
+It takes exactly the width its text needs.
+A ceiling keeps a long reading from pushing the row wide.
 
 ## `<Style x:Key="Theme.Pronunciation.Measure" TargetType="TextBlock">`
 
 An unseen twin of the field, carrying the same text in the same face.
 The field is sized by this twin, so the box grows and shrinks with what is typed.
-When nothing is typed the twin carries the placeholder instead, so the empty field is still wide enough to read it.
+When nothing is typed the twin carries the placeholder instead.
+The empty field is still wide enough to read it.
 
 ## `<Style x:Key="Theme.Pronunciation.Field" TargetType="TextBox">`
 
 The same pronunciation with a caret in it.
 It holds no floor width and fills the width its unseen twin measures.
-It carries the read size and is pulled a pixel left, because a WPF text box keeps that pixel for the caret.
+It carries the read size and is pulled a pixel left.
+A WPF text box keeps that pixel for the caret.
 So a reading sits in the same place whether it is being read or being typed.
 
 ## `<Style x:Key="Theme.Playback.Action" TargetType="Button">`
@@ -123,18 +127,22 @@ Both views draw it, because a recording is played where it is heard and where it
 ## `<Style x:Key="Theme.Volume.Rail" TargetType="RepeatButton">`
 
 The two halves of the volume track, the taken one filled in the accent and the remaining one left clear.
-They are repeat buttons because that is what a WPF track is built from, and a click on either walks the volume toward it.
+They are repeat buttons because that is what a WPF track is built from.
+A click on either walks the volume toward it.
 
 ## `<Style x:Key="Theme.Volume.Thumb" TargetType="Thumb">`
 
-The grip the volume is carried by: a ring of the accent around the surface, filling as it is pointed at and solid while it is dragged.
+The grip the volume is carried by is a ring of the accent around the surface.
+It fills as it is pointed at and is solid while it is dragged.
 It is a ring rather than a dot, so the track it sits on stays readable underneath it.
 
 ## `<Style x:Key="Theme.Volume.Slider" TargetType="Slider">`
 
 The volume of a played recording, from silence to full over its own width.
-It runs zero to one, which is the range a media player takes, so nothing between the grip and the sound rescales it.
-A click anywhere on the track moves the grip there, because a volume is chosen by where it should be rather than nudged toward it.
+It runs zero to one, the range a media player takes.
+Nothing between the grip and the sound rescales it.
+A click anywhere on the track moves the grip there.
+A volume is chosen by where it should be rather than nudged toward it.
 
 ## `<Style x:Key="Theme.Speech.Chip" TargetType="Border">`
 
@@ -209,8 +217,10 @@ A disabled switch keeps that tint, because the mode it stands on is still true.
 ## `<sys:Double x:Key="Theme.Card.TitleSize">`
 
 The measurements a card is drawn to, held here rather than in either card dictionary.
-A card must read the same whether it is being written or being read, and the two are drawn by dictionaries that never meet.
-So the numbers live where both can reach them, and neither can drift from the other by an edit to one file.
+A card must read the same whether it is being written or being read.
+The two are drawn by dictionaries that never meet.
+So the numbers live where both can reach them.
+Neither can drift from the other by an edit to one file.
 
 ## `<Style x:Key="Theme.Card.Shell" TargetType="Border">`
 
@@ -247,7 +257,8 @@ Its frame is drawn outward on hover and focus by "Theme.Input.Field.Bare", so th
 ## `<Style x:Key="Theme.Card.Title" TargetType="TextBox">`
 
 Each of a card's written fields at the size, weight and face the reading side gives that same field.
-A writer therefore sees the card as it will be read, with handles added rather than a form put in its place.
+A writer therefore sees the card as it will be read.
+Handles are added rather than a form put in its place.
 
 ## `<Style x:Key="Theme.Card.Handle" TargetType="Button">`
 
@@ -256,13 +267,17 @@ The small marks that add and drop a row, sized to sit in the gutter without push
 ## `<Style x:Key="Theme.Card.Switch" TargetType="ToggleButton">`
 
 The mark that opens a frame on an Example row that carries none.
-It carries a glyph rather than a drawing, and holds no size of its own, so it stands on the line's baseline as the text beside it does.
-A drawn mark of a fixed size sits where the row puts it, which is never quite where the eye reads the line.
+It carries a glyph rather than a drawing and holds no size of its own.
+It stands on the line's baseline as the text beside it does.
+A drawn mark of a fixed size sits where the row puts it.
+That is never quite where the eye reads the line.
 
 ## `<Style x:Key="Theme.Card.Ghost" TargetType="TextBlock">`
 
-A copy of what a field holds, drawn invisibly behind it so the field is exactly as wide as its text.
-An inline field has to be measured this way; left to itself a drop-down takes the width of its widest offer.
+A copy of what a field holds, drawn invisibly behind it.
+The field is then exactly as wide as its text.
+An inline field has to be measured this way.
+Left to itself a drop-down takes the width of its widest offer.
 
 ## `<Style x:Key="Theme.Card.Dot" TargetType="TextBlock">`
 
@@ -274,12 +289,15 @@ It is not hit tested, because it is punctuation and not a place to write.
 The parentheses a frame is written inside, set bold in the interface face and the accent colour.
 No room is kept for the ring a written field is framed by, because the reading view keeps none either.
 A frame the writing view widened would set the sentence further along than the card reads it.
-The example keeps the reading face and its own weight, so the frame is never read as part of the sentence.
-The invisible copies behind the written fields carry the same weight, or a bold field would outgrow the room measured for it.
+The example keeps the reading face and its own weight.
+The frame is never read as part of the sentence.
+The invisible copies behind the written fields carry the same weight.
+A bold field would otherwise outgrow the room measured for it.
 
 ## `<Style x:Key="Theme.Choice.Bare" TargetType="ComboBox">`
 
-The frame fields of an Example: typed into like text, offering what the language has saved, and framed only under the pointer.
+The frame fields of an Example are typed into like text.
+They offer what the language has saved and are framed only under the pointer.
 The frame is drawn outward, so a field being pointed at or written in never moves the sentence beside it.
 The frame is closed onto the text it rings, clearing it by a hairline and no more.
 A marker and a role are parted by one space, so a frame drawn outward crosses the word beside it.

@@ -10,7 +10,8 @@ It extracts the value with the attempt's declared strategy.
 That is a regex capture, a JSON path, or the tolerant nested-span IPA reader.
 It holds no knowledge of any particular source, dictionary, or language.
 So a new ordinary source needs only a `source.json` entry and no code.
-It answers with an `LAnswer`, so a source that was fetched and had nothing is told apart from one never reached.
+It answers with an `LAnswer`.
+A source that was fetched and had nothing is told apart from one never reached.
 An attempt whose page loaded is an answer even when nothing was extracted from it.
 Only a source whose every attempt failed to fetch is reported as never reached.
 

@@ -14,7 +14,8 @@ This follows `LEngineDraftExample.cs` call for call, so a third kind cannot inve
 Mints a draft id, writes the first file, and returns the held Situation.
 With no Situation the content is blank under an id minted for it, which is a context being written first.
 With a Situation the content is that Situation read back, which is an edit.
-The Situation id is given here rather than at the store, so a recovered draft names the same context it always did.
+The Situation id is given here rather than at the store.
+A recovered draft names the same context it always did.
 A Situation that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 

@@ -32,7 +32,8 @@ Marking a field is an edit like any other, so it too is pushed once the typing s
 
 Fills the whole edit area from the held Source, or empties it when no draft is held.
 The mark beside each field is set from the field's state, so the three states arrive distinct.
-The delete control and the citation figure follow the stored Source the draft names, because neither means anything before a store.
+The delete control and the citation figure follow the stored Source the draft names.
+Neither means anything before a store.
 The buttons are settled last, so the area and what they say never drift apart.
 
 ## `private void PImprintCountShow(string? stored)`
@@ -60,7 +61,8 @@ Restarting rather than refilling leaves nothing of the discarded work on disk.
 
 Commits the held Source and returns to the reading over what was stored.
 Typing still waiting to be pushed is pushed first, so the commit carries the last keystrokes.
-The engine announces the commit, and the shelf is read again on that, so the stored Source refreshes its own citation figure.
+The engine announces the commit and the shelf is read again on that.
+The stored Source refreshes its own citation figure.
 The panel no longer re-reads straight after its own commit, because it hears about the commit like everything else.
 Saving changes neither the identifier nor where the Source is cited.
 

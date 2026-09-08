@@ -16,4 +16,5 @@ A source that failed is as much a result as one that answered, and the user is t
   Sources answer at whatever speed the network gives them, so arrival order is meaningless to the reader.
   The position travels with the candidate, so the menu can show the order the pack declares.
 - `LCandidateReached` — Whether the source answered at all.
-  With no phonetic form, this is what separates a word the dictionary does not carry from a dictionary that is down.
+  With no phonetic form, this is what separates two cases.
+  A word the dictionary does not carry is told from a dictionary that is down.

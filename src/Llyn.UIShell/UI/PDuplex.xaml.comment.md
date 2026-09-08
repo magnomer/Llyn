@@ -18,7 +18,8 @@ Neither side subscribes: the display on each is its own subscriber, and it is th
 Puts the panel back on the workspace open now, standing on the Entries `state` names.
 Both queries are emptied and both sides are cleared first.
 A different workspace has its own database.
-So the Entries the panel was comparing came from one that is no longer open, and the ones it stands on come from the one that is.
+So the Entries the panel was comparing came from a workspace no longer open.
+The ones it stands on come from the workspace that is.
 A side the state names nothing for stays empty.
 
 ## `internal void PDuplexClose()`

@@ -14,9 +14,11 @@ It is given the untitled text for the first so no row stands blank beside the ne
 ## `internal PAtlasItem(LSituation situation, int usage, string unreadable, string untitled)`
 
 Builds the row from the stored Situation and the number of places referencing it.
-The two texts are handed in rather than read here, because a row is built while the list is being filled.
+The two texts are handed in rather than read here.
+A row is built while the list is being filled.
 
 ## `public string PAtlasItemCount { get; }`
 
 How many Meanings and Collocations reference this Situation, as the row shows it.
-It is the figure that decides whether a delete is legal, so the catalog carries it and not only the display.
+It is the figure that decides whether a delete is legal.
+The catalog carries it and not only the display.

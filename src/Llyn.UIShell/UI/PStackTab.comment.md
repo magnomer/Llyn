@@ -10,7 +10,8 @@ The same selection shape as the navigation strip, over the editor's own contents
 
 Selection lives in each button's tag rather than in a swapped style.
 A style swap rebuilds the template, which would drop any running animation and lose the hover state under the cursor.
-The tag also tells the template apart from a hover, so the selected tab never paints a hover fill over its own pill.
+The tag also tells the template apart from a hover.
+The selected tab never paints a hover fill over its own pill.
 
 ### `private void PStackPillPlace(bool glide)`
 

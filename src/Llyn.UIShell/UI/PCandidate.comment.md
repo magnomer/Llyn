@@ -4,9 +4,11 @@
 
 The dropdown of stored Situations a typed wording may already name, and the rows it offers.
 It is one popup the editor owns rather than one per card, for the reason the translation dropdown is.
-Only one card is being typed into at a time, so the popup is retargeted at the caret that opened it.
+Only one card is being typed into at a time.
+The popup is retargeted at the caret that opened it.
 
-A Situation is a workspace entity, not a word on a card: it carries a description, a kind and a usage count.
+A Situation is a workspace entity, not a word on a card.
+It carries a description, a kind and a usage count.
 Two cards naming the same wording should name the same Situation.
 Without this the wording would be written twice and the workspace would hold two Situations that read alike.
 
@@ -29,13 +31,15 @@ Down from nothing selects the first row and up selects the last.
 ### `PCandidate.PlacementTarget = PCandidateFrameFind(box) ?? box ?? (UIElement)PContents;`
 
 The frame inside the caret, because that is the edge the dropdown is read against.
-The caret it is drawn for falls back in, then the pane, so the list still opens when the frame is not built yet.
+The caret it is drawn for falls back in, then the pane.
+The list still opens when the frame is not built yet.
 
 ### `private static CustomPopupPlacement[] PCandidatePlace(Size popup, Size target, Point offset)`
 
 The dropdown is placed against the frame by hand, from the frame's own corner.
 Placing it under the frame's edge instead left it short of that edge and over the caret.
-The gutter the surface keeps for its shadow is taken back on both counts, so the list reads as the frame's own edge continued.
+The gutter the surface keeps for its shadow is taken back on both counts.
+The list reads as the frame's own edge continued.
 The second placement puts it above the frame, for a caret near the foot of the screen.
 
 ### `private void PCandidateShow(PCard card, string text)`

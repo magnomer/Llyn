@@ -19,8 +19,10 @@ The caret would be pushed right and down while the placeholder, padded once, sta
 
 ## `private static readonly Thickness PFieldPlaceholderInset`
 
-The room a placeholder is held off the caret by, the same in a bare field as in a framed one.
-A placeholder starting where the text starts is written under the caret, and a writer reads the caret as part of the word.
+The room a placeholder is held off the caret by.
+It is the same in a bare field as in a framed one.
+A placeholder starting where the text starts is written under the caret.
+A writer reads the caret as part of the word.
 Both templates hold their placeholder off by this much, so a field in a card sits as the headword does.
 
 ## `private static ControlTemplate PFieldBareBuild()`

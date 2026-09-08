@@ -19,14 +19,18 @@ But the correction the user typed would sit out of sight until they came back.
 
 ## `internal void PNavigationRestore(LWorkspaceState state)`
 
-Puts the window back on the tab `state` names, and puts that tab back on the side it was left standing on.
+Puts the window back on the tab `state` names.
+That tab goes back on the side it was left standing on.
 It goes through the ordinary tab switch, so the restored tab is selected exactly as a click selects it.
-A state naming no tab, or one this build no longer offers, leaves the window on the tab it opens with.
+A state naming no tab leaves the window on the tab it opens with.
+So does one naming a tab this build no longer offers.
 
 ## `private (string Mode, Button Button, FrameworkElement Panel, Action<bool>? Scribe)[] PNavigationTabRead()`
 
-The tabs of the window, each with the name it is stored under and the way to put it back on its editor.
-The switch and the restore read the same table, so a tab cannot be stored under one name and restored under another.
+The tabs of the window, each with the name it is stored under.
+Each also carries the way to put it back on its editor.
+The switch and the restore read the same table.
+A tab cannot be stored under one name and restored under another.
 A tab holding no editor offers no way to restore one.
 
 ## `internal void PWindowEntryShow(string id)`

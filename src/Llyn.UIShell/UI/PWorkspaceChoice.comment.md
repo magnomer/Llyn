@@ -27,9 +27,12 @@ The fault is reported as well, because a field that reverts on its own tells the
 
 ### `_pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());`
 
-The new workspace carries its own view state, so the shell is put onto it as well as onto its database.
-Restoring an ordering re-lists the catalog it orders, so each panel ends on the new workspace's order rather than the old one's.
-That is all this handler does after the change: emptying and re-reading is the engine's announcement, not a list kept here.
+The new workspace carries its own view state.
+The shell is put onto it as well as onto its database.
+Restoring an ordering re-lists the catalog it orders.
+Each panel ends on the new workspace's order rather than the old one's.
+That is all this handler does after the change.
+Emptying and re-reading is the engine's announcement, not a list kept here.
 
 ### `_lEngine.LEngineWorkspaceChange(path);`
 

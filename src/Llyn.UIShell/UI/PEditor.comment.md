@@ -53,9 +53,12 @@ The twin decides the cell's width, so the brackets close on the text instead of 
 
 ## `<Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Background="Transparent" BorderThickness="0" ...>`
 
-The playback row: the play button and the volume it is played at, the same bare row the reading view draws.
-It appears with a recording and goes with it, so the volume is offered only while there is something to hear.
-The volume it shows is the workspace's own, so a level set here is the level the reading view opens at.
+The playback row holds the play button and the volume it is played at.
+It is the same bare row the reading view draws.
+It appears with a recording and goes with it.
+The volume is offered only while there is something to hear.
+The volume it shows is the workspace's own.
+A level set here is the level the reading view opens at.
 
 ## `<Border Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">`
 

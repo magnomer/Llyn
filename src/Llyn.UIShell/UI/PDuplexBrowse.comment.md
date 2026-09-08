@@ -24,5 +24,6 @@ The list hides itself when it has nothing to offer.
 
 Loads one Entry back from the workspace onto the side that asked for it.
 An Entry that is gone leaves that side empty rather than showing what it was.
-It reports whether the side now stands on that Entry, so the caller stores an id only when something is shown.
+It reports whether the side now stands on that Entry.
+The caller stores an id only when something is shown.
 A side that could not load stores nothing rather than an id pointing at what is gone.

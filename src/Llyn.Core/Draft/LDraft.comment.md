@@ -7,7 +7,8 @@ It is plain data and knows nothing of files or the database.
 A draft carries its own throwaway id, discarded once the record becomes real.
 One draft holds one kind of work, told apart by which content field carries it.
 A draft naming no example, no situation and no source holds an entry.
-One naming an example holds a sentence, one naming a situation holds a context, one naming a source holds a citation.
+One naming an example holds a sentence and one naming a situation holds a context.
+One naming a source holds a citation.
 The kind is read from the content rather than from a tag beside it, so the two cannot disagree.
 
 **Parameters**

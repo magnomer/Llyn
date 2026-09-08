@@ -9,7 +9,8 @@ So the catalog here is a tag, and the entry list beside it is what that tag hold
 
 ## `<Grid x:Name="PFunnel" Grid.Row="0" Grid.Column="0" Margin="0,0,20,18">`
 
-The sorting button and the search field share the tag column, so their combined edge is the same as the catalog below.
+The sorting button and the search field share the tag column.
+Their combined edge is the same as the catalog below.
 Both act on the tag catalog and nothing else.
 The membership list has no toolbar because it is not searched.
 It is what the chosen tag decides it is.

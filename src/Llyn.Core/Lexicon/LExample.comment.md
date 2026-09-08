@@ -12,7 +12,8 @@ So the same Example can sit first under one Entry and third under a Meaning.
 Two Examples with identical text remain distinct rows.
 
 An Example carries its own `LExampleTranslation` and references *at most one* Source through `LExampleSource`.
-That translation is plain text the Example holds, unlike the Translation a Meaning carries, which is a link to another Entry.
+That translation is plain text the Example holds.
+The Translation a Meaning carries is instead a link to another Entry.
 The Source reference is a pointer, not ownership: clearing it or deleting the Example never touches the Source.
 Every field here that can stand empty carries `LStateValue`.
 A field holding nothing says whether nothing was ever recorded.

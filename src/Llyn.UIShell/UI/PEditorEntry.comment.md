@@ -33,7 +33,8 @@ A favourite that cannot be read is shown unmarked, since a star is not worth fai
 ### `private void PEditorFavoriteHandle(object sender, RoutedEventArgs e)`
 
 The mark is written straight to the engine rather than into the draft.
-A favourite is not part of the entry being edited, so it neither waits for a store nor falls with a discard.
+A favourite is not part of the entry being edited.
+It neither waits for a store nor falls with a discard.
 A refused write puts the star back, because the toggle had already moved itself before this was called.
 The engine announces the change, so the view showing the same entry follows without being told here.
 

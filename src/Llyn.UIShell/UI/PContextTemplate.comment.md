@@ -27,8 +27,10 @@ It carries no border of its own, because the field around it is the border.
 Its keys are read before the box reads them.
 The box would otherwise swallow the arrows for its own caret and the suggestion list would never see them.
 Its frame is drawn outward, so the entry is inset by that same amount.
-Its own room stands as tall as a chip stands, counting the line a chip is drawn with and the entry is not.
-Otherwise the run grew by that line the moment a first Situation was committed, and the whole card below stepped down with it.
+Its own room stands as tall as a chip stands.
+That counts the line a chip is drawn with and the entry is not.
+Otherwise the run grew by that line the moment a first Situation was committed.
+The whole card below stepped down with it.
 That way it opens where a chip opens and keeps a chip-wide gap after the run.
 
 ## `PContextTemplate.xaml.cs`

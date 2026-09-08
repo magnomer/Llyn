@@ -19,10 +19,12 @@ Requiring an Example first would lose what the user wrote for no reason the data
 
 ## `public void SentenceFrameRead_SavedRows_OffersWhatTheLanguageHolds()`
 
-Nothing ships a marker or a role, so what a store has already been given is the only list the editor can offer.
+Nothing ships a marker or a role.
+What a store has already been given is the only list the editor can offer.
 An untouched store offers nothing, which is what an empty dropdown on a fresh workspace means.
 Each language is asked separately, because a Japanese particle is no offer to make on an English row.
-The rows here cite no Example, so a frame saved before any sentence was written still reaches the field that offers it.
+The rows here cite no Example.
+A frame saved before any sentence was written still reaches the field that offers it.
 
 ## `public void SentenceSave_SharedExample_KeepsEachMeaningsFrame()`
 

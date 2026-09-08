@@ -3,7 +3,8 @@
 ## `public sealed record LVideoDraft(`
 
 One video row a card is holding before it is stored.
-A card names a video by location and by the span of it worth watching, and both are the user's writing.
+A card names a video by location and by the span of it worth watching.
+Both are the user's writing.
 So the two travel together from the form to the store rather than the location travelling alone.
 
 The span is text and not a pair of moments.

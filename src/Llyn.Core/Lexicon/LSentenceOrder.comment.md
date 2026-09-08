@@ -10,7 +10,8 @@ No marker and no role is ever shipped, by a pack or by the program.
 Each field is stated as the place it is written in, counted from zero.
 English writes its markers before what they mark, so the marker stands at nothing.
 A language whose markers follow the word they attach to writes the role there instead.
-A pack that states nothing leaves the marker first, which is a layout choice and not a claim about the language.
+A pack that states nothing leaves the marker first.
+That is a layout choice and not a claim about the language.
 
 **Parameters**
 

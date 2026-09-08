@@ -68,7 +68,8 @@ Without `detach` it is the refusing delete above.
 With it the detaching and the delete are one operation rather than a sequence a caller composes.
 
 The usage seams that once stood here now live in `LEngineUsage.cs`.
-An Example is browsed the same way a Situation is, so the two share one seam rather than each carrying its own.
+An Example is browsed the same way a Situation is.
+The two share one seam rather than each carrying its own.
 
 ## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(string query, LCatalogOrder order)`
 

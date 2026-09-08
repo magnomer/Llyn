@@ -62,7 +62,8 @@ That is what leaving the field or pressing enter means.
 
 ### `private void PCardContextChange(object? sender, PropertyChangedEventArgs arguments)`
 
-Every edit of the entry is reported, so the editor can offer the Situations the wording matches as it is typed.
+Every edit of the entry is reported.
+The editor can offer the Situations the wording matches as it is typed.
 The card cannot read the workspace itself, so it says what was typed and the editor answers.
 
 The comma is read off the entry's text rather than off a keystroke.

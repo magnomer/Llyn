@@ -13,7 +13,8 @@ The browsing lives in `PReferenceBrowse.cs`, the editing in `PReferenceImprint.c
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
 The window fills the source shelf when it restores the stored ordering.
-Every change after that arrives as an announcement, so the panel is current whether or not its tab is in front.
+Every change after that arrives as an announcement.
+The panel is current whether or not its tab is in front.
 
 ## `internal void PReferenceReset()`
 

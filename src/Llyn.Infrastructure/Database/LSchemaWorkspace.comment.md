@@ -9,7 +9,8 @@ The orderings a panel was listing by died with the process.
 ## `public static void LSchemaWorkspaceNormalize(SqliteConnection connection)`
 
 Adds one ordering column per browse panel to `workspace`, and clears a split that names neither side.
-A column is added only when it is missing, so the step may run over a workspace that already carries it.
+A column is added only when it is missing.
+The step may run over a workspace that already carries it.
 The rows carry over untouched.
 An ordering that was never stored stands empty, and the panel falls back to the ordering it opens on.
 
