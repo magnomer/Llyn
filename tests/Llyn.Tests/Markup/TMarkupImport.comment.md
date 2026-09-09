@@ -38,6 +38,11 @@ Declaring it is the author's statement that the workspace holds the work.
 An author credited on nothing had nowhere to live in the old format.
 The row is written and no credit row is written with it.
 
+### `MarkupImport_NamelessAuthor_StoresARowWithNoName`
+
+An author's name is not one of the three-state fields, so an empty tag records no name.
+Section 9 does not let an import refuse the file, and the row is written without one.
+
 ### `MarkupImport_TwoAuthorsOneName_StoresTwoRows`
 
 Author identity comes from the key, not from the name.

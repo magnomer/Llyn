@@ -152,6 +152,24 @@ public sealed class TMarkupImport
     }
 
     [Fact]
+    public void MarkupImport_NamelessAuthor_StoresARowWithNoName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        IReadOnlyList<LEntry> imported = engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
+            """
+            <llyn>
+              <catalog><author id="ghost"></author></catalog>
+              <entry><headword>kindle</headword><lang>English</lang></entry>
+            </llyn>
+            """));
+
+        Assert.Equal("kindle", Assert.Single(imported).LEntryHeadword);
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM author WHERE name = '';"));
+    }
+
+    [Fact]
     public void MarkupImport_TwoAuthorsOneName_StoresTwoRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

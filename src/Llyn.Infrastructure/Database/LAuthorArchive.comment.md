@@ -22,6 +22,9 @@ Binds the store to the workspace `database` it opens sessions through.
 Inserts `author` with a fresh opaque id and returns the stored Author with that id filled in.
 The new Author is credited on no Reference until one attaches it.
 
+The name may be empty, because section 6 of the format spec lets an author carry none.
+An import writes such a row and the engine refuses one typed by hand.
+
 ## `public LAuthor? LAuthorRead(string id)`
 
 Reads the Author identified by `id`, or `null` when none exists.

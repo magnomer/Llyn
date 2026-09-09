@@ -18,7 +18,6 @@ public sealed class LAuthorArchive
     public LAuthor LAuthorCreate(LAuthor author)
     {
         ArgumentNullException.ThrowIfNull(author);
-        ArgumentException.ThrowIfNullOrWhiteSpace(author.LAuthorName);
 
         LAuthor stored = author with { LAuthorId = LIdentity.LIdentityCreate() };
 

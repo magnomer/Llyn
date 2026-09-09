@@ -22,6 +22,7 @@ A path naming no file fails with a `FileNotFoundException` before anything is re
 
 The document is read before anything is written.
 A file that is malformed anywhere therefore fails with a `FormatException`.
+A catalog that fails to save is wrapped in one too, so no store exception reaches the shell raw.
 A broken tag, an entry with no headword, or a citation naming no row is such a fault.
 The workspace is still untouched, which is the cheapest way for the common failure to end.
 
@@ -60,6 +61,10 @@ The order the kinds are written in is the order they point at each other.
 Authors come first, because a source credits them.
 Sources come next, because an example cites one.
 Nothing else in the catalog points at anything, so the rest follow in any order.
+
+An author is written through its archive rather than through `LEngineAuthorCreate`.
+That engine method refuses a blank name, which a person typing one should never leave empty.
+The format allows an author with no name, so an import going that way would refuse a legal file.
 
 Every declared row is written, whether or not a citation names it.
 Section 3 of the format spec keeps a source nothing quotes and an author credited on nothing.

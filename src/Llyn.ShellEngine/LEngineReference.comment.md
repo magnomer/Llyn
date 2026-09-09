@@ -60,6 +60,10 @@ Only the credits between them and this Reference go.
 
 Creates `author` and returns it with its assigned id.
 
+A blank name is refused here rather than in the archive.
+This is the door the shell knocks on, and a name left empty there is a slip.
+An import writes through the archive instead, where a nameless author is a row the format allows.
+
 ## `public LAuthor? LEngineAuthorRead(string id)`
 
 Reads the Author for `id`, or `null` when none has that id.

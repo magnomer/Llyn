@@ -144,6 +144,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(author);
+            ArgumentException.ThrowIfNullOrWhiteSpace(author.LAuthorName);
             created = new LAuthorArchive(_lEngineDatabase).LAuthorCreate(author);
         }
 

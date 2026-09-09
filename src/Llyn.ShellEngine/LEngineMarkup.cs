@@ -27,8 +27,15 @@ public sealed partial class LEngine
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
-            IReadOnlyDictionary<string, string> rows =
-                LEngineCatalogSave(document.LMarkupDocumentCatalog, entries);
+            IReadOnlyDictionary<string, string> rows;
+            try
+            {
+                rows = LEngineCatalogSave(document.LMarkupDocumentCatalog, entries);
+            }
+            catch (Exception exception) when (exception is not FormatException)
+            {
+                throw new FormatException("The catalog could not be imported.", exception);
+            }
 
             for (int place = 0; place < entries.Count; place++)
             {
@@ -59,9 +66,10 @@ public sealed partial class LEngine
     {
         Dictionary<string, string> rows = new Dictionary<string, string>(StringComparer.Ordinal);
 
+        LAuthorArchive authors = new(_lEngineDatabase);
         foreach (KeyValuePair<string, LAuthor> author in catalog.LMarkupCatalogAuthor)
         {
-            rows[author.Key] = LEngineAuthorCreate(
+            rows[author.Key] = authors.LAuthorCreate(
                 new LAuthor(string.Empty, author.Value.LAuthorName)).LAuthorId;
         }
 
