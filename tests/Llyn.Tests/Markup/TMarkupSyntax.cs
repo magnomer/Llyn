@@ -269,8 +269,8 @@ public sealed class TMarkupSyntax
         Assert.Equal(LState.LStateUnknown, reference.LReferenceUrl.LStateValueState);
         Assert.Equal(LState.LStateUnknown, reference.LReferenceAuthorState);
         Assert.Empty(read.LMarkupReferenceAuthor);
-        Assert.Equal(LState.LStateUnspecified, reference.LReferenceProgram.LStateValueState);
-        Assert.Equal(LState.LStateUnspecified, reference.LReferenceChannel.LStateValueState);
+        Assert.Equal(LReferenceKind.LReferenceKindUnspecified, reference.LReferenceKind);
+        Assert.Equal(LState.LStateUnspecified, reference.LReferenceNote.LStateValueState);
     }
 
     [Fact]
@@ -338,16 +338,18 @@ public sealed class TMarkupSyntax
             <source id="oed">
               <title>Oxford English Dictionary</title>
               <author>Murray, James</author>
-              <program>Word of Mouth</program>
-              <channel>Radio 4</channel>
+              <kind>video</kind>
+              <note>Word of Mouth, Radio 4</note>
             </source>
             """));
 
         Assert.Equal("oed", read.LMarkupReferenceId);
         Assert.Equal(["Murray, James"], read.LMarkupReferenceAuthor);
         Assert.Equal(LState.LStateSpecified, read.LMarkupReferenceValue.LReferenceAuthorState);
-        Assert.Equal("Word of Mouth", read.LMarkupReferenceValue.LReferenceProgram.TStateValueShow());
-        Assert.Equal("Radio 4", read.LMarkupReferenceValue.LReferenceChannel.TStateValueShow());
+        Assert.Equal(LReferenceKind.LReferenceKindVideo, read.LMarkupReferenceValue.LReferenceKind);
+        Assert.Equal(
+            "Word of Mouth, Radio 4",
+            read.LMarkupReferenceValue.LReferenceNote.TStateValueShow());
     }
 
     private const string TMarkupSample =
@@ -392,8 +394,8 @@ public sealed class TMarkupSyntax
             <author>Murray, James</author>
             <year>1928</year>
             <url>https://www.oed.com/</url>
-            <program></program>
-            <channel></channel>
+            <kind>book</kind>
+            <note></note>
           </source>
         </entry>
 

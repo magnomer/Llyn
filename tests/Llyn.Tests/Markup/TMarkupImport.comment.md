@@ -25,9 +25,9 @@ So neither reads back, and asserting on them would test the sample rather than t
 One call takes the whole file.
 The entries come back in the order the document wrote them.
 
-### `Assert.Equal(LState.LStateUnknown, oed.LReferenceProgram.LStateValueState);`
+### `Assert.Equal(LState.LStateUnknown, oed.LReferenceNote.LStateValueState);`
 
-An empty `<program></program>` survives the round trip as *unknown*, distinct from the tags the source never wrote.
+An empty `<note></note>` survives the round trip as *unknown*, distinct from the tags the source never wrote.
 
 ### `Assert.Equal(`
 

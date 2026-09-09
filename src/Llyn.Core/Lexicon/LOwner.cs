@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public enum LOwner
 {
@@ -13,4 +13,6 @@ public enum LOwner
     LOwnerSituation,
 
     LOwnerReference,
+
+    LOwnerAuthor,
 }

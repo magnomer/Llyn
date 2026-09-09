@@ -137,6 +137,42 @@ public sealed class LEntryArchive
         return entries;
     }
 
+    public IReadOnlyList<LEntry> LEntryRegisterFind(string registerId)
+    {
+        ArgumentNullException.ThrowIfNull(registerId);
+        registerId = registerId.Trim();
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
+            FROM entry
+            WHERE $register = ''
+               OR id IN (
+                      SELECT sense.entry_id
+                      FROM sense_register
+                      JOIN sense ON sense.id = sense_register.sense_id
+                      WHERE sense_register.register_id = $register
+                      UNION
+                      SELECT collocation.entry_id
+                      FROM collocation_register
+                      JOIN collocation ON collocation.id = collocation_register.collocation_id
+                      WHERE collocation_register.register_id = $register)
+            ORDER BY headword;
+            """;
+        command.Parameters.AddWithValue("$register", registerId);
+
+        List<LEntry> entries = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            entries.Add(LEntryRowRead(reader));
+        }
+
+        return entries;
+    }
+
     public IReadOnlyList<LForm> LEntryFormRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);

@@ -324,6 +324,10 @@ public partial class PDisplay : UserControl
                 e.Handled = true;
                 _pDisplayHost.PWindowSituationShow(situation.LSituationDraftId);
                 break;
+            case LRegisterDraft register when register.LRegisterDraftId.Length != 0:
+                e.Handled = true;
+                _pDisplayHost.PWindowRegisterShow(register.LRegisterDraftId);
+                break;
             case PLinkChip link when link.PLinkChipId.Length != 0:
                 e.Handled = true;
                 _pDisplayHost.PWindowEntryShow(link.PLinkChipId);

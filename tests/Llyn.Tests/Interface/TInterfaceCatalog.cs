@@ -41,6 +41,12 @@ internal static partial class TInterface
         LCatalogOrder order) =>
         engine.LEngineSituationFind(query, order);
 
+    internal static IReadOnlyList<LCatalogRegister> TEngineRegisterFind(
+        this LEngine engine,
+        string query,
+        LCatalogOrder order) =>
+        engine.LEngineRegisterFind(query, order);
+
     internal static IReadOnlyList<LTag> TEngineTagFind(
         this LEngine engine,
         string query,

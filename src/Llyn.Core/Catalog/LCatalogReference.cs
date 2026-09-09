@@ -60,8 +60,7 @@ public sealed record LCatalogReference(
 
         LReference reference = LCatalogReferenceStored;
         if (LCatalog.LCatalogTextMatch(reference.LReferenceTitle.LStateValueShow(), query)
-            || LCatalog.LCatalogTextMatch(reference.LReferenceProgram.LStateValueShow(), query)
-            || LCatalog.LCatalogTextMatch(reference.LReferenceChannel.LStateValueShow(), query)
+            || LCatalog.LCatalogTextMatch(reference.LReferenceNote.LStateValueShow(), query)
             || LCatalog.LCatalogTextMatch(reference.LReferenceUrl.LStateValueShow(), query))
         {
             return true;

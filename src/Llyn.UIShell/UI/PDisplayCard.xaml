@@ -212,8 +212,30 @@
         </Button>
     </DataTemplate>
 
+    <Style x:Key="Display.Card.RegisterLink" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="PSurface" Style="{DynamicResource Theme.Card.Register}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{DynamicResource Theme.Helper}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.72" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <DataTemplate x:Key="Display.Card.RegisterChip">
-        <Border Style="{DynamicResource Theme.Card.Register}">
+        <Button Style="{StaticResource Display.Card.RegisterLink}">
             <TextBlock FontSize="{DynamicResource Theme.Card.RegisterSize}" Foreground="{DynamicResource Theme.Helper}">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
@@ -222,7 +244,7 @@
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
-        </Border>
+        </Button>
     </DataTemplate>
 
     <Style x:Key="Display.Card.ExampleFrame" TargetType="TextBlock" BasedOn="{StaticResource Theme.Card.Frame}">

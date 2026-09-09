@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public enum LSubject
 {
@@ -13,6 +13,8 @@ public enum LSubject
     LSubjectAuthor,
 
     LSubjectTag,
+
+    LSubjectRegister,
 
     LSubjectFavorite,
 

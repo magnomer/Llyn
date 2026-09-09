@@ -238,19 +238,17 @@ public static class LSchema
                 id TEXT NOT NULL PRIMARY KEY,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
-                program_name_state TEXT NOT NULL,
-                program_name TEXT,
-                channel_name_state TEXT NOT NULL,
-                channel_name TEXT,
                 year_state TEXT NOT NULL,
                 year TEXT,
+                kind TEXT NOT NULL DEFAULT 'unspecified',
+                note_state TEXT NOT NULL,
+                note TEXT,
                 url_state TEXT NOT NULL,
                 url TEXT,
                 author_state TEXT NOT NULL,
                 CHECK (title_state = 'specified' OR title IS NULL),
-                CHECK (program_name_state = 'specified' OR program_name IS NULL),
-                CHECK (channel_name_state = 'specified' OR channel_name IS NULL),
                 CHECK (year_state = 'specified' OR year IS NULL),
+                CHECK (note_state = 'specified' OR note IS NULL),
                 CHECK (url_state = 'specified' OR url IS NULL)
             );
 
@@ -265,18 +263,6 @@ public static class LSchema
 
             CREATE UNIQUE INDEX IF NOT EXISTS source_author_position
                 ON source_author (source_id, position);
-
-            CREATE TABLE IF NOT EXISTS entry_source (
-                entry_id TEXT NOT NULL,
-                source_id TEXT NOT NULL,
-                position INTEGER NOT NULL,
-                PRIMARY KEY (entry_id, source_id),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
-                FOREIGN KEY (source_id) REFERENCES source (id)
-            );
-
-            CREATE UNIQUE INDEX IF NOT EXISTS entry_source_position
-                ON entry_source (entry_id, position);
             """;
         command.ExecuteNonQuery();
 
@@ -296,18 +282,6 @@ public static class LSchema
                 CHECK (source_state = 'specified' OR source_id IS NULL),
                 FOREIGN KEY (source_id) REFERENCES source (id)
             );
-
-            CREATE TABLE IF NOT EXISTS entry_example (
-                entry_id TEXT NOT NULL,
-                example_id TEXT NOT NULL,
-                position INTEGER NOT NULL,
-                PRIMARY KEY (entry_id, example_id),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_id) REFERENCES example (id)
-            );
-
-            CREATE UNIQUE INDEX IF NOT EXISTS entry_example_position
-                ON entry_example (entry_id, position);
 
             CREATE TABLE IF NOT EXISTS sense_example (
                 id TEXT NOT NULL PRIMARY KEY,

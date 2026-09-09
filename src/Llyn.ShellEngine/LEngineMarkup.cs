@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Core;
@@ -51,13 +51,10 @@ public sealed partial class LEngine
         LMarkup.LMarkupEntry entry, IDictionary<string, string> writers)
     {
         Dictionary<string, string> rows = new Dictionary<string, string>(StringComparer.Ordinal);
-        List<string> order = new List<string>();
 
         foreach (LMarkup.LMarkupReference source in entry.LMarkupEntrySource)
         {
-            string row = LEngineReferenceSave(source, writers);
-            rows[source.LMarkupReferenceId] = row;
-            order.Add(row);
+            rows[source.LMarkupReferenceId] = LEngineReferenceSave(source, writers);
         }
 
         LEntryDraft draft = entry.LMarkupEntryDraft;
@@ -66,11 +63,6 @@ public sealed partial class LEngine
             LEntryDraftMeanings = LEngineCardResolve(draft.LEntryDraftMeanings, rows),
             LEntryDraftCollocations = LEngineCardResolve(draft.LEntryDraftCollocations, rows),
         });
-
-        for (int position = 0; position < order.Count; position++)
-        {
-            LEngineReferenceAttach(stored.LEntryId, order[position], position, LOwner.LOwnerEntry);
-        }
 
         return stored;
     }

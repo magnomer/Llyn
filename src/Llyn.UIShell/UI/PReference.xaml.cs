@@ -1,4 +1,5 @@
 using System.Windows.Controls;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -28,6 +29,28 @@ public partial class PReference : UserControl
 
         _pReferenceObserver = new PObserver(this, PReferenceBulletinHandle);
         engine.LEngineObserverAttach(_pReferenceObserver);
+    }
+
+    private string PReferenceKindShow(LReferenceKind kind)
+    {
+        return _pReferenceHost.PLocalizationTextRead(PReferenceKindRead(kind));
+    }
+
+    private static string PReferenceKindRead(LReferenceKind kind)
+    {
+        return kind switch
+        {
+            LReferenceKind.LReferenceKindUnknown => "Source.KindUnknown",
+            LReferenceKind.LReferenceKindBook => "Source.KindBook",
+            LReferenceKind.LReferenceKindJournal => "Source.KindJournal",
+            LReferenceKind.LReferenceKindArticle => "Source.KindArticle",
+            LReferenceKind.LReferenceKindWeb => "Source.KindWeb",
+            LReferenceKind.LReferenceKindVideo => "Source.KindVideo",
+            LReferenceKind.LReferenceKindAudio => "Source.KindAudio",
+            LReferenceKind.LReferenceKindPicture => "Source.KindPicture",
+            LReferenceKind.LReferenceKindOther => "Source.KindOther",
+            _ => "Source.KindUnspecified",
+        };
     }
 
     internal void PReferenceReset()

@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -10,6 +10,7 @@ public partial class PWindow
         PPhonology.PSequenceRestore(state.LWorkspaceStateSequence);
         PFavorite.PSeriesRestore(state.LWorkspaceStateSeries);
         PTaxonomy.PFunnelRestore(state.LWorkspaceStateFunnel);
+        PTenor.PDegreeRestore(state.LWorkspaceStateDegree);
         PRepertoire.PTierRestore(state.LWorkspaceStateTier);
         PReference.PGradeRestore(state.LWorkspaceStateGrade);
         PCorpus.PRankRestore(state.LWorkspaceStateRank);

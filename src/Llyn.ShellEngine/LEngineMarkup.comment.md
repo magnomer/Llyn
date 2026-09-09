@@ -1,4 +1,4 @@
-# LEngineMarkup.cs
+﻿# LEngineMarkup.cs
 
 ## `public sealed partial class LEngine`
 
@@ -54,22 +54,18 @@ Saving from the drafts alone would store citations pointing at sources that were
 Writes one entry as read.
 The sources it declared go first.
 Then comes the entry itself, with every citation naming the row its key created.
-Then comes the entry's hold on those sources.
 
 The sources go first because a citation cannot name a row that does not exist yet.
-The entry goes before the attachment for the same reason in the other direction.
 The index from key to row is built per entry, since an `id` is scoped to its entry.
 So two entries reusing one key get a row each.
 Section 5 of the format spec says the same `id` text collides across entries with nothing.
 Within one entry the reader has already refused a key declared twice, so the index cannot lose a source.
 
-Every declared source is attached to the entry, in the order the file wrote them.
-It is not only the ones a citation names.
-A `<source>` block is the entry's statement that it draws on that work.
-A source no example happens to cite is still declared.
-One left unattached would be a row no entry owns.
-It would be invisible in the editor, and left behind when the entry is deleted.
-It is the entry's hold on it that cascades.
+Every declared source is written as a row, whether or not a citation names it.
+A `<source>` block is the entry's statement that it draws on that work, so the row is kept.
+Only an Example cites a source, so a declared source no example names ends up cited by nothing.
+It stands in the source catalog as independent data rather than under the entry, and it outlives the entry's deletion.
+The alternative was a table linking the entry straight to it, which is what this housecleaning removed.
 
 The draft comes back rebuilt rather than edited, because a draft is immutable.
 Only its cards change, and only in their citations.

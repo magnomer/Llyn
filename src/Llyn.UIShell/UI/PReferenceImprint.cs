@@ -9,13 +9,25 @@ namespace Llyn.UIShell;
 
 public partial class PReference
 {
+    private static readonly LReferenceKind[] _pImprintKindOrder =
+    [
+        LReferenceKind.LReferenceKindUnspecified,
+        LReferenceKind.LReferenceKindBook,
+        LReferenceKind.LReferenceKindJournal,
+        LReferenceKind.LReferenceKindArticle,
+        LReferenceKind.LReferenceKindWeb,
+        LReferenceKind.LReferenceKindVideo,
+        LReferenceKind.LReferenceKindAudio,
+        LReferenceKind.LReferenceKindPicture,
+        LReferenceKind.LReferenceKindOther,
+        LReferenceKind.LReferenceKindUnknown,
+    ];
+
     private bool _pImprintTitleUnreadable;
 
-    private bool _pImprintProgramUnreadable;
-
-    private bool _pImprintChannelUnreadable;
-
     private bool _pImprintYearUnreadable;
+
+    private bool _pImprintNoteUnreadable;
 
     private bool _pImprintUrlUnreadable;
 
@@ -26,14 +38,19 @@ public partial class PReference
         PImprintMarkClear(ref _pImprintTitleUnreadable, PImprintTitle, PImprintTitleUnknown);
     }
 
-    private void PImprintProgramHandle(object sender, TextChangedEventArgs e)
+    private void PImprintNoteHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintProgramUnreadable, PImprintProgram, PImprintProgramUnknown);
+        PImprintMarkClear(ref _pImprintNoteUnreadable, PImprintNote, PImprintNoteUnknown);
     }
 
-    private void PImprintChannelHandle(object sender, TextChangedEventArgs e)
+    private void PImprintKindHandle(object sender, SelectionChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintChannelUnreadable, PImprintChannel, PImprintChannelUnknown);
+        if (_pImprintLoading)
+        {
+            return;
+        }
+
+        PImprintChangeDefer();
     }
 
     private void PImprintYearHandle(object sender, TextChangedEventArgs e)
@@ -72,11 +89,8 @@ public partial class PReference
             case "Title":
                 PImprintMarkShow(unreadable, PImprintTitle, ref _pImprintTitleUnreadable);
                 return;
-            case "Program":
-                PImprintMarkShow(unreadable, PImprintProgram, ref _pImprintProgramUnreadable);
-                return;
-            case "Channel":
-                PImprintMarkShow(unreadable, PImprintChannel, ref _pImprintChannelUnreadable);
+            case "Note":
+                PImprintMarkShow(unreadable, PImprintNote, ref _pImprintNoteUnreadable);
                 return;
             case "Year":
                 PImprintMarkShow(unreadable, PImprintYear, ref _pImprintYearUnreadable);
@@ -110,17 +124,15 @@ public partial class PReference
             PImprintTitle, PImprintTitleUnknown, reference?.LReferenceTitle, unreadable,
             ref _pImprintTitleUnreadable);
         PImprintFieldShow(
-            PImprintProgram, PImprintProgramUnknown, reference?.LReferenceProgram, unreadable,
-            ref _pImprintProgramUnreadable);
-        PImprintFieldShow(
-            PImprintChannel, PImprintChannelUnknown, reference?.LReferenceChannel, unreadable,
-            ref _pImprintChannelUnreadable);
-        PImprintFieldShow(
             PImprintYear, PImprintYearUnknown, reference?.LReferenceYear, unreadable,
             ref _pImprintYearUnreadable);
         PImprintFieldShow(
+            PImprintNote, PImprintNoteUnknown, reference?.LReferenceNote, unreadable,
+            ref _pImprintNoteUnreadable);
+        PImprintFieldShow(
             PImprintUrl, PImprintUrlUnknown, reference?.LReferenceUrl, unreadable,
             ref _pImprintUrlUnreadable);
+        PImprintKindShow(reference?.LReferenceKind ?? LReferenceKind.LReferenceKindUnspecified);
 
         PAuthorApply(reference);
 
@@ -131,6 +143,31 @@ public partial class PReference
         _pImprintLoading = false;
 
         PImprintChangeUpdate();
+    }
+
+    private void PImprintKindShow(LReferenceKind kind)
+    {
+        if (PImprintKind.Items.Count == 0)
+        {
+            PImprintKind.SelectedValuePath = "Tag";
+            foreach (LReferenceKind offered in _pImprintKindOrder)
+            {
+                PImprintKind.Items.Add(new ComboBoxItem
+                {
+                    Content = PReferenceKindShow(offered),
+                    Tag = offered,
+                });
+            }
+        }
+
+        PImprintKind.SelectedValue = kind;
+    }
+
+    private LReferenceKind PImprintKindRead()
+    {
+        return PImprintKind.SelectedValue is LReferenceKind kind
+            ? kind
+            : LReferenceKind.LReferenceKindUnspecified;
     }
 
     private static void PImprintFieldShow(
@@ -161,12 +198,11 @@ public partial class PReference
         {
             LReferenceTitle =
                 LStateValue.LStateValueResolve(PImprintTitle.Text, _pImprintTitleUnreadable),
-            LReferenceProgram =
-                LStateValue.LStateValueResolve(PImprintProgram.Text, _pImprintProgramUnreadable),
-            LReferenceChannel =
-                LStateValue.LStateValueResolve(PImprintChannel.Text, _pImprintChannelUnreadable),
             LReferenceYear =
                 LStateValue.LStateValueResolve(PImprintYear.Text, _pImprintYearUnreadable),
+            LReferenceKind = PImprintKindRead(),
+            LReferenceNote =
+                LStateValue.LStateValueResolve(PImprintNote.Text, _pImprintNoteUnreadable),
             LReferenceUrl =
                 LStateValue.LStateValueResolve(PImprintUrl.Text, _pImprintUrlUnreadable),
             LReferenceAuthorState = _pAuthorState,

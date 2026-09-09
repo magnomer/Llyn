@@ -2,7 +2,7 @@
 
 ## `public partial class PReference`
 
-The edit area of the Source panel: the five stated fields, the save, the discard, and the delete.
+The edit area of the Source panel: the stated fields, the save, the discard, and the delete.
 The credits are a responsibility of their own and live in `PReferenceAuthor.cs`.
 The panel owns its edit area, so it needs no dispatcher pair as the shared `PEditor` does.
 What is typed here reaches the held draft through `PReferenceHold.cs`, which is where every push and every answer lives.
@@ -24,7 +24,7 @@ Every edit that passes the guard starts the wait that ends in a push.
 ## `private void PImprintUnknownHandle(object sender, RoutedEventArgs e)`
 
 Records one field as unknown, or takes that record back.
-It is the same control over five fields rather than five different ones.
+It is the same control over every text field rather than one control each.
 The value is cleared with the mark, because a value is written only while the state is specified.
 Marking a field is an edit like any other, so it too is pushed once the typing stops.
 

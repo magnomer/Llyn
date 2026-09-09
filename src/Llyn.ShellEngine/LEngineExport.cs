@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -70,21 +70,6 @@ public sealed partial class LEngine
         List<string> ids = new List<string>();
         LEngineSourceRead(draft.LEntryDraftMeanings, ids);
         LEngineSourceRead(draft.LEntryDraftCollocations, ids);
-
-        try
-        {
-            foreach (LReference attached in LEngineReferenceRead(entryId, LOwner.LOwnerEntry))
-            {
-                if (!ids.Contains(attached.LReferenceId))
-                {
-                    ids.Add(attached.LReferenceId);
-                }
-            }
-        }
-        catch (Exception)
-        {
-            ids.Clear();
-        }
 
         List<LMarkup.LMarkupReference> sources = new List<LMarkup.LMarkupReference>();
         foreach (string id in ids)

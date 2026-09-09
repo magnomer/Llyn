@@ -32,7 +32,6 @@ public static class LSchemaIndex
 
         command.CommandText =
             """
-            CREATE INDEX IF NOT EXISTS entry_example_member ON entry_example (example_id);
             CREATE INDEX IF NOT EXISTS sense_example_member ON sense_example (example_id);
             CREATE INDEX IF NOT EXISTS sense_video_member ON sense_video (video_id);
             CREATE INDEX IF NOT EXISTS collocation_video_member ON collocation_video (video_id);
@@ -46,7 +45,6 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS sense_register_member ON sense_register (register_id);
             CREATE INDEX IF NOT EXISTS collocation_register_member ON collocation_register (register_id);
             CREATE INDEX IF NOT EXISTS source_author_member ON source_author (author_id);
-            CREATE INDEX IF NOT EXISTS entry_source_member ON entry_source (source_id);
             """;
         command.ExecuteNonQuery();
 

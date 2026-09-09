@@ -179,8 +179,7 @@ public sealed class LExampleArchive
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM entry_example WHERE example_id = $id)
-                + (SELECT COUNT(*) FROM sense_example WHERE example_id = $id)
+                (SELECT COUNT(*) FROM sense_example WHERE example_id = $id)
                 + (SELECT COUNT(*) FROM collocation_example WHERE example_id = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -194,8 +193,6 @@ public sealed class LExampleArchive
         command.CommandText =
             """
             SELECT example_id, COUNT(*) FROM (
-                SELECT example_id FROM entry_example
-                UNION ALL
                 SELECT example_id FROM sense_example WHERE example_id IS NOT NULL
                 UNION ALL
                 SELECT example_id FROM collocation_example WHERE example_id IS NOT NULL

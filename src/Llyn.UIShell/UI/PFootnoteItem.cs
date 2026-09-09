@@ -1,4 +1,4 @@
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -7,7 +7,7 @@ internal sealed class PFootnoteItem
 {
     internal PFootnoteItem(LUsage usage, string owner, string unreadable, string unnamed)
     {
-        PFootnoteItemId = usage.LUsageId;
+        PFootnoteItemId = usage.LUsageEntry;
         PFootnoteItemOwner = usage.LUsageOwner;
         PFootnoteItemKind = owner;
         PFootnoteItemName = usage.LUsageHeadword.Length > 0 ? usage.LUsageHeadword : unnamed;

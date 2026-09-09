@@ -49,7 +49,8 @@ The list is read-only, because a citation is set or cleared where it is held.
 ## `<Grid x:Name="PImprint">`
 
 The edit area, the selected Source as the panel writes it.
-Each of the five stated fields carries a `?` toggle beside it that records the value as unknown.
+Each stated text field carries a `?` toggle beside it that records the value as unknown.
+The kind is chosen from a list that carries its own unknown entry, so it needs no toggle.
 The three states are distinct facts, so clearing a value is not the same as recording it unknown.
 
 ## `<Grid x:Name="PAuthor" Margin="0,7,0,0">`

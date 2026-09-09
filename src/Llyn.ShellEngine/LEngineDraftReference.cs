@@ -108,7 +108,7 @@ public sealed partial class LEngine
             string.Empty,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
+            LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified);
@@ -116,9 +116,9 @@ public sealed partial class LEngine
     private static bool LEngineReferenceMatch(LReference one, LReference other)
     {
         return one.LReferenceTitle == other.LReferenceTitle
-            && one.LReferenceProgram == other.LReferenceProgram
-            && one.LReferenceChannel == other.LReferenceChannel
             && one.LReferenceYear == other.LReferenceYear
+            && one.LReferenceKind == other.LReferenceKind
+            && one.LReferenceNote == other.LReferenceNote
             && one.LReferenceUrl == other.LReferenceUrl
             && one.LReferenceAuthorState == other.LReferenceAuthorState;
     }

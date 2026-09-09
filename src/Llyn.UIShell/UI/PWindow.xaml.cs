@@ -42,6 +42,7 @@ public partial class PWindow : Window
         PLibrary.PLibraryAttach(this, engine);
         PPhonology.PPhonologyAttach(this, engine);
         PTaxonomy.PTaxonomyAttach(this, engine);
+        PTenor.PTenorAttach(this, engine);
         PRepertoire.PRepertoireAttach(this, engine);
         PCorpus.PCorpusAttach(this, engine);
         PReference.PReferenceAttach(this, engine);
@@ -68,6 +69,7 @@ public partial class PWindow : Window
         PLibrary.PLibraryClose();
         PPhonology.PPhonologyClose();
         PTaxonomy.PTaxonomyClose();
+        PTenor.PTenorClose();
         PRepertoire.PRepertoireClose();
         PCorpus.PCorpusClose();
         PReference.PReferenceClose();

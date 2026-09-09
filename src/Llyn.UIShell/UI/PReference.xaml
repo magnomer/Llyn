@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Llyn.UIShell.PReference"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -186,7 +186,7 @@
                                         <TextBlock Style="{StaticResource Theme.Catalog.Dot}" />
                                         <TextBlock Style="{StaticResource Theme.Shelf.Meta}" Text="{Binding PShelfItemYear}" />
                                     </StackPanel>
-                                    <Border Grid.Column="2" Style="{StaticResource Theme.Catalog.Pellet}">
+                                    <Border Grid.Column="2" Style="{StaticResource Theme.Catalog.Pellet}" ToolTip="{DynamicResource Source.Tally}">
                                         <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PShelfItemCount}" />
                                     </Border>
                                 </Grid>
@@ -212,14 +212,14 @@
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.Author}" />
                             <TextBlock x:Name="PColophonAuthor" Margin="0,5,0,0" Style="{StaticResource Theme.Colophon.Value}" />
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.Program}" />
-                            <TextBlock x:Name="PColophonProgram" Margin="0,5,0,0" Style="{StaticResource Theme.Colophon.Value}" />
-
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.Channel}" />
-                            <TextBlock x:Name="PColophonChannel" Margin="0,5,0,0" Style="{StaticResource Theme.Colophon.Value}" />
-
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.Year}" />
                             <TextBlock x:Name="PColophonYear" Margin="0,5,0,0" Style="{StaticResource Theme.Colophon.Value}" />
+
+                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.Kind}" />
+                            <TextBlock x:Name="PColophonKind" Margin="0,5,0,0" Style="{StaticResource Theme.Colophon.Value}" />
+
+                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.Note}" />
+                            <TextBlock x:Name="PColophonNote" Margin="0,5,0,0" Style="{StaticResource Theme.Colophon.Value}" TextWrapping="Wrap" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Colophon.Label}" Text="{DynamicResource Source.Url}" />
                             <TextBlock x:Name="PColophonUrl" Margin="0,5,0,0" Style="{StaticResource Theme.Colophon.Value}" />
@@ -405,46 +405,6 @@
                                 </StackPanel>
                             </Grid>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Program}" />
-                            <Grid Margin="0,7,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox
-                                    x:Name="PImprintProgram"
-                                    Height="44"
-                                    Style="{StaticResource Theme.Input.Field}"
-                                    TextChanged="PImprintProgramHandle" />
-                                <ToggleButton
-                                    x:Name="PImprintProgramUnknown"
-                                    Grid.Column="1"
-                                    Click="PImprintUnknownHandle"
-                                    Style="{StaticResource Theme.Imprint.Unknown}"
-                                    Tag="Program"
-                                    ToolTip="{DynamicResource Source.Unknown}" />
-                            </Grid>
-
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Channel}" />
-                            <Grid Margin="0,7,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox
-                                    x:Name="PImprintChannel"
-                                    Height="44"
-                                    Style="{StaticResource Theme.Input.Field}"
-                                    TextChanged="PImprintChannelHandle" />
-                                <ToggleButton
-                                    x:Name="PImprintChannelUnknown"
-                                    Grid.Column="1"
-                                    Click="PImprintUnknownHandle"
-                                    Style="{StaticResource Theme.Imprint.Unknown}"
-                                    Tag="Channel"
-                                    ToolTip="{DynamicResource Source.Unknown}" />
-                            </Grid>
-
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Year}" />
                             <Grid Margin="0,7,0,0">
                                 <Grid.ColumnDefinitions>
@@ -482,6 +442,38 @@
                                     Click="PImprintUnknownHandle"
                                     Style="{StaticResource Theme.Imprint.Unknown}"
                                     Tag="Url"
+                                    ToolTip="{DynamicResource Source.Unknown}" />
+                            </Grid>
+
+                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Kind}" />
+                            <ComboBox
+                                x:Name="PImprintKind"
+                                Height="44"
+                                Margin="0,7,0,0"
+                                SelectionChanged="PImprintKindHandle"
+                                Style="{StaticResource Theme.Input.Choice}" />
+
+                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Note}" />
+                            <Grid Margin="0,7,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox
+                                    x:Name="PImprintNote"
+                                    MinHeight="88"
+                                    VerticalContentAlignment="Top"
+                                    AcceptsReturn="True"
+                                    Style="{StaticResource Theme.Input.Field}"
+                                    TextChanged="PImprintNoteHandle"
+                                    TextWrapping="Wrap" />
+                                <ToggleButton
+                                    x:Name="PImprintNoteUnknown"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Top"
+                                    Click="PImprintUnknownHandle"
+                                    Style="{StaticResource Theme.Imprint.Unknown}"
+                                    Tag="Note"
                                     ToolTip="{DynamicResource Source.Unknown}" />
                             </Grid>
                         </StackPanel>

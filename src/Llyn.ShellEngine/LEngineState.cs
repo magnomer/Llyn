@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -53,6 +53,11 @@ public sealed partial class LEngine
     public void LEngineFunnelSave(LCatalogOrder order)
     {
         LEngineStateChange(state => state with { LWorkspaceStateFunnel = order });
+    }
+
+    public void LEngineDegreeSave(LCatalogOrder order)
+    {
+        LEngineStateChange(state => state with { LWorkspaceStateDegree = order });
     }
 
     public void LEngineTierSave(LCatalogOrder order)

@@ -12,17 +12,8 @@ public sealed class TReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = TReferenceEntryCreate(engine);
         LReference dictionary = TReferenceCreate(engine, "A Dictionary");
         LReference grammar = TReferenceCreate(engine, "A Grammar");
-
-        engine.TEngineReferenceAttach(entry.LEntryId, dictionary.LReferenceId, 0, LOwner.LOwnerEntry);
-        engine.TEngineReferenceAttach(entry.LEntryId, grammar.LReferenceId, 0, LOwner.LOwnerEntry);
-
-        Assert.Equal(
-            [grammar.LReferenceId, dictionary.LReferenceId],
-            engine.TEngineReferenceRead(entry.LEntryId, LOwner.LOwnerEntry)
-                .Select(row => row.LReferenceId));
 
         LExample example = engine.TEngineExampleCreate(
             TInterface.TExampleCreate(string.Empty, "English", "he said the word", null, null));
@@ -45,14 +36,16 @@ public sealed class TReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = TReferenceEntryCreate(engine);
         LReference reference = TReferenceCreate(engine, "A Dictionary");
-        engine.TEngineReferenceAttach(entry.LEntryId, reference.LReferenceId, 0, LOwner.LOwnerEntry);
+        LExample example = engine.TEngineExampleCreate(
+            TInterface.TExampleCreate(string.Empty, "English", "he said the word", null, null));
+        engine.TEngineReferenceAttach(
+            example.LExampleId, reference.LReferenceId, 0, LOwner.LOwnerExample);
 
         Assert.Throws<InvalidOperationException>(() =>
             engine.TEngineReferenceDelete(reference.LReferenceId));
 
-        engine.TEngineReferenceDetach(entry.LEntryId, reference.LReferenceId, LOwner.LOwnerEntry);
+        engine.TEngineReferenceDetach(example.LExampleId, reference.LReferenceId, LOwner.LOwnerExample);
         engine.TEngineReferenceDelete(reference.LReferenceId);
         Assert.Null(engine.TEngineReferenceRead(reference.LReferenceId));
     }
@@ -96,11 +89,72 @@ public sealed class TReference
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             string.Empty,
             TInterface.TStateValueCreate(title),
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
             TInterface.TStateValueCreate("1998"),
+            LReferenceKind.LReferenceKindUnspecified,
+            LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified));
+    }
+
+    [Fact]
+    public void ReferenceUsageRead_CitedThroughExamples_NamesEveryCard()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference dictionary = TReferenceCreate(engine, "A Dictionary");
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardDraftCreate(
+                    string.Empty, string.Empty, "a meaning",
+                    [
+                        TInterface.TExampleDraftCreate(
+                            "he said the word", string.Empty, dictionary.LReferenceId),
+                        TInterface.TExampleDraftCreate(
+                            "not a word was spoken", string.Empty, dictionary.LReferenceId),
+                    ],
+                    [], [], string.Empty, [], [], 1),
+            ],
+            [
+                TInterface.TCardDraftCreate(
+                    string.Empty, "in a word", "briefly",
+                    [
+                        TInterface.TExampleDraftCreate(
+                            "in a word, no", string.Empty, dictionary.LReferenceId),
+                    ],
+                    [], [], string.Empty, [], [], 1),
+            ]));
+
+        IReadOnlyList<LUsage> usages =
+            engine.TEngineUsageRead(dictionary.LReferenceId, LOwner.LOwnerReference);
+
+        Assert.Equal(
+            [
+                LOwner.LOwnerMeaning,
+                LOwner.LOwnerCollocation,
+                LOwner.LOwnerExample,
+                LOwner.LOwnerExample,
+                LOwner.LOwnerExample,
+            ],
+            usages.Select(row => row.LUsageOwner));
+
+        foreach (LUsage card in usages.Where(row => row.LUsageOwner != LOwner.LOwnerExample))
+        {
+            Assert.Equal(entry.LEntryId, card.LUsageEntry);
+            Assert.Equal("word", card.LUsageHeadword);
+        }
+
+        Assert.Equal(
+            ["a meaning", "in a word"],
+            usages.Where(row => row.LUsageOwner != LOwner.LOwnerExample)
+                .Select(row => row.LUsageTitle.TStateValueShow()));
+
+        Assert.Equal(3, engine.TEngineUsageRead(LOwner.LOwnerReference)[dictionary.LReferenceId]);
     }
 
     private static LEntry TReferenceEntryCreate(LEngine engine)
@@ -112,5 +166,89 @@ public sealed class TReference
             string.Empty,
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
             [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
+    }
+
+    [Fact]
+    public void AuthorUsageRead_CreditedSources_NamesEveryEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference dictionary = TReferenceCreate(engine, "A Dictionary");
+        LReference grammar = TReferenceCreate(engine, "A Grammar");
+
+        LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Kim"));
+        LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Lee"));
+        engine.TEngineAuthorAttach(dictionary.LReferenceId, kim.LAuthorId, 0);
+        engine.TEngineAuthorAttach(grammar.LReferenceId, kim.LAuthorId, 0);
+        engine.TEngineAuthorAttach(grammar.LReferenceId, lee.LAuthorId, 1);
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardDraftCreate(
+                    string.Empty, string.Empty, "a meaning",
+                    [
+                        TInterface.TExampleDraftCreate(
+                            "he said the word", string.Empty, dictionary.LReferenceId),
+                        TInterface.TExampleDraftCreate(
+                            "not a word was spoken", string.Empty, dictionary.LReferenceId),
+                    ],
+                    [], [], string.Empty, [], [], 1),
+            ],
+            [
+                TInterface.TCardDraftCreate(
+                    string.Empty, "in a word", "briefly",
+                    [
+                        TInterface.TExampleDraftCreate(
+                            "in a word, no", string.Empty, grammar.LReferenceId),
+                    ],
+                    [], [], string.Empty, [], [], 1),
+            ]));
+
+        IReadOnlyList<LUsage> credited = engine.TEngineUsageRead(kim.LAuthorId, LOwner.LOwnerAuthor);
+
+        Assert.Equal(
+            [
+                LOwner.LOwnerMeaning,
+                LOwner.LOwnerCollocation,
+                LOwner.LOwnerExample,
+                LOwner.LOwnerExample,
+                LOwner.LOwnerExample,
+            ],
+            credited.Select(row => row.LUsageOwner));
+
+        foreach (LUsage card in credited.Where(row => row.LUsageOwner != LOwner.LOwnerExample))
+        {
+            Assert.Equal(entry.LEntryId, card.LUsageEntry);
+            Assert.Equal("word", card.LUsageHeadword);
+        }
+
+        Assert.Equal(
+            ["a meaning", "in a word"],
+            credited.Where(row => row.LUsageOwner != LOwner.LOwnerExample)
+                .Select(row => row.LUsageTitle.TStateValueShow()));
+
+        Assert.Equal(
+            [LOwner.LOwnerCollocation, LOwner.LOwnerExample],
+            engine.TEngineUsageRead(lee.LAuthorId, LOwner.LOwnerAuthor).Select(row => row.LUsageOwner));
+    }
+
+    [Fact]
+    public void AuthorUsageRead_UncitedCredit_ReturnsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference dictionary = TReferenceCreate(engine, "A Dictionary");
+        LAuthor credited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Kim"));
+        LAuthor uncredited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Lee"));
+        engine.TEngineAuthorAttach(dictionary.LReferenceId, credited.LAuthorId, 0);
+
+        Assert.Empty(engine.TEngineUsageRead(credited.LAuthorId, LOwner.LOwnerAuthor));
+        Assert.Empty(engine.TEngineUsageRead(uncredited.LAuthorId, LOwner.LOwnerAuthor));
     }
 }

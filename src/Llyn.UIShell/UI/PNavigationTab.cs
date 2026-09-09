@@ -29,6 +29,11 @@ public partial class PWindow
             return;
         }
 
+        if (PTenor.IsVisible && selectedButton != PNavigationTenor && !PWindowDiscardConfirm(PTenor.PTenorChangeCheck()))
+        {
+            return;
+        }
+
         if (PRepertoire.IsVisible && selectedButton != PNavigationRepertoire
             && !PWindowDiscardConfirm(PRepertoire.PRepertoireChangeCheck()))
         {
@@ -90,6 +95,7 @@ public partial class PWindow
             ("Library", PNavigationLibrary, PLibrary, PLibrary.PLibraryScribeRestore),
             ("Phonology", PNavigationPhonology, PPhonology, PPhonology.PPhonologyScribeRestore),
             ("Taxonomy", PNavigationTaxonomy, PTaxonomy, PTaxonomy.PTaxonomyScribeRestore),
+            ("Tenor", PNavigationTenor, PTenor, PTenor.PTenorScribeRestore),
             ("Repertoire", PNavigationRepertoire, PRepertoire, PRepertoire.PRepertoireScribeRestore),
             ("Corpus", PNavigationCorpus, PCorpus, PCorpus.PCorpusScribeRestore),
             ("Reference", PNavigationSource, PReference, PReference.PReferenceScribeRestore),
@@ -130,6 +136,17 @@ public partial class PWindow
 
         PNavigationHandle(PNavigationTaxonomy, new RoutedEventArgs());
         PTaxonomy.PDirectoryTagShow(text);
+    }
+
+    internal void PWindowRegisterShow(string id)
+    {
+        if (!PTenor.PTenorLeaveConfirm())
+        {
+            return;
+        }
+
+        PNavigationHandle(PNavigationTenor, new RoutedEventArgs());
+        PTenor.PGamutRegisterShow(id);
     }
 
     internal void PWindowExampleShow(string id)

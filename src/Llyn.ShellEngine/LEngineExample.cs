@@ -93,10 +93,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LExampleLink examples = new(_lEngineDatabase);
             return owner switch
             {
-                LOwner.LOwnerEntry => examples.LExampleEntryRead(ownerId),
                 LOwner.LOwnerMeaning or LOwner.LOwnerCollocation =>
                     [.. LEngineSentenceRead(ownerId, owner)
                         .Select(sentence => sentence.LSentenceExample)
@@ -148,12 +146,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LExampleLink examples = new(_lEngineDatabase);
             switch (owner)
             {
-                case LOwner.LOwnerEntry:
-                    examples.LExampleEntryAttach(ownerId, exampleId, position);
-                    return;
                 case LOwner.LOwnerMeaning:
                     new LSentenceArchive(_lEngineDatabase).LSentenceMeaningAttach(ownerId, exampleId, position);
                     return;
@@ -170,12 +164,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LExampleLink examples = new(_lEngineDatabase);
             switch (owner)
             {
-                case LOwner.LOwnerEntry:
-                    examples.LExampleEntryDetach(ownerId, exampleId);
-                    return;
                 case LOwner.LOwnerMeaning:
                     new LSentenceArchive(_lEngineDatabase).LSentenceMeaningDetach(ownerId, exampleId);
                     return;

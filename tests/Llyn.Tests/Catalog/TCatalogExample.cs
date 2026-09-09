@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -65,10 +65,12 @@ public sealed class TCatalogExample
 
         LEntry first = TCatalogEntryCreate(engine, "apple");
         LEntry second = TCatalogEntryCreate(engine, "stone");
+        string apple = engine.TEngineMeaningRead(first.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        string stone = engine.TEngineMeaningRead(second.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
-        engine.TEngineExampleAttach(first.LEntryId, busy.LExampleId, 0, LOwner.LOwnerEntry);
-        engine.TEngineExampleAttach(second.LEntryId, busy.LExampleId, 0, LOwner.LOwnerEntry);
-        engine.TEngineExampleAttach(first.LEntryId, quiet.LExampleId, 1, LOwner.LOwnerEntry);
+        engine.TEngineExampleAttach(apple, busy.LExampleId, 0, LOwner.LOwnerMeaning);
+        engine.TEngineExampleAttach(stone, busy.LExampleId, 0, LOwner.LOwnerMeaning);
+        engine.TEngineExampleAttach(apple, quiet.LExampleId, 1, LOwner.LOwnerMeaning);
 
         IReadOnlyList<LCatalogExample> read =
             engine.TEngineExampleFind(string.Empty, LCatalogOrder.LCatalogOrderUsage);
@@ -132,7 +134,7 @@ public sealed class TCatalogExample
             string.Empty,
             title,
             unstated,
-            unstated,
+            LReferenceKind.LReferenceKindUnspecified,
             unstated,
             unstated,
             LState.LStateUnspecified));

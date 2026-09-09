@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
@@ -14,6 +14,7 @@ public static class LSchemaWorkspace
         "repertoire_order",
         "reference_order",
         "corpus_order",
+        "tenor_order",
     ];
 
     public static void LSchemaWorkspaceNormalize(SqliteConnection connection)

@@ -18,7 +18,7 @@ That requires foreign-key enforcement to be off.
 Enforcement cannot be changed inside a transaction.
 So the runner is called with a plain connection, before any session is open.
 
-## `public const long LSchemaMigrationVersion = 26;`
+## `public const long LSchemaMigrationVersion = 32;`
 
 The schema version this build produces.
 A later change to an existing table raises it.
@@ -247,3 +247,38 @@ The hand-written local text wins, because a person wrote it for that sentence.
 The first owned row stands in when no local text was written.
 An upgraded workspace keeps one translation instead of none.
 The table it reads is named example_rendition or example_translation depending on how old the file is.
+
+### `if (stored < 31)`
+
+Retires the Reference program and channel columns and puts a kind and a note in their place.
+Program name and channel name were one medium's metadata standing as columns every other medium left empty.
+
+### `private static void LSchemaSourceNormalize(SqliteConnection connection)`
+
+Rebuilds the source table around title, year, kind, note and url.
+A source row already carrying a kind column is the new shape, so the step returns untouched.
+The retired program and channel names are joined into the note, because a memo is where such text now belongs.
+A row that stated neither keeps an unspecified note rather than an empty one.
+Every kind starts unspecified, because no stored column ever said what the material was.
+
+### `if (stored < 32)`
+
+Version 32.
+Drops entry_source and entry_example, the two tables that linked an Entry straight to a Source or an Example.
+Both skipped the levels between, so a workspace could state a citation the chain of cards did not carry.
+An Entry now reaches a Source only through the Examples its Meanings and Collocations cite.
+
+### `private static void LSchemaShortcutRemove(SqliteConnection connection)`
+
+Drops both shortcut tables and the indexes over them.
+The record runs first, because it has to read entry_source while the table still stands.
+entry_example is dropped unconditionally, because nothing ever wrote it and there is nothing to report.
+
+### `private static void LSchemaShortcutRecord(SqliteConnection connection)`
+
+Counts the entry_source rows naming a Source no Example under that same entry cites, and writes that count to the audit log.
+Such a row is the citation that cannot be carried into the chain, so it is the loss worth stating.
+The count is per entry, because a Source cited only under another entry still left this entry's bibliography.
+The number is a log line rather than data, so it is read once by a person and never by the program.
+A workspace that loses nothing writes nothing, because a log entry saying zero is noise.
+The log stands beside the database file, which is where the migration finds the workspace root.

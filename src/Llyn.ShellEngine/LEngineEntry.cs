@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -48,6 +48,15 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(tag);
             return new LEntryArchive(_lEngineDatabase).LEntryTagFind(tag.LTagText);
+        }
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(register);
+            return new LEntryArchive(_lEngineDatabase).LEntryRegisterFind(register.LRegisterId);
         }
     }
 

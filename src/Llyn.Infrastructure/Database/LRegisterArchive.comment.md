@@ -71,7 +71,8 @@ Deletes a written Register that nothing references.
 
 Deletes a written Register, first dropping every reference to it when `detach` is set.
 It refuses while any reference remains, so a delete is never silently partial.
-A row a language pack ships survives the statement, because the pack owns it.
+A row a language pack ships is left alone before anything is dropped, and not merely spared the final statement.
+Otherwise a delete aimed at a shipped row would strip its mark off every card and leave the row standing.
 
 ## `public void LRegisterMeaningAttach(string meaningId, string registerId, int position)`
 

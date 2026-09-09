@@ -21,6 +21,23 @@ A written Register crosses languages because the user wrote it for their own use
 A shipped one does not, because its wording belongs to its pack.
 An empty query offers the whole shelf.
 
+## `public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(string query, LCatalogOrder order)`
+
+The shelf the tenor panel browses: every Register, counted and ordered.
+Unlike the card's shelf, this one holds every pack's rows at once, because a workspace holds Entries of any language.
+A row is answered by its name or by the language of the pack that ships it, so a shelf of several packs can be narrowed.
+
+## `public void LEngineRegisterChange(string registerId, string renamed)`
+
+Renames a written Register, which every card marked with it then shows.
+A row a language pack ships is left as it stands, because the pack owns the wording.
+The announcement is raised whether or not the row moved, so a shown panel always re-reads.
+
+## `public void LEngineRegisterDelete(string registerId)`
+
+Deletes a written Register and every mark on it, which is what the panel confirms before calling.
+A row a language pack ships is left whole, marks included.
+
 ## `private void LEngineRegisterCreate(string language)`
 
 Writes the rows the named language pack ships, skipping every id already stored.

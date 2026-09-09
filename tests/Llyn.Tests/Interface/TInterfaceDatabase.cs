@@ -334,8 +334,15 @@ internal static partial class TInterface
     internal static IReadOnlyList<LRegister> TRegisterRead(this LRegisterArchive registerArchive) =>
         registerArchive.LRegisterRead();
 
+    internal static LRegister? TRegisterRead(this LRegisterArchive registerArchive, string id) =>
+        registerArchive.LRegisterRead(id);
+
     internal static void TRegisterDelete(this LRegisterArchive registerArchive, string id) =>
         registerArchive.LRegisterDelete(id);
+
+    internal static void TRegisterDelete(
+        this LRegisterArchive registerArchive, string id, bool detach) =>
+        registerArchive.LRegisterDelete(id, detach);
 
     internal static LSituationArchive TSituationArchiveCreate(LDatabase database) =>
         new(database);

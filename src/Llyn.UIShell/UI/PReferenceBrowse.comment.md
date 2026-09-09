@@ -1,4 +1,4 @@
-# PReferenceBrowse.cs
+﻿# PReferenceBrowse.cs
 
 ## `public partial class PReference`
 
@@ -51,7 +51,8 @@ An unwritten value reads the unrecorded mark in the muted colour, so a blank lin
 ## `private void PFootnoteFind(string id)`
 
 Reads everything citing the Source, and names each row by the kind of side it is.
-An Entry and an Example cite on their own terms, so the row says which.
+A Meaning, a Collocation and an Example cite on their own terms, so the row says which.
+A card cites by holding the Example, so its row leads to the Entry the card belongs to.
 
 ## `private void PFootnoteHandle(object sender, RoutedEventArgs e)`
 

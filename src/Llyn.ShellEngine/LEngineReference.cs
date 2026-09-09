@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -69,8 +69,6 @@ public sealed partial class LEngine
             LReferenceArchive references = new(_lEngineDatabase);
             switch (owner)
             {
-                case LOwner.LOwnerEntry:
-                    return references.LReferenceEntryRead(ownerId);
                 case LOwner.LOwnerExample:
                     LReference? cited = references.LReferenceExampleRead(ownerId);
                     return cited is null ? [] : [cited];
@@ -95,9 +93,6 @@ public sealed partial class LEngine
             LReferenceArchive references = new(_lEngineDatabase);
             switch (owner)
             {
-                case LOwner.LOwnerEntry:
-                    references.LReferenceEntryAttach(ownerId, referenceId, position);
-                    return;
                 case LOwner.LOwnerExample:
                     references.LReferenceExampleAttach(ownerId, referenceId);
                     return;
@@ -114,9 +109,6 @@ public sealed partial class LEngine
             LReferenceArchive references = new(_lEngineDatabase);
             switch (owner)
             {
-                case LOwner.LOwnerEntry:
-                    references.LReferenceEntryDetach(ownerId, referenceId);
-                    return;
                 case LOwner.LOwnerExample:
                     references.LReferenceExampleDetach(ownerId);
                     return;

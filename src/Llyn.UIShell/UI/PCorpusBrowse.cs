@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -211,7 +211,6 @@ public partial class PCorpus
 
         string unreadable = _pCorpusHost.PLocalizationTextRead("Display.Unreadable");
         string unnamed = _pCorpusHost.PLocalizationTextRead("Example.Unnamed");
-        string entry = _pCorpusHost.PLocalizationTextRead("Example.Entry");
         string meaning = _pCorpusHost.PLocalizationTextRead("Example.Meaning");
         string collocation = _pCorpusHost.PLocalizationTextRead("Example.Collocation");
 
@@ -220,12 +219,7 @@ public partial class PCorpus
         {
             _pQuotationList.Add(new PUsageItem(
                 usage,
-                usage.LUsageOwner switch
-                {
-                    LOwner.LOwnerEntry => entry,
-                    LOwner.LOwnerCollocation => collocation,
-                    _ => meaning,
-                },
+                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
                 unreadable,
                 unnamed));
         }

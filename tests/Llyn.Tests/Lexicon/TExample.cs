@@ -10,7 +10,7 @@ namespace Llyn.Tests;
 public sealed class TExample
 {
     [Fact]
-    public void ExampleAttach_AllThreeSides_ReadsBackFromEach()
+    public void ExampleAttach_BothCardSides_ReadsBackFromEach()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -32,14 +32,12 @@ public sealed class TExample
             "그가 그 말을 했다",
             engine.TEngineExampleRead(example.LExampleId)!.LExampleTranslation.TStateValueShow());
 
-        engine.TEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
         engine.TEngineExampleAttach(meaningId, example.LExampleId, 0, LOwner.LOwnerMeaning);
         engine.TEngineExampleAttach(collocationId, example.LExampleId, 0, LOwner.LOwnerCollocation);
 
         Assert.Equal(
             example.LExampleId,
-            Assert.Single(engine.TEngineExampleRead(entry.LEntryId, LOwner.LOwnerEntry)).LExampleId);
-        Assert.Single(engine.TEngineExampleRead(meaningId, LOwner.LOwnerMeaning));
+            Assert.Single(engine.TEngineExampleRead(meaningId, LOwner.LOwnerMeaning)).LExampleId);
         Assert.Single(engine.TEngineExampleRead(collocationId, LOwner.LOwnerCollocation));
 
         engine.TEngineExampleUpdate(example with { LExampleText = "he spoke the word" });
@@ -54,17 +52,19 @@ public sealed class TExample
 
         LEntry entry = TExampleEntryCreate(engine);
         string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        string collocationId =
+            engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         LExample example = engine.TEngineExampleCreate(
             TInterface.TExampleCreate(string.Empty, "English", "he said the word", null, null));
-        engine.TEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
+        engine.TEngineExampleAttach(collocationId, example.LExampleId, 0, LOwner.LOwnerCollocation);
         engine.TEngineExampleAttach(meaningId, example.LExampleId, 0, LOwner.LOwnerMeaning);
 
         Assert.Throws<InvalidOperationException>(() => engine.TEngineExampleDelete(example.LExampleId));
         engine.TEngineExampleDetach(meaningId, example.LExampleId, LOwner.LOwnerMeaning);
         Assert.NotNull(engine.TEngineExampleRead(example.LExampleId));
 
-        engine.TEngineExampleRemove(entry.LEntryId, example.LExampleId, LOwner.LOwnerEntry);
+        engine.TEngineExampleRemove(collocationId, example.LExampleId, LOwner.LOwnerCollocation);
         Assert.Null(engine.TEngineExampleRead(example.LExampleId));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
     }
@@ -80,9 +80,9 @@ public sealed class TExample
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             string.Empty,
             TInterface.TStateValueCreate("A Dictionary"),
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
             TInterface.TStateValueCreate("1998"),
+            LReferenceKind.LReferenceKindUnspecified,
+            LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified));
 
@@ -146,7 +146,7 @@ public sealed class TExample
             string.Empty,
             TInterface.TStateValueCreate("A Dictionary"),
             LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
+            LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified));
@@ -194,6 +194,8 @@ public sealed class TExample
 
         LEntry entry = TExampleEntryCreate(engine);
         string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        string collocationId =
+            engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         LExample shared = engine.TEngineExampleCreate(TInterface.TExampleCreate(
             string.Empty,
@@ -204,7 +206,7 @@ public sealed class TExample
         LExample lonely = engine.TEngineExampleCreate(
             TInterface.TExampleCreate(string.Empty, "English", "nobody quotes me", null, null));
 
-        engine.TEngineExampleAttach(entry.LEntryId, shared.LExampleId, 0, LOwner.LOwnerEntry);
+        engine.TEngineExampleAttach(collocationId, shared.LExampleId, 0, LOwner.LOwnerCollocation);
         engine.TEngineExampleAttach(meaningId, shared.LExampleId, 0, LOwner.LOwnerMeaning);
 
         Assert.Equal(
@@ -220,7 +222,7 @@ public sealed class TExample
     }
 
     [Fact]
-    public void UsageRead_ExampleQuotedEverySide_NamesEachSide()
+    public void UsageRead_ExampleQuotedBothCardSides_NamesEachSide()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -232,13 +234,12 @@ public sealed class TExample
 
         LExample example = engine.TEngineExampleCreate(
             TInterface.TExampleCreate(string.Empty, "English", "he said the word", null, null));
-        engine.TEngineExampleAttach(entry.LEntryId, example.LExampleId, 0, LOwner.LOwnerEntry);
         engine.TEngineExampleAttach(meaningId, example.LExampleId, 0, LOwner.LOwnerMeaning);
         engine.TEngineExampleAttach(collocationId, example.LExampleId, 0, LOwner.LOwnerCollocation);
 
         IReadOnlyList<LUsage> usage = engine.TEngineUsageRead(example.LExampleId, LOwner.LOwnerExample);
-        Assert.Equal(3, usage.Count);
-        Assert.Equal(entry.LEntryId, usage.Single(row => row.LUsageOwner == LOwner.LOwnerEntry).LUsageEntry);
+        Assert.Equal(2, usage.Count);
+        Assert.Equal(entry.LEntryId, usage.Single(row => row.LUsageOwner == LOwner.LOwnerMeaning).LUsageEntry);
         Assert.Equal(meaningId, usage.Single(row => row.LUsageOwner == LOwner.LOwnerMeaning).LUsageId);
         Assert.Equal(
             "in a word",
@@ -249,7 +250,6 @@ public sealed class TExample
         engine.TEngineExampleDelete(example.LExampleId, true);
 
         Assert.Null(engine.TEngineExampleRead(example.LExampleId));
-        Assert.Empty(engine.TEngineExampleRead(entry.LEntryId, LOwner.LOwnerEntry));
         Assert.Empty(engine.TEngineExampleRead(meaningId, LOwner.LOwnerMeaning));
         Assert.Empty(engine.TEngineExampleRead(collocationId, LOwner.LOwnerCollocation));
         Assert.Empty(engine.TEngineUsageRead(example.LExampleId, LOwner.LOwnerExample));

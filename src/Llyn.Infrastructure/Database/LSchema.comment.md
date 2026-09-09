@@ -103,15 +103,16 @@ So example.source_id can carry its foreign key.
 Both are owned by nothing.
 An Author is shared by any number of References.
 A Reference is cited by any number of Entries and Examples without belonging to any.
-Every Reference field is stored as a state column plus a value column.
+Every Reference text field is stored as a state column plus a value column.
 The state says whether the field was never filled in, was recorded as unknown, or holds a value.
 The value column is NULL unless the state is 'specified'.
 The check constraints make that a schema fact rather than a store convention.
+kind is one column rather than two, because its closed set carries the three states as members of its own.
+It stores the word rather than a number, so the file never depends on the order the members are declared in.
 author_state has no value column of its own, because the authors themselves are the value.
 They are attached in order through source_author.
 That table cascades from its Reference.
 So deleting a Reference drops its author links and never an Author.
-entry_source cascades from its Entry only.
 So the source_id and author_id foreign keys deliberately have no cascade.
 The stores refuse to delete a Reference or an Author while anything still points at it.
 
@@ -120,9 +121,9 @@ The stores refuse to delete a Reference or an Author while anything still points
 The independent Example and the references that reach it.
 An Example is owned by nothing.
 It carries its own opaque id, its language and display text, and at most one Source reference.
-It is reached through the three association tables below, one per referrer kind.
+It is reached through the two association tables below, one per card kind.
 Each association carries the position the Example takes *for that referrer*.
-So one Example may be first under an Entry and third under a Meaning.
+So one Example may be first under a Meaning and third under a Collocation.
 The unique index per referrer keeps those orderings free of duplicates.
 sense_example and collocation_example carry data of their own, so each row carries its own opaque id.
 A row holds the frame its owner reads the Example under, a marker and a role.
@@ -132,7 +133,6 @@ So two owners citing one Example keep their own frame.
 Its example_id is nullable, so a row may state a frame and cite no Example at all.
 The frame is the owner's, so writing one before any sentence exists must not wait on a sentence.
 A row citing nothing and stating no frame says nothing, and the CHECK refuses it.
-entry_example carries no such data, because an Entry's Examples are quoted rather than read under a frame.
 Deleting a referrer removes only its own association rows, by ON DELETE CASCADE on that side.
 The example_id foreign keys deliberately have no cascade.
 So an Example survives every detach.

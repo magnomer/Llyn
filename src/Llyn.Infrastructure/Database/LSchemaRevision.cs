@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
@@ -54,6 +54,7 @@ public static class LSchemaRevision
                 repertoire_order TEXT,
                 reference_order TEXT,
                 corpus_order TEXT,
+                tenor_order TEXT,
                 FOREIGN KEY (left_entry) REFERENCES entry (id) ON DELETE SET NULL,
                 FOREIGN KEY (right_entry) REFERENCES entry (id) ON DELETE SET NULL,
                 FOREIGN KEY (revision) REFERENCES revision (id) ON DELETE SET NULL

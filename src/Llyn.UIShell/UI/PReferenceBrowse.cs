@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -159,9 +159,9 @@ public partial class PReference
         PShelfSelect(id);
 
         PColophonValueShow(PColophonTitle, reference.LReferenceTitle);
-        PColophonValueShow(PColophonProgram, reference.LReferenceProgram);
-        PColophonValueShow(PColophonChannel, reference.LReferenceChannel);
         PColophonValueShow(PColophonYear, reference.LReferenceYear);
+        PColophonKind.Text = PReferenceKindShow(reference.LReferenceKind);
+        PColophonValueShow(PColophonNote, reference.LReferenceNote);
         PColophonValueShow(PColophonUrl, reference.LReferenceUrl);
         PColophonAuthorShow(reference);
 
@@ -222,7 +222,8 @@ public partial class PReference
 
         string unreadable = _pReferenceHost.PLocalizationTextRead("Display.Unreadable");
         string unnamed = _pReferenceHost.PLocalizationTextRead("Source.Unnamed");
-        string entry = _pReferenceHost.PLocalizationTextRead("Source.Entry");
+        string meaning = _pReferenceHost.PLocalizationTextRead("Source.Meaning");
+        string collocation = _pReferenceHost.PLocalizationTextRead("Source.Collocation");
         string example = _pReferenceHost.PLocalizationTextRead("Source.Example");
 
         _pFootnoteList.Clear();
@@ -230,7 +231,12 @@ public partial class PReference
         {
             _pFootnoteList.Add(new PFootnoteItem(
                 usage,
-                usage.LUsageOwner == LOwner.LOwnerEntry ? entry : example,
+                usage.LUsageOwner switch
+                {
+                    LOwner.LOwnerMeaning => meaning,
+                    LOwner.LOwnerCollocation => collocation,
+                    _ => example,
+                },
                 unreadable,
                 unnamed));
         }
@@ -250,7 +256,7 @@ public partial class PReference
             return;
         }
 
-        if (item.PFootnoteItemOwner == LOwner.LOwnerEntry)
+        if (item.PFootnoteItemOwner != LOwner.LOwnerExample)
         {
             _pReferenceHost.PWindowEntryShow(item.PFootnoteItemId);
             return;

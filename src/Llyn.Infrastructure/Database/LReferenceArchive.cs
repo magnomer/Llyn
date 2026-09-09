@@ -34,25 +34,25 @@ public sealed class LReferenceArchive
                 INSERT INTO source (
                     id,
                     title_state, title,
-                    program_name_state, program_name,
-                    channel_name_state, channel_name,
                     year_state, year,
+                    kind,
+                    note_state, note,
                     url_state, url,
                     author_state)
                 VALUES (
                     $id,
                     $titleState, $title,
-                    $programState, $program,
-                    $channelState, $channel,
                     $yearState, $year,
+                    $kind,
+                    $noteState, $note,
                     $urlState, $url,
                     $authorState);
                 """;
             command.Parameters.AddWithValue("$id", stored.LReferenceId);
             LStateColumn.LStateColumnApply(command, "title", stored.LReferenceTitle);
-            LStateColumn.LStateColumnApply(command, "program", stored.LReferenceProgram);
-            LStateColumn.LStateColumnApply(command, "channel", stored.LReferenceChannel);
             LStateColumn.LStateColumnApply(command, "year", stored.LReferenceYear);
+            command.Parameters.AddWithValue("$kind", LReference.LReferenceKindFormat(stored.LReferenceKind));
+            LStateColumn.LStateColumnApply(command, "note", stored.LReferenceNote);
             LStateColumn.LStateColumnApply(command, "url", stored.LReferenceUrl);
             command.Parameters.AddWithValue("$authorState", LStateColumn.LStateColumnFormat(stored.LReferenceAuthorState));
             command.ExecuteNonQuery();
@@ -70,38 +70,6 @@ public sealed class LReferenceArchive
         return LReferenceSingleRead(session.LDatabaseSessionConnection, id);
     }
 
-    public IReadOnlyList<LReference> LReferenceEntryRead(string entryId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
-
-        using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
-        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT source.id,
-                   source.title_state, source.title,
-                   source.program_name_state, source.program_name,
-                   source.channel_name_state, source.channel_name,
-                   source.year_state, source.year,
-                   source.url_state, source.url,
-                   source.author_state
-            FROM entry_source link
-            JOIN source ON source.id = link.source_id
-            WHERE link.entry_id = $entry
-            ORDER BY link.position;
-            """;
-        command.Parameters.AddWithValue("$entry", entryId);
-
-        List<LReference> references = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            references.Add(LReferenceRowRead(reader, reader.GetString(0), 1));
-        }
-
-        return references;
-    }
-
     public IReadOnlyList<LReference> LReferenceAllRead()
     {
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
@@ -110,9 +78,9 @@ public sealed class LReferenceArchive
             """
             SELECT id,
                    title_state, title,
-                   program_name_state, program_name,
-                   channel_name_state, channel_name,
                    year_state, year,
+                   kind,
+                   note_state, note,
                    url_state, url,
                    author_state
             FROM source
@@ -165,17 +133,17 @@ public sealed class LReferenceArchive
                 """
                 UPDATE source
                 SET title_state = $titleState, title = $title,
-                    program_name_state = $programState, program_name = $program,
-                    channel_name_state = $channelState, channel_name = $channel,
                     year_state = $yearState, year = $year,
+                    kind = $kind,
+                    note_state = $noteState, note = $note,
                     url_state = $urlState, url = $url,
                     author_state = $authorState
                 WHERE id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", reference.LReferenceTitle);
-            LStateColumn.LStateColumnApply(command, "program", reference.LReferenceProgram);
-            LStateColumn.LStateColumnApply(command, "channel", reference.LReferenceChannel);
             LStateColumn.LStateColumnApply(command, "year", reference.LReferenceYear);
+            command.Parameters.AddWithValue("$kind", LReference.LReferenceKindFormat(reference.LReferenceKind));
+            LStateColumn.LStateColumnApply(command, "note", reference.LReferenceNote);
             LStateColumn.LStateColumnApply(command, "url", reference.LReferenceUrl);
             command.Parameters.AddWithValue("$authorState", LStateColumn.LStateColumnFormat(reference.LReferenceAuthorState));
             command.Parameters.AddWithValue("$id", reference.LReferenceId);
@@ -236,22 +204,6 @@ public sealed class LReferenceArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(authorId);
 
         LReferenceLinkDetach("source_author", "source_id", "author_id", referenceId, authorId);
-    }
-
-    public void LReferenceEntryAttach(string entryId, string referenceId, int position)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
-
-        LReferenceLinkAttach("entry_source", "entry_id", "source_id", entryId, referenceId, position);
-    }
-
-    public void LReferenceEntryDetach(string entryId, string referenceId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
-
-        LReferenceLinkDetach("entry_source", "entry_id", "source_id", entryId, referenceId);
     }
 
     public void LReferenceExampleAttach(string exampleId, string referenceId)
@@ -348,9 +300,9 @@ public sealed class LReferenceArchive
             """
             SELECT
                 title_state, title,
-                program_name_state, program_name,
-                channel_name_state, channel_name,
                 year_state, year,
+                kind,
+                note_state, note,
                 url_state, url,
                 author_state
             FROM source
@@ -372,10 +324,10 @@ public sealed class LReferenceArchive
             id,
             LStateColumn.LStateColumnRead(reader, first),
             LStateColumn.LStateColumnRead(reader, first + 2),
-            LStateColumn.LStateColumnRead(reader, first + 4),
-            LStateColumn.LStateColumnRead(reader, first + 6),
-            LStateColumn.LStateColumnRead(reader, first + 8),
-            LStateColumn.LStateColumnParse(reader.GetString(first + 10)));
+            LReference.LReferenceKindParse(reader.GetString(first + 4)),
+            LStateColumn.LStateColumnRead(reader, first + 5),
+            LStateColumn.LStateColumnRead(reader, first + 7),
+            LStateColumn.LStateColumnParse(reader.GetString(first + 9)));
     }
 
 }

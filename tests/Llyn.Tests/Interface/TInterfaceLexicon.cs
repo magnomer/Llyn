@@ -178,12 +178,12 @@ internal static partial class TInterface
     internal static LReference TReferenceCreate(
         string id,
         LStateValue title,
-        LStateValue program,
-        LStateValue channel,
         LStateValue year,
+        LReferenceKind kind,
+        LStateValue note,
         LStateValue url,
         LState authorState) =>
-        new(id, title, program, channel, year, url, authorState);
+        new(id, title, year, kind, note, url, authorState);
 
     internal static LRelation TRelationCreate(
         string id,
@@ -207,6 +207,9 @@ internal static partial class TInterface
         LStateValue definition,
         string labels) =>
         new(id, entryId, parentId, position, title, gloss, definitionLanguage, definition, labels);
+
+    internal static LRegister TRegisterCreate(string id, string name) =>
+        new(id, LStateValue.LStateValueRead(name), string.Empty, false);
 
     internal static LRegisterDraft TRegisterDraftCreate(string text) =>
         LRegisterDraft.LRegisterDraftCreate(text);

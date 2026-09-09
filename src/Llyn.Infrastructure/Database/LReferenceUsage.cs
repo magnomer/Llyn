@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -21,11 +21,8 @@ public sealed class LReferenceUsage
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT source_id, COUNT(*) FROM (
-                SELECT source_id FROM entry_source
-                UNION ALL
-                SELECT source_id FROM example WHERE source_id IS NOT NULL
-            )
+            SELECT source_id, COUNT(*) FROM example
+            WHERE source_id IS NOT NULL
             GROUP BY source_id;
             """;
 
@@ -47,7 +44,39 @@ public sealed class LReferenceUsage
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         List<LUsage> usages = [];
-        usages.AddRange(LReferenceEntryRead(connection, id));
+        usages.AddRange(LReferenceCardRead(
+            connection,
+            id,
+            LOwner.LOwnerMeaning,
+            """
+            SELECT sense.id, sense.entry_id, entry.headword, entry.language,
+                   sense.title_state, sense.title,
+                   CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
+                   COALESCE(sense.gloss, sense.definition)
+            FROM sense_example link
+            JOIN example ON example.id = link.example_id
+            JOIN sense ON sense.id = link.sense_id
+            JOIN entry ON entry.id = sense.entry_id
+            WHERE example.source_id = $id
+            GROUP BY sense.id
+            ORDER BY entry.headword, sense.position;
+            """));
+        usages.AddRange(LReferenceCardRead(
+            connection,
+            id,
+            LOwner.LOwnerCollocation,
+            """
+            SELECT collocation.id, collocation.entry_id, entry.headword, entry.language,
+                   collocation.title_state, collocation.title,
+                   collocation.expression_state, collocation.expression
+            FROM collocation_example link
+            JOIN example ON example.id = link.example_id
+            JOIN collocation ON collocation.id = link.collocation_id
+            JOIN entry ON entry.id = collocation.entry_id
+            WHERE example.source_id = $id
+            GROUP BY collocation.id
+            ORDER BY entry.headword, collocation.position;
+            """));
         usages.AddRange(LReferenceExampleRead(connection, id));
         return usages;
     }
@@ -59,9 +88,7 @@ public sealed class LReferenceUsage
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT
-                (SELECT COUNT(*) FROM entry_source WHERE source_id = $id)
-                + (SELECT COUNT(*) FROM example WHERE source_id = $id);
+            SELECT COUNT(*) FROM example WHERE source_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -71,52 +98,40 @@ public sealed class LReferenceUsage
     {
         ArgumentNullException.ThrowIfNull(connection);
 
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = "DELETE FROM entry_source WHERE source_id = $id;";
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText =
-                "UPDATE example SET source_state = 'unspecified', source_id = NULL WHERE source_id = $id;";
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
-    }
-
-    private static IReadOnlyList<LUsage> LReferenceEntryRead(SqliteConnection connection, string id)
-    {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
-            """
-            SELECT entry.id, entry.headword, entry.language,
-                   COALESCE((
-                       SELECT CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END
-                       FROM sense WHERE sense.entry_id = entry.id ORDER BY sense.position LIMIT 1), 'unspecified'),
-                   (SELECT COALESCE(sense.gloss, sense.definition)
-                    FROM sense WHERE sense.entry_id = entry.id ORDER BY sense.position LIMIT 1)
-            FROM entry_source link
-            JOIN entry ON entry.id = link.entry_id
-            WHERE link.source_id = $id
-            ORDER BY entry.headword;
-            """;
+            "UPDATE example SET source_state = 'unspecified', source_id = NULL WHERE source_id = $id;";
+        command.Parameters.AddWithValue("$id", id);
+        command.ExecuteNonQuery();
+    }
+
+    private static IReadOnlyList<LUsage> LReferenceCardRead(
+        SqliteConnection connection,
+        string id,
+        LOwner owner,
+        string statement)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = statement;
         command.Parameters.AddWithValue("$id", id);
 
         List<LUsage> usages = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            string entry = reader.GetString(0);
+            LStateValue title = LStateColumn.LStateColumnRead(reader, 4);
+            if (title.LStateValueEmpty)
+            {
+                title = LStateColumn.LStateColumnRead(reader, 6);
+            }
+
             usages.Add(new LUsage(
-                entry,
-                LOwner.LOwnerEntry,
-                entry,
+                reader.GetString(0),
+                owner,
                 reader.GetString(1),
                 reader.GetString(2),
-                LStateColumn.LStateColumnRead(reader, 3)));
+                reader.GetString(3),
+                title));
         }
 
         return usages;

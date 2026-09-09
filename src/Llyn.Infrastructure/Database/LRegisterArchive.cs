@@ -176,6 +176,11 @@ public sealed class LRegisterArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
 
+        if (LRegisterRead(id) is not LRegister stored || stored.LRegisterBuiltin)
+        {
+            return;
+        }
+
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 

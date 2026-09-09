@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -13,7 +13,7 @@ public sealed class LWorkspaceArchive
     private const string LWorkspaceArchiveColumn =
         "id, left_entry, right_entry, mode, split, revision, " +
         "library_order, phonology_order, favorite_order, taxonomy_order, " +
-        "repertoire_order, reference_order, corpus_order";
+        "repertoire_order, reference_order, corpus_order, tenor_order";
 
     private readonly LDatabase _lWorkspaceArchiveDatabase;
 
@@ -33,7 +33,9 @@ public sealed class LWorkspaceArchive
             command.CommandText =
                 $"""
                 INSERT INTO workspace ({LWorkspaceArchiveColumn})
-                VALUES ($id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
+                VALUES (
+                    $id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                    NULL)
                 ON CONFLICT (id) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
@@ -81,6 +83,8 @@ public sealed class LWorkspaceArchive
                     LWorkspaceArchiveRead(reader, 11), fallback.LWorkspaceStateGrade),
                 LWorkspaceStateRank = LCatalog.LCatalogOrderParse(
                     LWorkspaceArchiveRead(reader, 12), fallback.LWorkspaceStateRank),
+                LWorkspaceStateDegree = LCatalog.LCatalogOrderParse(
+                    LWorkspaceArchiveRead(reader, 13), fallback.LWorkspaceStateDegree),
             };
         }
 
@@ -100,11 +104,11 @@ public sealed class LWorkspaceArchive
                 INSERT INTO workspace (
                     id, left_entry, right_entry, mode, split, revision,
                     library_order, phonology_order, favorite_order, taxonomy_order,
-                    repertoire_order, reference_order, corpus_order)
+                    repertoire_order, reference_order, corpus_order, tenor_order)
                 VALUES (
                     $id, $left, $right, $mode, $split, $revision,
                     $library, $phonology, $favorite, $taxonomy,
-                    $repertoire, $reference, $corpus)
+                    $repertoire, $reference, $corpus, $tenor)
                 ON CONFLICT (id) DO UPDATE SET
                     left_entry = excluded.left_entry,
                     right_entry = excluded.right_entry,
@@ -117,7 +121,8 @@ public sealed class LWorkspaceArchive
                     taxonomy_order = excluded.taxonomy_order,
                     repertoire_order = excluded.repertoire_order,
                     reference_order = excluded.reference_order,
-                    corpus_order = excluded.corpus_order;
+                    corpus_order = excluded.corpus_order,
+                    tenor_order = excluded.tenor_order;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
             command.Parameters.AddWithValue("$left", (object?)state.LWorkspaceStateLeft ?? DBNull.Value);
@@ -133,6 +138,7 @@ public sealed class LWorkspaceArchive
             command.Parameters.AddWithValue("$repertoire", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateTier));
             command.Parameters.AddWithValue("$reference", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateGrade));
             command.Parameters.AddWithValue("$corpus", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateRank));
+            command.Parameters.AddWithValue("$tenor", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateDegree));
             command.ExecuteNonQuery();
         }
 

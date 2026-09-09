@@ -1,16 +1,16 @@
-# LEngineExample.cs
+﻿# LEngineExample.cs
 
 ## `public sealed partial class LEngine`
 
 The Example half of the engine.
 An Example is created, read, rewritten and let go of.
-So are the references an Entry, a Meaning or a Collocation holds to it.
+So are the references a Meaning or a Collocation holds to it.
 An Example is independent data owned by nothing.
-So three sides may reference the same one.
+So both card sides may reference the same one.
 Each holds its own order over the Examples it references.
 
-Three sides is why the side arrives as an `LOwner` and not in the method's name.
-Unlike a Tag, an Example may hang from an Entry as well.
+Two sides is why the side arrives as an `LOwner` and not in the method's name.
+An Entry is not one of them — it reaches an Example only through its cards.
 A seam handed a side no association table serves refuses rather than picking one.
 
 The Source an Example cites is set through its own seam.
@@ -28,7 +28,7 @@ Reads the Example for `id`, or `null` when no Example has that id.
 
 ## `public IReadOnlyList<LExample> LEngineExampleRead(string ownerId, LOwner owner)`
 
-Reads the Examples the Entry, Meaning or Collocation identified by `ownerId` references.
+Reads the Examples the Meaning or Collocation identified by `ownerId` references.
 They arrive in the order that side holds them.
 
 ## `public void LEngineExampleUpdate(LExample example)`
@@ -44,7 +44,7 @@ Only the citation moves: the Reference row itself is neither created, changed, n
 ## `public void LEngineExampleAttach(string ownerId, string exampleId, int position, LOwner owner)`
 
 References the Example identified by `exampleId` from the side identified by `ownerId`.
-That side is an Entry, a Meaning or a Collocation, and the reference goes in at `position`.
+That side is a Meaning or a Collocation, and the reference goes in at `position`.
 The set is renumbered around it so the positions stay contiguous.
 
 ## `public void LEngineExampleDetach(string ownerId, string exampleId, LOwner owner)`
@@ -68,7 +68,7 @@ Between any two steps the answer to "does anything still quote this" can change.
 ## `public void LEngineExampleDelete(string id)`
 
 Deletes the Example identified by `id`.
-Refused while any Entry, Meaning or Collocation still references it.
+Refused while any Meaning or Collocation still references it.
 `LEngineExampleRemove` is the seam that deletes one as its last reference goes.
 A Reference it cited is left standing.
 

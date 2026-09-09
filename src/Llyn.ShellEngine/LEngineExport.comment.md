@@ -1,4 +1,4 @@
-# LEngineExport.cs
+﻿# LEngineExport.cs
 
 ## `public sealed partial class LEngine`
 
@@ -20,7 +20,7 @@ An unconfigured press is an error rather than a silent empty file.
 
 ## `private string LEngineMarkupFormat(string entryId)`
 
-The sources are the ones the entry's own citations name, plus those attached to the entry.
+The sources are the ones the entry's own citations name, reached through the Examples its cards quote.
 A source that cannot be read is skipped, since the reader would reject a citation naming nothing.
 
 ## `private static void LEngineSourceRead(IReadOnlyList<LCardDraft> cards, List<string> ids)`

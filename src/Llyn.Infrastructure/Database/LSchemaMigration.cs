@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 29;
+    public const long LSchemaMigrationVersion = 32;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -121,7 +123,167 @@ public static class LSchemaMigration
             LSchemaRegisterCreate(connection);
         }
 
+        if (stored < 30)
+        {
+            LSchemaWorkspace.LSchemaWorkspaceNormalize(connection);
+        }
+
+        if (stored < 31)
+        {
+            LSchemaSourceNormalize(connection);
+        }
+
+        if (stored < 32)
+        {
+            LSchemaShortcutRemove(connection);
+        }
+
         LSchemaVersionSave(connection);
+    }
+
+    private static void LSchemaShortcutRemove(SqliteConnection connection)
+    {
+        if (LSchemaTableFind(connection, "entry_source"))
+        {
+            LSchemaShortcutRecord(connection);
+
+            using SqliteCommand dropped = connection.CreateCommand();
+            dropped.CommandText =
+                """
+                DROP INDEX IF EXISTS entry_source_position;
+                DROP INDEX IF EXISTS entry_source_member;
+                DROP TABLE IF EXISTS entry_source;
+                """;
+            dropped.ExecuteNonQuery();
+        }
+
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            DROP INDEX IF EXISTS entry_example_position;
+            DROP INDEX IF EXISTS entry_example_member;
+            DROP TABLE IF EXISTS entry_example;
+            """;
+        command.ExecuteNonQuery();
+    }
+
+    private static void LSchemaShortcutRecord(SqliteConnection connection)
+    {
+        long lost;
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                SELECT COUNT(*) FROM entry_source link
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM sense_example card
+                    JOIN sense ON sense.id = card.sense_id
+                    JOIN example ON example.id = card.example_id
+                    WHERE sense.entry_id = link.entry_id
+                      AND example.source_id = link.source_id)
+                  AND NOT EXISTS (
+                    SELECT 1 FROM collocation_example card
+                    JOIN collocation ON collocation.id = card.collocation_id
+                    JOIN example ON example.id = card.example_id
+                    WHERE collocation.entry_id = link.entry_id
+                      AND example.source_id = link.source_id);
+                """;
+            lost = Convert.ToInt64(command.ExecuteScalar());
+        }
+
+        if (lost == 0)
+        {
+            return;
+        }
+
+        string? root = Path.GetDirectoryName(connection.DataSource);
+        if (string.IsNullOrWhiteSpace(root))
+        {
+            return;
+        }
+
+        LAuditWriter.LAuditWriterRecord(
+            root,
+            string.Format(
+                CultureInfo.InvariantCulture,
+                "Schema revision 32 dropped entry_source. {0} entry citation(s) named a source no example under that entry cites and were not carried over.",
+                lost));
+    }
+
+    private static void LSchemaSourceNormalize(SqliteConnection connection)
+    {
+        if (LSchemaColumnFind(connection, "source", "kind"))
+        {
+            return;
+        }
+
+        using (SqliteCommand off = connection.CreateCommand())
+        {
+            off.CommandText = "PRAGMA foreign_keys = OFF;";
+            off.ExecuteNonQuery();
+        }
+
+        try
+        {
+            using SqliteTransaction rebuild = connection.BeginTransaction();
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                """
+                DROP TABLE IF EXISTS source_next;
+
+                CREATE TABLE source_next (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    title_state TEXT NOT NULL DEFAULT 'unspecified',
+                    title TEXT,
+                    year_state TEXT NOT NULL,
+                    year TEXT,
+                    kind TEXT NOT NULL DEFAULT 'unspecified',
+                    note_state TEXT NOT NULL,
+                    note TEXT,
+                    url_state TEXT NOT NULL,
+                    url TEXT,
+                    author_state TEXT NOT NULL,
+                    CHECK (title_state = 'specified' OR title IS NULL),
+                    CHECK (year_state = 'specified' OR year IS NULL),
+                    CHECK (note_state = 'specified' OR note IS NULL),
+                    CHECK (url_state = 'specified' OR url IS NULL)
+                );
+
+                INSERT INTO source_next (
+                    id, title_state, title, year_state, year, kind,
+                    note_state, note, url_state, url, author_state)
+                    SELECT
+                        source.id,
+                        source.title_state,
+                        source.title,
+                        source.year_state,
+                        source.year,
+                        'unspecified',
+                        CASE WHEN NULLIF(
+                                TRIM(COALESCE(source.program_name, '') || ' ' || COALESCE(source.channel_name, '')),
+                                '') IS NULL
+                            THEN 'unspecified' ELSE 'specified' END,
+                        NULLIF(
+                            TRIM(COALESCE(source.program_name, '') || ' ' || COALESCE(source.channel_name, '')),
+                            ''),
+                        source.url_state,
+                        source.url,
+                        source.author_state
+                    FROM source;
+
+                DROP TABLE source;
+
+                ALTER TABLE source_next RENAME TO source;
+                """;
+            command.ExecuteNonQuery();
+            rebuild.Commit();
+        }
+        finally
+        {
+            using SqliteCommand on = connection.CreateCommand();
+            on.CommandText = "PRAGMA foreign_keys = ON;";
+            on.ExecuteNonQuery();
+        }
     }
 
     private static void LSchemaVideoNormalize(SqliteConnection connection)

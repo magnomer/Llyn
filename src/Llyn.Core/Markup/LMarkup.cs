@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -210,8 +210,8 @@ public static partial class LMarkup
         List<LMarkupToken> authors = new List<LMarkupToken>();
         LMarkupToken? year = null;
         LMarkupToken? url = null;
-        LMarkupToken? program = null;
-        LMarkupToken? channel = null;
+        LMarkupToken? kind = null;
+        LMarkupToken? note = null;
 
         foreach (LMarkupToken token in LMarkupLeafRead(tokens))
         {
@@ -229,11 +229,11 @@ public static partial class LMarkup
                 case "url":
                     url = token;
                     break;
-                case "program":
-                    program = token;
+                case "kind":
+                    kind = token;
                     break;
-                case "channel":
-                    channel = token;
+                case "note":
+                    note = token;
                     break;
                 default:
                     break;
@@ -258,9 +258,9 @@ public static partial class LMarkup
         LReference reference = new LReference(
             id,
             LMarkupStateRead(title),
-            LMarkupStateRead(program),
-            LMarkupStateRead(channel),
             LMarkupStateRead(year),
+            LMarkupKindRead(kind),
+            LMarkupStateRead(note),
             LMarkupStateRead(url),
             credited);
 
@@ -300,6 +300,18 @@ public static partial class LMarkup
         }
 
         tags.Add(token.LMarkupTokenText);
+    }
+
+    private static LReferenceKind LMarkupKindRead(LMarkupToken? token)
+    {
+        if (token is null)
+        {
+            return LReferenceKind.LReferenceKindUnspecified;
+        }
+
+        return token.Value.LMarkupTokenEmpty
+            ? LReferenceKind.LReferenceKindUnknown
+            : LReference.LReferenceKindParse(token.Value.LMarkupTokenText);
     }
 
     private static LStateValue LMarkupStateRead(LMarkupToken? token)

@@ -25,9 +25,9 @@ public static class LMarkupSource
         }
 
         LMarkupLeaf.LMarkupLeafAppend(text, 2, "year", held.LReferenceYear);
+        LMarkupLeaf.LMarkupLeafAppend(text, 2, "kind", LReference.LReferenceKindShow(held.LReferenceKind));
+        LMarkupLeaf.LMarkupLeafAppend(text, 2, "note", held.LReferenceNote);
         LMarkupLeaf.LMarkupLeafAppend(text, 2, "url", held.LReferenceUrl);
-        LMarkupLeaf.LMarkupLeafAppend(text, 2, "program", held.LReferenceProgram);
-        LMarkupLeaf.LMarkupLeafAppend(text, 2, "channel", held.LReferenceChannel);
 
         text.Append("  </source>\n");
     }

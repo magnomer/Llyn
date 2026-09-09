@@ -130,7 +130,7 @@ public sealed class TSituation
             string.Empty,
             TInterface.TStateValueCreate("A Dictionary"),
             LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
+            LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified));

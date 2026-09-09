@@ -65,5 +65,5 @@ Its author state is unspecified, because nobody has been credited or ruled unrea
 
 Field by field, whether two References say the same thing.
 Identity is left out, because a held Reference is named before the record it becomes exists.
-The title, the programme, the channel, the year and the address each count.
+The title, the year, the kind, the note and the address each count.
 The author state counts too, because ruling the writers unreadable is an edit nothing else records.

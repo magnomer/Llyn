@@ -3,21 +3,22 @@
 ## `public sealed class LReferenceArchive`
 
 Persists bibliographic References — independent data no Entry, Example, or Author owns.
-A Reference is created once with an opaque id and is then cited two ways.
-An Entry cites any number of them in its own order through `entry_source`.
+A Reference is created once with an opaque id and is then cited one way.
 An Example cites at most one through its `example.source_id` column.
-Both are pointers — detaching a citation leaves the Reference standing, and `LReferenceDelete` refuses to run while any citation remains.
+An Entry reaches a Reference only through the Examples its cards quote, and holds no citation of its own.
+The citation is a pointer — clearing it leaves the Reference standing, and `LReferenceDelete` refuses to run while any citation remains.
 
-Every field is stored as a state column beside its value column.
+Every text field is stored as a state column beside its value column.
 So "never filled in", "recorded as unknown", and "this value" stay three different facts.
 The value column is written only when the state is specified.
+The kind is written as a single word, because its own members already carry those three states.
 The Authors a Reference credits are attached in order through `source_author`.
 Attaching and detaching write association rows only.
 Deleting the Reference drops those rows and never an Author.
 The Authors themselves live in `LAuthorArchive`.
 
-Both citation orders are unique indexes.
-So attaching and detaching renumber the whole set they touch through `LDatabaseOrder`.
+The author order is a unique index.
+So crediting and dropping a credit renumber the whole set they touch through `LDatabaseOrder`.
 A caller names the index it wants.
 It never has to find a free position or leave a gap behind.
 
@@ -37,11 +38,6 @@ The new Reference is cited by nothing and credits no Author until one is attache
 
 Reads the Reference identified by `id`, or `null` when none exists.
 
-## `public IReadOnlyList<LReference> LReferenceEntryRead(string entryId)`
-
-Reads the References an Entry cites, in the order that Entry gives them.
-Another Entry citing the same References may order them differently — the order lives on the association row.
-
 ## `public LReference? LReferenceExampleRead(string exampleId)`
 
 Reads the single Reference an Example cites, or `null` when the Example cites none or does not exist.
@@ -56,7 +52,7 @@ Throws when no Reference carries that id.
 ## `public void LReferenceDelete(string id)`
 
 Deletes the Reference identified by `id` together with the author links it owns.
-Guarded: while any Entry or Example still cites the Reference, nothing is deleted.
+Guarded: while any Example still cites the Reference, nothing is deleted.
 An `InvalidOperationException` is thrown instead.
 Remove those citations first.
 The Authors it credited survive.
@@ -79,17 +75,6 @@ The Author row itself is untouched and stays available to every other Reference.
 
 Removes this Reference's credit for an Author.
 The Author and its other credits survive.
-
-## `public void LReferenceEntryAttach(string entryId, string referenceId, int position)`
-
-Cites this Reference from an Entry at `position` in that Entry's citation order.
-An Entry may cite any number of References.
-Each keeps its own position there.
-
-## `public void LReferenceEntryDetach(string entryId, string referenceId)`
-
-Removes an Entry's citation of a Reference.
-The Reference and its other citations survive.
 
 ## `public void LReferenceExampleAttach(string exampleId, string referenceId)`
 

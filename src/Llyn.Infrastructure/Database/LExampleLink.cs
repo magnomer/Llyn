@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -15,21 +15,6 @@ public sealed class LExampleLink
         _lExampleLinkDatabase = database;
     }
 
-    public IReadOnlyList<LExample> LExampleEntryRead(string entryId)
-    {
-        return LExampleReferrerRead("entry_example", "entry_id", entryId);
-    }
-
-    public void LExampleEntryAttach(string entryId, string exampleId, int position)
-    {
-        LExampleReferenceAttach("entry_example", "entry_id", entryId, exampleId, position);
-    }
-
-    public void LExampleEntryDetach(string entryId, string exampleId)
-    {
-        LExampleReferenceDetach("entry_example", "entry_id", entryId, exampleId);
-    }
-
     public IReadOnlyList<LUsage> LExampleUsageRead(string id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -38,23 +23,6 @@ public sealed class LExampleLink
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         List<LUsage> usages = [];
-        usages.AddRange(LExampleUsageRead(
-            connection,
-            id,
-            LOwner.LOwnerEntry,
-            """
-            SELECT link.entry_id, entry.id, entry.headword, entry.language,
-                   'unspecified', NULL,
-                   COALESCE((
-                       SELECT CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END
-                       FROM sense WHERE sense.entry_id = entry.id ORDER BY sense.position LIMIT 1), 'unspecified'),
-                   (SELECT COALESCE(sense.gloss, sense.definition)
-                    FROM sense WHERE sense.entry_id = entry.id ORDER BY sense.position LIMIT 1)
-            FROM entry_example link
-            JOIN entry ON entry.id = link.entry_id
-            WHERE link.example_id = $id
-            ORDER BY entry.headword;
-            """));
         usages.AddRange(LExampleUsageRead(
             connection,
             id,
@@ -122,137 +90,6 @@ public sealed class LExampleLink
 
     internal static void LExampleLinkClear(SqliteConnection connection, string exampleId)
     {
-        LExampleLinkClear(connection, "entry_example", "entry_id", exampleId);
         LSentenceArchive.LSentenceExampleClear(connection, exampleId);
-    }
-
-    private static void LExampleLinkClear(
-        SqliteConnection connection, string table, string column, string exampleId)
-    {
-        List<string> referrers = [];
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = $"SELECT {column} FROM {table} WHERE example_id = $example;";
-            command.Parameters.AddWithValue("$example", exampleId);
-            using SqliteDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                referrers.Add(reader.GetString(0));
-            }
-        }
-
-        if (referrers.Count == 0)
-        {
-            return;
-        }
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = $"DELETE FROM {table} WHERE example_id = $example;";
-            command.Parameters.AddWithValue("$example", exampleId);
-            command.ExecuteNonQuery();
-        }
-
-        string scope = $"{column} = $owner";
-        foreach (string referrer in referrers)
-        {
-            LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, table, scope, referrer, "example_id",
-                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrer, "example_id"));
-        }
-    }
-
-    private void LExampleReferenceAttach(
-        string table, string column, string referrerId, string exampleId, int position)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
-
-        using LDatabaseSession session = _lExampleLinkDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        string scope = $"{column} = $owner";
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, referrerId, "example_id");
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText =
-                $"""
-                INSERT INTO {table} ({column}, example_id, position)
-                VALUES ($referrer, $example, $position)
-                ON CONFLICT ({column}, example_id) DO NOTHING;
-                """;
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            command.Parameters.AddWithValue("$example", exampleId);
-            command.Parameters.AddWithValue("$position", current.Count);
-            command.ExecuteNonQuery();
-        }
-
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "example_id",
-            LDatabaseOrder.LDatabaseOrderInsert(current, exampleId, position));
-
-        session.LDatabaseSessionCommit();
-    }
-
-    private void LExampleReferenceDetach(string table, string column, string referrerId, string exampleId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
-
-        using LDatabaseSession session = _lExampleLinkDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-        string scope = $"{column} = $owner";
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText =
-                $"DELETE FROM {table} WHERE {column} = $referrer AND example_id = $example;";
-            command.Parameters.AddWithValue("$referrer", referrerId);
-            command.Parameters.AddWithValue("$example", exampleId);
-            command.ExecuteNonQuery();
-        }
-
-        LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "example_id",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "example_id"));
-
-        session.LDatabaseSessionCommit();
-    }
-
-    private IReadOnlyList<LExample> LExampleReferrerRead(string table, string column, string referrerId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-
-        using LDatabaseSession session = _lExampleLinkDatabase.LDatabaseSessionStart();
-        SqliteConnection connection = session.LDatabaseSessionConnection;
-
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            $"""
-            SELECT example.id, example.language, example.text_state, example.text,
-                   example.translation_state, example.translation,
-                   example.source_state, example.source_id
-            FROM {table} link
-            JOIN example ON example.id = link.example_id
-            WHERE link.{column} = $referrer
-            ORDER BY link.position;
-            """;
-        command.Parameters.AddWithValue("$referrer", referrerId);
-
-        List<LExample> examples = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            examples.Add(new LExample(
-                reader.GetString(0),
-                reader.GetString(1),
-                LStateColumn.LStateColumnRead(reader, 2),
-                LStateColumn.LStateColumnRead(reader, 4),
-                LStateColumn.LStateColumnRead(reader, 6)));
-        }
-
-        return examples;
     }
 }

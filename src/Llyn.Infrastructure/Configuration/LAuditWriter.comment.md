@@ -12,11 +12,16 @@ Where the log stands for the workspace at `root`.
 
 ## `public static string? LAuditWriterRecord(string root, Exception exception)`
 
-Appends one fault, stamped in UTC, and answers with the file it was written to.
-
-The whole exception is written rather than its message alone.
+Appends one fault as a note carrying the whole exception rather than its message alone.
 A fault is read later by someone who was not there.
 The type and the stack are the part worth keeping.
+
+## `public static string? LAuditWriterRecord(string root, string note)`
+
+Appends one note, stamped in UTC, and answers with the file it was written to.
+
+Not every entry worth keeping is a fault.
+A migration that drops data reports what it dropped, and that report has no exception behind it.
 
 It answers `null` when the log cannot be written.
 A workspace on a read-only disk is a workspace that still has to report its faults.

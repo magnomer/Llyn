@@ -1,4 +1,4 @@
-# LExampleArchive.cs
+﻿# LExampleArchive.cs
 
 ## `public sealed class LExampleArchive`
 
@@ -54,7 +54,7 @@ No store of its own has to know which association tables exist.
 ## `public void LExampleDelete(string id)`
 
 Deletes the Example identified by `id`.
-Guarded: while any Entry, Meaning, or Collocation still references the Example, nothing is deleted.
+Guarded: while any Meaning or Collocation still references the Example, nothing is deleted.
 An `InvalidOperationException` is thrown instead.
 Detach every reference first.
 A Source the Example cited is left standing.

@@ -350,6 +350,31 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_VersionTwentyNine_AddsTenorOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 29);
+            """);
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('workspace') WHERE name = 'tenor_order';"));
+    }
+
+    [Fact]
     public void DatabaseCreate_VersionNineteen_AddsTranslationTables()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -685,6 +710,74 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_VersionThirty_TradesProgramAndChannelForKindAndNote()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 30);
+
+            CREATE TABLE source (
+                id TEXT NOT NULL PRIMARY KEY,
+                title_state TEXT NOT NULL DEFAULT 'unspecified',
+                title TEXT,
+                program_name_state TEXT NOT NULL,
+                program_name TEXT,
+                channel_name_state TEXT NOT NULL,
+                channel_name TEXT,
+                year_state TEXT NOT NULL,
+                year TEXT,
+                url_state TEXT NOT NULL,
+                url TEXT,
+                author_state TEXT NOT NULL
+            );
+
+            INSERT INTO source VALUES (
+                'aired', 'specified', 'The Word', 'specified', 'Word of Mouth',
+                'specified', 'Radio 4', 'specified', '2011', 'unspecified', NULL, 'unspecified');
+            INSERT INTO source VALUES (
+                'printed', 'specified', 'A Grammar', 'unspecified', NULL,
+                'unspecified', NULL, 'specified', '1998', 'unspecified', NULL, 'unspecified');
+            """);
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('source') WHERE name IN ('program_name', 'channel_name');"));
+        Assert.Equal(
+            2,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM pragma_table_info('source') WHERE name IN ('kind', 'note');"));
+        Assert.Equal(
+            2,
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source WHERE kind = 'unspecified';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                """
+                SELECT COUNT(*) FROM source
+                WHERE id = 'aired' AND note_state = 'specified' AND note = 'Word of Mouth Radio 4';
+                """));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                """
+                SELECT COUNT(*) FROM source
+                WHERE id = 'printed' AND note_state = 'unspecified' AND note IS NULL AND title = 'A Grammar';
+                """));
+    }
+
+    [Fact]
     public void DatabaseCreate_NewerBuild_Throws()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -705,7 +798,7 @@ public sealed class TSchemaMigration
         Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "relation", "sense_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "entry_example", "example_id"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "sense_example", "example_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "text"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "tombstone", "revision_id"));

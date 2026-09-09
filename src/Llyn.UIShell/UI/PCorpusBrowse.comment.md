@@ -1,4 +1,4 @@
-# PCorpusBrowse.cs
+﻿# PCorpusBrowse.cs
 
 ## `public partial class PCorpus`
 
@@ -43,7 +43,8 @@ An unwritten value reads the unrecorded mark in the muted colour, so a blank row
 ## `private void PQuotationFind(string id)`
 
 Reads everything quoting the Example, and names each row by the kind of side it is.
-An Entry, a Meaning and a Collocation quote on their own terms, so the row says which.
+A Meaning and a Collocation quote on their own terms, so the row says which.
+No Entry quotes an Example, because an Entry owns cards and a card owns the quotation.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
 ## `private void PQuotationHandle(object sender, RoutedEventArgs e)`

@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -12,13 +12,11 @@ public sealed class TCatalogReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        TCatalogReferenceCreate(engine, "Zebra Book", null, null, null, null);
-        TCatalogReferenceCreate(engine, null, "Anchor Show", null, null, null);
-        TCatalogReferenceCreate(engine, null, null, "Morning Channel", null, null);
-        TCatalogReferenceCreate(engine, null, null, null, null, "https://bird.example");
+        TCatalogReferenceCreate(engine, "Zebra Book", null, null, null);
+        TCatalogReferenceCreate(engine, null, null, "Anchor Show", "https://bird.example");
 
         Assert.Equal(
-            ["Anchor Show", "https://bird.example", "Morning Channel", "Zebra Book"],
+            ["https://bird.example", "Zebra Book"],
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName)
                 .Select(row => row.LCatalogReferenceName));
     }
@@ -29,7 +27,7 @@ public sealed class TCatalogReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LReference stored = TCatalogReferenceCreate(engine, null, null, null, null, null);
+        LReference stored = TCatalogReferenceCreate(engine, null, null, null, null);
 
         LCatalogReference row = Assert.Single(
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName));
@@ -43,9 +41,9 @@ public sealed class TCatalogReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        TCatalogReferenceCreate(engine, "Later", null, null, "2010", null);
-        TCatalogReferenceCreate(engine, "Undated", null, null, null, null);
-        TCatalogReferenceCreate(engine, "Earlier", null, null, "1999", null);
+        TCatalogReferenceCreate(engine, "Later", "2010", null, null);
+        TCatalogReferenceCreate(engine, "Undated", null, null, null);
+        TCatalogReferenceCreate(engine, "Earlier", "1999", null, null);
 
         Assert.Equal(
             ["Undated", "Earlier", "Later"],
@@ -59,9 +57,9 @@ public sealed class TCatalogReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        TCatalogReferenceCreate(engine, "Anonymous", null, null, null, null);
-        LReference credited = TCatalogReferenceCreate(engine, "Credited", null, null, null, null);
-        LReference later = TCatalogReferenceCreate(engine, "Also Credited", null, null, null, null);
+        TCatalogReferenceCreate(engine, "Anonymous", null, null, null);
+        LReference credited = TCatalogReferenceCreate(engine, "Credited", null, null, null);
+        LReference later = TCatalogReferenceCreate(engine, "Also Credited", null, null, null);
 
         TCatalogCreditAttach(engine, credited.LReferenceId, "Ashby");
         TCatalogCreditAttach(engine, later.LReferenceId, "Zeller");
@@ -78,15 +76,12 @@ public sealed class TCatalogReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LReference quiet = TCatalogReferenceCreate(engine, "Quiet", null, null, null, null);
-        LReference busy = TCatalogReferenceCreate(engine, "Busy", null, null, null, null);
+        LReference quiet = TCatalogReferenceCreate(engine, "Quiet", null, null, null);
+        LReference busy = TCatalogReferenceCreate(engine, "Busy", null, null, null);
 
-        LEntry first = TCatalogEntryCreate(engine, "apple");
-        LEntry second = TCatalogEntryCreate(engine, "stone");
-
-        engine.TEngineReferenceAttach(first.LEntryId, busy.LReferenceId, 0, LOwner.LOwnerEntry);
-        engine.TEngineReferenceAttach(second.LEntryId, busy.LReferenceId, 0, LOwner.LOwnerEntry);
-        engine.TEngineReferenceAttach(first.LEntryId, quiet.LReferenceId, 1, LOwner.LOwnerEntry);
+        TCatalogCitationCreate(engine, "he said the word", busy.LReferenceId);
+        TCatalogCitationCreate(engine, "not a word was spoken", busy.LReferenceId);
+        TCatalogCitationCreate(engine, "in a word, no", quiet.LReferenceId);
 
         IReadOnlyList<LCatalogReference> read =
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderUsage);
@@ -101,14 +96,14 @@ public sealed class TCatalogReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        TCatalogReferenceCreate(engine, "Water Rites", null, null, null, null);
-        TCatalogReferenceCreate(engine, null, "Watermark Weekly", null, null, null);
-        TCatalogReferenceCreate(engine, null, null, "Riverbank", null, null);
-        TCatalogReferenceCreate(engine, null, null, null, null, "https://water.example");
-        TCatalogReferenceCreate(engine, "Stone Age", null, null, null, null);
+        TCatalogReferenceCreate(engine, "Water Rites", null, null, null);
+        TCatalogReferenceCreate(engine, "Watermark Weekly", null, null, null);
+        TCatalogReferenceCreate(engine, "Riverbank", null, "shot near the water", null);
+        TCatalogReferenceCreate(engine, null, null, null, "https://water.example");
+        TCatalogReferenceCreate(engine, "Stone Age", null, null, null);
 
         Assert.Equal(
-            ["https://water.example", "Water Rites", "Watermark Weekly"],
+            ["https://water.example", "Riverbank", "Water Rites", "Watermark Weekly"],
             engine.TEngineReferenceFind("wat", LCatalogOrder.LCatalogOrderName)
                 .Select(row => row.LCatalogReferenceName));
     }
@@ -119,8 +114,8 @@ public sealed class TCatalogReference
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LReference credited = TCatalogReferenceCreate(engine, "Credited", null, null, null, null);
-        TCatalogReferenceCreate(engine, "Anonymous", null, null, null, null);
+        LReference credited = TCatalogReferenceCreate(engine, "Credited", null, null, null);
+        TCatalogReferenceCreate(engine, "Anonymous", null, null, null);
         TCatalogCreditAttach(engine, credited.LReferenceId, "Ashby");
 
         LCatalogReference row = Assert.Single(
@@ -132,17 +127,16 @@ public sealed class TCatalogReference
     private static LReference TCatalogReferenceCreate(
         LEngine engine,
         string? title,
-        string? program,
-        string? channel,
         string? year,
+        string? note,
         string? url)
     {
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             string.Empty,
             title,
-            program,
-            channel,
             year,
+            LReferenceKind.LReferenceKindUnspecified,
+            note,
             url,
             LState.LStateUnspecified));
     }
@@ -153,24 +147,9 @@ public sealed class TCatalogReference
         engine.TEngineAuthorAttach(referenceId, author.LAuthorId, 0);
     }
 
-    private static LEntry TCatalogEntryCreate(LEngine engine, string headword)
+    private static void TCatalogCitationCreate(LEngine engine, string text, string referenceId)
     {
-        return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            headword,
-            "English",
-            string.Empty,
-            string.Empty,
-            [TInterface.TCardDraftCreate(
-                string.Empty,
-                string.Empty,
-                "a meaning",
-                [],
-                [],
-                [],
-                string.Empty,
-                [],
-                [],
-                1)],
-            []));
+        engine.TEngineExampleCreate(
+            TInterface.TExampleCreate(string.Empty, "English", text, null, referenceId));
     }
 }

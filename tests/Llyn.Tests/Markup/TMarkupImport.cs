@@ -44,8 +44,8 @@ public sealed class TMarkupImport
             <author>Murray, James</author>
             <year>1928</year>
             <url>https://www.oed.com/</url>
-            <program></program>
-            <channel></channel>
+            <kind>book</kind>
+            <note></note>
           </source>
         </entry>
 
@@ -112,7 +112,8 @@ public sealed class TMarkupImport
             reference.LReferenceTitle.TStateValueShow() == "Oxford English Dictionary");
         Assert.Equal(oed.LReferenceId, logs.LExampleDraftReference.TStateValueShow());
         Assert.Equal("1928", oed.LReferenceYear.TStateValueShow());
-        Assert.Equal(LState.LStateUnknown, oed.LReferenceProgram.LStateValueState);
+        Assert.Equal(LReferenceKind.LReferenceKindBook, oed.LReferenceKind);
+        Assert.Equal(LState.LStateUnknown, oed.LReferenceNote.LStateValueState);
         Assert.Equal(LState.LStateSpecified, oed.LReferenceAuthorState);
         Assert.Equal(
             ["Murray, James"],
@@ -193,7 +194,7 @@ public sealed class TMarkupImport
     }
 
     [Fact]
-    public void MarkupImport_UncitedSource_HoldsItUnderItsEntry()
+    public void MarkupImport_UncitedSource_LeavesItOffTheEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -214,13 +215,26 @@ public sealed class TMarkupImport
             </entry>
             """)));
 
+        string cited = Assert.Single(engine.TEngineReferenceFind(
+                "Oxford English Dictionary", LCatalogOrder.LCatalogOrderName))
+            .LCatalogReferenceStored.LReferenceId;
+
         Assert.Equal(
-            ["Oxford English Dictionary", "A Field Guide to Rivers"],
-            engine.TEngineReferenceRead(entry.LEntryId, LOwner.LOwnerEntry)
-                .Select(reference => reference.LReferenceTitle.TStateValueShow()));
+            1,
+            workspace.TWorkspaceCountRead(
+                $"SELECT COUNT(*) FROM example WHERE source_id = '{cited}';"));
+
+        string uncited = Assert.Single(engine.TEngineReferenceFind(
+                "A Field Guide to Rivers", LCatalogOrder.LCatalogOrderName))
+            .LCatalogReferenceStored.LReferenceId;
+
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead(
+                $"SELECT COUNT(*) FROM example WHERE source_id = '{uncited}';"));
 
         engine.TEngineEntryDelete(entry.LEntryId);
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry_source;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
     }
 
     [Fact]

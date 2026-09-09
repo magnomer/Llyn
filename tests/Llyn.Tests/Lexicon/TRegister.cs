@@ -55,7 +55,7 @@ public sealed class TRegister
         engine.TEngineEntrySave(TRegisterDraftBuild(["gruff"], "term"));
 
         LRegisterArchive registers = TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase);
-        Assert.Single(registers.TRegisterRead().Where(row => !row.LRegisterBuiltin));
+        Assert.Single(registers.TRegisterRead(), row => !row.LRegisterBuiltin);
     }
 
     [Fact]
@@ -70,6 +70,101 @@ public sealed class TRegister
         registers.TRegisterDelete("English.informal");
 
         Assert.Contains(registers.TRegisterRead(), row => row.LRegisterId == "English.informal");
+    }
+
+    [Fact]
+    public void RegisterFind_WorkspaceShelf_ReturnsMarkCounts()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineEntrySave(TRegisterDraftBuild(["Formal"], "word"));
+        engine.TEngineEntrySave(TRegisterDraftBuild(["Formal"], "term"));
+        engine.TEngineEntrySave(TRegisterDraftBuild(["gruff"], "growl"));
+
+        IReadOnlyList<LCatalogRegister> read =
+            engine.TEngineRegisterFind(string.Empty, LCatalogOrder.LCatalogOrderUsage);
+
+        Assert.Equal(
+            2,
+            read.First(row => row.LCatalogRegisterStored.LRegisterId == "English.formal")
+                .LCatalogRegisterUsage);
+        Assert.Equal(
+            0,
+            read.First(row => row.LCatalogRegisterStored.LRegisterId == "English.informal")
+                .LCatalogRegisterUsage);
+        Assert.Equal("English.formal", read[0].LCatalogRegisterStored.LRegisterId);
+    }
+
+    [Fact]
+    public void RegisterFind_ByLanguage_AnswersThePackName()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineEntrySave(TRegisterDraftBuild(["gruff"]));
+
+        IReadOnlyList<LCatalogRegister> read =
+            engine.TEngineRegisterFind("English", LCatalogOrder.LCatalogOrderName);
+
+        Assert.Equal(4, read.Count);
+        Assert.All(read, row => Assert.True(row.LCatalogRegisterStored.LRegisterBuiltin));
+    }
+
+    [Fact]
+    public void EntryFind_ByRegister_ReturnsTheEntriesMarkedWithIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineEntrySave(TRegisterDraftBuild(["Formal"], "word"));
+        engine.TEngineEntrySave(TRegisterDraftBuild(["Polite"], "term"));
+
+        LRegister formal = Assert.Single(
+            TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase).TRegisterRead(),
+            row => row.LRegisterId == "English.formal");
+
+        Assert.Equal(["word"], engine.TEngineEntryFind(formal).Select(entry => entry.LEntryHeadword));
+        Assert.Equal(2, engine.TEngineEntryFind(TRegisterBlankCreate()).Count);
+    }
+
+    [Fact]
+    public void RegisterChange_WrittenRow_RenamesItOnEveryCard()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineEntrySave(TRegisterDraftBuild(["gruff"]));
+
+        LRegisterArchive registers = TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase);
+        LRegister written = Assert.Single(registers.TRegisterRead(), row => !row.LRegisterBuiltin);
+
+        engine.TEngineRegisterChange(written.LRegisterId, "blunt");
+
+        Assert.Equal(
+            "blunt",
+            registers.TRegisterRead(written.LRegisterId)?.LRegisterName.TStateValueShow());
+    }
+
+    [Fact]
+    public void RegisterDelete_LanguagePackRowOnCards_KeepsEveryMark()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TRegisterDraftBuild(["Formal"]));
+        LMeaning meaning = Assert.Single(
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
+
+        LRegisterArchive registers = TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase);
+        registers.TRegisterDelete("English.formal", true);
+
+        Assert.Single(registers.TRegisterMeaningRead(meaning.LMeaningId));
+    }
+
+    private static LRegister TRegisterBlankCreate()
+    {
+        return TInterface.TRegisterCreate(string.Empty, string.Empty);
     }
 
     private static LEntryDraft TRegisterDraftBuild(

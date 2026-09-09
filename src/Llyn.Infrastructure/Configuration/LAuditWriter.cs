@@ -16,8 +16,14 @@ public static class LAuditWriter
 
     public static string? LAuditWriterRecord(string root, Exception exception)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(exception);
+        return LAuditWriterRecord(root, exception.ToString());
+    }
+
+    public static string? LAuditWriterRecord(string root, string note)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        ArgumentException.ThrowIfNullOrWhiteSpace(note);
 
         string path = LAuditWriterRead(root);
         try
@@ -30,7 +36,7 @@ public static class LAuditWriter
                     "{0:yyyy-MM-dd HH:mm:ss}{1}{2}{1}{1}",
                     DateTime.UtcNow,
                     Environment.NewLine,
-                    exception));
+                    note));
             return path;
         }
         catch (Exception written) when (written is IOException or UnauthorizedAccessException)

@@ -58,6 +58,12 @@ The assignment already stored is a declared preset and stays one: it copies acro
 
 And the rebuilt table takes the row the editable field produces, which the old shape could not hold at all.
 
+### `INSERT INTO source VALUES (`
+
+A database in the version-30 shape, holding one broadcast Source and one printed one.
+The broadcast row states both retired columns and the printed row states neither.
+So the step is measured on the row it has text to carry and on the row it has none for.
+
 ### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));`
 
 A child column with no index turns each parent delete into a full scan of the child table.

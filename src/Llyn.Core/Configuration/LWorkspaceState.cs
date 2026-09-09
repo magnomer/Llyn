@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LWorkspaceState(
     string LWorkspaceStateId,
@@ -13,4 +13,5 @@ public sealed record LWorkspaceState(
     LCatalogOrder LWorkspaceStateFunnel = LCatalogOrder.LCatalogOrderName,
     LCatalogOrder LWorkspaceStateTier = LCatalogOrder.LCatalogOrderName,
     LCatalogOrder LWorkspaceStateGrade = LCatalogOrder.LCatalogOrderName,
-    LCatalogOrder LWorkspaceStateRank = LCatalogOrder.LCatalogOrderText);
+    LCatalogOrder LWorkspaceStateRank = LCatalogOrder.LCatalogOrderText,
+    LCatalogOrder LWorkspaceStateDegree = LCatalogOrder.LCatalogOrderName);

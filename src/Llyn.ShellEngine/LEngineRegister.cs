@@ -50,6 +50,56 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(string query, LCatalogOrder order)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+
+            LRegisterArchive archive = new(_lEngineDatabase);
+            IReadOnlyDictionary<string, int> counts = archive.LRegisterReferenceRead();
+
+            string written = query.Trim();
+            List<LCatalogRegister> found = [];
+            foreach (LRegister register in archive.LRegisterRead())
+            {
+                LCatalogRegister row = LCatalogRegister.LCatalogRegisterCreate(
+                    register, counts.TryGetValue(register.LRegisterId, out int usage) ? usage : 0);
+                if (row.LCatalogRegisterMatch(written))
+                {
+                    found.Add(row);
+                }
+            }
+
+            return LCatalogRegister.LCatalogRegisterSort(found, order);
+        }
+    }
+
+    public void LEngineRegisterChange(string registerId, string renamed)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(registerId);
+            ArgumentNullException.ThrowIfNull(renamed);
+
+            new LRegisterArchive(_lEngineDatabase).LRegisterNameUpdate(
+                registerId, LStateValue.LStateValueRead(renamed.Trim()));
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
+    }
+
+    public void LEngineRegisterDelete(string registerId)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(registerId);
+            new LRegisterArchive(_lEngineDatabase).LRegisterDelete(registerId, true);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
+    }
+
     private void LEngineRegisterCreate(string language)
     {
         if (string.IsNullOrWhiteSpace(language))

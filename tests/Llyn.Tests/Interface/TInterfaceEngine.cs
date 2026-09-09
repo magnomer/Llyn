@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -79,6 +79,15 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, LTag tag) =>
         engine.LEngineEntryFind(tag);
+
+    internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, LRegister register) =>
+        engine.LEngineEntryFind(register);
+
+    internal static void TEngineRegisterChange(this LEngine engine, string id, string renamed) =>
+        engine.LEngineRegisterChange(id, renamed);
+
+    internal static void TEngineRegisterDelete(this LEngine engine, string id) =>
+        engine.LEngineRegisterDelete(id);
 
     internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, string query) =>
         engine.LEngineEntryFind(query);

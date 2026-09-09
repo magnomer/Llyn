@@ -1,4 +1,4 @@
-# LOwner.cs
+﻿# LOwner.cs
 
 ## `public enum LOwner`
 
@@ -43,3 +43,7 @@ The id names a Situation.
 ## `LOwnerReference,`
 
 The id names a Reference.
+
+## `LOwnerAuthor,`
+
+The id names an Author.
