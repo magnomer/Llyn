@@ -12,6 +12,9 @@ The file is one that has been opened before.
 Stamping a version without acting on the one already stored records a shape the file does not have.
 That is what this file fixes.
 
+This file is the ladder alone.
+Each step is a file of its own, named for the shape it changes, and this one only says at which version it runs.
+
 A step that has to change an existing table follows SQLite's documented table-rebuild procedure.
 It creates the new shape beside the old one, copies, drops, and renames.
 That requires foreign-key enforcement to be off.
@@ -52,8 +55,6 @@ Without this step the meaning of every collocation saved into an existing databa
 Version 14.
 The pronunciation's downloaded recording gets a table of its own.
 A database built before this version has no pronunciation_audio at all, so the step creates it.
-The rows already stored are untouched.
-A pronunciation with no recording simply has no row.
 
 ### `if (stored < 15)`
 
@@ -69,7 +70,6 @@ Version 16.
 The part-of-speech field is editable, so a row may now carry text no preset names.
 The step rebuilds part_of_speech with value_id nullable beside a custom_name column.
 A CHECK keeps a row to exactly one of the two.
-The assignments already stored are all preset ids and copy across untouched.
 
 ### `if (stored < 20)`
 
@@ -91,14 +91,11 @@ A Situation carries no Source field, so the two columns holding one are dropped.
 
 Version 23.
 The favorite table arrives, so an upgraded workspace gains it too.
-No older row carries a mark, so nothing is copied into it.
 
 ### `if (stored < 24)`
 
 Version 24.
 A Meaning's hold on an Example becomes a row with data of its own, so `sense_example` is rebuilt.
-It gains its own id and the frame the Meaning reads the Example under.
-Every older row is carried over with its Example and its place, stating no frame.
 Nothing is dropped, because an older row said nothing that the new shape cannot hold.
 The video tables arrive in the same version through `LSchema`, which creates what is missing.
 
@@ -106,8 +103,6 @@ The video tables arrive in the same version through `LSchema`, which creates wha
 
 Version 25.
 A Collocation's hold on an Example takes the shape a Meaning's already has, so `collocation_example` is rebuilt.
-The same rebuild serves both, because the two tables differ only in their name and their owner column.
-Every older row is carried over with its Example and its place, stating no frame.
 The editor already drew the frame fields on a Collocation card, and the store dropped them until now.
 
 ### `if (stored < 26)`
@@ -121,145 +116,17 @@ The workspace row gains one ordering column per browse panel, so the shell's own
 Version 27.
 A frame is the owner's, not the Example's, so an owner may state one before any sentence is written.
 Both hold tables are rebuilt with a nullable `example_id` for it.
-SQLite cannot drop a NOT NULL from a table that stands.
-Every older row is carried over whole, id and frame included, since each one already cites an Example.
 
 ### `if (stored < 28)`
 
 Version 28.
 A Video now carries the span of it worth watching.
 The table gains a state column and a text column for it.
-The columns are added rather than the table rebuilt, since nothing already stored has to move.
-
-### `private static void LSchemaVideoNormalize(SqliteConnection connection)`
-
-A database already carrying the span column is left alone.
-`ALTER TABLE` has no `IF NOT EXISTS`, so the check is the guard.
-
-### `private static void LSchemaFrameNormalize(`
-
-The rebuild runs with foreign keys off and back on, exactly as the version 24 rebuild does.
-The two hold tables differ only in their name and their owner column, so one rebuild serves both.
-
-### `private static void LSchemaFrameRebuild(`
-
-The carried rows keep their own ids rather than being handed new ones.
-A hold's id is what a saved draft names, so reissuing it would orphan what points at it.
-
-### `private static void LSchemaSentenceRebuild(`
-
-SQLite cannot add a primary key or a foreign key to a table that stands.
-The table is rebuilt beside itself.
-Enforcement is off for the rebuild, because the carried rows are copied before their parents are checked.
-A row an older build left pointing at nothing therefore blocks nothing here.
-
-### `private static void LSchemaSpeechNormalize(SqliteConnection connection)`
-
-part_of_speech rebuilt to hold a custom part of speech beside a declared one.
-Nullability and a CHECK are table-shape facts.
-So neither ADD COLUMN nor anything short of SQLite's documented rebuild can deliver them.
-The table is one an earlier build created.
-
-### `using (SqliteCommand off = connection.CreateCommand())`
-
-Foreign-key enforcement has to be off across a table rebuild.
-It cannot be switched inside a transaction.
-Hence the explicit statements rather than a session.
-
-### `private static bool LSchemaVersionExist(SqliteConnection connection)`
-
-Whether the database has ever carried a version row.
-Absent means the file is new.
-LSchema has just created every table at the current shape, so there is nothing to migrate.
-
-### `private static void LSchemaVersionCreate(SqliteConnection connection)`
-
-Creates the version table in its current single-row shape and stamps this build's version.
-
-### `private static long LSchemaVersionRead(SqliteConnection connection)`
-
-The highest version recorded.
-An older database may hold several rows, which is one of the things version 12 removes.
-Until it does, the highest is the one that describes the file.
-
-### `private static void LSchemaVersionNormalize(SqliteConnection connection)`
-
-Rebuilds the version table so exactly one row can exist, and stamps this build's version.
-
-### `private static void LSchemaVersionSave(SqliteConnection connection)`
-
-Records this build's version on a table that already holds exactly one row.
-
-### `private static void LSchemaAudioNormalize(SqliteConnection connection)`
-
-Creates the pronunciation_audio table on a database that predates it.
-LSchema's own CREATE statement usually gets there first on startup.
-But the step is what makes the change explicit at the version that introduced it.
-It is also what carries the change when the table is created by any other path.
-
-### `private static void LSchemaTitleNormalize(SqliteConnection connection, string table)`
-
-Gives a card table the title column its template has always had a field for.
-Adding a column needs no table rebuild.
-So existing rows keep everything they have and read back a NULL title, which is what they had.
-Skipped when the column is already there.
-
-### `private static void LSchemaCollocationNormalize(SqliteConnection connection)`
-
-Gives the collocation table the meaning column its card has always had a field for.
-Adding a column needs no table rebuild.
-So the existing rows, and their expressions, are untouched.
-The meaning of a collocation written before this version reads back as NULL, which is what it was.
-
-### `private static void LSchemaExampleNormalize(SqliteConnection connection)`
-
-Gives example.source_id the foreign key it was declared with only once the source table existed.
-Skipped when the constraint is already there, so this costs one pragma read on every later start.
-
-### `using (SqliteCommand off = connection.CreateCommand())`
-
-Foreign-key enforcement has to be off across a table rebuild.
-It cannot be switched inside a transaction.
-Hence the explicit statements rather than a session.
-
-### `private static void LSchemaPositionNormalize(SqliteConnection connection, string table, string ownerColumn)`
-
-Renumbers an ordered set to 0…n-1 per owner so the unique position index can be created over it.
-The new positions are computed into a temporary table first.
-An UPDATE that read the very column it writes would depend on the order rows were visited.
-
-### `private static void LSchemaTranslationCreate(SqliteConnection connection)`
-
-Creates sense_translation and collocation_translation with their unique position indexes.
-The tables hold nothing yet, so there is no data to move and no rebuild to run.
-CREATE TABLE IF NOT EXISTS makes the step harmless on a workspace that already carries them.
-
-### `private static void LSchemaTranslationNormalize(SqliteConnection connection)`
-
-Retires the owned-text table an Example used to carry and puts one translation on the Example row.
-An example row still holding a local column is the mark of the old shape, because LSchema cannot add one.
-The rebuild is skipped when that column is gone, and the retired tables are dropped either way.
-
-### `private static void LSchemaCarriedRead(SqliteConnection connection)`
-
-The expression that decides what each Example's single translation becomes.
-The hand-written local text wins, because a person wrote it for that sentence.
-The first owned row stands in when no local text was written.
-An upgraded workspace keeps one translation instead of none.
-The table it reads is named example_rendition or example_translation depending on how old the file is.
 
 ### `if (stored < 31)`
 
 Retires the Reference program and channel columns and puts a kind and a note in their place.
 Program name and channel name were one medium's metadata standing as columns every other medium left empty.
-
-### `private static void LSchemaSourceNormalize(SqliteConnection connection)`
-
-Rebuilds the source table around title, year, kind, note and url.
-A source row already carrying a kind column is the new shape, so the step returns untouched.
-The retired program and channel names are joined into the note, because a memo is where such text now belongs.
-A row that stated neither keeps an unspecified note rather than an empty one.
-Every kind starts unspecified, because no stored column ever said what the material was.
 
 ### `if (stored < 32)`
 
@@ -267,18 +134,3 @@ Version 32.
 Drops entry_source and entry_example, the two tables that linked an Entry straight to a Source or an Example.
 Both skipped the levels between, so a workspace could state a citation the chain of cards did not carry.
 An Entry now reaches a Source only through the Examples its Meanings and Collocations cite.
-
-### `private static void LSchemaShortcutRemove(SqliteConnection connection)`
-
-Drops both shortcut tables and the indexes over them.
-The record runs first, because it has to read entry_source while the table still stands.
-entry_example is dropped unconditionally, because nothing ever wrote it and there is nothing to report.
-
-### `private static void LSchemaShortcutRecord(SqliteConnection connection)`
-
-Counts the entry_source rows naming a Source no Example under that same entry cites, and writes that count to the audit log.
-Such a row is the citation that cannot be carried into the chain, so it is the loss worth stating.
-The count is per entry, because a Source cited only under another entry still left this entry's bibliography.
-The number is a log line rather than data, so it is read once by a person and never by the program.
-A workspace that loses nothing writes nothing, because a log entry saying zero is noise.
-The log stands beside the database file, which is where the migration finds the workspace root.

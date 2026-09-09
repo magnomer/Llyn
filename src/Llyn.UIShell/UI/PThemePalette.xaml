@@ -1,0 +1,57 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="Theme.Ink" Color="{DynamicResource Theme.Ink.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Muted" Color="{DynamicResource Theme.Muted.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Canvas" Color="{DynamicResource Theme.Canvas.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Roof" Color="{DynamicResource Theme.Roof.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Navigation" Color="{DynamicResource Theme.Navigation.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Surface" Color="{DynamicResource Theme.Surface.Color}" />
+
+    <SolidColorBrush x:Key="Theme.SurfaceRaised" Color="{DynamicResource Theme.SurfaceRaised.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Line" Color="{DynamicResource Theme.Line.Color}" />
+
+    <SolidColorBrush x:Key="Theme.LineStrong" Color="{DynamicResource Theme.LineStrong.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Accent" Color="{DynamicResource Theme.Accent.Color}" />
+
+    <SolidColorBrush x:Key="Theme.AccentHover" Color="{DynamicResource Theme.AccentHover.Color}" />
+
+    <SolidColorBrush x:Key="Theme.AccentPress" Color="{DynamicResource Theme.AccentPress.Color}" />
+
+    <SolidColorBrush x:Key="Theme.AccentEdge" Color="{DynamicResource Theme.AccentEdge.Color}" />
+
+    <SolidColorBrush x:Key="Theme.AccentSoft" Color="{DynamicResource Theme.AccentSoft.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Helper" Color="{DynamicResource Theme.Helper.Color}" />
+
+    <SolidColorBrush x:Key="Theme.HelperSoft" Color="{DynamicResource Theme.HelperSoft.Color}" />
+
+    <SolidColorBrush x:Key="Theme.HelperEdge" Color="{DynamicResource Theme.HelperEdge.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Situation" Color="{DynamicResource Theme.Situation.Color}" />
+
+    <SolidColorBrush x:Key="Theme.SituationSoft" Color="{DynamicResource Theme.SituationSoft.Color}" />
+
+    <SolidColorBrush x:Key="Theme.SituationEdge" Color="{DynamicResource Theme.SituationEdge.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Warning" Color="{DynamicResource Theme.Warning.Color}" />
+
+    <SolidColorBrush x:Key="Theme.WarningSoft" Color="{DynamicResource Theme.WarningSoft.Color}" />
+
+    <SolidColorBrush x:Key="Theme.WarningStrong" Color="{DynamicResource Theme.WarningStrong.Color}" />
+
+    <SolidColorBrush x:Key="Theme.DisabledLine" Color="{DynamicResource Theme.DisabledLine.Color}" />
+
+    <SolidColorBrush x:Key="Theme.DisabledInk" Color="{DynamicResource Theme.DisabledInk.Color}" />
+
+    <FontFamily x:Key="Theme.Font">Segoe UI Variable, Segoe UI</FontFamily>
+
+</ResourceDictionary>

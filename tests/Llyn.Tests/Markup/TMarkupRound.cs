@@ -235,9 +235,9 @@ public sealed class TMarkupRound
     }
 
     [Fact]
-    public void MarkupExport_UncitedSourceAndUncreditedAuthor_ComeBack()
+    public void MarkupImport_UncitedSourceAndUncreditedAuthor_AreCreated()
     {
-        string written = TMarkupRoundExport(
+        const string written =
             """
             <llyn>
               <catalog>
@@ -246,8 +246,7 @@ public sealed class TMarkupRound
               </catalog>
               <entry><headword>kindle</headword><lang>English</lang></entry>
             </llyn>
-            """,
-            out _);
+            """;
 
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -258,6 +257,36 @@ public sealed class TMarkupRound
             Assert.Single(engine.TEngineReferenceRead()).LReferenceTitle.TStateValueShow());
         Assert.Equal("Gaskell, Ruth", Assert.Single(engine.TEngineAuthorRead()).LAuthorName);
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source_author;"));
+    }
+
+    [Fact]
+    public void MarkupExport_SourceNothingQuotes_StaysOut()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        IReadOnlyList<LEntry> imported = engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
+            """
+            <llyn>
+              <catalog>
+                <author id="gaskell">Gaskell, Ruth</author>
+                <source id="dormant">
+                  <title>A Work Nothing Cites</title>
+                  <author ref="gaskell"/>
+                </source>
+              </catalog>
+              <entry><headword>kindle</headword><lang>English</lang></entry>
+              <entry><headword>smoulder</headword><lang>English</lang></entry>
+            </llyn>
+            """));
+
+        string path = Path.Combine(workspace.TWorkspaceFolder, "one.llx");
+        engine.TEngineMarkupExport([imported[1].LEntryId], path);
+        string written = File.ReadAllText(path);
+
+        Assert.Contains("<headword>smoulder</headword>", written, StringComparison.Ordinal);
+        Assert.DoesNotContain("<source id=", written, StringComparison.Ordinal);
+        Assert.DoesNotContain("<author id=", written, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -274,8 +303,15 @@ public sealed class TMarkupRound
                   <author ref="one"/>
                   <author ref="two"/>
                 </source>
+                <example id="ex-brush" lang="English" src="oed">
+                  <text>he kindled the dry brush</text>
+                </example>
               </catalog>
-              <entry><headword>kindle</headword><lang>English</lang></entry>
+              <entry>
+                <headword>kindle</headword>
+                <lang>English</lang>
+                <sense><use ref="ex-brush"/></sense>
+              </entry>
             </llyn>
             """,
             out _);

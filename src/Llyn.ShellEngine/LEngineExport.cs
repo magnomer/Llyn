@@ -159,8 +159,41 @@ public sealed partial class LEngine
             LEngineCatalogRead(harvest, draft.LEntryDraftCollocations);
         }
 
+        Dictionary<string, LReference> cited = new(StringComparer.Ordinal);
+        foreach (LExample example in harvest.LEngineCatalogExample.Values)
+        {
+            if (example.LExampleSource.LStateValueState != LState.LStateSpecified)
+            {
+                continue;
+            }
+
+            string sourceId = example.LExampleSource.LStateValueShow();
+            if (sourceId.Length == 0 || cited.ContainsKey(sourceId))
+            {
+                continue;
+            }
+
+            if (LEngineReferenceRead(sourceId) is LReference source)
+            {
+                cited[sourceId] = source;
+            }
+        }
+
+        Dictionary<string, IReadOnlyList<LAuthor>> credits = new(StringComparer.Ordinal);
+        Dictionary<string, LAuthor> writers = new(StringComparer.Ordinal);
+        foreach (LReference reference in cited.Values)
+        {
+            IReadOnlyList<LAuthor> named =
+                LEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference);
+            credits[reference.LReferenceId] = named;
+            foreach (LAuthor author in named)
+            {
+                writers[author.LAuthorId] = author;
+            }
+        }
+
         Dictionary<string, LAuthor> authors = new(StringComparer.Ordinal);
-        foreach (LAuthor author in LEngineSort(LEngineAuthorRead(), row => row.LAuthorName, row => row.LAuthorId))
+        foreach (LAuthor author in LEngineSort(writers, row => row.LAuthorName, row => row.LAuthorId))
         {
             keys[author.LAuthorId] = LMarkup.LMarkupKeyCreate(
                 author.LAuthorName, LMarkup.LMarkupRowKind.LMarkupRowAuthor, taken);
@@ -169,7 +202,7 @@ public sealed partial class LEngine
 
         Dictionary<string, LMarkup.LMarkupReference> sources = new(StringComparer.Ordinal);
         IReadOnlyList<LReference> held = LEngineSort(
-            LEngineReferenceRead(), row => row.LReferenceNameRead(), row => row.LReferenceId);
+            cited, row => row.LReferenceNameRead(), row => row.LReferenceId);
         foreach (LReference reference in held)
         {
             keys[reference.LReferenceId] = LMarkup.LMarkupKeyCreate(
@@ -179,7 +212,7 @@ public sealed partial class LEngine
         foreach (LReference reference in held)
         {
             List<string> credited = [];
-            foreach (LAuthor author in LEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference))
+            foreach (LAuthor author in credits[reference.LReferenceId])
             {
                 if (keys.TryGetValue(author.LAuthorId, out string? named))
                 {
