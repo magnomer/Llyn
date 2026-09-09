@@ -30,7 +30,7 @@ The field is a plain box until something is written in it.
 
 An empty row nothing has been written in.
 
-## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, LExampleDraft draft)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, LSentenceDraft draft)`
 
 The row for a stored Example.
 It holds the sentence, the Source it cites, and the frame as the store knows them.
@@ -56,7 +56,7 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 Puts the marker and the role in the places the language pack states.
 The row states no order of its own, so it holds only what it was told.
 
-## `internal LExampleDraft PSentenceDraftRead()`
+## `internal LSentenceDraft PSentenceDraftRead()`
 
 What the row says its Example is, frame included.
 

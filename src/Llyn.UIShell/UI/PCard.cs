@@ -52,6 +52,8 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     public string PCardId { get; set; } = string.Empty;
 
+    internal LCardDraft? PCardDraft { get; set; }
+
     public int PCardPosition
     {
         get => _pCardPosition;

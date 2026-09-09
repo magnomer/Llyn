@@ -4,7 +4,7 @@
 
 One card of the input form, captured as an immutable value.
 A Meaning card and a Collocation card are the same card.
-Both carry Title, a meaning text, Example, Situation, Register, Translation, Synonym and Tags.
+Both carry Title, a meaning text, Sentence, Situation, Register, Translation, Synonym and Tags.
 So they are the same value here.
 The Collocation's own Expression field is the single member a Meaning card leaves empty.
 A field added to the form is therefore added once.
@@ -18,7 +18,7 @@ The card carries the number it is shown by, so no view has to count the list its
 The save still ignores it and rewrites every position from the order of the list.
 The load fills it from the stored position, which is the same order read back.
 
-Example, Situation, Register, Translation, Tag and Image are ordered sets, because the store models them as many-per-card.
+Sentence, Situation, Register, Translation, Tag and Image are ordered sets, because the store models them as many-per-card.
 A card may reference any number of each.
 The order of the list is the order they are stored in and read back.
 A field the form leaves empty is an empty list, never a list holding an empty string.
@@ -37,8 +37,10 @@ A comparison that means "the same card" walks the lists itself.
   It is always empty for a Meaning card, whose template has no Expression control.
 - `LCardDraftMeaning` — The card's meaning text: the Definition field of a Meaning card, the Meaning field of a Collocation card.
   One field, labelled differently on the two templates.
-- `LCardDraftExample` — The Examples the card references, in the order they are shown.
-  Each carries its id, its sentence and the Source it cites.
+- `LCardDraftSentence` — The card's holds on Examples, in the order they are shown.
+  A card holds these rows and never holds an Example directly.
+  Each names at most one Example and states the frame the card reads it under.
+  A row naming no Example carries a frame alone, which the store keeps.
 - `LCardDraftSituation` — The Situations the card references, in the order they are shown.
   Each carries its id, its wording and the Source it cites.
 - `LCardDraftRegister` — The Registers the card is marked with, in the order they are shown.
@@ -70,6 +72,17 @@ A comparison that means "the same card" walks the lists itself.
   The store counts from zero, so the load adds one on the way out.
   There is no default, so every caller states the number the card stands at.
   A card the engine saves has its number rewritten from the order of the list it sits in.
+- `LCardDraftChild` — The cards nested under this one, in the order they are shown.
+  Only a Meaning card nests, because only a sense names a parent in the store.
+  A Collocation carrying children is refused rather than saved with them dropped.
+  A child keeps its place among its siblings and never among the entry's top cards.
+- `LCardDraftGloss` — A Meaning's short gloss, `null` when none is written.
+  No card template offers a control for it, so the form carries it through untouched.
+- `LCardDraftLanguage` — The language a Meaning's definition is written in, `null` when none is stated.
+  It is the definition's language and never the entry's.
+  A Collocation records no such language, so it leaves this empty.
+- `LCardDraftLabels` — A Meaning's labels, stored as the JSON array text the store keeps.
+  These are not the card's Tags, which are their own list.
 - `LCardDraftId` — Id of the stored row this card was loaded from.
   It is empty for a card that has never been stored.
   It is the one member that is not typed text, and it exists only for the update.

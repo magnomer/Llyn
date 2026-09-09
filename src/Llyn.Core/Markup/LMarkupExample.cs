@@ -5,26 +5,33 @@ namespace Llyn.Core;
 
 public static class LMarkupExample
 {
-    public static void LMarkupExampleAppend(StringBuilder text, LExampleDraft example)
+    public static void LMarkupExampleAppend(StringBuilder text, LSentenceDraft sentence)
     {
         ArgumentNullException.ThrowIfNull(text);
-        ArgumentNullException.ThrowIfNull(example);
+        ArgumentNullException.ThrowIfNull(sentence);
 
-        if (example.LExampleDraftText.LStateValueState == LState.LStateUnspecified)
+        LStateValue written = sentence.LSentenceDraftExample is LExampleDraft example
+            ? example.LExampleDraftText
+            : LStateValue.LStateValueUnspecified;
+
+        if (written.LStateValueState == LState.LStateUnspecified)
         {
             return;
         }
 
         text.Append("    <example");
-        LMarkupMark.LMarkupMarkAppend(text, "src", example.LExampleDraftReference);
-        LMarkupMark.LMarkupMarkAppend(text, "par", example.LExampleDraftParticle);
-        LMarkupMark.LMarkupMarkAppend(text, "dep", example.LExampleDraftDependence);
+        LMarkupMark.LMarkupMarkAppend(
+            text,
+            "src",
+            sentence.LSentenceDraftExample?.LExampleDraftReference
+                ?? LStateValue.LStateValueUnspecified);
+        LMarkupMark.LMarkupMarkAppend(text, "par", sentence.LSentenceDraftParticle);
+        LMarkupMark.LMarkupMarkAppend(text, "dep", sentence.LSentenceDraftDependence);
         text.Append('>');
 
-        if (example.LExampleDraftText.LStateValueState == LState.LStateSpecified)
+        if (written.LStateValueState == LState.LStateSpecified)
         {
-            text.Append(LMarkupLeaf.LMarkupLeafNormalize(
-                example.LExampleDraftText.LStateValueShow(), "example"));
+            text.Append(LMarkupLeaf.LMarkupLeafNormalize(written.LStateValueShow(), "example"));
         }
 
         text.Append("</example>\n");

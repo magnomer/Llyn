@@ -195,19 +195,24 @@ public sealed partial class LEngine
 
         foreach (LCardDraft card in cards)
         {
-            List<LExampleDraft> examples = new List<LExampleDraft>();
-            foreach (LExampleDraft example in card.LCardDraftExample)
+            List<LSentenceDraft> sentences = new List<LSentenceDraft>();
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
             {
-                examples.Add(example with
-                {
-                    LExampleDraftReference =
-                        LEngineReferenceResolve(example.LExampleDraftReference, rows),
-                });
+                sentences.Add(sentence.LSentenceDraftExample is not LExampleDraft example
+                    ? sentence
+                    : sentence with
+                    {
+                        LSentenceDraftExample = example with
+                        {
+                            LExampleDraftReference =
+                                LEngineReferenceResolve(example.LExampleDraftReference, rows),
+                        },
+                    });
             }
 
             resolved.Add(card with
             {
-                LCardDraftExample = examples,
+                LCardDraftSentence = sentences,
             });
         }
 

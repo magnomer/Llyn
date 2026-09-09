@@ -35,14 +35,14 @@ public sealed record LPortraitCard(
             foreach (LSituationDraft situation in card.LCardDraftSituation)
             {
                 situations.Add(
-                    LPortraitText.LPortraitTextRead(situation.LSituationDraftText, mark));
+                    LPortraitText.LPortraitTextRead(situation.LSituationDraftTitle, mark));
             }
 
             List<string> registers = new List<string>();
             foreach (LRegisterDraft register in card.LCardDraftRegister)
             {
                 registers.Add(
-                    LPortraitText.LPortraitTextRead(register.LRegisterDraftText, mark));
+                    LPortraitText.LPortraitTextRead(register.LRegisterDraftName, mark));
             }
 
             List<LPortraitLink> links = new List<LPortraitLink>();
@@ -55,11 +55,14 @@ public sealed record LPortraitCard(
             }
 
             List<LPortraitExample> examples = new List<LPortraitExample>();
-            foreach (LExampleDraft example in card.LCardDraftExample)
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
             {
                 examples.Add(new LPortraitExample(
-                    LPortraitFrame.LPortraitFrameRead(example, order, mark),
-                    LPortraitText.LPortraitTextRead(example.LExampleDraftText, mark)));
+                    LPortraitFrame.LPortraitFrameRead(sentence, order, mark),
+                    LPortraitText.LPortraitTextRead(
+                        sentence.LSentenceDraftExample?.LExampleDraftText
+                            ?? LStateValue.LStateValueUnspecified,
+                        mark)));
             }
 
             List<LPortraitMedia> images = new List<LPortraitMedia>();

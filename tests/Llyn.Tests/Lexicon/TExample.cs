@@ -119,9 +119,9 @@ public sealed class TExample
                 string.Empty,
                 "a unit of language",
                 [
-                    TInterface.TExampleDraftCreate("he said a word"),
-                    TInterface.TExampleDraftCreate("not a word was spoken"),
-                    TInterface.TExampleDraftCreate("a word of advice"),
+                    TInterface.TSentenceDraftCreate("he said a word"),
+                    TInterface.TSentenceDraftCreate("not a word was spoken"),
+                    TInterface.TSentenceDraftCreate("a word of advice"),
                 ],
                 [],
                 [],
@@ -136,10 +136,10 @@ public sealed class TExample
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LCardDraft card = loaded.LEntryDraftMeanings[0];
-        Assert.Equal(3, card.LCardDraftExample.Count);
-        foreach (LExampleDraft draft in card.LCardDraftExample)
+        Assert.Equal(3, card.LCardDraftSentence.Count);
+        foreach (LSentenceDraft draft in card.LCardDraftSentence)
         {
-            Assert.NotEmpty(draft.LExampleDraftId);
+            Assert.NotEmpty(Assert.IsType<LExampleDraft>(draft.LSentenceDraftExample).LExampleDraftId);
         }
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
@@ -150,12 +150,16 @@ public sealed class TExample
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LState.LStateUnspecified));
-        string citedId = card.LCardDraftExample[1].LExampleDraftId;
+        string citedId = TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftId;
         engine.TEngineExampleUpdate(citedId, reference.LReferenceId);
 
         loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         card = loaded.LEntryDraftMeanings[0];
-        Assert.Equal(reference.LReferenceId, card.LCardDraftExample[1].LExampleDraftReference);
+        Assert.Equal(
+            reference.LReferenceId,
+            TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftReference);
+
+        LSentenceDraft cited = card.LCardDraftSentence[1];
 
         engine.TEngineEntryUpdate(entry.LEntryId, loaded with
         {
@@ -163,11 +167,17 @@ public sealed class TExample
             [
                 card with
                 {
-                    LCardDraftExample =
+                    LCardDraftSentence =
                     [
-                        card.LCardDraftExample[1] with { LExampleDraftText = "not one word was spoken" },
-                        card.LCardDraftExample[0],
-                        TInterface.TExampleDraftCreate("in a word"),
+                        cited with
+                        {
+                            LSentenceDraftExample = TExampleDraftRead(cited) with
+                            {
+                                LExampleDraftText = "not one word was spoken",
+                            },
+                        },
+                        card.LCardDraftSentence[0],
+                        TInterface.TSentenceDraftCreate("in a word"),
                     ],
                 },
             ],
@@ -179,9 +189,11 @@ public sealed class TExample
             attached.Select(example => example.LExampleText));
         Assert.Equal(citedId, attached[0].LExampleId);
         Assert.Equal(reference.LReferenceId, attached[0].LExampleSource.TStateValueShow());
-        Assert.Equal(card.LCardDraftExample[0].LExampleDraftId, attached[1].LExampleId);
+        Assert.Equal(
+            TExampleDraftRead(card.LCardDraftSentence[0]).LExampleDraftId, attached[1].LExampleId);
 
-        Assert.NotNull(engine.TEngineExampleRead(card.LCardDraftExample[2].LExampleDraftId));
+        Assert.NotNull(engine.TEngineExampleRead(
+            TExampleDraftRead(card.LCardDraftSentence[2]).LExampleDraftId));
         Assert.Equal(4, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
         Assert.Equal(3, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
     }
@@ -264,5 +276,10 @@ public sealed class TExample
             string.Empty,
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
             [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
+    }
+
+    private static LExampleDraft TExampleDraftRead(LSentenceDraft sentence)
+    {
+        return Assert.IsType<LExampleDraft>(sentence.LSentenceDraftExample);
     }
 }

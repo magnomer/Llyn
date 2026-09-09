@@ -15,15 +15,26 @@ internal sealed class PContext
     }
 
     internal PContext(LStateValue text, string id)
+        : this(text, id, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified)
+    {
+    }
+
+    internal PContext(LStateValue text, string id, LStateValue description, LStateValue kind)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         _pContextText = text.LStateValueShow();
         _pContextUnreadable = text.LStateValueState == LState.LStateUnknown;
         PContextId = id;
+        PContextDescription = description ?? LStateValue.LStateValueUnspecified;
+        PContextKind = kind ?? LStateValue.LStateValueUnspecified;
     }
 
     public string PContextId { get; }
+
+    internal LStateValue PContextDescription { get; }
+
+    internal LStateValue PContextKind { get; }
 
     public string PContextText => _pContextText;
 

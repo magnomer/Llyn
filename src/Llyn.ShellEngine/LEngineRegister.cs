@@ -202,7 +202,7 @@ public sealed partial class LEngine
 
         for (int index = 0; index < one.Count; index++)
         {
-            if (one[index].LRegisterDraftText != other[index].LRegisterDraftText
+            if (one[index].LRegisterDraftName != other[index].LRegisterDraftName
                 || !string.Equals(
                     one[index].LRegisterDraftId, other[index].LRegisterDraftId, StringComparison.Ordinal))
             {
@@ -217,7 +217,7 @@ public sealed partial class LEngine
     {
         foreach (LRegisterDraft draft in drafts)
         {
-            if (!draft.LRegisterDraftText.LStateValueEmpty)
+            if (!draft.LRegisterDraftName.LStateValueEmpty)
             {
                 return true;
             }
@@ -230,7 +230,7 @@ public sealed partial class LEngine
     {
         foreach (LRegisterDraft draft in drafts)
         {
-            if (!draft.LRegisterDraftText.LStateValueEmpty)
+            if (!draft.LRegisterDraftName.LStateValueEmpty)
             {
                 yield return draft;
             }
@@ -244,16 +244,16 @@ public sealed partial class LEngine
             LRegister? stored = registers.LRegisterRead(draft.LRegisterDraftId);
             if (stored is not null)
             {
-                if (!stored.LRegisterBuiltin && stored.LRegisterName != draft.LRegisterDraftText)
+                if (!stored.LRegisterBuiltin && stored.LRegisterName != draft.LRegisterDraftName)
                 {
-                    registers.LRegisterNameUpdate(stored.LRegisterId, draft.LRegisterDraftText);
+                    registers.LRegisterNameUpdate(stored.LRegisterId, draft.LRegisterDraftName);
                 }
 
                 return stored.LRegisterId;
             }
         }
 
-        string written = draft.LRegisterDraftText.LStateValueShow().Trim();
+        string written = draft.LRegisterDraftName.LStateValueShow().Trim();
         foreach (LRegister row in registers.LRegisterRead())
         {
             if (string.Equals(
@@ -267,8 +267,8 @@ public sealed partial class LEngine
 
         return registers.LRegisterCreate(new LRegister(
             string.Empty,
-            draft.LRegisterDraftText,
-            string.Empty,
-            false)).LRegisterId;
+            draft.LRegisterDraftName,
+            draft.LRegisterDraftLanguage,
+            draft.LRegisterDraftBuiltin)).LRegisterId;
     }
 }

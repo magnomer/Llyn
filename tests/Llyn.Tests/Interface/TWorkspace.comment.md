@@ -51,6 +51,13 @@ Runs one statement and returns its first column for every row.
 It is for a test that has to see a column the store layer does not hand out.
 An association's position is one such column.
 
+## `public IReadOnlyList<string> TWorkspaceRowRead(string sql)`
+
+Runs one statement and returns every row as one comparable string.
+It is for a test that must see whole rows rather than one column or a count.
+A null is written as a value of its own, so an empty field never reads as an empty string.
+The fields are joined by a separator no stored text carries.
+
 ## `public void TWorkspaceScriptRun(string sql)`
 
 Runs statements that set the database up in a shape the store layer would not produce.

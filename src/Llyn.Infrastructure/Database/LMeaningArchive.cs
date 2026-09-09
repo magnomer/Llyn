@@ -160,6 +160,44 @@ public sealed class LMeaningArchive
         session.LDatabaseSessionCommit();
     }
 
+    public void LMeaningParentUpdate(string id, string? parentId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        (string? entryId, string? held) = LMeaningHolderRead(connection, id);
+        if (entryId is null)
+        {
+            throw new InvalidOperationException($"No Meaning carries the id '{id}'.");
+        }
+
+        if (string.Equals(held, parentId, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        LMeaningParentValidate(connection, entryId, parentId);
+        LMeaningCycleValidate(connection, id, parentId);
+
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText =
+                "UPDATE sense SET parent_id = $parent, position = $position WHERE id = $id;";
+            command.Parameters.AddWithValue("$parent", (object?)parentId ?? DBNull.Value);
+            command.Parameters.AddWithValue(
+                "$position", LMeaningSiblingRead(connection, entryId, parentId).Count);
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        LMeaningSiblingNormalize(
+            connection, entryId, held, LMeaningSiblingRead(connection, entryId, held));
+
+        session.LDatabaseSessionCommit();
+    }
+
     public void LMeaningMove(string id, int position)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
@@ -294,6 +332,30 @@ public sealed class LMeaningArchive
                 """;
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
+        }
+    }
+
+    private static void LMeaningCycleValidate(
+        SqliteConnection connection, string id, string? parentId)
+    {
+        if (parentId is null)
+        {
+            return;
+        }
+
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            LMeaningSubtreeQuery +
+            """
+
+            SELECT COUNT(*) FROM subtree WHERE id = $parent;
+            """;
+        command.Parameters.AddWithValue("$id", id);
+        command.Parameters.AddWithValue("$parent", parentId);
+        if (Convert.ToInt64(command.ExecuteScalar()) > 0)
+        {
+            throw new InvalidOperationException(
+                $"Meaning '{parentId}' sits inside meaning '{id}' and cannot become its parent.");
         }
     }
 

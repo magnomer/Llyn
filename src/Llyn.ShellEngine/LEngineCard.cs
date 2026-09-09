@@ -16,32 +16,22 @@ public sealed partial class LEngine
         bool collocation,
         List<LRevisionChange> changes)
     {
-        LMeaningArchive meanings = new(_lEngineDatabase);
+        LEngineCardValidate(cards, collocation);
+
+        if (!collocation)
+        {
+            LEngineMeaningUpdate(connection, entryId, cards, language, changes);
+            return;
+        }
+
         LCollocationArchive collocations = new(_lEngineDatabase);
 
-        Dictionary<string, LMeaning> storedMeanings = new(StringComparer.Ordinal);
-        Dictionary<string, LCollocation> storedCollocations = new(StringComparer.Ordinal);
+        Dictionary<string, LCollocation> stored = new(StringComparer.Ordinal);
         List<string> storedOrder = [];
-        if (collocation)
+        foreach (LCollocation row in collocations.LCollocationRead(entryId))
         {
-            foreach (LCollocation row in collocations.LCollocationRead(entryId))
-            {
-                storedCollocations[row.LCollocationId] = row;
-                storedOrder.Add(row.LCollocationId);
-            }
-        }
-        else
-        {
-            foreach (LMeaning row in meanings.LMeaningRead(entryId))
-            {
-                if (row.LMeaningParentId is not null)
-                {
-                    continue;
-                }
-
-                storedMeanings[row.LMeaningId] = row;
-                storedOrder.Add(row.LMeaningId);
-            }
+            stored[row.LCollocationId] = row;
+            storedOrder.Add(row.LCollocationId);
         }
 
         List<LCardDraft> kept = [];
@@ -49,10 +39,7 @@ public sealed partial class LEngine
         foreach (LCardDraft card in LEngineCardRead(cards))
         {
             kept.Add(card);
-            bool known = collocation
-                ? storedCollocations.ContainsKey(card.LCardDraftId)
-                : storedMeanings.ContainsKey(card.LCardDraftId);
-            if (known)
+            if (stored.ContainsKey(card.LCardDraftId))
             {
                 named.Add(card.LCardDraftId);
             }
@@ -68,20 +55,11 @@ public sealed partial class LEngine
             changes.Add(new LRevisionChange(
                 0,
                 dropped,
-                collocation ? "collocation" : "sense",
+                "collocation",
                 "delete",
-                collocation
-                    ? storedCollocations[dropped].LCollocationExpression.LStateValueShow()
-                    : storedMeanings[dropped].LMeaningDefinition.LStateValueShow()));
+                stored[dropped].LCollocationExpression.LStateValueShow()));
 
-            if (collocation)
-            {
-                collocations.LCollocationDelete(dropped);
-            }
-            else
-            {
-                meanings.LMeaningDelete(dropped);
-            }
+            collocations.LCollocationDelete(dropped);
         }
 
         HashSet<string> applied = new(StringComparer.Ordinal);
@@ -89,99 +67,53 @@ public sealed partial class LEngine
         foreach (LCardDraft card in kept)
         {
             bool reuse = named.Contains(card.LCardDraftId) && applied.Add(card.LCardDraftId);
-            string rowId = reuse
-                ? LEngineCardApply(meanings, collocations, card, collocation, storedMeanings, storedCollocations, changes)
-                : LEngineCardCreate(meanings, collocations, entryId, card, collocation, changes);
+            string rowId;
+            if (reuse)
+            {
+                LCollocation row = stored[card.LCardDraftId];
+                collocations.LCollocationUpdate(row with
+                {
+                    LCollocationTitle = card.LCardDraftTitle,
+                    LCollocationExpression = card.LCardDraftExpression,
+                    LCollocationMeaning = card.LCardDraftMeaning,
+                });
+                changes.Add(new LRevisionChange(
+                    0,
+                    row.LCollocationId,
+                    "collocation",
+                    "update",
+                    card.LCardDraftExpression.LStateValueShow()));
+                rowId = row.LCollocationId;
+            }
+            else
+            {
+                LCollocation row = collocations.LCollocationCreate(new LCollocation(
+                    string.Empty,
+                    entryId,
+                    0,
+                    card.LCardDraftTitle,
+                    card.LCardDraftExpression,
+                    card.LCardDraftMeaning));
+                changes.Add(new LRevisionChange(
+                    0,
+                    row.LCollocationId,
+                    "collocation",
+                    "create",
+                    card.LCardDraftExpression.LStateValueShow()));
+                rowId = row.LCollocationId;
+            }
 
             order.Add(rowId);
-            LEngineCardSync(rowId, card, language, collocation);
-        }
-
-        if (collocation)
-        {
-            LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, "collocation", "entry_id = $owner", entryId, "id", order);
-            return;
+            LEngineCardSync(rowId, card, language, collocation: true);
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "sense", "entry_id = $owner AND parent_id IS NULL", entryId, "id", order);
-    }
-
-    private static string LEngineCardApply(
-        LMeaningArchive meanings,
-        LCollocationArchive collocations,
-        LCardDraft card,
-        bool collocation,
-        IReadOnlyDictionary<string, LMeaning> storedMeanings,
-        IReadOnlyDictionary<string, LCollocation> storedCollocations,
-        List<LRevisionChange> changes)
-    {
-        if (collocation)
-        {
-            LCollocation row = storedCollocations[card.LCardDraftId];
-            collocations.LCollocationUpdate(row with
-            {
-                LCollocationTitle = card.LCardDraftTitle,
-                LCollocationExpression = card.LCardDraftExpression,
-                LCollocationMeaning = card.LCardDraftMeaning,
-            });
-            changes.Add(new LRevisionChange(
-                0, row.LCollocationId, "collocation", "update", card.LCardDraftExpression.LStateValueShow()));
-            return row.LCollocationId;
-        }
-
-        LMeaning meaning = storedMeanings[card.LCardDraftId];
-        meanings.LMeaningUpdate(meaning with
-        {
-            LMeaningTitle = card.LCardDraftTitle,
-            LMeaningDefinition = card.LCardDraftMeaning,
-        });
-        changes.Add(new LRevisionChange(
-            0, meaning.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
-        return meaning.LMeaningId;
-    }
-
-    private static string LEngineCardCreate(
-        LMeaningArchive meanings,
-        LCollocationArchive collocations,
-        string entryId,
-        LCardDraft card,
-        bool collocation,
-        List<LRevisionChange> changes)
-    {
-        if (collocation)
-        {
-            LCollocation row = collocations.LCollocationCreate(new LCollocation(
-                string.Empty,
-                entryId,
-                0,
-                card.LCardDraftTitle,
-                card.LCardDraftExpression,
-                card.LCardDraftMeaning));
-            changes.Add(new LRevisionChange(
-                0, row.LCollocationId, "collocation", "create", card.LCardDraftExpression.LStateValueShow()));
-            return row.LCollocationId;
-        }
-
-        LMeaning meaning = meanings.LMeaningCreate(new LMeaning(
-            string.Empty,
-            entryId,
-            null,
-            0,
-            card.LCardDraftTitle,
-            null,
-            null,
-            card.LCardDraftMeaning,
-            string.Empty));
-        changes.Add(new LRevisionChange(
-            0, meaning.LMeaningId, "sense", "create", card.LCardDraftMeaning.LStateValueShow()));
-        return meaning.LMeaningId;
+            connection, "collocation", "entry_id = $owner", entryId, "id", order);
     }
 
     private void LEngineCardSync(string ownerId, LCardDraft card, string language, bool collocation)
     {
-        LEngineSentenceSync(ownerId, card.LCardDraftExample, language, collocation);
+        LEngineSentenceSync(ownerId, card.LCardDraftSentence, language, collocation);
         LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation);
         LEngineRegisterSync(ownerId, card.LCardDraftRegister, language, collocation);
 
@@ -247,20 +179,20 @@ public sealed partial class LEngine
     }
 
     private void LEngineSentenceSync(
-        string ownerId, IReadOnlyList<LExampleDraft> drafts, string language, bool collocation)
+        string ownerId, IReadOnlyList<LSentenceDraft> drafts, string language, bool collocation)
     {
         LExampleArchive exampleRows = new(_lEngineDatabase);
 
         List<LSentence> rows = [];
-        foreach (LExampleDraft draft in LEngineExampleRead(drafts))
+        foreach (LSentenceDraft draft in LEngineSentenceRead(drafts))
         {
             rows.Add(new LSentence(
-                string.Empty,
+                draft.LSentenceDraftId,
                 ownerId,
                 rows.Count,
                 LEngineExampleResolve(exampleRows, draft, language),
-                draft.LExampleDraftParticle,
-                draft.LExampleDraftDependence));
+                draft.LSentenceDraftParticle,
+                draft.LSentenceDraftDependence));
         }
 
         LSentenceArchive sentences = new(_lEngineDatabase);

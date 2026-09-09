@@ -9,6 +9,14 @@ No control shows it and nothing on screen changes with it.
 It travels with the card so a saved form can say which stored row each card is.
 That is what lets an update change the row a card came from instead of writing it again.
 
+### `internal LCardDraft? PCardDraft { get; set; }`
+
+The draft this card was built from, held so the read can hand back what no control shows.
+Those are a Meaning's gloss, its definition language, its labels, and the cards nested under it.
+It is `null` for a card typed into an empty form, which carries none of them yet.
+Reading a card writes the form's fields over this value rather than building one from nothing.
+So a field the editor never drew is never blanked by an edit that never saw it.
+
 ### `public int PCardPosition`
 
 The number this card is shown by, counted from one.

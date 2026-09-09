@@ -113,9 +113,9 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a meaning",
                     [
-                        TInterface.TExampleDraftCreate(
+                        TInterface.TSentenceDraftCreate(
                             "he said the word", string.Empty, dictionary.LReferenceId),
-                        TInterface.TExampleDraftCreate(
+                        TInterface.TSentenceDraftCreate(
                             "not a word was spoken", string.Empty, dictionary.LReferenceId),
                     ],
                     [], [], string.Empty, [], [], 1),
@@ -124,7 +124,7 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, "in a word", "briefly",
                     [
-                        TInterface.TExampleDraftCreate(
+                        TInterface.TSentenceDraftCreate(
                             "in a word, no", string.Empty, dictionary.LReferenceId),
                     ],
                     [], [], string.Empty, [], [], 1),
@@ -192,9 +192,9 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a meaning",
                     [
-                        TInterface.TExampleDraftCreate(
+                        TInterface.TSentenceDraftCreate(
                             "he said the word", string.Empty, dictionary.LReferenceId),
-                        TInterface.TExampleDraftCreate(
+                        TInterface.TSentenceDraftCreate(
                             "not a word was spoken", string.Empty, dictionary.LReferenceId),
                     ],
                     [], [], string.Empty, [], [], 1),
@@ -203,7 +203,7 @@ public sealed class TReference
                 TInterface.TCardDraftCreate(
                     string.Empty, "in a word", "briefly",
                     [
-                        TInterface.TExampleDraftCreate(
+                        TInterface.TSentenceDraftCreate(
                             "in a word, no", string.Empty, grammar.LReferenceId),
                     ],
                     [], [], string.Empty, [], [], 1),

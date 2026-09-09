@@ -118,14 +118,15 @@ public partial class PEditor
         {
             PCard card = new(prefix, draft.LCardDraftPosition, _pEditorCitation, _pEditorParticle, _pEditorDependence)
             {
-                PCardId = draft.LCardDraftId
+                PCardId = draft.LCardDraftId,
+                PCardDraft = draft,
             };
 
             card.PCardSentenceApply(_pEditorSentenceOrder);
             card.PCardTitleShow(draft.LCardDraftTitle);
             card.PCardExpressionShow(draft.LCardDraftExpression);
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
-            card.PCardSentenceShow(draft.LCardDraftExample);
+            card.PCardSentenceShow(draft.LCardDraftSentence);
             card.PCardContextShow(draft.LCardDraftSituation);
             card.PCardRegisterShow(draft.LCardDraftRegister);
             card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
@@ -406,23 +407,41 @@ public partial class PEditor
         List<LCardDraft> drafts = new(cards.Count);
         foreach (PCard card in cards)
         {
-            drafts.Add(new LCardDraft(
-                card.PCardTitleRead(),
-                card.PCardExpressionRead(),
-                card.PCardDefinitionRead(),
-                card.PCardSentenceRead(),
-                card.PCardContextRead(),
-                card.PCardRegisterRead(),
-                card.PCardLinkRead(),
-                string.Empty,
-                card.PCardLabelRead(),
-                card.PCardImageRead(),
-                card.PCardVideoRead(),
-                card.PCardPosition,
-                card.PCardId));
+            drafts.Add((card.PCardDraft ?? PCardDraftCreate()) with
+            {
+                LCardDraftTitle = card.PCardTitleRead(),
+                LCardDraftExpression = card.PCardExpressionRead(),
+                LCardDraftMeaning = card.PCardDefinitionRead(),
+                LCardDraftSentence = card.PCardSentenceRead(),
+                LCardDraftSituation = card.PCardContextRead(),
+                LCardDraftRegister = card.PCardRegisterRead(),
+                LCardDraftTranslation = card.PCardLinkRead(),
+                LCardDraftTag = card.PCardLabelRead(),
+                LCardDraftImage = card.PCardImageRead(),
+                LCardDraftVideo = card.PCardVideoRead(),
+                LCardDraftPosition = card.PCardPosition,
+                LCardDraftId = card.PCardId,
+            });
         }
 
         return drafts;
+    }
+
+    private static LCardDraft PCardDraftCreate()
+    {
+        return new LCardDraft(
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified,
+            [],
+            [],
+            [],
+            [],
+            string.Empty,
+            [],
+            [],
+            [],
+            0);
     }
 
     private string PEditorNoteRead()

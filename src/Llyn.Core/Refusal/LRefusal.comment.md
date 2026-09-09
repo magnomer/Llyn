@@ -44,6 +44,12 @@ Reason key for a source draft opened on a Reference that is not in the workspace
 Reason key for tentative work whose held file is no longer in the drafts folder.
 Another window may have stored or discarded it already.
 
+## `public const string LRefusalCollocation = "Refusal.CollocationNested";`
+
+A Collocation was handed a card to hold inside it.
+Only a Meaning nests, because only a sense names a parent in the store.
+The format cannot write such a document either, so the save refuses rather than dropping the card.
+
 ## `public const string LRefusalStale = "Refusal.DraftStale";`
 
 Reason key for tentative work whose id was raised in a workspace no longer open.

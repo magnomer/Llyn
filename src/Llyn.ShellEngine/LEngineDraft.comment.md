@@ -104,9 +104,18 @@ The part of speech is written with the entry rather than after it.
 It is an owned child row of the entry.
 The id it needs is the one LEntryCreate is about to assign.
 
-### `LMeaning meaning = meanings.LMeaningCreate(new LMeaning(`
+### `LEngineCardValidate(draft.LEntryDraftMeanings, collocation: false);`
 
-Each meaning is appended, so card order becomes stored position.
+A Collocation carrying a card inside it is refused before anything is written.
+Only a Meaning nests, and the format cannot write a nested Collocation either.
+Saving it with the children dropped would lose data the caller believes it handed over.
+
+### `private void LEngineMeaningCreate(`
+
+Writes one Meaning and then the Meanings nested under it, parent before child.
+A child needs its parent's id, which only exists once the parent row is written.
+Each is appended within its own sibling group, so card order becomes stored position.
+An empty child is skipped on the same terms an empty card is.
 
 ### `if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) ||`
 
@@ -128,6 +137,30 @@ So this is where an entry with nothing typed stops becoming rows.
 Those would be a meaning row with no definition and a collocation row with no expression.
 Positions come from the stored sibling count.
 So skipping a card in the middle still leaves 0, 1, 2 over the cards that remain.
+
+### `private static bool LEngineSentenceCheck(IReadOnlyList<LSentenceDraft> drafts)`
+
+Whether a card holds any row worth writing.
+A row naming no Example and stating no frame records nothing, and the store would refuse it.
+
+### `private static IEnumerable<LSentenceDraft> LEngineSentenceRead(IReadOnlyList<LSentenceDraft> drafts)`
+
+The rows worth writing, in the order the card holds them.
+A row stating a frame and no sentence is kept, because the frame is the card's own.
+The positions stay a gapless 0, 1, 2 over what is actually stored.
+
+### `private static LExample? LEngineExampleResolve(`
+
+The Example a row names, or `null` when the row names none.
+A row whose Example carries neither an id nor a sentence names none.
+An Example carrying an id names a stored row, however little its sentence says.
+
+### `private static LExample LEngineExampleResolve(`
+
+The stored Example a row's id names, updated to what the row now says.
+A row carrying no id, or one nothing is stored under, gets a fresh Example instead.
+Two rows naming one id therefore write one row, which is what sharing a sentence means.
+The language falls back to the entry's when the Example states none of its own.
 
 ### `private static bool LEngineFieldCheck(IReadOnlyList<string> texts)`
 

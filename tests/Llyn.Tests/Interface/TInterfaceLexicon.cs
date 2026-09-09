@@ -15,7 +15,7 @@ internal static partial class TInterface
         LStateValue title,
         LStateValue expression,
         LStateValue meaning,
-        IReadOnlyList<LExampleDraft> example,
+        IReadOnlyList<LSentenceDraft> sentence,
         IReadOnlyList<LSituationDraft> situation,
         IReadOnlyList<string> translation,
         string synonym,
@@ -26,7 +26,7 @@ internal static partial class TInterface
         IReadOnlyList<LVideoDraft>? video = null,
         IReadOnlyList<LRegisterDraft>? register = null) =>
         new(
-            title, expression, meaning, example, situation, register ?? [], translation, synonym, tag,
+            title, expression, meaning, sentence, situation, register ?? [], translation, synonym, tag,
             image, video ?? [], position, id);
 
     internal static LVideoDraft TVideoDraftCreate(string location, string span = "") =>
@@ -91,12 +91,30 @@ internal static partial class TInterface
         LStateValue text,
         string id,
         LStateValue reference,
+        LStateValue? translation = null,
+        string language = "") =>
+        new(text, id, reference, translation ?? LStateValue.LStateValueUnspecified, language);
+
+    internal static LSentenceDraft TSentenceDraftCreate(
+        LStateValue text,
+        string id,
+        LStateValue reference,
         LStateValue? particle = null,
-        LStateValue? dependence = null) =>
+        LStateValue? dependence = null,
+        string row = "") =>
         new(
-            text,
-            id,
-            reference,
+            TExampleDraftCreate(text, id, reference),
+            particle ?? LStateValue.LStateValueUnspecified,
+            dependence ?? LStateValue.LStateValueUnspecified,
+            row);
+
+    internal static LSentenceDraft TSentenceDraftCreate(string text) =>
+        LSentenceDraft.LSentenceDraftCreate(text);
+
+    internal static LSentenceDraft TSentenceDraftCreate(
+        LStateValue? particle, LStateValue? dependence) =>
+        new(
+            null,
             particle ?? LStateValue.LStateValueUnspecified,
             dependence ?? LStateValue.LStateValueUnspecified);
 
@@ -217,6 +235,10 @@ internal static partial class TInterface
     internal static LRegisterDraft TRegisterDraftCreate(string text) =>
         LRegisterDraft.LRegisterDraftCreate(text);
 
+    internal static LRegisterDraft TRegisterDraftCreate(
+        LStateValue name, string id, string language = "", bool builtin = false) =>
+        new(name, id, language, builtin);
+
     internal static LSituation TSituationCreate(
         string id,
         LStateValue title,
@@ -224,8 +246,16 @@ internal static partial class TInterface
         LStateValue kind) =>
         new(id, title, description, kind);
 
-    internal static LSituationDraft TSituationDraftCreate(LStateValue text, string id) =>
-        new(text, id);
+    internal static LSituationDraft TSituationDraftCreate(
+        LStateValue text,
+        string id,
+        LStateValue? description = null,
+        LStateValue? kind = null) =>
+        new(
+            text,
+            id,
+            description ?? LStateValue.LStateValueUnspecified,
+            kind ?? LStateValue.LStateValueUnspecified);
 
     internal static LSituationDraft TSituationDraftCreate(string text) =>
         LSituationDraft.LSituationDraftCreate(text);

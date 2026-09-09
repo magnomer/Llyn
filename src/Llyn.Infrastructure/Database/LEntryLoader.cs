@@ -37,17 +37,20 @@ public sealed class LEntryLoader
             ? null
             : pronunciations.LPronunciationAudioRead(pronunciation.LPronunciationId);
 
-        List<LCardDraft> meaningCards = [];
+        Dictionary<string, List<LMeaning>> senses = new(StringComparer.Ordinal);
         foreach (LMeaning meaning in new LMeaningArchive(_lEntryLoaderDatabase).LMeaningRead(id))
         {
-            meaningCards.Add(LEntryCardRead(
-                meaning.LMeaningId,
-                collocation: false,
-                meaning.LMeaningPosition + 1,
-                meaning.LMeaningTitle,
-                LStateValue.LStateValueUnspecified,
-                meaning.LMeaningDefinition));
+            string parent = meaning.LMeaningParentId ?? string.Empty;
+            if (!senses.TryGetValue(parent, out List<LMeaning>? group))
+            {
+                group = [];
+                senses[parent] = group;
+            }
+
+            group.Add(meaning);
         }
+
+        IReadOnlyList<LCardDraft> meaningCards = LEntryChildRead(senses, string.Empty);
 
         List<LCardDraft> collocationCards = [];
         foreach (LCollocation collocation in new LCollocationArchive(_lEntryLoaderDatabase).LCollocationRead(id))
@@ -71,6 +74,35 @@ public sealed class LEntryLoader
             audio?.LPronunciationAudioFile ?? string.Empty,
             audio?.LPronunciationAudioSource,
             speeches);
+    }
+
+    private IReadOnlyList<LCardDraft> LEntryChildRead(
+        IReadOnlyDictionary<string, List<LMeaning>> senses, string parentId)
+    {
+        if (!senses.TryGetValue(parentId, out List<LMeaning>? group))
+        {
+            return [];
+        }
+
+        List<LCardDraft> cards = new(group.Count);
+        foreach (LMeaning meaning in group)
+        {
+            cards.Add(LEntryCardRead(
+                meaning.LMeaningId,
+                collocation: false,
+                meaning.LMeaningPosition + 1,
+                meaning.LMeaningTitle,
+                LStateValue.LStateValueUnspecified,
+                meaning.LMeaningDefinition) with
+            {
+                LCardDraftChild = LEntryChildRead(senses, meaning.LMeaningId),
+                LCardDraftGloss = meaning.LMeaningGloss,
+                LCardDraftLanguage = meaning.LMeaningDefinitionLanguage,
+                LCardDraftLabels = meaning.LMeaningLabels,
+            });
+        }
+
+        return cards;
     }
 
     private IReadOnlyList<string> LEntrySpeechFormat(string language, IReadOnlyList<LSpeech> speeches)
@@ -135,20 +167,31 @@ public sealed class LEntryLoader
             ownerId);
     }
 
-    private static IReadOnlyList<LExampleDraft> LEntrySentenceRead(IReadOnlyList<LSentence> sentences)
+    private static IReadOnlyList<LSentenceDraft> LEntrySentenceRead(IReadOnlyList<LSentence> sentences)
     {
-        List<LExampleDraft> drafts = new(sentences.Count);
+        List<LSentenceDraft> drafts = new(sentences.Count);
         foreach (LSentence sentence in sentences)
         {
-            drafts.Add(new LExampleDraft(
-                sentence.LSentenceExample?.LExampleText ?? LStateValue.LStateValueUnspecified,
-                sentence.LSentenceExample?.LExampleId ?? string.Empty,
-                sentence.LSentenceExample?.LExampleSource ?? LStateValue.LStateValueUnspecified,
+            drafts.Add(new LSentenceDraft(
+                LEntryExampleRead(sentence.LSentenceExample),
                 sentence.LSentenceParticle,
-                sentence.LSentenceDependence));
+                sentence.LSentenceDependence,
+                sentence.LSentenceId));
         }
 
         return drafts;
+    }
+
+    private static LExampleDraft? LEntryExampleRead(LExample? example)
+    {
+        return example is null
+            ? null
+            : new LExampleDraft(
+                example.LExampleText,
+                example.LExampleId,
+                example.LExampleSource,
+                example.LExampleTranslation,
+                example.LExampleLanguage);
     }
 
     private static IReadOnlyList<LSituationDraft> LEntrySituationRead(IReadOnlyList<LSituation> situations)
@@ -157,7 +200,10 @@ public sealed class LEntryLoader
         foreach (LSituation situation in situations)
         {
             drafts.Add(new LSituationDraft(
-                situation.LSituationTitle, situation.LSituationId));
+                situation.LSituationTitle,
+                situation.LSituationId,
+                situation.LSituationDescription,
+                situation.LSituationKind));
         }
 
         return drafts;
@@ -168,7 +214,11 @@ public sealed class LEntryLoader
         List<LRegisterDraft> drafts = new(registers.Count);
         foreach (LRegister register in registers)
         {
-            drafts.Add(new LRegisterDraft(register.LRegisterName, register.LRegisterId));
+            drafts.Add(new LRegisterDraft(
+                register.LRegisterName,
+                register.LRegisterId,
+                register.LRegisterLanguage,
+                register.LRegisterBuiltin));
         }
 
         return drafts;

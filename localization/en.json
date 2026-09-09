@@ -64,6 +64,7 @@
     "Refusal.ReferenceMissing": "That source is no longer in this workspace.",
     "Refusal.DraftMissing": "That draft is no longer in this workspace.",
     "Refusal.DraftStale": "That draft belongs to a {terms.workspace} that is no longer open.",
+    "Refusal.CollocationNested": "A collocation cannot hold a card inside it.",
     "Notice.Unexpected": "Something went wrong that {terms.product} did not expect.",
     "Notice.Recorded": "The technical details were written here, in case they help:",
     "List.Search": "Search entries",

@@ -57,6 +57,14 @@ Where a Meaning sits among its siblings is changed by `LMeaningMove`.
 That method has to renumber the whole group.
 Throws when no meaning carries that id.
 
+## `public void LMeaningParentUpdate(string id, string? parentId)`
+
+Moves a Meaning under another Meaning of the same entry, or out to the entry's roots.
+The row goes to the end of the group it joins, and the group it left is renumbered behind it.
+The unique sibling index rejects two rows sharing a place, so neither group is left with a gap.
+A Meaning cannot be moved inside its own subtree, because a Meaning is not its own ancestor.
+Nothing happens when the row already sits under that parent.
+
 ## `public void LMeaningMove(string id, int position)`
 
 Moves the meaning identified by `id` to `position` among its siblings.
@@ -94,6 +102,12 @@ Both link statements below start from this set.
 The entry a meaning belongs to and the parent it hangs from.
 Those are the two values that name its sibling group.
 Both are null when no meaning carries the id.
+
+### `private static void LMeaningCycleValidate(`
+
+A Meaning may not be moved under a Meaning that already sits inside it.
+The subtree query answers whether the proposed parent is one of the row's own descendants.
+Such a move would cut the branch off the entry and leave a ring the tree walk never ends on.
 
 ### `private static IReadOnlyList<string> LMeaningSiblingRead(`
 

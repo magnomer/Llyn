@@ -24,7 +24,11 @@ internal sealed partial class PCard
         PCardRegister.Clear();
         foreach (LRegisterDraft draft in drafts)
         {
-            PRegister chip = new(draft.LRegisterDraftText, draft.LRegisterDraftId);
+            PRegister chip = new(
+                draft.LRegisterDraftName,
+                draft.LRegisterDraftId,
+                draft.LRegisterDraftLanguage,
+                draft.LRegisterDraftBuiltin);
             if (chip.PRegisterTextRead().LStateValueEmpty || PCardRegisterCheck(chip.PRegisterText))
             {
                 continue;
@@ -45,7 +49,11 @@ internal sealed partial class PCard
         {
             if (row is PRegister chip)
             {
-                drafts.Add(new LRegisterDraft(chip.PRegisterTextRead(), chip.PRegisterId));
+                drafts.Add(new LRegisterDraft(
+                    chip.PRegisterTextRead(),
+                    chip.PRegisterId,
+                    chip.PRegisterLanguage,
+                    chip.PRegisterBuiltin));
                 continue;
             }
 

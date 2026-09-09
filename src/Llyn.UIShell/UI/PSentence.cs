@@ -22,12 +22,15 @@ internal sealed class PSentence : INotifyPropertyChanged
     private int _pSentenceParticleColumn;
     private int _pSentenceDependenceColumn = 2;
     private bool _pSentenceFrameVisible;
+    private string _pSentenceRow = string.Empty;
+    private LStateValue _pSentenceTranslation = LStateValue.LStateValueUnspecified;
+    private string _pSentenceLanguage = string.Empty;
 
     internal PSentence(
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences)
-        : this(catalog, particles, dependences, LExampleDraft.LExampleDraftCreate(string.Empty))
+        : this(catalog, particles, dependences, LSentenceDraft.LSentenceDraftCreate(string.Empty))
     {
     }
 
@@ -35,23 +38,29 @@ internal sealed class PSentence : INotifyPropertyChanged
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
-        LExampleDraft draft)
+        LSentenceDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
+
+        LExampleDraft example = draft.LSentenceDraftExample
+            ?? LExampleDraft.LExampleDraftCreate(string.Empty);
 
         PSentenceCitationCatalog = catalog;
         PSentenceParticleCatalog = particles;
         PSentenceDependenceCatalog = dependences;
-        _pSentenceId = draft.LExampleDraftId;
-        _pSentenceText = draft.LExampleDraftText.LStateValueShow();
-        _pSentenceUnreadable = draft.LExampleDraftText.LStateValueState == LState.LStateUnknown;
-        _pSentenceCitation = draft.LExampleDraftReference.LStateValueShow();
-        _pSentenceCitationUnreadable = draft.LExampleDraftReference.LStateValueState == LState.LStateUnknown;
+        _pSentenceRow = draft.LSentenceDraftId;
+        _pSentenceId = example.LExampleDraftId;
+        _pSentenceText = example.LExampleDraftText.LStateValueShow();
+        _pSentenceUnreadable = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
+        _pSentenceCitation = example.LExampleDraftReference.LStateValueShow();
+        _pSentenceCitationUnreadable = example.LExampleDraftReference.LStateValueState == LState.LStateUnknown;
         _pSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
-        _pSentenceParticle = draft.LExampleDraftParticle.LStateValueShow();
-        _pSentenceParticleUnreadable = draft.LExampleDraftParticle.LStateValueState == LState.LStateUnknown;
-        _pSentenceDependence = draft.LExampleDraftDependence.LStateValueShow();
-        _pSentenceDependenceUnreadable = draft.LExampleDraftDependence.LStateValueState == LState.LStateUnknown;
+        _pSentenceTranslation = example.LExampleDraftTranslation;
+        _pSentenceLanguage = example.LExampleDraftLanguage;
+        _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
+        _pSentenceParticleUnreadable = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
+        _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
+        _pSentenceDependenceUnreadable = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
     }
 
     public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
@@ -311,14 +320,20 @@ internal sealed class PSentence : INotifyPropertyChanged
         PSentenceDependenceColumn = order.LSentenceOrderDependence * 2;
     }
 
-    internal LExampleDraft PSentenceDraftRead()
+    internal LSentenceDraft PSentenceDraftRead()
     {
-        return new LExampleDraft(
-            PSentenceTextRead(),
-            _pSentenceId,
-            PSentenceCitationRead(),
-            PSentenceParticleRead(),
-            PSentenceDependenceRead());
+        LStateValue text = PSentenceTextRead();
+        LExampleDraft? example = text.LStateValueEmpty && _pSentenceId.Length == 0
+            ? null
+            : new LExampleDraft(
+                text,
+                _pSentenceId,
+                PSentenceCitationRead(),
+                _pSentenceTranslation,
+                _pSentenceLanguage);
+
+        return new LSentenceDraft(
+            example, PSentenceParticleRead(), PSentenceDependenceRead(), _pSentenceRow);
     }
 
     internal LStateValue PSentenceParticleRead()
@@ -366,6 +381,7 @@ internal sealed class PSentence : INotifyPropertyChanged
 
     internal void PSentenceClear()
     {
+        _pSentenceRow = string.Empty;
         PSentenceText = string.Empty;
         PSentenceUnreadable = false;
         PSentenceCitation = string.Empty;

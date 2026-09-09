@@ -24,7 +24,11 @@ internal sealed partial class PCard
         PCardContext.Clear();
         foreach (LSituationDraft draft in drafts)
         {
-            PContext chip = new(draft.LSituationDraftText, draft.LSituationDraftId);
+            PContext chip = new(
+                draft.LSituationDraftTitle,
+                draft.LSituationDraftId,
+                draft.LSituationDraftDescription,
+                draft.LSituationDraftKind);
             if (chip.PContextTextRead().LStateValueEmpty || PCardContextCheck(chip.PContextText))
             {
                 continue;
@@ -45,7 +49,11 @@ internal sealed partial class PCard
         {
             if (row is PContext chip)
             {
-                drafts.Add(new LSituationDraft(chip.PContextTextRead(), chip.PContextId));
+                drafts.Add(new LSituationDraft(
+                    chip.PContextTextRead(),
+                    chip.PContextId,
+                    chip.PContextDescription,
+                    chip.PContextKind));
                 continue;
             }
 

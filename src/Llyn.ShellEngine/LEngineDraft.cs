@@ -33,21 +33,12 @@ public sealed partial class LEngine
                 speeches: LEngineSpeechResolve(
                     string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
 
-            LMeaningArchive meanings = new(_lEngineDatabase);
+            LEngineCardValidate(draft.LEntryDraftMeanings, collocation: false);
+            LEngineCardValidate(draft.LEntryDraftCollocations, collocation: true);
+
             foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftMeanings))
             {
-                LMeaning meaning = meanings.LMeaningCreate(new LMeaning(
-                    string.Empty,
-                    entry.LEntryId,
-                    null,
-                    0,
-                    card.LCardDraftTitle,
-                    null,
-                    null,
-                    card.LCardDraftMeaning,
-                    string.Empty));
-
-                LEngineCardAttach(meaning.LMeaningId, card, draft.LEntryDraftLanguage, collocation: false);
+                LEngineMeaningCreate(entry.LEntryId, null, card, draft.LEntryDraftLanguage);
             }
 
             LCollocationArchive collocations = new(_lEngineDatabase);
@@ -103,9 +94,47 @@ public sealed partial class LEngine
         }
     }
 
+    private void LEngineMeaningCreate(
+        string entryId, string? parentId, LCardDraft card, string language)
+    {
+        LMeaning meaning = new LMeaningArchive(_lEngineDatabase).LMeaningCreate(new LMeaning(
+            string.Empty,
+            entryId,
+            parentId,
+            0,
+            card.LCardDraftTitle,
+            card.LCardDraftGloss,
+            card.LCardDraftLanguage,
+            card.LCardDraftMeaning,
+            card.LCardDraftLabels));
+
+        LEngineCardAttach(meaning.LMeaningId, card, language, collocation: false);
+
+        foreach (LCardDraft child in LEngineCardRead(card.LCardDraftChild))
+        {
+            LEngineMeaningCreate(entryId, meaning.LMeaningId, child, language);
+        }
+    }
+
+    private static void LEngineCardValidate(IReadOnlyList<LCardDraft> cards, bool collocation)
+    {
+        if (!collocation)
+        {
+            return;
+        }
+
+        foreach (LCardDraft card in cards)
+        {
+            if (card.LCardDraftChild.Count > 0)
+            {
+                throw new LRefusal(LRefusal.LRefusalCollocation);
+            }
+        }
+    }
+
     private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)
     {
-        LEngineSentenceSync(ownerId, card.LCardDraftExample, language, collocation);
+        LEngineSentenceSync(ownerId, card.LCardDraftSentence, language, collocation);
 
         int position;
 
@@ -181,24 +210,26 @@ public sealed partial class LEngine
                 !card.LCardDraftExpression.LStateValueEmpty ||
                 !card.LCardDraftMeaning.LStateValueEmpty ||
                 !string.IsNullOrWhiteSpace(card.LCardDraftSynonym) ||
-                LEngineExampleCheck(card.LCardDraftExample) ||
+                !string.IsNullOrWhiteSpace(card.LCardDraftGloss) ||
+                LEngineSentenceCheck(card.LCardDraftSentence) ||
                 LEngineSituationCheck(card.LCardDraftSituation) ||
                 LEngineRegisterCheck(card.LCardDraftRegister) ||
                 LEngineTagCheck(card.LCardDraftTag) ||
                 LEngineTranslationCheck(card.LCardDraftTranslation) ||
                 LEngineFieldCheck(card.LCardDraftImage) ||
-                LEngineVideoCheck(card.LCardDraftVideo))
+                LEngineVideoCheck(card.LCardDraftVideo) ||
+                card.LCardDraftChild.Count > 0)
             {
                 yield return card;
             }
         }
     }
 
-    private static bool LEngineExampleCheck(IReadOnlyList<LExampleDraft> drafts)
+    private static bool LEngineSentenceCheck(IReadOnlyList<LSentenceDraft> drafts)
     {
-        foreach (LExampleDraft draft in drafts)
+        foreach (LSentenceDraft draft in drafts)
         {
-            if (LEngineExampleCheck(draft))
+            if (!draft.LSentenceDraftEmpty)
             {
                 return true;
             }
@@ -207,62 +238,47 @@ public sealed partial class LEngine
         return false;
     }
 
-    private static IEnumerable<LExampleDraft> LEngineExampleRead(IReadOnlyList<LExampleDraft> drafts)
+    private static IEnumerable<LSentenceDraft> LEngineSentenceRead(IReadOnlyList<LSentenceDraft> drafts)
     {
-        foreach (LExampleDraft draft in drafts)
+        foreach (LSentenceDraft draft in drafts)
         {
-            if (LEngineExampleCheck(draft))
+            if (!draft.LSentenceDraftEmpty)
             {
                 yield return draft;
             }
         }
     }
 
-    private static bool LEngineExampleCheck(LExampleDraft draft)
-    {
-        return !draft.LExampleDraftText.LStateValueEmpty
-            || !draft.LExampleDraftParticle.LStateValueEmpty
-            || !draft.LExampleDraftDependence.LStateValueEmpty;
-    }
-
     private static LExample? LEngineExampleResolve(
-        LExampleArchive examples, LExampleDraft draft, string language)
+        LExampleArchive examples, LSentenceDraft draft, string language)
     {
-        if (draft.LExampleDraftText.LStateValueEmpty)
+        if (draft.LSentenceDraftExample is not LExampleDraft written
+            || (written.LExampleDraftText.LStateValueEmpty && written.LExampleDraftId.Length == 0))
         {
             return null;
         }
 
-        return LEngineExampleResolve(
-            examples,
-            draft.LExampleDraftId,
-            draft.LExampleDraftText,
-            draft.LExampleDraftReference,
-            language);
+        return LEngineExampleResolve(examples, written, language);
     }
 
     private static LExample LEngineExampleResolve(
-        LExampleArchive examples,
-        string id,
-        LStateValue text,
-        LStateValue reference,
-        string language)
+        LExampleArchive examples, LExampleDraft written, string language)
     {
-        if (!string.IsNullOrWhiteSpace(id))
+        if (!string.IsNullOrWhiteSpace(written.LExampleDraftId))
         {
-            LExample? stored = examples.LExampleRead(id);
+            LExample? stored = examples.LExampleRead(written.LExampleDraftId);
             if (stored is not null)
             {
-                if (stored.LExampleText != text)
+                if (stored.LExampleText != written.LExampleDraftText)
                 {
-                    examples.LExampleTextUpdate(stored.LExampleId, text);
-                    stored = stored with { LExampleText = text };
+                    examples.LExampleTextUpdate(stored.LExampleId, written.LExampleDraftText);
+                    stored = stored with { LExampleText = written.LExampleDraftText };
                 }
 
-                if (stored.LExampleSource != reference)
+                if (stored.LExampleSource != written.LExampleDraftReference)
                 {
-                    examples.LExampleSourceUpdate(stored.LExampleId, reference);
-                    stored = stored with { LExampleSource = reference };
+                    examples.LExampleSourceUpdate(stored.LExampleId, written.LExampleDraftReference);
+                    stored = stored with { LExampleSource = written.LExampleDraftReference };
                 }
 
                 return stored;
@@ -270,14 +286,18 @@ public sealed partial class LEngine
         }
 
         return examples.LExampleCreate(new LExample(
-            id, language, text, LStateValue.LStateValueUnspecified, reference));
+            written.LExampleDraftId,
+            written.LExampleDraftLanguage.Length == 0 ? language : written.LExampleDraftLanguage,
+            written.LExampleDraftText,
+            written.LExampleDraftTranslation,
+            written.LExampleDraftReference));
     }
 
     private static bool LEngineSituationCheck(IReadOnlyList<LSituationDraft> drafts)
     {
         foreach (LSituationDraft draft in drafts)
         {
-            if (!draft.LSituationDraftText.LStateValueEmpty)
+            if (!draft.LSituationDraftTitle.LStateValueEmpty)
             {
                 return true;
             }
@@ -290,7 +310,7 @@ public sealed partial class LEngine
     {
         foreach (LSituationDraft draft in drafts)
         {
-            if (!draft.LSituationDraftText.LStateValueEmpty)
+            if (!draft.LSituationDraftTitle.LStateValueEmpty)
             {
                 yield return draft;
             }
@@ -304,9 +324,16 @@ public sealed partial class LEngine
             LSituation? stored = situations.LSituationRead(draft.LSituationDraftId);
             if (stored is not null)
             {
-                if (stored.LSituationTitle != draft.LSituationDraftText)
+                LSituation written = stored with
                 {
-                    situations.LSituationTitleUpdate(stored.LSituationId, draft.LSituationDraftText);
+                    LSituationTitle = draft.LSituationDraftTitle,
+                    LSituationDescription = draft.LSituationDraftDescription,
+                    LSituationKind = draft.LSituationDraftKind,
+                };
+
+                if (written != stored)
+                {
+                    situations.LSituationUpdate(written);
                 }
 
                 return stored.LSituationId;
@@ -315,9 +342,9 @@ public sealed partial class LEngine
 
         return situations.LSituationCreate(new LSituation(
             draft.LSituationDraftId,
-            draft.LSituationDraftText,
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified)).LSituationId;
+            draft.LSituationDraftTitle,
+            draft.LSituationDraftDescription,
+            draft.LSituationDraftKind)).LSituationId;
     }
 
     private static bool LEngineTagCheck(IReadOnlyList<string> texts)

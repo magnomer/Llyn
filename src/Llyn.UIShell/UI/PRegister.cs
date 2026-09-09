@@ -15,15 +15,26 @@ internal sealed class PRegister
     }
 
     internal PRegister(LStateValue text, string id)
+        : this(text, id, string.Empty, false)
+    {
+    }
+
+    internal PRegister(LStateValue text, string id, string language, bool builtin)
     {
         ArgumentNullException.ThrowIfNull(text);
 
         _pRegisterText = text.LStateValueShow();
         _pRegisterUnreadable = text.LStateValueState == LState.LStateUnknown;
         PRegisterId = id;
+        PRegisterLanguage = language ?? string.Empty;
+        PRegisterBuiltin = builtin;
     }
 
     public string PRegisterId { get; }
+
+    internal string PRegisterLanguage { get; }
+
+    internal bool PRegisterBuiltin { get; }
 
     public string PRegisterText => _pRegisterText;
 

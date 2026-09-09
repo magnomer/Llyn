@@ -4,8 +4,8 @@ public sealed record LExampleDraft(
     LStateValue LExampleDraftText,
     string LExampleDraftId,
     LStateValue LExampleDraftReference,
-    LStateValue LExampleDraftParticle,
-    LStateValue LExampleDraftDependence)
+    LStateValue LExampleDraftTranslation,
+    string LExampleDraftLanguage = "")
 {
     public LStateValue LExampleDraftText { get; init; } =
         LExampleDraftText ?? LStateValue.LStateValueUnspecified;
@@ -13,18 +13,16 @@ public sealed record LExampleDraft(
     public LStateValue LExampleDraftReference { get; init; } =
         LExampleDraftReference ?? LStateValue.LStateValueUnspecified;
 
-    public LStateValue LExampleDraftParticle { get; init; } =
-        LExampleDraftParticle ?? LStateValue.LStateValueUnspecified;
+    public LStateValue LExampleDraftTranslation { get; init; } =
+        LExampleDraftTranslation ?? LStateValue.LStateValueUnspecified;
 
-    public LStateValue LExampleDraftDependence { get; init; } =
-        LExampleDraftDependence ?? LStateValue.LStateValueUnspecified;
+    public string LExampleDraftLanguage { get; init; } = LExampleDraftLanguage ?? string.Empty;
 
     public static LExampleDraft LExampleDraftCreate(string text)
     {
         return new LExampleDraft(
             LStateValue.LStateValueRead(text),
             string.Empty,
-            LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified);
     }

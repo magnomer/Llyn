@@ -22,7 +22,7 @@ public sealed class TState
                 LStateValue.LStateValueUnknown,
                 LStateValue.LStateValueUnspecified,
                 TInterface.TStateValueCreate("a unit of language"),
-                [TInterface.TExampleDraftCreate(
+                [TInterface.TSentenceDraftCreate(
                     LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
                 [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, string.Empty)],
                 [],
@@ -53,10 +53,10 @@ public sealed class TState
         Assert.Equal(LStateValue.LStateValueUnspecified, card.LCardDraftExpression);
         Assert.Equal(
             LStateValue.LStateValueUnknown,
-            Assert.Single(card.LCardDraftExample).LExampleDraftText);
+            TExampleDraftRead(Assert.Single(card.LCardDraftSentence)).LExampleDraftText);
         Assert.Equal(
             LStateValue.LStateValueUnknown,
-            Assert.Single(card.LCardDraftSituation).LSituationDraftText);
+            Assert.Single(card.LCardDraftSituation).LSituationDraftTitle);
         Assert.Equal(["spoken"], card.LCardDraftTag);
     }
 
@@ -76,10 +76,10 @@ public sealed class TState
                 LStateValue.LStateValueUnspecified,
                 TInterface.TStateValueCreate("a unit of language"),
                 [
-                    TInterface.TExampleDraftCreate("he said a word"),
-                    TInterface.TExampleDraftCreate(
+                    TInterface.TSentenceDraftCreate("he said a word"),
+                    TInterface.TSentenceDraftCreate(
                         LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified),
-                    TInterface.TExampleDraftCreate("   "),
+                    TInterface.TSentenceDraftCreate("   "),
                 ],
                 [],
                 [],
@@ -107,11 +107,11 @@ public sealed class TState
                 LStateValue.LStateValueUnspecified,
                 TInterface.TStateValueCreate("a unit of language"),
                 [
-                    TInterface.TExampleDraftCreate(
+                    TInterface.TSentenceDraftCreate(
                         TInterface.TStateValueCreate("he said a word"),
                         string.Empty,
                         LStateValue.LStateValueUnknown),
-                    TInterface.TExampleDraftCreate("not a word was spoken"),
+                    TInterface.TSentenceDraftCreate("not a word was spoken"),
                 ],
                 [],
                 [],
@@ -132,9 +132,11 @@ public sealed class TState
         LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
 
         Assert.Equal(
-            LStateValue.LStateValueUnknown, card.LCardDraftExample[0].LExampleDraftReference);
+            LStateValue.LStateValueUnknown,
+            TExampleDraftRead(card.LCardDraftSentence[0]).LExampleDraftReference);
         Assert.Equal(
-            LStateValue.LStateValueUnspecified, card.LCardDraftExample[1].LExampleDraftReference);
+            LStateValue.LStateValueUnspecified,
+            TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftReference);
     }
 
     [Fact]
@@ -175,7 +177,7 @@ public sealed class TState
                     [
                         card.LCardDraftSituation[0] with
                         {
-                            LSituationDraftText = TInterface.TStateValueCreate("in court"),
+                            LSituationDraftTitle = TInterface.TStateValueCreate("in court"),
                         },
                     ],
                 },
@@ -190,7 +192,7 @@ public sealed class TState
 
         LSituationDraft situation = Assert.Single(written.LCardDraftSituation);
         Assert.Equal(situationId, situation.LSituationDraftId);
-        Assert.Equal(TInterface.TStateValueCreate("in court"), situation.LSituationDraftText);
+        Assert.Equal(TInterface.TStateValueCreate("in court"), situation.LSituationDraftTitle);
     }
 
     [Theory]
@@ -281,5 +283,10 @@ public sealed class TState
         });
 
         Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
+    }
+
+    private static LExampleDraft TExampleDraftRead(LSentenceDraft sentence)
+    {
+        return Assert.IsType<LExampleDraft>(sentence.LSentenceDraftExample);
     }
 }

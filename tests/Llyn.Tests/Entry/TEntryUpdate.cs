@@ -83,7 +83,7 @@ public sealed class TEntryUpdate
             string.Empty,
             [
                 TInterface.TCardDraftCreate(
-                    string.Empty, string.Empty, "meaning", [TInterface.TExampleDraftCreate("one"), TInterface.TExampleDraftCreate("two")], [],
+                    string.Empty, string.Empty, "meaning", [TInterface.TSentenceDraftCreate("one"), TInterface.TSentenceDraftCreate("two")], [],
                     [],
                     string.Empty, ["kept", "dropped"], [], 1),
             ],
@@ -98,7 +98,7 @@ public sealed class TEntryUpdate
             [
                 card with
                 {
-                    LCardDraftExample = [card.LCardDraftExample[1], card.LCardDraftExample[0]],
+                    LCardDraftSentence = [card.LCardDraftSentence[1], card.LCardDraftSentence[0]],
                     LCardDraftTag = ["kept"],
                 },
             ],

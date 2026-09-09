@@ -14,7 +14,14 @@ A chip for a wording the user typed, with an id nothing is stored under yet.
 
 ## `internal PRegister(LStateValue text, string id)`
 
+A chip for a Register whose language and origin are not known here.
+It is what a chip the user types needs, because typed text belongs to no language pack.
+
+## `internal PRegister(LStateValue text, string id, string language, bool builtin)`
+
 A chip for a Register the card already marks, keeping the id the reference is written by.
+The language and the built-in mark ride along unread.
+No control on the card shows either, and a save that dropped them would erase what the pack declared.
 
 ## `internal LStateValue PRegisterTextRead()`
 

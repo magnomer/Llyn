@@ -21,7 +21,7 @@ internal sealed partial class PCard
         }
     }
 
-    internal void PCardSentenceShow(IReadOnlyList<LExampleDraft> drafts)
+    internal void PCardSentenceShow(IReadOnlyList<LSentenceDraft> drafts)
     {
         foreach (PSentence row in PCardSentence)
         {
@@ -29,7 +29,7 @@ internal sealed partial class PCard
         }
 
         PCardSentence.Clear();
-        foreach (LExampleDraft draft in drafts)
+        foreach (LSentenceDraft draft in drafts)
         {
             PCardSentenceAdd(new PSentence(_pCardCitation, _pCardParticle, _pCardDependence, draft));
         }
@@ -40,9 +40,9 @@ internal sealed partial class PCard
         }
     }
 
-    internal IReadOnlyList<LExampleDraft> PCardSentenceRead()
+    internal IReadOnlyList<LSentenceDraft> PCardSentenceRead()
     {
-        List<LExampleDraft> drafts = [];
+        List<LSentenceDraft> drafts = [];
         foreach (PSentence row in PCardSentence)
         {
             if (!row.PSentenceCheck())

@@ -80,7 +80,7 @@ public sealed class TPortraitMarkup
             LStateValue.LStateValueUnspecified,
             TInterface.TStateValueCreate("to set something burning"),
             [
-                TInterface.TExampleDraftCreate(
+                TInterface.TSentenceDraftCreate(
                     TInterface.TStateValueCreate("she knelt to kindle the damp logs"),
                     string.Empty,
                     LStateValue.LStateValueUnspecified,

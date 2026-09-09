@@ -1,0 +1,31 @@
+namespace Llyn.Core;
+
+public sealed record LSentenceDraft(
+    LExampleDraft? LSentenceDraftExample,
+    LStateValue LSentenceDraftParticle,
+    LStateValue LSentenceDraftDependence,
+    string LSentenceDraftId = "")
+{
+    public string LSentenceDraftId { get; init; } = LSentenceDraftId ?? string.Empty;
+
+    public LStateValue LSentenceDraftParticle { get; init; } =
+        LSentenceDraftParticle ?? LStateValue.LStateValueUnspecified;
+
+    public LStateValue LSentenceDraftDependence { get; init; } =
+        LSentenceDraftDependence ?? LStateValue.LStateValueUnspecified;
+
+    public bool LSentenceDraftEmpty =>
+        (LSentenceDraftExample is null
+            || (LSentenceDraftExample.LExampleDraftText.LStateValueEmpty
+                && LSentenceDraftExample.LExampleDraftId.Length == 0))
+        && LSentenceDraftParticle.LStateValueEmpty
+        && LSentenceDraftDependence.LStateValueEmpty;
+
+    public static LSentenceDraft LSentenceDraftCreate(string text)
+    {
+        return new LSentenceDraft(
+            LExampleDraft.LExampleDraftCreate(text),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified);
+    }
+}

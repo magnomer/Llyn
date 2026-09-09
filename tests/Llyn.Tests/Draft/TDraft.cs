@@ -857,7 +857,7 @@ public sealed class TDraft
             TInterface.TStateValueCreate("set alight"),
             LStateValue.LStateValueUnspecified,
             TInterface.TStateValueCreate("to set something burning"),
-            [TInterface.TExampleDraftCreate("she knelt to kindle the damp logs")],
+            [TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs")],
             [TInterface.TSituationDraftCreate("around a hearth")],
             ["불을 붙이다"],
             "ignite",

@@ -5,13 +5,13 @@ namespace Llyn.Core;
 public static class LPortraitFrame
 {
     public static string LPortraitFrameRead(
-        LExampleDraft example, LSentenceOrder order, string mark)
+        LSentenceDraft sentence, LSentenceOrder order, string mark)
     {
-        ArgumentNullException.ThrowIfNull(example);
+        ArgumentNullException.ThrowIfNull(sentence);
         ArgumentNullException.ThrowIfNull(order);
 
-        string particle = LPortraitText.LPortraitTextRead(example.LExampleDraftParticle, mark);
-        string dependence = LPortraitText.LPortraitTextRead(example.LExampleDraftDependence, mark);
+        string particle = LPortraitText.LPortraitTextRead(sentence.LSentenceDraftParticle, mark);
+        string dependence = LPortraitText.LPortraitTextRead(sentence.LSentenceDraftDependence, mark);
 
         string first = order.LSentenceOrderParticle == 0 ? particle : dependence;
         string second = order.LSentenceOrderParticle == 0 ? dependence : particle;

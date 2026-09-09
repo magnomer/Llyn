@@ -64,6 +64,7 @@
     "Refusal.ReferenceMissing": "해당 출처는 이 {terms.workspace}에 더 이상 없습니다.",
     "Refusal.DraftMissing": "해당 초안은 이 {terms.workspace}에 더 이상 없습니다.",
     "Refusal.DraftStale": "해당 초안은 지금은 열려 있지 않은 {terms.workspace}에 속해 있습니다.",
+    "Refusal.CollocationNested": "연어는 안에 카드를 둘 수 없습니다.",
     "Notice.Unexpected": "{terms.product}가 예상하지 못한 문제가 발생했습니다.",
     "Notice.Recorded": "기술적인 세부 내용은 다음 위치에 기록했습니다:",
     "List.Search": "항목 검색",

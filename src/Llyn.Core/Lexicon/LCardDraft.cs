@@ -6,7 +6,7 @@ public sealed record LCardDraft(
     LStateValue LCardDraftTitle,
     LStateValue LCardDraftExpression,
     LStateValue LCardDraftMeaning,
-    IReadOnlyList<LExampleDraft> LCardDraftExample,
+    IReadOnlyList<LSentenceDraft> LCardDraftSentence,
     IReadOnlyList<LSituationDraft> LCardDraftSituation,
     IReadOnlyList<LRegisterDraft> LCardDraftRegister,
     IReadOnlyList<string> LCardDraftTranslation,
@@ -15,8 +15,16 @@ public sealed record LCardDraft(
     IReadOnlyList<LStateValue> LCardDraftImage,
     IReadOnlyList<LVideoDraft> LCardDraftVideo,
     int LCardDraftPosition,
-    string LCardDraftId = "")
+    string LCardDraftId = "",
+    IReadOnlyList<LCardDraft>? LCardDraftChild = null,
+    string? LCardDraftGloss = null,
+    string? LCardDraftLanguage = null,
+    string LCardDraftLabels = "")
 {
+    public string LCardDraftLabels { get; init; } = LCardDraftLabels ?? string.Empty;
+
+    public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; } = LCardDraftChild ?? [];
+
     public LStateValue LCardDraftTitle { get; init; } =
         LCardDraftTitle ?? LStateValue.LStateValueUnspecified;
 

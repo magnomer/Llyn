@@ -145,7 +145,7 @@ public sealed class TSituation
                     [
                         card.LCardDraftSituation[1] with
                         {
-                            LSituationDraftText = "in a courtroom",
+                            LSituationDraftTitle = "in a courtroom",
                         },
                         card.LCardDraftSituation[0],
                         TInterface.TSituationDraftCreate("in a letter"),

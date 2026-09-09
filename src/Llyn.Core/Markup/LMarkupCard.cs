@@ -20,17 +20,17 @@ public static class LMarkupCard
 
         foreach (LSituationDraft situation in card.LCardDraftSituation)
         {
-            LMarkupLeaf.LMarkupLeafAppend(text, 2, "situation", situation.LSituationDraftText);
+            LMarkupLeaf.LMarkupLeafAppend(text, 2, "situation", situation.LSituationDraftTitle);
         }
 
         foreach (LRegisterDraft register in card.LCardDraftRegister)
         {
-            LMarkupLeaf.LMarkupLeafAppend(text, 2, "register", register.LRegisterDraftText);
+            LMarkupLeaf.LMarkupLeafAppend(text, 2, "register", register.LRegisterDraftName);
         }
 
-        foreach (LExampleDraft example in card.LCardDraftExample)
+        foreach (LSentenceDraft sentence in card.LCardDraftSentence)
         {
-            LMarkupExample.LMarkupExampleAppend(text, example);
+            LMarkupExample.LMarkupExampleAppend(text, sentence);
         }
 
         foreach (string tag in card.LCardDraftTag)

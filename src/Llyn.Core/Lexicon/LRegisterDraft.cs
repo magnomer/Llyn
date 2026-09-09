@@ -1,11 +1,15 @@
 namespace Llyn.Core;
 
 public sealed record LRegisterDraft(
-    LStateValue LRegisterDraftText,
-    string LRegisterDraftId)
+    LStateValue LRegisterDraftName,
+    string LRegisterDraftId,
+    string LRegisterDraftLanguage = "",
+    bool LRegisterDraftBuiltin = false)
 {
-    public LStateValue LRegisterDraftText { get; init; } =
-        LRegisterDraftText ?? LStateValue.LStateValueUnspecified;
+    public LStateValue LRegisterDraftName { get; init; } =
+        LRegisterDraftName ?? LStateValue.LStateValueUnspecified;
+
+    public string LRegisterDraftLanguage { get; init; } = LRegisterDraftLanguage ?? string.Empty;
 
     public static LRegisterDraft LRegisterDraftCreate(string text)
     {

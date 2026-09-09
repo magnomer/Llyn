@@ -20,6 +20,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalStale = "Refusal.DraftStale";
 
+    public const string LRefusalCollocation = "Refusal.CollocationNested";
+
     public LRefusal(string reason)
         : base(reason)
     {

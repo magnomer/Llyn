@@ -74,10 +74,10 @@ public sealed class TEntrySave
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                string.Empty, string.Empty, "a meaning", [TInterface.TExampleDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [], "term",
+                string.Empty, string.Empty, "a meaning", [TInterface.TSentenceDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [], "term",
                 ["spoken"], [], 1)],
             [TInterface.TCardDraftCreate(
-                string.Empty, "in a word", "briefly", [TInterface.TExampleDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [], string.Empty,
+                string.Empty, "in a word", "briefly", [TInterface.TSentenceDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [], string.Empty,
                 ["written"], [], 1)]);
 
         LEntry entry = engine.TEngineEntrySave(draft);

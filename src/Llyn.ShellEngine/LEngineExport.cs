@@ -108,9 +108,10 @@ public sealed partial class LEngine
     {
         foreach (LCardDraft card in cards)
         {
-            foreach (LExampleDraft example in card.LCardDraftExample)
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
             {
-                if (example.LExampleDraftReference.LStateValueState != LState.LStateSpecified)
+                if (sentence.LSentenceDraftExample is not LExampleDraft example
+                    || example.LExampleDraftReference.LStateValueState != LState.LStateSpecified)
                 {
                     continue;
                 }

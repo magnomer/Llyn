@@ -25,10 +25,13 @@ The whole surviving set is renumbered afterwards in one pass.
 The unique (owner, position) index rejects a swap done row by row.
 That is what LDatabaseOrder exists for.
 
-### `if (row.LMeaningParentId is not null)`
+A Meaning list is a tree and is reconciled in `LEngineMeaningCard.cs`.
+What stays here is the flat half, which is what a Collocation list is.
 
-A sub-meaning belongs to its parent's group, not to the entry's card list, and no save writes one.
-Leaving it out keeps this over the cards the form actually shows.
+### `LEngineCardValidate(cards, collocation);`
+
+A Collocation carrying a card inside it is refused before anything is written.
+Only a Meaning nests, because only a sense names a parent in the store.
 
 ### `List<LCardDraft> kept = [];`
 
@@ -43,22 +46,15 @@ Two cards carrying one id would otherwise both write that row.
 The renumber would then be handed the same member twice.
 So the second is a new card.
 
-### `private static string LEngineCardApply(`
+### `bool reuse = named.Contains(card.LCardDraftId) && applied.Add(card.LCardDraftId);`
 
-Writes a card the draft still names onto the row it names, keeping that row's id, and returns the id.
-The columns the form has no control for are carried over from the stored row.
-Those are a Meaning's gloss, definition language and labels.
-They are not blanked by an edit that never saw them.
-
-### `private static string LEngineCardCreate(`
-
-Writes a card the draft added as a new row and returns its fresh id.
-The row is appended.
+A card the draft still names is written onto the row it names and keeps that row's id.
+Any other card is appended as a new row.
 The renumber that follows the whole set puts it where the draft holds it.
 
 ### `private void LEngineCardSync(string ownerId, LCardDraft card, string language, bool collocation)`
 
-Re-attaches the Examples and Situations one card references and rewrites the Tags it carries so they match the draft.
+Re-attaches the rows and Situations one card references and rewrites the Tags it carries so they match the draft.
 A row whose text the card still lists is kept and moved to its new place.
 A text the card gained gets a row of its own.
 A row the card dropped is detached only.
@@ -70,6 +66,13 @@ So the card's whole Tag line is written over.
 Translations are written over the same way, because a link is an id the card holds.
 Nothing is created or detached for one, and no target row is touched.
 A newly created card has nothing attached yet, so the same path attaches its whole set.
+
+### `private void LEngineSentenceSync(`
+
+Writes the whole row list of one card over what the store holds for it.
+Each row carries the id of the stored row it edits, so an untouched save rewrites the same ids.
+A row states which Example it quotes, and two cards quoting one sentence name one Example row.
+A row naming no Example is written with none, which is what the store's check allows for a bare frame.
 
 ### `private static void LEngineFieldSync<TRow>(`
 

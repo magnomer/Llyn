@@ -26,11 +26,11 @@ Binds the loader to the workspace `database` it reads through.
 
 Returns the draft for the entry identified by `id`, or `null` when no entry has that id.
 
-A card's Examples, Situations, Tags and Translations are ordered sets.
+A card's rows, Situations, Tags and Translations are ordered sets.
 Every row the card references or carries fills the field, in the order the associations record.
 So a card referencing three tags loads back with three.
-Meanings arrive flat, as the draft has no nesting.
-A sub-meaning, which no save writes, would come back as a card of its own.
+Meanings arrive as the tree the store keeps, each card holding the cards nested under it.
+A Collocation never nests, so its children are read nowhere.
 
 Each card carries the id of the row it was read from.
 So a draft loaded, edited and handed to `LEngineEntryUpdate` names the row each card belongs to.
@@ -55,6 +55,20 @@ The bare id is shown when the pack that declared it is no longer installed.
 An id is still what the entry was filed under, and showing it beats showing nothing.
 Only the first assignment is shown, because the field holds one.
 A second row, which no save writes, stays stored and is simply not displayed.
+
+### `private IReadOnlyList<LCardDraft> LEntryChildRead(`
+
+The Meanings under one parent, each already holding the Meanings under it.
+The senses are grouped by parent once and the tree is walked from the roots.
+A root is grouped under the empty key, because the store writes no parent for one.
+Each group is already in stored position order, so no group is sorted again here.
+Position is per sibling group, which is what the store's unique index counts.
+
+### `private static LExampleDraft? LEntryExampleRead(LExample? example)`
+
+The Example a card's row quotes, or `null` when the row quotes none.
+A row states a frame and no sentence when the store holds no Example for it.
+That row is real data and must load as itself rather than as an empty sentence.
 
 ### `private LCardDraft LEntryCardRead(`
 

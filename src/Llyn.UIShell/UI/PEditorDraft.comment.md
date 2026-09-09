@@ -77,11 +77,17 @@ A card resolves no typed word on its own.
 
 A card that cannot report its own edits would be typed into without ever being written.
 
-### `PCardId = draft.LCardDraftId`
+### `PCardId = draft.LCardDraftId,`
 
 Which stored row this card is.
 It is carried through the form untouched.
 So a save of the same card changes that row instead of adding another one beside it.
+
+### `PCardDraft = draft,`
+
+The whole draft the card was drawn from, kept beside the fields drawn out of it.
+The read writes the form's fields over it rather than building a card from nothing.
+So every column the form has no control for goes back exactly as it came.
 
 ### `private void PEditorNoteShow(string note)`
 
@@ -203,23 +209,26 @@ A Meaning card's Expression stays empty.
 Its template has no Expression control, and no writer looks at the field for a meaning.
 The Translation line reads back the ids the card's link field holds.
 
-### `card.PTitle,`
+### `LCardDraftTitle = card.PCardTitleRead(),`
 
 The card's own Title field, which is not PCardTitle.
 That one is the "Meaning 1" header the template shows as a placeholder over this box.
 
-### `card.PCardDefinition,`
+### `LCardDraftMeaning = card.PCardDefinitionRead(),`
 
 The Meaning field of a collocation card and the Definition field of a meaning card are one property.
 One card class serves both kinds, so the label differs and not the field.
 
-### `string.Empty,`
-
+The Synonym line is not written over at all.
 Neither template has a Synonym control any more.
-A synonym is a link to a stored Entry or Meaning.
-No picker exists to resolve typed text to one.
+A synonym is a link to a stored Entry or Meaning, and no picker resolves typed text to one.
 So the field is not offered, rather than offered and discarded.
-Both card kinds read back empty here.
+
+### `private static LCardDraft PCardDraftCreate()`
+
+The empty card a form with no stored draft behind it reads back.
+Every list is empty and every field unwritten, which is what a blank card means.
+It exists so the read has one shape to write the form over, stored or not.
 
 ### `private static IReadOnlyList<string> PEditorFieldRead(string text)`
 

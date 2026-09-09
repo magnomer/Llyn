@@ -308,16 +308,22 @@ The cards that carry something, in their original order.
 Whether a card holds nothing at all.
 An open form always shows one such card, and offering it is not an edit.
 
-## `private static bool LEngineExampleMatch(IReadOnlyList<LExampleDraft> one, IReadOnlyList<LExampleDraft> other)`
+## `private static bool LEngineSentenceMatch(IReadOnlyList<LSentenceDraft> one, IReadOnlyList<LSentenceDraft> other)`
 
-Whether two example lists say the same thing in the same order.
-The citation each names counts, so retagging a sentence is a change.
-The frame counts too.
-Writing a marker or a role and nothing else is a change and is saved.
+Whether two row lists say the same thing in the same order.
+The frame counts, so writing a marker or a role and nothing else is a change and is saved.
+The stored row each names counts too, because a row that changed id is a different row.
+
+## `private static bool LEngineExampleMatch(LExampleDraft? one, LExampleDraft? other)`
+
+Whether two rows quote the same Example on the same terms.
+A row quoting none matches only another quoting none.
+The citation counts, so retagging a sentence is a change.
 
 ## `private static bool LEngineSituationMatch(IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)`
 
 Whether two situation lists say the same thing in the same order.
+All three stored fields count, not the title the card happens to show.
 
 ## `private static bool LEngineValueMatch(IReadOnlyList<LStateValue> one, IReadOnlyList<LStateValue> other)`
 

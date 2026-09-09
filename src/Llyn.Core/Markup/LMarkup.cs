@@ -178,7 +178,7 @@ public static partial class LMarkup
         List<string> tags = new List<string>();
         List<LStateValue> images = new List<LStateValue>();
         List<LVideoDraft> videos = new List<LVideoDraft>();
-        List<LExampleDraft> examples = new List<LExampleDraft>();
+        List<LSentenceDraft> sentences = new List<LSentenceDraft>();
         List<LSituationDraft> situations = new List<LSituationDraft>();
         List<LRegisterDraft> registers = new List<LRegisterDraft>();
 
@@ -208,15 +208,21 @@ public static partial class LMarkup
                     videos.Add(LVideoDraft.LVideoDraftCreate(LMarkupStateRead(token)));
                     break;
                 case "example":
-                    examples.Add(new LExampleDraft(
-                        LMarkupStateRead(token),
-                        string.Empty,
-                        LMarkupStateRead(token.LMarkupTokenRead("src")),
+                    sentences.Add(new LSentenceDraft(
+                        new LExampleDraft(
+                            LMarkupStateRead(token),
+                            string.Empty,
+                            LMarkupStateRead(token.LMarkupTokenRead("src")),
+                            LStateValue.LStateValueUnspecified),
                         LMarkupStateRead(token.LMarkupTokenRead("par")),
                         LMarkupStateRead(token.LMarkupTokenRead("dep"))));
                     break;
                 case "situation":
-                    situations.Add(new LSituationDraft(LMarkupStateRead(token), string.Empty));
+                    situations.Add(new LSituationDraft(
+                        LMarkupStateRead(token),
+                        string.Empty,
+                        LStateValue.LStateValueUnspecified,
+                        LStateValue.LStateValueUnspecified));
                     break;
                 case "register":
                     registers.Add(new LRegisterDraft(LMarkupStateRead(token), string.Empty));
@@ -230,7 +236,7 @@ public static partial class LMarkup
             LMarkupStateRead(title),
             LMarkupStateRead(expression),
             LMarkupStateRead(meaning),
-            examples,
+            sentences,
             situations,
             registers,
             [],
