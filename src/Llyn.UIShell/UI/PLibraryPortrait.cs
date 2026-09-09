@@ -8,7 +8,7 @@ namespace Llyn.UIShell;
 
 public partial class PLibrary
 {
-    private static readonly IReadOnlyList<(string Key, string Suffix, LPortraitFormat Format)>
+    private static readonly IReadOnlyList<(string PLibraryKey, string PLibrarySuffix, LPortraitFormat PLibraryKind)>
         PLibraryPortraitKinds =
         [
             ("Export.Markup", ".llx", LPortraitFormat.LPortraitFormatMarkup),
@@ -46,7 +46,7 @@ public partial class PLibrary
         }
 
         int chosen = Math.Clamp(dialog.FilterIndex - 1, 0, PLibraryPortraitKinds.Count - 1);
-        LPortraitFormat format = PLibraryPortraitKinds[chosen].Format;
+        LPortraitFormat format = PLibraryPortraitKinds[chosen].PLibraryKind;
 
         try
         {

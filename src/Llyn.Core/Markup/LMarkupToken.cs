@@ -84,7 +84,7 @@ public static partial class LMarkup
     internal static IReadOnlyList<LMarkupToken> LMarkupScan(string text)
     {
         List<LMarkupToken> tokens = new List<LMarkupToken>();
-        Stack<(string Name, int Start)> blocks = new Stack<(string, int)>();
+        Stack<(string LMarkupBlockName, int LMarkupBlockOffset)> blocks = new Stack<(string, int)>();
         int position = 0;
 
         while (position < text.Length)
@@ -104,7 +104,7 @@ public static partial class LMarkup
                 string closed = LMarkupNameRead(text, ref position, start);
                 LMarkupTailRead(text, ref position, start, closed);
 
-                if (blocks.Count == 0 || !string.Equals(blocks.Peek().Name, closed, StringComparison.Ordinal))
+                if (blocks.Count == 0 || !string.Equals(blocks.Peek().LMarkupBlockName, closed, StringComparison.Ordinal))
                 {
                     throw new FormatException(
                         $"Unmatched closing tag '</{closed}>' at character {start}.");
@@ -175,7 +175,7 @@ public static partial class LMarkup
         return text[first..position];
     }
 
-    private static (IReadOnlyDictionary<string, string> Mark, bool Closing)
+    private static (IReadOnlyDictionary<string, string> LMarkupHeadMark, bool LMarkupHeadClosing)
         LMarkupHeadRead(string text, ref int position, int start, string name)
     {
         Dictionary<string, string>? mark = null;

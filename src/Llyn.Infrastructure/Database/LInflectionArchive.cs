@@ -93,7 +93,8 @@ public sealed class LInflectionArchive
 
     private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, string entryId)
     {
-        List<(int Position, string Text, string? Local, string? SpeechId)> rows = [];
+        List<(int LInflectionPosition, string LInflectionText, string? LInflectionLocal,
+            string? LInflectionSpeechId)> rows = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =

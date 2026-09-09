@@ -87,7 +87,8 @@ public partial class PWindow
         }
     }
 
-    private (string Mode, Button Button, FrameworkElement Panel, Action<bool>? Scribe)[] PNavigationTabRead()
+    private (string PNavigationMode, Button PNavigationButton, FrameworkElement PNavigationPanel,
+        Action<bool>? PNavigationScribe)[] PNavigationTabRead()
     {
         return
         [

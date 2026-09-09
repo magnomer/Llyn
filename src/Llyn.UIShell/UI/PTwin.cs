@@ -6,22 +6,22 @@ namespace Llyn.UIShell;
 
 internal static class PTwin
 {
-    internal static void PTwinNameApply<TRow>(
-        IReadOnlyList<TRow> rows, Func<TRow, string> read, Action<TRow, string> write)
+    internal static void PTwinNameApply<PTwinRow>(
+        IReadOnlyList<PTwinRow> rows, Func<PTwinRow, string> read, Action<PTwinRow, string> write)
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(read);
         ArgumentNullException.ThrowIfNull(write);
 
         Dictionary<string, int> shared = new(StringComparer.Ordinal);
-        foreach (TRow row in rows)
+        foreach (PTwinRow row in rows)
         {
             string name = read(row);
             shared[name] = shared.TryGetValue(name, out int seen) ? seen + 1 : 1;
         }
 
         Dictionary<string, int> taken = new(StringComparer.Ordinal);
-        foreach (TRow row in rows)
+        foreach (PTwinRow row in rows)
         {
             string name = read(row);
             if (shared[name] < 2)

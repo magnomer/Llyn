@@ -6,21 +6,22 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LTrove
 {
-    private readonly Dictionary<string, (string Word, string Language, IReadOnlyList<LCandidate> Found)>
+    private readonly Dictionary<string, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)>
         _lTroveCandidate = new(StringComparer.Ordinal);
 
-    private readonly Dictionary<string, (string Word, string Language, IReadOnlyList<LRecording> Found)>
+    private readonly Dictionary<string, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound)>
         _lTroveRecording = new(StringComparer.Ordinal);
 
     internal IReadOnlyList<LCandidate>? LTroveCandidateRead(string session, string word, string language)
     {
         if (session.Length == 0 ||
-            !_lTroveCandidate.TryGetValue(session, out (string Word, string Language, IReadOnlyList<LCandidate> Found) held))
+            !_lTroveCandidate.TryGetValue(session,
+                out (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound) held))
         {
             return null;
         }
 
-        return LTroveHoldMatch(held.Word, held.Language, word, language) ? held.Found : null;
+        return LTroveHoldMatch(held.LTroveWord, held.LTroveLanguage, word, language) ? held.LTroveFound : null;
     }
 
     internal void LTroveCandidateSave(
@@ -37,12 +38,13 @@ internal sealed class LTrove
     internal IReadOnlyList<LRecording>? LTroveRecordingRead(string session, string word, string language)
     {
         if (session.Length == 0 ||
-            !_lTroveRecording.TryGetValue(session, out (string Word, string Language, IReadOnlyList<LRecording> Found) held))
+            !_lTroveRecording.TryGetValue(session,
+                out (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound) held))
         {
             return null;
         }
 
-        return LTroveHoldMatch(held.Word, held.Language, word, language) ? held.Found : null;
+        return LTroveHoldMatch(held.LTroveWord, held.LTroveLanguage, word, language) ? held.LTroveFound : null;
     }
 
     internal void LTroveRecordingSave(

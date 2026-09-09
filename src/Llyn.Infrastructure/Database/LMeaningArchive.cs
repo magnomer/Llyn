@@ -254,7 +254,7 @@ public sealed class LMeaningArchive
         )
         """;
 
-    private static (string? Entry, string? Parent) LMeaningHolderRead(SqliteConnection connection, string id)
+    private static (string? LMeaningEntry, string? LMeaningParent) LMeaningHolderRead(SqliteConnection connection, string id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT entry_id, parent_id FROM sense WHERE id = $id;";

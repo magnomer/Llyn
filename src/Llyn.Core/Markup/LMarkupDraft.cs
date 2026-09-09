@@ -302,11 +302,11 @@ public static class LMarkupDraft
             .Append("</representation>\n");
     }
 
-    private static List<KeyValuePair<string, TRow>> LMarkupDraftSort<TRow>(
-        IReadOnlyDictionary<string, TRow> rows)
+    private static List<KeyValuePair<string, LMarkupRow>> LMarkupDraftSort<LMarkupRow>(
+        IReadOnlyDictionary<string, LMarkupRow> rows)
     {
-        List<KeyValuePair<string, TRow>> sorted = new List<KeyValuePair<string, TRow>>(rows.Count);
-        foreach (KeyValuePair<string, TRow> row in rows)
+        List<KeyValuePair<string, LMarkupRow>> sorted = new List<KeyValuePair<string, LMarkupRow>>(rows.Count);
+        foreach (KeyValuePair<string, LMarkupRow> row in rows)
         {
             sorted.Add(row);
         }

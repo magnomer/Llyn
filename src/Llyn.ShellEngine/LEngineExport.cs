@@ -392,11 +392,11 @@ public sealed partial class LEngine
         }
     }
 
-    private static IReadOnlyList<TRow> LEngineSort<TRow>(
-        IEnumerable<TRow> rows, Func<TRow, string> seed, Func<TRow, string> identify)
+    private static IReadOnlyList<LEngineRow> LEngineSort<LEngineRow>(
+        IEnumerable<LEngineRow> rows, Func<LEngineRow, string> seed, Func<LEngineRow, string> identify)
     {
-        List<TRow> sorted = [];
-        foreach (TRow row in rows)
+        List<LEngineRow> sorted = [];
+        foreach (LEngineRow row in rows)
         {
             sorted.Add(row);
         }
@@ -410,10 +410,10 @@ public sealed partial class LEngine
         return sorted;
     }
 
-    private static IReadOnlyList<TRow> LEngineSort<TRow>(
-        Dictionary<string, TRow> rows, Func<TRow, string> seed, Func<TRow, string> identify)
+    private static IReadOnlyList<LEngineRow> LEngineSort<LEngineRow>(
+        Dictionary<string, LEngineRow> rows, Func<LEngineRow, string> seed, Func<LEngineRow, string> identify)
     {
-        return LEngineSort((IEnumerable<TRow>)rows.Values, seed, identify);
+        return LEngineSort((IEnumerable<LEngineRow>)rows.Values, seed, identify);
     }
 
     private sealed class LEngineCatalog

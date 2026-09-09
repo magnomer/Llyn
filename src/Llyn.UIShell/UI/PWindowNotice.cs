@@ -57,7 +57,7 @@ public partial class PWindow
         return exception.InnerException is null ? null : PWindowRefusalRead(exception.InnerException);
     }
 
-    private (Func<bool> Check, Func<bool, bool> Finish)[] PWindowEditorRead()
+    private (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] PWindowEditorRead()
     {
         return
         [
@@ -75,7 +75,7 @@ public partial class PWindow
 
     internal bool PWindowDiscardConfirm()
     {
-        (Func<bool> Check, Func<bool, bool> Finish)[] editors = PWindowEditorRead();
+        (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] editors = PWindowEditorRead();
 
         bool unsaved = false;
         foreach ((Func<bool> check, Func<bool, bool> _) in editors)
@@ -108,7 +108,8 @@ public partial class PWindow
         return PWindowDraftFinish(editors, store);
     }
 
-    private bool PWindowDraftFinish((Func<bool> Check, Func<bool, bool> Finish)[] editors, bool store)
+    private bool PWindowDraftFinish(
+        (Func<bool> PWindowEditorPending, Func<bool, bool> PWindowEditorClosure)[] editors, bool store)
     {
         bool finished = true;
         foreach ((Func<bool> _, Func<bool, bool> finish) in editors)

@@ -4,7 +4,7 @@ namespace Llyn.Infrastructure;
 
 public static class LPortraitSize
 {
-    public static (int Width, int Height) LPortraitSizeRead(byte[] data)
+    public static (int LPortraitWidth, int LPortraitHeight) LPortraitSizeRead(byte[] data)
     {
         ArgumentNullException.ThrowIfNull(data);
 
@@ -32,7 +32,7 @@ public static class LPortraitSize
         return (640, 360);
     }
 
-    private static (int Width, int Height) LPortraitSizeScan(byte[] data)
+    private static (int LPortraitWidth, int LPortraitHeight) LPortraitSizeScan(byte[] data)
     {
         int place = 2;
 

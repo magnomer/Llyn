@@ -22,7 +22,7 @@ public partial class PEditor
             return;
         }
 
-        (Button Button, FrameworkElement Contents)[] tabs =
+        (Button PStackButton, FrameworkElement PStackContents)[] tabs =
         [
             (PStackMeaning, PMeaning),
             (PStackCollocation, PCollocation),

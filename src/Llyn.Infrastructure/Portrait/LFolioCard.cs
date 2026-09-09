@@ -117,7 +117,7 @@ public static class LFolioCard
         body.Append("<w:p><w:pPr><w:spacing w:after=\"0\"/></w:pPr></w:p>");
     }
 
-    private static (long Across, long Down) LFolioCardClamp(int width, int height)
+    private static (long LFolioAcross, long LFolioDown) LFolioCardClamp(int width, int height)
     {
         const long ceiling = 4114800L;
 

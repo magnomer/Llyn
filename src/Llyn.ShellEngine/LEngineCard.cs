@@ -297,24 +297,24 @@ public sealed partial class LEngine
         translations.LTranslationMeaningSave(ownerId, written);
     }
 
-    private static void LEngineFieldSync<TRow, TWritten>(
-        IEnumerable<TWritten> written,
-        IReadOnlyList<TRow> attached,
-        Func<TRow, string> identify,
-        Func<TRow, TWritten> read,
-        Func<TWritten, string> create,
+    private static void LEngineFieldSync<LEngineRow, LEngineWritten>(
+        IEnumerable<LEngineWritten> written,
+        IReadOnlyList<LEngineRow> attached,
+        Func<LEngineRow, string> identify,
+        Func<LEngineRow, LEngineWritten> read,
+        Func<LEngineWritten, string> create,
         Action<string> detach,
         Action<string, int> attach)
     {
         List<string> targets = [];
         HashSet<string> kept = new(StringComparer.Ordinal);
-        foreach (TWritten text in written)
+        foreach (LEngineWritten text in written)
         {
             string? found = null;
-            foreach (TRow row in attached)
+            foreach (LEngineRow row in attached)
             {
                 if (!kept.Contains(identify(row))
-                    && EqualityComparer<TWritten>.Default.Equals(read(row), text))
+                    && EqualityComparer<LEngineWritten>.Default.Equals(read(row), text))
                 {
                     found = identify(row);
                     break;
@@ -326,7 +326,7 @@ public sealed partial class LEngine
             targets.Add(found);
         }
 
-        foreach (TRow row in attached)
+        foreach (LEngineRow row in attached)
         {
             if (!kept.Contains(identify(row)))
             {
