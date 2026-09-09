@@ -142,6 +142,9 @@ public partial class PTaxonomy
                 entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
         }
 
+        PTwin.PTwinNameApply(
+            _pMembershipList, row => row.PMembershipItemHeadword, (row, name) => row.PMembershipItemName = name);
+
         PMembershipEmpty.Visibility = _pMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PMembershipSelect(_pDisplayEntry);

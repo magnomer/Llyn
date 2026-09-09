@@ -220,6 +220,9 @@ public partial class PRepertoire
                 unnamed));
         }
 
+        PTwin.PTwinNameApply(
+            _pOccurrenceList, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
+
         POccurrenceEmpty.Visibility = _pOccurrenceList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 

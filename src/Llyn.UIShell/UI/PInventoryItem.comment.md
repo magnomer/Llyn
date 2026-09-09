@@ -15,3 +15,9 @@ The flag is resolved once for the language and handed to the row, not read from 
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
 The panel sets it instead of refilling the list, so the catalog keeps its scroll position.
+
+## `public string PInventoryItemName`
+
+The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
+`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`PInventoryItemHeadword` keeps the plain headword for everything that is not display.

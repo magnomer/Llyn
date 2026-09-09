@@ -86,6 +86,9 @@ public partial class PFavorite
                 favorite.LFavoriteEntry.LEntryLanguage));
         }
 
+        PTwin.PTwinNameApply(
+            _pRosterList, row => row.PRosterItemHeadword, (row, name) => row.PRosterItemName = name);
+
         PRosterEmpty.Visibility = _pRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PRosterSelect(_pRosterEntry);

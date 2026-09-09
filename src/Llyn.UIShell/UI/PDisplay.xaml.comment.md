@@ -110,3 +110,8 @@ The language shown now is compared before the image is set.
 
 The reading view draws a headword exactly as the editor does.
 Both ask the same pack, so the two views never differ in family or size.
+
+### `PCompassUpdate();`
+
+The contents are rebuilt at the end of showing an entry, after every section has been given its visibility.
+Rebuilding earlier would list sections the entry is about to collapse.

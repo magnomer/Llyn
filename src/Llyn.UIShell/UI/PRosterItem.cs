@@ -11,6 +11,7 @@ internal sealed class PRosterItem : INotifyPropertyChanged
     {
         PRosterItemId = id;
         PRosterItemHeadword = headword;
+        PRosterItemName = headword;
         PRosterItemLanguage = language;
         PRosterItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -18,6 +19,8 @@ internal sealed class PRosterItem : INotifyPropertyChanged
     public string PRosterItemId { get; }
 
     public string PRosterItemHeadword { get; }
+
+    public string PRosterItemName { get; internal set; }
 
     public string PRosterItemLanguage { get; }
 

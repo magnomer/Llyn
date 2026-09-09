@@ -37,6 +37,8 @@ public partial class PDisplay : UserControl
         PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
         PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
         PVolume.AddHandler(KeyUpEvent, new KeyEventHandler(PVolumeSave), true);
+
+        PCompassAttach();
     }
 
     internal void PDisplayAttach(PWindow host, LEngine engine)
@@ -146,6 +148,8 @@ public partial class PDisplay : UserControl
 
         PDisplayEmpty.Visibility = Visibility.Collapsed;
         PDisplayContents.Visibility = Visibility.Visible;
+
+        PCompassUpdate();
     }
 
     internal void PDisplayClear()
@@ -170,6 +174,8 @@ public partial class PDisplay : UserControl
         PDisplayNoteSection.Visibility = Visibility.Collapsed;
         PDisplayContents.Visibility = Visibility.Collapsed;
         PDisplayEmpty.Visibility = Visibility.Visible;
+
+        PCompassClear();
     }
 
     internal void PDisplayClose()
@@ -296,6 +302,9 @@ public partial class PDisplay : UserControl
                 unreadable,
                 string.Empty));
         }
+
+        PTwin.PTwinNameApply(
+            _pDisplayIncoming, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
 
         PDisplayIncomingSection.Visibility = _pDisplayIncoming.Count == 0
             ? Visibility.Collapsed

@@ -60,6 +60,7 @@ The row is never hidden, because a missing row and an empty field are different 
 
 Reads the referring sides of one Situation, itemized rather than counted.
 An empty result is shown rather than hidden: a Situation nothing references is reachable only here.
+Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
 ## `private void PCitationFind()`
 

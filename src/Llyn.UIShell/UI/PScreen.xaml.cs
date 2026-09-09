@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -27,7 +27,7 @@ public partial class PScreen : UserControl
 
     private bool _pScreenReady;
 
-    private WebView2? _pScreenBrowser;
+    private WebView2CompositionControl? _pScreenBrowser;
 
     private string _pScreenPaper = string.Empty;
 
@@ -218,7 +218,7 @@ public partial class PScreen : UserControl
     private async Task PScreenPageShow()
     {
         string paper = _pScreenPaper;
-        WebView2 browser = _pScreenBrowser ??= PScreenBrowserCreate();
+        WebView2CompositionControl browser = _pScreenBrowser ??= PScreenBrowserCreate();
 
         try
         {
@@ -259,9 +259,9 @@ public partial class PScreen : UserControl
         browser.CoreWebView2.Navigate(PScreenHost);
     }
 
-    private WebView2 PScreenBrowserCreate()
+    private WebView2CompositionControl PScreenBrowserCreate()
     {
-        WebView2 browser = new()
+        WebView2CompositionControl browser = new()
         {
             DefaultBackgroundColor = System.Drawing.Color.Black,
         };
@@ -380,7 +380,7 @@ public partial class PScreen : UserControl
         _pScreenPending.Stop();
         PScreenStop();
 
-        if (_pScreenBrowser is not WebView2 browser)
+        if (_pScreenBrowser is not WebView2CompositionControl browser)
         {
             return;
         }

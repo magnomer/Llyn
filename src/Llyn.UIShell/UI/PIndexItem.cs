@@ -11,6 +11,7 @@ internal sealed class PIndexItem : INotifyPropertyChanged
     {
         PIndexItemId = id;
         PIndexItemHeadword = headword;
+        PIndexItemName = headword;
         PIndexItemLanguage = language;
         PIndexItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -18,6 +19,8 @@ internal sealed class PIndexItem : INotifyPropertyChanged
     public string PIndexItemId { get; }
 
     public string PIndexItemHeadword { get; }
+
+    public string PIndexItemName { get; internal set; }
 
     public string PIndexItemLanguage { get; }
 

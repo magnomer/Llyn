@@ -75,6 +75,9 @@ public partial class PPhonology
                 row.LCatalogPronunciationSound));
         }
 
+        PTwin.PTwinNameApply(
+            _pInventoryList, row => row.PInventoryItemHeadword, (row, name) => row.PInventoryItemName = name);
+
         PInventoryEmpty.Visibility = _pInventoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PInventorySelect(_pDisplayEntry);

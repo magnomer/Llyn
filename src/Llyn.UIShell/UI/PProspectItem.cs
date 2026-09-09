@@ -8,6 +8,7 @@ internal sealed class PProspectItem
     {
         PProspectItemId = id;
         PProspectItemHeadword = headword;
+        PProspectItemName = headword;
         PProspectItemLanguage = language;
         PProspectItemFlag = PEnsign.PEnsignFind(language);
         PProspectItemFresh = fresh;
@@ -16,6 +17,8 @@ internal sealed class PProspectItem
     public string PProspectItemId { get; }
 
     public string PProspectItemHeadword { get; }
+
+    public string PProspectItemName { get; internal set; }
 
     public string PProspectItemLanguage { get; }
 

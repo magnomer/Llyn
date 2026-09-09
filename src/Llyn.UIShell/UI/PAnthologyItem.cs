@@ -13,6 +13,7 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
     {
         PAnthologyItemId = example.LExampleId;
         PAnthologyItemText = PAnthologyTextRead(example.LExampleText, unreadable) ?? unwritten;
+        PAnthologyItemName = PAnthologyItemText;
         PAnthologyItemLanguage = example.LExampleLanguage;
         PAnthologyItemFlag = PEnsign.PEnsignFind(example.LExampleLanguage);
         PAnthologyItemSource = source;
@@ -22,6 +23,8 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
     public string PAnthologyItemId { get; }
 
     public string PAnthologyItemText { get; }
+
+    public string PAnthologyItemName { get; internal set; }
 
     public string PAnthologyItemLanguage { get; }
 

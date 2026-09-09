@@ -11,6 +11,7 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
     {
         PInventoryItemId = id;
         PInventoryItemHeadword = headword;
+        PInventoryItemName = headword;
         PInventoryItemLanguage = language;
         PInventoryItemSound = sound;
         PInventoryItemPronunciation = sound.Length == 0 ? "[ ]" : $"[{sound}]";
@@ -20,6 +21,8 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
     public string PInventoryItemId { get; }
 
     public string PInventoryItemHeadword { get; }
+
+    public string PInventoryItemName { get; internal set; }
 
     public string PInventoryItemLanguage { get; }
 

@@ -43,6 +43,7 @@ An ordering says in which order the entries are offered, never which one is show
 Refills the index with the entries the engine returns for the query and the ordering.
 An empty box lists everything.
 The display is not touched: the search says which entries are offered, never which one is shown.
+Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
 ### `if (!PLibraryLeaveConfirm())`
 

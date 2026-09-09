@@ -11,6 +11,7 @@ internal sealed class PMembershipItem : INotifyPropertyChanged
     {
         PMembershipItemId = id;
         PMembershipItemHeadword = headword;
+        PMembershipItemName = headword;
         PMembershipItemLanguage = language;
         PMembershipItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -18,6 +19,8 @@ internal sealed class PMembershipItem : INotifyPropertyChanged
     public string PMembershipItemId { get; }
 
     public string PMembershipItemHeadword { get; }
+
+    public string PMembershipItemName { get; internal set; }
 
     public string PMembershipItemLanguage { get; }
 

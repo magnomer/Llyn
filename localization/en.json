@@ -1,4 +1,4 @@
-{
+﻿{
   "terms.product": "Llyn",
   "terms.exit": "exit",
   "terms.minimize": "minimize",
@@ -175,6 +175,7 @@
     "Display.TranslatedEmpty": "No entries link here yet",
     "Display.Note": "Note",
     "Display.Unselected": "Select an entry to read it",
+    "Contents.Title": "Contents",
     "Speech.Title": "Part of speech",
     "Speech.Empty": "This language declares no parts of speech",
     "Speech.Absent": "No part of speech matches what you typed",

@@ -10,3 +10,9 @@ The two panels list the same entries but reach them through different questions.
 The flag is resolved once for the language and handed to the row, not read from disk by the row.
 A row is built while its list is being filled, and reading a file there would stall the fill.
 The row announces its chosen flag, so the mark moves without the list being rebuilt.
+
+## `public string PMembershipItemName`
+
+The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
+`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`PMembershipItemHeadword` keeps the plain headword for everything that is not display.

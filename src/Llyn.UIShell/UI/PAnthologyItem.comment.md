@@ -29,3 +29,9 @@ The catalog carries it and not only the display.
 Whether this row is the one the panel stands on, which the row template paints an accent edge for.
 It is the only value of the row that changes after the row is built.
 The panel sets it instead of refilling the list, so the catalog keeps its scroll position.
+
+## `public string PAnthologyItemName`
+
+The sentence as the row shows it, numbered `(1)`, `(2)` while another row carries the same sentence.
+`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`PAnthologyItemText` keeps the plain sentence for everything that is not display.

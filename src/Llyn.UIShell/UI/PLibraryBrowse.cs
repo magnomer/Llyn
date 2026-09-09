@@ -71,6 +71,9 @@ public partial class PLibrary
             _pIndexList.Add(new PIndexItem(entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
         }
 
+        PTwin.PTwinNameApply(
+            _pIndexList, row => row.PIndexItemHeadword, (row, name) => row.PIndexItemName = name);
+
         PIndexEmpty.Visibility = _pIndexList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PIndexSelect(_pDisplayEntry);

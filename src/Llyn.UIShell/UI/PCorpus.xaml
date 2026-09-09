@@ -181,7 +181,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PAnthologyItemFlag}" Stretch="Uniform" />
-                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PAnthologyItemText}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PAnthologyItemName}" />
                                     <StackPanel Grid.Column="2" Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
                                         <TextBlock Style="{StaticResource Theme.Anthology.Meta}" Text="{Binding PAnthologyItemLanguage}" />
                                         <TextBlock Style="{StaticResource Theme.Catalog.Dot}" />
@@ -234,7 +234,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemHeadword}" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemName}" TextTrimming="CharacterEllipsis" />
                                                         <TextBlock Margin="9,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PUsageItemOwner}" />
                                                     </StackPanel>
                                                     <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PUsageItemTitle}" TextTrimming="CharacterEllipsis" />

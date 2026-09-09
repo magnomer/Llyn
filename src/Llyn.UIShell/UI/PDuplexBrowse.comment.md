@@ -19,6 +19,7 @@ Changing one side leaves the other where it was.
 Refills one side's matches from its query.
 An empty query stands for no matches rather than for every entry.
 The list hides itself when it has nothing to offer.
+Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
 ## `private bool PDuplexEntryShow(string id, PDisplay display)`
 

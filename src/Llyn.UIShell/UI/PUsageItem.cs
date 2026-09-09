@@ -10,6 +10,7 @@ internal sealed class PUsageItem
         PUsageItemId = usage.LUsageId;
         PUsageItemEntry = usage.LUsageEntry;
         PUsageItemHeadword = usage.LUsageHeadword;
+        PUsageItemName = usage.LUsageHeadword;
         PUsageItemLanguage = usage.LUsageLanguage;
         PUsageItemOwner = owner;
         PUsageItemTitle = usage.LUsageTitle.LStateValueState switch
@@ -26,6 +27,8 @@ internal sealed class PUsageItem
     public string PUsageItemEntry { get; }
 
     public string PUsageItemHeadword { get; }
+
+    public string PUsageItemName { get; internal set; }
 
     public string PUsageItemLanguage { get; }
 

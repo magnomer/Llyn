@@ -124,6 +124,9 @@ public partial class PEditor
             _pProspectItem.Add(new PProspectItem(string.Empty, word, language, true));
         }
 
+        PTwin.PTwinNameApply(
+            _pProspectItem, row => row.PProspectItemHeadword, (row, name) => row.PProspectItemName = name);
+
         _pProspectCard = card;
         PProspect.PlacementTarget = PLinkBoxFind(card) ?? (UIElement)PContents;
         PProspect.IsOpen = true;

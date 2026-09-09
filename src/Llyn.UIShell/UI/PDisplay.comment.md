@@ -50,3 +50,15 @@ A recording is played the same way where it is read and where it is chosen.
 
 The parts of speech stand on a row of their own, as they do in the editor.
 Sharing the pronunciation row put them beside a chip that the editor puts a button beside.
+
+## `<StackPanel x:Name="PCompass" HorizontalAlignment="Right" VerticalAlignment="Top" ...>`
+
+The floating contents stand over the reading surface rather than beside it.
+A column of their own would take width from the entry, and the panel is already narrowed by the seam beside it.
+Floating also lets the comparison panel carry one on each side without either half paying for it.
+The reader who wants that width back folds the panel away with the toggle above it.
+The toggle stays, because a fold the reader cannot undo is a feature they have lost.
+The toggle stands at the left edge of the panel it opens rather than the right.
+The right edge of that row belongs to the delete button every panel holding a Display puts there.
+The column keeps its width while folded, so the toggle does not slide under that button when the panel goes away.
+The behavior lives in [PCompass.cs](PCompass.comment.md).

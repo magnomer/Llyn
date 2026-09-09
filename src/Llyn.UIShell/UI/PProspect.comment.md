@@ -42,6 +42,7 @@ One opened because a committed word was ambiguous selects its first row, since t
 
 The create row stands after the matches rather than among them.
 It carries the typed word untouched, because that word is what the tentative entry will be called.
+Rows sharing a headword are numbered afterwards, so the reader can tell two entries apart.
 
 ### `private IReadOnlyList<string> PProspectLanguageRead()`
 

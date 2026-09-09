@@ -57,6 +57,71 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+            <Style x:Key="Theme.Compass.Choice" TargetType="Button">
+                <Setter Property="Margin" Value="0,0,0,1" />
+                <Setter Property="Padding" Value="9,5" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="PSurface"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding PCompassItemCurrent}" Value="True">
+                        <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="Theme.Compass.Number" TargetType="TextBlock">
+                <Setter Property="Width" Value="17" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <DataTemplate x:Key="Theme.Compass.Row">
+                <Button Click="PCompassRowHandle" Style="{StaticResource Theme.Compass.Choice}">
+                    <Grid Margin="{Binding PCompassItemIndent}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Style="{StaticResource Theme.Compass.Number}" Text="{Binding PCompassItemNumber}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Text="{Binding PCompassItemName}"
+                            TextTrimming="CharacterEllipsis" />
+                    </Grid>
+                </Button>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -209,7 +274,7 @@
                                         </Border>
 
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemHeadword}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemName}" TextTrimming="CharacterEllipsis" />
                                             <TextBlock Style="{StaticResource Theme.Usage.Detail}" Text="{Binding PUsageItemTitle}" />
                                         </StackPanel>
 
@@ -236,5 +301,28 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
+
+        <StackPanel x:Name="PCompass" Width="216" Margin="0,20,26,0" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed">
+            <ToggleButton x:Name="PCompassSwitch" HorizontalAlignment="Left" Click="PCompassSwitchHandle" IsChecked="True" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Contents.Title}">
+                <Path
+                    Width="14"
+                    Height="12"
+                    Data="M 0.75,1 H 13.25 M 0.75,6 H 13.25 M 0.75,11 H 9.25"
+                    SnapsToDevicePixels="True"
+                    Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                    StrokeEndLineCap="Round"
+                    StrokeStartLineCap="Round"
+                    StrokeThickness="1.5" />
+            </ToggleButton>
+
+            <Border x:Name="PCompassSurface" Margin="0,6,0,0" Style="{StaticResource Theme.Popup.Surface}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Contents.Title}" />
+                    <ScrollViewer MaxHeight="326" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="PCompassList" ItemTemplate="{StaticResource Theme.Compass.Row}" />
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </StackPanel>
     </Grid>
 </UserControl>

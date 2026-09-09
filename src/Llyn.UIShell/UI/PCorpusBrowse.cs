@@ -109,6 +109,9 @@ public partial class PCorpus
                 unwritten));
         }
 
+        PTwin.PTwinNameApply(
+            _pAnthologyList, row => row.PAnthologyItemText, (row, name) => row.PAnthologyItemName = name);
+
         PAnthologyEmpty.Visibility = _pAnthologyList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PAnthologySelect(_pExcerptExample);
@@ -226,6 +229,9 @@ public partial class PCorpus
                 unreadable,
                 unnamed));
         }
+
+        PTwin.PTwinNameApply(
+            _pQuotationList, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
 
         PQuotationEmpty.Visibility = _pQuotationList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }

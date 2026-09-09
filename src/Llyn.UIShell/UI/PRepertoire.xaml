@@ -205,7 +205,7 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemHeadword}" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemName}" TextTrimming="CharacterEllipsis" />
                                                         <TextBlock Margin="9,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PUsageItemOwner}" />
                                                     </StackPanel>
                                                     <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PUsageItemTitle}" TextTrimming="CharacterEllipsis" />

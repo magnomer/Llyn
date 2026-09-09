@@ -26,6 +26,7 @@ Refills the catalog with the rows the engine returns, already matched and alread
 The panel names the ordering and the query and decides nothing else about either.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open editor keeps its selection either way, because the row may be the one being written.
+Rows sharing a sentence are numbered afterwards, so the reader can tell them apart.
 
 ## `internal void PAnthologyExampleShow(string id)`
 
@@ -43,6 +44,7 @@ An unwritten value reads the unrecorded mark in the muted colour, so a blank row
 
 Reads everything quoting the Example, and names each row by the kind of side it is.
 An Entry, a Meaning and a Collocation quote on their own terms, so the row says which.
+Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
 ## `private void PQuotationHandle(object sender, RoutedEventArgs e)`
 

@@ -34,6 +34,7 @@ The ordering is the same one whatever language names it.
 The engine returns each matching entry already carrying the pronunciation stored for it.
 An entry with no pronunciation sorts last under a pronunciation ordering.
 It sorts first under the ordering that looks for what is still missing.
+Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
 ### `internal void PSequenceRestore(LCatalogOrder order)`
 

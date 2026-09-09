@@ -61,6 +61,7 @@ It is called wherever the shown entry changes, so the mark and the reader never 
 
 The entry list is never refilled on its own.
 It is refilled whenever the catalog is, because the chosen tag may have just changed or vanished.
+Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
 ### `_pDirectoryChoice = item.PDirectoryItemChosen ? null : item.PDirectoryItemText;`
 
