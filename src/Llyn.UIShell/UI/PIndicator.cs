@@ -10,20 +10,19 @@ internal static class PIndicator
     private const string PIndicatorVerticalKey = "Theme.ScrollBar.Vertical.Template";
     private const string PIndicatorHorizontalKey = "Theme.ScrollBar.Horizontal.Template";
     private const string PIndicatorGutterKey = "Theme.Scroll.Gutter.Template";
-    private const string PIndicatorCatalogKey = "Theme.Scroll.Catalog.Template";
-    private const string PIndicatorCompactKey = "Theme.ScrollBar.Catalog.Template";
-    private const string PIndicatorGutterSize = "40";
+    private const string PIndicatorLaneSize = "14";
+    private const string PIndicatorRailSize = "10";
+    private const string PIndicatorRailRadius = "5";
+    private const string PIndicatorThumbLength = "40";
 
     internal static void PIndicatorApply(ResourceDictionary resources)
     {
         resources[PIndicatorVerticalKey] = PIndicatorTemplateBuild(Orientation.Vertical);
         resources[PIndicatorHorizontalKey] = PIndicatorTemplateBuild(Orientation.Horizontal);
         resources[PIndicatorGutterKey] = PIndicatorGutterBuild();
-        resources[PIndicatorCatalogKey] = PIndicatorGutterBuild("6");
-        resources[PIndicatorCompactKey] = PIndicatorTemplateBuild(Orientation.Vertical, true);
     }
 
-    private static ControlTemplate PIndicatorGutterBuild(string size = PIndicatorGutterSize)
+    private static ControlTemplate PIndicatorGutterBuild()
     {
         string markup = $$$"""
             <ControlTemplate
@@ -33,11 +32,11 @@ internal static class PIndicator
                 <Grid Background="{TemplateBinding Background}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition x:Name="PScrollColumn" Width="{{{size}}}" />
+                        <ColumnDefinition x:Name="PScrollColumn" Width="0" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
-                        <RowDefinition x:Name="PScrollRow" Height="{{{size}}}" />
+                        <RowDefinition x:Name="PScrollRow" Height="0" />
                     </Grid.RowDefinitions>
                     <ScrollContentPresenter
                         x:Name="PART_ScrollContentPresenter"
@@ -51,6 +50,11 @@ internal static class PIndicator
                         x:Name="PART_VerticalScrollBar"
                         Grid.Row="0"
                         Grid.Column="1"
+                        Width="{{{PIndicatorLaneSize}}}"
+                        MinWidth="{{{PIndicatorLaneSize}}}"
+                        Margin="0"
+                        HorizontalAlignment="Right"
+                        Template="{DynamicResource {{{PIndicatorVerticalKey}}}}"
                         Maximum="{TemplateBinding ScrollableHeight}"
                         Orientation="Vertical"
                         ViewportSize="{TemplateBinding ViewportHeight}"
@@ -60,6 +64,11 @@ internal static class PIndicator
                         x:Name="PART_HorizontalScrollBar"
                         Grid.Row="1"
                         Grid.Column="0"
+                        Height="{{{PIndicatorLaneSize}}}"
+                        MinHeight="{{{PIndicatorLaneSize}}}"
+                        Margin="0"
+                        VerticalAlignment="Bottom"
+                        Template="{DynamicResource {{{PIndicatorHorizontalKey}}}}"
                         Maximum="{TemplateBinding ScrollableWidth}"
                         Orientation="Horizontal"
                         ViewportSize="{TemplateBinding ViewportWidth}"
@@ -67,11 +76,11 @@ internal static class PIndicator
                         Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
                 </Grid>
                 <ControlTemplate.Triggers>
-                    <Trigger Property="VerticalScrollBarVisibility" Value="Disabled">
-                        <Setter TargetName="PScrollColumn" Property="Width" Value="0" />
+                    <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
+                        <Setter TargetName="PScrollColumn" Property="Width" Value="{{{PIndicatorLaneSize}}}" />
                     </Trigger>
-                    <Trigger Property="HorizontalScrollBarVisibility" Value="Disabled">
-                        <Setter TargetName="PScrollRow" Property="Height" Value="0" />
+                    <Trigger Property="ComputedHorizontalScrollBarVisibility" Value="Visible">
+                        <Setter TargetName="PScrollRow" Property="Height" Value="{{{PIndicatorLaneSize}}}" />
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
@@ -80,30 +89,26 @@ internal static class PIndicator
         return (ControlTemplate)XamlReader.Parse(markup);
     }
 
-    private static ControlTemplate PIndicatorTemplateBuild(Orientation orientation, bool compact = false)
+    private static ControlTemplate PIndicatorTemplateBuild(Orientation orientation)
     {
         string direction = orientation == Orientation.Vertical ? "True" : "False";
         string decrease = orientation == Orientation.Vertical ? "PageUpCommand" : "PageLeftCommand";
         string increase = orientation == Orientation.Vertical ? "PageDownCommand" : "PageRightCommand";
-        string rail = orientation == Orientation.Vertical
-            ? "Width=\"16\" VerticalAlignment=\"Stretch\""
-            : "Height=\"16\" HorizontalAlignment=\"Stretch\"";
+        string inset = orientation == Orientation.Vertical ? "4,0,0,0" : "0,4,0,0";
         string thumb = orientation == Orientation.Vertical
-            ? "MinHeight=\"40\" Margin=\"6,0\""
-            : "MinWidth=\"40\" Margin=\"0,6\"";
-        if (compact)
-        {
-            rail = "Width=\"6\" VerticalAlignment=\"Stretch\"";
-            thumb = "MinHeight=\"40\" Margin=\"0\"";
-        }
+            ? $"MinHeight=\"{PIndicatorThumbLength}\""
+            : $"MinWidth=\"{PIndicatorThumbLength}\"";
+        string rail = orientation == Orientation.Vertical
+            ? $"Width=\"{PIndicatorRailSize}\" HorizontalAlignment=\"Right\" VerticalAlignment=\"Stretch\""
+            : $"Height=\"{PIndicatorRailSize}\" VerticalAlignment=\"Bottom\" HorizontalAlignment=\"Stretch\"";
 
         string markup = $$$"""
             <ControlTemplate
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 TargetType="{x:Type ScrollBar}">
-                <Grid Background="Transparent" SnapsToDevicePixels="True">
-                    <Border {{{rail}}} Background="{DynamicResource Theme.Line}" CornerRadius="2" Opacity="0.34" />
+                <Grid Margin="{{{inset}}}" Background="Transparent" SnapsToDevicePixels="True">
+                    <Border {{{rail}}} Background="{DynamicResource Theme.Line}" CornerRadius="{{{PIndicatorRailRadius}}}" Opacity="0.34" />
                     <Track x:Name="PART_Track" IsDirectionReversed="{{{direction}}}" Orientation="{TemplateBinding Orientation}">
                         <Track.DecreaseRepeatButton>
                             <RepeatButton
@@ -119,13 +124,14 @@ internal static class PIndicator
                             </RepeatButton>
                         </Track.DecreaseRepeatButton>
                         <Track.Thumb>
-                            <Thumb {{{thumb}}} Cursor="Hand">
+                            <Thumb {{{thumb}}} Margin="0" Cursor="Hand">
                                 <Thumb.Template>
                                     <ControlTemplate TargetType="Thumb">
                                         <Border
                                             x:Name="PSurface"
+                                            {{{rail}}}
                                             Background="{DynamicResource Theme.Muted}"
-                                            CornerRadius="8"
+                                            CornerRadius="{{{PIndicatorRailRadius}}}"
                                             Opacity="0.42" />
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">

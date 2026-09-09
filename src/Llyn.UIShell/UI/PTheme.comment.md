@@ -2,21 +2,28 @@
 
 ## `<Style TargetType="ScrollBar">`
 
-Scroll viewers use a clear, comfortably sized rail instead of the platform scrollbar.
-Its leading margin leaves a gutter between the document and the rail.
-It disappears with the scrollbar when no scrolling is needed.
+Every rail in the app is one design at one size, upright or sideways.
+A page, a catalog, a popup and a text field all show the same thread.
 The two control templates are registered by PIndicator.
 WPF requires a PART_Track name.
 That name must stay out of the audited XAML naming surface.
 
+## `<Style TargetType="ScrollViewer">`
+
+The lane template is the default for every scroll viewer, not an opt-in.
+A viewer the app never names, inside a dropdown or a text field, would otherwise keep the platform one.
+That is how a rail nobody styled used to appear over the content at a size nobody chose.
+PIndicator registers the template.
+
 ## `<Style x:Key="Theme.Scroll.Gutter" TargetType="ScrollViewer">`
 
-Every scrolling page of the app reserves the lane its rail needs.
-The lane is there before the page is long enough to scroll.
-A page therefore never reflows when its content grows past one screen.
-The rail lands beside the page instead of over it.
-Dropdowns and popups keep the plain scroll viewer, where a held lane would only look empty.
-PIndicator registers the template.
+The name a page uses to ask for the lane it already has.
+It says in the markup what the default would give it anyway.
+
+## `<Style x:Key="Theme.Scroll.Lane" TargetType="ScrollViewer">`
+
+A band that scrolls sideways and never up.
+It holds the same rail as everything else, turned on its side.
 
 ## `<Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Template}" />`
 
@@ -186,6 +193,13 @@ It carries no outline, because a region is not an object and an outline at one p
 The outline it once carried was the only thing marking the region, which is why the region read as unfinished.
 What separates one region from the next is a seam, not a box drawn round each of them.
 
+## `<Style x:Key="Theme.Panel.Helper" TargetType="Border">`
+
+The region a helper stands on, the same region shape carried on the helper ground instead of the panel's own.
+A helper is an aid to the work rather than the work, and a reader must be able to see that before reading a word of it.
+The ground is one step cooler and deeper than the canvas, which is enough to read as another kind of region.
+It stays inside the program's own blue-grey, because a helper is a quieter thing than a choice or a verdict and must not out-colour either.
+
 ## `<Style x:Key="Theme.Panel.SeamRow" TargetType="Rectangle">`
 
 The hairline laid across a panel where its controls end and its contents begin.
@@ -343,6 +357,13 @@ The search field inside the bar, on one line and without a frame.
 It takes the plain template, which draws the placeholder but no frame of its own.
 The bar around it already frames the dropper, the divider and the field as one control.
 
+## `<Style x:Key="Theme.Search.Helper" TargetType="ToggleButton">`
+
+A folding control standing next to the bar rather than inside it, for a panel the search bar does not own.
+It borrows the bar's height and corner, so the two shapes read as one row of controls over the catalog.
+It carries a marked label like the command row does, and the mark is left out when no icon is named.
+An open panel is shown by the soft accent ground the mode buttons use, because the fold is a state and not an action.
+
 ## `<Style x:Key="Theme.Catalog.Row" TargetType="Button">`
 
 One row of a panel's catalog, drawn on nothing until it is pointed at.
@@ -368,6 +389,6 @@ Theme.Catalog.HeaderMargin brings each catalog's sort and search row to the same
 It offsets the panel's 34-pixel inset, leaving the shared 6-pixel outer gutter, and ends where the row surface ends before the scroll rail.
 Theme.Catalog.Frame offsets the 34-pixel panel margin to leave a 6-pixel left gutter.
 Theme.Catalog.Middle offsets the seam 16 pixels before an interior column to leave the same 6-pixel gutter.
-Both end at the next seam; Theme.Catalog.Scroll reserves the final 6 pixels for its compact vertical rail.
+Both end at the next seam, where Theme.Catalog.Scroll opens its lane once the rows outrun the panel.
 Library, Sound, Tags (including matching entries), Situations, Examples, Sources and Favorites share these styles.
-The document and editor scroll viewers retain their wider lanes.
+The document and editor scroll viewers hold the same lane at the same width.

@@ -18,6 +18,7 @@ The articulation fold stands outside this bar, because it shapes the editor rath
 
 The fold control of the input aid, standing beside the ordering and the search.
 The three controls that shape what the panel shows are read as one row.
+It carries the height, the corner and the marked label of the bar beside it, so the row reads as one control rather than two shapes.
 The aid is two full charts, so it is folded away until it is asked for.
 
 ## `<UserControl.Resources>`
@@ -34,6 +35,7 @@ The mode toggle stands there rather than inside the display, because the display
 ## `<local:PArticulation ... Grid.ColumnSpan="2" />`
 
 The input aid spans both columns.
+It is bled to both panel edges like the seams, because its ground is a band across the panel rather than a box inside it.
 It serves the pronunciation field on the right, and the reader reads the catalog on the left.
 Neither column owns it.
 

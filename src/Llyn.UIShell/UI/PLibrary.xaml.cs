@@ -30,6 +30,9 @@ public partial class PLibrary : UserControl
 
         PEditor.PEditorAttach(host, engine, "Library", null);
         PEditor.PEditorChangeNotice = changed => PLibraryStore.IsEnabled = changed;
+
+        IsVisibleChanged += (_, _) => PLibraryCommandApply();
+        PLibraryCommandApply();
     }
 
     internal void PLibraryReset()

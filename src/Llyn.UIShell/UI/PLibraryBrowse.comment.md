@@ -121,6 +121,14 @@ Nothing unsaved means nothing to ask about.
 The shared display draws the entry, and this panel decides what the toggle may then do.
 An entry is selected now, so it can be written as well as read.
 
+### `internal void PLibraryCommandApply()`
+
+The delete and export buttons act on the entry being read.
+Both are derived from that one fact rather than switched on at each place an entry appears.
+An entry can be shown by a click, by an announcement, or by a restored tab.
+Deriving the state means no such path can leave a button contradicting the panel.
+It is applied again when the panel becomes visible, so a tab never returns holding a stale answer.
+
 ### `private void PLibraryClear()`
 
 The panel must not assume an entry is selected.

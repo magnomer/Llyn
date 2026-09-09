@@ -1,4 +1,4 @@
-﻿{
+{
   "terms.product": "Llyn",
   "terms.exit": "exit",
   "terms.minimize": "minimize",
@@ -92,6 +92,13 @@
     "Scribe.Delete": "Delete",
     "Scribe.DeleteConfirm": "Delete this entry? It cannot be undone.",
     "Scribe.DeleteFailed": "The entry could not be deleted.",
+    "Export.Title": "Export entry",
+    "Export.Markup": "Llyn Markup",
+    "Export.Html": "Web Page",
+    "Export.Markdown": "Markdown",
+    "Export.Docx": "Word Document",
+    "Export.Pdf": "PDF Document",
+    "Export.Failed": "The entry could not be exported.",
     "Sound.Search": "Search pronunciations",
     "Sound.Empty": "No entries yet",
     "Sound.LoadFailed": "The entry could not be opened.",

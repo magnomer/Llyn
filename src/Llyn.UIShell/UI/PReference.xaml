@@ -122,8 +122,8 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+        <local:PRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="PReferenceFresh"
@@ -146,7 +146,6 @@
             </Border>
             <Border
                 x:Name="PReferenceMode"
-                HorizontalAlignment="Right"
                 IsEnabled="False"
                 Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
@@ -167,7 +166,7 @@
                         Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
                 </StackPanel>
             </Border>
-        </Grid>
+        </local:PRail>
 
         <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
             <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">

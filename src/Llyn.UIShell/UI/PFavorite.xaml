@@ -110,8 +110,8 @@
                 Text="{DynamicResource Favorite.Empty}" />
         </Grid>
 
-        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+        <local:PRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="PFavoriteStore"
@@ -135,7 +135,6 @@
             </Border>
             <Border
                 x:Name="PFavoriteMode"
-                HorizontalAlignment="Right"
                 IsEnabled="False"
                 Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
@@ -156,7 +155,7 @@
                         Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
                 </StackPanel>
             </Border>
-        </Grid>
+        </local:PRail>
 
         <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>

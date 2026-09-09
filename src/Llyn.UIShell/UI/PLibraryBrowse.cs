@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -113,7 +113,6 @@ public partial class PLibrary
 
         _pDisplayEntry = id;
         PIndexSelect(id);
-        PLibraryBin.IsEnabled = true;
         PLibraryEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -128,8 +127,9 @@ public partial class PLibrary
         {
             _pDisplayEntry = id;
             PIndexSelect(id);
-        PLibraryBin.IsEnabled = true;
         }
+
+        PLibraryCommandApply();
 
         PIndexFind(PInquiry.Text ?? string.Empty);
 
@@ -242,6 +242,15 @@ public partial class PLibrary
     {
         PDisplay.PDisplayShow(id, draft);
         PLibraryMode.IsEnabled = true;
+        PLibraryCommandApply();
+    }
+
+    internal void PLibraryCommandApply()
+    {
+        bool standing = _pDisplayEntry is not null;
+
+        PLibraryBin.IsEnabled = standing;
+        PLibraryPortrait.IsEnabled = standing;
     }
 
     private void PLibraryClear()
@@ -252,7 +261,7 @@ public partial class PLibrary
         PEditor.PEditorReset();
         PLibraryScribeShow(false);
         PLibraryMode.IsEnabled = false;
-        PLibraryBin.IsEnabled = false;
+        PLibraryCommandApply();
     }
 
     private void PLibraryStoreHandle(object sender, RoutedEventArgs e)

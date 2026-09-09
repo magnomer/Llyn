@@ -19,6 +19,9 @@
     <SolidColorBrush x:Key="Theme.AccentPress" Color="{DynamicResource Theme.AccentPress.Color}" />
     <SolidColorBrush x:Key="Theme.AccentEdge" Color="{DynamicResource Theme.AccentEdge.Color}" />
     <SolidColorBrush x:Key="Theme.AccentSoft" Color="{DynamicResource Theme.AccentSoft.Color}" />
+    <SolidColorBrush x:Key="Theme.Helper" Color="{DynamicResource Theme.Helper.Color}" />
+    <SolidColorBrush x:Key="Theme.HelperSoft" Color="{DynamicResource Theme.HelperSoft.Color}" />
+    <SolidColorBrush x:Key="Theme.HelperEdge" Color="{DynamicResource Theme.HelperEdge.Color}" />
     <SolidColorBrush x:Key="Theme.Situation" Color="{DynamicResource Theme.Situation.Color}" />
     <SolidColorBrush x:Key="Theme.SituationSoft" Color="{DynamicResource Theme.SituationSoft.Color}" />
     <SolidColorBrush x:Key="Theme.SituationEdge" Color="{DynamicResource Theme.SituationEdge.Color}" />
@@ -43,9 +46,9 @@
     </Style>
 
     <Style TargetType="ScrollBar">
-        <Setter Property="Width" Value="28" />
-        <Setter Property="MinWidth" Value="28" />
-        <Setter Property="Margin" Value="12,0,0,0" />
+        <Setter Property="Width" Value="14" />
+        <Setter Property="MinWidth" Value="14" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template" Value="{DynamicResource Theme.ScrollBar.Vertical.Template}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -53,16 +56,22 @@
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width" Value="Auto" />
                 <Setter Property="MinWidth" Value="0" />
-                <Setter Property="Height" Value="28" />
-                <Setter Property="MinHeight" Value="28" />
-                <Setter Property="Margin" Value="0,12,0,0" />
+                <Setter Property="Height" Value="14" />
+                <Setter Property="MinHeight" Value="14" />
                 <Setter Property="Template" Value="{DynamicResource Theme.ScrollBar.Horizontal.Template}" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Theme.Scroll.Gutter" TargetType="ScrollViewer">
+    <Style TargetType="ScrollViewer">
         <Setter Property="Template" Value="{DynamicResource Theme.Scroll.Gutter.Template}" />
+    </Style>
+
+    <Style x:Key="Theme.Scroll.Gutter" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}" />
+
+    <Style x:Key="Theme.Scroll.Lane" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
     </Style>
 
     <Style x:Key="Theme.Caption.Button" TargetType="Button">
@@ -1085,6 +1094,10 @@
         <Setter Property="CornerRadius" Value="0" />
     </Style>
 
+    <Style x:Key="Theme.Panel.Helper" TargetType="Border" BasedOn="{StaticResource Theme.Panel.Surface}">
+        <Setter Property="Background" Value="{StaticResource Theme.HelperSoft}" />
+    </Style>
+
     <Style x:Key="Theme.Panel.SeamRow" TargetType="Rectangle">
         <Setter Property="Height" Value="1" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
@@ -1736,6 +1749,71 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
+    <Style x:Key="Theme.Search.Helper" TargetType="ToggleButton">
+        <Setter Property="Height" Value="46" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border
+                        x:Name="PSurface"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="13"
+                        SnapsToDevicePixels="True">
+                        <StackPanel Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                            <Rectangle
+                                x:Name="PSurfaceMark"
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Fill="{TemplateBinding Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Uniform">
+                                        <VisualBrush.Visual>
+                                            <svgc:SvgViewbox Width="16" Height="16" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="{TemplateBinding FontSize}"
+                                FontWeight="{TemplateBinding FontWeight}"
+                                Foreground="{TemplateBinding Foreground}"
+                                Text="{TemplateBinding Content}" />
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Tag" Value="{x:Null}">
+                            <Setter TargetName="PSurfaceMark" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.AccentEdge}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                            <Setter Property="FontWeight" Value="SemiBold" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Thickness x:Key="Theme.Catalog.HeaderMargin">-28,0,22,18</Thickness>
 
     <Style x:Key="Theme.Catalog.Frame" TargetType="Grid">
@@ -1746,18 +1824,9 @@
         <Setter Property="Margin" Value="-10,14,16,0" />
     </Style>
 
-    <Style x:Key="Theme.Catalog.Scroll" TargetType="ScrollViewer">
-        <Style.Resources>
-            <Style TargetType="ScrollBar" BasedOn="{StaticResource {x:Type ScrollBar}}">
-                <Setter Property="Width" Value="6" />
-                <Setter Property="MinWidth" Value="6" />
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="Template" Value="{DynamicResource Theme.ScrollBar.Catalog.Template}" />
-            </Style>
-        </Style.Resources>
+    <Style x:Key="Theme.Catalog.Scroll" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
-        <Setter Property="Template" Value="{DynamicResource Theme.Scroll.Catalog.Template}" />
     </Style>
 
     <Style x:Key="Theme.Catalog.Row" TargetType="Button">

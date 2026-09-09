@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Llyn.UIShell.PLibrary"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -110,8 +110,8 @@
                 Text="{DynamicResource List.Empty}" />
         </Grid>
 
-        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+        <local:PRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="PLibraryFresh"
@@ -133,6 +133,8 @@
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="pack://application:,,,/Llyn;component/icons/download-simple.svg" />
                     <Button
+                        x:Name="PLibraryPortrait"
+                        Click="PLibraryPortraitHandle"
                         Content="{DynamicResource Scribe.Export}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
@@ -146,7 +148,6 @@
             </Border>
             <Border
                 x:Name="PLibraryMode"
-                HorizontalAlignment="Right"
                 IsEnabled="False"
                 Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
@@ -167,9 +168,9 @@
                         Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
                 </StackPanel>
             </Border>
-        </Grid>
+        </local:PRail>
 
-        <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
+        <Border Grid.Row="1" Grid.Column="1" Margin="0,14,-18,-38" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>
                 <local:PDisplay x:Name="PDisplay" />
 

@@ -31,7 +31,7 @@ public partial class PPhonology : UserControl
         PEditor.PEditorAttach(host, engine, "Phonology", null);
         PEditor.PEditorChangeNotice = changed => PPhonologyStore.IsEnabled = changed;
 
-        PArticulation.PArticulationAttach(PEditor.PPronunciation);
+        PArticulation.PArticulationAttach(PProbe, PEditor.PPronunciation);
     }
 
     internal void PPhonologyReset()

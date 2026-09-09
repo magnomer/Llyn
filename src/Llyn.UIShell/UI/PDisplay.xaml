@@ -67,7 +67,7 @@
             VerticalAlignment="Center"
             Foreground="{StaticResource Theme.Muted}"
             Text="{DynamicResource Display.Unselected}" />
-        <ScrollViewer x:Name="PDisplayContents" Margin="30,18,0,30" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+        <ScrollViewer x:Name="PDisplayContents" Margin="30,18,0,0" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
             <StackPanel>
                 <Grid HorizontalAlignment="Left">
                     <Grid.ColumnDefinitions>

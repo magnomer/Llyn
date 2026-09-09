@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
+    <ProjectReference Include="..\Llyn.Media\Llyn.Media.csproj" />
     <ProjectReference Include="..\Llyn.ShellEngine\Llyn.ShellEngine.csproj" />
   </ItemGroup>
 

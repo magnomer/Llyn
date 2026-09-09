@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -29,6 +29,9 @@ internal static class PThemeLoader
             ["accentPress"] = "Theme.AccentPress.Color",
             ["accentEdge"] = "Theme.AccentEdge.Color",
             ["accentSoft"] = "Theme.AccentSoft.Color",
+            ["helper"] = "Theme.Helper.Color",
+            ["helperSoft"] = "Theme.HelperSoft.Color",
+            ["helperEdge"] = "Theme.HelperEdge.Color",
             ["situation"] = "Theme.Situation.Color",
             ["situationSoft"] = "Theme.SituationSoft.Color",
             ["situationEdge"] = "Theme.SituationEdge.Color",

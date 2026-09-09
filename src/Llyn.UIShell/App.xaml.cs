@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Llyn.Core;
+using Llyn.Media;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -45,6 +46,8 @@ public partial class LBootstrap : System.Windows.Application
             Shutdown(1);
             return;
         }
+
+        engine.LEnginePressApply(new LPressBrowser());
 
         LBootstrapRescueShow(engine.LEngineRescueRead());
 

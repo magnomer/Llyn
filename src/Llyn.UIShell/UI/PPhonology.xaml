@@ -93,14 +93,13 @@
             <ToggleButton
                 x:Name="PArticulationHelper"
                 Grid.Column="2"
-                Height="46"
-                Padding="16,0"
                 Content="{DynamicResource Articulation.Title}"
-                Style="{StaticResource Theme.Input.TogglePill}" />
+                Style="{StaticResource Theme.Search.Helper}"
+                Tag="pack://application:,,,/Llyn;component/icons/keyboard.svg" />
         </Grid>
 
-        <Grid Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <Border HorizontalAlignment="Left" Style="{StaticResource Theme.Command.Group}">
+        <local:PRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+            <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
                         x:Name="PPhonologyFresh"
@@ -130,7 +129,6 @@
             </Border>
             <Border
                 x:Name="PPhonologyMode"
-                HorizontalAlignment="Right"
                 IsEnabled="False"
                 Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
@@ -151,14 +149,14 @@
                         Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
                 </StackPanel>
             </Border>
-        </Grid>
+        </local:PRail>
 
         <local:PArticulation
             x:Name="PArticulation"
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="0,0,0,18"
+            Margin="-34,0,-34,0"
             Visibility="{Binding IsChecked, ElementName=PArticulationHelper, Converter={StaticResource Sound.Fold}}" />
 
         <Grid Grid.Row="2" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">

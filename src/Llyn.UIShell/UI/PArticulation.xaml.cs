@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -6,6 +7,10 @@ namespace Llyn.UIShell;
 
 public partial class PArticulation : UserControl
 {
+    private const double PArticulationGap = 12;
+
+    private readonly List<TextBox> _pArticulationTarget = [];
+
     private TextBox? _pArticulationField;
 
     public PArticulation()
@@ -16,10 +21,35 @@ public partial class PArticulation : UserControl
         PConsonantBuild();
     }
 
+    private void PArticulationLaneHandle(object sender, SizeChangedEventArgs e)
+    {
+        PArticulationPlace(e.NewSize.Width);
+    }
+
+    private void PArticulationPlace(double lane)
+    {
+        double vowel = PVowelChart.DesiredSize.Width;
+        double consonant = PConsonantChart.DesiredSize.Width;
+
+        if (vowel <= 0 || consonant <= 0)
+        {
+            return;
+        }
+
+        bool beside = vowel + PArticulationGap + consonant <= lane;
+
+        Grid.SetRow(PConsonantChart, beside ? 0 : 1);
+        Grid.SetColumn(PConsonantChart, beside ? 1 : 0);
+        PConsonantChart.Margin = beside
+            ? new Thickness(PArticulationGap, 0, 0, 0)
+            : new Thickness(0, PArticulationGap, 0, 0);
+    }
+
     internal void PArticulationAttach(params TextBox[] fields)
     {
         foreach (TextBox field in fields)
         {
+            _pArticulationTarget.Add(field);
             _pArticulationField ??= field;
             field.GotKeyboardFocus += PArticulationFocusHandle;
         }
@@ -45,7 +75,9 @@ public partial class PArticulation : UserControl
 
     private void PArticulationInsert(string character)
     {
-        if (_pArticulationField is not { IsEnabled: true } field)
+        TextBox? field = PArticulationTargetFind();
+
+        if (field is null)
         {
             return;
         }
@@ -57,6 +89,16 @@ public partial class PArticulation : UserControl
         field.SelectionStart = caret + character.Length;
         field.SelectionLength = 0;
         field.Focus();
+    }
+
+    private TextBox? PArticulationTargetFind()
+    {
+        if (_pArticulationField is { IsEnabled: true, IsVisible: true })
+        {
+            return _pArticulationField;
+        }
+
+        return _pArticulationTarget.Find(field => field is { IsEnabled: true, IsVisible: true });
     }
 
     private Grid PArticulationTableBuild(Grid table, int columns, int rows)

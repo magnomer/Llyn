@@ -12,6 +12,7 @@ Puts the panel to work on `engine`, the workspace the window opened.
 It binds its lists and subscribes to the engine, and reads nothing yet.
 The window fills it when it restores the stored ordering, and every change after that arrives as an announcement.
 So the panel is current whether or not its tab is the one in front.
+The command buttons are derived once here and again whenever the panel is shown.
 
 ## `internal void PLibraryReset()`
 

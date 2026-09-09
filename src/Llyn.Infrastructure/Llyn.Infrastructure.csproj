@@ -19,4 +19,8 @@
 
     <Content Include="..\..\languages\**\*.json" Link="languages\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\themes\default.json" LogicalName="Llyn.Infrastructure.Themes.default.json" />
+  </ItemGroup>
 </Project>
