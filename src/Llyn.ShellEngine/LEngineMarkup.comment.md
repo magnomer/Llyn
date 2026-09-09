@@ -128,37 +128,79 @@ Only its cards change, and only in their citations.
 
 ## `private void LEngineMarkupAttach(IReadOnlyList<LMarkup.LMarkupEntry> entries, IReadOnlyList<LEntryDraft> resolved, IReadOnlyList<LEntry> saved)`
 
-Attaches the translations after every entry in the document exists.
+Attaches the links that cross entries, after every entry in the document exists.
 
-A translation names another entry of the same file, and that entry may be declared later.
-An entry id is handed out by the store when the entry is written.
-So a translation cannot be resolved while the entries are still being written.
+A translation, a relation or a synonym names a row of the same file, declared anywhere in it.
+An id is handed out by the store when the row is written.
+So such a link cannot be resolved while the entries are still being written.
 Saving them first and pointing afterwards is the only order that lets a file point both ways.
-`LEngineTranslationSave` drops a name that is no entry, which is what keeps the first pass legal.
 
-Entries that declared no key can be named by nothing, so a file with none needs no second pass.
+The stored entries are loaded once and kept, because both walks below need them.
+The first walk names every row: entry keys from the document, sense keys from the cards.
+The second writes the links, and only then, because a relation may name a sense read later.
+Doing both in one walk would resolve a forward-pointing relation against a half-built map.
+
+Entries and senses that declared no key can be named by nothing, so a file with none needs no second walk.
 
 **Parameters**
 
 - `entries` — The entries as read, for the key each declared.
-- `resolved` — The same entries with their citations resolved, for the translations each card wrote.
+- `resolved` — The same entries with their citations resolved, for the links each card wrote.
 - `saved` — The stored entries, in the same order.
+
+## `private static void LEngineKeyRead(IReadOnlyList<LCardDraft> written, IReadOnlyList<LCardDraft> stored, Dictionary<string, string> named)`
+
+Records the stored row every card key names, so a link can be resolved against it.
+
+A sense key and an entry key share one namespace, which is why one map holds both.
+The two card lists line up the way the attaching walk needs them to, and for the same reason.
+Sub-senses are walked as well, because a sub-sense may be a relation's target.
+
+**Parameters**
+
+- `written` — The cards as read, holding the keys the file declared.
+- `stored` — The same cards as stored, holding the ids those keys stand for.
+- `named` — The map being filled, already holding the entry keys.
 
 ## `private void LEngineMarkupAttach(IReadOnlyList<LCardDraft> written, IReadOnlyList<LCardDraft> stored, IReadOnlyDictionary<string, string> named, bool collocation)`
 
-Walks the cards read beside the cards stored and writes each card's translations.
+Walks the cards read beside the cards stored and writes each card's outward links.
 
 The two lists line up because both are the same cards in the same order.
 The read cards are put through `LEngineCardRead` first, which is the filter the save path applied.
 A card carrying nothing was never written, so it must not consume a stored card's place.
-Sub-senses are walked the same way, because a sub-sense may translate as well.
+Sub-senses are walked the same way, because a sub-sense links as its parent does.
+
+A sense writes relations and a collocation writes synonym links, because that is where each is stored.
+Translations are written for both kinds.
 
 **Parameters**
 
-- `written` — The cards as read, holding the entry keys their translations named.
-- `stored` — The same cards as stored, holding the ids the translations attach to.
-- `named` — The stored entry id for every entry key the document declared.
+- `written` — The cards as read, holding the keys their links named.
+- `stored` — The same cards as stored, holding the ids the links attach to.
+- `named` — The stored row for every key the document declared, entries and senses alike.
 - `collocation` — Whether these cards are collocations rather than senses.
+
+## `private void LEngineRelationSave(string meaningId, IReadOnlyList<LRelationDraft> drafts, IReadOnlyDictionary<string, string> named)`
+
+Writes one sense's relations, each pointing at the stored row its key named.
+
+A key the map does not hold names a card that was never stored, and that relation is dropped.
+The reader has already refused a relation with no type and one with no target.
+So every relation reaching here is one the archive will accept.
+Position is left at zero, because the archive counts the siblings already stored.
+
+## `private void LEngineSynonymSave(string collocationId, IReadOnlyList<LSynonymDraft> drafts, IReadOnlyDictionary<string, string> named)`
+
+Writes one collocation's synonym links by the same rule a relation follows.
+
+## `private static bool LEngineTargetRead(string entry, string meaning, IReadOnlyDictionary<string, string> named, out string entryId, out string meaningId)`
+
+The stored row a target names, and which of the two kinds it is.
+
+A target names an entry or a sense and never both, so one of the two answers is always empty.
+The answer says whether the row was found at all, which is how a caller learns to drop the link.
+Both kinds of link resolve their target this way, so the rule is written once.
 
 ## `private string LEngineReferenceSave(LMarkup.LMarkupReference source, IReadOnlyDictionary<string, string> rows)`
 

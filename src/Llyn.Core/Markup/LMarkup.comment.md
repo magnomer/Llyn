@@ -63,6 +63,10 @@ An absent gloss and an empty one are one case, and the draft carries `null` for 
 Only a sense records it, so a collocation's meaning carries no `lang`.
 The reader takes the attribute wherever it stands and lets the writer decide where it belongs.
 
+A `<sense>` may declare a key, and the card carries it so the second pass can name the stored row.
+A collocation declares none, because nothing in the format points at a collocation.
+Relations belong to a sense and synonym links to a collocation, so each kind reads only its own.
+
 ## `private static LSentenceDraft LMarkupUseRead(LMarkupCatalog catalog, LMarkupToken token, int card, int place)`
 
 Reads one `<use>`: a position in the card that may quote an example and may state a frame.
@@ -120,6 +124,50 @@ Section 5 of the format spec states all three rules.
 Adds the entry one `<translation entry="...">` names.
 The key is kept as written, because the entry it names may be declared later in the file.
 A translation naming no entry records nothing.
+
+## `private static void LMarkupRelationRead(List<LRelationDraft> relations, IReadOnlyList<LMarkupToken> tokens, int first, int last, int card, int place)`
+
+Reads one `<relation>`: a type, an optional label, and the one target it points at.
+
+A relation is a block rather than a leaf, because its target is an element of its own.
+The type is required and a relation without one raises a `FormatException`.
+So is a relation with no `<target>`, which section 9 of the format spec refuses the file over.
+Both messages name the relation and the card, so the author can find the line.
+
+A `<target>` written twice is not an error and the last one wins.
+The reader is lenient about repetition everywhere else and this is no different.
+
+Only a sense reads relations, because the store hangs a relation off a sense.
+A `<relation>` inside a `<collocation>` is skipped, as a nested `<sense>` there is.
+
+**Parameters**
+
+- `relations` — The relations read so far for this card.
+- `tokens` — The whole token stream.
+- `first` — Where the `<relation>` block opens.
+- `last` — Where it closes.
+- `card` — The number of the card holding it, counted from one.
+- `place` — The number of this relation within that card, counted from one.
+
+## `private static void LMarkupSynonymRead(List<LSynonymDraft> interlinks, LMarkupToken token, int card, int place)`
+
+Reads one `<synonym entry|sense="...">`, which only a collocation carries.
+A synonym is a leaf and a relation is a block, so the two are read apart.
+The target rule is the same for both and lives in one place.
+
+## `private static LSynonymDraft LMarkupTargetRead(LMarkupToken token, string named)`
+
+The one row a `<target>` or a `<synonym>` names, as an entry key or a sense key.
+
+Naming both kinds, or neither, refuses the file, which section 9 of the spec states.
+The two elements share the rule, so they share the check rather than each writing one.
+The key is kept as written, because the row it names may be declared later in the file.
+The caller passes the wording that names the element at fault, so one message serves both.
+
+**Parameters**
+
+- `token` — The `<target>` or `<synonym>` as scanned.
+- `named` — How the message names this element, such as `Relation 1 of card 2`.
 
 ## `private static IEnumerable<LMarkupToken> LMarkupLeafRead(IReadOnlyList<LMarkupToken> tokens)`
 

@@ -55,8 +55,9 @@ A comparison that means "the same card" walks the lists itself.
   The list is one way: the target holds nothing pointing back.
 - `LCardDraftSynonym` — Always empty.
   Neither card template offers a Synonym control.
-  A synonym is a link to a stored Entry or Meaning, not text the card owns.
-  It is written through the engine's relation seam against a target the caller resolved.
+  This is free text the card would own, and it points at nothing.
+  The link a Collocation stores is `LCardDraftInterlink`, which is a different member.
+  The two share a word and are never merged.
   The member is kept so the card shape stays one shape for both kinds.
 - `LCardDraftTag` — The Tags the card carries, each one its own text, in the order they are shown.
   A Tag is its name, so the list holds plain text and no Tag is ever blank.
@@ -92,3 +93,14 @@ A comparison that means "the same card" walks the lists itself.
   That would move one card's text onto another card's row.
   A card carrying no id is a new card and is created.
   The form builds its cards without one, so nothing in the shell carries it until it chooses to.
+- `LCardDraftRelation` — The lexical relations this Meaning holds, in the order they are shown.
+  Only a Meaning holds them, because the store hangs a relation off a sense.
+  Each names an Entry or another Meaning, and exactly one of the two.
+  The name is a document key while the card comes from a file, and a stored id otherwise.
+- `LCardDraftInterlink` — The synonym links this Collocation holds, in the order they are shown.
+  Only a Collocation holds them, because the store hangs the link off a collocation.
+  Each names an Entry or a Meaning by the same rule a relation target follows.
+  It is the stored link and never the free text `LCardDraftSynonym` carries.
+- `LCardDraftKey` — The key the file declared this card under, empty for a card from the workspace.
+  A relation in another entry may name this card, and the key is how it does.
+  It never reaches the store, because a key means nothing outside the file that wrote it.

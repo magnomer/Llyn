@@ -19,14 +19,17 @@ public sealed partial class LEngine
         _lEnginePress = press;
     }
 
-    public void LEngineMarkupExport(IReadOnlyList<string> entryIds, string path)
+    public IReadOnlyList<LMarkupLoss> LEngineMarkupExport(
+        IReadOnlyList<string> entryIds, string path)
     {
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(entryIds);
             ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
-            File.WriteAllText(path, LEngineMarkupFormat(entryIds), new UTF8Encoding(false));
+            List<LMarkupLoss> lost = [];
+            File.WriteAllText(path, LEngineMarkupFormat(entryIds, lost), new UTF8Encoding(false));
+            return LEngineLossRead(lost);
         }
     }
 
@@ -39,7 +42,7 @@ public sealed partial class LEngine
 
         if (format == LPortraitFormat.LPortraitFormatMarkup)
         {
-            File.WriteAllText(path, LEngineMarkupFormat([entryId]), new UTF8Encoding(false));
+            File.WriteAllText(path, LEngineMarkupFormat([entryId], []), new UTF8Encoding(false));
             return;
         }
 
@@ -73,7 +76,7 @@ public sealed partial class LEngine
         }
     }
 
-    private string LEngineMarkupFormat(IReadOnlyList<string> entryIds)
+    private string LEngineMarkupFormat(IReadOnlyList<string> entryIds, List<LMarkupLoss> lost)
     {
         List<LMarkup.LMarkupEntry> entries = [];
         Dictionary<string, string> keys = new(StringComparer.Ordinal);
@@ -90,13 +93,58 @@ public sealed partial class LEngine
                 draft.LEntryDraftHeadword, LMarkup.LMarkupRowKind.LMarkupRowEntry, taken);
         }
 
+        foreach (LEntryDraft draft in drafts)
+        {
+            LEngineKeyCreate(draft.LEntryDraftMeanings, keys, taken);
+        }
+
         for (int place = 0; place < drafts.Count; place++)
         {
             entries.Add(new LMarkup.LMarkupEntry(drafts[place], keys[entryIds[place]]));
         }
 
-        return LMarkupDraft.LMarkupDraftFormat(
-            new LMarkup.LMarkupDocument(LEngineCatalogCreate(drafts, keys, taken), entries), keys);
+        LMarkup.LMarkupDocument document =
+            new(LEngineCatalogCreate(drafts, keys, taken), entries);
+
+        lost.AddRange(LMarkupLoss.LMarkupLossRead(document, keys));
+        return LMarkupDraft.LMarkupDraftFormat(document, keys);
+    }
+
+    private static void LEngineKeyCreate(
+        IReadOnlyList<LCardDraft> cards, Dictionary<string, string> keys, HashSet<string> taken)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            if (card.LCardDraftId.Length > 0)
+            {
+                keys[card.LCardDraftId] = LMarkup.LMarkupKeyCreate(
+                    card.LCardDraftGloss ?? card.LCardDraftTitle.LStateValueShow(),
+                    LMarkup.LMarkupRowKind.LMarkupRowSense,
+                    taken);
+            }
+
+            LEngineKeyCreate(card.LCardDraftChild, keys, taken);
+        }
+    }
+
+    private IReadOnlyList<LMarkupLoss> LEngineLossRead(IReadOnlyList<LMarkupLoss> lost)
+    {
+        if (lost.Count == 0)
+        {
+            return lost;
+        }
+
+        LEntryArchive entries = new(_lEngineDatabase);
+        List<LMarkupLoss> named = new(lost.Count);
+        foreach (LMarkupLoss loss in lost)
+        {
+            LEntry? target = entries.LEntryRead(loss.LMarkupLossTarget);
+            named.Add(target is null
+                ? loss
+                : loss with { LMarkupLossTarget = target.LEntryHeadword });
+        }
+
+        return named;
     }
 
     private LMarkup.LMarkupCatalog LEngineCatalogCreate(

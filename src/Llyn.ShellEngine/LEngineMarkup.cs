@@ -188,15 +188,32 @@ public sealed partial class LEngine
             }
         }
 
+        List<LEntryDraft?> loaded = new List<LEntryDraft?>();
+        for (int place = 0; place < saved.Count; place++)
+        {
+            loaded.Add(new LEntryLoader(_lEngineDatabase).LEntryLoad(saved[place].LEntryId));
+        }
+
+        for (int place = 0; place < loaded.Count; place++)
+        {
+            if (loaded[place] is not LEntryDraft stored)
+            {
+                continue;
+            }
+
+            LEngineKeyRead(resolved[place].LEntryDraftMeanings, stored.LEntryDraftMeanings, named);
+            LEngineKeyRead(
+                resolved[place].LEntryDraftCollocations, stored.LEntryDraftCollocations, named);
+        }
+
         if (named.Count == 0)
         {
             return;
         }
 
-        for (int place = 0; place < saved.Count; place++)
+        for (int place = 0; place < loaded.Count; place++)
         {
-            LEntryDraft? stored = new LEntryLoader(_lEngineDatabase).LEntryLoad(saved[place].LEntryId);
-            if (stored is null)
+            if (loaded[place] is not LEntryDraft stored)
             {
                 continue;
             }
@@ -205,6 +222,28 @@ public sealed partial class LEngine
                 resolved[place].LEntryDraftMeanings, stored.LEntryDraftMeanings, named, false);
             LEngineMarkupAttach(
                 resolved[place].LEntryDraftCollocations, stored.LEntryDraftCollocations, named, true);
+        }
+    }
+
+    private static void LEngineKeyRead(
+        IReadOnlyList<LCardDraft> written,
+        IReadOnlyList<LCardDraft> stored,
+        Dictionary<string, string> named)
+    {
+        List<LCardDraft> kept = new List<LCardDraft>();
+        foreach (LCardDraft card in LEngineCardRead(written))
+        {
+            kept.Add(card);
+        }
+
+        for (int place = 0; place < kept.Count && place < stored.Count; place++)
+        {
+            if (kept[place].LCardDraftKey.Length > 0)
+            {
+                named[kept[place].LCardDraftKey] = stored[place].LCardDraftId;
+            }
+
+            LEngineKeyRead(kept[place].LCardDraftChild, stored[place].LCardDraftChild, named);
         }
     }
 
@@ -236,9 +275,93 @@ public sealed partial class LEngine
                 LEngineTranslationSave(stored[place].LCardDraftId, ids, collocation);
             }
 
+            if (collocation)
+            {
+                LEngineSynonymSave(stored[place].LCardDraftId, kept[place].LCardDraftInterlink, named);
+            }
+            else
+            {
+                LEngineRelationSave(stored[place].LCardDraftId, kept[place].LCardDraftRelation, named);
+            }
+
             LEngineMarkupAttach(
                 kept[place].LCardDraftChild, stored[place].LCardDraftChild, named, collocation);
         }
+    }
+
+    private void LEngineRelationSave(
+        string meaningId,
+        IReadOnlyList<LRelationDraft> drafts,
+        IReadOnlyDictionary<string, string> named)
+    {
+        LRelationArchive relations = new(_lEngineDatabase);
+        foreach (LRelationDraft draft in drafts)
+        {
+            if (!LEngineTargetRead(draft.LRelationDraftEntry, draft.LRelationDraftMeaning, named,
+                    out string entryId, out string targetId))
+            {
+                continue;
+            }
+
+            relations.LRelationCreate(new LRelation(
+                string.Empty,
+                meaningId,
+                0,
+                draft.LRelationDraftType,
+                draft.LRelationDraftLabel,
+                draft.LRelationDraftLabels,
+                entryId.Length > 0 ? entryId : null,
+                targetId.Length > 0 ? targetId : null));
+        }
+    }
+
+    private void LEngineSynonymSave(
+        string collocationId,
+        IReadOnlyList<LSynonymDraft> drafts,
+        IReadOnlyDictionary<string, string> named)
+    {
+        LSynonymArchive synonyms = new(_lEngineDatabase);
+        foreach (LSynonymDraft draft in drafts)
+        {
+            if (!LEngineTargetRead(draft.LSynonymDraftEntry, draft.LSynonymDraftMeaning, named,
+                    out string entryId, out string targetId))
+            {
+                continue;
+            }
+
+            synonyms.LSynonymCreate(new LSynonym(
+                string.Empty,
+                collocationId,
+                0,
+                entryId.Length > 0 ? entryId : null,
+                targetId.Length > 0 ? targetId : null));
+        }
+    }
+
+    private static bool LEngineTargetRead(
+        string entry,
+        string meaning,
+        IReadOnlyDictionary<string, string> named,
+        out string entryId,
+        out string meaningId)
+    {
+        entryId = string.Empty;
+        meaningId = string.Empty;
+
+        string key = entry.Length > 0 ? entry : meaning;
+        if (key.Length == 0 || !named.TryGetValue(key, out string? row))
+        {
+            return false;
+        }
+
+        if (entry.Length > 0)
+        {
+            entryId = row;
+            return true;
+        }
+
+        meaningId = row;
+        return true;
     }
 
     private string LEngineReferenceSave(

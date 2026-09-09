@@ -188,7 +188,44 @@ public sealed class LEntryLoader
             LEntryVideoRead(
                 collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId)),
             position,
-            ownerId);
+            ownerId,
+            LCardDraftRelation: collocation ? [] : LEntryRelationRead(ownerId),
+            LCardDraftInterlink: collocation ? LEntrySynonymRead(ownerId) : []);
+    }
+
+    private IReadOnlyList<LRelationDraft> LEntryRelationRead(string meaningId)
+    {
+        IReadOnlyList<LRelation> stored =
+            new LRelationArchive(_lEntryLoaderDatabase).LRelationRead(meaningId);
+
+        List<LRelationDraft> drafts = new(stored.Count);
+        foreach (LRelation relation in stored)
+        {
+            drafts.Add(new LRelationDraft(
+                relation.LRelationType,
+                relation.LRelationLabel,
+                relation.LRelationLabels,
+                relation.LRelationTargetEntry ?? string.Empty,
+                relation.LRelationTargetMeaning ?? string.Empty));
+        }
+
+        return drafts;
+    }
+
+    private IReadOnlyList<LSynonymDraft> LEntrySynonymRead(string collocationId)
+    {
+        IReadOnlyList<LSynonym> stored =
+            new LSynonymArchive(_lEntryLoaderDatabase).LSynonymRead(collocationId);
+
+        List<LSynonymDraft> drafts = new(stored.Count);
+        foreach (LSynonym synonym in stored)
+        {
+            drafts.Add(new LSynonymDraft(
+                synonym.LSynonymTargetEntry ?? string.Empty,
+                synonym.LSynonymTargetMeaning ?? string.Empty));
+        }
+
+        return drafts;
     }
 
     private static IReadOnlyList<LSentenceDraft> LEntrySentenceRead(IReadOnlyList<LSentence> sentences)

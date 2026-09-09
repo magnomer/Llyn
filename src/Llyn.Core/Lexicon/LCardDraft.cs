@@ -19,11 +19,22 @@ public sealed record LCardDraft(
     IReadOnlyList<LCardDraft>? LCardDraftChild = null,
     string? LCardDraftGloss = null,
     string? LCardDraftLanguage = null,
-    string LCardDraftLabels = "")
+    string LCardDraftLabels = "",
+    IReadOnlyList<LRelationDraft>? LCardDraftRelation = null,
+    IReadOnlyList<LSynonymDraft>? LCardDraftInterlink = null,
+    string LCardDraftKey = "")
 {
     public string LCardDraftLabels { get; init; } = LCardDraftLabels ?? string.Empty;
 
+    public string LCardDraftKey { get; init; } = LCardDraftKey ?? string.Empty;
+
     public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; } = LCardDraftChild ?? [];
+
+    public IReadOnlyList<LRelationDraft> LCardDraftRelation { get; init; } =
+        LCardDraftRelation ?? [];
+
+    public IReadOnlyList<LSynonymDraft> LCardDraftInterlink { get; init; } =
+        LCardDraftInterlink ?? [];
 
     public LStateValue LCardDraftTitle { get; init; } =
         LCardDraftTitle ?? LStateValue.LStateValueUnspecified;

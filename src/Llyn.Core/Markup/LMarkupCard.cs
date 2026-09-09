@@ -20,7 +20,14 @@ public static class LMarkupCard
         bool collocation = string.Equals(block, "collocation", StringComparison.Ordinal);
         int inner = depth + 1;
 
-        text.Append(' ', depth * 2).Append('<').Append(block).Append(">\n");
+        text.Append(' ', depth * 2).Append('<').Append(block);
+
+        if (!collocation && keys.TryGetValue(card.LCardDraftId, out string? own))
+        {
+            text.Append(" id=").Append(LMarkupMark.LMarkupMarkNormalize(own));
+        }
+
+        text.Append(">\n");
 
         LMarkupLeaf.LMarkupLeafAppend(text, inner, "title", card.LCardDraftTitle);
 
@@ -80,6 +87,16 @@ public static class LMarkupCard
             }
         }
 
+        foreach (LRelationDraft relation in card.LCardDraftRelation)
+        {
+            LMarkupCardAppend(text, inner, relation, keys);
+        }
+
+        foreach (LSynonymDraft interlink in card.LCardDraftInterlink)
+        {
+            LMarkupCardAppend(text, inner, "synonym", interlink, keys);
+        }
+
         if (!collocation)
         {
             foreach (LCardDraft child in card.LCardDraftChild)
@@ -89,6 +106,51 @@ public static class LMarkupCard
         }
 
         text.Append(' ', depth * 2).Append("</").Append(block).Append(">\n");
+    }
+
+    private static void LMarkupCardAppend(
+        StringBuilder text,
+        int depth,
+        LRelationDraft relation,
+        IReadOnlyDictionary<string, string> keys)
+    {
+        StringBuilder target = new StringBuilder();
+        if (!LMarkupCardAppend(target, depth + 1, "target", new LSynonymDraft(
+            relation.LRelationDraftEntry, relation.LRelationDraftMeaning), keys))
+        {
+            return;
+        }
+
+        text.Append(' ', depth * 2).Append("<relation");
+        LMarkupMark.LMarkupMarkAppend(text, "type", relation.LRelationDraftType);
+        LMarkupMark.LMarkupMarkAppend(text, "label", relation.LRelationDraftLabel);
+        LMarkupMark.LMarkupMarkAppend(text, "labels", relation.LRelationDraftLabels);
+        text.Append(">\n").Append(target);
+        text.Append(' ', depth * 2).Append("</relation>\n");
+    }
+
+    private static bool LMarkupCardAppend(
+        StringBuilder text,
+        int depth,
+        string name,
+        LSynonymDraft target,
+        IReadOnlyDictionary<string, string> keys)
+    {
+        bool entry = target.LSynonymDraftEntry.Length > 0;
+        string row = entry ? target.LSynonymDraftEntry : target.LSynonymDraftMeaning;
+
+        if (!keys.TryGetValue(row, out string? named))
+        {
+            return false;
+        }
+
+        text.Append(' ', depth * 2)
+            .Append('<')
+            .Append(name)
+            .Append(entry ? " entry=" : " sense=")
+            .Append(LMarkupMark.LMarkupMarkNormalize(named))
+            .Append("/>\n");
+        return true;
     }
 
     private static void LMarkupCardAppend(

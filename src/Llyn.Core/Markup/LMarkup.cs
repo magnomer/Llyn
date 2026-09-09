@@ -32,6 +32,8 @@ public static partial class LMarkup
         LMarkupToken? labels = null;
         List<string> tags = new List<string>();
         List<string> translations = new List<string>();
+        List<LRelationDraft> relations = new List<LRelationDraft>();
+        List<LSynonymDraft> interlinks = new List<LSynonymDraft>();
         List<LImageDraft> images = new List<LImageDraft>();
         List<LVideoDraft> videos = new List<LVideoDraft>();
         List<LSentenceDraft> sentences = new List<LSentenceDraft>();
@@ -65,6 +67,14 @@ public static partial class LMarkup
                         break;
                     case "video":
                         LMarkupVideoAdd(catalog, videos, token);
+                        break;
+                    case "relation":
+                        if (!collocation)
+                        {
+                            LMarkupRelationRead(
+                                relations, tokens, position, close, place, relations.Count + 1);
+                        }
+
                         break;
                     default:
                         break;
@@ -108,6 +118,13 @@ public static partial class LMarkup
                 case "image":
                     LMarkupImageAdd(catalog, images, token);
                     break;
+                case "synonym":
+                    if (collocation)
+                    {
+                        LMarkupSynonymRead(interlinks, token, place, interlinks.Count + 1);
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -130,7 +147,70 @@ public static partial class LMarkup
             children,
             LMarkupPlainRead(gloss),
             meaning?.LMarkupTokenRead("lang"),
-            LMarkupPlainRead(labels) ?? string.Empty);
+            LMarkupPlainRead(labels) ?? string.Empty,
+            relations,
+            interlinks,
+            collocation ? string.Empty : tokens[first].LMarkupTokenRead("id") ?? string.Empty);
+    }
+
+    private static void LMarkupRelationRead(
+        List<LRelationDraft> relations,
+        IReadOnlyList<LMarkupToken> tokens,
+        int first,
+        int last,
+        int card,
+        int place)
+    {
+        string? type = tokens[first].LMarkupTokenRead("type");
+        if (string.IsNullOrWhiteSpace(type))
+        {
+            throw new FormatException($"Relation {place} of card {card} names no type.");
+        }
+
+        LSynonymDraft? target = null;
+        foreach (LMarkupToken leaf in LMarkupLeafRead(LMarkupBlockRead(tokens, first, last)))
+        {
+            if (string.Equals(leaf.LMarkupTokenName, "target", StringComparison.Ordinal))
+            {
+                target = LMarkupTargetRead(leaf, $"Relation {place} of card {card}");
+            }
+        }
+
+        if (target is null)
+        {
+            throw new FormatException($"Relation {place} of card {card} names no target.");
+        }
+
+        relations.Add(new LRelationDraft(
+            type,
+            tokens[first].LMarkupTokenRead("label"),
+            tokens[first].LMarkupTokenRead("labels"),
+            target.LSynonymDraftEntry,
+            target.LSynonymDraftMeaning));
+    }
+
+    private static void LMarkupSynonymRead(
+        List<LSynonymDraft> interlinks, LMarkupToken token, int card, int place)
+    {
+        interlinks.Add(LMarkupTargetRead(token, $"Synonym {place} of card {card}"));
+    }
+
+    private static LSynonymDraft LMarkupTargetRead(LMarkupToken token, string named)
+    {
+        string entry = token.LMarkupTokenRead("entry") ?? string.Empty;
+        string meaning = token.LMarkupTokenRead("sense") ?? string.Empty;
+
+        if (entry.Length > 0 && meaning.Length > 0)
+        {
+            throw new FormatException($"{named} names both an entry and a sense.");
+        }
+
+        if (entry.Length == 0 && meaning.Length == 0)
+        {
+            throw new FormatException($"{named} names neither an entry nor a sense.");
+        }
+
+        return new LSynonymDraft(entry, meaning);
     }
 
     private static LSentenceDraft LMarkupUseRead(
