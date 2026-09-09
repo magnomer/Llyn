@@ -15,6 +15,7 @@ Nothing written means the attribute is left off, which is the only absence such 
 
 ## `public static string LMarkupMarkNormalize(string value)`
 
-The reader requires a quoted value and ends it at the matching quote.
-A value holding a double quote is wrapped in single quotes instead.
-Any single quote inside such a value is dropped, because no escape exists to keep it.
+The reader requires a quoted value and ends it at the first delimiter that is not doubled.
+So the value is always wrapped in double quotes and a double quote inside it is written twice.
+Section 7 of the format spec makes that pair read back as the one character.
+Choosing the delimiter by what the value holds would fail a value holding both quote characters.

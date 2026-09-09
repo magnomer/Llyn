@@ -63,6 +63,8 @@ The scan walks the text once.
 Outside a tag, anything that is not `<` is skipped.
 So whitespace and stray prose between blocks are insignificant rather than an error.
 At a `<`, the tag name is read, then its attributes.
+An attribute value ends at the first delimiter that is not doubled, and a doubled pair yields the one character.
+That is the format's only escape, and it is what lets a value carry both quote characters at once.
 Only the attributes the format defines are kept.
 The rest are dropped.
 An unrecognised attribute, like an unrecognised tag, must not break an older file.

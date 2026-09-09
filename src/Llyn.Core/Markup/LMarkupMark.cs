@@ -38,8 +38,6 @@ public static class LMarkupMark
 
     public static string LMarkupMarkNormalize(string value)
     {
-        return value.Contains('"', StringComparison.Ordinal)
-            ? "'" + value.Replace("'", string.Empty, StringComparison.Ordinal) + "'"
-            : "\"" + value + "\"";
+        return "\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
     }
 }

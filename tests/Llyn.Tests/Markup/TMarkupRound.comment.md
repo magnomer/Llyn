@@ -50,6 +50,16 @@ Situations, images and videos are counted too, because each is cited by one card
 Exporting an export gives the same file back.
 A tree that lost a level, or gained one, would not survive the second trip.
 
+### `private const string TMarkupQuoted`
+
+One entry whose values carry a double quote and an apostrophe at once.
+Both quote characters in one value is the case that leaves the writer no delimiter it can pick.
+
+### `MarkupExport_ValueHoldingBothQuotes_ComesBackWhole`
+
+Section 7 doubles a delimiter inside an attribute value rather than dropping it.
+The written file is checked as well as the store, because a value that read back whole from a file no reader could parse would prove nothing.
+
 ### `MarkupExport_UncitedSourceAndUncreditedAuthor_ComeBack`
 
 Section 3 keeps a source nothing quotes and an author credited on nothing.

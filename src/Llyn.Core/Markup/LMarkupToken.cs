@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Llyn.Core;
 
@@ -262,20 +263,36 @@ public static partial class LMarkup
         char quote = text[position];
         position++;
         int first = position;
-        while (position < text.Length && text[position] != quote)
-        {
-            position++;
-        }
+        StringBuilder? held = null;
 
-        if (position >= text.Length)
+        while (true)
         {
-            throw new FormatException(
-                $"Unterminated attribute value in tag '<{name}' at character {first}.");
+            if (position >= text.Length)
+            {
+                throw new FormatException(
+                    $"Unterminated attribute value in tag '<{name}' at character {first}.");
+            }
+
+            if (text[position] != quote)
+            {
+                position++;
+                continue;
+            }
+
+            if (position + 1 >= text.Length || text[position + 1] != quote)
+            {
+                break;
+            }
+
+            held ??= new StringBuilder();
+            held.Append(text[first..position]).Append(quote);
+            position += 2;
+            first = position;
         }
 
         string value = text[first..position];
         position++;
-        return value;
+        return held is null ? value : held.Append(value).ToString();
     }
 
     private static string LMarkupTextRead(string text, ref int position, int start, string name)

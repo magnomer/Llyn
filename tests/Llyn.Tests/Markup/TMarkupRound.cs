@@ -198,6 +198,42 @@ public sealed class TMarkupRound
         Assert.Contains("to rouse a feeling", twice, StringComparison.Ordinal);
     }
 
+    private const string TMarkupQuoted =
+        """"
+        <llyn>
+          <entry>
+            <headword>kindle</headword>
+            <form role="past" local="he said ""it's mine""">kindled</form>
+            <sense>
+              <meaning>to set something burning</meaning>
+              <use par="he said ""it's mine""" dep="Agent"/>
+            </sense>
+          </entry>
+        </llyn>
+        """";
+
+    [Fact]
+    public void MarkupExport_ValueHoldingBothQuotes_ComesBackWhole()
+    {
+        const string carried = "he said \"it's mine\"";
+        string written = TMarkupRoundExport(TMarkupQuoted, out _);
+
+        Assert.Contains("he said \"\"it's mine\"\"", written, StringComparison.Ordinal);
+
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        IReadOnlyList<LEntry> reimported =
+            engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(written));
+        LEntryDraft? draft = engine.TEngineEntryLoad(reimported[0].LEntryId);
+        Assert.NotNull(draft);
+
+        Assert.Equal(carried, draft.LEntryDraftForms[0].LFormLocal);
+        Assert.Equal(
+            carried,
+            draft.LEntryDraftMeanings[0].LCardDraftSentence[0].LSentenceDraftParticle.TStateValueShow());
+    }
+
     [Fact]
     public void MarkupExport_UncitedSourceAndUncreditedAuthor_ComeBack()
     {
