@@ -24,13 +24,15 @@ The row says what was meant, not what could be reached.
 
 An empty row nothing has been written in, which is what the card's Extra row opens.
 
-## `internal PImage(LStateValue location)`
+## `internal PImage(LImageDraft written)`
 
-The row for a stored Image: the location as the store knows it.
+The row for a stored Image: the location as the store knows it, and the row it stands for.
+The row id is carried through untouched, so an edited location updates a picture rather than replacing it.
 
-## `internal LStateValue PImageLocationRead()`
+## `internal LImageDraft PImageDraftRead()`
 
-What the row says its location is: nothing written, unreadable, or the text it shows.
+What the row says its Image is: nothing written, unreadable, or the text it shows.
+The stored row it came from travels back with it, empty for a row the user opened.
 
 ## `internal static Uri? PImageAddressRead(string location)`
 

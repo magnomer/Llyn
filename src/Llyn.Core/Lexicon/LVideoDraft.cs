@@ -2,8 +2,11 @@ namespace Llyn.Core;
 
 public sealed record LVideoDraft(
     LStateValue LVideoDraftLocation,
-    LStateValue LVideoDraftSpan)
+    LStateValue LVideoDraftSpan,
+    string LVideoDraftId = "")
 {
+    public string LVideoDraftId { get; init; } = LVideoDraftId ?? string.Empty;
+
     public LStateValue LVideoDraftLocation { get; init; } =
         LVideoDraftLocation ?? LStateValue.LStateValueUnspecified;
 

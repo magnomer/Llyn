@@ -110,7 +110,7 @@ public sealed class TSpeech
 
         Assert.Equal(
             "Verb, transitive",
-            Assert.Single(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!));
+            Assert.Single(TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!)));
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public sealed class TSpeech
         Assert.Equal("Verb, ergative", speech.LSpeechCustom);
         Assert.Equal(
             "Verb, ergative",
-            Assert.Single(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!));
+            Assert.Single(TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!)));
 
         Assert.Equal("verb_transitive", engine.TEngineSpeechFind("English", "verb, TRANSITIVE"));
         Assert.Null(engine.TEngineSpeechFind("English", "Verb, ergative"));
@@ -142,7 +142,7 @@ public sealed class TSpeech
         LEntry entry = engine.TEngineEntrySave(TSpeechDraftCreate("   "));
 
         Assert.Empty(TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntrySpeechRead(entry.LEntryId));
-        Assert.Empty(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!);
+        Assert.Empty(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches);
     }
 
     [Fact]
@@ -199,7 +199,7 @@ public sealed class TSpeech
 
         Assert.Equal(
             ["Noun", "Verb, transitive", "Verb, ergative"],
-            engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftSpeeches!);
+            TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!));
     }
 
     private static LEntryDraft TSpeechDraftCreate(params string[] speeches)

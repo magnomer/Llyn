@@ -1,5 +1,6 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 
+using LMarkupCatalog = Llyn.Core.LMarkup.LMarkupCatalog;
 using LMarkupDocument = Llyn.Core.LMarkup.LMarkupDocument;
 using LMarkupReference = Llyn.Core.LMarkup.LMarkupReference;
 using LMarkupToken = Llyn.Core.LMarkup.LMarkupToken;
@@ -20,7 +21,7 @@ internal static partial class TInterface
         IReadOnlyList<string> translation,
         string synonym,
         IReadOnlyList<string> tag,
-        IReadOnlyList<LStateValue> image,
+        IReadOnlyList<LImageDraft> image,
         int position,
         string id = "",
         IReadOnlyList<LVideoDraft>? video = null,
@@ -29,8 +30,11 @@ internal static partial class TInterface
             title, expression, meaning, sentence, situation, register ?? [], translation, synonym, tag,
             image, video ?? [], position, id);
 
-    internal static LVideoDraft TVideoDraftCreate(string location, string span = "") =>
-        new(LStateValue.LStateValueRead(location), LStateValue.LStateValueRead(span));
+    internal static LVideoDraft TVideoDraftCreate(string location, string span = "", string id = "") =>
+        new(LStateValue.LStateValueRead(location), LStateValue.LStateValueRead(span), id);
+
+    internal static LImageDraft TImageDraftCreate(string location, string id = "") =>
+        new(LStateValue.LStateValueRead(location), id);
 
     internal static LCollocation TCollocationCreate(
         string id,
@@ -77,7 +81,41 @@ internal static partial class TInterface
         string audio = "",
         string? source = null,
         IReadOnlyList<string>? speeches = null) =>
-        new(headword, language, pronunciation, note, meanings, collocations, audio, source, speeches);
+        new(
+            headword,
+            language,
+            LPronunciationDraft.LPronunciationDraftCreate(pronunciation, audio, source),
+            note,
+            meanings,
+            collocations,
+            TSpeechDraftCreate(speeches));
+
+    internal static IReadOnlyList<LSpeechDraft> TSpeechDraftCreate(IReadOnlyList<string>? speeches)
+    {
+        if (speeches is null)
+        {
+            return [];
+        }
+
+        List<LSpeechDraft> drafts = new(speeches.Count);
+        foreach (string speech in speeches)
+        {
+            drafts.Add(LSpeechDraft.LSpeechDraftCreate(speech));
+        }
+
+        return drafts;
+    }
+
+    internal static IReadOnlyList<string> TSpeechNameRead(LEntryDraft draft)
+    {
+        List<string> named = new(draft.LEntryDraftSpeeches.Count);
+        foreach (LSpeechDraft speech in draft.LEntryDraftSpeeches)
+        {
+            named.Add(speech.LSpeechDraftName);
+        }
+
+        return named;
+    }
 
     internal static LExample TExampleCreate(
         string id,
@@ -156,8 +194,18 @@ internal static partial class TInterface
         IReadOnlyList<LFeature> features) =>
         new(entryId, position, text, local, speechId, features);
 
-    internal static LCardDraft TMarkupCardRead(IReadOnlyList<LMarkupToken> tokens, int position) =>
-        LMarkup.LMarkupCardRead(tokens, position);
+    internal static LCardDraft TMarkupCardRead(
+        IReadOnlyList<LMarkupToken> tokens,
+        int position,
+        LMarkupCatalog? catalog = null,
+        bool collocation = false) =>
+        LMarkup.LMarkupCardRead(
+            catalog ?? LMarkupCatalog.LMarkupCatalogCreate(),
+            tokens,
+            0,
+            tokens.Count - 1,
+            position,
+            collocation);
 
     internal static LMarkupDocument TMarkupEntryRead(string text) =>
         LMarkup.LMarkupEntryRead(text);

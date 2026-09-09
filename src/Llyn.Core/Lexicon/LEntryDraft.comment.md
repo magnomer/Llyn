@@ -7,23 +7,24 @@ The shell reads the visual tree once, builds this, and hands it to the engine.
 The engine never learns that controls exist and the save never walks the tree.
 Both card lists are lists of the one card shape, and arrive in the order they are shown.
 A card's position is its place in its list, not a value it carries.
+The entry-level detail travels as the shapes the archives store, never as flattened text.
 
 **Parameters**
 
 - `LEntryDraftHeadword` — Headword text as typed.
 - `LEntryDraftLanguage` — Language chosen in the language selector.
-- `LEntryDraftPronunciation` — Pronunciation text as typed or filled by a lookup.
+- `LEntryDraftPronunciation` — The whole pronunciation, or null when the entry records none.
 - `LEntryDraftNote` — Plain text of the note editor.
 - `LEntryDraftMeanings` — Meaning cards in list order, whose Expression is always empty.
 - `LEntryDraftCollocations` — Collocation cards in list order.
-- `LEntryDraftAudio` — Full path to the recording downloaded for this entry, or empty when none was chosen.
-  The shell deals in full paths.
-  The engine stores the path relative to the workspace and resolves it back on the way out.
-  So the draft is the same value in both directions.
-- `LEntryDraftSource` — Label of the source the recording came from, when there is one.
-- `LEntryDraftSpeech` — Part of speech as the field shows it.
-  It is the display name of a preset the user picked, or whatever they typed instead.
-  It is empty when none was given.
-  It travels as text in both directions because that is what the field holds.
-  The engine decides whether to turn it into the stable id a preset is stored under.
-  Text is kept when no preset names it, and the decision is made once, at the write.
+- `LEntryDraftSpeeches` — Parts of speech in order, each a language-pack value or a typed name.
+- `LEntryDraftForms` — Variant forms in order, each with its role and its localized label.
+- `LEntryDraftInflections` — Inflections in order, each owning its ordered features.
+
+## `public string LEntryDraftIpa`
+
+The transcription alone, for the surfaces that show only that.
+
+## `public string LEntryDraftAudio`
+
+The recording path alone, for the surfaces that play only that.

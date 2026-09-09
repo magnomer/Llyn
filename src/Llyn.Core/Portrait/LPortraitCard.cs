@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -66,12 +66,14 @@ public sealed record LPortraitCard(
             }
 
             List<LPortraitMedia> images = new List<LPortraitMedia>();
-            foreach (LStateValue image in card.LCardDraftImage)
+            foreach (LImageDraft image in card.LCardDraftImage)
             {
-                if (!image.LStateValueEmpty)
+                if (!image.LImageDraftEmpty)
                 {
                     images.Add(new LPortraitMedia(
-                        LPortraitText.LPortraitTextRead(image, mark), string.Empty, false));
+                        LPortraitText.LPortraitTextRead(image.LImageDraftLocation, mark),
+                        string.Empty,
+                        false));
                 }
             }
 

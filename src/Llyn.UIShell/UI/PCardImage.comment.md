@@ -9,12 +9,12 @@ A picture is an addition the user asks for through the card's Extra row.
 So an empty card shows no picture field.
 A card whose last picture is dropped goes back to showing none.
 
-## `internal void PCardImageShow(IReadOnlyList<LStateValue> locations)`
+## `internal void PCardImageShow(IReadOnlyList<LImageDraft> rows)`
 
-Replaces the rows with the stored Images of the card being loaded, one row per location.
+Replaces the rows with the stored Images of the card being loaded, one row per picture.
 It leaves the card with no rows when it references none.
 
-## `internal IReadOnlyList<LStateValue> PCardImageRead()`
+## `internal IReadOnlyList<LImageDraft> PCardImageRead()`
 
 What the card says its Images are.
 A row whose location stands empty is left out, so a row opened and never filled is written nowhere.

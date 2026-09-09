@@ -51,7 +51,21 @@ It also covers the note and pronunciation when they moved.
 It is not one change saying the entry changed, so the history says what an edit did.
 The workspace row is moved onto that revision, as the save and the delete both do.
 
+Forms, parts of speech, inflections and the pronunciation are each compared before they are written.
+A field that did not change writes no row and records no revision change.
+
 ## Inline notes
+
+### `private static void LEngineFormUpdate(LEntryArchive entries, string entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+
+The forms of the entry as the draft holds them, replacing what stood before.
+Positions are rewritten by the archive, so a reordered list stores as the new order.
+The comparison is over the text, the role and the label, because those are what a form is.
+
+### `private void LEngineInflectionUpdate(string entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+
+The inflections of the entry as the draft holds them, features and all.
+A feature list that differs at one place is a different inflection, so the whole set is rewritten.
 
 ### `entries.LEntryUpdate(stored with`
 

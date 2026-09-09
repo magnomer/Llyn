@@ -1,53 +1,113 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Llyn.Core;
 
 public static class LMarkupCard
 {
-    public static void LMarkupCardAppend(StringBuilder text, string block, LCardDraft card)
+    public static void LMarkupCardAppend(
+        StringBuilder text,
+        int depth,
+        string block,
+        LCardDraft card,
+        IReadOnlyDictionary<string, string> keys)
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(keys);
 
-        text.Append("  <").Append(block).Append(">\n");
+        bool collocation = string.Equals(block, "collocation", StringComparison.Ordinal);
+        int inner = depth + 1;
 
-        LMarkupLeaf.LMarkupLeafAppend(text, 2, "title", card.LCardDraftTitle);
-        LMarkupLeaf.LMarkupLeafAppend(text, 2, "expression", card.LCardDraftExpression);
-        LMarkupLeaf.LMarkupLeafAppend(text, 2, "meaning", card.LCardDraftMeaning);
-        LMarkupLeaf.LMarkupLeafAppend(
-            text, 2, "synonym", LStateValue.LStateValueRead(card.LCardDraftSynonym));
+        text.Append(' ', depth * 2).Append('<').Append(block).Append(">\n");
 
-        foreach (LSituationDraft situation in card.LCardDraftSituation)
+        LMarkupLeaf.LMarkupLeafAppend(text, inner, "title", card.LCardDraftTitle);
+
+        if (collocation)
         {
-            LMarkupLeaf.LMarkupLeafAppend(text, 2, "situation", situation.LSituationDraftTitle);
+            LMarkupLeaf.LMarkupLeafAppend(text, inner, "expression", card.LCardDraftExpression);
+            LMarkupLeaf.LMarkupLeafAppend(text, inner, "meaning", card.LCardDraftMeaning);
         }
-
-        foreach (LRegisterDraft register in card.LCardDraftRegister)
+        else
         {
-            LMarkupLeaf.LMarkupLeafAppend(text, 2, "register", register.LRegisterDraftName);
+            LMarkupLeaf.LMarkupLeafAppend(
+                text, inner, "gloss", LStateValue.LStateValueRead(card.LCardDraftGloss));
+            LMarkupLeaf.LMarkupLeafAppend(
+                text, inner, "meaning", card.LCardDraftMeaning, "lang", card.LCardDraftLanguage);
+            LMarkupLeaf.LMarkupLeafAppend(
+                text, inner, "labels", LStateValue.LStateValueRead(card.LCardDraftLabels));
         }
 
         foreach (LSentenceDraft sentence in card.LCardDraftSentence)
         {
-            LMarkupExample.LMarkupExampleAppend(text, sentence);
+            LMarkupExample.LMarkupExampleAppend(text, inner, sentence, keys);
         }
 
-        foreach (string tag in card.LCardDraftTag)
+        foreach (LSituationDraft situation in card.LCardDraftSituation)
         {
-            LMarkupLeaf.LMarkupLeafAppend(text, 2, "tag", LStateValue.LStateValueRead(tag));
+            LMarkupCardAppend(text, inner, "situation", situation.LSituationDraftId, keys);
         }
 
-        foreach (LStateValue image in card.LCardDraftImage)
+        foreach (LRegisterDraft register in card.LCardDraftRegister)
         {
-            LMarkupLeaf.LMarkupLeafAppend(text, 2, "image", image);
+            LMarkupCardAppend(text, inner, "register", register.LRegisterDraftId, keys);
+        }
+
+        foreach (LImageDraft image in card.LCardDraftImage)
+        {
+            LMarkupCardAppend(text, inner, "image", image.LImageDraftId, keys);
         }
 
         foreach (LVideoDraft video in card.LCardDraftVideo)
         {
-            LMarkupLeaf.LMarkupLeafAppend(text, 2, "video", video.LVideoDraftLocation);
+            LMarkupCardAppend(text, inner, "video", video.LVideoDraftId, keys);
         }
 
-        text.Append("  </").Append(block).Append(">\n");
+        foreach (string tag in card.LCardDraftTag)
+        {
+            LMarkupLeaf.LMarkupLeafAppend(text, inner, "tag", LStateValue.LStateValueRead(tag));
+        }
+
+        foreach (string translation in card.LCardDraftTranslation)
+        {
+            if (keys.TryGetValue(translation, out string? named))
+            {
+                text.Append(' ', inner * 2)
+                    .Append("<translation entry=")
+                    .Append(LMarkupMark.LMarkupMarkNormalize(named))
+                    .Append("/>\n");
+            }
+        }
+
+        if (!collocation)
+        {
+            foreach (LCardDraft child in card.LCardDraftChild)
+            {
+                LMarkupCardAppend(text, inner, "sense", child, keys);
+            }
+        }
+
+        text.Append(' ', depth * 2).Append("</").Append(block).Append(">\n");
+    }
+
+    private static void LMarkupCardAppend(
+        StringBuilder text,
+        int depth,
+        string name,
+        string row,
+        IReadOnlyDictionary<string, string> keys)
+    {
+        if (!keys.TryGetValue(row, out string? named))
+        {
+            return;
+        }
+
+        text.Append(' ', depth * 2)
+            .Append('<')
+            .Append(name)
+            .Append(" ref=")
+            .Append(LMarkupMark.LMarkupMarkNormalize(named))
+            .Append("/>\n");
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -27,8 +27,11 @@ public sealed class LEntryLoader
         }
 
         LEntryArchive entries = new(_lEntryLoaderDatabase);
-        IReadOnlyList<string> speeches = LEntrySpeechFormat(
+        IReadOnlyList<LSpeechDraft> speeches = LEntrySpeechFormat(
             entry.LEntryLanguage, entries.LEntrySpeechRead(id));
+        IReadOnlyList<LForm> forms = entries.LEntryFormRead(id);
+        IReadOnlyList<LInflection> inflections =
+            new LInflectionArchive(_lEntryLoaderDatabase).LInflectionRead(id);
 
         LNote? note = new LNoteArchive(_lEntryLoaderDatabase).LNoteRead(id);
         LPronunciationArchive pronunciations = new(_lEntryLoaderDatabase);
@@ -67,13 +70,13 @@ public sealed class LEntryLoader
         return new LEntryDraft(
             entry.LEntryHeadword,
             entry.LEntryLanguage,
-            pronunciation?.LPronunciationIpa ?? string.Empty,
+            LEntrySoundFormat(pronunciation, audio),
             note?.LNoteText ?? string.Empty,
             meaningCards,
             collocationCards,
-            audio?.LPronunciationAudioFile ?? string.Empty,
-            audio?.LPronunciationAudioSource,
-            speeches);
+            speeches,
+            forms,
+            inflections);
     }
 
     private IReadOnlyList<LCardDraft> LEntryChildRead(
@@ -105,7 +108,26 @@ public sealed class LEntryLoader
         return cards;
     }
 
-    private IReadOnlyList<string> LEntrySpeechFormat(string language, IReadOnlyList<LSpeech> speeches)
+    private static LPronunciationDraft? LEntrySoundFormat(
+        LPronunciation? pronunciation, LPronunciationAudio? audio)
+    {
+        if (pronunciation is null)
+        {
+            return null;
+        }
+
+        return new LPronunciationDraft(
+            pronunciation.LPronunciationIpa ?? string.Empty,
+            pronunciation.LPronunciationLevel,
+            pronunciation.LPronunciationSyllables,
+            pronunciation.LPronunciationRepresentations,
+            audio?.LPronunciationAudioFile ?? string.Empty,
+            audio?.LPronunciationAudioSource,
+            pronunciation.LPronunciationId);
+    }
+
+    private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(
+        string language, IReadOnlyList<LSpeech> speeches)
     {
         if (speeches.Count == 0)
         {
@@ -113,15 +135,17 @@ public sealed class LEntryLoader
         }
 
         LSpeechArchive values = new(_lEntryLoaderDatabase);
-        List<string> names = new(speeches.Count);
+        List<LSpeechDraft> named = new(speeches.Count);
         foreach (LSpeech speech in speeches)
         {
-            names.Add(speech.LSpeechValueId is not string value
+            string shown = speech.LSpeechValueId is not string value
                 ? speech.LSpeechCustom ?? string.Empty
-                : values.LSpeechValueRead(language, value) ?? value);
+                : values.LSpeechValueRead(language, value) ?? value;
+
+            named.Add(new LSpeechDraft(speech.LSpeechValueId, speech.LSpeechCustom, shown));
         }
 
-        return names;
+        return named;
     }
 
     private LCardDraft LEntryCardRead(
@@ -224,15 +248,15 @@ public sealed class LEntryLoader
         return drafts;
     }
 
-    private static IReadOnlyList<LStateValue> LEntryImageRead(IReadOnlyList<LImage> images)
+    private static IReadOnlyList<LImageDraft> LEntryImageRead(IReadOnlyList<LImage> images)
     {
-        List<LStateValue> locations = new(images.Count);
+        List<LImageDraft> rows = new(images.Count);
         foreach (LImage image in images)
         {
-            locations.Add(image.LImageLocation);
+            rows.Add(new LImageDraft(image.LImageLocation, image.LImageId));
         }
 
-        return locations;
+        return rows;
     }
 
     private static IReadOnlyList<LVideoDraft> LEntryVideoRead(IReadOnlyList<LVideo> videos)
@@ -240,7 +264,7 @@ public sealed class LEntryLoader
         List<LVideoDraft> rows = new(videos.Count);
         foreach (LVideo video in videos)
         {
-            rows.Add(new LVideoDraft(video.LVideoLocation, video.LVideoSpan));
+            rows.Add(new LVideoDraft(video.LVideoLocation, video.LVideoSpan, video.LVideoId));
         }
 
         return rows;

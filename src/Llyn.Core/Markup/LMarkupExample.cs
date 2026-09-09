@@ -1,39 +1,66 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Llyn.Core;
 
 public static class LMarkupExample
 {
-    public static void LMarkupExampleAppend(StringBuilder text, LSentenceDraft sentence)
+    public static void LMarkupExampleAppend(
+        StringBuilder text,
+        int depth,
+        LSentenceDraft sentence,
+        IReadOnlyDictionary<string, string> keys)
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(sentence);
+        ArgumentNullException.ThrowIfNull(keys);
 
-        LStateValue written = sentence.LSentenceDraftExample is LExampleDraft example
-            ? example.LExampleDraftText
-            : LStateValue.LStateValueUnspecified;
-
-        if (written.LStateValueState == LState.LStateUnspecified)
+        if (sentence.LSentenceDraftEmpty)
         {
             return;
         }
 
-        text.Append("    <example");
-        LMarkupMark.LMarkupMarkAppend(
-            text,
-            "src",
-            sentence.LSentenceDraftExample?.LExampleDraftReference
-                ?? LStateValue.LStateValueUnspecified);
-        LMarkupMark.LMarkupMarkAppend(text, "par", sentence.LSentenceDraftParticle);
-        LMarkupMark.LMarkupMarkAppend(text, "dep", sentence.LSentenceDraftDependence);
-        text.Append('>');
+        text.Append(' ', depth * 2).Append("<use");
 
-        if (written.LStateValueState == LState.LStateSpecified)
+        if (sentence.LSentenceDraftExample is LExampleDraft quoted)
         {
-            text.Append(LMarkupLeaf.LMarkupLeafNormalize(written.LStateValueShow(), "example"));
+            LMarkupMark.LMarkupMarkAppend(
+                text,
+                "ref",
+                LStateValue.LStateValueCreate(
+                    keys.TryGetValue(quoted.LExampleDraftId, out string? named)
+                        ? named
+                        : string.Empty));
         }
 
-        text.Append("</example>\n");
+        LMarkupMark.LMarkupMarkAppend(text, "par", sentence.LSentenceDraftParticle);
+        LMarkupMark.LMarkupMarkAppend(text, "dep", sentence.LSentenceDraftDependence);
+        text.Append("/>\n");
+    }
+
+    public static void LMarkupExampleAppend(
+        StringBuilder text, int depth, string key, LExample example)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(example);
+
+        text.Append(' ', depth * 2)
+            .Append("<example id=")
+            .Append(LMarkupMark.LMarkupMarkNormalize(key));
+
+        if (example.LExampleLanguage.Length > 0)
+        {
+            text.Append(" lang=")
+                .Append(LMarkupMark.LMarkupMarkNormalize(example.LExampleLanguage));
+        }
+
+        LMarkupMark.LMarkupMarkAppend(text, "src", example.LExampleSource);
+        text.Append(">\n");
+
+        LMarkupLeaf.LMarkupLeafAppend(text, depth + 1, "text", example.LExampleText);
+        LMarkupLeaf.LMarkupLeafAppend(text, depth + 1, "trans", example.LExampleTranslation);
+
+        text.Append(' ', depth * 2).Append("</example>\n");
     }
 }

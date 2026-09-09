@@ -100,6 +100,20 @@ public partial class PDisplay : UserControl
         PDisplayShow(shown, draft);
     }
 
+    private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)
+    {
+        List<string> named = new(speeches.Count);
+        foreach (LSpeechDraft speech in speeches)
+        {
+            if (speech.LSpeechDraftName.Length > 0)
+            {
+                named.Add(speech.LSpeechDraftName);
+            }
+        }
+
+        return named;
+    }
+
     internal void PDisplayShow(string id, LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
@@ -115,11 +129,11 @@ public partial class PDisplay : UserControl
 
         PDisplayHeadword.Text = draft.LEntryDraftHeadword;
         PDisplayLanguageShow(draft.LEntryDraftLanguage);
-        PDisplayPronunciation.Text = draft.LEntryDraftPronunciation;
-        PDisplayPronunciationSurface.Visibility = draft.LEntryDraftPronunciation.Length == 0
+        PDisplayPronunciation.Text = draft.LEntryDraftIpa;
+        PDisplayPronunciationSurface.Visibility = draft.LEntryDraftIpa.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
-        PPlayback.Margin = draft.LEntryDraftPronunciation.Length == 0
+        PPlayback.Margin = draft.LEntryDraftIpa.Length == 0
             ? new Thickness(0)
             : new Thickness(10, 0, 0, 0);
 
@@ -128,8 +142,8 @@ public partial class PDisplay : UserControl
         PDisplayTranslationShow(draft);
         PDisplayIncomingShow(id);
 
-        PDisplaySpeech.ItemsSource = draft.LEntryDraftSpeeches ?? [];
-        PDisplaySpeechSection.Visibility = draft.LEntryDraftSpeeches is null || draft.LEntryDraftSpeeches.Count == 0
+        PDisplaySpeech.ItemsSource = PDisplaySpeechShow(draft.LEntryDraftSpeeches);
+        PDisplaySpeechSection.Visibility = draft.LEntryDraftSpeeches.Count == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
         PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;

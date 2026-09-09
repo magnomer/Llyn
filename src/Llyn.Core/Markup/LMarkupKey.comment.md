@@ -80,3 +80,32 @@ The author wrote one name for two things, and the message has to say which two.
 - `cited` — The citation as written, or `null` when the tag carried none.
 - `wanted` — The kind the citing tag expects.
 - `keys` — Every key the document declares, and the kind of the row it names.
+
+## `public static string LMarkupKeyCreate(string? seed, LMarkupRowKind kind, ISet<string> taken)`
+
+Derives the key one exported row is declared under, and reserves it.
+
+A key is written for a person to read in a diff, so it comes from the row's own content.
+An author's name, a source's title, an example's opening words.
+The seed is lowercased, its runs of letters and digits joined by hyphens, and everything else dropped.
+Five words and forty characters are enough to recognise a row and short enough to read.
+A row whose seed says nothing falls back to the name of its kind.
+
+Keys share one namespace across a whole document, so a stem already taken needs a suffix.
+The smallest number that is free is appended, starting at two.
+The caller reserves rows in a fixed order, so the same workspace produces the same keys twice running.
+An export that reshuffled its keys would make every diff between two exports unreadable.
+
+**Parameters**
+
+- `seed` — The row's own content, or `null` when it has none to offer.
+- `kind` — The kind of row, used to name a key nothing else could name.
+- `taken` — Every key the document has already declared, which this call adds to.
+
+**Returns** — A key no other row in the document holds.
+
+## `private static string LMarkupKeyFormat(string? seed)`
+
+Turns content into the stem of a key, or into nothing when the content offers no letter or digit.
+A key is one or more letters, digits, `-`, or `_`, which section 2 of the format spec states.
+Letters here means letters in any script, so a Korean headword keys as itself rather than as a number.

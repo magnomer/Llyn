@@ -36,16 +36,10 @@ The overload takes a tag rather than text so the two searches cannot be confused
 
 ## `public LEntryDraft? LEngineEntryLoad(string id)`
 
-Reads the entry identified by `id` back into the draft the input form saved.
-It returns `null` when no entry has that id.
-This is the inverse of `LEngineEntrySave`.
-It composes the entry row, its meanings and collocations, its note and pronunciation.
-It also composes the Examples, Situations and Tags each card references.
-All of them arrive in stored order, as one value the shell can put back on screen.
-It is read as a single consistent snapshot.
-A card's synonym comes back empty, because no card writes one.
-The links a Meaning or Collocation holds are read through the engine's relation seam instead.
-That seam returns targets rather than text.
+The stored entry as the input form would have handed it over.
+The recording comes out of the store relative to the workspace and leaves here as a full path.
+The shell deals in full paths, and only the engine knows which folder the workspace stands in.
+An entry with no pronunciation, or one whose pronunciation carries no recording, is handed back untouched.
 
 ## `public LRevision LEngineEntryDelete(string id)`
 

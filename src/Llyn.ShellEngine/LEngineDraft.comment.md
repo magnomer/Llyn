@@ -65,6 +65,11 @@ So the field was removed from the form rather than left to discard what was type
 Writing a link is its own seam, `LEngineRelationCreate` and `LEngineSynonymCreate`.
 Each takes a target the caller resolved through `LEngineEntryFind` or `LEngineMeaningFind` first.
 
+The entry's forms and inflections are written with the entry, in the order the draft holds them.
+A part of speech is written as the language-pack value the draft names, or as the text it carries.
+The pronunciation is written whole: its level, reading, syllables, representations and recording.
+An entry recording no pronunciation writes no row, so an empty block is never stored.
+
 ## `private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)`
 
 Writes the Example and Situation a card typed and points the stored card at them.
@@ -162,15 +167,26 @@ A row carrying no id, or one nothing is stored under, gets a fresh Example inste
 Two rows naming one id therefore write one row, which is what sharing a sentence means.
 The language falls back to the entry's when the Example states none of its own.
 
-### `private static bool LEngineFieldCheck(IReadOnlyList<string> texts)`
+### `private static bool LEngineImageCheck(IReadOnlyList<LImageDraft> rows)`
 
-Whether one card field carries any value worth a row.
-It is on the same terms LEngineFieldRead writes them.
-A field holding only blanks counts as typed-in nothing.
+Whether the card's Images carry any location worth a row.
+It is on the same terms LEngineImageRead writes them.
+A row naming nothing counts as typed-in nothing.
 
-### `private static IEnumerable<string> LEngineFieldRead(IReadOnlyList<string> texts)`
+### `internal static IEnumerable<LImageDraft> LEngineImageRead(IReadOnlyList<LImageDraft> rows)`
 
-The values of one card field that are worth a row.
-Blank entries are dropped here rather than written.
+The Images of one card that are worth a row.
+Rows naming no picture are dropped here rather than written.
 So a list the shell built out of a control cannot leave an empty row behind.
 The positions stay a gapless 0, 1, 2 over what is actually stored.
+
+### `private static string LEngineImageResolve(LImageArchive images, LImageDraft draft)`
+
+The stored Image a row's id names, updated to the location the row now says.
+A row carrying no id, or one nothing is stored under, gets a fresh Image instead.
+Two cards naming one id therefore reference one row, which is what sharing a picture means.
+An imported card names the row the catalog created, so a file that declared one picture stores one.
+
+### `private static string LEngineVideoResolve(LVideoArchive videos, LVideoDraft draft)`
+
+The same rule for a Video, whose location and span are both updated when either changed.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Llyn.Core;
@@ -23,6 +23,7 @@ public sealed partial class LEngine
             LMarkup.LMarkupDocument document = LMarkup.LMarkupEntryRead(File.ReadAllText(path));
             IReadOnlyList<LMarkup.LMarkupEntry> entries = document.LMarkupDocumentEntry;
             List<LEntry> saved = new List<LEntry>();
+            List<LEntryDraft> resolved = new List<LEntryDraft>();
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
@@ -33,13 +34,17 @@ public sealed partial class LEngine
             {
                 try
                 {
-                    saved.Add(LEngineMarkupSave(entries[place], rows));
+                    LEntryDraft draft = LEngineMarkupResolve(entries[place].LMarkupEntryDraft, rows);
+                    resolved.Add(draft);
+                    saved.Add(LEngineEntrySave(draft));
                 }
                 catch (Exception exception)
                 {
                     throw new FormatException($"Entry {place + 1} could not be imported.", exception);
                 }
             }
+
+            LEngineMarkupAttach(entries, resolved, saved);
 
             session.LDatabaseSessionCommit();
             imported = saved;
@@ -158,16 +163,82 @@ public sealed partial class LEngine
             false)).LRegisterId;
     }
 
-    private LEntry LEngineMarkupSave(
-        LMarkup.LMarkupEntry entry, IReadOnlyDictionary<string, string> rows)
+    private static LEntryDraft LEngineMarkupResolve(
+        LEntryDraft draft, IReadOnlyDictionary<string, string> rows)
     {
-        LEntryDraft draft = entry.LMarkupEntryDraft;
-
-        return LEngineEntrySave(draft with
+        return draft with
         {
             LEntryDraftMeanings = LEngineCardResolve(draft.LEntryDraftMeanings, rows),
             LEntryDraftCollocations = LEngineCardResolve(draft.LEntryDraftCollocations, rows),
-        });
+        };
+    }
+
+    private void LEngineMarkupAttach(
+        IReadOnlyList<LMarkup.LMarkupEntry> entries,
+        IReadOnlyList<LEntryDraft> resolved,
+        IReadOnlyList<LEntry> saved)
+    {
+        Dictionary<string, string> named = new Dictionary<string, string>(StringComparer.Ordinal);
+        for (int place = 0; place < entries.Count; place++)
+        {
+            string key = entries[place].LMarkupEntryKey;
+            if (key.Length > 0)
+            {
+                named[key] = saved[place].LEntryId;
+            }
+        }
+
+        if (named.Count == 0)
+        {
+            return;
+        }
+
+        for (int place = 0; place < saved.Count; place++)
+        {
+            LEntryDraft? stored = new LEntryLoader(_lEngineDatabase).LEntryLoad(saved[place].LEntryId);
+            if (stored is null)
+            {
+                continue;
+            }
+
+            LEngineMarkupAttach(
+                resolved[place].LEntryDraftMeanings, stored.LEntryDraftMeanings, named, false);
+            LEngineMarkupAttach(
+                resolved[place].LEntryDraftCollocations, stored.LEntryDraftCollocations, named, true);
+        }
+    }
+
+    private void LEngineMarkupAttach(
+        IReadOnlyList<LCardDraft> written,
+        IReadOnlyList<LCardDraft> stored,
+        IReadOnlyDictionary<string, string> named,
+        bool collocation)
+    {
+        List<LCardDraft> kept = new List<LCardDraft>();
+        foreach (LCardDraft card in LEngineCardRead(written))
+        {
+            kept.Add(card);
+        }
+
+        for (int place = 0; place < kept.Count && place < stored.Count; place++)
+        {
+            List<string> ids = new List<string>();
+            foreach (string key in kept[place].LCardDraftTranslation)
+            {
+                if (named.TryGetValue(key, out string? entryId) && !ids.Contains(entryId))
+                {
+                    ids.Add(entryId);
+                }
+            }
+
+            if (ids.Count > 0)
+            {
+                LEngineTranslationSave(stored[place].LCardDraftId, ids, collocation);
+            }
+
+            LEngineMarkupAttach(
+                kept[place].LCardDraftChild, stored[place].LCardDraftChild, named, collocation);
+        }
     }
 
     private string LEngineReferenceSave(
@@ -204,19 +275,76 @@ public sealed partial class LEngine
                     {
                         LSentenceDraftExample = example with
                         {
+                            LExampleDraftId = LEngineKeyResolve(example.LExampleDraftId, rows),
                             LExampleDraftReference =
                                 LEngineReferenceResolve(example.LExampleDraftReference, rows),
                         },
                     });
             }
 
+            List<LSituationDraft> situations = new List<LSituationDraft>();
+            foreach (LSituationDraft situation in card.LCardDraftSituation)
+            {
+                situations.Add(situation with
+                {
+                    LSituationDraftId = LEngineKeyResolve(situation.LSituationDraftId, rows),
+                });
+            }
+
+            List<LRegisterDraft> registers = new List<LRegisterDraft>();
+            foreach (LRegisterDraft register in card.LCardDraftRegister)
+            {
+                registers.Add(register with
+                {
+                    LRegisterDraftId = LEngineKeyResolve(register.LRegisterDraftId, rows),
+                });
+            }
+
+            List<LImageDraft> images = new List<LImageDraft>();
+            foreach (LImageDraft image in card.LCardDraftImage)
+            {
+                images.Add(image with
+                {
+                    LImageDraftId = LEngineKeyResolve(image.LImageDraftId, rows),
+                });
+            }
+
+            List<LVideoDraft> videos = new List<LVideoDraft>();
+            foreach (LVideoDraft video in card.LCardDraftVideo)
+            {
+                videos.Add(video with
+                {
+                    LVideoDraftId = LEngineKeyResolve(video.LVideoDraftId, rows),
+                });
+            }
+
             resolved.Add(card with
             {
                 LCardDraftSentence = sentences,
+                LCardDraftSituation = situations,
+                LCardDraftRegister = registers,
+                LCardDraftImage = images,
+                LCardDraftVideo = videos,
+                LCardDraftChild = LEngineCardResolve(card.LCardDraftChild, rows),
             });
         }
 
         return resolved;
+    }
+
+    private static string LEngineKeyResolve(string key, IReadOnlyDictionary<string, string> rows)
+    {
+        if (key.Length == 0)
+        {
+            return key;
+        }
+
+        if (!rows.TryGetValue(key, out string? row))
+        {
+            throw new FormatException($"The citation '{key}' names no row the document declares.");
+        }
+
+        return row;
     }
 
     private static LStateValue LEngineReferenceResolve(

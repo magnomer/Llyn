@@ -312,7 +312,7 @@ public sealed class TEntryDraft
                     [target.LEntryId],
                     string.Empty,
                     ["fire", "literary"],
-                    [TInterface.TStateValueCreate("media/fire.jpg")],
+                    [TInterface.TImageDraftCreate("media/fire.jpg")],
                     1,
                     video: [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
                     register: [TInterface.TRegisterDraftCreate("formal")]) with

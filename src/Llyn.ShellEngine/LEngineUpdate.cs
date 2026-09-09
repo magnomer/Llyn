@@ -54,6 +54,8 @@ public sealed partial class LEngine
                 changes);
 
             LEngineSpeechUpdate(entries, id, draft, changes);
+            LEngineFormUpdate(entries, id, draft, changes);
+            LEngineInflectionUpdate(id, draft, changes);
             LEngineNoteUpdate(id, draft, changes);
             LEnginePronunciationUpdate(id, draft, changes);
 
@@ -88,6 +90,68 @@ public sealed partial class LEngine
             "speech",
             current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
             LEngineSpeechFormat(current)));
+    }
+
+    private static void LEngineFormUpdate(
+        LEntryArchive entries, string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    {
+        IReadOnlyList<LForm> stored = entries.LEntryFormRead(entryId);
+        IReadOnlyList<LForm> current = draft.LEntryDraftForms;
+
+        if (LEngineFormMatch(stored, current))
+        {
+            return;
+        }
+
+        entries.LEntryFormSet(entryId, current);
+        changes.Add(new LRevisionChange(
+            0,
+            entryId,
+            "form",
+            current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
+            null));
+    }
+
+    private static bool LEngineFormMatch(IReadOnlyList<LForm> stored, IReadOnlyList<LForm> current)
+    {
+        if (stored.Count != current.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < stored.Count; index++)
+        {
+            if (!string.Equals(stored[index].LFormText, current[index].LFormText, StringComparison.Ordinal)
+                || !string.Equals(stored[index].LFormRole, current[index].LFormRole, StringComparison.Ordinal)
+                || !string.Equals(
+                    stored[index].LFormLocal, current[index].LFormLocal, StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void LEngineInflectionUpdate(
+        string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    {
+        LInflectionArchive inflections = new(_lEngineDatabase);
+        IReadOnlyList<LInflection> stored = inflections.LInflectionRead(entryId);
+        IReadOnlyList<LInflection> current = draft.LEntryDraftInflections;
+
+        if (LEngineInflectionMatch(stored, current))
+        {
+            return;
+        }
+
+        inflections.LInflectionSet(entryId, current);
+        changes.Add(new LRevisionChange(
+            0,
+            entryId,
+            "inflection",
+            current.Count == 0 ? "delete" : stored.Count == 0 ? "create" : "update",
+            null));
     }
 
     private static string LEngineSpeechFormat(IReadOnlyList<LSpeech> speeches)
@@ -151,9 +215,9 @@ public sealed partial class LEngine
     {
         LPronunciationArchive pronunciations = new(_lEngineDatabase);
         LPronunciation? stored = pronunciations.LPronunciationRead(entryId);
+        LPronunciationDraft? written = draft.LEntryDraftPronunciation;
 
-        if (string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) &&
-            string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+        if (written is null || written.LPronunciationDraftEmpty)
         {
             if (stored is not null)
             {
@@ -169,39 +233,124 @@ public sealed partial class LEngine
         if (stored is null)
         {
             LPronunciation created = pronunciations.LPronunciationCreate(new LPronunciation(
-                string.Empty, entryId, null, draft.LEntryDraftPronunciation, [], []));
+                string.Empty,
+                entryId,
+                written.LPronunciationDraftLevel,
+                written.LPronunciationDraftIpa,
+                written.LPronunciationDraftSyllables,
+                written.LPronunciationDraftRepresentations));
             pronunciationId = created.LPronunciationId;
             changes.Add(new LRevisionChange(
-                0, pronunciationId, "pronunciation", "create", draft.LEntryDraftPronunciation));
+                0, pronunciationId, "pronunciation", "create", written.LPronunciationDraftIpa));
         }
         else
         {
             pronunciationId = stored.LPronunciationId;
-            if (!string.Equals(
-                    stored.LPronunciationIpa, draft.LEntryDraftPronunciation, StringComparison.Ordinal))
+            LPronunciation current = stored with
             {
-                pronunciations.LPronunciationUpdate(stored with
-                {
-                    LPronunciationIpa = draft.LEntryDraftPronunciation,
-                });
+                LPronunciationLevel = written.LPronunciationDraftLevel,
+                LPronunciationIpa = written.LPronunciationDraftIpa,
+                LPronunciationSyllables = written.LPronunciationDraftSyllables,
+                LPronunciationRepresentations = written.LPronunciationDraftRepresentations,
+            };
+
+            if (!LEngineSoundMatch(stored, current))
+            {
+                pronunciations.LPronunciationUpdate(current);
                 changes.Add(new LRevisionChange(
-                    0, pronunciationId, "pronunciation", "update", draft.LEntryDraftPronunciation));
+                    0, pronunciationId, "pronunciation", "update", written.LPronunciationDraftIpa));
             }
         }
 
-        if (string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+        if (written.LPronunciationDraftAudio.Length == 0)
         {
             return;
         }
 
-        string file = LEngineRecordingFormat(draft.LEntryDraftAudio);
+        string file = LEngineRecordingFormat(written.LPronunciationDraftAudio);
         LPronunciationAudio? audio = pronunciations.LPronunciationAudioRead(pronunciationId);
-        if (string.Equals(audio?.LPronunciationAudioFile, file, StringComparison.Ordinal))
+        if (string.Equals(audio?.LPronunciationAudioFile, file, StringComparison.Ordinal)
+            && string.Equals(
+                audio?.LPronunciationAudioSource,
+                written.LPronunciationDraftSource,
+                StringComparison.Ordinal))
         {
             return;
         }
 
-        pronunciations.LPronunciationAudioSave(pronunciationId, file, draft.LEntryDraftSource);
+        pronunciations.LPronunciationAudioSave(
+            pronunciationId, file, written.LPronunciationDraftSource);
         changes.Add(new LRevisionChange(0, pronunciationId, "pronunciation", "update", file));
+    }
+
+    private static bool LEngineSoundMatch(LPronunciation stored, LPronunciation current)
+    {
+        if (!string.Equals(stored.LPronunciationIpa, current.LPronunciationIpa, StringComparison.Ordinal)
+            || !string.Equals(
+                stored.LPronunciationLevel, current.LPronunciationLevel, StringComparison.Ordinal)
+            || stored.LPronunciationSyllables.Count != current.LPronunciationSyllables.Count
+            || stored.LPronunciationRepresentations.Count != current.LPronunciationRepresentations.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < stored.LPronunciationSyllables.Count; index++)
+        {
+            if (stored.LPronunciationSyllables[index] with { LSyllablePronunciationId = string.Empty }
+                != current.LPronunciationSyllables[index] with { LSyllablePronunciationId = string.Empty })
+            {
+                return false;
+            }
+        }
+
+        for (int index = 0; index < stored.LPronunciationRepresentations.Count; index++)
+        {
+            if (stored.LPronunciationRepresentations[index]
+                    with { LRepresentationPronunciationId = string.Empty }
+                != current.LPronunciationRepresentations[index]
+                    with { LRepresentationPronunciationId = string.Empty })
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool LEngineInflectionMatch(
+        IReadOnlyList<LInflection> stored, IReadOnlyList<LInflection> current)
+    {
+        if (stored.Count != current.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < stored.Count; index++)
+        {
+            if (!string.Equals(
+                    stored[index].LInflectionText, current[index].LInflectionText, StringComparison.Ordinal)
+                || !string.Equals(
+                    stored[index].LInflectionLocal,
+                    current[index].LInflectionLocal,
+                    StringComparison.Ordinal)
+                || !string.Equals(
+                    stored[index].LInflectionSpeechId,
+                    current[index].LInflectionSpeechId,
+                    StringComparison.Ordinal)
+                || stored[index].LInflectionFeatures.Count != current[index].LInflectionFeatures.Count)
+            {
+                return false;
+            }
+
+            for (int place = 0; place < stored[index].LInflectionFeatures.Count; place++)
+            {
+                if (stored[index].LInflectionFeatures[place] != current[index].LInflectionFeatures[place])
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

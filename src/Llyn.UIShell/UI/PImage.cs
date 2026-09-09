@@ -12,18 +12,20 @@ internal sealed class PImage : INotifyPropertyChanged
     private string _pImageLocation;
     private bool _pImageUnreadable;
     private ImageSource? _pImagePreview;
+    private readonly string _pImageRow;
 
     internal PImage()
-        : this(LStateValue.LStateValueUnspecified)
+        : this(new LImageDraft(LStateValue.LStateValueUnspecified))
     {
     }
 
-    internal PImage(LStateValue location)
+    internal PImage(LImageDraft written)
     {
-        ArgumentNullException.ThrowIfNull(location);
+        ArgumentNullException.ThrowIfNull(written);
 
-        _pImageLocation = location.LStateValueShow();
-        _pImageUnreadable = location.LStateValueState == LState.LStateUnknown;
+        _pImageRow = written.LImageDraftId;
+        _pImageLocation = written.LImageDraftLocation.LStateValueShow();
+        _pImageUnreadable = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
         PImagePreviewUpdate();
     }
 
@@ -75,9 +77,10 @@ internal sealed class PImage : INotifyPropertyChanged
         }
     }
 
-    internal LStateValue PImageLocationRead()
+    internal LImageDraft PImageDraftRead()
     {
-        return LStateValue.LStateValueResolve(_pImageLocation, _pImageUnreadable);
+        return new LImageDraft(
+            LStateValue.LStateValueResolve(_pImageLocation, _pImageUnreadable), _pImageRow);
     }
 
     internal static Uri? PImageAddressRead(string location)

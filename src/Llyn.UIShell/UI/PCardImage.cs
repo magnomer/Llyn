@@ -8,30 +8,30 @@ internal sealed partial class PCard
 {
     public ObservableCollection<PImage> PCardImage { get; }
 
-    internal void PCardImageShow(IReadOnlyList<LStateValue> locations)
+    internal void PCardImageShow(IReadOnlyList<LImageDraft> rows)
     {
         PCardImage.Clear();
-        foreach (LStateValue location in locations)
+        foreach (LImageDraft row in rows)
         {
-            PCardImage.Add(new PImage(location));
+            PCardImage.Add(new PImage(row));
         }
     }
 
-    internal IReadOnlyList<LStateValue> PCardImageRead()
+    internal IReadOnlyList<LImageDraft> PCardImageRead()
     {
-        List<LStateValue> locations = [];
+        List<LImageDraft> rows = [];
         foreach (PImage row in PCardImage)
         {
-            LStateValue location = row.PImageLocationRead();
-            if (location.LStateValueEmpty)
+            LImageDraft written = row.PImageDraftRead();
+            if (written.LImageDraftEmpty)
             {
                 continue;
             }
 
-            locations.Add(location);
+            rows.Add(written);
         }
 
-        return locations;
+        return rows;
     }
 
     internal void PCardImageAdd()

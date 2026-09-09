@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using Llyn.Core;
@@ -15,6 +15,7 @@ internal sealed class PVideo : INotifyPropertyChanged
     private TimeSpan _pVideoFrom = TimeSpan.Zero;
     private TimeSpan? _pVideoUntil;
     private bool _pVideoPlaying;
+    private string _pVideoRow = string.Empty;
 
     internal PVideo()
     {
@@ -23,6 +24,8 @@ internal sealed class PVideo : INotifyPropertyChanged
     internal PVideo(LVideoDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
+
+        _pVideoRow = written.LVideoDraftId;
 
         PVideoLocation = written.LVideoDraftLocation.LStateValueShow();
         PVideoUnreadable = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
@@ -145,7 +148,8 @@ internal sealed class PVideo : INotifyPropertyChanged
     {
         return new LVideoDraft(
             LStateValue.LStateValueResolve(_pVideoLocation, _pVideoUnreadable),
-            LStateValue.LStateValueResolve(_pVideoTimestamp, _pVideoUnwritten));
+            LStateValue.LStateValueResolve(_pVideoTimestamp, _pVideoUnwritten),
+            _pVideoRow);
     }
 
     private void PVideoTimestampApply(string timestamp)

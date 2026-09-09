@@ -293,6 +293,17 @@ Field by field, whether two forms of an entry say the same thing.
 Language sits beside the headword, because changing only the tongue is still an edit.
 The lists inside are compared by their contents, since records compare them by reference.
 
+## `private static bool LEngineSoundMatch(LPronunciationDraft? one, LPronunciationDraft? other)`
+
+Whether two drafts record the same pronunciation.
+The lists inside a draft are compared by content, because two equal lists are rarely the same object.
+A record comparison would call every reloaded draft a change and never settle.
+
+## `private static bool LEngineSpeechMatch(IReadOnlyList<LSpeechDraft> one, IReadOnlyList<LSpeechDraft> other)`
+
+Whether two drafts name the same parts of speech in the same order.
+A language-pack value and a custom name of the same wording are two different parts.
+
 ## `private static bool LEngineCardMatch(IReadOnlyList<LCardDraft> one, IReadOnlyList<LCardDraft> other)`
 
 Whether two card lists carry the same cards in the same order.

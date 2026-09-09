@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -19,6 +19,17 @@ public sealed partial class LEngine
         _lEnginePress = press;
     }
 
+    public void LEngineMarkupExport(IReadOnlyList<string> entryIds, string path)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(entryIds);
+            ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+            File.WriteAllText(path, LEngineMarkupFormat(entryIds), new UTF8Encoding(false));
+        }
+    }
+
     public async Task LEnginePortraitExport(
         string entryId, string path, LPortraitFormat format, LPortraitLabel label)
     {
@@ -28,7 +39,7 @@ public sealed partial class LEngine
 
         if (format == LPortraitFormat.LPortraitFormatMarkup)
         {
-            File.WriteAllText(path, LEngineMarkupFormat(entryId), new UTF8Encoding(false));
+            File.WriteAllText(path, LEngineMarkupFormat([entryId]), new UTF8Encoding(false));
             return;
         }
 
@@ -62,66 +73,283 @@ public sealed partial class LEngine
         }
     }
 
-    private string LEngineMarkupFormat(string entryId)
+    private string LEngineMarkupFormat(IReadOnlyList<string> entryIds)
     {
-        LEntryDraft draft = LEngineEntryLoad(entryId)
-            ?? throw new InvalidOperationException("The entry no longer stands in the workspace.");
+        List<LMarkup.LMarkupEntry> entries = [];
+        Dictionary<string, string> keys = new(StringComparer.Ordinal);
+        HashSet<string> taken = new(StringComparer.Ordinal);
+        List<LEntryDraft> drafts = [];
 
-        List<string> ids = new List<string>();
-        LEngineSourceRead(draft.LEntryDraftMeanings, ids);
-        LEngineSourceRead(draft.LEntryDraftCollocations, ids);
-
-        List<LMarkup.LMarkupReference> sources = new List<LMarkup.LMarkupReference>();
-        foreach (string id in ids)
+        foreach (string entryId in entryIds)
         {
-            LReference? held;
-            List<string> writers = new List<string>();
+            LEntryDraft draft = new LEntryLoader(_lEngineDatabase).LEntryLoad(entryId)
+                ?? throw new InvalidOperationException("The entry no longer stands in the workspace.");
 
-            try
-            {
-                held = LEngineReferenceRead(id);
-
-                if (held is not null)
-                {
-                    foreach (LAuthor author in LEngineAuthorRead(id, LOwner.LOwnerReference))
-                    {
-                        writers.Add(author.LAuthorName);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                continue;
-            }
-
-            if (held is not null)
-            {
-                sources.Add(new LMarkup.LMarkupReference(id, held, writers));
-            }
+            drafts.Add(draft);
+            keys[entryId] = LMarkup.LMarkupKeyCreate(
+                draft.LEntryDraftHeadword, LMarkup.LMarkupRowKind.LMarkupRowEntry, taken);
         }
 
-        return LMarkupDraft.LMarkupDraftFormat(draft, sources);
+        for (int place = 0; place < drafts.Count; place++)
+        {
+            entries.Add(new LMarkup.LMarkupEntry(drafts[place], keys[entryIds[place]]));
+        }
+
+        return LMarkupDraft.LMarkupDraftFormat(
+            new LMarkup.LMarkupDocument(LEngineCatalogCreate(drafts, keys, taken), entries), keys);
     }
 
-    private static void LEngineSourceRead(
-        IReadOnlyList<LCardDraft> cards, List<string> ids)
+    private LMarkup.LMarkupCatalog LEngineCatalogCreate(
+        IReadOnlyList<LEntryDraft> drafts,
+        Dictionary<string, string> keys,
+        HashSet<string> taken)
+    {
+        LEngineCatalog harvest = new();
+        foreach (LEntryDraft draft in drafts)
+        {
+            LEngineCatalogRead(harvest, draft.LEntryDraftMeanings);
+            LEngineCatalogRead(harvest, draft.LEntryDraftCollocations);
+        }
+
+        Dictionary<string, LAuthor> authors = new(StringComparer.Ordinal);
+        foreach (LAuthor author in LEngineSort(LEngineAuthorRead(), row => row.LAuthorName, row => row.LAuthorId))
+        {
+            keys[author.LAuthorId] = LMarkup.LMarkupKeyCreate(
+                author.LAuthorName, LMarkup.LMarkupRowKind.LMarkupRowAuthor, taken);
+            authors[keys[author.LAuthorId]] = author;
+        }
+
+        Dictionary<string, LMarkup.LMarkupReference> sources = new(StringComparer.Ordinal);
+        IReadOnlyList<LReference> held = LEngineSort(
+            LEngineReferenceRead(), row => row.LReferenceNameRead(), row => row.LReferenceId);
+        foreach (LReference reference in held)
+        {
+            keys[reference.LReferenceId] = LMarkup.LMarkupKeyCreate(
+                reference.LReferenceNameRead(), LMarkup.LMarkupRowKind.LMarkupRowSource, taken);
+        }
+
+        foreach (LReference reference in held)
+        {
+            List<string> credited = [];
+            foreach (LAuthor author in LEngineAuthorRead(reference.LReferenceId, LOwner.LOwnerReference))
+            {
+                if (keys.TryGetValue(author.LAuthorId, out string? named))
+                {
+                    credited.Add(named);
+                }
+            }
+
+            sources[keys[reference.LReferenceId]] = new LMarkup.LMarkupReference(
+                keys[reference.LReferenceId], reference, credited);
+        }
+
+        Dictionary<string, LExample> examples = new(StringComparer.Ordinal);
+        foreach (LExample example in LEngineSort(
+            harvest.LEngineCatalogExample, row => row.LExampleText.LStateValueShow(), row => row.LExampleId))
+        {
+            string named = LMarkup.LMarkupKeyCreate(
+                example.LExampleText.LStateValueShow(),
+                LMarkup.LMarkupRowKind.LMarkupRowExample,
+                taken);
+            keys[example.LExampleId] = named;
+            examples[named] = example with
+            {
+                LExampleSource = LEngineCitationRead(example.LExampleSource, keys),
+            };
+        }
+
+        Dictionary<string, LSituation> situations = new(StringComparer.Ordinal);
+        foreach (LSituation situation in LEngineSort(
+            harvest.LEngineCatalogSituation,
+            row => row.LSituationTitle.LStateValueShow(),
+            row => row.LSituationId))
+        {
+            string named = LMarkup.LMarkupKeyCreate(
+                situation.LSituationTitle.LStateValueShow(),
+                LMarkup.LMarkupRowKind.LMarkupRowSituation,
+                taken);
+            keys[situation.LSituationId] = named;
+            situations[named] = situation;
+        }
+
+        Dictionary<string, LRegister> registers = new(StringComparer.Ordinal);
+        foreach (LRegister register in LEngineSort(
+            harvest.LEngineCatalogRegister,
+            row => row.LRegisterName.LStateValueShow(),
+            row => row.LRegisterId))
+        {
+            string named = LMarkup.LMarkupKeyCreate(
+                register.LRegisterName.LStateValueShow(),
+                LMarkup.LMarkupRowKind.LMarkupRowRegister,
+                taken);
+            keys[register.LRegisterId] = named;
+            registers[named] = register;
+        }
+
+        Dictionary<string, LImage> images = new(StringComparer.Ordinal);
+        foreach (LImage image in LEngineSort(
+            harvest.LEngineCatalogImage,
+            row => row.LImageLocation.LStateValueShow(),
+            row => row.LImageId))
+        {
+            string named = LMarkup.LMarkupKeyCreate(
+                image.LImageLocation.LStateValueShow(),
+                LMarkup.LMarkupRowKind.LMarkupRowImage,
+                taken);
+            keys[image.LImageId] = named;
+            images[named] = image;
+        }
+
+        Dictionary<string, LVideo> videos = new(StringComparer.Ordinal);
+        foreach (LVideo video in LEngineSort(
+            harvest.LEngineCatalogVideo,
+            row => row.LVideoLocation.LStateValueShow(),
+            row => row.LVideoId))
+        {
+            string named = LMarkup.LMarkupKeyCreate(
+                video.LVideoLocation.LStateValueShow(),
+                LMarkup.LMarkupRowKind.LMarkupRowVideo,
+                taken);
+            keys[video.LVideoId] = named;
+            videos[named] = video;
+        }
+
+        return new LMarkup.LMarkupCatalog(
+            new Dictionary<string, LMarkup.LMarkupRowKind>(StringComparer.Ordinal),
+            authors,
+            sources,
+            examples,
+            situations,
+            registers,
+            images,
+            videos);
+    }
+
+    private static LStateValue LEngineCitationRead(
+        LStateValue citation, IReadOnlyDictionary<string, string> keys)
+    {
+        if (citation.LStateValueState != LState.LStateSpecified)
+        {
+            return citation;
+        }
+
+        return keys.TryGetValue(citation.LStateValueShow(), out string? named)
+            ? LStateValue.LStateValueCreate(named)
+            : LStateValue.LStateValueUnknown;
+    }
+
+    private static void LEngineCatalogRead(LEngineCatalog harvest, IReadOnlyList<LCardDraft> cards)
     {
         foreach (LCardDraft card in cards)
         {
             foreach (LSentenceDraft sentence in card.LCardDraftSentence)
             {
-                if (sentence.LSentenceDraftExample is not LExampleDraft example
-                    || example.LExampleDraftReference.LStateValueState != LState.LStateSpecified)
+                if (sentence.LSentenceDraftExample is LExampleDraft quoted
+                    && quoted.LExampleDraftId.Length > 0)
                 {
-                    continue;
-                }
-
-                string id = example.LExampleDraftReference.LStateValueShow();
-                if (id.Length > 0 && !ids.Contains(id))
-                {
-                    ids.Add(id);
+                    harvest.LEngineCatalogExample.TryAdd(
+                        quoted.LExampleDraftId,
+                        new LExample(
+                            quoted.LExampleDraftId,
+                            quoted.LExampleDraftLanguage,
+                            quoted.LExampleDraftText,
+                            quoted.LExampleDraftTranslation,
+                            quoted.LExampleDraftReference));
                 }
             }
+
+            foreach (LSituationDraft situation in card.LCardDraftSituation)
+            {
+                if (situation.LSituationDraftId.Length > 0)
+                {
+                    harvest.LEngineCatalogSituation.TryAdd(
+                        situation.LSituationDraftId,
+                        new LSituation(
+                            situation.LSituationDraftId,
+                            situation.LSituationDraftTitle,
+                            situation.LSituationDraftDescription,
+                            situation.LSituationDraftKind));
+                }
+            }
+
+            foreach (LRegisterDraft register in card.LCardDraftRegister)
+            {
+                if (register.LRegisterDraftId.Length > 0)
+                {
+                    harvest.LEngineCatalogRegister.TryAdd(
+                        register.LRegisterDraftId,
+                        new LRegister(
+                            register.LRegisterDraftId,
+                            register.LRegisterDraftName,
+                            register.LRegisterDraftLanguage,
+                            register.LRegisterDraftBuiltin));
+                }
+            }
+
+            foreach (LImageDraft image in card.LCardDraftImage)
+            {
+                if (image.LImageDraftId.Length > 0)
+                {
+                    harvest.LEngineCatalogImage.TryAdd(
+                        image.LImageDraftId,
+                        new LImage(image.LImageDraftId, image.LImageDraftLocation));
+                }
+            }
+
+            foreach (LVideoDraft video in card.LCardDraftVideo)
+            {
+                if (video.LVideoDraftId.Length > 0)
+                {
+                    harvest.LEngineCatalogVideo.TryAdd(
+                        video.LVideoDraftId,
+                        new LVideo(
+                            video.LVideoDraftId, video.LVideoDraftLocation, video.LVideoDraftSpan));
+                }
+            }
+
+            LEngineCatalogRead(harvest, card.LCardDraftChild);
         }
+    }
+
+    private static IReadOnlyList<TRow> LEngineSort<TRow>(
+        IEnumerable<TRow> rows, Func<TRow, string> seed, Func<TRow, string> identify)
+    {
+        List<TRow> sorted = [];
+        foreach (TRow row in rows)
+        {
+            sorted.Add(row);
+        }
+
+        sorted.Sort((one, other) =>
+        {
+            int order = string.CompareOrdinal(seed(one), seed(other));
+            return order != 0 ? order : string.CompareOrdinal(identify(one), identify(other));
+        });
+
+        return sorted;
+    }
+
+    private static IReadOnlyList<TRow> LEngineSort<TRow>(
+        Dictionary<string, TRow> rows, Func<TRow, string> seed, Func<TRow, string> identify)
+    {
+        return LEngineSort((IEnumerable<TRow>)rows.Values, seed, identify);
+    }
+
+    private sealed class LEngineCatalog
+    {
+        public Dictionary<string, LExample> LEngineCatalogExample { get; } =
+            new(StringComparer.Ordinal);
+
+        public Dictionary<string, LSituation> LEngineCatalogSituation { get; } =
+            new(StringComparer.Ordinal);
+
+        public Dictionary<string, LRegister> LEngineCatalogRegister { get; } =
+            new(StringComparer.Ordinal);
+
+        public Dictionary<string, LImage> LEngineCatalogImage { get; } =
+            new(StringComparer.Ordinal);
+
+        public Dictionary<string, LVideo> LEngineCatalogVideo { get; } =
+            new(StringComparer.Ordinal);
     }
 }

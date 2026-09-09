@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -29,9 +29,15 @@ public sealed partial class LEngine
                     null,
                     null,
                     null),
-                forms: [],
+                forms: draft.LEntryDraftForms,
                 speeches: LEngineSpeechResolve(
                     string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
+
+            if (draft.LEntryDraftInflections.Count > 0)
+            {
+                new LInflectionArchive(_lEngineDatabase).LInflectionSet(
+                    entry.LEntryId, draft.LEntryDraftInflections);
+            }
 
             LEngineCardValidate(draft.LEntryDraftMeanings, collocation: false);
             LEngineCardValidate(draft.LEntryDraftCollocations, collocation: true);
@@ -61,24 +67,24 @@ public sealed partial class LEngine
                 new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, draft.LEntryDraftNote));
             }
 
-            if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) ||
-                !string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+            if (draft.LEntryDraftPronunciation is LPronunciationDraft spoken
+                && !spoken.LPronunciationDraftEmpty)
             {
                 LPronunciationArchive pronunciations = new(_lEngineDatabase);
                 LPronunciation pronunciation = pronunciations.LPronunciationCreate(new LPronunciation(
                     string.Empty,
                     entry.LEntryId,
-                    null,
-                    draft.LEntryDraftPronunciation,
-                    [],
-                    []));
+                    spoken.LPronunciationDraftLevel,
+                    spoken.LPronunciationDraftIpa,
+                    spoken.LPronunciationDraftSyllables,
+                    spoken.LPronunciationDraftRepresentations));
 
-                if (!string.IsNullOrWhiteSpace(draft.LEntryDraftAudio))
+                if (spoken.LPronunciationDraftAudio.Length > 0)
                 {
                     pronunciations.LPronunciationAudioSave(
                         pronunciation.LPronunciationId,
-                        LEngineRecordingFormat(draft.LEntryDraftAudio),
-                        draft.LEntryDraftSource);
+                        LEngineRecordingFormat(spoken.LPronunciationDraftAudio),
+                        spoken.LPronunciationDraftSource);
                 }
             }
 
@@ -168,16 +174,22 @@ public sealed partial class LEngine
 
         LImageArchive images = new(_lEngineDatabase);
         position = 0;
-        foreach (LStateValue location in LEngineFieldRead(card.LCardDraftImage))
+        HashSet<string> attachedImages = new(StringComparer.Ordinal);
+        foreach (LImageDraft draft in LEngineImageRead(card.LCardDraftImage))
         {
-            LImage image = images.LImageCreate(new LImage(string.Empty, location));
+            string imageId = LEngineImageResolve(images, draft);
+            if (!attachedImages.Add(imageId))
+            {
+                continue;
+            }
+
             if (collocation)
             {
-                images.LImageCollocationAttach(ownerId, image.LImageId, position);
+                images.LImageCollocationAttach(ownerId, imageId, position);
             }
             else
             {
-                images.LImageMeaningAttach(ownerId, image.LImageId, position);
+                images.LImageMeaningAttach(ownerId, imageId, position);
             }
 
             position++;
@@ -185,17 +197,22 @@ public sealed partial class LEngine
 
         LVideoArchive videos = new(_lEngineDatabase);
         position = 0;
-        foreach (LVideoDraft row in LEngineVideoRead(card.LCardDraftVideo))
+        HashSet<string> attachedVideos = new(StringComparer.Ordinal);
+        foreach (LVideoDraft draft in LEngineVideoRead(card.LCardDraftVideo))
         {
-            LVideo video = videos.LVideoCreate(
-                new LVideo(string.Empty, row.LVideoDraftLocation, row.LVideoDraftSpan));
+            string videoId = LEngineVideoResolve(videos, draft);
+            if (!attachedVideos.Add(videoId))
+            {
+                continue;
+            }
+
             if (collocation)
             {
-                videos.LVideoCollocationAttach(ownerId, video.LVideoId, position);
+                videos.LVideoCollocationAttach(ownerId, videoId, position);
             }
             else
             {
-                videos.LVideoMeaningAttach(ownerId, video.LVideoId, position);
+                videos.LVideoMeaningAttach(ownerId, videoId, position);
             }
 
             position++;
@@ -216,7 +233,7 @@ public sealed partial class LEngine
                 LEngineRegisterCheck(card.LCardDraftRegister) ||
                 LEngineTagCheck(card.LCardDraftTag) ||
                 LEngineTranslationCheck(card.LCardDraftTranslation) ||
-                LEngineFieldCheck(card.LCardDraftImage) ||
+                LEngineImageCheck(card.LCardDraftImage) ||
                 LEngineVideoCheck(card.LCardDraftVideo) ||
                 card.LCardDraftChild.Count > 0)
             {
@@ -397,11 +414,11 @@ public sealed partial class LEngine
         }
     }
 
-    private static bool LEngineFieldCheck(IReadOnlyList<LStateValue> texts)
+    private static bool LEngineImageCheck(IReadOnlyList<LImageDraft> rows)
     {
-        foreach (LStateValue text in texts)
+        foreach (LImageDraft row in rows)
         {
-            if (!text.LStateValueEmpty)
+            if (!row.LImageDraftEmpty)
             {
                 return true;
             }
@@ -410,14 +427,54 @@ public sealed partial class LEngine
         return false;
     }
 
-    private static IEnumerable<LStateValue> LEngineFieldRead(IReadOnlyList<LStateValue> texts)
+    internal static IEnumerable<LImageDraft> LEngineImageRead(IReadOnlyList<LImageDraft> rows)
     {
-        foreach (LStateValue text in texts)
+        foreach (LImageDraft row in rows)
         {
-            if (!text.LStateValueEmpty)
+            if (!row.LImageDraftEmpty)
             {
-                yield return text;
+                yield return row;
             }
         }
+    }
+
+    private static string LEngineImageResolve(LImageArchive images, LImageDraft draft)
+    {
+        if (!string.IsNullOrWhiteSpace(draft.LImageDraftId)
+            && images.LImageRead(draft.LImageDraftId) is LImage stored)
+        {
+            if (stored.LImageLocation != draft.LImageDraftLocation)
+            {
+                images.LImageUpdate(stored with { LImageLocation = draft.LImageDraftLocation });
+            }
+
+            return stored.LImageId;
+        }
+
+        return images.LImageCreate(
+            new LImage(string.Empty, draft.LImageDraftLocation)).LImageId;
+    }
+
+    private static string LEngineVideoResolve(LVideoArchive videos, LVideoDraft draft)
+    {
+        if (!string.IsNullOrWhiteSpace(draft.LVideoDraftId)
+            && videos.LVideoRead(draft.LVideoDraftId) is LVideo stored)
+        {
+            LVideo written = stored with
+            {
+                LVideoLocation = draft.LVideoDraftLocation,
+                LVideoSpan = draft.LVideoDraftSpan,
+            };
+
+            if (written != stored)
+            {
+                videos.LVideoUpdate(written);
+            }
+
+            return stored.LVideoId;
+        }
+
+        return videos.LVideoCreate(new LVideo(
+            string.Empty, draft.LVideoDraftLocation, draft.LVideoDraftSpan)).LVideoId;
     }
 }

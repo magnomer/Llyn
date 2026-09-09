@@ -28,3 +28,9 @@ Every reader that knew only locations still means exactly that.
 
 A row is empty when it names no film.
 A span alone points at nothing, so it never keeps a row alive.
+
+### `public string LVideoDraftId`
+
+The stored row this draft stands for, empty when the row is new.
+A card points at a video rather than owning one, and two cards may point at the same film.
+Carrying the row id beside the location is what lets a citation stay a citation.

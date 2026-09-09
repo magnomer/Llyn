@@ -182,38 +182,213 @@ public sealed class TMarkupSyntax
             """
             <sense>
               <title>set alight</title>
-              <expression>kindle a fire</expression>
-              <meaning>to set something burning</meaning>
-              <synonym>ignite, light</synonym>
+              <gloss>ignite</gloss>
+              <meaning lang="English">to set something burning</meaning>
+              <labels>literal</labels>
               <tag>literal</tag>
-              <tag>old</tag>
-              <image>media/one.jpg</image>
-              <image>media/two.jpg</image>
+              <tag> old </tag>
+              <tag>literal</tag>
             </sense>
             """), 1);
 
         Assert.Equal("set alight", card.LCardDraftTitle.TStateValueShow());
-        Assert.Equal("kindle a fire", card.LCardDraftExpression.TStateValueShow());
+        Assert.Equal("ignite", card.LCardDraftGloss);
         Assert.Equal("to set something burning", card.LCardDraftMeaning.TStateValueShow());
-        Assert.Equal("ignite, light", card.LCardDraftSynonym);
+        Assert.Equal("English", card.LCardDraftLanguage);
+        Assert.Equal("literal", card.LCardDraftLabels);
         Assert.Equal(["literal", "old"], card.LCardDraftTag);
-        Assert.Equal(
-            ["media/one.jpg", "media/two.jpg"],
-            card.LCardDraftImage.Select(image => image.TStateValueShow()));
     }
 
     [Fact]
     public void MarkupCardRead_EmptyTag_ReturnsNoTag()
     {
         LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
-            "<sense><meaning></meaning><tag></tag></sense>"), 1);
+            "<sense><meaning></meaning><gloss></gloss><tag></tag></sense>"), 1);
 
         Assert.Equal(LState.LStateUnknown, card.LCardDraftMeaning.LStateValueState);
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftExpression.LStateValueState);
-        Assert.Equal(string.Empty, card.LCardDraftSynonym);
+        Assert.Null(card.LCardDraftGloss);
         Assert.Empty(card.LCardDraftTag);
         Assert.Empty(card.LCardDraftImage);
+    }
+
+    [Fact]
+    public void MarkupCardRead_NestedSense_KeepsTheChildOrder()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            """
+            <sense>
+              <meaning>to set alight</meaning>
+              <sense><meaning>to rouse a feeling</meaning></sense>
+              <sense><meaning>to bear young</meaning></sense>
+            </sense>
+            """), 1);
+
+        Assert.Equal(
+            ["to rouse a feeling", "to bear young"],
+            card.LCardDraftChild.Select(child => child.LCardDraftMeaning.TStateValueShow()));
+        Assert.Equal([1, 2], card.LCardDraftChild.Select(child => child.LCardDraftPosition));
+    }
+
+    [Fact]
+    public void MarkupCardRead_FrameWithoutExample_ReturnsTheUse()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            "<sense><use par=\"for\" dep=\"Agent\"/><use par=\"\"/></sense>"), 1);
+
+        Assert.Equal(2, card.LCardDraftSentence.Count);
+        Assert.Null(card.LCardDraftSentence[0].LSentenceDraftExample);
+        Assert.Equal("for", card.LCardDraftSentence[0].LSentenceDraftParticle.TStateValueShow());
+        Assert.Equal("Agent", card.LCardDraftSentence[0].LSentenceDraftDependence.TStateValueShow());
+        Assert.Equal(
+            LState.LStateUnknown,
+            card.LCardDraftSentence[1].LSentenceDraftParticle.LStateValueState);
+    }
+
+    [Fact]
+    public void MarkupRead_EntryDetail_ReturnsEveryField()
+    {
+        LEntryDraft entry = Assert.Single(TInterface.TMarkupRead(
+            """
+            <llyn>
+              <entry>
+                <headword>kindle</headword>
+                <form role="past" local="과거형">kindled</form>
+                <form role="participle">kindling</form>
+                <pos id="verb"/>
+                <pos>서술어</pos>
+                <inflection local="3인칭 단수" pos="verb">
+                  <text>kindles</text>
+                  <feature id="person" value="third"/>
+                  <feature id="number" value="singular"/>
+                </inflection>
+                <pronunciation level="standard">
+                  <ipa>/ˈkɪnd(ə)l/</ipa>
+                  <syllable onset="k" nucleus="ɪ" coda="n" orthography="kin" local="킨" tone="1"/>
+                  <representation system="revised" role="transcription" tone="평성">kindeul</representation>
+                  <audio source="recorded by the author">media/kindle.mp3</audio>
+                </pronunciation>
+              </entry>
+            </llyn>
+            """));
+
+        Assert.Equal(["kindled", "kindling"], entry.LEntryDraftForms.Select(form => form.LFormText));
+        Assert.Equal(["past", "participle"], entry.LEntryDraftForms.Select(form => form.LFormRole));
+        Assert.Equal("과거형", entry.LEntryDraftForms[0].LFormLocal);
+        Assert.Null(entry.LEntryDraftForms[1].LFormLocal);
+
+        Assert.Equal("verb", entry.LEntryDraftSpeeches[0].LSpeechDraftValue);
+        Assert.Null(entry.LEntryDraftSpeeches[0].LSpeechDraftCustom);
+        Assert.Null(entry.LEntryDraftSpeeches[1].LSpeechDraftValue);
+        Assert.Equal("서술어", entry.LEntryDraftSpeeches[1].LSpeechDraftCustom);
+
+        LInflection inflection = Assert.Single(entry.LEntryDraftInflections);
+        Assert.Equal("kindles", inflection.LInflectionText);
+        Assert.Equal("3인칭 단수", inflection.LInflectionLocal);
+        Assert.Equal("verb", inflection.LInflectionSpeechId);
+        Assert.Equal(
+            ["person", "number"], inflection.LInflectionFeatures.Select(feature => feature.LFeatureId));
+        Assert.Equal(
+            ["third", "singular"],
+            inflection.LInflectionFeatures.Select(feature => feature.LFeatureValueId));
+
+        Assert.NotNull(entry.LEntryDraftPronunciation);
+        LPronunciationDraft spoken = entry.LEntryDraftPronunciation;
+        Assert.Equal("standard", spoken.LPronunciationDraftLevel);
+        Assert.Equal("/ˈkɪnd(ə)l/", spoken.LPronunciationDraftIpa);
+        Assert.Equal("media/kindle.mp3", spoken.LPronunciationDraftAudio);
+        Assert.Equal("recorded by the author", spoken.LPronunciationDraftSource);
+
+        LSyllable syllable = Assert.Single(spoken.LPronunciationDraftSyllables);
+        Assert.Equal("k", syllable.LSyllableOnset);
+        Assert.Equal("ɪ", syllable.LSyllableNucleus);
+        Assert.Equal("n", syllable.LSyllableCoda);
+        Assert.Equal("kin", syllable.LSyllableOrthography);
+        Assert.Equal("킨", syllable.LSyllableLocal);
+        Assert.Equal(1, syllable.LSyllableToneNumber);
+
+        LRepresentation representation = Assert.Single(spoken.LPronunciationDraftRepresentations);
+        Assert.Equal("revised", representation.LRepresentationSystem);
+        Assert.Equal("transcription", representation.LRepresentationRole);
+        Assert.Equal("kindeul", representation.LRepresentationText);
+        Assert.Equal("평성", representation.LRepresentationLocalTone);
+    }
+
+    [Fact]
+    public void MarkupRead_SpeechCarryingIdAndName_Throws()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
+            "<llyn><entry><headword>kindle</headword><pos id=\"verb\">서술어</pos></entry></llyn>"));
+
+        Assert.Contains("<pos>", failure.Message);
+    }
+
+    [Fact]
+    public void MarkupRead_SpeechCarryingNeither_Throws()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
+            "<llyn><entry><headword>kindle</headword><pos/></entry></llyn>"));
+
+        Assert.Contains("<pos>", failure.Message);
+    }
+
+    [Fact]
+    public void MarkupRead_SyllableWithoutNucleus_Throws()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
+            "<llyn><entry><headword>kindle</headword>"
+            + "<pronunciation><syllable onset=\"k\"/></pronunciation></entry></llyn>"));
+
+        Assert.Contains("<syllable>", failure.Message);
+    }
+
+    [Fact]
+    public void MarkupRead_SyllablesWithoutIpa_KeepsTheSyllables()
+    {
+        LEntryDraft entry = Assert.Single(TInterface.TMarkupRead(
+            "<llyn><entry><headword>kindle</headword>"
+            + "<pronunciation><syllable nucleus=\"ɪ\"/></pronunciation></entry></llyn>"));
+
+        Assert.NotNull(entry.LEntryDraftPronunciation);
+        LPronunciationDraft spoken = entry.LEntryDraftPronunciation;
+        Assert.Equal(string.Empty, spoken.LPronunciationDraftIpa);
+        Assert.Equal("ɪ", Assert.Single(spoken.LPronunciationDraftSyllables).LSyllableNucleus);
+    }
+
+    [Fact]
+    public void MarkupRead_IpaWithoutSyllables_KeepsTheReading()
+    {
+        LEntryDraft entry = Assert.Single(TInterface.TMarkupRead(
+            "<llyn><entry><headword>kindle</headword>"
+            + "<pronunciation><ipa>/ˈkɪnd(ə)l/</ipa></pronunciation></entry></llyn>"));
+
+        Assert.NotNull(entry.LEntryDraftPronunciation);
+        LPronunciationDraft spoken = entry.LEntryDraftPronunciation;
+        Assert.Equal("/ˈkɪnd(ə)l/", spoken.LPronunciationDraftIpa);
+        Assert.Empty(spoken.LPronunciationDraftSyllables);
+    }
+
+    [Fact]
+    public void MarkupCardRead_UseWithoutReferenceOrFrame_Throws()
+    {
+        FormatException failure = Assert.Throws<FormatException>(() =>
+            TInterface.TMarkupCardRead(TInterface.TMarkupScan("<sense><use/></sense>"), 1));
+
+        Assert.Contains("Use 1", failure.Message);
+    }
+
+    [Fact]
+    public void MarkupCardRead_UnreadableReference_QuotesAnUnreadableExample()
+    {
+        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
+            "<sense><use ref=\"\"/></sense>"), 1);
+
+        LSentenceDraft use = Assert.Single(card.LCardDraftSentence);
+        Assert.NotNull(use.LSentenceDraftExample);
+        Assert.Equal(
+            LState.LStateUnknown, use.LSentenceDraftExample.LExampleDraftText.LStateValueState);
+        Assert.False(use.LSentenceDraftEmpty);
     }
 
     [Fact]

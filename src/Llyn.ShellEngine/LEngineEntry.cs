@@ -65,12 +65,21 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             LEntryDraft? draft = new LEntryLoader(_lEngineDatabase).LEntryLoad(id);
-            if (draft is null || draft.LEntryDraftAudio.Length == 0)
+            if (draft is null
+                || draft.LEntryDraftPronunciation is not LPronunciationDraft spoken
+                || spoken.LPronunciationDraftAudio.Length == 0)
             {
                 return draft;
             }
 
-            return draft with { LEntryDraftAudio = LEngineRecordingResolve(draft.LEntryDraftAudio) };
+            return draft with
+            {
+                LEntryDraftPronunciation = spoken with
+                {
+                    LPronunciationDraftAudio =
+                        LEngineRecordingResolve(spoken.LPronunciationDraftAudio),
+                },
+            };
         }
     }
 

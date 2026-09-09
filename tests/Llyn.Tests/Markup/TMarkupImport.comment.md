@@ -47,3 +47,28 @@ The old format deduplicated by name, so two namesakes imported as one person.
 
 Every refusal is the same promise: the file is refused and the workspace is untouched.
 The catalog is written before the entries, so a refusal must leave no row behind either.
+
+### `MarkupImport_UseWithoutReferenceOrFrame_StoresNothing`
+
+Section 9 refuses a use that records nothing, and a refusal leaves the whole file unimported.
+
+### `MarkupImport_UseNamingNoExample_StoresNothing`
+
+A `ref` naming no declared key is a broken pointer, not a use to be read leniently.
+
+### `MarkupImport_TranslationNamingNoEntry_StoresNothing`
+
+A translation names an entry of this file, and a key no entry declared is the same broken pointer.
+
+### `MarkupImport_TranslationNamingASense_StoresNothing`
+
+A citation must name a row of the kind it expects, and a sense is not an entry.
+
+### `MarkupImport_UnclosedTag_StoresNothing`
+
+Structural damage is refused by the scanner before any row is written.
+
+### `MarkupImport_SharedExample_SavesOneRowAndTwoUses`
+
+Two cards quoting one key is one example quoted twice, which is why examples live in the catalog.
+The two uses are counted separately, because each card holds its own position on that one row.

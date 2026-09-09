@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -222,6 +222,106 @@ public sealed class TMarkupImport
               </entry>
             </llyn>
             """);
+    }
+
+    [Fact]
+    public void MarkupImport_UseWithoutReferenceOrFrame_StoresNothing()
+    {
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <entry>
+                <headword>kindle</headword>
+                <lang>English</lang>
+                <sense><meaning>to set alight</meaning><use/></sense>
+              </entry>
+            </llyn>
+            """);
+    }
+
+    [Fact]
+    public void MarkupImport_UseNamingNoExample_StoresNothing()
+    {
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <entry>
+                <headword>kindle</headword>
+                <lang>English</lang>
+                <sense><use ref="ex-brush"/></sense>
+              </entry>
+            </llyn>
+            """);
+    }
+
+    [Fact]
+    public void MarkupImport_TranslationNamingNoEntry_StoresNothing()
+    {
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <entry>
+                <headword>kindle</headword>
+                <lang>English</lang>
+                <sense><translation entry="점화하다"/></sense>
+              </entry>
+            </llyn>
+            """);
+    }
+
+    [Fact]
+    public void MarkupImport_TranslationNamingASense_StoresNothing()
+    {
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <entry id="kindle">
+                <headword>kindle</headword>
+                <lang>English</lang>
+                <sense id="s-alight"><translation entry="s-alight"/></sense>
+              </entry>
+            </llyn>
+            """);
+    }
+
+    [Fact]
+    public void MarkupImport_UnclosedTag_StoresNothing()
+    {
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <entry>
+                <headword>kindle</headword>
+                <sense><meaning>to set alight</meaning>
+              </entry>
+            </llyn>
+            """);
+    }
+
+    [Fact]
+    public void MarkupImport_SharedExample_SavesOneRowAndTwoUses()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
+            """
+            <llyn>
+              <catalog>
+                <example id="ex-brush" lang="English"><text>he kindled the dry brush</text></example>
+              </catalog>
+              <entry>
+                <headword>kindle</headword>
+                <lang>English</lang>
+                <sense><meaning>to set alight</meaning><use ref="ex-brush"/></sense>
+                <collocation><expression>kindle interest</expression><use ref="ex-brush"/></collocation>
+              </entry>
+            </llyn>
+            """));
+
+        Assert.Single(engine.TEngineExampleRead());
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_example;"));
     }
 
     [Fact]

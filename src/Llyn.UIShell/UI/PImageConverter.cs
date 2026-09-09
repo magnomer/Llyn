@@ -11,19 +11,19 @@ internal sealed class PImageConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         List<PImage> shown = [];
-        if (value is not IEnumerable<LStateValue> locations)
+        if (value is not IEnumerable<LImageDraft> rows)
         {
             return shown;
         }
 
-        foreach (LStateValue location in locations)
+        foreach (LImageDraft row in rows)
         {
-            if (location.LStateValueEmpty)
+            if (row.LImageDraftEmpty)
             {
                 continue;
             }
 
-            shown.Add(new PImage(location));
+            shown.Add(new PImage(row));
         }
 
         return shown;

@@ -65,6 +65,8 @@ A Tag is its own text and lives on the card.
 So the card's whole Tag line is written over.
 Translations are written over the same way, because a link is an id the card holds.
 Nothing is created or detached for one, and no target row is touched.
+A name that is no Entry is dropped rather than written.
+An import points a card at an Entry the same file declares, and that Entry may not exist yet.
 A newly created card has nothing attached yet, so the same path attaches its whole set.
 
 ### `private void LEngineSentenceSync(`

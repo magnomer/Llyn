@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Llyn.Core;
 
@@ -41,7 +42,7 @@ public static partial class LMarkup
             int close = LMarkupBlockFind(tokens, position);
             if (string.Equals(tokens[position].LMarkupTokenName, "entry", StringComparison.Ordinal))
             {
-                entries.Add(LMarkupEntryCreate(tokens, position, close, entries.Count + 1));
+                entries.Add(LMarkupEntryCreate(catalog, tokens, position, close, entries.Count + 1));
             }
 
             position = close;
@@ -72,14 +73,15 @@ public static partial class LMarkup
     }
 
     private static LMarkupEntry LMarkupEntryCreate(
-        IReadOnlyList<LMarkupToken> tokens, int first, int last, int place)
+        LMarkupCatalog catalog, IReadOnlyList<LMarkupToken> tokens, int first, int last, int place)
     {
         LMarkupToken? headword = null;
         LMarkupToken? language = null;
-        LMarkupToken? pronunciation = null;
-        LMarkupToken? audio = null;
-        LMarkupToken? speech = null;
         LMarkupToken? note = null;
+        LPronunciationDraft? pronunciation = null;
+        List<LSpeechDraft> speeches = new List<LSpeechDraft>();
+        List<LForm> forms = new List<LForm>();
+        List<LInflection> inflections = new List<LInflection>();
         List<LCardDraft> meanings = new List<LCardDraft>();
         List<LCardDraft> collocations = new List<LCardDraft>();
 
@@ -90,15 +92,24 @@ public static partial class LMarkup
             if (token.LMarkupTokenKind == LMarkupTokenKind.LMarkupTokenEnter)
             {
                 int close = LMarkupBlockFind(tokens, position);
-                IReadOnlyList<LMarkupToken> block = LMarkupBlockRead(tokens, position, close);
 
                 switch (token.LMarkupTokenName)
                 {
                     case "sense":
-                        meanings.Add(LMarkupCardRead(block, meanings.Count + 1));
+                        meanings.Add(LMarkupCardRead(
+                            catalog, tokens, position, close, meanings.Count + 1, false));
                         break;
                     case "collocation":
-                        collocations.Add(LMarkupCardRead(block, collocations.Count + 1));
+                        collocations.Add(LMarkupCardRead(
+                            catalog, tokens, position, close, collocations.Count + 1, true));
+                        break;
+                    case "inflection":
+                        LMarkupInflectionRead(
+                            inflections, token, LMarkupBlockRead(tokens, position, close));
+                        break;
+                    case "pronunciation":
+                        pronunciation = LMarkupSoundRead(
+                            token, LMarkupBlockRead(tokens, position, close), place);
                         break;
                     default:
                         break;
@@ -121,17 +132,14 @@ public static partial class LMarkup
                 case "lang":
                     language = token;
                     break;
-                case "ipa":
-                    pronunciation = token;
-                    break;
-                case "audio":
-                    audio = token;
-                    break;
-                case "pos":
-                    speech = token;
-                    break;
                 case "note":
                     note = token;
+                    break;
+                case "pos":
+                    LMarkupSpeechRead(speeches, token, place);
+                    break;
+                case "form":
+                    LMarkupFormRead(forms, token);
                     break;
                 default:
                     break;
@@ -149,35 +157,171 @@ public static partial class LMarkup
         LEntryDraft draft = new LEntryDraft(
             word,
             LMarkupStateRead(language).LStateValueShow(),
-            LMarkupStateRead(pronunciation).LStateValueShow(),
+            pronunciation,
             LMarkupStateRead(note).LStateValueShow(),
             meanings,
             collocations,
-            LMarkupStateRead(audio).LStateValueShow(),
-            null,
-            LMarkupSpeechRead(speech));
+            speeches,
+            forms,
+            inflections);
 
         return new LMarkupEntry(draft, tokens[first].LMarkupTokenRead("id") ?? string.Empty);
     }
 
-    private static IReadOnlyList<string> LMarkupSpeechRead(LMarkupToken? token)
+    private static LPronunciationDraft? LMarkupSoundRead(
+        LMarkupToken token, IReadOnlyList<LMarkupToken> block, int place)
     {
-        List<string> speeches = new List<string>();
-        if (token is null || token.Value.LMarkupTokenEmpty)
-        {
-            return speeches;
-        }
+        string ipa = string.Empty;
+        string file = string.Empty;
+        string? source = null;
+        List<LSyllable> syllables = new List<LSyllable>();
+        List<LRepresentation> representations = new List<LRepresentation>();
 
-        foreach (string part in token.Value.LMarkupTokenText.Split(','))
+        foreach (LMarkupToken leaf in LMarkupLeafRead(block))
         {
-            string name = part.Trim();
-            if (name.Length > 0)
+            switch (leaf.LMarkupTokenName)
             {
-                speeches.Add(name);
+                case "ipa":
+                    ipa = leaf.LMarkupTokenText;
+                    break;
+                case "audio":
+                    file = leaf.LMarkupTokenText;
+                    source = leaf.LMarkupTokenRead("source");
+                    break;
+                case "syllable":
+                    syllables.Add(LMarkupSyllableRead(leaf, syllables.Count, place));
+                    break;
+                case "representation":
+                    representations.Add(LMarkupRepresentationRead(leaf, representations.Count));
+                    break;
+                default:
+                    break;
             }
         }
 
-        return speeches;
+        LPronunciationDraft written = new LPronunciationDraft(
+            ipa,
+            token.LMarkupTokenRead("level"),
+            syllables,
+            representations,
+            file,
+            source);
+
+        return written.LPronunciationDraftEmpty ? null : written;
+    }
+
+    private static LSyllable LMarkupSyllableRead(LMarkupToken token, int position, int place)
+    {
+        string? nucleus = token.LMarkupTokenRead("nucleus");
+        if (string.IsNullOrEmpty(nucleus))
+        {
+            throw new FormatException($"Entry {place} carries a '<syllable>' with no nucleus.");
+        }
+
+        return new LSyllable(
+            string.Empty,
+            position,
+            token.LMarkupTokenRead("orthography"),
+            token.LMarkupTokenRead("local"),
+            token.LMarkupTokenRead("onset"),
+            token.LMarkupTokenRead("medial"),
+            nucleus,
+            token.LMarkupTokenRead("coda"),
+            LMarkupToneRead(token.LMarkupTokenRead("tone")),
+            token.LMarkupTokenRead("tone-local"),
+            token.LMarkupTokenRead("tone-points"));
+    }
+
+    private static int? LMarkupToneRead(string? tone)
+    {
+        return int.TryParse(tone, NumberStyles.Integer, CultureInfo.InvariantCulture, out int number)
+            ? number
+            : null;
+    }
+
+    private static LRepresentation LMarkupRepresentationRead(LMarkupToken token, int position)
+    {
+        return new LRepresentation(
+            string.Empty,
+            position,
+            token.LMarkupTokenRead("system") ?? string.Empty,
+            token.LMarkupTokenRead("role") ?? string.Empty,
+            token.LMarkupTokenText,
+            token.LMarkupTokenRead("tone"));
+    }
+
+    private static void LMarkupInflectionRead(
+        List<LInflection> inflections, LMarkupToken token, IReadOnlyList<LMarkupToken> block)
+    {
+        string text = string.Empty;
+        List<LFeature> features = new List<LFeature>();
+
+        foreach (LMarkupToken leaf in LMarkupLeafRead(block))
+        {
+            switch (leaf.LMarkupTokenName)
+            {
+                case "text":
+                    text = leaf.LMarkupTokenText;
+                    break;
+                case "feature":
+                    features.Add(new LFeature(
+                        leaf.LMarkupTokenRead("id") ?? string.Empty,
+                        leaf.LMarkupTokenRead("value") ?? string.Empty));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (text.Length == 0)
+        {
+            return;
+        }
+
+        inflections.Add(new LInflection(
+            string.Empty,
+            inflections.Count,
+            text,
+            token.LMarkupTokenRead("local"),
+            token.LMarkupTokenRead("pos"),
+            features));
+    }
+
+    private static void LMarkupFormRead(List<LForm> forms, LMarkupToken token)
+    {
+        if (token.LMarkupTokenEmpty)
+        {
+            return;
+        }
+
+        forms.Add(new LForm(
+            string.Empty,
+            forms.Count,
+            token.LMarkupTokenText,
+            token.LMarkupTokenRead("local"),
+            token.LMarkupTokenRead("role") ?? string.Empty));
+    }
+
+    private static void LMarkupSpeechRead(List<LSpeechDraft> speeches, LMarkupToken token, int place)
+    {
+        string? value = token.LMarkupTokenRead("id");
+        string named = token.LMarkupTokenEmpty ? string.Empty : token.LMarkupTokenText.Trim();
+
+        if (!string.IsNullOrEmpty(value) && named.Length > 0)
+        {
+            throw new FormatException(
+                $"Entry {place} carries a '<pos>' holding both an id and a name.");
+        }
+
+        if (string.IsNullOrEmpty(value) && named.Length == 0)
+        {
+            throw new FormatException(
+                $"Entry {place} carries a '<pos>' holding neither an id nor a name.");
+        }
+
+        speeches.Add(string.IsNullOrEmpty(value)
+            ? new LSpeechDraft(null, named, named)
+            : new LSpeechDraft(value, null, value));
     }
 
     private static int LMarkupBlockFind(IReadOnlyList<LMarkupToken> tokens, int first)

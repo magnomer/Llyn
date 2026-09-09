@@ -5,80 +5,6 @@ namespace Llyn.Core;
 
 public static partial class LMarkup
 {
-    internal enum LMarkupTokenKind
-    {
-        LMarkupTokenText,
-
-        LMarkupTokenEnter,
-
-        LMarkupTokenLeave,
-    }
-
-    internal readonly record struct LMarkupToken(
-        LMarkupTokenKind LMarkupTokenKind,
-        string LMarkupTokenName,
-        IReadOnlyDictionary<string, string> LMarkupTokenMark,
-        string LMarkupTokenText,
-        bool LMarkupTokenEmpty)
-    {
-        internal string? LMarkupTokenRead(string mark)
-        {
-            return LMarkupTokenMark.TryGetValue(mark, out string? value) ? value : null;
-        }
-    }
-
-    internal static readonly IReadOnlyDictionary<string, string> LMarkupMarkEmpty =
-        new Dictionary<string, string>(StringComparer.Ordinal);
-
-    private static readonly HashSet<string> LMarkupBlockList =
-        new HashSet<string>(StringComparer.Ordinal)
-        {
-            "llyn",
-            "catalog",
-            "entry",
-            "sense",
-            "collocation",
-            "source",
-            "example",
-            "situation",
-            "register",
-            "video",
-            "inflection",
-            "pronunciation",
-            "relation",
-        };
-
-    private static readonly HashSet<string> LMarkupMarkList =
-        new HashSet<string>(StringComparer.Ordinal)
-        {
-            "id",
-            "ref",
-            "src",
-            "par",
-            "dep",
-            "lang",
-            "role",
-            "local",
-            "pos",
-            "entry",
-            "sense",
-            "type",
-            "label",
-            "labels",
-            "level",
-            "system",
-            "builtin",
-            "source",
-            "onset",
-            "medial",
-            "nucleus",
-            "coda",
-            "orthography",
-            "tone",
-            "tone-local",
-            "tone-points",
-        };
-
     public static IReadOnlyList<LEntryDraft> LMarkupRead(string text)
     {
         List<LEntryDraft> drafts = new List<LEntryDraft>();
@@ -91,99 +17,68 @@ public static partial class LMarkup
         return drafts;
     }
 
-    internal static IReadOnlyList<LMarkupToken> LMarkupScan(string text)
-    {
-        List<LMarkupToken> tokens = new List<LMarkupToken>();
-        Stack<(string Name, int Start)> blocks = new Stack<(string, int)>();
-        int position = 0;
-
-        while (position < text.Length)
-        {
-            if (text[position] != '<')
-            {
-                position++;
-                continue;
-            }
-
-            int start = position;
-            position++;
-
-            if (position < text.Length && text[position] == '/')
-            {
-                position++;
-                string closed = LMarkupNameRead(text, ref position, start);
-                LMarkupTailRead(text, ref position, start, closed);
-
-                if (blocks.Count == 0 || !string.Equals(blocks.Peek().Name, closed, StringComparison.Ordinal))
-                {
-                    throw new FormatException(
-                        $"Unmatched closing tag '</{closed}>' at character {start}.");
-                }
-
-                blocks.Pop();
-                tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenLeave, closed, LMarkupMarkEmpty, string.Empty, false));
-                continue;
-            }
-
-            string name = LMarkupNameRead(text, ref position, start);
-            (IReadOnlyDictionary<string, string> mark, bool closing) =
-                LMarkupHeadRead(text, ref position, start, name);
-
-            if (LMarkupBlockList.Contains(name))
-            {
-                tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenEnter, name, mark, string.Empty, closing));
-
-                if (closing)
-                {
-                    tokens.Add(new LMarkupToken(
-                        LMarkupTokenKind.LMarkupTokenLeave, name, LMarkupMarkEmpty, string.Empty, false));
-                }
-                else
-                {
-                    blocks.Push((name, start));
-                }
-
-                continue;
-            }
-
-            if (closing)
-            {
-                tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenText, name, mark, string.Empty, true));
-                continue;
-            }
-
-            string inner = LMarkupTextRead(text, ref position, start, name);
-            tokens.Add(new LMarkupToken(
-                LMarkupTokenKind.LMarkupTokenText, name, mark, inner, inner.Length == 0));
-        }
-
-        if (blocks.Count > 0)
-        {
-            (string open, int opened) = blocks.Peek();
-            throw new FormatException($"Unclosed tag '<{open}>' at character {opened}.");
-        }
-
-        return tokens;
-    }
-
-    internal static LCardDraft LMarkupCardRead(IReadOnlyList<LMarkupToken> tokens, int position)
+    internal static LCardDraft LMarkupCardRead(
+        LMarkupCatalog catalog,
+        IReadOnlyList<LMarkupToken> tokens,
+        int first,
+        int last,
+        int place,
+        bool collocation)
     {
         LMarkupToken? title = null;
         LMarkupToken? expression = null;
         LMarkupToken? meaning = null;
-        LMarkupToken? synonym = null;
+        LMarkupToken? gloss = null;
+        LMarkupToken? labels = null;
         List<string> tags = new List<string>();
-        List<LStateValue> images = new List<LStateValue>();
+        List<string> translations = new List<string>();
+        List<LImageDraft> images = new List<LImageDraft>();
         List<LVideoDraft> videos = new List<LVideoDraft>();
         List<LSentenceDraft> sentences = new List<LSentenceDraft>();
         List<LSituationDraft> situations = new List<LSituationDraft>();
         List<LRegisterDraft> registers = new List<LRegisterDraft>();
+        List<LCardDraft> children = new List<LCardDraft>();
 
-        foreach (LMarkupToken token in LMarkupLeafRead(tokens))
+        for (int position = first + 1; position < last; position++)
         {
+            LMarkupToken token = tokens[position];
+
+            if (token.LMarkupTokenKind == LMarkupTokenKind.LMarkupTokenEnter)
+            {
+                int close = LMarkupBlockFind(tokens, position);
+
+                switch (token.LMarkupTokenName)
+                {
+                    case "sense":
+                        if (!collocation)
+                        {
+                            children.Add(LMarkupCardRead(
+                                catalog, tokens, position, close, children.Count + 1, false));
+                        }
+
+                        break;
+                    case "situation":
+                        LMarkupSituationAdd(catalog, situations, token);
+                        break;
+                    case "register":
+                        LMarkupRegisterAdd(catalog, registers, token);
+                        break;
+                    case "video":
+                        LMarkupVideoAdd(catalog, videos, token);
+                        break;
+                    default:
+                        break;
+                }
+
+                position = close;
+                continue;
+            }
+
+            if (token.LMarkupTokenKind != LMarkupTokenKind.LMarkupTokenText)
+            {
+                continue;
+            }
+
             switch (token.LMarkupTokenName)
             {
                 case "title":
@@ -195,37 +90,23 @@ public static partial class LMarkup
                 case "meaning":
                     meaning = token;
                     break;
-                case "synonym":
-                    synonym = token;
+                case "gloss":
+                    gloss = token;
+                    break;
+                case "labels":
+                    labels = token;
                     break;
                 case "tag":
                     LMarkupTagRead(tags, token);
                     break;
+                case "translation":
+                    LMarkupTranslationRead(translations, token);
+                    break;
+                case "use":
+                    sentences.Add(LMarkupUseRead(catalog, token, place, sentences.Count + 1));
+                    break;
                 case "image":
-                    images.Add(LMarkupStateRead(token));
-                    break;
-                case "video":
-                    videos.Add(LVideoDraft.LVideoDraftCreate(LMarkupStateRead(token)));
-                    break;
-                case "example":
-                    sentences.Add(new LSentenceDraft(
-                        new LExampleDraft(
-                            LMarkupStateRead(token),
-                            string.Empty,
-                            LMarkupStateRead(token.LMarkupTokenRead("src")),
-                            LStateValue.LStateValueUnspecified),
-                        LMarkupStateRead(token.LMarkupTokenRead("par")),
-                        LMarkupStateRead(token.LMarkupTokenRead("dep"))));
-                    break;
-                case "situation":
-                    situations.Add(new LSituationDraft(
-                        LMarkupStateRead(token),
-                        string.Empty,
-                        LStateValue.LStateValueUnspecified,
-                        LStateValue.LStateValueUnspecified));
-                    break;
-                case "register":
-                    registers.Add(new LRegisterDraft(LMarkupStateRead(token), string.Empty));
+                    LMarkupImageAdd(catalog, images, token);
                     break;
                 default:
                     break;
@@ -239,12 +120,136 @@ public static partial class LMarkup
             sentences,
             situations,
             registers,
-            [],
-            LMarkupStateRead(synonym).LStateValueShow(),
+            translations,
+            string.Empty,
             tags,
             images,
             videos,
-            position);
+            place,
+            string.Empty,
+            children,
+            LMarkupPlainRead(gloss),
+            meaning?.LMarkupTokenRead("lang"),
+            LMarkupPlainRead(labels) ?? string.Empty);
+    }
+
+    private static LSentenceDraft LMarkupUseRead(
+        LMarkupCatalog catalog, LMarkupToken token, int card, int place)
+    {
+        LSentenceDraft written = new LSentenceDraft(
+            LMarkupQuoteRead(catalog, token.LMarkupTokenRead("ref")),
+            LMarkupStateRead(token.LMarkupTokenRead("par")),
+            LMarkupStateRead(token.LMarkupTokenRead("dep")));
+
+        if (written.LSentenceDraftEmpty)
+        {
+            throw new FormatException(
+                $"Use {place} of card {card} carries neither a reference nor a frame.");
+        }
+
+        return written;
+    }
+
+    private static LExampleDraft? LMarkupQuoteRead(LMarkupCatalog catalog, string? cited)
+    {
+        if (cited is null)
+        {
+            return null;
+        }
+
+        if (!catalog.LMarkupCatalogExample.TryGetValue(cited, out LExample? held))
+        {
+            return new LExampleDraft(
+                LStateValue.LStateValueUnknown,
+                string.Empty,
+                LStateValue.LStateValueUnspecified,
+                LStateValue.LStateValueUnspecified);
+        }
+
+        return new LExampleDraft(
+            held.LExampleText,
+            cited,
+            held.LExampleSource,
+            held.LExampleTranslation,
+            held.LExampleLanguage);
+    }
+
+    private static void LMarkupSituationAdd(
+        LMarkupCatalog catalog, List<LSituationDraft> situations, LMarkupToken token)
+    {
+        if (token.LMarkupTokenRead("ref") is not string cited
+            || !catalog.LMarkupCatalogSituation.TryGetValue(cited, out LSituation? held))
+        {
+            return;
+        }
+
+        situations.Add(new LSituationDraft(
+            held.LSituationTitle, cited, held.LSituationDescription, held.LSituationKind));
+    }
+
+    private static void LMarkupRegisterAdd(
+        LMarkupCatalog catalog, List<LRegisterDraft> registers, LMarkupToken token)
+    {
+        if (token.LMarkupTokenRead("ref") is not string cited
+            || !catalog.LMarkupCatalogRegister.TryGetValue(cited, out LRegister? held))
+        {
+            return;
+        }
+
+        registers.Add(new LRegisterDraft(
+            held.LRegisterName, cited, held.LRegisterLanguage, held.LRegisterBuiltin));
+    }
+
+    private static void LMarkupImageAdd(
+        LMarkupCatalog catalog, List<LImageDraft> images, LMarkupToken token)
+    {
+        if (token.LMarkupTokenRead("ref") is not string cited
+            || !catalog.LMarkupCatalogImage.TryGetValue(cited, out LImage? held))
+        {
+            return;
+        }
+
+        images.Add(new LImageDraft(held.LImageLocation, cited));
+    }
+
+    private static void LMarkupVideoAdd(
+        LMarkupCatalog catalog, List<LVideoDraft> videos, LMarkupToken token)
+    {
+        if (token.LMarkupTokenRead("ref") is not string cited
+            || !catalog.LMarkupCatalogVideo.TryGetValue(cited, out LVideo? held))
+        {
+            return;
+        }
+
+        videos.Add(new LVideoDraft(held.LVideoLocation, held.LVideoSpan, cited));
+    }
+
+    private static void LMarkupTagRead(List<string> tags, LMarkupToken token)
+    {
+        if (token.LMarkupTokenEmpty)
+        {
+            return;
+        }
+
+        string named = token.LMarkupTokenText.Trim();
+        if (named.Length == 0 || tags.Contains(named))
+        {
+            return;
+        }
+
+        tags.Add(named);
+    }
+
+    private static void LMarkupTranslationRead(List<string> translations, LMarkupToken token)
+    {
+        if (token.LMarkupTokenRead("entry") is not string cited
+            || cited.Length == 0
+            || translations.Contains(cited))
+        {
+            return;
+        }
+
+        translations.Add(cited);
     }
 
     private static IEnumerable<LMarkupToken> LMarkupLeafRead(IReadOnlyList<LMarkupToken> tokens)
@@ -272,14 +277,14 @@ public static partial class LMarkup
         }
     }
 
-    private static void LMarkupTagRead(List<string> tags, LMarkupToken token)
+    private static string? LMarkupPlainRead(LMarkupToken? token)
     {
-        if (token.LMarkupTokenEmpty)
+        if (token is null || token.Value.LMarkupTokenEmpty)
         {
-            return;
+            return null;
         }
 
-        tags.Add(token.LMarkupTokenText);
+        return token.Value.LMarkupTokenText;
     }
 
     private static LStateValue LMarkupStateRead(LMarkupToken? token)
@@ -304,159 +309,5 @@ public static partial class LMarkup
         return source.Length == 0
             ? LStateValue.LStateValueUnknown
             : LStateValue.LStateValueCreate(source);
-    }
-
-    private static string LMarkupNameRead(string text, ref int position, int start)
-    {
-        int first = position;
-        while (position < text.Length && LMarkupLetterCheck(text[position]))
-        {
-            position++;
-        }
-
-        if (position == first)
-        {
-            throw new FormatException($"Stray '<' at character {start}.");
-        }
-
-        return text[first..position];
-    }
-
-    private static (IReadOnlyDictionary<string, string> Mark, bool Closing)
-        LMarkupHeadRead(string text, ref int position, int start, string name)
-    {
-        Dictionary<string, string>? mark = null;
-
-        while (true)
-        {
-            while (position < text.Length && char.IsWhiteSpace(text[position]))
-            {
-                position++;
-            }
-
-            if (position >= text.Length)
-            {
-                throw new FormatException($"Unclosed tag '<{name}' at character {start}.");
-            }
-
-            if (text[position] == '>')
-            {
-                position++;
-                return (mark ?? LMarkupMarkEmpty, false);
-            }
-
-            if (text[position] == '/')
-            {
-                position++;
-                if (position >= text.Length || text[position] != '>')
-                {
-                    throw new FormatException($"Unclosed tag '<{name}' at character {start}.");
-                }
-
-                position++;
-                return (mark ?? LMarkupMarkEmpty, true);
-            }
-
-            int first = position;
-            while (position < text.Length && LMarkupLetterCheck(text[position]))
-            {
-                position++;
-            }
-
-            if (position == first)
-            {
-                throw new FormatException(
-                    $"Malformed attribute in tag '<{name}' at character {position}.");
-            }
-
-            string attribute = text[first..position];
-            string value = LMarkupValueRead(text, ref position, name);
-
-            if (!LMarkupMarkList.Contains(attribute))
-            {
-                continue;
-            }
-
-            mark ??= new Dictionary<string, string>(StringComparer.Ordinal);
-            mark[attribute] = value;
-        }
-    }
-
-    private static string LMarkupValueRead(string text, ref int position, string name)
-    {
-        while (position < text.Length && char.IsWhiteSpace(text[position]))
-        {
-            position++;
-        }
-
-        if (position >= text.Length || text[position] != '=')
-        {
-            throw new FormatException(
-                $"Attribute without a value in tag '<{name}' at character {position}.");
-        }
-
-        position++;
-        while (position < text.Length && char.IsWhiteSpace(text[position]))
-        {
-            position++;
-        }
-
-        if (position >= text.Length || (text[position] != '"' && text[position] != '\''))
-        {
-            throw new FormatException(
-                $"Unquoted attribute value in tag '<{name}' at character {position}.");
-        }
-
-        char quote = text[position];
-        position++;
-        int first = position;
-        while (position < text.Length && text[position] != quote)
-        {
-            position++;
-        }
-
-        if (position >= text.Length)
-        {
-            throw new FormatException(
-                $"Unterminated attribute value in tag '<{name}' at character {first}.");
-        }
-
-        string value = text[first..position];
-        position++;
-        return value;
-    }
-
-    private static string LMarkupTextRead(string text, ref int position, int start, string name)
-    {
-        string tail = $"</{name}>";
-        int close = text.IndexOf(tail, position, StringComparison.Ordinal);
-        if (close < 0)
-        {
-            throw new FormatException($"Unclosed tag '<{name}>' at character {start}.");
-        }
-
-        string inner = text[position..close];
-        position = close + tail.Length;
-        return inner.Trim();
-    }
-
-    private static void LMarkupTailRead(string text, ref int position, int start, string name)
-    {
-        while (position < text.Length && char.IsWhiteSpace(text[position]))
-        {
-            position++;
-        }
-
-        if (position >= text.Length || text[position] != '>')
-        {
-            throw new FormatException($"Unclosed tag '</{name}' at character {start}.");
-        }
-
-        position++;
-    }
-
-    private static bool LMarkupLetterCheck(char value)
-    {
-        return char.IsLetterOrDigit(value) || value == '-' || value == '_';
     }
 }

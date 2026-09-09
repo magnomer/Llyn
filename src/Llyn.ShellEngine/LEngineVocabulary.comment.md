@@ -84,6 +84,18 @@ Reads the roles already saved under Entries written in `language`, on the same t
 
 ## Inline notes
 
+### `private static IReadOnlyList<string> LEngineSpeechShow(IReadOnlyList<LSpeechDraft> drafts)`
+
+The names of the parts of speech, for the surfaces that show words rather than ids.
+A draft that names nothing shows nothing.
+
+### `private IReadOnlyList<LSpeech> LEngineSpeechResolve(string entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)`
+
+The parts of speech a draft carries, as the rows the store keeps.
+A draft naming a language-pack value is stored under that value untouched.
+A draft carrying only typed text is looked up in the language's vocabulary first.
+Text that names a preset is filed under the preset, and text that names none is kept as it was typed.
+
 ### `private static string LEngineSpeechNormalize(string name)`
 
 A typed name as the stable id its preset is keyed by, letters and digits kept and lowered.

@@ -7,6 +7,7 @@ It owns no SQL of its own.
 It composes what the archives already read into one value shape.
 That shape is what `LEngineEntrySave` consumes, so a save and a load are inverses.
 The parts are the entry row, its meanings and collocations, its note and pronunciation.
+They include the entry's forms, its parts of speech and its inflections with their features.
 They also include every Example and Situation each card references and every Tag and Translation it carries.
 All of them arrive in stored order.
 
@@ -46,15 +47,21 @@ They are links between rows rather than text belonging to the card.
 
 ## Inline notes
 
-### `private string LEntrySpeechFormat(string language, IReadOnlyList<LSpeech> speeches)`
+### `private static LPronunciationDraft? LEntrySoundFormat(LPronunciation? pronunciation, LPronunciationAudio? audio)`
 
-The part of speech as the field shows it.
+The stored pronunciation and its recording as the one value the draft carries.
+An entry with no pronunciation row carries none, rather than an empty one.
+The row's id travels with it, so a save updates that row instead of writing another.
+The audio's added time stays behind, because it is workspace bookkeeping.
+
+### `private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(string language, IReadOnlyList<LSpeech> speeches)`
+
+Every part of speech the entry carries, in stored order.
+The draft keeps the stored value id and the custom name apart, and carries the name to show beside them.
 A custom row shows the text it carries.
 A row naming a preset shows the language's display name.
 The bare id is shown when the pack that declared it is no longer installed.
 An id is still what the entry was filed under, and showing it beats showing nothing.
-Only the first assignment is shown, because the field holds one.
-A second row, which no save writes, stays stored and is simply not displayed.
 
 ### `private IReadOnlyList<LCardDraft> LEntryChildRead(`
 

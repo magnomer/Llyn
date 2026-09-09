@@ -115,7 +115,7 @@ public sealed class TEntryLoad
         Assert.NotNull(loaded);
         Assert.Equal(word.LEntryDraftHeadword, loaded.LEntryDraftHeadword);
         Assert.Equal(word.LEntryDraftLanguage, loaded.LEntryDraftLanguage);
-        Assert.Equal(word.LEntryDraftPronunciation, loaded.LEntryDraftPronunciation);
+        Assert.Equal(word.LEntryDraftIpa, loaded.LEntryDraftIpa);
         Assert.Equal(word.LEntryDraftNote, loaded.LEntryDraftNote);
 
         TEntryCardMatch(word.LEntryDraftMeanings, loaded.LEntryDraftMeanings);
@@ -201,7 +201,7 @@ public sealed class TEntryLoad
 
         Assert.NotNull(loaded);
         Assert.Equal(file, loaded.LEntryDraftAudio);
-        Assert.Equal("Wiktionary", loaded.LEntryDraftSource);
+        Assert.Equal("Wiktionary", loaded.LEntryDraftPronunciation!.LPronunciationDraftSource);
     }
 
     [Fact]
@@ -217,7 +217,7 @@ public sealed class TEntryLoad
 
         Assert.NotNull(loaded);
         Assert.Equal(string.Empty, loaded.LEntryDraftAudio);
-        Assert.Null(loaded.LEntryDraftSource);
+        Assert.Null(loaded.LEntryDraftPronunciation!.LPronunciationDraftSource);
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM pronunciation_audio;"));
     }
 

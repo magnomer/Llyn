@@ -1,4 +1,4 @@
-﻿# LEngineMarkup.cs
+# LEngineMarkup.cs
 
 ## `public sealed partial class LEngine`
 
@@ -112,19 +112,53 @@ Section 3 of the format spec asks for exactly that fallback.
 
 **Returns** — The id of the register the file's key now names.
 
-## `private LEntry LEngineMarkupSave(LMarkup.LMarkupEntry entry, IReadOnlyDictionary<string, string> rows)`
+## `private static LEntryDraft LEngineMarkupResolve(LEntryDraft draft, IReadOnlyDictionary<string, string> rows)`
 
-Writes one entry as read, with every citation naming the row its key created.
+Rewrites one entry so that every citation names the row its key created.
 The catalog is already written, so a citation always finds its row.
 The draft comes back rebuilt rather than edited, because a draft is immutable.
 Only its cards change, and only in their citations.
 
 **Parameters**
 
-- `entry` — One entry as the reader produced it.
+- `draft` — One entry as the reader produced it.
 - `rows` — The id of the stored row for every key the catalog declared.
 
-**Returns** — The stored entry.
+**Returns** — The same entry with stored ids in place of document keys.
+
+## `private void LEngineMarkupAttach(IReadOnlyList<LMarkup.LMarkupEntry> entries, IReadOnlyList<LEntryDraft> resolved, IReadOnlyList<LEntry> saved)`
+
+Attaches the translations after every entry in the document exists.
+
+A translation names another entry of the same file, and that entry may be declared later.
+An entry id is handed out by the store when the entry is written.
+So a translation cannot be resolved while the entries are still being written.
+Saving them first and pointing afterwards is the only order that lets a file point both ways.
+`LEngineTranslationSave` drops a name that is no entry, which is what keeps the first pass legal.
+
+Entries that declared no key can be named by nothing, so a file with none needs no second pass.
+
+**Parameters**
+
+- `entries` — The entries as read, for the key each declared.
+- `resolved` — The same entries with their citations resolved, for the translations each card wrote.
+- `saved` — The stored entries, in the same order.
+
+## `private void LEngineMarkupAttach(IReadOnlyList<LCardDraft> written, IReadOnlyList<LCardDraft> stored, IReadOnlyDictionary<string, string> named, bool collocation)`
+
+Walks the cards read beside the cards stored and writes each card's translations.
+
+The two lists line up because both are the same cards in the same order.
+The read cards are put through `LEngineCardRead` first, which is the filter the save path applied.
+A card carrying nothing was never written, so it must not consume a stored card's place.
+Sub-senses are walked the same way, because a sub-sense may translate as well.
+
+**Parameters**
+
+- `written` — The cards as read, holding the entry keys their translations named.
+- `stored` — The same cards as stored, holding the ids the translations attach to.
+- `named` — The stored entry id for every entry key the document declared.
+- `collocation` — Whether these cards are collocations rather than senses.
 
 ## `private string LEngineReferenceSave(LMarkup.LMarkupReference source, IReadOnlyDictionary<string, string> rows)`
 
@@ -152,13 +186,25 @@ The old format deduplicated by name, so a file could not tell one namesake from 
 
 ## `private static IReadOnlyList<LCardDraft> LEngineCardResolve(IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<string, string> rows)`
 
-Rewrites every example of every card.
-Its citation points at the stored row instead of the key the file wrote.
+Rewrites every citation of every card so that it points at the stored row.
+
+A use names an example, an example names a source, and a card names situations, registers, images and videos.
+All of them arrive holding the key the file wrote, and all of them leave holding a row id.
+That is what makes a row cited twice one row rather than two.
+Sub-senses are rewritten the same way, because a sub-sense cites what any sense may cite.
+
+Translations are left as keys here, because the entries they name do not exist yet.
 
 **Parameters**
 
 - `cards` — The cards as read, their citations still the document's keys.
 - `rows` — The id of the stored row for every key the catalog declared.
+
+## `private static string LEngineKeyResolve(string key, IReadOnlyDictionary<string, string> rows)`
+
+Turns one row key into the id of the row it created.
+An empty key names nothing and stays empty, which is how an unreadable quotation stays unreadable.
+A key with no row raises a `FormatException` naming it, for the reason `LEngineReferenceResolve` gives.
 
 ## `private static LStateValue LEngineReferenceResolve(LStateValue citation, IReadOnlyDictionary<string, string> rows)`
 

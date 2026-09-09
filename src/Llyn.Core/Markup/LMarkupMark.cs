@@ -21,6 +21,21 @@ public static class LMarkupMark
             .Append(LMarkupMarkNormalize(value.LStateValueShow()));
     }
 
+    public static void LMarkupMarkAppend(StringBuilder text, string mark, string? value)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        if (string.IsNullOrEmpty(value))
+        {
+            return;
+        }
+
+        text.Append(' ')
+            .Append(mark)
+            .Append('=')
+            .Append(LMarkupMarkNormalize(value));
+    }
+
     public static string LMarkupMarkNormalize(string value)
     {
         return value.Contains('"', StringComparison.Ordinal)

@@ -1,4 +1,4 @@
-﻿# LCardDraft.cs
+# LCardDraft.cs
 
 ## `public sealed record LCardDraft(`
 
@@ -62,10 +62,11 @@ A comparison that means "the same card" walks the lists itself.
   A Tag is its name, so the list holds plain text and no Tag is ever blank.
 - `LCardDraftImage` — The Images the card references, in the order they are shown.
   Each carries the location it is loaded from, a file on this machine or a web address.
-  Each also carries what is known about that location.
+  Each also carries what is known about that location, and the stored row it stands for.
+  The row id is what lets two cards reference one picture rather than a copy each.
 - `LCardDraftVideo` — The Videos the card references, in the order they are shown.
   Each carries the location it is loaded from, a file on this machine or a web address.
-  Each also carries what is known about that location.
+  Each also carries what is known about that location, and the stored row it stands for.
   A Video is kept with the card exactly as an Image is.
 - `LCardDraftPosition` — The number this card is shown by, counted from one.
   It is the reader's number and never the offset the store keeps.

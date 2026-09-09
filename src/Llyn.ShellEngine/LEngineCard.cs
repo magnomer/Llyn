@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -122,11 +122,12 @@ public sealed partial class LEngine
 
         LImageArchive images = new(_lEngineDatabase);
         LEngineFieldSync(
-            LEngineFieldRead(card.LCardDraftImage),
+            LEngineImageRead(card.LCardDraftImage),
             collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId),
             row => row.LImageId,
-            row => row.LImageLocation,
-            location => images.LImageCreate(new LImage(string.Empty, location)).LImageId,
+            row => new LImageDraft(row.LImageLocation, row.LImageId),
+            written => images.LImageCreate(
+                new LImage(string.Empty, written.LImageDraftLocation)).LImageId,
             rowId =>
             {
                 if (collocation)
@@ -153,7 +154,7 @@ public sealed partial class LEngine
             LEngineVideoRead(card.LCardDraftVideo),
             collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId),
             row => row.LVideoId,
-            row => new LVideoDraft(row.LVideoLocation, row.LVideoSpan),
+            row => new LVideoDraft(row.LVideoLocation, row.LVideoSpan, row.LVideoId),
             written => videos.LVideoCreate(
                 new LVideo(string.Empty, written.LVideoDraftLocation, written.LVideoDraftSpan)).LVideoId,
             rowId =>
@@ -276,10 +277,14 @@ public sealed partial class LEngine
     private void LEngineTranslationSave(
         string ownerId, IReadOnlyList<string> ids, bool collocation)
     {
+        LEntryArchive entries = new(_lEngineDatabase);
         List<LTranslation> written = new(ids.Count);
         foreach (string id in ids)
         {
-            written.Add(new LTranslation(id, 0));
+            if (!string.IsNullOrWhiteSpace(id) && entries.LEntryRead(id) is not null)
+            {
+                written.Add(new LTranslation(id, 0));
+            }
         }
 
         LTranslationArchive translations = new(_lEngineDatabase);

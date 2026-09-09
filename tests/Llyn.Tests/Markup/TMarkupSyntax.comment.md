@@ -73,3 +73,48 @@ This pins that it is not quietly dropped on the way, and that credit order survi
 A lone `<author/>` credits somebody unreadable.
 No key leaves beside the reference, because there is no row to point at.
 The state is what keeps that apart from a source crediting nobody at all.
+
+### `MarkupRead_EntryDetail_ReturnsEveryField`
+
+Everything an entry carries above its cards, read from one document.
+Forms, both kinds of part of speech, an inflection with its features, and a whole pronunciation.
+A field read here and dropped by the writer is the defect the round trip catches next.
+
+### `MarkupRead_SpeechCarryingIdAndName_Throws`
+
+A `<pos>` names a language-pack value or a typed name, never both.
+Section 9 refuses the file, and the message names the element.
+
+### `MarkupRead_SpeechCarryingNeither_Throws`
+
+A `<pos>` naming nothing records nothing, and section 9 refuses the file over it.
+
+### `MarkupRead_SyllableWithoutNucleus_Throws`
+
+A nucleus is the one segment a syllable cannot be written without.
+
+### `MarkupRead_SyllablesWithoutIpa_KeepsTheSyllables`
+
+A pronunciation may be written as syllables alone, and the block is not required to carry a reading.
+
+### `MarkupRead_IpaWithoutSyllables_KeepsTheReading`
+
+The other half: a reading with no syllable breakdown is an ordinary pronunciation.
+
+### `MarkupCardRead_NestedSense_KeepsTheChildOrder`
+
+A sense holds senses to any depth, and a child keeps its position among its siblings.
+
+### `MarkupCardRead_FrameWithoutExample_ReturnsTheUse`
+
+A use may state a frame and quote nothing, and its `par` carries the three states like any field.
+
+### `MarkupCardRead_UseWithoutReferenceOrFrame_Throws`
+
+A use carrying neither records nothing, and section 9 refuses the file over it.
+The message names the use and the card, because that is what an author needs to find the line.
+
+### `MarkupCardRead_UnreadableReference_QuotesAnUnreadableExample`
+
+`ref=""` quotes an example that exists and cannot be read.
+It is not the same as no `ref` at all, and the use is not empty.

@@ -13,6 +13,11 @@ Puts the view on `engine`, the workspace the window opened.
 The engine is read for the flag beside the language, the linked headwords and the incoming cards.
 The window is held because an incoming row opens the entry it names.
 
+## `private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)`
+
+The parts of speech as the names a reader reads.
+The draft keeps the stored value beside the name, and the panel shows only the name.
+
 ## `internal void PDisplayShow(string id, LEntryDraft draft)`
 
 Draws `draft` as the entry being read.

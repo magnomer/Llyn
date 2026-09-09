@@ -8,6 +8,11 @@ Writes one attribute of a markup element.
 
 An unset value writes no attribute at all, which is how the reader tells it from an empty one.
 
+## `public static void LMarkupMarkAppend(StringBuilder text, string mark, string? value)`
+
+The same writer for a field the store keeps as plain text rather than as a state.
+Nothing written means the attribute is left off, which is the only absence such a field has.
+
 ## `public static string LMarkupMarkNormalize(string value)`
 
 The reader requires a quoted value and ends it at the matching quote.

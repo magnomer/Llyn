@@ -91,24 +91,44 @@ public sealed partial class LEngine
         return built.ToString();
     }
 
-    private IReadOnlyList<LSpeech> LEngineSpeechResolve(
-        string entryId, string language, IReadOnlyList<string>? texts)
+    private static IReadOnlyList<string> LEngineSpeechShow(IReadOnlyList<LSpeechDraft> drafts)
     {
-        if (texts is null || texts.Count == 0)
+        List<string> named = new(drafts.Count);
+        foreach (LSpeechDraft draft in drafts)
+        {
+            if (draft.LSpeechDraftName.Length > 0)
+            {
+                named.Add(draft.LSpeechDraftName);
+            }
+        }
+
+        return named;
+    }
+
+    private IReadOnlyList<LSpeech> LEngineSpeechResolve(
+        string entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)
+    {
+        if (drafts is null || drafts.Count == 0)
         {
             return [];
         }
 
         LSpeechArchive values = new(_lEngineDatabase);
         List<LSpeech> speeches = [];
-        foreach (string text in texts)
+        foreach (LSpeechDraft draft in drafts)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (draft.LSpeechDraftValue is string declared && declared.Length > 0)
+            {
+                speeches.Add(new LSpeech(entryId, speeches.Count, declared));
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(draft.LSpeechDraftCustom))
             {
                 continue;
             }
 
-            string typed = text.Trim();
+            string typed = draft.LSpeechDraftCustom.Trim();
             string? value = string.IsNullOrWhiteSpace(language)
                 ? null
                 : values.LSpeechValueFind(language, typed);

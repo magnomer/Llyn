@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -19,7 +19,7 @@ public sealed partial class LEngine
 
             string entry = string.IsNullOrWhiteSpace(entryId) ? string.Empty : entryId;
             LEntryDraft content = entry.Length == 0
-                ? new LEntryDraft(string.Empty, string.Empty, string.Empty, string.Empty, [], [])
+                ? new LEntryDraft(string.Empty, string.Empty, null, string.Empty, [], [])
                 : LEngineEntryLoad(entry) ?? throw new LRefusal(LRefusal.LRefusalEntry);
 
             LDraft draft = new(
@@ -554,7 +554,7 @@ public sealed partial class LEngine
     }
 
     private static LEntryDraft LEngineDraftBlank =>
-        new(string.Empty, string.Empty, string.Empty, string.Empty, [], []);
+        new(string.Empty, string.Empty, null, string.Empty, [], []);
 
     private IReadOnlyList<LCourtLink> LEngineCourtScan(string ownerId)
     {
@@ -574,14 +574,73 @@ public sealed partial class LEngine
     {
         return string.Equals(one.LEntryDraftHeadword, other.LEntryDraftHeadword, StringComparison.Ordinal)
             && string.Equals(one.LEntryDraftLanguage, other.LEntryDraftLanguage, StringComparison.Ordinal)
-            && string.Equals(
-                one.LEntryDraftPronunciation, other.LEntryDraftPronunciation, StringComparison.Ordinal)
+            && LEngineSoundMatch(one.LEntryDraftPronunciation, other.LEntryDraftPronunciation)
             && string.Equals(one.LEntryDraftNote, other.LEntryDraftNote, StringComparison.Ordinal)
-            && LEngineTextMatch(one.LEntryDraftSpeeches ?? [], other.LEntryDraftSpeeches ?? [])
-            && string.Equals(one.LEntryDraftAudio, other.LEntryDraftAudio, StringComparison.Ordinal)
-            && string.Equals(one.LEntryDraftSource, other.LEntryDraftSource, StringComparison.Ordinal)
+            && LEngineSpeechMatch(one.LEntryDraftSpeeches, other.LEntryDraftSpeeches)
+            && LEngineFormMatch(one.LEntryDraftForms, other.LEntryDraftForms)
+            && LEngineInflectionMatch(one.LEntryDraftInflections, other.LEntryDraftInflections)
             && LEngineCardMatch(one.LEntryDraftMeanings, other.LEntryDraftMeanings)
             && LEngineCardMatch(one.LEntryDraftCollocations, other.LEntryDraftCollocations);
+    }
+
+    private static bool LEngineSoundMatch(LPronunciationDraft? one, LPronunciationDraft? other)
+    {
+        if (one is null || other is null)
+        {
+            return one is null && other is null;
+        }
+
+        if (!string.Equals(one.LPronunciationDraftIpa, other.LPronunciationDraftIpa, StringComparison.Ordinal)
+            || !string.Equals(
+                one.LPronunciationDraftLevel, other.LPronunciationDraftLevel, StringComparison.Ordinal)
+            || !string.Equals(
+                one.LPronunciationDraftAudio, other.LPronunciationDraftAudio, StringComparison.Ordinal)
+            || !string.Equals(
+                one.LPronunciationDraftSource, other.LPronunciationDraftSource, StringComparison.Ordinal)
+            || one.LPronunciationDraftSyllables.Count != other.LPronunciationDraftSyllables.Count
+            || one.LPronunciationDraftRepresentations.Count
+                != other.LPronunciationDraftRepresentations.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.LPronunciationDraftSyllables.Count; index++)
+        {
+            if (one.LPronunciationDraftSyllables[index] != other.LPronunciationDraftSyllables[index])
+            {
+                return false;
+            }
+        }
+
+        for (int index = 0; index < one.LPronunciationDraftRepresentations.Count; index++)
+        {
+            if (one.LPronunciationDraftRepresentations[index]
+                != other.LPronunciationDraftRepresentations[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool LEngineSpeechMatch(
+        IReadOnlyList<LSpeechDraft> one, IReadOnlyList<LSpeechDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index] != other[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool LEngineCardMatch(IReadOnlyList<LCardDraft> one, IReadOnlyList<LCardDraft> other)
@@ -612,7 +671,7 @@ public sealed partial class LEngine
                 || !LEngineRegisterMatch(written.LCardDraftRegister, held.LCardDraftRegister)
                 || !LEngineTextMatch(written.LCardDraftTranslation, held.LCardDraftTranslation)
                 || !LEngineTextMatch(written.LCardDraftTag, held.LCardDraftTag)
-                || !LEngineValueMatch(written.LCardDraftImage, held.LCardDraftImage)
+                || !LEngineImageMatch(written.LCardDraftImage, held.LCardDraftImage)
                 || !LEngineVideoMatch(written.LCardDraftVideo, held.LCardDraftVideo)
                 || !LEngineCardMatch(written.LCardDraftChild, held.LCardDraftChild))
             {
@@ -733,7 +792,7 @@ public sealed partial class LEngine
         return true;
     }
 
-    private static bool LEngineValueMatch(IReadOnlyList<LStateValue> one, IReadOnlyList<LStateValue> other)
+    private static bool LEngineImageMatch(IReadOnlyList<LImageDraft> one, IReadOnlyList<LImageDraft> other)
     {
         if (one.Count != other.Count)
         {

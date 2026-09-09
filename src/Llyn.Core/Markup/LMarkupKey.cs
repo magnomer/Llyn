@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 
 namespace Llyn.Core;
 
 public static partial class LMarkup
 {
+    private const int LMarkupKeyWord = 5;
+
+    private const int LMarkupKeyLength = 40;
+
     private static readonly IReadOnlyDictionary<string, LMarkupRowKind> LMarkupCitationList =
         new Dictionary<string, LMarkupRowKind>(StringComparer.Ordinal)
         {
@@ -114,5 +120,76 @@ public static partial class LMarkup
                 $"The citation '{cited}' names a {LMarkupRowFormat(found)} "
                 + $"where a {LMarkupRowFormat(wanted)} was wanted.");
         }
+    }
+
+    public static string LMarkupKeyCreate(string? seed, LMarkupRowKind kind, ISet<string> taken)
+    {
+        ArgumentNullException.ThrowIfNull(taken);
+
+        string stem = LMarkupKeyFormat(seed);
+        if (stem.Length == 0)
+        {
+            stem = LMarkupRowFormat(kind);
+        }
+
+        if (taken.Add(stem))
+        {
+            return stem;
+        }
+
+        for (int suffix = 2; ; suffix++)
+        {
+            string named = stem + "-" + suffix.ToString(CultureInfo.InvariantCulture);
+            if (taken.Add(named))
+            {
+                return named;
+            }
+        }
+    }
+
+    private static string LMarkupKeyFormat(string? seed)
+    {
+        if (string.IsNullOrWhiteSpace(seed))
+        {
+            return string.Empty;
+        }
+
+        StringBuilder stem = new StringBuilder();
+        int words = 0;
+        bool broken = true;
+
+        foreach (char letter in seed)
+        {
+            if (char.IsLetterOrDigit(letter))
+            {
+                if (broken)
+                {
+                    words++;
+                    if (words > LMarkupKeyWord)
+                    {
+                        break;
+                    }
+
+                    if (stem.Length > 0)
+                    {
+                        stem.Append('-');
+                    }
+
+                    broken = false;
+                }
+
+                stem.Append(char.ToLowerInvariant(letter));
+                if (stem.Length >= LMarkupKeyLength)
+                {
+                    break;
+                }
+
+                continue;
+            }
+
+            broken = true;
+        }
+
+        return stem.ToString();
     }
 }

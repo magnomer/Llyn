@@ -24,7 +24,7 @@ public sealed class TDraft
         Assert.Equal(draft.LDraftMoment, loaded.LDraftMoment);
         Assert.Equal(draft.LDraftContent.LEntryDraftHeadword, loaded.LDraftContent.LEntryDraftHeadword);
         Assert.Equal(draft.LDraftContent.LEntryDraftLanguage, loaded.LDraftContent.LEntryDraftLanguage);
-        Assert.Equal(draft.LDraftContent.LEntryDraftPronunciation, loaded.LDraftContent.LEntryDraftPronunciation);
+        Assert.Equal(draft.LDraftContent.LEntryDraftIpa, loaded.LDraftContent.LEntryDraftIpa);
         Assert.Equal(draft.LDraftContent.LEntryDraftNote, loaded.LDraftContent.LEntryDraftNote);
         Assert.Equal(
             draft.LDraftContent.LEntryDraftMeanings[0].LCardDraftTitle.TStateValueShow(),

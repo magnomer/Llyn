@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.Infrastructure;
 
 namespace Llyn.Tests;
@@ -80,8 +80,8 @@ internal static partial class TInterface
             label);
 
     internal static string TMarkupDraftFormat(
-        LEntryDraft draft, IReadOnlyList<LMarkup.LMarkupReference> sources) =>
-        LMarkupDraft.LMarkupDraftFormat(draft, sources);
+        LMarkup.LMarkupDocument document, IReadOnlyDictionary<string, string> keys) =>
+        LMarkupDraft.LMarkupDraftFormat(document, keys);
 
     internal static LTheme TThemeLoad() => LTheme.LThemeLoad();
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -12,7 +12,7 @@ public sealed record LCardDraft(
     IReadOnlyList<string> LCardDraftTranslation,
     string LCardDraftSynonym,
     IReadOnlyList<string> LCardDraftTag,
-    IReadOnlyList<LStateValue> LCardDraftImage,
+    IReadOnlyList<LImageDraft> LCardDraftImage,
     IReadOnlyList<LVideoDraft> LCardDraftVideo,
     int LCardDraftPosition,
     string LCardDraftId = "",

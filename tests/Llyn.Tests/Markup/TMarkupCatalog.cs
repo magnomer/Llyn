@@ -245,7 +245,7 @@ public sealed class TMarkupCatalog
         Assert.Equal("kindle", kindle.LEntryDraftHeadword);
         Assert.Equal("English", kindle.LEntryDraftLanguage);
         Assert.Equal("Chiefly literary in its figurative senses.", kindle.LEntryDraftNote);
-        Assert.Equal(["verb"], kindle.LEntryDraftSpeeches);
+        Assert.Equal(["verb"], TInterface.TSpeechNameRead(kindle));
 
         LCardDraft alight = Assert.Single(kindle.LEntryDraftMeanings);
         Assert.Equal("set alight", alight.LCardDraftTitle.TStateValueShow());

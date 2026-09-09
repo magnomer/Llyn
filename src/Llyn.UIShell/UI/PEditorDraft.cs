@@ -12,6 +12,8 @@ public partial class PEditor
 {
     private string _pEditorDraft = string.Empty;
 
+    private LEntryDraft? _pEditorDetail;
+
     private bool _pEditorHalted;
 
     private LEntryDraft PEditorDraftRead()
@@ -19,23 +21,79 @@ public partial class PEditor
         return new LEntryDraft(
             PHeadword.Text ?? string.Empty,
             _pSpeakerChoice,
-            PPronunciation.Text ?? string.Empty,
+            PEditorSoundRead(),
             PEditorNoteRead(),
             PCardRead(_pMeaningList),
             PCardRead(_pCollocationList),
-            _pRecording ?? string.Empty,
-            _pRecordingSource,
-            PMarkerRead());
+            PEditorSpeechRead(),
+            _pEditorDetail?.LEntryDraftForms ?? [],
+            _pEditorDetail?.LEntryDraftInflections ?? []);
+    }
+
+    private LPronunciationDraft? PEditorSoundRead()
+    {
+        LPronunciationDraft held = _pEditorDetail?.LEntryDraftPronunciation
+            ?? new LPronunciationDraft(string.Empty);
+
+        LPronunciationDraft written = held with
+        {
+            LPronunciationDraftIpa = PPronunciation.Text ?? string.Empty,
+            LPronunciationDraftAudio = _pRecording ?? string.Empty,
+            LPronunciationDraftSource = _pRecordingSource,
+        };
+
+        return written.LPronunciationDraftEmpty ? null : written;
+    }
+
+    private IReadOnlyList<LSpeechDraft> PEditorSpeechRead()
+    {
+        IReadOnlyList<LSpeechDraft> held = _pEditorDetail?.LEntryDraftSpeeches ?? [];
+        List<LSpeechDraft> written = [];
+
+        foreach (string name in PMarkerRead())
+        {
+            written.Add(PEditorSpeechFind(held, name));
+        }
+
+        return written;
+    }
+
+    private static LSpeechDraft PEditorSpeechFind(IReadOnlyList<LSpeechDraft> held, string name)
+    {
+        foreach (LSpeechDraft speech in held)
+        {
+            if (string.Equals(speech.LSpeechDraftName, name, StringComparison.OrdinalIgnoreCase))
+            {
+                return speech;
+            }
+        }
+
+        return LSpeechDraft.LSpeechDraftCreate(name);
+    }
+
+    private static IReadOnlyList<string> PEditorSpeechShow(IReadOnlyList<LSpeechDraft> speeches)
+    {
+        List<string> named = new(speeches.Count);
+        foreach (LSpeechDraft speech in speeches)
+        {
+            if (speech.LSpeechDraftName.Length > 0)
+            {
+                named.Add(speech.LSpeechDraftName);
+            }
+        }
+
+        return named;
     }
 
     private void PEditorDraftShow(LEntryDraft draft)
     {
         _pEditorFill = true;
+        _pEditorDetail = draft;
         PSentenceFrameLoad(draft.LEntryDraftLanguage);
 
         PHeadword.Text = draft.LEntryDraftHeadword;
-        PPronunciation.Text = draft.LEntryDraftPronunciation;
-        PMarkerShow(draft.LEntryDraftSpeeches);
+        PPronunciation.Text = draft.LEntryDraftIpa;
+        PMarkerShow(PEditorSpeechShow(draft.LEntryDraftSpeeches));
         PEditorLanguageShow(draft.LEntryDraftLanguage);
 
         IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);
@@ -161,7 +219,7 @@ public partial class PEditor
         }
 
         _pRecording = draft.LEntryDraftAudio;
-        _pRecordingSource = draft.LEntryDraftSource;
+        _pRecordingSource = draft.LEntryDraftPronunciation?.LPronunciationDraftSource;
         _pRecordingStored = true;
         PPlayback.Visibility = Visibility.Visible;
         PVolumeLoad();
@@ -217,6 +275,7 @@ public partial class PEditor
         PEditorDraftStart(null);
 
         _pEditorFill = true;
+        _pEditorDetail = null;
 
         PHeadword.Text = string.Empty;
         PPronunciation.Text = string.Empty;

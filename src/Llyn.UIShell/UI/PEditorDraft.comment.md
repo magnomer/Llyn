@@ -19,7 +19,26 @@ It is the form's only claim on anything outside itself.
 The draft carries the entry it was started from, so the form no longer remembers that.
 Empty means the engine refused to start one, and every write here is skipped.
 
-### `_pRecording ?? string.Empty,`
+### `private LEntryDraft? _pEditorDetail;`
+
+The draft the form was last filled from, kept for the fields the form has no control for.
+Forms, inflections, syllables and representations are stored detail this panel never shows.
+Reading the form back over the draft it was filled from is how that detail survives a save.
+
+### `private LPronunciationDraft? PEditorSoundRead()`
+
+The pronunciation as the form holds it, written over the pronunciation it was filled from.
+The typed reading and the chosen recording are the two parts this panel owns.
+The level, the syllables and the representations go back exactly as they came.
+A form holding neither reading nor recording carries no pronunciation at all.
+
+### `private IReadOnlyList<LSpeechDraft> PEditorSpeechRead()`
+
+The parts of speech as chips, matched back to the drafts the form was filled from.
+A chip whose name was filed under a language-pack value keeps that value.
+A chip the user typed is a name, and the engine decides at the write whether a preset names it.
+
+### `_pRecording ?? string.Empty,
 
 The downloaded recording is form state like any field.
 It travels in the draft.
