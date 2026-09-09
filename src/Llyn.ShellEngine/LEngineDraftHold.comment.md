@@ -1,4 +1,4 @@
-﻿# LEngineDraftHold.cs
+# LEngineDraftHold.cs
 
 ## `public sealed partial class LEngine`
 
@@ -24,6 +24,10 @@ The sentence calls live in `LEngineDraftExample.cs`, the situation calls in `LEn
 Only the shared calls belong here.
 Start, save and commit differ per kind.
 The claim, the sweep, the recovery and the discard are one for all kinds.
+The sweep and the recovery live in `LEngineDraftLeftover.cs`.
+The card order calls live in `LEngineDraftCard.cs`.
+The court rows live in `LEngineCourt.cs`.
+The field by field comparisons live in `LEngineDraftMatch.cs`.
 
 ## `public LDraft LEngineDraftStart(string origin, string? entryId)`
 
@@ -57,35 +61,6 @@ Every held draft the folder still carries.
 This is what a session offers back after a crash.
 A broken file is skipped rather than thrown, so one bad draft never hides the rest.
 
-## `public void LEngineLeftoverSweep()`
-
-Clears what the drafts folder keeps forever, before anything counts what is left.
-A draft committed just before a kill kept its file, because the commit names the stored entry first.
-Its content then matches that entry, so nothing offers it back and nothing deletes it either.
-Such a draft is dropped here with its claim and its court rows.
-A sentence draft is measured the same way, against the Example it names rather than the entry.
-A situation draft is measured against the Situation it names.
-A source draft is measured against the Reference it names.
-A draft naming no entry, or an entry since deleted, is left for recovery to offer back.
-So is one whose content differs from the entry it names, which is work the user would lose.
-A draft this engine holds, or another running copy claims, is passed over untouched.
-The half-written pending files both archives leave behind go too.
-Only files older than an hour, so a save in flight in the other copy is never taken.
-Nothing here throws on a folder that is missing or unreadable.
-
-## `public IReadOnlyList<LDraft> LEngineLeftoverRead()`
-
-The held drafts nothing is still working on and that differ from the entry they opened from.
-A draft this engine started is claimed by an open window.
-Offering it back would fight the window still typing into it.
-A draft another running copy of the program claims is passed over too.
-The claim file that copy wrote tells it apart.
-Two copies may run on one workspace, and an in-memory set cannot see across them.
-A claim naming a process that is gone is what a crash leaves behind.
-The draft under it is exactly what recovery is for.
-A draft matching its origin carries nothing worth recovering, which is what an untouched panel leaves behind.
-What remains is what a forced shutdown cost, counted at launch.
-
 ## `public void LEngineDraftDelete(string id)`
 
 Removes one held draft with its claim, after the links that draft owns are settled.
@@ -93,61 +68,6 @@ A dropped draft that kept its rows would leave links no call can reach again.
 `LCourtArchiveSettle` matches on target alone, so a row whose owner is gone answers no settlement.
 The rows pointing at this draft are left, because the caller dropping a chip already took its own row back.
 Abandoning work is `LEngineDraftCancel`, which settles those rows too.
-
-## `public IReadOnlyList<LCardDraft> LEngineDraftMove(string id, bool collocation, int from, int target)`
-
-Reorders one card inside the held content and hands the whole list back renumbered.
-Positions are rewritten from `1` so they stay contiguous whatever the drag did.
-This is the only place card order is computed, so the form no longer keeps its own count.
-`collocation` picks which of the two lists is reordered.
-Both ends are clamped into range, because a drag can land past the last card.
-An empty list is written back untouched.
-
-## `public IReadOnlyList<LCardDraft> LEngineDraftNormalize(string id, bool collocation)`
-
-Renumbers one card list without moving anything, and hands the whole list back.
-A removed card leaves a gap in the numbering that nothing else closes.
-Asking for a move of nothing said the same thing by accident, and read as a reorder that never happened.
-
-## `public string LEngineCardCreate()`
-
-Mints one card id for a card the form has just added.
-The form cannot mint one itself, because identity is the workspace's to give.
-An id given at the moment a card appears is what lets a later answer name that card back.
-
-## `private IReadOnlyList<LCardDraft> LEngineCardApply(LDraft draft, bool collocation, List<LCardDraft> cards)`
-
-Writes one card list onto a held draft, numbered from `1` and named throughout.
-Positions are rewritten so they stay contiguous whatever the caller did to the list.
-This is the only place card order is computed, so the form no longer keeps its own count.
-A card still carrying no id is named here too.
-The answer is about to be matched by id.
-Both the move and the renumber end here, so the two cannot drift apart.
-
-## `public LCourtLink LEngineCourtSave(string ownerId, string targetId, string headword, string language)`
-
-Writes one court row: a link from a held draft to a target that is not an entry yet.
-The headword and language travel with it, because the chip is shown long before the target is real.
-Returns the row so the caller can drop it again by id.
-
-## `public LCourtLink LEngineCourtStart(string ownerId, string origin, string headword, string language)`
-
-Starts a tentative target and records the row naming it, as one call.
-The word and the language are written into the target before the row is made.
-A caller doing this in three calls could fail on the last and leave a draft nothing points at.
-Such a draft is invisible: no chip names it, and no commit or cancel ever reaches it.
-A failure anywhere after the target is started cancels it before the refusal leaves.
-So the workspace holds either the target with its row or neither.
-
-## `public void LEngineCourtDelete(string linkId)`
-
-Removes one court row, for a chip the user took back.
-
-## `public LCourtLink? LEngineCourtFind(string ownerId, string targetId)`
-
-The court row one draft holds against one target, or null when there is none.
-A chip the user takes back is dropped by finding its row this way.
-An ordinary translation to a stored entry answers null, because it never had a row.
 
 ## `public bool LEngineDraftCheck(string id)`
 
@@ -230,25 +150,6 @@ Each row pointing at it also has its tentative id struck from the draft that hel
 That id will never become an entry now.
 A chip left carrying it would be stored as a translation of a record that never existed.
 
-## `private void LEngineCourtRemove(string id)`
-
-Drops every court row one draft owns, and the tentative target each row named when nothing else wants it.
-A tentative target goes only when this draft is the last thing holding it.
-A target another draft still links to stays, because that draft's chip would otherwise point at nothing.
-A target goes only while this engine owns it.
-Ownership means a live claim naming this process for a draft this engine started.
-A target another window or another copy of the program is editing therefore stays.
-Taking it would empty an open editor.
-A target whose claim is gone was left by an earlier launch.
-Sweeping it here would delete work its own recovery is about to offer back.
-The panel a draft names cannot answer that.
-A panel is a kind of surface, not a window.
-Both copies of the program name the same ones.
-The target's claim is dropped with its file, so nothing outlives the draft it named.
-A row whose owner draft is gone is dropped as well, wherever the sweep meets one.
-Such a row can no longer be reached by owner or by target, so nothing else would ever collect it.
-Cancelling and deleting share this, because both end a draft and both leave its links behind otherwise.
-
 ## `private bool LEngineHoldCheck(string id)`
 
 Whether this engine may take a draft away.
@@ -282,68 +183,6 @@ A copy is taken only from the first unnamed card, because a settled list is the 
 What a draft carrying no entry is measured against.
 A form that was never opened on an entry started from nothing.
 
-## `private IReadOnlyList<LCourtLink> LEngineCourtScan(string ownerId)`
-
-Every court row one draft holds, whatever it points at.
-Committing and cancelling both act on the whole set.
-
-## `private static bool LEngineDraftMatch(LEntryDraft one, LEntryDraft other)`
-
-Field by field, whether two forms of an entry say the same thing.
-Language sits beside the headword, because changing only the tongue is still an edit.
-The lists inside are compared by their contents, since records compare them by reference.
-
-## `private static bool LEngineSoundMatch(LPronunciationDraft? one, LPronunciationDraft? other)`
-
-Whether two drafts record the same pronunciation.
-The lists inside a draft are compared by content, because two equal lists are rarely the same object.
-A record comparison would call every reloaded draft a change and never settle.
-
-## `private static bool LEngineSpeechMatch(IReadOnlyList<LSpeechDraft> one, IReadOnlyList<LSpeechDraft> other)`
-
-Whether two drafts name the same parts of speech in the same order.
-A language-pack value and a custom name of the same wording are two different parts.
-
-## `private static bool LEngineCardMatch(IReadOnlyList<LCardDraft> one, IReadOnlyList<LCardDraft> other)`
-
-Whether two card lists carry the same cards in the same order.
-Order counts, because the order cards are in is the order they are stored in.
-Position is compared with it, so a reorder is caught by what it changed rather than by chance.
-
-## `private static IReadOnlyList<LCardDraft> LEngineCardScan(IReadOnlyList<LCardDraft> cards)`
-
-The cards that carry something, in their original order.
-
-## `private static bool LEngineCardCheck(LCardDraft card)`
-
-Whether a card holds nothing at all.
-An open form always shows one such card, and offering it is not an edit.
-
-## `private static bool LEngineSentenceMatch(IReadOnlyList<LSentenceDraft> one, IReadOnlyList<LSentenceDraft> other)`
-
-Whether two row lists say the same thing in the same order.
-The frame counts, so writing a marker or a role and nothing else is a change and is saved.
-The stored row each names counts too, because a row that changed id is a different row.
-
-## `private static bool LEngineExampleMatch(LExampleDraft? one, LExampleDraft? other)`
-
-Whether two rows quote the same Example on the same terms.
-A row quoting none matches only another quoting none.
-The citation counts, so retagging a sentence is a change.
-
-## `private static bool LEngineSituationMatch(IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)`
-
-Whether two situation lists say the same thing in the same order.
-All three stored fields count, not the title the card happens to show.
-
-## `private static bool LEngineValueMatch(IReadOnlyList<LStateValue> one, IReadOnlyList<LStateValue> other)`
-
-Whether two value lists match, keeping an unreadable field apart from an empty one.
-
-## `private static bool LEngineTextMatch(IReadOnlyList<string> one, IReadOnlyList<string> other)`
-
-Whether two text lists match exactly, order included.
-
 ## `private void LEngineDraftValidate(string id)`
 
 Refuses an id raised in a workspace this engine no longer holds.
@@ -356,10 +195,6 @@ A caller holding one is told so rather than being handed either silence.
 Reads a held draft that the caller is about to act on, refusing when it is gone.
 Another window may have stored or discarded it already.
 
-## `private void LEngineCourtUpdate(LCourtLink link, string realId)`
-
-Rewrites the one draft that held a settled link.
-
 ## `private LEntryDraft LEngineTranslationSettle(LEntryDraft content)`
 
 The same content with every translation that names no stored entry removed.
@@ -370,10 +205,3 @@ Both card lists are settled, because a chip can sit on a meaning or on a colloca
 Keeps only the translations that still load as an entry.
 An id that loads nothing points at a record that was discarded or never arrived.
 There is nothing left to store it against.
-
-## `private static IReadOnlyList<LCardDraft> LEngineTranslationUpdate(IReadOnlyList<LCardDraft> cards, string draftId, string realId)`
-
-Swaps the tentative id for the real one wherever a card's translations name it.
-An empty real id drops the tentative one instead.
-That is how a cancelled target leaves the drafts that pointed at it.
-Every other translation is copied through unchanged.

@@ -1,4 +1,4 @@
-﻿# PReferenceBrowse.cs
+# PReferenceBrowse.cs
 
 ## `public partial class PReference`
 
@@ -37,7 +37,18 @@ The read area and the editor also stand on them.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open edit area keeps its selection either way, because the row may be the one being written.
 
-## `private void PReferenceShow(string id)`
+## `internal int PShelfReachRead(string author)`
+
+How many Sources one Author is credited on.
+The count is answered here, because the credit map is held here and the edit area only asks.
+
+## `internal bool PShelfCreditUpdate()`
+
+Reads the credit map again after the edit area writes a credit, and refills the shelf.
+The shelf shows credits too, so one write is one refill for both.
+It answers false on a failure, so the caller stops rather than refilling from a stale map.
+
+## `internal void PReferenceShow(string id)`
 
 Reads one Source back and shows it with the sides citing it.
 An id the store no longer knows clears the selection and refills the shelf rather than failing.
@@ -70,7 +81,12 @@ Held work is started on entering and discarded on leaving, so no draft outlives 
 
 Both segments answer here, so the click is read off which one was pressed.
 The segment already standing for what is on screen changes nothing.
-## `private void PReferenceClear()`
+## `private void PReferenceFreshHandle(object sender, RoutedEventArgs e)`
+
+Opens the edit area on a Source nothing has stored yet.
+The held work is started before the controls are filled, so the first keystroke already has somewhere to go.
+
+## `internal void PReferenceClear()`
 
 Drops the selection and empties the reading, the citing list and the edit area together.
 Held work is discarded first, because the panel is leaving behind everything the draft was opened on.

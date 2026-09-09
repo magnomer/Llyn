@@ -1,0 +1,33 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIShell">
+
+    <DataTemplate x:Key="Imprint.Credit.Card">
+        <Border Margin="0,0,0,6" Padding="12,6" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Line}" BorderThickness="1" CornerRadius="9">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PAuthorItemName}" TextTrimming="CharacterEllipsis" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="↑" IsEnabled="{Binding PAuthorItemEarlier}" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Earlier" ToolTip="{DynamicResource Source.AuthorEarlier}" />
+                    <Button Content="↓" IsEnabled="{Binding PAuthorItemLater}" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Later" ToolTip="{DynamicResource Source.AuthorLater}" />
+                    <Button Content="✎" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Rename" ToolTip="{DynamicResource Source.AuthorRename}" />
+                    <Button Content="✕" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Remove" ToolTip="{DynamicResource Source.AuthorRemove}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Imprint.Author.Row">
+        <TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding PAuthorItemName}" TextTrimming="CharacterEllipsis" />
+    </DataTemplate>
+
+    <Style x:Key="Imprint.Author.Item" TargetType="ListBoxItem">
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+</ResourceDictionary>

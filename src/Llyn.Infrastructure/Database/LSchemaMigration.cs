@@ -87,7 +87,7 @@ public static class LSchemaMigration
 
         if (stored < 23)
         {
-            LSchemaTable.LSchemaFavoriteCreate(connection);
+            LSchemaTable.LSchemaFavoriteNormalize(connection);
         }
 
         if (stored < 24)
@@ -118,7 +118,7 @@ public static class LSchemaMigration
 
         if (stored < 29)
         {
-            LSchemaTable.LSchemaRegisterCreate(connection);
+            LSchemaTable.LSchemaRegisterNormalize(connection);
         }
 
         if (stored < 30)

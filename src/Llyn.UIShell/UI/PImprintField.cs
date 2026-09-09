@@ -7,7 +7,7 @@ using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-public partial class PReference
+public partial class PImprint
 {
     private static readonly LReferenceKind[] _pImprintKindOrder =
     [
@@ -107,7 +107,7 @@ public partial class PReference
 
         held = unreadable;
         field.Text = string.Empty;
-        field.Tag = unreadable ? _pReferenceHost.PLocalizationTextRead("Display.Unreadable") : string.Empty;
+        field.Tag = unreadable ? _pImprintHost.PLocalizationTextRead("Display.Unreadable") : string.Empty;
 
         _pImprintLoading = false;
 
@@ -118,7 +118,7 @@ public partial class PReference
     {
         _pImprintLoading = true;
 
-        string unreadable = _pReferenceHost.PLocalizationTextRead("Display.Unreadable");
+        string unreadable = _pImprintHost.PLocalizationTextRead("Display.Unreadable");
 
         PImprintFieldShow(
             PImprintTitle, PImprintTitleUnknown, reference?.LReferenceTitle, unreadable,
@@ -154,7 +154,7 @@ public partial class PReference
             {
                 PImprintKind.Items.Add(new ComboBoxItem
                 {
-                    Content = PReferenceKindShow(offered),
+                    Content = _pImprintHost.PLocalizationTextRead(PReference.PReferenceKindRead(offered)),
                     Tag = offered,
                 });
             }
@@ -187,8 +187,8 @@ public partial class PReference
             return;
         }
 
-        int usage = PShelfCountRead(stored);
-        PImprintCount.Text = $"{_pReferenceHost.PLocalizationTextRead("Source.DetachCount")} "
+        int usage = _pImprintOwner.PShelfCountRead(stored);
+        PImprintCount.Text = $"{_pImprintHost.PLocalizationTextRead("Source.DetachCount")} "
             + usage.ToString(CultureInfo.CurrentCulture);
     }
 
@@ -209,27 +209,14 @@ public partial class PReference
         };
     }
 
-    private void PReferenceFreshHandle(object sender, RoutedEventArgs e)
-    {
-        if (!PReferenceLeaveConfirm())
-        {
-            return;
-        }
-
-        PReferenceClear();
-        PReferenceScribeShow(true);
-        PImprintDraftShow(PImprintDraftStart(null));
-        PReferenceScribe.IsEnabled = true;
-    }
-
     private void PImprintDiscardHandle(object sender, RoutedEventArgs e)
     {
-        if (!PReferenceLeaveConfirm())
+        if (!_pImprintOwner.PReferenceLeaveConfirm())
         {
             return;
         }
 
-        PImprintDraftShow(PImprintDraftStart(PImprintReferenceRead()));
+        PImprintDraftOpen(PImprintReferenceRead());
     }
 
     private void PImprintStoreHandle(object sender, RoutedEventArgs e)
@@ -249,15 +236,14 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.SaveFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.SaveFailed", exception);
             return;
         }
 
         _pImprintDraft = string.Empty;
-        _pColophonReference = stored.LReferenceId;
 
-        PReferenceScribeShow(false);
-        PReferenceShow(stored.LReferenceId);
+        _pImprintOwner.PReferenceScribeShow(false);
+        _pImprintOwner.PReferenceShow(stored.LReferenceId);
     }
 
     private void PImprintRemovalHandle(object sender, RoutedEventArgs e)
@@ -267,9 +253,9 @@ public partial class PReference
             return;
         }
 
-        int usage = PShelfCountRead(id);
+        int usage = _pImprintOwner.PShelfCountRead(id);
 
-        if (!_pReferenceHost.PWindowRemovalConfirm(usage, "Source"))
+        if (!_pImprintHost.PWindowRemovalConfirm(usage, "Source"))
         {
             return;
         }
@@ -280,11 +266,11 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.DeleteFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.DeleteFailed", exception);
             return;
         }
 
-        PReferenceScribeShow(false);
-        PReferenceClear();
+        _pImprintOwner.PReferenceScribeShow(false);
+        _pImprintOwner.PReferenceClear();
     }
 }

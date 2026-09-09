@@ -20,7 +20,7 @@ public static class LSchemaTable
         command.ExecuteNonQuery();
     }
 
-    public static void LSchemaFavoriteCreate(SqliteConnection connection)
+    public static void LSchemaFavoriteNormalize(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -36,7 +36,7 @@ public static class LSchemaTable
         command.ExecuteNonQuery();
     }
 
-    public static void LSchemaRegisterCreate(SqliteConnection connection)
+    public static void LSchemaRegisterNormalize(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =

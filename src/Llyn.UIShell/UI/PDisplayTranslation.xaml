@@ -1,0 +1,55 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="Display.Card.Chips" TargetType="ItemsControl">
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipTightMargin}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding LCardDraftSituation.Count}" Value="0">
+                <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipMargin}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding LCardDraftTranslation.Count}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Display.Card.TranslationLink" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="PSurface" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource Theme.Card.Pellet}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{DynamicResource Theme.Accent}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.72" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="Display.Card.TranslationChip">
+        <Button Style="{StaticResource Display.Card.TranslationLink}">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <Image Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PLinkChipFlag}" Stretch="Uniform" />
+                <TextBlock VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PLinkChipHeadword}" />
+                <TextBlock Margin="7,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PLinkChipLanguage}" />
+            </StackPanel>
+        </Button>
+    </DataTemplate>
+</ResourceDictionary>

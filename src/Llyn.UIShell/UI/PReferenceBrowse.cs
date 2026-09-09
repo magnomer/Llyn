@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -31,7 +31,7 @@ public partial class PReference
             PReferenceReset();
         }
 
-        PAuthorFind();
+        PImprint.PAuthorFind();
         PShelfFind(PSurvey.Text ?? string.Empty);
     }
 
@@ -58,16 +58,50 @@ public partial class PReference
         _pGradeChoice = order;
         PChoice.PChoiceOrderApply(PGradeDropdown, order);
 
-        PAuthorFind();
+        PImprint.PAuthorFind();
         PShelfFind(PSurvey.Text ?? string.Empty);
     }
 
-    private IReadOnlyList<LAuthor> PShelfCreditRead(string id)
+    internal IReadOnlyList<LAuthor> PShelfCreditRead(string id)
     {
         return _pShelfCredit.TryGetValue(id, out IReadOnlyList<LAuthor>? credits) ? credits : PShelfNobody;
     }
 
-    private int PShelfCountRead(string id)
+    internal int PShelfReachRead(string author)
+    {
+        int reach = 0;
+        foreach (IReadOnlyList<LAuthor> credits in _pShelfCredit.Values)
+        {
+            foreach (LAuthor written in credits)
+            {
+                if (string.Equals(written.LAuthorId, author, StringComparison.Ordinal))
+                {
+                    reach++;
+                    break;
+                }
+            }
+        }
+
+        return reach;
+    }
+
+    internal bool PShelfCreditUpdate()
+    {
+        try
+        {
+            _pShelfCredit = _lEngine.LEngineAuthorRead(LOwner.LOwnerReference);
+        }
+        catch (Exception exception)
+        {
+            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            return false;
+        }
+
+        PShelfFind(PSurvey.Text ?? string.Empty);
+        return true;
+    }
+
+    internal int PShelfCountRead(string id)
     {
         return _pShelfCount.TryGetValue(id, out int usage) ? usage : 0;
     }
@@ -122,7 +156,7 @@ public partial class PReference
 
     private void PShelfHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement row || row.DataContext is not PShelfItem item)
+        if (e.Source is not FrameworkElement row || row.DataContext is not PShelfItem item)
         {
             return;
         }
@@ -135,7 +169,7 @@ public partial class PReference
         PReferenceShow(item.PShelfItemId);
     }
 
-    private void PReferenceShow(string id)
+    internal void PReferenceShow(string id)
     {
         LReference? reference;
         try
@@ -173,7 +207,7 @@ public partial class PReference
 
         if (PImprint.Visibility == Visibility.Visible)
         {
-            PImprintDraftShow(PImprintDraftStart(id));
+            PImprint.PImprintDraftOpen(id);
         }
     }
 
@@ -246,7 +280,7 @@ public partial class PReference
 
     private void PFootnoteHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement row || row.DataContext is not PFootnoteItem item)
+        if (e.Source is not FrameworkElement row || row.DataContext is not PFootnoteItem item)
         {
             return;
         }
@@ -281,7 +315,7 @@ public partial class PReference
                 return;
             }
 
-            PImprintDraftCancel();
+            PImprint.PImprintDraftCancel();
             PReferenceScribeShow(false);
 
             if (_pColophonReference is not null)
@@ -301,10 +335,10 @@ public partial class PReference
         }
 
         PReferenceScribeShow(true);
-        PImprintDraftShow(PImprintDraftStart(_pColophonReference));
+        PImprint.PImprintDraftOpen(_pColophonReference);
     }
 
-    private void PReferenceScribeShow(bool editing)
+    internal void PReferenceScribeShow(bool editing)
     {
         _lEngine.LEngineSplitSave(editing);
 
@@ -334,9 +368,22 @@ public partial class PReference
         return _pReferenceHost.PWindowDiscardConfirm(PReferenceChangeCheck());
     }
 
-    private void PReferenceClear()
+    private void PReferenceFreshHandle(object sender, RoutedEventArgs e)
     {
-        PImprintDraftCancel();
+        if (!PReferenceLeaveConfirm())
+        {
+            return;
+        }
+
+        PReferenceClear();
+        PReferenceScribeShow(true);
+        PImprint.PImprintDraftOpen(null);
+        PReferenceScribe.IsEnabled = true;
+    }
+
+    internal void PReferenceClear()
+    {
+        PImprint.PImprintDraftCancel();
 
         _pColophonReference = null;
         PShelfSelect(null);
@@ -344,7 +391,7 @@ public partial class PReference
 
         PColophonBody.Visibility = Visibility.Collapsed;
         PColophonUnselected.Visibility = Visibility.Visible;
-        PImprintApply(null);
+        PImprint.PImprintClear();
         PReferenceScribeShow(false);
         PReferenceMode.IsEnabled = false;
     }

@@ -1,11 +1,11 @@
-# PReferenceImprint.cs
+# PImprintField.cs
 
-## `public partial class PReference`
+## `public partial class PImprint`
 
-The edit area of the Source panel: the stated fields, the save, the discard, and the delete.
-The credits are a responsibility of their own and live in `PReferenceAuthor.cs`.
-The panel owns its edit area, so it needs no dispatcher pair as the shared `PEditor` does.
-What is typed here reaches the held draft through `PReferenceHold.cs`, which is where every push and every answer lives.
+The stated fields of the Source edit area: the fields, the save, the discard, and the delete.
+The credits are a responsibility of their own and live in `PImprintAuthor.cs`.
+The control owns its edit area, so it needs no dispatcher pair as the shared `PEditor` does.
+What is typed here reaches the held draft through `PImprintHold.cs`, which is where every push and every answer lives.
 The area no longer keeps a copy of the stored Source to compare itself against.
 
 ## Inline notes
@@ -47,11 +47,6 @@ Reads the edit area back onto the Source being held.
 Identity comes from the held Source rather than from the area, which knows nothing about it.
 The author state comes from the credits region, because it is a column on the same row.
 
-## `private void PReferenceFreshHandle(object sender, RoutedEventArgs e)`
-
-Opens the edit area on a Source nothing has stored yet.
-The held work is started before the controls are filled, so the first keystroke already has somewhere to go.
-
 ## `private void PImprintDiscardHandle(object sender, RoutedEventArgs e)`
 
 Throws the held Source away and opens a fresh one on the same stored Source.
@@ -59,7 +54,7 @@ Restarting rather than refilling leaves nothing of the discarded work on disk.
 
 ## `private void PImprintStoreHandle(object sender, RoutedEventArgs e)`
 
-Commits the held Source and returns to the reading over what was stored.
+Commits the held Source and asks the panel to read over what was stored.
 Typing still waiting to be pushed is pushed first, so the commit carries the last keystrokes.
 The engine announces the commit and the shelf is read again on that.
 The stored Source refreshes its own citation figure.

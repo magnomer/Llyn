@@ -8,7 +8,7 @@ using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-public partial class PReference
+public partial class PImprint
 {
     private readonly ObservableCollection<PAuthorItem> _pAuthorCredit = [];
 
@@ -18,7 +18,7 @@ public partial class PReference
 
     private bool _pAuthorLoading;
 
-    private void PAuthorFind()
+    internal void PAuthorFind()
     {
         IReadOnlyList<LAuthor> read;
         try
@@ -27,7 +27,7 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
             read = [];
         }
 
@@ -60,7 +60,7 @@ public partial class PReference
 
         if (stored is not null)
         {
-            IReadOnlyList<LAuthor> credits = PShelfCreditRead(stored);
+            IReadOnlyList<LAuthor> credits = _pImprintOwner.PShelfCreditRead(stored);
             for (int index = 0; index < credits.Count; index++)
             {
                 _pAuthorCredit.Add(new PAuthorItem(credits[index], index, credits.Count));
@@ -75,18 +75,12 @@ public partial class PReference
 
     private void PAuthorUpdate()
     {
-        try
+        if (!_pImprintOwner.PShelfCreditUpdate())
         {
-            _pShelfCredit = _lEngine.LEngineAuthorRead(LOwner.LOwnerReference);
-        }
-        catch (Exception exception)
-        {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
             return;
         }
 
         PAuthorCreditFind(PImprintReferenceRead());
-        PShelfFind(PSurvey.Text ?? string.Empty);
     }
 
     private void PAuthorHandle(object sender, SelectionChangedEventArgs e)
@@ -122,7 +116,7 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
             return;
         }
 
@@ -145,7 +139,7 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
             return;
         }
 
@@ -155,10 +149,33 @@ public partial class PReference
         PAuthorAttach(written.LAuthorId);
     }
 
-    private void PAuthorRemoveHandle(object sender, RoutedEventArgs e)
+    private void PAuthorCreditHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PAuthorItem item }
-            || PImprintReferenceRead() is not string stored)
+        if (e.Source is not FrameworkElement { Tag: string action, DataContext: PAuthorItem item })
+        {
+            return;
+        }
+
+        switch (action)
+        {
+            case "Earlier":
+                PAuthorMove(item, -1);
+                return;
+            case "Later":
+                PAuthorMove(item, 1);
+                return;
+            case "Rename":
+                PAuthorNameUpdate(item);
+                return;
+            default:
+                PAuthorRemove(item);
+                return;
+        }
+    }
+
+    private void PAuthorRemove(PAuthorItem item)
+    {
+        if (PImprintReferenceRead() is not string stored)
         {
             return;
         }
@@ -169,27 +186,16 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
             return;
         }
 
         PAuthorUpdate();
     }
 
-    private void PAuthorEarlierHandle(object sender, RoutedEventArgs e)
+    private void PAuthorMove(PAuthorItem item, int step)
     {
-        PAuthorMove(sender, -1);
-    }
-
-    private void PAuthorLaterHandle(object sender, RoutedEventArgs e)
-    {
-        PAuthorMove(sender, 1);
-    }
-
-    private void PAuthorMove(object sender, int step)
-    {
-        if (sender is not FrameworkElement { DataContext: PAuthorItem item }
-            || PImprintReferenceRead() is not string stored)
+        if (PImprintReferenceRead() is not string stored)
         {
             return;
         }
@@ -201,20 +207,15 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
             return;
         }
 
         PAuthorUpdate();
     }
 
-    private void PAuthorRenameHandle(object sender, RoutedEventArgs e)
+    private void PAuthorNameUpdate(PAuthorItem item)
     {
-        if (sender is not FrameworkElement { DataContext: PAuthorItem item })
-        {
-            return;
-        }
-
         string name = PAuthorName.Text.Trim();
         if (name.Length == 0)
         {
@@ -234,7 +235,7 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
             return;
         }
 
@@ -245,26 +246,15 @@ public partial class PReference
 
     private bool PAuthorRenameConfirm(PAuthorItem item)
     {
-        int reach = 0;
-        foreach (IReadOnlyList<LAuthor> credits in _pShelfCredit.Values)
-        {
-            foreach (LAuthor author in credits)
-            {
-                if (string.Equals(author.LAuthorId, item.PAuthorItemId, StringComparison.Ordinal))
-                {
-                    reach++;
-                    break;
-                }
-            }
-        }
+        int reach = _pImprintOwner.PShelfReachRead(item.PAuthorItemId);
 
-        string count = $"{_pReferenceHost.PLocalizationTextRead("Source.AuthorRenameCount")} "
+        string count = $"{_pImprintHost.PLocalizationTextRead("Source.AuthorRenameCount")} "
             + reach.ToString(CultureInfo.CurrentCulture);
 
         return MessageBox.Show(
-            _pReferenceHost,
-            $"{_pReferenceHost.PLocalizationTextRead("Source.AuthorRenameConfirm")}\n\n{count}",
-            _pReferenceHost.PLocalizationTextRead("Terms.Product"),
+            _pImprintHost,
+            $"{_pImprintHost.PLocalizationTextRead("Source.AuthorRenameConfirm")}\n\n{count}",
+            _pImprintHost.PLocalizationTextRead("Terms.Product"),
             MessageBoxButton.YesNo,
             MessageBoxImage.Question) == MessageBoxResult.Yes;
     }

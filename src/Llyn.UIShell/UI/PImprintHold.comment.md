@@ -1,6 +1,6 @@
-# PReferenceHold.cs
+# PImprintHold.cs
 
-## `public partial class PReference`
+## `public partial class PImprint`
 
 When what the user typed into the source editor reaches the draft the engine holds.
 The panel no longer keeps a copy of the stored Source to compare itself against.
@@ -8,13 +8,13 @@ It writes what it holds instead, and asks the engine whether that differs.
 Typing is written once the user stops, because a write per keystroke is a write per keystroke.
 This mirrors `PRepertoireHold.cs` field for field, so the four editors cannot drift apart.
 
-## `internal bool PReferenceDraftFinish(bool store)`
+## `internal bool PImprintDraftFinish(bool store)`
 
 Ends the held Source when the window closes, committing it or discarding it.
 Typing still waiting to be written is written first, whatever the answer was.
 A refused commit puts the id back and answers false, so the window stays open over work still on disk.
 
-## `private bool PImprintChangeCheck()`
+## `internal bool PImprintChangeCheck()`
 
 Whether the editor holds work a host would be sorry to lose.
 Typing still waiting to be written is written first.
@@ -59,7 +59,7 @@ The engine hands back what it stored, which is not always what was sent.
 The controls are rebuilt only when those differ, or every keystroke would rebuild them under the caret.
 A draft the engine no longer holds is left alone rather than recreated.
 
-## `private void PImprintDraftCancel()`
+## `internal void PImprintDraftCancel()`
 
 Discards the held Source and forgets its id.
 The id is dropped before the call, so a failing discard cannot leave the panel writing into it.

@@ -24,8 +24,8 @@ public partial class PReference : UserControl
 
         PShelf.ItemsSource = _pShelfList;
         PFootnote.ItemsSource = _pFootnoteList;
-        PAuthorCredit.ItemsSource = _pAuthorCredit;
-        PAuthorList.ItemsSource = _pAuthorCatalog;
+
+        PImprint.PImprintAttach(host, engine, this);
 
         _pReferenceObserver = new PObserver(this, PReferenceBulletinHandle);
         engine.LEngineObserverAttach(_pReferenceObserver);
@@ -36,7 +36,7 @@ public partial class PReference : UserControl
         return _pReferenceHost.PLocalizationTextRead(PReferenceKindRead(kind));
     }
 
-    private static string PReferenceKindRead(LReferenceKind kind)
+    internal static string PReferenceKindRead(LReferenceKind kind)
     {
         return kind switch
         {
@@ -61,7 +61,12 @@ public partial class PReference : UserControl
 
     internal bool PReferenceChangeCheck()
     {
-        return PImprintChangeCheck();
+        return PImprint.PImprintChangeCheck();
+    }
+
+    internal bool PReferenceDraftFinish(bool store)
+    {
+        return PImprint.PImprintDraftFinish(store);
     }
 
     internal void PReferenceClose()
@@ -72,7 +77,7 @@ public partial class PReference : UserControl
             _pReferenceObserver = null;
         }
 
-        PAuthorMenu.IsOpen = false;
+        PImprint.PImprintClose();
         PGradeDropdown.IsOpen = false;
     }
 }

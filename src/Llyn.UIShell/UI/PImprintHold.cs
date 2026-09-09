@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-public partial class PReference
+public partial class PImprint
 {
     private const int PImprintChangeDelay = 250;
 
@@ -17,7 +17,7 @@ public partial class PReference
 
     private bool _pImprintHalted;
 
-    internal bool PReferenceDraftFinish(bool store)
+    internal bool PImprintDraftFinish(bool store)
     {
         if (_pImprintPending is not null)
         {
@@ -45,14 +45,14 @@ public partial class PReference
         catch (Exception exception)
         {
             _pImprintDraft = held;
-            _pReferenceHost.PWindowFailureShow("Source.SaveFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.SaveFailed", exception);
             return false;
         }
 
         return true;
     }
 
-    private bool PImprintChangeCheck()
+    internal bool PImprintChangeCheck()
     {
         if (_pImprintPending is not null)
         {
@@ -94,7 +94,7 @@ public partial class PReference
         }
         catch (Exception exception)
         {
-            _pReferenceHost.PWindowFailureShow("Source.HoldFailed", exception);
+            _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
         }
     }
 
@@ -186,7 +186,7 @@ public partial class PReference
         }
     }
 
-    private void PImprintDraftCancel()
+    internal void PImprintDraftCancel()
     {
         if (_pImprintDraft.Length == 0)
         {
@@ -251,8 +251,8 @@ public partial class PReference
         }
 
         _pImprintHalted = true;
-        PImprint.IsEnabled = false;
-        _pReferenceHost.PWindowFailureShow("Source.HoldFailed", exception);
+        IsEnabled = false;
+        _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
     }
 
     private void PImprintHoldResume()
@@ -263,6 +263,6 @@ public partial class PReference
         }
 
         _pImprintHalted = false;
-        PImprint.IsEnabled = true;
+        IsEnabled = true;
     }
 }

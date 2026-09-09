@@ -4,6 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PEditorField.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PEditorCard.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PEditorPopup.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -23,19 +33,8 @@
             </Grid.ColumnDefinitions>
 
             <Grid Margin="0,0,10,0">
-                <TextBlock x:Name="PHeadwordHint" Margin="0,0,4,0" Opacity="0" IsHitTestVisible="False" Text="{DynamicResource Input.Headword}">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=PHeadword}" Value="">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-                <TextBlock x:Name="PHeadwordGhost" Margin="0,0,4,0" Opacity="0" IsHitTestVisible="False" Style="{StaticResource Theme.Text.Headword}" Text="{Binding Text, ElementName=PHeadword}" />
+                <TextBlock x:Name="PHeadwordHint" Style="{StaticResource Editor.Field.Hint}" Text="{DynamicResource Input.Headword}" />
+                <TextBlock x:Name="PHeadwordGhost" Style="{StaticResource Editor.Field.Ghost}" />
                 <TextBox x:Name="PHeadword" Margin="-2,0,0,0" HorizontalAlignment="Stretch" Style="{StaticResource Theme.Input.Headword}" Tag="{DynamicResource Input.Headword}" />
             </Grid>
 
@@ -72,18 +71,7 @@
             </Grid>
 
             <ToggleButton x:Name="PEditorFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="PEditorFavoriteHandle" Style="{StaticResource Theme.Favorite.Mark}" ToolTip="{DynamicResource Favorite.Mark}">
-                <Path Width="17" Height="16" Stretch="Uniform" Stroke="{StaticResource Theme.Accent}" StrokeLineJoin="Round" StrokeThickness="1.4" Data="M 8,0.7 L 10.06,5.62 15.4,6.05 11.34,9.55 12.58,14.75 8,11.95 3.42,14.75 4.66,9.55 0.6,6.05 5.94,5.62 Z">
-                    <Path.Style>
-                        <Style TargetType="Path">
-                            <Setter Property="Fill" Value="Transparent" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsChecked, ElementName=PEditorFavorite}" Value="True">
-                                    <Setter Property="Fill" Value="{StaticResource Theme.Accent}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Path.Style>
-                </Path>
+                <Path Style="{StaticResource Editor.Field.Mark}" />
             </ToggleButton>
 
             <Border
@@ -117,18 +105,7 @@
                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
                     <Grid Margin="3,0">
-                        <TextBlock>
-                            <TextBlock.Style>
-                                <Style BasedOn="{StaticResource Theme.Pronunciation.Measure}" TargetType="TextBlock">
-                                    <Setter Property="Text" Value="{Binding Text, ElementName=PPronunciation}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Text, ElementName=PPronunciation}" Value="">
-                                            <Setter Property="Text" Value="{Binding Tag, ElementName=PPronunciation}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <TextBlock Style="{StaticResource Editor.Field.Measure}" />
                         <TextBox x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
                     </Grid>
                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
@@ -187,13 +164,7 @@
                                     </Border>
                                     <TextBlock x:Name="PNotationNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Transcriber.Searching}" Visibility="Collapsed" />
                                     <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                        <ItemsControl x:Name="PNotationList" ItemTemplate="{DynamicResource Theme.Notation.Row}" Visibility="Collapsed">
-                                            <ItemsControl.ItemContainerStyle>
-                                                <Style TargetType="ContentPresenter">
-                                                    <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                                </Style>
-                                            </ItemsControl.ItemContainerStyle>
-                                        </ItemsControl>
+                                        <ItemsControl x:Name="PNotationList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Notation.Row}" Visibility="Collapsed" />
                                     </ScrollViewer>
                                 </StackPanel>
                             </Border>
@@ -231,13 +202,7 @@
                                     </Border>
                                     <TextBlock x:Name="PClipNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Downloader.Searching}" Visibility="Collapsed" />
                                     <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                        <ItemsControl x:Name="PClipList" ItemTemplate="{DynamicResource Theme.Clip.Row}" Visibility="Collapsed">
-                                            <ItemsControl.ItemContainerStyle>
-                                                <Style TargetType="ContentPresenter">
-                                                    <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                                </Style>
-                                            </ItemsControl.ItemContainerStyle>
-                                        </ItemsControl>
+                                        <ItemsControl x:Name="PClipList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Clip.Row}" Visibility="Collapsed" />
                                     </ScrollViewer>
                                 </StackPanel>
                             </Border>
@@ -288,13 +253,7 @@
                             <TextBlock x:Name="PCategoryNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Empty}" Visibility="Collapsed" />
                             <TextBlock x:Name="PCategoryAbsent" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Absent}" Visibility="Collapsed" />
                             <ScrollViewer MaxHeight="252" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="PCategoryList" ItemTemplate="{DynamicResource Theme.Category.Row}">
-                                    <ItemsControl.ItemContainerStyle>
-                                        <Style TargetType="ContentPresenter">
-                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                        </Style>
-                                    </ItemsControl.ItemContainerStyle>
-                                </ItemsControl>
+                                <ItemsControl x:Name="PCategoryList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Category.Row}" />
                             </ScrollViewer>
                         </StackPanel>
                     </Border>
@@ -323,25 +282,7 @@
                     <StackPanel>
                         <ItemsControl x:Name="PMeaningList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Meaning.Card}" />
 
-                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PMeaningHandle">
-                            <StackPanel Orientation="Horizontal">
-                                <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
-                                    <Grid>
-                                        <Rectangle Width="10" Height="1.5" Fill="White" />
-                                        <Rectangle Width="1.5" Height="10" Fill="White" />
-                                    </Grid>
-                                </Border>
-                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="{DynamicResource Input.MeaningAdd}" />
-                            </StackPanel>
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Grid Background="Transparent">
-                                        <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource Theme.Accent}" StrokeDashArray="5,3" StrokeThickness="1" Opacity="0.52" />
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                        <Button Click="PMeaningHandle" Content="{DynamicResource Input.MeaningAdd}" Style="{StaticResource Editor.Card.Add}" />
                     </StackPanel>
                 </ScrollViewer>
 
@@ -349,25 +290,7 @@
                     <StackPanel>
                         <ItemsControl x:Name="PCollocationList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Collocation.Card}" />
 
-                        <Button Height="56" Margin="0,20,0,0" Foreground="{StaticResource Theme.Accent}" Background="Transparent" BorderThickness="0" FontWeight="SemiBold" Click="PCollocationHandle">
-                            <StackPanel Orientation="Horizontal">
-                                <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
-                                    <Grid>
-                                        <Rectangle Width="10" Height="1.5" Fill="White" />
-                                        <Rectangle Width="1.5" Height="10" Fill="White" />
-                                    </Grid>
-                                </Border>
-                                <TextBlock VerticalAlignment="Center" Foreground="{StaticResource Theme.Accent}" Text="{DynamicResource Input.CollocationAdd}" />
-                            </StackPanel>
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Grid Background="Transparent">
-                                        <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource Theme.Accent}" StrokeDashArray="5,3" StrokeThickness="1" Opacity="0.52" />
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    </Grid>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                        <Button Click="PCollocationHandle" Content="{DynamicResource Input.CollocationAdd}" Style="{StaticResource Editor.Card.Add}" />
                     </StackPanel>
                 </ScrollViewer>
 
@@ -398,38 +321,9 @@
                 <ListBox
                     x:Name="PProspectList"
                     MaxHeight="264"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Focusable="False"
+                    ItemContainerStyle="{StaticResource Editor.Popup.Row}"
                     ItemTemplate="{DynamicResource Theme.Prospect.Row}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    SelectionMode="Single">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Focusable" Value="False" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <Border x:Name="PSurface" MinHeight="38" Padding="10,0" Background="Transparent" CornerRadius="9">
-                                            <ContentPresenter VerticalAlignment="Center" />
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                                            </Trigger>
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
+                    Style="{StaticResource Editor.Popup.List}" />
             </Border>
         </Popup>
 
@@ -440,45 +334,13 @@
             AllowsTransparency="True"
             Placement="Custom"
             StaysOpen="False">
-            <Border MinWidth="{Binding ElementName=PCandidate, Path=PlacementTarget.ActualWidth}" Margin="10" Padding="4" BorderThickness="0" CornerRadius="10" Style="{StaticResource Theme.Popup.Surface}">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="16" Direction="270" Opacity="0.10" ShadowDepth="4" />
-                </Border.Effect>
+            <Border MinWidth="{Binding ElementName=PCandidate, Path=PlacementTarget.ActualWidth}" Style="{StaticResource Editor.Popup.Frame}">
                 <ListBox
                     x:Name="PCandidateList"
                     MaxHeight="232"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Focusable="False"
+                    ItemContainerStyle="{StaticResource Editor.Popup.Caret}"
                     ItemTemplate="{DynamicResource Theme.Candidate.Row}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    SelectionMode="Single">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Focusable" Value="False" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <Border x:Name="PSurface" MinHeight="28" Padding="8,0" Background="Transparent" CornerRadius="6">
-                                            <ContentPresenter VerticalAlignment="Center" />
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                                            </Trigger>
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
+                    Style="{StaticResource Editor.Popup.List}" />
             </Border>
         </Popup>
 
@@ -489,45 +351,13 @@
             AllowsTransparency="True"
             Placement="Custom"
             StaysOpen="False">
-            <Border MinWidth="{Binding ElementName=PSlate, Path=PlacementTarget.ActualWidth}" Margin="10" Padding="4" BorderThickness="0" CornerRadius="10" Style="{StaticResource Theme.Popup.Surface}">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="16" Direction="270" Opacity="0.10" ShadowDepth="4" />
-                </Border.Effect>
+            <Border MinWidth="{Binding ElementName=PSlate, Path=PlacementTarget.ActualWidth}" Style="{StaticResource Editor.Popup.Frame}">
                 <ListBox
                     x:Name="PSlateList"
                     MaxHeight="232"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Focusable="False"
+                    ItemContainerStyle="{StaticResource Editor.Popup.Caret}"
                     ItemTemplate="{DynamicResource Theme.Slate.Row}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    SelectionMode="Single">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Focusable" Value="False" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <Border x:Name="PSurface" MinHeight="28" Padding="8,0" Background="Transparent" CornerRadius="6">
-                                            <ContentPresenter VerticalAlignment="Center" />
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                                            </Trigger>
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
+                    Style="{StaticResource Editor.Popup.List}" />
             </Border>
         </Popup>
     </Grid>

@@ -2,10 +2,10 @@
 
 ## `public static class LSchema`
 
-Creates the database schema idempotently.
-Each job adds its own `CREATE TABLE IF NOT EXISTS` statements here.
-It may add them in a per-area file it owns instead.
-So the schema grows one job at a time without ever dropping what an earlier job built.
+Runs the schema build in order.
+Each area owns a file of its own and creates the tables it is named for.
+This file names those areas in the only order their foreign keys allow.
+So the schema grows one area at a time without ever dropping what an earlier build made.
 
 Creating a table is only half of it.
 `IF NOT EXISTS` leaves an existing table untouched.
@@ -23,168 +23,16 @@ Safe to run on each startup: existing tables and an existing version row are lef
 
 ## Inline notes
 
-### `command.CommandText =`
+### `LSchemaReference.LSchemaReferenceCreate(connection);`
 
-Data-contract names (table and column identifiers) are persisted keys, so they stay lowercase and independent of code member names.
-
-The Entry root, its owned written forms and parts of speech, and the language-controlled POS display vocabulary.
-Owned child rows carry an (entry_id, position) identity and cascade when their Entry is deleted.
-
-A part_of_speech row says its part of speech one of two ways and never both.
-value_id names a preset the language declares, whose display name lives in part_of_speech_value.
-custom_name carries text the user typed that no preset names.
-The CHECK keeps the two from drifting into a row that is half id, half name.
-
-### `command.CommandText =`
-
-Entry-owned inflected forms and their ordered grammatical features, plus the language-controlled morphology display vocabulary.
-A feature's identity is the two-level owned key (entry_id, inflection_position, position).
-It cascades when its inflection is deleted.
-An inflection cascades when its Entry is deleted.
-Lexical rows store only stable ids — display names live in morphology_value.
-
-### `command.CommandText =`
-
-The Meaning tree an entry owns.
-Each meaning is a stable-id node that may nest under another meaning in the same entry.
-It carries a single inline definition field.
-A meaning cascades when its parent meaning is deleted and when its Entry is deleted.
-Sibling ordering is unique within a parent.
-The ifnull() expression index treats root meanings (null parent) as one sibling group.
-
-### `command.CommandText =`
-
-Lexical relations originating from a Meaning.
-Each relation hangs from its origin meaning and points at exactly one target.
-The target is reached through a checked reference row.
-It is an Entry (relation_entry) XOR another Meaning (relation_sense).
-The relation_id primary key on each target table allows at most one target row per relation.
-The store enforces the XOR across the two tables.
-A relation cascades when its origin meaning is deleted, and its target row cascades with it.
-The referenced Entry or Meaning is never touched.
-
-### `command.CommandText =`
-
-The single pronunciation an entry owns and its two owned child structures.
-An entry carries at most one pronunciation, enforced by the unique entry_id.
-The pronunciation itself carries no position.
-It owns ordered syllables and representations keyed by (pronunciation_id, position).
-A syllable requires only its nucleus.
-Every other syllable field and a representation's local_tone are optional.
-They store NULL when absent, which is distinct from empty.
-The pronunciation also owns at most one downloaded recording.
-pronunciation_audio has no id of its own, since pronunciation_id is its primary key.
-Its file is stored relative to the workspace folder.
-So a moved or copied workspace keeps its audio.
-Children cascade when their pronunciation is deleted, and the pronunciation cascades when its entry is deleted.
-
-### `command.CommandText =`
-
-The collocations an entry owns and the single Note it owns.
-A collocation is a stable-id row ordered within its entry.
-It carries both an expression and the meaning that explains it, and the card has a field for each.
-A meaning carries a definition instead.
-Reordering rewrites position only.
-A collocation's synonym is an interlink, not owned text.
-It uses the same discriminated target model as a job05 relation, an Entry XOR a Meaning.
-The XOR is enforced by a check constraint.
-Each target column is a checked foreign key.
-So the referenced row must exist and is never touched by the link.
-The note table has no id and no position.
-entry_id is its primary key.
-That makes at-most-one Note per entry a schema fact.
-Everything here cascades when its entry is deleted, and a synonym cascades when its collocation is deleted.
-
-### `command.CommandText =`
-
-The independent Author and the independent bibliographic Reference.
-They are created before the Example block below.
-So example.source_id can carry its foreign key.
-Both are owned by nothing.
-An Author is shared by any number of References.
-A Reference is cited by any number of Entries and Examples without belonging to any.
-Every Reference text field is stored as a state column plus a value column.
-The state says whether the field was never filled in, was recorded as unknown, or holds a value.
-The value column is NULL unless the state is 'specified'.
-The check constraints make that a schema fact rather than a store convention.
-kind is one column rather than two, because its closed set carries the three states as members of its own.
-It stores the word rather than a number, so the file never depends on the order the members are declared in.
-author_state has no value column of its own, because the authors themselves are the value.
-They are attached in order through source_author.
-That table cascades from its Reference.
-So deleting a Reference drops its author links and never an Author.
-So the source_id and author_id foreign keys deliberately have no cascade.
-The stores refuse to delete a Reference or an Author while anything still points at it.
-
-### `command.CommandText =`
-
-The independent Example and the references that reach it.
-An Example is owned by nothing.
-It carries its own opaque id, its language and display text, and at most one Source reference.
-It is reached through the two association tables below, one per card kind.
-Each association carries the position the Example takes *for that referrer*.
-So one Example may be first under a Meaning and third under a Collocation.
-The unique index per referrer keeps those orderings free of duplicates.
-sense_example and collocation_example carry data of their own, so each row carries its own opaque id.
-A row holds the frame its owner reads the Example under, a marker and a role.
-Each carries what is known about it.
-The frame lives on the association and never on the Example.
-So two owners citing one Example keep their own frame.
-Its example_id is nullable, so a row may state a frame and cite no Example at all.
-The frame is the owner's, so writing one before any sentence exists must not wait on a sentence.
-A row citing nothing and stating no frame says nothing, and the CHECK refuses it.
-Deleting a referrer removes only its own association rows, by ON DELETE CASCADE on that side.
-The example_id foreign keys deliberately have no cascade.
-So an Example survives every detach.
-The store refuses to delete one while any reference still points at it.
-The translation is a column on the Example row, so it goes when the row goes.
-
-example.source_id points at the independent Reference the block above creates.
-Its foreign key could only be declared once that source table existed.
-SQLite refuses to prepare any statement writing to a child table whose parent is missing.
-That holds even for NULL keys, which is why the source block runs first.
-A database created before this version keeps the column without the constraint.
-CREATE TABLE IF NOT EXISTS leaves the existing table as it stands.
-
-### `command.CommandText =`
-
-The Tags a card carries and the independent Situation the cards reach.
-A Tag has no table of its own, because its text is its identity.
-So the association row *is* the Tag.
-It is one card, one text, and the position that text takes on that card.
-The primary key on (card, text) stops a card carrying the same Tag twice.
-The unique index on (card, position) keeps the order free of duplicates.
-Both cascade with the card, since a Tag no card writes is not data left behind.
-The translation tables beside them are the links a card carries to another Entry.
-A link stores the target's id and never its text, so it is one card, one entry, one position.
-The primary key on (card, entry) stops a card linking the same Entry twice.
-The entry_id cascade is deliberate, since deleting a target Entry drops the links pointing at it.
-Situation is the opposite and keeps the older shape.
-It carries its own opaque id, and its visible data is never identity.
-It is reached only through the association table below.
-That table's situation_id foreign key deliberately has no cascade.
-So the row survives every detach.
-
-### `CREATE TABLE IF NOT EXISTS video (`
-
-The independent Video and the two associations that reach it.
-It is shaped exactly like the image block above, because a Video is kept exactly like an Image.
-It carries its own opaque id and the location it plays from, and nothing about it is identity.
-The association cascades with the card and never with the Video.
-So a Video survives every detach, and the store refuses to delete one anything still points at.
-
-### `CREATE TABLE IF NOT EXISTS favorite (`
-
-The favorite marks, one row per marked Entry.
-The mark is no lexical object, so it holds nothing but the entry it stands on and its stamp.
-The cascade drops the mark with the entry it marks.
-The stamp is indexed because the favorites panel orders by it.
+The Author and Reference tables come before the Example tables.
+An example row carries a foreign key into source, and SQLite refuses a child table whose parent is missing.
 
 ### `LSchemaRevision.LSchemaRevisionCreate(connection);`
 
 The operational and history tables close the schema.
 They carry no lexical ownership, and the workspace row points at both entry and revision.
-So they are created last, in their own file.
+So they are created last.
 
 ### `LSchemaMigration.LSchemaMigrationApply(connection);`
 

@@ -1,0 +1,70 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIShell">
+
+    <Style x:Key="Display.Card.Example" TargetType="Border">
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.ExampleMargin}" />
+        <Setter Property="Padding" Value="{DynamicResource Theme.Card.ExamplePadding}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding LCardDraftExample.Count}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Display.Card.ExampleFrame" TargetType="TextBlock" BasedOn="{StaticResource Theme.Card.Frame}">
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.FrameMargin}" />
+        <Style.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <DataTemplate x:Key="Display.Card.ExampleLine">
+        <Grid Margin="{DynamicResource Theme.Card.ExampleLineMargin}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Style="{DynamicResource Theme.Card.Dot}" />
+
+            <TextBlock x:Name="PExampleFrame" Grid.Column="1" Style="{StaticResource Display.Card.ExampleFrame}">
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource Display.Card.Frame}" ConverterParameter="Head">
+                        <Binding Path="LExampleDraftParticle" />
+                        <Binding Path="LExampleDraftDependence" />
+                        <Binding Path="LExampleDraftText" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
+            <TextBlock
+                Grid.Column="2"
+                FontFamily="{DynamicResource Theme.Card.ExampleFamily}"
+                FontSize="{DynamicResource Theme.Card.ExampleSize}"
+                TextWrapping="Wrap">
+                <TextBlock.Margin>
+                    <MultiBinding Converter="{StaticResource Display.Card.Inset}">
+                        <Binding Path="FontFamily" ElementName="PExampleFrame" />
+                        <Binding Path="FontSize" ElementName="PExampleFrame" />
+                        <Binding Path="FontFamily" RelativeSource="{RelativeSource Self}" />
+                        <Binding Path="FontSize" RelativeSource="{RelativeSource Self}" />
+                    </MultiBinding>
+                </TextBlock.Margin>
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource Display.Card.Frame}" ConverterParameter="Text">
+                        <Binding Path="LExampleDraftParticle" />
+                        <Binding Path="LExampleDraftDependence" />
+                        <Binding Path="LExampleDraftText" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

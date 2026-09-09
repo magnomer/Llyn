@@ -1,4 +1,4 @@
-﻿# PScreen.xaml.cs
+# PScreen.xaml.cs
 
 ## `public partial class PScreen : UserControl`
 
@@ -12,6 +12,14 @@ A web address is handed to an embedded browser page.
 A page address is not a film and no local player can resolve one.
 A YouTube address is played through YouTube's own embedded player.
 That is the only way the site allows and the only way that keeps its terms.
+
+This file holds the surface itself and the choice between the two players.
+Each player is written where it is used and nowhere else.
+The machine's own player lives in [PScreenMedia.cs](PScreenMedia.comment.md).
+The embedded browser lives in [PScreenBrowser.cs](PScreenBrowser.comment.md).
+The page it is given lives in [PScreenPaper.cs](PScreenPaper.comment.md).
+The address a YouTube film is read from lives in [PScreenFilm.cs](PScreenFilm.comment.md).
+A reader who wants one of them reads one file rather than a player split across a long one.
 
 The span is enforced wherever the film is playing.
 A file is watched by a clock that sends it back to the start when it passes the end.
@@ -66,36 +74,13 @@ A page still loading is skipped, since the level it will be built with is the cu
 The height follows the width at sixteen to nine.
 Only a width change is answered, because the answer is a height change and answering that would not end.
 
-### `private async Task PScreenPageShow()`
+### `private void PScreenShow()`
 
-The browser environment is made once for the whole program and shared by every Screen.
-It is started with autoplay allowed.
-The user has already asked by the time play is called, and the page cannot see that.
+The one place the two players are chosen between.
+A file address is the machine's own player and anything else is the browser page.
+Whichever was standing is stopped first, because a Screen shows one film at a time.
 
-A machine without the browser runtime is told so rather than shown an empty box.
-The stored environment is dropped on that failure so a later attempt is a real attempt.
+### `private void PScreenSync()`
 
-A page that finished loading after the row moved on is discarded.
-The paper it was built for is compared, because typing quickly starts more loads than it finishes.
-
-### `private WebView2CompositionControl PScreenBrowserCreate()`
-
-The composition-hosted browser is used rather than the ordinary one.
-The ordinary control is a window of its own, and a window of its own is drawn by the system over everything the program draws.
-Such a player ignored the scroll region it sat in and covered the entry list, the command row and the title bar.
-No draw order, opacity or arrangement reaches a separate window, so the fix could only be to stop it being one.
-The composition control draws into the program's own surface and is therefore clipped, layered and moved like every other element.
-It builds its surface through the Windows projection, so the shell is targeted at a Windows-versioned framework to carry it.
-Lowering that target again removes the projection and the player then fails the moment a card holding one is drawn.
-
-### `private void PScreenPaperHandle(object? sender, CoreWebView2WebResourceRequestedEventArgs e)`
-
-The page is answered from memory rather than written to a file.
-It still needs a real address to be answered at.
-The embedded player refuses to run for a page that has no origin.
-
-### `internal static string? PScreenFilmRead(Uri address)`
-
-The film id inside a YouTube address, or `null` when the address is not one.
-Every shape that site hands out is read, since a user pastes whichever one they were given.
-An id holding anything but letters, digits, dashes and underscores is refused, because it is written straight into the page.
+Which player is running decides who is told to play or pause.
+The flag is kept here rather than asked of either player, since only this file starts them.

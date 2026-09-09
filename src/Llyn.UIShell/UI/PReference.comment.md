@@ -1,5 +1,10 @@
 # PReference.xaml
 
+## `<UserControl.Resources>`
+
+The row and card templates the panel draws with live in `PReferenceShelf.xaml` and `PReferenceColophon.xaml`.
+Only the styles built on another style stay here, because a dictionary standing on its own cannot resolve one.
+
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
 The seams that part the source catalog from the source it opens.
@@ -27,10 +32,11 @@ The action row of the panel.
 That is the normal case, because a Source is written down first and cited afterwards.
 Export and print are mock-up controls and are not wired.
 
-## `<ItemsControl x:Name="PShelf">`
+## `<ItemsControl x:Name="PShelf" Button.Click="PShelfHandle" ...>`
 
 Every Source the workspace holds, including one nothing cites.
-The row shows the resolved name over its credits and year, with the citation count at the right.
+The row itself is drawn by a template the merged dictionary holds.
+The click of every row is taken here, because a template in a dictionary can name no handler.
 `PShelfEmpty` covers both an empty workspace and a search that matches nothing.
 
 ## `<Grid x:Name="PColophon">`
@@ -40,29 +46,18 @@ Every field is shown, including one standing Unspecified, so a reader learns wha
 The mode toggle is not in here.
 It sits in the action row as it does in every built panel.
 
-## `<ItemsControl x:Name="PFootnote">`
+## `<ItemsControl x:Name="PFootnote" Button.Click="PFootnoteHandle" ...>`
 
 The Entries and Examples citing the selected Source, each row leading to the panel that holds it.
+The row is drawn by a template the merged dictionary holds, so the click is taken over the whole list.
 A Situation is not listed, because a Situation is written rather than quoted and cites no Source.
 The list is read-only, because a citation is set or cleared where it is held.
 
-## `<Grid x:Name="PImprint">`
+## `<local:PImprint x:Name="PImprint" Visibility="Collapsed" />`
 
-The edit area, the selected Source as the panel writes it.
-Each stated text field carries a `?` toggle beside it that records the value as unknown.
-The kind is chosen from a list that carries its own unknown entry, so it needs no toggle.
-The three states are distinct facts, so clearing a value is not the same as recording it unknown.
-
-## `<Grid x:Name="PAuthor" Margin="0,7,0,0">`
-
-The ordered credits and the workspace's authors offered for crediting.
-`PAuthorSwitch` stands disabled until the Source exists, because a credit is an association row on a stored id.
-`PAuthorUnknown` records that the authorship is unknown, which is not the same as no credit yet.
-
-## `<StackPanel Grid.Row="1" Margin="24,10,24,20" ...>`
-
-The usage figure stays visible while editing, because one correction reaches every place citing the Source.
-`PImprintRemoval` offers a plain delete at zero and a detach-and-delete otherwise.
+The edit area, a control of its own and described in `PImprint.comment.md`.
+It sits over the read area in the same cell, because one Source is either being read or being written.
+The panel decides which is shown, so the mode toggle stays in the action row.
 
 ## Catalog spacing
 

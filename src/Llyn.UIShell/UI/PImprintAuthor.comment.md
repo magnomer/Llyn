@@ -1,6 +1,6 @@
-﻿# PReferenceAuthor.cs
+# PImprintAuthor.cs
 
-## `public partial class PReference`
+## `public partial class PImprint`
 
 The credited-author region of the Source edit area.
 An Author is shared data credited on any number of Sources, so editing one here reaches every one of them.
@@ -28,7 +28,7 @@ The stored id comes from the held draft, which is the only thing that knows whet
 
 ## `private void PAuthorUpdate()`
 
-Reads the credits again after a write and refills both the region and the shelf.
+Asks the panel to read the credits again after a write, then refills the region.
 The shelf shows credits too, so one write is one refill for both.
 
 ## `private void PAuthorAttach(string id)`
@@ -41,18 +41,24 @@ Crediting anyone moves the author state to Specified.
 
 Creates an Author from the typed name and credits it at once.
 
-## `private void PAuthorRemoveHandle(object sender, RoutedEventArgs e)`
+## `private void PAuthorCreditHandle(object sender, RoutedEventArgs e)`
+
+The one handler over every credit row, because the row template is a shared resource.
+A template kept in a dictionary can name no handler of its own.
+The button carrying the click says in its `Tag` which of the four actions it is.
+
+## `private void PAuthorRemove(PAuthorItem item)`
 
 Drops one credit and never the Author.
 The Author stays available to every other Source.
 Dropping the last credit does not move the author state back on its own.
 
-## `private void PAuthorMove(object sender, int step)`
+## `private void PAuthorMove(PAuthorItem item, int step)`
 
 Moves one credit through the Source's order.
 Attaching at a position renumbers the whole set, so a reorder never collides mid-write.
 
-## `private void PAuthorRenameHandle(object sender, RoutedEventArgs e)`
+## `private void PAuthorNameUpdate(PAuthorItem item)`
 
 Renames an Author to the name typed in the menu's box.
 The rename is an explicit action rather than a side effect of typing in the credit list.
@@ -61,7 +67,7 @@ The name is rewritten and never the id, so every Source keeps pointing at the sa
 ## `private bool PAuthorRenameConfirm(PAuthorItem item)`
 
 Says how many Sources the rename reaches before it is applied.
-The figure comes from the credit map the panel already holds.
+The figure is counted by the panel, which is where the credit map is held.
 
 ## `private void PAuthorUnknownHandle(object sender, RoutedEventArgs e)`
 

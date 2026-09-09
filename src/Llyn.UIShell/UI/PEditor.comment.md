@@ -1,5 +1,11 @@
 ﻿# PEditor.xaml
 
+## `<ResourceDictionary.MergedDictionaries>`
+
+The form's shape stays here and the rules its parts are drawn by stand beside it.
+Fields, the card the lists end with, and the dropdown shells are each a dictionary of their own.
+A reader of this file sees where things sit, not how each of them is painted.
+
 ## `<Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">`
 
 The same floating ground the other pickers stand on.

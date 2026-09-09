@@ -1,0 +1,249 @@
+<UserControl
+    x:Class="Llyn.UIShell.PImprint"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIShell"
+    >
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PImprintCredit.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="Imprint.Unknown" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Input.ToggleAction}">
+                <Setter Property="Width" Value="44" />
+                <Setter Property="Height" Value="44" />
+                <Setter Property="Margin" Value="8,0,0,0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="Content" Value="?" />
+                <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Padding="24,22,0,10" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.TitleField}" />
+                <Grid Margin="0,7,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="PImprintTitle"
+                        Height="44"
+                        Style="{StaticResource Theme.Input.Field}"
+                        TextChanged="PImprintTitleHandle" />
+                    <ToggleButton
+                        x:Name="PImprintTitleUnknown"
+                        Grid.Column="1"
+                        Click="PImprintUnknownHandle"
+                        Style="{StaticResource Imprint.Unknown}"
+                        Tag="Title"
+                        ToolTip="{DynamicResource Source.Unknown}" />
+                </Grid>
+
+                <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Author}" />
+                <Grid x:Name="PAuthor" Margin="0,7,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ItemsControl
+                        x:Name="PAuthorCredit"
+                        Button.Click="PAuthorCreditHandle"
+                        ItemTemplate="{StaticResource Imprint.Credit.Card}" />
+                    <TextBlock
+                        x:Name="PAuthorNotice"
+                        Margin="0,0,0,6"
+                        VerticalAlignment="Top"
+                        Foreground="{StaticResource Theme.Muted}"
+                        IsHitTestVisible="False"
+                        Text="{DynamicResource Source.AuthorNone}"
+                        TextWrapping="Wrap" />
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Grid>
+                            <ToggleButton
+                                x:Name="PAuthorSwitch"
+                                MinWidth="180"
+                                Height="44"
+                                Padding="12,0"
+                                Content="{DynamicResource Source.AuthorAdd}"
+                                Foreground="{StaticResource Theme.Accent}"
+                                Style="{StaticResource Theme.Input.ToggleAction}" />
+                            <Popup
+                                x:Name="PAuthorMenu"
+                                Width="264"
+                                AllowsTransparency="True"
+                                IsOpen="{Binding IsChecked, ElementName=PAuthorSwitch, Mode=TwoWay}"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=PAuthorSwitch}"
+                                StaysOpen="False">
+                                <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Source.Author}" />
+                                        <TextBlock
+                                            x:Name="PAuthorEmpty"
+                                            Margin="10,5,10,9"
+                                            FontSize="12"
+                                            Foreground="{StaticResource Theme.Muted}"
+                                            Text="{DynamicResource Source.AuthorEmpty}"
+                                            Visibility="Collapsed" />
+                                        <ListBox
+                                            x:Name="PAuthorList"
+                                            MaxHeight="220"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            IsSynchronizedWithCurrentItem="False"
+                                            ItemContainerStyle="{StaticResource Imprint.Author.Item}"
+                                            ItemTemplate="{StaticResource Imprint.Author.Row}"
+                                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                            SelectedValuePath="PAuthorItemId"
+                                            SelectionChanged="PAuthorHandle" />
+                                        <Grid Margin="10,8,10,4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox
+                                                x:Name="PAuthorName"
+                                                Height="36"
+                                                Style="{StaticResource Theme.Input.Field}"
+                                                Tag="{DynamicResource Source.AuthorName}" />
+                                            <Button
+                                                x:Name="PAuthorFresh"
+                                                Grid.Column="1"
+                                                Height="36"
+                                                Margin="8,0,0,0"
+                                                Click="PAuthorFreshHandle"
+                                                Content="{DynamicResource Source.AuthorAdd}"
+                                                Style="{StaticResource Theme.Input.Pill}" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ToggleButton
+                            x:Name="PAuthorUnknown"
+                            Height="44"
+                            Margin="8,0,0,0"
+                            Padding="12,0"
+                            Click="PAuthorUnknownHandle"
+                            Content="{DynamicResource Source.AuthorUnknown}"
+                            Style="{StaticResource Theme.Input.ToggleAction}" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Year}" />
+                <Grid Margin="0,7,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="PImprintYear"
+                        Height="44"
+                        Style="{StaticResource Theme.Input.Field}"
+                        TextChanged="PImprintYearHandle" />
+                    <ToggleButton
+                        x:Name="PImprintYearUnknown"
+                        Grid.Column="1"
+                        Click="PImprintUnknownHandle"
+                        Style="{StaticResource Imprint.Unknown}"
+                        Tag="Year"
+                        ToolTip="{DynamicResource Source.Unknown}" />
+                </Grid>
+
+                <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Url}" />
+                <Grid Margin="0,7,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="PImprintUrl"
+                        Height="44"
+                        Style="{StaticResource Theme.Input.Field}"
+                        TextChanged="PImprintUrlHandle" />
+                    <ToggleButton
+                        x:Name="PImprintUrlUnknown"
+                        Grid.Column="1"
+                        Click="PImprintUnknownHandle"
+                        Style="{StaticResource Imprint.Unknown}"
+                        Tag="Url"
+                        ToolTip="{DynamicResource Source.Unknown}" />
+                </Grid>
+
+                <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Kind}" />
+                <ComboBox
+                    x:Name="PImprintKind"
+                    Height="44"
+                    Margin="0,7,0,0"
+                    SelectionChanged="PImprintKindHandle"
+                    Style="{StaticResource Theme.Input.Choice}" />
+
+                <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Source.Note}" />
+                <Grid Margin="0,7,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="PImprintNote"
+                        MinHeight="88"
+                        VerticalContentAlignment="Top"
+                        AcceptsReturn="True"
+                        Style="{StaticResource Theme.Input.Field}"
+                        TextChanged="PImprintNoteHandle"
+                        TextWrapping="Wrap" />
+                    <ToggleButton
+                        x:Name="PImprintNoteUnknown"
+                        Grid.Column="1"
+                        VerticalAlignment="Top"
+                        Click="PImprintUnknownHandle"
+                        Style="{StaticResource Imprint.Unknown}"
+                        Tag="Note"
+                        ToolTip="{DynamicResource Source.Unknown}" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Margin="24,10,24,20" HorizontalAlignment="Right" Orientation="Horizontal">
+            <TextBlock x:Name="PImprintCount" Margin="0,0,14,0" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" />
+            <Button
+                x:Name="PImprintRemoval"
+                Height="44"
+                Margin="0,0,8,0"
+                Click="PImprintRemovalHandle"
+                Content="{DynamicResource Source.Delete}"
+                IsEnabled="False"
+                Style="{StaticResource Theme.Input.Pill}" />
+            <Button
+                x:Name="PImprintDiscard"
+                Height="44"
+                Margin="0,0,8,0"
+                Click="PImprintDiscardHandle"
+                Content="{DynamicResource Source.Discard}"
+                Style="{StaticResource Theme.Input.Pill}" />
+            <Button
+                x:Name="PImprintStore"
+                Height="44"
+                Click="PImprintStoreHandle"
+                Content="{DynamicResource Source.Store}"
+                Style="{StaticResource Theme.Input.Primary}" />
+        </StackPanel>
+    </Grid>
+</UserControl>
