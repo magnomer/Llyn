@@ -43,6 +43,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardSentence = [];
         PCardSentenceAdd(new PSentence(catalog, particles, dependences));
         PCardContextStart();
+        PCardRegisterStart();
         PCardLinkStart();
         PCardLabelStart();
         PCardImage = [];

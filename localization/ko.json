@@ -149,6 +149,7 @@
     "Card.ParticleHint": "조사",
     "Card.DependenceHint": "의존 관계",
     "Card.SituationHint": "언제 어디서 쓰나요?",
+    "Card.RegisterHint": "어떤 말투인가요?",
     "Card.PositionHint": "두 번 클릭하면 번호를 바꿉니다",
     "Card.Image": "이미지",
     "Card.Video": "영상",

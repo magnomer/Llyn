@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -18,6 +18,8 @@ public partial class PEditor
     private readonly ObservableCollection<PCandidateItem> _pCandidateItem = [];
 
     private PCard? _pCandidateCard;
+
+    private bool _pCandidateRegister;
 
     internal void PCandidateHandle(object sender, MouseButtonEventArgs e)
     {
@@ -68,6 +70,7 @@ public partial class PEditor
     private void PCandidateSelect(PCandidateItem item)
     {
         PCard? card = _pCandidateCard;
+        bool register = _pCandidateRegister;
         PCandidateHide();
 
         if (card is null)
@@ -75,8 +78,67 @@ public partial class PEditor
             return;
         }
 
+        if (register)
+        {
+            card.PCardRegisterCommit(item.PCandidateItemId, item.PCandidateItemTitle);
+            card.PCardRegisterClear();
+            return;
+        }
+
         card.PCardContextCommit(item.PCandidateItemId, item.PCandidateItemTitle);
         card.PCardContextClear();
+    }
+
+    private void PCandidateRegisterShow(PCard card, string text)
+    {
+        string word = (text ?? string.Empty).Trim();
+        if (word.Length == 0)
+        {
+            PCandidateHide();
+            return;
+        }
+
+        IReadOnlyList<LRegister> found;
+        try
+        {
+            found = _lEngine.LEngineRegisterFind(word, _pSpeakerChoice);
+        }
+        catch (Exception)
+        {
+            PCandidateHide();
+            return;
+        }
+
+        _pCandidateItem.Clear();
+        foreach (LRegister row in found)
+        {
+            string name = row.LRegisterName.LStateValueShow().Trim();
+            if (name.Length == 0 || card.PCardRegisterMatch(row.LRegisterId))
+            {
+                continue;
+            }
+
+            _pCandidateItem.Add(new PCandidateItem(row.LRegisterId, name, 0, word));
+
+            if (_pCandidateItem.Count == PCandidateLimit)
+            {
+                break;
+            }
+        }
+
+        if (_pCandidateItem.Count == 0)
+        {
+            PCandidateHide();
+            return;
+        }
+
+        TextBox? box = PCandidateRegisterFind(card);
+
+        _pCandidateCard = card;
+        _pCandidateRegister = true;
+        PCandidate.PlacementTarget = PCandidateFrameFind(box) ?? box ?? (UIElement)PContents;
+        PCandidate.IsOpen = true;
+        PCandidateList.SelectedIndex = -1;
     }
 
     private void PCandidateShow(PCard card, string text)
@@ -127,6 +189,7 @@ public partial class PEditor
         TextBox? box = PCandidateBoxFind(card);
 
         _pCandidateCard = card;
+        _pCandidateRegister = false;
         PCandidate.PlacementTarget = PCandidateFrameFind(box) ?? box ?? (UIElement)PContents;
         PCandidate.IsOpen = true;
         PCandidateList.SelectedIndex = -1;
@@ -138,6 +201,15 @@ public partial class PEditor
         PCandidateList.SelectedIndex = -1;
         _pCandidateItem.Clear();
         _pCandidateCard = null;
+        _pCandidateRegister = false;
+    }
+
+    private TextBox? PCandidateRegisterFind(PCard card)
+    {
+        return Keyboard.FocusedElement is TextBox { DataContext: PRegisterCaret row } box &&
+            PCardRegisterFind(row) == card
+            ? box
+            : null;
     }
 
     private TextBox? PCandidateBoxFind(PCard card)

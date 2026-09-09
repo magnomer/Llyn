@@ -101,6 +101,7 @@ public sealed class LEntryLoader
         LStateValue meaning)
     {
         LSituationArchive situations = new(_lEntryLoaderDatabase);
+        LRegisterArchive registers = new(_lEntryLoaderDatabase);
         LTagArchive tags = new(_lEntryLoaderDatabase);
         LTranslationArchive translations = new(_lEntryLoaderDatabase);
         LImageArchive images = new(_lEntryLoaderDatabase);
@@ -117,6 +118,8 @@ public sealed class LEntryLoader
                     : sentences.LSentenceMeaningRead(ownerId)),
             LEntrySituationRead(
                 collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationMeaningRead(ownerId)),
+            LEntryRegisterRead(
+                collocation ? registers.LRegisterCollocationRead(ownerId) : registers.LRegisterMeaningRead(ownerId)),
             LEntryTranslationRead(
                 collocation
                     ? translations.LTranslationCollocationRead(ownerId)
@@ -155,6 +158,17 @@ public sealed class LEntryLoader
         {
             drafts.Add(new LSituationDraft(
                 situation.LSituationTitle, situation.LSituationId));
+        }
+
+        return drafts;
+    }
+
+    private static IReadOnlyList<LRegisterDraft> LEntryRegisterRead(IReadOnlyList<LRegister> registers)
+    {
+        List<LRegisterDraft> drafts = new(registers.Count);
+        foreach (LRegister register in registers)
+        {
+            drafts.Add(new LRegisterDraft(register.LRegisterName, register.LRegisterId));
         }
 
         return drafts;

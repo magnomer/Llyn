@@ -4,7 +4,7 @@
 
 One card of the input form, captured as an immutable value.
 A Meaning card and a Collocation card are the same card.
-Both carry Title, a meaning text, Example, Situation, Translation, Synonym and Tags.
+Both carry Title, a meaning text, Example, Situation, Register, Translation, Synonym and Tags.
 So they are the same value here.
 The Collocation's own Expression field is the single member a Meaning card leaves empty.
 A field added to the form is therefore added once.
@@ -18,7 +18,7 @@ The card carries the number it is shown by, so no view has to count the list its
 The save still ignores it and rewrites every position from the order of the list.
 The load fills it from the stored position, which is the same order read back.
 
-Example, Situation, Translation, Tag and Image are ordered sets, because the store models them as many-per-card.
+Example, Situation, Register, Translation, Tag and Image are ordered sets, because the store models them as many-per-card.
 A card may reference any number of each.
 The order of the list is the order they are stored in and read back.
 A field the form leaves empty is an empty list, never a list holding an empty string.
@@ -41,6 +41,11 @@ A comparison that means "the same card" walks the lists itself.
   Each carries its id, its sentence and the Source it cites.
 - `LCardDraftSituation` — The Situations the card references, in the order they are shown.
   Each carries its id, its wording and the Source it cites.
+- `LCardDraftRegister` — The Registers the card is marked with, in the order they are shown.
+  Each carries its id and its wording, the way a Situation row does.
+  A Register is shared data, so two cards marked the same way reference one stored row.
+  The wording a chip shows is read back from that row, so a renamed Register follows.
+  A row a language pack ships and a row the user wrote sit in the same list.
 - `LCardDraftTranslation` — The Entries this card is translated by, in the order they are shown.
   Each is the id of a stored Entry and never the word it shows.
   The word a chip shows is read back from that Entry, so a renamed headword follows.

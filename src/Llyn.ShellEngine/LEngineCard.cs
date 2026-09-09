@@ -183,6 +183,7 @@ public sealed partial class LEngine
     {
         LEngineSentenceSync(ownerId, card.LCardDraftExample, language, collocation);
         LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation);
+        LEngineRegisterSync(ownerId, card.LCardDraftRegister, language, collocation);
 
         LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
         LEngineTranslationSave(ownerId, card.LCardDraftTranslation, collocation);

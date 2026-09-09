@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 
 namespace Llyn.Infrastructure;
@@ -73,6 +73,12 @@ public static class LSheetStyle
         sheet.Append(".scene span{margin:0 9px 7px 0;padding:4px 10px;border-radius:11px;")
             .Append("background:var(--situation-soft);border:1px solid var(--situation-edge);")
             .Append("font-size:13px;color:var(--situation);}");
+
+        sheet.Append(".tone{margin:10px 0 0 0;display:flex;flex-wrap:wrap;}");
+        sheet.Append(".scene+.tone{margin-top:4px;}");
+        sheet.Append(".tone span{margin:0 9px 7px 0;padding:4px 10px;border-radius:11px;")
+            .Append("background:transparent;border:1px solid var(--line);")
+            .Append("font-size:13px;color:var(--muted);}");
 
         sheet.Append(".bridge{margin:15px 0 0 0;display:flex;flex-wrap:wrap;align-items:center;}");
         sheet.Append(".scene+.bridge{margin-top:6px;}");

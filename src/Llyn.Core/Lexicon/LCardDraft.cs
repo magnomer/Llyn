@@ -8,6 +8,7 @@ public sealed record LCardDraft(
     LStateValue LCardDraftMeaning,
     IReadOnlyList<LExampleDraft> LCardDraftExample,
     IReadOnlyList<LSituationDraft> LCardDraftSituation,
+    IReadOnlyList<LRegisterDraft> LCardDraftRegister,
     IReadOnlyList<string> LCardDraftTranslation,
     string LCardDraftSynonym,
     IReadOnlyList<string> LCardDraftTag,

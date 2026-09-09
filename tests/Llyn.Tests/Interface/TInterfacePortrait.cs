@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 
 namespace Llyn.Tests;
@@ -36,6 +36,7 @@ internal static partial class TInterface
         string expression,
         string meaning,
         IReadOnlyList<string> situation,
+        IReadOnlyList<string> register,
         IReadOnlyList<LPortraitLink> translation,
         IReadOnlyList<LPortraitExample> example,
         IReadOnlyList<string> tag,
@@ -48,6 +49,7 @@ internal static partial class TInterface
             expression,
             meaning,
             situation,
+            register,
             translation,
             example,
             tag,

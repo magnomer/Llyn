@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 
 namespace Llyn.Core;
@@ -21,6 +21,11 @@ public static class LMarkupCard
         foreach (LSituationDraft situation in card.LCardDraftSituation)
         {
             LMarkupLeaf.LMarkupLeafAppend(text, 2, "situation", situation.LSituationDraftText);
+        }
+
+        foreach (LRegisterDraft register in card.LCardDraftRegister)
+        {
+            LMarkupLeaf.LMarkupLeafAppend(text, 2, "register", register.LRegisterDraftText);
         }
 
         foreach (LExampleDraft example in card.LCardDraftExample)

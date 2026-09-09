@@ -605,6 +605,7 @@ public sealed partial class LEngine
                 || !string.Equals(written.LCardDraftId, held.LCardDraftId, StringComparison.Ordinal)
                 || !LEngineExampleMatch(written.LCardDraftExample, held.LCardDraftExample)
                 || !LEngineSituationMatch(written.LCardDraftSituation, held.LCardDraftSituation)
+                || !LEngineRegisterMatch(written.LCardDraftRegister, held.LCardDraftRegister)
                 || !LEngineTextMatch(written.LCardDraftTranslation, held.LCardDraftTranslation)
                 || !LEngineTextMatch(written.LCardDraftTag, held.LCardDraftTag)
                 || !LEngineValueMatch(written.LCardDraftImage, held.LCardDraftImage)
@@ -656,6 +657,7 @@ public sealed partial class LEngine
             && card.LCardDraftMeaning.LStateValueEmpty
             && card.LCardDraftExample.Count == 0
             && card.LCardDraftSituation.Count == 0
+            && card.LCardDraftRegister.Count == 0
             && card.LCardDraftTranslation.Count == 0
             && card.LCardDraftTag.Count == 0
             && card.LCardDraftImage.Count == 0

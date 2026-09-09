@@ -132,6 +132,7 @@ public static partial class LMarkup
         List<LVideoDraft> videos = new List<LVideoDraft>();
         List<LExampleDraft> examples = new List<LExampleDraft>();
         List<LSituationDraft> situations = new List<LSituationDraft>();
+        List<LRegisterDraft> registers = new List<LRegisterDraft>();
 
         foreach (LMarkupToken token in LMarkupLeafRead(tokens))
         {
@@ -169,6 +170,9 @@ public static partial class LMarkup
                 case "situation":
                     situations.Add(new LSituationDraft(LMarkupStateRead(token), string.Empty));
                     break;
+                case "register":
+                    registers.Add(new LRegisterDraft(LMarkupStateRead(token), string.Empty));
+                    break;
                 default:
                     break;
             }
@@ -180,6 +184,7 @@ public static partial class LMarkup
             LMarkupStateRead(meaning),
             examples,
             situations,
+            registers,
             [],
             LMarkupStateRead(synonym).LStateValueShow(),
             tags,

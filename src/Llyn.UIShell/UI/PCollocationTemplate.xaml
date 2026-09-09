@@ -77,6 +77,8 @@
 
                         <ItemsControl ItemsSource="{Binding PCardContext}" Style="{DynamicResource Theme.Context.Field}" />
 
+                        <ItemsControl ItemsSource="{Binding PCardRegister}" Style="{DynamicResource Theme.Register.Field}" />
+
                         <ItemsControl ItemsSource="{Binding PCardLink}" Style="{DynamicResource Theme.Link.Field}" />
 
                         <Border Style="{DynamicResource Theme.Card.Example}">

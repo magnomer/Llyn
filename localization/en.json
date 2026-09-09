@@ -149,6 +149,7 @@
     "Card.ParticleHint": "Particle",
     "Card.DependenceHint": "Dependence",
     "Card.SituationHint": "Where or when is it used?",
+    "Card.RegisterHint": "What register does it carry?",
     "Card.PositionHint": "Double-click to change the number",
     "Card.Image": "Image",
     "Card.Video": "Video",

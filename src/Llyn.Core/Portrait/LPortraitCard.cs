@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -10,6 +10,7 @@ public sealed record LPortraitCard(
     string LPortraitCardExpression,
     string LPortraitCardMeaning,
     IReadOnlyList<string> LPortraitCardSituation,
+    IReadOnlyList<string> LPortraitCardRegister,
     IReadOnlyList<LPortraitLink> LPortraitCardTranslation,
     IReadOnlyList<LPortraitExample> LPortraitCardExample,
     IReadOnlyList<string> LPortraitCardTag,
@@ -35,6 +36,13 @@ public sealed record LPortraitCard(
             {
                 situations.Add(
                     LPortraitText.LPortraitTextRead(situation.LSituationDraftText, mark));
+            }
+
+            List<string> registers = new List<string>();
+            foreach (LRegisterDraft register in card.LCardDraftRegister)
+            {
+                registers.Add(
+                    LPortraitText.LPortraitTextRead(register.LRegisterDraftText, mark));
             }
 
             List<LPortraitLink> links = new List<LPortraitLink>();
@@ -83,6 +91,7 @@ public sealed record LPortraitCard(
                 LPortraitText.LPortraitTextRead(card.LCardDraftExpression, mark),
                 LPortraitText.LPortraitTextRead(card.LCardDraftMeaning, mark),
                 situations,
+                registers,
                 links,
                 examples,
                 card.LCardDraftTag,

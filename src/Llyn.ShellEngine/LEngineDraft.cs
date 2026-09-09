@@ -132,6 +132,8 @@ public sealed partial class LEngine
             position++;
         }
 
+        LEngineRegisterAttach(ownerId, card.LCardDraftRegister, language, collocation);
+
         LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
         LEngineTranslationSave(ownerId, card.LCardDraftTranslation, collocation);
 
@@ -181,6 +183,7 @@ public sealed partial class LEngine
                 !string.IsNullOrWhiteSpace(card.LCardDraftSynonym) ||
                 LEngineExampleCheck(card.LCardDraftExample) ||
                 LEngineSituationCheck(card.LCardDraftSituation) ||
+                LEngineRegisterCheck(card.LCardDraftRegister) ||
                 LEngineTagCheck(card.LCardDraftTag) ||
                 LEngineTranslationCheck(card.LCardDraftTranslation) ||
                 LEngineFieldCheck(card.LCardDraftImage) ||

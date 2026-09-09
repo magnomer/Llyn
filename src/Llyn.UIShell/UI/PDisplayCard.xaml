@@ -98,6 +98,22 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Display.Card.Register" TargetType="ItemsControl">
+        <Setter Property="Margin" Value="{DynamicResource Theme.Card.RegisterMargin}" />
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding LCardDraftRegister.Count}" Value="0">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="Display.Card.Chips" TargetType="ItemsControl">
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.ChipTightMargin}" />
         <Setter Property="ItemsPanel">
@@ -194,6 +210,19 @@
                 </TextBlock.Text>
             </TextBlock>
         </Button>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Display.Card.RegisterChip">
+        <Border Style="{DynamicResource Theme.Card.Register}">
+            <TextBlock FontSize="{DynamicResource Theme.Card.RegisterSize}" Foreground="{DynamicResource Theme.Helper}">
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource Display.Card.State}">
+                        <Binding Path="LRegisterDraftText" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </Border>
     </DataTemplate>
 
     <Style x:Key="Display.Card.ExampleFrame" TargetType="TextBlock" BasedOn="{StaticResource Theme.Card.Frame}">
@@ -331,6 +360,7 @@
     <DataTemplate x:Key="Display.Card.Body">
         <StackPanel>
             <ItemsControl ItemTemplate="{StaticResource Display.Card.SituationChip}" ItemsSource="{Binding LCardDraftSituation}" Style="{StaticResource Display.Card.Situation}" />
+            <ItemsControl ItemTemplate="{StaticResource Display.Card.RegisterChip}" ItemsSource="{Binding LCardDraftRegister}" Style="{StaticResource Display.Card.Register}" />
             <ItemsControl
                 ItemTemplate="{StaticResource Display.Card.TranslationChip}"
                 ItemsSource="{Binding LCardDraftTranslation, Converter={StaticResource Display.Card.Translation}}"

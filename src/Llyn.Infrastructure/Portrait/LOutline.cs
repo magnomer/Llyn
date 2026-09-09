@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -157,6 +157,17 @@ public static class LOutline
             }
 
             page.Append("*").Append(string.Join(" · ", scenes)).Append("*\n\n");
+        }
+
+        if (card.LPortraitCardRegister.Count > 0)
+        {
+            List<string> tones = new List<string>();
+            foreach (string register in card.LPortraitCardRegister)
+            {
+                tones.Add(LOutlineNormalize(register));
+            }
+
+            page.Append("`").Append(string.Join(" · ", tones)).Append("`\n\n");
         }
 
         if (card.LPortraitCardTranslation.Count > 0)

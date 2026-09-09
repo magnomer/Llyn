@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 
 namespace Llyn.Tests;
 
@@ -16,6 +16,7 @@ internal static class TPortraitSample
             string.Empty,
             "to set something burning",
             ["around a hearth <cold>"],
+            ["formal"],
             [TInterface.TPortraitLinkCreate("e2", "불붙이다", "Korean")],
             [TInterface.TPortraitExampleCreate("(+with)", "she knelt to kindle the damp logs")],
             ["literal", "fire & light"],
@@ -28,6 +29,7 @@ internal static class TPortraitSample
             "Collocation",
             "kindle interest",
             "to cause interest to begin",
+            [],
             [],
             [],
             [],

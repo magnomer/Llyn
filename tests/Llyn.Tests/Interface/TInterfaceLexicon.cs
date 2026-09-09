@@ -23,10 +23,11 @@ internal static partial class TInterface
         IReadOnlyList<LStateValue> image,
         int position,
         string id = "",
-        IReadOnlyList<LVideoDraft>? video = null) =>
+        IReadOnlyList<LVideoDraft>? video = null,
+        IReadOnlyList<LRegisterDraft>? register = null) =>
         new(
-            title, expression, meaning, example, situation, translation, synonym, tag, image,
-            video ?? [], position, id);
+            title, expression, meaning, example, situation, register ?? [], translation, synonym, tag,
+            image, video ?? [], position, id);
 
     internal static LVideoDraft TVideoDraftCreate(string location, string span = "") =>
         new(LStateValue.LStateValueRead(location), LStateValue.LStateValueRead(span));
@@ -206,6 +207,9 @@ internal static partial class TInterface
         LStateValue definition,
         string labels) =>
         new(id, entryId, parentId, position, title, gloss, definitionLanguage, definition, labels);
+
+    internal static LRegisterDraft TRegisterDraftCreate(string text) =>
+        LRegisterDraft.LRegisterDraftCreate(text);
 
     internal static LSituation TSituationCreate(
         string id,

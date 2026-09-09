@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Text;
 using Llyn.Core;
@@ -42,6 +42,17 @@ public static class LSheetCard
             foreach (string situation in card.LPortraitCardSituation)
             {
                 page.Append("<span>").Append(LSheet.LSheetNormalize(situation)).Append("</span>");
+            }
+
+            page.Append("</div>\n");
+        }
+
+        if (card.LPortraitCardRegister.Count > 0)
+        {
+            page.Append("<div class=\"tone\">");
+            foreach (string register in card.LPortraitCardRegister)
+            {
+                page.Append("<span>").Append(LSheet.LSheetNormalize(register)).Append("</span>");
             }
 
             page.Append("</div>\n");

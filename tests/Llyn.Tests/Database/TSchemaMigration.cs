@@ -314,6 +314,42 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_VersionTwentyEight_AddsRegisterTables()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        workspace.TWorkspaceScriptRun(
+            """
+            CREATE TABLE schema_version (
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                version INTEGER NOT NULL
+            );
+            INSERT INTO schema_version (id, version) VALUES (1, 28);
+            """);
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'register';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = 'sense_register';"));
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                """
+                SELECT COUNT(*) FROM sqlite_master
+                WHERE type = 'table' AND name = 'collocation_register';
+                """));
+    }
+
+    [Fact]
     public void DatabaseCreate_VersionNineteen_AddsTranslationTables()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

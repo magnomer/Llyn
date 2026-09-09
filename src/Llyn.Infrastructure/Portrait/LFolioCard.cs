@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -57,6 +57,12 @@ public static class LFolioCard
         {
             LFolioLine.LFolioLineAppend(
                 body, "Scene", string.Join("   ·   ", card.LPortraitCardSituation));
+        }
+
+        if (card.LPortraitCardRegister.Count > 0)
+        {
+            LFolioLine.LFolioLineAppend(
+                body, "Tone", string.Join("   ·   ", card.LPortraitCardRegister));
         }
 
         if (card.LPortraitCardTranslation.Count > 0)

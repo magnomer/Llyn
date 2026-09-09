@@ -318,6 +318,25 @@ internal static partial class TInterface
     internal static IReadOnlyList<LMeaning> TMeaningRead(this LMeaningArchive meaningArchive, string entryId) =>
         meaningArchive.LMeaningRead(entryId);
 
+    internal static LRegisterArchive TRegisterArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static IReadOnlyList<LRegister> TRegisterCollocationRead(
+        this LRegisterArchive registerArchive,
+        string collocationId) =>
+        registerArchive.LRegisterCollocationRead(collocationId);
+
+    internal static IReadOnlyList<LRegister> TRegisterMeaningRead(
+        this LRegisterArchive registerArchive,
+        string meaningId) =>
+        registerArchive.LRegisterMeaningRead(meaningId);
+
+    internal static IReadOnlyList<LRegister> TRegisterRead(this LRegisterArchive registerArchive) =>
+        registerArchive.LRegisterRead();
+
+    internal static void TRegisterDelete(this LRegisterArchive registerArchive, string id) =>
+        registerArchive.LRegisterDelete(id);
+
     internal static LSituationArchive TSituationArchiveCreate(LDatabase database) =>
         new(database);
 

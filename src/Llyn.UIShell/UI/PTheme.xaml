@@ -1353,6 +1353,7 @@
     <sys:Double x:Key="Theme.Card.TitleSize">16</sys:Double>
     <sys:Double x:Key="Theme.Card.DefinitionSize">16</sys:Double>
     <sys:Double x:Key="Theme.Card.SituationSize">13</sys:Double>
+    <sys:Double x:Key="Theme.Card.RegisterSize">13</sys:Double>
     <sys:Double x:Key="Theme.Card.ExampleSize">15</sys:Double>
     <sys:Double x:Key="Theme.Card.FrameSize">15</sys:Double>
     <Thickness x:Key="Theme.Card.FrameMargin">0,0,16,0</Thickness>
@@ -1360,6 +1361,7 @@
 
     <Thickness x:Key="Theme.Card.ExpressionMargin">0,0,0,7</Thickness>
     <Thickness x:Key="Theme.Card.SituationMargin">0,18,0,0</Thickness>
+    <Thickness x:Key="Theme.Card.RegisterMargin">0,10,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ChipMargin">0,15,0,0</Thickness>
     <Thickness x:Key="Theme.Card.ChipTightMargin">0,6,0,0</Thickness>
     <Thickness x:Key="Theme.Card.TagMargin">0,24,0,0</Thickness>
@@ -1513,6 +1515,15 @@
         <Setter Property="Padding" Value="10,4" />
         <Setter Property="Background" Value="{StaticResource Theme.SituationSoft}" />
         <Setter Property="BorderBrush" Value="{StaticResource Theme.SituationEdge}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="11" />
+    </Style>
+
+    <Style x:Key="Theme.Card.Register" TargetType="Border">
+        <Setter Property="Margin" Value="0,0,9,7" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Background" Value="{StaticResource Theme.HelperSoft}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.HelperEdge}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="11" />
     </Style>

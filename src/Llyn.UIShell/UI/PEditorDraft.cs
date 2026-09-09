@@ -127,9 +127,11 @@ public partial class PEditor
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
             card.PCardSentenceShow(draft.LCardDraftExample);
             card.PCardContextShow(draft.LCardDraftSituation);
+            card.PCardRegisterShow(draft.LCardDraftRegister);
             card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
             PLinkAttach(card);
             PContextAttach(card);
+            PRegisterAttach(card);
             PLabelAttach(card);
             PEditorChangeAttach(card);
             card.PCardLabelShow(draft.LCardDraftTag);
@@ -410,6 +412,7 @@ public partial class PEditor
                 card.PCardDefinitionRead(),
                 card.PCardSentenceRead(),
                 card.PCardContextRead(),
+                card.PCardRegisterRead(),
                 card.PCardLinkRead(),
                 string.Empty,
                 card.PCardLabelRead(),
