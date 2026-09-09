@@ -3,58 +3,47 @@
 ## `public sealed class TMarkupImport`
 
 Covers the seam between the markup reader and the store.
-A document goes in as text and comes out as entries that load back as the file wrote them.
-The sources it declared become reference rows its citations name.
+A document goes in as text and its catalog comes out as rows that point at each other.
 A file with anything broken in it adds nothing at all.
 
-The parse itself is covered in `TMarkupSyntax.cs`.
+The parse itself is covered in `TMarkupSyntax.cs` and `TMarkupCatalog.cs`.
 What is tested here is only what needs a workspace.
-That is the rows, the shared source, and the atomicity.
+That is the rows, their identity, and the atomicity.
 
 ## Inline notes
 
-### `private const string TMarkupSample =`
+### `private const string TMarkupSample`
 
-The sample from section 8 of `docs/Format-LlynMarkup.md`, less the `<audio>` and `<synonym>` tags.
-An audio path is stored relative to the workspace.
-A card's synonym text is deliberately dropped by the save.
-So neither reads back, and asserting on them would test the sample rather than the import.
+One document holding a catalog of every kind and two entries that cite it.
+It leaves out the tags the save deliberately drops, so no assertion tests the sample instead of the import.
 
-### `IReadOnlyList<LEntry> imported = engine.LEngineMarkupImport(TMarkupSample);`
+### `MarkupImport_Catalog_StoresRowsPointingAtEachOther`
 
-One call takes the whole file.
-The entries come back in the order the document wrote them.
+The chain the catalog exists for: an author, a source crediting the author, an example citing the source.
+Each is stored once, and each stored row names the row the file said it names.
+The credits keep the order the source wrote them, because first author is a distinction Llyn keeps.
 
-### `Assert.Equal(LState.LStateUnknown, oed.LReferenceNote.LStateValueState);`
+### `MarkupImport_KeyOfARow_LeavesNoTraceInTheStore`
 
-An empty `<note></note>` survives the round trip as *unknown*, distinct from the tags the source never wrote.
+A key is meaningful only inside its own file and never becomes an identifier.
+Two files reusing `oed` for different works would otherwise collide in one workspace.
 
-### `Assert.Equal(`
+### `MarkupImport_UncitedSource_StoresItAnyway`
 
-The author the source credited is its own row, attached to the reference in the order the block wrote it.
+Section 3 keeps a source nothing quotes.
+Declaring it is the author's statement that the workspace holds the work.
 
-### `Assert.Equal(`
+### `MarkupImport_UncreditedAuthor_StoresItAnyway`
 
-The second meaning holds the three states side by side.
-There is a written tag and an empty one.
-There is an example citing nothing and one citing a source that cannot be read.
+An author credited on nothing had nowhere to live in the old format.
+The row is written and no credit row is written with it.
 
-### `Assert.Equal(LState.LStateUnknown, field.LReferenceAuthorState);`
+### `MarkupImport_TwoAuthorsOneName_StoresTwoRows`
 
-A lone empty `<author></author>` credits somebody unreadable.
-The state says so and no author row is written, because there is no name to write.
+Author identity comes from the key, not from the name.
+The old format deduplicated by name, so two namesakes imported as one person.
 
-### `LReference oed = Assert.Single(engine.LEngineReferenceRead());`
+### `private static void TMarkupRefusalCheck(string text)`
 
-Two examples citing one `id` share one reference row rather than each declaring its own.
-
-### `Assert.Throws<FormatException>(() => engine.LEngineMarkupImport(`
-
-The second entry cites a source no entry declares.
-The first entry is perfectly good and is still not stored.
-An import is one unit of work, so a file either imports whole or not at all.
-
-## `MarkupImport_PathThatDoesNotExist_ImportsNothing`
-
-The engine is given a path naming no file.
-It fails there rather than importing an empty document, and the workspace holds nothing after.
+Every refusal is the same promise: the file is refused and the workspace is untouched.
+The catalog is written before the entries, so a refusal must leave no row behind either.

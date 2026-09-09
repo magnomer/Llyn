@@ -8,79 +8,65 @@ public sealed class TMarkupImport
 {
     private const string TMarkupSample =
         """
-        <entry>
-          <headword>kindle</headword>
-          <lang>English</lang>
-          <ipa>/ˈkɪnd(ə)l/</ipa>
-          <pos>verb</pos>
-          <note>Chiefly literary in its figurative senses.</note>
+        <llyn>
+          <catalog>
+            <author id="murray">Murray, James</author>
+            <author id="bradley">Bradley, Henry</author>
 
-          <sense>
-            <title>set alight</title>
-            <meaning>to set something burning; to start a flame</meaning>
-            <tag>literal</tag>
-            <example src="oed">she knelt to kindle the damp logs</example>
-            <situation src="oed">around a hearth on a cold evening</situation>
-            <image>media/kindle-hearth.jpg</image>
-          </sense>
+            <source id="oed">
+              <title>Oxford English Dictionary</title>
+              <author ref="murray"/>
+              <author ref="bradley"/>
+              <year>1928</year>
+              <kind>book</kind>
+              <url>https://www.oed.com/</url>
+              <note></note>
+            </source>
 
-          <sense>
-            <title>rouse a feeling</title>
-            <meaning>to stir up an emotion or interest</meaning>
-            <tag>figurative</tag>
-            <tag></tag>
-            <example>the teacher kindled a love of poetry in her class</example>
-            <example src="">a remark that kindled old resentments</example>
-          </sense>
+            <example id="ex-brush" lang="English" src="oed">
+              <text>he kindled the dry brush with a single match</text>
+              <trans>그는 성냥 하나로 마른 덤불에 불을 붙였다</trans>
+            </example>
 
-          <collocation>
-            <expression>kindle interest</expression>
-            <meaning>to cause interest to begin</meaning>
-            <example>the exhibition kindled fresh interest in the painter</example>
-          </collocation>
+            <situation id="hearth">
+              <title>Around a hearth</title>
+            </situation>
 
-          <source id="oed">
-            <title>Oxford English Dictionary</title>
-            <author>Murray, James</author>
-            <year>1928</year>
-            <url>https://www.oed.com/</url>
-            <kind>book</kind>
-            <note></note>
-          </source>
-        </entry>
+            <image id="fire">media/fire.jpg</image>
 
-        <entry>
-          <headword>brook</headword>
-          <lang>English</lang>
-          <ipa>/brʊk/</ipa>
+            <video id="clip">
+              <location>media/kindling.mp4</location>
+              <span>00:12-00:19</span>
+            </video>
+          </catalog>
 
-          <sense>
-            <title>a small stream</title>
-            <meaning>a small natural watercourse</meaning>
-            <tag>nature</tag>
-            <example src="field">the path followed a shallow brook down the valley</example>
-          </sense>
+          <entry id="kindle">
+            <headword>kindle</headword>
+            <lang>English</lang>
+            <note>Chiefly literary in its figurative senses.</note>
 
-          <sense>
-            <title>to tolerate</title>
-            <meaning>to bear or put up with, usually in the negative</meaning>
-            <tag>formal</tag>
-            <tag>usually negative</tag>
-            <example>she would brook no argument on the matter</example>
-            <situation></situation>
-          </sense>
+            <sense id="s-alight">
+              <title>set alight</title>
+              <meaning>to set something burning; to start a flame</meaning>
+              <tag>literal</tag>
+              <use ref="ex-brush"/>
+            </sense>
+          </entry>
 
-          <source id="field">
-            <title>A Field Guide to Rivers</title>
-            <author></author>
-            <year>2011</year>
-            <url></url>
-          </source>
-        </entry>
+          <entry id="brook">
+            <headword>brook</headword>
+            <lang>English</lang>
+
+            <sense id="s-stream">
+              <meaning>a small natural watercourse</meaning>
+              <tag>nature</tag>
+            </sense>
+          </entry>
+        </llyn>
         """;
 
     [Fact]
-    public void MarkupImport_TwoEntries_StoresBothWithAllStates()
+    public void MarkupImport_Catalog_StoresRowsPointingAtEachOther()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -88,279 +74,167 @@ public sealed class TMarkupImport
         IReadOnlyList<LEntry> imported = engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(TMarkupSample));
 
         Assert.Equal(["kindle", "brook"], imported.Select(entry => entry.LEntryHeadword));
-        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
 
-        LEntryDraft kindle = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(imported[0].LEntryId));
-        Assert.Equal("kindle", kindle.LEntryDraftHeadword);
-        Assert.Equal("English", kindle.LEntryDraftLanguage);
-        Assert.Equal("/ˈkɪnd(ə)l/", kindle.LEntryDraftPronunciation);
-        Assert.Equal("Chiefly literary in its figurative senses.", kindle.LEntryDraftNote);
-        Assert.Equal(2, kindle.LEntryDraftMeanings.Count);
-
-        LCardDraft alight = kindle.LEntryDraftMeanings[0];
-        Assert.Equal("set alight", alight.LCardDraftTitle.TStateValueShow());
-        Assert.Equal("to set something burning; to start a flame", alight.LCardDraftMeaning.TStateValueShow());
-        Assert.Equal(["literal"], alight.LCardDraftTag);
-        Assert.Equal(["media/kindle-hearth.jpg"], alight.LCardDraftImage.Select(image => image.TStateValueShow()));
-
-        LExampleDraft logs = Assert.Single(alight.LCardDraftExample);
-        LSituationDraft hearth = Assert.Single(alight.LCardDraftSituation);
-        Assert.Equal("she knelt to kindle the damp logs", logs.LExampleDraftText.TStateValueShow());
-        Assert.Equal("around a hearth on a cold evening", hearth.LSituationDraftText.TStateValueShow());
-
-        LReference oed = Assert.Single(engine.TEngineReferenceRead(), reference =>
-            reference.LReferenceTitle.TStateValueShow() == "Oxford English Dictionary");
-        Assert.Equal(oed.LReferenceId, logs.LExampleDraftReference.TStateValueShow());
+        LReference oed = Assert.Single(engine.TEngineReferenceRead());
+        Assert.Equal("Oxford English Dictionary", oed.LReferenceTitle.TStateValueShow());
         Assert.Equal("1928", oed.LReferenceYear.TStateValueShow());
         Assert.Equal(LReferenceKind.LReferenceKindBook, oed.LReferenceKind);
         Assert.Equal(LState.LStateUnknown, oed.LReferenceNote.LStateValueState);
         Assert.Equal(LState.LStateSpecified, oed.LReferenceAuthorState);
         Assert.Equal(
-            ["Murray, James"],
-            engine.TEngineAuthorRead(oed.LReferenceId, LOwner.LOwnerReference).Select(author => author.LAuthorName));
+            ["Murray, James", "Bradley, Henry"],
+            engine.TEngineAuthorRead(oed.LReferenceId, LOwner.LOwnerReference)
+                .Select(author => author.LAuthorName));
 
-        LCardDraft rouse = kindle.LEntryDraftMeanings[1];
-        Assert.Equal(["figurative"], rouse.LCardDraftTag);
-        Assert.Equal(
-            [LState.LStateUnspecified, LState.LStateUnknown],
-            rouse.LCardDraftExample.Select(example => example.LExampleDraftReference.LStateValueState));
+        LExample brush = Assert.Single(engine.TEngineExampleRead());
+        Assert.Equal("English", brush.LExampleLanguage);
+        Assert.Equal("he kindled the dry brush with a single match", brush.LExampleText.TStateValueShow());
+        Assert.Equal("그는 성냥 하나로 마른 덤불에 불을 붙였다", brush.LExampleTranslation.TStateValueShow());
+        Assert.Equal(oed.LReferenceId, brush.LExampleSource.TStateValueShow());
 
-        LCardDraft interest = Assert.Single(kindle.LEntryDraftCollocations);
-        Assert.Equal("kindle interest", interest.LCardDraftExpression.TStateValueShow());
-        Assert.Equal(
-            "the exhibition kindled fresh interest in the painter",
-            Assert.Single(interest.LCardDraftExample).LExampleDraftText.TStateValueShow());
-
-        LEntryDraft brook = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(imported[1].LEntryId));
-        Assert.Equal("brook", brook.LEntryDraftHeadword);
-        Assert.Equal(2, brook.LEntryDraftMeanings.Count);
-        Assert.Equal(
-            ["formal", "usually negative"],
-            brook.LEntryDraftMeanings[1].LCardDraftTag);
-        Assert.Equal(
-            LState.LStateUnknown,
-            Assert.Single(brook.LEntryDraftMeanings[1].LCardDraftSituation).LSituationDraftText.LStateValueState);
-
-        LReference field = Assert.Single(engine.TEngineReferenceRead(), reference =>
-            reference.LReferenceTitle.TStateValueShow() == "A Field Guide to Rivers");
-        Assert.Equal(LState.LStateUnknown, field.LReferenceAuthorState);
-        Assert.Equal(LState.LStateUnknown, field.LReferenceUrl.LStateValueState);
-        Assert.Empty(engine.TEngineAuthorRead(field.LReferenceId, LOwner.LOwnerReference));
-        Assert.Equal(
-            field.LReferenceId,
-            Assert.Single(brook.LEntryDraftMeanings[0].LCardDraftExample)
-                .LExampleDraftReference.TStateValueShow());
+        Assert.Equal("Around a hearth", Assert.Single(engine.TEngineSituationRead()).LSituationTitle.TStateValueShow());
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM image;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM video;"));
     }
 
     [Fact]
-    public void MarkupImport_SourceCitedTwice_StoresOneReference()
+    public void MarkupImport_KeyOfARow_LeavesNoTraceInTheStore()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
-            """
-            <entry>
-              <headword>kindle</headword>
-              <lang>English</lang>
+        engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(TMarkupSample));
 
-              <sense>
-                <meaning>to set something burning</meaning>
-                <example src="oed">she knelt to kindle the damp logs</example>
-              </sense>
-
-              <sense>
-                <meaning>to stir up an emotion</meaning>
-                <example src="oed">the teacher kindled a love of poetry</example>
-              </sense>
-
-              <source id="oed">
-                <title>Oxford English Dictionary</title>
-              </source>
-            </entry>
-            """)));
-
-        LReference oed = Assert.Single(engine.TEngineReferenceRead());
-        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source;"));
-
-        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        IEnumerable<string> cited = draft.LEntryDraftMeanings.Select(card =>
-            Assert.Single(card.LCardDraftExample).LExampleDraftReference.TStateValueShow());
-
-        Assert.Equal([oed.LReferenceId, oed.LReferenceId], cited);
-        Assert.Equal(
-            2,
-            workspace.TWorkspaceCountRead($"SELECT COUNT(*) FROM example WHERE source_id = '{oed.LReferenceId}';"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source WHERE id = 'oed';"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example WHERE id = 'ex-brush';"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry WHERE id = 'kindle';"));
     }
 
     [Fact]
-    public void MarkupImport_UncitedSource_LeavesItOffTheEntry()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
-            """
-            <entry>
-              <headword>kindle</headword>
-              <lang>English</lang>
-
-              <sense>
-                <meaning>to set something burning</meaning>
-                <example src="oed">she knelt to kindle the damp logs</example>
-              </sense>
-
-              <source id="oed"><title>Oxford English Dictionary</title></source>
-              <source id="field"><title>A Field Guide to Rivers</title></source>
-            </entry>
-            """)));
-
-        string cited = Assert.Single(engine.TEngineReferenceFind(
-                "Oxford English Dictionary", LCatalogOrder.LCatalogOrderName))
-            .LCatalogReferenceStored.LReferenceId;
-
-        Assert.Equal(
-            1,
-            workspace.TWorkspaceCountRead(
-                $"SELECT COUNT(*) FROM example WHERE source_id = '{cited}';"));
-
-        string uncited = Assert.Single(engine.TEngineReferenceFind(
-                "A Field Guide to Rivers", LCatalogOrder.LCatalogOrderName))
-            .LCatalogReferenceStored.LReferenceId;
-
-        Assert.Equal(
-            0,
-            workspace.TWorkspaceCountRead(
-                $"SELECT COUNT(*) FROM example WHERE source_id = '{uncited}';"));
-
-        engine.TEngineEntryDelete(entry.LEntryId);
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
-    }
-
-    [Fact]
-    public void MarkupImport_AuthorNamedTwice_StoresOneAuthor()
+    public void MarkupImport_UncitedSource_StoresItAnyway()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
             """
-            <entry>
-              <headword>kindle</headword>
-              <lang>English</lang>
-              <sense><meaning>to set something burning</meaning></sense>
-              <source id="one">
-                <title>Oxford English Dictionary</title>
-                <author>Murray, James</author>
-              </source>
-              <source id="two">
-                <title>A Field Guide to Rivers</title>
-                <author>Murray, James</author>
-              </source>
-            </entry>
+            <llyn>
+              <catalog>
+                <source id="dormant"><title>A Work Nothing Cites</title></source>
+              </catalog>
+              <entry><headword>kindle</headword><lang>English</lang></entry>
+            </llyn>
+            """));
+
+        Assert.Equal(
+            "A Work Nothing Cites",
+            Assert.Single(engine.TEngineReferenceRead()).LReferenceTitle.TStateValueShow());
+    }
+
+    [Fact]
+    public void MarkupImport_UncreditedAuthor_StoresItAnyway()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
+            """
+            <llyn>
+              <catalog>
+                <author id="gaskell">Gaskell, Ruth</author>
+              </catalog>
+              <entry><headword>kindle</headword><lang>English</lang></entry>
+            </llyn>
             """));
 
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM author;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source_author;"));
+    }
+
+    [Fact]
+    public void MarkupImport_TwoAuthorsOneName_StoresTwoRows()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
+            """
+            <llyn>
+              <catalog>
+                <author id="one">Murray, James</author>
+                <author id="two">Murray, James</author>
+                <source id="oed">
+                  <title>Oxford English Dictionary</title>
+                  <author ref="one"/>
+                  <author ref="two"/>
+                </source>
+              </catalog>
+              <entry><headword>kindle</headword><lang>English</lang></entry>
+            </llyn>
+            """));
+
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM author;"));
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source_author;"));
     }
 
     [Fact]
-    public void MarkupImport_UnknownCitation_StoresNoEntry()
+    public void MarkupImport_KeyDeclaredTwice_StoresNothing()
     {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <catalog>
+                <source id="oed"><title>Oxford English Dictionary</title></source>
+                <source id="oed"><title>A Field Guide to Rivers</title></source>
+              </catalog>
+              <entry><headword>kindle</headword><lang>English</lang></entry>
+            </llyn>
+            """);
+    }
 
-        Assert.Throws<FormatException>(() => engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
+    [Fact]
+    public void MarkupImport_DanglingReference_StoresNothing()
+    {
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <catalog>
+                <example id="ex1" lang="English" src="oed"><text>she kindled the lamp</text></example>
+              </catalog>
+              <entry><headword>kindle</headword><lang>English</lang></entry>
+            </llyn>
+            """);
+    }
+
+    [Fact]
+    public void MarkupImport_CitationOfAWrongKind_StoresNothing()
+    {
+        TMarkupRefusalCheck(
+            """
+            <llyn>
+              <catalog>
+                <source id="oed"><title>Oxford English Dictionary</title></source>
+              </catalog>
+              <entry>
+                <headword>kindle</headword>
+                <lang>English</lang>
+                <sense><situation ref="oed"/></sense>
+              </entry>
+            </llyn>
+            """);
+    }
+
+    [Fact]
+    public void MarkupImport_FileWrittenBefore_StoresNothing()
+    {
+        TMarkupRefusalCheck(
             """
             <entry>
               <headword>kindle</headword>
               <lang>English</lang>
-
-              <sense>
-                <meaning>to set something burning</meaning>
-              </sense>
+              <source id="oed"><title>Oxford English Dictionary</title></source>
             </entry>
-
-            <entry>
-              <headword>brook</headword>
-              <lang>English</lang>
-
-              <sense>
-                <meaning>a small natural watercourse</meaning>
-                <example src="field">the path followed a shallow brook</example>
-              </sense>
-            </entry>
-            """)));
-
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense;"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source;"));
-    }
-
-    [Fact]
-    public void MarkupImport_Frame_StoresEveryField()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
-            """
-            <entry>
-              <headword>wait</headword>
-              <lang>English</lang>
-
-              <sense>
-                <meaning>to stay until something happens</meaning>
-                <example src="oed" par="for" dep="Agent">he waited for her</example>
-                <example par="" dep="Recipient">the class waited</example>
-                <video>media/wait.mp4</video>
-              </sense>
-
-              <source id="oed">
-                <title>Oxford English Dictionary</title>
-              </source>
-            </entry>
-            """)));
-
-        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        LCardDraft card = Assert.Single(draft.LEntryDraftMeanings);
-
-        Assert.Equal(["media/wait.mp4"], card.LCardDraftVideo.Select(video => video.LVideoDraftLocation.TStateValueShow()));
-        Assert.Equal(2, card.LCardDraftExample.Count);
-
-        LExampleDraft waited = card.LCardDraftExample[0];
-        Assert.Equal("for", waited.LExampleDraftParticle.TStateValueShow());
-        Assert.Equal("Agent", waited.LExampleDraftDependence.TStateValueShow());
-
-        LExampleDraft classes = card.LCardDraftExample[1];
-        Assert.Equal(LState.LStateUnknown, classes.LExampleDraftParticle.LStateValueState);
-        Assert.Equal("Recipient", classes.LExampleDraftDependence.TStateValueShow());
-    }
-
-    [Fact]
-    public void MarkupImport_FileWrittenBefore_StoresNoFrame()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry entry = Assert.Single(engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(
-            """
-            <entry>
-              <headword>wait</headword>
-              <lang>English</lang>
-
-              <sense>
-                <meaning>to stay until something happens</meaning>
-                <example>he waited for her</example>
-              </sense>
-            </entry>
-            """)));
-
-        LEntryDraft draft = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        LExampleDraft example = Assert.Single(Assert.Single(draft.LEntryDraftMeanings).LCardDraftExample);
-
-        Assert.Equal(LState.LStateUnspecified, example.LExampleDraftParticle.LStateValueState);
-        Assert.Equal(LState.LStateUnspecified, example.LExampleDraftDependence.LStateValueState);
+            """);
     }
 
     [Fact]
@@ -373,5 +247,19 @@ public sealed class TMarkupImport
 
         Assert.Throws<FileNotFoundException>(() => engine.TEngineMarkupImport(path));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+    }
+
+    private static void TMarkupRefusalCheck(string text)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        Assert.Throws<FormatException>(
+            () => engine.TEngineMarkupImport(workspace.TWorkspaceMarkupSave(text)));
+
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM source;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM author;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
     }
 }

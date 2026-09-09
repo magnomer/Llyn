@@ -1,6 +1,6 @@
 ﻿using Llyn.Core;
 
-using LMarkupEntry = Llyn.Core.LMarkup.LMarkupEntry;
+using LMarkupDocument = Llyn.Core.LMarkup.LMarkupDocument;
 using LMarkupReference = Llyn.Core.LMarkup.LMarkupReference;
 using LMarkupToken = Llyn.Core.LMarkup.LMarkupToken;
 
@@ -141,8 +141,11 @@ internal static partial class TInterface
     internal static LCardDraft TMarkupCardRead(IReadOnlyList<LMarkupToken> tokens, int position) =>
         LMarkup.LMarkupCardRead(tokens, position);
 
-    internal static IReadOnlyList<LMarkupEntry> TMarkupEntryRead(string text) =>
+    internal static LMarkupDocument TMarkupEntryRead(string text) =>
         LMarkup.LMarkupEntryRead(text);
+
+    internal static string? TMarkupTokenRead(LMarkupToken token, string mark) =>
+        token.LMarkupTokenRead(mark);
 
     internal static IReadOnlyList<LEntryDraft> TMarkupRead(string text) =>
         LMarkup.LMarkupRead(text);

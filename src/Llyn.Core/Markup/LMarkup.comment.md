@@ -5,7 +5,7 @@
 Reads Llyn Markup text into entry drafts.
 Llyn Markup is the plain-text format Llyn imports and exports whole entries in.
 One file carries any number of entries as tagged text.
-`docs/Format-LlynMarkup.md` is the authority on its syntax and on the meaning of every tag.
+`docs-work/FormatLlynMarkup.md` is the authority on its syntax and on the meaning of every tag.
 This class implements that document and decides nothing on its own.
 Where the two disagree the document is right and the code is wrong.
 
@@ -19,13 +19,12 @@ Takes the whole text of a Llyn Markup document.
 Returns one draft per entry it declares, in the order the file declares them.
 It is the projection of `LMarkupEntryRead` that keeps only the drafts.
 A draft is all the rest of the program has a shape for.
-The sources an entry declared have already been folded into the citations that name them.
-The author names an entry wrote are of use only to the layer that creates author rows.
-That layer reads them through `LMarkupEntryRead` instead.
+The catalog the document declared is of use only to the layer that creates rows.
+That layer reads it through `LMarkupEntryRead` instead.
 
 A document that declares no entry reads as an empty list rather than an error.
-Text outside every `<entry>` block is not part of any entry and is skipped.
-So a file with a comment line or a stray heading above its first entry still imports.
+Text between elements is insignificant and is skipped.
+A file whose first element is not `<llyn>` raises a `FormatException` and reads as nothing.
 
 **Parameters**
 
@@ -45,32 +44,32 @@ That is the format spec's business and not the scanner's.
 
 One tag, as scanned.
 `LMarkupTokenName` is the tag name exactly as written.
-`LMarkupTokenSource` is the attribute value the tag carried, and `null` when it carried none.
-It is the `src` of a text tag, or the `id` of a block tag.
-Which of the two lands here is decided by the tag's kind, not the attribute's name.
-The format gives each name to one kind only.
-`src` cites a source from an example or a situation.
-`id` declares one on a `<source>`.
-A text tag written with an `id` therefore carries nothing.
-So does a block tag written with an `src`.
-That is what an attribute the format does not define there must amount to.
+`LMarkupTokenMark` holds the attributes the tag carried, each under its own name.
+A map rather than a field per attribute, because the format names twenty-six of them.
+A positional record of that width would be read by counting commas.
+The scanner keeps only the attributes the format defines and drops the rest.
+Section 1 of the format spec makes an unrecognised attribute ignorable rather than an error.
+An attribute the tag never carried is absent from the map, and `ref=""` is present and empty.
+Only that difference keeps *unspecified* apart from *unknown* on an attribute.
 
-`LMarkupTokenParticle` and `LMarkupTokenDependence` are the `par` and the `dep` of a text tag.
-They are the two halves of the frame an example states.
-They are scanned on every text tag and read only off an `<example>`.
-Keeping them on the token lets the scanner stay ignorant of which tag may state a frame.
-A block tag never carries either, because the format writes a frame on an example alone.
 `LMarkupTokenText` is the literal inner text with leading and trailing whitespace trimmed.
 Everything inside it is untouched.
-`&`, `<` and quotes are ordinary characters, as section 6 of the format spec requires.
+`&`, `<` and quotes are ordinary characters, as section 7 of the format spec requires.
 `LMarkupTokenEmpty` is set for the empty-element form, `<tag></tag>` or `<tag/>`.
 That is how the format writes the *unknown* state.
-A later job turns that flag into `LStateValueUnknown`.
+A later reader turns that flag into `LStateValueUnknown`.
 It turns the absence of the token altogether into `LStateValueUnspecified`.
 
-Distinguishing an absent attribute from an empty one matters for the same reason.
-No `src` is unspecified, and `src=""` is unknown.
-Only a `null` versus an empty string keeps the two apart.
+## `internal string? LMarkupTokenRead(string mark)`
+
+Reads one attribute off the token by name.
+It returns `null` when the tag carried no such attribute.
+It returns the empty string when the tag carried it written empty.
+So every caller reads the three states through one door instead of probing the map.
+
+**Parameters**
+
+- `mark` — The attribute name as the format writes it, such as `ref` or `tone-local`.
 
 ## `internal static IReadOnlyList<LMarkupToken> LMarkupScan(string text)`
 
@@ -79,16 +78,20 @@ The scan is hand-written rather than handed to an XML reader, because Llyn Marku
 Its text is literal.
 A document that says `a & b` inside a `<meaning>` is well formed here and rejected there.
 Reading it as XML would force authors to escape ordinary punctuation.
-Section 6 of the format spec exists to promise they never have to.
+Section 7 of the format spec exists to promise they never have to.
 
 The scan walks the text once.
 Outside a tag, anything that is not `<` is skipped.
 So whitespace and stray prose between blocks are insignificant rather than an error.
 At a `<`, the tag name is read, then its attributes.
-Only `src`, `id`, `par` and `dep` are kept.
+Only the attributes the format defines are kept.
 The rest are dropped.
 An unrecognised attribute, like an unrecognised tag, must not break an older file.
 A block tag emits an enter token and, at its `</name>`, a leave token.
+The block list holds every tag the format writes children inside.
+`<catalog>`, `<example>`, `<situation>`, `<register>`, `<video>`, `<inflection>`, `<pronunciation>` and `<relation>` joined it with the catalog.
+`<llyn>` is the document element and is a block like any other.
+`<sense>` may hold a `<sense>`, and depth counting is what keeps the inner one from closing the outer.
 Any other tag is a text tag.
 Its content is taken literally up to the first `</name>`.
 So the one sequence an author cannot write inside text is that tag's own closing tag.
@@ -106,34 +109,6 @@ So do a closing tag matching no open block and a block still open at the end.
 **Returns** — Every tag in the order the document writes it.
 Block tags are bounded by an enter and a leave token.
 
-## `public readonly record struct LMarkupReference`
-
-One `<source>` block as read.
-`LMarkupReferenceId` is the `id` the block declared.
-It is repeated outside the reference so a caller can index the block by it.
-The caller need not unpack the value.
-An `id` is meaningful only inside its own entry.
-So the index a caller builds is per entry and never shared between them.
-
-`LMarkupReferenceAuthor` exists because a source's author is not part of an `LReference`.
-An `LReference` records only whether an author was recorded, in `LReferenceAuthorState`.
-The names themselves are `LAuthor` rows attached to the reference in order.
-They are shared with every other reference that credits the same person.
-Reading is pure and cannot create or match those rows.
-So the author text is carried out beside the reference.
-It is left for the layer that owns author identity to attach.
-Dropping it here would silently lose a written author on import.
-That is the one thing the format promises not to do.
-
-It is a list rather than one value because section 5 of the format spec allows several.
-A source may credit several authors, and the format keeps their order.
-The list holds only the names that were written.
-An author whose tag was empty contributes no name, since there is no name to attach.
-That the source credits someone unreadable is already recorded in the reference's author state.
-So the list is empty for a source with no `<author>`.
-It is also empty for one whose only `<author>` was empty.
-The two stay apart on the reference, which is where that distinction belongs.
-
 ## `internal static LCardDraft LMarkupCardRead(IReadOnlyList<LMarkupToken> tokens, int position)`
 
 Turns the tokens of one `<sense>` or `<collocation>` block into the card draft it describes.
@@ -148,8 +123,10 @@ A block written where the format does not allow one is skipped whole for the sam
 A `<source>` inside a `<sense>` is such a block.
 So its `<title>` can never be mistaken for the card's.
 Everything else is read by tag name in one pass.
-So `<tag>`, `<example>`, `<situation>`, `<image>` and `<video>` keep the order the document writes them in.
-Section 7 makes that order meaningful.
+So `<tag>` and `<image>` keep the order the document writes them in.
+Section 8 makes that order meaningful.
+A card's uses, situations, registers and videos are blocks the format now writes children inside.
+This reader takes none of them, and reading them is the card reader's own next change.
 
 The card comes back holding no Translation, because the format writes none.
 A link is an id of a stored Entry, and a document has no id to give.
@@ -166,10 +143,10 @@ The last one written wins.
 A document that repeats a singular tag is malformed in a way the format does not describe.
 Refusing the whole import over it would be harsher than the format's leniency elsewhere warrants.
 
-The `src` on an example or a situation is kept as it was written.
+The `src` on an example is kept as it was written.
 It is not resolved to a source here.
-A card can be read before the `<source>` blocks of its entry have been.
-So the citation stays a raw key until entry assembly resolves it against the entry's sources.
+A card is read before the catalog it cites has been.
+So the citation stays a raw key until the document has resolved it.
 It is stored as an `LStateValue` because the raw key already carries the three states.
 No `src` is unspecified, `src=""` is unknown, and a named `src` is specified.
 The state survives resolution unchanged when the key does not.
@@ -188,37 +165,6 @@ Markup is read in tag order, so no pack can reorder what a file wrote.
   Cards of one entry therefore number one to n in the order the document writes them.
 
 **Returns** — The card as a draft, with no id, because an imported card has none until it is saved.
-
-## `internal static LMarkupReference LMarkupReferenceRead(IReadOnlyList<LMarkupToken> tokens)`
-
-Turns the tokens of one `<source>` block into the reference it declares, keyed by its `id`.
-The `id` comes from the block's enter token, which is where the scanner puts the attribute a tag carried.
-A block written without one, or with an empty one, raises a `FormatException`.
-Section 5 of the format spec declares a source *with* a stable `id`.
-A source that has none can be cited by nothing.
-It cannot be told apart from the next one that has none either.
-Refusing it says so where the file is wrong.
-Reading it as an empty key would let two unrelated works collapse into one.
-The first would be lost without a word.
-
-Only the block's own direct children are read, through `LMarkupLeafRead`.
-So a block nested inside a source contributes none of its fields to it.
-
-Every field runs through the same three-state reading the card fields do.
-The author is the exception.
-It is the one repeatable field here, and the one whose value does not live on the reference.
-Its state is worked out from the tags as a whole.
-It is *specified* as soon as one `<author>` names somebody.
-It is *unknown* when the only ones written were empty.
-It is *unspecified* when none was written.
-That state is stored on the reference.
-The names leave beside it in the order the block wrote them.
-
-**Parameters**
-
-- `tokens` — Every token of one `<source>` block, in document order.
-
-**Returns** — The reference, its `id`, and the author text the block wrote.
 
 ## `private static IEnumerable<LMarkupToken> LMarkupLeafRead(IReadOnlyList<LMarkupToken> tokens)`
 

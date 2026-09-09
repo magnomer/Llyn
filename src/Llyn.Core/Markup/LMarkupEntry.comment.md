@@ -2,50 +2,65 @@
 
 ## `public static partial class LMarkup`
 
-The entry half of the markup reader.
-It turns the flat token stream `LMarkup.cs` scans into whole entries.
-It checks each entry's citations against the sources that entry declares.
-It lives in its own file because scanning text and assembling entries are two responsibilities.
-The one file that held both had outgrown the size the project's audit advises.
+The document half of the markup reader.
+It turns the flat token stream `LMarkup.cs` scans into a whole document.
+A document is the catalog it declares and the entries that cite it.
+It lives in its own file because scanning text and assembling a document are two responsibilities.
 The class stays one class.
 Callers should see one door into the format and not two.
 
 ## `public readonly record struct LMarkupEntry`
 
-One `<entry>` block as read: the draft it describes, and the sources it declared.
+One `<entry>` block as read: the draft it describes, and the key it declared.
 
 `LMarkupEntryDraft` is the whole entry in the shape the editor produces.
 So an imported entry and a typed one reach the save path as the same value.
-`LMarkupEntrySource` is kept beside it because a draft has nowhere to put a reference.
-`LEntryDraftSource` is the label of the source a *recording* came from.
-It is a different thing entirely.
-An example or situation carries only the key of the source it cites.
-It never carries the source's title, year or authors.
-Those fields would be lost between reading and saving if the block did not travel out whole.
-The format's promise is that nothing written is silently dropped.
+`LMarkupEntryKey` is kept beside it because a draft has nowhere to put a key.
+A relation, a translation or a synonym in another entry names this entry by that key.
+An entry that declares none carries the empty string, which no citation can name.
 
-The sources travel as a list rather than a map keyed by `id`.
-The list is what the format wrote, order included.
-The map is a working index that only assembly needs.
-A map would also decide, silently and by position, what a repeated `id` means.
-The list holds every block as written.
-It leaves that question to be answered out loud, which assembly does by refusing the file.
+## `public readonly record struct LMarkupDocument`
 
-## `public static IReadOnlyList<LMarkupEntry> LMarkupEntryRead(string text)`
+One `.llx` file as read.
 
-Scans the whole document once and reads every `<entry>` block it contains, in the order the file writes them.
+`LMarkupDocumentCatalog` is every row the file declared and the key each was declared under.
+`LMarkupDocumentEntry` is every entry, in the order the file wrote them.
+The two travel together because neither is the whole file.
+An entry cites rows it does not own, and a row is kept whether or not an entry cites it.
+Returning drafts alone would drop the catalog, which is where sharing is written down.
 
-Only a top-level `<entry>` starts an entry.
-The walk jumps from an entry's enter token straight past its leave token.
-So nothing inside one entry can be mistaken for the start of another.
-Anything between entries is skipped rather than refused.
-Section 2 of the format spec requires that of stray text between blocks.
+## `public static LMarkupDocument LMarkupEntryRead(string text)`
+
+Scans the whole document once and reads the catalog and every `<entry>` it contains.
+
+The first element must be `<llyn>`, and a file that opens otherwise raises a `FormatException`.
+Section 2 of the format spec makes it the document element.
+A file in the retired format opens with `<entry>` and is refused here rather than half read.
+Only the root's own children are read, so an entry written outside it is not an entry.
+
+The catalog is read whole before any citation is resolved.
+Section 10 of the format spec declares an author after the source that credits him.
+A reader resolving as it went would refuse that file.
+Entry and sense keys join the catalog's keys in one namespace, which is where a repeat is caught.
+Every citation in the file is then held against that namespace before an entry is read.
+So a dangling key is reported once, from the document, rather than by each reader that meets it.
 
 **Parameters**
 
 - `text` — The whole Llyn Markup document.
 
-**Returns** — Every entry the document declares, each with the sources it wrote.
+**Returns** — The catalog and every entry the document declares.
+
+## `private static LMarkupCatalog LMarkupCatalogFind(IReadOnlyList<LMarkupToken> tokens, int root)`
+
+Finds the `<catalog>` among the root's children and reads it.
+A document with no shared rows may omit it, and an absent catalog reads as an empty one.
+Section 2 of the format spec allows the omission outright.
+
+**Parameters**
+
+- `tokens` — The whole document's tokens.
+- `root` — Index of the leave token that closes `<llyn>`.
 
 ## `private static LMarkupEntry LMarkupEntryCreate(IReadOnlyList<LMarkupToken> tokens, int first, int last, int place)`
 
@@ -53,30 +68,16 @@ Reads the tokens of one `<entry>` block into its draft.
 
 The block is read in one pass.
 A nested block is handed whole to the reader that owns it.
-Those blocks are `<sense>`, `<collocation>` and `<source>`.
+Those blocks are `<sense>` and `<collocation>`.
 The walk resumes after its leave token.
 So a `<title>` inside a meaning is never mistaken for a field of the entry.
 Everything else is a leaf tag read by name.
 An unrecognised one is ignored, as section 1 of the format spec requires.
-Meanings, collocations and sources each keep the order they were written in, which section 7 makes meaningful.
+Meanings and collocations keep the order they were written in, which section 8 makes meaningful.
 
-Citations are checked only after the whole block has been read.
-A `<source>` may be written after the cards that cite it.
-The sample in section 8 does exactly that.
-A reader that checked as it went would reject a perfectly ordinary file.
-The check is all this layer does with a citation.
-The key the file wrote is left on the card untouched, because reading is pure.
-The id a stored citation must carry does not exist until a source has been written.
-Rewriting the key as itself here would read as resolution and be none.
-The layer that does resolve would then be resolving something already claimed to be resolved.
-
-Two `<source>` blocks sharing one `id` raise a `FormatException` naming the key.
-The entry is the scope an `id` is unique in.
-Section 5 says so, and says two entries may reuse one freely.
-So a repeat inside one entry is a broken file.
-Every `src` that names the key would have to point at one of the two works.
-Nothing the author wrote would choose between them, and the other would vanish.
-Refusing names the file's mistake while both are still there to name.
+Citations are not checked here.
+The document has already held every key in the file against the one namespace.
+Checking again per entry would report the same fault twice and scope it wrongly.
 
 The entry's own fields are plain text rather than three-state values.
 `LEntryDraft` holds them as strings.
@@ -99,40 +100,10 @@ The first entry of a file is its first, not its zeroth.
 - `last` — Index of its matching leave token.
 - `place` — The entry's position in the file, counted from one, used only to name it in an error.
 
-## `private static void LMarkupCitationCheck(IReadOnlyList<LCardDraft> cards, IReadOnlySet<string> registry)`
-
-Walks every example and situation of every card and holds each citation against the sources the entry declared.
-Nothing is rewritten.
-The cards are already the values the draft will carry.
-The only question left about them is whether the keys they hold were ever declared.
-
-**Parameters**
-
-- `cards` — The entry's cards, their citations the keys the file wrote.
-- `registry` — The `id` every `<source>` in the entry declared.
-
-## `private static void LMarkupSourceCheck(LStateValue citation, IReadOnlySet<string> registry)`
-
-Refuses a citation that names a source the entry never declared.
-
-Only a *specified* citation is checked.
-No `src` stays *unspecified* and `src=""` stays *unknown*.
-Neither names a source, so neither can be held against one.
-Section 4 of the format spec keeps the two apart all the way through.
-A named key that no `<source>` in the same entry declares is a `FormatException`.
-The message quotes the key.
-A citation pointing at nothing is a broken file, not a field to be read leniently.
-Leniency is for tags the format may one day add, not for a reference the author meant.
-
-**Parameters**
-
-- `citation` — The `src` as read, in one of the three states.
-- `registry` — The `id` every `<source>` in the entry declared.
-
 ## `private static IReadOnlyList<string> LMarkupSpeechRead(LMarkupToken? token)`
 
 Splits `<pos>` into the entry's parts of speech.
-The format writes them as one comma-separated tag, and the draft holds them as an ordered list.
+The old format wrote them as one comma-separated tag, and the draft holds them as an ordered list.
 So the tag is split on commas and each name trimmed.
 A part that is blank between two commas is dropped rather than kept as an empty speech.
 An absent or empty tag reads as no speeches at all.
@@ -145,6 +116,7 @@ An absent or empty tag reads as no speeches at all.
 
 Finds the leave token that closes the block opening at `first`.
 It counts depth so that a block inside a block does not end it.
+A `<sense>` inside a `<sense>` is the case that depends on it.
 The scanner has already refused any document whose blocks are unbalanced.
 So the search always finds its match.
 The last token is returned as a fallback only because the language requires the method to end.

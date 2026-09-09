@@ -20,18 +20,20 @@ public sealed partial class LEngine
                 throw new FileNotFoundException("No markup file stands at the chosen path.", path);
             }
 
-            IReadOnlyList<LMarkup.LMarkupEntry> entries =
-                LMarkup.LMarkupEntryRead(File.ReadAllText(path));
+            LMarkup.LMarkupDocument document = LMarkup.LMarkupEntryRead(File.ReadAllText(path));
+            IReadOnlyList<LMarkup.LMarkupEntry> entries = document.LMarkupDocumentEntry;
             List<LEntry> saved = new List<LEntry>();
-            Dictionary<string, string> writers = new Dictionary<string, string>(StringComparer.Ordinal);
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+
+            IReadOnlyDictionary<string, string> rows =
+                LEngineCatalogSave(document.LMarkupDocumentCatalog, entries);
 
             for (int place = 0; place < entries.Count; place++)
             {
                 try
                 {
-                    saved.Add(LEngineMarkupSave(entries[place], writers));
+                    saved.Add(LEngineMarkupSave(entries[place], rows));
                 }
                 catch (Exception exception)
                 {
@@ -47,41 +49,139 @@ public sealed partial class LEngine
         return imported;
     }
 
-    private LEntry LEngineMarkupSave(
-        LMarkup.LMarkupEntry entry, IDictionary<string, string> writers)
+    private IReadOnlyDictionary<string, string> LEngineCatalogSave(
+        LMarkup.LMarkupCatalog catalog, IReadOnlyList<LMarkup.LMarkupEntry> entries)
     {
         Dictionary<string, string> rows = new Dictionary<string, string>(StringComparer.Ordinal);
 
-        foreach (LMarkup.LMarkupReference source in entry.LMarkupEntrySource)
+        foreach (KeyValuePair<string, LAuthor> author in catalog.LMarkupCatalogAuthor)
         {
-            rows[source.LMarkupReferenceId] = LEngineReferenceSave(source, writers);
+            rows[author.Key] = LEngineAuthorCreate(
+                new LAuthor(string.Empty, author.Value.LAuthorName)).LAuthorId;
         }
 
+        foreach (KeyValuePair<string, LMarkup.LMarkupReference> source in catalog.LMarkupCatalogSource)
+        {
+            rows[source.Key] = LEngineReferenceSave(source.Value, rows);
+        }
+
+        LExampleArchive examples = new(_lEngineDatabase);
+        foreach (KeyValuePair<string, LExample> example in catalog.LMarkupCatalogExample)
+        {
+            rows[example.Key] = examples.LExampleCreate(new LExample(
+                string.Empty,
+                LEngineLanguageRead(example.Key, example.Value, entries),
+                example.Value.LExampleText,
+                example.Value.LExampleTranslation,
+                LEngineReferenceResolve(example.Value.LExampleSource, rows))).LExampleId;
+        }
+
+        foreach (KeyValuePair<string, LSituation> situation in catalog.LMarkupCatalogSituation)
+        {
+            rows[situation.Key] = LEngineSituationCreate(situation.Value with
+            {
+                LSituationId = string.Empty,
+            }).LSituationId;
+        }
+
+        LRegisterArchive registers = new(_lEngineDatabase);
+        foreach (KeyValuePair<string, LRegister> register in catalog.LMarkupCatalogRegister)
+        {
+            rows[register.Key] = LEngineRegisterSave(registers, register.Value);
+        }
+
+        LImageArchive images = new(_lEngineDatabase);
+        foreach (KeyValuePair<string, LImage> image in catalog.LMarkupCatalogImage)
+        {
+            rows[image.Key] = images.LImageCreate(
+                new LImage(string.Empty, image.Value.LImageLocation)).LImageId;
+        }
+
+        LVideoArchive videos = new(_lEngineDatabase);
+        foreach (KeyValuePair<string, LVideo> video in catalog.LMarkupCatalogVideo)
+        {
+            rows[video.Key] = videos.LVideoCreate(new LVideo(
+                string.Empty,
+                video.Value.LVideoLocation,
+                video.Value.LVideoSpan)).LVideoId;
+        }
+
+        return rows;
+    }
+
+    private static string LEngineLanguageRead(
+        string key, LExample example, IReadOnlyList<LMarkup.LMarkupEntry> entries)
+    {
+        if (!string.IsNullOrWhiteSpace(example.LExampleLanguage))
+        {
+            return example.LExampleLanguage;
+        }
+
+        foreach (LMarkup.LMarkupEntry entry in entries)
+        {
+            if (!string.IsNullOrWhiteSpace(entry.LMarkupEntryDraft.LEntryDraftLanguage))
+            {
+                return entry.LMarkupEntryDraft.LEntryDraftLanguage;
+            }
+        }
+
+        throw new FormatException(
+            $"The example '{key}' names no language and the document declares none.");
+    }
+
+    private string LEngineRegisterSave(LRegisterArchive registers, LRegister written)
+    {
+        LEngineRegisterCreate(written.LRegisterLanguage);
+
+        if (written.LRegisterBuiltin)
+        {
+            foreach (LRegister stored in registers.LRegisterRead())
+            {
+                if (string.Equals(
+                        stored.LRegisterName.LStateValueShow().Trim(),
+                        written.LRegisterName.LStateValueShow().Trim(),
+                        StringComparison.CurrentCultureIgnoreCase)
+                    && string.Equals(
+                        stored.LRegisterLanguage,
+                        written.LRegisterLanguage,
+                        StringComparison.Ordinal))
+                {
+                    return stored.LRegisterId;
+                }
+            }
+        }
+
+        return registers.LRegisterCreate(new LRegister(
+            string.Empty,
+            written.LRegisterName,
+            written.LRegisterLanguage,
+            false)).LRegisterId;
+    }
+
+    private LEntry LEngineMarkupSave(
+        LMarkup.LMarkupEntry entry, IReadOnlyDictionary<string, string> rows)
+    {
         LEntryDraft draft = entry.LMarkupEntryDraft;
-        LEntry stored = LEngineEntrySave(draft with
+
+        return LEngineEntrySave(draft with
         {
             LEntryDraftMeanings = LEngineCardResolve(draft.LEntryDraftMeanings, rows),
             LEntryDraftCollocations = LEngineCardResolve(draft.LEntryDraftCollocations, rows),
         });
-
-        return stored;
     }
 
     private string LEngineReferenceSave(
-        LMarkup.LMarkupReference source, IDictionary<string, string> writers)
+        LMarkup.LMarkupReference source, IReadOnlyDictionary<string, string> rows)
     {
-        LReference stored = LEngineReferenceCreate(source.LMarkupReferenceValue);
+        LReference stored = LEngineReferenceCreate(source.LMarkupReferenceValue with
+        {
+            LReferenceId = string.Empty,
+        });
 
         int position = 0;
-        foreach (string name in source.LMarkupReferenceAuthor)
+        foreach (string key in source.LMarkupReferenceAuthor)
         {
-            if (!writers.TryGetValue(name, out string? writer))
-            {
-                writer = LEngineAuthorCreate(new LAuthor(string.Empty, name)).LAuthorId;
-                writers[name] = writer;
-            }
-
-            LEngineAuthorAttach(stored.LReferenceId, writer, position);
+            LEngineAuthorAttach(stored.LReferenceId, rows[key], position);
             position++;
         }
 
@@ -125,7 +225,7 @@ public sealed partial class LEngine
         string key = citation.LStateValueText ?? string.Empty;
         if (!rows.TryGetValue(key, out string? row))
         {
-            throw new FormatException($"Citation names no source declared in its entry: '{key}'.");
+            throw new FormatException($"The citation '{key}' names no row the document declares.");
         }
 
         return LStateValue.LStateValueCreate(row);

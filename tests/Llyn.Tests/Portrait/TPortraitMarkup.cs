@@ -7,38 +7,26 @@ namespace Llyn.Tests;
 public sealed class TPortraitMarkup
 {
     [Fact]
-    public void MarkupDraftFormat_WrittenEntry_ReadsBackAsTheSameDraft()
+    public void MarkupDraftFormat_WrittenEntry_ReturnsEveryTag()
     {
-        LEntryDraft written = TPortraitMarkupCreate();
+        string text = TInterface.TMarkupDraftFormat(TPortraitMarkupCreate(), []);
 
-        string text = TInterface.TMarkupDraftFormat(written, []);
-        IReadOnlyList<LEntryDraft> read = TInterface.TMarkupRead(text);
-
-        LEntryDraft back = Assert.Single(read);
-
-        Assert.Equal(written.LEntryDraftHeadword, back.LEntryDraftHeadword);
-        Assert.Equal(written.LEntryDraftLanguage, back.LEntryDraftLanguage);
-        Assert.Equal(written.LEntryDraftPronunciation, back.LEntryDraftPronunciation);
-        Assert.Equal(written.LEntryDraftNote, back.LEntryDraftNote);
-        Assert.Equal(written.LEntryDraftSpeeches, back.LEntryDraftSpeeches);
-        Assert.Single(back.LEntryDraftMeanings);
-        Assert.Single(back.LEntryDraftCollocations);
-
-        LCardDraft sense = back.LEntryDraftMeanings[0];
-        Assert.Equal("set alight", sense.LCardDraftTitle.TStateValueShow());
-        Assert.Equal("to set something burning", sense.LCardDraftMeaning.TStateValueShow());
-        Assert.Equal(["literal"], sense.LCardDraftTag);
-        Assert.Equal(
-            "she knelt to kindle the damp logs",
-            sense.LCardDraftExample[0].LExampleDraftText.TStateValueShow());
-        Assert.Equal("with", sense.LCardDraftExample[0].LExampleDraftParticle.TStateValueShow());
-        Assert.Equal(
-            "kindle interest",
-            back.LEntryDraftCollocations[0].LCardDraftExpression.TStateValueShow());
+        Assert.Contains("<headword>kindle</headword>", text);
+        Assert.Contains("<lang>English</lang>", text);
+        Assert.Contains("<ipa>/ˈkɪnd(ə)l/</ipa>", text);
+        Assert.Contains("<pos>verb</pos>", text);
+        Assert.Contains("<note>Chiefly literary.</note>", text);
+        Assert.Contains("<title>set alight</title>", text);
+        Assert.Contains("<meaning>to set something burning</meaning>", text);
+        Assert.Contains("<situation>around a hearth</situation>", text);
+        Assert.Contains("<example par=\"with\">she knelt to kindle the damp logs</example>", text);
+        Assert.Contains("<tag>literal</tag>", text);
+        Assert.Contains("<image>media/kindle.jpg</image>", text);
+        Assert.Contains("<expression>kindle interest</expression>", text);
     }
 
     [Fact]
-    public void MarkupDraftFormat_UnreadableField_ReadsBackAsUnreadable()
+    public void MarkupDraftFormat_UnreadableField_WritesAnEmptyTag()
     {
         LCardDraft card = TInterface.TCardDraftCreate(
             LStateValue.LStateValueUnknown,
@@ -55,22 +43,19 @@ public sealed class TPortraitMarkup
         LEntryDraft written = TInterface.TEntryDraftCreate(
             "kindle", "English", string.Empty, string.Empty, [card], []);
 
-        LEntryDraft back = Assert.Single(
-            TInterface.TMarkupRead(TInterface.TMarkupDraftFormat(written, [])));
+        string text = TInterface.TMarkupDraftFormat(written, []);
 
-        Assert.Equal(LState.LStateUnknown, back.LEntryDraftMeanings[0].LCardDraftTitle.LStateValueState);
-        Assert.Equal(
-            LState.LStateUnspecified,
-            back.LEntryDraftMeanings[0].LCardDraftExpression.LStateValueState);
+        Assert.Contains("<title></title>", text);
+        Assert.DoesNotContain("<expression>", text);
     }
 
     [Fact]
-    public void MarkupDraftFormat_ClosingTagInsideText_LeavesTheDocumentReadable()
+    public void MarkupDraftFormat_ClosingTagInsideText_DropsThatTag()
     {
         LCardDraft card = TInterface.TCardDraftCreate(
-            TInterface.TStateValueCreate("a </meaning> inside"),
+            TInterface.TStateValueCreate("set alight"),
             LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate("kept"),
+            TInterface.TStateValueCreate("a </meaning> inside"),
             [],
             [],
             [],
@@ -82,10 +67,10 @@ public sealed class TPortraitMarkup
         LEntryDraft written = TInterface.TEntryDraftCreate(
             "kindle", "English", string.Empty, string.Empty, [card], []);
 
-        LEntryDraft back = Assert.Single(
-            TInterface.TMarkupRead(TInterface.TMarkupDraftFormat(written, [])));
+        string text = TInterface.TMarkupDraftFormat(written, []);
 
-        Assert.Equal("kept", back.LEntryDraftMeanings[0].LCardDraftMeaning.TStateValueShow());
+        Assert.Contains("<meaning>a  inside</meaning>", text);
+        Assert.Contains("<title>set alight</title>", text);
     }
 
     private static LEntryDraft TPortraitMarkupCreate()

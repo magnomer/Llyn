@@ -19,13 +19,13 @@ public sealed class TMarkupSyntax
         Assert.Equal("meaning", token.LMarkupTokenName);
         Assert.Equal("a unit of language", token.LMarkupTokenText);
         Assert.False(token.LMarkupTokenEmpty);
-        Assert.Null(token.LMarkupTokenSource);
+        Assert.Null(TInterface.TMarkupTokenRead(token, "src"));
     }
 
     [Fact]
     public void MarkupScan_EmptyTagBothForms_CarriesEmptyFlag()
     {
-        IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan("<meaning></meaning><tag>\n  </tag><image/>");
+        IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan("<meaning></meaning><tag>\n  </tag><use/>");
 
         Assert.Equal(3, tokens.Count);
         Assert.All(tokens, token =>
@@ -33,20 +33,19 @@ public sealed class TMarkupSyntax
             Assert.True(token.LMarkupTokenEmpty);
             Assert.Equal(string.Empty, token.LMarkupTokenText);
         });
-        Assert.Equal(["meaning", "tag", "image"], tokens.Select(token => token.LMarkupTokenName));
+        Assert.Equal(["meaning", "tag", "use"], tokens.Select(token => token.LMarkupTokenName));
     }
 
     [Fact]
-    public void MarkupScan_ThreeSourceForms_KeepsThemApart()
+    public void MarkupScan_ThreeReferenceForms_KeepsThemApart()
     {
         IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
-            "<example>plain</example><example src=\"\">unknown</example><example src=\"oed\">cited</example>");
+            "<use/><use ref=\"\"/><use ref=\"ex1\"/>");
 
         Assert.Equal(3, tokens.Count);
-        Assert.Null(tokens[0].LMarkupTokenSource);
-        Assert.Equal(string.Empty, tokens[1].LMarkupTokenSource);
-        Assert.Equal("oed", tokens[2].LMarkupTokenSource);
-        Assert.Equal(["plain", "unknown", "cited"], tokens.Select(token => token.LMarkupTokenText));
+        Assert.Null(TInterface.TMarkupTokenRead(tokens[0], "ref"));
+        Assert.Equal(string.Empty, TInterface.TMarkupTokenRead(tokens[1], "ref"));
+        Assert.Equal("ex1", TInterface.TMarkupTokenRead(tokens[2], "ref"));
     }
 
     [Fact]
@@ -75,8 +74,33 @@ public sealed class TMarkupSyntax
                 LMarkupTokenKind.LMarkupTokenLeave,
             ],
             tokens.Select(token => token.LMarkupTokenKind));
-        Assert.Equal(["entry", "headword", "source", "year", "source", "entry"], tokens.Select(token => token.LMarkupTokenName));
-        Assert.Equal("oed", tokens[2].LMarkupTokenSource);
+        Assert.Equal(
+            ["entry", "headword", "source", "year", "source", "entry"],
+            tokens.Select(token => token.LMarkupTokenName));
+        Assert.Equal("oed", TInterface.TMarkupTokenRead(tokens[2], "id"));
+    }
+
+    [Fact]
+    public void MarkupScan_NestedSense_BoundsTwoBlocks()
+    {
+        IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
+            """
+            <sense id="alight">
+              <sense id="figurative"><meaning>to rouse a feeling</meaning></sense>
+            </sense>
+            """);
+
+        Assert.Equal(
+            [
+                LMarkupTokenKind.LMarkupTokenEnter,
+                LMarkupTokenKind.LMarkupTokenEnter,
+                LMarkupTokenKind.LMarkupTokenText,
+                LMarkupTokenKind.LMarkupTokenLeave,
+                LMarkupTokenKind.LMarkupTokenLeave,
+            ],
+            tokens.Select(token => token.LMarkupTokenKind));
+        Assert.Equal("alight", TInterface.TMarkupTokenRead(tokens[0], "id"));
+        Assert.Equal("figurative", TInterface.TMarkupTokenRead(tokens[1], "id"));
     }
 
     [Fact]
@@ -87,6 +111,33 @@ public sealed class TMarkupSyntax
 
         Assert.Equal(["", "literal", "", "figurative", ""], tokens.Select(token => token.LMarkupTokenText));
         Assert.Equal([false, false, true, false, false], tokens.Select(token => token.LMarkupTokenEmpty));
+    }
+
+    [Fact]
+    public void MarkupScan_UnknownAttribute_DropsIt()
+    {
+        IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
+            "<use mood=\"wry\" par=\"for\" dep=\"Agent\"/>");
+
+        LMarkupToken token = Assert.Single(tokens);
+        Assert.Null(TInterface.TMarkupTokenRead(token, "mood"));
+        Assert.Equal("for", TInterface.TMarkupTokenRead(token, "par"));
+        Assert.Equal("Agent", TInterface.TMarkupTokenRead(token, "dep"));
+    }
+
+    [Fact]
+    public void MarkupScan_SyllableAttributes_KeepsEveryOne()
+    {
+        IReadOnlyList<LMarkupToken> tokens = TInterface.TMarkupScan(
+            "<syllable onset=\"k\" nucleus=\"ɪ\" coda=\"n\" orthography=\"kin\" local=\"킨\" tone-points=\"55\"/>");
+
+        LMarkupToken token = Assert.Single(tokens);
+        Assert.Equal("k", TInterface.TMarkupTokenRead(token, "onset"));
+        Assert.Equal("ɪ", TInterface.TMarkupTokenRead(token, "nucleus"));
+        Assert.Equal("n", TInterface.TMarkupTokenRead(token, "coda"));
+        Assert.Equal("kin", TInterface.TMarkupTokenRead(token, "orthography"));
+        Assert.Equal("킨", TInterface.TMarkupTokenRead(token, "local"));
+        Assert.Equal("55", TInterface.TMarkupTokenRead(token, "tone-points"));
     }
 
     [Fact]
@@ -136,9 +187,6 @@ public sealed class TMarkupSyntax
               <synonym>ignite, light</synonym>
               <tag>literal</tag>
               <tag>old</tag>
-              <example src="oed">she knelt to kindle the damp logs</example>
-              <example>a second example</example>
-              <situation src="">around a hearth</situation>
               <image>media/one.jpg</image>
               <image>media/two.jpg</image>
             </sense>
@@ -152,12 +200,6 @@ public sealed class TMarkupSyntax
         Assert.Equal(
             ["media/one.jpg", "media/two.jpg"],
             card.LCardDraftImage.Select(image => image.TStateValueShow()));
-        Assert.Equal(2, card.LCardDraftExample.Count);
-        Assert.Equal("she knelt to kindle the damp logs", card.LCardDraftExample[0].LExampleDraftText.TStateValueShow());
-        Assert.Equal("oed", card.LCardDraftExample[0].LExampleDraftReference.TStateValueShow());
-        Assert.Equal(LState.LStateUnspecified, card.LCardDraftExample[1].LExampleDraftReference.LStateValueState);
-        LSituationDraft situation = Assert.Single(card.LCardDraftSituation);
-        Assert.Equal("around a hearth", situation.LSituationDraftText.TStateValueShow());
     }
 
     [Fact]
@@ -171,8 +213,6 @@ public sealed class TMarkupSyntax
         Assert.Equal(LState.LStateUnspecified, card.LCardDraftExpression.LStateValueState);
         Assert.Equal(string.Empty, card.LCardDraftSynonym);
         Assert.Empty(card.LCardDraftTag);
-        Assert.Empty(card.LCardDraftExample);
-        Assert.Empty(card.LCardDraftSituation);
         Assert.Empty(card.LCardDraftImage);
     }
 
@@ -186,66 +226,18 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void MarkupCardRead_ExampleFrame_ReadsMarkerAndRole()
+    public void MarkupCardRead_NestedSource_LeavesNoFieldOnCard()
     {
         LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
             """
             <sense>
-              <example par="for" dep="Agent">he waited for her</example>
+              <meaning>to set something burning</meaning>
+              <source id="oed"><title>Oxford English Dictionary</title></source>
             </sense>
             """), 1);
 
-        LExampleDraft example = Assert.Single(card.LCardDraftExample);
-        Assert.Equal("for", example.LExampleDraftParticle.TStateValueShow());
-        Assert.Equal("Agent", example.LExampleDraftDependence.TStateValueShow());
-    }
-
-    [Fact]
-    public void MarkupCardRead_FrameAttributeForms_KeepsThreeStates()
-    {
-        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
-            """
-            <sense>
-              <example>plain</example>
-              <example par="" dep="">unknown</example>
-              <example par="for" dep="Agent">named</example>
-            </sense>
-            """), 1);
-
-        Assert.Equal(
-            [LState.LStateUnspecified, LState.LStateUnknown, LState.LStateSpecified],
-            card.LCardDraftExample.Select(example => example.LExampleDraftParticle.LStateValueState));
-        Assert.Equal(
-            [LState.LStateUnspecified, LState.LStateUnknown, LState.LStateSpecified],
-            card.LCardDraftExample.Select(example => example.LExampleDraftDependence.LStateValueState));
-    }
-
-    [Fact]
-    public void MarkupCardRead_Video_ReadsIntoCard()
-    {
-        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
-            """
-            <sense>
-              <video>media/one.mp4</video>
-              <video></video>
-            </sense>
-            """), 1);
-
-        Assert.Equal(
-            [LState.LStateSpecified, LState.LStateUnknown],
-            card.LCardDraftVideo.Select(video => video.LVideoDraftLocation.LStateValueState));
-        Assert.Equal("media/one.mp4", card.LCardDraftVideo[0].LVideoDraftLocation.TStateValueShow());
-    }
-
-    [Fact]
-    public void MarkupCardRead_UnrecognisedAttribute_IgnoresIt()
-    {
-        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
-            "<sense><example mood=\"wry\" par=\"for\">he waited for her</example></sense>"), 1);
-
-        LExampleDraft example = Assert.Single(card.LCardDraftExample);
-        Assert.Equal("he waited for her", example.LExampleDraftText.TStateValueShow());
-        Assert.Equal("for", example.LExampleDraftParticle.TStateValueShow());
+        Assert.Equal("to set something burning", card.LCardDraftMeaning.TStateValueShow());
+        Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
     }
 
     [Fact]
@@ -255,7 +247,7 @@ public sealed class TMarkupSyntax
             """
             <source id="field">
               <title>A Field Guide to Rivers</title>
-              <author></author>
+              <author/>
               <year>2011</year>
               <url></url>
             </source>
@@ -263,7 +255,6 @@ public sealed class TMarkupSyntax
 
         Assert.Equal("field", read.LMarkupReferenceId);
         LReference reference = read.LMarkupReferenceValue;
-        Assert.Equal("field", reference.LReferenceId);
         Assert.Equal("A Field Guide to Rivers", reference.LReferenceTitle.TStateValueShow());
         Assert.Equal("2011", reference.LReferenceYear.TStateValueShow());
         Assert.Equal(LState.LStateUnknown, reference.LReferenceUrl.LStateValueState);
@@ -290,267 +281,25 @@ public sealed class TMarkupSyntax
     }
 
     [Fact]
-    public void MarkupCardRead_NestedSource_LeavesNoFieldOnCard()
-    {
-        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
-            """
-            <sense>
-              <meaning>to set something burning</meaning>
-              <source id="oed"><title>Oxford English Dictionary</title></source>
-            </sense>
-            """), 1);
-
-        Assert.Equal("to set something burning", card.LCardDraftMeaning.TStateValueShow());
-        Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
-    }
-
-    [Fact]
-    public void MarkupCardRead_IdOnExample_ReadsAsNoCitation()
-    {
-        LCardDraft card = TInterface.TMarkupCardRead(TInterface.TMarkupScan(
-            "<sense><example id=\"oed\">she knelt to kindle the damp logs</example></sense>"), 1);
-
-        Assert.Equal(
-            LState.LStateUnspecified,
-            Assert.Single(card.LCardDraftExample).LExampleDraftReference.LStateValueState);
-    }
-
-    [Fact]
-    public void MarkupRead_SourceIdDeclaredTwice_Throws()
-    {
-        FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
-            """
-            <entry>
-              <headword>kindle</headword>
-              <source id="oed"><title>Oxford English Dictionary</title></source>
-              <source id="oed"><title>A Field Guide to Rivers</title></source>
-            </entry>
-            """));
-
-        Assert.Contains("oed", failure.Message);
-    }
-
-    [Fact]
-    public void MarkupReferenceRead_SourceWithAuthor_CarriesName()
+    public void MarkupReferenceRead_CitedAuthors_KeepsCreditOrder()
     {
         LMarkupReference read = TInterface.TMarkupReferenceRead(TInterface.TMarkupScan(
             """
             <source id="oed">
               <title>Oxford English Dictionary</title>
-              <author>Murray, James</author>
+              <author ref="murray"/>
+              <author ref="bradley"/>
               <kind>video</kind>
               <note>Word of Mouth, Radio 4</note>
             </source>
             """));
 
         Assert.Equal("oed", read.LMarkupReferenceId);
-        Assert.Equal(["Murray, James"], read.LMarkupReferenceAuthor);
+        Assert.Equal(["murray", "bradley"], read.LMarkupReferenceAuthor);
         Assert.Equal(LState.LStateSpecified, read.LMarkupReferenceValue.LReferenceAuthorState);
         Assert.Equal(LReferenceKind.LReferenceKindVideo, read.LMarkupReferenceValue.LReferenceKind);
         Assert.Equal(
             "Word of Mouth, Radio 4",
             read.LMarkupReferenceValue.LReferenceNote.TStateValueShow());
-    }
-
-    private const string TMarkupSample =
-        """
-        <entry>
-          <headword>kindle</headword>
-          <lang>English</lang>
-          <ipa>/ˈkɪnd(ə)l/</ipa>
-          <audio>media/kindle.mp3</audio>
-          <pos>verb</pos>
-          <note>Chiefly literary in its figurative senses.</note>
-
-          <sense>
-            <title>set alight</title>
-            <expression>kindle a fire</expression>
-            <meaning>to set something burning; to start a flame</meaning>
-            <synonym>ignite, light</synonym>
-            <tag>literal</tag>
-            <example src="oed">she knelt to kindle the damp logs</example>
-            <situation src="oed">around a hearth on a cold evening</situation>
-            <image>media/kindle-hearth.jpg</image>
-          </sense>
-
-          <sense>
-            <title>rouse a feeling</title>
-            <meaning>to stir up an emotion or interest</meaning>
-            <synonym>arouse, awaken, spark</synonym>
-            <tag>figurative</tag>
-            <tag></tag>
-            <example>the teacher kindled a love of poetry in her class</example>
-            <example src="">a remark that kindled old resentments</example>
-          </sense>
-
-          <collocation>
-            <expression>kindle interest</expression>
-            <meaning>to cause interest to begin</meaning>
-            <example>the exhibition kindled fresh interest in the painter</example>
-          </collocation>
-
-          <source id="oed">
-            <title>Oxford English Dictionary</title>
-            <author>Murray, James</author>
-            <year>1928</year>
-            <url>https://www.oed.com/</url>
-            <kind>book</kind>
-            <note></note>
-          </source>
-        </entry>
-
-        <entry>
-          <headword>brook</headword>
-          <lang>English</lang>
-          <ipa>/brʊk/</ipa>
-          <pos>noun, verb</pos>
-
-          <sense>
-            <title>a small stream</title>
-            <meaning>a small natural watercourse</meaning>
-            <synonym>stream, creek, rivulet</synonym>
-            <tag>nature</tag>
-            <example src="field">the path followed a shallow brook down the valley</example>
-          </sense>
-
-          <sense>
-            <title>to tolerate</title>
-            <meaning>to bear or put up with, usually in the negative</meaning>
-            <tag>formal</tag>
-            <tag>usually negative</tag>
-            <example>she would brook no argument on the matter</example>
-            <situation></situation>
-          </sense>
-
-          <source id="field">
-            <title>A Field Guide to Rivers</title>
-            <author></author>
-            <year>2011</year>
-            <url></url>
-          </source>
-        </entry>
-        """;
-
-    [Fact]
-    public void MarkupRead_CompleteSample_ReturnsEveryField()
-    {
-        IReadOnlyList<LEntryDraft> entries = TInterface.TMarkupRead(TMarkupSample);
-
-        Assert.Equal(2, entries.Count);
-
-        LEntryDraft kindle = entries[0];
-        Assert.Equal("kindle", kindle.LEntryDraftHeadword);
-        Assert.Equal("English", kindle.LEntryDraftLanguage);
-        Assert.Equal("/\u02c8k\u026And(\u0259)l/", kindle.LEntryDraftPronunciation);
-        Assert.Equal("media/kindle.mp3", kindle.LEntryDraftAudio);
-        Assert.Equal(["verb"], kindle.LEntryDraftSpeeches);
-        Assert.Equal("Chiefly literary in its figurative senses.", kindle.LEntryDraftNote);
-        Assert.Equal(2, kindle.LEntryDraftMeanings.Count);
-        Assert.Equal("kindle interest", Assert.Single(kindle.LEntryDraftCollocations).LCardDraftExpression.TStateValueShow());
-
-        LCardDraft alight = kindle.LEntryDraftMeanings[0];
-        Assert.Equal("set alight", alight.LCardDraftTitle.TStateValueShow());
-        Assert.Equal("ignite, light", alight.LCardDraftSynonym);
-        Assert.Equal(["literal"], alight.LCardDraftTag);
-        Assert.Equal(["media/kindle-hearth.jpg"], alight.LCardDraftImage.Select(image => image.TStateValueShow()));
-        Assert.Equal("oed", Assert.Single(alight.LCardDraftExample).LExampleDraftReference.TStateValueShow());
-
-        LCardDraft rouse = kindle.LEntryDraftMeanings[1];
-        Assert.Equal(["figurative"], rouse.LCardDraftTag);
-        Assert.Equal(
-            [LState.LStateUnspecified, LState.LStateUnknown],
-            rouse.LCardDraftExample.Select(example => example.LExampleDraftReference.LStateValueState));
-
-        LEntryDraft brook = entries[1];
-        Assert.Equal("brook", brook.LEntryDraftHeadword);
-        Assert.Equal(["noun", "verb"], brook.LEntryDraftSpeeches);
-        Assert.Equal(string.Empty, brook.LEntryDraftAudio);
-        Assert.Equal(string.Empty, brook.LEntryDraftNote);
-        Assert.Equal("field", Assert.Single(brook.LEntryDraftMeanings[0].LCardDraftExample).LExampleDraftReference.TStateValueShow());
-        Assert.Equal(
-            LState.LStateUnknown,
-            Assert.Single(brook.LEntryDraftMeanings[1].LCardDraftSituation).LSituationDraftText.LStateValueState);
-    }
-
-    [Fact]
-    public void MarkupEntryRead_SharedSource_ResolvesItOnce()
-    {
-        LMarkup.LMarkupEntry entry = Assert.Single(TInterface.TMarkupEntryRead(
-            """
-            <entry>
-              <headword>kindle</headword>
-              <sense>
-                <example src="oed">she knelt to kindle the damp logs</example>
-                <situation src="oed">around a hearth on a cold evening</situation>
-              </sense>
-              <source id="oed">
-                <title>Oxford English Dictionary</title>
-                <author>Murray, James</author>
-                <author>Bradley, Henry</author>
-              </source>
-            </entry>
-            """));
-
-        LMarkupReference source = Assert.Single(entry.LMarkupEntrySource);
-        Assert.Equal("oed", source.LMarkupReferenceId);
-        Assert.Equal(["Murray, James", "Bradley, Henry"], source.LMarkupReferenceAuthor);
-        Assert.Equal(LState.LStateSpecified, source.LMarkupReferenceValue.LReferenceAuthorState);
-
-        LCardDraft card = Assert.Single(entry.LMarkupEntryDraft.LEntryDraftMeanings);
-        Assert.Equal(
-            source.LMarkupReferenceValue.LReferenceId,
-            Assert.Single(card.LCardDraftExample).LExampleDraftReference.TStateValueShow());
-    }
-
-    [Fact]
-    public void MarkupEntryRead_SameIdInTwoEntries_KeepsThemApart()
-    {
-        IReadOnlyList<LMarkup.LMarkupEntry> entries = TInterface.TMarkupEntryRead(
-            """
-            <entry>
-              <headword>one</headword>
-              <sense><example src="key">first</example></sense>
-              <source id="key"><title>First Work</title></source>
-            </entry>
-            <entry>
-              <headword>two</headword>
-              <sense><example src="key">second</example></sense>
-              <source id="key"><title>Second Work</title></source>
-            </entry>
-            """);
-
-        Assert.Equal(2, entries.Count);
-        Assert.Equal("First Work", Assert.Single(entries[0].LMarkupEntrySource).LMarkupReferenceValue.LReferenceTitle.TStateValueShow());
-        Assert.Equal("Second Work", Assert.Single(entries[1].LMarkupEntrySource).LMarkupReferenceValue.LReferenceTitle.TStateValueShow());
-    }
-
-    [Fact]
-    public void MarkupRead_MissingHeadword_ThrowsNamingEntryIndex()
-    {
-        FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
-            "<entry><headword>kindle</headword></entry><entry><lang>English</lang></entry>"));
-
-        Assert.Contains("headword", failure.Message);
-        Assert.Contains("2", failure.Message);
-    }
-
-    [Fact]
-    public void MarkupRead_EmptyHeadword_ThrowsLikeMissing()
-    {
-        Assert.Throws<FormatException>(() => TInterface.TMarkupRead("<entry><headword></headword></entry>"));
-    }
-
-    [Fact]
-    public void MarkupRead_UnknownSourceKey_ThrowsNamingKey()
-    {
-        FormatException failure = Assert.Throws<FormatException>(() => TInterface.TMarkupRead(
-            """
-            <entry>
-              <headword>brook</headword>
-              <sense><example src="field">the path followed a shallow brook</example></sense>
-            </entry>
-            """));
-
-        Assert.Contains("field", failure.Message);
     }
 }

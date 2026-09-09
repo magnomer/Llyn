@@ -17,25 +17,73 @@ public static partial class LMarkup
     internal readonly record struct LMarkupToken(
         LMarkupTokenKind LMarkupTokenKind,
         string LMarkupTokenName,
-        string? LMarkupTokenSource,
-        string? LMarkupTokenParticle,
-        string? LMarkupTokenDependence,
+        IReadOnlyDictionary<string, string> LMarkupTokenMark,
         string LMarkupTokenText,
-        bool LMarkupTokenEmpty);
+        bool LMarkupTokenEmpty)
+    {
+        internal string? LMarkupTokenRead(string mark)
+        {
+            return LMarkupTokenMark.TryGetValue(mark, out string? value) ? value : null;
+        }
+    }
 
-    public readonly record struct LMarkupReference(
-        string LMarkupReferenceId,
-        LReference LMarkupReferenceValue,
-        IReadOnlyList<string> LMarkupReferenceAuthor);
+    internal static readonly IReadOnlyDictionary<string, string> LMarkupMarkEmpty =
+        new Dictionary<string, string>(StringComparer.Ordinal);
 
     private static readonly HashSet<string> LMarkupBlockList =
-        new HashSet<string>(StringComparer.Ordinal) { "entry", "sense", "collocation", "source" };
+        new HashSet<string>(StringComparer.Ordinal)
+        {
+            "llyn",
+            "catalog",
+            "entry",
+            "sense",
+            "collocation",
+            "source",
+            "example",
+            "situation",
+            "register",
+            "video",
+            "inflection",
+            "pronunciation",
+            "relation",
+        };
+
+    private static readonly HashSet<string> LMarkupMarkList =
+        new HashSet<string>(StringComparer.Ordinal)
+        {
+            "id",
+            "ref",
+            "src",
+            "par",
+            "dep",
+            "lang",
+            "role",
+            "local",
+            "pos",
+            "entry",
+            "sense",
+            "type",
+            "label",
+            "labels",
+            "level",
+            "system",
+            "builtin",
+            "source",
+            "onset",
+            "medial",
+            "nucleus",
+            "coda",
+            "orthography",
+            "tone",
+            "tone-local",
+            "tone-points",
+        };
 
     public static IReadOnlyList<LEntryDraft> LMarkupRead(string text)
     {
         List<LEntryDraft> drafts = new List<LEntryDraft>();
 
-        foreach (LMarkupEntry entry in LMarkupEntryRead(text))
+        foreach (LMarkupEntry entry in LMarkupEntryRead(text).LMarkupDocumentEntry)
         {
             drafts.Add(entry.LMarkupEntryDraft);
         }
@@ -74,23 +122,23 @@ public static partial class LMarkup
 
                 blocks.Pop();
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenLeave, closed, null, null, null, string.Empty, false));
+                    LMarkupTokenKind.LMarkupTokenLeave, closed, LMarkupMarkEmpty, string.Empty, false));
                 continue;
             }
 
             string name = LMarkupNameRead(text, ref position, start);
-            (string? cited, string? named, string? marked, string? filled, bool closing) =
+            (IReadOnlyDictionary<string, string> mark, bool closing) =
                 LMarkupHeadRead(text, ref position, start, name);
 
             if (LMarkupBlockList.Contains(name))
             {
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenEnter, name, named, null, null, string.Empty, closing));
+                    LMarkupTokenKind.LMarkupTokenEnter, name, mark, string.Empty, closing));
 
                 if (closing)
                 {
                     tokens.Add(new LMarkupToken(
-                        LMarkupTokenKind.LMarkupTokenLeave, name, null, null, null, string.Empty, false));
+                        LMarkupTokenKind.LMarkupTokenLeave, name, LMarkupMarkEmpty, string.Empty, false));
                 }
                 else
                 {
@@ -103,13 +151,13 @@ public static partial class LMarkup
             if (closing)
             {
                 tokens.Add(new LMarkupToken(
-                    LMarkupTokenKind.LMarkupTokenText, name, cited, marked, filled, string.Empty, true));
+                    LMarkupTokenKind.LMarkupTokenText, name, mark, string.Empty, true));
                 continue;
             }
 
             string inner = LMarkupTextRead(text, ref position, start, name);
             tokens.Add(new LMarkupToken(
-                LMarkupTokenKind.LMarkupTokenText, name, cited, marked, filled, inner, inner.Length == 0));
+                LMarkupTokenKind.LMarkupTokenText, name, mark, inner, inner.Length == 0));
         }
 
         if (blocks.Count > 0)
@@ -163,9 +211,9 @@ public static partial class LMarkup
                     examples.Add(new LExampleDraft(
                         LMarkupStateRead(token),
                         string.Empty,
-                        LMarkupStateRead(token.LMarkupTokenSource),
-                        LMarkupStateRead(token.LMarkupTokenParticle),
-                        LMarkupStateRead(token.LMarkupTokenDependence)));
+                        LMarkupStateRead(token.LMarkupTokenRead("src")),
+                        LMarkupStateRead(token.LMarkupTokenRead("par")),
+                        LMarkupStateRead(token.LMarkupTokenRead("dep"))));
                     break;
                 case "situation":
                     situations.Add(new LSituationDraft(LMarkupStateRead(token), string.Empty));
@@ -191,80 +239,6 @@ public static partial class LMarkup
             images,
             videos,
             position);
-    }
-
-    internal static LMarkupReference LMarkupReferenceRead(IReadOnlyList<LMarkupToken> tokens)
-    {
-        string? named = tokens.Count > 0 && tokens[0].LMarkupTokenKind == LMarkupTokenKind.LMarkupTokenEnter
-            ? tokens[0].LMarkupTokenSource
-            : null;
-
-        if (string.IsNullOrEmpty(named))
-        {
-            throw new FormatException("A source is declared without an id.");
-        }
-
-        string id = named;
-
-        LMarkupToken? title = null;
-        List<LMarkupToken> authors = new List<LMarkupToken>();
-        LMarkupToken? year = null;
-        LMarkupToken? url = null;
-        LMarkupToken? kind = null;
-        LMarkupToken? note = null;
-
-        foreach (LMarkupToken token in LMarkupLeafRead(tokens))
-        {
-            switch (token.LMarkupTokenName)
-            {
-                case "title":
-                    title = token;
-                    break;
-                case "author":
-                    authors.Add(token);
-                    break;
-                case "year":
-                    year = token;
-                    break;
-                case "url":
-                    url = token;
-                    break;
-                case "kind":
-                    kind = token;
-                    break;
-                case "note":
-                    note = token;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        List<string> names = new List<string>();
-        foreach (LMarkupToken author in authors)
-        {
-            if (!author.LMarkupTokenEmpty)
-            {
-                names.Add(author.LMarkupTokenText);
-            }
-        }
-
-        LState credited = names.Count > 0
-            ? LState.LStateSpecified
-            : authors.Count > 0
-                ? LState.LStateUnknown
-                : LState.LStateUnspecified;
-
-        LReference reference = new LReference(
-            id,
-            LMarkupStateRead(title),
-            LMarkupStateRead(year),
-            LMarkupKindRead(kind),
-            LMarkupStateRead(note),
-            LMarkupStateRead(url),
-            credited);
-
-        return new LMarkupReference(id, reference, names);
     }
 
     private static IEnumerable<LMarkupToken> LMarkupLeafRead(IReadOnlyList<LMarkupToken> tokens)
@@ -300,18 +274,6 @@ public static partial class LMarkup
         }
 
         tags.Add(token.LMarkupTokenText);
-    }
-
-    private static LReferenceKind LMarkupKindRead(LMarkupToken? token)
-    {
-        if (token is null)
-        {
-            return LReferenceKind.LReferenceKindUnspecified;
-        }
-
-        return token.Value.LMarkupTokenEmpty
-            ? LReferenceKind.LReferenceKindUnknown
-            : LReference.LReferenceKindParse(token.Value.LMarkupTokenText);
     }
 
     private static LStateValue LMarkupStateRead(LMarkupToken? token)
@@ -354,13 +316,10 @@ public static partial class LMarkup
         return text[first..position];
     }
 
-    private static (string? Cited, string? Named, string? Marked, string? Filled, bool Closing)
+    private static (IReadOnlyDictionary<string, string> Mark, bool Closing)
         LMarkupHeadRead(string text, ref int position, int start, string name)
     {
-        string? cited = null;
-        string? named = null;
-        string? marked = null;
-        string? filled = null;
+        Dictionary<string, string>? mark = null;
 
         while (true)
         {
@@ -377,7 +336,7 @@ public static partial class LMarkup
             if (text[position] == '>')
             {
                 position++;
-                return (cited, named, marked, filled, false);
+                return (mark ?? LMarkupMarkEmpty, false);
             }
 
             if (text[position] == '/')
@@ -389,7 +348,7 @@ public static partial class LMarkup
                 }
 
                 position++;
-                return (cited, named, marked, filled, true);
+                return (mark ?? LMarkupMarkEmpty, true);
             }
 
             int first = position;
@@ -407,22 +366,13 @@ public static partial class LMarkup
             string attribute = text[first..position];
             string value = LMarkupValueRead(text, ref position, name);
 
-            if (string.Equals(attribute, "src", StringComparison.Ordinal))
+            if (!LMarkupMarkList.Contains(attribute))
             {
-                cited = value;
+                continue;
             }
-            else if (string.Equals(attribute, "id", StringComparison.Ordinal))
-            {
-                named = value;
-            }
-            else if (string.Equals(attribute, "par", StringComparison.Ordinal))
-            {
-                marked = value;
-            }
-            else if (string.Equals(attribute, "dep", StringComparison.Ordinal))
-            {
-                filled = value;
-            }
+
+            mark ??= new Dictionary<string, string>(StringComparer.Ordinal);
+            mark[attribute] = value;
         }
     }
 

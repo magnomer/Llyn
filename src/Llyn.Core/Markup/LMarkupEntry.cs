@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -7,29 +7,68 @@ public static partial class LMarkup
 {
     public readonly record struct LMarkupEntry(
         LEntryDraft LMarkupEntryDraft,
-        IReadOnlyList<LMarkupReference> LMarkupEntrySource);
+        string LMarkupEntryKey);
 
-    public static IReadOnlyList<LMarkupEntry> LMarkupEntryRead(string text)
+    public readonly record struct LMarkupDocument(
+        LMarkupCatalog LMarkupDocumentCatalog,
+        IReadOnlyList<LMarkupEntry> LMarkupDocumentEntry);
+
+    public static LMarkupDocument LMarkupEntryRead(string text)
     {
         IReadOnlyList<LMarkupToken> tokens = LMarkupScan(text);
-        List<LMarkupEntry> entries = new List<LMarkupEntry>();
-        int position = 0;
 
-        while (position < tokens.Count)
+        if (tokens.Count == 0
+            || tokens[0].LMarkupTokenKind != LMarkupTokenKind.LMarkupTokenEnter
+            || !string.Equals(tokens[0].LMarkupTokenName, "llyn", StringComparison.Ordinal))
         {
-            if (tokens[position].LMarkupTokenKind != LMarkupTokenKind.LMarkupTokenEnter ||
-                !string.Equals(tokens[position].LMarkupTokenName, "entry", StringComparison.Ordinal))
+            throw new FormatException("The document does not open with a '<llyn>' element.");
+        }
+
+        int root = LMarkupBlockFind(tokens, 0);
+        LMarkupCatalog catalog = LMarkupCatalogFind(tokens, root);
+        catalog = catalog with { LMarkupCatalogRow = LMarkupKeyRead(tokens, catalog) };
+        LMarkupCitationValidate(tokens, catalog.LMarkupCatalogRow);
+
+        List<LMarkupEntry> entries = new List<LMarkupEntry>();
+
+        for (int position = 1; position < root; position++)
+        {
+            if (tokens[position].LMarkupTokenKind != LMarkupTokenKind.LMarkupTokenEnter)
             {
-                position++;
                 continue;
             }
 
             int close = LMarkupBlockFind(tokens, position);
-            entries.Add(LMarkupEntryCreate(tokens, position, close, entries.Count + 1));
-            position = close + 1;
+            if (string.Equals(tokens[position].LMarkupTokenName, "entry", StringComparison.Ordinal))
+            {
+                entries.Add(LMarkupEntryCreate(tokens, position, close, entries.Count + 1));
+            }
+
+            position = close;
         }
 
-        return entries;
+        return new LMarkupDocument(catalog, entries);
+    }
+
+    private static LMarkupCatalog LMarkupCatalogFind(IReadOnlyList<LMarkupToken> tokens, int root)
+    {
+        for (int position = 1; position < root; position++)
+        {
+            if (tokens[position].LMarkupTokenKind != LMarkupTokenKind.LMarkupTokenEnter)
+            {
+                continue;
+            }
+
+            int close = LMarkupBlockFind(tokens, position);
+            if (string.Equals(tokens[position].LMarkupTokenName, "catalog", StringComparison.Ordinal))
+            {
+                return LMarkupCatalogRead(tokens, position, close);
+            }
+
+            position = close;
+        }
+
+        return LMarkupCatalog.LMarkupCatalogCreate();
     }
 
     private static LMarkupEntry LMarkupEntryCreate(
@@ -43,7 +82,6 @@ public static partial class LMarkup
         LMarkupToken? note = null;
         List<LCardDraft> meanings = new List<LCardDraft>();
         List<LCardDraft> collocations = new List<LCardDraft>();
-        List<LMarkupReference> sources = new List<LMarkupReference>();
 
         for (int position = first + 1; position < last; position++)
         {
@@ -61,9 +99,6 @@ public static partial class LMarkup
                         break;
                     case "collocation":
                         collocations.Add(LMarkupCardRead(block, collocations.Count + 1));
-                        break;
-                    case "source":
-                        sources.Add(LMarkupReferenceRead(block));
                         break;
                     default:
                         break;
@@ -111,19 +146,6 @@ public static partial class LMarkup
                 : $"Entry {place} has an unreadable headword.");
         }
 
-        HashSet<string> registry = new HashSet<string>(StringComparer.Ordinal);
-        foreach (LMarkupReference source in sources)
-        {
-            if (!registry.Add(source.LMarkupReferenceId))
-            {
-                throw new FormatException(
-                    $"Entry {place} declares the source id '{source.LMarkupReferenceId}' twice.");
-            }
-        }
-
-        LMarkupCitationCheck(meanings, registry);
-        LMarkupCitationCheck(collocations, registry);
-
         LEntryDraft draft = new LEntryDraft(
             word,
             LMarkupStateRead(language).LStateValueShow(),
@@ -135,33 +157,7 @@ public static partial class LMarkup
             null,
             LMarkupSpeechRead(speech));
 
-        return new LMarkupEntry(draft, sources);
-    }
-
-    private static void LMarkupCitationCheck(
-        IReadOnlyList<LCardDraft> cards, IReadOnlySet<string> registry)
-    {
-        foreach (LCardDraft card in cards)
-        {
-            foreach (LExampleDraft example in card.LCardDraftExample)
-            {
-                LMarkupSourceCheck(example.LExampleDraftReference, registry);
-            }
-        }
-    }
-
-    private static void LMarkupSourceCheck(LStateValue citation, IReadOnlySet<string> registry)
-    {
-        if (citation.LStateValueState != LState.LStateSpecified)
-        {
-            return;
-        }
-
-        string key = citation.LStateValueText ?? string.Empty;
-        if (!registry.Contains(key))
-        {
-            throw new FormatException($"Citation names no source declared in its entry: '{key}'.");
-        }
+        return new LMarkupEntry(draft, tokens[first].LMarkupTokenRead("id") ?? string.Empty);
     }
 
     private static IReadOnlyList<string> LMarkupSpeechRead(LMarkupToken? token)
