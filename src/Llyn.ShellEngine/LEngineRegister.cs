@@ -213,19 +213,6 @@ public sealed partial class LEngine
         return true;
     }
 
-    private static bool LEngineRegisterCheck(IReadOnlyList<LRegisterDraft> drafts)
-    {
-        foreach (LRegisterDraft draft in drafts)
-        {
-            if (!draft.LRegisterDraftName.LStateValueEmpty)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static IEnumerable<LRegisterDraft> LEngineRegisterRead(IReadOnlyList<LRegisterDraft> drafts)
     {
         foreach (LRegisterDraft draft in drafts)

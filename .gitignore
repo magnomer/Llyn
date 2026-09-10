@@ -98,3 +98,5 @@ $RECYCLE.BIN/
 
 # Temporary gitignore
 /docs/
+# Local structure-audit configuration
+/auditstructure.json

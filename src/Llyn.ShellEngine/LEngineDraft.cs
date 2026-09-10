@@ -223,36 +223,11 @@ public sealed partial class LEngine
     {
         foreach (LCardDraft card in cards)
         {
-            if (!card.LCardDraftTitle.LStateValueEmpty ||
-                !card.LCardDraftExpression.LStateValueEmpty ||
-                !card.LCardDraftMeaning.LStateValueEmpty ||
-                !string.IsNullOrWhiteSpace(card.LCardDraftSynonym) ||
-                !string.IsNullOrWhiteSpace(card.LCardDraftGloss) ||
-                LEngineSentenceCheck(card.LCardDraftSentence) ||
-                LEngineSituationCheck(card.LCardDraftSituation) ||
-                LEngineRegisterCheck(card.LCardDraftRegister) ||
-                LEngineTagCheck(card.LCardDraftTag) ||
-                LEngineTranslationCheck(card.LCardDraftTranslation) ||
-                LEngineImageCheck(card.LCardDraftImage) ||
-                LEngineVideoCheck(card.LCardDraftVideo) ||
-                card.LCardDraftChild.Count > 0)
+            if (!card.LCardDraftEmpty)
             {
                 yield return card;
             }
         }
-    }
-
-    private static bool LEngineSentenceCheck(IReadOnlyList<LSentenceDraft> drafts)
-    {
-        foreach (LSentenceDraft draft in drafts)
-        {
-            if (!draft.LSentenceDraftEmpty)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static IEnumerable<LSentenceDraft> LEngineSentenceRead(IReadOnlyList<LSentenceDraft> drafts)
@@ -310,19 +285,6 @@ public sealed partial class LEngine
             written.LExampleDraftReference));
     }
 
-    private static bool LEngineSituationCheck(IReadOnlyList<LSituationDraft> drafts)
-    {
-        foreach (LSituationDraft draft in drafts)
-        {
-            if (!draft.LSituationDraftTitle.LStateValueEmpty)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static IEnumerable<LSituationDraft> LEngineSituationRead(IReadOnlyList<LSituationDraft> drafts)
     {
         foreach (LSituationDraft draft in drafts)
@@ -364,45 +326,6 @@ public sealed partial class LEngine
             draft.LSituationDraftKind)).LSituationId;
     }
 
-    private static bool LEngineTagCheck(IReadOnlyList<string> texts)
-    {
-        foreach (string text in texts)
-        {
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool LEngineTranslationCheck(IReadOnlyList<string> ids)
-    {
-        foreach (string id in ids)
-        {
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool LEngineVideoCheck(IReadOnlyList<LVideoDraft> rows)
-    {
-        foreach (LVideoDraft row in rows)
-        {
-            if (!row.LVideoDraftEmpty)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     internal static IEnumerable<LVideoDraft> LEngineVideoRead(IReadOnlyList<LVideoDraft> rows)
     {
         foreach (LVideoDraft row in rows)
@@ -412,19 +335,6 @@ public sealed partial class LEngine
                 yield return row;
             }
         }
-    }
-
-    private static bool LEngineImageCheck(IReadOnlyList<LImageDraft> rows)
-    {
-        foreach (LImageDraft row in rows)
-        {
-            if (!row.LImageDraftEmpty)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     internal static IEnumerable<LImageDraft> LEngineImageRead(IReadOnlyList<LImageDraft> rows)

@@ -115,6 +115,32 @@ public sealed class TDraftExample
         Assert.Contains(launched.TEngineLeftoverRead(), draft => draft.LDraftId == kept);
     }
 
+    [Fact]
+    public void ExampleCommit_SentenceWithNoLanguage_StoresIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LDraft started = engine.TEngineExampleStart("Corpus", null);
+
+        engine.TEngineExampleSave(started with
+        {
+            LDraftExample = TDraftSentenceCreate(started, "she knelt to kindle the damp logs") with
+            {
+                LExampleLanguage = string.Empty,
+            },
+        });
+
+        LExample stored = engine.TEngineExampleCommit(started.LDraftId);
+
+        Assert.Equal(string.Empty, stored.LExampleLanguage);
+
+        LExample? written = engine.TEngineExampleRead(stored.LExampleId);
+
+        Assert.NotNull(written);
+        Assert.Equal(string.Empty, written.LExampleLanguage);
+    }
+
     private static LExample TDraftSentenceCreate(LDraft draft, string text)
     {
         Assert.NotNull(draft.LDraftExample);

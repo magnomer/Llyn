@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -127,10 +127,6 @@ internal static partial class TInterface
     {
         engine.LEngineLeftoverSweep();
     }
-
-    internal static IReadOnlyList<LMarkupLoss> TEngineMarkupExport(
-        this LEngine engine, IReadOnlyList<string> entryIds, string path) =>
-        engine.LEngineMarkupExport(entryIds, path);
 
     internal static IReadOnlyList<LEntry> TEngineMarkupImport(this LEngine engine, string path) =>
         engine.LEngineMarkupImport(path);

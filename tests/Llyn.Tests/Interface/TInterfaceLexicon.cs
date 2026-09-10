@@ -1,10 +1,5 @@
 using Llyn.Core;
 
-using LMarkupCatalog = Llyn.Core.LMarkup.LMarkupCatalog;
-using LMarkupDocument = Llyn.Core.LMarkup.LMarkupDocument;
-using LMarkupReference = Llyn.Core.LMarkup.LMarkupReference;
-using LMarkupToken = Llyn.Core.LMarkup.LMarkupToken;
-
 namespace Llyn.Tests;
 
 internal static partial class TInterface
@@ -193,34 +188,6 @@ internal static partial class TInterface
         string? speechId,
         IReadOnlyList<LFeature> features) =>
         new(entryId, position, text, local, speechId, features);
-
-    internal static LCardDraft TMarkupCardRead(
-        IReadOnlyList<LMarkupToken> tokens,
-        int position,
-        LMarkupCatalog? catalog = null,
-        bool collocation = false) =>
-        LMarkup.LMarkupCardRead(
-            catalog ?? LMarkupCatalog.LMarkupCatalogCreate(),
-            tokens,
-            0,
-            tokens.Count - 1,
-            position,
-            collocation);
-
-    internal static LMarkupDocument TMarkupEntryRead(string text) =>
-        LMarkup.LMarkupEntryRead(text);
-
-    internal static string? TMarkupTokenRead(LMarkupToken token, string mark) =>
-        token.LMarkupTokenRead(mark);
-
-    internal static IReadOnlyList<LEntryDraft> TMarkupRead(string text) =>
-        LMarkup.LMarkupRead(text);
-
-    internal static LMarkupReference TMarkupReferenceRead(IReadOnlyList<LMarkupToken> tokens) =>
-        LMarkup.LMarkupReferenceRead(tokens);
-
-    internal static IReadOnlyList<LMarkupToken> TMarkupScan(string text) =>
-        LMarkup.LMarkupScan(text);
 
     internal static LMorphology TMorphologyCreate(
         string language,

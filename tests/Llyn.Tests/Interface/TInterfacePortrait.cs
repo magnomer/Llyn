@@ -79,10 +79,6 @@ internal static partial class TInterface
             favorite,
             label);
 
-    internal static string TMarkupDraftFormat(
-        LMarkup.LMarkupDocument document, IReadOnlyDictionary<string, string> keys) =>
-        LMarkupDraft.LMarkupDraftFormat(document, keys);
-
     internal static LTheme TThemeLoad() => LTheme.LThemeLoad();
 
     internal static string TThemeRead(this LTheme theme, string name) => theme.LThemeRead(name);

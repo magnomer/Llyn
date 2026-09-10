@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Llyn.Core;
 
@@ -44,4 +45,22 @@ public sealed record LCardDraft(
 
     public LStateValue LCardDraftMeaning { get; init; } =
         LCardDraftMeaning ?? LStateValue.LStateValueUnspecified;
+
+    public bool LCardDraftEmpty =>
+        LCardDraftTitle.LStateValueEmpty
+        && LCardDraftExpression.LStateValueEmpty
+        && LCardDraftMeaning.LStateValueEmpty
+        && string.IsNullOrWhiteSpace(LCardDraftSynonym)
+        && string.IsNullOrWhiteSpace(LCardDraftGloss)
+        && string.IsNullOrWhiteSpace(LCardDraftLabels)
+        && LCardDraftChild.Count == 0
+        && LCardDraftSentence.All(static row => row.LSentenceDraftEmpty)
+        && LCardDraftSituation.All(static row => row.LSituationDraftTitle.LStateValueEmpty)
+        && LCardDraftRegister.All(static row => row.LRegisterDraftName.LStateValueEmpty)
+        && LCardDraftTranslation.All(static text => string.IsNullOrWhiteSpace(text))
+        && LCardDraftTag.All(static text => string.IsNullOrWhiteSpace(text))
+        && LCardDraftImage.All(static row => row.LImageDraftEmpty)
+        && LCardDraftVideo.All(static row => row.LVideoDraftEmpty)
+        && LCardDraftRelation.All(static row => row.LRelationDraftEmpty)
+        && LCardDraftInterlink.All(static row => row.LSynonymDraftEmpty);
 }

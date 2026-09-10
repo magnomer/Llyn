@@ -25,6 +25,8 @@ Binds the store to the workspace `database` it opens sessions through.
 
 Inserts `example` with a fresh opaque id and returns the stored Example with that id filled in.
 The new Example is referenced by nothing until it is attached to a referrer.
+An Example's language is optional and an empty one is stored as written.
+A sentence may be written in two languages, so no one language can be demanded of it.
 
 ## `public LExample? LExampleRead(string id)`
 

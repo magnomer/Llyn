@@ -104,3 +104,13 @@ A comparison that means "the same card" walks the lists itself.
 - `LCardDraftKey` — The key the file declared this card under, empty for a card from the workspace.
   A relation in another entry may name this card, and the key is how it does.
   It never reaches the store, because a key means nothing outside the file that wrote it.
+
+## Inline notes
+
+### `public bool LCardDraftEmpty`
+
+A card is empty when every field a reader can fill is empty.
+The save drops such a card, and the update reads it as a card the user removed.
+The test lives here rather than in the engine because the fields it walks live here.
+A field added to the record is added to this walk in the same file, at the same time.
+The engine restated the list by hand once, and fell three fields behind the record.

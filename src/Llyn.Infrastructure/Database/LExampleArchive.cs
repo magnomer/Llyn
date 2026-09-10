@@ -18,7 +18,6 @@ public sealed class LExampleArchive
     public LExample LExampleCreate(LExample example)
     {
         ArgumentNullException.ThrowIfNull(example);
-        ArgumentException.ThrowIfNullOrWhiteSpace(example.LExampleLanguage);
 
         LExample stored = example with
         {

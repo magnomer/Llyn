@@ -21,8 +21,9 @@ It also holds the push back, so a fill never writes what it has just read.
 
 ## `private void PSpeakerLoad()`
 
-Reads the workspace languages and fixes a default for an Example being written for the first time.
-The `example` row requires a language, so the field is never left empty on the way to the store.
+Reads the workspace languages the picker offers.
+No default is chosen, because an Example's language is optional and the store accepts none.
+Choosing one here would put a language on every sentence the user never named.
 
 ## `private void PCitationFind()`
 
@@ -47,6 +48,8 @@ Typing is a recording, so what stood there as unreadable stops being that the mo
 ## `private void PTranscriptApply(LExample? example)`
 
 Fills every field from the held sentence, or empties them when no draft stands.
+The language is taken as the sentence carries it, an empty one included.
+Keeping the last shown language would write it onto a sentence imported without one.
 The delete control and the usage count follow the stored id the draft names, not the sentence being written.
 A sentence the engine has not stored yet can be deleted from nothing.
 The control stays off until it names one.

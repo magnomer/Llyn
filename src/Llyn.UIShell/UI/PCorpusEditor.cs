@@ -38,11 +38,6 @@ public partial class PCorpus
                 language, PEnsign.PEnsignFind(language)));
         }
 
-        if (_pTranscriptLanguage.Length == 0 && languages.Count > 0)
-        {
-            _pTranscriptLanguage = languages[0];
-        }
-
         PSpeakerShow();
     }
 
@@ -175,10 +170,7 @@ public partial class PCorpus
             example?.LExampleTranslation.LStateValueState == LState.LStateUnknown;
         PTranscriptTranslation.Tag = _pTranscriptTranslationUnreadable ? unreadable : string.Empty;
 
-        if (example is not null && example.LExampleLanguage.Length > 0)
-        {
-            _pTranscriptLanguage = example.LExampleLanguage;
-        }
+        _pTranscriptLanguage = example?.LExampleLanguage ?? string.Empty;
 
         PSpeakerShow();
 
