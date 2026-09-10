@@ -26,3 +26,9 @@ A reader who begins to write finds it unchanged.
 Examples are drawn in the typography the language pack declares for them.
 Both modes read the same two keys, and each sets them on itself for the entry it shows.
 The fallback for a pack that declares none is written once, with the rest of a card's measurements.
+
+### `<local:PSentenceConverter x:Key="Display.Card.Frame" />`
+
+The sentence order and the inset are read nowhere but here.
+They stand in this file so the example row can name them without reaching outside it.
+The display holds one of each, since this dictionary is merged once.

@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIShell">
 
+    <local:PSentenceConverter x:Key="Display.Card.Frame" />
+    <local:PFontConverter x:Key="Display.Card.Inset" />
+
     <Style x:Key="Display.Card.Example" TargetType="Border">
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.ExampleMargin}" />
         <Setter Property="Padding" Value="{DynamicResource Theme.Card.ExamplePadding}" />

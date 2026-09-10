@@ -3,6 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIShell">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn;component/UI/PDisplayState.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <DataTemplate x:Key="Display.Meaning.Card">
         <Border Style="{DynamicResource Theme.Card.Shell}">
             <Grid>
@@ -24,7 +28,7 @@
                                 Foreground="{DynamicResource Theme.Accent}"
                                 Text="{Binding LCardDraftPosition}" />
                         </Border>
-                        <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Title}">
+                        <TextBlock Grid.Column="1" Style="{DynamicResource Display.Card.Title}">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource Display.Card.State}">
                                     <Binding Path="LCardDraftTitle" />
@@ -32,7 +36,7 @@
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
-                        <TextBlock Grid.Column="1" Style="{StaticResource Display.Card.Kind}" Text="{DynamicResource Display.MeaningSingle}" />
+                        <TextBlock Grid.Column="1" Style="{DynamicResource Display.Card.Kind}" Text="{DynamicResource Display.MeaningSingle}" />
                     </Grid>
                 </Border>
                 <Grid Grid.Row="1" Style="{DynamicResource Theme.Card.Body}">
@@ -41,7 +45,7 @@
                         <ColumnDefinition Style="{DynamicResource Theme.Card.Gutter}" />
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource Display.Card.Definition}">
+                        <TextBlock Style="{DynamicResource Display.Card.Definition}">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource Display.Card.State}">
                                     <Binding Path="LCardDraftMeaning" />
@@ -49,7 +53,7 @@
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
-                        <ContentControl Content="{Binding}" ContentTemplate="{StaticResource Display.Card.Body}" Focusable="False" />
+                        <ContentControl Content="{Binding}" ContentTemplate="{DynamicResource Display.Card.Body}" Focusable="False" />
                     </StackPanel>
                 </Grid>
             </Grid>
