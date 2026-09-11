@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -18,7 +18,7 @@ public sealed partial class LEngine
             {
                 if (_lEngineDraftHeld.Contains(draft.LDraftId)
                     || LEngineClaimCheck(draft.LDraftId)
-                    || string.IsNullOrWhiteSpace(draft.LDraftEntry))
+                    || draft.LDraftEntry <= 0)
                 {
                     continue;
                 }

@@ -14,8 +14,8 @@ public static class LSchemaRelation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS relation (
-                id TEXT NOT NULL PRIMARY KEY,
-                sense_id TEXT NOT NULL,
+                id INTEGER PRIMARY KEY,
+                sense_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 relation_type TEXT NOT NULL,
                 label TEXT,
@@ -24,15 +24,15 @@ public static class LSchemaRelation
             );
 
             CREATE TABLE IF NOT EXISTS relation_entry (
-                relation_id TEXT NOT NULL PRIMARY KEY,
-                entry_id TEXT NOT NULL,
+                relation_id INTEGER NOT NULL PRIMARY KEY,
+                entry_id INTEGER NOT NULL,
                 FOREIGN KEY (relation_id) REFERENCES relation (id) ON DELETE CASCADE,
                 FOREIGN KEY (entry_id) REFERENCES entry (id)
             );
 
             CREATE TABLE IF NOT EXISTS relation_sense (
-                relation_id TEXT NOT NULL PRIMARY KEY,
-                sense_id TEXT NOT NULL,
+                relation_id INTEGER NOT NULL PRIMARY KEY,
+                sense_id INTEGER NOT NULL,
                 FOREIGN KEY (relation_id) REFERENCES relation (id) ON DELETE CASCADE,
                 FOREIGN KEY (sense_id) REFERENCES sense (id)
             );

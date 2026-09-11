@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 
 namespace Llyn.Core;
 
 public sealed record LDraft(
-    string LDraftId,
+    long LDraftId,
     string LDraftOrigin,
-    string LDraftEntry,
+    long LDraftEntry,
     LEntryDraft LDraftContent,
     DateTimeOffset LDraftMoment,
     LExample? LDraftExample = null,

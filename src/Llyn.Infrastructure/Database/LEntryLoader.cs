@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -14,9 +14,9 @@ public sealed class LEntryLoader
         _lEntryLoaderDatabase = database;
     }
 
-    public LEntryDraft? LEntryLoad(string id)
+    public LEntryDraft? LEntryLoad(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lEntryLoaderDatabase.LDatabaseSessionStart();
 
@@ -40,10 +40,10 @@ public sealed class LEntryLoader
             ? null
             : pronunciations.LPronunciationAudioRead(pronunciation.LPronunciationId);
 
-        Dictionary<string, List<LMeaning>> senses = new(StringComparer.Ordinal);
+        Dictionary<long, List<LMeaning>> senses = [];
         foreach (LMeaning meaning in new LMeaningArchive(_lEntryLoaderDatabase).LMeaningRead(id))
         {
-            string parent = meaning.LMeaningParentId ?? string.Empty;
+            long parent = meaning.LMeaningParentId ?? 0;
             if (!senses.TryGetValue(parent, out List<LMeaning>? group))
             {
                 group = [];
@@ -53,7 +53,7 @@ public sealed class LEntryLoader
             group.Add(meaning);
         }
 
-        IReadOnlyList<LCardDraft> meaningCards = LEntryChildRead(senses, string.Empty);
+        IReadOnlyList<LCardDraft> meaningCards = LEntryChildRead(senses, 0);
 
         List<LCardDraft> collocationCards = [];
         foreach (LCollocation collocation in new LCollocationArchive(_lEntryLoaderDatabase).LCollocationRead(id))
@@ -80,7 +80,7 @@ public sealed class LEntryLoader
     }
 
     private IReadOnlyList<LCardDraft> LEntryChildRead(
-        IReadOnlyDictionary<string, List<LMeaning>> senses, string parentId)
+        IReadOnlyDictionary<long, List<LMeaning>> senses, long parentId)
     {
         if (!senses.TryGetValue(parentId, out List<LMeaning>? group))
         {
@@ -149,7 +149,7 @@ public sealed class LEntryLoader
     }
 
     private LCardDraft LEntryCardRead(
-        string ownerId,
+        long ownerId,
         bool collocation,
         int position,
         LStateValue title,
@@ -193,7 +193,7 @@ public sealed class LEntryLoader
             LCardDraftInterlink: collocation ? LEntrySynonymRead(ownerId) : []);
     }
 
-    private IReadOnlyList<LRelationDraft> LEntryRelationRead(string meaningId)
+    private IReadOnlyList<LRelationDraft> LEntryRelationRead(long meaningId)
     {
         IReadOnlyList<LRelation> stored =
             new LRelationArchive(_lEntryLoaderDatabase).LRelationRead(meaningId);
@@ -205,14 +205,14 @@ public sealed class LEntryLoader
                 relation.LRelationType,
                 relation.LRelationLabel,
                 relation.LRelationLabels,
-                relation.LRelationTargetEntry ?? string.Empty,
-                relation.LRelationTargetMeaning ?? string.Empty));
+                relation.LRelationTargetEntry ?? 0,
+                relation.LRelationTargetMeaning ?? 0));
         }
 
         return drafts;
     }
 
-    private IReadOnlyList<LSynonymDraft> LEntrySynonymRead(string collocationId)
+    private IReadOnlyList<LSynonymDraft> LEntrySynonymRead(long collocationId)
     {
         IReadOnlyList<LSynonym> stored =
             new LSynonymArchive(_lEntryLoaderDatabase).LSynonymRead(collocationId);
@@ -221,8 +221,8 @@ public sealed class LEntryLoader
         foreach (LSynonym synonym in stored)
         {
             drafts.Add(new LSynonymDraft(
-                synonym.LSynonymTargetEntry ?? string.Empty,
-                synonym.LSynonymTargetMeaning ?? string.Empty));
+                synonym.LSynonymTargetEntry ?? 0,
+                synonym.LSynonymTargetMeaning ?? 0));
         }
 
         return drafts;
@@ -307,10 +307,10 @@ public sealed class LEntryLoader
         return rows;
     }
 
-    private static IReadOnlyList<string> LEntryTranslationRead(
+    private static IReadOnlyList<long> LEntryTranslationRead(
         IReadOnlyList<LTranslation> translations)
     {
-        List<string> ids = new(translations.Count);
+        List<long> ids = new(translations.Count);
         foreach (LTranslation translation in translations)
         {
             ids.Add(translation.LTranslationEntryId);

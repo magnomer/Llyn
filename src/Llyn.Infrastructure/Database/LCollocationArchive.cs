@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -18,14 +18,13 @@ public sealed class LCollocationArchive
     public LCollocation LCollocationCreate(LCollocation collocation)
     {
         ArgumentNullException.ThrowIfNull(collocation);
-        ArgumentException.ThrowIfNullOrWhiteSpace(collocation.LCollocationEntryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(collocation.LCollocationEntryId);
 
         using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         LCollocation stored = collocation with
         {
-            LCollocationId = LIdentity.LIdentityCreate(),
             LCollocationPosition = LCollocationSiblingRead(connection, collocation.LCollocationEntryId).Count,
         };
 
@@ -34,28 +33,28 @@ public sealed class LCollocationArchive
             command.CommandText =
                 """
                 INSERT INTO collocation (
-                    id, entry_id, position, title_state, title,
+                    entry_id, position, title_state, title,
                     expression_state, expression, meaning_state, meaning)
                 VALUES (
-                    $id, $entry, $position, $titleState, $title,
-                    $expressionState, $expression, $meaningState, $meaning);
+                    $entry, $position, $titleState, $title,
+                    $expressionState, $expression, $meaningState, $meaning)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LCollocationId);
             command.Parameters.AddWithValue("$entry", stored.LCollocationEntryId);
             command.Parameters.AddWithValue("$position", stored.LCollocationPosition);
             LStateColumn.LStateColumnApply(command, "title", stored.LCollocationTitle);
             LStateColumn.LStateColumnApply(command, "expression", stored.LCollocationExpression);
             LStateColumn.LStateColumnApply(command, "meaning", stored.LCollocationMeaning);
-            command.ExecuteNonQuery();
+            stored = stored with { LCollocationId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public IReadOnlyList<LCollocation> LCollocationRead(string entryId)
+    public IReadOnlyList<LCollocation> LCollocationRead(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -73,8 +72,8 @@ public sealed class LCollocationArchive
         while (reader.Read())
         {
             collocations.Add(new LCollocation(
-                reader.GetString(0),
-                reader.GetString(1),
+                reader.GetInt64(0),
+                reader.GetInt64(1),
                 reader.GetInt32(2),
                 LStateColumn.LStateColumnRead(reader, 3),
                 LStateColumn.LStateColumnRead(reader, 5),
@@ -87,7 +86,7 @@ public sealed class LCollocationArchive
     public void LCollocationUpdate(LCollocation collocation)
     {
         ArgumentNullException.ThrowIfNull(collocation);
-        ArgumentException.ThrowIfNullOrWhiteSpace(collocation.LCollocationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(collocation.LCollocationId);
 
         using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -114,20 +113,20 @@ public sealed class LCollocationArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LCollocationMove(string id, int position)
+    public void LCollocationMove(long id, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string? entryId = LCollocationHolderRead(connection, id);
+        long? entryId = LCollocationHolderRead(connection, id);
         if (entryId is null)
         {
             return;
         }
 
-        IReadOnlyList<string> order = LDatabaseOrder.LDatabaseOrderInsert(
+        IReadOnlyList<long> order = LDatabaseOrder.LDatabaseOrderInsert(
             LCollocationSiblingRead(connection, entryId), id, position);
         LDatabaseOrder.LDatabaseOrderNormalize(
             connection, "collocation", "entry_id = $owner", entryId, "id", order);
@@ -135,14 +134,14 @@ public sealed class LCollocationArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LCollocationDelete(string id)
+    public void LCollocationDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string? entryId = LCollocationHolderRead(connection, id);
+        long? entryId = LCollocationHolderRead(connection, id);
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -161,15 +160,15 @@ public sealed class LCollocationArchive
         session.LDatabaseSessionCommit();
     }
 
-    private static string? LCollocationHolderRead(SqliteConnection connection, string id)
+    private static long? LCollocationHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT entry_id FROM collocation WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
-        return command.ExecuteScalar() as string;
+        return command.ExecuteScalar() as long?;
     }
 
-    private static IReadOnlyList<string> LCollocationSiblingRead(SqliteConnection connection, string entryId)
+    private static IReadOnlyList<long> LCollocationSiblingRead(SqliteConnection connection, long? entryId)
     {
         return LDatabaseOrder.LDatabaseOrderRead(
             connection, "collocation", "entry_id = $owner", entryId, "id");

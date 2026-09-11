@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
@@ -19,16 +19,9 @@ public sealed class LPronunciationArchive
     public LPronunciation LPronunciationCreate(LPronunciation pronunciation)
     {
         ArgumentNullException.ThrowIfNull(pronunciation);
-        ArgumentException.ThrowIfNullOrWhiteSpace(pronunciation.LPronunciationEntryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pronunciation.LPronunciationEntryId);
 
-        string id = LIdentity.LIdentityCreate();
-        LPronunciation stored = pronunciation with
-        {
-            LPronunciationId = id,
-            LPronunciationSyllables = LPronunciationSyllableBuild(id, pronunciation.LPronunciationSyllables),
-            LPronunciationRepresentations =
-                LPronunciationRepresentationBuild(id, pronunciation.LPronunciationRepresentations),
-        };
+        LPronunciation stored = pronunciation;
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -37,15 +30,23 @@ public sealed class LPronunciationArchive
         {
             command.CommandText =
                 """
-                INSERT INTO pronunciation (id, entry_id, level, ipa)
-                VALUES ($id, $entry, $level, $ipa);
+                INSERT INTO pronunciation (entry_id, level, ipa)
+                VALUES ($entry, $level, $ipa)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LPronunciationId);
             command.Parameters.AddWithValue("$entry", stored.LPronunciationEntryId);
             command.Parameters.AddWithValue("$level", (object?)stored.LPronunciationLevel ?? DBNull.Value);
             command.Parameters.AddWithValue("$ipa", (object?)stored.LPronunciationIpa ?? DBNull.Value);
-            command.ExecuteNonQuery();
+            stored = stored with { LPronunciationId = (long)command.ExecuteScalar()! };
         }
+
+        long id = stored.LPronunciationId;
+        stored = stored with
+        {
+            LPronunciationSyllables = LPronunciationSyllableBuild(id, stored.LPronunciationSyllables),
+            LPronunciationRepresentations =
+                LPronunciationRepresentationBuild(id, stored.LPronunciationRepresentations),
+        };
 
         LPronunciationSyllableInsert(connection, id, stored.LPronunciationSyllables);
         LPronunciationRepresentationInsert(connection, id, stored.LPronunciationRepresentations);
@@ -54,14 +55,14 @@ public sealed class LPronunciationArchive
         return stored;
     }
 
-    public LPronunciation? LPronunciationRead(string entryId)
+    public LPronunciation? LPronunciationRead(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string id;
+        long id;
         string? level;
         string? ipa;
         using (SqliteCommand command = connection.CreateCommand())
@@ -76,7 +77,7 @@ public sealed class LPronunciationArchive
                 return null;
             }
 
-            id = reader.GetString(0);
+            id = reader.GetInt64(0);
             level = reader.IsDBNull(1) ? null : reader.GetString(1);
             ipa = reader.IsDBNull(2) ? null : reader.GetString(2);
         }
@@ -93,9 +94,9 @@ public sealed class LPronunciationArchive
     public void LPronunciationUpdate(LPronunciation pronunciation)
     {
         ArgumentNullException.ThrowIfNull(pronunciation);
-        ArgumentException.ThrowIfNullOrWhiteSpace(pronunciation.LPronunciationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pronunciation.LPronunciationId);
 
-        string id = pronunciation.LPronunciationId;
+        long id = pronunciation.LPronunciationId;
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -121,9 +122,9 @@ public sealed class LPronunciationArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LPronunciationDelete(string id)
+    public void LPronunciationDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -136,9 +137,9 @@ public sealed class LPronunciationArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LPronunciationAudioSave(string pronunciationId, string file, string? source)
+    public void LPronunciationAudioSave(long pronunciationId, string file, string? source)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(pronunciationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pronunciationId);
         ArgumentException.ThrowIfNullOrWhiteSpace(file);
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
@@ -164,9 +165,9 @@ public sealed class LPronunciationArchive
         session.LDatabaseSessionCommit();
     }
 
-    public LPronunciationAudio? LPronunciationAudioRead(string pronunciationId)
+    public LPronunciationAudio? LPronunciationAudioRead(long pronunciationId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(pronunciationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pronunciationId);
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -184,14 +185,14 @@ public sealed class LPronunciationArchive
         }
 
         return new LPronunciationAudio(
-            reader.GetString(0),
+            reader.GetInt64(0),
             reader.GetString(1),
             reader.IsDBNull(2) ? null : reader.GetString(2),
             reader.GetString(3));
     }
 
     private static IReadOnlyList<LSyllable> LPronunciationSyllableBuild(
-        string id, IReadOnlyList<LSyllable> syllables)
+        long id, IReadOnlyList<LSyllable> syllables)
     {
         ArgumentNullException.ThrowIfNull(syllables);
 
@@ -209,7 +210,7 @@ public sealed class LPronunciationArchive
     }
 
     private static IReadOnlyList<LRepresentation> LPronunciationRepresentationBuild(
-        string id, IReadOnlyList<LRepresentation> representations)
+        long id, IReadOnlyList<LRepresentation> representations)
     {
         ArgumentNullException.ThrowIfNull(representations);
 
@@ -227,7 +228,7 @@ public sealed class LPronunciationArchive
     }
 
     private static void LPronunciationSyllableInsert(
-        SqliteConnection connection, string id, IReadOnlyList<LSyllable> syllables)
+        SqliteConnection connection, long id, IReadOnlyList<LSyllable> syllables)
     {
         for (int position = 0; position < syllables.Count; position++)
         {
@@ -256,7 +257,7 @@ public sealed class LPronunciationArchive
     }
 
     private static void LPronunciationRepresentationInsert(
-        SqliteConnection connection, string id, IReadOnlyList<LRepresentation> representations)
+        SqliteConnection connection, long id, IReadOnlyList<LRepresentation> representations)
     {
         for (int position = 0; position < representations.Count; position++)
         {
@@ -277,7 +278,7 @@ public sealed class LPronunciationArchive
         }
     }
 
-    private static IReadOnlyList<LSyllable> LPronunciationSyllableRead(SqliteConnection connection, string id)
+    private static IReadOnlyList<LSyllable> LPronunciationSyllableRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -293,7 +294,7 @@ public sealed class LPronunciationArchive
         while (reader.Read())
         {
             syllables.Add(new LSyllable(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 reader.GetInt32(1),
                 reader.IsDBNull(2) ? null : reader.GetString(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3),
@@ -310,7 +311,7 @@ public sealed class LPronunciationArchive
     }
 
     private static IReadOnlyList<LRepresentation> LPronunciationRepresentationRead(
-        SqliteConnection connection, string id)
+        SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -325,7 +326,7 @@ public sealed class LPronunciationArchive
         while (reader.Read())
         {
             representations.Add(new LRepresentation(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 reader.GetInt32(1),
                 reader.GetString(2),
                 reader.GetString(3),
@@ -336,7 +337,7 @@ public sealed class LPronunciationArchive
         return representations;
     }
 
-    private static void LPronunciationChildClear(SqliteConnection connection, string table, string id)
+    private static void LPronunciationChildClear(SqliteConnection connection, string table, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = $"DELETE FROM {table} WHERE pronunciation_id = $id;";

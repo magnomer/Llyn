@@ -1,8 +1,8 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LCollocation(
-    string LCollocationId,
-    string LCollocationEntryId,
+    long LCollocationId,
+    long LCollocationEntryId,
     int LCollocationPosition,
     LStateValue LCollocationTitle,
     LStateValue LCollocationExpression,

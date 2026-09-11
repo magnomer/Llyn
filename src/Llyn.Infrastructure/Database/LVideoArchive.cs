@@ -19,40 +19,40 @@ public sealed class LVideoArchive
     {
         ArgumentNullException.ThrowIfNull(video);
 
-        LVideo stored = video with { LVideoId = LIdentity.LIdentityCreate() };
+        LVideo stored = video;
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
                 """
-                INSERT INTO video (id, location_state, location, span_state, span)
-                VALUES ($id, $locationState, $location, $spanState, $span);
+                INSERT INTO video (location_state, location, span_state, span)
+                VALUES ($locationState, $location, $spanState, $span)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LVideoId);
             LStateColumn.LStateColumnApply(command, "location", stored.LVideoLocation);
             LStateColumn.LStateColumnApply(command, "span", stored.LVideoSpan);
-            command.ExecuteNonQuery();
+            stored = stored with { LVideoId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public LVideo? LVideoRead(string id)
+    public LVideo? LVideoRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         return LVideoSingleRead(session.LDatabaseSessionConnection, id);
     }
 
-    public IReadOnlyList<LVideo> LVideoMeaningRead(string meaningId)
+    public IReadOnlyList<LVideo> LVideoMeaningRead(long meaningId)
     {
         return LVideoReferrerRead("sense_video", "sense_id", meaningId);
     }
 
-    public IReadOnlyList<LVideo> LVideoCollocationRead(string collocationId)
+    public IReadOnlyList<LVideo> LVideoCollocationRead(long collocationId)
     {
         return LVideoReferrerRead("collocation_video", "collocation_id", collocationId);
     }
@@ -60,7 +60,7 @@ public sealed class LVideoArchive
     public void LVideoUpdate(LVideo video)
     {
         ArgumentNullException.ThrowIfNull(video);
-        ArgumentException.ThrowIfNullOrWhiteSpace(video.LVideoId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(video.LVideoId);
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -84,15 +84,15 @@ public sealed class LVideoArchive
         session.LDatabaseSessionCommit();
     }
 
-    public int LVideoReferenceRead(string id)
+    public int LVideoReferenceRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         return LVideoReferenceRead(session.LDatabaseSessionConnection, id);
     }
 
-    private static int LVideoReferenceRead(SqliteConnection connection, string id)
+    private static int LVideoReferenceRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -105,9 +105,9 @@ public sealed class LVideoArchive
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    public void LVideoDelete(string id)
+    public void LVideoDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -129,36 +129,36 @@ public sealed class LVideoArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LVideoMeaningAttach(string meaningId, string videoId, int position)
+    public void LVideoMeaningAttach(long meaningId, long videoId, int position)
     {
         LVideoReferenceAttach("sense_video", "sense_id", meaningId, videoId, position);
     }
 
-    public void LVideoCollocationAttach(string collocationId, string videoId, int position)
+    public void LVideoCollocationAttach(long collocationId, long videoId, int position)
     {
         LVideoReferenceAttach("collocation_video", "collocation_id", collocationId, videoId, position);
     }
 
-    public void LVideoMeaningDetach(string meaningId, string videoId)
+    public void LVideoMeaningDetach(long meaningId, long videoId)
     {
         LVideoReferenceDetach("sense_video", "sense_id", meaningId, videoId);
     }
 
-    public void LVideoCollocationDetach(string collocationId, string videoId)
+    public void LVideoCollocationDetach(long collocationId, long videoId)
     {
         LVideoReferenceDetach("collocation_video", "collocation_id", collocationId, videoId);
     }
 
-    private void LVideoReferenceAttach(string table, string column, string referrerId, string videoId, int position)
+    private void LVideoReferenceAttach(string table, string column, long referrerId, long videoId, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(videoId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(videoId);
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         string scope = $"{column} = $owner";
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
+        IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
             connection, table, scope, referrerId, "video_id");
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -182,10 +182,10 @@ public sealed class LVideoArchive
         session.LDatabaseSessionCommit();
     }
 
-    private void LVideoReferenceDetach(string table, string column, string referrerId, string videoId)
+    private void LVideoReferenceDetach(string table, string column, long referrerId, long videoId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(videoId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(videoId);
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -206,9 +206,9 @@ public sealed class LVideoArchive
         session.LDatabaseSessionCommit();
     }
 
-    private IReadOnlyList<LVideo> LVideoReferrerRead(string table, string column, string referrerId)
+    private IReadOnlyList<LVideo> LVideoReferrerRead(string table, string column, long referrerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
 
         using LDatabaseSession session = _lVideoArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -227,7 +227,7 @@ public sealed class LVideoArchive
         while (reader.Read())
         {
             videos.Add(new LVideo(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 LStateColumn.LStateColumnRead(reader, 1),
                 LStateColumn.LStateColumnRead(reader, 3)));
         }
@@ -235,7 +235,7 @@ public sealed class LVideoArchive
         return videos;
     }
 
-    private static LVideo? LVideoSingleRead(SqliteConnection connection, string id)
+    private static LVideo? LVideoSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT location_state, location, span_state, span FROM video WHERE id = $id;";

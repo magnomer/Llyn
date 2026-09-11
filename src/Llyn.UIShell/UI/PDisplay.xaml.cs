@@ -114,7 +114,7 @@ public partial class PDisplay : UserControl
         return named;
     }
 
-    internal void PDisplayShow(string id, LEntryDraft draft)
+    internal void PDisplayShow(long id, LEntryDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
 
@@ -205,7 +205,7 @@ public partial class PDisplay : UserControl
 
     private void PDisplayTranslationShow(LEntryDraft draft)
     {
-        List<string> ids = [];
+        List<long> ids = [];
         PDisplayTranslationRead(draft.LEntryDraftMeanings, ids);
         PDisplayTranslationRead(draft.LEntryDraftCollocations, ids);
 
@@ -237,7 +237,7 @@ public partial class PDisplay : UserControl
     {
         foreach (LCardDraft card in cards)
         {
-            foreach (string id in card.LCardDraftTranslation)
+            foreach (long id in card.LCardDraftTranslation)
             {
                 if (!ids.Contains(id))
                 {
@@ -290,7 +290,7 @@ public partial class PDisplay : UserControl
         }
     }
 
-    private void PDisplayIncomingShow(string id)
+    private void PDisplayIncomingShow(long id)
     {
         _pDisplayIncoming.Clear();
 
@@ -334,15 +334,15 @@ public partial class PDisplay : UserControl
 
         switch (chip.DataContext)
         {
-            case LSituationDraft situation when situation.LSituationDraftId.Length != 0:
+            case LSituationDraft situation when situation.LSituationDraftId != 0:
                 e.Handled = true;
                 _pDisplayHost.PWindowSituationShow(situation.LSituationDraftId);
                 break;
-            case LRegisterDraft register when register.LRegisterDraftId.Length != 0:
+            case LRegisterDraft register when register.LRegisterDraftId != 0:
                 e.Handled = true;
                 _pDisplayHost.PWindowRegisterShow(register.LRegisterDraftId);
                 break;
-            case PLinkChip link when link.PLinkChipId.Length != 0:
+            case PLinkChip link when link.PLinkChipId != 0:
                 e.Handled = true;
                 _pDisplayHost.PWindowEntryShow(link.PLinkChipId);
                 break;
@@ -377,7 +377,7 @@ public partial class PDisplay : UserControl
         PDisplayLanguageFlag.Source = PEnsign.PEnsignFind(language);
     }
 
-    private void PDisplayFavoriteShow(string id)
+    private void PDisplayFavoriteShow(long id)
     {
         try
         {

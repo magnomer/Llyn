@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -14,12 +14,12 @@ internal sealed class PContext
     {
     }
 
-    internal PContext(LStateValue text, string id)
+    internal PContext(LStateValue text, long id)
         : this(text, id, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified)
     {
     }
 
-    internal PContext(LStateValue text, string id, LStateValue description, LStateValue kind)
+    internal PContext(LStateValue text, long id, LStateValue description, LStateValue kind)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -30,7 +30,7 @@ internal sealed class PContext
         PContextKind = kind ?? LStateValue.LStateValueUnspecified;
     }
 
-    public string PContextId { get; }
+    public long PContextId { get; }
 
     internal LStateValue PContextDescription { get; }
 

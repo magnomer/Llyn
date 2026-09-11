@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 using Llyn.Core;
@@ -15,7 +15,7 @@ internal sealed class PVideo : INotifyPropertyChanged
     private TimeSpan _pVideoFrom = TimeSpan.Zero;
     private TimeSpan? _pVideoUntil;
     private bool _pVideoPlaying;
-    private string _pVideoRow = string.Empty;
+    private long _pVideoRow;
 
     internal PVideo()
     {

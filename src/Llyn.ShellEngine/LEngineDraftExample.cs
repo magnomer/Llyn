@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -6,14 +6,14 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LDraft LEngineExampleStart(string origin, string? exampleId)
+    public LDraft LEngineExampleStart(string origin, long? exampleId)
     {
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
 
-            string example = string.IsNullOrWhiteSpace(exampleId) ? string.Empty : exampleId;
-            LExample content = example.Length == 0
+            long example = exampleId is null or <= 0 ? 0 : exampleId.Value;
+            LExample content = example == 0
                 ? LEngineExampleBlank with { LExampleId = LIdentity.LIdentityCreate() }
                 : LEngineExampleRead(example) ?? throw new LRefusal(LRefusal.LRefusalExample);
 
@@ -47,12 +47,12 @@ public sealed partial class LEngine
         }
     }
 
-    public LExample LEngineExampleCommit(string id)
+    public LExample LEngineExampleCommit(long id)
     {
         LExample settled;
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             LEngineDraftValidate(id);
 
             LDraft draft = LEngineDraftLoad(id);
@@ -60,7 +60,7 @@ public sealed partial class LEngine
                 draft.LDraftExample ?? throw new LRefusal(LRefusal.LRefusalExample));
 
             LExample stored;
-            if (draft.LDraftEntry.Length == 0 || LEngineExampleRead(draft.LDraftEntry) is null)
+            if (draft.LDraftEntry == 0 || LEngineExampleRead(draft.LDraftEntry) is null)
             {
                 stored = LEngineExampleCreate(sending);
             }
@@ -88,7 +88,7 @@ public sealed partial class LEngine
     private bool LEngineExampleCheck(LDraft draft, LExample held)
     {
         LExample blank = LEngineExampleBlank with { LExampleLanguage = held.LExampleLanguage };
-        LExample origin = draft.LDraftEntry.Length == 0
+        LExample origin = draft.LDraftEntry == 0
             ? blank
             : LEngineExampleRead(draft.LDraftEntry) ?? blank;
 
@@ -97,18 +97,18 @@ public sealed partial class LEngine
 
     private static LExample LEngineExampleNormalize(LExample content)
     {
-        return content.LExampleId.Length == 0
+        return content.LExampleId == 0
             ? content with { LExampleId = LIdentity.LIdentityCreate() }
             : content;
     }
 
     private static LExample LEngineExampleBlank =>
         new(
-            string.Empty,
+            0,
             string.Empty,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified);
+            LStateAnchor.LStateAnchorUnspecified);
 
     private static bool LEngineExampleMatch(LExample one, LExample other)
     {

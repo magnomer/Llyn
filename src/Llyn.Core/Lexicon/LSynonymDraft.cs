@@ -1,13 +1,9 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSynonymDraft(
-    string LSynonymDraftEntry = "",
-    string LSynonymDraftMeaning = "")
+    long LSynonymDraftEntry = 0,
+    long LSynonymDraftMeaning = 0)
 {
-    public string LSynonymDraftEntry { get; init; } = LSynonymDraftEntry ?? string.Empty;
-
-    public string LSynonymDraftMeaning { get; init; } = LSynonymDraftMeaning ?? string.Empty;
-
     public bool LSynonymDraftEmpty =>
-        LSynonymDraftEntry.Length == 0 && LSynonymDraftMeaning.Length == 0;
+        LSynonymDraftEntry == 0 && LSynonymDraftMeaning == 0;
 }

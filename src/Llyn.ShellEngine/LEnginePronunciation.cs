@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -16,7 +16,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LPronunciation? LEnginePronunciationRead(string entryId)
+    public LPronunciation? LEnginePronunciationRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -52,7 +52,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEnginePronunciationDelete(string id)
+    public void LEnginePronunciationDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -60,7 +60,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineAudioSave(string pronunciationId, string file, string? source)
+    public void LEngineAudioSave(long pronunciationId, string file, string? source)
     {
         lock (_lEngineGate)
         {
@@ -71,7 +71,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LPronunciationAudio? LEngineAudioRead(string pronunciationId)
+    public LPronunciationAudio? LEngineAudioRead(long pronunciationId)
     {
         lock (_lEngineGate)
         {
@@ -92,7 +92,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LNote? LEngineNoteRead(string entryId)
+    public LNote? LEngineNoteRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -100,7 +100,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineNoteDelete(string entryId)
+    public void LEngineNoteDelete(long entryId)
     {
         lock (_lEngineGate)
         {

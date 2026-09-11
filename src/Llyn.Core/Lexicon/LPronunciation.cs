@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Llyn.Core;
 
 public sealed record LPronunciation(
-    string LPronunciationId,
-    string LPronunciationEntryId,
+    long LPronunciationId,
+    long LPronunciationEntryId,
     string? LPronunciationLevel,
     string? LPronunciationIpa,
     IReadOnlyList<LSyllable> LPronunciationSyllables,

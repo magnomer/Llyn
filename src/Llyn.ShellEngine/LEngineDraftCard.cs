@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LCardDraft> LEngineDraftMove(string id, bool collocation, int from, int target)
+    public IReadOnlyList<LCardDraft> LEngineDraftMove(long id, bool collocation, int from, int target)
     {
         lock (_lEngineGate)
         {
@@ -32,7 +32,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCardDraft> LEngineDraftNormalize(string id, bool collocation)
+    public IReadOnlyList<LCardDraft> LEngineDraftNormalize(long id, bool collocation)
     {
         lock (_lEngineGate)
         {
@@ -47,7 +47,7 @@ public sealed partial class LEngine
         }
     }
 
-    public string LEngineCardCreate()
+    public long LEngineCardCreate()
     {
         lock (_lEngineGate)
         {
@@ -64,7 +64,7 @@ public sealed partial class LEngine
             cards[index] = card with
             {
                 LCardDraftPosition = index + 1,
-                LCardDraftId = card.LCardDraftId.Length == 0
+                LCardDraftId = card.LCardDraftId == 0
                     ? LIdentity.LIdentityCreate()
                     : card.LCardDraftId,
             };

@@ -7,7 +7,7 @@ internal sealed class PRosterItem : INotifyPropertyChanged
 {
     private bool _pRosterItemChosen;
 
-    internal PRosterItem(string id, string headword, string language)
+    internal PRosterItem(long id, string headword, string language)
     {
         PRosterItemId = id;
         PRosterItemHeadword = headword;
@@ -16,7 +16,7 @@ internal sealed class PRosterItem : INotifyPropertyChanged
         PRosterItemFlag = PEnsign.PEnsignFind(language);
     }
 
-    public string PRosterItemId { get; }
+    public long PRosterItemId { get; }
 
     public string PRosterItemHeadword { get; }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -6,14 +6,14 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LDraft LEngineSituationStart(string origin, string? situationId)
+    public LDraft LEngineSituationStart(string origin, long? situationId)
     {
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
 
-            string situation = string.IsNullOrWhiteSpace(situationId) ? string.Empty : situationId;
-            LSituation content = situation.Length == 0
+            long situation = situationId is null or <= 0 ? 0 : situationId.Value;
+            LSituation content = situation == 0
                 ? LEngineSituationBlank with { LSituationId = LIdentity.LIdentityCreate() }
                 : LEngineSituationRead(situation) ?? throw new LRefusal(LRefusal.LRefusalSituation);
 
@@ -48,12 +48,12 @@ public sealed partial class LEngine
         }
     }
 
-    public LSituation LEngineSituationCommit(string id)
+    public LSituation LEngineSituationCommit(long id)
     {
         LSituation settled;
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             LEngineDraftValidate(id);
 
             LDraft draft = LEngineDraftLoad(id);
@@ -61,7 +61,7 @@ public sealed partial class LEngine
                 draft.LDraftSituation ?? throw new LRefusal(LRefusal.LRefusalSituation));
 
             LSituation stored;
-            if (draft.LDraftEntry.Length == 0 || LEngineSituationRead(draft.LDraftEntry) is null)
+            if (draft.LDraftEntry == 0 || LEngineSituationRead(draft.LDraftEntry) is null)
             {
                 stored = LEngineSituationCreate(sending);
             }
@@ -88,7 +88,7 @@ public sealed partial class LEngine
 
     private bool LEngineSituationCheck(LDraft draft, LSituation held)
     {
-        LSituation origin = draft.LDraftEntry.Length == 0
+        LSituation origin = draft.LDraftEntry == 0
             ? LEngineSituationBlank
             : LEngineSituationRead(draft.LDraftEntry) ?? LEngineSituationBlank;
 
@@ -97,14 +97,14 @@ public sealed partial class LEngine
 
     private static LSituation LEngineSituationNormalize(LSituation content)
     {
-        return content.LSituationId.Length == 0
+        return content.LSituationId == 0
             ? content with { LSituationId = LIdentity.LIdentityCreate() }
             : content;
     }
 
     private static LSituation LEngineSituationBlank =>
         new(
-            string.Empty,
+            0,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified);

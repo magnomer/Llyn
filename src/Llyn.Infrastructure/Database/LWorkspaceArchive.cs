@@ -34,7 +34,7 @@ public sealed class LWorkspaceArchive
                 $"""
                 INSERT INTO workspace ({LWorkspaceArchiveColumn})
                 VALUES (
-                    $id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                     NULL)
                 ON CONFLICT (id) DO NOTHING;
                 """;
@@ -64,11 +64,11 @@ public sealed class LWorkspaceArchive
 
             state = fallback with
             {
-                LWorkspaceStateLeft = LWorkspaceArchiveRead(reader, 1),
-                LWorkspaceStateRight = LWorkspaceArchiveRead(reader, 2),
+                LWorkspaceStateLeft = LWorkspaceArchiveHolderRead(reader, 1),
+                LWorkspaceStateRight = LWorkspaceArchiveHolderRead(reader, 2),
                 LWorkspaceStateMode = LWorkspaceArchiveRead(reader, 3),
                 LWorkspaceStateSplit = LWorkspaceArchiveRead(reader, 4) == LWorkspaceArchiveEditor,
-                LWorkspaceStateRevision = LWorkspaceArchiveRead(reader, 5),
+                LWorkspaceStateRevision = LWorkspaceArchiveHolderRead(reader, 5),
                 LWorkspaceStateOrder = LCatalog.LCatalogOrderParse(
                     LWorkspaceArchiveRead(reader, 6), fallback.LWorkspaceStateOrder),
                 LWorkspaceStateSequence = LCatalog.LCatalogOrderParse(
@@ -102,11 +102,11 @@ public sealed class LWorkspaceArchive
             command.CommandText =
                 """
                 INSERT INTO workspace (
-                    id, left_entry, right_entry, mode, split, revision,
+                    left_entry, right_entry, mode, split, revision,
                     library_order, phonology_order, favorite_order, taxonomy_order,
                     repertoire_order, reference_order, corpus_order, tenor_order)
                 VALUES (
-                    $id, $left, $right, $mode, $split, $revision,
+                    $left, $right, $mode, $split, $revision,
                     $library, $phonology, $favorite, $taxonomy,
                     $repertoire, $reference, $corpus, $tenor)
                 ON CONFLICT (id) DO UPDATE SET
@@ -148,5 +148,10 @@ public sealed class LWorkspaceArchive
     private static string? LWorkspaceArchiveRead(SqliteDataReader reader, int column)
     {
         return reader.IsDBNull(column) ? null : reader.GetString(column);
+    }
+
+    private static long? LWorkspaceArchiveHolderRead(SqliteDataReader reader, int column)
+    {
+        return reader.IsDBNull(column) ? null : reader.GetInt64(column);
     }
 }

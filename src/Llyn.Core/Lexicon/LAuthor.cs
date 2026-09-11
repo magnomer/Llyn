@@ -1,5 +1,5 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LAuthor(
-    string LAuthorId,
+    long LAuthorId,
     string LAuthorName);

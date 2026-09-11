@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,12 +54,12 @@ public partial class PPhonology
         PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
-    private void PInventorySelect(string? id)
+    private void PInventorySelect(long? id)
     {
         foreach (PInventoryItem item in _pInventoryList)
         {
             item.PInventoryItemChosen = id is not null
-                && string.Equals(item.PInventoryItemId, id, StringComparison.Ordinal);
+                && item.PInventoryItemId == id;
         }
     }
 
@@ -98,7 +98,7 @@ public partial class PPhonology
         PInventoryEntryShow(item.PInventoryItemId);
     }
 
-    private void PInventoryEntryShow(string id)
+    private void PInventoryEntryShow(long id)
     {
         LEntryDraft? draft;
         try
@@ -129,7 +129,7 @@ public partial class PPhonology
         }
     }
 
-    private void PInventoryEntryUpdate(string id)
+    private void PInventoryEntryUpdate(long id)
     {
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
@@ -245,7 +245,7 @@ public partial class PPhonology
         return _pPhonologyHost.PWindowDiscardConfirm(PPhonologyChangeCheck());
     }
 
-    private void PPhonologyEntryShow(string id, LEntryDraft draft)
+    private void PPhonologyEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
         PPhonologyMode.IsEnabled = true;
@@ -269,7 +269,7 @@ public partial class PPhonology
 
     private void PPhonologyBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not string id)
+        if (_pDisplayEntry is not long id)
         {
             return;
         }

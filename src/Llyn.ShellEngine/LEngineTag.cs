@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -35,7 +35,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LTag> LEngineTagRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -46,7 +46,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineTagSave(string ownerId, IReadOnlyList<LTag> written, LOwner owner)
+    public void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -70,7 +70,7 @@ public sealed partial class LEngine
             new LTagArchive(_lEngineDatabase).LTagChange(text, renamed);
         }
 
-        LEngineBulletinRaise(LSubject.LSubjectTag, string.Empty);
+        LEngineBulletinRaise(LSubject.LSubjectTag, 0);
     }
 
     public void LEngineTagDelete(string text)
@@ -80,6 +80,6 @@ public sealed partial class LEngine
             new LTagArchive(_lEngineDatabase).LTagDelete(text);
         }
 
-        LEngineBulletinRaise(LSubject.LSubjectTag, string.Empty);
+        LEngineBulletinRaise(LSubject.LSubjectTag, 0);
     }
 }

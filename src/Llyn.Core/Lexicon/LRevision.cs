@@ -1,5 +1,5 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRevision(
-    string LRevisionId,
+    long LRevisionId,
     string LRevisionCreatedUtc);

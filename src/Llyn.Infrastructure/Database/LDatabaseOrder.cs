@@ -8,24 +8,24 @@ public static class LDatabaseOrder
 {
     private const long LDatabaseOrderShift = 1_000_000_000L;
 
-    public static IReadOnlyList<string> LDatabaseOrderRead(
+    public static IReadOnlyList<long> LDatabaseOrderRead(
         SqliteConnection connection,
         string table,
         string scope,
-        string owner,
+        long? owner,
         string memberColumn)
     {
         ArgumentNullException.ThrowIfNull(connection);
 
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = $"SELECT {memberColumn} FROM {table} WHERE {scope} ORDER BY position;";
-        command.Parameters.AddWithValue("$owner", owner);
+        command.Parameters.AddWithValue("$owner", (object?)owner ?? DBNull.Value);
 
-        List<string> identifiers = [];
+        List<long> identifiers = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            identifiers.Add(reader.GetString(0));
+            identifiers.Add(reader.GetInt64(0));
         }
 
         return identifiers;
@@ -35,9 +35,9 @@ public static class LDatabaseOrder
         SqliteConnection connection,
         string table,
         string scope,
-        string owner,
+        long? owner,
         string memberColumn,
-        IReadOnlyList<string> identifiers)
+        IReadOnlyList<long> identifiers)
     {
         ArgumentNullException.ThrowIfNull(connection);
         ArgumentNullException.ThrowIfNull(identifiers);
@@ -46,7 +46,7 @@ public static class LDatabaseOrder
         {
             shelve.CommandText = $"UPDATE {table} SET position = position + $shift WHERE {scope};";
             shelve.Parameters.AddWithValue("$shift", LDatabaseOrderShift);
-            shelve.Parameters.AddWithValue("$owner", owner);
+            shelve.Parameters.AddWithValue("$owner", (object?)owner ?? DBNull.Value);
             shelve.ExecuteNonQuery();
         }
 
@@ -56,21 +56,21 @@ public static class LDatabaseOrder
             command.CommandText =
                 $"UPDATE {table} SET position = $position WHERE {scope} AND {memberColumn} = $member;";
             command.Parameters.AddWithValue("$position", position);
-            command.Parameters.AddWithValue("$owner", owner);
+            command.Parameters.AddWithValue("$owner", (object?)owner ?? DBNull.Value);
             command.Parameters.AddWithValue("$member", identifiers[position]);
             command.ExecuteNonQuery();
         }
     }
 
-    public static IReadOnlyList<string> LDatabaseOrderInsert(
-        IReadOnlyList<string> identifiers,
-        string member,
+    public static IReadOnlyList<long> LDatabaseOrderInsert(
+        IReadOnlyList<long> identifiers,
+        long member,
         int target)
     {
         ArgumentNullException.ThrowIfNull(identifiers);
-        ArgumentException.ThrowIfNullOrWhiteSpace(member);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(member);
 
-        List<string> placed = new(identifiers);
+        List<long> placed = new(identifiers);
         placed.Remove(member);
         placed.Insert(Math.Clamp(target, 0, placed.Count), member);
         return placed;

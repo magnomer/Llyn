@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -98,7 +98,7 @@ public sealed partial class LEngine
                 || written.LCardDraftTitle != held.LCardDraftTitle
                 || written.LCardDraftExpression != held.LCardDraftExpression
                 || written.LCardDraftMeaning != held.LCardDraftMeaning
-                || !string.Equals(written.LCardDraftId, held.LCardDraftId, StringComparison.Ordinal)
+                || written.LCardDraftId != held.LCardDraftId
                 || !string.Equals(written.LCardDraftGloss, held.LCardDraftGloss, StringComparison.Ordinal)
                 || !string.Equals(
                     written.LCardDraftLanguage, held.LCardDraftLanguage, StringComparison.Ordinal)
@@ -106,7 +106,7 @@ public sealed partial class LEngine
                 || !LEngineSentenceMatch(written.LCardDraftSentence, held.LCardDraftSentence)
                 || !LEngineSituationMatch(written.LCardDraftSituation, held.LCardDraftSituation)
                 || !LEngineRegisterMatch(written.LCardDraftRegister, held.LCardDraftRegister)
-                || !LEngineTextMatch(written.LCardDraftTranslation, held.LCardDraftTranslation)
+                || !LEngineLinkMatch(written.LCardDraftTranslation, held.LCardDraftTranslation)
                 || !LEngineTextMatch(written.LCardDraftTag, held.LCardDraftTag)
                 || !LEngineImageMatch(written.LCardDraftImage, held.LCardDraftImage)
                 || !LEngineVideoMatch(written.LCardDraftVideo, held.LCardDraftVideo)
@@ -177,8 +177,7 @@ public sealed partial class LEngine
 
         for (int index = 0; index < one.Count; index++)
         {
-            if (!string.Equals(
-                    one[index].LSentenceDraftId, other[index].LSentenceDraftId, StringComparison.Ordinal)
+            if (one[index].LSentenceDraftId != other[index].LSentenceDraftId
                 || one[index].LSentenceDraftParticle != other[index].LSentenceDraftParticle
                 || one[index].LSentenceDraftDependence != other[index].LSentenceDraftDependence
                 || !LEngineExampleMatch(
@@ -199,7 +198,7 @@ public sealed partial class LEngine
         }
 
         return one.LExampleDraftText == other.LExampleDraftText
-            && string.Equals(one.LExampleDraftId, other.LExampleDraftId, StringComparison.Ordinal)
+            && one.LExampleDraftId == other.LExampleDraftId
             && one.LExampleDraftReference == other.LExampleDraftReference
             && one.LExampleDraftTranslation == other.LExampleDraftTranslation
             && string.Equals(
@@ -219,8 +218,7 @@ public sealed partial class LEngine
             if (one[index].LSituationDraftTitle != other[index].LSituationDraftTitle
                 || one[index].LSituationDraftDescription != other[index].LSituationDraftDescription
                 || one[index].LSituationDraftKind != other[index].LSituationDraftKind
-                || !string.Equals(
-                    one[index].LSituationDraftId, other[index].LSituationDraftId, StringComparison.Ordinal))
+                || one[index].LSituationDraftId != other[index].LSituationDraftId)
             {
                 return false;
             }
@@ -230,6 +228,24 @@ public sealed partial class LEngine
     }
 
     private static bool LEngineImageMatch(IReadOnlyList<LImageDraft> one, IReadOnlyList<LImageDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index] != other[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool LEngineLinkMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
     {
         if (one.Count != other.Count)
         {

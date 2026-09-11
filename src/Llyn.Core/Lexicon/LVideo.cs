@@ -1,7 +1,7 @@
 ﻿namespace Llyn.Core;
 
 public sealed record LVideo(
-    string LVideoId,
+    long LVideoId,
     LStateValue LVideoLocation,
     LStateValue LVideoSpan)
 {

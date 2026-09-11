@@ -21,7 +21,7 @@ internal sealed class PFootnoteItem
         PFootnoteItemFlag = PEnsign.PEnsignFind(usage.LUsageLanguage);
     }
 
-    public string PFootnoteItemId { get; }
+    public long PFootnoteItemId { get; }
 
     public LOwner PFootnoteItemOwner { get; }
 

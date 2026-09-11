@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -14,7 +14,7 @@ public partial class PRepertoire
     private readonly ObservableCollection<PUsageItem> _pOccurrenceList = [];
 
 
-    private IReadOnlyDictionary<string, int> _pAtlasCount = new Dictionary<string, int>();
+    private IReadOnlyDictionary<long, int> _pAtlasCount = new Dictionary<string, int>();
 
     private string? _pVignetteSituation;
 
@@ -68,12 +68,12 @@ public partial class PRepertoire
         PAtlasFind(PInquest.Text ?? string.Empty);
     }
 
-    private void PAtlasSelect(string? id)
+    private void PAtlasSelect(long? id)
     {
         foreach (PAtlasItem item in _pAtlasList)
         {
             item.PAtlasItemChosen = id is not null
-                && string.Equals(item.PAtlasItemId, id, StringComparison.Ordinal);
+                && item.PAtlasItemId == id;
         }
     }
 
@@ -134,12 +134,12 @@ public partial class PRepertoire
         PRepertoireShow(item.PAtlasItemId);
     }
 
-    internal void PAtlasSituationShow(string id)
+    internal void PAtlasSituationShow(long id)
     {
         PRepertoireShow(id);
     }
 
-    private void PRepertoireShow(string id)
+    private void PRepertoireShow(long id)
     {
         LSituation? situation;
         try
@@ -192,7 +192,7 @@ public partial class PRepertoire
             text is null ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void POccurrenceFind(string id)
+    private void POccurrenceFind(long id)
     {
         IReadOnlyList<LUsage> read;
         try
@@ -435,7 +435,7 @@ public partial class PRepertoire
 
     private void PScenarioRemovalHandle(object sender, RoutedEventArgs e)
     {
-        if (PScenarioSituationRead() is not string id)
+        if (PScenarioSituationRead() is not long id)
         {
             return;
         }

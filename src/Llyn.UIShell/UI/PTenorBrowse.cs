@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -84,7 +84,7 @@ public partial class PTenor
         foreach (LCatalogRegister row in read)
         {
             LRegister stored = row.LCatalogRegisterStored;
-            bool chosen = string.Equals(stored.LRegisterId, _pGamutChoice, StringComparison.Ordinal);
+            bool chosen = stored.LRegisterId == _pGamutChoice;
             kept |= chosen;
             _pGamutList.Add(new PGamutItem(
                 stored.LRegisterId,
@@ -115,19 +115,19 @@ public partial class PTenor
         PGamutFind(PSounding.Text ?? string.Empty);
     }
 
-    internal void PGamutRegisterShow(string id)
+    internal void PGamutRegisterShow(long id)
     {
         _pGamutChoice = id;
         PSounding.Text = string.Empty;
         PGamutFind(string.Empty);
     }
 
-    private void PCohortSelect(string? id)
+    private void PCohortSelect(long? id)
     {
         foreach (PCohortItem item in _pCohortList)
         {
             item.PCohortItemChosen = id is not null
-                && string.Equals(item.PCohortItemId, id, StringComparison.Ordinal);
+                && item.PCohortItemId == id;
         }
     }
 
@@ -175,7 +175,7 @@ public partial class PTenor
         PCohortEntryShow(item.PCohortItemId);
     }
 
-    private void PCohortEntryShow(string id)
+    private void PCohortEntryShow(long id)
     {
         LEntryDraft? draft;
         try
@@ -206,7 +206,7 @@ public partial class PTenor
         }
     }
 
-    private void PCohortEntryUpdate(string id)
+    private void PCohortEntryUpdate(long id)
     {
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
@@ -322,7 +322,7 @@ public partial class PTenor
         return _pTenorHost.PWindowDiscardConfirm(PTenorChangeCheck());
     }
 
-    private void PTenorEntryShow(string id, LEntryDraft draft)
+    private void PTenorEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
         PTenorMode.IsEnabled = true;
@@ -346,7 +346,7 @@ public partial class PTenor
 
     private void PTenorBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not string id)
+        if (_pDisplayEntry is not long id)
         {
             return;
         }

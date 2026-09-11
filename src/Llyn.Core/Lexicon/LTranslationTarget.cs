@@ -1,6 +1,6 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LTranslationTarget(
-    string LTranslationTargetId,
+    long LTranslationTargetId,
     string LTranslationTargetHeadword,
     string LTranslationTargetLanguage);

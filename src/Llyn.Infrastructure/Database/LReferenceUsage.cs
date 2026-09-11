@@ -15,7 +15,7 @@ public sealed class LReferenceUsage
         _lReferenceUsageDatabase = database;
     }
 
-    public IReadOnlyDictionary<string, int> LReferenceUsageRead()
+    public IReadOnlyDictionary<long, int> LReferenceUsageRead()
     {
         using LDatabaseSession session = _lReferenceUsageDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -26,19 +26,19 @@ public sealed class LReferenceUsage
             GROUP BY source_id;
             """;
 
-        Dictionary<string, int> counts = [];
+        Dictionary<long, int> counts = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            counts[reader.GetString(0)] = reader.GetInt32(1);
+            counts[reader.GetInt64(0)] = reader.GetInt32(1);
         }
 
         return counts;
     }
 
-    public IReadOnlyList<LUsage> LReferenceUsageRead(string id)
+    public IReadOnlyList<LUsage> LReferenceUsageRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lReferenceUsageDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -81,7 +81,7 @@ public sealed class LReferenceUsage
         return usages;
     }
 
-    internal static int LReferenceUsageRead(SqliteConnection connection, string id)
+    internal static int LReferenceUsageRead(SqliteConnection connection, long id)
     {
         ArgumentNullException.ThrowIfNull(connection);
 
@@ -94,7 +94,7 @@ public sealed class LReferenceUsage
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    internal static void LReferenceUsageClear(SqliteConnection connection, string id)
+    internal static void LReferenceUsageClear(SqliteConnection connection, long id)
     {
         ArgumentNullException.ThrowIfNull(connection);
 
@@ -107,7 +107,7 @@ public sealed class LReferenceUsage
 
     private static IReadOnlyList<LUsage> LReferenceCardRead(
         SqliteConnection connection,
-        string id,
+        long id,
         LOwner owner,
         string statement)
     {
@@ -126,9 +126,9 @@ public sealed class LReferenceUsage
             }
 
             usages.Add(new LUsage(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 owner,
-                reader.GetString(1),
+                reader.GetInt64(1),
                 reader.GetString(2),
                 reader.GetString(3),
                 title));
@@ -137,7 +137,7 @@ public sealed class LReferenceUsage
         return usages;
     }
 
-    private static IReadOnlyList<LUsage> LReferenceExampleRead(SqliteConnection connection, string id)
+    private static IReadOnlyList<LUsage> LReferenceExampleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -155,7 +155,7 @@ public sealed class LReferenceUsage
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            string example = reader.GetString(0);
+            long example = reader.GetInt64(0);
             usages.Add(new LUsage(
                 example,
                 LOwner.LOwnerExample,

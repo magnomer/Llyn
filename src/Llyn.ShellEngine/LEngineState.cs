@@ -14,12 +14,12 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineLeftSave(string? id)
+    public void LEngineLeftSave(long? id)
     {
         LEngineStateChange(state => state with { LWorkspaceStateLeft = id });
     }
 
-    public void LEngineRightSave(string? id)
+    public void LEngineRightSave(long? id)
     {
         LEngineStateChange(state => state with { LWorkspaceStateRight = id });
     }

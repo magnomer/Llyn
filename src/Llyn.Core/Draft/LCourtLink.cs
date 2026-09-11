@@ -1,8 +1,8 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LCourtLink(
-    string LCourtLinkId,
-    string LCourtLinkOwner,
-    string LCourtLinkTarget,
+    long LCourtLinkId,
+    long LCourtLinkOwner,
+    long LCourtLinkTarget,
     string LCourtLinkHeadword,
     string LCourtLinkLanguage);

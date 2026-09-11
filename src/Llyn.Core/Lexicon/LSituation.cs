@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSituation(
-    string LSituationId,
+    long LSituationId,
     LStateValue LSituationTitle,
     LStateValue LSituationDescription,
     LStateValue LSituationKind)

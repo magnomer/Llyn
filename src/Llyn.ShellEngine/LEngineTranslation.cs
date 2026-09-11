@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LTranslation> LEngineTranslationRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -18,7 +18,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineTranslationSave(string ownerId, IReadOnlyList<string> ids, LOwner owner)
+    public void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -27,14 +27,14 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LEntry> LEngineTranslationFind(string query, string? entryId)
+    public IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)
     {
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(query);
 
             IReadOnlyList<LEntry> found = new LEntryArchive(_lEngineDatabase).LEntryFind(query);
-            if (string.IsNullOrWhiteSpace(entryId))
+            if (entryId <= 0)
             {
                 return found;
             }
@@ -42,7 +42,7 @@ public sealed partial class LEngine
             List<LEntry> kept = new(found.Count);
             foreach (LEntry entry in found)
             {
-                if (!string.Equals(entry.LEntryId, entryId, StringComparison.Ordinal))
+                if (entry.LEntryId != entryId)
                 {
                     kept.Add(entry);
                 }
@@ -52,7 +52,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LEntry? LEngineTranslationResolve(string word, string? entryId)
+    public LEntry? LEngineTranslationResolve(string word, long? entryId)
     {
         lock (_lEngineGate)
         {
@@ -95,7 +95,7 @@ public sealed partial class LEngine
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
             LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
-                new LEntry(string.Empty, headword.Trim(), language, null, null, null, null),
+                new LEntry(0, headword.Trim(), language, null, null, null, null),
                 forms: [],
                 speeches: []);
 
@@ -111,11 +111,11 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineTranslationDelete(string id)
+    public void LEngineTranslationDelete(long id)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
             if (new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(id).Count > 0)
             {
@@ -126,7 +126,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(IReadOnlyList<string> ids)
+    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(IReadOnlyList<long> ids)
     {
         lock (_lEngineGate)
         {
@@ -135,7 +135,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LUsage> LEngineIncomingRead(string entryId)
+    public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId)
     {
         lock (_lEngineGate)
         {

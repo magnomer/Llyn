@@ -85,15 +85,15 @@ public partial class PCorpus
 
     private string PCitationNameRead(LStateValue source)
     {
-        string id = source.LStateValueShow();
-        if (id.Length == 0)
+        long id = source.LStateValueShow();
+        if (id == 0)
         {
             return string.Empty;
         }
 
         foreach (PCitationItem row in _pCitationCatalog)
         {
-            if (string.Equals(row.PCitationItemId, id, StringComparison.Ordinal))
+            if (row.PCitationItemId == id)
             {
                 return row.PCitationItemName;
             }
@@ -104,7 +104,7 @@ public partial class PCorpus
 
     private void PCitationHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (_pTranscriptLoading || PCitationList.SelectedValue is not string id)
+        if (_pTranscriptLoading || PCitationList.SelectedValue is not long id)
         {
             return;
         }
@@ -187,7 +187,7 @@ public partial class PCorpus
         PTranscriptChangeUpdate();
     }
 
-    private void PTranscriptCountShow(string? id)
+    private void PTranscriptCountShow(long? id)
     {
         if (id is null)
         {
@@ -268,7 +268,7 @@ public partial class PCorpus
 
     private void PTranscriptRemovalHandle(object sender, RoutedEventArgs e)
     {
-        if (PTranscriptExampleRead() is not string id)
+        if (PTranscriptExampleRead() is not long id)
         {
             return;
         }

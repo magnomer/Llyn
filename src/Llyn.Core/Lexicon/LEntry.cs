@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LEntry(
-    string LEntryId,
+    long LEntryId,
     string LEntryHeadword,
     string LEntryLanguage,
     string? LEntryProficiency,

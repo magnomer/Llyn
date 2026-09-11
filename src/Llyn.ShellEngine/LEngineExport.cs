@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +19,9 @@ public sealed partial class LEngine
     }
 
     public async Task LEnginePortraitExport(
-        string entryId, string path, LPortraitFormat format, LPortraitLabel label)
+        long entryId, string path, LPortraitFormat format, LPortraitLabel label)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         ArgumentNullException.ThrowIfNull(label);
 

@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyDictionary<string, int> LEngineUsageRead(LOwner owner)
+    public IReadOnlyDictionary<long, int> LEngineUsageRead(LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -21,11 +21,11 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LUsage> LEngineUsageRead(string id, LOwner owner)
+    public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
             return owner switch
             {

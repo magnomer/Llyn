@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -33,7 +33,7 @@ public sealed partial class LEngine
 
             LSituationArchive situations = new(_lEngineDatabase);
             IReadOnlyList<LSituation> read = situations.LSituationRead();
-            IReadOnlyDictionary<string, int> usage = situations.LSituationReferenceRead();
+            IReadOnlyDictionary<long, int> usage = situations.LSituationReferenceRead();
 
             List<LCatalogSituation> rows = [];
             foreach (LSituation situation in read)
@@ -51,7 +51,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LSituation? LEngineSituationRead(string id)
+    public LSituation? LEngineSituationRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -59,7 +59,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSituation> LEngineSituationRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -78,7 +78,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationAttach(string ownerId, string situationId, int position, LOwner owner)
+    public void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -93,7 +93,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationDetach(string ownerId, string situationId, LOwner owner)
+    public void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -108,11 +108,11 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationRemove(string ownerId, string situationId, LOwner owner)
+    public void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
@@ -128,7 +128,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSituationDelete(string id)
+    public void LEngineSituationDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -138,7 +138,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectSituation, id);
     }
 
-    public void LEngineSituationDelete(string id, bool detach)
+    public void LEngineSituationDelete(long id, bool detach)
     {
         lock (_lEngineGate)
         {

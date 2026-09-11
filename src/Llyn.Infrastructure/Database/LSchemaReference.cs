@@ -14,12 +14,16 @@ public static class LSchemaReference
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS author (
-                id TEXT NOT NULL PRIMARY KEY,
+                id INTEGER PRIMARY KEY,
+                realm_origin INTEGER REFERENCES realm (id),
+                id_origin INTEGER,
                 name TEXT NOT NULL
             );
 
             CREATE TABLE IF NOT EXISTS source (
-                id TEXT NOT NULL PRIMARY KEY,
+                id INTEGER PRIMARY KEY,
+                realm_origin INTEGER REFERENCES realm (id),
+                id_origin INTEGER,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
                 year_state TEXT NOT NULL,
@@ -37,8 +41,8 @@ public static class LSchemaReference
             );
 
             CREATE TABLE IF NOT EXISTS source_author (
-                source_id TEXT NOT NULL,
-                author_id TEXT NOT NULL,
+                source_id INTEGER NOT NULL,
+                author_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 PRIMARY KEY (source_id, author_id),
                 FOREIGN KEY (source_id) REFERENCES source (id) ON DELETE CASCADE,

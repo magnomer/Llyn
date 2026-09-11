@@ -15,9 +15,9 @@ public sealed class LExampleLink
         _lExampleLinkDatabase = database;
     }
 
-    public IReadOnlyList<LUsage> LExampleUsageRead(string id)
+    public IReadOnlyList<LUsage> LExampleUsageRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lExampleLinkDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -58,7 +58,7 @@ public sealed class LExampleLink
 
     private static IReadOnlyList<LUsage> LExampleUsageRead(
         SqliteConnection connection,
-        string id,
+        long id,
         LOwner owner,
         string statement)
     {
@@ -77,9 +77,9 @@ public sealed class LExampleLink
             }
 
             usages.Add(new LUsage(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 owner,
-                reader.GetString(1),
+                reader.GetInt64(1),
                 reader.GetString(2),
                 reader.GetString(3),
                 title));
@@ -88,7 +88,7 @@ public sealed class LExampleLink
         return usages;
     }
 
-    internal static void LExampleLinkClear(SqliteConnection connection, string exampleId)
+    internal static void LExampleLinkClear(SqliteConnection connection, long exampleId)
     {
         LSentenceArchive.LSentenceExampleClear(connection, exampleId);
     }

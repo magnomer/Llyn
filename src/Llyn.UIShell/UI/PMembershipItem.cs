@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
@@ -7,7 +7,7 @@ internal sealed class PMembershipItem : INotifyPropertyChanged
 {
     private bool _pMembershipItemChosen;
 
-    internal PMembershipItem(string id, string headword, string language)
+    internal PMembershipItem(long id, string headword, string language)
     {
         PMembershipItemId = id;
         PMembershipItemHeadword = headword;
@@ -16,7 +16,7 @@ internal sealed class PMembershipItem : INotifyPropertyChanged
         PMembershipItemFlag = PEnsign.PEnsignFind(language);
     }
 
-    public string PMembershipItemId { get; }
+    public long PMembershipItemId { get; }
 
     public string PMembershipItemHeadword { get; }
 

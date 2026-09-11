@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -10,29 +10,29 @@ public sealed partial class LEngine
 {
     private void LEngineMeaningUpdate(
         SqliteConnection connection,
-        string entryId,
+        long entryId,
         IReadOnlyList<LCardDraft> cards,
         string language,
         List<LRevisionChange> changes)
     {
         LMeaningArchive meanings = new(_lEngineDatabase);
 
-        Dictionary<string, LMeaning> stored = new(StringComparer.Ordinal);
-        List<string> storedOrder = [];
+        Dictionary<long, LMeaning> stored = [];
+        List<long> storedOrder = [];
         foreach (LMeaning row in meanings.LMeaningRead(entryId))
         {
             stored[row.LMeaningId] = row;
             storedOrder.Add(row.LMeaningId);
         }
 
-        HashSet<string> named = new(StringComparer.Ordinal);
+        HashSet<long> named = [];
         LEngineMeaningScan(cards, stored, named);
 
-        HashSet<string> gone = new(StringComparer.Ordinal);
-        foreach (string dropped in storedOrder)
+        HashSet<long> gone = [];
+        foreach (long dropped in storedOrder)
         {
             LMeaning row = stored[dropped];
-            if (row.LMeaningParentId is string parent && gone.Contains(parent))
+            if (row.LMeaningParentId is long parent && gone.Contains(parent))
             {
                 gone.Add(dropped);
                 continue;
@@ -59,33 +59,33 @@ public sealed partial class LEngine
             meanings,
             stored,
             gone,
-            new HashSet<string>(StringComparer.Ordinal));
+            new HashSet<long>());
     }
 
     private void LEngineMeaningApply(
         SqliteConnection connection,
-        string entryId,
-        string? parentId,
+        long entryId,
+        long? parentId,
         IReadOnlyList<LCardDraft> cards,
         string language,
         List<LRevisionChange> changes,
         LMeaningArchive meanings,
-        IReadOnlyDictionary<string, LMeaning> stored,
-        ISet<string> gone,
-        ISet<string> applied)
+        IReadOnlyDictionary<long, LMeaning> stored,
+        ISet<long> gone,
+        ISet<long> applied)
     {
-        List<string> order = [];
+        List<long> order = [];
         foreach (LCardDraft card in LEngineCardRead(cards))
         {
             bool reuse = stored.ContainsKey(card.LCardDraftId)
                 && !gone.Contains(card.LCardDraftId)
                 && applied.Add(card.LCardDraftId);
 
-            string rowId;
+            long rowId;
             if (reuse)
             {
                 LMeaning row = stored[card.LCardDraftId];
-                if (!string.Equals(row.LMeaningParentId, parentId, StringComparison.Ordinal))
+                if (row.LMeaningParentId != parentId)
                 {
                     meanings.LMeaningParentUpdate(row.LMeaningId, parentId);
                 }
@@ -105,7 +105,7 @@ public sealed partial class LEngine
             else
             {
                 LMeaning created = meanings.LMeaningCreate(new LMeaning(
-                    string.Empty,
+                0,
                     entryId,
                     parentId,
                     0,
@@ -151,8 +151,8 @@ public sealed partial class LEngine
 
     private static void LEngineMeaningScan(
         IReadOnlyList<LCardDraft> cards,
-        IReadOnlyDictionary<string, LMeaning> stored,
-        ISet<string> named)
+        IReadOnlyDictionary<long, LMeaning> stored,
+        ISet<long> named)
     {
         foreach (LCardDraft card in LEngineCardRead(cards))
         {

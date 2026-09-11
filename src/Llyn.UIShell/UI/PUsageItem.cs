@@ -1,4 +1,4 @@
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -22,7 +22,7 @@ internal sealed class PUsageItem
         PUsageItemFlag = PEnsign.PEnsignFind(usage.LUsageLanguage);
     }
 
-    public string PUsageItemId { get; }
+    public long PUsageItemId { get; }
 
     public string PUsageItemEntry { get; }
 

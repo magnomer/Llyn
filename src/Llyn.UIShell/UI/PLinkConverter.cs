@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
@@ -38,7 +38,7 @@ internal sealed class PLinkConverter : IValueConverter
             return chips;
         }
 
-        foreach (string id in ids)
+        foreach (long id in ids)
         {
             if (_pLinkConverterTargets.TryGetValue(id, out PLinkChip? chip))
             {

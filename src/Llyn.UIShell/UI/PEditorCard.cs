@@ -50,7 +50,7 @@ public partial class PEditor
         IReadOnlyDictionary<string, LTranslationTarget> targets, IReadOnlyList<string> ids)
     {
         List<LTranslationTarget> found = [];
-        foreach (string id in ids)
+        foreach (long id in ids)
         {
             if (targets.TryGetValue(id, out LTranslationTarget? target))
             {

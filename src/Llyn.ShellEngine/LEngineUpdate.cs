@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -7,11 +7,11 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LEntry LEngineEntryUpdate(string id, LEntryDraft draft)
+    public LEntry LEngineEntryUpdate(long id, LEntryDraft draft)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             ArgumentNullException.ThrowIfNull(draft);
 
             if (string.IsNullOrWhiteSpace(draft.LEntryDraftHeadword))
@@ -72,7 +72,7 @@ public sealed partial class LEngine
     }
 
     private void LEngineSpeechUpdate(
-        LEntryArchive entries, string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+        LEntryArchive entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         IReadOnlyList<LSpeech> stored = entries.LEntrySpeechRead(entryId);
         IReadOnlyList<LSpeech> current = LEngineSpeechResolve(
@@ -93,7 +93,7 @@ public sealed partial class LEngine
     }
 
     private static void LEngineFormUpdate(
-        LEntryArchive entries, string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+        LEntryArchive entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         IReadOnlyList<LForm> stored = entries.LEntryFormRead(entryId);
         IReadOnlyList<LForm> current = draft.LEntryDraftForms;
@@ -134,7 +134,7 @@ public sealed partial class LEngine
     }
 
     private void LEngineInflectionUpdate(
-        string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+        long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         LInflectionArchive inflections = new(_lEngineDatabase);
         IReadOnlyList<LInflection> stored = inflections.LInflectionRead(entryId);
@@ -184,7 +184,7 @@ public sealed partial class LEngine
         return true;
     }
 
-    private void LEngineNoteUpdate(string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+    private void LEngineNoteUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         LNoteArchive notes = new(_lEngineDatabase);
         LNote? stored = notes.LNoteRead(entryId);
@@ -211,7 +211,7 @@ public sealed partial class LEngine
     }
 
     private void LEnginePronunciationUpdate(
-        string entryId, LEntryDraft draft, List<LRevisionChange> changes)
+        long entryId, LEntryDraft draft, List<LRevisionChange> changes)
     {
         LPronunciationArchive pronunciations = new(_lEngineDatabase);
         LPronunciation? stored = pronunciations.LPronunciationRead(entryId);
@@ -229,11 +229,11 @@ public sealed partial class LEngine
             return;
         }
 
-        string pronunciationId;
+        long pronunciationId;
         if (stored is null)
         {
             LPronunciation created = pronunciations.LPronunciationCreate(new LPronunciation(
-                string.Empty,
+                0,
                 entryId,
                 written.LPronunciationDraftLevel,
                 written.LPronunciationDraftIpa,
@@ -296,8 +296,8 @@ public sealed partial class LEngine
 
         for (int index = 0; index < stored.LPronunciationSyllables.Count; index++)
         {
-            if (stored.LPronunciationSyllables[index] with { LSyllablePronunciationId = string.Empty }
-                != current.LPronunciationSyllables[index] with { LSyllablePronunciationId = string.Empty })
+            if (stored.LPronunciationSyllables[index] with { LSyllablePronunciationId = 0 }
+                != current.LPronunciationSyllables[index] with { LSyllablePronunciationId = 0 })
             {
                 return false;
             }
@@ -306,9 +306,9 @@ public sealed partial class LEngine
         for (int index = 0; index < stored.LPronunciationRepresentations.Count; index++)
         {
             if (stored.LPronunciationRepresentations[index]
-                    with { LRepresentationPronunciationId = string.Empty }
+                    with { LRepresentationPronunciationId = 0 }
                 != current.LPronunciationRepresentations[index]
-                    with { LRepresentationPronunciationId = string.Empty })
+                    with { LRepresentationPronunciationId = 0 })
             {
                 return false;
             }

@@ -113,12 +113,12 @@ public partial class PTaxonomy
         PDirectoryFind(string.Empty);
     }
 
-    private void PMembershipSelect(string? id)
+    private void PMembershipSelect(long? id)
     {
         foreach (PMembershipItem item in _pMembershipList)
         {
             item.PMembershipItemChosen = id is not null
-                && string.Equals(item.PMembershipItemId, id, StringComparison.Ordinal);
+                && item.PMembershipItemId == id;
         }
     }
 
@@ -165,7 +165,7 @@ public partial class PTaxonomy
         PMembershipEntryShow(item.PMembershipItemId);
     }
 
-    private void PMembershipEntryShow(string id)
+    private void PMembershipEntryShow(long id)
     {
         LEntryDraft? draft;
         try
@@ -196,7 +196,7 @@ public partial class PTaxonomy
         }
     }
 
-    private void PMembershipEntryUpdate(string id)
+    private void PMembershipEntryUpdate(long id)
     {
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
@@ -312,7 +312,7 @@ public partial class PTaxonomy
         return _pTaxonomyHost.PWindowDiscardConfirm(PTaxonomyChangeCheck());
     }
 
-    private void PTaxonomyEntryShow(string id, LEntryDraft draft)
+    private void PTaxonomyEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
         PTaxonomyMode.IsEnabled = true;
@@ -336,7 +336,7 @@ public partial class PTaxonomy
 
     private void PTaxonomyBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not string id)
+        if (_pDisplayEntry is not long id)
         {
             return;
         }

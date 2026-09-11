@@ -6,7 +6,7 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    internal void PEditorEntryShow(string id)
+    internal void PEditorEntryShow(long id)
     {
         LDraft? started = PEditorDraftStart(id);
 

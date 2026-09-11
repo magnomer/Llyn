@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -15,9 +15,9 @@ public sealed class LAuthorUsage
         _lAuthorUsageDatabase = database;
     }
 
-    public IReadOnlyList<LUsage> LAuthorUsageRead(string id)
+    public IReadOnlyList<LUsage> LAuthorUsageRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lAuthorUsageDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -64,7 +64,7 @@ public sealed class LAuthorUsage
 
     private static IReadOnlyList<LUsage> LAuthorCardRead(
         SqliteConnection connection,
-        string id,
+        long id,
         LOwner owner,
         string statement)
     {
@@ -83,9 +83,9 @@ public sealed class LAuthorUsage
             }
 
             usages.Add(new LUsage(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 owner,
-                reader.GetString(1),
+                reader.GetInt64(1),
                 reader.GetString(2),
                 reader.GetString(3),
                 title));
@@ -94,7 +94,7 @@ public sealed class LAuthorUsage
         return usages;
     }
 
-    private static IReadOnlyList<LUsage> LAuthorExampleRead(SqliteConnection connection, string id)
+    private static IReadOnlyList<LUsage> LAuthorExampleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -114,7 +114,7 @@ public sealed class LAuthorUsage
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            string example = reader.GetString(0);
+            long example = reader.GetInt64(0);
             usages.Add(new LUsage(
                 example,
                 LOwner.LOwnerExample,

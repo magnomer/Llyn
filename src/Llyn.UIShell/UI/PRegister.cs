@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -14,12 +14,12 @@ internal sealed class PRegister
     {
     }
 
-    internal PRegister(LStateValue text, string id)
+    internal PRegister(LStateValue text, long id)
         : this(text, id, string.Empty, false)
     {
     }
 
-    internal PRegister(LStateValue text, string id, string language, bool builtin)
+    internal PRegister(LStateValue text, long id, string language, bool builtin)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -30,7 +30,7 @@ internal sealed class PRegister
         PRegisterBuiltin = builtin;
     }
 
-    public string PRegisterId { get; }
+    public long PRegisterId { get; }
 
     internal string PRegisterLanguage { get; }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -6,9 +6,9 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LPortrait LEnginePortraitRead(string entryId, LPortraitLabel label)
+    public LPortrait LEnginePortraitRead(long entryId, LPortraitLabel label)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(label);
 
         LEntryDraft draft = LEngineEntryLoad(entryId)
@@ -17,12 +17,11 @@ public sealed partial class LEngine
         string mark = label.LPortraitLabelUnreadable;
         LSentenceOrder order = LEngineFrameRead(draft.LEntryDraftLanguage);
 
-        List<string> ids = new List<string>();
+        List<long> ids = [];
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftMeanings, ids);
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftCollocations, ids);
 
-        Dictionary<string, LPortraitLink> targets =
-            new Dictionary<string, LPortraitLink>(StringComparer.Ordinal);
+        Dictionary<long, LPortraitLink> targets = [];
 
         try
         {

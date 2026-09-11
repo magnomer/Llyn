@@ -1,10 +1,10 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace Llyn.UIShell;
 
 internal sealed class PGamutItem
 {
-    internal PGamutItem(string id, string name, string language, int usage, bool shipped, bool chosen)
+    internal PGamutItem(long id, string name, string language, int usage, bool shipped, bool chosen)
     {
         PGamutItemId = id;
         PGamutItemName = name;
@@ -14,7 +14,7 @@ internal sealed class PGamutItem
         PGamutItemChosen = chosen;
     }
 
-    public string PGamutItemId { get; }
+    public long PGamutItemId { get; }
 
     public string PGamutItemName { get; }
 

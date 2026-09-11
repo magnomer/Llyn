@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,8 +26,8 @@ internal sealed partial class PCard
         PCardLink.Clear();
         foreach (LTranslationTarget target in targets)
         {
-            string id = target.LTranslationTargetId.Trim();
-            if (id.Length == 0 || PCardLinkCheck(id))
+            long id = target.LTranslationTargetId;
+            if (id == 0 || PCardLinkCheck(id))
             {
                 continue;
             }
@@ -45,7 +45,7 @@ internal sealed partial class PCard
 
     internal IReadOnlyList<string> PCardLinkRead()
     {
-        List<string> ids = [];
+        List<long> ids = [];
         foreach (object row in PCardLink)
         {
             if (row is PLinkChip chip)
@@ -105,9 +105,9 @@ internal sealed partial class PCard
         }
     }
 
-    internal bool PCardLinkCommit(string id, string headword, string language)
+    internal bool PCardLinkCommit(long id, string headword, string language)
     {
-        string written = (id ?? string.Empty).Trim();
+        long written = id;
         if (written.Length == 0)
         {
             return false;
@@ -204,12 +204,12 @@ internal sealed partial class PCard
             ?? "Add translations";
     }
 
-    private bool PCardLinkCheck(string id)
+    private bool PCardLinkCheck(long id)
     {
         foreach (object row in PCardLink)
         {
             if (row is PLinkChip chip &&
-                string.Equals(chip.PLinkChipId, id, StringComparison.Ordinal))
+                chip.PLinkChipId == id)
             {
                 return true;
             }

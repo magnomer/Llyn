@@ -20,7 +20,7 @@ internal sealed class PShelfItem : INotifyPropertyChanged
         PShelfItemCount = row.LCatalogReferenceUsage.ToString(CultureInfo.CurrentCulture);
     }
 
-    public string PShelfItemId { get; }
+    public long PShelfItemId { get; }
 
     public string PShelfItemName { get; }
 

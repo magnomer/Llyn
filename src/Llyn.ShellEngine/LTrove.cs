@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -6,15 +6,13 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LTrove
 {
-    private readonly Dictionary<string, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)>
-        _lTroveCandidate = new(StringComparer.Ordinal);
+    private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)> _lTroveCandidate = [];
 
-    private readonly Dictionary<string, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound)>
-        _lTroveRecording = new(StringComparer.Ordinal);
+    private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound)> _lTroveRecording = [];
 
-    internal IReadOnlyList<LCandidate>? LTroveCandidateRead(string session, string word, string language)
+    internal IReadOnlyList<LCandidate>? LTroveCandidateRead(long session, string word, string language)
     {
-        if (session.Length == 0 ||
+        if (session == 0 ||
             !_lTroveCandidate.TryGetValue(session,
                 out (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound) held))
         {
@@ -25,9 +23,9 @@ internal sealed class LTrove
     }
 
     internal void LTroveCandidateSave(
-        string session, string word, string language, IReadOnlyList<LCandidate> found)
+        long session, string word, string language, IReadOnlyList<LCandidate> found)
     {
-        if (session.Length == 0 || !LTroveCandidateCheck(found))
+        if (session == 0 || !LTroveCandidateCheck(found))
         {
             return;
         }
@@ -35,9 +33,9 @@ internal sealed class LTrove
         _lTroveCandidate[session] = (word, language, found);
     }
 
-    internal IReadOnlyList<LRecording>? LTroveRecordingRead(string session, string word, string language)
+    internal IReadOnlyList<LRecording>? LTroveRecordingRead(long session, string word, string language)
     {
-        if (session.Length == 0 ||
+        if (session == 0 ||
             !_lTroveRecording.TryGetValue(session,
                 out (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound) held))
         {
@@ -48,9 +46,9 @@ internal sealed class LTrove
     }
 
     internal void LTroveRecordingSave(
-        string session, string word, string language, IReadOnlyList<LRecording> found)
+        long session, string word, string language, IReadOnlyList<LRecording> found)
     {
-        if (session.Length == 0 || !LTroveRecordingCheck(found))
+        if (session == 0 || !LTroveRecordingCheck(found))
         {
             return;
         }
@@ -58,7 +56,7 @@ internal sealed class LTrove
         _lTroveRecording[session] = (word, language, found);
     }
 
-    internal void LTroveClear(string session)
+    internal void LTroveClear(long session)
     {
         _lTroveCandidate.Remove(session);
         _lTroveRecording.Remove(session);

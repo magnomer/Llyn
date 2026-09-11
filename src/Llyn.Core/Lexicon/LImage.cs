@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LImage(
-    string LImageId,
+    long LImageId,
     LStateValue LImageLocation)
 {
     public LStateValue LImageLocation { get; init; } = LImageLocation ?? LStateValue.LStateValueUnspecified;

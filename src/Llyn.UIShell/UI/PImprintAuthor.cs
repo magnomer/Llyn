@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -85,7 +85,7 @@ public partial class PImprint
 
     private void PAuthorHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (_pAuthorLoading || PImprintReferenceRead() is null || PAuthorList.SelectedValue is not string id)
+        if (_pAuthorLoading || PImprintReferenceRead() is null || PAuthorList.SelectedValue is not long id)
         {
             return;
         }
@@ -95,7 +95,7 @@ public partial class PImprint
         PAuthorAttach(id);
     }
 
-    private void PAuthorAttach(string id)
+    private void PAuthorAttach(long id)
     {
         if (PImprintReferenceRead() is not string stored)
         {
@@ -104,7 +104,7 @@ public partial class PImprint
 
         foreach (PAuthorItem credit in _pAuthorCredit)
         {
-            if (string.Equals(credit.PAuthorItemId, id, StringComparison.Ordinal))
+            if (credit.PAuthorItemId == id)
             {
                 return;
             }

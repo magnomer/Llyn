@@ -14,14 +14,16 @@ public static class LSchemaQuotation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS example (
-                id TEXT NOT NULL PRIMARY KEY,
+                id INTEGER PRIMARY KEY,
+                realm_origin INTEGER REFERENCES realm (id),
+                id_origin INTEGER,
                 language TEXT NOT NULL,
                 text_state TEXT NOT NULL DEFAULT 'unspecified',
                 text TEXT,
                 translation_state TEXT NOT NULL DEFAULT 'unspecified',
                 translation TEXT,
                 source_state TEXT NOT NULL DEFAULT 'unspecified',
-                source_id TEXT,
+                source_id INTEGER,
                 CHECK (text_state = 'specified' OR text IS NULL),
                 CHECK (translation_state = 'specified' OR translation IS NULL),
                 CHECK (source_state = 'specified' OR source_id IS NULL),
@@ -29,9 +31,9 @@ public static class LSchemaQuotation
             );
 
             CREATE TABLE IF NOT EXISTS sense_example (
-                id TEXT NOT NULL PRIMARY KEY,
-                sense_id TEXT NOT NULL,
-                example_id TEXT,
+                id INTEGER PRIMARY KEY,
+                sense_id INTEGER NOT NULL,
+                example_id INTEGER,
                 position INTEGER NOT NULL,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
                 particle TEXT,
@@ -50,9 +52,9 @@ public static class LSchemaQuotation
                 ON sense_example (sense_id, position);
 
             CREATE TABLE IF NOT EXISTS collocation_example (
-                id TEXT NOT NULL PRIMARY KEY,
-                collocation_id TEXT NOT NULL,
-                example_id TEXT,
+                id INTEGER PRIMARY KEY,
+                collocation_id INTEGER NOT NULL,
+                example_id INTEGER,
                 position INTEGER NOT NULL,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
                 particle TEXT,

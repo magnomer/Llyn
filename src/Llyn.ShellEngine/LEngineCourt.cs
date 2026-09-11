@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -8,12 +8,12 @@ namespace Llyn.ShellEngine;
 public sealed partial class LEngine
 {
     public LCourtLink LEngineCourtSave(
-        string ownerId, string targetId, string headword, string language)
+        long ownerId, long targetId, string headword, string language)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
-            ArgumentException.ThrowIfNullOrWhiteSpace(targetId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(targetId);
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
 
             LCourtLink link = new(
@@ -29,11 +29,11 @@ public sealed partial class LEngine
     }
 
     public LCourtLink LEngineCourtStart(
-        string ownerId, string origin, string headword, string language)
+        long ownerId, string origin, string headword, string language)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
             LEngineDraftValidate(ownerId);
 
@@ -61,25 +61,25 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineCourtDelete(string linkId)
+    public void LEngineCourtDelete(long linkId)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(linkId);
+            ArgumentOutOfRangeException.ThrowIfZero(linkId);
             LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, linkId);
         }
     }
 
-    public LCourtLink? LEngineCourtFind(string ownerId, string targetId)
+    public LCourtLink? LEngineCourtFind(long ownerId, long targetId)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
-            ArgumentException.ThrowIfNullOrWhiteSpace(targetId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(targetId);
 
             foreach (LCourtLink link in LEngineCourtScan(ownerId))
             {
-                if (string.Equals(link.LCourtLinkTarget, targetId, StringComparison.Ordinal))
+                if (link.LCourtLinkTarget == targetId)
                 {
                     return link;
                 }
@@ -89,13 +89,13 @@ public sealed partial class LEngine
         }
     }
 
-    private void LEngineCourtRemove(string id)
+    private void LEngineCourtRemove(long id)
     {
         IReadOnlyList<LCourtLink> court = LCourtArchive.LCourtArchiveScan(_lEngineWorkspace);
 
         foreach (LCourtLink link in court)
         {
-            if (!string.Equals(link.LCourtLinkOwner, id, StringComparison.Ordinal))
+            if (link.LCourtLinkOwner != id)
             {
                 if (LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkOwner) is null)
                 {
@@ -107,7 +107,7 @@ public sealed partial class LEngine
 
             LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtLinkId);
 
-            if (string.Equals(link.LCourtLinkTarget, id, StringComparison.Ordinal))
+            if (link.LCourtLinkTarget == id)
             {
                 continue;
             }
@@ -115,9 +115,8 @@ public sealed partial class LEngine
             bool claimed = false;
             foreach (LCourtLink other in court)
             {
-                if (!string.Equals(other.LCourtLinkOwner, id, StringComparison.Ordinal)
-                    && string.Equals(
-                        other.LCourtLinkTarget, link.LCourtLinkTarget, StringComparison.Ordinal))
+                if (other.LCourtLinkOwner != id
+                    && other.LCourtLinkTarget == link.LCourtLinkTarget)
                 {
                     claimed = true;
                     break;
@@ -137,12 +136,12 @@ public sealed partial class LEngine
         }
     }
 
-    private IReadOnlyList<LCourtLink> LEngineCourtScan(string ownerId)
+    private IReadOnlyList<LCourtLink> LEngineCourtScan(long ownerId)
     {
         List<LCourtLink> owned = [];
         foreach (LCourtLink link in LCourtArchive.LCourtArchiveScan(_lEngineWorkspace))
         {
-            if (string.Equals(link.LCourtLinkOwner, ownerId, StringComparison.Ordinal))
+            if (link.LCourtLinkOwner == ownerId)
             {
                 owned.Add(link);
             }
@@ -151,7 +150,7 @@ public sealed partial class LEngine
         return owned;
     }
 
-    private void LEngineCourtUpdate(LCourtLink link, string realId)
+    private void LEngineCourtUpdate(LCourtLink link, long realId)
     {
         LDraft? owner = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkOwner);
         if (owner is null)
@@ -171,21 +170,21 @@ public sealed partial class LEngine
     }
 
     private static IReadOnlyList<LCardDraft> LEngineTranslationUpdate(
-        IReadOnlyList<LCardDraft> cards, string draftId, string realId)
+        IReadOnlyList<LCardDraft> cards, long draftId, long realId)
     {
         List<LCardDraft> written = new(cards.Count);
         foreach (LCardDraft card in cards)
         {
-            List<string> translations = new(card.LCardDraftTranslation.Count);
-            foreach (string translation in card.LCardDraftTranslation)
+            List<long> translations = new(card.LCardDraftTranslation.Count);
+            foreach (long translation in card.LCardDraftTranslation)
             {
-                if (!string.Equals(translation, draftId, StringComparison.Ordinal))
+                if (translation != draftId)
                 {
                     translations.Add(translation);
                     continue;
                 }
 
-                if (realId.Length != 0)
+                if (realId != 0)
                 {
                     translations.Add(realId);
                 }

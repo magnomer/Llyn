@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 
 namespace Llyn.Core;
 
 public sealed record LClaim(
-    string LClaimDraft,
+    long LClaimDraft,
     int LClaimProcess,
     DateTimeOffset LClaimMoment);

@@ -15,42 +15,42 @@ public sealed class LSentenceArchive
         _lSentenceArchiveDatabase = database;
     }
 
-    public IReadOnlyList<LSentence> LSentenceMeaningRead(string meaningId)
+    public IReadOnlyList<LSentence> LSentenceMeaningRead(long meaningId)
     {
         return LSentenceOwnerRead("sense_example", "sense_id", meaningId);
     }
 
-    public IReadOnlyList<LSentence> LSentenceCollocationRead(string collocationId)
+    public IReadOnlyList<LSentence> LSentenceCollocationRead(long collocationId)
     {
         return LSentenceOwnerRead("collocation_example", "collocation_id", collocationId);
     }
 
-    public void LSentenceMeaningSave(string meaningId, IReadOnlyList<LSentence> sentences)
+    public void LSentenceMeaningSave(long meaningId, IReadOnlyList<LSentence> sentences)
     {
         LSentenceOwnerSave("sense_example", "sense_id", meaningId, sentences);
     }
 
-    public void LSentenceCollocationSave(string collocationId, IReadOnlyList<LSentence> sentences)
+    public void LSentenceCollocationSave(long collocationId, IReadOnlyList<LSentence> sentences)
     {
         LSentenceOwnerSave("collocation_example", "collocation_id", collocationId, sentences);
     }
 
-    public void LSentenceMeaningAttach(string meaningId, string exampleId, int position)
+    public void LSentenceMeaningAttach(long meaningId, long exampleId, int position)
     {
         LSentenceOwnerAttach("sense_example", "sense_id", meaningId, exampleId, position);
     }
 
-    public void LSentenceCollocationAttach(string collocationId, string exampleId, int position)
+    public void LSentenceCollocationAttach(long collocationId, long exampleId, int position)
     {
         LSentenceOwnerAttach("collocation_example", "collocation_id", collocationId, exampleId, position);
     }
 
-    public void LSentenceMeaningDetach(string meaningId, string exampleId)
+    public void LSentenceMeaningDetach(long meaningId, long exampleId)
     {
         LSentenceOwnerDetach("sense_example", "sense_id", meaningId, exampleId);
     }
 
-    public void LSentenceCollocationDetach(string collocationId, string exampleId)
+    public void LSentenceCollocationDetach(long collocationId, long exampleId)
     {
         LSentenceOwnerDetach("collocation_example", "collocation_id", collocationId, exampleId);
     }
@@ -65,7 +65,7 @@ public sealed class LSentenceArchive
         return LSentenceFrameRead("dependence", language);
     }
 
-    internal static void LSentenceExampleClear(SqliteConnection connection, string exampleId)
+    internal static void LSentenceExampleClear(SqliteConnection connection, long exampleId)
     {
         LSentenceTableClear(connection, "sense_example", "sense_id", exampleId);
         LSentenceTableClear(connection, "collocation_example", "collocation_id", exampleId);
@@ -114,7 +114,7 @@ public sealed class LSentenceArchive
     }
 
     private static IReadOnlyList<LSentence> LSentenceOwnerRead(
-        SqliteConnection connection, string table, string column, string ownerId)
+        SqliteConnection connection, string table, string column, long ownerId)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -137,8 +137,8 @@ public sealed class LSentenceArchive
         while (reader.Read())
         {
             sentences.Add(new LSentence(
-                reader.GetString(0),
-                reader.GetString(1),
+                reader.GetInt64(0),
+                reader.GetInt64(1),
                 reader.GetInt32(2),
                 reader.IsDBNull(3) ? null : LSentenceExampleRead(reader, 3),
                 LStateColumn.LStateColumnRead(reader, 11),
@@ -149,7 +149,7 @@ public sealed class LSentenceArchive
     }
 
     private static void LSentenceOwnerClear(
-        SqliteConnection connection, string table, string column, string ownerId)
+        SqliteConnection connection, string table, string column, long ownerId)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = $"DELETE FROM {table} WHERE {column} = $owner;";
@@ -158,9 +158,9 @@ public sealed class LSentenceArchive
     }
 
     private static void LSentenceTableClear(
-        SqliteConnection connection, string table, string column, string exampleId)
+        SqliteConnection connection, string table, string column, long exampleId)
     {
-        List<string> owners = [];
+        List<long> owners = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
@@ -169,7 +169,7 @@ public sealed class LSentenceArchive
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                owners.Add(reader.GetString(0));
+                owners.Add(reader.GetInt64(0));
             }
         }
 
@@ -186,7 +186,7 @@ public sealed class LSentenceArchive
         }
 
         string scope = LSentenceScopeCreate(column);
-        foreach (string owner in owners)
+        foreach (long owner in owners)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
                 connection, table, scope, owner, "id",
@@ -195,7 +195,7 @@ public sealed class LSentenceArchive
     }
 
     private static void LSentenceSave(
-        SqliteConnection connection, string table, string column, string ownerId, LSentence sentence, int position)
+        SqliteConnection connection, string table, string column, long ownerId, LSentence sentence, int position)
     {
         ArgumentNullException.ThrowIfNull(sentence);
 
@@ -203,17 +203,14 @@ public sealed class LSentenceArchive
         command.CommandText =
             $"""
             INSERT INTO {table} (
-                id, {column}, example_id, position,
+                {column}, example_id, position,
                 particle_state, particle,
                 dependence_state, dependence)
             VALUES (
-                $id, $owner, $example, $position,
+                $owner, $example, $position,
                 $particleState, $particle,
                 $dependenceState, $dependence);
             """;
-        command.Parameters.AddWithValue(
-            "$id",
-            string.IsNullOrWhiteSpace(sentence.LSentenceId) ? LIdentity.LIdentityCreate() : sentence.LSentenceId);
         command.Parameters.AddWithValue("$owner", ownerId);
         command.Parameters.AddWithValue(
             "$example", (object?)sentence.LSentenceExample?.LExampleId ?? DBNull.Value);
@@ -226,24 +223,24 @@ public sealed class LSentenceArchive
     private static LExample LSentenceExampleRead(SqliteDataReader reader, int start)
     {
         return new LExample(
-            reader.GetString(start),
+            reader.GetInt64(start),
             reader.GetString(start + 1),
             LStateColumn.LStateColumnRead(reader, start + 2),
             LStateColumn.LStateColumnRead(reader, start + 4),
-            LStateColumn.LStateColumnRead(reader, start + 6));
+            LStateColumn.LStateColumnAnchorRead(reader, start + 6));
     }
 
-    private IReadOnlyList<LSentence> LSentenceOwnerRead(string table, string column, string ownerId)
+    private IReadOnlyList<LSentence> LSentenceOwnerRead(string table, string column, long ownerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
 
         using LDatabaseSession session = _lSentenceArchiveDatabase.LDatabaseSessionStart();
         return LSentenceOwnerRead(session.LDatabaseSessionConnection, table, column, ownerId);
     }
 
-    private void LSentenceOwnerSave(string table, string column, string ownerId, IReadOnlyList<LSentence> sentences)
+    private void LSentenceOwnerSave(string table, string column, long ownerId, IReadOnlyList<LSentence> sentences)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
         ArgumentNullException.ThrowIfNull(sentences);
 
         using LDatabaseSession session = _lSentenceArchiveDatabase.LDatabaseSessionStart();
@@ -258,31 +255,31 @@ public sealed class LSentenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    private void LSentenceOwnerAttach(string table, string column, string ownerId, string exampleId, int position)
+    private void LSentenceOwnerAttach(string table, string column, long ownerId, long exampleId, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
 
         using LDatabaseSession session = _lSentenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         string scope = LSentenceScopeCreate(column);
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
+        IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
             connection, table, scope, ownerId, "id");
 
-        string id = LIdentity.LIdentityCreate();
+        long id;
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 $"""
-                INSERT INTO {table} (id, {column}, example_id, position)
-                VALUES ($id, $owner, $example, $position);
+                INSERT INTO {table} ({column}, example_id, position)
+                VALUES ($owner, $example, $position)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", id);
             command.Parameters.AddWithValue("$owner", ownerId);
             command.Parameters.AddWithValue("$example", exampleId);
             command.Parameters.AddWithValue("$position", current.Count);
-            command.ExecuteNonQuery();
+            id = (long)command.ExecuteScalar()!;
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
@@ -292,10 +289,10 @@ public sealed class LSentenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    private void LSentenceOwnerDetach(string table, string column, string ownerId, string exampleId)
+    private void LSentenceOwnerDetach(string table, string column, long ownerId, long exampleId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(ownerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
 
         using LDatabaseSession session = _lSentenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;

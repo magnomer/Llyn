@@ -1,7 +1,9 @@
+﻿using System.Globalization;
+
 namespace Llyn.Core;
 
 public sealed record LReference(
-    string LReferenceId,
+    long LReferenceId,
     LStateValue LReferenceTitle,
     LStateValue LReferenceYear,
     LReferenceKind LReferenceKind,
@@ -21,7 +23,7 @@ public sealed record LReference(
     {
         return LReferenceTextRead(LReferenceTitle)
             ?? LReferenceTextRead(LReferenceUrl)
-            ?? LReferenceId;
+            ?? LReferenceId.ToString(CultureInfo.InvariantCulture);
     }
 
     public static string LReferenceKindFormat(LReferenceKind kind)

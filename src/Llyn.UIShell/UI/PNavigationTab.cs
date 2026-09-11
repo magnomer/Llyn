@@ -106,7 +106,7 @@ public partial class PWindow
         ];
     }
 
-    internal void PWindowEntryShow(string id)
+    internal void PWindowEntryShow(long id)
     {
         if (!PLibrary.PLibraryLeaveConfirm())
         {
@@ -117,7 +117,7 @@ public partial class PWindow
         PLibrary.PIndexEntryShow(id);
     }
 
-    internal void PWindowSituationShow(string id)
+    internal void PWindowSituationShow(long id)
     {
         if (!PRepertoire.PRepertoireLeaveConfirm())
         {
@@ -139,7 +139,7 @@ public partial class PWindow
         PTaxonomy.PDirectoryTagShow(text);
     }
 
-    internal void PWindowRegisterShow(string id)
+    internal void PWindowRegisterShow(long id)
     {
         if (!PTenor.PTenorLeaveConfirm())
         {
@@ -150,7 +150,7 @@ public partial class PWindow
         PTenor.PGamutRegisterShow(id);
     }
 
-    internal void PWindowExampleShow(string id)
+    internal void PWindowExampleShow(long id)
     {
         if (!PCorpus.PCorpusLeaveConfirm())
         {

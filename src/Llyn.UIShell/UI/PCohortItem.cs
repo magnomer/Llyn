@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Media;
 
 namespace Llyn.UIShell;
@@ -7,7 +7,7 @@ internal sealed class PCohortItem : INotifyPropertyChanged
 {
     private bool _pCohortItemChosen;
 
-    internal PCohortItem(string id, string headword, string language)
+    internal PCohortItem(long id, string headword, string language)
     {
         PCohortItemId = id;
         PCohortItemHeadword = headword;
@@ -16,7 +16,7 @@ internal sealed class PCohortItem : INotifyPropertyChanged
         PCohortItemFlag = PEnsign.PEnsignFind(language);
     }
 
-    public string PCohortItemId { get; }
+    public long PCohortItemId { get; }
 
     public string PCohortItemHeadword { get; }
 

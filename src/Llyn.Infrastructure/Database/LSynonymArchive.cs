@@ -18,7 +18,7 @@ public sealed class LSynonymArchive
     public LSynonym LSynonymCreate(LSynonym synonym)
     {
         ArgumentNullException.ThrowIfNull(synonym);
-        ArgumentException.ThrowIfNullOrWhiteSpace(synonym.LSynonymCollocationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(synonym.LSynonymCollocationId);
         LSynonymTargetValidate(synonym);
 
         using LDatabaseSession session = _lSynonymArchiveDatabase.LDatabaseSessionStart();
@@ -26,7 +26,6 @@ public sealed class LSynonymArchive
 
         LSynonym stored = synonym with
         {
-            LSynonymId = LIdentity.LIdentityCreate(),
             LSynonymPosition = LSynonymSiblingRead(connection, synonym.LSynonymCollocationId).Count,
         };
 
@@ -34,24 +33,24 @@ public sealed class LSynonymArchive
         {
             command.CommandText =
                 """
-                INSERT INTO collocation_synonym (id, collocation_id, position, target_entry_id, target_sense_id)
-                VALUES ($id, $collocation, $position, $entry, $sense);
+                INSERT INTO collocation_synonym (collocation_id, position, target_entry_id, target_sense_id)
+                VALUES ($collocation, $position, $entry, $sense)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LSynonymId);
             command.Parameters.AddWithValue("$collocation", stored.LSynonymCollocationId);
             command.Parameters.AddWithValue("$position", stored.LSynonymPosition);
             command.Parameters.AddWithValue("$entry", (object?)stored.LSynonymTargetEntry ?? DBNull.Value);
             command.Parameters.AddWithValue("$sense", (object?)stored.LSynonymTargetMeaning ?? DBNull.Value);
-            command.ExecuteNonQuery();
+            stored = stored with { LSynonymId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public IReadOnlyList<LSynonym> LSynonymRead(string collocationId)
+    public IReadOnlyList<LSynonym> LSynonymRead(long collocationId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(collocationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(collocationId);
 
         using LDatabaseSession session = _lSynonymArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -68,11 +67,11 @@ public sealed class LSynonymArchive
         while (reader.Read())
         {
             synonyms.Add(new LSynonym(
-                reader.GetString(0),
-                reader.GetString(1),
+                reader.GetInt64(0),
+                reader.GetInt64(1),
                 reader.GetInt32(2),
-                reader.IsDBNull(3) ? null : reader.GetString(3),
-                reader.IsDBNull(4) ? null : reader.GetString(4)));
+                reader.IsDBNull(3) ? null : reader.GetInt64(3),
+                reader.IsDBNull(4) ? null : reader.GetInt64(4)));
         }
 
         return synonyms;
@@ -81,7 +80,7 @@ public sealed class LSynonymArchive
     public void LSynonymUpdate(LSynonym synonym)
     {
         ArgumentNullException.ThrowIfNull(synonym);
-        ArgumentException.ThrowIfNullOrWhiteSpace(synonym.LSynonymId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(synonym.LSynonymId);
         LSynonymTargetValidate(synonym);
 
         using LDatabaseSession session = _lSynonymArchiveDatabase.LDatabaseSessionStart();
@@ -105,20 +104,20 @@ public sealed class LSynonymArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LSynonymMove(string id, int position)
+    public void LSynonymMove(long id, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lSynonymArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string? collocationId = LSynonymHolderRead(connection, id);
+        long? collocationId = LSynonymHolderRead(connection, id);
         if (collocationId is null)
         {
             return;
         }
 
-        IReadOnlyList<string> order = LDatabaseOrder.LDatabaseOrderInsert(
+        IReadOnlyList<long> order = LDatabaseOrder.LDatabaseOrderInsert(
             LSynonymSiblingRead(connection, collocationId), id, position);
         LDatabaseOrder.LDatabaseOrderNormalize(
             connection, "collocation_synonym", "collocation_id = $owner", collocationId, "id", order);
@@ -126,14 +125,14 @@ public sealed class LSynonymArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LSynonymDelete(string id)
+    public void LSynonymDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lSynonymArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string? collocationId = LSynonymHolderRead(connection, id);
+        long? collocationId = LSynonymHolderRead(connection, id);
 
         using (SqliteCommand command = connection.CreateCommand())
         {
@@ -152,15 +151,15 @@ public sealed class LSynonymArchive
         session.LDatabaseSessionCommit();
     }
 
-    private static string? LSynonymHolderRead(SqliteConnection connection, string id)
+    private static long? LSynonymHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT collocation_id FROM collocation_synonym WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
-        return command.ExecuteScalar() as string;
+        return command.ExecuteScalar() as long?;
     }
 
-    private static IReadOnlyList<string> LSynonymSiblingRead(SqliteConnection connection, string collocationId)
+    private static IReadOnlyList<long> LSynonymSiblingRead(SqliteConnection connection, long? collocationId)
     {
         return LDatabaseOrder.LDatabaseOrderRead(
             connection, "collocation_synonym", "collocation_id = $owner", collocationId, "id");
@@ -168,8 +167,8 @@ public sealed class LSynonymArchive
 
     private static void LSynonymTargetValidate(LSynonym synonym)
     {
-        bool hasEntry = !string.IsNullOrWhiteSpace(synonym.LSynonymTargetEntry);
-        bool hasMeaning = !string.IsNullOrWhiteSpace(synonym.LSynonymTargetMeaning);
+        bool hasEntry = synonym.LSynonymTargetEntry is not null;
+        bool hasMeaning = synonym.LSynonymTargetMeaning is not null;
         if (hasEntry == hasMeaning)
         {
             throw new InvalidOperationException(

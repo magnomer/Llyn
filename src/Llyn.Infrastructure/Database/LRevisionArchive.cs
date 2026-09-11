@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
@@ -21,7 +21,7 @@ public sealed class LRevisionArchive
         ArgumentNullException.ThrowIfNull(changes);
 
         LRevision stored = new(
-            LIdentity.LIdentityCreate(),
+            0,
             DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
 
         using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
@@ -29,10 +29,10 @@ public sealed class LRevisionArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "INSERT INTO revision (id, created_utc) VALUES ($id, $created);";
-            command.Parameters.AddWithValue("$id", stored.LRevisionId);
+            command.CommandText =
+                "INSERT INTO revision (created_utc) VALUES ($created) RETURNING id;";
             command.Parameters.AddWithValue("$created", stored.LRevisionCreatedUtc);
-            command.ExecuteNonQuery();
+            stored = stored with { LRevisionId = (long)command.ExecuteScalar()! };
         }
 
         for (int position = 0; position < changes.Count; position++)
@@ -57,9 +57,9 @@ public sealed class LRevisionArchive
         return stored;
     }
 
-    public LRevision? LRevisionRead(string id)
+    public LRevision? LRevisionRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -72,7 +72,7 @@ public sealed class LRevisionArchive
             return null;
         }
 
-        return new LRevision(reader.GetString(0), reader.GetString(1));
+        return new LRevision(reader.GetInt64(0), reader.GetString(1));
     }
 
     public LRevision? LRevisionLatestRead()
@@ -88,12 +88,12 @@ public sealed class LRevisionArchive
             return null;
         }
 
-        return new LRevision(reader.GetString(0), reader.GetString(1));
+        return new LRevision(reader.GetInt64(0), reader.GetString(1));
     }
 
-    public IReadOnlyList<LRevisionChange> LRevisionChangeRead(string revisionId)
+    public IReadOnlyList<LRevisionChange> LRevisionChangeRead(long revisionId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(revisionId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(revisionId);
 
         using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -110,7 +110,7 @@ public sealed class LRevisionArchive
         {
             changes.Add(new LRevisionChange(
                 reader.GetInt32(0),
-                reader.GetString(1),
+                reader.GetInt64(1),
                 reader.GetString(2),
                 reader.GetString(3),
                 reader.IsDBNull(4) ? null : reader.GetString(4)));

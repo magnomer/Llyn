@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -22,7 +22,7 @@ public sealed partial class LEngine
 
             LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
                 new LEntry(
-                    string.Empty,
+                    0,
                     draft.LEntryDraftHeadword,
                     draft.LEntryDraftLanguage,
                     null,
@@ -31,7 +31,7 @@ public sealed partial class LEngine
                     null),
                 forms: draft.LEntryDraftForms,
                 speeches: LEngineSpeechResolve(
-                    string.Empty, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
+                    0, draft.LEntryDraftLanguage, draft.LEntryDraftSpeeches));
 
             if (draft.LEntryDraftInflections.Count > 0)
             {
@@ -51,7 +51,7 @@ public sealed partial class LEngine
             foreach (LCardDraft card in LEngineCardRead(draft.LEntryDraftCollocations))
             {
                 LCollocation collocation = collocations.LCollocationCreate(new LCollocation(
-                    string.Empty,
+                0,
                     entry.LEntryId,
                     0,
                     card.LCardDraftTitle,
@@ -72,7 +72,7 @@ public sealed partial class LEngine
             {
                 LPronunciationArchive pronunciations = new(_lEngineDatabase);
                 LPronunciation pronunciation = pronunciations.LPronunciationCreate(new LPronunciation(
-                    string.Empty,
+                0,
                     entry.LEntryId,
                     spoken.LPronunciationDraftLevel,
                     spoken.LPronunciationDraftIpa,
@@ -101,10 +101,10 @@ public sealed partial class LEngine
     }
 
     private void LEngineMeaningCreate(
-        string entryId, string? parentId, LCardDraft card, string language)
+        long entryId, long? parentId, LCardDraft card, string language)
     {
         LMeaning meaning = new LMeaningArchive(_lEngineDatabase).LMeaningCreate(new LMeaning(
-            string.Empty,
+                0,
             entryId,
             parentId,
             0,
@@ -138,7 +138,7 @@ public sealed partial class LEngine
         }
     }
 
-    private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)
+    private void LEngineCardAttach(long ownerId, LCardDraft card, string language, bool collocation)
     {
         LEngineSentenceSync(ownerId, card.LCardDraftSentence, language, collocation);
 
@@ -146,10 +146,10 @@ public sealed partial class LEngine
 
         LSituationArchive situations = new(_lEngineDatabase);
         position = 0;
-        HashSet<string> attachedSituations = new(StringComparer.Ordinal);
+        HashSet<long> attachedSituations = [];
         foreach (LSituationDraft draft in LEngineSituationRead(card.LCardDraftSituation))
         {
-            string situationId = LEngineSituationResolve(situations, draft);
+            long situationId = LEngineSituationResolve(situations, draft);
             if (!attachedSituations.Add(situationId))
             {
                 continue;
@@ -174,10 +174,10 @@ public sealed partial class LEngine
 
         LImageArchive images = new(_lEngineDatabase);
         position = 0;
-        HashSet<string> attachedImages = new(StringComparer.Ordinal);
+        HashSet<long> attachedImages = [];
         foreach (LImageDraft draft in LEngineImageRead(card.LCardDraftImage))
         {
-            string imageId = LEngineImageResolve(images, draft);
+            long imageId = LEngineImageResolve(images, draft);
             if (!attachedImages.Add(imageId))
             {
                 continue;
@@ -197,10 +197,10 @@ public sealed partial class LEngine
 
         LVideoArchive videos = new(_lEngineDatabase);
         position = 0;
-        HashSet<string> attachedVideos = new(StringComparer.Ordinal);
+        HashSet<long> attachedVideos = [];
         foreach (LVideoDraft draft in LEngineVideoRead(card.LCardDraftVideo))
         {
-            string videoId = LEngineVideoResolve(videos, draft);
+            long videoId = LEngineVideoResolve(videos, draft);
             if (!attachedVideos.Add(videoId))
             {
                 continue;
@@ -245,7 +245,7 @@ public sealed partial class LEngine
         LExampleArchive examples, LSentenceDraft draft, string language)
     {
         if (draft.LSentenceDraftExample is not LExampleDraft written
-            || (written.LExampleDraftText.LStateValueEmpty && written.LExampleDraftId.Length == 0))
+            || (written.LExampleDraftText.LStateValueEmpty && written.LExampleDraftId == 0))
         {
             return null;
         }
@@ -256,7 +256,7 @@ public sealed partial class LEngine
     private static LExample LEngineExampleResolve(
         LExampleArchive examples, LExampleDraft written, string language)
     {
-        if (!string.IsNullOrWhiteSpace(written.LExampleDraftId))
+        if (written.LExampleDraftId > 0)
         {
             LExample? stored = examples.LExampleRead(written.LExampleDraftId);
             if (stored is not null)
@@ -296,9 +296,9 @@ public sealed partial class LEngine
         }
     }
 
-    private static string LEngineSituationResolve(LSituationArchive situations, LSituationDraft draft)
+    private static long LEngineSituationResolve(LSituationArchive situations, LSituationDraft draft)
     {
-        if (!string.IsNullOrWhiteSpace(draft.LSituationDraftId))
+        if (draft.LSituationDraftId > 0)
         {
             LSituation? stored = situations.LSituationRead(draft.LSituationDraftId);
             if (stored is not null)
@@ -320,7 +320,7 @@ public sealed partial class LEngine
         }
 
         return situations.LSituationCreate(new LSituation(
-            draft.LSituationDraftId,
+            0,
             draft.LSituationDraftTitle,
             draft.LSituationDraftDescription,
             draft.LSituationDraftKind)).LSituationId;
@@ -348,9 +348,9 @@ public sealed partial class LEngine
         }
     }
 
-    private static string LEngineImageResolve(LImageArchive images, LImageDraft draft)
+    private static long LEngineImageResolve(LImageArchive images, LImageDraft draft)
     {
-        if (!string.IsNullOrWhiteSpace(draft.LImageDraftId)
+        if (draft.LImageDraftId > 0
             && images.LImageRead(draft.LImageDraftId) is LImage stored)
         {
             if (stored.LImageLocation != draft.LImageDraftLocation)
@@ -362,12 +362,13 @@ public sealed partial class LEngine
         }
 
         return images.LImageCreate(
-            new LImage(string.Empty, draft.LImageDraftLocation)).LImageId;
+            new LImage(
+                0, draft.LImageDraftLocation)).LImageId;
     }
 
-    private static string LEngineVideoResolve(LVideoArchive videos, LVideoDraft draft)
+    private static long LEngineVideoResolve(LVideoArchive videos, LVideoDraft draft)
     {
-        if (!string.IsNullOrWhiteSpace(draft.LVideoDraftId)
+        if (draft.LVideoDraftId > 0
             && videos.LVideoRead(draft.LVideoDraftId) is LVideo stored)
         {
             LVideo written = stored with
@@ -385,6 +386,6 @@ public sealed partial class LEngine
         }
 
         return videos.LVideoCreate(new LVideo(
-            string.Empty, draft.LVideoDraftLocation, draft.LVideoDraftSpan)).LVideoId;
+                0, draft.LVideoDraftLocation, draft.LVideoDraftSpan)).LVideoId;
     }
 }

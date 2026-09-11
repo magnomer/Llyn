@@ -19,12 +19,7 @@ public sealed class LSituationArchive
     {
         ArgumentNullException.ThrowIfNull(situation);
 
-        LSituation stored = situation with
-        {
-            LSituationId = string.IsNullOrWhiteSpace(situation.LSituationId)
-                ? LIdentity.LIdentityCreate()
-                : situation.LSituationId,
-        };
+        LSituation stored = situation;
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -32,26 +27,26 @@ public sealed class LSituationArchive
             command.CommandText =
                 """
                 INSERT INTO situation (
-                    id, title_state, title, description_state, description,
+                    title_state, title, description_state, description,
                     kind_state, kind)
                 VALUES (
-                    $id, $titleState, $title, $descriptionState, $description,
-                    $kindState, $kind);
+                    $titleState, $title, $descriptionState, $description,
+                    $kindState, $kind)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LSituationId);
             LStateColumn.LStateColumnApply(command, "title", stored.LSituationTitle);
             LStateColumn.LStateColumnApply(command, "description", stored.LSituationDescription);
             LStateColumn.LStateColumnApply(command, "kind", stored.LSituationKind);
-            command.ExecuteNonQuery();
+            stored = stored with { LSituationId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public LSituation? LSituationRead(string id)
+    public LSituation? LSituationRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         return LSituationSingleRead(session.LDatabaseSessionConnection, id);
@@ -74,7 +69,7 @@ public sealed class LSituationArchive
         while (reader.Read())
         {
             situations.Add(new LSituation(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 LStateColumn.LStateColumnRead(reader, 1),
                 LStateColumn.LStateColumnRead(reader, 3),
                 LStateColumn.LStateColumnRead(reader, 5)));
@@ -83,12 +78,12 @@ public sealed class LSituationArchive
         return situations;
     }
 
-    public IReadOnlyList<LSituation> LSituationMeaningRead(string meaningId)
+    public IReadOnlyList<LSituation> LSituationMeaningRead(long meaningId)
     {
         return LSituationReferrerRead("sense_situation", "sense_id", meaningId);
     }
 
-    public IReadOnlyList<LSituation> LSituationCollocationRead(string collocationId)
+    public IReadOnlyList<LSituation> LSituationCollocationRead(long collocationId)
     {
         return LSituationReferrerRead("collocation_situation", "collocation_id", collocationId);
     }
@@ -96,7 +91,7 @@ public sealed class LSituationArchive
     public void LSituationUpdate(LSituation situation)
     {
         ArgumentNullException.ThrowIfNull(situation);
-        ArgumentException.ThrowIfNullOrWhiteSpace(situation.LSituationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situation.LSituationId);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -122,9 +117,9 @@ public sealed class LSituationArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LSituationTitleUpdate(string situationId, LStateValue title)
+    public void LSituationTitleUpdate(long situationId, LStateValue title)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
         ArgumentNullException.ThrowIfNull(title);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
@@ -143,15 +138,15 @@ public sealed class LSituationArchive
         session.LDatabaseSessionCommit();
     }
 
-    public int LSituationReferenceRead(string id)
+    public int LSituationReferenceRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         return LSituationReferenceRead(session.LDatabaseSessionConnection, id);
     }
 
-    public IReadOnlyDictionary<string, int> LSituationReferenceRead()
+    public IReadOnlyDictionary<long, int> LSituationReferenceRead()
     {
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -165,19 +160,19 @@ public sealed class LSituationArchive
             GROUP BY situation_id;
             """;
 
-        Dictionary<string, int> counts = [];
+        Dictionary<long, int> counts = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            counts[reader.GetString(0)] = reader.GetInt32(1);
+            counts[reader.GetInt64(0)] = reader.GetInt32(1);
         }
 
         return counts;
     }
 
-    public IReadOnlyList<LUsage> LSituationUsageRead(string id)
+    public IReadOnlyList<LUsage> LSituationUsageRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -218,7 +213,7 @@ public sealed class LSituationArchive
 
     private static IReadOnlyList<LUsage> LSituationUsageRead(
         SqliteConnection connection,
-        string id,
+        long id,
         LOwner owner,
         string statement)
     {
@@ -237,9 +232,9 @@ public sealed class LSituationArchive
             }
 
             usages.Add(new LUsage(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 owner,
-                reader.GetString(1),
+                reader.GetInt64(1),
                 reader.GetString(2),
                 reader.GetString(3),
                 title));
@@ -248,7 +243,7 @@ public sealed class LSituationArchive
         return usages;
     }
 
-    private static int LSituationReferenceRead(SqliteConnection connection, string id)
+    private static int LSituationReferenceRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -261,14 +256,14 @@ public sealed class LSituationArchive
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    public void LSituationDelete(string id)
+    public void LSituationDelete(long id)
     {
         LSituationDelete(id, false);
     }
 
-    public void LSituationDelete(string id, bool detach)
+    public void LSituationDelete(long id, bool detach)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -296,11 +291,11 @@ public sealed class LSituationArchive
         session.LDatabaseSessionCommit();
     }
 
-    private static void LSituationLinkDelete(SqliteConnection connection, string table, string situationId)
+    private static void LSituationLinkDelete(SqliteConnection connection, string table, long situationId)
     {
         string column = table == "sense_situation" ? "sense_id" : "collocation_id";
 
-        List<string> referrers = [];
+        List<long> referrers = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = $"SELECT {column} FROM {table} WHERE situation_id = $situation;";
@@ -308,7 +303,7 @@ public sealed class LSituationArchive
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                referrers.Add(reader.GetString(0));
+                referrers.Add(reader.GetInt64(0));
             }
         }
 
@@ -325,7 +320,7 @@ public sealed class LSituationArchive
         }
 
         string scope = $"{column} = $owner";
-        foreach (string referrer in referrers)
+        foreach (long referrer in referrers)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
                 connection, table, scope, referrer, "situation_id",
@@ -333,22 +328,22 @@ public sealed class LSituationArchive
         }
     }
 
-    public void LSituationMeaningAttach(string meaningId, string situationId, int position)
+    public void LSituationMeaningAttach(long meaningId, long situationId, int position)
     {
         LSituationReferenceAttach("sense_situation", "sense_id", meaningId, situationId, position);
     }
 
-    public void LSituationCollocationAttach(string collocationId, string situationId, int position)
+    public void LSituationCollocationAttach(long collocationId, long situationId, int position)
     {
         LSituationReferenceAttach("collocation_situation", "collocation_id", collocationId, situationId, position);
     }
 
-    public void LSituationMeaningDetach(string meaningId, string situationId)
+    public void LSituationMeaningDetach(long meaningId, long situationId)
     {
         LSituationReferenceDetach("sense_situation", "sense_id", meaningId, situationId);
     }
 
-    public void LSituationCollocationDetach(string collocationId, string situationId)
+    public void LSituationCollocationDetach(long collocationId, long situationId)
     {
         LSituationReferenceDetach("collocation_situation", "collocation_id", collocationId, situationId);
     }
@@ -356,18 +351,18 @@ public sealed class LSituationArchive
     private void LSituationReferenceAttach(
         string table,
         string column,
-        string referrerId,
-        string situationId,
+        long referrerId,
+        long situationId,
         int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         string scope = $"{column} = $owner";
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
+        IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
             connection, table, scope, referrerId, "situation_id");
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -391,10 +386,10 @@ public sealed class LSituationArchive
         session.LDatabaseSessionCommit();
     }
 
-    private void LSituationReferenceDetach(string table, string column, string referrerId, string situationId)
+    private void LSituationReferenceDetach(string table, string column, long referrerId, long situationId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(situationId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(situationId);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -416,9 +411,9 @@ public sealed class LSituationArchive
         session.LDatabaseSessionCommit();
     }
 
-    private IReadOnlyList<LSituation> LSituationReferrerRead(string table, string column, string referrerId)
+    private IReadOnlyList<LSituation> LSituationReferrerRead(string table, string column, long referrerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
 
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -439,7 +434,7 @@ public sealed class LSituationArchive
         while (reader.Read())
         {
             situations.Add(new LSituation(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 LStateColumn.LStateColumnRead(reader, 1),
                 LStateColumn.LStateColumnRead(reader, 3),
                 LStateColumn.LStateColumnRead(reader, 5)));
@@ -448,7 +443,7 @@ public sealed class LSituationArchive
         return situations;
     }
 
-    private static LSituation? LSituationSingleRead(SqliteConnection connection, string id)
+    private static LSituation? LSituationSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
@@ -17,7 +18,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LExample? LEngineExampleRead(string id)
+    public LExample? LEngineExampleRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -41,9 +42,9 @@ public sealed partial class LEngine
             query = query.Trim();
 
             IReadOnlyList<LExample> read = new LExampleArchive(_lEngineDatabase).LExampleRead();
-            IReadOnlyDictionary<string, int> usage =
+            IReadOnlyDictionary<long, int> usage =
                 new LExampleArchive(_lEngineDatabase).LExampleReferenceRead();
-            IReadOnlyDictionary<string, string> cited = LEngineCitationRead();
+            IReadOnlyDictionary<long, string> cited = LEngineCitationRead();
 
             List<LCatalogExample> rows = [];
             foreach (LExample example in read)
@@ -64,11 +65,11 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyDictionary<string, string> LEngineCitationRead()
+    public IReadOnlyDictionary<long, string> LEngineCitationRead()
     {
         lock (_lEngineGate)
         {
-            Dictionary<string, string> named = new(StringComparer.Ordinal);
+            Dictionary<long, string> named = [];
             foreach (LReference reference in new LReferenceArchive(_lEngineDatabase).LReferenceAllRead())
             {
                 named[reference.LReferenceId] = reference.LReferenceNameRead();
@@ -78,18 +79,20 @@ public sealed partial class LEngine
         }
     }
 
-    private static string LEngineCitationRead(IReadOnlyDictionary<string, string> named, LStateValue source)
+    private static string LEngineCitationRead(IReadOnlyDictionary<long, string> named, LStateAnchor source)
     {
-        string id = source.LStateValueShow();
-        if (id.Length == 0)
+        long id = source.LStateAnchorShow();
+        if (id == 0)
         {
             return string.Empty;
         }
 
-        return named.TryGetValue(id, out string? name) ? name : id;
+        return named.TryGetValue(id, out string? name)
+            ? name
+            : id.ToString(CultureInfo.InvariantCulture);
     }
 
-    public IReadOnlyList<LExample> LEngineExampleRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LExample> LEngineExampleRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -104,7 +107,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSentence> LEngineSentenceRead(string meaningId)
+    public IReadOnlyList<LSentence> LEngineSentenceRead(long meaningId)
     {
         lock (_lEngineGate)
         {
@@ -112,7 +115,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSentence> LEngineSentenceRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LSentence> LEngineSentenceRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -134,7 +137,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleUpdate(string exampleId, LStateValue reference)
+    public void LEngineExampleUpdate(long exampleId, LStateAnchor reference)
     {
         lock (_lEngineGate)
         {
@@ -142,7 +145,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleAttach(string ownerId, string exampleId, int position, LOwner owner)
+    public void LEngineExampleAttach(long ownerId, long exampleId, int position, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -160,7 +163,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleDetach(string ownerId, string exampleId, LOwner owner)
+    public void LEngineExampleDetach(long ownerId, long exampleId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -178,11 +181,11 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleRemove(string ownerId, string exampleId, LOwner owner)
+    public void LEngineExampleRemove(long ownerId, long exampleId, LOwner owner)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
@@ -198,7 +201,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineExampleDelete(string id)
+    public void LEngineExampleDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -208,7 +211,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectExample, id);
     }
 
-    public void LEngineExampleDelete(string id, bool detach)
+    public void LEngineExampleDelete(long id, bool detach)
     {
         lock (_lEngineGate)
         {

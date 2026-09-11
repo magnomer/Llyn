@@ -1,18 +1,14 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRelationDraft(
     string LRelationDraftType,
     string? LRelationDraftLabel,
     string? LRelationDraftLabels,
-    string LRelationDraftEntry = "",
-    string LRelationDraftMeaning = "")
+    long LRelationDraftEntry = 0,
+    long LRelationDraftMeaning = 0)
 {
     public string LRelationDraftType { get; init; } = LRelationDraftType ?? string.Empty;
 
-    public string LRelationDraftEntry { get; init; } = LRelationDraftEntry ?? string.Empty;
-
-    public string LRelationDraftMeaning { get; init; } = LRelationDraftMeaning ?? string.Empty;
-
     public bool LRelationDraftEmpty =>
-        LRelationDraftEntry.Length == 0 && LRelationDraftMeaning.Length == 0;
+        LRelationDraftEntry == 0 && LRelationDraftMeaning == 0;
 }

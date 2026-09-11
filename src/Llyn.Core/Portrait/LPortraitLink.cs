@@ -1,21 +1,21 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
 
 public sealed record LPortraitLink(
-    string LPortraitLinkId,
+    long LPortraitLinkId,
     string LPortraitLinkHeadword,
     string LPortraitLinkLanguage)
 {
-    public static void LPortraitLinkRead(IReadOnlyList<LCardDraft> cards, List<string> ids)
+    public static void LPortraitLinkRead(IReadOnlyList<LCardDraft> cards, List<long> ids)
     {
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(ids);
 
         foreach (LCardDraft card in cards)
         {
-            foreach (string id in card.LCardDraftTranslation)
+            foreach (long id in card.LCardDraftTranslation)
             {
                 if (!ids.Contains(id))
                 {

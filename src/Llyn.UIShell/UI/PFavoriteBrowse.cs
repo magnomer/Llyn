@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -55,12 +55,12 @@ public partial class PFavorite
         PRosterFind(PRecall.Text ?? string.Empty);
     }
 
-    private void PRosterSelect(string? id)
+    private void PRosterSelect(long? id)
     {
         foreach (PRosterItem item in _pRosterList)
         {
             item.PRosterItemChosen = id is not null
-                && string.Equals(item.PRosterItemId, id, StringComparison.Ordinal);
+                && item.PRosterItemId == id;
         }
     }
 
@@ -109,7 +109,7 @@ public partial class PFavorite
         PRosterEntryShow(item.PRosterItemId);
     }
 
-    internal void PRosterEntryShow(string id)
+    internal void PRosterEntryShow(long id)
     {
         LEntryDraft? draft;
         try
@@ -140,7 +140,7 @@ public partial class PFavorite
         }
     }
 
-    private void PRosterEntryUpdate(string id)
+    private void PRosterEntryUpdate(long id)
     {
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
@@ -244,7 +244,7 @@ public partial class PFavorite
         return _pFavoriteHost.PWindowDiscardConfirm(PFavoriteChangeCheck());
     }
 
-    private void PFavoriteEntryShow(string id, LEntryDraft draft)
+    private void PFavoriteEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
         PFavoriteMode.IsEnabled = true;
@@ -268,7 +268,7 @@ public partial class PFavorite
 
     private void PFavoriteBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pRosterEntry is not string id)
+        if (_pRosterEntry is not long id)
         {
             return;
         }

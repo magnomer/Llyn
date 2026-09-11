@@ -1,13 +1,11 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSentenceDraft(
     LExampleDraft? LSentenceDraftExample,
     LStateValue LSentenceDraftParticle,
     LStateValue LSentenceDraftDependence,
-    string LSentenceDraftId = "")
+    long LSentenceDraftId = 0)
 {
-    public string LSentenceDraftId { get; init; } = LSentenceDraftId ?? string.Empty;
-
     public LStateValue LSentenceDraftParticle { get; init; } =
         LSentenceDraftParticle ?? LStateValue.LStateValueUnspecified;
 
@@ -17,7 +15,7 @@ public sealed record LSentenceDraft(
     public bool LSentenceDraftEmpty =>
         (LSentenceDraftExample is null
             || (LSentenceDraftExample.LExampleDraftText.LStateValueEmpty
-                && LSentenceDraftExample.LExampleDraftId.Length == 0))
+                && LSentenceDraftExample.LExampleDraftId == 0))
         && LSentenceDraftParticle.LStateValueEmpty
         && LSentenceDraftDependence.LStateValueEmpty;
 

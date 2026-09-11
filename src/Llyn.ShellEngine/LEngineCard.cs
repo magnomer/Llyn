@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -10,7 +10,7 @@ public sealed partial class LEngine
 {
     private void LEngineCardUpdate(
         SqliteConnection connection,
-        string entryId,
+        long entryId,
         IReadOnlyList<LCardDraft> cards,
         string language,
         bool collocation,
@@ -26,8 +26,8 @@ public sealed partial class LEngine
 
         LCollocationArchive collocations = new(_lEngineDatabase);
 
-        Dictionary<string, LCollocation> stored = new(StringComparer.Ordinal);
-        List<string> storedOrder = [];
+        Dictionary<long, LCollocation> stored = [];
+        List<long> storedOrder = [];
         foreach (LCollocation row in collocations.LCollocationRead(entryId))
         {
             stored[row.LCollocationId] = row;
@@ -35,7 +35,7 @@ public sealed partial class LEngine
         }
 
         List<LCardDraft> kept = [];
-        HashSet<string> named = new(StringComparer.Ordinal);
+        HashSet<long> named = [];
         foreach (LCardDraft card in LEngineCardRead(cards))
         {
             kept.Add(card);
@@ -45,7 +45,7 @@ public sealed partial class LEngine
             }
         }
 
-        foreach (string dropped in storedOrder)
+        foreach (long dropped in storedOrder)
         {
             if (named.Contains(dropped))
             {
@@ -62,12 +62,12 @@ public sealed partial class LEngine
             collocations.LCollocationDelete(dropped);
         }
 
-        HashSet<string> applied = new(StringComparer.Ordinal);
-        List<string> order = [];
+        HashSet<long> applied = [];
+        List<long> order = [];
         foreach (LCardDraft card in kept)
         {
             bool reuse = named.Contains(card.LCardDraftId) && applied.Add(card.LCardDraftId);
-            string rowId;
+            long rowId;
             if (reuse)
             {
                 LCollocation row = stored[card.LCardDraftId];
@@ -88,7 +88,7 @@ public sealed partial class LEngine
             else
             {
                 LCollocation row = collocations.LCollocationCreate(new LCollocation(
-                    string.Empty,
+                0,
                     entryId,
                     0,
                     card.LCardDraftTitle,
@@ -111,7 +111,7 @@ public sealed partial class LEngine
             connection, "collocation", "entry_id = $owner", entryId, "id", order);
     }
 
-    private void LEngineCardSync(string ownerId, LCardDraft card, string language, bool collocation)
+    private void LEngineCardSync(long ownerId, LCardDraft card, string language, bool collocation)
     {
         LEngineSentenceSync(ownerId, card.LCardDraftSentence, language, collocation);
         LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation);
@@ -127,7 +127,8 @@ public sealed partial class LEngine
             row => row.LImageId,
             row => new LImageDraft(row.LImageLocation, row.LImageId),
             written => images.LImageCreate(
-                new LImage(string.Empty, written.LImageDraftLocation)).LImageId,
+                new LImage(
+                0, written.LImageDraftLocation)).LImageId,
             rowId =>
             {
                 if (collocation)
@@ -156,7 +157,8 @@ public sealed partial class LEngine
             row => row.LVideoId,
             row => new LVideoDraft(row.LVideoLocation, row.LVideoSpan, row.LVideoId),
             written => videos.LVideoCreate(
-                new LVideo(string.Empty, written.LVideoDraftLocation, written.LVideoDraftSpan)).LVideoId,
+                new LVideo(
+                0, written.LVideoDraftLocation, written.LVideoDraftSpan)).LVideoId,
             rowId =>
             {
                 if (collocation)
@@ -180,7 +182,7 @@ public sealed partial class LEngine
     }
 
     private void LEngineSentenceSync(
-        string ownerId, IReadOnlyList<LSentenceDraft> drafts, string language, bool collocation)
+        long ownerId, IReadOnlyList<LSentenceDraft> drafts, string language, bool collocation)
     {
         LExampleArchive exampleRows = new(_lEngineDatabase);
 
@@ -207,7 +209,7 @@ public sealed partial class LEngine
     }
 
     private void LEngineSituationSync(
-        string ownerId, IReadOnlyList<LSituationDraft> drafts, bool collocation)
+        long ownerId, IReadOnlyList<LSituationDraft> drafts, bool collocation)
     {
         LSituationArchive situations = new(_lEngineDatabase);
 
@@ -215,11 +217,11 @@ public sealed partial class LEngine
             ? situations.LSituationCollocationRead(ownerId)
             : situations.LSituationMeaningRead(ownerId);
 
-        List<string> targets = [];
-        HashSet<string> kept = new(StringComparer.Ordinal);
+        List<long> targets = [];
+        HashSet<long> kept = [];
         foreach (LSituationDraft draft in LEngineSituationRead(drafts))
         {
-            string id = LEngineSituationResolve(situations, draft);
+            long id = LEngineSituationResolve(situations, draft);
             if (!kept.Add(id))
             {
                 continue;
@@ -256,7 +258,7 @@ public sealed partial class LEngine
         }
     }
 
-    private void LEngineTagSave(string ownerId, IReadOnlyList<string> texts, bool collocation)
+    private void LEngineTagSave(long ownerId, IReadOnlyList<string> texts, bool collocation)
     {
         List<LTag> written = new(texts.Count);
         foreach (string text in texts)
@@ -275,13 +277,13 @@ public sealed partial class LEngine
     }
 
     private void LEngineTranslationSave(
-        string ownerId, IReadOnlyList<string> ids, bool collocation)
+        long ownerId, IReadOnlyList<long> ids, bool collocation)
     {
         LEntryArchive entries = new(_lEngineDatabase);
         List<LTranslation> written = new(ids.Count);
-        foreach (string id in ids)
+        foreach (long id in ids)
         {
-            if (!string.IsNullOrWhiteSpace(id) && entries.LEntryRead(id) is not null)
+            if (id > 0 && entries.LEntryRead(id) is not null)
             {
                 written.Add(new LTranslation(id, 0));
             }
@@ -300,17 +302,17 @@ public sealed partial class LEngine
     private static void LEngineFieldSync<LEngineRow, LEngineWritten>(
         IEnumerable<LEngineWritten> written,
         IReadOnlyList<LEngineRow> attached,
-        Func<LEngineRow, string> identify,
+        Func<LEngineRow, long> identify,
         Func<LEngineRow, LEngineWritten> read,
-        Func<LEngineWritten, string> create,
-        Action<string> detach,
-        Action<string, int> attach)
+        Func<LEngineWritten, long> create,
+        Action<long> detach,
+        Action<long, int> attach)
     {
-        List<string> targets = [];
-        HashSet<string> kept = new(StringComparer.Ordinal);
+        List<long> targets = [];
+        HashSet<long> kept = [];
         foreach (LEngineWritten text in written)
         {
-            string? found = null;
+            long? found = null;
             foreach (LEngineRow row in attached)
             {
                 if (!kept.Contains(identify(row))
@@ -321,9 +323,9 @@ public sealed partial class LEngine
                 }
             }
 
-            found ??= create(text);
-            kept.Add(found);
-            targets.Add(found);
+            long settled = found ?? create(text);
+            kept.Add(settled);
+            targets.Add(settled);
         }
 
         foreach (LEngineRow row in attached)

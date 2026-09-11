@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -19,25 +19,20 @@ public sealed class LRegisterArchive
     {
         ArgumentNullException.ThrowIfNull(register);
 
-        LRegister stored = register with
-        {
-            LRegisterId = string.IsNullOrWhiteSpace(register.LRegisterId)
-                ? LIdentity.LIdentityCreate()
-                : register.LRegisterId,
-        };
+        LRegister stored = register;
 
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
                 """
-                INSERT INTO register (id, name_state, name, language, builtin)
-                VALUES ($id, $nameState, $name, $language, $builtin);
+                INSERT INTO register (name_state, name, language, builtin)
+                VALUES ($nameState, $name, $language, $builtin)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LRegisterId);
             LStateColumn.LStateColumnApply(command, "name", stored.LRegisterName);
             LRegisterLanguageApply(command, stored);
-            command.ExecuteNonQuery();
+            stored = stored with { LRegisterId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
@@ -59,11 +54,12 @@ public sealed class LRegisterArchive
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO register (id, name_state, name, language, builtin)
-                VALUES ($id, $nameState, $name, $language, $builtin)
-                ON CONFLICT (id) DO NOTHING;
+                INSERT INTO register (name_state, name, language, builtin, pack_key)
+                VALUES ($nameState, $name, $language, $builtin, $packKey)
+                ON CONFLICT DO NOTHING;
                 """;
-            command.Parameters.AddWithValue("$id", register.LRegisterId);
+            command.Parameters.AddWithValue(
+                "$packKey", (object?)register.LRegisterPackKey ?? DBNull.Value);
             LStateColumn.LStateColumnApply(command, "name", register.LRegisterName);
             LRegisterLanguageApply(command, register);
             command.ExecuteNonQuery();
@@ -72,9 +68,9 @@ public sealed class LRegisterArchive
         session.LDatabaseSessionCommit();
     }
 
-    public LRegister? LRegisterRead(string id)
+    public LRegister? LRegisterRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -107,19 +103,19 @@ public sealed class LRegisterArchive
         return registers;
     }
 
-    public IReadOnlyList<LRegister> LRegisterMeaningRead(string meaningId)
+    public IReadOnlyList<LRegister> LRegisterMeaningRead(long meaningId)
     {
         return LRegisterReferrerRead("sense_register", "sense_id", meaningId);
     }
 
-    public IReadOnlyList<LRegister> LRegisterCollocationRead(string collocationId)
+    public IReadOnlyList<LRegister> LRegisterCollocationRead(long collocationId)
     {
         return LRegisterReferrerRead("collocation_register", "collocation_id", collocationId);
     }
 
-    public void LRegisterNameUpdate(string registerId, LStateValue name)
+    public void LRegisterNameUpdate(long registerId, LStateValue name)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(registerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
         ArgumentNullException.ThrowIfNull(name);
 
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
@@ -135,15 +131,15 @@ public sealed class LRegisterArchive
         session.LDatabaseSessionCommit();
     }
 
-    public int LRegisterReferenceRead(string id)
+    public int LRegisterReferenceRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         return LRegisterReferenceRead(session.LDatabaseSessionConnection, id);
     }
 
-    public IReadOnlyDictionary<string, int> LRegisterReferenceRead()
+    public IReadOnlyDictionary<long, int> LRegisterReferenceRead()
     {
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -157,24 +153,24 @@ public sealed class LRegisterArchive
             GROUP BY register_id;
             """;
 
-        Dictionary<string, int> counts = [];
+        Dictionary<long, int> counts = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            counts[reader.GetString(0)] = reader.GetInt32(1);
+            counts[reader.GetInt64(0)] = reader.GetInt32(1);
         }
 
         return counts;
     }
 
-    public void LRegisterDelete(string id)
+    public void LRegisterDelete(long id)
     {
         LRegisterDelete(id, false);
     }
 
-    public void LRegisterDelete(string id, bool detach)
+    public void LRegisterDelete(long id, bool detach)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         if (LRegisterRead(id) is not LRegister stored || stored.LRegisterBuiltin)
         {
@@ -207,22 +203,22 @@ public sealed class LRegisterArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LRegisterMeaningAttach(string meaningId, string registerId, int position)
+    public void LRegisterMeaningAttach(long meaningId, long registerId, int position)
     {
         LRegisterReferenceAttach("sense_register", "sense_id", meaningId, registerId, position);
     }
 
-    public void LRegisterCollocationAttach(string collocationId, string registerId, int position)
+    public void LRegisterCollocationAttach(long collocationId, long registerId, int position)
     {
         LRegisterReferenceAttach("collocation_register", "collocation_id", collocationId, registerId, position);
     }
 
-    public void LRegisterMeaningDetach(string meaningId, string registerId)
+    public void LRegisterMeaningDetach(long meaningId, long registerId)
     {
         LRegisterReferenceDetach("sense_register", "sense_id", meaningId, registerId);
     }
 
-    public void LRegisterCollocationDetach(string collocationId, string registerId)
+    public void LRegisterCollocationDetach(long collocationId, long registerId)
     {
         LRegisterReferenceDetach("collocation_register", "collocation_id", collocationId, registerId);
     }
@@ -238,13 +234,13 @@ public sealed class LRegisterArchive
     private static LRegister LRegisterRowRead(SqliteDataReader reader)
     {
         return new LRegister(
-            reader.GetString(0),
+            reader.GetInt64(0),
             LStateColumn.LStateColumnRead(reader, 1),
             reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
             reader.GetInt32(4) != 0);
     }
 
-    private static int LRegisterReferenceRead(SqliteConnection connection, string id)
+    private static int LRegisterReferenceRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -261,9 +257,9 @@ public sealed class LRegisterArchive
         SqliteConnection connection,
         string table,
         string column,
-        string registerId)
+        long registerId)
     {
-        List<string> referrers = [];
+        List<long> referrers = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = $"SELECT {column} FROM {table} WHERE register_id = $register;";
@@ -271,7 +267,7 @@ public sealed class LRegisterArchive
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                referrers.Add(reader.GetString(0));
+                referrers.Add(reader.GetInt64(0));
             }
         }
 
@@ -288,7 +284,7 @@ public sealed class LRegisterArchive
         }
 
         string scope = $"{column} = $owner";
-        foreach (string referrer in referrers)
+        foreach (long referrer in referrers)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
                 connection, table, scope, referrer, "register_id",
@@ -299,18 +295,18 @@ public sealed class LRegisterArchive
     private void LRegisterReferenceAttach(
         string table,
         string column,
-        string referrerId,
-        string registerId,
+        long referrerId,
+        long registerId,
         int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(registerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
 
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         string scope = $"{column} = $owner";
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
+        IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
             connection, table, scope, referrerId, "register_id");
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -334,10 +330,10 @@ public sealed class LRegisterArchive
         session.LDatabaseSessionCommit();
     }
 
-    private void LRegisterReferenceDetach(string table, string column, string referrerId, string registerId)
+    private void LRegisterReferenceDetach(string table, string column, long referrerId, long registerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(registerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
 
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -359,9 +355,9 @@ public sealed class LRegisterArchive
         session.LDatabaseSessionCommit();
     }
 
-    private IReadOnlyList<LRegister> LRegisterReferrerRead(string table, string column, string referrerId)
+    private IReadOnlyList<LRegister> LRegisterReferrerRead(string table, string column, long referrerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
 
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();

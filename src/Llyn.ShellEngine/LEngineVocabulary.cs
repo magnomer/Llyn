@@ -106,7 +106,7 @@ public sealed partial class LEngine
     }
 
     private IReadOnlyList<LSpeech> LEngineSpeechResolve(
-        string entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)
+        long entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)
     {
         if (drafts is null || drafts.Count == 0)
         {

@@ -1,9 +1,9 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LUsage(
-    string LUsageId,
+    long LUsageId,
     LOwner LUsageOwner,
-    string LUsageEntry,
+    long LUsageEntry,
     string LUsageHeadword,
     string LUsageLanguage,
     LStateValue LUsageTitle)

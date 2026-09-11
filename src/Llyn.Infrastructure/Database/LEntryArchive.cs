@@ -22,11 +22,9 @@ public sealed class LEntryArchive
         ArgumentNullException.ThrowIfNull(forms);
         ArgumentNullException.ThrowIfNull(speeches);
 
-        string id = LIdentity.LIdentityCreate();
         string now = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
         LEntry stored = entry with
         {
-            LEntryId = id,
             LEntryAddedUtc = now,
             LEntryUpdatedUtc = now,
         };
@@ -38,29 +36,29 @@ public sealed class LEntryArchive
         {
             command.CommandText =
                 """
-                INSERT INTO entry (id, headword, language, proficiency, frequency, added_utc, updated_utc)
-                VALUES ($id, $headword, $language, $proficiency, $frequency, $added, $updated);
+                INSERT INTO entry (headword, language, proficiency, frequency, added_utc, updated_utc)
+                VALUES ($headword, $language, $proficiency, $frequency, $added, $updated)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LEntryId);
             command.Parameters.AddWithValue("$headword", stored.LEntryHeadword);
             command.Parameters.AddWithValue("$language", stored.LEntryLanguage);
             command.Parameters.AddWithValue("$proficiency", (object?)stored.LEntryProficiency ?? DBNull.Value);
             command.Parameters.AddWithValue("$frequency", (object?)stored.LEntryFrequency ?? DBNull.Value);
             command.Parameters.AddWithValue("$added", (object?)stored.LEntryAddedUtc ?? DBNull.Value);
             command.Parameters.AddWithValue("$updated", (object?)stored.LEntryUpdatedUtc ?? DBNull.Value);
-            command.ExecuteNonQuery();
+            stored = stored with { LEntryId = (long)command.ExecuteScalar()! };
         }
 
-        LEntryFormInsert(connection, id, forms);
-        LEntrySpeechInsert(connection, id, speeches);
+        LEntryFormInsert(connection, stored.LEntryId, forms);
+        LEntrySpeechInsert(connection, stored.LEntryId, speeches);
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public LEntry? LEntryRead(string id)
+    public LEntry? LEntryRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -137,10 +135,9 @@ public sealed class LEntryArchive
         return entries;
     }
 
-    public IReadOnlyList<LEntry> LEntryRegisterFind(string registerId)
+    public IReadOnlyList<LEntry> LEntryRegisterFind(long registerId)
     {
-        ArgumentNullException.ThrowIfNull(registerId);
-        registerId = registerId.Trim();
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -173,9 +170,9 @@ public sealed class LEntryArchive
         return entries;
     }
 
-    public IReadOnlyList<LForm> LEntryFormRead(string id)
+    public IReadOnlyList<LForm> LEntryFormRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -191,7 +188,7 @@ public sealed class LEntryArchive
         while (reader.Read())
         {
             forms.Add(new LForm(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 reader.GetInt32(1),
                 reader.GetString(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3),
@@ -201,9 +198,9 @@ public sealed class LEntryArchive
         return forms;
     }
 
-    public IReadOnlyList<LSpeech> LEntrySpeechRead(string id)
+    public IReadOnlyList<LSpeech> LEntrySpeechRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -219,7 +216,7 @@ public sealed class LEntryArchive
         while (reader.Read())
         {
             speeches.Add(new LSpeech(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 reader.GetInt32(1),
                 reader.IsDBNull(2) ? null : reader.GetString(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3)));
@@ -231,7 +228,7 @@ public sealed class LEntryArchive
     public void LEntryUpdate(LEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
-        ArgumentException.ThrowIfNullOrWhiteSpace(entry.LEntryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entry.LEntryId);
 
         string now = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
 
@@ -260,9 +257,9 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LEntryFormSet(string id, IReadOnlyList<LForm> forms)
+    public void LEntryFormSet(long id, IReadOnlyList<LForm> forms)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(forms);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
@@ -272,9 +269,9 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LEntrySpeechSet(string id, IReadOnlyList<LSpeech> speeches)
+    public void LEntrySpeechSet(long id, IReadOnlyList<LSpeech> speeches)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
         ArgumentNullException.ThrowIfNull(speeches);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
@@ -284,9 +281,9 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LEntryDelete(string id)
+    public void LEntryDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -304,7 +301,7 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
-    private static void LEntryLinkValidate(SqliteConnection connection, string id)
+    private static void LEntryLinkValidate(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -336,7 +333,7 @@ public sealed class LEntryArchive
         }
     }
 
-    private static void LEntryLinkClear(SqliteConnection connection, string id)
+    private static void LEntryLinkClear(SqliteConnection connection, long id)
     {
         string[] statements =
         [
@@ -370,7 +367,7 @@ public sealed class LEntryArchive
     private static LEntry LEntryRowRead(SqliteDataReader reader)
     {
         return new LEntry(
-            reader.GetString(0),
+            reader.GetInt64(0),
             reader.GetString(1),
             reader.GetString(2),
             reader.IsDBNull(3) ? null : reader.GetString(3),
@@ -379,7 +376,7 @@ public sealed class LEntryArchive
             reader.IsDBNull(6) ? null : reader.GetString(6));
     }
 
-    private static void LEntryFormInsert(SqliteConnection connection, string id, IReadOnlyList<LForm> forms)
+    private static void LEntryFormInsert(SqliteConnection connection, long id, IReadOnlyList<LForm> forms)
     {
         for (int position = 0; position < forms.Count; position++)
         {
@@ -399,7 +396,7 @@ public sealed class LEntryArchive
         }
     }
 
-    private static void LEntrySpeechInsert(SqliteConnection connection, string id, IReadOnlyList<LSpeech> speeches)
+    private static void LEntrySpeechInsert(SqliteConnection connection, long id, IReadOnlyList<LSpeech> speeches)
     {
         for (int position = 0; position < speeches.Count; position++)
         {
@@ -421,7 +418,7 @@ public sealed class LEntryArchive
         }
     }
 
-    private static void LEntryChildClear(SqliteConnection connection, string table, string id)
+    private static void LEntryChildClear(SqliteConnection connection, string table, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = $"DELETE FROM {table} WHERE entry_id = $id;";

@@ -1,17 +1,17 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LExampleDraft(
     LStateValue LExampleDraftText,
-    string LExampleDraftId,
-    LStateValue LExampleDraftReference,
+    long LExampleDraftId,
+    LStateAnchor LExampleDraftReference,
     LStateValue LExampleDraftTranslation,
     string LExampleDraftLanguage = "")
 {
     public LStateValue LExampleDraftText { get; init; } =
         LExampleDraftText ?? LStateValue.LStateValueUnspecified;
 
-    public LStateValue LExampleDraftReference { get; init; } =
-        LExampleDraftReference ?? LStateValue.LStateValueUnspecified;
+    public LStateAnchor LExampleDraftReference { get; init; } =
+        LExampleDraftReference ?? LStateAnchor.LStateAnchorUnspecified;
 
     public LStateValue LExampleDraftTranslation { get; init; } =
         LExampleDraftTranslation ?? LStateValue.LStateValueUnspecified;
@@ -22,8 +22,8 @@ public sealed record LExampleDraft(
     {
         return new LExampleDraft(
             LStateValue.LStateValueRead(text),
-            string.Empty,
-            LStateValue.LStateValueUnspecified,
+            0,
+            LStateAnchor.LStateAnchorUnspecified,
             LStateValue.LStateValueUnspecified);
     }
 }

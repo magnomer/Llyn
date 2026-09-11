@@ -16,7 +16,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LEntry? LEngineEntryRead(string id)
+    public LEntry? LEngineEntryRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -60,7 +60,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LEntryDraft? LEngineEntryLoad(string id)
+    public LEntryDraft? LEngineEntryLoad(long id)
     {
         lock (_lEngineGate)
         {
@@ -83,12 +83,12 @@ public sealed partial class LEngine
         }
     }
 
-    public LRevision LEngineEntryDelete(string id)
+    public LRevision LEngineEntryDelete(long id)
     {
         LRevision recorded;
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
@@ -112,7 +112,7 @@ public sealed partial class LEngine
         return recorded;
     }
 
-    public LTombstone? LEngineTombstoneRead(string entryId)
+    public LTombstone? LEngineTombstoneRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -124,12 +124,12 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            string? id = new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead().LWorkspaceStateRevision;
-            return id is null ? null : new LRevisionArchive(_lEngineDatabase).LRevisionRead(id);
+            long? id = new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead().LWorkspaceStateRevision;
+            return id is null ? null : new LRevisionArchive(_lEngineDatabase).LRevisionRead(id.Value);
         }
     }
 
-    public IReadOnlyList<LRevisionChange> LEngineChangeRead(string revisionId)
+    public IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)
     {
         lock (_lEngineGate)
         {

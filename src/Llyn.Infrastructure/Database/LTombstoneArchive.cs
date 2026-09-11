@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
@@ -16,10 +16,10 @@ public sealed class LTombstoneArchive
         _lTombstoneArchiveDatabase = database;
     }
 
-    public LTombstone LTombstoneRecord(string entryId, string revisionId)
+    public LTombstone LTombstoneRecord(long entryId, long revisionId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(revisionId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(revisionId);
 
         LTombstone stored = new(
             entryId,
@@ -44,9 +44,9 @@ public sealed class LTombstoneArchive
         return stored;
     }
 
-    public LTombstone? LTombstoneRead(string entryId)
+    public LTombstone? LTombstoneRead(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -60,12 +60,12 @@ public sealed class LTombstoneArchive
             return null;
         }
 
-        return new LTombstone(reader.GetString(0), reader.GetString(1), reader.GetString(2));
+        return new LTombstone(reader.GetInt64(0), reader.GetInt64(1), reader.GetString(2));
     }
 
-    public IReadOnlyList<LTombstone> LTombstoneRevisionRead(string revisionId)
+    public IReadOnlyList<LTombstone> LTombstoneRevisionRead(long revisionId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(revisionId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(revisionId);
 
         using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -81,8 +81,8 @@ public sealed class LTombstoneArchive
         while (reader.Read())
         {
             tombstones.Add(new LTombstone(
-                reader.GetString(0),
-                reader.GetString(1),
+                reader.GetInt64(0),
+                reader.GetInt64(1),
                 reader.GetString(2)));
         }
 

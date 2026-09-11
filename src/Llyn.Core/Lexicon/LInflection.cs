@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Llyn.Core;
 
 public sealed record LInflection(
-    string LInflectionEntryId,
+    long LInflectionEntryId,
     int LInflectionPosition,
     string LInflectionText,
     string? LInflectionLocal,

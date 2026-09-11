@@ -14,7 +14,9 @@ public static class LSchemaEntry
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS entry (
-                id TEXT NOT NULL PRIMARY KEY,
+                id INTEGER PRIMARY KEY,
+                realm_origin INTEGER REFERENCES realm (id),
+                id_origin INTEGER,
                 headword TEXT NOT NULL,
                 language TEXT NOT NULL,
                 proficiency TEXT,
@@ -24,7 +26,7 @@ public static class LSchemaEntry
             );
 
             CREATE TABLE IF NOT EXISTS form (
-                entry_id TEXT NOT NULL,
+                entry_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 text TEXT NOT NULL,
                 local TEXT,
@@ -34,7 +36,7 @@ public static class LSchemaEntry
             );
 
             CREATE TABLE IF NOT EXISTS part_of_speech (
-                entry_id TEXT NOT NULL,
+                entry_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 value_id TEXT,
                 custom_name TEXT,

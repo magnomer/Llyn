@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Llyn.Core;
@@ -16,9 +16,9 @@ public sealed class LFavoriteArchive
         _lFavoriteArchiveDatabase = database;
     }
 
-    public void LFavoriteSave(string entryId)
+    public void LFavoriteSave(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lFavoriteArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -37,9 +37,9 @@ public sealed class LFavoriteArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LFavoriteDelete(string entryId)
+    public void LFavoriteDelete(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lFavoriteArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -52,7 +52,7 @@ public sealed class LFavoriteArchive
         session.LDatabaseSessionCommit();
     }
 
-    public bool LFavoriteCheck(string entryId)
+    public bool LFavoriteCheck(long entryId)
     {
         ArgumentNullException.ThrowIfNull(entryId);
 
@@ -87,7 +87,7 @@ public sealed class LFavoriteArchive
         {
             favorites.Add(new LFavorite(
                 new LEntry(
-                    reader.GetString(0),
+                    reader.GetInt64(0),
                     reader.GetString(1),
                     reader.GetString(2),
                     reader.IsDBNull(3) ? null : reader.GetString(3),

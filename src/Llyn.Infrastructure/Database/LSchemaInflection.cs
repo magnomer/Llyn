@@ -14,7 +14,7 @@ public static class LSchemaInflection
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS inflection (
-                entry_id TEXT NOT NULL,
+                entry_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 text TEXT NOT NULL,
                 local TEXT,
@@ -24,7 +24,7 @@ public static class LSchemaInflection
             );
 
             CREATE TABLE IF NOT EXISTS inflection_feature (
-                entry_id TEXT NOT NULL,
+                entry_id INTEGER NOT NULL,
                 inflection_position INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 feature_id TEXT NOT NULL,

@@ -11,7 +11,7 @@ public partial class PEditor
 
     private IReadOnlyDictionary<string, LTranslationTarget> PEditorTargetRead(LEntryDraft draft)
     {
-        List<string> ids = [];
+        List<long> ids = [];
         PEditorTargetRead(draft.LEntryDraftMeanings, ids);
         PEditorTargetRead(draft.LEntryDraftCollocations, ids);
 
@@ -40,7 +40,7 @@ public partial class PEditor
     {
         foreach (LCardDraft card in cards)
         {
-            foreach (string id in card.LCardDraftTranslation)
+            foreach (long id in card.LCardDraftTranslation)
             {
                 if (!ids.Contains(id))
                 {

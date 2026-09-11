@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LPronunciationAudio(
-    string LPronunciationAudioId,
+    long LPronunciationAudioId,
     string LPronunciationAudioFile,
     string? LPronunciationAudioSource,
     string LPronunciationAudioAdded);

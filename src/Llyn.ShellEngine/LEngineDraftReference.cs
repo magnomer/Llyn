@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -6,14 +6,14 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LDraft LEngineReferenceStart(string origin, string? referenceId)
+    public LDraft LEngineReferenceStart(string origin, long? referenceId)
     {
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
 
-            string reference = string.IsNullOrWhiteSpace(referenceId) ? string.Empty : referenceId;
-            LReference content = reference.Length == 0
+            long reference = referenceId is null or <= 0 ? 0 : referenceId.Value;
+            LReference content = reference == 0
                 ? LEngineReferenceBlank with { LReferenceId = LIdentity.LIdentityCreate() }
                 : LEngineReferenceRead(reference) ?? throw new LRefusal(LRefusal.LRefusalReference);
 
@@ -49,12 +49,12 @@ public sealed partial class LEngine
         }
     }
 
-    public LReference LEngineReferenceCommit(string id)
+    public LReference LEngineReferenceCommit(long id)
     {
         LReference settled;
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             LEngineDraftValidate(id);
 
             LDraft draft = LEngineDraftLoad(id);
@@ -62,7 +62,7 @@ public sealed partial class LEngine
                 draft.LDraftReference ?? throw new LRefusal(LRefusal.LRefusalReference));
 
             LReference stored;
-            if (draft.LDraftEntry.Length == 0 || LEngineReferenceRead(draft.LDraftEntry) is null)
+            if (draft.LDraftEntry == 0 || LEngineReferenceRead(draft.LDraftEntry) is null)
             {
                 stored = LEngineReferenceCreate(sending);
             }
@@ -89,7 +89,7 @@ public sealed partial class LEngine
 
     private bool LEngineReferenceCheck(LDraft draft, LReference held)
     {
-        LReference origin = draft.LDraftEntry.Length == 0
+        LReference origin = draft.LDraftEntry == 0
             ? LEngineReferenceBlank
             : LEngineReferenceRead(draft.LDraftEntry) ?? LEngineReferenceBlank;
 
@@ -98,14 +98,14 @@ public sealed partial class LEngine
 
     private static LReference LEngineReferenceNormalize(LReference content)
     {
-        return content.LReferenceId.Length == 0
+        return content.LReferenceId == 0
             ? content with { LReferenceId = LIdentity.LIdentityCreate() }
             : content;
     }
 
     private static LReference LEngineReferenceBlank =>
         new(
-            string.Empty,
+            0,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindUnspecified,

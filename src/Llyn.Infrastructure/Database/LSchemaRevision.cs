@@ -14,14 +14,14 @@ public static class LSchemaRevision
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS revision (
-                id TEXT NOT NULL PRIMARY KEY,
+                id INTEGER PRIMARY KEY,
                 created_utc TEXT NOT NULL
             );
 
             CREATE TABLE IF NOT EXISTS revision_change (
-                revision_id TEXT NOT NULL,
+                revision_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                target_id TEXT NOT NULL,
+                target_id INTEGER NOT NULL,
                 target_type TEXT NOT NULL,
                 kind TEXT NOT NULL,
                 summary TEXT,
@@ -30,8 +30,8 @@ public static class LSchemaRevision
             );
 
             CREATE TABLE IF NOT EXISTS tombstone (
-                entry_id TEXT NOT NULL PRIMARY KEY,
-                revision_id TEXT NOT NULL,
+                entry_id INTEGER NOT NULL PRIMARY KEY,
+                revision_id INTEGER NOT NULL,
                 deleted_utc TEXT NOT NULL,
                 FOREIGN KEY (revision_id) REFERENCES revision (id)
             );
@@ -41,12 +41,12 @@ public static class LSchemaRevision
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS workspace (
-                id TEXT NOT NULL PRIMARY KEY,
-                left_entry TEXT,
-                right_entry TEXT,
+                id INTEGER PRIMARY KEY,
+                left_entry INTEGER,
+                right_entry INTEGER,
                 mode TEXT,
                 split TEXT,
-                revision TEXT,
+                revision INTEGER,
                 library_order TEXT,
                 phonology_order TEXT,
                 favorite_order TEXT,

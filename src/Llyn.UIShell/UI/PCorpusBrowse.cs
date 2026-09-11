@@ -17,7 +17,7 @@ public partial class PCorpus
 
     private readonly ObservableCollection<PLanguageItem> _pLanguageItem = [];
 
-    private IReadOnlyDictionary<string, int> _pAnthologyCount = new Dictionary<string, int>();
+    private IReadOnlyDictionary<long, int> _pAnthologyCount = new Dictionary<string, int>();
 
     private string? _pExcerptExample;
 
@@ -67,12 +67,12 @@ public partial class PCorpus
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 
-    private void PAnthologySelect(string? id)
+    private void PAnthologySelect(long? id)
     {
         foreach (PAnthologyItem item in _pAnthologyList)
         {
             item.PAnthologyItemChosen = id is not null
-                && string.Equals(item.PAnthologyItemId, id, StringComparison.Ordinal);
+                && item.PAnthologyItemId == id;
         }
     }
 
@@ -137,7 +137,7 @@ public partial class PCorpus
         PAnthologyExampleShow(item.PAnthologyItemId);
     }
 
-    internal void PAnthologyExampleShow(string id)
+    internal void PAnthologyExampleShow(long id)
     {
         LExample? example;
         try
@@ -196,7 +196,7 @@ public partial class PCorpus
             text is null ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void PQuotationFind(string id)
+    private void PQuotationFind(long id)
     {
         IReadOnlyList<LUsage> read;
         try

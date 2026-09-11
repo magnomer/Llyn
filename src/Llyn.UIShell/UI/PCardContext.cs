@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -104,7 +104,7 @@ internal sealed partial class PCard
         PCardContextClear();
     }
 
-    internal bool PCardContextCommit(string id, string title)
+    internal bool PCardContextCommit(long id, string title)
     {
         string written = (title ?? string.Empty).Trim();
         if (written.Length == 0 || PCardContextMatch(id) || PCardContextCheck(written))
@@ -128,9 +128,9 @@ internal sealed partial class PCard
         PCardContextUpdate();
     }
 
-    internal bool PCardContextMatch(string id)
+    internal bool PCardContextMatch(long id)
     {
-        if (string.IsNullOrEmpty(id))
+        if (id <= 0)
         {
             return false;
         }
@@ -138,7 +138,7 @@ internal sealed partial class PCard
         foreach (object row in PCardContext)
         {
             if (row is PContext chip &&
-                string.Equals(chip.PContextId, id, StringComparison.Ordinal))
+                chip.PContextId == id)
             {
                 return true;
             }

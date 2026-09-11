@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -19,36 +19,39 @@ public sealed class LImageArchive
     {
         ArgumentNullException.ThrowIfNull(image);
 
-        LImage stored = image with { LImageId = LIdentity.LIdentityCreate() };
+        LImage stored = image;
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "INSERT INTO image (id, location_state, location) VALUES ($id, $locationState, $location);";
-            command.Parameters.AddWithValue("$id", stored.LImageId);
+                """
+                INSERT INTO image (location_state, location)
+                VALUES ($locationState, $location)
+                RETURNING id;
+                """;
             LStateColumn.LStateColumnApply(command, "location", stored.LImageLocation);
-            command.ExecuteNonQuery();
+            stored = stored with { LImageId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public LImage? LImageRead(string id)
+    public LImage? LImageRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         return LImageSingleRead(session.LDatabaseSessionConnection, id);
     }
 
-    public IReadOnlyList<LImage> LImageMeaningRead(string meaningId)
+    public IReadOnlyList<LImage> LImageMeaningRead(long meaningId)
     {
         return LImageReferrerRead("sense_image", "sense_id", meaningId);
     }
 
-    public IReadOnlyList<LImage> LImageCollocationRead(string collocationId)
+    public IReadOnlyList<LImage> LImageCollocationRead(long collocationId)
     {
         return LImageReferrerRead("collocation_image", "collocation_id", collocationId);
     }
@@ -56,7 +59,7 @@ public sealed class LImageArchive
     public void LImageUpdate(LImage image)
     {
         ArgumentNullException.ThrowIfNull(image);
-        ArgumentException.ThrowIfNullOrWhiteSpace(image.LImageId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(image.LImageId);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -74,15 +77,15 @@ public sealed class LImageArchive
         session.LDatabaseSessionCommit();
     }
 
-    public int LImageReferenceRead(string id)
+    public int LImageReferenceRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         return LImageReferenceRead(session.LDatabaseSessionConnection, id);
     }
 
-    private static int LImageReferenceRead(SqliteConnection connection, string id)
+    private static int LImageReferenceRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -95,9 +98,9 @@ public sealed class LImageArchive
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    public void LImageDelete(string id)
+    public void LImageDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -119,36 +122,36 @@ public sealed class LImageArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LImageMeaningAttach(string meaningId, string imageId, int position)
+    public void LImageMeaningAttach(long meaningId, long imageId, int position)
     {
         LImageReferenceAttach("sense_image", "sense_id", meaningId, imageId, position);
     }
 
-    public void LImageCollocationAttach(string collocationId, string imageId, int position)
+    public void LImageCollocationAttach(long collocationId, long imageId, int position)
     {
         LImageReferenceAttach("collocation_image", "collocation_id", collocationId, imageId, position);
     }
 
-    public void LImageMeaningDetach(string meaningId, string imageId)
+    public void LImageMeaningDetach(long meaningId, long imageId)
     {
         LImageReferenceDetach("sense_image", "sense_id", meaningId, imageId);
     }
 
-    public void LImageCollocationDetach(string collocationId, string imageId)
+    public void LImageCollocationDetach(long collocationId, long imageId)
     {
         LImageReferenceDetach("collocation_image", "collocation_id", collocationId, imageId);
     }
 
-    private void LImageReferenceAttach(string table, string column, string referrerId, string imageId, int position)
+    private void LImageReferenceAttach(string table, string column, long referrerId, long imageId, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(imageId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(imageId);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         string scope = $"{column} = $owner";
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
+        IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
             connection, table, scope, referrerId, "image_id");
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -172,10 +175,10 @@ public sealed class LImageArchive
         session.LDatabaseSessionCommit();
     }
 
-    private void LImageReferenceDetach(string table, string column, string referrerId, string imageId)
+    private void LImageReferenceDetach(string table, string column, long referrerId, long imageId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(imageId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(imageId);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -196,9 +199,9 @@ public sealed class LImageArchive
         session.LDatabaseSessionCommit();
     }
 
-    private IReadOnlyList<LImage> LImageReferrerRead(string table, string column, string referrerId)
+    private IReadOnlyList<LImage> LImageReferrerRead(string table, string column, long referrerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
 
         using LDatabaseSession session = _lImageArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -216,13 +219,13 @@ public sealed class LImageArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            images.Add(new LImage(reader.GetString(0), LStateColumn.LStateColumnRead(reader, 1)));
+            images.Add(new LImage(reader.GetInt64(0), LStateColumn.LStateColumnRead(reader, 1)));
         }
 
         return images;
     }
 
-    private static LImage? LImageSingleRead(SqliteConnection connection, string id)
+    private static LImage? LImageSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT location_state, location FROM image WHERE id = $id;";

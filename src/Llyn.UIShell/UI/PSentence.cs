@@ -8,7 +8,7 @@ namespace Llyn.UIShell;
 
 internal sealed class PSentence : INotifyPropertyChanged
 {
-    private string _pSentenceId;
+    private long _pSentenceId;
     private string _pSentenceText;
     private bool _pSentenceUnreadable;
     private string _pSentenceCitation;
@@ -22,7 +22,7 @@ internal sealed class PSentence : INotifyPropertyChanged
     private int _pSentenceParticleColumn;
     private int _pSentenceDependenceColumn = 2;
     private bool _pSentenceFrameVisible;
-    private string _pSentenceRow = string.Empty;
+    private long _pSentenceRow;
     private LStateValue _pSentenceTranslation = LStateValue.LStateValueUnspecified;
     private string _pSentenceLanguage = string.Empty;
 
@@ -52,8 +52,8 @@ internal sealed class PSentence : INotifyPropertyChanged
         _pSentenceId = example.LExampleDraftId;
         _pSentenceText = example.LExampleDraftText.LStateValueShow();
         _pSentenceUnreadable = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
-        _pSentenceCitation = example.LExampleDraftReference.LStateValueShow();
-        _pSentenceCitationUnreadable = example.LExampleDraftReference.LStateValueState == LState.LStateUnknown;
+        _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
+        _pSentenceCitationUnreadable = example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown;
         _pSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
         _pSentenceTranslation = example.LExampleDraftTranslation;
         _pSentenceLanguage = example.LExampleDraftLanguage;
@@ -69,12 +69,12 @@ internal sealed class PSentence : INotifyPropertyChanged
 
     public ObservableCollection<string> PSentenceDependenceCatalog { get; }
 
-    public string PSentenceId
+    public long PSentenceId
     {
         get => _pSentenceId;
         private set
         {
-            if (string.Equals(_pSentenceId, value, StringComparison.Ordinal))
+            if (_pSentenceId == value)
             {
                 return;
             }
@@ -367,7 +367,7 @@ internal sealed class PSentence : INotifyPropertyChanged
     {
         if (PSentenceTextRead().LStateValueEmpty)
         {
-            PSentenceId = string.Empty;
+            PSentenceId = 0;
             return;
         }
 
@@ -381,12 +381,12 @@ internal sealed class PSentence : INotifyPropertyChanged
 
     internal void PSentenceClear()
     {
-        _pSentenceRow = string.Empty;
+        _pSentenceRow = 0;
         PSentenceText = string.Empty;
         PSentenceUnreadable = false;
         PSentenceCitation = string.Empty;
         PSentenceCitationUnreadable = false;
-        PSentenceId = string.Empty;
+        PSentenceId = 0;
         PSentenceParticle = string.Empty;
         PSentenceDependence = string.Empty;
     }
@@ -405,7 +405,7 @@ internal sealed class PSentence : INotifyPropertyChanged
 
         foreach (PCitationItem row in PSentenceCitationCatalog)
         {
-            if (string.Equals(row.PCitationItemId, reference, StringComparison.Ordinal))
+            if (row.PCitationItemId == reference)
             {
                 return row.PCitationItemName;
             }

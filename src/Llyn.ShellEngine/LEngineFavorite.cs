@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -25,31 +25,31 @@ public sealed partial class LEngine
         }
     }
 
-    public bool LEngineFavoriteCheck(string entryId)
+    public bool LEngineFavoriteCheck(long entryId)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
             return new LFavoriteArchive(_lEngineDatabase).LFavoriteCheck(entryId);
         }
     }
 
-    public void LEngineFavoriteSave(string entryId)
+    public void LEngineFavoriteSave(long entryId)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
             new LFavoriteArchive(_lEngineDatabase).LFavoriteSave(entryId);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectFavorite, entryId);
     }
 
-    public void LEngineFavoriteDelete(string entryId)
+    public void LEngineFavoriteDelete(long entryId)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
             new LFavoriteArchive(_lEngineDatabase).LFavoriteDelete(entryId);
         }
 

@@ -54,12 +54,12 @@ public partial class PLibrary
         PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
-    private void PIndexSelect(string? id)
+    private void PIndexSelect(long? id)
     {
         foreach (PIndexItem item in _pIndexList)
         {
             item.PIndexItemChosen = id is not null
-                && string.Equals(item.PIndexItemId, id, StringComparison.Ordinal);
+                && item.PIndexItemId == id;
         }
     }
 
@@ -94,7 +94,7 @@ public partial class PLibrary
         PIndexEntryShow(item.PIndexItemId);
     }
 
-    internal void PIndexEntryShow(string id)
+    internal void PIndexEntryShow(long id)
     {
         LEntryDraft? draft;
         try
@@ -124,7 +124,7 @@ public partial class PLibrary
         }
     }
 
-    private void PIndexEntryUpdate(string id)
+    private void PIndexEntryUpdate(long id)
     {
         if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
@@ -241,7 +241,7 @@ public partial class PLibrary
         return _pLibraryHost.PWindowDiscardConfirm(PLibraryChangeCheck());
     }
 
-    private void PLibraryEntryShow(string id, LEntryDraft draft)
+    private void PLibraryEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);
         PLibraryMode.IsEnabled = true;
@@ -274,7 +274,7 @@ public partial class PLibrary
 
     private void PLibraryBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not string id)
+        if (_pDisplayEntry is not long id)
         {
             return;
         }

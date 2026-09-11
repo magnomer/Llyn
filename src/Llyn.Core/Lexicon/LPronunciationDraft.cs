@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -9,13 +9,11 @@ public sealed record LPronunciationDraft(
     IReadOnlyList<LRepresentation>? LPronunciationDraftRepresentations = null,
     string LPronunciationDraftAudio = "",
     string? LPronunciationDraftSource = null,
-    string LPronunciationDraftId = "")
+    long LPronunciationDraftId = 0)
 {
     public string LPronunciationDraftIpa { get; init; } = LPronunciationDraftIpa ?? string.Empty;
 
     public string LPronunciationDraftAudio { get; init; } = LPronunciationDraftAudio ?? string.Empty;
-
-    public string LPronunciationDraftId { get; init; } = LPronunciationDraftId ?? string.Empty;
 
     public IReadOnlyList<LSyllable> LPronunciationDraftSyllables { get; init; } =
         LPronunciationDraftSyllables ?? [];

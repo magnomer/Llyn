@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -17,7 +17,7 @@ public sealed class LNoteArchive
     public void LNoteSave(LNote note)
     {
         ArgumentNullException.ThrowIfNull(note);
-        ArgumentException.ThrowIfNullOrWhiteSpace(note.LNoteEntryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(note.LNoteEntryId);
 
         using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -35,9 +35,9 @@ public sealed class LNoteArchive
         session.LDatabaseSessionCommit();
     }
 
-    public LNote? LNoteRead(string entryId)
+    public LNote? LNoteRead(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -45,12 +45,12 @@ public sealed class LNoteArchive
         command.Parameters.AddWithValue("$entry", entryId);
 
         using SqliteDataReader reader = command.ExecuteReader();
-        return reader.Read() ? new LNote(reader.GetString(0), reader.GetString(1)) : null;
+        return reader.Read() ? new LNote(reader.GetInt64(0), reader.GetString(1)) : null;
     }
 
-    public void LNoteDelete(string entryId)
+    public void LNoteDelete(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())

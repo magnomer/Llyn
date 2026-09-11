@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -248,7 +248,7 @@ public partial class PImprint
 
     private void PImprintRemovalHandle(object sender, RoutedEventArgs e)
     {
-        if (PImprintReferenceRead() is not string id)
+        if (PImprintReferenceRead() is not long id)
         {
             return;
         }

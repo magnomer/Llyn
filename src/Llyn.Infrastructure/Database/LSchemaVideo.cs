@@ -14,7 +14,9 @@ public static class LSchemaVideo
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS video (
-                id TEXT NOT NULL PRIMARY KEY,
+                id INTEGER PRIMARY KEY,
+                realm_origin INTEGER REFERENCES realm (id),
+                id_origin INTEGER,
                 location_state TEXT NOT NULL DEFAULT 'unspecified',
                 location TEXT,
                 span_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -24,8 +26,8 @@ public static class LSchemaVideo
             );
 
             CREATE TABLE IF NOT EXISTS sense_video (
-                sense_id TEXT NOT NULL,
-                video_id TEXT NOT NULL,
+                sense_id INTEGER NOT NULL,
+                video_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 PRIMARY KEY (sense_id, video_id),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
@@ -36,8 +38,8 @@ public static class LSchemaVideo
                 ON sense_video (sense_id, position);
 
             CREATE TABLE IF NOT EXISTS collocation_video (
-                collocation_id TEXT NOT NULL,
-                video_id TEXT NOT NULL,
+                collocation_id INTEGER NOT NULL,
+                video_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 PRIMARY KEY (collocation_id, video_id),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,

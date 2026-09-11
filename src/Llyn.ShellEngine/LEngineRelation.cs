@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -32,7 +32,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LRelation> LEngineRelationRead(string meaningId)
+    public IReadOnlyList<LRelation> LEngineRelationRead(long meaningId)
     {
         lock (_lEngineGate)
         {
@@ -48,7 +48,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineRelationMove(string id, int position)
+    public void LEngineRelationMove(long id, int position)
     {
         lock (_lEngineGate)
         {
@@ -56,7 +56,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineRelationDelete(string id)
+    public void LEngineRelationDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -80,7 +80,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LSynonym> LEngineSynonymRead(string collocationId)
+    public IReadOnlyList<LSynonym> LEngineSynonymRead(long collocationId)
     {
         lock (_lEngineGate)
         {
@@ -103,7 +103,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSynonymMove(string id, int position)
+    public void LEngineSynonymMove(long id, int position)
     {
         lock (_lEngineGate)
         {
@@ -111,7 +111,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineSynonymDelete(string id)
+    public void LEngineSynonymDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -119,18 +119,18 @@ public sealed partial class LEngine
         }
     }
 
-    private void LEngineTargetValidate(string? entryId, string? meaningId)
+    private void LEngineTargetValidate(long? entryId, long? meaningId)
     {
-        bool hasEntry = !string.IsNullOrWhiteSpace(entryId);
-        bool hasMeaning = !string.IsNullOrWhiteSpace(meaningId);
+        bool hasEntry = entryId > 0;
+        bool hasMeaning = meaningId > 0;
         if (hasEntry == hasMeaning)
         {
             throw new LRefusal(LRefusal.LRefusalTarget);
         }
 
         bool found = hasEntry
-            ? new LEntryArchive(_lEngineDatabase).LEntryRead(entryId!) is not null
-            : new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(meaningId!) is not null;
+            ? new LEntryArchive(_lEngineDatabase).LEntryRead(entryId!.Value) is not null
+            : new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(meaningId!.Value) is not null;
         if (!found)
         {
             throw new LRefusal(LRefusal.LRefusalTarget);

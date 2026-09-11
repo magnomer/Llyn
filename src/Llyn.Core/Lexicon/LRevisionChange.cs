@@ -1,8 +1,8 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRevisionChange(
     int LRevisionChangePosition,
-    string LRevisionChangeTarget,
+    long LRevisionChangeTarget,
     string LRevisionChangeType,
     string LRevisionChangeKind,
     string? LRevisionChangeSummary);

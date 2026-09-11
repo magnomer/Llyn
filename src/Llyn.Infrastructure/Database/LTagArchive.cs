@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -15,22 +15,22 @@ public sealed class LTagArchive
         _lTagArchiveDatabase = database;
     }
 
-    public IReadOnlyList<LTag> LTagMeaningRead(string meaningId)
+    public IReadOnlyList<LTag> LTagMeaningRead(long meaningId)
     {
         return LTagReferrerRead("sense_tag", "sense_id", meaningId);
     }
 
-    public IReadOnlyList<LTag> LTagCollocationRead(string collocationId)
+    public IReadOnlyList<LTag> LTagCollocationRead(long collocationId)
     {
         return LTagReferrerRead("collocation_tag", "collocation_id", collocationId);
     }
 
-    public void LTagMeaningSave(string meaningId, IReadOnlyList<LTag> tags)
+    public void LTagMeaningSave(long meaningId, IReadOnlyList<LTag> tags)
     {
         LTagReferrerSave("sense_tag", "sense_id", meaningId, tags);
     }
 
-    public void LTagCollocationSave(string collocationId, IReadOnlyList<LTag> tags)
+    public void LTagCollocationSave(long collocationId, IReadOnlyList<LTag> tags)
     {
         LTagReferrerSave("collocation_tag", "collocation_id", collocationId, tags);
     }
@@ -132,7 +132,7 @@ public sealed class LTagArchive
     private static void LTagDelete(
         SqliteConnection connection, string table, string column, string text)
     {
-        List<string> owners = [];
+        List<long> owners = [];
         using (SqliteCommand named = connection.CreateCommand())
         {
             named.CommandText = $"SELECT {column} FROM {table} WHERE text = $text;";
@@ -140,7 +140,7 @@ public sealed class LTagArchive
             using SqliteDataReader reader = named.ExecuteReader();
             while (reader.Read())
             {
-                owners.Add(reader.GetString(0));
+                owners.Add(reader.GetInt64(0));
             }
         }
 
@@ -151,7 +151,7 @@ public sealed class LTagArchive
             command.ExecuteNonQuery();
         }
 
-        foreach (string owner in owners)
+        foreach (long owner in owners)
         {
             LTagOwnerNormalize(connection, table, column, owner);
         }
@@ -160,7 +160,7 @@ public sealed class LTagArchive
     private static void LTagPositionNormalize(
         SqliteConnection connection, string table, string column, string text)
     {
-        List<string> owners = [];
+        List<long> owners = [];
         using (SqliteCommand named = connection.CreateCommand())
         {
             named.CommandText = $"SELECT {column} FROM {table} WHERE text = $text;";
@@ -168,18 +168,18 @@ public sealed class LTagArchive
             using SqliteDataReader reader = named.ExecuteReader();
             while (reader.Read())
             {
-                owners.Add(reader.GetString(0));
+                owners.Add(reader.GetInt64(0));
             }
         }
 
-        foreach (string owner in owners)
+        foreach (long owner in owners)
         {
             LTagOwnerNormalize(connection, table, column, owner);
         }
     }
 
     private static void LTagOwnerNormalize(
-        SqliteConnection connection, string table, string column, string owner)
+        SqliteConnection connection, string table, string column, long owner)
     {
         List<string> texts = [];
         using (SqliteCommand named = connection.CreateCommand())
@@ -205,7 +205,7 @@ public sealed class LTagArchive
     }
 
     private static void LTagOwnerSave(
-        SqliteConnection connection, string table, string column, string owner, IReadOnlyList<string> texts)
+        SqliteConnection connection, string table, string column, long owner, IReadOnlyList<string> texts)
     {
         int position = 0;
         foreach (string text in texts)
@@ -222,9 +222,9 @@ public sealed class LTagArchive
     }
 
     private void LTagReferrerSave(
-        string table, string column, string referrerId, IReadOnlyList<LTag> tags)
+        string table, string column, long referrerId, IReadOnlyList<LTag> tags)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
         ArgumentNullException.ThrowIfNull(tags);
 
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
@@ -256,9 +256,9 @@ public sealed class LTagArchive
         session.LDatabaseSessionCommit();
     }
 
-    private IReadOnlyList<LTag> LTagReferrerRead(string table, string column, string referrerId)
+    private IReadOnlyList<LTag> LTagReferrerRead(string table, string column, long referrerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
 
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();

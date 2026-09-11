@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -62,7 +62,7 @@ public partial class PDuplex
         index.Visibility = catalog.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
     }
 
-    private bool PDuplexEntryShow(string id, PDisplay display)
+    private bool PDuplexEntryShow(long id, PDisplay display)
     {
         LEntryDraft? draft;
         try

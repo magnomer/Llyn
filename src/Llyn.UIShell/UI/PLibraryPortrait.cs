@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
@@ -20,7 +20,7 @@ public partial class PLibrary
 
     internal async void PLibraryPortraitHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not string id)
+        if (_pDisplayEntry is not long id)
         {
             return;
         }
@@ -71,7 +71,7 @@ public partial class PLibrary
             _pLibraryHost.PLocalizationTextRead("Display.Note"));
     }
 
-    private string PLibraryNameRead(string id)
+    private string PLibraryNameRead(long id)
     {
         string headword;
         try

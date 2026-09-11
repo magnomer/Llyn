@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSyllable(
-    string LSyllablePronunciationId,
+    long LSyllablePronunciationId,
     int LSyllablePosition,
     string? LSyllableOrthography,
     string? LSyllableLocal,

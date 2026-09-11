@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -7,18 +7,18 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    private readonly HashSet<string> _lEngineDraftHeld = new(StringComparer.Ordinal);
+    private readonly HashSet<long> _lEngineDraftHeld = [];
 
-    private readonly HashSet<string> _lEngineDraftStale = new(StringComparer.Ordinal);
+    private readonly HashSet<long> _lEngineDraftStale = [];
 
-    public LDraft LEngineDraftStart(string origin, string? entryId)
+    public LDraft LEngineDraftStart(string origin, long? entryId)
     {
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(origin);
 
-            string entry = string.IsNullOrWhiteSpace(entryId) ? string.Empty : entryId;
-            LEntryDraft content = entry.Length == 0
+            long entry = entryId is null or <= 0 ? 0 : entryId.Value;
+            LEntryDraft content = entry == 0
                 ? new LEntryDraft(string.Empty, string.Empty, null, string.Empty, [], [])
                 : LEngineEntryLoad(entry) ?? throw new LRefusal(LRefusal.LRefusalEntry);
 
@@ -50,11 +50,11 @@ public sealed partial class LEngine
         }
     }
 
-    public LDraft? LEngineDraftRead(string id)
+    public LDraft? LEngineDraftRead(long id)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             LEngineDraftValidate(id);
             return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
         }
@@ -68,11 +68,11 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineDraftDelete(string id)
+    public void LEngineDraftDelete(long id)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             LEngineDraftValidate(id);
             LEngineCourtRemove(id);
             _lEngineDraftHeld.Remove(id);
@@ -82,11 +82,11 @@ public sealed partial class LEngine
         }
     }
 
-    public bool LEngineDraftCheck(string id)
+    public bool LEngineDraftCheck(long id)
     {
         lock (_lEngineGate)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (id <= 0)
             {
                 return false;
             }
@@ -114,7 +114,7 @@ public sealed partial class LEngine
                 return LEngineReferenceCheck(draft, reference);
             }
 
-            LEntryDraft origin = string.IsNullOrWhiteSpace(draft.LDraftEntry)
+            LEntryDraft origin = draft.LDraftEntry <= 0
                 ? LEngineDraftBlank with { LEntryDraftLanguage = draft.LDraftContent.LEntryDraftLanguage }
                 : LEngineEntryLoad(draft.LDraftEntry) ?? LEngineDraftBlank;
 
@@ -122,12 +122,12 @@ public sealed partial class LEngine
         }
     }
 
-    public LEntry LEngineDraftCommit(string id)
+    public LEntry LEngineDraftCommit(long id)
     {
         LEntry stored;
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             LEngineDraftValidate(id);
             stored = LEngineDraftCommit(id, [], true);
             _lEngineTrove.LTroveClear(id);
@@ -137,7 +137,7 @@ public sealed partial class LEngine
         return stored;
     }
 
-    private LEntry LEngineDraftCommit(string id, HashSet<string> entered, bool held)
+    private LEntry LEngineDraftCommit(long id, HashSet<long> entered, bool held)
     {
         entered.Add(id);
 
@@ -157,7 +157,7 @@ public sealed partial class LEngine
 
         LEntryDraft sending = LEngineTranslationSettle(draft.LDraftContent);
 
-        LEntry entry = string.IsNullOrWhiteSpace(draft.LDraftEntry)
+        LEntry entry = draft.LDraftEntry <= 0
             || LEngineEntryLoad(draft.LDraftEntry) is null
             ? LEngineEntrySave(sending)
             : LEngineEntryUpdate(draft.LDraftEntry, sending);
@@ -187,18 +187,18 @@ public sealed partial class LEngine
         return entry;
     }
 
-    public void LEngineDraftCancel(string id)
+    public void LEngineDraftCancel(long id)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(id);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
             LEngineDraftValidate(id);
 
             LEngineCourtRemove(id);
 
             foreach (LCourtLink link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
             {
-                LEngineCourtUpdate(link, string.Empty);
+                LEngineCourtUpdate(link, 0);
             }
 
             _lEngineDraftHeld.Remove(id);
@@ -208,7 +208,7 @@ public sealed partial class LEngine
         }
     }
 
-    private bool LEngineHoldCheck(string id)
+    private bool LEngineHoldCheck(long id)
     {
         LClaim? claim = LClaimArchive.LClaimArchiveCheck(_lEngineWorkspace, id)
             ? LClaimArchive.LClaimArchiveRead(_lEngineWorkspace, id)
@@ -219,7 +219,7 @@ public sealed partial class LEngine
             && _lEngineDraftHeld.Contains(id);
     }
 
-    private bool LEngineClaimCheck(string id)
+    private bool LEngineClaimCheck(long id)
     {
         if (!LClaimArchive.LClaimArchiveCheck(_lEngineWorkspace, id))
         {
@@ -250,7 +250,7 @@ public sealed partial class LEngine
         List<LCardDraft>? named = null;
         for (int index = 0; index < cards.Count; index++)
         {
-            if (cards[index].LCardDraftId.Length != 0)
+            if (cards[index].LCardDraftId != 0)
             {
                 named?.Add(cards[index]);
                 continue;
@@ -274,7 +274,7 @@ public sealed partial class LEngine
     private static LEntryDraft LEngineDraftBlank =>
         new(string.Empty, string.Empty, null, string.Empty, [], []);
 
-    private void LEngineDraftValidate(string id)
+    private void LEngineDraftValidate(long id)
     {
         if (_lEngineDraftStale.Contains(id))
         {
@@ -282,9 +282,9 @@ public sealed partial class LEngine
         }
     }
 
-    private LDraft LEngineDraftLoad(string id)
+    private LDraft LEngineDraftLoad(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id)
             ?? throw new LRefusal(LRefusal.LRefusalDraft);
@@ -304,10 +304,10 @@ public sealed partial class LEngine
         List<LCardDraft> written = new(cards.Count);
         foreach (LCardDraft card in cards)
         {
-            List<string> translations = new(card.LCardDraftTranslation.Count);
-            foreach (string translation in card.LCardDraftTranslation)
+            List<long> translations = new(card.LCardDraftTranslation.Count);
+            foreach (long translation in card.LCardDraftTranslation)
             {
-                if (!string.IsNullOrWhiteSpace(translation) && LEngineEntryLoad(translation) is not null)
+                if (translation > 0 && LEngineEntryLoad(translation) is not null)
                 {
                     translations.Add(translation);
                 }

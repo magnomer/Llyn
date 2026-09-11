@@ -7,7 +7,7 @@ internal sealed class PIndexItem : INotifyPropertyChanged
 {
     private bool _pIndexItemChosen;
 
-    internal PIndexItem(string id, string headword, string language)
+    internal PIndexItem(long id, string headword, string language)
     {
         PIndexItemId = id;
         PIndexItemHeadword = headword;
@@ -16,7 +16,7 @@ internal sealed class PIndexItem : INotifyPropertyChanged
         PIndexItemFlag = PEnsign.PEnsignFind(language);
     }
 
-    public string PIndexItemId { get; }
+    public long PIndexItemId { get; }
 
     public string PIndexItemHeadword { get; }
 

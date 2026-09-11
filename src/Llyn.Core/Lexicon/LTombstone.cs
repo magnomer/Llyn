@@ -1,6 +1,6 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LTombstone(
-    string LTombstoneEntryId,
-    string LTombstoneRevisionId,
+    long LTombstoneEntryId,
+    long LTombstoneRevisionId,
     string LTombstoneDeletedUtc);

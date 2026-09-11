@@ -7,7 +7,7 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
 {
     private bool _pInventoryItemChosen;
 
-    internal PInventoryItem(string id, string headword, string language, string sound)
+    internal PInventoryItem(long id, string headword, string language, string sound)
     {
         PInventoryItemId = id;
         PInventoryItemHeadword = headword;
@@ -18,7 +18,7 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
         PInventoryItemFlag = PEnsign.PEnsignFind(language);
     }
 
-    public string PInventoryItemId { get; }
+    public long PInventoryItemId { get; }
 
     public string PInventoryItemHeadword { get; }
 

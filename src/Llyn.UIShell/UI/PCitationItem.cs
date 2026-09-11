@@ -1,16 +1,16 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 
 namespace Llyn.UIShell;
 
 internal sealed class PCitationItem
 {
-    internal PCitationItem(string id, string name)
+    internal PCitationItem(long id, string name)
     {
         PCitationItemId = id;
         PCitationItemName = name;
     }
 
-    public string PCitationItemId { get; }
+    public long PCitationItemId { get; }
 
     public string PCitationItemName { get; }
 

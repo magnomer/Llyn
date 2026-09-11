@@ -14,8 +14,8 @@ public static class LSchemaCollocation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS collocation (
-                id TEXT NOT NULL PRIMARY KEY,
-                entry_id TEXT NOT NULL,
+                id INTEGER PRIMARY KEY,
+                entry_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
@@ -30,11 +30,11 @@ public static class LSchemaCollocation
             );
 
             CREATE TABLE IF NOT EXISTS collocation_synonym (
-                id TEXT NOT NULL PRIMARY KEY,
-                collocation_id TEXT NOT NULL,
+                id INTEGER PRIMARY KEY,
+                collocation_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                target_entry_id TEXT,
-                target_sense_id TEXT,
+                target_entry_id INTEGER,
+                target_sense_id INTEGER,
                 CHECK ((target_entry_id IS NULL) <> (target_sense_id IS NULL)),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
                 FOREIGN KEY (target_entry_id) REFERENCES entry (id),
@@ -42,7 +42,7 @@ public static class LSchemaCollocation
             );
 
             CREATE TABLE IF NOT EXISTS note (
-                entry_id TEXT NOT NULL PRIMARY KEY,
+                entry_id INTEGER NOT NULL PRIMARY KEY,
                 text TEXT NOT NULL,
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
             );

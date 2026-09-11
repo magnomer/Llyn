@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -37,6 +37,28 @@ public static class LStateColumn
             value.LStateValueState == LState.LStateSpecified && value.LStateValueText is not null
                 ? value.LStateValueText
                 : DBNull.Value);
+    }
+
+    public static void LStateColumnApply(SqliteCommand command, string field, LStateAnchor anchor)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(anchor);
+
+        command.Parameters.AddWithValue($"${field}State", LStateColumnFormat(anchor.LStateAnchorState));
+        command.Parameters.AddWithValue(
+            $"${field}",
+            anchor.LStateAnchorState == LState.LStateSpecified && anchor.LStateAnchorId is not null
+                ? anchor.LStateAnchorId.Value
+                : DBNull.Value);
+    }
+
+    public static LStateAnchor LStateColumnAnchorRead(SqliteDataReader reader, int state)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+
+        return new LStateAnchor(
+            LStateColumnParse(reader.GetString(state)),
+            reader.IsDBNull(state + 1) ? null : reader.GetInt64(state + 1));
     }
 
     public static LStateValue LStateColumnRead(SqliteDataReader reader, int state)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -117,7 +117,7 @@ public partial class PEditor
         PCandidateHide();
 
         string written = card.PCardContextText.Trim();
-        string? id = written.Length == 0 ? null : PContextResolve(written);
+        long? id = written.Length == 0 ? null : PContextResolve(written);
 
         if (id is null)
         {

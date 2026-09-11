@@ -20,7 +20,7 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
         PAnthologyItemCount = usage.ToString(CultureInfo.CurrentCulture);
     }
 
-    public string PAnthologyItemId { get; }
+    public long PAnthologyItemId { get; }
 
     public string PAnthologyItemText { get; }
 

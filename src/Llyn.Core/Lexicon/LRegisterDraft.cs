@@ -1,8 +1,8 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRegisterDraft(
     LStateValue LRegisterDraftName,
-    string LRegisterDraftId,
+    long LRegisterDraftId,
     string LRegisterDraftLanguage = "",
     bool LRegisterDraftBuiltin = false)
 {
@@ -13,6 +13,6 @@ public sealed record LRegisterDraft(
 
     public static LRegisterDraft LRegisterDraftCreate(string text)
     {
-        return new LRegisterDraft(LStateValue.LStateValueRead(text), string.Empty);
+        return new LRegisterDraft(LStateValue.LStateValueRead(text), 0);
     }
 }

@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRepresentation(
-    string LRepresentationPronunciationId,
+    long LRepresentationPronunciationId,
     int LRepresentationPosition,
     string LRepresentationSystem,
     string LRepresentationRole,

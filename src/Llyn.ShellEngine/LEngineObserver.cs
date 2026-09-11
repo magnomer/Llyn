@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -31,7 +31,7 @@ public sealed partial class LEngine
         }
     }
 
-    private void LEngineBulletinRaise(LSubject subject, string id)
+    private void LEngineBulletinRaise(LSubject subject, long id)
     {
         LObserver[] observers;
         lock (_lEngineGate)
@@ -44,7 +44,7 @@ public sealed partial class LEngine
             observers = [.. _lEngineObservers];
         }
 
-        LBulletin bulletin = new(subject, id ?? string.Empty);
+        LBulletin bulletin = new(subject, id);
         foreach (LObserver observer in observers)
         {
             observer.LObserverBulletinHandle(bulletin);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -19,32 +19,32 @@ public sealed class LAuthorArchive
     {
         ArgumentNullException.ThrowIfNull(author);
 
-        LAuthor stored = author with { LAuthorId = LIdentity.LIdentityCreate() };
+        LAuthor stored = author;
 
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "INSERT INTO author (id, name) VALUES ($id, $name);";
-            command.Parameters.AddWithValue("$id", stored.LAuthorId);
+            command.CommandText =
+                "INSERT INTO author (name) VALUES ($name) RETURNING id;";
             command.Parameters.AddWithValue("$name", stored.LAuthorName);
-            command.ExecuteNonQuery();
+            stored = stored with { LAuthorId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public LAuthor? LAuthorRead(string id)
+    public LAuthor? LAuthorRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         return LAuthorSingleRead(session.LDatabaseSessionConnection, id);
     }
 
-    public IReadOnlyList<LAuthor> LAuthorReferenceRead(string referenceId)
+    public IReadOnlyList<LAuthor> LAuthorReferenceRead(long referenceId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
 
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -62,7 +62,7 @@ public sealed class LAuthorArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            authors.Add(new LAuthor(reader.GetString(0), reader.GetString(1)));
+            authors.Add(new LAuthor(reader.GetInt64(0), reader.GetString(1)));
         }
 
         return authors;
@@ -78,13 +78,13 @@ public sealed class LAuthorArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            authors.Add(new LAuthor(reader.GetString(0), reader.GetString(1)));
+            authors.Add(new LAuthor(reader.GetInt64(0), reader.GetString(1)));
         }
 
         return authors;
     }
 
-    public IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> LAuthorReferenceRead()
+    public IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> LAuthorReferenceRead()
     {
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -96,18 +96,18 @@ public sealed class LAuthorArchive
             ORDER BY link.source_id, link.position;
             """;
 
-        Dictionary<string, IReadOnlyList<LAuthor>> credits = [];
+        Dictionary<long, IReadOnlyList<LAuthor>> credits = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            string reference = reader.GetString(0);
+            long reference = reader.GetInt64(0);
             if (credits.TryGetValue(reference, out IReadOnlyList<LAuthor>? held))
             {
-                ((List<LAuthor>)held).Add(new LAuthor(reader.GetString(1), reader.GetString(2)));
+                ((List<LAuthor>)held).Add(new LAuthor(reader.GetInt64(1), reader.GetString(2)));
                 continue;
             }
 
-            credits[reference] = new List<LAuthor> { new(reader.GetString(1), reader.GetString(2)) };
+            credits[reference] = new List<LAuthor> { new(reader.GetInt64(1), reader.GetString(2)) };
         }
 
         return credits;
@@ -116,7 +116,7 @@ public sealed class LAuthorArchive
     public void LAuthorUpdate(LAuthor author)
     {
         ArgumentNullException.ThrowIfNull(author);
-        ArgumentException.ThrowIfNullOrWhiteSpace(author.LAuthorId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(author.LAuthorId);
         ArgumentException.ThrowIfNullOrWhiteSpace(author.LAuthorName);
 
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
@@ -134,14 +134,14 @@ public sealed class LAuthorArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LAuthorDelete(string id)
+    public void LAuthorDelete(long id)
     {
         LAuthorDelete(id, false);
     }
 
-    public void LAuthorDelete(string id, bool detach)
+    public void LAuthorDelete(long id, bool detach)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -173,9 +173,9 @@ public sealed class LAuthorArchive
         session.LDatabaseSessionCommit();
     }
 
-    private static void LAuthorCreditClear(SqliteConnection connection, string id)
+    private static void LAuthorCreditClear(SqliteConnection connection, long id)
     {
-        List<string> references = [];
+        List<long> references = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = "SELECT source_id FROM source_author WHERE author_id = $id;";
@@ -183,7 +183,7 @@ public sealed class LAuthorArchive
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                references.Add(reader.GetString(0));
+                references.Add(reader.GetInt64(0));
             }
         }
 
@@ -195,7 +195,7 @@ public sealed class LAuthorArchive
         }
 
         const string scope = "source_id = $owner";
-        foreach (string reference in references)
+        foreach (long reference in references)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
                 connection,
@@ -207,7 +207,7 @@ public sealed class LAuthorArchive
         }
     }
 
-    private static LAuthor? LAuthorSingleRead(SqliteConnection connection, string id)
+    private static LAuthor? LAuthorSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT name FROM author WHERE id = $id;";

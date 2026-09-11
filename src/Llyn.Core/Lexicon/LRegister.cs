@@ -1,10 +1,11 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRegister(
-    string LRegisterId,
+    long LRegisterId,
     LStateValue LRegisterName,
     string LRegisterLanguage,
-    bool LRegisterBuiltin)
+    bool LRegisterBuiltin,
+    string? LRegisterPackKey = null)
 {
     public LStateValue LRegisterName { get; init; } = LRegisterName ?? LStateValue.LStateValueUnspecified;
 

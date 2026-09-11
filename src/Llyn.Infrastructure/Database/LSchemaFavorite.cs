@@ -14,7 +14,7 @@ public static class LSchemaFavorite
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS favorite (
-                entry_id TEXT NOT NULL PRIMARY KEY,
+                entry_id INTEGER NOT NULL PRIMARY KEY,
                 marked_utc TEXT NOT NULL,
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
             );

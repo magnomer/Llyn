@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Llyn.Core;
@@ -16,43 +16,42 @@ public sealed class LTranslationArchive
         _lTranslationArchiveDatabase = database;
     }
 
-    public IReadOnlyList<LTranslation> LTranslationMeaningRead(string meaningId)
+    public IReadOnlyList<LTranslation> LTranslationMeaningRead(long meaningId)
     {
         return LTranslationReferrerRead("sense_translation", "sense_id", meaningId);
     }
 
-    public IReadOnlyList<LTranslation> LTranslationCollocationRead(string collocationId)
+    public IReadOnlyList<LTranslation> LTranslationCollocationRead(long collocationId)
     {
         return LTranslationReferrerRead("collocation_translation", "collocation_id", collocationId);
     }
 
-    public void LTranslationMeaningSave(string meaningId, IReadOnlyList<LTranslation> translations)
+    public void LTranslationMeaningSave(long meaningId, IReadOnlyList<LTranslation> translations)
     {
         LTranslationReferrerSave("sense_translation", "sense_id", meaningId, translations);
     }
 
     public void LTranslationCollocationSave(
-        string collocationId, IReadOnlyList<LTranslation> translations)
+        long collocationId, IReadOnlyList<LTranslation> translations)
     {
         LTranslationReferrerSave(
             "collocation_translation", "collocation_id", collocationId, translations);
     }
 
-    public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<string> ids)
+    public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<long> ids)
     {
         ArgumentNullException.ThrowIfNull(ids);
 
-        List<string> wanted = [];
-        HashSet<string> written = new(StringComparer.Ordinal);
-        foreach (string id in ids)
+        List<long> wanted = [];
+        HashSet<long> written = [];
+        foreach (long id in ids)
         {
-            string trimmed = (id ?? string.Empty).Trim();
-            if (trimmed.Length == 0 || !written.Add(trimmed))
+            if (id == 0 || !written.Add(id))
             {
                 continue;
             }
 
-            wanted.Add(trimmed);
+            wanted.Add(id);
         }
 
         if (wanted.Count == 0)
@@ -83,18 +82,18 @@ public sealed class LTranslationArchive
             WHERE entry.id IN ({placeholders});
             """;
 
-        Dictionary<string, LTranslationTarget> found = new(StringComparer.Ordinal);
+        Dictionary<long, LTranslationTarget> found = [];
         using (SqliteDataReader reader = command.ExecuteReader())
         {
             while (reader.Read())
             {
-                found[reader.GetString(0)] = new LTranslationTarget(
-                    reader.GetString(0), reader.GetString(1), reader.GetString(2));
+                found[reader.GetInt64(0)] = new LTranslationTarget(
+                    reader.GetInt64(0), reader.GetString(1), reader.GetString(2));
             }
         }
 
         List<LTranslationTarget> targets = [];
-        foreach (string id in wanted)
+        foreach (long id in wanted)
         {
             if (found.TryGetValue(id, out LTranslationTarget? target))
             {
@@ -105,9 +104,9 @@ public sealed class LTranslationArchive
         return targets;
     }
 
-    public IReadOnlyList<LUsage> LTranslationIncomingRead(string entryId)
+    public IReadOnlyList<LUsage> LTranslationIncomingRead(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lTranslationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -148,7 +147,7 @@ public sealed class LTranslationArchive
 
     private static IReadOnlyList<LUsage> LTranslationIncomingRead(
         SqliteConnection connection,
-        string entryId,
+        long entryId,
         LOwner owner,
         string statement)
     {
@@ -167,9 +166,9 @@ public sealed class LTranslationArchive
             }
 
             usages.Add(new LUsage(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 owner,
-                reader.GetString(1),
+                reader.GetInt64(1),
                 reader.GetString(2),
                 reader.GetString(3),
                 title));
@@ -182,11 +181,11 @@ public sealed class LTranslationArchive
         SqliteConnection connection,
         string table,
         string column,
-        string owner,
-        IReadOnlyList<string> entryIds)
+        long owner,
+        IReadOnlyList<long> entryIds)
     {
         int position = 0;
-        foreach (string entryId in entryIds)
+        foreach (long entryId in entryIds)
         {
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
@@ -200,9 +199,9 @@ public sealed class LTranslationArchive
     }
 
     private void LTranslationReferrerSave(
-        string table, string column, string referrerId, IReadOnlyList<LTranslation> translations)
+        string table, string column, long referrerId, IReadOnlyList<LTranslation> translations)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
         ArgumentNullException.ThrowIfNull(translations);
 
         using LDatabaseSession session = _lTranslationArchiveDatabase.LDatabaseSessionStart();
@@ -215,13 +214,13 @@ public sealed class LTranslationArchive
             cleared.ExecuteNonQuery();
         }
 
-        List<string> entryIds = [];
-        HashSet<string> written = new(StringComparer.Ordinal);
+        List<long> entryIds = [];
+        HashSet<long> written = [];
         foreach (LTranslation translation in translations)
         {
             ArgumentNullException.ThrowIfNull(translation);
-            string entryId = translation.LTranslationEntryId.Trim();
-            if (entryId.Length == 0 || !written.Add(entryId))
+            long entryId = translation.LTranslationEntryId;
+            if (entryId == 0 || !written.Add(entryId))
             {
                 continue;
             }
@@ -235,9 +234,9 @@ public sealed class LTranslationArchive
     }
 
     private IReadOnlyList<LTranslation> LTranslationReferrerRead(
-        string table, string column, string referrerId)
+        string table, string column, long referrerId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referrerId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referrerId);
 
         using LDatabaseSession session = _lTranslationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -249,7 +248,7 @@ public sealed class LTranslationArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            translations.Add(new LTranslation(reader.GetString(0), reader.GetInt32(1)));
+            translations.Add(new LTranslation(reader.GetInt64(0), reader.GetInt32(1)));
         }
 
         return translations;

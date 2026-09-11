@@ -18,7 +18,7 @@ public sealed class LMeaningArchive
     public LMeaning LMeaningCreate(LMeaning meaning)
     {
         ArgumentNullException.ThrowIfNull(meaning);
-        ArgumentException.ThrowIfNullOrWhiteSpace(meaning.LMeaningEntryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(meaning.LMeaningEntryId);
 
         using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -27,7 +27,6 @@ public sealed class LMeaningArchive
 
         LMeaning stored = meaning with
         {
-            LMeaningId = LIdentity.LIdentityCreate(),
             LMeaningPosition = LMeaningSiblingRead(connection, meaning.LMeaningEntryId, meaning.LMeaningParentId).Count,
         };
 
@@ -36,13 +35,13 @@ public sealed class LMeaningArchive
             command.CommandText =
                 """
                 INSERT INTO sense (
-                    id, entry_id, parent_id, position, title_state, title, gloss,
+                    entry_id, parent_id, position, title_state, title, gloss,
                     definition_language, definition_state, definition, labels)
                 VALUES (
-                    $id, $entry, $parent, $position, $titleState, $title, $gloss,
-                    $language, $definitionState, $definition, $labels);
+                    $entry, $parent, $position, $titleState, $title, $gloss,
+                    $language, $definitionState, $definition, $labels)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LMeaningId);
             command.Parameters.AddWithValue("$entry", stored.LMeaningEntryId);
             command.Parameters.AddWithValue("$parent", (object?)stored.LMeaningParentId ?? DBNull.Value);
             command.Parameters.AddWithValue("$position", stored.LMeaningPosition);
@@ -51,16 +50,16 @@ public sealed class LMeaningArchive
             command.Parameters.AddWithValue("$language", (object?)stored.LMeaningDefinitionLanguage ?? DBNull.Value);
             LStateColumn.LStateColumnApply(command, "definition", stored.LMeaningDefinition);
             command.Parameters.AddWithValue("$labels", stored.LMeaningLabels);
-            command.ExecuteNonQuery();
+            stored = stored with { LMeaningId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public IReadOnlyList<LMeaning> LMeaningRead(string entryId)
+    public IReadOnlyList<LMeaning> LMeaningRead(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -83,9 +82,9 @@ public sealed class LMeaningArchive
         return meanings;
     }
 
-    public LMeaning? LMeaningSingleRead(string id)
+    public LMeaning? LMeaningSingleRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -132,7 +131,7 @@ public sealed class LMeaningArchive
     public void LMeaningUpdate(LMeaning meaning)
     {
         ArgumentNullException.ThrowIfNull(meaning);
-        ArgumentException.ThrowIfNullOrWhiteSpace(meaning.LMeaningId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(meaning.LMeaningId);
 
         using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -160,20 +159,20 @@ public sealed class LMeaningArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LMeaningParentUpdate(string id, string? parentId)
+    public void LMeaningParentUpdate(long id, long? parentId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        (string? entryId, string? held) = LMeaningHolderRead(connection, id);
+        (long? entryId, long? held) = LMeaningHolderRead(connection, id);
         if (entryId is null)
         {
             throw new InvalidOperationException($"No Meaning carries the id '{id}'.");
         }
 
-        if (string.Equals(held, parentId, StringComparison.Ordinal))
+        if (held == parentId)
         {
             return;
         }
@@ -198,34 +197,34 @@ public sealed class LMeaningArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LMeaningMove(string id, int position)
+    public void LMeaningMove(long id, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        (string? entryId, string? parentId) = LMeaningHolderRead(connection, id);
+        (long? entryId, long? parentId) = LMeaningHolderRead(connection, id);
         if (entryId is null)
         {
             return;
         }
 
-        IReadOnlyList<string> siblings = LMeaningSiblingRead(connection, entryId, parentId);
-        IReadOnlyList<string> moved = LDatabaseOrder.LDatabaseOrderInsert(siblings, id, position);
+        IReadOnlyList<long> siblings = LMeaningSiblingRead(connection, entryId, parentId);
+        IReadOnlyList<long> moved = LDatabaseOrder.LDatabaseOrderInsert(siblings, id, position);
         LMeaningSiblingNormalize(connection, entryId, parentId, moved);
 
         session.LDatabaseSessionCommit();
     }
 
-    public void LMeaningDelete(string id)
+    public void LMeaningDelete(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        (string? entryId, string? parentId) = LMeaningHolderRead(connection, id);
+        (long? entryId, long? parentId) = LMeaningHolderRead(connection, id);
 
         LMeaningLinkValidate(connection, id);
         LMeaningLinkClear(connection, id);
@@ -254,7 +253,7 @@ public sealed class LMeaningArchive
         )
         """;
 
-    private static (string? LMeaningEntry, string? LMeaningParent) LMeaningHolderRead(SqliteConnection connection, string id)
+    private static (long? LMeaningEntry, long? LMeaningParent) LMeaningHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT entry_id, parent_id FROM sense WHERE id = $id;";
@@ -266,11 +265,11 @@ public sealed class LMeaningArchive
             return (null, null);
         }
 
-        return (reader.GetString(0), reader.IsDBNull(1) ? null : reader.GetString(1));
+        return (reader.GetInt64(0), reader.IsDBNull(1) ? null : reader.GetInt64(1));
     }
 
-    private static IReadOnlyList<string> LMeaningSiblingRead(
-        SqliteConnection connection, string entryId, string? parentId)
+    private static IReadOnlyList<long> LMeaningSiblingRead(
+        SqliteConnection connection, long? entryId, long? parentId)
     {
         return parentId is null
             ? LDatabaseOrder.LDatabaseOrderRead(
@@ -280,7 +279,7 @@ public sealed class LMeaningArchive
     }
 
     private static void LMeaningSiblingNormalize(
-        SqliteConnection connection, string entryId, string? parentId, IReadOnlyList<string> order)
+        SqliteConnection connection, long? entryId, long? parentId, IReadOnlyList<long> order)
     {
         if (parentId is null)
         {
@@ -293,7 +292,7 @@ public sealed class LMeaningArchive
             connection, "sense", "parent_id = $owner", parentId, "id", order);
     }
 
-    private static void LMeaningLinkValidate(SqliteConnection connection, string id)
+    private static void LMeaningLinkValidate(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -317,7 +316,7 @@ public sealed class LMeaningArchive
         }
     }
 
-    private static void LMeaningLinkClear(SqliteConnection connection, string id)
+    private static void LMeaningLinkClear(SqliteConnection connection, long id)
     {
         string[] tables = ["relation_entry", "relation_sense"];
         foreach (string table in tables)
@@ -336,7 +335,7 @@ public sealed class LMeaningArchive
     }
 
     private static void LMeaningCycleValidate(
-        SqliteConnection connection, string id, string? parentId)
+        SqliteConnection connection, long id, long? parentId)
     {
         if (parentId is null)
         {
@@ -359,7 +358,7 @@ public sealed class LMeaningArchive
         }
     }
 
-    private static void LMeaningParentValidate(SqliteConnection connection, string entryId, string? parentId)
+    private static void LMeaningParentValidate(SqliteConnection connection, long? entryId, long? parentId)
     {
         if (parentId is null)
         {
@@ -381,9 +380,9 @@ public sealed class LMeaningArchive
     private static LMeaning LMeaningRowRead(SqliteDataReader reader)
     {
         return new LMeaning(
-            reader.GetString(0),
-            reader.GetString(1),
-            reader.IsDBNull(2) ? null : reader.GetString(2),
+            reader.GetInt64(0),
+            reader.GetInt64(1),
+            reader.IsDBNull(2) ? null : reader.GetInt64(2),
             reader.GetInt32(3),
             LStateColumn.LStateColumnRead(reader, 4),
             reader.IsDBNull(6) ? null : reader.GetString(6),

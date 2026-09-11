@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -47,17 +47,18 @@ public static class LRegisterLoader
         List<LRegister> values = [];
         foreach (JsonElement register in registers.EnumerateArray())
         {
-            string? id = LRegisterTextRead(register, "id");
-            if (id is null)
+            string? key = LRegisterTextRead(register, "id");
+            if (key is null)
             {
                 continue;
             }
 
             values.Add(new LRegister(
-                $"{language}.{id}",
-                LStateValue.LStateValueRead(LRegisterTextRead(register, "name") ?? id),
+                0,
+                LStateValue.LStateValueRead(LRegisterTextRead(register, "name") ?? key),
                 language,
-                true));
+                true,
+                key));
         }
 
         return values;

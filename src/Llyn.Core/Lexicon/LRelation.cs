@@ -1,11 +1,11 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LRelation(
-    string LRelationId,
-    string LRelationMeaningId,
+    long LRelationId,
+    long LRelationMeaningId,
     int LRelationPosition,
     string LRelationType,
     string? LRelationLabel,
     string? LRelationLabels,
-    string? LRelationTargetEntry,
-    string? LRelationTargetMeaning);
+    long? LRelationTargetEntry,
+    long? LRelationTargetMeaning);

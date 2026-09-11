@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public IReadOnlyList<LRegister> LEngineRegisterRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LRegister> LEngineRegisterRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -57,7 +57,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(query);
 
             LRegisterArchive archive = new(_lEngineDatabase);
-            IReadOnlyDictionary<string, int> counts = archive.LRegisterReferenceRead();
+            IReadOnlyDictionary<long, int> counts = archive.LRegisterReferenceRead();
 
             string written = query.Trim();
             List<LCatalogRegister> found = [];
@@ -75,11 +75,11 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineRegisterChange(string registerId, string renamed)
+    public void LEngineRegisterChange(long registerId, string renamed)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(registerId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
             ArgumentNullException.ThrowIfNull(renamed);
 
             new LRegisterArchive(_lEngineDatabase).LRegisterNameUpdate(
@@ -89,11 +89,11 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
     }
 
-    public void LEngineRegisterDelete(string registerId)
+    public void LEngineRegisterDelete(long registerId)
     {
         lock (_lEngineGate)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(registerId);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
             new LRegisterArchive(_lEngineDatabase).LRegisterDelete(registerId, true);
         }
 
@@ -112,7 +112,7 @@ public sealed partial class LEngine
     }
 
     private void LEngineRegisterSync(
-        string ownerId, IReadOnlyList<LRegisterDraft> drafts, string language, bool collocation)
+        long ownerId, IReadOnlyList<LRegisterDraft> drafts, string language, bool collocation)
     {
         LEngineRegisterCreate(language);
 
@@ -122,11 +122,11 @@ public sealed partial class LEngine
             ? registers.LRegisterCollocationRead(ownerId)
             : registers.LRegisterMeaningRead(ownerId);
 
-        List<string> targets = [];
-        HashSet<string> kept = new(StringComparer.Ordinal);
+        List<long> targets = [];
+        HashSet<long> kept = [];
         foreach (LRegisterDraft draft in LEngineRegisterRead(drafts))
         {
-            string id = LEngineRegisterResolve(registers, draft);
+            long id = LEngineRegisterResolve(registers, draft);
             if (!kept.Add(id))
             {
                 continue;
@@ -164,16 +164,16 @@ public sealed partial class LEngine
     }
 
     private void LEngineRegisterAttach(
-        string ownerId, IReadOnlyList<LRegisterDraft> drafts, string language, bool collocation)
+        long ownerId, IReadOnlyList<LRegisterDraft> drafts, string language, bool collocation)
     {
         LEngineRegisterCreate(language);
 
         LRegisterArchive registers = new(_lEngineDatabase);
         int position = 0;
-        HashSet<string> attached = new(StringComparer.Ordinal);
+        HashSet<long> attached = [];
         foreach (LRegisterDraft draft in LEngineRegisterRead(drafts))
         {
-            string registerId = LEngineRegisterResolve(registers, draft);
+            long registerId = LEngineRegisterResolve(registers, draft);
             if (!attached.Add(registerId))
             {
                 continue;
@@ -203,8 +203,7 @@ public sealed partial class LEngine
         for (int index = 0; index < one.Count; index++)
         {
             if (one[index].LRegisterDraftName != other[index].LRegisterDraftName
-                || !string.Equals(
-                    one[index].LRegisterDraftId, other[index].LRegisterDraftId, StringComparison.Ordinal))
+                || one[index].LRegisterDraftId != other[index].LRegisterDraftId)
             {
                 return false;
             }
@@ -224,9 +223,9 @@ public sealed partial class LEngine
         }
     }
 
-    private static string LEngineRegisterResolve(LRegisterArchive registers, LRegisterDraft draft)
+    private static long LEngineRegisterResolve(LRegisterArchive registers, LRegisterDraft draft)
     {
-        if (!string.IsNullOrWhiteSpace(draft.LRegisterDraftId))
+        if (draft.LRegisterDraftId > 0)
         {
             LRegister? stored = registers.LRegisterRead(draft.LRegisterDraftId);
             if (stored is not null)
@@ -253,7 +252,7 @@ public sealed partial class LEngine
         }
 
         return registers.LRegisterCreate(new LRegister(
-            string.Empty,
+                0,
             draft.LRegisterDraftName,
             draft.LRegisterDraftLanguage,
             draft.LRegisterDraftBuiltin)).LRegisterId;

@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -19,22 +20,22 @@ public static class LDraftArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(draft);
-        ArgumentException.ThrowIfNullOrWhiteSpace(draft.LDraftId);
+        ArgumentOutOfRangeException.ThrowIfZero(draft.LDraftId);
 
         string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
-        string pending = Path.Combine(folder, draft.LDraftId + LDraftArchivePending);
-        string path = Path.Combine(folder, draft.LDraftId + LDraftArchiveExtension);
+        string pending = Path.Combine(folder, draft.LDraftId.ToString(CultureInfo.InvariantCulture) + LDraftArchivePending);
+        string path = Path.Combine(folder, draft.LDraftId.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
 
         File.WriteAllText(pending, JsonSerializer.Serialize(draft, LDraftArchiveIndent));
         File.Move(pending, path, true);
     }
 
-    public static LDraft? LDraftArchiveRead(string root, string id)
+    public static LDraft? LDraftArchiveRead(string root, long id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceDraftRead(root), id + LDraftArchiveExtension);
+        string path = Path.Combine(LWorkspaceRoot.LWorkspaceDraftRead(root), id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
         return LDraftArchiveLoad(path);
     }
 
@@ -75,12 +76,12 @@ public static class LDraftArchive
         return drafts;
     }
 
-    public static void LDraftArchiveDelete(string root, string id)
+    public static void LDraftArchiveDelete(string root, long id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceDraftRead(root), id + LDraftArchiveExtension);
+        string path = Path.Combine(LWorkspaceRoot.LWorkspaceDraftRead(root), id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
         try
         {
             File.Delete(path);

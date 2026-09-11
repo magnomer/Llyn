@@ -178,7 +178,7 @@ public partial class PEditor
         PEditorChangeDefer();
     }
 
-    private void PLinkCourtDelete(string id)
+    private void PLinkCourtDelete(long id)
     {
         if (_pEditorDraft.Length == 0)
         {

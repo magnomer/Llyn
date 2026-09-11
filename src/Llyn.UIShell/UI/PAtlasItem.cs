@@ -15,7 +15,7 @@ internal sealed class PAtlasItem : INotifyPropertyChanged
         PAtlasItemCount = usage.ToString(System.Globalization.CultureInfo.CurrentCulture);
     }
 
-    public string PAtlasItemId { get; }
+    public long PAtlasItemId { get; }
 
     public string PAtlasItemTitle { get; }
 

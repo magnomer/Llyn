@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -19,22 +20,22 @@ public static class LCourtArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(link);
-        ArgumentException.ThrowIfNullOrWhiteSpace(link.LCourtLinkId);
+        ArgumentOutOfRangeException.ThrowIfZero(link.LCourtLinkId);
 
         string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
-        string pending = Path.Combine(folder, link.LCourtLinkId + LCourtArchivePending);
-        string path = Path.Combine(folder, link.LCourtLinkId + LCourtArchiveExtension);
+        string pending = Path.Combine(folder, link.LCourtLinkId.ToString(CultureInfo.InvariantCulture) + LCourtArchivePending);
+        string path = Path.Combine(folder, link.LCourtLinkId.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
 
         File.WriteAllText(pending, JsonSerializer.Serialize(link, LCourtArchiveIndent));
         File.Move(pending, path, true);
     }
 
-    public static LCourtLink? LCourtArchiveRead(string root, string id)
+    public static LCourtLink? LCourtArchiveRead(string root, long id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceCourtRead(root), id + LCourtArchiveExtension);
+        string path = Path.Combine(LWorkspaceRoot.LWorkspaceCourtRead(root), id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
         return LCourtArchiveLoad(path);
     }
 
@@ -75,12 +76,12 @@ public static class LCourtArchive
         return links;
     }
 
-    public static void LCourtArchiveDelete(string root, string id)
+    public static void LCourtArchiveDelete(string root, long id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceCourtRead(root), id + LCourtArchiveExtension);
+        string path = Path.Combine(LWorkspaceRoot.LWorkspaceCourtRead(root), id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
         try
         {
             File.Delete(path);
@@ -93,15 +94,15 @@ public static class LCourtArchive
         }
     }
 
-    public static IReadOnlyList<LCourtLink> LCourtArchiveSettle(string root, string draftId)
+    public static IReadOnlyList<LCourtLink> LCourtArchiveSettle(string root, long draftId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(draftId);
+        ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         List<LCourtLink> settled = [];
         foreach (LCourtLink link in LCourtArchiveScan(root))
         {
-            if (!string.Equals(link.LCourtLinkTarget, draftId, StringComparison.Ordinal))
+            if (link.LCourtLinkTarget != draftId)
             {
                 continue;
             }

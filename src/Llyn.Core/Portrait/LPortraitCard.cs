@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -22,7 +22,7 @@ public sealed record LPortraitCard(
         string kind,
         LSentenceOrder order,
         string mark,
-        IReadOnlyDictionary<string, LPortraitLink> targets)
+        IReadOnlyDictionary<long, LPortraitLink> targets)
     {
         ArgumentNullException.ThrowIfNull(cards);
         ArgumentNullException.ThrowIfNull(targets);
@@ -46,7 +46,7 @@ public sealed record LPortraitCard(
             }
 
             List<LPortraitLink> links = new List<LPortraitLink>();
-            foreach (string id in card.LCardDraftTranslation)
+            foreach (long id in card.LCardDraftTranslation)
             {
                 if (targets.TryGetValue(id, out LPortraitLink? link))
                 {

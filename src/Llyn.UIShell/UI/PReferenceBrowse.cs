@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -15,9 +15,9 @@ public partial class PReference
 
     private readonly ObservableCollection<PFootnoteItem> _pFootnoteList = [];
 
-    private IReadOnlyDictionary<string, int> _pShelfCount = new Dictionary<string, int>();
+    private IReadOnlyDictionary<long, int> _pShelfCount = new Dictionary<string, int>();
 
-    private IReadOnlyDictionary<string, IReadOnlyList<LAuthor>> _pShelfCredit =
+    private IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> _pShelfCredit =
         new Dictionary<string, IReadOnlyList<LAuthor>>();
 
     private string? _pColophonReference;
@@ -62,7 +62,7 @@ public partial class PReference
         PShelfFind(PSurvey.Text ?? string.Empty);
     }
 
-    internal IReadOnlyList<LAuthor> PShelfCreditRead(string id)
+    internal IReadOnlyList<LAuthor> PShelfCreditRead(long id)
     {
         return _pShelfCredit.TryGetValue(id, out IReadOnlyList<LAuthor>? credits) ? credits : PShelfNobody;
     }
@@ -74,7 +74,7 @@ public partial class PReference
         {
             foreach (LAuthor written in credits)
             {
-                if (string.Equals(written.LAuthorId, author, StringComparison.Ordinal))
+                if (written.LAuthorId == author)
                 {
                     reach++;
                     break;
@@ -101,17 +101,17 @@ public partial class PReference
         return true;
     }
 
-    internal int PShelfCountRead(string id)
+    internal int PShelfCountRead(long id)
     {
         return _pShelfCount.TryGetValue(id, out int usage) ? usage : 0;
     }
 
-    private void PShelfSelect(string? id)
+    private void PShelfSelect(long? id)
     {
         foreach (PShelfItem item in _pShelfList)
         {
             item.PShelfItemChosen = id is not null
-                && string.Equals(item.PShelfItemId, id, StringComparison.Ordinal);
+                && item.PShelfItemId == id;
         }
     }
 
@@ -169,7 +169,7 @@ public partial class PReference
         PReferenceShow(item.PShelfItemId);
     }
 
-    internal void PReferenceShow(string id)
+    internal void PReferenceShow(long id)
     {
         LReference? reference;
         try
@@ -241,7 +241,7 @@ public partial class PReference
             credits.Count == 0 ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void PFootnoteFind(string id)
+    private void PFootnoteFind(long id)
     {
         IReadOnlyList<LUsage> read;
         try

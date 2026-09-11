@@ -19,12 +19,7 @@ public sealed class LExampleArchive
     {
         ArgumentNullException.ThrowIfNull(example);
 
-        LExample stored = example with
-        {
-            LExampleId = string.IsNullOrWhiteSpace(example.LExampleId)
-                ? LIdentity.LIdentityCreate()
-                : example.LExampleId,
-        };
+        LExample stored = example;
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -34,18 +29,18 @@ public sealed class LExampleArchive
             command.CommandText =
                 """
                 INSERT INTO example (
-                    id, language, text_state, text, translation_state, translation,
+                    language, text_state, text, translation_state, translation,
                     source_state, source_id)
                 VALUES (
-                    $id, $language, $textState, $text, $translationState, $translation,
-                    $sourceState, $source);
+                    $language, $textState, $text, $translationState, $translation,
+                    $sourceState, $source)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LExampleId);
             command.Parameters.AddWithValue("$language", stored.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", stored.LExampleText);
             LStateColumn.LStateColumnApply(command, "translation", stored.LExampleTranslation);
             LStateColumn.LStateColumnApply(command, "source", stored.LExampleSource);
-            command.ExecuteNonQuery();
+            stored = stored with { LExampleId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
@@ -53,9 +48,9 @@ public sealed class LExampleArchive
         return stored;
     }
 
-    public LExample? LExampleRead(string id)
+    public LExample? LExampleRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         return LExampleSingleRead(session.LDatabaseSessionConnection, id);
@@ -80,11 +75,11 @@ public sealed class LExampleArchive
         while (reader.Read())
         {
             examples.Add(new LExample(
-                reader.GetString(0),
+                reader.GetInt64(0),
                 reader.GetString(1),
                 LStateColumn.LStateColumnRead(reader, 2),
                 LStateColumn.LStateColumnRead(reader, 4),
-                LStateColumn.LStateColumnRead(reader, 6)));
+                LStateColumn.LStateColumnAnchorRead(reader, 6)));
         }
 
         return examples;
@@ -93,7 +88,7 @@ public sealed class LExampleArchive
     public void LExampleUpdate(LExample example)
     {
         ArgumentNullException.ThrowIfNull(example);
-        ArgumentException.ThrowIfNullOrWhiteSpace(example.LExampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(example.LExampleId);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -122,9 +117,9 @@ public sealed class LExampleArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LExampleTextUpdate(string exampleId, LStateValue text)
+    public void LExampleTextUpdate(long exampleId, LStateValue text)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
         ArgumentNullException.ThrowIfNull(text);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
@@ -143,9 +138,9 @@ public sealed class LExampleArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LExampleSourceUpdate(string exampleId, LStateValue source)
+    public void LExampleSourceUpdate(long exampleId, LStateAnchor source)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
         ArgumentNullException.ThrowIfNull(source);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
@@ -164,15 +159,15 @@ public sealed class LExampleArchive
         session.LDatabaseSessionCommit();
     }
 
-    public int LExampleReferenceRead(string id)
+    public int LExampleReferenceRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         return LExampleReferenceRead(session.LDatabaseSessionConnection, id);
     }
 
-    private static int LExampleReferenceRead(SqliteConnection connection, string id)
+    private static int LExampleReferenceRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -185,7 +180,7 @@ public sealed class LExampleArchive
         return Convert.ToInt32(command.ExecuteScalar());
     }
 
-    public IReadOnlyDictionary<string, int> LExampleReferenceRead()
+    public IReadOnlyDictionary<long, int> LExampleReferenceRead()
     {
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -199,24 +194,24 @@ public sealed class LExampleArchive
             GROUP BY example_id;
             """;
 
-        Dictionary<string, int> counts = [];
+        Dictionary<long, int> counts = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            counts[reader.GetString(0)] = reader.GetInt32(1);
+            counts[reader.GetInt64(0)] = reader.GetInt32(1);
         }
 
         return counts;
     }
 
-    public void LExampleDelete(string id)
+    public void LExampleDelete(long id)
     {
         LExampleDelete(id, false);
     }
 
-    public void LExampleDelete(string id, bool detach)
+    public void LExampleDelete(long id, bool detach)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -243,7 +238,7 @@ public sealed class LExampleArchive
         session.LDatabaseSessionCommit();
     }
 
-    internal static LExample? LExampleSingleRead(SqliteConnection connection, string id)
+    internal static LExample? LExampleSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -264,6 +259,6 @@ public sealed class LExampleArchive
             reader.GetString(0),
             LStateColumn.LStateColumnRead(reader, 1),
             LStateColumn.LStateColumnRead(reader, 3),
-            LStateColumn.LStateColumnRead(reader, 5));
+            LStateColumn.LStateColumnAnchorRead(reader, 5));
     }
 }

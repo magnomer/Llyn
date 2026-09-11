@@ -246,11 +246,11 @@ public partial class PEditor
     }
 
     private static PCard? PCardFind(
-        ObservableCollection<PCard> list, List<PCard> shown, string id)
+        ObservableCollection<PCard> list, List<PCard> shown, long id)
     {
         foreach (PCard card in list)
         {
-            if (string.Equals(card.PCardId, id, StringComparison.Ordinal) && !shown.Contains(card))
+            if (card.PCardId == id && !shown.Contains(card))
             {
                 return card;
             }

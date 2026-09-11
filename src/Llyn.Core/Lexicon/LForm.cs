@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LForm(
-    string LFormEntryId,
+    long LFormEntryId,
     int LFormPosition,
     string LFormText,
     string? LFormLocal,

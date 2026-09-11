@@ -1,10 +1,10 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace Llyn.UIShell;
 
 internal sealed class PCandidateItem
 {
-    internal PCandidateItem(string id, string title, int usage, string word)
+    internal PCandidateItem(long id, string title, int usage, string word)
     {
         PCandidateItemId = id;
         PCandidateItemTitle = title;
@@ -31,7 +31,7 @@ internal sealed class PCandidateItem
         PCandidateItemTail = title[(found + size)..];
     }
 
-    public string PCandidateItemId { get; }
+    public long PCandidateItemId { get; }
 
     public string PCandidateItemTitle { get; }
 

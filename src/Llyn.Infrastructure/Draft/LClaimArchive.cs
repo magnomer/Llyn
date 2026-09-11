@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -17,9 +18,9 @@ public static class LClaimArchive
 
     private static readonly JsonSerializerOptions LClaimArchiveIndent = new() { WriteIndented = true };
 
-    public static LClaim LClaimArchiveCreate(string draftId)
+    public static LClaim LClaimArchiveCreate(long draftId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(draftId);
+        ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         using Process running = Process.GetCurrentProcess();
         return new LClaim(draftId, running.Id, new DateTimeOffset(running.StartTime.ToUniversalTime()));
@@ -29,20 +30,20 @@ public static class LClaimArchive
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(claim);
-        ArgumentException.ThrowIfNullOrWhiteSpace(claim.LClaimDraft);
+        ArgumentOutOfRangeException.ThrowIfZero(claim.LClaimDraft);
 
         string folder = LWorkspaceRoot.LWorkspaceClaimRead(root);
-        string pending = Path.Combine(folder, claim.LClaimDraft + LClaimArchivePending);
-        string path = Path.Combine(folder, claim.LClaimDraft + LClaimArchiveExtension);
+        string pending = Path.Combine(folder, claim.LClaimDraft.ToString(CultureInfo.InvariantCulture) + LClaimArchivePending);
+        string path = Path.Combine(folder, claim.LClaimDraft.ToString(CultureInfo.InvariantCulture) + LClaimArchiveExtension);
 
         File.WriteAllText(pending, JsonSerializer.Serialize(claim, LClaimArchiveIndent));
         File.Move(pending, path, true);
     }
 
-    public static LClaim? LClaimArchiveRead(string root, string draftId)
+    public static LClaim? LClaimArchiveRead(string root, long draftId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(draftId);
+        ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         string path = Path.Combine(
             LWorkspaceRoot.LWorkspaceClaimRead(root), draftId + LClaimArchiveExtension);
@@ -86,10 +87,10 @@ public static class LClaimArchive
         return claims;
     }
 
-    public static void LClaimArchiveDelete(string root, string draftId)
+    public static void LClaimArchiveDelete(string root, long draftId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(draftId);
+        ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         string path = Path.Combine(
             LWorkspaceRoot.LWorkspaceClaimRead(root), draftId + LClaimArchiveExtension);
@@ -105,10 +106,10 @@ public static class LClaimArchive
         }
     }
 
-    public static bool LClaimArchiveCheck(string root, string draftId)
+    public static bool LClaimArchiveCheck(string root, long draftId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
-        ArgumentException.ThrowIfNullOrWhiteSpace(draftId);
+        ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
         LClaim? claim = LClaimArchiveRead(root, draftId);
         if (claim is null)

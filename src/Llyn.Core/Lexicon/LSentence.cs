@@ -1,8 +1,8 @@
 ﻿namespace Llyn.Core;
 
 public sealed record LSentence(
-    string LSentenceId,
-    string LSentenceOwnerId,
+    long LSentenceId,
+    long LSentenceOwnerId,
     int LSentencePosition,
     LExample? LSentenceExample,
     LStateValue LSentenceParticle,

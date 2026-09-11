@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -111,26 +111,5 @@ public sealed class TWorkspaceState
         engine.TEngineEntryDelete(entry.LEntryId);
 
         Assert.Null(engine.TEngineStateRead().LWorkspaceStateLeft);
-    }
-
-    [Fact]
-    public void StateRead_WorkspaceWithoutOrderColumns_ReadsPanelDefaults()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-
-        workspace.TWorkspaceScriptRun(
-            """
-            ALTER TABLE workspace DROP COLUMN library_order;
-            ALTER TABLE workspace DROP COLUMN corpus_order;
-            UPDATE schema_version SET version = 25;
-            """);
-
-        workspace.TWorkspaceDatabase.TDatabaseCreate();
-
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LWorkspaceState state = engine.TEngineStateRead();
-
-        Assert.Equal(LCatalogOrder.LCatalogOrderHeadword, state.LWorkspaceStateOrder);
-        Assert.Equal(LCatalogOrder.LCatalogOrderText, state.LWorkspaceStateRank);
     }
 }

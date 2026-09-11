@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -16,7 +16,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LMeaning? LEngineMeaningRead(string id)
+    public LMeaning? LEngineMeaningRead(long id)
     {
         lock (_lEngineGate)
         {
@@ -24,7 +24,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LMeaning> LEngineMeaningRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LMeaning> LEngineMeaningRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -45,7 +45,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineMeaningMove(string id, int position)
+    public void LEngineMeaningMove(long id, int position)
     {
         lock (_lEngineGate)
         {
@@ -53,7 +53,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineMeaningDelete(string id)
+    public void LEngineMeaningDelete(long id)
     {
         lock (_lEngineGate)
         {
@@ -70,7 +70,7 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCollocation> LEngineCollocationRead(string ownerId, LOwner owner)
+    public IReadOnlyList<LCollocation> LEngineCollocationRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)
         {
@@ -91,7 +91,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineCollocationMove(string id, int position)
+    public void LEngineCollocationMove(long id, int position)
     {
         lock (_lEngineGate)
         {
@@ -99,7 +99,7 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineCollocationDelete(string id)
+    public void LEngineCollocationDelete(long id)
     {
         lock (_lEngineGate)
         {

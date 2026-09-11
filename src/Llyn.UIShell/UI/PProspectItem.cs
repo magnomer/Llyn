@@ -1,10 +1,10 @@
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace Llyn.UIShell;
 
 internal sealed class PProspectItem
 {
-    internal PProspectItem(string id, string headword, string language, bool fresh)
+    internal PProspectItem(long id, string headword, string language, bool fresh)
     {
         PProspectItemId = id;
         PProspectItemHeadword = headword;
@@ -14,7 +14,7 @@ internal sealed class PProspectItem
         PProspectItemFresh = fresh;
     }
 
-    public string PProspectItemId { get; }
+    public long PProspectItemId { get; }
 
     public string PProspectItemHeadword { get; }
 

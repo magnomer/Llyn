@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Llyn.Core;
@@ -10,13 +10,13 @@ public sealed record LCardDraft(
     IReadOnlyList<LSentenceDraft> LCardDraftSentence,
     IReadOnlyList<LSituationDraft> LCardDraftSituation,
     IReadOnlyList<LRegisterDraft> LCardDraftRegister,
-    IReadOnlyList<string> LCardDraftTranslation,
+    IReadOnlyList<long> LCardDraftTranslation,
     string LCardDraftSynonym,
     IReadOnlyList<string> LCardDraftTag,
     IReadOnlyList<LImageDraft> LCardDraftImage,
     IReadOnlyList<LVideoDraft> LCardDraftVideo,
     int LCardDraftPosition,
-    string LCardDraftId = "",
+    long LCardDraftId = 0,
     IReadOnlyList<LCardDraft>? LCardDraftChild = null,
     string? LCardDraftGloss = null,
     string? LCardDraftLanguage = null,
@@ -57,7 +57,7 @@ public sealed record LCardDraft(
         && LCardDraftSentence.All(static row => row.LSentenceDraftEmpty)
         && LCardDraftSituation.All(static row => row.LSituationDraftTitle.LStateValueEmpty)
         && LCardDraftRegister.All(static row => row.LRegisterDraftName.LStateValueEmpty)
-        && LCardDraftTranslation.All(static text => string.IsNullOrWhiteSpace(text))
+        && LCardDraftTranslation.All(static id => id == 0)
         && LCardDraftTag.All(static text => string.IsNullOrWhiteSpace(text))
         && LCardDraftImage.All(static row => row.LImageDraftEmpty)
         && LCardDraftVideo.All(static row => row.LVideoDraftEmpty)

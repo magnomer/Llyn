@@ -1,7 +1,7 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSpeech(
-    string LSpeechEntryId,
+    long LSpeechEntryId,
     int LSpeechPosition,
     string? LSpeechValueId,
     string? LSpeechCustom = null);

@@ -1,8 +1,8 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSynonym(
-    string LSynonymId,
-    string LSynonymCollocationId,
+    long LSynonymId,
+    long LSynonymCollocationId,
     int LSynonymPosition,
-    string? LSynonymTargetEntry,
-    string? LSynonymTargetMeaning);
+    long? LSynonymTargetEntry,
+    long? LSynonymTargetMeaning);

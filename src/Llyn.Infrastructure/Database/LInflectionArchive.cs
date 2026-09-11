@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -15,9 +15,9 @@ public sealed class LInflectionArchive
         _lInflectionArchiveDatabase = database;
     }
 
-    public void LInflectionAppend(string entryId, IReadOnlyList<LInflection> inflections)
+    public void LInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(inflections);
 
         using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
@@ -26,17 +26,17 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    public IReadOnlyList<LInflection> LInflectionRead(string entryId)
+    public IReadOnlyList<LInflection> LInflectionRead(long entryId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
         return LInflectionSetRead(session.LDatabaseSessionConnection, entryId);
     }
 
-    public void LInflectionSet(string entryId, IReadOnlyList<LInflection> inflections)
+    public void LInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(inflections);
 
         using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
@@ -46,9 +46,9 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LInflectionDelete(string entryId, int position)
+    public void LInflectionDelete(long entryId, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -67,9 +67,9 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LInflectionMove(string entryId, int position, int target)
+    public void LInflectionMove(long entryId, int position, int target)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -91,7 +91,7 @@ public sealed class LInflectionArchive
         session.LDatabaseSessionCommit();
     }
 
-    private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, string entryId)
+    private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, long entryId)
     {
         List<(int LInflectionPosition, string LInflectionText, string? LInflectionLocal,
             string? LInflectionSpeechId)> rows = [];
@@ -133,7 +133,7 @@ public sealed class LInflectionArchive
         return inflections;
     }
 
-    private static int LInflectionCountRead(SqliteConnection connection, string entryId)
+    private static int LInflectionCountRead(SqliteConnection connection, long entryId)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "SELECT COUNT(*) FROM inflection WHERE entry_id = $entry;";
@@ -142,7 +142,7 @@ public sealed class LInflectionArchive
     }
 
     private static IReadOnlyDictionary<int, IReadOnlyList<LFeature>> LInflectionFeatureRead(
-        SqliteConnection connection, string entryId)
+        SqliteConnection connection, long entryId)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -171,7 +171,7 @@ public sealed class LInflectionArchive
     }
 
     private static void LInflectionInsert(
-        SqliteConnection connection, string entryId, IReadOnlyList<LInflection> inflections, int first)
+        SqliteConnection connection, long entryId, IReadOnlyList<LInflection> inflections, int first)
     {
         for (int index = 0; index < inflections.Count; index++)
         {
@@ -198,7 +198,7 @@ public sealed class LInflectionArchive
     }
 
     private static void LInflectionFeatureInsert(
-        SqliteConnection connection, string entryId, int inflectionPosition, IReadOnlyList<LFeature> features)
+        SqliteConnection connection, long entryId, int inflectionPosition, IReadOnlyList<LFeature> features)
     {
         for (int position = 0; position < features.Count; position++)
         {
@@ -218,7 +218,7 @@ public sealed class LInflectionArchive
         }
     }
 
-    private static void LInflectionClear(SqliteConnection connection, string entryId)
+    private static void LInflectionClear(SqliteConnection connection, long entryId)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText = "DELETE FROM inflection WHERE entry_id = $entry;";

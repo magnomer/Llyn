@@ -9,6 +9,7 @@ public static class LSchema
     {
         ArgumentNullException.ThrowIfNull(connection);
 
+        LSchemaRealm.LSchemaRealmCreate(connection);
         LSchemaEntry.LSchemaEntryCreate(connection);
         LSchemaInflection.LSchemaInflectionCreate(connection);
         LSchemaMeaning.LSchemaMeaningCreate(connection);
@@ -27,5 +28,6 @@ public static class LSchema
 
         LSchemaMigration.LSchemaMigrationApply(connection);
         LSchemaIndex.LSchemaIndexCreate(connection);
+        LSchemaStamp.LSchemaStampCreate(connection);
     }
 }

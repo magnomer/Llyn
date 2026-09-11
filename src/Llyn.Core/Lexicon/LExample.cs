@@ -1,16 +1,16 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LExample(
-    string LExampleId,
+    long LExampleId,
     string LExampleLanguage,
     LStateValue LExampleText,
     LStateValue LExampleTranslation,
-    LStateValue LExampleSource)
+    LStateAnchor LExampleSource)
 {
     public LStateValue LExampleText { get; init; } = LExampleText ?? LStateValue.LStateValueUnspecified;
 
     public LStateValue LExampleTranslation { get; init; } =
         LExampleTranslation ?? LStateValue.LStateValueUnspecified;
 
-    public LStateValue LExampleSource { get; init; } = LExampleSource ?? LStateValue.LStateValueUnspecified;
+    public LStateAnchor LExampleSource { get; init; } = LExampleSource ?? LStateAnchor.LStateAnchorUnspecified;
 }

@@ -19,12 +19,7 @@ public sealed class LReferenceArchive
     {
         ArgumentNullException.ThrowIfNull(reference);
 
-        LReference stored = reference with
-        {
-            LReferenceId = string.IsNullOrWhiteSpace(reference.LReferenceId)
-                ? LIdentity.LIdentityCreate()
-                : reference.LReferenceId,
-        };
+        LReference stored = reference;
 
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -46,25 +41,25 @@ public sealed class LReferenceArchive
                     $kind,
                     $noteState, $note,
                     $urlState, $url,
-                    $authorState);
+                    $authorState)
+                RETURNING id;
                 """;
-            command.Parameters.AddWithValue("$id", stored.LReferenceId);
             LStateColumn.LStateColumnApply(command, "title", stored.LReferenceTitle);
             LStateColumn.LStateColumnApply(command, "year", stored.LReferenceYear);
             command.Parameters.AddWithValue("$kind", LReference.LReferenceKindFormat(stored.LReferenceKind));
             LStateColumn.LStateColumnApply(command, "note", stored.LReferenceNote);
             LStateColumn.LStateColumnApply(command, "url", stored.LReferenceUrl);
             command.Parameters.AddWithValue("$authorState", LStateColumn.LStateColumnFormat(stored.LReferenceAuthorState));
-            command.ExecuteNonQuery();
+            stored = stored with { LReferenceId = (long)command.ExecuteScalar()! };
         }
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public LReference? LReferenceRead(string id)
+    public LReference? LReferenceRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         return LReferenceSingleRead(session.LDatabaseSessionConnection, id);
@@ -91,20 +86,20 @@ public sealed class LReferenceArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            references.Add(LReferenceRowRead(reader, reader.GetString(0), 1));
+            references.Add(LReferenceRowRead(reader, reader.GetInt64(0), 1));
         }
 
         return references;
     }
 
-    public LReference? LReferenceExampleRead(string exampleId)
+    public LReference? LReferenceExampleRead(long exampleId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
 
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        string id;
+        long id;
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = "SELECT source_id FROM example WHERE id = $example;";
@@ -115,7 +110,7 @@ public sealed class LReferenceArchive
                 return null;
             }
 
-            id = reader.GetString(0);
+            id = reader.GetInt64(0);
         }
 
         return LReferenceSingleRead(connection, id);
@@ -124,7 +119,7 @@ public sealed class LReferenceArchive
     public void LReferenceUpdate(LReference reference)
     {
         ArgumentNullException.ThrowIfNull(reference);
-        ArgumentException.ThrowIfNullOrWhiteSpace(reference.LReferenceId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(reference.LReferenceId);
 
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -156,14 +151,14 @@ public sealed class LReferenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LReferenceDelete(string id)
+    public void LReferenceDelete(long id)
     {
         LReferenceDelete(id, false);
     }
 
-    public void LReferenceDelete(string id, bool detach)
+    public void LReferenceDelete(long id, bool detach)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -190,38 +185,38 @@ public sealed class LReferenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    public void LReferenceAuthorAttach(string referenceId, string authorId, int position)
+    public void LReferenceAuthorAttach(long referenceId, long authorId, int position)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(authorId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authorId);
 
         LReferenceLinkAttach("source_author", "source_id", "author_id", referenceId, authorId, position);
     }
 
-    public void LReferenceAuthorDetach(string referenceId, string authorId)
+    public void LReferenceAuthorDetach(long referenceId, long authorId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(authorId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authorId);
 
         LReferenceLinkDetach("source_author", "source_id", "author_id", referenceId, authorId);
     }
 
-    public void LReferenceExampleAttach(string exampleId, string referenceId)
+    public void LReferenceExampleAttach(long exampleId, long referenceId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(referenceId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
 
-        LReferenceExampleSave(exampleId, LStateValue.LStateValueCreate(referenceId));
+        LReferenceExampleSave(exampleId, LStateAnchor.LStateAnchorCreate(referenceId));
     }
 
-    public void LReferenceExampleDetach(string exampleId)
+    public void LReferenceExampleDetach(long exampleId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(exampleId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(exampleId);
 
-        LReferenceExampleSave(exampleId, LStateValue.LStateValueUnspecified);
+        LReferenceExampleSave(exampleId, LStateAnchor.LStateAnchorUnspecified);
     }
 
-    private void LReferenceExampleSave(string exampleId, LStateValue reference)
+    private void LReferenceExampleSave(long exampleId, LStateAnchor reference)
     {
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
@@ -240,13 +235,13 @@ public sealed class LReferenceArchive
     }
 
     private void LReferenceLinkAttach(
-        string table, string ownerColumn, string memberColumn, string ownerId, string memberId, int position)
+        string table, string ownerColumn, string memberColumn, long ownerId, long memberId, int position)
     {
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         string scope = $"{ownerColumn} = $owner";
-        IReadOnlyList<string> current = LDatabaseOrder.LDatabaseOrderRead(
+        IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
             connection, table, scope, ownerId, memberColumn);
 
         using (SqliteCommand command = connection.CreateCommand())
@@ -271,7 +266,7 @@ public sealed class LReferenceArchive
     }
 
     private void LReferenceLinkDetach(
-        string table, string ownerColumn, string memberColumn, string ownerId, string memberId)
+        string table, string ownerColumn, string memberColumn, long ownerId, long memberId)
     {
         using LDatabaseSession session = _lReferenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
@@ -293,7 +288,7 @@ public sealed class LReferenceArchive
         session.LDatabaseSessionCommit();
     }
 
-    private static LReference? LReferenceSingleRead(SqliteConnection connection, string id)
+    private static LReference? LReferenceSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -318,7 +313,7 @@ public sealed class LReferenceArchive
         return LReferenceRowRead(reader, id, 0);
     }
 
-    private static LReference LReferenceRowRead(SqliteDataReader reader, string id, int first)
+    private static LReference LReferenceRowRead(SqliteDataReader reader, long id, int first)
     {
         return new LReference(
             id,

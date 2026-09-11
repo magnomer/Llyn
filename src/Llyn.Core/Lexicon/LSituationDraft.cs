@@ -1,8 +1,8 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSituationDraft(
     LStateValue LSituationDraftTitle,
-    string LSituationDraftId,
+    long LSituationDraftId,
     LStateValue LSituationDraftDescription,
     LStateValue LSituationDraftKind)
 {
@@ -19,7 +19,7 @@ public sealed record LSituationDraft(
     {
         return new LSituationDraft(
             LStateValue.LStateValueRead(text),
-            string.Empty,
+            0,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified);
     }

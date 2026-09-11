@@ -47,7 +47,7 @@ public sealed partial class LEngine : IDisposable
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
     }
 
-    public static string LEngineIdentityCreate()
+    public static long LEngineIdentityCreate()
     {
         return LIdentity.LIdentityCreate();
     }
@@ -131,7 +131,7 @@ public sealed partial class LEngine : IDisposable
             LWorkspaceRoot.LWorkspaceRootChange(path);
             _lEngineWorkspace = path;
 
-            foreach (string held in _lEngineDraftHeld)
+            foreach (long held in _lEngineDraftHeld)
             {
                 _lEngineDraftStale.Add(held);
             }
@@ -147,7 +147,7 @@ public sealed partial class LEngine : IDisposable
             LEngineLanguageImport();
         }
 
-        LEngineBulletinRaise(LSubject.LSubjectWorkspace, string.Empty);
+        LEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
     }
 
     public LSettings LEngineSettingsRead()
@@ -199,7 +199,7 @@ public sealed partial class LEngine : IDisposable
     }
 
     public Task LEnginePronunciationFind(
-        string session,
+        long session,
         string word,
         string language,
         LReceiver receiver,
@@ -221,7 +221,7 @@ public sealed partial class LEngine : IDisposable
     }
 
     public Task LEngineRecordingFind(
-        string session,
+        long session,
         string word,
         string language,
         LListener listener,
@@ -243,7 +243,7 @@ public sealed partial class LEngine : IDisposable
     }
 
     private async Task LEngineCandidateScan(
-        string session,
+        long session,
         string word,
         string language,
         IReadOnlyList<LSource> sources,
@@ -260,7 +260,7 @@ public sealed partial class LEngine : IDisposable
     }
 
     private async Task LEngineRecordingScan(
-        string session,
+        long session,
         string word,
         string language,
         IReadOnlyList<LSource> sources,

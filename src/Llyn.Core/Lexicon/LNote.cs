@@ -1,5 +1,5 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LNote(
-    string LNoteEntryId,
+    long LNoteEntryId,
     string LNoteText);

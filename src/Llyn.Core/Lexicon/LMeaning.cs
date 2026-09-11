@@ -1,9 +1,9 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LMeaning(
-    string LMeaningId,
-    string LMeaningEntryId,
-    string? LMeaningParentId,
+    long LMeaningId,
+    long LMeaningEntryId,
+    long? LMeaningParentId,
     int LMeaningPosition,
     LStateValue LMeaningTitle,
     string? LMeaningGloss,

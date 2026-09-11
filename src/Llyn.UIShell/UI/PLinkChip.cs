@@ -1,10 +1,10 @@
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace Llyn.UIShell;
 
 internal sealed class PLinkChip
 {
-    internal PLinkChip(string id, string headword, string language)
+    internal PLinkChip(long id, string headword, string language)
     {
         PLinkChipId = id;
         PLinkChipHeadword = headword;
@@ -12,7 +12,7 @@ internal sealed class PLinkChip
         PLinkChipFlag = PEnsign.PEnsignFind(language);
     }
 
-    public string PLinkChipId { get; }
+    public long PLinkChipId { get; }
 
     public string PLinkChipHeadword { get; }
 
