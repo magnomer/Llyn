@@ -14,7 +14,7 @@ public static class LSchemaCollocation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS collocation (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 entry_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',

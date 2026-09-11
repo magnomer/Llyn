@@ -22,5 +22,9 @@ A row arriving from a merge already carries both, so the trigger passes it over 
 Filling the mark in the database rather than in each store keeps every insert path honest.
 A store cannot forget to stamp a row, because it never stamps one.
 
+Each stamped table also checks that the two halves of the mark are both present or both absent.
+A row with only one half would slip past the unique index, since the index treats an empty column as matching nothing.
+So an import that forgets a half is refused instead of quietly admitted twice.
+
 The unique index is what makes importing the same file twice harmless.
 The second pass finds the mark already present and updates that row instead of adding another.

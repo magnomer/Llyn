@@ -20,10 +20,12 @@ The local surrogate this workspace's own realm always takes.
 
 Row one is reserved for it and seeded when the database is made.
 Imported realms take the numbers after it, in the order they arrive.
+A number is never handed out twice, so a stamp keeps naming the realm it was written for even if that realm is later dropped.
 
 ## `public static void LSchemaRealmCreate(SqliteConnection connection)`
 
 Creates the table when it is absent and seeds the own-realm row when that is absent.
 
-The seeded value is minted once and never again, because the insert yields to the row already there.
+The seeded value is minted once and never again, because the insert names row one and yields to the row already there.
+Leaving the id out would let the database pick a fresh number, and every open would add one more realm.
 Minting it twice would give one workspace two identities and break every stamp already written.

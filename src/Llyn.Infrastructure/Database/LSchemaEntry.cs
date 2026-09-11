@@ -22,7 +22,8 @@ public static class LSchemaEntry
                 proficiency TEXT,
                 frequency TEXT,
                 added_utc TEXT,
-                updated_utc TEXT
+                updated_utc TEXT,
+                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
             );
 
             CREATE TABLE IF NOT EXISTS form (

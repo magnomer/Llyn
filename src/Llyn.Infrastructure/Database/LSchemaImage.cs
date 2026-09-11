@@ -19,7 +19,8 @@ public static class LSchemaImage
                 id_origin INTEGER,
                 location_state TEXT NOT NULL DEFAULT 'unspecified',
                 location TEXT,
-                CHECK (location_state = 'specified' OR location IS NULL)
+                CHECK (location_state = 'specified' OR location IS NULL),
+                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
             );
 
             CREATE TABLE IF NOT EXISTS sense_image (

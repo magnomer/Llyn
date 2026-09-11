@@ -25,7 +25,8 @@ public static class LSchemaRegister
                 CHECK (name_state = 'specified' OR name IS NULL),
                 CHECK (builtin IN (0, 1)),
                 CHECK (builtin = 0 OR language IS NOT NULL),
-                CHECK (builtin = 0 OR pack_key IS NOT NULL)
+                CHECK (builtin = 0 OR pack_key IS NOT NULL),
+                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS register_pack_key

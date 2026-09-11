@@ -67,7 +67,8 @@ public static class LSchemaMarker
                 kind TEXT,
                 CHECK (title_state = 'specified' OR title IS NULL),
                 CHECK (description_state = 'specified' OR description IS NULL),
-                CHECK (kind_state = 'specified' OR kind IS NULL)
+                CHECK (kind_state = 'specified' OR kind IS NULL),
+                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
             );
 
             CREATE TABLE IF NOT EXISTS sense_situation (

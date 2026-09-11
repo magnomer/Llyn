@@ -14,7 +14,7 @@ public static class LSchemaMeaning
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS sense (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 entry_id INTEGER NOT NULL,
                 parent_id INTEGER,
                 position INTEGER NOT NULL,

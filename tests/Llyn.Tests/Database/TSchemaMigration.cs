@@ -61,6 +61,38 @@ public sealed class TSchemaMigration
         byte[] second = TRealmValueRead(workspace);
 
         Assert.Equal(first, second);
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM realm;"));
+    }
+
+    [Fact]
+    public void DatabaseCreate_StampHalfWritten_Refuses()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        SqliteException error = Assert.Throws<SqliteException>(() => workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (id_origin, headword, language, proficiency, frequency, added_utc, updated_utc) " +
+            "VALUES (7, 'word', 'English', 0, 0, '2026-01-01', '2026-01-01');"));
+        Assert.Contains("CHECK", error.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void DatabaseCreate_HistoryBearingRows_NeverReuseAnId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        Assert.Equal(1, TSchemaAutoincrementRead(workspace, "sense"));
+        Assert.Equal(1, TSchemaAutoincrementRead(workspace, "collocation"));
+        Assert.Equal(1, TSchemaAutoincrementRead(workspace, "realm"));
+    }
+
+    private static long TSchemaAutoincrementRead(TWorkspace workspace, string table)
+    {
+        using SqliteConnection connection = workspace.TWorkspaceConnectionRead();
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            "SELECT COUNT(*) FROM sqlite_master WHERE name = $table AND sql LIKE '%AUTOINCREMENT%';";
+        command.Parameters.AddWithValue("$table", table);
+        return Convert.ToInt64(command.ExecuteScalar());
     }
 
     private static byte[] TRealmValueRead(TWorkspace workspace)

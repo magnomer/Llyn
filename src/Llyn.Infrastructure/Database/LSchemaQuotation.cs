@@ -27,7 +27,8 @@ public static class LSchemaQuotation
                 CHECK (text_state = 'specified' OR text IS NULL),
                 CHECK (translation_state = 'specified' OR translation IS NULL),
                 CHECK (source_state = 'specified' OR source_id IS NULL),
-                FOREIGN KEY (source_id) REFERENCES source (id)
+                FOREIGN KEY (source_id) REFERENCES source (id),
+                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
             );
 
             CREATE TABLE IF NOT EXISTS sense_example (

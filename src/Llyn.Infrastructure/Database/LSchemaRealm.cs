@@ -16,7 +16,7 @@ public static class LSchemaRealm
             command.CommandText =
                 """
                 CREATE TABLE IF NOT EXISTS realm (
-                    id INTEGER PRIMARY KEY,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     value BLOB NOT NULL UNIQUE
                 );
                 """;
@@ -27,8 +27,8 @@ public static class LSchemaRealm
         {
             command.CommandText =
                 """
-                INSERT INTO realm (value)
-                VALUES ($value)
+                INSERT INTO realm (id, value)
+                VALUES ($id, $value)
                 ON CONFLICT (id) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$id", LSchemaRealmOwn);
