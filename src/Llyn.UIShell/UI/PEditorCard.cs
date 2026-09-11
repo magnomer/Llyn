@@ -15,7 +15,8 @@ public partial class PEditor
         cards.Clear();
         foreach (LCardDraft draft in drafts)
         {
-            PCard card = new(prefix, draft.LCardDraftPosition, _pEditorCitation, _pEditorParticle, _pEditorDependence)
+            PCard card = new(
+                _lEngine, prefix, draft.LCardDraftPosition, _pEditorCitation, _pEditorParticle, _pEditorDependence)
             {
                 PCardId = draft.LCardDraftId,
                 PCardDraft = draft,

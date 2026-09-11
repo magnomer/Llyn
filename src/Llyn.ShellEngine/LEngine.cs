@@ -21,6 +21,8 @@ public sealed partial class LEngine : IDisposable
     private LSettings _lEngineSettings;
     private LDatabase _lEngineDatabase;
     private LDoctorRescue _lEngineRescue;
+    private LRealm _lEngineRealm;
+    private LIdentity _lEngineIdentity;
 
     public LEngine()
         : this(LWorkspaceRoot.LWorkspaceRootRead())
@@ -36,6 +38,8 @@ public sealed partial class LEngine : IDisposable
 
         _lEngineDatabase = new LDatabase(_lEngineWorkspace);
         _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
+        _lEngineRealm = new LRealmArchive(_lEngineDatabase).LRealmRead();
+        _lEngineIdentity = new LIdentity(_lEngineDatabase);
 
         LEngineLanguageImport();
 
@@ -47,9 +51,20 @@ public sealed partial class LEngine : IDisposable
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
     }
 
-    public static long LEngineIdentityCreate()
+    public long LEngineIdentityCreate()
     {
-        return LIdentity.LIdentityCreate();
+        lock (_lEngineGate)
+        {
+            return _lEngineIdentity.LIdentityCreate();
+        }
+    }
+
+    public LRealm LEngineRealmRead()
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineRealm;
+        }
     }
 
     public IReadOnlyList<string> LEngineLanguageRead()
@@ -144,6 +159,8 @@ public sealed partial class LEngine : IDisposable
 
             _lEngineDatabase = new LDatabase(_lEngineWorkspace);
             _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
+            _lEngineRealm = new LRealmArchive(_lEngineDatabase).LRealmRead();
+            _lEngineIdentity = new LIdentity(_lEngineDatabase);
             LEngineLanguageImport();
         }
 

@@ -14,11 +14,11 @@ public sealed partial class LEngine
 
             long example = exampleId is null or <= 0 ? 0 : exampleId.Value;
             LExample content = example == 0
-                ? LEngineExampleBlank with { LExampleId = LIdentity.LIdentityCreate() }
+                ? LEngineExampleBlank with { LExampleId = LEngineIdentityCreate() }
                 : LEngineExampleRead(example) ?? throw new LRefusal(LRefusal.LRefusalExample);
 
             LDraft draft = new(
-                LIdentity.LIdentityCreate(),
+                LEngineIdentityCreate(),
                 origin,
                 example,
                 LEngineDraftBlank,
@@ -95,10 +95,10 @@ public sealed partial class LEngine
         return !LEngineExampleMatch(origin, held);
     }
 
-    private static LExample LEngineExampleNormalize(LExample content)
+    private LExample LEngineExampleNormalize(LExample content)
     {
         return content.LExampleId == 0
-            ? content with { LExampleId = LIdentity.LIdentityCreate() }
+            ? content with { LExampleId = LEngineIdentityCreate() }
             : content;
     }
 

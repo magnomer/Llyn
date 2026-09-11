@@ -6,12 +6,12 @@ namespace Llyn.Infrastructure;
 
 public sealed class LWorkspaceArchive
 {
-    private const string LWorkspaceArchiveRow = "workspace";
+    private const long LWorkspaceArchiveRow = 1;
     private const string LWorkspaceArchiveEditor = "Editor";
     private const string LWorkspaceArchiveDisplay = "Display";
 
     private const string LWorkspaceArchiveColumn =
-        "id, left_entry, right_entry, mode, split, revision, " +
+        "id, left_entry_id, right_entry_id, revision_id, identity_floor, mode, split, " +
         "library_order, phonology_order, favorite_order, taxonomy_order, " +
         "repertoire_order, reference_order, corpus_order, tenor_order";
 
@@ -34,8 +34,8 @@ public sealed class LWorkspaceArchive
                 $"""
                 INSERT INTO workspace ({LWorkspaceArchiveColumn})
                 VALUES (
-                    $id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                    NULL)
+                    $id, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                    NULL, NULL)
                 ON CONFLICT (id) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
@@ -60,31 +60,32 @@ public sealed class LWorkspaceArchive
                     "The workspace row is missing immediately after it was created.");
             }
 
-            LWorkspaceState fallback = new(reader.GetString(0));
+            LWorkspaceState fallback = new(reader.GetInt64(0));
 
             state = fallback with
             {
-                LWorkspaceStateLeft = LWorkspaceArchiveResolve(reader, 1),
-                LWorkspaceStateRight = LWorkspaceArchiveResolve(reader, 2),
-                LWorkspaceStateMode = LWorkspaceArchiveRead(reader, 3),
-                LWorkspaceStateSplit = LWorkspaceArchiveRead(reader, 4) == LWorkspaceArchiveEditor,
-                LWorkspaceStateRevision = LWorkspaceArchiveResolve(reader, 5),
+                LWorkspaceStateLeftEntryId = LWorkspaceArchiveResolve(reader, 1),
+                LWorkspaceStateRightEntryId = LWorkspaceArchiveResolve(reader, 2),
+                LWorkspaceStateRevisionId = LWorkspaceArchiveResolve(reader, 3),
+                LWorkspaceStateIdentityFloor = reader.GetInt64(4),
+                LWorkspaceStateMode = LWorkspaceArchiveRead(reader, 5),
+                LWorkspaceStateSplit = LWorkspaceArchiveRead(reader, 6) == LWorkspaceArchiveEditor,
                 LWorkspaceStateOrder = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 6), fallback.LWorkspaceStateOrder),
+                    LWorkspaceArchiveRead(reader, 7), fallback.LWorkspaceStateOrder),
                 LWorkspaceStateSequence = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 7), fallback.LWorkspaceStateSequence),
+                    LWorkspaceArchiveRead(reader, 8), fallback.LWorkspaceStateSequence),
                 LWorkspaceStateSeries = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 8), fallback.LWorkspaceStateSeries),
+                    LWorkspaceArchiveRead(reader, 9), fallback.LWorkspaceStateSeries),
                 LWorkspaceStateFunnel = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 9), fallback.LWorkspaceStateFunnel),
+                    LWorkspaceArchiveRead(reader, 10), fallback.LWorkspaceStateFunnel),
                 LWorkspaceStateTier = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 10), fallback.LWorkspaceStateTier),
+                    LWorkspaceArchiveRead(reader, 11), fallback.LWorkspaceStateTier),
                 LWorkspaceStateGrade = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 11), fallback.LWorkspaceStateGrade),
+                    LWorkspaceArchiveRead(reader, 12), fallback.LWorkspaceStateGrade),
                 LWorkspaceStateRank = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 12), fallback.LWorkspaceStateRank),
+                    LWorkspaceArchiveRead(reader, 13), fallback.LWorkspaceStateRank),
                 LWorkspaceStateDegree = LCatalog.LCatalogOrderParse(
-                    LWorkspaceArchiveRead(reader, 13), fallback.LWorkspaceStateDegree),
+                    LWorkspaceArchiveRead(reader, 14), fallback.LWorkspaceStateDegree),
             };
         }
 
@@ -102,19 +103,20 @@ public sealed class LWorkspaceArchive
             command.CommandText =
                 """
                 INSERT INTO workspace (
-                    id, left_entry, right_entry, mode, split, revision,
+                    id, left_entry_id, right_entry_id, revision_id, identity_floor, mode, split,
                     library_order, phonology_order, favorite_order, taxonomy_order,
                     repertoire_order, reference_order, corpus_order, tenor_order)
                 VALUES (
-                    $id, $left, $right, $mode, $split, $revision,
+                    $id, $left, $right, $revision, $floor, $mode, $split,
                     $library, $phonology, $favorite, $taxonomy,
                     $repertoire, $reference, $corpus, $tenor)
                 ON CONFLICT (id) DO UPDATE SET
-                    left_entry = excluded.left_entry,
-                    right_entry = excluded.right_entry,
+                    left_entry_id = excluded.left_entry_id,
+                    right_entry_id = excluded.right_entry_id,
+                    revision_id = excluded.revision_id,
+                    identity_floor = min(identity_floor, excluded.identity_floor),
                     mode = excluded.mode,
                     split = excluded.split,
-                    revision = excluded.revision,
                     library_order = excluded.library_order,
                     phonology_order = excluded.phonology_order,
                     favorite_order = excluded.favorite_order,
@@ -125,12 +127,13 @@ public sealed class LWorkspaceArchive
                     tenor_order = excluded.tenor_order;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
-            command.Parameters.AddWithValue("$left", (object?)state.LWorkspaceStateLeft ?? DBNull.Value);
-            command.Parameters.AddWithValue("$right", (object?)state.LWorkspaceStateRight ?? DBNull.Value);
+            command.Parameters.AddWithValue("$left", (object?)state.LWorkspaceStateLeftEntryId ?? DBNull.Value);
+            command.Parameters.AddWithValue("$right", (object?)state.LWorkspaceStateRightEntryId ?? DBNull.Value);
+            command.Parameters.AddWithValue("$revision", (object?)state.LWorkspaceStateRevisionId ?? DBNull.Value);
+            command.Parameters.AddWithValue("$floor", state.LWorkspaceStateIdentityFloor);
             command.Parameters.AddWithValue("$mode", (object?)state.LWorkspaceStateMode ?? DBNull.Value);
             command.Parameters.AddWithValue(
                 "$split", state.LWorkspaceStateSplit ? LWorkspaceArchiveEditor : LWorkspaceArchiveDisplay);
-            command.Parameters.AddWithValue("$revision", (object?)state.LWorkspaceStateRevision ?? DBNull.Value);
             command.Parameters.AddWithValue("$library", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateOrder));
             command.Parameters.AddWithValue("$phonology", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateSequence));
             command.Parameters.AddWithValue("$favorite", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateSeries));
@@ -143,6 +146,27 @@ public sealed class LWorkspaceArchive
         }
 
         session.LDatabaseSessionCommit();
+    }
+
+    public long LWorkspaceFloorLower()
+    {
+        using LDatabaseSession session = _lWorkspaceArchiveDatabase.LDatabaseSessionStart();
+        long floor;
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                INSERT INTO workspace (id, identity_floor)
+                VALUES ($id, -1)
+                ON CONFLICT (id) DO UPDATE SET identity_floor = identity_floor - 1
+                RETURNING identity_floor;
+                """;
+            command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
+            floor = Convert.ToInt64(command.ExecuteScalar());
+        }
+
+        session.LDatabaseSessionCommit();
+        return floor;
     }
 
     private static string? LWorkspaceArchiveRead(SqliteDataReader reader, int column)

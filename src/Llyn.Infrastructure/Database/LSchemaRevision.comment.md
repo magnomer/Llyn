@@ -44,6 +44,7 @@ The workspace row is operational state.
 It holds which Entry each duplex side shows and the tab standing open.
 It also holds whether that tab shows its editor and the ordering each browse panel lists by.
 The session revision is held with them.
+So is the identity floor, the lowest temporary id ever issued, which the schema keeps at or below zero.
 Its ordering columns hold the stored name of an ordering.
 A build that adds one still reads back what an earlier one wrote.
 It owns nothing lexical.

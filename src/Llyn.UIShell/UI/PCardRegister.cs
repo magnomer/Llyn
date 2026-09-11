@@ -191,7 +191,7 @@ internal sealed partial class PCard
         }
 
         int index = PCardRegister.IndexOf(_pCardRegisterCaret);
-        PCardRegister.Insert(index < 0 ? PCardRegister.Count : index, new PRegister(written));
+        PCardRegister.Insert(index < 0 ? PCardRegister.Count : index, new PRegister(LStateValue.LStateValueRead(written), _pCardEngine.LEngineIdentityCreate()));
     }
 
     private bool PCardRegisterCheck(string text)

@@ -1,6 +1,6 @@
 ﻿# LIdentity.cs
 
-## `public static class LIdentity`
+## `public sealed class LIdentity`
 
 Issues the temporary ids a draft row carries before the database has given it a real one.
 
@@ -15,9 +15,23 @@ A row whose id is still negative has never been written; a row whose id is posit
 The issuer lives here and not in the UI, because the UI holds no ground truth.
 The draft is held below the UI, ids are issued below the UI, and saving sends that held draft down to the database rather than reading it back off the widgets.
 
-## `public static long LIdentityCreate()`
+The issuer is an instance the engine owns, one per open workspace, and it counts from the workspace row rather than from a process-wide static.
+Drafts, court links, and claims are files named by the id they were issued.
+A counter that restarted at zero with the process would name a new draft after a file still on disk.
+So the floor lives in the workspace database and every issue lowers it there before the id is used.
+
+## `public LIdentity(LDatabase database)`
+
+Binds the issuer to the workspace `database` whose floor it lowers.
+
+## `public long LIdentityFloor`
+
+The lowest id issued so far, read from the workspace row.
+
+## `public long LIdentityCreate()`
 
 Issues the next temporary id.
 
-Counts downward, so ids are distinct for the life of the process and never stray into the range the database assigns.
-Interlocked, because drafts are edited from the UI thread while the shell works on others.
+Lowers the floor in the database and returns the new floor, in one statement.
+The write commits before the id is handed out, so a crash after the call cannot bring the id round again.
+Two engines open on one workspace lower the same row, so neither can issue what the other already holds.

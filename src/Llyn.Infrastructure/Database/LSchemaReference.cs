@@ -15,16 +15,16 @@ public static class LSchemaReference
             """
             CREATE TABLE IF NOT EXISTS author (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 name TEXT NOT NULL,
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS source (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
                 year_state TEXT NOT NULL,
@@ -39,7 +39,7 @@ public static class LSchemaReference
                 CHECK (year_state = 'specified' OR year IS NULL),
                 CHECK (note_state = 'specified' OR note IS NULL),
                 CHECK (url_state = 'specified' OR url IS NULL),
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS source_author (

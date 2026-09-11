@@ -362,7 +362,7 @@ public sealed class TTranslation
         Assert.NotNull(engine.TEngineEntryRead(stub.LEntryId));
         Assert.Contains(
             engine.TEngineChangeRead(engine.TEngineRevisionRead()!.LRevisionId),
-            change => change.LRevisionChangeTarget == stub.LEntryId);
+            change => change.LRevisionChangeTargetId == stub.LEntryId);
 
         engine.TEngineTranslationDelete(stub.LEntryId);
 

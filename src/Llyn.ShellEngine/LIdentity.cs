@@ -1,13 +1,22 @@
-﻿using System.Threading;
+using System;
+using Llyn.Infrastructure;
 
 namespace Llyn.ShellEngine;
 
-public static class LIdentity
+public sealed class LIdentity
 {
-    private static long _lIdentityIssued;
+    private readonly LWorkspaceArchive _lIdentityArchive;
 
-    public static long LIdentityCreate()
+    public LIdentity(LDatabase database)
     {
-        return Interlocked.Decrement(ref _lIdentityIssued);
+        ArgumentNullException.ThrowIfNull(database);
+        _lIdentityArchive = new LWorkspaceArchive(database);
+    }
+
+    public long LIdentityFloor => _lIdentityArchive.LWorkspaceStateRead().LWorkspaceStateIdentityFloor;
+
+    public long LIdentityCreate()
+    {
+        return _lIdentityArchive.LWorkspaceFloorLower();
     }
 }

@@ -14,11 +14,11 @@ public sealed partial class LEngine
 
             long reference = referenceId is null or <= 0 ? 0 : referenceId.Value;
             LReference content = reference == 0
-                ? LEngineReferenceBlank with { LReferenceId = LIdentity.LIdentityCreate() }
+                ? LEngineReferenceBlank with { LReferenceId = LEngineIdentityCreate() }
                 : LEngineReferenceRead(reference) ?? throw new LRefusal(LRefusal.LRefusalReference);
 
             LDraft draft = new(
-                LIdentity.LIdentityCreate(),
+                LEngineIdentityCreate(),
                 origin,
                 reference,
                 LEngineDraftBlank,
@@ -96,10 +96,10 @@ public sealed partial class LEngine
         return !LEngineReferenceMatch(origin, held);
     }
 
-    private static LReference LEngineReferenceNormalize(LReference content)
+    private LReference LEngineReferenceNormalize(LReference content)
     {
         return content.LReferenceId == 0
-            ? content with { LReferenceId = LIdentity.LIdentityCreate() }
+            ? content with { LReferenceId = LEngineIdentityCreate() }
             : content;
     }
 

@@ -232,8 +232,10 @@ internal static partial class TInterface
         exampleArchive.LExampleUpdate(example);
     }
 
+    private static long TInterfaceIdentity;
+
     internal static long TIdentityCreate() =>
-        LIdentity.LIdentityCreate();
+        Interlocked.Decrement(ref TInterfaceIdentity);
 
     internal static void TInflectionAppend(
         this LInflectionArchive inflectionArchive,
@@ -318,6 +320,9 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LMeaning> TMeaningRead(this LMeaningArchive meaningArchive, long entryId) =>
         meaningArchive.LMeaningRead(entryId);
+
+    internal static LRealm TRealmRead(LDatabase database) =>
+        new LRealmArchive(database).LRealmRead();
 
     internal static LRegisterArchive TRegisterArchiveCreate(LDatabase database) =>
         new(database);

@@ -8,6 +8,7 @@ namespace Llyn.UIShell;
 
 internal sealed class PSentence : INotifyPropertyChanged
 {
+    private readonly LEngine _pSentenceEngine;
     private long _pSentenceId;
     private string _pSentenceText;
     private bool _pSentenceUnreadable;
@@ -27,20 +28,25 @@ internal sealed class PSentence : INotifyPropertyChanged
     private string _pSentenceLanguage = string.Empty;
 
     internal PSentence(
+        LEngine engine,
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences)
-        : this(catalog, particles, dependences, LSentenceDraft.LSentenceDraftCreate(string.Empty))
+        : this(engine, catalog, particles, dependences, LSentenceDraft.LSentenceDraftCreate(string.Empty))
     {
     }
 
     internal PSentence(
+        LEngine engine,
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         LSentenceDraft draft)
     {
+        ArgumentNullException.ThrowIfNull(engine);
         ArgumentNullException.ThrowIfNull(draft);
+
+        _pSentenceEngine = engine;
 
         LExampleDraft example = draft.LSentenceDraftExample
             ?? LExampleDraft.LExampleDraftCreate(string.Empty);
@@ -378,7 +384,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             return;
         }
 
-        PSentenceId = LEngine.LEngineIdentityCreate();
+        PSentenceId = _pSentenceEngine.LEngineIdentityCreate();
     }
 
     internal void PSentenceClear()

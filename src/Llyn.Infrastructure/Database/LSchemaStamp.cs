@@ -28,15 +28,16 @@ public static class LSchemaStamp
                 $"""
                 CREATE TRIGGER IF NOT EXISTS {table}_origin
                 AFTER INSERT ON {table}
-                WHEN NEW.id_origin IS NULL
+                WHEN NEW.origin_id = 0
                 BEGIN
                     UPDATE {table}
-                    SET realm_origin = {LSchemaRealm.LSchemaRealmOwn}, id_origin = NEW.id
+                    SET origin_realm = (SELECT value FROM realm WHERE id = {LSchemaRealm.LSchemaRealmRow}),
+                        origin_id = NEW.id
                     WHERE id = NEW.id;
                 END;
 
                 CREATE UNIQUE INDEX IF NOT EXISTS {table}_origin_unique
-                ON {table} (realm_origin, id_origin);
+                ON {table} (origin_realm, origin_id);
                 """;
             command.ExecuteNonQuery();
         }

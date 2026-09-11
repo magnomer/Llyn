@@ -6,6 +6,7 @@ The shell's own view state for one workspace.
 It holds which Entry each duplex side shows and which tab stands open.
 It also holds whether that tab shows its editor and the ordering each browse panel lists by.
 The session revision is held with them.
+So is the identity floor: the lowest temporary id this workspace has ever issued.
 This is session data, not lexical data.
 It owns nothing and defines no ownership, so clearing it loses no dictionary content.
 Deleting an Entry simply empties whichever duplex side was showing it.
@@ -21,12 +22,13 @@ That is the interface language and the window geometry, which mean the same thin
 
 **Parameters**
 
-- `LWorkspaceStateId` — Identity of the workspace row.
-- `LWorkspaceStateLeft` — Id of the Entry the left duplex side shows, and `null` when that side is empty.
-- `LWorkspaceStateRight` — Id of the Entry the right duplex side shows, and `null` when that side is empty.
+- `LWorkspaceStateId` — Id of the workspace row, always 1.
+- `LWorkspaceStateLeftEntryId` — Id of the Entry the left duplex side shows, and `null` when that side is empty.
+- `LWorkspaceStateRightEntryId` — Id of the Entry the right duplex side shows, and `null` when that side is empty.
+- `LWorkspaceStateRevisionId` — Id of the current revision, and `null` before any revision is recorded.
+- `LWorkspaceStateIdentityFloor` — Lowest temporary id ever issued in this workspace, and 0 before any was.
 - `LWorkspaceStateMode` — Name of the tab standing open, and `null` before any tab is chosen.
 - `LWorkspaceStateSplit` — Whether the open tab shows its editor rather than its read area.
-- `LWorkspaceStateRevision` — Id of the current revision, and `null` before any revision is recorded.
 - `LWorkspaceStateOrder` — Ordering the library panel lists entries in.
 - `LWorkspaceStateSequence` — Ordering the phonology panel lists pronunciations in.
 - `LWorkspaceStateSeries` — Ordering the favorites panel lists favorite entries in.

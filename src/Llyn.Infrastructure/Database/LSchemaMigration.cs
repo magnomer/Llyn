@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 34;
+    public const long LSchemaMigrationVersion = 35;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -29,7 +29,7 @@ public static class LSchemaMigration
         {
             throw new InvalidOperationException(
                 $"The workspace database is at schema version {stored}, which this build cannot upgrade. " +
-                $"Version {LSchemaMigrationVersion} rebuilt every identifier, so no upgrade path exists. " +
+                $"Version {LSchemaMigrationVersion} rebuilt row identity, so no upgrade path exists. " +
                 "Create a new workspace and import the old one.");
         }
     }

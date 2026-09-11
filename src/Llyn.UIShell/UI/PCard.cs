@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -10,6 +11,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
 {
     internal const string PCardUnreadableMark = "(?)";
 
+    private readonly LEngine _pCardEngine;
     private readonly string _pCardPrefix;
     private readonly ObservableCollection<PCitationItem> _pCardCitation;
     private readonly ObservableCollection<string> _pCardParticle;
@@ -25,12 +27,16 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private bool _pCardExpressionUnreadable;
 
     internal PCard(
+        LEngine engine,
         string prefix,
         int position,
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences)
     {
+        ArgumentNullException.ThrowIfNull(engine);
+
+        _pCardEngine = engine;
         _pCardPrefix = prefix;
         _pCardPosition = position;
         _pCardPositionText = position.ToString(CultureInfo.InvariantCulture);
@@ -41,7 +47,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;
         PCardSentence = [];
-        PCardSentenceAdd(new PSentence(catalog, particles, dependences));
+        PCardSentenceAdd(new PSentence(engine, catalog, particles, dependences));
         PCardContextStart();
         PCardRegisterStart();
         PCardLinkStart();

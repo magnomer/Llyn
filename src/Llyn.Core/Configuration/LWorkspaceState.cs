@@ -1,12 +1,13 @@
 ﻿namespace Llyn.Core;
 
 public sealed record LWorkspaceState(
-    string LWorkspaceStateId,
-    long? LWorkspaceStateLeft = null,
-    long? LWorkspaceStateRight = null,
+    long LWorkspaceStateId,
+    long? LWorkspaceStateLeftEntryId = null,
+    long? LWorkspaceStateRightEntryId = null,
+    long? LWorkspaceStateRevisionId = null,
+    long LWorkspaceStateIdentityFloor = 0,
     string? LWorkspaceStateMode = null,
     bool LWorkspaceStateSplit = false,
-    long? LWorkspaceStateRevision = null,
     LCatalogOrder LWorkspaceStateOrder = LCatalogOrder.LCatalogOrderHeadword,
     LCatalogOrder LWorkspaceStateSequence = LCatalogOrder.LCatalogOrderHeadword,
     LCatalogOrder LWorkspaceStateSeries = LCatalogOrder.LCatalogOrderHeadword,

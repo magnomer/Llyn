@@ -51,9 +51,9 @@ public static class LSchemaIndex
         command.CommandText =
             """
             CREATE INDEX IF NOT EXISTS tombstone_revision ON tombstone (revision_id);
-            CREATE INDEX IF NOT EXISTS workspace_left ON workspace (left_entry);
-            CREATE INDEX IF NOT EXISTS workspace_right ON workspace (right_entry);
-            CREATE INDEX IF NOT EXISTS workspace_revision ON workspace (revision);
+            CREATE INDEX IF NOT EXISTS workspace_left ON workspace (left_entry_id);
+            CREATE INDEX IF NOT EXISTS workspace_right ON workspace (right_entry_id);
+            CREATE INDEX IF NOT EXISTS workspace_revision ON workspace (revision_id);
             """;
         command.ExecuteNonQuery();
 

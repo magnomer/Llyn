@@ -41,12 +41,13 @@ public static class LSchemaRevision
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS workspace (
-                id TEXT NOT NULL PRIMARY KEY,
-                left_entry INTEGER,
-                right_entry INTEGER,
+                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                left_entry_id INTEGER,
+                right_entry_id INTEGER,
+                revision_id INTEGER,
+                identity_floor INTEGER NOT NULL DEFAULT 0,
                 mode TEXT,
                 split TEXT,
-                revision INTEGER,
                 library_order TEXT,
                 phonology_order TEXT,
                 favorite_order TEXT,
@@ -55,9 +56,10 @@ public static class LSchemaRevision
                 reference_order TEXT,
                 corpus_order TEXT,
                 tenor_order TEXT,
-                FOREIGN KEY (left_entry) REFERENCES entry (id) ON DELETE SET NULL,
-                FOREIGN KEY (right_entry) REFERENCES entry (id) ON DELETE SET NULL,
-                FOREIGN KEY (revision) REFERENCES revision (id) ON DELETE SET NULL
+                CHECK (identity_floor <= 0),
+                FOREIGN KEY (left_entry_id) REFERENCES entry (id) ON DELETE SET NULL,
+                FOREIGN KEY (right_entry_id) REFERENCES entry (id) ON DELETE SET NULL,
+                FOREIGN KEY (revision_id) REFERENCES revision (id) ON DELETE SET NULL
             );
             """;
         command.ExecuteNonQuery();

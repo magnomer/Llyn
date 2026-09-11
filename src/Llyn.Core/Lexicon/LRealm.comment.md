@@ -2,8 +2,8 @@
 
 ## `public sealed record LRealm`
 
-One realm: the identity of a workspace's database, in both the forms it takes.
+One realm: the identity of a workspace's database.
 
-`LRealmId` is the local surrogate this database assigns, which is what rows actually stamp.
-`LRealmValue` is the global identity, which is what survives the trip between databases.
-The pair is held together because a surrogate means nothing outside the database that assigned it.
+`LRealmValue` is sixteen bytes minted once, when the database is made, and no other workspace mints the same.
+It is the whole identity, so it means the same thing in every workspace it reaches.
+No local surrogate stands beside it, because a surrogate would mean nothing outside the database that assigned it.

@@ -31,12 +31,12 @@ internal sealed partial class PCard
         PCardSentence.Clear();
         foreach (LSentenceDraft draft in drafts)
         {
-            PCardSentenceAdd(new PSentence(_pCardCitation, _pCardParticle, _pCardDependence, draft));
+            PCardSentenceAdd(new PSentence(_pCardEngine, _pCardCitation, _pCardParticle, _pCardDependence, draft));
         }
 
         if (PCardSentence.Count == 0)
         {
-            PCardSentenceAdd(new PSentence(_pCardCitation, _pCardParticle, _pCardDependence));
+            PCardSentenceAdd(new PSentence(_pCardEngine, _pCardCitation, _pCardParticle, _pCardDependence));
         }
     }
 
@@ -59,7 +59,7 @@ internal sealed partial class PCard
     internal void PCardSentenceInsert(PSentence row)
     {
         int index = PCardSentence.IndexOf(row);
-        PSentence opened = new(_pCardCitation, _pCardParticle, _pCardDependence);
+        PSentence opened = new(_pCardEngine, _pCardCitation, _pCardParticle, _pCardDependence);
         opened.PSentenceOrderApply(_pCardSentenceOrder);
         opened.PropertyChanged += PCardSentenceChange;
         PCardSentence.Insert(index < 0 ? PCardSentence.Count : index + 1, opened);

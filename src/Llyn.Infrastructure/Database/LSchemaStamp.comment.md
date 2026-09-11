@@ -15,16 +15,16 @@ The tables whose rows stand alone: Entry and the shared pool every card points a
 
 Creates, for each of those tables, the trigger that fills the mark and the index that keeps it unique.
 
-The trigger runs only when the inserted row left `id_origin` empty, which is what a row made here does.
-It then writes this workspace's realm and the id the row was just given.
+The trigger runs only when the inserted row left `origin_id` at zero, which is what a row made here does.
+It then writes this workspace's realm value and the id the row was just given.
 A row arriving from a merge already carries both, so the trigger passes it over and the mark it was born with survives the trip.
 
 Filling the mark in the database rather than in each store keeps every insert path honest.
 A store cannot forget to stamp a row, because it never stamps one.
 
-Each stamped table also checks that the two halves of the mark are both present or both absent.
-A row with only one half would slip past the unique index, since the index treats an empty column as matching nothing.
-So an import that forgets a half is refused instead of quietly admitted twice.
+Each stamped table also checks that a row naming an origin id carries a sixteen-byte realm.
+A row with the id and no realm would be a stamp with half its meaning gone.
+So an import that forgets the realm is refused instead of quietly admitted.
 
 The unique index is what makes importing the same file twice harmless.
 The second pass finds the mark already present and updates that row instead of adding another.

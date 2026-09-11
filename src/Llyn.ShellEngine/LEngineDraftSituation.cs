@@ -14,11 +14,11 @@ public sealed partial class LEngine
 
             long situation = situationId is null or <= 0 ? 0 : situationId.Value;
             LSituation content = situation == 0
-                ? LEngineSituationBlank with { LSituationId = LIdentity.LIdentityCreate() }
+                ? LEngineSituationBlank with { LSituationId = LEngineIdentityCreate() }
                 : LEngineSituationRead(situation) ?? throw new LRefusal(LRefusal.LRefusalSituation);
 
             LDraft draft = new(
-                LIdentity.LIdentityCreate(),
+                LEngineIdentityCreate(),
                 origin,
                 situation,
                 LEngineDraftBlank,
@@ -95,10 +95,10 @@ public sealed partial class LEngine
         return !LEngineSituationMatch(origin, held);
     }
 
-    private static LSituation LEngineSituationNormalize(LSituation content)
+    private LSituation LEngineSituationNormalize(LSituation content)
     {
         return content.LSituationId == 0
-            ? content with { LSituationId = LIdentity.LIdentityCreate() }
+            ? content with { LSituationId = LEngineIdentityCreate() }
             : content;
     }
 

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
 public static class LSchemaRealm
 {
-    public const long LSchemaRealmOwn = 1;
+    public const long LSchemaRealmRow = 1;
 
     public static void LSchemaRealmCreate(SqliteConnection connection)
     {
@@ -16,8 +16,8 @@ public static class LSchemaRealm
             command.CommandText =
                 """
                 CREATE TABLE IF NOT EXISTS realm (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    value BLOB NOT NULL UNIQUE
+                    id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                    value BLOB NOT NULL CHECK (length(value) = 16)
                 );
                 """;
             command.ExecuteNonQuery();
@@ -31,7 +31,7 @@ public static class LSchemaRealm
                 VALUES ($id, $value)
                 ON CONFLICT (id) DO NOTHING;
                 """;
-            command.Parameters.AddWithValue("$id", LSchemaRealmOwn);
+            command.Parameters.AddWithValue("$id", LSchemaRealmRow);
             command.Parameters.AddWithValue("$value", Guid.NewGuid().ToByteArray());
             command.ExecuteNonQuery();
         }

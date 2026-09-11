@@ -15,15 +15,15 @@ public static class LSchemaEntry
             """
             CREATE TABLE IF NOT EXISTS entry (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 headword TEXT NOT NULL,
                 language TEXT NOT NULL,
                 proficiency TEXT,
                 frequency TEXT,
                 added_utc TEXT,
                 updated_utc TEXT,
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS form (

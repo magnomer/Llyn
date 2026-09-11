@@ -23,7 +23,7 @@ public sealed partial class LEngine
                 : LEngineEntryLoad(entry) ?? throw new LRefusal(LRefusal.LRefusalEntry);
 
             LDraft draft = new(
-                LIdentity.LIdentityCreate(),
+                LEngineIdentityCreate(),
                 origin,
                 entry,
                 content,
@@ -230,7 +230,7 @@ public sealed partial class LEngine
         return claim is not null && claim.LClaimProcess != Environment.ProcessId;
     }
 
-    private static LEntryDraft LEngineDraftNormalize(LEntryDraft content)
+    private LEntryDraft LEngineDraftNormalize(LEntryDraft content)
     {
         IReadOnlyList<LCardDraft> meanings = LEngineCardNormalize(content.LEntryDraftMeanings);
         IReadOnlyList<LCardDraft> collocations = LEngineCardNormalize(content.LEntryDraftCollocations);
@@ -245,7 +245,7 @@ public sealed partial class LEngine
             };
     }
 
-    private static IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)
+    private IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)
     {
         List<LCardDraft>? named = null;
         for (int index = 0; index < cards.Count; index++)
@@ -265,7 +265,7 @@ public sealed partial class LEngine
                 }
             }
 
-            named.Add(cards[index] with { LCardDraftId = LIdentity.LIdentityCreate() });
+            named.Add(cards[index] with { LCardDraftId = LEngineIdentityCreate() });
         }
 
         return named ?? cards;

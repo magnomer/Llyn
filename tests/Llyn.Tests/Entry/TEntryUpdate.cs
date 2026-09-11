@@ -61,13 +61,13 @@ public sealed class TEntryUpdate
         Assert.Contains(changes, change =>
             change.LRevisionChangeKind == "delete" && change.LRevisionChangeSummary == "second");
         Assert.Contains(changes, change =>
-            change.LRevisionChangeKind == "update" && change.LRevisionChangeTarget == firstId);
+            change.LRevisionChangeKind == "update" && change.LRevisionChangeTargetId == firstId);
         Assert.Contains(changes, change =>
-            change.LRevisionChangeKind == "update" && change.LRevisionChangeTarget == thirdId);
+            change.LRevisionChangeKind == "update" && change.LRevisionChangeTargetId == thirdId);
         Assert.Contains(changes, change =>
             change.LRevisionChangeKind == "create" && change.LRevisionChangeSummary == "fourth");
 
-        Assert.Equal(revision.LRevisionId, engine.TEngineStateRead().LWorkspaceStateRevision);
+        Assert.Equal(revision.LRevisionId, engine.TEngineStateRead().LWorkspaceStateRevisionId);
     }
 
     [Fact]

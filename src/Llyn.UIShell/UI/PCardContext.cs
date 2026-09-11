@@ -189,7 +189,7 @@ internal sealed partial class PCard
         }
 
         int index = PCardContext.IndexOf(_pCardContextCaret);
-        PCardContext.Insert(index < 0 ? PCardContext.Count : index, new PContext(written));
+        PCardContext.Insert(index < 0 ? PCardContext.Count : index, new PContext(LStateValue.LStateValueRead(written), _pCardEngine.LEngineIdentityCreate()));
     }
 
     private bool PCardContextCheck(string text)

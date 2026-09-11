@@ -1,6 +1,5 @@
 ﻿using System;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -8,11 +7,6 @@ internal sealed class PRegister
 {
     private readonly string _pRegisterText;
     private readonly bool _pRegisterUnreadable;
-
-    internal PRegister(string text)
-        : this(LStateValue.LStateValueRead(text), LEngine.LEngineIdentityCreate())
-    {
-    }
 
     internal PRegister(LStateValue text, long id)
         : this(text, id, string.Empty, false)

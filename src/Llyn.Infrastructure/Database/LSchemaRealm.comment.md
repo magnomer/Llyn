@@ -9,23 +9,21 @@ Every row a workspace creates is stamped with the realm that first created it.
 Identifiers are sequential within a database, so they say nothing on their own once two databases meet.
 The realm is what tells them apart, so a merge never mistakes one workspace's row for another's.
 
-The table holds two columns because a realm has two forms.
-`value` is the global form: sixteen bytes no other workspace mints.
-`id` is the local form: a small number this database alone assigns.
-Rows stamp the local form, so the stamp costs a byte or two rather than sixteen.
+The table holds one row.
+`value` is sixteen bytes no other workspace mints.
+Rows stamp that value itself, so a stamp means the same thing in every workspace it reaches.
+A local number in its place would be true only inside the database that assigned it.
 
-## `public const long LSchemaRealmOwn`
+## `public const long LSchemaRealmRow`
 
-The local surrogate this workspace's own realm always takes.
+The id the single realm row always carries.
 
-Row one is reserved for it and seeded when the database is made.
-Imported realms take the numbers after it, in the order they arrive.
-A number is never handed out twice, so a stamp keeps naming the realm it was written for even if that realm is later dropped.
+The table checks that no other id exists.
+A second row would give one workspace two identities.
 
 ## `public static void LSchemaRealmCreate(SqliteConnection connection)`
 
-Creates the table when it is absent and seeds the own-realm row when that is absent.
+Creates the table when it is absent and seeds the realm row when that is absent.
 
-The seeded value is minted once and never again, because the insert names row one and yields to the row already there.
-Leaving the id out would let the database pick a fresh number, and every open would add one more realm.
+The seeded value is minted once and never again, because the insert names the one row and yields to the row already there.
 Minting it twice would give one workspace two identities and break every stamp already written.

@@ -15,8 +15,8 @@ public static class LSchemaQuotation
             """
             CREATE TABLE IF NOT EXISTS example (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 language TEXT NOT NULL,
                 text_state TEXT NOT NULL DEFAULT 'unspecified',
                 text TEXT,
@@ -28,7 +28,7 @@ public static class LSchemaQuotation
                 CHECK (translation_state = 'specified' OR translation IS NULL),
                 CHECK (source_state = 'specified' OR source_id IS NULL),
                 FOREIGN KEY (source_id) REFERENCES source (id),
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS sense_example (

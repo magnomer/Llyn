@@ -51,7 +51,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return LIdentity.LIdentityCreate();
+            return LEngineIdentityCreate();
         }
     }
 
@@ -65,7 +65,7 @@ public sealed partial class LEngine
             {
                 LCardDraftPosition = index + 1,
                 LCardDraftId = card.LCardDraftId == 0
-                    ? LIdentity.LIdentityCreate()
+                    ? LEngineIdentityCreate()
                     : card.LCardDraftId,
             };
         }

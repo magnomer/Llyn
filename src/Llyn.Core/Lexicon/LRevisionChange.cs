@@ -2,7 +2,7 @@
 
 public sealed record LRevisionChange(
     int LRevisionChangePosition,
-    long LRevisionChangeTarget,
-    string LRevisionChangeType,
+    long LRevisionChangeTargetId,
+    string LRevisionChangeTargetType,
     string LRevisionChangeKind,
     string? LRevisionChangeSummary);

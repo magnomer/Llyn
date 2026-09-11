@@ -15,8 +15,8 @@ public static class LSchemaRegister
             """
             CREATE TABLE IF NOT EXISTS register (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 name_state TEXT NOT NULL DEFAULT 'unspecified',
                 name TEXT,
                 language TEXT,
@@ -26,7 +26,7 @@ public static class LSchemaRegister
                 CHECK (builtin IN (0, 1)),
                 CHECK (builtin = 0 OR language IS NOT NULL),
                 CHECK (builtin = 0 OR pack_key IS NOT NULL),
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS register_pack_key

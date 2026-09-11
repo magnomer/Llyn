@@ -37,12 +37,12 @@ public partial class PDuplex : UserControl
         PLeftDisplay.PDisplayClear();
         PRightDisplay.PDisplayClear();
 
-        if (state.LWorkspaceStateLeft is long left)
+        if (state.LWorkspaceStateLeftEntryId is long left)
         {
             PDuplexEntryShow(left, PLeftDisplay);
         }
 
-        if (state.LWorkspaceStateRight is long right)
+        if (state.LWorkspaceStateRightEntryId is long right)
         {
             PDuplexEntryShow(right, PRightDisplay);
         }

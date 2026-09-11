@@ -1,6 +1,5 @@
 ﻿using System;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -8,11 +7,6 @@ internal sealed class PContext
 {
     private readonly string _pContextText;
     private readonly bool _pContextUnreadable;
-
-    internal PContext(string text)
-        : this(LStateValue.LStateValueRead(text), LEngine.LEngineIdentityCreate())
-    {
-    }
 
     internal PContext(LStateValue text, long id)
         : this(text, id, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified)

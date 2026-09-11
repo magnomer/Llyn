@@ -15,15 +15,15 @@ public static class LSchemaVideo
             """
             CREATE TABLE IF NOT EXISTS video (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 location_state TEXT NOT NULL DEFAULT 'unspecified',
                 location TEXT,
                 span_state TEXT NOT NULL DEFAULT 'unspecified',
                 span TEXT,
                 CHECK (location_state = 'specified' OR location IS NULL),
                 CHECK (span_state = 'specified' OR span IS NULL),
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS sense_video (

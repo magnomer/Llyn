@@ -172,13 +172,13 @@ public sealed class TSpeech
         Assert.Equal(
             "speech",
             Assert.Single(engine.TEngineChangeRead(revision!.LRevisionId),
-                change => change.LRevisionChangeType == "speech").LRevisionChangeType);
+                change => change.LRevisionChangeTargetType == "speech").LRevisionChangeTargetType);
 
         engine.TEngineEntryUpdate(entry.LEntryId, TSpeechDraftCreate("Noun"));
         revision = engine.TEngineRevisionRead();
         Assert.DoesNotContain(
             engine.TEngineChangeRead(revision!.LRevisionId),
-            change => change.LRevisionChangeType == "speech");
+            change => change.LRevisionChangeTargetType == "speech");
     }
 
     [Fact]

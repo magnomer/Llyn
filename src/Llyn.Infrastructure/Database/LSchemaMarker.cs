@@ -57,8 +57,8 @@ public static class LSchemaMarker
 
             CREATE TABLE IF NOT EXISTS situation (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
                 description_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -68,7 +68,7 @@ public static class LSchemaMarker
                 CHECK (title_state = 'specified' OR title IS NULL),
                 CHECK (description_state = 'specified' OR description IS NULL),
                 CHECK (kind_state = 'specified' OR kind IS NULL),
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS sense_situation (

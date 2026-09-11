@@ -3,7 +3,7 @@
 ## `public sealed class LWorkspaceArchive`
 
 Persists the workspace row — the operational state of the session, not lexical data.
-There is one such row per database, carried under a fixed id.
+There is one such row per database, carried under id 1.
 So opening the workspace never has to search for it.
 `LWorkspaceStateRead` creates the row on first use and returns it.
 `LWorkspaceStateSave` writes it back in place.
@@ -21,7 +21,7 @@ The pane columns and the revision column are references the schema clears rather
 Deleting an Entry sets the pane that showed it back to empty instead of blocking the delete.
 So this store holds no lexical guard of its own — losing the whole row would lose no dictionary content.
 
-## `private const string LWorkspaceArchiveRow = "workspace";`
+## `private const long LWorkspaceArchiveRow = 1;`
 
 Fixed id of the single workspace row this store reads and writes.
 
@@ -53,6 +53,15 @@ So the caller always receives a state rather than `null`.
 
 Writes `state` back into the workspace row, creating the row when it is absent.
 The row written is always this store's single one, whatever id the state carries.
+The identity floor is written only downward.
+A state read before another engine issued an id would otherwise raise the floor and let that id come round again.
+
+## `public long LWorkspaceFloorLower()`
+
+Lowers the identity floor by one and returns the new floor.
+
+One statement lowers and reads, so two engines on one workspace never receive the same number.
+The row is created at minus one when the database has none yet.
 
 ## `private static string? LWorkspaceArchiveRead(SqliteDataReader reader, int column)`
 

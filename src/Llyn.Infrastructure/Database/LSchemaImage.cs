@@ -15,12 +15,12 @@ public static class LSchemaImage
             """
             CREATE TABLE IF NOT EXISTS image (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                realm_origin INTEGER REFERENCES realm (id),
-                id_origin INTEGER,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
                 location_state TEXT NOT NULL DEFAULT 'unspecified',
                 location TEXT,
                 CHECK (location_state = 'specified' OR location IS NULL),
-                CHECK ((realm_origin IS NULL) = (id_origin IS NULL))
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS sense_image (

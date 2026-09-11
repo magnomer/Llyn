@@ -17,7 +17,7 @@ public sealed partial class LEngine
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
 
             LCourtLink link = new(
-                LIdentity.LIdentityCreate(),
+                LEngineIdentityCreate(),
                 ownerId,
                 targetId,
                 headword,
