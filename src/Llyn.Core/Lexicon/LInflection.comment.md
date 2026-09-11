@@ -3,15 +3,18 @@
 ## `public sealed record LInflection(`
 
 One inflected form of an entry, ordered within it.
-Identity is `(entry_id, position)`: the inflection is subordinate to its `LInflectionEntryId` parent, and reordering changes `LInflectionPosition` only.
-It carries its own grammatical features in order (`LInflectionFeatures`).
-It stores only the stable part-of-speech id (`LInflectionSpeechId`), never a display name.
+The inflection has its own row id so its morphology links can name it directly.
+It is subordinate to its `LInflectionEntryId` parent, and reordering changes `LInflectionPosition` only.
+It carries the morphology values it shows, in order (`LInflectionMorphology`).
+It links its part of speech by row id (`LInflectionSpeechId`), never by name.
 
 **Parameters**
 
+- `LInflectionId` — Row id, `0` before the row is stored.
 - `LInflectionEntryId` — Parent entry id.
 - `LInflectionPosition` — Order within the parent entry.
 - `LInflectionText` — The inflected form.
 - `LInflectionLocal` — Optional local representation.
-- `LInflectionSpeechId` — Optional stable part-of-speech id, and `null` when unspecified.
-- `LInflectionFeatures` — Ordered grammatical features carried by the inflection.
+- `LInflectionSpeechId` — Linked `speech_value` row, or `null` when unspecified.
+- `LInflectionMorphology` — Ordered `morphology_value` row ids the inflection carries.
+  Each value knows its feature, so the feature is not repeated here.

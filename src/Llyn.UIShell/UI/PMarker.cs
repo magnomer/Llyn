@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -63,10 +64,12 @@ public partial class PEditor
 
         if (!PMarkerFind(typed))
         {
-            _pMarkerChip.Add(new PMarkerChip(typed));
+            LSpeechValue? value = PCategoryAdd(typed);
+            _pMarkerChip.Add(value is null
+                ? new PMarkerChip(0, typed)
+                : new PMarkerChip(value.LSpeechValueId, value.LSpeechValueName));
         }
 
-        PCategoryAdd(typed);
         PCategoryUpdate();
     }
 
@@ -83,36 +86,38 @@ public partial class PEditor
         return false;
     }
 
-    private IReadOnlyList<string> PMarkerRead()
+    private IReadOnlyList<LSpeechDraft> PMarkerRead()
     {
-        List<string> names = new(_pMarkerChip.Count + 1);
+        List<LSpeechDraft> drafts = new(_pMarkerChip.Count + 1);
         foreach (PMarkerChip chip in _pMarkerChip)
         {
-            names.Add(chip.PMarkerChipName);
+            drafts.Add(chip.PMarkerChipValue > 0
+                ? LSpeechDraft.LSpeechDraftCreate(chip.PMarkerChipValue, chip.PMarkerChipName)
+                : LSpeechDraft.LSpeechDraftCreate(chip.PMarkerChipName));
         }
 
         string typed = (PMarkerField.Text ?? string.Empty).Trim();
         if (typed.Length > 0 && !PMarkerFind(typed))
         {
-            names.Add(typed);
+            drafts.Add(LSpeechDraft.LSpeechDraftCreate(typed));
         }
 
-        return names;
+        return drafts;
     }
 
-    private void PMarkerShow(IReadOnlyList<string>? names)
+    private void PMarkerShow(IReadOnlyList<LSpeechDraft>? speeches)
     {
         _pMarkerChip.Clear();
         PMarkerField.Text = string.Empty;
 
-        if (names is not null)
+        if (speeches is not null)
         {
-            foreach (string name in names)
+            foreach (LSpeechDraft speech in speeches)
             {
-                string typed = name.Trim();
-                if (typed.Length > 0 && !PMarkerFind(typed))
+                string name = speech.LSpeechDraftName.Trim();
+                if (name.Length > 0 && !PMarkerFind(name))
                 {
-                    _pMarkerChip.Add(new PMarkerChip(typed));
+                    _pMarkerChip.Add(new PMarkerChip(speech.LSpeechDraftValue, name));
                 }
             }
         }

@@ -2,10 +2,10 @@
 
 public sealed record LWorkspaceState(
     long LWorkspaceStateId,
-    long? LWorkspaceStateLeftEntryId = null,
-    long? LWorkspaceStateRightEntryId = null,
-    long? LWorkspaceStateRevisionId = null,
-    long LWorkspaceStateIdentityFloor = 0,
+    long? LWorkspaceStateLeft = null,
+    long? LWorkspaceStateRight = null,
+    long? LWorkspaceStateRevision = null,
+    long LWorkspaceStateFloor = 0,
     string? LWorkspaceStateMode = null,
     bool LWorkspaceStateSplit = false,
     LCatalogOrder LWorkspaceStateOrder = LCatalogOrder.LCatalogOrderHeadword,

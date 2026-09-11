@@ -2,11 +2,14 @@ namespace Llyn.UIShell;
 
 internal sealed class PCategoryItem
 {
-    internal PCategoryItem(string name, bool taken)
+    internal PCategoryItem(long valueId, string name, bool taken)
     {
+        PCategoryItemValue = valueId;
         PCategoryItemName = name;
         PCategoryItemTaken = taken;
     }
+
+    public long PCategoryItemValue { get; }
 
     public string PCategoryItemName { get; }
 

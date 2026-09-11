@@ -15,47 +15,58 @@ public sealed class LSpeechArchive
         _lSpeechArchiveDatabase = database;
     }
 
-    public void LSpeechValueCreate(LSpeechValue value)
+    public LSpeechValue LSpeechValueCreate(LSpeechValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
+        ArgumentException.ThrowIfNullOrWhiteSpace(value.LSpeechValueLanguage);
+        ArgumentException.ThrowIfNullOrWhiteSpace(value.LSpeechValueName);
 
         using LDatabaseSession session = _lSpeechArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        long packId = value.LSpeechValueCode == 0
+            ? LSpeechCodeCreate(connection, value.LSpeechValueLanguage)
+            : value.LSpeechValueCode;
+
+        long id;
+        using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 """
-                INSERT INTO part_of_speech_value (language, value_id, display_name, position)
-                VALUES ($language, $value, $name, $position)
-                ON CONFLICT (language, value_id)
-                DO UPDATE SET display_name = excluded.display_name, position = excluded.position;
+                INSERT INTO speech_value (language, pack_id, name, position)
+                VALUES ($language, $pack, $name, $position)
+                ON CONFLICT (language, pack_id)
+                DO UPDATE SET name = excluded.name, position = excluded.position
+                RETURNING id;
                 """;
             command.Parameters.AddWithValue("$language", value.LSpeechValueLanguage);
-            command.Parameters.AddWithValue("$value", value.LSpeechValueId);
+            command.Parameters.AddWithValue("$pack", packId);
             command.Parameters.AddWithValue("$name", value.LSpeechValueName);
             command.Parameters.AddWithValue("$position", value.LSpeechValuePosition);
-            command.ExecuteNonQuery();
+            id = Convert.ToInt64(command.ExecuteScalar());
         }
 
         session.LDatabaseSessionCommit();
+        return value with { LSpeechValueId = id, LSpeechValueCode = packId };
     }
 
-    public string? LSpeechValueRead(string language, string valueId)
+    public LSpeechValue? LSpeechValueRead(long id)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-        ArgumentException.ThrowIfNullOrWhiteSpace(valueId);
+        if (id <= 0)
+        {
+            return null;
+        }
 
         using LDatabaseSession session = _lSpeechArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT display_name FROM part_of_speech_value
-            WHERE language = $language AND value_id = $value;
+            SELECT id, language, pack_id, name, position FROM speech_value WHERE id = $id;
             """;
-        command.Parameters.AddWithValue("$language", language);
-        command.Parameters.AddWithValue("$value", valueId);
+        command.Parameters.AddWithValue("$id", id);
 
-        object? result = command.ExecuteScalar();
-        return result is string name ? name : null;
+        using SqliteDataReader reader = command.ExecuteReader();
+        return reader.Read() ? LSpeechRowRead(reader) : null;
     }
 
     public IReadOnlyList<LSpeechValue> LSpeechValueRead(string language)
@@ -66,8 +77,8 @@ public sealed class LSpeechArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT language, value_id, display_name, position FROM part_of_speech_value
-            WHERE language = $language ORDER BY position;
+            SELECT id, language, pack_id, name, position FROM speech_value
+            WHERE language = $language ORDER BY position, id;
             """;
         command.Parameters.AddWithValue("$language", language);
 
@@ -75,17 +86,13 @@ public sealed class LSpeechArchive
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            values.Add(new LSpeechValue(
-                reader.GetString(0),
-                reader.GetString(1),
-                reader.GetString(2),
-                reader.GetInt32(3)));
+            values.Add(LSpeechRowRead(reader));
         }
 
         return values;
     }
 
-    public string? LSpeechValueFind(string language, string name)
+    public LSpeechValue? LSpeechValueFind(string language, string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
         if (string.IsNullOrWhiteSpace(name))
@@ -98,14 +105,33 @@ public sealed class LSpeechArchive
 
         command.CommandText =
             """
-            SELECT value_id FROM part_of_speech_value
-            WHERE language = $language AND trim(display_name) = trim($name) COLLATE NOCASE
-            ORDER BY position LIMIT 1;
+            SELECT id, language, pack_id, name, position FROM speech_value
+            WHERE language = $language AND trim(name) = trim($name) COLLATE NOCASE
+            ORDER BY position, id LIMIT 1;
             """;
         command.Parameters.AddWithValue("$language", language);
         command.Parameters.AddWithValue("$name", name);
 
-        object? result = command.ExecuteScalar();
-        return result is string value ? value : null;
+        using SqliteDataReader reader = command.ExecuteReader();
+        return reader.Read() ? LSpeechRowRead(reader) : null;
+    }
+
+    private static long LSpeechCodeCreate(SqliteConnection connection, string language)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            "SELECT min(0, ifnull(MIN(pack_id), 0)) - 1 FROM speech_value WHERE language = $language;";
+        command.Parameters.AddWithValue("$language", language);
+        return Convert.ToInt64(command.ExecuteScalar());
+    }
+
+    private static LSpeechValue LSpeechRowRead(SqliteDataReader reader)
+    {
+        return new LSpeechValue(
+            reader.GetInt64(0),
+            reader.GetString(1),
+            reader.GetInt64(2),
+            reader.GetString(3),
+            reader.GetInt32(4));
     }
 }

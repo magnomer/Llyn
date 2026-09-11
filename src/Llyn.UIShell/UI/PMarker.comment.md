@@ -10,9 +10,9 @@ The field is a text box rather than a chooser on purpose.
 The presets are what a language pack declares.
 A pack cannot have thought of everything a user will want to write down.
 So the box takes anything, whether it was picked or typed.
-Text naming a preset is stored as that preset's stable id.
-Text naming none is stored as typed.
-Which of the two it is stays the engine's decision at the write.
+A chip picked or declared as a preset carries that preset's row id.
+A chip the engine could not declare carries only its text.
+Whether typed text names a preset stays the engine's decision at the write.
 
 ## Inline notes
 
@@ -39,13 +39,15 @@ A form being filled from a draft is not typing, so it moves nothing.
 Blank text and a name already carried both add no chip.
 The box is cleared either way, so a repeated name does not sit there looking unread.
 A name the presets do not hold is declared as one, so the menu offers it next time.
+The chip takes the declared row's id and name, or the bare text when declaring failed.
 
-### `private IReadOnlyList<string> PMarkerRead()`
+### `private IReadOnlyList<LSpeechDraft> PMarkerRead()`
 
+Each chip as the draft it stands for, linked by id where the chip knows one.
 What the box still holds counts as carried.
 A user who typed a last part of speech and stored without pressing Enter meant it.
 
-### `private void PMarkerShow(IReadOnlyList<string>? names)`
+### `private void PMarkerShow(IReadOnlyList<LSpeechDraft>? speeches)`
 
 A null list is the empty form rather than an entry with no parts of speech.
 Both end with no chips, and the difference is the caller's.

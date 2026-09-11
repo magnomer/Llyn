@@ -23,10 +23,10 @@ That is the interface language and the window geometry, which mean the same thin
 **Parameters**
 
 - `LWorkspaceStateId` — Id of the workspace row, always 1.
-- `LWorkspaceStateLeftEntryId` — Id of the Entry the left duplex side shows, and `null` when that side is empty.
-- `LWorkspaceStateRightEntryId` — Id of the Entry the right duplex side shows, and `null` when that side is empty.
-- `LWorkspaceStateRevisionId` — Id of the current revision, and `null` before any revision is recorded.
-- `LWorkspaceStateIdentityFloor` — Lowest temporary id ever issued in this workspace, and 0 before any was.
+- `LWorkspaceStateLeft` — Id of the Entry the left duplex side shows, and `null` when that side is empty.
+- `LWorkspaceStateRight` — Id of the Entry the right duplex side shows, and `null` when that side is empty.
+- `LWorkspaceStateRevision` — Id of the current revision, and `null` before any revision is recorded.
+- `LWorkspaceStateFloor` — Lowest temporary id ever issued in this workspace, and 0 before any was.
 - `LWorkspaceStateMode` — Name of the tab standing open, and `null` before any tab is chosen.
 - `LWorkspaceStateSplit` — Whether the open tab shows its editor rather than its read area.
 - `LWorkspaceStateOrder` — Ordering the library panel lists entries in.

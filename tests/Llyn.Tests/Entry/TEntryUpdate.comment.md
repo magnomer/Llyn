@@ -26,7 +26,7 @@ The cards the draft still named kept their rows.
 So anything pointing at them still points at the same Meaning.
 The card added got a row of its own.
 
-### `Assert.Equal(revision.LRevisionId, engine.LEngineStateRead().LWorkspaceStateRevisionId);`
+### `Assert.Equal(revision.LRevisionId, engine.LEngineStateRead().LWorkspaceStateRevision);`
 
 The workspace row moved onto the revision the update recorded.
 

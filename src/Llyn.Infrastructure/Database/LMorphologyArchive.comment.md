@@ -2,21 +2,43 @@
 
 ## `public sealed class LMorphologyArchive`
 
-Persists and resolves the language-controlled morphology display vocabulary.
-Inflections store only stable ids.
-The feature and value display names for a language live here.
-They are resolved by `(language, part_of_speech_id, feature_id, value_id)`.
-So a name is never copied onto an entry's lexical rows.
+Persists and resolves a language's morphology vocabulary.
+A feature belongs to a part of speech and owns its values.
+Inflections link a value row by id, and the value knows its feature.
+Names live here and are never copied onto an entry's lexical rows.
 
 ## `public LMorphologyArchive(LDatabase database)`
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public void LMorphologyCreate(LMorphology morphology)`
+## `public LFeature LFeatureCreate(LFeature feature)`
 
-Adds or replaces one vocabulary row, keyed by `(language, part_of_speech_id, feature_id, value_id)`.
-It carries its feature and value display names and display order.
+Adds or replaces one feature, keyed by `(speech_value_id, pack_id)`, and returns it with its row id.
+A pack that renames a feature keeps the row id.
 
-## `public LMorphology? LMorphologyRead(string language, string speechId, string featureId, string valueId)`
+## `public LMorphology LMorphologyCreate(LMorphology value)`
 
-Resolves the vocabulary row for `language`, `speechId`, `featureId`, and `valueId`, or `null` when the vocabulary has no such row.
+Adds or replaces one value, keyed by `(morphology_feature_id, pack_id)`, and returns it with its row id.
+A pack that renames a value keeps the row id, so every inflection that links it follows the rename.
+
+## `public IReadOnlyList<LFeature> LFeatureRead(long speechValueId)`
+
+Reads every feature the part of speech takes, in display order.
+
+## `public LFeature? LFeatureFind(long speechValueId, string name)`
+
+Resolves the feature `name` names under the part of speech, or `null` when none does.
+Matching is a trimmed, case-insensitive comparison of the display name.
+
+## `public LMorphology? LMorphologyRead(long id)`
+
+Reads one value by row id, or `null` when no row has it.
+
+## `public IReadOnlyList<LMorphology> LMorphologyScan(long featureId)`
+
+Reads every value the feature takes, in display order.
+
+## `public LMorphology? LMorphologyFind(long featureId, string name)`
+
+Resolves the value `name` names under the feature, or `null` when none does.
+Matching is a trimmed, case-insensitive comparison of the display name.

@@ -56,7 +56,7 @@ The row written is always this store's single one, whatever id the state carries
 The identity floor is written only downward.
 A state read before another engine issued an id would otherwise raise the floor and let that id come round again.
 
-## `public long LWorkspaceFloorLower()`
+## `public long LWorkspaceFloorAdjust()`
 
 Lowers the identity floor by one and returns the new floor.
 

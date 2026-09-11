@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Llyn.Core;
 
 public sealed record LInflection(
+    long LInflectionId,
     long LInflectionEntryId,
     int LInflectionPosition,
     string LInflectionText,
     string? LInflectionLocal,
-    string? LInflectionSpeechId,
-    IReadOnlyList<LFeature> LInflectionFeatures);
+    long? LInflectionSpeechId,
+    IReadOnlyList<long> LInflectionMorphology);

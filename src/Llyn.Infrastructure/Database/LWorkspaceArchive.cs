@@ -64,10 +64,10 @@ public sealed class LWorkspaceArchive
 
             state = fallback with
             {
-                LWorkspaceStateLeftEntryId = LWorkspaceArchiveResolve(reader, 1),
-                LWorkspaceStateRightEntryId = LWorkspaceArchiveResolve(reader, 2),
-                LWorkspaceStateRevisionId = LWorkspaceArchiveResolve(reader, 3),
-                LWorkspaceStateIdentityFloor = reader.GetInt64(4),
+                LWorkspaceStateLeft = LWorkspaceArchiveResolve(reader, 1),
+                LWorkspaceStateRight = LWorkspaceArchiveResolve(reader, 2),
+                LWorkspaceStateRevision = LWorkspaceArchiveResolve(reader, 3),
+                LWorkspaceStateFloor = reader.GetInt64(4),
                 LWorkspaceStateMode = LWorkspaceArchiveRead(reader, 5),
                 LWorkspaceStateSplit = LWorkspaceArchiveRead(reader, 6) == LWorkspaceArchiveEditor,
                 LWorkspaceStateOrder = LCatalog.LCatalogOrderParse(
@@ -127,10 +127,10 @@ public sealed class LWorkspaceArchive
                     tenor_order = excluded.tenor_order;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
-            command.Parameters.AddWithValue("$left", (object?)state.LWorkspaceStateLeftEntryId ?? DBNull.Value);
-            command.Parameters.AddWithValue("$right", (object?)state.LWorkspaceStateRightEntryId ?? DBNull.Value);
-            command.Parameters.AddWithValue("$revision", (object?)state.LWorkspaceStateRevisionId ?? DBNull.Value);
-            command.Parameters.AddWithValue("$floor", state.LWorkspaceStateIdentityFloor);
+            command.Parameters.AddWithValue("$left", (object?)state.LWorkspaceStateLeft ?? DBNull.Value);
+            command.Parameters.AddWithValue("$right", (object?)state.LWorkspaceStateRight ?? DBNull.Value);
+            command.Parameters.AddWithValue("$revision", (object?)state.LWorkspaceStateRevision ?? DBNull.Value);
+            command.Parameters.AddWithValue("$floor", state.LWorkspaceStateFloor);
             command.Parameters.AddWithValue("$mode", (object?)state.LWorkspaceStateMode ?? DBNull.Value);
             command.Parameters.AddWithValue(
                 "$split", state.LWorkspaceStateSplit ? LWorkspaceArchiveEditor : LWorkspaceArchiveDisplay);
@@ -148,7 +148,7 @@ public sealed class LWorkspaceArchive
         session.LDatabaseSessionCommit();
     }
 
-    public long LWorkspaceFloorLower()
+    public long LWorkspaceFloorAdjust()
     {
         using LDatabaseSession session = _lWorkspaceArchiveDatabase.LDatabaseSessionStart();
         long floor;

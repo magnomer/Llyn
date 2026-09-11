@@ -1,4 +1,4 @@
-# LEngineUpdate.cs
+﻿# LEngineUpdate.cs
 
 ## `public sealed partial class LEngine`
 
@@ -85,11 +85,16 @@ A field that comes back the same row writes nothing and records no change.
 ### `private static bool LEngineSpeechMatch(IReadOnlyList<LSpeech> one, IReadOnlyList<LSpeech> other)`
 
 Two sets of assignments compared as they are stored.
-A row is the same row when it names the same preset id at the same position.
+A row is the same row when it links the same value row at the same position.
 It is also the same when it carries the same typed text at the same position.
 The generated record equality would do this too.
 But it also compares the entry id a resolved row carries.
 That id is empty on the way in and filled on the way out.
+
+### `private string LEngineSpeechFormat(IReadOnlyList<LSpeech> speeches)`
+
+The parts of speech as words, for the revision change text.
+A linked value shows its current name, and custom text shows itself.
 
 ### `private void LEngineNoteUpdate(string entryId, LEntryDraft draft, List<LRevisionChange> changes)`
 

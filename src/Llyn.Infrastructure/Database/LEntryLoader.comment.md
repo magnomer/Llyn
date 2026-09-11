@@ -54,13 +54,12 @@ An entry with no pronunciation row carries none, rather than an empty one.
 The row's id travels with it, so a save updates that row instead of writing another.
 The audio's added time stays behind, because it is workspace bookkeeping.
 
-### `private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(string language, IReadOnlyList<LSpeech> speeches)`
+### `private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)`
 
 Every part of speech the entry carries, in stored order.
-The draft keeps the stored value id and the custom name apart, and carries the name to show beside them.
+The draft keeps the value link and the custom name apart, and carries the name to show beside them.
 A custom row shows the text it carries.
-A row naming a preset shows the language's display name.
-The bare id is shown when the pack that declared it is no longer installed.
+A row linking a value shows that row's name.
 An id is still what the entry was filed under, and showing it beats showing nothing.
 
 ### `private IReadOnlyList<LCardDraft> LEntryChildRead(`

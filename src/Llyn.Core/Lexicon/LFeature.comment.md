@@ -2,12 +2,14 @@
 
 ## `public sealed record LFeature(`
 
-One grammatical feature carried by an inflection, ordered within it.
-It stores only stable grammatical ids, a feature id and its value id, never display names.
-The names are resolved from the language-controlled morphology vocabulary (`LMorphology`).
-The feature's position and its parent inflection are given by its order within `LInflection.LInflectionFeatures`.
+One grammatical feature a part of speech takes (for example `number` on a noun).
+It owns the `LMorphology` rows that name its values.
+Inside a loaded `LSpeechPack` the parent link holds the parent's code, because the row id is unknown until import.
 
 **Parameters**
 
-- `LFeatureId` — Stable grammatical feature id (for example `number`).
-- `LFeatureValueId` — Stable grammatical value id (for example `plural`).
+- `LFeatureId` — Row id, `0` before the row is stored.
+- `LFeatureSpeechId` — Part of speech the feature applies to.
+- `LFeatureCode` — Number the pack file gave the feature, unique under its part of speech.
+- `LFeatureName` — Display name for the language.
+- `LFeaturePosition` — Display order within the part of speech.

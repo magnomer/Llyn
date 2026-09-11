@@ -18,20 +18,18 @@ Such a row resolves against nothing and is displayed as it was typed.
 The vocabulary is seeded from the language packs, not from anything compiled in.
 Every pack on disk declaring a `vocabulary.json` is written into the workspace.
 It happens when the engine binds to it, in one session.
-The rows are keyed by `(language, value_id)`.
-So a second run rewrites the same rows rather than adding to them.
+The rows are keyed by `(language, pack_id)` and their parents.
+So a second run rewrites the same rows, keeps their ids, and adds nothing.
 That is why the tables are no longer empty on a fresh workspace.
 It is also why adding a language is still a folder rather than a change here.
 
-## `public void LEngineSpeechCreate(LSpeechValue value)`
+## `public LSpeechValue LEngineSpeechCreate(LSpeechValue value)`
 
-Adds or replaces one part-of-speech vocabulary entry, keyed by its language and value id.
-It carries its display name and display order.
+Adds or replaces one part-of-speech value, keyed by its language and code, and returns it with its row id.
 
-## `public string? LEngineSpeechRead(string language, string valueId)`
+## `public LSpeechValue? LEngineSpeechRead(long id)`
 
-Resolves the display name of the part of speech `valueId` names in `language`.
-It returns `null` when that language declares no such part of speech.
+Reads the part-of-speech value with row id `id`, or `null` when no row has it.
 
 ## `public IReadOnlyList<LSpeechValue> LEngineSpeechRead(string language)`
 
@@ -46,26 +44,44 @@ Nothing to choose from is a language to type into, not a failure.
 Takes a part of speech no preset declares and makes it one of `language`'s presets.
 A name a preset already carries is returned as it stands rather than declared twice.
 Matching is on the trimmed name, without case, because the field is typed into by hand.
-A new preset is given a stable id derived from the name and the next free order.
+A new preset takes the next free order and a negative code, outside the space a pack owns.
 It returns the preset the name now stands for, or `null` when either argument is blank.
 This is what lets the dropdown grow with what a user writes.
 
-## `public string? LEngineSpeechFind(string language, string name)`
+## `public LSpeechValue? LEngineSpeechFind(string language, string name)`
 
-Resolves the display `name` of a part of speech back to the stable id `language` declares.
+Resolves the display `name` of a part of speech back to the row `language` declares.
 It returns `null` when no preset carries that name.
 That is what makes the typed text a custom part of speech rather than a preset.
 
-## `public void LEngineMorphologyCreate(LMorphology morphology)`
+## `public LFeature LEngineFeatureCreate(LFeature feature)`
 
-Adds or replaces one morphology vocabulary row.
-It is keyed by its language, part of speech, feature and value.
-It carries the display names and order those hold.
+Adds or replaces one feature under its part of speech, keyed by code.
+It returns the feature with its row id.
 
-## `public LMorphology? LEngineMorphologyRead(`
+## `public LMorphology LEngineMorphologyCreate(LMorphology value)`
 
-Resolves one morphology vocabulary row, the feature and value display names and their order.
-It returns `null` when the language declares no such row.
+Adds or replaces one value under its feature, keyed by code, and returns it with its row id.
+
+## `public IReadOnlyList<LFeature> LEngineFeatureRead(long speechValueId)`
+
+Reads the features the part of speech takes, in display order.
+
+## `public LFeature? LEngineFeatureFind(long speechValueId, string name)`
+
+Resolves the feature `name` names under the part of speech, or `null` when none does.
+
+## `public LMorphology? LEngineMorphologyRead(long id)`
+
+Reads the morphology value with row id `id`, or `null` when no row has it.
+
+## `public IReadOnlyList<LMorphology> LEngineMorphologyScan(long featureId)`
+
+Reads the values the feature takes, in display order.
+
+## `public LMorphology? LEngineMorphologyFind(long featureId, string name)`
+
+Resolves the value `name` names under the feature, or `null` when none does.
 
 ## `public LSentenceOrder LEngineOrderRead(string language)`
 
@@ -89,42 +105,27 @@ Reads the roles already saved under Entries written in `language`, on the same t
 The names of the parts of speech, for the surfaces that show words rather than ids.
 A draft that names nothing shows nothing.
 
-### `private IReadOnlyList<LSpeech> LEngineSpeechResolve(string entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)`
+### `private IReadOnlyList<LSpeech> LEngineSpeechResolve(long entryId, string language, IReadOnlyList<LSpeechDraft>? drafts)`
 
 The parts of speech a draft carries, as the rows the store keeps.
-A draft naming a language-pack value is stored under that value untouched.
+A draft linking a value row that still exists is stored under that link untouched.
 A draft carrying only typed text is looked up in the language's vocabulary first.
-Text that names a preset is filed under the preset, and text that names none is kept as it was typed.
-
-### `private static string LEngineSpeechNormalize(string name)`
-
-A typed name as the stable id its preset is keyed by, letters and digits kept and lowered.
-The `custom_` prefix keeps a user's preset out of the id space a language pack owns.
-So reimporting a pack rewrites its own rows and leaves what the user declared alone.
-
-### `id = $"{id}_{position + 1}"`
-
-Two different names can wear down to the same id.
-The order the preset takes is unique, so it is what separates them.
-
-### `private IReadOnlyList<LSpeech> LEngineSpeechResolve(string entryId, string language, string text)`
-
-One typed part of speech as the row (or no row) an entry stores for it.
-Blank text is no assignment at all.
-Text a preset names is stored as that preset's stable id.
-So renaming the preset renames it on every entry.
-Text nothing names is stored as typed, because the field is editable.
-Losing what a user wrote is not an option the form offers.
+Text that names a value is filed under that row.
+Text that names none is kept as it was typed.
+So renaming the value renames it on every entry, and a user's own wording is never lost.
 
 ### `private void LEngineLanguageImport()`
 
 Every language pack's vocabulary written into the workspace, in one session.
-The parts of speech go first, then the morphology rows that name them.
+The parts of speech go first, then the features under them, then the values under those.
+A pack names its parents by code, and the import maps each to the row id it was given.
+A feature or value whose parent the pack never declared is skipped.
 It runs whenever the engine binds to a workspace.
 A workspace may be new.
 It may have been created by an older version with fewer packs installed.
 It may have had a pack's wording corrected since it was last opened.
-Each row is keyed by its ids, so writing it again updates the wording.
+Each row is keyed by its parent and code.
+So writing it again updates the wording and keeps the row id.
 
 A pack that declares no vocabulary contributes nothing and is not an error.
 A language with no morphology to declare is an ordinary language, not a broken pack.

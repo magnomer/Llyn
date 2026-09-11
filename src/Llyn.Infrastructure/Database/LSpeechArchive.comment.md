@@ -2,22 +2,24 @@
 
 ## `public sealed class LSpeechArchive`
 
-Persists and resolves the language-controlled part-of-speech display vocabulary.
-An entry's POS rows store only the stable value id.
-The display name for a language lives here and is resolved by `(language, value_id)`.
+Persists and resolves a language's part-of-speech vocabulary.
+An entry's POS rows link a `speech_value` row by id.
+The display name lives here and is read by that id.
 So a name is never copied onto an entry's rows.
 
 ## `public LSpeechArchive(LDatabase database)`
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public void LSpeechValueCreate(LSpeechValue value)`
+## `public LSpeechValue LSpeechValueCreate(LSpeechValue value)`
 
-Adds or replaces one vocabulary entry, keyed by `(language, value_id)`, with its display name and display order.
+Adds or replaces one vocabulary row, keyed by `(language, pack_id)`, and returns it with its row id.
+A pack that renames a value keeps the row id, so every entry that links it follows the rename.
+A value with code `0` is user-added and is given a negative code no pack can collide with.
 
-## `public string? LSpeechValueRead(string language, string valueId)`
+## `public LSpeechValue? LSpeechValueRead(long id)`
 
-Resolves the display name for `valueId` in `language`, or `null` when the vocabulary has no such entry.
+Reads one value by row id, or `null` when no row has it.
 
 ## `public IReadOnlyList<LSpeechValue> LSpeechValueRead(string language)`
 
@@ -26,16 +28,20 @@ They come in the display order the language pack listed them in.
 Those are the presets the part-of-speech field offers.
 A language with no pack on disk declares none, which is an empty list rather than a failure.
 
-## `public string? LSpeechValueFind(string language, string name)`
+## `public LSpeechValue? LSpeechValueFind(string language, string name)`
 
-Resolves the part of speech `name` names in `language` back to its stable id.
-It returns `null` when the language declares no preset by that name.
+Resolves the part of speech `name` names in `language` back to its row.
+It returns `null` when the language declares no value by that name.
 Matching is a trimmed, case-insensitive comparison of the display name.
 The name arrives as the user typed it.
 Picking "Verb, transitive" from the dropdown and typing "verb, transitive" mean the same thing.
-Only text that names no preset at all is stored as typed.
+Only text that names no value at all is stored as typed.
 
 ## Inline notes
+
+### `private static long LSpeechCodeCreate(SqliteConnection connection, string language)`
+
+The next free negative code for `language`, counting down from `-1`.
 
 ### `command.CommandText =`
 

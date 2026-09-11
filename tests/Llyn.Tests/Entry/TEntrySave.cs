@@ -55,11 +55,11 @@ public sealed class TEntrySave
         LRevisionChange change = Assert.Single(
             TInterface.TRevisionArchiveCreate(workspace.TWorkspaceDatabase).TRevisionChangeRead(revision.LRevisionId));
         Assert.Equal("create", change.LRevisionChangeKind);
-        Assert.Equal(entry.LEntryId, change.LRevisionChangeTargetId);
+        Assert.Equal(entry.LEntryId, change.LRevisionChangeTarget);
 
         LWorkspaceState state = TInterface.TWorkspaceArchiveCreate(workspace.TWorkspaceDatabase).TWorkspaceStateRead();
-        Assert.Null(state.LWorkspaceStateLeftEntryId);
-        Assert.Equal(revision.LRevisionId, state.LWorkspaceStateRevisionId);
+        Assert.Null(state.LWorkspaceStateLeft);
+        Assert.Equal(revision.LRevisionId, state.LWorkspaceStateRevision);
     }
 
     [Fact]

@@ -139,16 +139,28 @@ public sealed class TDatabaseSession
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LInflectionArchive inflections = TInterface.TInflectionArchiveCreate(workspace.TWorkspaceDatabase);
 
+        LSpeechValue verb = TInterface.TSpeechArchiveCreate(workspace.TWorkspaceDatabase)
+            .TSpeechValueCreate(TInterface.TSpeechValueCreate("en", 1, "Verb", 0));
+        LMorphologyArchive morphology = TInterface.TMorphologyArchiveCreate(workspace.TWorkspaceDatabase);
+        LFeature tense = morphology.TFeatureCreate(
+            TInterface.TFeatureCreate(verb.LSpeechValueId, 1, "tense", 0));
+        LMorphology singular = morphology.TMorphologyCreate(
+            TInterface.TMorphologyCreate(tense.LFeatureId, 1, "singular", 0));
+        LMorphology past = morphology.TMorphologyCreate(
+            TInterface.TMorphologyCreate(tense.LFeatureId, 2, "past", 1));
+        LMorphology progressive = morphology.TMorphologyCreate(
+            TInterface.TMorphologyCreate(tense.LFeatureId, 3, "progressive", 2));
+
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "run", "en", null, null, null, null), [], []);
         inflections.TInflectionAppend(entry.LEntryId,
         [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "runs", null, null, [TInterface.TFeatureCreate("number", "singular")]),
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "ran", null, null, [TInterface.TFeatureCreate("tense", "past")]),
+            TInterface.TInflectionCreate(entry.LEntryId, 0, "runs", null, null, [singular.LMorphologyId]),
+            TInterface.TInflectionCreate(entry.LEntryId, 0, "ran", null, null, [past.LMorphologyId]),
         ]);
         inflections.TInflectionAppend(entry.LEntryId,
         [
-            TInterface.TInflectionCreate(entry.LEntryId, 0, "running", null, null, [TInterface.TFeatureCreate("aspect", "progressive")]),
+            TInterface.TInflectionCreate(entry.LEntryId, 0, "running", null, null, [progressive.LMorphologyId]),
         ]);
 
         Assert.Equal(
@@ -160,8 +172,8 @@ public sealed class TDatabaseSession
         IReadOnlyList<LInflection> remaining = inflections.TInflectionRead(entry.LEntryId);
         Assert.Equal(["ran", "running"], remaining.Select(inflection => inflection.LInflectionText));
         Assert.Equal([0, 1], remaining.Select(inflection => inflection.LInflectionPosition));
-        Assert.Equal("past", remaining[0].LInflectionFeatures[0].LFeatureValueId);
-        Assert.Equal("progressive", remaining[1].LInflectionFeatures[0].LFeatureValueId);
+        Assert.Equal(past.LMorphologyId, remaining[0].LInflectionMorphology[0]);
+        Assert.Equal(progressive.LMorphologyId, remaining[1].LInflectionMorphology[0]);
     }
 
     [Fact]

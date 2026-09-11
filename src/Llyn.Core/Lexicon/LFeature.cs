@@ -1,5 +1,8 @@
 namespace Llyn.Core;
 
 public sealed record LFeature(
-    string LFeatureId,
-    string LFeatureValueId);
+    long LFeatureId,
+    long LFeatureSpeechId,
+    long LFeatureCode,
+    string LFeatureName,
+    int LFeaturePosition);

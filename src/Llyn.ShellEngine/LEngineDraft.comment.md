@@ -101,7 +101,7 @@ The shell turns that into localized text, so no user-facing wording lives in the
 
 ### `LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(`
 
-The entry's language is the language-pack name, which is the key part_of_speech_value and morphology_value are already written against.
+The entry's language is the language-pack name, which is the language speech_value rows are already written under.
 
 ### `speeches: LEngineSpeechResolve(`
 

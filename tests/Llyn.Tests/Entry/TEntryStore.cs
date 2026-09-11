@@ -16,7 +16,7 @@ public sealed class TEntryStore
             TInterface.TEntryCreate(0, "word", "en", null, null, null, null),
             [TInterface.TFormCreate(0, 0, "word", null, "headword"),
              TInterface.TFormCreate(0, 0, "words", null, "plural")],
-            [TInterface.TSpeechCreate(0, 0, "noun")]);
+            [TInterface.TSpeechCreate(0, 0, null, "noun")]);
 
         Assert.NotEqual(0, stored.LEntryId);
         Assert.Equal("word", entries.TEntryRead(stored.LEntryId)?.LEntryHeadword);

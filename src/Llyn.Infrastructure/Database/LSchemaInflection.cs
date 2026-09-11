@@ -13,36 +13,45 @@ public static class LSchemaInflection
 
         command.CommandText =
             """
+            CREATE TABLE IF NOT EXISTS morphology_feature (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                speech_value_id INTEGER NOT NULL,
+                pack_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                UNIQUE (speech_value_id, pack_id),
+                FOREIGN KEY (speech_value_id) REFERENCES speech_value (id) ON DELETE CASCADE
+            );
+
+            CREATE TABLE IF NOT EXISTS morphology_value (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                morphology_feature_id INTEGER NOT NULL,
+                pack_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                UNIQUE (morphology_feature_id, pack_id),
+                FOREIGN KEY (morphology_feature_id) REFERENCES morphology_feature (id) ON DELETE CASCADE
+            );
+
             CREATE TABLE IF NOT EXISTS inflection (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 entry_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 text TEXT NOT NULL,
                 local TEXT,
-                part_of_speech_id TEXT,
-                PRIMARY KEY (entry_id, position),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                speech_value_id INTEGER,
+                UNIQUE (entry_id, position),
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
+                FOREIGN KEY (speech_value_id) REFERENCES speech_value (id)
             );
 
             CREATE TABLE IF NOT EXISTS inflection_feature (
-                entry_id INTEGER NOT NULL,
-                inflection_position INTEGER NOT NULL,
+                inflection_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                feature_id TEXT NOT NULL,
-                value_id TEXT NOT NULL,
-                PRIMARY KEY (entry_id, inflection_position, position),
-                FOREIGN KEY (entry_id, inflection_position)
-                    REFERENCES inflection (entry_id, position) ON DELETE CASCADE
-            );
-
-            CREATE TABLE IF NOT EXISTS morphology_value (
-                language TEXT NOT NULL,
-                part_of_speech_id TEXT NOT NULL,
-                feature_id TEXT NOT NULL,
-                feature_display_name TEXT NOT NULL,
-                value_id TEXT NOT NULL,
-                value_display_name TEXT NOT NULL,
-                position INTEGER NOT NULL,
-                PRIMARY KEY (language, part_of_speech_id, feature_id, value_id)
+                morphology_value_id INTEGER NOT NULL,
+                PRIMARY KEY (inflection_id, position),
+                FOREIGN KEY (inflection_id) REFERENCES inflection (id) ON DELETE CASCADE,
+                FOREIGN KEY (morphology_value_id) REFERENCES morphology_value (id)
             );
             """;
         command.ExecuteNonQuery();

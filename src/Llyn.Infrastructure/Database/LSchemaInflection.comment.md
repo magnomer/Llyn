@@ -6,8 +6,11 @@ Creates the inflected forms an Entry owns and the vocabulary they read their fea
 
 ## `public static void LSchemaInflectionCreate(SqliteConnection connection)`
 
-Entry-owned inflected forms and their ordered grammatical features, plus the language-controlled morphology display vocabulary.
-A feature's identity is the two-level owned key (entry_id, inflection_position, position).
-It cascades when its inflection is deleted.
-An inflection cascades when its Entry is deleted.
-Lexical rows store only stable ids, and display names live in morphology_value.
+The morphology vocabulary, then the entry-owned inflected forms and their ordered features.
+morphology_feature belongs to a speech_value row and morphology_value belongs to a feature.
+Both have their own integer id and are unique on (parent, pack_id), so a re-seed upserts and keeps ids.
+
+An inflection has its own id and is unique on (entry_id, position).
+It cascades when its Entry is deleted.
+An inflection_feature links its inflection by id and cascades with it.
+It stores only the morphology_value link, because the value knows its feature.

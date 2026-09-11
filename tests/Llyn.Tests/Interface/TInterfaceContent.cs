@@ -184,18 +184,32 @@ internal static partial class TInterface
         engine.LEngineInflectionSet(entryId, inflections);
     }
 
-    internal static void TEngineMorphologyCreate(this LEngine engine, LMorphology morphology)
-    {
-        engine.LEngineMorphologyCreate(morphology);
-    }
+    internal static LFeature TEngineFeatureCreate(
+        this LEngine engine, LFeature feature) =>
+        engine.LEngineFeatureCreate(feature);
 
-    internal static LMorphology? TEngineMorphologyRead(
-        this LEngine engine,
-        string language,
-        string speechId,
-        string featureId,
-        string valueId) =>
-        engine.LEngineMorphologyRead(language, speechId, featureId, valueId);
+    internal static LMorphology TEngineMorphologyCreate(
+        this LEngine engine, LMorphology value) =>
+        engine.LEngineMorphologyCreate(value);
+
+    internal static IReadOnlyList<LFeature> TEngineFeatureRead(
+        this LEngine engine, long speechValueId) =>
+        engine.LEngineFeatureRead(speechValueId);
+
+    internal static LFeature? TEngineFeatureFind(
+        this LEngine engine, long speechValueId, string name) =>
+        engine.LEngineFeatureFind(speechValueId, name);
+
+    internal static LMorphology? TEngineMorphologyRead(this LEngine engine, long id) =>
+        engine.LEngineMorphologyRead(id);
+
+    internal static IReadOnlyList<LMorphology> TEngineMorphologyScan(
+        this LEngine engine, long featureId) =>
+        engine.LEngineMorphologyScan(featureId);
+
+    internal static LMorphology? TEngineMorphologyFind(
+        this LEngine engine, long featureId, string name) =>
+        engine.LEngineMorphologyFind(featureId, name);
 
     internal static void TEngineNoteDelete(this LEngine engine, long entryId)
     {
@@ -394,19 +408,20 @@ internal static partial class TInterface
         engine.LEngineSituationUpdate(situation);
     }
 
-    internal static void TEngineSpeechCreate(this LEngine engine, LSpeechValue value)
-    {
-        engine.LEngineSpeechCreate(value);
-    }
+    internal static LSpeechValue? TEngineSpeechAdd(this LEngine engine, string language, string name) =>
+        engine.LEngineSpeechAdd(language, name);
 
-    internal static string? TEngineSpeechFind(this LEngine engine, string language, string name) =>
+    internal static LSpeechValue TEngineSpeechCreate(this LEngine engine, LSpeechValue value) =>
+        engine.LEngineSpeechCreate(value);
+
+    internal static LSpeechValue? TEngineSpeechFind(this LEngine engine, string language, string name) =>
         engine.LEngineSpeechFind(language, name);
 
     internal static IReadOnlyList<LSpeechValue> TEngineSpeechRead(this LEngine engine, string language) =>
         engine.LEngineSpeechRead(language);
 
-    internal static string? TEngineSpeechRead(this LEngine engine, string language, string valueId) =>
-        engine.LEngineSpeechRead(language, valueId);
+    internal static LSpeechValue? TEngineSpeechRead(this LEngine engine, long id) =>
+        engine.LEngineSpeechRead(id);
 
     internal static LSynonym TEngineSynonymCreate(this LEngine engine, LSynonym synonym) =>
         engine.LEngineSynonymCreate(synonym);

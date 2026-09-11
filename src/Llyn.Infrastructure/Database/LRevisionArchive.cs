@@ -46,8 +46,8 @@ public sealed class LRevisionArchive
                 """;
             command.Parameters.AddWithValue("$revision", stored.LRevisionId);
             command.Parameters.AddWithValue("$position", position);
-            command.Parameters.AddWithValue("$target", change.LRevisionChangeTargetId);
-            command.Parameters.AddWithValue("$type", change.LRevisionChangeTargetType);
+            command.Parameters.AddWithValue("$target", change.LRevisionChangeTarget);
+            command.Parameters.AddWithValue("$type", change.LRevisionChangeSubject);
             command.Parameters.AddWithValue("$kind", change.LRevisionChangeKind);
             command.Parameters.AddWithValue("$summary", (object?)change.LRevisionChangeSummary ?? DBNull.Value);
             command.ExecuteNonQuery();

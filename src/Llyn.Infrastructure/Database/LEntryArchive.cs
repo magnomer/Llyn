@@ -206,7 +206,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, position, value_id, custom_name
+            SELECT entry_id, position, speech_value_id, custom_name
             FROM part_of_speech WHERE entry_id = $id ORDER BY position;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -218,7 +218,7 @@ public sealed class LEntryArchive
             speeches.Add(new LSpeech(
                 reader.GetInt64(0),
                 reader.GetInt32(1),
-                reader.IsDBNull(2) ? null : reader.GetString(2),
+                reader.IsDBNull(2) ? null : reader.GetInt64(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3)));
         }
 
@@ -403,15 +403,15 @@ public sealed class LEntryArchive
             LSpeech speech = speeches[position];
             using SqliteCommand command = connection.CreateCommand();
 
-            bool declared = !string.IsNullOrWhiteSpace(speech.LSpeechValueId);
+            bool declared = speech.LSpeechValueId is > 0;
             command.CommandText =
                 """
-                INSERT INTO part_of_speech (entry_id, position, value_id, custom_name)
+                INSERT INTO part_of_speech (entry_id, position, speech_value_id, custom_name)
                 VALUES ($entry, $position, $value, $custom);
                 """;
             command.Parameters.AddWithValue("$entry", id);
             command.Parameters.AddWithValue("$position", position);
-            command.Parameters.AddWithValue("$value", declared ? speech.LSpeechValueId! : DBNull.Value);
+            command.Parameters.AddWithValue("$value", declared ? speech.LSpeechValueId!.Value : DBNull.Value);
             command.Parameters.AddWithValue(
                 "$custom", declared ? DBNull.Value : (object?)speech.LSpeechCustom ?? DBNull.Value);
             command.ExecuteNonQuery();

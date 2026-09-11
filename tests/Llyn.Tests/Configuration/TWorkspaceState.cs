@@ -94,8 +94,8 @@ public sealed class TWorkspaceState
 
         LWorkspaceState state = engine.TEngineStateRead();
 
-        Assert.Equal(left.LEntryId, state.LWorkspaceStateLeftEntryId);
-        Assert.Equal(right.LEntryId, state.LWorkspaceStateRightEntryId);
+        Assert.Equal(left.LEntryId, state.LWorkspaceStateLeft);
+        Assert.Equal(right.LEntryId, state.LWorkspaceStateRight);
     }
 
     [Fact]
@@ -110,6 +110,6 @@ public sealed class TWorkspaceState
         engine.TEngineLeftSave(entry.LEntryId);
         engine.TEngineEntryDelete(entry.LEntryId);
 
-        Assert.Null(engine.TEngineStateRead().LWorkspaceStateLeftEntryId);
+        Assert.Null(engine.TEngineStateRead().LWorkspaceStateLeft);
     }
 }

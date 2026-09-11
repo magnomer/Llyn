@@ -299,6 +299,7 @@ internal static class TAuditSetting
         "Video",
         "Vignette",
         "Violation",
+        "Vocabulary",
         "Volume",
         "Vowel",
         "Window",

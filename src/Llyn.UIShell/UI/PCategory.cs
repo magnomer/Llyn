@@ -10,11 +10,11 @@ public partial class PEditor
 {
     private readonly ObservableCollection<PCategoryItem> _pCategoryItem = [];
 
-    private readonly List<string> _pCategoryName = [];
+    private readonly List<LSpeechValue> _pCategoryValue = [];
 
     internal void PCategoryLoad()
     {
-        _pCategoryName.Clear();
+        _pCategoryValue.Clear();
 
         IReadOnlyList<LSpeechValue> values;
         try
@@ -26,19 +26,16 @@ public partial class PEditor
             values = [];
         }
 
-        foreach (LSpeechValue value in values)
-        {
-            _pCategoryName.Add(value.LSpeechValueName);
-        }
-
+        _pCategoryValue.AddRange(values);
         PCategoryUpdate();
     }
 
-    private void PCategoryAdd(string name)
+    private LSpeechValue? PCategoryAdd(string name)
     {
-        if (PCategoryFind(name))
+        LSpeechValue? held = PCategoryFind(name);
+        if (held is not null)
         {
-            return;
+            return held;
         }
 
         LSpeechValue? created;
@@ -48,28 +45,35 @@ public partial class PEditor
         }
         catch (Exception)
         {
-            return;
+            return null;
         }
 
-        if (created is null || PCategoryFind(created.LSpeechValueName))
+        if (created is null)
         {
-            return;
+            return null;
         }
 
-        _pCategoryName.Add(created.LSpeechValueName);
+        held = PCategoryFind(created.LSpeechValueName);
+        if (held is not null)
+        {
+            return held;
+        }
+
+        _pCategoryValue.Add(created);
+        return created;
     }
 
-    private bool PCategoryFind(string name)
+    private LSpeechValue? PCategoryFind(string name)
     {
-        foreach (string held in _pCategoryName)
+        foreach (LSpeechValue held in _pCategoryValue)
         {
-            if (string.Equals(held.Trim(), name.Trim(), StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(held.LSpeechValueName.Trim(), name.Trim(), StringComparison.OrdinalIgnoreCase))
             {
-                return true;
+                return held;
             }
         }
 
-        return false;
+        return null;
     }
 
     private void PCategoryUpdate()
@@ -77,17 +81,18 @@ public partial class PEditor
         string typed = (PMarkerField.Text ?? string.Empty).Trim();
 
         _pCategoryItem.Clear();
-        foreach (string name in _pCategoryName)
+        foreach (LSpeechValue value in _pCategoryValue)
         {
+            string name = value.LSpeechValueName;
             if (typed.Length > 0 && name.IndexOf(typed, StringComparison.OrdinalIgnoreCase) < 0)
             {
                 continue;
             }
 
-            _pCategoryItem.Add(new PCategoryItem(name, PMarkerFind(name)));
+            _pCategoryItem.Add(new PCategoryItem(value.LSpeechValueId, name, PMarkerFind(name)));
         }
 
-        bool declared = _pCategoryName.Count > 0;
+        bool declared = _pCategoryValue.Count > 0;
         PCategoryNotice.Visibility = declared ? Visibility.Collapsed : Visibility.Visible;
         PCategoryAbsent.Visibility = declared && _pCategoryItem.Count == 0
             ? Visibility.Visible
@@ -96,12 +101,12 @@ public partial class PEditor
 
     internal void PCategoryHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PCategoryItem { PCategoryItemName: string name } })
+        if (sender is not FrameworkElement { DataContext: PCategoryItem item })
         {
             return;
         }
 
-        PMarkerAdd(name);
+        PMarkerAdd(item.PCategoryItemName);
         PMarkerSwitch.IsChecked = false;
     }
 }

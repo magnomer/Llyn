@@ -3,16 +3,15 @@
 ## `public sealed record LSpeechPack(`
 
 The display vocabulary one language pack declares.
-It lists the parts of speech the language uses.
-It also lists the morphology features each of those parts of speech takes.
-Loaded from `languages//vocabulary.json` and written into `part_of_speech_value` and `morphology_value`.
-Those tables are keyed by language.
+It lists the parts of speech, the features each takes, and the values each feature takes.
+Loaded from `languages/<Name>/vocabulary.json` and upserted into `speech_value`, `morphology_feature`, and `morphology_value`.
 So a pack is the only place a language's vocabulary is stated, and no such fact is compiled in.
 
-The two lists travel together because the morphology rows are keyed by their part of speech.
-Reading one without the other leaves rows that name a part of speech nothing declared.
+Rows in a pack have row id `0`.
+Their parent links hold the parent's code, and the import resolves those to row ids.
 
 **Parameters**
 
 - `LSpeechPackValues` — The parts of speech, in the order the pack lists them.
-- `LSpeechPackMorphology` — The morphology rows, in the order the pack lists them.
+- `LSpeechPackFeatures` — The features, in the order the pack lists them.
+- `LSpeechPackMorphology` — The feature values, in the order the pack lists them.

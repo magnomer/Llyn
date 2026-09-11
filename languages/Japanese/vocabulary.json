@@ -4,7 +4,7 @@
     "dependence",
     "particle"
   ],
-  "note": "Display vocabulary for Japanese: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names.",
+  "note": "Display vocabulary for Japanese: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Every id is an integer that never changes once published; renaming a preset keeps its id, so every entry linking it follows the rename. 'parts' lists the parts of speech, 'features' the grammatical features each part takes ('part' names the part id), and 'values' the values each feature takes ('feature' names the feature id). The names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names.",
   "registers": [
     {
       "id": "formal",
@@ -25,291 +25,270 @@
   ],
   "parts": [
     {
-      "id": "noun",
+      "id": 1,
       "name": "Noun"
     },
     {
-      "id": "noun_proper",
+      "id": 2,
       "name": "Noun, proper"
     },
     {
-      "id": "verb",
+      "id": 3,
       "name": "Verb"
     },
     {
-      "id": "verb_transitive",
+      "id": 4,
       "name": "Verb, transitive"
     },
     {
-      "id": "verb_intransitive",
+      "id": 5,
       "name": "Verb, intransitive"
     },
     {
-      "id": "verb_godan",
+      "id": 6,
       "name": "Verb, godan"
     },
     {
-      "id": "verb_ichidan",
+      "id": 7,
       "name": "Verb, ichidan"
     },
     {
-      "id": "verb_suru",
+      "id": 8,
       "name": "Verb, suru"
     },
     {
-      "id": "verb_irregular",
+      "id": 9,
       "name": "Verb, irregular"
     },
     {
-      "id": "adjective",
+      "id": 10,
       "name": "I-adjective"
     },
     {
-      "id": "adjective_attributive",
+      "id": 11,
       "name": "I-adjective, attributive"
     },
     {
-      "id": "adjective_predicative",
+      "id": 12,
       "name": "I-adjective, predicative"
     },
     {
-      "id": "adjectival_noun",
+      "id": 13,
       "name": "Na-adjective"
     },
     {
-      "id": "adverb",
+      "id": 14,
       "name": "Adverb"
     },
     {
-      "id": "adverb_manner",
+      "id": 15,
       "name": "Adverb, manner"
     },
     {
-      "id": "adverb_degree",
+      "id": 16,
       "name": "Adverb, degree"
     },
     {
-      "id": "adverb_frequency",
+      "id": 17,
       "name": "Adverb, frequency"
     },
     {
-      "id": "particle",
+      "id": 18,
       "name": "Particle"
     },
     {
-      "id": "auxiliary",
+      "id": 19,
       "name": "Auxiliary verb"
     },
     {
-      "id": "conjunction",
+      "id": 20,
       "name": "Conjunction"
     },
     {
-      "id": "conjunction_coordinating",
+      "id": 21,
       "name": "Conjunction, coordinating"
     },
     {
-      "id": "conjunction_subordinating",
+      "id": 22,
       "name": "Conjunction, subordinating"
     },
     {
-      "id": "interjection",
+      "id": 23,
       "name": "Interjection"
     },
     {
-      "id": "counter",
+      "id": 24,
       "name": "Counter"
     },
     {
-      "id": "pronoun",
+      "id": 25,
       "name": "Pronoun"
     },
     {
-      "id": "pronoun_personal",
+      "id": 26,
       "name": "Pronoun, personal"
     },
     {
-      "id": "pronoun_possessive",
+      "id": 27,
       "name": "Pronoun, possessive"
     },
     {
-      "id": "pronoun_demonstrative",
+      "id": 28,
       "name": "Pronoun, demonstrative"
     },
     {
-      "id": "pronoun_relative",
+      "id": 29,
       "name": "Pronoun, relative"
     },
     {
-      "id": "pronoun_interrogative",
+      "id": 30,
       "name": "Pronoun, interrogative"
     },
     {
-      "id": "pronoun_reflexive",
+      "id": 31,
       "name": "Pronoun, reflexive"
     },
     {
-      "id": "prenominal",
+      "id": 32,
       "name": "Prenominal adjectival"
     },
     {
-      "id": "phrase",
+      "id": 33,
       "name": "Phrase"
     },
     {
-      "id": "idiom",
+      "id": 34,
       "name": "Idiom"
     },
     {
-      "id": "proverb",
+      "id": 35,
       "name": "Proverb"
     },
     {
-      "id": "abbreviation",
+      "id": 36,
       "name": "Abbreviation"
     },
     {
-      "id": "prefix",
+      "id": 37,
       "name": "Prefix"
     },
     {
-      "id": "suffix",
+      "id": 38,
       "name": "Suffix"
     }
   ],
-  "morphology": [
+  "features": [
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "dictionary",
-      "valueName": "dictionary"
+      "id": 1,
+      "part": 3,
+      "name": "form"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "polite",
-      "valueName": "polite"
+      "id": 2,
+      "part": 10,
+      "name": "form"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "te",
-      "valueName": "te"
+      "id": 3,
+      "part": 13,
+      "name": "form"
+    }
+  ],
+  "values": [
+    {
+      "id": 1,
+      "feature": 1,
+      "name": "dictionary"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "past",
-      "valueName": "past"
+      "id": 2,
+      "feature": 1,
+      "name": "polite"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "negative",
-      "valueName": "negative"
+      "id": 3,
+      "feature": 1,
+      "name": "te"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "potential",
-      "valueName": "potential"
+      "id": 4,
+      "feature": 1,
+      "name": "past"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "passive",
-      "valueName": "passive"
+      "id": 5,
+      "feature": 1,
+      "name": "negative"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "causative",
-      "valueName": "causative"
+      "id": 6,
+      "feature": 1,
+      "name": "potential"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "volitional",
-      "valueName": "volitional"
+      "id": 7,
+      "feature": 1,
+      "name": "passive"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "imperative",
-      "valueName": "imperative"
+      "id": 8,
+      "feature": 1,
+      "name": "causative"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "conditional",
-      "valueName": "conditional"
+      "id": 9,
+      "feature": 1,
+      "name": "volitional"
     },
     {
-      "part": "adjective",
-      "feature": "form",
-      "featureName": "form",
-      "value": "plain",
-      "valueName": "plain"
+      "id": 10,
+      "feature": 1,
+      "name": "imperative"
     },
     {
-      "part": "adjective",
-      "feature": "form",
-      "featureName": "form",
-      "value": "past",
-      "valueName": "past"
+      "id": 11,
+      "feature": 1,
+      "name": "conditional"
     },
     {
-      "part": "adjective",
-      "feature": "form",
-      "featureName": "form",
-      "value": "negative",
-      "valueName": "negative"
+      "id": 12,
+      "feature": 2,
+      "name": "plain"
     },
     {
-      "part": "adjective",
-      "feature": "form",
-      "featureName": "form",
-      "value": "adverbial",
-      "valueName": "adverbial"
+      "id": 13,
+      "feature": 2,
+      "name": "past"
     },
     {
-      "part": "adjective",
-      "feature": "form",
-      "featureName": "form",
-      "value": "te",
-      "valueName": "te"
+      "id": 14,
+      "feature": 2,
+      "name": "negative"
     },
     {
-      "part": "adjectival_noun",
-      "feature": "form",
-      "featureName": "form",
-      "value": "attributive",
-      "valueName": "attributive"
+      "id": 15,
+      "feature": 2,
+      "name": "adverbial"
     },
     {
-      "part": "adjectival_noun",
-      "feature": "form",
-      "featureName": "form",
-      "value": "predicative",
-      "valueName": "predicative"
+      "id": 16,
+      "feature": 2,
+      "name": "te"
     },
     {
-      "part": "adjectival_noun",
-      "feature": "form",
-      "featureName": "form",
-      "value": "adverbial",
-      "valueName": "adverbial"
+      "id": 17,
+      "feature": 3,
+      "name": "attributive"
+    },
+    {
+      "id": 18,
+      "feature": 3,
+      "name": "predicative"
+    },
+    {
+      "id": 19,
+      "feature": 3,
+      "name": "adverbial"
     }
   ]
 }

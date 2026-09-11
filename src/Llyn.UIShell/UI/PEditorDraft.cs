@@ -41,42 +41,7 @@ public partial class PEditor
 
     private IReadOnlyList<LSpeechDraft> PEditorSpeechRead()
     {
-        IReadOnlyList<LSpeechDraft> held = _pEditorDetail?.LEntryDraftSpeeches ?? [];
-        List<LSpeechDraft> written = [];
-
-        foreach (string name in PMarkerRead())
-        {
-            written.Add(PEditorSpeechFind(held, name));
-        }
-
-        return written;
-    }
-
-    private static LSpeechDraft PEditorSpeechFind(IReadOnlyList<LSpeechDraft> held, string name)
-    {
-        foreach (LSpeechDraft speech in held)
-        {
-            if (string.Equals(speech.LSpeechDraftName, name, StringComparison.OrdinalIgnoreCase))
-            {
-                return speech;
-            }
-        }
-
-        return LSpeechDraft.LSpeechDraftCreate(name);
-    }
-
-    private static IReadOnlyList<string> PEditorSpeechShow(IReadOnlyList<LSpeechDraft> speeches)
-    {
-        List<string> named = new(speeches.Count);
-        foreach (LSpeechDraft speech in speeches)
-        {
-            if (speech.LSpeechDraftName.Length > 0)
-            {
-                named.Add(speech.LSpeechDraftName);
-            }
-        }
-
-        return named;
+        return PMarkerRead();
     }
 
     private void PEditorDraftShow(LEntryDraft draft)
@@ -87,7 +52,7 @@ public partial class PEditor
 
         PHeadword.Text = draft.LEntryDraftHeadword;
         PPronunciation.Text = draft.LEntryDraftIpa;
-        PMarkerShow(PEditorSpeechShow(draft.LEntryDraftSpeeches));
+        PMarkerShow(draft.LEntryDraftSpeeches);
         PEditorLanguageShow(draft.LEntryDraftLanguage);
 
         IReadOnlyDictionary<long, LTranslationTarget> targets = PEditorTargetRead(draft);

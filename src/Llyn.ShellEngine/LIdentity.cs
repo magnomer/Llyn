@@ -13,10 +13,10 @@ public sealed class LIdentity
         _lIdentityArchive = new LWorkspaceArchive(database);
     }
 
-    public long LIdentityFloor => _lIdentityArchive.LWorkspaceStateRead().LWorkspaceStateIdentityFloor;
+    public long LIdentityFloor => _lIdentityArchive.LWorkspaceStateRead().LWorkspaceStateFloor;
 
     public long LIdentityCreate()
     {
-        return _lIdentityArchive.LWorkspaceFloorLower();
+        return _lIdentityArchive.LWorkspaceFloorAdjust();
     }
 }

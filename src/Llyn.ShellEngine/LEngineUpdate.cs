@@ -63,7 +63,7 @@ public sealed partial class LEngine
 
             LWorkspaceArchive workspace = new(_lEngineDatabase);
             LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevisionId = revision.LRevisionId });
+            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             LEntry updated = entries.LEntryRead(id) ?? stored;
             session.LDatabaseSessionCommit();
@@ -154,12 +154,15 @@ public sealed partial class LEngine
             null));
     }
 
-    private static string LEngineSpeechFormat(IReadOnlyList<LSpeech> speeches)
+    private string LEngineSpeechFormat(IReadOnlyList<LSpeech> speeches)
     {
+        LSpeechArchive values = new(_lEngineDatabase);
         List<string> names = new(speeches.Count);
         foreach (LSpeech speech in speeches)
         {
-            names.Add(speech.LSpeechCustom ?? speech.LSpeechValueId ?? string.Empty);
+            names.Add(speech.LSpeechCustom
+                ?? values.LSpeechValueRead(speech.LSpeechValueId ?? 0)?.LSpeechValueName
+                ?? string.Empty);
         }
 
         return string.Join(", ", names);
@@ -174,7 +177,7 @@ public sealed partial class LEngine
 
         for (int index = 0; index < one.Count; index++)
         {
-            if (!string.Equals(one[index].LSpeechValueId, other[index].LSpeechValueId, StringComparison.Ordinal) ||
+            if (one[index].LSpeechValueId != other[index].LSpeechValueId ||
                 !string.Equals(one[index].LSpeechCustom, other[index].LSpeechCustom, StringComparison.Ordinal))
             {
                 return false;
@@ -333,18 +336,15 @@ public sealed partial class LEngine
                     stored[index].LInflectionLocal,
                     current[index].LInflectionLocal,
                     StringComparison.Ordinal)
-                || !string.Equals(
-                    stored[index].LInflectionSpeechId,
-                    current[index].LInflectionSpeechId,
-                    StringComparison.Ordinal)
-                || stored[index].LInflectionFeatures.Count != current[index].LInflectionFeatures.Count)
+                || stored[index].LInflectionSpeechId != current[index].LInflectionSpeechId
+                || stored[index].LInflectionMorphology.Count != current[index].LInflectionMorphology.Count)
             {
                 return false;
             }
 
-            for (int place = 0; place < stored[index].LInflectionFeatures.Count; place++)
+            for (int place = 0; place < stored[index].LInflectionMorphology.Count; place++)
             {
-                if (stored[index].LInflectionFeatures[place] != current[index].LInflectionFeatures[place])
+                if (stored[index].LInflectionMorphology[place] != current[index].LInflectionMorphology[place])
                 {
                     return false;
                 }

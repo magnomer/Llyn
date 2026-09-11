@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -19,7 +19,7 @@ public static class LSpeechLoader
             AppContext.BaseDirectory, LSpeechLoaderFolder, language, LSpeechLoaderFile);
         if (!File.Exists(path))
         {
-            return new LSpeechPack([], []);
+            return new LSpeechPack([], [], []);
         }
 
         try
@@ -30,7 +30,7 @@ public static class LSpeechLoader
         }
         catch (Exception exception) when (exception is IOException or JsonException or UnauthorizedAccessException)
         {
-            return new LSpeechPack([], []);
+            return new LSpeechPack([], [], []);
         }
     }
 
@@ -38,55 +38,81 @@ public static class LSpeechLoader
     {
         if (root.ValueKind != JsonValueKind.Object)
         {
-            return new LSpeechPack([], []);
+            return new LSpeechPack([], [], []);
         }
 
         List<LSpeechValue> values = [];
-        if (root.TryGetProperty("parts", out JsonElement parts) && parts.ValueKind == JsonValueKind.Array)
+        foreach (JsonElement part in LSpeechRowRead(root, "parts"))
         {
-            foreach (JsonElement part in parts.EnumerateArray())
+            long? id = LSpeechNumberRead(part, "id");
+            string? name = LSpeechTextRead(part, "name");
+            if (id is null || name is null)
             {
-                string? id = LSpeechTextRead(part, "id");
-                if (id is null)
-                {
-                    continue;
-                }
-
-                values.Add(new LSpeechValue(
-                    language, id, LSpeechTextRead(part, "name") ?? id, values.Count));
+                continue;
             }
+
+            values.Add(new LSpeechValue(0, language, id.Value, name, values.Count));
+        }
+
+        List<LFeature> features = [];
+        Dictionary<long, int> featureOrder = [];
+        foreach (JsonElement row in LSpeechRowRead(root, "features"))
+        {
+            long? id = LSpeechNumberRead(row, "id");
+            long? part = LSpeechNumberRead(row, "part");
+            string? name = LSpeechTextRead(row, "name");
+            if (id is null || part is null || name is null)
+            {
+                continue;
+            }
+
+            featureOrder.TryGetValue(part.Value, out int position);
+            featureOrder[part.Value] = position + 1;
+            features.Add(new LFeature(0, part.Value, id.Value, name, position));
         }
 
         List<LMorphology> morphology = [];
-        Dictionary<string, int> order = new(StringComparer.Ordinal);
-        if (root.TryGetProperty("morphology", out JsonElement rows) && rows.ValueKind == JsonValueKind.Array)
+        Dictionary<long, int> valueOrder = [];
+        foreach (JsonElement row in LSpeechRowRead(root, "values"))
         {
-            foreach (JsonElement row in rows.EnumerateArray())
+            long? id = LSpeechNumberRead(row, "id");
+            long? feature = LSpeechNumberRead(row, "feature");
+            string? name = LSpeechTextRead(row, "name");
+            if (id is null || feature is null || name is null)
             {
-                string? speech = LSpeechTextRead(row, "part");
-                string? feature = LSpeechTextRead(row, "feature");
-                string? value = LSpeechTextRead(row, "value");
-                if (speech is null || feature is null || value is null)
-                {
-                    continue;
-                }
-
-                string group = speech + '\u001f' + feature;
-                order.TryGetValue(group, out int position);
-                order[group] = position + 1;
-
-                morphology.Add(new LMorphology(
-                    language,
-                    speech,
-                    feature,
-                    LSpeechTextRead(row, "featureName") ?? feature,
-                    value,
-                    LSpeechTextRead(row, "valueName") ?? value,
-                    position));
+                continue;
             }
+
+            valueOrder.TryGetValue(feature.Value, out int position);
+            valueOrder[feature.Value] = position + 1;
+            morphology.Add(new LMorphology(0, feature.Value, id.Value, name, position));
         }
 
-        return new LSpeechPack(values, morphology);
+        return new LSpeechPack(values, features, morphology);
+    }
+
+    private static IEnumerable<JsonElement> LSpeechRowRead(JsonElement root, string name)
+    {
+        if (!root.TryGetProperty(name, out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
+        {
+            return [];
+        }
+
+        return rows.EnumerateArray();
+    }
+
+    private static long? LSpeechNumberRead(JsonElement element, string name)
+    {
+        if (element.ValueKind != JsonValueKind.Object ||
+            !element.TryGetProperty(name, out JsonElement found) ||
+            found.ValueKind != JsonValueKind.Number ||
+            !found.TryGetInt64(out long number) ||
+            number <= 0)
+        {
+            return null;
+        }
+
+        return number;
     }
 
     private static string? LSpeechTextRead(JsonElement element, string name)

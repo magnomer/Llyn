@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -8,20 +7,20 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public void LEngineSpeechCreate(LSpeechValue value)
+    public LSpeechValue LEngineSpeechCreate(LSpeechValue value)
     {
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(value);
-            new LSpeechArchive(_lEngineDatabase).LSpeechValueCreate(value);
+            return new LSpeechArchive(_lEngineDatabase).LSpeechValueCreate(value);
         }
     }
 
-    public string? LEngineSpeechRead(string language, string valueId)
+    public LSpeechValue? LEngineSpeechRead(long id)
     {
         lock (_lEngineGate)
         {
-            return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(language, valueId);
+            return new LSpeechArchive(_lEngineDatabase).LSpeechValueRead(id);
         }
     }
 
@@ -45,50 +44,28 @@ public sealed partial class LEngine
             string typed = name.Trim();
             LSpeechArchive values = new(_lEngineDatabase);
 
-            IReadOnlyList<LSpeechValue> stored = values.LSpeechValueRead(language);
-            HashSet<string> taken = new(StringComparer.Ordinal);
+            LSpeechValue? held = values.LSpeechValueFind(language, typed);
+            if (held is not null)
+            {
+                return held;
+            }
+
             int position = 0;
-            foreach (LSpeechValue held in stored)
+            foreach (LSpeechValue stored in values.LSpeechValueRead(language))
             {
-                if (string.Equals(held.LSpeechValueName.Trim(), typed, StringComparison.OrdinalIgnoreCase))
-                {
-                    return held;
-                }
-
-                taken.Add(held.LSpeechValueId);
-                position = Math.Max(position, held.LSpeechValuePosition);
+                position = Math.Max(position, stored.LSpeechValuePosition + 1);
             }
 
-            string id = LEngineSpeechNormalize(typed);
-            if (taken.Contains(id))
-            {
-                id = $"{id}_{position + 1}";
-            }
-
-            LSpeechValue created = new(language, id, typed, position + 1);
-            values.LSpeechValueCreate(created);
-            return created;
+            return values.LSpeechValueCreate(new LSpeechValue(0, language, 0, typed, position));
         }
     }
 
-    public string? LEngineSpeechFind(string language, string name)
+    public LSpeechValue? LEngineSpeechFind(string language, string name)
     {
         lock (_lEngineGate)
         {
             return new LSpeechArchive(_lEngineDatabase).LSpeechValueFind(language, name);
         }
-    }
-
-    private static string LEngineSpeechNormalize(string name)
-    {
-        StringBuilder built = new(name.Length + 7);
-        built.Append("custom_");
-        foreach (char letter in name)
-        {
-            built.Append(char.IsLetterOrDigit(letter) ? char.ToLowerInvariant(letter) : '_');
-        }
-
-        return built.ToString();
     }
 
     private static IReadOnlyList<string> LEngineSpeechShow(IReadOnlyList<LSpeechDraft> drafts)
@@ -117,9 +94,9 @@ public sealed partial class LEngine
         List<LSpeech> speeches = [];
         foreach (LSpeechDraft draft in drafts)
         {
-            if (draft.LSpeechDraftValue is string declared && declared.Length > 0)
+            if (draft.LSpeechDraftValue > 0 && values.LSpeechValueRead(draft.LSpeechDraftValue) is not null)
             {
-                speeches.Add(new LSpeech(entryId, speeches.Count, declared));
+                speeches.Add(new LSpeech(entryId, speeches.Count, draft.LSpeechDraftValue));
                 continue;
             }
 
@@ -129,34 +106,81 @@ public sealed partial class LEngine
             }
 
             string typed = draft.LSpeechDraftCustom.Trim();
-            string? value = string.IsNullOrWhiteSpace(language)
+            LSpeechValue? value = string.IsNullOrWhiteSpace(language)
                 ? null
                 : values.LSpeechValueFind(language, typed);
 
             speeches.Add(value is null
                 ? new LSpeech(entryId, speeches.Count, null, typed)
-                : new LSpeech(entryId, speeches.Count, value));
+                : new LSpeech(entryId, speeches.Count, value.LSpeechValueId));
         }
 
         return speeches;
     }
 
-    public void LEngineMorphologyCreate(LMorphology morphology)
+    public LFeature LEngineFeatureCreate(LFeature feature)
     {
         lock (_lEngineGate)
         {
-            ArgumentNullException.ThrowIfNull(morphology);
-            new LMorphologyArchive(_lEngineDatabase).LMorphologyCreate(morphology);
+            ArgumentNullException.ThrowIfNull(feature);
+            return new LMorphologyArchive(_lEngineDatabase).LFeatureCreate(feature);
         }
     }
 
-    public LMorphology? LEngineMorphologyRead(
-        string language, string speechId, string featureId, string valueId)
+    public LMorphology LEngineMorphologyCreate(LMorphology value)
     {
         lock (_lEngineGate)
         {
-            return new LMorphologyArchive(_lEngineDatabase)
-                .LMorphologyRead(language, speechId, featureId, valueId);
+            ArgumentNullException.ThrowIfNull(value);
+            return new LMorphologyArchive(_lEngineDatabase).LMorphologyCreate(value);
+        }
+    }
+
+    public IReadOnlyList<LFeature> LEngineFeatureRead(long speechValueId)
+    {
+        lock (_lEngineGate)
+        {
+            return speechValueId <= 0
+                ? []
+                : new LMorphologyArchive(_lEngineDatabase).LFeatureRead(speechValueId);
+        }
+    }
+
+    public LFeature? LEngineFeatureFind(long speechValueId, string name)
+    {
+        lock (_lEngineGate)
+        {
+            return speechValueId <= 0
+                ? null
+                : new LMorphologyArchive(_lEngineDatabase).LFeatureFind(speechValueId, name);
+        }
+    }
+
+    public LMorphology? LEngineMorphologyRead(long id)
+    {
+        lock (_lEngineGate)
+        {
+            return new LMorphologyArchive(_lEngineDatabase).LMorphologyRead(id);
+        }
+    }
+
+    public IReadOnlyList<LMorphology> LEngineMorphologyScan(long featureId)
+    {
+        lock (_lEngineGate)
+        {
+            return featureId <= 0
+                ? []
+                : new LMorphologyArchive(_lEngineDatabase).LMorphologyScan(featureId);
+        }
+    }
+
+    public LMorphology? LEngineMorphologyFind(long featureId, string name)
+    {
+        lock (_lEngineGate)
+        {
+            return featureId <= 0
+                ? null
+                : new LMorphologyArchive(_lEngineDatabase).LMorphologyFind(featureId, name);
         }
     }
 
@@ -197,14 +221,34 @@ public sealed partial class LEngine
         foreach (string language in LLanguageLoader.LLanguageLoaderScan())
         {
             LSpeechPack pack = LSpeechLoader.LSpeechLoaderLoad(language);
+
+            Dictionary<long, long> speechIds = [];
             foreach (LSpeechValue value in pack.LSpeechPackValues)
             {
-                speeches.LSpeechValueCreate(value);
+                speechIds[value.LSpeechValueCode] = speeches.LSpeechValueCreate(value).LSpeechValueId;
             }
 
-            foreach (LMorphology row in pack.LSpeechPackMorphology)
+            Dictionary<long, long> featureIds = [];
+            foreach (LFeature feature in pack.LSpeechPackFeatures)
             {
-                morphology.LMorphologyCreate(row);
+                if (!speechIds.TryGetValue(feature.LFeatureSpeechId, out long speechId))
+                {
+                    continue;
+                }
+
+                featureIds[feature.LFeatureCode] = morphology
+                    .LFeatureCreate(feature with { LFeatureSpeechId = speechId })
+                    .LFeatureId;
+            }
+
+            foreach (LMorphology value in pack.LSpeechPackMorphology)
+            {
+                if (!featureIds.TryGetValue(value.LMorphologyFeatureId, out long featureId))
+                {
+                    continue;
+                }
+
+                morphology.LMorphologyCreate(value with { LMorphologyFeatureId = featureId });
             }
         }
 

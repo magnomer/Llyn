@@ -1,4 +1,4 @@
-# LEntryArchive.cs
+﻿# LEntryArchive.cs
 
 ## `public sealed class LEntryArchive`
 
@@ -126,9 +126,9 @@ Removing them first makes the delete deterministic.
 The entry row shape every read here selects, in one place.
 A single read and a find would otherwise drift apart column by column.
 
-### `bool declared = !string.IsNullOrWhiteSpace(speech.LSpeechValueId);`
+### `bool declared = speech.LSpeechValueId is > 0;`
 
-A row names a declared preset or carries typed text, never both.
+A row links a declared value or carries typed text, never both.
 The table's CHECK says so.
 A caller handing over both would otherwise write a row that resolves one way and displays another.
-The id wins, because a name matching a preset is that preset.
+The id wins, because a name matching a value is that value.

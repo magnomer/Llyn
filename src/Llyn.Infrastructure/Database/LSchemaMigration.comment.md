@@ -21,10 +21,11 @@ That requires foreign-key enforcement to be off.
 Enforcement cannot be changed inside a transaction.
 So the runner is called with a plain connection, before any session is open.
 
-## `public const long LSchemaMigrationVersion = 35;`
+## `public const long LSchemaMigrationVersion = 36;`
 
 The schema version this build produces.
 A later change to an existing table raises it.
+Version 36 gave the vocabulary rows integer ids and made every link to them an integer column.
 
 ## `public static void LSchemaMigrationApply(SqliteConnection connection)`
 

@@ -102,7 +102,7 @@ public sealed partial class LEngine
 
             LWorkspaceArchive workspace = new(_lEngineDatabase);
             LWorkspaceState state = workspace.LWorkspaceStateRead();
-            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevisionId = revision.LRevisionId });
+            workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             session.LDatabaseSessionCommit();
             recorded = revision;
@@ -124,7 +124,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            long? id = new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead().LWorkspaceStateRevisionId;
+            long? id = new LWorkspaceArchive(_lEngineDatabase).LWorkspaceStateRead().LWorkspaceStateRevision;
             return id is null ? null : new LRevisionArchive(_lEngineDatabase).LRevisionRead(id.Value);
         }
     }

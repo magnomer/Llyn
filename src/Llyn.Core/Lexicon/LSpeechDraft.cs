@@ -1,20 +1,25 @@
 namespace Llyn.Core;
 
 public sealed record LSpeechDraft(
-    string? LSpeechDraftValue,
+    long LSpeechDraftValue,
     string? LSpeechDraftCustom,
     string LSpeechDraftName = "")
 {
     public string LSpeechDraftName { get; init; } =
         string.IsNullOrEmpty(LSpeechDraftName)
-            ? LSpeechDraftCustom ?? LSpeechDraftValue ?? string.Empty
+            ? LSpeechDraftCustom ?? string.Empty
             : LSpeechDraftName;
 
     public static LSpeechDraft LSpeechDraftCreate(string name)
     {
-        return new LSpeechDraft(null, name, name);
+        return new LSpeechDraft(0, name, name);
+    }
+
+    public static LSpeechDraft LSpeechDraftCreate(long valueId, string name)
+    {
+        return new LSpeechDraft(valueId, null, name);
     }
 
     public bool LSpeechDraftEmpty =>
-        string.IsNullOrWhiteSpace(LSpeechDraftValue) && string.IsNullOrWhiteSpace(LSpeechDraftCustom);
+        LSpeechDraftValue <= 0 && string.IsNullOrWhiteSpace(LSpeechDraftCustom);
 }

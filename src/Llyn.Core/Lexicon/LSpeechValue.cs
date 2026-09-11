@@ -1,7 +1,8 @@
 namespace Llyn.Core;
 
 public sealed record LSpeechValue(
+    long LSpeechValueId,
     string LSpeechValueLanguage,
-    string LSpeechValueId,
+    long LSpeechValueCode,
     string LSpeechValueName,
     int LSpeechValuePosition);

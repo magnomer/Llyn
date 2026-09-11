@@ -101,6 +101,9 @@ internal static partial class TInterface
         return drafts;
     }
 
+    internal static LSpeechDraft TSpeechDraftCreate(long valueId, string name) =>
+        LSpeechDraft.LSpeechDraftCreate(valueId, name);
+
     internal static IReadOnlyList<string> TSpeechNameRead(LEntryDraft draft)
     {
         List<string> named = new(draft.LEntryDraftSpeeches.Count);
@@ -169,9 +172,6 @@ internal static partial class TInterface
     internal static LExampleDraft TExampleDraftCreate(string text) =>
         LExampleDraft.LExampleDraftCreate(text);
 
-    internal static LFeature TFeatureCreate(string id, string valueId) =>
-        new(id, valueId);
-
     internal static LForm TFormCreate(
         long entryId,
         int position,
@@ -185,19 +185,23 @@ internal static partial class TInterface
         int position,
         string text,
         string? local,
-        string? speechId,
-        IReadOnlyList<LFeature> features) =>
-        new(entryId, position, text, local, speechId, features);
+        long? speechValueId,
+        IReadOnlyList<long> morphology) =>
+        new(0, entryId, position, text, local, speechValueId, morphology);
+
+    internal static LFeature TFeatureCreate(
+        long speechValueId,
+        long packId,
+        string name,
+        int position) =>
+        new(0, speechValueId, packId, name, position);
 
     internal static LMorphology TMorphologyCreate(
-        string language,
-        string speechId,
-        string featureId,
-        string featureName,
-        string valueId,
-        string valueName,
+        long featureId,
+        long packId,
+        string name,
         int position) =>
-        new(language, speechId, featureId, featureName, valueId, valueName, position);
+        new(0, featureId, packId, name, position);
 
     internal static LNote TNoteCreate(long entryId, string text) =>
         new(entryId, text);
@@ -278,12 +282,12 @@ internal static partial class TInterface
     internal static LSpeech TSpeechCreate(
         long entryId,
         int position,
-        string? valueId,
+        long? valueId,
         string? custom = null) =>
         new(entryId, position, valueId, custom);
 
-    internal static LSpeechValue TSpeechValueCreate(string language, string id, string name, int position) =>
-        new(language, id, name, position);
+    internal static LSpeechValue TSpeechValueCreate(string language, long packId, string name, int position) =>
+        new(0, language, packId, name, position);
 
     internal static LStateValue TStateValueCreate(string text) =>
         LStateValue.LStateValueCreate(text);

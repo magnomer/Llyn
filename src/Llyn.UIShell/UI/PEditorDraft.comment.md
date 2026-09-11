@@ -26,9 +26,9 @@ A form holding neither reading nor recording carries no pronunciation at all.
 
 ### `private IReadOnlyList<LSpeechDraft> PEditorSpeechRead()`
 
-The parts of speech as chips, matched back to the drafts the form was filled from.
-A chip whose name was filed under a language-pack value keeps that value.
-A chip the user typed is a name, and the engine decides at the write whether a preset names it.
+The parts of speech as the chips carry them.
+A chip that knows its value row links it by id.
+A chip the user typed is a name, and the engine decides at the write whether a value names it.
 
 ### `_pRecording ?? string.Empty,`
 

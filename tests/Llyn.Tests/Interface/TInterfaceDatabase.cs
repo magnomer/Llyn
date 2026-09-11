@@ -261,6 +261,19 @@ internal static partial class TInterface
         long entryId) =>
         inflectionArchive.LInflectionRead(entryId);
 
+    internal static LMorphologyArchive TMorphologyArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static LFeature TFeatureCreate(
+        this LMorphologyArchive morphologyArchive,
+        LFeature feature) =>
+        morphologyArchive.LFeatureCreate(feature);
+
+    internal static LMorphology TMorphologyCreate(
+        this LMorphologyArchive morphologyArchive,
+        LMorphology value) =>
+        morphologyArchive.LMorphologyCreate(value);
+
     internal static LNoteArchive TNoteArchiveCreate(LDatabase database) =>
         new(database);
 
@@ -362,6 +375,14 @@ internal static partial class TInterface
         this LSituationArchive situationArchive,
         long meaningId) =>
         situationArchive.LSituationMeaningRead(meaningId);
+
+    internal static LSpeechArchive TSpeechArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static LSpeechValue TSpeechValueCreate(
+        this LSpeechArchive speechArchive,
+        LSpeechValue value) =>
+        speechArchive.LSpeechValueCreate(value);
 
     internal static LTagArchive TTagArchiveCreate(LDatabase database) =>
         new(database);

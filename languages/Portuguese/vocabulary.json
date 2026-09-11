@@ -4,7 +4,7 @@
     "particle",
     "dependence"
   ],
-  "note": "Display vocabulary for Portuguese: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names.",
+  "note": "Display vocabulary for Portuguese: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Every id is an integer that never changes once published; renaming a preset keeps its id, so every entry linking it follows the rename. 'parts' lists the parts of speech, 'features' the grammatical features each part takes ('part' names the part id), and 'values' the values each feature takes ('feature' names the feature id). The names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names.",
   "registers": [
     {
       "id": "formal",
@@ -25,321 +25,321 @@
   ],
   "parts": [
     {
-      "id": "noun",
+      "id": 1,
       "name": "Noun"
     },
     {
-      "id": "noun_countable",
+      "id": 2,
       "name": "Noun, countable"
     },
     {
-      "id": "noun_uncountable",
+      "id": 3,
       "name": "Noun, uncountable"
     },
     {
-      "id": "noun_proper",
+      "id": 4,
       "name": "Noun, proper"
     },
     {
-      "id": "noun_collective",
+      "id": 5,
       "name": "Noun, collective"
     },
     {
-      "id": "verb",
+      "id": 6,
       "name": "Verb"
     },
     {
-      "id": "verb_transitive",
+      "id": 7,
       "name": "Verb, transitive"
     },
     {
-      "id": "verb_intransitive",
+      "id": 8,
       "name": "Verb, intransitive"
     },
     {
-      "id": "verb_pronominal",
+      "id": 9,
       "name": "Verb, pronominal"
     },
     {
-      "id": "verb_reflexive",
+      "id": 10,
       "name": "Verb, reflexive"
     },
     {
-      "id": "verb_impersonal",
+      "id": 11,
       "name": "Verb, impersonal"
     },
     {
-      "id": "adjective",
+      "id": 12,
       "name": "Adjective"
     },
     {
-      "id": "adjective_attributive",
+      "id": 13,
       "name": "Adjective, attributive"
     },
     {
-      "id": "adjective_predicative",
+      "id": 14,
       "name": "Adjective, predicative"
     },
     {
-      "id": "adverb",
+      "id": 15,
       "name": "Adverb"
     },
     {
-      "id": "adverb_manner",
+      "id": 16,
       "name": "Adverb, manner"
     },
     {
-      "id": "adverb_degree",
+      "id": 17,
       "name": "Adverb, degree"
     },
     {
-      "id": "adverb_frequency",
+      "id": 18,
       "name": "Adverb, frequency"
     },
     {
-      "id": "pronoun",
+      "id": 19,
       "name": "Pronoun"
     },
     {
-      "id": "pronoun_personal",
+      "id": 20,
       "name": "Pronoun, personal"
     },
     {
-      "id": "pronoun_possessive",
+      "id": 21,
       "name": "Pronoun, possessive"
     },
     {
-      "id": "pronoun_demonstrative",
+      "id": 22,
       "name": "Pronoun, demonstrative"
     },
     {
-      "id": "pronoun_relative",
+      "id": 23,
       "name": "Pronoun, relative"
     },
     {
-      "id": "pronoun_interrogative",
+      "id": 24,
       "name": "Pronoun, interrogative"
     },
     {
-      "id": "pronoun_reflexive",
+      "id": 25,
       "name": "Pronoun, reflexive"
     },
     {
-      "id": "article",
+      "id": 26,
       "name": "Article"
     },
     {
-      "id": "article_definite",
+      "id": 27,
       "name": "Article, definite"
     },
     {
-      "id": "article_indefinite",
+      "id": 28,
       "name": "Article, indefinite"
     },
     {
-      "id": "preposition",
+      "id": 29,
       "name": "Preposition"
     },
     {
-      "id": "conjunction",
+      "id": 30,
       "name": "Conjunction"
     },
     {
-      "id": "conjunction_coordinating",
+      "id": 31,
       "name": "Conjunction, coordinating"
     },
     {
-      "id": "conjunction_subordinating",
+      "id": 32,
       "name": "Conjunction, subordinating"
     },
     {
-      "id": "numeral",
+      "id": 33,
       "name": "Numeral"
     },
     {
-      "id": "numeral_cardinal",
+      "id": 34,
       "name": "Numeral, cardinal"
     },
     {
-      "id": "numeral_ordinal",
+      "id": 35,
       "name": "Numeral, ordinal"
     },
     {
-      "id": "interjection",
+      "id": 36,
       "name": "Interjection"
     },
     {
-      "id": "phrase",
+      "id": 37,
       "name": "Phrase"
     },
     {
-      "id": "idiom",
+      "id": 38,
       "name": "Idiom"
     },
     {
-      "id": "proverb",
+      "id": 39,
       "name": "Proverb"
     },
     {
-      "id": "abbreviation",
+      "id": 40,
       "name": "Abbreviation"
     },
     {
-      "id": "prefix",
+      "id": 41,
       "name": "Prefix"
     },
     {
-      "id": "suffix",
+      "id": 42,
       "name": "Suffix"
     }
   ],
-  "morphology": [
+  "features": [
     {
-      "part": "noun",
-      "feature": "gender",
-      "featureName": "gender",
-      "value": "masculine",
-      "valueName": "masculine"
+      "id": 1,
+      "part": 1,
+      "name": "gender"
     },
     {
-      "part": "noun",
-      "feature": "gender",
-      "featureName": "gender",
-      "value": "feminine",
-      "valueName": "feminine"
+      "id": 2,
+      "part": 1,
+      "name": "number"
     },
     {
-      "part": "noun",
-      "feature": "number",
-      "featureName": "number",
-      "value": "singular",
-      "valueName": "singular"
+      "id": 3,
+      "part": 12,
+      "name": "gender"
     },
     {
-      "part": "noun",
-      "feature": "number",
-      "featureName": "number",
-      "value": "plural",
-      "valueName": "plural"
+      "id": 4,
+      "part": 12,
+      "name": "number"
     },
     {
-      "part": "adjective",
-      "feature": "gender",
-      "featureName": "gender",
-      "value": "masculine",
-      "valueName": "masculine"
+      "id": 5,
+      "part": 6,
+      "name": "mood"
     },
     {
-      "part": "adjective",
-      "feature": "gender",
-      "featureName": "gender",
-      "value": "feminine",
-      "valueName": "feminine"
+      "id": 6,
+      "part": 6,
+      "name": "tense"
     },
     {
-      "part": "adjective",
-      "feature": "number",
-      "featureName": "number",
-      "value": "singular",
-      "valueName": "singular"
+      "id": 7,
+      "part": 6,
+      "name": "person"
     },
     {
-      "part": "adjective",
-      "feature": "number",
-      "featureName": "number",
-      "value": "plural",
-      "valueName": "plural"
+      "id": 8,
+      "part": 6,
+      "name": "number"
+    }
+  ],
+  "values": [
+    {
+      "id": 1,
+      "feature": 1,
+      "name": "masculine"
     },
     {
-      "part": "verb",
-      "feature": "mood",
-      "featureName": "mood",
-      "value": "indicative",
-      "valueName": "indicative"
+      "id": 2,
+      "feature": 1,
+      "name": "feminine"
     },
     {
-      "part": "verb",
-      "feature": "mood",
-      "featureName": "mood",
-      "value": "subjunctive",
-      "valueName": "subjunctive"
+      "id": 3,
+      "feature": 2,
+      "name": "singular"
     },
     {
-      "part": "verb",
-      "feature": "mood",
-      "featureName": "mood",
-      "value": "imperative",
-      "valueName": "imperative"
+      "id": 4,
+      "feature": 2,
+      "name": "plural"
     },
     {
-      "part": "verb",
-      "feature": "tense",
-      "featureName": "tense",
-      "value": "present",
-      "valueName": "present"
+      "id": 5,
+      "feature": 3,
+      "name": "masculine"
     },
     {
-      "part": "verb",
-      "feature": "tense",
-      "featureName": "tense",
-      "value": "preterite",
-      "valueName": "preterite"
+      "id": 6,
+      "feature": 3,
+      "name": "feminine"
     },
     {
-      "part": "verb",
-      "feature": "tense",
-      "featureName": "tense",
-      "value": "imperfect",
-      "valueName": "imperfect"
+      "id": 7,
+      "feature": 4,
+      "name": "singular"
     },
     {
-      "part": "verb",
-      "feature": "tense",
-      "featureName": "tense",
-      "value": "future",
-      "valueName": "future"
+      "id": 8,
+      "feature": 4,
+      "name": "plural"
     },
     {
-      "part": "verb",
-      "feature": "tense",
-      "featureName": "tense",
-      "value": "conditional",
-      "valueName": "conditional"
+      "id": 9,
+      "feature": 5,
+      "name": "indicative"
     },
     {
-      "part": "verb",
-      "feature": "person",
-      "featureName": "person",
-      "value": "first",
-      "valueName": "first"
+      "id": 10,
+      "feature": 5,
+      "name": "subjunctive"
     },
     {
-      "part": "verb",
-      "feature": "person",
-      "featureName": "person",
-      "value": "second",
-      "valueName": "second"
+      "id": 11,
+      "feature": 5,
+      "name": "imperative"
     },
     {
-      "part": "verb",
-      "feature": "person",
-      "featureName": "person",
-      "value": "third",
-      "valueName": "third"
+      "id": 12,
+      "feature": 6,
+      "name": "present"
     },
     {
-      "part": "verb",
-      "feature": "number",
-      "featureName": "number",
-      "value": "singular",
-      "valueName": "singular"
+      "id": 13,
+      "feature": 6,
+      "name": "preterite"
     },
     {
-      "part": "verb",
-      "feature": "number",
-      "featureName": "number",
-      "value": "plural",
-      "valueName": "plural"
+      "id": 14,
+      "feature": 6,
+      "name": "imperfect"
+    },
+    {
+      "id": 15,
+      "feature": 6,
+      "name": "future"
+    },
+    {
+      "id": 16,
+      "feature": 6,
+      "name": "conditional"
+    },
+    {
+      "id": 17,
+      "feature": 7,
+      "name": "first"
+    },
+    {
+      "id": 18,
+      "feature": 7,
+      "name": "second"
+    },
+    {
+      "id": 19,
+      "feature": 7,
+      "name": "third"
+    },
+    {
+      "id": 20,
+      "feature": 8,
+      "name": "singular"
+    },
+    {
+      "id": 21,
+      "feature": 8,
+      "name": "plural"
     }
   ]
 }

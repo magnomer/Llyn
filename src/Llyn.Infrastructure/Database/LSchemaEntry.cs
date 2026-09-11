@@ -36,22 +36,24 @@ public static class LSchemaEntry
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS speech_value (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                language TEXT NOT NULL,
+                pack_id INTEGER NOT NULL,
+                name TEXT NOT NULL,
+                position INTEGER NOT NULL,
+                UNIQUE (language, pack_id)
+            );
+
             CREATE TABLE IF NOT EXISTS part_of_speech (
                 entry_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                value_id TEXT,
+                speech_value_id INTEGER,
                 custom_name TEXT,
                 PRIMARY KEY (entry_id, position),
-                CHECK ((value_id IS NULL) <> (custom_name IS NULL)),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
-            );
-
-            CREATE TABLE IF NOT EXISTS part_of_speech_value (
-                language TEXT NOT NULL,
-                value_id TEXT NOT NULL,
-                display_name TEXT NOT NULL,
-                position INTEGER NOT NULL,
-                PRIMARY KEY (language, value_id)
+                CHECK ((speech_value_id IS NULL) <> (custom_name IS NULL)),
+                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
+                FOREIGN KEY (speech_value_id) REFERENCES speech_value (id)
             );
             """;
         command.ExecuteNonQuery();

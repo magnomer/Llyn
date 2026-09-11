@@ -4,7 +4,7 @@
     "particle",
     "dependence"
   ],
-  "note": "Display vocabulary for English: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Ids are stable and are what lexical rows store; the names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names.",
+  "note": "Display vocabulary for English: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Every id is an integer that never changes once published; renaming a preset keeps its id, so every entry linking it follows the rename. 'parts' lists the parts of speech, 'features' the grammatical features each part takes ('part' names the part id), and 'values' the values each feature takes ('feature' names the feature id). The names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names.",
   "registers": [
     {
       "id": "formal",
@@ -25,316 +25,312 @@
   ],
   "parts": [
     {
-      "id": "noun",
+      "id": 1,
       "name": "Noun"
     },
     {
-      "id": "noun_countable",
+      "id": 2,
       "name": "Noun, countable"
     },
     {
-      "id": "noun_uncountable",
+      "id": 3,
       "name": "Noun, uncountable"
     },
     {
-      "id": "noun_proper",
+      "id": 4,
       "name": "Noun, proper"
     },
     {
-      "id": "noun_collective",
+      "id": 5,
       "name": "Noun, collective"
     },
     {
-      "id": "verb",
+      "id": 6,
       "name": "Verb"
     },
     {
-      "id": "verb_transitive",
+      "id": 7,
       "name": "Verb, transitive"
     },
     {
-      "id": "verb_intransitive",
+      "id": 8,
       "name": "Verb, intransitive"
     },
     {
-      "id": "verb_modal",
+      "id": 9,
       "name": "Verb, modal"
     },
     {
-      "id": "verb_phrasal",
+      "id": 10,
       "name": "Verb, phrasal"
     },
     {
-      "id": "verb_auxiliary",
+      "id": 11,
       "name": "Verb, auxiliary"
     },
     {
-      "id": "adjective",
+      "id": 12,
       "name": "Adjective"
     },
     {
-      "id": "adjective_attributive",
+      "id": 13,
       "name": "Adjective, attributive"
     },
     {
-      "id": "adjective_predicative",
+      "id": 14,
       "name": "Adjective, predicative"
     },
     {
-      "id": "adverb",
+      "id": 15,
       "name": "Adverb"
     },
     {
-      "id": "adverb_manner",
+      "id": 16,
       "name": "Adverb, manner"
     },
     {
-      "id": "adverb_degree",
+      "id": 17,
       "name": "Adverb, degree"
     },
     {
-      "id": "adverb_frequency",
+      "id": 18,
       "name": "Adverb, frequency"
     },
     {
-      "id": "pronoun",
+      "id": 19,
       "name": "Pronoun"
     },
     {
-      "id": "pronoun_personal",
+      "id": 20,
       "name": "Pronoun, personal"
     },
     {
-      "id": "pronoun_possessive",
+      "id": 21,
       "name": "Pronoun, possessive"
     },
     {
-      "id": "pronoun_demonstrative",
+      "id": 22,
       "name": "Pronoun, demonstrative"
     },
     {
-      "id": "pronoun_relative",
+      "id": 23,
       "name": "Pronoun, relative"
     },
     {
-      "id": "pronoun_interrogative",
+      "id": 24,
       "name": "Pronoun, interrogative"
     },
     {
-      "id": "pronoun_reflexive",
+      "id": 25,
       "name": "Pronoun, reflexive"
     },
     {
-      "id": "determiner",
+      "id": 26,
       "name": "Determiner"
     },
     {
-      "id": "determiner_definite",
+      "id": 27,
       "name": "Determiner, definite"
     },
     {
-      "id": "determiner_indefinite",
+      "id": 28,
       "name": "Determiner, indefinite"
     },
     {
-      "id": "determiner_demonstrative",
+      "id": 29,
       "name": "Determiner, demonstrative"
     },
     {
-      "id": "determiner_quantifier",
+      "id": 30,
       "name": "Determiner, quantifier"
     },
     {
-      "id": "preposition",
+      "id": 31,
       "name": "Preposition"
     },
     {
-      "id": "conjunction",
+      "id": 32,
       "name": "Conjunction"
     },
     {
-      "id": "conjunction_coordinating",
+      "id": 33,
       "name": "Conjunction, coordinating"
     },
     {
-      "id": "conjunction_subordinating",
+      "id": 34,
       "name": "Conjunction, subordinating"
     },
     {
-      "id": "numeral",
+      "id": 35,
       "name": "Numeral"
     },
     {
-      "id": "numeral_cardinal",
+      "id": 36,
       "name": "Numeral, cardinal"
     },
     {
-      "id": "numeral_ordinal",
+      "id": 37,
       "name": "Numeral, ordinal"
     },
     {
-      "id": "interjection",
+      "id": 38,
       "name": "Interjection"
     },
     {
-      "id": "auxiliary",
+      "id": 39,
       "name": "Auxiliary"
     },
     {
-      "id": "particle",
+      "id": 40,
       "name": "Particle"
     },
     {
-      "id": "phrase",
+      "id": 41,
       "name": "Phrase"
     },
     {
-      "id": "idiom",
+      "id": 42,
       "name": "Idiom"
     },
     {
-      "id": "proverb",
+      "id": 43,
       "name": "Proverb"
     },
     {
-      "id": "abbreviation",
+      "id": 44,
       "name": "Abbreviation"
     },
     {
-      "id": "prefix",
+      "id": 45,
       "name": "Prefix"
     },
     {
-      "id": "suffix",
+      "id": 46,
       "name": "Suffix"
     }
   ],
-  "morphology": [
+  "features": [
     {
-      "part": "noun",
-      "feature": "number",
-      "featureName": "number",
-      "value": "singular",
-      "valueName": "singular"
+      "id": 1,
+      "part": 1,
+      "name": "number"
     },
     {
-      "part": "noun",
-      "feature": "number",
-      "featureName": "number",
-      "value": "plural",
-      "valueName": "plural"
+      "id": 2,
+      "part": 6,
+      "name": "form"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "base",
-      "valueName": "base"
+      "id": 3,
+      "part": 6,
+      "name": "tense"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "third_person",
-      "valueName": "third person singular"
+      "id": 4,
+      "part": 12,
+      "name": "degree"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "past",
-      "valueName": "past"
+      "id": 5,
+      "part": 15,
+      "name": "degree"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "past_participle",
-      "valueName": "past participle"
+      "id": 6,
+      "part": 19,
+      "name": "case"
+    }
+  ],
+  "values": [
+    {
+      "id": 1,
+      "feature": 1,
+      "name": "singular"
     },
     {
-      "part": "verb",
-      "feature": "form",
-      "featureName": "form",
-      "value": "present_participle",
-      "valueName": "present participle"
+      "id": 2,
+      "feature": 1,
+      "name": "plural"
     },
     {
-      "part": "verb",
-      "feature": "tense",
-      "featureName": "tense",
-      "value": "present",
-      "valueName": "present"
+      "id": 3,
+      "feature": 2,
+      "name": "base"
     },
     {
-      "part": "verb",
-      "feature": "tense",
-      "featureName": "tense",
-      "value": "past",
-      "valueName": "past"
+      "id": 4,
+      "feature": 2,
+      "name": "third person singular"
     },
     {
-      "part": "adjective",
-      "feature": "degree",
-      "featureName": "degree",
-      "value": "positive",
-      "valueName": "positive"
+      "id": 5,
+      "feature": 2,
+      "name": "past"
     },
     {
-      "part": "adjective",
-      "feature": "degree",
-      "featureName": "degree",
-      "value": "comparative",
-      "valueName": "comparative"
+      "id": 6,
+      "feature": 2,
+      "name": "past participle"
     },
     {
-      "part": "adjective",
-      "feature": "degree",
-      "featureName": "degree",
-      "value": "superlative",
-      "valueName": "superlative"
+      "id": 7,
+      "feature": 2,
+      "name": "present participle"
     },
     {
-      "part": "adverb",
-      "feature": "degree",
-      "featureName": "degree",
-      "value": "positive",
-      "valueName": "positive"
+      "id": 8,
+      "feature": 3,
+      "name": "present"
     },
     {
-      "part": "adverb",
-      "feature": "degree",
-      "featureName": "degree",
-      "value": "comparative",
-      "valueName": "comparative"
+      "id": 9,
+      "feature": 3,
+      "name": "past"
     },
     {
-      "part": "adverb",
-      "feature": "degree",
-      "featureName": "degree",
-      "value": "superlative",
-      "valueName": "superlative"
+      "id": 10,
+      "feature": 4,
+      "name": "positive"
     },
     {
-      "part": "pronoun",
-      "feature": "case",
-      "featureName": "case",
-      "value": "subject",
-      "valueName": "subject"
+      "id": 11,
+      "feature": 4,
+      "name": "comparative"
     },
     {
-      "part": "pronoun",
-      "feature": "case",
-      "featureName": "case",
-      "value": "object",
-      "valueName": "object"
+      "id": 12,
+      "feature": 4,
+      "name": "superlative"
     },
     {
-      "part": "pronoun",
-      "feature": "case",
-      "featureName": "case",
-      "value": "possessive",
-      "valueName": "possessive"
+      "id": 13,
+      "feature": 5,
+      "name": "positive"
+    },
+    {
+      "id": 14,
+      "feature": 5,
+      "name": "comparative"
+    },
+    {
+      "id": 15,
+      "feature": 5,
+      "name": "superlative"
+    },
+    {
+      "id": 16,
+      "feature": 6,
+      "name": "subject"
+    },
+    {
+      "id": 17,
+      "feature": 6,
+      "name": "object"
+    },
+    {
+      "id": 18,
+      "feature": 6,
+      "name": "possessive"
     }
   ]
 }

@@ -45,6 +45,11 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS sense_register_member ON sense_register (register_id);
             CREATE INDEX IF NOT EXISTS collocation_register_member ON collocation_register (register_id);
             CREATE INDEX IF NOT EXISTS source_author_member ON source_author (author_id);
+            CREATE INDEX IF NOT EXISTS part_of_speech_value ON part_of_speech (speech_value_id);
+            CREATE INDEX IF NOT EXISTS morphology_feature_speech ON morphology_feature (speech_value_id);
+            CREATE INDEX IF NOT EXISTS morphology_value_feature ON morphology_value (morphology_feature_id);
+            CREATE INDEX IF NOT EXISTS inflection_speech ON inflection (speech_value_id);
+            CREATE INDEX IF NOT EXISTS inflection_feature_value ON inflection_feature (morphology_value_id);
             """;
         command.ExecuteNonQuery();
 

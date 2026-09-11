@@ -139,7 +139,7 @@ public sealed class TSchemaMigration
         Assert.True(first < 0);
         Assert.True(second < first);
         Assert.Equal(
-            reopened.TEngineStateRead().LWorkspaceStateIdentityFloor,
+            reopened.TEngineStateRead().LWorkspaceStateFloor,
             workspace.TWorkspaceCountRead("SELECT identity_floor FROM workspace;"));
     }
 

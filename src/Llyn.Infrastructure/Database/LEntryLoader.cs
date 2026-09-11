@@ -27,8 +27,7 @@ public sealed class LEntryLoader
         }
 
         LEntryArchive entries = new(_lEntryLoaderDatabase);
-        IReadOnlyList<LSpeechDraft> speeches = LEntrySpeechFormat(
-            entry.LEntryLanguage, entries.LEntrySpeechRead(id));
+        IReadOnlyList<LSpeechDraft> speeches = LEntrySpeechFormat(entries.LEntrySpeechRead(id));
         IReadOnlyList<LForm> forms = entries.LEntryFormRead(id);
         IReadOnlyList<LInflection> inflections =
             new LInflectionArchive(_lEntryLoaderDatabase).LInflectionRead(id);
@@ -126,8 +125,7 @@ public sealed class LEntryLoader
             pronunciation.LPronunciationId);
     }
 
-    private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(
-        string language, IReadOnlyList<LSpeech> speeches)
+    private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)
     {
         if (speeches.Count == 0)
         {
@@ -138,11 +136,14 @@ public sealed class LEntryLoader
         List<LSpeechDraft> named = new(speeches.Count);
         foreach (LSpeech speech in speeches)
         {
-            string shown = speech.LSpeechValueId is not string value
-                ? speech.LSpeechCustom ?? string.Empty
-                : values.LSpeechValueRead(language, value) ?? value;
+            if (speech.LSpeechValueId is not long valueId)
+            {
+                named.Add(new LSpeechDraft(0, speech.LSpeechCustom, speech.LSpeechCustom ?? string.Empty));
+                continue;
+            }
 
-            named.Add(new LSpeechDraft(speech.LSpeechValueId, speech.LSpeechCustom, shown));
+            string shown = values.LSpeechValueRead(valueId)?.LSpeechValueName ?? string.Empty;
+            named.Add(new LSpeechDraft(valueId, null, shown));
         }
 
         return named;
