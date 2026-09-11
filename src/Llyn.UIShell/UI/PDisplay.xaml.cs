@@ -25,7 +25,7 @@ public partial class PDisplay : UserControl
 
     private string? _pDisplayRecording;
 
-    private string? _pDisplayEntry;
+    private long? _pDisplayEntry;
 
     private PObserver? _pDisplayObserver;
 
@@ -54,14 +54,14 @@ public partial class PDisplay : UserControl
 
     private void PDisplayBulletinHandle(LBulletin bulletin)
     {
-        if (_pDisplayEntry is not string shown)
+        if (_pDisplayEntry is not long shown)
         {
             return;
         }
 
         if (bulletin.LBulletinSubject == LSubject.LSubjectFavorite)
         {
-            if (string.Equals(shown, bulletin.LBulletinId, StringComparison.Ordinal))
+            if (shown == bulletin.LBulletinId)
             {
                 PDisplayFavoriteShow(shown);
             }
@@ -75,8 +75,8 @@ public partial class PDisplay : UserControl
             return;
         }
 
-        if (bulletin.LBulletinId.Length > 0
-            && !string.Equals(shown, bulletin.LBulletinId, StringComparison.Ordinal))
+        if (bulletin.LBulletinId > 0
+            && shown != bulletin.LBulletinId)
         {
             return;
         }
@@ -233,7 +233,7 @@ public partial class PDisplay : UserControl
         PDisplayCollocation.ItemsSource = collocations;
     }
 
-    private static void PDisplayTranslationRead(IReadOnlyList<LCardDraft> cards, List<string> ids)
+    private static void PDisplayTranslationRead(IReadOnlyList<LCardDraft> cards, List<long> ids)
     {
         foreach (LCardDraft card in cards)
         {
@@ -402,11 +402,11 @@ public partial class PDisplay : UserControl
         {
             if (marked)
             {
-                _lEngine.LEngineFavoriteSave(_pDisplayEntry);
+                _lEngine.LEngineFavoriteSave(_pDisplayEntry!.Value);
             }
             else
             {
-                _lEngine.LEngineFavoriteDelete(_pDisplayEntry);
+                _lEngine.LEngineFavoriteDelete(_pDisplayEntry!.Value);
             }
         }
         catch (Exception exception)

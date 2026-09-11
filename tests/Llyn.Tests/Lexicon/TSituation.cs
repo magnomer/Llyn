@@ -13,12 +13,12 @@ public sealed class TSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TSituationEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        string collocationId =
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         LSituation situation = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "at a funeral", null, null));
+            TInterface.TSituationCreate(0, "at a funeral", null, null));
         engine.TEngineSituationAttach(meaningId, situation.LSituationId, 0, LOwner.LOwnerMeaning);
         engine.TEngineSituationAttach(
             collocationId, situation.LSituationId, 0, LOwner.LOwnerCollocation);
@@ -47,12 +47,12 @@ public sealed class TSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TSituationEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         LSituation first = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "in court", null, null));
+            TInterface.TSituationCreate(0, "in court", null, null));
         LSituation second = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "at home", null, null));
+            TInterface.TSituationCreate(0, "at home", null, null));
 
         engine.TEngineSituationAttach(meaningId, first.LSituationId, 0, LOwner.LOwnerMeaning);
         engine.TEngineSituationAttach(meaningId, second.LSituationId, 0, LOwner.LOwnerMeaning);
@@ -70,10 +70,10 @@ public sealed class TSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TSituationEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         LSituation situation = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "in court", null, null));
+            TInterface.TSituationCreate(0, "in court", null, null));
         engine.TEngineSituationAttach(meaningId, situation.LSituationId, 0, LOwner.LOwnerMeaning);
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -113,7 +113,7 @@ public sealed class TSituation
                 [], [], 1)],
             []));
 
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
         Assert.Equal(
             ["in conversation", "in court", "at home"],
             engine.TEngineSituationRead(meaningId, LOwner.LOwnerMeaning).Select(row => row.LSituationTitle));
@@ -123,11 +123,11 @@ public sealed class TSituation
         Assert.Equal(3, card.LCardDraftSituation.Count);
         foreach (LSituationDraft draft in card.LCardDraftSituation)
         {
-            Assert.NotEmpty(draft.LSituationDraftId);
+            Assert.NotEqual(0, draft.LSituationDraftId);
         }
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
-            string.Empty,
+            0,
             TInterface.TStateValueCreate("A Dictionary"),
             LStateValue.LStateValueUnspecified,
             LReferenceKind.LReferenceKindUnspecified,
@@ -154,7 +154,7 @@ public sealed class TSituation
             ],
         });
 
-        string citedId = card.LCardDraftSituation[1].LSituationDraftId;
+        long citedId = card.LCardDraftSituation[1].LSituationDraftId;
         IReadOnlyList<LSituation> attached = engine.TEngineSituationRead(meaningId, LOwner.LOwnerMeaning);
         Assert.Equal(
             ["in a courtroom", "in conversation", "in a letter"],
@@ -174,14 +174,14 @@ public sealed class TSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TSituationEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        string collocationId =
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         LSituation shared = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "in court", null, null));
+            TInterface.TSituationCreate(0, "in court", null, null));
         LSituation lonely = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "at home", null, null));
+            TInterface.TSituationCreate(0, "at home", null, null));
 
         engine.TEngineSituationAttach(meaningId, shared.LSituationId, 0, LOwner.LOwnerMeaning);
         engine.TEngineSituationAttach(collocationId, shared.LSituationId, 0, LOwner.LOwnerCollocation);
@@ -190,7 +190,7 @@ public sealed class TSituation
             ["in court", "at home"],
             engine.TEngineSituationRead().Select(row => row.LSituationTitle.TStateValueShow()));
 
-        IReadOnlyDictionary<string, int> counts = engine.TEngineUsageRead(LOwner.LOwnerSituation);
+        IReadOnlyDictionary<long, int> counts = engine.TEngineUsageRead(LOwner.LOwnerSituation);
         Assert.Equal(2, counts[shared.LSituationId]);
         Assert.DoesNotContain(lonely.LSituationId, counts);
     }
@@ -202,12 +202,12 @@ public sealed class TSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TSituationEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        string collocationId =
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         LSituation situation = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "in court", null, null));
+            TInterface.TSituationCreate(0, "in court", null, null));
         engine.TEngineSituationAttach(meaningId, situation.LSituationId, 0, LOwner.LOwnerMeaning);
         engine.TEngineSituationAttach(collocationId, situation.LSituationId, 0, LOwner.LOwnerCollocation);
 
@@ -226,7 +226,7 @@ public sealed class TSituation
         Assert.Equal("in a word", collocation.LUsageTitle.TStateValueShow());
 
         Assert.Empty(engine.TEngineUsageRead(
-            engine.TEngineSituationCreate(TInterface.TSituationCreate(string.Empty, "at home", null, null))
+            engine.TEngineSituationCreate(TInterface.TSituationCreate(0, "at home", null, null))
                 .LSituationId,
             LOwner.LOwnerSituation));
     }
@@ -238,14 +238,14 @@ public sealed class TSituation
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TSituationEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        string collocationId =
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         LSituation first = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "in court", null, null));
+            TInterface.TSituationCreate(0, "in court", null, null));
         LSituation second = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "at home", null, null));
+            TInterface.TSituationCreate(0, "at home", null, null));
 
         engine.TEngineSituationAttach(meaningId, first.LSituationId, 0, LOwner.LOwnerMeaning);
         engine.TEngineSituationAttach(meaningId, second.LSituationId, 1, LOwner.LOwnerMeaning);
@@ -263,7 +263,7 @@ public sealed class TSituation
             "SELECT COUNT(*) FROM sense_situation WHERE position <> 0;"));
 
         LSituation third = engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, "in a letter", null, null));
+            TInterface.TSituationCreate(0, "in a letter", null, null));
         engine.TEngineSituationAttach(meaningId, third.LSituationId, 1, LOwner.LOwnerMeaning);
         Assert.Equal(
             ["at home", "in a letter"],

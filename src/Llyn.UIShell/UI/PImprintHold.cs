@@ -13,7 +13,7 @@ public partial class PImprint
 
     private CancellationTokenSource? _pImprintPending;
 
-    private string _pImprintDraft = string.Empty;
+    private long _pImprintDraft;
 
     private bool _pImprintHalted;
 
@@ -30,13 +30,13 @@ public partial class PImprint
             return true;
         }
 
-        string held = _pImprintDraft;
-        if (held.Length == 0)
+        long held = _pImprintDraft;
+        if (held == 0)
         {
             return true;
         }
 
-        _pImprintDraft = string.Empty;
+        _pImprintDraft = 0;
 
         try
         {
@@ -64,7 +64,7 @@ public partial class PImprint
 
     private void PImprintChangeDefer()
     {
-        if (_pImprintLoading || _pImprintHalted || _pImprintDraft.Length == 0)
+        if (_pImprintLoading || _pImprintHalted || _pImprintDraft == 0)
         {
             return;
         }
@@ -102,7 +102,7 @@ public partial class PImprint
     {
         PImprintChangeStop();
 
-        if (_pImprintLoading || _pImprintHalted || _pImprintDraft.Length == 0)
+        if (_pImprintLoading || _pImprintHalted || _pImprintDraft == 0)
         {
             return;
         }
@@ -132,7 +132,7 @@ public partial class PImprint
         PImprintStore.IsEnabled = changed;
     }
 
-    private LDraft? PImprintDraftStart(string? reference)
+    private LDraft? PImprintDraftStart(long? reference)
     {
         PImprintChangeStop();
         PImprintDraftCancel();
@@ -146,7 +146,7 @@ public partial class PImprint
         }
         catch (Exception exception)
         {
-            _pImprintDraft = string.Empty;
+            _pImprintDraft = 0;
             PImprintHoldSuspend(exception);
             return null;
         }
@@ -159,7 +159,7 @@ public partial class PImprint
 
     private void PImprintDraftSave()
     {
-        if (_pImprintDraft.Length == 0)
+        if (_pImprintDraft == 0)
         {
             return;
         }
@@ -188,13 +188,13 @@ public partial class PImprint
 
     internal void PImprintDraftCancel()
     {
-        if (_pImprintDraft.Length == 0)
+        if (_pImprintDraft == 0)
         {
             return;
         }
 
-        string held = _pImprintDraft;
-        _pImprintDraft = string.Empty;
+        long held = _pImprintDraft;
+        _pImprintDraft = 0;
 
         try
         {
@@ -207,7 +207,7 @@ public partial class PImprint
 
     private bool PImprintDraftCheck()
     {
-        if (_pImprintDraft.Length == 0)
+        if (_pImprintDraft == 0)
         {
             return false;
         }
@@ -223,9 +223,9 @@ public partial class PImprint
         }
     }
 
-    private string? PImprintReferenceRead()
+    private long? PImprintReferenceRead()
     {
-        if (_pImprintDraft.Length == 0)
+        if (_pImprintDraft == 0)
         {
             return null;
         }
@@ -240,7 +240,7 @@ public partial class PImprint
             return null;
         }
 
-        return string.IsNullOrWhiteSpace(held?.LDraftEntry) ? null : held.LDraftEntry;
+        return held?.LDraftEntry is null or 0 ? null : held.LDraftEntry;
     }
 
     private void PImprintHoldSuspend(Exception exception)

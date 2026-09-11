@@ -13,8 +13,8 @@ public sealed class TTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        string collocationId =
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         engine.TEngineTagSave(
@@ -40,7 +40,7 @@ public sealed class TTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         engine.TEngineTagSave(
             meaningId,
@@ -59,7 +59,7 @@ public sealed class TTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         engine.TEngineTagSave(
             meaningId,
@@ -81,8 +81,8 @@ public sealed class TTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        string collocationId =
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
             engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
 
         engine.TEngineTagSave(
@@ -108,7 +108,7 @@ public sealed class TTag
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TTagEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         engine.TEngineTagSave(
             meaningId,
@@ -139,7 +139,7 @@ public sealed class TTag
     }
 
     private static IReadOnlyList<long> TDatabasePositionRead(
-        TWorkspace workspace, string table, string column, string ownerId)
+        TWorkspace workspace, string table, string column, long ownerId)
     {
         using Microsoft.Data.Sqlite.SqliteConnection connection = workspace.TWorkspaceConnectionRead();
         using Microsoft.Data.Sqlite.SqliteCommand command = connection.CreateCommand();

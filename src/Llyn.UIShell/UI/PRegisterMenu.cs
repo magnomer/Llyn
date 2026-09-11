@@ -150,7 +150,7 @@ public partial class PEditor
         card.PCardRegisterClear();
     }
 
-    private string? PRegisterResolve(string written)
+    private long? PRegisterResolve(string written)
     {
         try
         {

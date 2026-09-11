@@ -155,7 +155,7 @@ public partial class PEditor
 
     private void PCardOrderApply(ObservableCollection<PCard> list, int from, int target)
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return;
         }
@@ -177,7 +177,7 @@ public partial class PEditor
 
     private void PCardOrderApply(ObservableCollection<PCard> list)
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return;
         }

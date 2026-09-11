@@ -27,7 +27,7 @@ public sealed class TEntrySave
                     string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1),
             ]));
 
-        Assert.NotEmpty(entry.LEntryId);
+        Assert.NotEqual(0, entry.LEntryId);
 
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         Assert.Equal("word", entries.TEntryRead(entry.LEntryId)?.LEntryHeadword);

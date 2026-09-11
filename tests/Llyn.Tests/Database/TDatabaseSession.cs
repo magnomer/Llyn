@@ -15,7 +15,7 @@ public sealed class TDatabaseSession
         using (LDatabaseSession session = workspace.TWorkspaceDatabase.TDatabaseSessionStart())
         {
             entries.TEntryCreate(
-                TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
+                TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         }
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
@@ -31,7 +31,7 @@ public sealed class TDatabaseSession
         using (LDatabaseSession session = workspace.TWorkspaceDatabase.TDatabaseSessionStart())
         {
             LEntry entry = entries.TEntryCreate(
-                TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
+                TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
             notes.TNoteSave(TInterface.TNoteCreate(entry.LEntryId, "a note"));
             session.TDatabaseSessionCommit();
         }
@@ -49,8 +49,8 @@ public sealed class TDatabaseSession
         Assert.Throws<InvalidOperationException>(() =>
         {
             using LDatabaseSession session = workspace.TWorkspaceDatabase.TDatabaseSessionStart();
-            entries.TEntryCreate(TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
-            entries.TEntryUpdate(TInterface.TEntryCreate("missing", "word", "en", null, null, null, null));
+            entries.TEntryCreate(TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
+            entries.TEntryUpdate(TInterface.TEntryCreate(9999, "word", "en", null, null, null, null));
             session.TDatabaseSessionCommit();
         });
 
@@ -65,13 +65,13 @@ public sealed class TDatabaseSession
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
         LMeaning second = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
         LMeaning third = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
 
         Assert.Equal([0, 1, 2], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
 
@@ -91,11 +91,11 @@ public sealed class TDatabaseSession
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
-        meanings.TMeaningCreate(TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
-        meanings.TMeaningCreate(TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
 
         meanings.TMeaningDelete(first.LMeaningId);
 
@@ -111,9 +111,9 @@ public sealed class TDatabaseSession
         LTagArchive tags = TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         LMeaning meaning = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, null, null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, null, null, null, string.Empty));
 
         tags.TTagMeaningSave(
             meaning.LMeaningId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("archaic"), TInterface.TTagCreate("rare")]);
@@ -140,7 +140,7 @@ public sealed class TDatabaseSession
         LInflectionArchive inflections = TInterface.TInflectionArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "run", "en", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "run", "en", null, null, null, null), [], []);
         inflections.TInflectionAppend(entry.LEntryId,
         [
             TInterface.TInflectionCreate(entry.LEntryId, 0, "runs", null, null, [TInterface.TFeatureCreate("number", "singular")]),
@@ -171,7 +171,7 @@ public sealed class TDatabaseSession
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
 
         LExample stored = examples.TExampleCreate(TInterface.TExampleCreate(
-            string.Empty, "en", "a sentence", "one translation", null));
+            0, "en", "a sentence", "one translation", null));
 
         examples.TExampleUpdate(stored with { LExampleText = "a changed sentence" });
 
@@ -184,17 +184,17 @@ public sealed class TDatabaseSession
     [Fact]
     public void IdentityCreate_ManyCalls_ReturnsDistinctValues()
     {
-        HashSet<string> identifiers = [];
+        HashSet<long> identifiers = [];
         for (int count = 0; count < 5000; count++)
         {
-            string identifier = TInterface.TIdentityCreate();
-            Assert.Equal(12, identifier.Length);
+            long identifier = TInterface.TIdentityCreate();
+            Assert.True(identifier < 0);
             Assert.True(identifiers.Add(identifier));
         }
     }
 
     private static IReadOnlyList<long> TDatabasePositionRead(
-        TWorkspace workspace, string table, string column, string referrerId)
+        TWorkspace workspace, string table, string column, long referrerId)
     {
         using Microsoft.Data.Sqlite.SqliteConnection connection = workspace.TWorkspaceConnectionRead();
         using Microsoft.Data.Sqlite.SqliteCommand command = connection.CreateCommand();

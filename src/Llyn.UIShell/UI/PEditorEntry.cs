@@ -23,7 +23,7 @@ public partial class PEditor
 
     internal void PEditorFavoriteShow()
     {
-        string? entry = PEditorEntryRead();
+        long? entry = PEditorEntryRead();
 
         if (entry is null)
         {
@@ -36,7 +36,7 @@ public partial class PEditor
 
         try
         {
-            PEditorFavorite.IsChecked = _lEngine.LEngineFavoriteCheck(entry);
+            PEditorFavorite.IsChecked = _lEngine.LEngineFavoriteCheck(entry.Value);
         }
         catch (Exception)
         {
@@ -46,7 +46,7 @@ public partial class PEditor
 
     private void PEditorFavoriteHandle(object sender, RoutedEventArgs e)
     {
-        string? entry = PEditorEntryRead();
+        long? entry = PEditorEntryRead();
 
         if (entry is null)
         {
@@ -59,11 +59,11 @@ public partial class PEditor
         {
             if (marked)
             {
-                _lEngine.LEngineFavoriteSave(entry);
+                _lEngine.LEngineFavoriteSave(entry.Value);
             }
             else
             {
-                _lEngine.LEngineFavoriteDelete(entry);
+                _lEngine.LEngineFavoriteDelete(entry.Value);
             }
         }
         catch (Exception exception)
@@ -73,9 +73,9 @@ public partial class PEditor
         }
     }
 
-    private string? PEditorEntryRead()
+    private long? PEditorEntryRead()
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return null;
         }
@@ -90,7 +90,7 @@ public partial class PEditor
             return null;
         }
 
-        return string.IsNullOrWhiteSpace(held?.LDraftEntry) ? null : held.LDraftEntry;
+        return held?.LDraftEntry is null or 0 ? null : held.LDraftEntry;
     }
 
     private void PEditorStoreHandle(object sender, RoutedEventArgs e)
@@ -102,13 +102,13 @@ public partial class PEditor
     {
         PEditorChangeSave();
 
-        string held = _pEditorDraft;
-        if (held.Length == 0)
+        long held = _pEditorDraft;
+        if (held == 0)
         {
             return;
         }
 
-        string? entry = PEditorEntryRead();
+        long? entry = PEditorEntryRead();
 
         LEntry stored;
         try
@@ -121,7 +121,7 @@ public partial class PEditor
             return;
         }
 
-        _pEditorDraft = string.Empty;
+        _pEditorDraft = 0;
 
         if (entry is not null)
         {
@@ -134,7 +134,7 @@ public partial class PEditor
 
     private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
     {
-        string? entry = PEditorEntryRead();
+        long? entry = PEditorEntryRead();
 
         PEditorChangeStop();
         PEditorDraftCancel();
@@ -145,6 +145,6 @@ public partial class PEditor
             return;
         }
 
-        PEditorEntryShow(entry);
+        PEditorEntryShow(entry.Value);
     }
 }

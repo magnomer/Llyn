@@ -65,8 +65,8 @@ public sealed class TCatalogExample
 
         LEntry first = TCatalogEntryCreate(engine, "apple");
         LEntry second = TCatalogEntryCreate(engine, "stone");
-        string apple = engine.TEngineMeaningRead(first.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
-        string stone = engine.TEngineMeaningRead(second.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long apple = engine.TEngineMeaningRead(first.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long stone = engine.TEngineMeaningRead(second.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         engine.TEngineExampleAttach(apple, busy.LExampleId, 0, LOwner.LOwnerMeaning);
         engine.TEngineExampleAttach(stone, busy.LExampleId, 0, LOwner.LOwnerMeaning);
@@ -115,15 +115,15 @@ public sealed class TCatalogExample
         LEngine engine,
         string text,
         string language,
-        string? source,
+        long? source,
         string? translation = null)
     {
         return engine.TEngineExampleCreate(TInterface.TExampleCreate(
-            string.Empty,
+            0,
             language,
             text,
             translation,
-            source));
+            TInterface.TStateAnchorRead(source)));
     }
 
     private static LReference TCatalogSourceCreate(LEngine engine, string title)
@@ -131,7 +131,7 @@ public sealed class TCatalogExample
         string? unstated = null;
 
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
-            string.Empty,
+            0,
             title,
             unstated,
             LReferenceKind.LReferenceKindUnspecified,

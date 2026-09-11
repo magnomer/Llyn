@@ -54,7 +54,7 @@ public sealed class LFavoriteArchive
 
     public bool LFavoriteCheck(long entryId)
     {
-        ArgumentNullException.ThrowIfNull(entryId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lFavoriteArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();

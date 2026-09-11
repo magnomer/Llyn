@@ -52,7 +52,7 @@ public sealed partial class LEngine
         LExample settled;
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+            ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
             LDraft draft = LEngineDraftLoad(id);

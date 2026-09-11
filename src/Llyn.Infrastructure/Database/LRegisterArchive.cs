@@ -75,7 +75,7 @@ public sealed class LRegisterArchive
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT id, name_state, name, language, builtin FROM register WHERE id = $id;";
+            "SELECT id, name_state, name, language, builtin, pack_key FROM register WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -88,7 +88,7 @@ public sealed class LRegisterArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, name_state, name, language, builtin
+            SELECT id, name_state, name, language, builtin, pack_key
             FROM register
             ORDER BY builtin DESC, rowid;
             """;
@@ -237,7 +237,8 @@ public sealed class LRegisterArchive
             reader.GetInt64(0),
             LStateColumn.LStateColumnRead(reader, 1),
             reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-            reader.GetInt32(4) != 0);
+            reader.GetInt32(4) != 0,
+            reader.IsDBNull(5) ? null : reader.GetString(5));
     }
 
     private static int LRegisterReferenceRead(SqliteConnection connection, long id)
@@ -364,7 +365,7 @@ public sealed class LRegisterArchive
         command.CommandText =
             $"""
             SELECT register.id, register.name_state, register.name,
-                   register.language, register.builtin
+                   register.language, register.builtin, register.pack_key
             FROM {table} link
             JOIN register ON register.id = link.register_id
             WHERE link.{column} = $referrer

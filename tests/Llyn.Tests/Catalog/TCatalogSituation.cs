@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -90,7 +90,7 @@ public sealed class TCatalogSituation
         string? kind)
     {
         return engine.TEngineSituationCreate(
-            TInterface.TSituationCreate(string.Empty, title, description, kind));
+            TInterface.TSituationCreate(0, title, description, kind));
     }
 
     private static LEntry TCatalogEntryCreate(LEngine engine, string headword)

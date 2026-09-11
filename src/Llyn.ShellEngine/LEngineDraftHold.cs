@@ -54,7 +54,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+            ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
             return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id);
         }
@@ -72,7 +72,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+            ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
             LEngineCourtRemove(id);
             _lEngineDraftHeld.Remove(id);
@@ -86,7 +86,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            if (id <= 0)
+            if (id == 0)
             {
                 return false;
             }
@@ -127,7 +127,7 @@ public sealed partial class LEngine
         LEntry stored;
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+            ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
             stored = LEngineDraftCommit(id, [], true);
             _lEngineTrove.LTroveClear(id);
@@ -191,7 +191,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+            ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
             LEngineCourtRemove(id);
@@ -284,7 +284,7 @@ public sealed partial class LEngine
 
     private LDraft LEngineDraftLoad(long id)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+        ArgumentOutOfRangeException.ThrowIfZero(id);
 
         return LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, id)
             ?? throw new LRefusal(LRefusal.LRefusalDraft);

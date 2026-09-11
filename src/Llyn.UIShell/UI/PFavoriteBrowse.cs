@@ -11,7 +11,7 @@ public partial class PFavorite
 {
     private readonly ObservableCollection<PRosterItem> _pRosterList = [];
 
-    private string? _pRosterEntry;
+    private long? _pRosterEntry;
 
     private LCatalogOrder _pSeriesChoice;
 
@@ -142,7 +142,7 @@ public partial class PFavorite
 
     private void PRosterEntryUpdate(long id)
     {
-        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pRosterEntry = id;
             PRosterSelect(id);
@@ -151,8 +151,8 @@ public partial class PFavorite
 
         PRosterFind(PRecall.Text ?? string.Empty);
 
-        if (_pRosterEntry is not string shown
-            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        if (_pRosterEntry is not long shown
+            || (id > 0 && shown != id))
         {
             return;
         }
@@ -196,7 +196,7 @@ public partial class PFavorite
 
             if (_pRosterEntry is not null)
             {
-                PRosterEntryShow(_pRosterEntry);
+                PRosterEntryShow(_pRosterEntry.Value);
                 return;
             }
 
@@ -210,7 +210,7 @@ public partial class PFavorite
             return;
         }
 
-        PEditor.PEditorEntryShow(_pRosterEntry);
+        PEditor.PEditorEntryShow(_pRosterEntry.Value);
         PFavoriteScribeShow(true);
     }
 

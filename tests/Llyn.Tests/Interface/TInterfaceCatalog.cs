@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -53,7 +53,7 @@ internal static partial class TInterface
         LCatalogOrder order) =>
         engine.LEngineTagFind(query, order);
 
-    internal static IReadOnlyDictionary<string, string> TEngineCitationRead(this LEngine engine) =>
+    internal static IReadOnlyDictionary<long, string> TEngineCitationRead(this LEngine engine) =>
         engine.LEngineCitationRead();
 
     internal static string TReferenceNameRead(this LReference reference) =>

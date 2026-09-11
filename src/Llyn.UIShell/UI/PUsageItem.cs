@@ -24,7 +24,7 @@ internal sealed class PUsageItem
 
     public long PUsageItemId { get; }
 
-    public string PUsageItemEntry { get; }
+    public long PUsageItemEntry { get; }
 
     public string PUsageItemHeadword { get; }
 

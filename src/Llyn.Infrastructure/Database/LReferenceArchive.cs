@@ -27,7 +27,6 @@ public sealed class LReferenceArchive
             command.CommandText =
                 """
                 INSERT INTO source (
-                    id,
                     title_state, title,
                     year_state, year,
                     kind,
@@ -35,7 +34,6 @@ public sealed class LReferenceArchive
                     url_state, url,
                     author_state)
                 VALUES (
-                    $id,
                     $titleState, $title,
                     $yearState, $year,
                     $kind,

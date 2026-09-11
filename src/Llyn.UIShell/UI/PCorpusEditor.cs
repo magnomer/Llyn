@@ -9,7 +9,7 @@ namespace Llyn.UIShell;
 
 public partial class PCorpus
 {
-    private string _pTranscriptCitation = string.Empty;
+    private long _pTranscriptCitation;
 
     private string _pTranscriptLanguage = string.Empty;
 
@@ -83,9 +83,9 @@ public partial class PCorpus
         PCitationEmpty.Visibility = _pCitationCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private string PCitationNameRead(LStateValue source)
+    private string PCitationNameRead(LStateAnchor source)
     {
-        long id = source.LStateValueShow();
+        long id = source.LStateAnchorShow();
         if (id == 0)
         {
             return string.Empty;
@@ -99,7 +99,7 @@ public partial class PCorpus
             }
         }
 
-        return id;
+        return id.ToString(CultureInfo.InvariantCulture);
     }
 
     private void PCitationHandle(object sender, SelectionChangedEventArgs e)
@@ -117,7 +117,7 @@ public partial class PCorpus
 
     private void PCitationClearHandle(object sender, RoutedEventArgs e)
     {
-        _pTranscriptCitation = string.Empty;
+        _pTranscriptCitation = 0;
         PCitationList.SelectedValue = null;
         PCitation.IsChecked = false;
         PCitationUpdate();
@@ -126,9 +126,9 @@ public partial class PCorpus
 
     private void PCitationUpdate()
     {
-        PCitationName.Text = _pTranscriptCitation.Length == 0
+        PCitationName.Text = _pTranscriptCitation == 0
             ? _pCorpusHost.PLocalizationTextRead("Reference.Assign")
-            : PCitationNameRead(LStateValue.LStateValueCreate(_pTranscriptCitation));
+            : PCitationNameRead(LStateAnchor.LStateAnchorCreate(_pTranscriptCitation));
     }
 
     private void PTranscriptTextHandle(object sender, TextChangedEventArgs e)
@@ -174,11 +174,11 @@ public partial class PCorpus
 
         PSpeakerShow();
 
-        _pTranscriptCitation = example?.LExampleSource.LStateValueShow() ?? string.Empty;
-        PCitationList.SelectedValue = _pTranscriptCitation.Length == 0 ? null : _pTranscriptCitation;
+        _pTranscriptCitation = example?.LExampleSource.LStateAnchorShow() ?? 0;
+        PCitationList.SelectedValue = _pTranscriptCitation == 0 ? null : _pTranscriptCitation;
         PCitationUpdate();
 
-        string? stored = PTranscriptExampleRead();
+        long? stored = PTranscriptExampleRead();
         PTranscriptRemoval.IsEnabled = stored is not null;
         PTranscriptCountShow(stored);
 
@@ -195,7 +195,7 @@ public partial class PCorpus
             return;
         }
 
-        int usage = _pAnthologyCount.TryGetValue(id, out int count) ? count : 0;
+        int usage = _pAnthologyCount.TryGetValue(id.Value, out int count) ? count : 0;
         PTranscriptCount.Text = $"{_pCorpusHost.PLocalizationTextRead("Example.DetachCount")} "
             + usage.ToString(CultureInfo.CurrentCulture);
     }
@@ -209,7 +209,7 @@ public partial class PCorpus
                 LStateValue.LStateValueResolve(PTranscriptText.Text, _pTranscriptTextUnreadable),
             LExampleTranslation = LStateValue.LStateValueResolve(
                 PTranscriptTranslation.Text, _pTranscriptTranslationUnreadable),
-            LExampleSource = LStateValue.LStateValueRead(_pTranscriptCitation),
+            LExampleSource = LStateAnchor.LStateAnchorRead(_pTranscriptCitation),
         };
     }
 
@@ -233,7 +233,7 @@ public partial class PCorpus
             return;
         }
 
-        string? example = PTranscriptExampleRead();
+        long? example = PTranscriptExampleRead();
         PTranscriptDraftShow(PTranscriptDraftStart(example));
     }
 
@@ -241,8 +241,8 @@ public partial class PCorpus
     {
         PTranscriptChangeSave();
 
-        string held = _pTranscriptDraft;
-        if (held.Length == 0)
+        long held = _pTranscriptDraft;
+        if (held == 0)
         {
             return;
         }
@@ -258,7 +258,7 @@ public partial class PCorpus
             return;
         }
 
-        _pTranscriptDraft = string.Empty;
+        _pTranscriptDraft = 0;
         _pExcerptExample = stored.LExampleId;
 
         PAnthologyFind(PQuery.Text ?? string.Empty);

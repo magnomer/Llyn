@@ -14,7 +14,7 @@ public static class LSchemaEntry
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS entry (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 realm_origin INTEGER REFERENCES realm (id),
                 id_origin INTEGER,
                 headword TEXT NOT NULL,

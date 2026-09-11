@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -16,10 +16,10 @@ public sealed class TClaim
 
         TInterface.TClaimArchiveSave(
             workspace.TWorkspaceFolder,
-            TInterface.TClaimCreate("kindle", running.Id, new DateTimeOffset(running.StartTime)));
+            TInterface.TClaimCreate(-1, running.Id, new DateTimeOffset(running.StartTime)));
 
-        Assert.True(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, "kindle"));
-        Assert.NotNull(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, "kindle"));
+        Assert.True(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, -1));
+        Assert.NotNull(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, -1));
         Assert.Single(TInterface.TClaimArchiveScan(workspace.TWorkspaceFolder));
     }
 
@@ -30,13 +30,13 @@ public sealed class TClaim
 
         Process held = TClaimProcessStart();
         LClaim claim = TInterface.TClaimCreate(
-            "kindle", held.Id, new DateTimeOffset(held.StartTime));
+            -1, held.Id, new DateTimeOffset(held.StartTime));
         TClaimProcessStop(held);
 
         TInterface.TClaimArchiveSave(workspace.TWorkspaceFolder, claim);
 
-        Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, "kindle"));
-        Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, "kindle"));
+        Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, -1));
+        Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, -1));
         Assert.Empty(TInterface.TClaimArchiveScan(workspace.TWorkspaceFolder));
     }
 
@@ -49,10 +49,10 @@ public sealed class TClaim
         TInterface.TClaimArchiveSave(
             workspace.TWorkspaceFolder,
             TInterface.TClaimCreate(
-                "kindle", running.Id, new DateTimeOffset(running.StartTime).AddMinutes(-5)));
+                -1, running.Id, new DateTimeOffset(running.StartTime).AddMinutes(-5)));
 
-        Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, "kindle"));
-        Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, "kindle"));
+        Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, -1));
+        Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, -1));
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public sealed class TClaim
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, "kindle"));
+        Assert.False(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, -1));
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public sealed class TClaim
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         Process held = TClaimProcessStart();
 
-        string draftId = TClaimDraftCreate(workspace);
+        long draftId = TClaimDraftCreate(workspace);
 
         TInterface.TClaimArchiveSave(
             workspace.TWorkspaceFolder,
@@ -121,7 +121,7 @@ public sealed class TClaim
         Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, started.LDraftId));
     }
 
-    private static string TClaimDraftCreate(TWorkspace workspace)
+    private static long TClaimDraftCreate(TWorkspace workspace)
     {
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineDraftStart("Input", null);

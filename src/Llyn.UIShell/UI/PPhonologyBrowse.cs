@@ -10,7 +10,7 @@ public partial class PPhonology
 {
     private readonly ObservableCollection<PInventoryItem> _pInventoryList = [];
 
-    private string? _pDisplayEntry;
+    private long? _pDisplayEntry;
 
     private LCatalogOrder _pSequenceChoice;
 
@@ -131,7 +131,7 @@ public partial class PPhonology
 
     private void PInventoryEntryUpdate(long id)
     {
-        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
             PInventorySelect(id);
@@ -140,8 +140,8 @@ public partial class PPhonology
 
         PInventoryFind(PProbe.Text ?? string.Empty);
 
-        if (_pDisplayEntry is not string shown
-            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        if (_pDisplayEntry is not long shown
+            || (id > 0 && shown != id))
         {
             return;
         }
@@ -197,7 +197,7 @@ public partial class PPhonology
 
             if (_pDisplayEntry is not null)
             {
-                PInventoryEntryShow(_pDisplayEntry);
+                PInventoryEntryShow(_pDisplayEntry.Value);
                 return;
             }
 
@@ -211,7 +211,7 @@ public partial class PPhonology
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry);
+        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
         PPhonologyScribeShow(true);
     }
 

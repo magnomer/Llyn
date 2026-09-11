@@ -56,7 +56,7 @@ public static class LSchemaMarker
             );
 
             CREATE TABLE IF NOT EXISTS situation (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 realm_origin INTEGER REFERENCES realm (id),
                 id_origin INTEGER,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',

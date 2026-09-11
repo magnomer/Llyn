@@ -10,7 +10,7 @@ public partial class PEditor
         ObservableCollection<PCard> cards,
         string prefix,
         IReadOnlyList<LCardDraft> drafts,
-        IReadOnlyDictionary<string, LTranslationTarget> targets)
+        IReadOnlyDictionary<long, LTranslationTarget> targets)
     {
         cards.Clear();
         foreach (LCardDraft draft in drafts)
@@ -47,7 +47,7 @@ public partial class PEditor
     }
 
     private static IReadOnlyList<LTranslationTarget> PCardTargetRead(
-        IReadOnlyDictionary<string, LTranslationTarget> targets, IReadOnlyList<string> ids)
+        IReadOnlyDictionary<long, LTranslationTarget> targets, IReadOnlyList<long> ids)
     {
         List<LTranslationTarget> found = [];
         foreach (long id in ids)

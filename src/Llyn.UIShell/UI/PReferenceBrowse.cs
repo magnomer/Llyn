@@ -15,12 +15,12 @@ public partial class PReference
 
     private readonly ObservableCollection<PFootnoteItem> _pFootnoteList = [];
 
-    private IReadOnlyDictionary<long, int> _pShelfCount = new Dictionary<string, int>();
+    private IReadOnlyDictionary<long, int> _pShelfCount = new Dictionary<long, int>();
 
     private IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> _pShelfCredit =
-        new Dictionary<string, IReadOnlyList<LAuthor>>();
+        new Dictionary<long, IReadOnlyList<LAuthor>>();
 
-    private string? _pColophonReference;
+    private long? _pColophonReference;
 
     private LCatalogOrder _pGradeChoice;
 
@@ -67,7 +67,7 @@ public partial class PReference
         return _pShelfCredit.TryGetValue(id, out IReadOnlyList<LAuthor>? credits) ? credits : PShelfNobody;
     }
 
-    internal int PShelfReachRead(string author)
+    internal int PShelfReachRead(long author)
     {
         int reach = 0;
         foreach (IReadOnlyList<LAuthor> credits in _pShelfCredit.Values)
@@ -137,10 +137,7 @@ public partial class PReference
         bool kept = false;
         foreach (LCatalogReference row in read)
         {
-            kept |= string.Equals(
-                row.LCatalogReferenceStored.LReferenceId,
-                _pColophonReference,
-                StringComparison.Ordinal);
+            kept |= row.LCatalogReferenceStored.LReferenceId == _pColophonReference;
             _pShelfList.Add(new PShelfItem(row, unreadable, unset));
         }
 
@@ -320,7 +317,7 @@ public partial class PReference
 
             if (_pColophonReference is not null)
             {
-                PReferenceShow(_pColophonReference);
+                PReferenceShow(_pColophonReference.Value);
                 return;
             }
 

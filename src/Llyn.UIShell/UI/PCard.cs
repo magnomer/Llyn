@@ -50,7 +50,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         PCardVideo = [];
     }
 
-    public long PCardId { get; set; } = string.Empty;
+    public long PCardId { get; set; }
 
     internal LCardDraft? PCardDraft { get; set; }
 

@@ -1,4 +1,4 @@
-# LIdentity.cs
+﻿# LIdentity.cs
 
 ## `public static class LIdentity`
 
@@ -21,9 +21,3 @@ Issues the next temporary id.
 
 Counts downward, so ids are distinct for the life of the process and never stray into the range the database assigns.
 Interlocked, because drafts are edited from the UI thread while the shell works on others.
-
-## `public static bool LIdentityTemporary(long id)`
-
-Reports whether `id` names a row the database has never stored.
-
-Zero counts as temporary, because it is what a record carries before anything has been issued at all.

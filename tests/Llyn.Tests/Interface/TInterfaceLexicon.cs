@@ -1,10 +1,10 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 
 namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static LAuthor TAuthorCreate(string id, string name) =>
+    internal static LAuthor TAuthorCreate(long id, string name) =>
         new(id, name);
 
     internal static LCardDraft TCardDraftCreate(
@@ -13,27 +13,27 @@ internal static partial class TInterface
         LStateValue meaning,
         IReadOnlyList<LSentenceDraft> sentence,
         IReadOnlyList<LSituationDraft> situation,
-        IReadOnlyList<string> translation,
+        IReadOnlyList<long> translation,
         string synonym,
         IReadOnlyList<string> tag,
         IReadOnlyList<LImageDraft> image,
         int position,
-        string id = "",
+        long id = 0,
         IReadOnlyList<LVideoDraft>? video = null,
         IReadOnlyList<LRegisterDraft>? register = null) =>
         new(
             title, expression, meaning, sentence, situation, register ?? [], translation, synonym, tag,
             image, video ?? [], position, id);
 
-    internal static LVideoDraft TVideoDraftCreate(string location, string span = "", string id = "") =>
+    internal static LVideoDraft TVideoDraftCreate(string location, string span = "", long id = 0) =>
         new(LStateValue.LStateValueRead(location), LStateValue.LStateValueRead(span), id);
 
-    internal static LImageDraft TImageDraftCreate(string location, string id = "") =>
+    internal static LImageDraft TImageDraftCreate(string location, long id = 0) =>
         new(LStateValue.LStateValueRead(location), id);
 
     internal static LCollocation TCollocationCreate(
-        string id,
-        string entryId,
+        long id,
+        long entryId,
         int position,
         LStateValue title,
         LStateValue expression,
@@ -41,23 +41,23 @@ internal static partial class TInterface
         new(id, entryId, position, title, expression, meaning);
 
     internal static LCourtLink TCourtLinkCreate(
-        string id,
-        string owner,
-        string target,
+        long id,
+        long owner,
+        long target,
         string headword,
         string language) =>
         new(id, owner, target, headword, language);
 
     internal static LDraft TDraftCreate(
-        string id,
+        long id,
         string origin,
-        string entry,
+        long entry,
         LEntryDraft content,
         DateTimeOffset moment) =>
         new(id, origin, entry, content, moment);
 
     internal static LEntry TEntryCreate(
-        string id,
+        long id,
         string headword,
         string language,
         string? proficiency,
@@ -113,28 +113,28 @@ internal static partial class TInterface
     }
 
     internal static LExample TExampleCreate(
-        string id,
+        long id,
         string language,
         LStateValue text,
         LStateValue translation,
-        LStateValue source) =>
+        LStateAnchor source) =>
         new(id, language, text, translation, source);
 
     internal static LExampleDraft TExampleDraftCreate(
         LStateValue text,
-        string id,
-        LStateValue reference,
+        long id,
+        LStateAnchor reference,
         LStateValue? translation = null,
         string language = "") =>
         new(text, id, reference, translation ?? LStateValue.LStateValueUnspecified, language);
 
     internal static LSentenceDraft TSentenceDraftCreate(
         LStateValue text,
-        string id,
-        LStateValue reference,
+        long id,
+        LStateAnchor reference,
         LStateValue? particle = null,
         LStateValue? dependence = null,
-        string row = "") =>
+        long row = 0) =>
         new(
             TExampleDraftCreate(text, id, reference),
             particle ?? LStateValue.LStateValueUnspecified,
@@ -152,8 +152,8 @@ internal static partial class TInterface
             dependence ?? LStateValue.LStateValueUnspecified);
 
     internal static LSentence TSentenceCreate(
-        string id,
-        string ownerId,
+        long id,
+        long ownerId,
         int position,
         LExample? example,
         LStateValue? particle,
@@ -173,7 +173,7 @@ internal static partial class TInterface
         new(id, valueId);
 
     internal static LForm TFormCreate(
-        string entryId,
+        long entryId,
         int position,
         string text,
         string? local,
@@ -181,7 +181,7 @@ internal static partial class TInterface
         new(entryId, position, text, local, role);
 
     internal static LInflection TInflectionCreate(
-        string entryId,
+        long entryId,
         int position,
         string text,
         string? local,
@@ -199,12 +199,12 @@ internal static partial class TInterface
         int position) =>
         new(language, speechId, featureId, featureName, valueId, valueName, position);
 
-    internal static LNote TNoteCreate(string entryId, string text) =>
+    internal static LNote TNoteCreate(long entryId, string text) =>
         new(entryId, text);
 
     internal static LPronunciation TPronunciationCreate(
-        string id,
-        string entryId,
+        long id,
+        long entryId,
         string? level,
         string? ipa,
         IReadOnlyList<LSyllable> syllables,
@@ -212,7 +212,7 @@ internal static partial class TInterface
         new(id, entryId, level, ipa, syllables, representations);
 
     internal static LReference TReferenceCreate(
-        string id,
+        long id,
         LStateValue title,
         LStateValue year,
         LReferenceKind kind,
@@ -222,20 +222,20 @@ internal static partial class TInterface
         new(id, title, year, kind, note, url, authorState);
 
     internal static LRelation TRelationCreate(
-        string id,
-        string meaningId,
+        long id,
+        long meaningId,
         int position,
         string type,
         string? label,
         string? labels,
-        string? targetEntry,
-        string? targetMeaning) =>
+        long? targetEntry,
+        long? targetMeaning) =>
         new(id, meaningId, position, type, label, labels, targetEntry, targetMeaning);
 
     internal static LMeaning TMeaningCreate(
-        string id,
-        string entryId,
-        string? parentId,
+        long id,
+        long entryId,
+        long? parentId,
         int position,
         LStateValue title,
         string? gloss,
@@ -244,18 +244,18 @@ internal static partial class TInterface
         string labels) =>
         new(id, entryId, parentId, position, title, gloss, definitionLanguage, definition, labels);
 
-    internal static LRegister TRegisterCreate(string id, string name) =>
+    internal static LRegister TRegisterCreate(long id, string name) =>
         new(id, LStateValue.LStateValueRead(name), string.Empty, false);
 
     internal static LRegisterDraft TRegisterDraftCreate(string text) =>
         LRegisterDraft.LRegisterDraftCreate(text);
 
     internal static LRegisterDraft TRegisterDraftCreate(
-        LStateValue name, string id, string language = "", bool builtin = false) =>
+        LStateValue name, long id, string language = "", bool builtin = false) =>
         new(name, id, language, builtin);
 
     internal static LSituation TSituationCreate(
-        string id,
+        long id,
         LStateValue title,
         LStateValue description,
         LStateValue kind) =>
@@ -263,7 +263,7 @@ internal static partial class TInterface
 
     internal static LSituationDraft TSituationDraftCreate(
         LStateValue text,
-        string id,
+        long id,
         LStateValue? description = null,
         LStateValue? kind = null) =>
         new(
@@ -276,7 +276,7 @@ internal static partial class TInterface
         LSituationDraft.LSituationDraftCreate(text);
 
     internal static LSpeech TSpeechCreate(
-        string entryId,
+        long entryId,
         int position,
         string? valueId,
         string? custom = null) =>
@@ -294,17 +294,23 @@ internal static partial class TInterface
     internal static string TStateValueShow(this LStateValue stateValue) =>
         stateValue.LStateValueShow();
 
+    internal static long TStateAnchorShow(this LStateAnchor stateAnchor) =>
+        stateAnchor.LStateAnchorShow();
+
+    internal static LStateAnchor TStateAnchorRead(long? id) =>
+        LStateAnchor.LStateAnchorRead(id);
+
     internal static LSynonym TSynonymCreate(
-        string id,
-        string collocationId,
+        long id,
+        long collocationId,
         int position,
-        string? targetEntry,
-        string? targetMeaning) =>
+        long? targetEntry,
+        long? targetMeaning) =>
         new(id, collocationId, position, targetEntry, targetMeaning);
 
     internal static LTag TTagCreate(string text) =>
         new(text);
 
-    internal static LTranslation TTranslationCreate(string entryId, int position) =>
+    internal static LTranslation TTranslationCreate(long entryId, int position) =>
         new(entryId, position);
 }

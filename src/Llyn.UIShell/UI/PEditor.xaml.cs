@@ -55,7 +55,7 @@ public partial class PEditor : UserControl
         PVolumeAttach();
     }
 
-    internal void PEditorAttach(PWindow host, LEngine engine, string origin, string? entry)
+    internal void PEditorAttach(PWindow host, LEngine engine, string origin, long? entry)
     {
         _pEditorHost = host;
         _lEngine = engine;
@@ -74,7 +74,7 @@ public partial class PEditor : UserControl
         }
         else
         {
-            PEditorEntryShow(entry);
+            PEditorEntryShow(entry.Value);
         }
 
         PSpeakerLoad();

@@ -15,9 +15,9 @@ public sealed class TPronunciation
 
         LEntry entry = TPronunciationEntryCreate(engine);
         LPronunciation stored = engine.TEnginePronunciationCreate(
-            TInterface.TPronunciationCreate(string.Empty, entry.LEntryId, null, "/wɜːd/", [], []));
+            TInterface.TPronunciationCreate(0, entry.LEntryId, null, "/wɜːd/", [], []));
 
-        Assert.NotEmpty(stored.LPronunciationId);
+        Assert.NotEqual(0, stored.LPronunciationId);
         Assert.Equal("/wɜːd/", engine.TEnginePronunciationRead(entry.LEntryId)?.LPronunciationIpa);
 
         engine.TEnginePronunciationUpdate(stored with { LPronunciationIpa = "/wɝd/" });
@@ -35,7 +35,7 @@ public sealed class TPronunciation
 
         LEntry entry = TPronunciationEntryCreate(engine);
         LPronunciation pronunciation = engine.TEnginePronunciationCreate(
-            TInterface.TPronunciationCreate(string.Empty, entry.LEntryId, null, "/wɜːd/", [], []));
+            TInterface.TPronunciationCreate(0, entry.LEntryId, null, "/wɜːd/", [], []));
 
         string file = Path.Combine(workspace.TWorkspaceFolder, "audio", "English", "word.mp3");
         engine.TEngineAudioSave(pronunciation.LPronunciationId, file, "Wikipedia");

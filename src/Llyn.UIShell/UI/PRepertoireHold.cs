@@ -13,7 +13,7 @@ public partial class PRepertoire
 
     private CancellationTokenSource? _pScenarioPending;
 
-    private string _pScenarioDraft = string.Empty;
+    private long _pScenarioDraft;
 
     private bool _pScenarioHalted;
 
@@ -30,13 +30,13 @@ public partial class PRepertoire
             return true;
         }
 
-        string held = _pScenarioDraft;
-        if (held.Length == 0)
+        long held = _pScenarioDraft;
+        if (held == 0)
         {
             return true;
         }
 
-        _pScenarioDraft = string.Empty;
+        _pScenarioDraft = 0;
 
         try
         {
@@ -64,7 +64,7 @@ public partial class PRepertoire
 
     private void PScenarioChangeDefer()
     {
-        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft.Length == 0)
+        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft == 0)
         {
             return;
         }
@@ -102,7 +102,7 @@ public partial class PRepertoire
     {
         PScenarioChangeStop();
 
-        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft.Length == 0)
+        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft == 0)
         {
             return;
         }
@@ -132,7 +132,7 @@ public partial class PRepertoire
         PScenarioStore.IsEnabled = changed;
     }
 
-    private LDraft? PScenarioDraftStart(string? situation)
+    private LDraft? PScenarioDraftStart(long? situation)
     {
         PScenarioChangeStop();
         PScenarioDraftCancel();
@@ -146,7 +146,7 @@ public partial class PRepertoire
         }
         catch (Exception exception)
         {
-            _pScenarioDraft = string.Empty;
+            _pScenarioDraft = 0;
             PScenarioHoldSuspend(exception);
             return null;
         }
@@ -159,7 +159,7 @@ public partial class PRepertoire
 
     private void PScenarioDraftSave()
     {
-        if (_pScenarioDraft.Length == 0)
+        if (_pScenarioDraft == 0)
         {
             return;
         }
@@ -188,13 +188,13 @@ public partial class PRepertoire
 
     private void PScenarioDraftCancel()
     {
-        if (_pScenarioDraft.Length == 0)
+        if (_pScenarioDraft == 0)
         {
             return;
         }
 
-        string held = _pScenarioDraft;
-        _pScenarioDraft = string.Empty;
+        long held = _pScenarioDraft;
+        _pScenarioDraft = 0;
 
         try
         {
@@ -207,7 +207,7 @@ public partial class PRepertoire
 
     private bool PScenarioDraftCheck()
     {
-        if (_pScenarioDraft.Length == 0)
+        if (_pScenarioDraft == 0)
         {
             return false;
         }
@@ -223,9 +223,9 @@ public partial class PRepertoire
         }
     }
 
-    private string? PScenarioSituationRead()
+    private long? PScenarioSituationRead()
     {
-        if (_pScenarioDraft.Length == 0)
+        if (_pScenarioDraft == 0)
         {
             return null;
         }
@@ -240,7 +240,7 @@ public partial class PRepertoire
             return null;
         }
 
-        return string.IsNullOrWhiteSpace(held?.LDraftEntry) ? null : held.LDraftEntry;
+        return held?.LDraftEntry is null or 0 ? null : held.LDraftEntry;
     }
 
     private void PScenarioHoldSuspend(Exception exception)

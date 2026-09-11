@@ -8,8 +8,7 @@ namespace Llyn.UIShell;
 
 internal sealed class PLinkConverter : IValueConverter
 {
-    private readonly Dictionary<string, PLinkChip> _pLinkConverterTargets =
-        new(StringComparer.Ordinal);
+    private readonly Dictionary<long, PLinkChip> _pLinkConverterTargets = [];
 
     internal void PLinkConverterShow(IReadOnlyList<LTranslationTarget> targets)
     {
@@ -33,7 +32,7 @@ internal sealed class PLinkConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         List<PLinkChip> chips = [];
-        if (value is not IEnumerable<string> ids)
+        if (value is not IEnumerable<long> ids)
         {
             return chips;
         }

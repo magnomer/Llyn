@@ -79,7 +79,7 @@ public sealed class LExampleArchive
                 reader.GetString(1),
                 LStateColumn.LStateColumnRead(reader, 2),
                 LStateColumn.LStateColumnRead(reader, 4),
-                LStateColumn.LStateColumnAnchorRead(reader, 6)));
+                LStateColumn.LStateColumnResolve(reader, 6)));
         }
 
         return examples;
@@ -259,6 +259,6 @@ public sealed class LExampleArchive
             reader.GetString(0),
             LStateColumn.LStateColumnRead(reader, 1),
             LStateColumn.LStateColumnRead(reader, 3),
-            LStateColumn.LStateColumnAnchorRead(reader, 5));
+            LStateColumn.LStateColumnResolve(reader, 5));
     }
 }

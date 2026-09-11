@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 
 namespace Llyn.ShellEngine;
 
@@ -9,10 +9,5 @@ public static class LIdentity
     public static long LIdentityCreate()
     {
         return Interlocked.Decrement(ref _lIdentityIssued);
-    }
-
-    public static bool LIdentityTemporary(long id)
-    {
-        return id <= 0;
     }
 }

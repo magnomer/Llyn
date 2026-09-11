@@ -17,9 +17,9 @@ public partial class PCorpus
 
     private readonly ObservableCollection<PLanguageItem> _pLanguageItem = [];
 
-    private IReadOnlyDictionary<long, int> _pAnthologyCount = new Dictionary<string, int>();
+    private IReadOnlyDictionary<long, int> _pAnthologyCount = new Dictionary<long, int>();
 
-    private string? _pExcerptExample;
+    private long? _pExcerptExample;
 
     private LCatalogOrder _pRankChoice;
 
@@ -97,10 +97,7 @@ public partial class PCorpus
         bool kept = false;
         foreach (LCatalogExample row in read)
         {
-            kept |= string.Equals(
-                row.LCatalogExampleStored.LExampleId,
-                _pExcerptExample,
-                StringComparison.Ordinal);
+            kept |= row.LCatalogExampleStored.LExampleId == _pExcerptExample;
             _pAnthologyList.Add(new PAnthologyItem(
                 row.LCatalogExampleStored,
                 row.LCatalogExampleUsage,
@@ -164,7 +161,7 @@ public partial class PCorpus
         PExcerptLanguage.Text = example.LExampleLanguage;
         PExcerptFlag.Source = PEnsign.PEnsignFind(example.LExampleLanguage);
         PExcerptValueShow(PExcerptTranslation, example.LExampleTranslation);
-        PExcerptValueShow(
+        PExcerptAnchorShow(
             PExcerptCitation,
             example.LExampleSource,
             PCitationNameRead(example.LExampleSource));
@@ -179,6 +176,16 @@ public partial class PCorpus
         {
             PTranscriptDraftShow(PTranscriptDraftStart(id));
         }
+    }
+
+    private void PExcerptAnchorShow(TextBlock field, LStateAnchor value, string? shown)
+    {
+        PExcerptValueShow(
+            field,
+            value.LStateAnchorState == LState.LStateUnknown
+                ? LStateValue.LStateValueUnknown
+                : LStateValue.LStateValueRead(shown),
+            shown);
     }
 
     private void PExcerptValueShow(TextBlock field, LStateValue value, string? shown = null)
@@ -266,7 +273,7 @@ public partial class PCorpus
 
             if (_pExcerptExample is not null)
             {
-                PAnthologyExampleShow(_pExcerptExample);
+                PAnthologyExampleShow(_pExcerptExample.Value);
                 return;
             }
 

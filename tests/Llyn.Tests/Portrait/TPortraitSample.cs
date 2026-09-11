@@ -17,7 +17,7 @@ internal static class TPortraitSample
             "to set something burning",
             ["around a hearth <cold>"],
             ["formal"],
-            [TInterface.TPortraitLinkCreate("e2", "불붙이다", "Korean")],
+            [TInterface.TPortraitLinkCreate(1, "불붙이다", "Korean")],
             [TInterface.TPortraitExampleCreate("(+with)", "she knelt to kindle the damp logs")],
             ["literal", "fire & light"],
             [],

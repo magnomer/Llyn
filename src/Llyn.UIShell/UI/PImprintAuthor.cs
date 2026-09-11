@@ -49,18 +49,18 @@ public partial class PImprint
         _pAuthorState = reference?.LReferenceAuthorState ?? LState.LStateUnspecified;
         PAuthorUnknown.IsChecked = _pAuthorState == LState.LStateUnknown;
 
-        string? stored = PImprintReferenceRead();
+        long? stored = PImprintReferenceRead();
         PAuthorSwitch.IsEnabled = stored is not null;
         PAuthorCreditFind(stored);
     }
 
-    private void PAuthorCreditFind(string? stored)
+    private void PAuthorCreditFind(long? stored)
     {
         _pAuthorCredit.Clear();
 
         if (stored is not null)
         {
-            IReadOnlyList<LAuthor> credits = _pImprintOwner.PShelfCreditRead(stored);
+            IReadOnlyList<LAuthor> credits = _pImprintOwner.PShelfCreditRead(stored.Value);
             for (int index = 0; index < credits.Count; index++)
             {
                 _pAuthorCredit.Add(new PAuthorItem(credits[index], index, credits.Count));
@@ -97,7 +97,7 @@ public partial class PImprint
 
     private void PAuthorAttach(long id)
     {
-        if (PImprintReferenceRead() is not string stored)
+        if (PImprintReferenceRead() is not long stored)
         {
             return;
         }
@@ -135,7 +135,7 @@ public partial class PImprint
         LAuthor written;
         try
         {
-            written = _lEngine.LEngineAuthorCreate(new LAuthor(string.Empty, name));
+            written = _lEngine.LEngineAuthorCreate(new LAuthor(0, name));
         }
         catch (Exception exception)
         {
@@ -175,7 +175,7 @@ public partial class PImprint
 
     private void PAuthorRemove(PAuthorItem item)
     {
-        if (PImprintReferenceRead() is not string stored)
+        if (PImprintReferenceRead() is not long stored)
         {
             return;
         }
@@ -195,7 +195,7 @@ public partial class PImprint
 
     private void PAuthorMove(PAuthorItem item, int step)
     {
-        if (PImprintReferenceRead() is not string stored)
+        if (PImprintReferenceRead() is not long stored)
         {
             return;
         }

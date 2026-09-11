@@ -54,7 +54,7 @@ public sealed partial class LEngine
         LReference settled;
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+            ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
 
             LDraft draft = LEngineDraftLoad(id);

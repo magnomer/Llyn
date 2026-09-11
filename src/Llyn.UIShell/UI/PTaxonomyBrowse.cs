@@ -15,7 +15,7 @@ public partial class PTaxonomy
 
     private string? _pDirectoryChoice;
 
-    private string? _pDisplayEntry;
+    private long? _pDisplayEntry;
 
     private LCatalogOrder _pFunnelChoice;
 
@@ -198,7 +198,7 @@ public partial class PTaxonomy
 
     private void PMembershipEntryUpdate(long id)
     {
-        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
             PMembershipSelect(id);
@@ -207,8 +207,8 @@ public partial class PTaxonomy
 
         PDirectoryFind(PExploration.Text ?? string.Empty);
 
-        if (_pDisplayEntry is not string shown
-            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        if (_pDisplayEntry is not long shown
+            || (id > 0 && shown != id))
         {
             return;
         }
@@ -264,7 +264,7 @@ public partial class PTaxonomy
 
             if (_pDisplayEntry is not null)
             {
-                PMembershipEntryShow(_pDisplayEntry);
+                PMembershipEntryShow(_pDisplayEntry.Value);
                 return;
             }
 
@@ -278,7 +278,7 @@ public partial class PTaxonomy
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry);
+        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
         PTaxonomyScribeShow(true);
     }
 

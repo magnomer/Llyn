@@ -52,7 +52,7 @@ public static class LStateColumn
                 : DBNull.Value);
     }
 
-    public static LStateAnchor LStateColumnAnchorRead(SqliteDataReader reader, int state)
+    public static LStateAnchor LStateColumnResolve(SqliteDataReader reader, int state)
     {
         ArgumentNullException.ThrowIfNull(reader);
 

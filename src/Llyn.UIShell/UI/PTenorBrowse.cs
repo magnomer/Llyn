@@ -15,9 +15,9 @@ public partial class PTenor
 
     private readonly ObservableCollection<PCohortItem> _pCohortList = [];
 
-    private string? _pGamutChoice;
+    private long? _pGamutChoice;
 
-    private string? _pDisplayEntry;
+    private long? _pDisplayEntry;
 
     private LCatalogOrder _pDegreeChoice;
 
@@ -137,7 +137,7 @@ public partial class PTenor
         try
         {
             read = _lEngine.LEngineEntryFind(new LRegister(
-                _pGamutChoice ?? string.Empty, LStateValue.LStateValueUnspecified, string.Empty, false));
+                _pGamutChoice ?? 0, LStateValue.LStateValueUnspecified, string.Empty, false));
         }
         catch (Exception exception)
         {
@@ -208,7 +208,7 @@ public partial class PTenor
 
     private void PCohortEntryUpdate(long id)
     {
-        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
             PCohortSelect(id);
@@ -217,8 +217,8 @@ public partial class PTenor
 
         PGamutFind(PSounding.Text ?? string.Empty);
 
-        if (_pDisplayEntry is not string shown
-            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        if (_pDisplayEntry is not long shown
+            || (id > 0 && shown != id))
         {
             return;
         }
@@ -274,7 +274,7 @@ public partial class PTenor
 
             if (_pDisplayEntry is not null)
             {
-                PCohortEntryShow(_pDisplayEntry);
+                PCohortEntryShow(_pDisplayEntry.Value);
                 return;
             }
 
@@ -288,7 +288,7 @@ public partial class PTenor
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry);
+        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
         PTenorScribeShow(true);
     }
 

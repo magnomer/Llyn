@@ -105,7 +105,7 @@ internal sealed partial class PCard
         PCardRegisterClear();
     }
 
-    internal bool PCardRegisterCommit(long id, string name)
+    internal bool PCardRegisterCommit(long? id, string name)
     {
         string written = (name ?? string.Empty).Trim();
         if (written.Length == 0 || PCardRegisterMatch(id) || PCardRegisterCheck(written))
@@ -116,7 +116,7 @@ internal sealed partial class PCard
         int index = PCardRegister.IndexOf(_pCardRegisterCaret);
         PCardRegister.Insert(
             index < 0 ? PCardRegister.Count : index,
-            new PRegister(LStateValue.LStateValueRead(written), id));
+            new PRegister(LStateValue.LStateValueRead(written), id ?? 0));
         PCardRegisterUpdate();
         return true;
     }
@@ -129,7 +129,7 @@ internal sealed partial class PCard
         PCardRegisterUpdate();
     }
 
-    internal bool PCardRegisterMatch(long id)
+    internal bool PCardRegisterMatch(long? id)
     {
         if (id <= 0)
         {

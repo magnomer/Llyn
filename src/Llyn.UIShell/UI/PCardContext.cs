@@ -104,7 +104,7 @@ internal sealed partial class PCard
         PCardContextClear();
     }
 
-    internal bool PCardContextCommit(long id, string title)
+    internal bool PCardContextCommit(long? id, string title)
     {
         string written = (title ?? string.Empty).Trim();
         if (written.Length == 0 || PCardContextMatch(id) || PCardContextCheck(written))
@@ -115,7 +115,7 @@ internal sealed partial class PCard
         int index = PCardContext.IndexOf(_pCardContextCaret);
         PCardContext.Insert(
             index < 0 ? PCardContext.Count : index,
-            new PContext(LStateValue.LStateValueRead(written), id));
+            new PContext(LStateValue.LStateValueRead(written), id ?? 0));
         PCardContextUpdate();
         return true;
     }
@@ -128,7 +128,7 @@ internal sealed partial class PCard
         PCardContextUpdate();
     }
 
-    internal bool PCardContextMatch(long id)
+    internal bool PCardContextMatch(long? id)
     {
         if (id <= 0)
         {

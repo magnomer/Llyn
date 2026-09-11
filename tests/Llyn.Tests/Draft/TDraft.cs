@@ -94,7 +94,7 @@ public sealed class TDraft
     public void CourtArchiveSettle_WaitingLinks_DropsAll()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        string target = TInterface.TIdentityCreate();
+        long target = TInterface.TIdentityCreate();
         LCourtLink first = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
         LCourtLink second = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
 
@@ -119,8 +119,8 @@ public sealed class TDraft
     public void CourtArchiveSettle_OtherTargetLink_LeavesIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        string target = TInterface.TIdentityCreate();
-        string other = TInterface.TIdentityCreate();
+        long target = TInterface.TIdentityCreate();
+        long other = TInterface.TIdentityCreate();
         LCourtLink settled = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
         LCourtLink kept = TDraftLinkCreate(TInterface.TIdentityCreate(), other, "ember");
 
@@ -172,7 +172,7 @@ public sealed class TDraft
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
 
         Assert.Equal("kindle", stored.LEntryHeadword);
-        Assert.False(string.IsNullOrWhiteSpace(stored.LEntryId));
+        Assert.NotEqual(0, stored.LEntryId);
         Assert.Equal("kindle", engine.TEngineEntryRead(stored.LEntryId)?.LEntryHeadword);
         Assert.Empty(engine.TEngineDraftScan());
         Assert.Null(engine.TEngineDraftRead(started.LDraftId));
@@ -379,8 +379,8 @@ public sealed class TDraft
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        string first;
-        string second;
+        long first;
+        long second;
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
@@ -423,8 +423,8 @@ public sealed class TDraft
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        string swept;
-        string kept;
+        long swept;
+        long kept;
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
@@ -681,13 +681,13 @@ public sealed class TDraft
         Assert.Same(sent.LEntryDraftMeanings, stored.LEntryDraftMeanings);
         Assert.All(
             stored.LEntryDraftMeanings,
-            card => Assert.NotEqual(string.Empty, card.LCardDraftId));
+            card => Assert.NotEqual(0, card.LCardDraftId));
         Assert.All(
             stored.LEntryDraftCollocations,
-            card => Assert.NotEqual(string.Empty, card.LCardDraftId));
+            card => Assert.NotEqual(0, card.LCardDraftId));
     }
 
-    private static LCardDraft TDraftCardCreate(string title, string id)
+    private static LCardDraft TDraftCardCreate(string title, long id)
     {
         return TInterface.TCardDraftCreate(
             TInterface.TStateValueCreate(title),
@@ -738,10 +738,10 @@ public sealed class TDraft
         LDraft? kept = writer.TEngineDraftRead(target.LDraftId);
 
         Assert.NotNull(kept);
-        Assert.NotEqual(string.Empty, kept.LDraftEntry);
+        Assert.NotEqual(0, kept.LDraftEntry);
         Assert.NotNull(writer.TEngineEntryLoad(kept.LDraftEntry));
         Assert.NotEqual(
-            string.Empty,
+            0,
             kept.LDraftContent.LEntryDraftMeanings[0].LCardDraftId);
         Assert.Empty(writer.TEngineLeftoverRead());
     }
@@ -816,7 +816,7 @@ public sealed class TDraft
                 [
                     content.LEntryDraftMeanings[0] with
                     {
-                        LCardDraftTranslation = ["nosuchentry00"],
+                        LCardDraftTranslation = [9999],
                     },
                 ],
             },
@@ -846,7 +846,7 @@ public sealed class TDraft
         return TInterface.TEntryDraftCreate(headword, "English", string.Empty, string.Empty, [meaning], []);
     }
 
-    private static LCourtLink TDraftLinkCreate(string owner, string target, string headword)
+    private static LCourtLink TDraftLinkCreate(long owner, long target, string headword)
     {
         return TInterface.TCourtLinkCreate(TInterface.TIdentityCreate(), owner, target, headword, "English");
     }
@@ -859,7 +859,7 @@ public sealed class TDraft
             TInterface.TStateValueCreate("to set something burning"),
             [TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs")],
             [TInterface.TSituationDraftCreate("around a hearth")],
-            ["불을 붙이다"],
+            [],
             "ignite",
             ["literal"],
             [],
@@ -876,7 +876,7 @@ public sealed class TDraft
         return TInterface.TDraftCreate(
             TInterface.TIdentityCreate(),
             origin,
-            string.Empty,
+            0,
             content,
             DateTimeOffset.UtcNow);
     }

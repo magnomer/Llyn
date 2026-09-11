@@ -14,14 +14,14 @@ public static class LSchemaReference
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS author (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 realm_origin INTEGER REFERENCES realm (id),
                 id_origin INTEGER,
                 name TEXT NOT NULL
             );
 
             CREATE TABLE IF NOT EXISTS source (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 realm_origin INTEGER REFERENCES realm (id),
                 id_origin INTEGER,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',

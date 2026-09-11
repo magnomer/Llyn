@@ -227,7 +227,7 @@ public sealed class LSentenceArchive
             reader.GetString(start + 1),
             LStateColumn.LStateColumnRead(reader, start + 2),
             LStateColumn.LStateColumnRead(reader, start + 4),
-            LStateColumn.LStateColumnAnchorRead(reader, start + 6));
+            LStateColumn.LStateColumnResolve(reader, start + 6));
     }
 
     private IReadOnlyList<LSentence> LSentenceOwnerRead(string table, string column, long ownerId)

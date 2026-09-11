@@ -129,7 +129,7 @@ public partial class PEditor
         card.PCardContextClear();
     }
 
-    private string? PContextResolve(string written)
+    private long? PContextResolve(string written)
     {
         try
         {

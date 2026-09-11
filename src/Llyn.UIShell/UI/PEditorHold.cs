@@ -5,11 +5,11 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private string _pEditorDraft = string.Empty;
+    private long _pEditorDraft;
 
     private bool _pEditorHalted;
 
-    private LDraft? PEditorDraftStart(string? entry)
+    private LDraft? PEditorDraftStart(long? entry)
     {
         PEditorChangeStop();
         PEditorDraftCancel();
@@ -23,7 +23,7 @@ public partial class PEditor
         }
         catch (Exception exception)
         {
-            _pEditorDraft = string.Empty;
+            _pEditorDraft = 0;
             PEditorHoldSuspend(exception);
             return null;
         }
@@ -54,13 +54,13 @@ public partial class PEditor
 
     private void PEditorDraftCancel()
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return;
         }
 
-        string held = _pEditorDraft;
-        _pEditorDraft = string.Empty;
+        long held = _pEditorDraft;
+        _pEditorDraft = 0;
 
         try
         {
@@ -73,7 +73,7 @@ public partial class PEditor
 
     private void PEditorDraftSave()
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return;
         }
@@ -102,7 +102,7 @@ public partial class PEditor
 
     private void PEditorDraftRestore()
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return;
         }
@@ -133,13 +133,13 @@ public partial class PEditor
             return true;
         }
 
-        string held = _pEditorDraft;
-        if (held.Length == 0)
+        long held = _pEditorDraft;
+        if (held == 0)
         {
             return true;
         }
 
-        _pEditorDraft = string.Empty;
+        _pEditorDraft = 0;
 
         try
         {
@@ -148,7 +148,7 @@ public partial class PEditor
         catch (Exception exception)
         {
             _pEditorDraft = held;
-            string? entry = PEditorEntryRead();
+            long? entry = PEditorEntryRead();
             _pEditorHost.PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
             return false;
         }
@@ -158,7 +158,7 @@ public partial class PEditor
 
     private bool PEditorDraftCheck()
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return false;
         }

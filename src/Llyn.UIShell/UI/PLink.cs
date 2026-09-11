@@ -180,7 +180,7 @@ public partial class PEditor
 
     private void PLinkCourtDelete(long id)
     {
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             return;
         }
@@ -213,7 +213,7 @@ public partial class PEditor
         IReadOnlyList<LEntry> found;
         try
         {
-            string? entry = PEditorEntryRead();
+            long? entry = PEditorEntryRead();
             single = _lEngine.LEngineTranslationResolve(word, entry);
             found = single is null ? _lEngine.LEngineTranslationFind(word, entry) : [];
         }

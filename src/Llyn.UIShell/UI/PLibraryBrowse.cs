@@ -10,7 +10,7 @@ public partial class PLibrary
 {
     private readonly ObservableCollection<PIndexItem> _pIndexList = [];
 
-    private string? _pDisplayEntry;
+    private long? _pDisplayEntry;
 
     private LCatalogOrder _pOrderChoice;
 
@@ -126,7 +126,7 @@ public partial class PLibrary
 
     private void PIndexEntryUpdate(long id)
     {
-        if (id.Length > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
             PIndexSelect(id);
@@ -136,8 +136,8 @@ public partial class PLibrary
 
         PIndexFind(PInquiry.Text ?? string.Empty);
 
-        if (_pDisplayEntry is not string shown
-            || (id.Length > 0 && !string.Equals(shown, id, StringComparison.Ordinal)))
+        if (_pDisplayEntry is not long shown
+            || (id > 0 && shown != id))
         {
             return;
         }
@@ -193,7 +193,7 @@ public partial class PLibrary
 
             if (_pDisplayEntry is not null)
             {
-                PIndexEntryShow(_pDisplayEntry);
+                PIndexEntryShow(_pDisplayEntry.Value);
                 return;
             }
 
@@ -207,7 +207,7 @@ public partial class PLibrary
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry);
+        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
         PLibraryScribeShow(true);
     }
 

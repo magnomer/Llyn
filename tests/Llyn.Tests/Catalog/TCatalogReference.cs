@@ -1,4 +1,5 @@
-﻿using Llyn.Core;
+﻿using System.Globalization;
+using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -31,8 +32,8 @@ public sealed class TCatalogReference
 
         LCatalogReference row = Assert.Single(
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName));
-        Assert.Equal(stored.LReferenceId, row.LCatalogReferenceName);
-        Assert.Equal(stored.LReferenceId, stored.TReferenceNameRead());
+        Assert.Equal(stored.LReferenceId.ToString(CultureInfo.InvariantCulture), row.LCatalogReferenceName);
+        Assert.Equal(stored.LReferenceId.ToString(CultureInfo.InvariantCulture), stored.TReferenceNameRead());
     }
 
     [Fact]
@@ -132,7 +133,7 @@ public sealed class TCatalogReference
         string? url)
     {
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
-            string.Empty,
+            0,
             title,
             year,
             LReferenceKind.LReferenceKindUnspecified,
@@ -141,15 +142,16 @@ public sealed class TCatalogReference
             LState.LStateUnspecified));
     }
 
-    private static void TCatalogCreditAttach(LEngine engine, string referenceId, string name)
+    private static void TCatalogCreditAttach(LEngine engine, long referenceId, string name)
     {
-        LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, name));
+        LAuthor author = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, name));
         engine.TEngineAuthorAttach(referenceId, author.LAuthorId, 0);
     }
 
-    private static void TCatalogCitationCreate(LEngine engine, string text, string referenceId)
+    private static void TCatalogCitationCreate(LEngine engine, string text, long referenceId)
     {
         engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(string.Empty, "English", text, null, referenceId));
+            TInterface.TExampleCreate(
+            0, "English", text, null, TInterface.TStateAnchorRead(referenceId)));
     }
 }

@@ -23,8 +23,8 @@ public sealed class TState
                 LStateValue.LStateValueUnspecified,
                 TInterface.TStateValueCreate("a unit of language"),
                 [TInterface.TSentenceDraftCreate(
-                    LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified)],
-                [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, string.Empty)],
+                    LStateValue.LStateValueUnknown, 0, LStateAnchor.LStateAnchorUnspecified)],
+                [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, 0)],
                 [],
                 string.Empty,
                 ["spoken"], [], 1)],
@@ -78,7 +78,7 @@ public sealed class TState
                 [
                     TInterface.TSentenceDraftCreate("he said a word"),
                     TInterface.TSentenceDraftCreate(
-                        LStateValue.LStateValueUnknown, string.Empty, LStateValue.LStateValueUnspecified),
+                        LStateValue.LStateValueUnknown, 0, LStateAnchor.LStateAnchorUnspecified),
                     TInterface.TSentenceDraftCreate("   "),
                 ],
                 [],
@@ -109,8 +109,8 @@ public sealed class TState
                 [
                     TInterface.TSentenceDraftCreate(
                         TInterface.TStateValueCreate("he said a word"),
-                        string.Empty,
-                        LStateValue.LStateValueUnknown),
+                        0,
+                        LStateAnchor.LStateAnchorUnknown),
                     TInterface.TSentenceDraftCreate("not a word was spoken"),
                 ],
                 [],
@@ -132,10 +132,10 @@ public sealed class TState
         LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
 
         Assert.Equal(
-            LStateValue.LStateValueUnknown,
+LStateAnchor.LStateAnchorUnknown,
             TExampleDraftRead(card.LCardDraftSentence[0]).LExampleDraftReference);
         Assert.Equal(
-            LStateValue.LStateValueUnspecified,
+LStateAnchor.LStateAnchorUnspecified,
             TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftReference);
     }
 
@@ -155,7 +155,7 @@ public sealed class TState
                 LStateValue.LStateValueUnspecified,
                 LStateValue.LStateValueUnknown,
                 [],
-                [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, string.Empty)],
+                [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, 0)],
                 [],
                 string.Empty,
                 [], [], 1)],
@@ -163,7 +163,7 @@ public sealed class TState
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
         LCardDraft card = loaded.LEntryDraftMeanings[0];
-        string situationId = card.LCardDraftSituation[0].LSituationDraftId;
+        long situationId = card.LCardDraftSituation[0].LSituationDraftId;
 
         engine.TEngineEntryUpdate(stored.LEntryId, loaded with
         {

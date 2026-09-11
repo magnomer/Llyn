@@ -137,7 +137,7 @@ public sealed class LEntryArchive
 
     public IReadOnlyList<LEntry> LEntryRegisterFind(long registerId)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(registerId);
+        ArgumentOutOfRangeException.ThrowIfNegative(registerId);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -145,7 +145,7 @@ public sealed class LEntryArchive
             """
             SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
             FROM entry
-            WHERE $register = ''
+            WHERE $register = 0
                OR id IN (
                       SELECT sense.entry_id
                       FROM sense_register

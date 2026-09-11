@@ -19,11 +19,11 @@ public sealed class TRelation
         LEntry resolved = Assert.Single(engine.TEngineEntryFind("term"));
         Assert.Equal(target.LEntryId, resolved.LEntryId);
 
-        string meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
+        long meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
         LRelation stored = engine.TEngineRelationCreate(TInterface.TRelationCreate(
-            string.Empty, meaningId, 0, "synonym", null, null, resolved.LEntryId, null));
+            0, meaningId, 0, "synonym", null, null, resolved.LEntryId, null));
 
-        Assert.NotEmpty(stored.LRelationId);
+        Assert.NotEqual(0, stored.LRelationId);
 
         LRelation read = Assert.Single(engine.TEngineRelationRead(meaningId));
         Assert.Equal(stored.LRelationId, read.LRelationId);
@@ -45,9 +45,9 @@ public sealed class TRelation
         Assert.Equal(target.LEntryId, chosen.LMeaningEntryId);
         Assert.Equal("the other meaning", chosen.LMeaningDefinition);
 
-        string meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
+        long meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
         engine.TEngineRelationCreate(TInterface.TRelationCreate(
-            string.Empty, meaningId, 0, "synonym", null, null, null, chosen.LMeaningId));
+            0, meaningId, 0, "synonym", null, null, null, chosen.LMeaningId));
 
         LRelation read = Assert.Single(engine.TEngineRelationRead(meaningId));
         Assert.Equal(chosen.LMeaningId, read.LRelationTargetMeaning);
@@ -61,13 +61,13 @@ public sealed class TRelation
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry origin = TRelationEntryCreate(engine, "word", "the first meaning");
-        string meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
+        long meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
 
         Assert.Empty(engine.TEngineEntryFind("nothingatall"));
         Assert.Empty(engine.TEngineMeaningFind("nothingatall"));
 
         LRelation unresolved = TInterface.TRelationCreate(
-            string.Empty, meaningId, 0, "synonym", null, null, "no-such-entry", null);
+            0, meaningId, 0, "synonym", null, null, 9999, null);
         LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineRelationCreate(unresolved));
         Assert.Equal(LRefusal.LRefusalTarget, refusal.LRefusalReason);
 
@@ -93,12 +93,12 @@ public sealed class TRelation
 
         LEntry origin = TRelationEntryCreate(engine, "word", "the first meaning");
         LEntry target = TRelationEntryCreate(engine, "term", "the other meaning");
-        string meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
+        long meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
 
         LRelation first = engine.TEngineRelationCreate(TInterface.TRelationCreate(
-            string.Empty, meaningId, 0, "synonym", null, null, target.LEntryId, null));
+            0, meaningId, 0, "synonym", null, null, target.LEntryId, null));
         LRelation second = engine.TEngineRelationCreate(TInterface.TRelationCreate(
-            string.Empty, meaningId, 0, "antonym", null, null, target.LEntryId, null));
+            0, meaningId, 0, "antonym", null, null, target.LEntryId, null));
 
         Assert.Equal([0, 1], engine.TEngineRelationRead(meaningId).Select(row => row.LRelationPosition));
 
@@ -126,14 +126,14 @@ public sealed class TRelation
 
         LEntry origin = TRelationEntryCreate(engine, "word", "the first meaning");
         LEntry target = TRelationEntryCreate(engine, "term", "the other meaning");
-        string collocationId = Assert
+        long collocationId = Assert
             .Single(TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(origin.LEntryId))
             .LCollocationId;
 
         LSynonym first = engine.TEngineSynonymCreate(
-            TInterface.TSynonymCreate(string.Empty, collocationId, 0, target.LEntryId, null));
+            TInterface.TSynonymCreate(0, collocationId, 0, target.LEntryId, null));
         LSynonym second = engine.TEngineSynonymCreate(
-            TInterface.TSynonymCreate(string.Empty, collocationId, 0, target.LEntryId, null));
+            TInterface.TSynonymCreate(0, collocationId, 0, target.LEntryId, null));
 
         Assert.Equal([0, 1], engine.TEngineSynonymRead(collocationId).Select(row => row.LSynonymPosition));
 
@@ -150,12 +150,12 @@ public sealed class TRelation
         Assert.Equal(
             LRefusal.LRefusalTarget,
             Assert.Throws<LRefusal>(() => engine.TEngineSynonymUpdate(
-                first with { LSynonymTargetEntry = "no-such-entry", LSynonymTargetMeaning = null }))
+                first with { LSynonymTargetEntry = 9999, LSynonymTargetMeaning = null }))
                 .LRefusalReason);
         Assert.Equal(
             LRefusal.LRefusalTarget,
             Assert.Throws<LRefusal>(() => engine.TEngineSynonymCreate(
-                TInterface.TSynonymCreate(string.Empty, collocationId, 0, null, null))).LRefusalReason);
+                TInterface.TSynonymCreate(0, collocationId, 0, null, null))).LRefusalReason);
 
         engine.TEngineSynonymMove(second.LSynonymId, 0);
         Assert.Equal(
@@ -195,7 +195,7 @@ public sealed class TRelation
             [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
     }
 
-    private static string TRelationMeaningRead(TWorkspace workspace, string entryId)
+    private static long TRelationMeaningRead(TWorkspace workspace, long entryId)
     {
         return Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entryId)).LMeaningId;
     }

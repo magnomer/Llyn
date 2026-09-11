@@ -27,8 +27,8 @@ public sealed class TEntryUpdate
 
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         IReadOnlyList<LMeaning> saved = meanings.TMeaningRead(entry.LEntryId);
-        string firstId = saved[0].LMeaningId;
-        string thirdId = saved[2].LMeaningId;
+        long firstId = saved[0].LMeaningId;
+        long thirdId = saved[2].LMeaningId;
 
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
@@ -141,11 +141,11 @@ public sealed class TEntryUpdate
 
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
         LEntry origin = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "origin", "English", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "origin", "English", null, null, null, null), [], []);
         LMeaning source = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, origin.LEntryId, null, 0, null, null, null, "links", string.Empty));
+            TInterface.TMeaningCreate(0, origin.LEntryId, null, 0, null, null, null, "links", string.Empty));
         TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase).TRelationCreate(
-            TInterface.TRelationCreate(string.Empty, source.LMeaningId, 0, "synonym", null, null, null, saved[1].LMeaningId));
+            TInterface.TRelationCreate(0, source.LMeaningId, 0, "synonym", null, null, null, saved[1].LMeaningId));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LRevision? before = engine.TEngineRevisionRead();
@@ -179,7 +179,7 @@ public sealed class TEntryUpdate
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineEntryUpdate(
-            "no-such-entry",
+            9999,
             TInterface.TEntryDraftCreate("word", "English", string.Empty, string.Empty, [], [])));
 
         Assert.Equal(LRefusal.LRefusalEntry, refusal.LRefusalReason);

@@ -14,7 +14,7 @@ public static class LSchemaImage
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS image (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 realm_origin INTEGER REFERENCES realm (id),
                 id_origin INTEGER,
                 location_state TEXT NOT NULL DEFAULT 'unspecified',

@@ -12,8 +12,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(targetId);
+            ArgumentOutOfRangeException.ThrowIfZero(ownerId);
+            ArgumentOutOfRangeException.ThrowIfZero(targetId);
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
 
             LCourtLink link = new(
@@ -33,7 +33,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
+            ArgumentOutOfRangeException.ThrowIfZero(ownerId);
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
             LEngineDraftValidate(ownerId);
 
@@ -74,8 +74,8 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(targetId);
+            ArgumentOutOfRangeException.ThrowIfZero(ownerId);
+            ArgumentOutOfRangeException.ThrowIfZero(targetId);
 
             foreach (LCourtLink link in LEngineCourtScan(ownerId))
             {

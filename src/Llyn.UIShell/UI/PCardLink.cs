@@ -43,7 +43,7 @@ internal sealed partial class PCard
         PCardLinkUpdate();
     }
 
-    internal IReadOnlyList<string> PCardLinkRead()
+    internal IReadOnlyList<long> PCardLinkRead()
     {
         List<long> ids = [];
         foreach (object row in PCardLink)
@@ -108,7 +108,7 @@ internal sealed partial class PCard
     internal bool PCardLinkCommit(long id, string headword, string language)
     {
         long written = id;
-        if (written.Length == 0)
+        if (written == 0)
         {
             return false;
         }

@@ -14,7 +14,7 @@ public static class LSchemaQuotation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS example (
-                id INTEGER PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 realm_origin INTEGER REFERENCES realm (id),
                 id_origin INTEGER,
                 language TEXT NOT NULL,

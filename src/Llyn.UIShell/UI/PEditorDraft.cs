@@ -90,7 +90,7 @@ public partial class PEditor
         PMarkerShow(PEditorSpeechShow(draft.LEntryDraftSpeeches));
         PEditorLanguageShow(draft.LEntryDraftLanguage);
 
-        IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);
+        IReadOnlyDictionary<long, LTranslationTarget> targets = PEditorTargetRead(draft);
         PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets);
         PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets);
 

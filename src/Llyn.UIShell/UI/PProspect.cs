@@ -77,7 +77,7 @@ public partial class PEditor
             return;
         }
 
-        if (_pEditorDraft.Length == 0)
+        if (_pEditorDraft == 0)
         {
             PProspectHide();
             return;
@@ -121,7 +121,7 @@ public partial class PEditor
 
         foreach (string language in PProspectLanguageRead())
         {
-            _pProspectItem.Add(new PProspectItem(string.Empty, word, language, true));
+            _pProspectItem.Add(new PProspectItem(0, word, language, true));
         }
 
         PTwin.PTwinNameApply(

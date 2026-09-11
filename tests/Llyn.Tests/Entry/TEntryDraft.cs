@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -234,7 +234,7 @@ public sealed class TEntryDraft
                     [],
                     [TInterface.TSituationDraftCreate(
                         TInterface.TStateValueCreate("writing a formal letter"),
-                        string.Empty,
+                        0,
                         TInterface.TStateValueCreate("the register an institution expects"),
                         TInterface.TStateValueCreate("writing"))],
                     [target.LEntryId],
@@ -244,7 +244,7 @@ public sealed class TEntryDraft
                     1,
                     video: [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
                     register: [TInterface.TRegisterDraftCreate(
-                        TInterface.TStateValueCreate("courtroom"), string.Empty, "English")]) with
+                        TInterface.TStateValueCreate("courtroom"), 0, "English")]) with
                 {
                     LCardDraftGloss = "ignite",
                     LCardDraftLanguage = "English",

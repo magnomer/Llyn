@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -68,7 +68,7 @@ public sealed class TCatalogTag
                 1)],
             []));
 
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
         engine.TEngineTagSave(
             meaningId,
             [.. texts.Select(TInterface.TTagCreate)],

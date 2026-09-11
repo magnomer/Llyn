@@ -23,8 +23,8 @@ public sealed class TEntryLoad
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "to stay until something happens",
                     [TInterface.TSentenceDraftCreate(
-                        LStateValue.LStateValueUnspecified, string.Empty,
-                        LStateValue.LStateValueUnspecified, "for", "Patient")],
+                        LStateValue.LStateValueUnspecified, 0,
+                        LStateAnchor.LStateAnchorUnspecified, "for", "Patient")],
                     [], [], string.Empty, [], [], 1),
             ],
             []));
@@ -368,6 +368,6 @@ public sealed class TEntryLoad
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        Assert.Null(engine.TEngineEntryLoad("no-such-entry"));
+        Assert.Null(engine.TEngineEntryLoad(9999));
     }
 }

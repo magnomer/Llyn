@@ -16,7 +16,8 @@ public sealed class TReference
         LReference grammar = TReferenceCreate(engine, "A Grammar");
 
         LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(string.Empty, "English", "he said the word", null, null));
+            TInterface.TExampleCreate(
+            0, "English", "he said the word", null, null));
         engine.TEngineReferenceAttach(
             example.LExampleId, dictionary.LReferenceId, 0, LOwner.LOwnerExample);
         engine.TEngineReferenceAttach(example.LExampleId, grammar.LReferenceId, 0, LOwner.LOwnerExample);
@@ -38,7 +39,8 @@ public sealed class TReference
 
         LReference reference = TReferenceCreate(engine, "A Dictionary");
         LExample example = engine.TEngineExampleCreate(
-            TInterface.TExampleCreate(string.Empty, "English", "he said the word", null, null));
+            TInterface.TExampleCreate(
+            0, "English", "he said the word", null, null));
         engine.TEngineReferenceAttach(
             example.LExampleId, reference.LReferenceId, 0, LOwner.LOwnerExample);
 
@@ -57,8 +59,8 @@ public sealed class TReference
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LReference reference = TReferenceCreate(engine, "A Dictionary");
-        LAuthor first = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Kim"));
-        LAuthor second = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Lee"));
+        LAuthor first = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
+        LAuthor second = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
 
         engine.TEngineAuthorAttach(reference.LReferenceId, first.LAuthorId, 0);
         engine.TEngineAuthorAttach(reference.LReferenceId, second.LAuthorId, 1);
@@ -87,7 +89,7 @@ public sealed class TReference
     private static LReference TReferenceCreate(LEngine engine, string title)
     {
         return engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
-            string.Empty,
+            0,
             TInterface.TStateValueCreate(title),
             TInterface.TStateValueCreate("1998"),
             LReferenceKind.LReferenceKindUnspecified,
@@ -114,9 +116,9 @@ public sealed class TReference
                     string.Empty, string.Empty, "a meaning",
                     [
                         TInterface.TSentenceDraftCreate(
-                            "he said the word", string.Empty, dictionary.LReferenceId),
+                            "he said the word", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
                         TInterface.TSentenceDraftCreate(
-                            "not a word was spoken", string.Empty, dictionary.LReferenceId),
+                            "not a word was spoken", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
                     ],
                     [], [], string.Empty, [], [], 1),
             ],
@@ -125,7 +127,7 @@ public sealed class TReference
                     string.Empty, "in a word", "briefly",
                     [
                         TInterface.TSentenceDraftCreate(
-                            "in a word, no", string.Empty, dictionary.LReferenceId),
+                            "in a word, no", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
                     ],
                     [], [], string.Empty, [], [], 1),
             ]));
@@ -177,8 +179,8 @@ public sealed class TReference
         LReference dictionary = TReferenceCreate(engine, "A Dictionary");
         LReference grammar = TReferenceCreate(engine, "A Grammar");
 
-        LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Kim"));
-        LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Lee"));
+        LAuthor kim = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
+        LAuthor lee = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
         engine.TEngineAuthorAttach(dictionary.LReferenceId, kim.LAuthorId, 0);
         engine.TEngineAuthorAttach(grammar.LReferenceId, kim.LAuthorId, 0);
         engine.TEngineAuthorAttach(grammar.LReferenceId, lee.LAuthorId, 1);
@@ -193,9 +195,9 @@ public sealed class TReference
                     string.Empty, string.Empty, "a meaning",
                     [
                         TInterface.TSentenceDraftCreate(
-                            "he said the word", string.Empty, dictionary.LReferenceId),
+                            "he said the word", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
                         TInterface.TSentenceDraftCreate(
-                            "not a word was spoken", string.Empty, dictionary.LReferenceId),
+                            "not a word was spoken", 0, TInterface.TStateAnchorRead(dictionary.LReferenceId)),
                     ],
                     [], [], string.Empty, [], [], 1),
             ],
@@ -204,7 +206,7 @@ public sealed class TReference
                     string.Empty, "in a word", "briefly",
                     [
                         TInterface.TSentenceDraftCreate(
-                            "in a word, no", string.Empty, grammar.LReferenceId),
+                            "in a word, no", 0, TInterface.TStateAnchorRead(grammar.LReferenceId)),
                     ],
                     [], [], string.Empty, [], [], 1),
             ]));
@@ -244,8 +246,8 @@ public sealed class TReference
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LReference dictionary = TReferenceCreate(engine, "A Dictionary");
-        LAuthor credited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Kim"));
-        LAuthor uncredited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(string.Empty, "Lee"));
+        LAuthor credited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Kim"));
+        LAuthor uncredited = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Lee"));
         engine.TEngineAuthorAttach(dictionary.LReferenceId, credited.LAuthorId, 0);
 
         Assert.Empty(engine.TEngineUsageRead(credited.LAuthorId, LOwner.LOwnerAuthor));

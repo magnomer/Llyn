@@ -13,12 +13,12 @@ public sealed class TEntryStore
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry stored = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null),
-            [TInterface.TFormCreate(string.Empty, 0, "word", null, "headword"),
-             TInterface.TFormCreate(string.Empty, 0, "words", null, "plural")],
-            [TInterface.TSpeechCreate(string.Empty, 0, "noun")]);
+            TInterface.TEntryCreate(0, "word", "en", null, null, null, null),
+            [TInterface.TFormCreate(0, 0, "word", null, "headword"),
+             TInterface.TFormCreate(0, 0, "words", null, "plural")],
+            [TInterface.TSpeechCreate(0, 0, "noun")]);
 
-        Assert.NotEmpty(stored.LEntryId);
+        Assert.NotEqual(0, stored.LEntryId);
         Assert.Equal("word", entries.TEntryRead(stored.LEntryId)?.LEntryHeadword);
         Assert.Equal([0, 1], entries.TEntryFormRead(stored.LEntryId).Select(form => form.LFormPosition));
         Assert.Single(entries.TEntrySpeechRead(stored.LEntryId));
@@ -31,7 +31,7 @@ public sealed class TEntryStore
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
 
         Assert.Throws<InvalidOperationException>(
-            () => entries.TEntryUpdate(TInterface.TEntryCreate("missing", "word", "en", null, null, null, null)));
+            () => entries.TEntryUpdate(TInterface.TEntryCreate(9999, "word", "en", null, null, null, null)));
     }
 
     [Fact]
@@ -44,13 +44,14 @@ public sealed class TEntryStore
         LSentenceArchive links = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null),
-            [TInterface.TFormCreate(string.Empty, 0, "word", null, "headword")],
+            TInterface.TEntryCreate(0, "word", "en", null, null, null, null),
+            [TInterface.TFormCreate(0, 0, "word", null, "headword")],
             []);
         LMeaning meaning = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
         LExample example = examples.TExampleCreate(
-            TInterface.TExampleCreate(string.Empty, "en", "a sentence", null, null));
+            TInterface.TExampleCreate(
+            0, "en", "a sentence", null, null));
         links.TSentenceMeaningAttach(meaning.LMeaningId, example.LExampleId, 0);
 
         entries.TEntryDelete(entry.LEntryId);
@@ -72,13 +73,13 @@ public sealed class TEntryStore
         LRelationArchive relations = TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry target = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "target", "en", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "target", "en", null, null, null, null), [], []);
         LEntry origin = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "origin", "en", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "origin", "en", null, null, null, null), [], []);
         LMeaning meaning = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, origin.LEntryId, null, 0, null, null, null, null, string.Empty));
+            TInterface.TMeaningCreate(0, origin.LEntryId, null, 0, null, null, null, null, string.Empty));
         relations.TRelationCreate(
-            TInterface.TRelationCreate(string.Empty, meaning.LMeaningId, 0, "synonym", null, null, target.LEntryId, null));
+            TInterface.TRelationCreate(0, meaning.LMeaningId, 0, "synonym", null, null, target.LEntryId, null));
 
         InvalidOperationException error =
             Assert.Throws<InvalidOperationException>(() => entries.TEntryDelete(target.LEntryId));
@@ -96,13 +97,13 @@ public sealed class TEntryStore
         LRelationArchive relations = TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, "word", "en", null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
         LMeaning second = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(string.Empty, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
         relations.TRelationCreate(
-            TInterface.TRelationCreate(string.Empty, first.LMeaningId, 0, "related", null, null, null, second.LMeaningId));
+            TInterface.TRelationCreate(0, first.LMeaningId, 0, "related", null, null, null, second.LMeaningId));
 
         entries.TEntryDelete(entry.LEntryId);
 
@@ -116,8 +117,8 @@ public sealed class TEntryStore
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
 
-        entries.TEntryCreate(TInterface.TEntryCreate(string.Empty, "Äpfel", "de", null, null, null, null), [], []);
-        entries.TEntryCreate(TInterface.TEntryCreate(string.Empty, "straße", "de", null, null, null, null), [], []);
+        entries.TEntryCreate(TInterface.TEntryCreate(0, "Äpfel", "de", null, null, null, null), [], []);
+        entries.TEntryCreate(TInterface.TEntryCreate(0, "straße", "de", null, null, null, null), [], []);
 
         Assert.Equal("Äpfel", Assert.Single(entries.TEntryFind("äpfel")).LEntryHeadword);
         Assert.Equal("Äpfel", Assert.Single(entries.TEntryFind("ÄPF")).LEntryHeadword);

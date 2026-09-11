@@ -16,7 +16,7 @@ public sealed class TMeaning
         LMeaning first = Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry));
 
         LMeaning second = engine.TEngineMeaningCreate(TInterface.TMeaningCreate(
-            string.Empty, entry.LEntryId, null, 0, null, null, null, "a second meaning", string.Empty));
+            0, entry.LEntryId, null, 0, null, null, null, "a second meaning", string.Empty));
         Assert.Equal(1, second.LMeaningPosition);
         Assert.Equal("a second meaning", engine.TEngineMeaningRead(second.LMeaningId)?.LMeaningDefinition);
 
@@ -45,7 +45,7 @@ public sealed class TMeaning
             Assert.Single(engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry));
 
         LCollocation second = engine.TEngineCollocationCreate(TInterface.TCollocationCreate(
-            string.Empty, entry.LEntryId, 0, null, "at a word", "quickly"));
+            0, entry.LEntryId, 0, null, "at a word", "quickly"));
         Assert.Equal(1, second.LCollocationPosition);
 
         engine.TEngineCollocationUpdate(second with { LCollocationMeaning = "in short" });
@@ -70,7 +70,7 @@ public sealed class TMeaning
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry entry = TMeaningEntryCreate(engine);
-        string meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             engine.TEngineMeaningRead(meaningId, LOwner.LOwnerMeaning));

@@ -14,9 +14,9 @@ public partial class PRepertoire
     private readonly ObservableCollection<PUsageItem> _pOccurrenceList = [];
 
 
-    private IReadOnlyDictionary<long, int> _pAtlasCount = new Dictionary<string, int>();
+    private IReadOnlyDictionary<long, int> _pAtlasCount = new Dictionary<long, int>();
 
-    private string? _pVignetteSituation;
+    private long? _pVignetteSituation;
 
     private LCatalogOrder _pTierChoice;
 
@@ -98,10 +98,7 @@ public partial class PRepertoire
         bool kept = false;
         foreach (LCatalogSituation row in read)
         {
-            kept |= string.Equals(
-                row.LCatalogSituationStored.LSituationId,
-                _pVignetteSituation,
-                StringComparison.Ordinal);
+            kept |= row.LCatalogSituationStored.LSituationId == _pVignetteSituation;
             _pAtlasList.Add(new PAtlasItem(
                 row.LCatalogSituationStored,
                 row.LCatalogSituationUsage,
@@ -295,7 +292,7 @@ public partial class PRepertoire
         PScenarioKind.Tag = _pScenarioKindUnreadable ? unreadable : string.Empty;
         PScenarioDescription.Tag = _pScenarioDescriptionUnreadable ? unreadable : string.Empty;
 
-        string? stored = PScenarioSituationRead();
+        long? stored = PScenarioSituationRead();
         PScenarioRemoval.IsEnabled = stored is not null;
 
         _pScenarioLoading = false;
@@ -350,7 +347,7 @@ public partial class PRepertoire
 
             if (_pVignetteSituation is not null)
             {
-                PRepertoireShow(_pVignetteSituation);
+                PRepertoireShow(_pVignetteSituation.Value);
                 return;
             }
 
@@ -407,8 +404,8 @@ public partial class PRepertoire
     {
         PScenarioChangeSave();
 
-        string held = _pScenarioDraft;
-        if (held.Length == 0)
+        long held = _pScenarioDraft;
+        if (held == 0)
         {
             return;
         }
@@ -424,7 +421,7 @@ public partial class PRepertoire
             return;
         }
 
-        _pScenarioDraft = string.Empty;
+        _pScenarioDraft = 0;
         _pVignetteSituation = stored.LSituationId;
         PAtlasSelect(stored.LSituationId);
 

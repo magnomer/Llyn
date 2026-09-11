@@ -11,7 +11,7 @@ internal sealed class PSentence : INotifyPropertyChanged
     private long _pSentenceId;
     private string _pSentenceText;
     private bool _pSentenceUnreadable;
-    private string _pSentenceCitation;
+    private long _pSentenceCitation;
     private bool _pSentenceCitationUnreadable;
     private string _pSentenceCitationName;
     private bool _pSentenceCitationVisible;
@@ -115,13 +115,13 @@ internal sealed class PSentence : INotifyPropertyChanged
         }
     }
 
-    public string PSentenceCitation
+    public long PSentenceCitation
     {
         get => _pSentenceCitation;
         set
         {
-            string chosen = value ?? string.Empty;
-            if (string.Equals(_pSentenceCitation, chosen, StringComparison.Ordinal))
+            long chosen = value;
+            if (_pSentenceCitation == chosen)
             {
                 return;
             }
@@ -323,7 +323,7 @@ internal sealed class PSentence : INotifyPropertyChanged
     internal LSentenceDraft PSentenceDraftRead()
     {
         LStateValue text = PSentenceTextRead();
-        LExampleDraft? example = text.LStateValueEmpty && _pSentenceId.Length == 0
+        LExampleDraft? example = text.LStateValueEmpty && _pSentenceId == 0
             ? null
             : new LExampleDraft(
                 text,
@@ -351,9 +351,11 @@ internal sealed class PSentence : INotifyPropertyChanged
         return LStateValue.LStateValueResolve(_pSentenceText, _pSentenceUnreadable);
     }
 
-    internal LStateValue PSentenceCitationRead()
+    internal LStateAnchor PSentenceCitationRead()
     {
-        return LStateValue.LStateValueResolve(_pSentenceCitation, _pSentenceCitationUnreadable);
+        return _pSentenceCitationUnreadable
+            ? LStateAnchor.LStateAnchorUnknown
+            : LStateAnchor.LStateAnchorRead(_pSentenceCitation);
     }
 
     internal bool PSentenceCheck()
@@ -371,7 +373,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             return;
         }
 
-        if (_pSentenceId.Length != 0)
+        if (_pSentenceId != 0)
         {
             return;
         }
@@ -384,7 +386,7 @@ internal sealed class PSentence : INotifyPropertyChanged
         _pSentenceRow = 0;
         PSentenceText = string.Empty;
         PSentenceUnreadable = false;
-        PSentenceCitation = string.Empty;
+        PSentenceCitation = 0;
         PSentenceCitationUnreadable = false;
         PSentenceId = 0;
         PSentenceParticle = string.Empty;
@@ -396,9 +398,9 @@ internal sealed class PSentence : INotifyPropertyChanged
         PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
     }
 
-    private string PSentenceCitationFind(string reference)
+    private string PSentenceCitationFind(long reference)
     {
-        if (string.IsNullOrWhiteSpace(reference))
+        if (reference == 0)
         {
             return string.Empty;
         }

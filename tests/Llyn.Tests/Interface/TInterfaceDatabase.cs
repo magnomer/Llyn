@@ -1,19 +1,20 @@
 ﻿using Llyn.Core;
 using Llyn.Infrastructure;
+using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static bool TClaimArchiveCheck(string root, string draftId) =>
+    internal static bool TClaimArchiveCheck(string root, long draftId) =>
         LClaimArchive.LClaimArchiveCheck(root, draftId);
 
-    internal static void TClaimArchiveDelete(string root, string draftId)
+    internal static void TClaimArchiveDelete(string root, long draftId)
     {
         LClaimArchive.LClaimArchiveDelete(root, draftId);
     }
 
-    internal static LClaim? TClaimArchiveRead(string root, string draftId) =>
+    internal static LClaim? TClaimArchiveRead(string root, long draftId) =>
         LClaimArchive.LClaimArchiveRead(root, draftId);
 
     internal static void TClaimArchiveSave(string root, LClaim claim)
@@ -24,7 +25,7 @@ internal static partial class TInterface
     internal static IReadOnlyList<LClaim> TClaimArchiveScan(string root) =>
         LClaimArchive.LClaimArchiveScan(root);
 
-    internal static LClaim TClaimCreate(string draftId, int process, DateTimeOffset moment) =>
+    internal static LClaim TClaimCreate(long draftId, int process, DateTimeOffset moment) =>
         new(draftId, process, moment);
 
     internal static LCollocationArchive TCollocationArchiveCreate(LDatabase database) =>
@@ -37,15 +38,15 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LCollocation> TCollocationRead(
         this LCollocationArchive collocationArchive,
-        string entryId) =>
+        long entryId) =>
         collocationArchive.LCollocationRead(entryId);
 
-    internal static void TCollocationDelete(this LCollocationArchive collocationArchive, string id)
+    internal static void TCollocationDelete(this LCollocationArchive collocationArchive, long id)
     {
         collocationArchive.LCollocationDelete(id);
     }
 
-    internal static LCourtLink? TCourtArchiveRead(string root, string id) =>
+    internal static LCourtLink? TCourtArchiveRead(string root, long id) =>
         LCourtArchive.LCourtArchiveRead(root, id);
 
     internal static void TCourtArchiveSave(string root, LCourtLink link)
@@ -56,7 +57,7 @@ internal static partial class TInterface
     internal static IReadOnlyList<LCourtLink> TCourtArchiveScan(string root) =>
         LCourtArchive.LCourtArchiveScan(root);
 
-    internal static IReadOnlyList<LCourtLink> TCourtArchiveSettle(string root, string draftId) =>
+    internal static IReadOnlyList<LCourtLink> TCourtArchiveSettle(string root, long draftId) =>
         LCourtArchive.LCourtArchiveSettle(root, draftId);
 
     internal static void TCourtArchiveSweep(string root)
@@ -80,12 +81,12 @@ internal static partial class TInterface
     internal static LDoctorRescue TDoctorDatabaseCreate(LDatabase database) =>
         LDoctor.LDoctorDatabaseCreate(database);
 
-    internal static void TDraftArchiveDelete(string root, string id)
+    internal static void TDraftArchiveDelete(string root, long id)
     {
         LDraftArchive.LDraftArchiveDelete(root, id);
     }
 
-    internal static LDraft? TDraftArchiveRead(string root, string id) =>
+    internal static LDraft? TDraftArchiveRead(string root, long id) =>
         LDraftArchive.LDraftArchiveRead(root, id);
 
     internal static void TDraftArchiveSave(string root, LDraft draft)
@@ -111,7 +112,7 @@ internal static partial class TInterface
         IReadOnlyList<LSpeech> speeches) =>
         entryArchive.LEntryCreate(entry, forms, speeches);
 
-    internal static void TEntryDelete(this LEntryArchive entryArchive, string id)
+    internal static void TEntryDelete(this LEntryArchive entryArchive, long id)
     {
         entryArchive.LEntryDelete(id);
     }
@@ -119,13 +120,13 @@ internal static partial class TInterface
     internal static IReadOnlyList<LEntry> TEntryFind(this LEntryArchive entryArchive, string query) =>
         entryArchive.LEntryFind(query);
 
-    internal static IReadOnlyList<LForm> TEntryFormRead(this LEntryArchive entryArchive, string id) =>
+    internal static IReadOnlyList<LForm> TEntryFormRead(this LEntryArchive entryArchive, long id) =>
         entryArchive.LEntryFormRead(id);
 
-    internal static LEntry? TEntryRead(this LEntryArchive entryArchive, string id) =>
+    internal static LEntry? TEntryRead(this LEntryArchive entryArchive, long id) =>
         entryArchive.LEntryRead(id);
 
-    internal static IReadOnlyList<LSpeech> TEntrySpeechRead(this LEntryArchive entryArchive, string id) =>
+    internal static IReadOnlyList<LSpeech> TEntrySpeechRead(this LEntryArchive entryArchive, long id) =>
         entryArchive.LEntrySpeechRead(id);
 
     internal static void TEntryUpdate(this LEntryArchive entryArchive, LEntry entry)
@@ -142,10 +143,10 @@ internal static partial class TInterface
     internal static IReadOnlyList<LExample> TExampleRead(this LExampleArchive exampleArchive) =>
         exampleArchive.LExampleRead();
 
-    internal static LExample? TExampleRead(this LExampleArchive exampleArchive, string id) =>
+    internal static LExample? TExampleRead(this LExampleArchive exampleArchive, long id) =>
         exampleArchive.LExampleRead(id);
 
-    internal static void TExampleDelete(this LExampleArchive exampleArchive, string id, bool detach)
+    internal static void TExampleDelete(this LExampleArchive exampleArchive, long id, bool detach)
     {
         exampleArchive.LExampleDelete(id, detach);
     }
@@ -158,8 +159,8 @@ internal static partial class TInterface
 
     internal static void TSentenceMeaningAttach(
         this LSentenceArchive sentenceArchive,
-        string meaningId,
-        string exampleId,
+        long meaningId,
+        long exampleId,
         int position)
     {
         sentenceArchive.LSentenceMeaningAttach(meaningId, exampleId, position);
@@ -167,15 +168,15 @@ internal static partial class TInterface
 
     internal static void TSentenceMeaningDetach(
         this LSentenceArchive sentenceArchive,
-        string meaningId,
-        string exampleId)
+        long meaningId,
+        long exampleId)
     {
         sentenceArchive.LSentenceMeaningDetach(meaningId, exampleId);
     }
 
     internal static void TSentenceMeaningSave(
         this LSentenceArchive sentenceArchive,
-        string meaningId,
+        long meaningId,
         IReadOnlyList<LSentence> sentences)
     {
         sentenceArchive.LSentenceMeaningSave(meaningId, sentences);
@@ -183,7 +184,7 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LSentence> TSentenceMeaningRead(
         this LSentenceArchive sentenceArchive,
-        string meaningId) =>
+        long meaningId) =>
         sentenceArchive.LSentenceMeaningRead(meaningId);
 
     internal static IReadOnlyList<string> TSentenceParticleRead(
@@ -198,8 +199,8 @@ internal static partial class TInterface
 
     internal static void TSentenceCollocationAttach(
         this LSentenceArchive sentenceArchive,
-        string collocationId,
-        string exampleId,
+        long collocationId,
+        long exampleId,
         int position)
     {
         sentenceArchive.LSentenceCollocationAttach(collocationId, exampleId, position);
@@ -207,15 +208,15 @@ internal static partial class TInterface
 
     internal static void TSentenceCollocationDetach(
         this LSentenceArchive sentenceArchive,
-        string collocationId,
-        string exampleId)
+        long collocationId,
+        long exampleId)
     {
         sentenceArchive.LSentenceCollocationDetach(collocationId, exampleId);
     }
 
     internal static void TSentenceCollocationSave(
         this LSentenceArchive sentenceArchive,
-        string collocationId,
+        long collocationId,
         IReadOnlyList<LSentence> sentences)
     {
         sentenceArchive.LSentenceCollocationSave(collocationId, sentences);
@@ -223,7 +224,7 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LSentence> TSentenceCollocationRead(
         this LSentenceArchive sentenceArchive,
-        string collocationId) =>
+        long collocationId) =>
         sentenceArchive.LSentenceCollocationRead(collocationId);
 
     internal static void TExampleUpdate(this LExampleArchive exampleArchive, LExample example)
@@ -231,12 +232,12 @@ internal static partial class TInterface
         exampleArchive.LExampleUpdate(example);
     }
 
-    internal static string TIdentityCreate() =>
+    internal static long TIdentityCreate() =>
         LIdentity.LIdentityCreate();
 
     internal static void TInflectionAppend(
         this LInflectionArchive inflectionArchive,
-        string entryId,
+        long entryId,
         IReadOnlyList<LInflection> inflections)
     {
         inflectionArchive.LInflectionAppend(entryId, inflections);
@@ -247,7 +248,7 @@ internal static partial class TInterface
 
     internal static void TInflectionDelete(
         this LInflectionArchive inflectionArchive,
-        string entryId,
+        long entryId,
         int position)
     {
         inflectionArchive.LInflectionDelete(entryId, position);
@@ -255,13 +256,13 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LInflection> TInflectionRead(
         this LInflectionArchive inflectionArchive,
-        string entryId) =>
+        long entryId) =>
         inflectionArchive.LInflectionRead(entryId);
 
     internal static LNoteArchive TNoteArchiveCreate(LDatabase database) =>
         new(database);
 
-    internal static LNote? TNoteRead(this LNoteArchive noteArchive, string entryId) =>
+    internal static LNote? TNoteRead(this LNoteArchive noteArchive, long entryId) =>
         noteArchive.LNoteRead(entryId);
 
     internal static void TNoteSave(this LNoteArchive noteArchive, LNote note)
@@ -274,12 +275,12 @@ internal static partial class TInterface
 
     internal static LPronunciationAudio? TPronunciationAudioRead(
         this LPronunciationArchive pronunciationArchive,
-        string pronunciationId) =>
+        long pronunciationId) =>
         pronunciationArchive.LPronunciationAudioRead(pronunciationId);
 
     internal static LPronunciation? TPronunciationRead(
         this LPronunciationArchive pronunciationArchive,
-        string entryId) =>
+        long entryId) =>
         pronunciationArchive.LPronunciationRead(entryId);
 
     internal static LRelationArchive TRelationArchiveCreate(LDatabase database) =>
@@ -293,7 +294,7 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LRevisionChange> TRevisionChangeRead(
         this LRevisionArchive revisionArchive,
-        string revisionId) =>
+        long revisionId) =>
         revisionArchive.LRevisionChangeRead(revisionId);
 
     internal static LRevision? TRevisionLatestRead(this LRevisionArchive revisionArchive) =>
@@ -305,17 +306,17 @@ internal static partial class TInterface
     internal static LMeaning TMeaningCreate(this LMeaningArchive meaningArchive, LMeaning meaning) =>
         meaningArchive.LMeaningCreate(meaning);
 
-    internal static void TMeaningDelete(this LMeaningArchive meaningArchive, string id)
+    internal static void TMeaningDelete(this LMeaningArchive meaningArchive, long id)
     {
         meaningArchive.LMeaningDelete(id);
     }
 
-    internal static void TMeaningMove(this LMeaningArchive meaningArchive, string id, int position)
+    internal static void TMeaningMove(this LMeaningArchive meaningArchive, long id, int position)
     {
         meaningArchive.LMeaningMove(id, position);
     }
 
-    internal static IReadOnlyList<LMeaning> TMeaningRead(this LMeaningArchive meaningArchive, string entryId) =>
+    internal static IReadOnlyList<LMeaning> TMeaningRead(this LMeaningArchive meaningArchive, long entryId) =>
         meaningArchive.LMeaningRead(entryId);
 
     internal static LRegisterArchive TRegisterArchiveCreate(LDatabase database) =>
@@ -323,25 +324,25 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LRegister> TRegisterCollocationRead(
         this LRegisterArchive registerArchive,
-        string collocationId) =>
+        long collocationId) =>
         registerArchive.LRegisterCollocationRead(collocationId);
 
     internal static IReadOnlyList<LRegister> TRegisterMeaningRead(
         this LRegisterArchive registerArchive,
-        string meaningId) =>
+        long meaningId) =>
         registerArchive.LRegisterMeaningRead(meaningId);
 
     internal static IReadOnlyList<LRegister> TRegisterRead(this LRegisterArchive registerArchive) =>
         registerArchive.LRegisterRead();
 
-    internal static LRegister? TRegisterRead(this LRegisterArchive registerArchive, string id) =>
+    internal static LRegister? TRegisterRead(this LRegisterArchive registerArchive, long id) =>
         registerArchive.LRegisterRead(id);
 
-    internal static void TRegisterDelete(this LRegisterArchive registerArchive, string id) =>
+    internal static void TRegisterDelete(this LRegisterArchive registerArchive, long id) =>
         registerArchive.LRegisterDelete(id);
 
     internal static void TRegisterDelete(
-        this LRegisterArchive registerArchive, string id, bool detach) =>
+        this LRegisterArchive registerArchive, long id, bool detach) =>
         registerArchive.LRegisterDelete(id, detach);
 
     internal static LSituationArchive TSituationArchiveCreate(LDatabase database) =>
@@ -349,12 +350,12 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LSituation> TSituationCollocationRead(
         this LSituationArchive situationArchive,
-        string collocationId) =>
+        long collocationId) =>
         situationArchive.LSituationCollocationRead(collocationId);
 
     internal static IReadOnlyList<LSituation> TSituationMeaningRead(
         this LSituationArchive situationArchive,
-        string meaningId) =>
+        long meaningId) =>
         situationArchive.LSituationMeaningRead(meaningId);
 
     internal static LTagArchive TTagArchiveCreate(LDatabase database) =>
@@ -362,13 +363,13 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LTag> TTagCollocationRead(
         this LTagArchive tagArchive,
-        string collocationId) =>
+        long collocationId) =>
         tagArchive.LTagCollocationRead(collocationId);
 
-    internal static IReadOnlyList<LTag> TTagMeaningRead(this LTagArchive tagArchive, string meaningId) =>
+    internal static IReadOnlyList<LTag> TTagMeaningRead(this LTagArchive tagArchive, long meaningId) =>
         tagArchive.LTagMeaningRead(meaningId);
 
-    internal static void TTagMeaningSave(this LTagArchive tagArchive, string meaningId, IReadOnlyList<LTag> tags)
+    internal static void TTagMeaningSave(this LTagArchive tagArchive, long meaningId, IReadOnlyList<LTag> tags)
     {
         tagArchive.LTagMeaningSave(meaningId, tags);
     }
@@ -378,12 +379,12 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LTranslation> TTranslationCollocationRead(
         this LTranslationArchive translationArchive,
-        string collocationId) =>
+        long collocationId) =>
         translationArchive.LTranslationCollocationRead(collocationId);
 
     internal static void TTranslationCollocationSave(
         this LTranslationArchive translationArchive,
-        string collocationId,
+        long collocationId,
         IReadOnlyList<LTranslation> translations)
     {
         translationArchive.LTranslationCollocationSave(collocationId, translations);
@@ -391,17 +392,17 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LUsage> TTranslationIncomingRead(
         this LTranslationArchive translationArchive,
-        string entryId) =>
+        long entryId) =>
         translationArchive.LTranslationIncomingRead(entryId);
 
     internal static IReadOnlyList<LTranslation> TTranslationMeaningRead(
         this LTranslationArchive translationArchive,
-        string meaningId) =>
+        long meaningId) =>
         translationArchive.LTranslationMeaningRead(meaningId);
 
     internal static void TTranslationMeaningSave(
         this LTranslationArchive translationArchive,
-        string meaningId,
+        long meaningId,
         IReadOnlyList<LTranslation> translations)
     {
         translationArchive.LTranslationMeaningSave(meaningId, translations);
@@ -409,7 +410,7 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LTranslationTarget> TTranslationTargetRead(
         this LTranslationArchive translationArchive,
-        IReadOnlyList<string> ids) =>
+        IReadOnlyList<long> ids) =>
         translationArchive.LTranslationTargetRead(ids);
 
     internal static LWorkspaceArchive TWorkspaceArchiveCreate(LDatabase database) =>

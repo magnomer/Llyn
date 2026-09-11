@@ -13,7 +13,7 @@ public partial class PCorpus
 
     private CancellationTokenSource? _pTranscriptPending;
 
-    private string _pTranscriptDraft = string.Empty;
+    private long _pTranscriptDraft;
 
     private bool _pTranscriptHalted;
 
@@ -30,13 +30,13 @@ public partial class PCorpus
             return true;
         }
 
-        string held = _pTranscriptDraft;
-        if (held.Length == 0)
+        long held = _pTranscriptDraft;
+        if (held == 0)
         {
             return true;
         }
 
-        _pTranscriptDraft = string.Empty;
+        _pTranscriptDraft = 0;
 
         try
         {
@@ -64,7 +64,7 @@ public partial class PCorpus
 
     private void PTranscriptChangeDefer()
     {
-        if (_pTranscriptLoading || _pTranscriptHalted || _pTranscriptDraft.Length == 0)
+        if (_pTranscriptLoading || _pTranscriptHalted || _pTranscriptDraft == 0)
         {
             return;
         }
@@ -102,7 +102,7 @@ public partial class PCorpus
     {
         PTranscriptChangeStop();
 
-        if (_pTranscriptLoading || _pTranscriptHalted || _pTranscriptDraft.Length == 0)
+        if (_pTranscriptLoading || _pTranscriptHalted || _pTranscriptDraft == 0)
         {
             return;
         }
@@ -132,7 +132,7 @@ public partial class PCorpus
         PTranscriptStore.IsEnabled = changed;
     }
 
-    private LDraft? PTranscriptDraftStart(string? example)
+    private LDraft? PTranscriptDraftStart(long? example)
     {
         PTranscriptChangeStop();
         PTranscriptDraftCancel();
@@ -146,7 +146,7 @@ public partial class PCorpus
         }
         catch (Exception exception)
         {
-            _pTranscriptDraft = string.Empty;
+            _pTranscriptDraft = 0;
             PTranscriptHoldSuspend(exception);
             return null;
         }
@@ -159,7 +159,7 @@ public partial class PCorpus
 
     private void PTranscriptDraftSave()
     {
-        if (_pTranscriptDraft.Length == 0)
+        if (_pTranscriptDraft == 0)
         {
             return;
         }
@@ -188,13 +188,13 @@ public partial class PCorpus
 
     private void PTranscriptDraftCancel()
     {
-        if (_pTranscriptDraft.Length == 0)
+        if (_pTranscriptDraft == 0)
         {
             return;
         }
 
-        string held = _pTranscriptDraft;
-        _pTranscriptDraft = string.Empty;
+        long held = _pTranscriptDraft;
+        _pTranscriptDraft = 0;
 
         try
         {
@@ -207,7 +207,7 @@ public partial class PCorpus
 
     private bool PTranscriptDraftCheck()
     {
-        if (_pTranscriptDraft.Length == 0)
+        if (_pTranscriptDraft == 0)
         {
             return false;
         }
@@ -223,9 +223,9 @@ public partial class PCorpus
         }
     }
 
-    private string? PTranscriptExampleRead()
+    private long? PTranscriptExampleRead()
     {
-        if (_pTranscriptDraft.Length == 0)
+        if (_pTranscriptDraft == 0)
         {
             return null;
         }
@@ -240,7 +240,7 @@ public partial class PCorpus
             return null;
         }
 
-        return string.IsNullOrWhiteSpace(held?.LDraftEntry) ? null : held.LDraftEntry;
+        return held?.LDraftEntry is null or 0 ? null : held.LDraftEntry;
     }
 
     private void PTranscriptHoldSuspend(Exception exception)

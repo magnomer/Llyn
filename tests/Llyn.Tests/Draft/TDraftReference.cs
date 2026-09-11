@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -12,7 +12,7 @@ public sealed class TDraftReference
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        string held;
+        long held;
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
@@ -76,8 +76,8 @@ public sealed class TDraftReference
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
-        string swept;
-        string kept;
+        long swept;
+        long kept;
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {

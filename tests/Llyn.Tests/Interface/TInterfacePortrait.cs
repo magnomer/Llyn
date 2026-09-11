@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.Infrastructure;
 
 namespace Llyn.Tests;
@@ -15,7 +15,7 @@ internal static partial class TInterface
         string note) =>
         new(unreadable, meaning, meanings, collocation, collocations, incoming, note);
 
-    internal static LPortraitLink TPortraitLinkCreate(string id, string headword, string language) =>
+    internal static LPortraitLink TPortraitLinkCreate(long id, string headword, string language) =>
         new(id, headword, language);
 
     internal static LPortraitExample TPortraitExampleCreate(string frame, string text) =>

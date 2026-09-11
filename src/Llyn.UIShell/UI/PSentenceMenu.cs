@@ -111,7 +111,7 @@ public partial class PEditor
     {
         if (sender is FrameworkElement { DataContext: PSentence row })
         {
-            row.PSentenceCitation = string.Empty;
+            row.PSentenceCitation = 0;
         }
     }
 

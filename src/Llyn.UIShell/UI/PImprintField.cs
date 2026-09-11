@@ -136,7 +136,7 @@ public partial class PImprint
 
         PAuthorApply(reference);
 
-        string? stored = PImprintReferenceRead();
+        long? stored = PImprintReferenceRead();
         PImprintRemoval.IsEnabled = stored is not null;
         PImprintCountShow(stored);
 
@@ -179,7 +179,7 @@ public partial class PImprint
         mark.IsChecked = held;
     }
 
-    private void PImprintCountShow(string? stored)
+    private void PImprintCountShow(long? stored)
     {
         if (stored is null)
         {
@@ -187,7 +187,7 @@ public partial class PImprint
             return;
         }
 
-        int usage = _pImprintOwner.PShelfCountRead(stored);
+        int usage = _pImprintOwner.PShelfCountRead(stored.Value);
         PImprintCount.Text = $"{_pImprintHost.PLocalizationTextRead("Source.DetachCount")} "
             + usage.ToString(CultureInfo.CurrentCulture);
     }
@@ -223,8 +223,8 @@ public partial class PImprint
     {
         PImprintChangeSave();
 
-        string held = _pImprintDraft;
-        if (held.Length == 0)
+        long held = _pImprintDraft;
+        if (held == 0)
         {
             return;
         }
@@ -240,7 +240,7 @@ public partial class PImprint
             return;
         }
 
-        _pImprintDraft = string.Empty;
+        _pImprintDraft = 0;
 
         _pImprintOwner.PReferenceScribeShow(false);
         _pImprintOwner.PReferenceShow(stored.LReferenceId);

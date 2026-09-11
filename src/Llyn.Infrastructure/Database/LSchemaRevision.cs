@@ -41,7 +41,7 @@ public static class LSchemaRevision
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS workspace (
-                id INTEGER PRIMARY KEY,
+                id TEXT NOT NULL PRIMARY KEY,
                 left_entry INTEGER,
                 right_entry INTEGER,
                 mode TEXT,

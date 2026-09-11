@@ -1,4 +1,4 @@
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -26,7 +26,7 @@ public partial class PImprint : UserControl
         PAuthorList.ItemsSource = _pAuthorCatalog;
     }
 
-    internal void PImprintDraftOpen(string? reference)
+    internal void PImprintDraftOpen(long? reference)
     {
         PImprintDraftShow(PImprintDraftStart(reference));
     }

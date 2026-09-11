@@ -23,7 +23,7 @@ public static class LSchemaVersion
                 version INTEGER NOT NULL
             );
 
-            INSERT INTO schema_version (version) VALUES (1, $version);
+            INSERT INTO schema_version (id, version) VALUES (1, $version);
             """;
         command.Parameters.AddWithValue("$version", LSchemaMigration.LSchemaMigrationVersion);
         command.ExecuteNonQuery();

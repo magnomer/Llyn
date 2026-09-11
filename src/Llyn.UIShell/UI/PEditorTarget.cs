@@ -6,16 +6,15 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private static IReadOnlyDictionary<string, LTranslationTarget> PEditorTargetEmpty =>
-        new Dictionary<string, LTranslationTarget>(StringComparer.Ordinal);
+    private static IReadOnlyDictionary<long, LTranslationTarget> PEditorTargetEmpty => new Dictionary<long, LTranslationTarget>();
 
-    private IReadOnlyDictionary<string, LTranslationTarget> PEditorTargetRead(LEntryDraft draft)
+    private IReadOnlyDictionary<long, LTranslationTarget> PEditorTargetRead(LEntryDraft draft)
     {
         List<long> ids = [];
         PEditorTargetRead(draft.LEntryDraftMeanings, ids);
         PEditorTargetRead(draft.LEntryDraftCollocations, ids);
 
-        Dictionary<string, LTranslationTarget> targets = new(StringComparer.Ordinal);
+        Dictionary<long, LTranslationTarget> targets = [];
         if (ids.Count == 0)
         {
             return targets;
@@ -36,7 +35,7 @@ public partial class PEditor
         return targets;
     }
 
-    private static void PEditorTargetRead(IReadOnlyList<LCardDraft> cards, List<string> ids)
+    private static void PEditorTargetRead(IReadOnlyList<LCardDraft> cards, List<long> ids)
     {
         foreach (LCardDraft card in cards)
         {

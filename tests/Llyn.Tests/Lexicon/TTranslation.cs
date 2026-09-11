@@ -15,7 +15,7 @@ public sealed class TTranslation
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
+        long meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
         LEntry third = TTranslationEntryCreate(entries, "부러뜨리다", "Korean");
@@ -46,7 +46,7 @@ public sealed class TTranslation
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
+        long meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
 
@@ -55,7 +55,7 @@ public sealed class TTranslation
             [
                 TInterface.TTranslationCreate(first.LEntryId, 0),
                 TInterface.TTranslationCreate(first.LEntryId, 0),
-                TInterface.TTranslationCreate("   ", 0),
+                TInterface.TTranslationCreate(0, 0),
                 TInterface.TTranslationCreate(second.LEntryId, 0),
             ]);
 
@@ -76,7 +76,7 @@ public sealed class TTranslation
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string collocationId = TTranslationCollocationCreate(workspace, source.LEntryId);
+        long collocationId = TTranslationCollocationCreate(workspace, source.LEntryId);
         LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
         LEntry third = TTranslationEntryCreate(entries, "부러뜨리다", "Korean");
@@ -110,7 +110,7 @@ public sealed class TTranslation
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
+        long meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
 
@@ -138,7 +138,7 @@ public sealed class TTranslation
         LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
 
         IReadOnlyList<LTranslationTarget> targets =
-            translations.TTranslationTargetRead([second.LEntryId, "missing", first.LEntryId]);
+            translations.TTranslationTargetRead([second.LEntryId, 9999, first.LEntryId]);
 
         Assert.Equal(
             [second.LEntryId, first.LEntryId],
@@ -159,8 +159,8 @@ public sealed class TTranslation
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
-        string collocationId = TTranslationCollocationCreate(workspace, source.LEntryId);
+        long meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
+        long collocationId = TTranslationCollocationCreate(workspace, source.LEntryId);
         LEntry target = TTranslationEntryCreate(entries, "부수다", "Korean");
 
         translations.TTranslationMeaningSave(meaningId, [TInterface.TTranslationCreate(target.LEntryId, 0)]);
@@ -269,7 +269,7 @@ public sealed class TTranslation
             Assert.Single(Assert.Single(loaded.LEntryDraftMeanings).LCardDraftTranslation));
     }
 
-    private static LCardDraft TTranslationCardCreate(string meaning, IReadOnlyList<string> ids)
+    private static LCardDraft TTranslationCardCreate(string meaning, IReadOnlyList<long> ids)
     {
         return TInterface.TCardDraftCreate(
             string.Empty,
@@ -285,7 +285,7 @@ public sealed class TTranslation
     }
 
     private static IReadOnlyList<long> TTranslationPositionRead(
-        TWorkspace workspace, string table, string column, string ownerId)
+        TWorkspace workspace, string table, string column, long ownerId)
     {
         using Microsoft.Data.Sqlite.SqliteConnection connection = workspace.TWorkspaceConnectionRead();
         using Microsoft.Data.Sqlite.SqliteCommand command = connection.CreateCommand();
@@ -378,7 +378,7 @@ public sealed class TTranslation
         LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        string meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
+        long meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
         LEntry stub = engine.TEngineTranslationCreate("부수다", "Korean");
         translations.TTranslationMeaningSave(meaningId, [TInterface.TTranslationCreate(stub.LEntryId, 0)]);
 
@@ -392,20 +392,20 @@ public sealed class TTranslation
         LEntryArchive entries, string headword, string language)
     {
         return entries.TEntryCreate(
-            TInterface.TEntryCreate(string.Empty, headword, language, null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, headword, language, null, null, null, null), [], []);
     }
 
-    private static string TTranslationMeaningCreate(TWorkspace workspace, string entryId)
+    private static long TTranslationMeaningCreate(TWorkspace workspace, long entryId)
     {
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         return meanings.TMeaningCreate(TInterface.TMeaningCreate(
-            string.Empty, entryId, null, 0, null, "a meaning", null, null, string.Empty)).LMeaningId;
+            0, entryId, null, 0, null, "a meaning", null, null, string.Empty)).LMeaningId;
     }
 
-    private static string TTranslationCollocationCreate(TWorkspace workspace, string entryId)
+    private static long TTranslationCollocationCreate(TWorkspace workspace, long entryId)
     {
         LCollocationArchive collocations = TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase);
         return collocations.TCollocationCreate(TInterface.TCollocationCreate(
-            string.Empty, entryId, 0, null, "in a word", "briefly")).LCollocationId;
+            0, entryId, 0, null, "in a word", "briefly")).LCollocationId;
     }
 }
