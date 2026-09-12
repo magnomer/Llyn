@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,10 +8,13 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard
 {
-    private const string PCardLinkKey = "Card.TranslationHint";
+    private const string PCardLinkHint = "Card.TranslationHint";
 
     private readonly PLinkCaret _pCardLinkCaret = new();
     private bool _pCardLinkBusy;
+
+    private static readonly Func<object, long?> _pCardLinkKey =
+        row => row is PLinkChip chip ? chip.PLinkChipId : null;
 
     public ObservableCollection<object> PCardLink { get; } = [];
 
@@ -19,63 +22,41 @@ internal sealed partial class PCard
 
     internal Action<string>? PCardLinkNotice { get; set; }
 
+    internal string PCardLinkText => _pCardLinkCaret.PLinkCaretText;
+
+    internal int PCardLinkPosition =>
+        PCardRowResolve(PCardLink, _pCardLinkKey, PCardLink.IndexOf(_pCardLinkCaret));
+
     internal void PCardLinkShow(IReadOnlyList<LTranslationTarget> targets)
     {
         ArgumentNullException.ThrowIfNull(targets);
 
-        PCardLink.Clear();
-        foreach (LTranslationTarget target in targets)
-        {
-            long id = target.LTranslationTargetId;
-            if (id == 0 || PCardLinkCheck(id))
-            {
-                continue;
-            }
+        PCardRowShow(
+            PCardLink,
+            targets,
+            _pCardLinkKey,
+            static target => target.LTranslationTargetId,
+            PCardLinkCreate,
+            static (row, target) =>
+                row is PLinkChip chip
+                && string.Equals(chip.PLinkChipHeadword, target.LTranslationTargetHeadword, StringComparison.Ordinal)
+                && string.Equals(chip.PLinkChipLanguage, target.LTranslationTargetLanguage, StringComparison.Ordinal)
+                    ? row
+                    : PCardLinkCreate(target));
 
-            PCardLink.Add(new PLinkChip(
-                id,
-                target.LTranslationTargetHeadword,
-                target.LTranslationTargetLanguage));
-        }
-
-        _pCardLinkCaret.PLinkCaretText = string.Empty;
-        PCardLink.Add(_pCardLinkCaret);
         PCardLinkUpdate();
     }
 
-    internal IReadOnlyList<long> PCardLinkRead()
-    {
-        List<long> ids = [];
-        foreach (object row in PCardLink)
-        {
-            if (row is PLinkChip chip)
-            {
-                ids.Add(chip.PLinkChipId);
-            }
-        }
-
-        return ids;
-    }
-
-    internal void PCardLinkRemove(PLinkChip chip)
-    {
-        PCardLink.Remove(chip);
-        PCardLinkUpdate();
-    }
-
-    internal void PCardLinkRemove(int step)
+    internal PLinkChip? PCardLinkFind(int step)
     {
         int index = PCardLink.IndexOf(_pCardLinkCaret);
         int target = index + step;
-        if (index < 0 ||
-            target < 0 ||
-            target >= PCardLink.Count ||
-            PCardLink[target] is not PLinkChip chip)
+        if (index < 0 || target < 0 || target >= PCardLink.Count)
         {
-            return;
+            return null;
         }
 
-        PCardLinkRemove(chip);
+        return PCardLink[target] as PLinkChip;
     }
 
     internal bool PCardLinkMove(int step)
@@ -105,33 +86,25 @@ internal sealed partial class PCard
         }
     }
 
-    internal bool PCardLinkCommit(long id, string headword, string language)
-    {
-        long written = id;
-        if (written == 0)
-        {
-            return false;
-        }
-
-        if (PCardLinkCheck(written))
-        {
-            return true;
-        }
-
-        int index = PCardLink.IndexOf(_pCardLinkCaret);
-        PCardLink.Insert(
-            index < 0 ? PCardLink.Count : index,
-            new PLinkChip(written, headword, language));
-        PCardLinkUpdate();
-        return true;
-    }
-
     internal void PCardLinkClear()
     {
         _pCardLinkBusy = true;
         _pCardLinkCaret.PLinkCaretText = string.Empty;
         _pCardLinkBusy = false;
         PCardLinkUpdate();
+    }
+
+    internal bool PCardLinkCheck(long id)
+    {
+        foreach (object row in PCardLink)
+        {
+            if (row is PLinkChip chip && chip.PLinkChipId == id)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     internal void PCardFlagUpdate()
@@ -149,6 +122,12 @@ internal sealed partial class PCard
                 chip.PLinkChipHeadword,
                 chip.PLinkChipLanguage);
         }
+    }
+
+    private static object PCardLinkCreate(LTranslationTarget target)
+    {
+        return new PLinkChip(
+            target.LTranslationTargetId, target.LTranslationTargetHeadword, target.LTranslationTargetLanguage);
     }
 
     private void PCardLinkStart()
@@ -200,22 +179,8 @@ internal sealed partial class PCard
 
     private static string PCardHintRead()
     {
-        return System.Windows.Application.Current?.TryFindResource(PCardLinkKey) as string
+        return System.Windows.Application.Current?.TryFindResource(PCardLinkHint) as string
             ?? "Add translations";
-    }
-
-    private bool PCardLinkCheck(long id)
-    {
-        foreach (object row in PCardLink)
-        {
-            if (row is PLinkChip chip &&
-                chip.PLinkChipId == id)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void PCardLinkUpdate()

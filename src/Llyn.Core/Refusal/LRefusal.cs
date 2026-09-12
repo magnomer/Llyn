@@ -24,6 +24,10 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalCard = "Refusal.CardMissing";
 
+    public const string LRefusalItem = "Refusal.ItemMissing";
+
+    public const string LRefusalLink = "Refusal.LinkMissing";
+
     public LRefusal(string reason)
         : base(reason)
     {

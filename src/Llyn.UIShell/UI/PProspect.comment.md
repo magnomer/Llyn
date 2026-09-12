@@ -1,4 +1,4 @@
-﻿# PProspect.cs
+# PProspect.cs
 
 ## `public partial class PEditor`
 
@@ -32,7 +32,8 @@ The tentative entry carries the typed word and the chosen language, ready to be 
 A court row ties it to this draft, and storing this draft stores it too.
 The entry and its row are asked for in one call.
 A stub half made is a draft nothing points at.
-The chip is named from the row that came back, not from an id the form guessed.
+The link is asked for under the target the row names, not under an id the form guessed.
+The chip then shows the court's word and language, since no Entry answers a draft id yet.
 A stub that cannot be started raises a notice rather than leaving the field looking unanswered.
 
 ### `private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)`

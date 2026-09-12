@@ -1,22 +1,31 @@
 using System.Windows;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
 public partial class PEditor
 {
+    internal void PImageAttach(PCard card)
+    {
+        card.PCardImageNotice = row => PEditorRequestDefer(
+            PEditorRequestFormat(card, row.PImageId, nameof(PImage.PImageLocation)),
+            new LRequestImageLocation(_pEditorDraft, row.PImageId, row.PImageLocationRead()));
+    }
+
     internal void PImageAddHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PCard card })
         {
-            card.PCardImageAdd();
+            PEditorRequestSend(new LRequestImageAddition(
+                _pEditorDraft, card.PCardId, LStateValue.LStateValueUnspecified, card.PCardImage.Count));
         }
     }
 
     internal void PImageRemoveHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PImage row })
+        if (sender is FrameworkElement { DataContext: PImage row } && PCardImageFind(row) is PCard card)
         {
-            PCardImageFind(row)?.PCardImageRemove(row);
+            PEditorRequestSend(new LRequestImageRemoval(_pEditorDraft, card.PCardId, row.PImageId));
         }
     }
 
@@ -38,6 +47,11 @@ public partial class PEditor
         {
             row.PImageLocation = dialog.FileName;
         }
+    }
+
+    private bool PImagePendingCheck(PCard card, PImage row)
+    {
+        return PEditorRequestCheck(PEditorRequestFormat(card, row.PImageId, nameof(PImage.PImageLocation)));
     }
 
     private PCard? PCardImageFind(PImage row)

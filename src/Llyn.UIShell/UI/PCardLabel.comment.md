@@ -1,95 +1,60 @@
-﻿# PCardLabel.cs
+# PCardLabel.cs
 
 ## `internal sealed partial class PCard`
 
-The Tags a card carries, held as the items of one field rather than as a line of text.
-The collection is a run of committed Tags with one open entry among them.
-That entry is the caret the user types into, and it moves between Tags as a caret does.
-So the field can be drawn as boxed Tags with a cursor after them.
-A Tag can hold spaces and punctuation without a separator being guessed at inside it.
-Only a comma ends a Tag.
-
-Duplicates are refused as they are committed rather than repaired afterwards.
-So what the field shows is what the store will hold.
-
-## `internal void PCardLabelShow(IReadOnlyList<LTagDraft> drafts)`
-
-Replaces the Tags with the stored ones of the card being loaded and reopens an empty entry after them.
-Each chip keeps the id of the stored Tag it came from.
-
-## `internal IReadOnlyList<LTagDraft> PCardLabelRead()`
-
-What the card says its Tags are.
-That is the committed Tags and the entry text, each in the order the field shows them.
-A committed chip carries the id it was loaded or chosen with, and the entry text carries none.
-So a Tag typed but never followed by a comma is not lost on save.
-Reading does not change the field.
-An unsaved-change check runs this while the user is still typing.
-Closing a half-typed word into a Tag there would edit the card behind them.
-
-## `internal void PCardLabelApply(IReadOnlyList<LTagDraft> stored)`
-
-Writes the ids the engine minted back onto the chips, in the order the read listed them.
-A caret holding unfinished text counted as a row in the read, so it is stepped over here.
-
-## `internal void PCardLabelRemove(PLabelChip chip)`
-
-Drops one Tag the user closed.
-
-## `internal void PCardLabelRemove(int step)`
-
-Drops the Tag standing one step from the entry, before it or after it.
-That is what a backspace at the start, or a delete at the end, reaches for.
-
-## `internal bool PCardLabelMove(int step)`
-
-Steps the entry one place along the field, past the Tag on that side.
-A Tag is passed over as a single character would be.
-Reports whether there was anywhere left to go.
+The Tags a card shows, held as the items of one field.
+The collection is a run of Tag chips with one open entry among them, which is the caret.
+The engine holds the chips, the card renders them by id, and every commit or removal is a request.
+Duplicates are refused before a request is sent.
 
 ## `internal Action<string>? PCardLabelNotice { get; set; }`
 
-What the card says when the entry's text changes.
-The card does not know what listens, so the dropdown of stored tags can be wired above it.
+Where the entry's text goes as it is typed, so the editor can offer matching Tags.
 
-## `internal void PCardLabelCommit()`
+## `internal Func<string, bool>? PCardLabelDispatcher { get; set; }`
 
-Closes what is standing in the entry into a Tag and clears the entry.
-That is what leaving the field or pressing enter means.
+Where a typed tag goes to become a chip, answering whether a request went out.
 
-## `internal void PCardLabelCommit(string text)`
+## `internal string PCardLabelText`
 
-Closes one given word into a Tag before the entry, with no stored Tag resolved for it.
-That is what a comma in the text reaches for.
+What is standing in the entry.
 
-## `internal void PCardLabelCommit(long id, string text)`
+## `internal int PCardLabelPosition`
 
-Closes one word into a Tag before the entry, linking the stored Tag `id` names.
-That is what a row taken from the dropdown reaches for.
-The save links the row rather than matching its text.
+How many chips stand before the caret, which is the place a new chip is asked for.
+
+## `internal void PCardLabelShow(IReadOnlyList<LTagDraft> drafts)`
+
+Makes the chips show the engine's Tags, matched by id, replacing a chip whose text changed.
+
+## `internal PLabelChip? PCardLabelFind(int step)`
+
+The chip standing one step from the entry, before it or after it, or null.
+
+## `internal bool PCardLabelMove(int step)`
+
+Steps the entry one place along the field and reports whether there was anywhere left to go.
 
 ## `internal void PCardLabelClear()`
 
-Empties the entry without announcing it as typing.
-Otherwise clearing after a commit would reopen the dropdown on the text just filed.
+Empties the entry without reading it as a further edit.
+
+## `internal bool PCardLabelMatch(long? id)`
+
+Whether the card already carries the stored Tag.
+
+## `internal bool PCardLabelCheck(string text)`
+
+Whether the card already carries a Tag with this text.
 
 ## Inline notes
 
 ### `private void PCardLabelChange(object? sender, PropertyChangedEventArgs arguments)`
 
-The comma is read off the entry's text rather than off a keystroke.
-So a comma arriving by paste ends a Tag exactly as a typed one does.
-A paste of several commas leaves several Tags.
-Everything before the last comma is committed and the remainder stays in the entry.
-That is what makes the field reactive as it is typed into.
-
-The guard around the rewrite is there because the rewrite sets the property being answered.
-Without it the handler would answer itself.
-
-The notice is sent after the commas are settled, so what is announced is what the entry now holds.
+The comma is read off the entry's text, so a pasted comma ends a tag as a typed one does.
+Everything before the last comma is dispatched and the remainder stays in the entry.
+The guard around the rewrite keeps the handler from answering itself.
 
 ### `private void PCardLabelUpdate()`
 
-The hint belongs to the empty field, not to the entry.
-Once a card carries a Tag the entry sits beside it.
-Prompting again would read as a second, unfilled field.
+The hint belongs to the empty field and goes once a chip stands beside the entry.

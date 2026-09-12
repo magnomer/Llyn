@@ -33,7 +33,7 @@ The switch and the restore read the same table.
 A tab cannot be stored under one name and restored under another.
 A tab holding no editor offers no way to restore one.
 
-## `internal void PWindowEntryShow(string id)`
+## `internal void PWindowEntryShow(long id)`
 
 Switches to the library panel and opens one Entry there.
 It is the way a referring side listed under a shared record reaches the Entry holding it.
@@ -41,7 +41,7 @@ Panel switching is the window's to do, so a panel asks for it rather than reachi
 The library is asked first, because the tab guard above passes over a library that is already the target.
 Opening the entry would otherwise cancel the draft being written in that panel without a word.
 
-## `internal void PWindowSituationShow(string id)`
+## `internal void PWindowSituationShow(long id)`
 
 Switches to the repertoire panel and opens one Situation there.
 It is the way a situation chip read on a card reaches the record it names.
@@ -52,7 +52,7 @@ The repertoire is asked first, for the reason the library is asked above.
 Switches to the taxonomy panel and browses by one tag, named by its id.
 The taxonomy is asked first, for the reason the library is asked above.
 
-## `internal void PWindowExampleShow(string id)`
+## `internal void PWindowExampleShow(long id)`
 
 Switches to the corpus panel and opens one Example there.
 A Source citing row names an Example rather than an Entry, so it needs the counterpart of the entry switch.

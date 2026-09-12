@@ -34,11 +34,11 @@ A Reference already carrying one keeps it, because a held source is named before
 Each field is written as its state plus, for a specified field alone, its value.
 The new Reference is cited by nothing and credits no Author until one is attached.
 
-## `public LReference? LReferenceRead(string id)`
+## `public LReference? LReferenceRead(long id)`
 
 Reads the Reference identified by `id`, or `null` when none exists.
 
-## `public LReference? LReferenceExampleRead(string exampleId)`
+## `public LReference? LReferenceExampleRead(long exampleId)`
 
 Reads the single Reference an Example cites, or `null` when the Example cites none or does not exist.
 
@@ -49,7 +49,7 @@ The id, the Authors credited, and every citation pointing at it are untouched.
 So an update never changes where the Reference appears or in what order.
 Throws when no Reference carries that id.
 
-## `public void LReferenceDelete(string id)`
+## `public void LReferenceDelete(long id)`
 
 Deletes the Reference identified by `id` together with the author links it owns.
 Guarded: while any Example still cites the Reference, nothing is deleted.
@@ -57,7 +57,7 @@ An `InvalidOperationException` is thrown instead.
 Remove those citations first.
 The Authors it credited survive.
 
-## `public void LReferenceDelete(string id, bool detach)`
+## `public void LReferenceDelete(long id, bool detach)`
 
 The same delete, with `detach` clearing every citation first.
 The detaching, the count, and the delete stand in one session.
@@ -66,23 +66,23 @@ An Example is not deleted with the Reference, so its citation is cleared back to
 Only the links between them and this Reference go.
 The guard and the delete share one transaction, so nothing can cite the Reference between them.
 
-## `public void LReferenceAuthorAttach(string referenceId, string authorId, int position)`
+## `public void LReferenceAuthorAttach(long referenceId, long authorId, int position)`
 
 Credits an existing Author on this Reference at `position` in the Reference's own author order.
 The Author row itself is untouched and stays available to every other Reference.
 
-## `public void LReferenceAuthorDetach(string referenceId, string authorId)`
+## `public void LReferenceAuthorDetach(long referenceId, long authorId)`
 
 Removes this Reference's credit for an Author.
 The Author and its other credits survive.
 
-## `public void LReferenceExampleAttach(string exampleId, string referenceId)`
+## `public void LReferenceExampleAttach(long exampleId, long referenceId)`
 
 Makes this Reference the single one an Example cites, replacing whatever it cited before.
 An Example holds one source column, so there is nothing to order and nothing to duplicate.
 The Reference is only pointed at, never owned.
 
-## `public void LReferenceExampleDetach(string exampleId)`
+## `public void LReferenceExampleDetach(long exampleId)`
 
 Clears the Reference an Example cites.
 Only the pointer is cleared: both the Example and the Reference stay exactly as they were.

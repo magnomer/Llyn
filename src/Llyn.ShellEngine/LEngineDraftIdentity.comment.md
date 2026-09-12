@@ -27,9 +27,12 @@ A card is returned itself when it was named and none of its lists changed.
 
 ## `private IReadOnlyList<LSentenceDraft> LEngineSentenceNormalize(IReadOnlyList<LSentenceDraft> drafts)`
 
-A row saying nothing is dropped.
+A row saying nothing is kept, because the form adds a row blank and fills it afterwards.
+The commit skips such a row, so keeping it costs nothing in the store.
 An Example with no text and no id is dropped from its row, since it names nothing.
 An Example with text and no id is named, and so is a row with no id.
+Image and video rows are kept blank for the same reason.
+Situation, register and tag chips are never added blank, so a blank one is still dropped.
 
 ## `private static IReadOnlyList<LEngineItem> LEngineListNormalize<LEngineItem>(`
 

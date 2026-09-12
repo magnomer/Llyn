@@ -351,43 +351,6 @@ public sealed class TTranslation
         Assert.NotNull(engine.TEngineTranslationResolve("break", null));
     }
 
-    [Fact]
-    public void TranslationDelete_StubThrownAway_LeavesNothing()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LEntry stub = engine.TEngineTranslationCreate("부수다", "Korean");
-
-        Assert.NotNull(engine.TEngineEntryRead(stub.LEntryId));
-        Assert.Contains(
-            engine.TEngineChangeRead(engine.TEngineRevisionRead()!.LRevisionId),
-            change => change.LRevisionChangeTarget == stub.LEntryId);
-
-        engine.TEngineTranslationDelete(stub.LEntryId);
-
-        Assert.Null(engine.TEngineEntryRead(stub.LEntryId));
-    }
-
-    [Fact]
-    public void TranslationDelete_LinkedStub_KeepsIt()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
-
-        LEntry source = TTranslationEntryCreate(entries, "break", "English");
-        long meaningId = TTranslationMeaningCreate(workspace, source.LEntryId);
-        LEntry stub = engine.TEngineTranslationCreate("부수다", "Korean");
-        translations.TTranslationMeaningSave(meaningId, [TInterface.TTranslationCreate(stub.LEntryId, 0)]);
-
-        engine.TEngineTranslationDelete(stub.LEntryId);
-
-        Assert.NotNull(engine.TEngineEntryRead(stub.LEntryId));
-        Assert.Single(translations.TTranslationMeaningRead(meaningId));
-    }
-
     private static LEntry TTranslationEntryCreate(
         LEntryArchive entries, string headword, string language)
     {

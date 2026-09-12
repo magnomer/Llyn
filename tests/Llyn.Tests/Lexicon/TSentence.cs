@@ -126,6 +126,39 @@ public sealed class TSentence
     }
 
     [Fact]
+    public void SentenceSave_RowNamedAgain_KeepsItsId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LSentenceArchive sentences = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
+        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
+
+        long meaningId = TSentenceMeaningCreate(workspace);
+        LExample first = examples.TExampleCreate(
+            TInterface.TExampleCreate(
+            0, "en", "first", null, null));
+        LExample second = examples.TExampleCreate(
+            TInterface.TExampleCreate(
+            0, "en", "second", null, null));
+
+        IReadOnlyList<long> written = sentences.TSentenceMeaningSave(
+            meaningId,
+            [TInterface.TSentenceCreate(0, meaningId, 0, first, null, null),
+             TInterface.TSentenceCreate(0, meaningId, 1, second, null, null)]);
+
+        IReadOnlyList<long> rewritten = sentences.TSentenceMeaningSave(
+            meaningId,
+            [TInterface.TSentenceCreate(written[1], meaningId, 0, second, "for", null),
+             TInterface.TSentenceCreate(0, meaningId, 1, first, null, null)]);
+
+        Assert.Equal(written[1], rewritten[0]);
+        Assert.NotEqual(written[0], rewritten[1]);
+        IReadOnlyList<LSentence> read = sentences.TSentenceMeaningRead(meaningId);
+        Assert.Equal([written[1], rewritten[1]], read.Select(sentence => sentence.LSentenceId));
+        Assert.Equal("for", read[0].LSentenceParticle.TStateValueShow());
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_example;"));
+    }
+
+    [Fact]
     public void SentenceDetach_MiddleRow_ClosesTheOrder()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

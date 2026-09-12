@@ -118,7 +118,7 @@ public sealed class TEntrySave
         Assert.NotEqual(
             Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample.LExampleId,
             Assert.Single(examples.TSentenceMeaningRead(other.LMeaningId)).LSentenceExample.LExampleId);
-        Assert.NotEqual(
+        Assert.Equal(
             Assert.Single(situations.TSituationMeaningRead(meaning.LMeaningId)).LSituationId,
             Assert.Single(situations.TSituationMeaningRead(other.LMeaningId)).LSituationId);
         Assert.Equal(
@@ -126,7 +126,7 @@ public sealed class TEntrySave
             Assert.Single(tags.TTagMeaningRead(other.LMeaningId)).LTagText);
 
         Assert.Equal(4, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
-        Assert.Equal(4, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation;"));
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation;"));
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM sense_tag;"));
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_tag;"));
     }

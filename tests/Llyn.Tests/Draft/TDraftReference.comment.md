@@ -5,7 +5,7 @@
 Covers the source side of the drafts folder, the held work the imprint panel pushes into.
 A source draft carries a Reference where a situation draft carries a Situation.
 
-## `public void ReferenceSave_HeldReference_SurvivesScan()`
+## `public void RequestApply_HeldReference_SurvivesScan()`
 
 A source typed and then lost with its launch is still on disk, and recovery offers it back.
 This is the loss the downstream exists to prevent: the panel used to hold the source in its controls alone.

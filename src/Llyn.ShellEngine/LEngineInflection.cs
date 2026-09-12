@@ -20,6 +20,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(inflections);
+            LEngineInflectionValidate(inflections);
             new LInflectionArchive(_lEngineDatabase).LInflectionSet(entryId, inflections);
         }
     }
@@ -29,7 +30,30 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(inflections);
+            LEngineInflectionValidate(inflections);
             new LInflectionArchive(_lEngineDatabase).LInflectionAppend(entryId, inflections);
+        }
+    }
+
+    private void LEngineInflectionValidate(IReadOnlyList<LInflection> inflections)
+    {
+        LSpeechArchive speeches = new(_lEngineDatabase);
+        LMorphologyArchive morphologies = new(_lEngineDatabase);
+        foreach (LInflection inflection in inflections)
+        {
+            if (inflection.LInflectionSpeechId is long speechId
+                && speeches.LSpeechValueRead(speechId) is null)
+            {
+                throw new LRefusal(LRefusal.LRefusalLink);
+            }
+
+            foreach (long morphologyId in inflection.LInflectionMorphology)
+            {
+                if (morphologies.LMorphologyRead(morphologyId) is null)
+                {
+                    throw new LRefusal(LRefusal.LRefusalLink);
+                }
+            }
         }
     }
 

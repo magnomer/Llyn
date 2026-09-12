@@ -18,7 +18,7 @@ The window is held because an incoming row opens the entry it names.
 The parts of speech as the names a reader reads.
 The draft keeps the stored value beside the name, and the panel shows only the name.
 
-## `internal void PDisplayShow(string id, LEntryDraft draft)`
+## `internal void PDisplayShow(long id, LEntryDraft draft)`
 
 Draws `draft` as the entry being read.
 A field the draft left empty collapses instead of standing as a blank line.
@@ -79,7 +79,7 @@ Example lines are drawn inside card templates, where no code can reach one line 
 So the pack's example typography is put into two view resources the templates read.
 A pack that declares none has its keys removed, and the card's own fallback typography stands.
 
-### `private void PDisplayFavoriteShow(string id)`
+### `private void PDisplayFavoriteShow(long id)`
 
 Reads whether the shown entry is marked and sets the star to match.
 An unreadable mark leaves the star empty rather than claiming the entry is marked.

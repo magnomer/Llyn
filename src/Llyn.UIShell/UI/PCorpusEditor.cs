@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
@@ -198,6 +198,47 @@ public partial class PCorpus
         int usage = _pAnthologyCount.TryGetValue(id.Value, out int count) ? count : 0;
         PTranscriptCount.Text = $"{_pCorpusHost.PLocalizationTextRead("Example.DetachCount")} "
             + usage.ToString(CultureInfo.CurrentCulture);
+    }
+
+    private void PTranscriptShow(LExample example)
+    {
+        _pTranscriptLoading = true;
+
+        string unreadable = _pCorpusHost.PLocalizationTextRead("Display.Unreadable");
+
+        PTranscriptFieldShow(PTranscriptText, example.LExampleText, unreadable, ref _pTranscriptTextUnreadable);
+        PTranscriptFieldShow(
+            PTranscriptTranslation, example.LExampleTranslation, unreadable, ref _pTranscriptTranslationUnreadable);
+
+        if (!string.Equals(_pTranscriptLanguage, example.LExampleLanguage, StringComparison.Ordinal))
+        {
+            _pTranscriptLanguage = example.LExampleLanguage;
+            PSpeakerShow();
+        }
+
+        long citation = example.LExampleSource.LStateAnchorShow();
+        if (_pTranscriptCitation != citation)
+        {
+            _pTranscriptCitation = citation;
+            PCitationList.SelectedValue = citation == 0 ? null : citation;
+            PCitationUpdate();
+        }
+
+        _pTranscriptLoading = false;
+
+        PTranscriptChangeUpdate();
+    }
+
+    private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)
+    {
+        if (LStateValue.LStateValueResolve(field.Text, held) == value)
+        {
+            return;
+        }
+
+        field.Text = value.LStateValueShow();
+        held = value.LStateValueState == LState.LStateUnknown;
+        field.Tag = held ? unreadable : string.Empty;
     }
 
     private LExample PTranscriptRead(LExample held)

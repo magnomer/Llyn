@@ -25,11 +25,11 @@ The new Author is credited on no Reference until one attaches it.
 The name may be empty, because section 6 of the format spec lets an author carry none.
 An import writes such a row and the engine refuses one typed by hand.
 
-## `public LAuthor? LAuthorRead(string id)`
+## `public LAuthor? LAuthorRead(long id)`
 
 Reads the Author identified by `id`, or `null` when none exists.
 
-## `public IReadOnlyList<LAuthor> LAuthorReferenceRead(string referenceId)`
+## `public IReadOnlyList<LAuthor> LAuthorReferenceRead(long referenceId)`
 
 Reads the Authors a Reference credits, in the order that Reference gives them.
 Another Reference crediting the same Authors may order them differently — the order lives on the association row.
@@ -50,13 +50,13 @@ Rewrites the name of the Author identified by `author`'s id.
 The id and every Reference crediting it are untouched, so a rename never changes where the Author appears.
 Throws when no Author carries that id.
 
-## `public void LAuthorDelete(string id, bool detach)`
+## `public void LAuthorDelete(long id, bool detach)`
 
 The same delete, with `detach` dropping every credit first.
 Dropping a credit renumbers that Reference's remaining credits, because the order is a unique index.
 Deleting an Author never deletes a Reference.
 
-## `public void LAuthorDelete(string id)`
+## `public void LAuthorDelete(long id)`
 
 Deletes the Author identified by `id`.
 Guarded: while any Reference still credits the Author, nothing is deleted.

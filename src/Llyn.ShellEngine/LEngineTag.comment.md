@@ -23,11 +23,11 @@ So any other side is refused rather than guessed.
 
 Reads every Tag the workspace holds, once each, in alphabetical order — what a Tag-based lookup lists.
 
-## `public IReadOnlyList<LTag> LEngineTagRead(string ownerId, LOwner owner)`
+## `public IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)`
 
 Reads the Tags the Meaning or Collocation identified by `ownerId` carries, in the order that card holds them.
 
-## `public void LEngineTagSave(string ownerId, IReadOnlyList<LTag> written, LOwner owner)`
+## `public void LEngineTagSave(long ownerId, IReadOnlyList<LTag> written, LOwner owner)`
 
 Writes that card's whole Tag line.
 Each Tag is resolved to its row by id, or by text when it carries none.

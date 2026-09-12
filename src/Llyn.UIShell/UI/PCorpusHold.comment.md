@@ -43,7 +43,7 @@ It also settles the buttons, so a write and what the buttons say never drift apa
 Settles the discard and store controls against the engine's answer.
 Both read the same answer the closing warning reads, so the three cannot disagree.
 
-## `private LDraft? PTranscriptDraftStart(string? example)`
+## `private LDraft? PTranscriptDraftStart(long? example)`
 
 Starts a held sentence, on a stored Example or on nothing, and hands back what was started.
 Whatever was held before is discarded first, so the panel never holds two.
@@ -55,10 +55,15 @@ Fills the controls from a draft just started, or empties them when none was.
 
 ## `private void PTranscriptDraftSave()`
 
-Writes the control values onto the held sentence and renders what was stored.
-The engine hands back what it stored, which is not always what was sent.
-The controls are rebuilt only when those differ, or every keystroke would rebuild them under the caret.
+Sends one request per field whose control value differs from what the engine holds.
+The engine answers each with a bulletin, and the bulletin redraws only what differs, so nothing moves under the caret.
 A draft the engine no longer holds is left alone rather than recreated.
+
+## `private void PTranscriptDraftRestore()`
+
+Reads the held sentence back and redraws the controls from it where they differ.
+This is what the panel's own draft bulletin does.
+Nothing is read while the controls are being filled, because filling raises the bulletin's own echo.
 
 ## `private void PTranscriptDraftCancel()`
 
@@ -71,7 +76,7 @@ A failure here is swallowed, because the caller is already leaving the work behi
 The engine's answer to whether the held sentence differs from the Example it opened on.
 A panel holding no draft has nothing to lose and answers false.
 
-## `private string? PTranscriptExampleRead()`
+## `private long? PTranscriptExampleRead()`
 
 The stored Example the held sentence was opened on, or null for one nothing has stored.
 The delete control, the usage count and the discard all read identity through this.

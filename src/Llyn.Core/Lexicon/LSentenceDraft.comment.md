@@ -17,7 +17,9 @@ A marker written before any sentence is not the Example's to lose.
 The store keeps such a row, and it must survive a load and a save unchanged.
 
 A row stating neither an Example nor a frame records nothing.
-The save drops it rather than writing a row the store would refuse.
+The commit skips it rather than writing a row the store would refuse.
+The engine still holds such a row in the draft.
+The form adds a row blank and fills it afterwards.
 
 Where the row sits among its card's rows is the order of the list holding it.
 The save rewrites every stored position from that order.
@@ -36,9 +38,10 @@ A save that kept the frame but issued a fresh id would rewrite a row nothing ask
 ## `public bool LSentenceDraftEmpty`
 
 True when the row names no Example and states no frame.
-A row whose Example has neither an id nor a sentence names no Example.
-An Example carrying an id names a stored row, however little the sentence says.
-Such an empty row records nothing and is never saved.
+A row whose Example has no sentence and no stored id names no Example.
+A minted id is not a stored one, so an Example the engine named but nobody wrote is still nothing.
+An Example carrying a stored id names a stored row, however little the sentence says.
+Such an empty row records nothing and is never committed.
 
 ## `public static LSentenceDraft LSentenceDraftCreate(string text)`
 

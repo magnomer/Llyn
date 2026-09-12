@@ -50,7 +50,7 @@ Rows sharing a headword are numbered afterwards, so the reader can tell them apa
 Selecting another entry leaves whatever is being written behind, so it is asked about first.
 The row that was clicked is not worth the correction that was typed.
 
-### `private void PIndexEntryShow(string id)`
+### `private void PIndexEntryShow(long id)`
 
 Puts the whole right-hand side on one entry.
 The display is filled from the store.
@@ -62,7 +62,7 @@ The entry went away between the search and the click.
 The row is stale.
 So the list is re-read rather than left offering a row that no longer loads.
 
-### `private void PIndexEntryUpdate(string id)`
+### `private void PIndexEntryUpdate(long id)`
 
 After a store, the headword the index lists may have changed.
 So may the text the display shows.
@@ -117,7 +117,7 @@ It is anything else that would leave typed corrections behind.
 The window asks it too, for a jump that lands on the library the user is already writing in.
 Nothing unsaved means nothing to ask about.
 
-### `private void PLibraryEntryShow(string id, LEntryDraft draft)`
+### `private void PLibraryEntryShow(long id, LEntryDraft draft)`
 
 The shared display draws the entry, and this panel decides what the toggle may then do.
 An entry is selected now, so it can be written as well as read.

@@ -1,4 +1,4 @@
-﻿# PEditorRequest.cs
+# PEditorRequest.cs
 
 ## `public partial class PEditor`
 
@@ -16,6 +16,10 @@ One waiting request per field, the last keystroke winning.
 The key names the field, so a second keystroke replaces the first rather than queueing behind it.
 A field with a key here is skipped by the render.
 The draft is about to change to what that field holds.
+
+### `private static string PEditorRequestFormat(PCard card, long rowId, string field)`
+
+The key of a waiting request for one row inside a card, so two rows' texts never share a slot.
 
 ### `private static string PEditorRequestFormat(PCard card, string field)`
 

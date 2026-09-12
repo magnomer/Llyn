@@ -23,6 +23,13 @@ Clearing the citation leaves both rows standing: only the pointer moved.
 
 One saved entry with a Meaning card and a Collocation card, neither quoting an Example of its own.
 
+## `public void EntryUpdate_SharedExampleEdited_LeavesOtherCardsSentence()`
+
+An Example two cards quote is pool data, and a card edits only what it owns.
+Editing the sentence through one card gives that card a new Example row carrying the new text.
+The other card keeps the row it quoted, unchanged, because nobody edited it there.
+A card quoting an Example alone still edits it in place, since no one else can see the change.
+
 ## `public void ExampleRead_WorkspaceStock_ReturnsUsageCounts()`
 
 The reads the browsing panel stands on.

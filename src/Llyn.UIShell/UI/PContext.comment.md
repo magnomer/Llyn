@@ -10,12 +10,12 @@ A Situation the store could not read back is marked rather than shown.
 The mark stands until the user closes the chip and writes the wording again.
 So nothing unreadable is quietly turned into nothing at all.
 
-## `internal PContext(LStateValue text, string id)`
+## `internal PContext(LStateValue text, long id)`
 
 The chip for a stored Situation whose other two fields are not known here.
 It is what a chip the user writes needs, because a written Situation states only its wording.
 
-## `internal PContext(LStateValue text, string id, LStateValue description, LStateValue kind)`
+## `internal PContext(LStateValue text, long id, LStateValue description, LStateValue kind)`
 
 The chip for a stored Situation.
 It holds the wording as the store knows it, under the id that names it.

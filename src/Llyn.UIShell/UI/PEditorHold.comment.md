@@ -1,4 +1,4 @@
-﻿# PEditorHold.cs
+# PEditorHold.cs
 
 ## `public partial class PEditor`
 
@@ -42,17 +42,6 @@ It does nothing to a form that was never suspended, so an ordinary start touches
 
 Throws the held draft away, links and all.
 The id is dropped first, so a failure to delete cannot leave the form writing into a dead draft.
-
-### `private void PEditorDraftSave()`
-
-Writes the chip lists over the held draft, and takes back whatever was stored instead.
-The draft is read back first, because every other field already reached it as a request.
-A draft that reads back null is gone, which is an ordinary answer and leaves the form alone.
-A write that fails is not, so the form is suspended and the failure reported.
-The engine may correct what it was sent, and it names every new chip and row.
-A form that assumed otherwise would drift from the draft with no way to notice.
-Only ids are taken from the answer, so no keystroke redraws the form.
-The controls keep what they hold and learn which row it will become.
 
 ### `private void PEditorDraftRestore()`
 

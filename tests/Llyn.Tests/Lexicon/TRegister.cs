@@ -59,16 +59,16 @@ public sealed class TRegister
     }
 
     [Fact]
-    public void RegisterSave_TwoEntriesWritingOneName_StoreTwoRows()
+    public void RegisterSave_TwoEntriesWritingOneName_ReferenceOneRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         engine.TEngineEntrySave(TRegisterDraftBuild(["gruff"], "word"));
-        engine.TEngineEntrySave(TRegisterDraftBuild(["gruff"], "term"));
+        engine.TEngineEntrySave(TRegisterDraftBuild(["Gruff "], "term"));
 
         LRegisterArchive registers = TInterface.TRegisterArchiveCreate(workspace.TWorkspaceDatabase);
-        Assert.Equal(2, registers.TRegisterRead().Count(row => !row.LRegisterBuiltin));
+        Assert.Single(registers.TRegisterRead(), row => !row.LRegisterBuiltin);
     }
 
     [Fact]

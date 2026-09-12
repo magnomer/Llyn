@@ -1,13 +1,12 @@
-﻿# PSentence.cs
+# PSentence.cs
 
 ## `internal sealed class PSentence`
 
 One Example row on a card.
-The row carries the id of the Example it edits.
+The row carries the id of the Example it edits, and the id of the row itself.
 So a sentence the user rewrites stays the same Example.
-A row that has never been written carries an empty id.
-It is given one the moment a sentence is typed into it.
-That is the id it is then stored under, and the id the row shows while writing.
+Both ids are the engine's, read from the draft, and the row never mints one.
+A row that has never been written shows an empty Example id until the engine names one.
 
 A row standing empty is not one thing.
 The sentence may never have been written.
@@ -26,16 +25,15 @@ Each of the two frame fields offers what has already been saved for the language
 Nothing is shipped, so an empty store offers nothing.
 The field is a plain box until something is written in it.
 
-## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences)`
+## `internal PSentence(`
 
-An empty row nothing has been written in.
-It carries id zero until the engine names it on the next draft save.
+The row for one of the engine's rows, blank or filled.
+It holds the sentence, the Source it cites, and the frame as the draft holds them.
+All of it stands under the ids that name it.
 
-## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, LSentenceDraft draft)`
+## `internal long PSentenceRow`
 
-The row for a stored Example.
-It holds the sentence, the Source it cites, and the frame as the store knows them.
-All of it stands under the id that names it.
+The id of the row itself, which every request about the row names.
 
 ## `public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }`
 
@@ -57,10 +55,6 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 Puts the marker and the role in the places the language pack states.
 The row states no order of its own, so it holds only what it was told.
 
-## `internal LSentenceDraft PSentenceDraftRead()`
-
-What the row says its Example is, frame included.
-
 ## `internal LStateValue PSentenceParticleRead()`
 
 What the row says its marker is: nothing written, unreadable, or the text it shows.
@@ -77,26 +71,12 @@ What the row says its sentence is: nothing written, unreadable, or the text it s
 
 What the row says about the Source it cites: none, unreadable, or the one it names.
 
-## `internal bool PSentenceCheck()`
+## `internal void PSentenceShow(LSentenceDraft draft, Func<string, bool> pending)`
 
-Whether the row says anything at all: a sentence, a marker, or a role.
-A frame written on a row with no sentence still stands, so the row is read rather than dropped.
-
-## `internal void PSentenceIdentityApply()`
-
-Emptying the sentence takes the Example id with it.
-The row then holds a frame and no Example to name.
-The row never mints an id of its own.
-
-## `internal void PSentenceIdentityApply(LSentenceDraft stored)`
-
-Takes the ids the engine gave this row and its Example when it saved the draft.
-The engine is the only minter, so the row learns its identity from the saved content and nowhere else.
-
-## `internal void PSentenceClear()`
-
-Empties the row without dropping it, which is what removing the last row on a card leaves.
-An emptied row says nothing was written, because the user said so.
+Redraws the row from the engine's row, field by field, only where the field says something else.
+A field with a request still waiting is left as typed, which `pending` answers by field name.
+The ids are always taken, because the engine is the only minter.
+A field that already reads what the engine holds is left alone, so the caret survives its own echo.
 
 ## `internal void PSentenceCitationShow()`
 

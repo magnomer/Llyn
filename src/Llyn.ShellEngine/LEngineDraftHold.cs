@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -34,19 +34,6 @@ public sealed partial class LEngine
                 _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
             return draft;
-        }
-    }
-
-    public LEntryDraft LEngineDraftSave(LDraft draft)
-    {
-        lock (_lEngineGate)
-        {
-            ArgumentNullException.ThrowIfNull(draft);
-            LEngineDraftValidate(draft.LDraftId);
-
-            LEntryDraft content = LEngineDraftNormalize(draft.LDraftContent);
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftContent = content });
-            return content;
         }
     }
 
@@ -125,34 +112,87 @@ public sealed partial class LEngine
     public LOutcome LEngineDraftCommit(long id)
     {
         LOutcome outcome;
+        List<long> raised = [];
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            outcome = LEngineDraftCommit(id, [], true);
+
+            Dictionary<long, LDraft> loaded = [];
+            Dictionary<long, LOutcome> settled = [];
+            List<LCourt> deferred = [];
+            List<long> finished = [];
+
+            using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
+            {
+                outcome = LEngineDraftCommit(id, true, loaded, settled, deferred, finished);
+                LEngineCourtApply(loaded, settled, deferred);
+                session.LDatabaseSessionCommit();
+            }
+
+            foreach (long done in finished)
+            {
+                _lEngineDraftHeld.Remove(done);
+                LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, done);
+                LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, done);
+            }
+
             _lEngineTrove.LTroveClear(id);
+
+            foreach (LOutcome made in settled.Values)
+            {
+                raised.Add(made.LOutcomeEntry.LEntryId);
+            }
         }
 
-        LEngineBulletinRaise(LSubject.LSubjectEntry, outcome.LOutcomeEntry.LEntryId);
+        foreach (long entryId in raised)
+        {
+            LEngineBulletinRaise(LSubject.LSubjectEntry, entryId);
+        }
+
         return outcome;
     }
 
-    private LOutcome LEngineDraftCommit(long id, HashSet<long> entered, bool held)
+    private LOutcome LEngineDraftCommit(
+        long id,
+        bool held,
+        Dictionary<long, LDraft> loaded,
+        Dictionary<long, LOutcome> settled,
+        List<LCourt> deferred,
+        List<long> finished)
     {
-        entered.Add(id);
         LDraft draft = LEngineDraftLoad(id);
+        loaded[id] = draft;
         Dictionary<long, long> identity = [];
 
         foreach (LCourt link in LEngineCourtScan(id))
         {
-            if (entered.Contains(link.LCourtTargetId) ||
-                LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtTargetId) is null)
+            if (loaded.ContainsKey(link.LCourtTargetId))
+            {
+                if (settled.TryGetValue(link.LCourtTargetId, out LOutcome? made))
+                {
+                    LEngineIdentityRecord(identity, link.LCourtTargetId, made.LOutcomeEntry.LEntryId);
+                }
+                else
+                {
+                    deferred.Add(link);
+                }
+
+                continue;
+            }
+
+            if (LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtTargetId) is null)
             {
                 continue;
             }
 
             LOutcome target = LEngineDraftCommit(
-                link.LCourtTargetId, entered, LEngineHoldCheck(link.LCourtTargetId));
+                link.LCourtTargetId,
+                LEngineHoldCheck(link.LCourtTargetId),
+                loaded,
+                settled,
+                deferred,
+                finished);
             LEngineIdentityRecord(identity, link.LCourtTargetId, target.LOutcomeEntry.LEntryId);
         }
 
@@ -163,13 +203,16 @@ public sealed partial class LEngine
             ? LEngineEntrySave(sending, identity)
             : LEngineEntryUpdate(draft.LDraftEntryId, sending, identity);
 
-        LDraft settled = draft with { LDraftEntryId = entry.LEntryId };
-        if (LEngineEntryLoad(entry.LEntryId) is LEntryDraft written)
+        LOutcome outcome = new(entry, identity);
+        settled[id] = outcome;
+
+        LDraft written = draft with { LDraftEntryId = entry.LEntryId };
+        if (LEngineEntryLoad(entry.LEntryId) is LEntryDraft stored)
         {
-            settled = settled with { LDraftContent = written };
+            written = written with { LDraftContent = stored };
         }
 
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, settled);
+        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, written);
 
         foreach (LCourt link in
             LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
@@ -177,15 +220,90 @@ public sealed partial class LEngine
             LEngineCourtUpdate(link, entry.LEntryId);
         }
 
-        if (!held)
+        if (held)
         {
-            return new LOutcome(entry, identity);
+            finished.Add(id);
         }
 
-        _lEngineDraftHeld.Remove(id);
-        LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
-        LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
-        return new LOutcome(entry, identity);
+        return outcome;
+    }
+
+    private void LEngineCourtApply(
+        IReadOnlyDictionary<long, LDraft> loaded,
+        IReadOnlyDictionary<long, LOutcome> settled,
+        IReadOnlyList<LCourt> deferred)
+    {
+        foreach (LCourt link in deferred)
+        {
+            if (!loaded.TryGetValue(link.LCourtOwnerId, out LDraft? owner)
+                || !settled.TryGetValue(link.LCourtOwnerId, out LOutcome? made)
+                || !settled.TryGetValue(link.LCourtTargetId, out LOutcome? target))
+            {
+                continue;
+            }
+
+            long entryId = target.LOutcomeEntry.LEntryId;
+            LEngineCourtApply(
+                owner.LDraftContent.LEntryDraftMeanings, made, link.LCourtTargetId, entryId, false);
+            LEngineCourtApply(
+                owner.LDraftContent.LEntryDraftCollocations, made, link.LCourtTargetId, entryId, true);
+        }
+    }
+
+    private void LEngineCourtApply(
+        IReadOnlyList<LCardDraft> cards, LOutcome made, long draftId, long entryId, bool collocation)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            if (LEngineTranslationCheck(card.LCardDraftTranslation, draftId))
+            {
+                long ownerId = made.LOutcomeIdentity.TryGetValue(card.LCardDraftId, out long real)
+                    ? real
+                    : card.LCardDraftId;
+                if (ownerId > 0)
+                {
+                    LEngineTranslationAppend(ownerId, entryId, collocation);
+                }
+            }
+
+            if (!collocation)
+            {
+                LEngineCourtApply(card.LCardDraftChild, made, draftId, entryId, false);
+            }
+        }
+    }
+
+    private static bool LEngineTranslationCheck(IReadOnlyList<long> translations, long id)
+    {
+        foreach (long held in translations)
+        {
+            if (held == id)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void LEngineTranslationAppend(long ownerId, long entryId, bool collocation)
+    {
+        LTranslationArchive translations = new(_lEngineDatabase);
+        List<long> ids = [];
+        foreach (LTranslation held in collocation
+            ? translations.LTranslationCollocationRead(ownerId)
+            : translations.LTranslationMeaningRead(ownerId))
+        {
+            ids.Add(held.LTranslationEntryId);
+        }
+
+        if (ids.Contains(entryId))
+        {
+            return;
+        }
+
+        ids.Add(entryId);
+        LEngineTranslationSave(ownerId, ids, collocation);
     }
 
     public void LEngineDraftCancel(long id)
@@ -263,6 +381,7 @@ public sealed partial class LEngine
     private IReadOnlyList<LCardDraft> LEngineTranslationSettle(
         IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, long> identity)
     {
+        LEntryArchive entries = new(_lEngineDatabase);
         List<LCardDraft> written = new(cards.Count);
         foreach (LCardDraft card in cards)
         {
@@ -270,7 +389,7 @@ public sealed partial class LEngine
             foreach (long held in card.LCardDraftTranslation)
             {
                 long translation = identity.TryGetValue(held, out long settled) ? settled : held;
-                if (translation > 0 && LEngineEntryLoad(translation) is not null)
+                if (translation > 0 && entries.LEntryRead(translation) is not null)
                 {
                     translations.Add(translation);
                 }

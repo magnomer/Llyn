@@ -15,7 +15,7 @@ That shape is several stores, one session, one decision.
 Creates `entry` with `forms` and `speeches` as its ordered child rows.
 Returns the stored entry with its assigned id and timestamps.
 
-## `public LEntry? LEngineEntryRead(string id)`
+## `public LEntry? LEngineEntryRead(long id)`
 
 Reads the entry for `id`, or `null` when no entry has that id.
 
@@ -34,14 +34,14 @@ A zero id stands for no tag chosen and returns every entry.
 That is the list the taxonomy panel shows beside its tag catalog.
 The overload takes a tag rather than text so the two searches cannot be confused.
 
-## `public LEntryDraft? LEngineEntryLoad(string id)`
+## `public LEntryDraft? LEngineEntryLoad(long id)`
 
 The stored entry as the input form would have handed it over.
 The recording comes out of the store relative to the workspace and leaves here as a full path.
 The shell deals in full paths, and only the engine knows which folder the workspace stands in.
 An entry with no pronunciation, or one whose pronunciation carries no recording, is handed back untouched.
 
-## `public LRevision LEngineEntryDelete(string id)`
+## `public LRevision LEngineEntryDelete(long id)`
 
 Deletes the entry identified by `id` with everything it owns.
 It then writes the history the deletion leaves behind.
@@ -60,7 +60,7 @@ Either all land or none of them do.
 Without it a failure part-way would leave an entry deleted with no tombstone naming it.
 That is history that no longer describes the file.
 
-## `public LTombstone? LEngineTombstoneRead(string entryId)`
+## `public LTombstone? LEngineTombstoneRead(long entryId)`
 
 Reads the tombstone left by deleting the Entry identified by `entryId`, or `null` when that Entry has never been deleted.
 
@@ -70,7 +70,7 @@ Reads the revision the workspace row points at, or `null` when the workspace has
 The pointer is what every save and delete moves.
 The current revision is read from where it is recorded rather than guessed from the newest row.
 
-## `public IReadOnlyList<LRevisionChange> LEngineChangeRead(string revisionId)`
+## `public IReadOnlyList<LRevisionChange> LEngineChangeRead(long revisionId)`
 
 Reads the changes recorded under `revisionId`, in the order recorded.
 

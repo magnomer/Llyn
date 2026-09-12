@@ -55,6 +55,66 @@ public sealed class TRelation
     }
 
     [Fact]
+    public void EntryUpdate_DraftCarryingRelations_StoresAndReconcilesThem()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry origin = TRelationEntryCreate(engine, "word", "the first meaning");
+        LEntry target = TRelationEntryCreate(engine, "term", "the other meaning");
+        LEntry other = TRelationEntryCreate(engine, "phrase", "a third meaning");
+
+        LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(origin.LEntryId));
+        LCardDraft card = loaded.LEntryDraftMeanings[0];
+        engine.TEngineEntryUpdate(origin.LEntryId, loaded with
+        {
+            LEntryDraftMeanings =
+            [
+                card with
+                {
+                    LCardDraftRelation =
+                    [
+                        TInterface.TRelationDraftCreate("synonym", target.LEntryId, null),
+                        TInterface.TRelationDraftCreate("antonym", other.LEntryId, null),
+                    ],
+                },
+            ],
+        });
+
+        long meaningId = TRelationMeaningRead(workspace, origin.LEntryId);
+        IReadOnlyList<LRelation> stored = engine.TEngineRelationRead(meaningId);
+        Assert.Equal(2, stored.Count);
+        Assert.Equal("synonym", stored[0].LRelationType);
+        Assert.Equal(target.LEntryId, stored[0].LRelationTargetEntry.TStateAnchorShow());
+        Assert.Equal(other.LEntryId, stored[1].LRelationTargetEntry.TStateAnchorShow());
+
+        loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(origin.LEntryId));
+        card = loaded.LEntryDraftMeanings[0];
+        Assert.Equal(2, card.LCardDraftRelation.Count);
+        Assert.Equal(stored[1].LRelationId, card.LCardDraftRelation[1].LRelationDraftId);
+
+        engine.TEngineEntryUpdate(origin.LEntryId, loaded with
+        {
+            LEntryDraftMeanings =
+            [
+                card with
+                {
+                    LCardDraftRelation =
+                    [
+                        card.LCardDraftRelation[1] with { LRelationDraftType = "contrast" },
+                    ],
+                },
+            ],
+        });
+
+        LRelation kept = Assert.Single(engine.TEngineRelationRead(meaningId));
+        Assert.Equal(stored[1].LRelationId, kept.LRelationId);
+        Assert.Equal("contrast", kept.LRelationType);
+        Assert.Equal(0, kept.LRelationPosition);
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));
+    }
+
+    [Fact]
     public void RelationCreate_UnresolvedTarget_RefusesWriting()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

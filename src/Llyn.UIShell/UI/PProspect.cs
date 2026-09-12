@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -70,8 +70,7 @@ public partial class PEditor
 
         if (!item.PProspectItemFresh)
         {
-            card.PCardLinkCommit(
-                item.PProspectItemId, item.PProspectItemHeadword, item.PProspectItemLanguage);
+            PLinkSend(card, item.PProspectItemId);
             card.PCardLinkClear();
             PProspectHide();
             return;
@@ -99,8 +98,7 @@ public partial class PEditor
             return;
         }
 
-        card.PCardLinkCommit(
-            link.LCourtTargetId, item.PProspectItemHeadword, item.PProspectItemLanguage);
+        PLinkSend(card, link.LCourtTargetId);
         card.PCardLinkClear();
         PProspectHide();
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -44,48 +44,82 @@ public partial class PImprint
         PAuthorEmpty.Visibility = _pAuthorCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void PAuthorApply(LReference? reference)
+    private void PAuthorShow(LDraft? draft)
     {
-        _pAuthorState = reference?.LReferenceAuthorState ?? LState.LStateUnspecified;
+        _pAuthorState = draft?.LDraftReference?.LReferenceAuthorState ?? LState.LStateUnspecified;
         PAuthorUnknown.IsChecked = _pAuthorState == LState.LStateUnknown;
-
-        long? stored = PImprintReferenceRead();
-        PAuthorSwitch.IsEnabled = stored is not null;
-        PAuthorCreditFind(stored);
-    }
-
-    private void PAuthorCreditFind(long? stored)
-    {
-        _pAuthorCredit.Clear();
-
-        if (stored is not null)
-        {
-            IReadOnlyList<LAuthor> credits = _pImprintOwner.PShelfCreditRead(stored.Value);
-            for (int index = 0; index < credits.Count; index++)
-            {
-                _pAuthorCredit.Add(new PAuthorItem(credits[index], index, credits.Count));
-            }
-        }
+        PAuthorSwitch.IsEnabled = draft is not null;
+        PAuthorCreditShow(draft is null ? [] : PAuthorCreditRead(draft));
 
         PAuthorNotice.Visibility = _pAuthorCredit.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         PAuthorNotice.SetResourceReference(
             TextBlock.TextProperty,
-            stored is null ? "Source.AuthorUnsaved" : "Source.AuthorNone");
+            draft is null ? "Source.AuthorUnsaved" : "Source.AuthorNone");
     }
 
-    private void PAuthorUpdate()
+    private void PAuthorCreditShow(IReadOnlyList<LAuthor> credits)
     {
-        if (!_pImprintOwner.PShelfCreditUpdate())
+        if (PAuthorCreditMatch(credits))
         {
             return;
         }
 
-        PAuthorCreditFind(PImprintReferenceRead());
+        _pAuthorCredit.Clear();
+        for (int index = 0; index < credits.Count; index++)
+        {
+            _pAuthorCredit.Add(new PAuthorItem(credits[index], index, credits.Count));
+        }
+    }
+
+    private IReadOnlyList<LAuthor> PAuthorCreditRead(LDraft draft)
+    {
+        List<LAuthor> credits = new(draft.LDraftAuthor.Count);
+        foreach (LAuthor author in draft.LDraftAuthor)
+        {
+            credits.Add(PAuthorCatalogFind(author.LAuthorId) is PAuthorItem named
+                ? author with { LAuthorName = named.PAuthorItemName }
+                : author);
+        }
+
+        return credits;
+    }
+
+    private PAuthorItem? PAuthorCatalogFind(long id)
+    {
+        foreach (PAuthorItem item in _pAuthorCatalog)
+        {
+            if (item.PAuthorItemId == id)
+            {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    private bool PAuthorCreditMatch(IReadOnlyList<LAuthor> credits)
+    {
+        if (_pAuthorCredit.Count != credits.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < credits.Count; index++)
+        {
+            if (_pAuthorCredit[index].PAuthorItemId != credits[index].LAuthorId
+                || !string.Equals(
+                    _pAuthorCredit[index].PAuthorItemName, credits[index].LAuthorName, StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void PAuthorHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (_pAuthorLoading || PImprintReferenceRead() is null || PAuthorList.SelectedValue is not long id)
+        if (_pAuthorLoading || _pImprintDraft == 0 || PAuthorList.SelectedValue is not long id)
         {
             return;
         }
@@ -97,11 +131,6 @@ public partial class PImprint
 
     private void PAuthorAttach(long id)
     {
-        if (PImprintReferenceRead() is not long stored)
-        {
-            return;
-        }
-
         foreach (PAuthorItem credit in _pAuthorCredit)
         {
             if (credit.PAuthorItemId == id)
@@ -110,43 +139,20 @@ public partial class PImprint
             }
         }
 
-        try
-        {
-            _lEngine.LEngineAuthorAttach(stored, id, _pAuthorCredit.Count);
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            return;
-        }
-
-        PAuthorStateShow(LState.LStateSpecified);
-        PAuthorUpdate();
+        PAuthorRequestSend(new LRequestAuthorPick(_pImprintDraft, id, _pAuthorCredit.Count));
     }
 
     private void PAuthorFreshHandle(object sender, RoutedEventArgs e)
     {
         string name = PAuthorName.Text.Trim();
-        if (name.Length == 0 || PImprintReferenceRead() is null)
+        if (name.Length == 0 || _pImprintDraft == 0)
         {
-            return;
-        }
-
-        LAuthor written;
-        try
-        {
-            written = _lEngine.LEngineAuthorCreate(new LAuthor(0, name));
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
             return;
         }
 
         PAuthorName.Text = string.Empty;
         PAuthorSwitch.IsChecked = false;
-        PAuthorFind();
-        PAuthorAttach(written.LAuthorId);
+        PAuthorRequestSend(new LRequestAuthorAddition(_pImprintDraft, name, _pAuthorCredit.Count));
     }
 
     private void PAuthorCreditHandle(object sender, RoutedEventArgs e)
@@ -168,50 +174,15 @@ public partial class PImprint
                 PAuthorNameUpdate(item);
                 return;
             default:
-                PAuthorRemove(item);
+                PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, item.PAuthorItemId));
                 return;
         }
     }
 
-    private void PAuthorRemove(PAuthorItem item)
-    {
-        if (PImprintReferenceRead() is not long stored)
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineAuthorDetach(stored, item.PAuthorItemId);
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            return;
-        }
-
-        PAuthorUpdate();
-    }
-
     private void PAuthorMove(PAuthorItem item, int step)
     {
-        if (PImprintReferenceRead() is not long stored)
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineAuthorAttach(
-                stored, item.PAuthorItemId, item.PAuthorItemPosition + step);
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            return;
-        }
-
-        PAuthorUpdate();
+        PAuthorRequestSend(
+            new LRequestAuthorShift(_pImprintDraft, item.PAuthorItemId, item.PAuthorItemPosition + step));
     }
 
     private void PAuthorNameUpdate(PAuthorItem item)
@@ -221,6 +192,14 @@ public partial class PImprint
         {
             PAuthorSwitch.IsChecked = true;
             PAuthorName.Focus();
+            return;
+        }
+
+        if (item.PAuthorItemId < 0)
+        {
+            PAuthorName.Text = string.Empty;
+            PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, item.PAuthorItemId));
+            PAuthorRequestSend(new LRequestAuthorAddition(_pImprintDraft, name, item.PAuthorItemPosition));
             return;
         }
 
@@ -241,7 +220,30 @@ public partial class PImprint
 
         PAuthorName.Text = string.Empty;
         PAuthorFind();
-        PAuthorUpdate();
+        PImprintDraftRestore();
+    }
+
+    private void PAuthorRequestSend(LRequest request)
+    {
+        if (_pImprintDraft == 0 || _pImprintHalted)
+        {
+            return;
+        }
+
+        PImprintChangeSave();
+
+        try
+        {
+            _lEngine.LEngineRequestApply(request);
+        }
+        catch (Exception exception)
+        {
+            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
+            return;
+        }
+
+        PImprintDraftRestore();
+        PImprintChangeUpdate();
     }
 
     private bool PAuthorRenameConfirm(PAuthorItem item)
@@ -268,7 +270,7 @@ public partial class PImprint
 
     private void PAuthorStateShow(LState state)
     {
-        if (state == LState.LStateSpecified && _pAuthorState == LState.LStateSpecified)
+        if (_pAuthorState == state)
         {
             return;
         }

@@ -1,4 +1,4 @@
-﻿# TDraft.cs
+# TDraft.cs
 
 ## `public sealed class TDraft`
 
@@ -109,6 +109,13 @@ Committing it again would store a second copy if the file still named nothing.
 A draft opened on an entry that is deleted while it is open commits as a new entry.
 Taking the update branch would refuse it forever, and the work would sit unsaved with no way out.
 
+## `public void DraftCommit_DraftsTranslatingEachOther_StoresBothLinks()`
+
+Two drafts each naming the other as a translation must both keep their link once committed.
+The second draft commits inside the first, before the first has an id, so its link cannot settle in the ordinary pass.
+The engine holds that link back and writes it once every entry in the round has its id.
+Losing it silently was the old behaviour, and nothing told the user.
+
 ## `public void DraftCommit_TargetAnotherEditorHolds_KeepsTargetFile()`
 
 A commit that reaches a target another editor is holding stores that target and leaves its file where it is.
@@ -128,20 +135,6 @@ A row left behind names an owner no call can reach, so nothing would ever collec
 
 A row whose owner draft is already gone is collected by the next draft that ends.
 That is what an earlier launch stranded, and neither resolving nor cancelling can find it by target alone.
-
-## `public void DraftSave_EveryCardNamed_ReturnsTheContentSent()`
-
-Content whose cards already carry names comes back as the same instance the editor sent.
-The editor redraws only when the instance differs, so a fresh instance here would redraw the page on every keystroke.
-
-## `public void DraftSave_UnnamedCard_ReturnsFreshContentWithEveryCardNamed()`
-
-Content holding one unnamed card comes back as a different instance with every card named.
-The untouched list inside it is still the sent one, so the editor rebuilds only the part that changed.
-
-## `private static LCardDraft TDraftCardCreate(string title, string id)`
-
-A card carrying a title and a name already given, for the save that must change nothing.
 
 ## `private static LCardDraft TDraftCardCreate(string title)`
 

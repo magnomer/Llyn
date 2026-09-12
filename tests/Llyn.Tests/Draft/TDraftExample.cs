@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TDraftExample
 {
     [Fact]
-    public void ExampleSave_HeldSentence_SurvivesScan()
+    public void RequestApply_HeldSentence_SurvivesScan()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -19,10 +19,7 @@ public sealed class TDraftExample
             LDraft started = engine.TEngineExampleStart("Corpus", null);
             held = started.LDraftId;
 
-            engine.TEngineExampleSave(started with
-            {
-                LDraftExample = TDraftSentenceCreate(started, "she knelt to kindle the damp logs"),
-            });
+            TDraftSentenceApply(engine, started, "she knelt to kindle the damp logs", "English");
 
             Assert.True(engine.TEngineDraftCheck(held));
         }
@@ -55,10 +52,7 @@ public sealed class TDraftExample
 
         LDraft started = engine.TEngineExampleStart("Corpus", null);
 
-        engine.TEngineExampleSave(started with
-        {
-            LDraftExample = TDraftSentenceCreate(started, "she knelt to kindle the damp logs"),
-        });
+        TDraftSentenceApply(engine, started, "she knelt to kindle the damp logs", "English");
 
         LExample stored = engine.TEngineExampleCommit(started.LDraftId);
 
@@ -90,20 +84,16 @@ public sealed class TDraftExample
             swept = committed.LDraftId;
             kept = edited.LDraftId;
 
-            LExample sentence = TDraftSentenceCreate(committed, "she knelt to kindle the damp logs");
-            engine.TEngineExampleSave(committed with { LDraftExample = sentence });
+            LDraft written = TDraftSentenceApply(engine, committed, "she knelt to kindle the damp logs", "English");
 
-            LExample stored = engine.TEngineExampleCreate(sentence);
+            LExample stored = engine.TEngineExampleCreate(written.LDraftExample!);
 
-            engine.TEngineExampleSave(committed with
+            TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, written with
             {
                 LDraftEntryId = stored.LExampleId,
                 LDraftExample = stored,
             });
-            engine.TEngineExampleSave(edited with
-            {
-                LDraftExample = TDraftSentenceCreate(edited, "the ember still glowed"),
-            });
+            TDraftSentenceApply(engine, edited, "the ember still glowed", "English");
         }
 
         using LEngine launched = workspace.TWorkspaceEngineStart();
@@ -123,13 +113,7 @@ public sealed class TDraftExample
 
         LDraft started = engine.TEngineExampleStart("Corpus", null);
 
-        engine.TEngineExampleSave(started with
-        {
-            LDraftExample = TDraftSentenceCreate(started, "she knelt to kindle the damp logs") with
-            {
-                LExampleLanguage = string.Empty,
-            },
-        });
+        TDraftSentenceApply(engine, started, "she knelt to kindle the damp logs", string.Empty);
 
         LExample stored = engine.TEngineExampleCommit(started.LDraftId);
 
@@ -141,14 +125,12 @@ public sealed class TDraftExample
         Assert.Equal(string.Empty, written.LExampleLanguage);
     }
 
-    private static LExample TDraftSentenceCreate(LDraft draft, string text)
+    private static LDraft TDraftSentenceApply(LEngine engine, LDraft draft, string text, string language)
     {
         Assert.NotNull(draft.LDraftExample);
 
-        return draft.LDraftExample with
-        {
-            LExampleLanguage = "English",
-            LExampleText = TInterface.TStateValueCreate(text),
-        };
+        engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(draft.LDraftId, language));
+        return engine.TEngineRequestApply(
+            TInterface.TExampleTextCreate(draft.LDraftId, TInterface.TStateValueCreate(text)));
     }
 }

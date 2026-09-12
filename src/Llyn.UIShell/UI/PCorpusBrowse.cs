@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -25,6 +25,16 @@ public partial class PCorpus
 
     private async void PCorpusBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+        {
+            if (bulletin.LBulletinId == _pTranscriptDraft)
+            {
+                PTranscriptDraftRestore();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             await PEnsign.PEnsignLoad(_lEngine);

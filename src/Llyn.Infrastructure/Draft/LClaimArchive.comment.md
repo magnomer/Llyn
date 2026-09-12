@@ -9,7 +9,7 @@ The folder sits under `drafts` because a claim means nothing once the draft it n
 Files are named after draft ids, so a listing of the drafts folder never picks them up.
 The folder is never locked and nothing is held open, since two copies of the program write here at once.
 
-## `public static LClaim LClaimArchiveCreate(string draftId)`
+## `public static LClaim LClaimArchiveCreate(long draftId)`
 
 A claim on `draftId` naming the process running this code and the instant it started.
 The start time travels with the id because the operating system hands a freed id to the next program.
@@ -23,7 +23,7 @@ Writes `claim` to `drafts/claim/<LClaimDraft>.json`, replacing whatever was ther
 The text goes to a `.json.tmp` file first and is then moved over the target.
 A move is atomic, so the other copy of the program never reads half a claim.
 
-## `public static LClaim? LClaimArchiveRead(string root, string draftId)`
+## `public static LClaim? LClaimArchiveRead(string root, long draftId)`
 
 The claim held on `draftId`, or `null` when no readable file holds one.
 No claim and an unreadable claim are the same answer: nobody can be shown to hold the draft.
@@ -34,12 +34,12 @@ Every claim the folder holds.
 A file that fails to parse or cannot be opened is skipped rather than thrown.
 A crash is exactly when a truncated file is likely, and one bad file must not hide the rest.
 
-## `public static void LClaimArchiveDelete(string root, string draftId)`
+## `public static void LClaimArchiveDelete(string root, long draftId)`
 
 Drops the claim on `draftId`, which is how a hold ends once the draft is committed, cancelled, or deleted.
 A file already gone, or held open by the other copy of the program, is not an error.
 
-## `public static bool LClaimArchiveCheck(string root, string draftId)`
+## `public static bool LClaimArchiveCheck(string root, long draftId)`
 
 Whether a running program still holds `draftId`.
 True demands all three: a claim exists, its process is running, and that process started when the claim says.

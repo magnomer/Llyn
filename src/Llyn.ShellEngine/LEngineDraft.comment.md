@@ -74,27 +74,9 @@ A part of speech is written as the language-pack value the draft names, or as th
 The pronunciation is written whole: its level, reading, syllables, representations and recording.
 An entry recording no pronunciation writes no row, so an empty block is never stored.
 
-## `private void LEngineCardAttach(string ownerId, LCardDraft card, string language, bool collocation)`
-
-Writes the Example and Situation a card typed and points the stored card at them.
-Writes its Tag and Translation lines.
-Each non-empty Example and Situation field creates a row of its own.
-That row is independent data the card references rather than owns.
-An empty field writes nothing at all.
-
-A Meaning card and a Collocation card carry the same three fields on the same terms.
-So this is the one write path for both.
-`collocation` says which of the two owner sides `ownerId` names.
-Nothing else about the two differs.
-
-Each field is an ordered set.
-Every value the card lists is kept at the position it holds in that list.
-So three Tags are three rows at 0, 1 and 2, read back in the order they were typed.
-The list arrives as the shell built it — the engine never splits text into rows.
-A card that lists nothing for a field attaches nothing.
-That detaches the field rather than deleting anything.
-The rows a card references are independent data it does not own.
-The card's own order is already carried by the row it produced.
+A new card's rows, chips, links and relations are written by `LEngineCardSync` in `LEngineCard.cs`.
+A card just created references nothing yet, so the reconcile that updates a stored card attaches a new one whole.
+One write path for both keeps the two from drifting apart.
 
 ## Inline notes
 
@@ -158,20 +140,33 @@ The rows worth writing, in the order the card holds them.
 A row stating a frame and no sentence is kept, because the frame is the card's own.
 The positions stay a gapless 0, 1, 2 over what is actually stored.
 
-### `private static LExample? LEngineExampleResolve(`
+### `private LExample? LEngineExampleResolve(`
 
 The Example a row names, or `null` when the row names none.
 A row whose Example carries neither an id nor a sentence names none.
 An Example carrying an id names a stored row, however little its sentence says.
 
-### `private static LExample LEngineExampleResolve(`
+### `private LExample LEngineExampleResolve(`
 
-The stored Example a row's id names, updated to what the row now says.
-A row carrying a negative id, or one nothing is stored under, gets a fresh Example instead.
-The fresh row is recorded in the map under the negative id it replaces.
-Two rows naming one id therefore write one row, which is what sharing a sentence means.
+The stored Example a row's positive id names, updated to what the row now says.
+A positive id nothing is stored under is refused, because the card would otherwise be bound to a row the user never chose.
+An Example other cards also quote is pool data, so an edit made through this card gives this card a fresh row instead.
+The other cards keep the row they quoted, unchanged, because nobody edited it there.
+A row carrying a negative id gets a fresh Example, recorded in the map under the negative id it replaces.
 No row is ever matched by its wording, so two new rows with one sentence stay two rows.
 The language falls back to the entry's when the Example states none of its own.
+
+### `private bool LEngineExampleShareCheck(long exampleId, long ownerId, bool collocation)`
+
+Whether any card other than `ownerId` quotes the Example.
+The owner side matters, because a Meaning and a Collocation can carry one id each.
+
+### `private static long LEngineSituationResolve(`
+
+The stored Situation a chip's positive id names, updated to what the chip now says.
+A positive id nothing is stored under is refused rather than rebound.
+A chip carrying a negative id is looked up by its title first, so a wording the workspace already holds is shared rather than doubled.
+Only then is a fresh Situation made, recorded in the map under the negative id it replaces.
 
 ### `private static bool LEngineImageCheck(IReadOnlyList<LImageDraft> rows)`
 
@@ -189,7 +184,8 @@ The positions stay a gapless 0, 1, 2 over what is actually stored.
 ### `private static long LEngineImageResolve(`
 
 The stored Image a row's id names, updated to the location the row now says.
-A row carrying a negative id, or one nothing is stored under, gets a fresh Image instead.
+A positive id nothing is stored under is refused rather than rebound to a fresh row.
+A row carrying a negative id gets a fresh Image instead.
 The fresh row is recorded in the map under the negative id it replaces.
 Two cards naming one id therefore reference one row, which is what sharing a picture means.
 An imported card names the row the catalog created, so a file that declared one picture stores one.

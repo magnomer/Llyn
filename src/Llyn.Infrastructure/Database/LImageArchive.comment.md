@@ -25,15 +25,15 @@ Binds the store to the workspace `database` it opens sessions through.
 Inserts `image` with a fresh opaque id and returns the stored Image with that id filled in.
 The new Image is referenced by nothing until it is attached to a referrer.
 
-## `public LImage? LImageRead(string id)`
+## `public LImage? LImageRead(long id)`
 
 Reads the Image identified by `id`, or `null` when no such Image exists.
 
-## `public IReadOnlyList<LImage> LImageMeaningRead(string meaningId)`
+## `public IReadOnlyList<LImage> LImageMeaningRead(long meaningId)`
 
 Reads the Images a Meaning references, in the order that Meaning gives them.
 
-## `public IReadOnlyList<LImage> LImageCollocationRead(string collocationId)`
+## `public IReadOnlyList<LImage> LImageCollocationRead(long collocationId)`
 
 Reads the Images a Collocation references, in the order that Collocation gives them.
 
@@ -42,30 +42,30 @@ Reads the Images a Collocation references, in the order that Collocation gives t
 Rewrites the location of the Image `image` names.
 Every referrer sees the change at once, because a reference points at the row and never at its text.
 
-## `public int LImageReferenceRead(string id)`
+## `public int LImageReferenceRead(long id)`
 
 Counts the references standing on the Image, across both sides.
 It is what a delete asks before it refuses.
 
-## `public void LImageDelete(string id)`
+## `public void LImageDelete(long id)`
 
 Deletes the Image, refusing while any Meaning or Collocation still references it.
 So a live reference is never left pointing at a row that is gone.
 
-## `public void LImageMeaningAttach(string meaningId, string imageId, int position)`
+## `public void LImageMeaningAttach(long meaningId, long imageId, int position)`
 
 References the Image from a Meaning at the index named, renumbering that Meaning's other references around it.
 
-## `public void LImageCollocationAttach(string collocationId, string imageId, int position)`
+## `public void LImageCollocationAttach(long collocationId, long imageId, int position)`
 
 References the Image from a Collocation at the index named, renumbering that Collocation's other references around it.
 
-## `public void LImageMeaningDetach(string meaningId, string imageId)`
+## `public void LImageMeaningDetach(long meaningId, long imageId)`
 
 Drops a Meaning's reference and closes the gap it leaves.
 The Image and every other reference stay.
 
-## `public void LImageCollocationDetach(string collocationId, string imageId)`
+## `public void LImageCollocationDetach(long collocationId, long imageId)`
 
 Drops a Collocation's reference and closes the gap it leaves.
 The Image and every other reference stay.

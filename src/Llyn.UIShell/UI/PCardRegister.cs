@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,78 +13,46 @@ internal sealed partial class PCard
     private readonly PRegisterCaret _pCardRegisterCaret = new();
     private bool _pCardRegisterBusy;
 
+    private static readonly Func<object, long?> _pCardRegisterKey =
+        row => row is PRegister chip ? chip.PRegisterId : null;
+
     public ObservableCollection<object> PCardRegister { get; } = [];
 
     internal Action<string>? PCardRegisterNotice { get; set; }
 
+    internal Func<string, bool>? PCardRegisterDispatcher { get; set; }
+
     internal string PCardRegisterText => _pCardRegisterCaret.PRegisterCaretText;
+
+    internal int PCardRegisterPosition =>
+        PCardRowResolve(PCardRegister, _pCardRegisterKey, PCardRegister.IndexOf(_pCardRegisterCaret));
 
     internal void PCardRegisterShow(IReadOnlyList<LRegisterDraft> drafts)
     {
-        PCardRegister.Clear();
-        foreach (LRegisterDraft draft in drafts)
-        {
-            PRegister chip = new(
-                draft.LRegisterDraftName,
-                draft.LRegisterDraftId,
-                draft.LRegisterDraftLanguage);
-            if (chip.PRegisterTextRead().LStateValueEmpty || PCardRegisterCheck(chip.PRegisterText))
-            {
-                continue;
-            }
+        PCardRowShow(
+            PCardRegister,
+            drafts,
+            _pCardRegisterKey,
+            static draft => draft.LRegisterDraftId,
+            PCardRegisterCreate,
+            static (row, draft) =>
+                row is PRegister chip && chip.PRegisterTextRead() == draft.LRegisterDraftName
+                    ? row
+                    : PCardRegisterCreate(draft));
 
-            PCardRegister.Add(chip);
-        }
-
-        _pCardRegisterCaret.PRegisterCaretText = string.Empty;
-        PCardRegister.Add(_pCardRegisterCaret);
         PCardRegisterUpdate();
     }
 
-    internal IReadOnlyList<LRegisterDraft> PCardRegisterRead()
-    {
-        List<LRegisterDraft> drafts = [];
-        foreach (object row in PCardRegister)
-        {
-            if (row is PRegister chip)
-            {
-                drafts.Add(new LRegisterDraft(
-                    chip.PRegisterTextRead(),
-                    chip.PRegisterId,
-                    chip.PRegisterLanguage));
-                continue;
-            }
-
-            string written = _pCardRegisterCaret.PRegisterCaretText.Trim();
-            if (written.Length != 0 && !PCardRegisterCheck(written))
-            {
-                drafts.Add(LRegisterDraft.LRegisterDraftCreate(written) with
-                {
-                    LRegisterDraftId = _pCardRegisterCaret.PRegisterCaretId,
-                });
-            }
-        }
-
-        return drafts;
-    }
-
-    internal void PCardRegisterRemove(PRegister chip)
-    {
-        PCardRegister.Remove(chip);
-        PCardRegisterUpdate();
-    }
-
-    internal void PCardRegisterRemove(int step)
+    internal PRegister? PCardRegisterFind(int step)
     {
         int index = PCardRegister.IndexOf(_pCardRegisterCaret);
         int target = index + step;
-        if (index < 0 || target < 0 || target >= PCardRegister.Count
-            || PCardRegister[target] is not PRegister chip)
+        if (index < 0 || target < 0 || target >= PCardRegister.Count)
         {
-            return;
+            return null;
         }
 
-        PCardRegisterRemove(chip);
+        return PCardRegister[target] as PRegister;
     }
 
     internal bool PCardRegisterMove(int step)
@@ -100,54 +68,53 @@ internal sealed partial class PCard
         return true;
     }
 
-    internal void PCardRegisterCommit()
-    {
-        PCardRegisterCommit(_pCardRegisterCaret.PRegisterCaretText);
-        PCardRegisterClear();
-    }
-
-    internal bool PCardRegisterCommit(long? id, string name)
-    {
-        string written = (name ?? string.Empty).Trim();
-        if (written.Length == 0 || PCardRegisterMatch(id) || PCardRegisterCheck(written))
-        {
-            return false;
-        }
-
-        int index = PCardRegister.IndexOf(_pCardRegisterCaret);
-        PCardRegister.Insert(
-            index < 0 ? PCardRegister.Count : index,
-            new PRegister(LStateValue.LStateValueRead(written), id ?? 0));
-        PCardRegisterUpdate();
-        return true;
-    }
-
     internal void PCardRegisterClear()
     {
         _pCardRegisterBusy = true;
         _pCardRegisterCaret.PRegisterCaretText = string.Empty;
-        _pCardRegisterCaret.PRegisterCaretId = 0;
         _pCardRegisterBusy = false;
         PCardRegisterUpdate();
     }
 
     internal bool PCardRegisterMatch(long? id)
     {
-        if (id <= 0)
+        if (id is null or <= 0)
         {
             return false;
         }
 
         foreach (object row in PCardRegister)
         {
-            if (row is PRegister chip &&
-                chip.PRegisterId == id)
+            if (row is PRegister chip && chip.PRegisterId == id)
             {
                 return true;
             }
         }
 
         return false;
+    }
+
+    internal bool PCardRegisterCheck(string text)
+    {
+        if (text.Length == 0)
+        {
+            return false;
+        }
+
+        foreach (object row in PCardRegister)
+        {
+            if (row is PRegister chip && string.Equals(chip.PRegisterText, text, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static object PCardRegisterCreate(LRegisterDraft draft)
+    {
+        return new PRegister(draft.LRegisterDraftName, draft.LRegisterDraftId, draft.LRegisterDraftLanguage);
     }
 
     private void PCardRegisterStart()
@@ -173,7 +140,7 @@ internal sealed partial class PCard
             string[] parts = written.Split(',');
             for (int index = 0; index < parts.Length - 1; index++)
             {
-                PCardRegisterCommit(parts[index]);
+                PCardRegisterDispatcher?.Invoke(parts[index]);
             }
 
             _pCardRegisterCaret.PRegisterCaretText = parts[^1].TrimStart();
@@ -182,68 +149,6 @@ internal sealed partial class PCard
         }
 
         PCardRegisterNotice?.Invoke(_pCardRegisterCaret.PRegisterCaretText);
-    }
-
-    private void PCardRegisterCommit(string text)
-    {
-        string written = (text ?? string.Empty).Trim();
-        if (written.Length == 0 || PCardRegisterCheck(written))
-        {
-            return;
-        }
-
-        int index = PCardRegister.IndexOf(_pCardRegisterCaret);
-        PCardRegister.Insert(
-            index < 0 ? PCardRegister.Count : index,
-            new PRegister(LStateValue.LStateValueRead(written), _pCardRegisterCaret.PRegisterCaretId));
-        _pCardRegisterCaret.PRegisterCaretId = 0;
-    }
-
-    internal void PCardRegisterApply(IReadOnlyList<LRegisterDraft> stored)
-    {
-        int index = 0;
-        foreach (object row in PCardRegister)
-        {
-            if (row is PRegister chip)
-            {
-                if (index < stored.Count)
-                {
-                    chip.PRegisterId = stored[index].LRegisterDraftId;
-                }
-
-                index++;
-                continue;
-            }
-
-            if (_pCardRegisterCaret.PRegisterCaretText.Trim().Length != 0)
-            {
-                if (index < stored.Count)
-                {
-                    _pCardRegisterCaret.PRegisterCaretId = stored[index].LRegisterDraftId;
-                }
-
-                index++;
-            }
-        }
-    }
-
-    private bool PCardRegisterCheck(string text)
-    {
-        if (text.Length == 0)
-        {
-            return false;
-        }
-
-        foreach (object row in PCardRegister)
-        {
-            if (row is PRegister chip &&
-                string.Equals(chip.PRegisterText, text, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void PCardRegisterUpdate()

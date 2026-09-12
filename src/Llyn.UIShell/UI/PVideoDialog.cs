@@ -1,23 +1,39 @@
 using System.Windows;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
 public partial class PEditor
 {
+    internal void PVideoAttach(PCard card)
+    {
+        card.PCardVideoNotice = (row, field) => PEditorRequestDefer(
+            PEditorRequestFormat(card, row.PVideoId, field),
+            field == nameof(PVideo.PVideoLocation)
+                ? new LRequestVideoLocation(_pEditorDraft, row.PVideoId, row.PVideoLocationRead())
+                : new LRequestVideoSpan(_pEditorDraft, row.PVideoId, row.PVideoSpanRead()));
+    }
+
     internal void PVideoAddHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PCard card })
         {
-            card.PCardVideoAdd();
+            PEditorRequestSend(new LRequestVideoAddition(
+                _pEditorDraft, card.PCardId, LStateValue.LStateValueUnspecified, card.PCardVideo.Count));
         }
     }
 
     internal void PVideoRemoveHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PVideo row })
+        if (sender is FrameworkElement { DataContext: PVideo row } && PCardVideoFind(row) is PCard card)
         {
-            PCardVideoFind(row)?.PCardVideoRemove(row);
+            PEditorRequestSend(new LRequestVideoRemoval(_pEditorDraft, card.PCardId, row.PVideoId));
         }
+    }
+
+    private bool PVideoPendingCheck(PCard card, PVideo row, string field)
+    {
+        return PEditorRequestCheck(PEditorRequestFormat(card, row.PVideoId, field));
     }
 
     internal void PVideoOpenHandle(object sender, RoutedEventArgs e)

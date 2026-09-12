@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -46,29 +46,13 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pTitle = string.Empty;
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;
-        PCardSentence = [];
-        PCardSentenceAdd(new PSentence(catalog, particles, dependences));
         PCardContextStart();
         PCardRegisterStart();
         PCardLinkStart();
         PCardLabelStart();
-        PCardImage = [];
-        PCardVideo = [];
     }
 
     public long PCardId { get; set; }
-
-    internal void PCardIdentityApply(LCardDraft stored)
-    {
-        ArgumentNullException.ThrowIfNull(stored);
-
-        PCardSentenceApply(stored.LCardDraftSentence);
-        PCardContextApply(stored.LCardDraftSituation);
-        PCardRegisterApply(stored.LCardDraftRegister);
-        PCardLabelApply(stored.LCardDraftTag);
-        PCardImageApply(stored.LCardDraftImage);
-        PCardVideoApply(stored.LCardDraftVideo);
-    }
 
     public int PCardPosition
     {

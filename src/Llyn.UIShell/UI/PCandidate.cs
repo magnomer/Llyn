@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -80,12 +80,20 @@ public partial class PEditor
 
         if (register)
         {
-            card.PCardRegisterCommit(item.PCandidateItemId, item.PCandidateItemTitle);
+            if (!card.PCardRegisterMatch(item.PCandidateItemId))
+            {
+                PRegisterSend(card, item.PCandidateItemId, item.PCandidateItemTitle);
+            }
+
             card.PCardRegisterClear();
             return;
         }
 
-        card.PCardContextCommit(item.PCandidateItemId, item.PCandidateItemTitle);
+        if (!card.PCardContextMatch(item.PCandidateItemId))
+        {
+            PContextSend(card, item.PCandidateItemId, item.PCandidateItemTitle);
+        }
+
         card.PCardContextClear();
     }
 

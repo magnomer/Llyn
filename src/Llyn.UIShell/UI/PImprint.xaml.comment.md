@@ -13,10 +13,14 @@ Binds the area to the window, the engine, and the panel it answers to.
 It binds its own lists and reads nothing yet.
 It subscribes to no announcement, because the panel is announced to and drives the area.
 
-## `internal void PImprintDraftOpen(string? reference)`
+## `internal void PImprintDraftOpen(long? reference)`
 
 Starts a held Source and fills the controls from it, which is never done apart.
 Every caller wants both, so the pair is offered as one call.
+
+## `internal void PImprintBulletinHandle(LBulletin bulletin)`
+
+Takes the draft bulletins the owning panel receives, since this area holds no observer of its own.
 
 ## `internal void PImprintClear()`
 

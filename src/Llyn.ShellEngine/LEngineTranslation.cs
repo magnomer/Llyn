@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -33,22 +33,28 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(query);
 
-            IReadOnlyList<LEntry> found = new LEntryArchive(_lEngineDatabase).LEntryFind(query);
-            if (entryId <= 0)
+            string written = LCatalog.LCatalogTextFold(query);
+            List<LEntry> exact = [];
+            List<LEntry> partial = [];
+            foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(query))
             {
-                return found;
-            }
-
-            List<LEntry> kept = new(found.Count);
-            foreach (LEntry entry in found)
-            {
-                if (entry.LEntryId != entryId)
+                if (entryId > 0 && entry.LEntryId == entryId)
                 {
-                    kept.Add(entry);
+                    continue;
+                }
+
+                if (string.Equals(LCatalog.LCatalogTextFold(entry.LEntryHeadword), written, StringComparison.Ordinal))
+                {
+                    exact.Add(entry);
+                }
+                else
+                {
+                    partial.Add(entry);
                 }
             }
 
-            return kept;
+            exact.AddRange(partial);
+            return exact;
         }
     }
 
@@ -64,13 +70,13 @@ public sealed partial class LEngine
                 return null;
             }
 
+            string folded = LCatalog.LCatalogTextFold(written);
             LEntry? single = null;
             foreach (LEntry entry in LEngineTranslationFind(written, entryId))
             {
-                if (!string.Equals(
-                        entry.LEntryHeadword.Trim(), written, StringComparison.InvariantCultureIgnoreCase))
+                if (!string.Equals(LCatalog.LCatalogTextFold(entry.LEntryHeadword), folded, StringComparison.Ordinal))
                 {
-                    continue;
+                    break;
                 }
 
                 if (single is not null)
@@ -111,27 +117,40 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineTranslationDelete(long id)
-    {
-        lock (_lEngineGate)
-        {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
-
-            if (new LTranslationArchive(_lEngineDatabase).LTranslationIncomingRead(id).Count > 0)
-            {
-                return;
-            }
-
-            LEngineEntryDelete(id);
-        }
-    }
-
     public IReadOnlyList<LTranslationTarget> LEngineTargetRead(IReadOnlyList<long> ids)
     {
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(ids);
             return new LTranslationArchive(_lEngineDatabase).LTranslationTargetRead(ids);
+        }
+    }
+
+    public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(ids);
+            ArgumentOutOfRangeException.ThrowIfZero(ownerId);
+
+            List<LTranslationTarget> targets = new(
+                new LTranslationArchive(_lEngineDatabase).LTranslationTargetRead(ids));
+            HashSet<long> wanted = [.. ids];
+            foreach (LTranslationTarget target in targets)
+            {
+                wanted.Remove(target.LTranslationTargetId);
+            }
+
+            foreach (LCourt link in LEngineCourtScan(ownerId))
+            {
+                if (wanted.Remove(link.LCourtTargetId))
+                {
+                    targets.Add(new LTranslationTarget(
+                        link.LCourtTargetId, link.LCourtHeadword, link.LCourtLanguage));
+                }
+            }
+
+            return targets;
         }
     }
 

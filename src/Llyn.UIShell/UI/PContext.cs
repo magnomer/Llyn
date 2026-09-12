@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -24,7 +24,7 @@ internal sealed class PContext
         PContextKind = kind ?? LStateValue.LStateValueUnspecified;
     }
 
-    public long PContextId { get; internal set; }
+    public long PContextId { get; }
 
     internal LStateValue PContextDescription { get; }
 

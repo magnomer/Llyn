@@ -30,7 +30,7 @@ Returns the stored pronunciation with its id and children filled in.
 The whole write is one transaction.
 The entry's unique constraint rejects a second pronunciation for the same entry.
 
-## `public LPronunciation? LPronunciationRead(string entryId)`
+## `public LPronunciation? LPronunciationRead(long entryId)`
 
 Reads the entry's pronunciation with its ordered syllables and representations, or `null` when the entry has none.
 
@@ -41,19 +41,19 @@ Existing syllable and representation rows are cleared and the supplied lists wri
 So the pronunciation id, entry link, and identity stay fixed.
 The whole write is one transaction, and it throws when no pronunciation carries that id.
 
-## `public void LPronunciationDelete(string id)`
+## `public void LPronunciationDelete(long id)`
 
 Deletes the pronunciation identified by `id`.
 Its syllables and representations are removed by the foreign-key cascade.
 
-## `public void LPronunciationAudioSave(string pronunciationId, string file, string? source)`
+## `public void LPronunciationAudioSave(long pronunciationId, string file, string? source)`
 
 Records `file`, a path relative to the workspace folder, as the recording the pronunciation owns.
 It records the `source` label it was downloaded from and the moment it was stored.
 A pronunciation carries at most one recording.
 So a second save for the same pronunciation replaces the first rather than adding a row.
 
-## `public LPronunciationAudio? LPronunciationAudioRead(string pronunciationId)`
+## `public LPronunciationAudio? LPronunciationAudioRead(long pronunciationId)`
 
 Reads the recording the pronunciation owns, or `null` when it has none.
 The file path comes back exactly as stored, relative to the workspace folder.

@@ -5,7 +5,7 @@
 Covers the situation side of the drafts folder, the held work the repertoire panel pushes into.
 A situation draft carries a Situation where a sentence draft carries an Example.
 
-## `public void SituationSave_HeldSituation_SurvivesScan()`
+## `public void RequestApply_HeldSituation_SurvivesScan()`
 
 A context typed and then lost with its launch is still on disk, and recovery offers it back.
 This is the loss the downstream exists to prevent: the panel used to hold the context in its controls alone.

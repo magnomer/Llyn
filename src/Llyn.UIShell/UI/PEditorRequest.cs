@@ -24,6 +24,12 @@ public partial class PEditor
         return string.Concat("Card:", card.PCardId.ToString(CultureInfo.InvariantCulture), ":", field);
     }
 
+    private static string PEditorRequestFormat(PCard card, long rowId, string field)
+    {
+        return string.Concat(
+            PEditorRequestFormat(card, field), ":", rowId.ToString(CultureInfo.InvariantCulture));
+    }
+
     private bool PEditorRequestCheck(string key)
     {
         return _pEditorRequestPending.ContainsKey(key);

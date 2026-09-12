@@ -86,5 +86,5 @@ The two association tables differ only in their name and their card column, so t
 Both identifiers are store-owned literals chosen by the methods above, never caller input.
 So composing them into the statement text opens no injection seam.
 Every value still travels as a parameter.
-An id the caller hands over that names no row is treated as text.
-A Tag deleted under an open card should still save as the word it shows.
+A positive id that names no row is refused, because the card would otherwise be bound to a row the user never chose.
+Only an id the engine minted, which is negative, is resolved by its wording.

@@ -9,7 +9,7 @@ Only starting, saving and committing differ by kind, and only those live here.
 The shared claim, sweep, recovery and discard read `LDraftSituation` and branch where the kinds part.
 This follows `LEngineDraftExample.cs` call for call, so a third kind cannot invent a third protocol.
 
-## `public LDraft LEngineSituationStart(string origin, string? situationId)`
+## `public LDraft LEngineSituationStart(string origin, long? situationId)`
 
 Mints a draft id, writes the first file, and returns the held Situation.
 With no Situation the content is blank under an id minted for it, which is a context being written first.
@@ -19,14 +19,7 @@ A recovered draft names the same context it always did.
 A Situation that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 
-## `public LSituation LEngineSituationSave(LDraft draft)`
-
-Overwrites that one file with the Situation given, and hands back the Situation it stored.
-The content that came in is handed straight back when nothing needed naming.
-So the caller can tell a settled write from a corrected one without comparing field by field.
-A draft carrying no Situation is refused, because this call is the situation side of the folder.
-
-## `public LSituation LEngineSituationCommit(string id)`
+## `public LSituation LEngineSituationCommit(long id)`
 
 Turns a held Situation into a stored one and returns it.
 A draft naming no Situation is a create, one naming a Situation is a rewrite.
@@ -45,7 +38,7 @@ A draft naming no Situation is measured against an empty one.
 A draft whose Situation has since gone is measured against that same empty one.
 This is the domain rule the repertoire panel used to keep in its own comparison.
 
-## `private static LSituation LEngineSituationNormalize(LSituation content)`
+## `private LSituation LEngineSituationNormalize(LSituation content)`
 
 The same Situation with an id minted when it carries none.
 The Situation that came in is returned itself when it was already named.

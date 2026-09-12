@@ -19,7 +19,7 @@ That is correct under the chain rather than a fault, and a tab renders it as not
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public IReadOnlyList<LUsage> LAuthorUsageRead(string id)`
+## `public IReadOnlyList<LUsage> LAuthorUsageRead(long id)`
 
 Reads the Meanings, Collocations and Examples citing any Source the Author is credited on.
 A card names its own id, the Entry it belongs to, that Entry's headword, and its title.

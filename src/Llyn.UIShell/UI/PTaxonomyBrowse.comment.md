@@ -68,7 +68,7 @@ Rows sharing a headword are numbered afterwards, so the reader can tell them apa
 Clicking the chosen tag lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
 
-### `private void PMembershipEntryUpdate(string id)`
+### `private void PMembershipEntryUpdate(long id)`
 
 A store is answered by re-reading the catalog rather than the entry list alone.
 Storing may have written a tag no other card carries, or taken away the last card that carried one.

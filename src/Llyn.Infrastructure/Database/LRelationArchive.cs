@@ -93,9 +93,11 @@ public sealed class LRelationArchive
         ArgumentNullException.ThrowIfNull(relation);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(relation.LRelationId);
         ArgumentException.ThrowIfNullOrWhiteSpace(relation.LRelationType);
+        LRelationTargetValidate(relation);
 
         using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+        using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 """
@@ -113,6 +115,20 @@ public sealed class LRelationArchive
             }
         }
 
+        LRelationTargetDelete(connection, relation.LRelationId);
+        LRelationTargetInsert(connection, relation);
+
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LRelationOrderSet(long meaningId, IReadOnlyList<long> order)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(meaningId);
+        ArgumentNullException.ThrowIfNull(order);
+
+        using LDatabaseSession session = _lRelationArchiveDatabase.LDatabaseSessionStart();
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            session.LDatabaseSessionConnection, "relation", "sense_id = $owner", meaningId, "id", order);
         session.LDatabaseSessionCommit();
     }
 
@@ -185,6 +201,18 @@ public sealed class LRelationArchive
             throw new InvalidOperationException(
                 "A relation must have exactly one target: a target Entry id XOR a target Meaning id.");
         }
+    }
+
+    private static void LRelationTargetDelete(SqliteConnection connection, long relationId)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            DELETE FROM relation_entry WHERE relation_id = $relation;
+            DELETE FROM relation_sense WHERE relation_id = $relation;
+            """;
+        command.Parameters.AddWithValue("$relation", relationId);
+        command.ExecuteNonQuery();
     }
 
     private static void LRelationTargetInsert(SqliteConnection connection, LRelation relation)

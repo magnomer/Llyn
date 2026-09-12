@@ -8,20 +8,17 @@ namespace Llyn.Tests;
 public sealed class TIdentity
 {
     [Fact]
-    public void DraftSave_TwoNewSentencesSharingText_MintsTwoIdsAndCommitStoresTwoRows()
+    public void RequestApply_TwoNewSentencesSharingText_MintsTwoIdsAndCommitStoresTwoRows()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft started = engine.TEngineDraftStart("editor", null);
-        LEntryDraft stored = engine.TEngineDraftSave(started with
-        {
-            LDraftContent = TIdentityContentCreate(
+        LEntryDraft stored = engine.TRequestContentApply(started.LDraftId, TIdentityContentCreate(
                 [
                     TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs"),
                     TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs"),
-                ]),
-        });
+                ])).LDraftContent;
 
         IReadOnlyList<LSentenceDraft> sentences = stored.LEntryDraftMeanings[0].LCardDraftSentence;
         Assert.Equal(2, sentences.Count);
@@ -43,7 +40,7 @@ public sealed class TIdentity
     }
 
     [Fact]
-    public void DraftSave_SentencePickingStoredExample_KeepsIdAndCommitReusesRow()
+    public void RequestApply_SentencePickingStoredExample_KeepsIdAndCommitReusesRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -56,14 +53,11 @@ public sealed class TIdentity
             TInterface.TStateAnchorRead(null)));
 
         LDraft started = engine.TEngineDraftStart("editor", null);
-        LEntryDraft stored = engine.TEngineDraftSave(started with
-        {
-            LDraftContent = TIdentityContentCreate(
+        LEntryDraft stored = engine.TRequestContentApply(started.LDraftId, TIdentityContentCreate(
                 [
                     TInterface.TSentenceDraftCreate(
                         example.LExampleText, example.LExampleId, TInterface.TStateAnchorRead(null)),
-                ]),
-        });
+                ])).LDraftContent;
 
         LSentenceDraft sentence = Assert.Single(stored.LEntryDraftMeanings[0].LCardDraftSentence);
         Assert.Equal(example.LExampleId, sentence.LSentenceDraftExample!.LExampleDraftId);
@@ -95,10 +89,7 @@ public sealed class TIdentity
             LCardDraftVideo = [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
         };
 
-        LEntryDraft stored = engine.TEngineDraftSave(started with
-        {
-            LDraftContent = content with { LEntryDraftMeanings = [card] },
-        });
+        LEntryDraft stored = engine.TRequestContentApply(started.LDraftId, content with { LEntryDraftMeanings = [card] }).LDraftContent;
 
         List<long> minted = [];
         TIdentityNegativeRead(stored, minted);
@@ -116,7 +107,7 @@ public sealed class TIdentity
 
         LCardDraft loaded = Assert.IsType<LEntryDraft>(
             engine.TEngineEntryLoad(outcome.LOutcomeEntry.LEntryId)).LEntryDraftMeanings[0];
-        Assert.Equal(outcome.LOutcomeIdentity[card.LCardDraftId], loaded.LCardDraftId);
+        Assert.Equal(outcome.LOutcomeIdentity[stored.LEntryDraftMeanings[0].LCardDraftId], loaded.LCardDraftId);
         Assert.Equal(
             outcome.LOutcomeIdentity[stored.LEntryDraftMeanings[0].LCardDraftSituation[0].LSituationDraftId],
             loaded.LCardDraftSituation[0].LSituationDraftId);
@@ -126,6 +117,71 @@ public sealed class TIdentity
         Assert.Equal(
             outcome.LOutcomeIdentity[stored.LEntryDraftMeanings[0].LCardDraftSentence[0].LSentenceDraftId],
             loaded.LCardDraftSentence[0].LSentenceDraftId);
+    }
+
+    [Fact]
+    public void DraftCommit_LinkedRowGone_Refuses()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LSituation stored = engine.TEngineSituationCreate(TInterface.TSituationCreate(
+            0,
+            TInterface.TStateValueCreate("story telling"),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified));
+
+        LDraft started = engine.TEngineDraftStart("editor", null);
+        LEntryDraft content = engine.TRequestContentApply(started.LDraftId, TIdentityContentCreate([])).LDraftContent;
+        engine.TEngineRequestApply(TInterface.TSituationPickCreate(
+            started.LDraftId, content.LEntryDraftMeanings[0].LCardDraftId, stored.LSituationId, 0));
+
+        engine.TEngineSituationDelete(stored.LSituationId);
+
+        LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineOutcomeCommit(started.LDraftId));
+        Assert.Equal(LRefusal.LRefusalLink, refusal.LRefusalReason);
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation;"));
+        Assert.NotNull(engine.TEngineDraftRead(started.LDraftId));
+    }
+
+    [Fact]
+    public void RequestApply_WrittenNameStoredAlready_PicksTheStoredRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LSituation situation = engine.TEngineSituationCreate(TInterface.TSituationCreate(
+            0,
+            TInterface.TStateValueCreate("Story telling"),
+            LStateValue.LStateValueUnspecified,
+            LStateValue.LStateValueUnspecified));
+
+        LDraft started = engine.TEngineDraftStart("editor", null);
+        LEntryDraft content = engine.TRequestContentApply(started.LDraftId, TIdentityContentCreate([])).LDraftContent;
+        long cardId = content.LEntryDraftMeanings[0].LCardDraftId;
+        engine.TEngineRequestApply(TInterface.TSituationAdditionCreate(started.LDraftId, cardId, " story telling", 0));
+        LDraft held = engine.TEngineRequestApply(
+            TInterface.TRegisterAdditionCreate(started.LDraftId, cardId, "gruff", 0));
+
+        LCardDraft card = held.LDraftContent.LEntryDraftMeanings[0];
+        Assert.Equal(situation.LSituationId, Assert.Single(card.LCardDraftSituation).LSituationDraftId);
+        Assert.True(Assert.Single(card.LCardDraftRegister).LRegisterDraftId < 0);
+
+        LEntry first = engine.TEngineDraftCommit(started.LDraftId);
+
+        LDraft again = engine.TEngineDraftStart("editor", null);
+        LEntryDraft other = engine.TRequestContentApply(
+            again.LDraftId, TIdentityContentCreate([]) with { LEntryDraftHeadword = "ignite" }).LDraftContent;
+        LDraft picked = engine.TEngineRequestApply(TInterface.TRegisterAdditionCreate(
+            again.LDraftId, other.LEntryDraftMeanings[0].LCardDraftId, "GRUFF", 0));
+
+        Assert.True(Assert.Single(picked.LDraftContent.LEntryDraftMeanings[0].LCardDraftRegister).LRegisterDraftId > 0);
+        engine.TEngineDraftCommit(again.LDraftId);
+
+        Assert.NotEqual(0, first.LEntryId);
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM register WHERE pack_id IS NULL;"));
     }
 
     [Fact]

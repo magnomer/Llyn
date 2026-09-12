@@ -38,13 +38,13 @@ An unmarked entry loses its row at once, while the display keeps showing it.
 
 Selects the clicked entry, after the editor has been given the chance to keep unsaved changes.
 
-## `internal void PRosterEntryShow(string id)`
+## `internal void PRosterEntryShow(long id)`
 
 Loads the entry and shows it in the display.
 An entry that has left the workspace clears the panel and re-reads the roster.
 An open editor is moved onto the same entry, so the two never stand on different records.
 
-## `private void PRosterEntryUpdate(string id)`
+## `private void PRosterEntryUpdate(long id)`
 
 Re-reads the roster and the display after the editor stored the entry.
 A headword the store changed must reach the row that carries it.
@@ -74,7 +74,7 @@ The side chosen is pushed downstream as it changes, so the panel opens on it nex
 Asks the window whether the unsaved changes may be dropped.
 An editor holding nothing answers yes without asking.
 
-## `private void PFavoriteEntryShow(string id, LEntryDraft draft)`
+## `private void PFavoriteEntryShow(long id, LEntryDraft draft)`
 
 Fills the display and enables the mode toggle, which is dead while nothing is selected.
 

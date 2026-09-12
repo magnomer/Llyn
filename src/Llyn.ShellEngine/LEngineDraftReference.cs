@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -25,27 +26,16 @@ public sealed partial class LEngine
                 DateTimeOffset.UtcNow,
                 null,
                 null,
-                content);
+                content)
+            {
+                LDraftAuthor = reference == 0 ? [] : LEngineCreditRead(reference),
+            };
 
             LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft);
             LClaimArchive.LClaimArchiveSave(
                 _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
             return draft;
-        }
-    }
-
-    public LReference LEngineReferenceSave(LDraft draft)
-    {
-        lock (_lEngineGate)
-        {
-            ArgumentNullException.ThrowIfNull(draft);
-            LEngineDraftValidate(draft.LDraftId);
-
-            LReference sent = draft.LDraftReference ?? throw new LRefusal(LRefusal.LRefusalReference);
-            LReference content = LEngineReferenceNormalize(sent);
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftReference = content });
-            return content;
         }
     }
 
@@ -62,15 +52,21 @@ public sealed partial class LEngine
                 draft.LDraftReference ?? throw new LRefusal(LRefusal.LRefusalReference));
 
             LReference stored;
-            if (draft.LDraftEntryId == 0 || LEngineReferenceRead(draft.LDraftEntryId) is null)
+            using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
             {
-                stored = LEngineReferenceCreate(sending);
-            }
-            else
-            {
-                LReference written = sending with { LReferenceId = draft.LDraftEntryId };
-                LEngineReferenceUpdate(written);
-                stored = LEngineReferenceRead(draft.LDraftEntryId) ?? written;
+                if (draft.LDraftEntryId == 0 || LEngineReferenceRead(draft.LDraftEntryId) is null)
+                {
+                    stored = LEngineReferenceCreate(sending);
+                }
+                else
+                {
+                    LReference written = sending with { LReferenceId = draft.LDraftEntryId };
+                    LEngineReferenceUpdate(written);
+                    stored = LEngineReferenceRead(draft.LDraftEntryId) ?? written;
+                }
+
+                LEngineCreditSave(stored.LReferenceId, draft.LDraftAuthor);
+                session.LDatabaseSessionCommit();
             }
 
             LDraftArchive.LDraftArchiveSave(
@@ -93,7 +89,65 @@ public sealed partial class LEngine
             ? LEngineReferenceBlank
             : LEngineReferenceRead(draft.LDraftEntryId) ?? LEngineReferenceBlank;
 
-        return !LEngineReferenceMatch(origin, held);
+        IReadOnlyList<LAuthor> credited = draft.LDraftEntryId == 0 ? [] : LEngineCreditRead(draft.LDraftEntryId);
+
+        return !LEngineReferenceMatch(origin, held) || !LEngineCreditMatch(credited, draft.LDraftAuthor);
+    }
+
+    private IReadOnlyList<LAuthor> LEngineCreditRead(long referenceId)
+    {
+        return new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead(referenceId);
+    }
+
+    private void LEngineCreditSave(long referenceId, IReadOnlyList<LAuthor> authors)
+    {
+        LAuthorArchive archive = new(_lEngineDatabase);
+        LReferenceArchive references = new(_lEngineDatabase);
+
+        List<long> kept = new(authors.Count);
+        foreach (LAuthor author in authors)
+        {
+            long id = author.LAuthorId switch
+            {
+                > 0 when archive.LAuthorRead(author.LAuthorId) is not null => author.LAuthorId,
+                > 0 => throw new LRefusal(LRefusal.LRefusalLink),
+                _ => archive.LAuthorCreate(new LAuthor(0, author.LAuthorName)).LAuthorId,
+            };
+
+            if (kept.Contains(id))
+            {
+                continue;
+            }
+
+            references.LReferenceAuthorAttach(referenceId, id, kept.Count);
+            kept.Add(id);
+        }
+
+        foreach (LAuthor credited in archive.LAuthorReferenceRead(referenceId))
+        {
+            if (!kept.Contains(credited.LAuthorId))
+            {
+                references.LReferenceAuthorDetach(referenceId, credited.LAuthorId);
+            }
+        }
+    }
+
+    private static bool LEngineCreditMatch(IReadOnlyList<LAuthor> one, IReadOnlyList<LAuthor> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index].LAuthorId != other[index].LAuthorId)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private LReference LEngineReferenceNormalize(LReference content)

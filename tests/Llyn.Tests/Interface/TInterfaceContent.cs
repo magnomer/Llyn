@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -95,9 +95,6 @@ internal static partial class TInterface
 
     internal static LDraft TEngineExampleStart(this LEngine engine, string origin, long? exampleId) =>
         engine.LEngineExampleStart(origin, exampleId);
-
-    internal static LExample TEngineExampleSave(this LEngine engine, LDraft draft) =>
-        engine.LEngineExampleSave(draft);
 
     internal static LExample TEngineExampleCreate(this LEngine engine, LExample example) =>
         engine.LEngineExampleCreate(example);
@@ -261,9 +258,6 @@ internal static partial class TInterface
     internal static LDraft TEngineReferenceStart(this LEngine engine, string origin, long? referenceId) =>
         engine.LEngineReferenceStart(origin, referenceId);
 
-    internal static LReference TEngineReferenceSave(this LEngine engine, LDraft draft) =>
-        engine.LEngineReferenceSave(draft);
-
     internal static void TEngineReferenceDelete(this LEngine engine, long id)
     {
         engine.LEngineReferenceDelete(id);
@@ -359,9 +353,6 @@ internal static partial class TInterface
 
     internal static LDraft TEngineSituationStart(this LEngine engine, string origin, long? situationId) =>
         engine.LEngineSituationStart(origin, situationId);
-
-    internal static LSituation TEngineSituationSave(this LEngine engine, LDraft draft) =>
-        engine.LEngineSituationSave(draft);
 
     internal static void TEngineSituationDelete(this LEngine engine, long id)
     {
@@ -471,11 +462,6 @@ internal static partial class TInterface
 
     internal static LEntry TEngineTranslationCreate(this LEngine engine, string headword, string language) =>
         engine.LEngineTranslationCreate(headword, language);
-
-    internal static void TEngineTranslationDelete(this LEngine engine, long id)
-    {
-        engine.LEngineTranslationDelete(id);
-    }
 
     internal static IReadOnlyList<LEntry> TEngineTranslationFind(
         this LEngine engine,

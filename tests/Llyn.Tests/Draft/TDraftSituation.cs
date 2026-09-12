@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TDraftSituation
 {
     [Fact]
-    public void SituationSave_HeldSituation_SurvivesScan()
+    public void RequestApply_HeldSituation_SurvivesScan()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -19,10 +19,7 @@ public sealed class TDraftSituation
             LDraft started = engine.TEngineSituationStart("Repertoire", null);
             held = started.LDraftId;
 
-            engine.TEngineSituationSave(started with
-            {
-                LDraftSituation = TDraftSituationCreate(started, "asking the way at a station"),
-            });
+            TDraftSituationApply(engine, started, "asking the way at a station");
 
             Assert.True(engine.TEngineDraftCheck(held));
         }
@@ -55,10 +52,7 @@ public sealed class TDraftSituation
 
         LDraft started = engine.TEngineSituationStart("Repertoire", null);
 
-        engine.TEngineSituationSave(started with
-        {
-            LDraftSituation = TDraftSituationCreate(started, "asking the way at a station"),
-        });
+        TDraftSituationApply(engine, started, "asking the way at a station");
 
         LSituation stored = engine.TEngineSituationCommit(started.LDraftId);
 
@@ -89,20 +83,16 @@ public sealed class TDraftSituation
             swept = committed.LDraftId;
             kept = edited.LDraftId;
 
-            LSituation situation = TDraftSituationCreate(committed, "asking the way at a station");
-            engine.TEngineSituationSave(committed with { LDraftSituation = situation });
+            LDraft written = TDraftSituationApply(engine, committed, "asking the way at a station");
 
-            LSituation stored = engine.TEngineSituationCreate(situation);
+            LSituation stored = engine.TEngineSituationCreate(written.LDraftSituation!);
 
-            engine.TEngineSituationSave(committed with
+            TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, written with
             {
                 LDraftEntryId = stored.LSituationId,
                 LDraftSituation = stored,
             });
-            engine.TEngineSituationSave(edited with
-            {
-                LDraftSituation = TDraftSituationCreate(edited, "ordering at a counter"),
-            });
+            TDraftSituationApply(engine, edited, "ordering at a counter");
         }
 
         using LEngine launched = workspace.TWorkspaceEngineStart();
@@ -114,13 +104,11 @@ public sealed class TDraftSituation
         Assert.Contains(launched.TEngineLeftoverRead(), draft => draft.LDraftId == kept);
     }
 
-    private static LSituation TDraftSituationCreate(LDraft draft, string title)
+    private static LDraft TDraftSituationApply(LEngine engine, LDraft draft, string title)
     {
         Assert.NotNull(draft.LDraftSituation);
 
-        return draft.LDraftSituation with
-        {
-            LSituationTitle = TInterface.TStateValueCreate(title),
-        };
+        return engine.TEngineRequestApply(TInterface.TSituationTitleCreate(
+            draft.LDraftId, draft.LDraftSituation.LSituationId, TInterface.TStateValueCreate(title)));
     }
 }

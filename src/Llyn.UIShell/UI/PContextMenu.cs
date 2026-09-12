@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,13 +11,14 @@ public partial class PEditor
     internal void PContextAttach(PCard card)
     {
         card.PCardContextNotice = text => PCandidateShow(card, text);
+        card.PCardContextDispatcher = text => PContextSend(card, text);
     }
 
     internal void PContextChipHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PContext chip })
+        if (sender is FrameworkElement { DataContext: PContext chip } && PCardContextFind(chip) is PCard card)
         {
-            PCardContextFind(chip)?.PCardContextRemove(chip);
+            PContextRemove(card, chip);
         }
     }
 
@@ -54,14 +55,14 @@ public partial class PEditor
 
         if (e.Key == Key.Back && box.CaretIndex == 0)
         {
-            card.PCardContextRemove(-1);
+            PContextRemove(card, card.PCardContextFind(-1));
             e.Handled = true;
             return;
         }
 
         if (e.Key == Key.Delete && box.CaretIndex == box.Text.Length)
         {
-            card.PCardContextRemove(1);
+            PContextRemove(card, card.PCardContextFind(1));
             e.Handled = true;
             return;
         }
@@ -115,41 +116,36 @@ public partial class PEditor
     private void PContextCommit(PCard card)
     {
         PCandidateHide();
-
-        string written = card.PCardContextText.Trim();
-        long? id = written.Length == 0 ? null : PContextResolve(written);
-
-        if (id is null)
-        {
-            card.PCardContextCommit();
-            return;
-        }
-
-        card.PCardContextCommit(id, written);
+        PContextSend(card, card.PCardContextText);
         card.PCardContextClear();
     }
 
-    private long? PContextResolve(string written)
+    private bool PContextSend(PCard card, string text)
     {
-        try
+        string written = (text ?? string.Empty).Trim();
+        if (written.Length == 0 || card.PCardContextCheck(written))
         {
-            foreach (LCatalogSituation row in _lEngine.LEngineSituationFind(
-                written, LCatalogOrder.LCatalogOrderUsage))
-            {
-                if (string.Equals(
-                        row.LCatalogSituationStored.LSituationTitle.LStateValueShow().Trim(),
-                        written,
-                        StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return row.LCatalogSituationStored.LSituationId;
-                }
-            }
-        }
-        catch (Exception)
-        {
+            return false;
         }
 
-        return null;
+        PContextSend(card, null, written);
+        return true;
+    }
+
+    private void PContextSend(PCard card, long? id, string written)
+    {
+        int position = card.PCardContextPosition;
+        PEditorRequestSend(id is long picked
+            ? new LRequestSituationPick(_pEditorDraft, card.PCardId, picked, position)
+            : new LRequestSituationAddition(_pEditorDraft, card.PCardId, written, position));
+    }
+
+    private void PContextRemove(PCard card, PContext? chip)
+    {
+        if (chip is not null)
+        {
+            PEditorRequestSend(new LRequestSituationRemoval(_pEditorDraft, card.PCardId, chip.PContextId));
+        }
     }
 
     private PCard? PCardContextFind(object row)

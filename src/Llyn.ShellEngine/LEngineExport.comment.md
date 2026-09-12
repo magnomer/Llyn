@@ -11,7 +11,7 @@ No writer is reachable from the interface layer.
 The shell hands in the platform's printing surface at startup.
 Without it every format still works except PDF.
 
-## `public async Task LEnginePortraitExport(string entryId, string path, LPortraitFormat format, LPortraitLabel label)`
+## `public async Task LEnginePortraitExport(long entryId, string path, LPortraitFormat format, LPortraitLabel label)`
 
 The formats are written from the portrait, so they show exactly what the panel shows.
 PDF is the rendered page printed, which is why it needs no layout of its own.

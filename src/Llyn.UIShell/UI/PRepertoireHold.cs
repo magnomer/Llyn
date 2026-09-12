@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -173,11 +173,42 @@ public partial class PRepertoire
             }
 
             LSituation sent = PScenarioRead(content);
-            LSituation stored = _lEngine.LEngineSituationSave(held with { LDraftSituation = sent });
-
-            if (!ReferenceEquals(stored, sent))
+            if (sent.LSituationTitle != content.LSituationTitle)
             {
-                PScenarioApply(stored);
+                _lEngine.LEngineRequestApply(
+                    new LRequestSituationTitle(_pScenarioDraft, content.LSituationId, sent.LSituationTitle));
+            }
+
+            if (sent.LSituationDescription != content.LSituationDescription)
+            {
+                _lEngine.LEngineRequestApply(new LRequestSituationDescription(
+                    _pScenarioDraft, content.LSituationId, sent.LSituationDescription));
+            }
+
+            if (sent.LSituationKind != content.LSituationKind)
+            {
+                _lEngine.LEngineRequestApply(
+                    new LRequestSituationKind(_pScenarioDraft, content.LSituationId, sent.LSituationKind));
+            }
+        }
+        catch (Exception exception)
+        {
+            PScenarioHoldSuspend(exception);
+        }
+    }
+
+    private void PScenarioDraftRestore()
+    {
+        if (_pScenarioDraft == 0 || _pScenarioLoading)
+        {
+            return;
+        }
+
+        try
+        {
+            if (_lEngine.LEngineDraftRead(_pScenarioDraft)?.LDraftSituation is LSituation held)
+            {
+                PScenarioShow(held);
             }
         }
         catch (Exception exception)

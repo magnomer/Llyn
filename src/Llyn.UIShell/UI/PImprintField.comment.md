@@ -28,15 +28,26 @@ It is the same control over every text field rather than one control each.
 The value is cleared with the mark, because a value is written only while the state is specified.
 Marking a field is an edit like any other, so it too is pushed once the typing stops.
 
-## `private void PImprintApply(LReference? reference)`
+## `private void PImprintApply(LDraft? draft)`
 
-Fills the whole edit area from the held Source, or empties it when no draft is held.
+Fills the whole edit area from the held draft, or empties it when none is held.
+The credits come from the same draft, so the area is drawn from one reading.
 The mark beside each field is set from the field's state, so the three states arrive distinct.
 The delete control and the citation figure follow the stored Source the draft names.
 Neither means anything before a store.
 The buttons are settled last, so the area and what they say never drift apart.
 
-## `private void PImprintCountShow(string? stored)`
+## `private void PImprintShow(LDraft draft)`
+
+Redraws the area from the held draft only where a control says something else.
+This is what the draft bulletin does, so a keystroke echoed back never moves the caret.
+
+## `private static void PImprintFieldShow(`
+
+Writes one field and its mark from a value.
+With `differing` set it first checks whether the field already reads that value, and leaves it alone when it does.
+
+## `private void PImprintCountShow(long? stored)`
 
 Keeps the citation figure visible while editing.
 A user correcting a title must see how many places that correction reaches without leaving the area.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Media;
@@ -13,11 +13,6 @@ internal sealed class PImage : INotifyPropertyChanged
     private bool _pImageUnreadable;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
-
-    internal PImage()
-        : this(new LImageDraft(LStateValue.LStateValueUnspecified))
-    {
-    }
 
     internal PImage(LImageDraft written)
     {
@@ -77,16 +72,27 @@ internal sealed class PImage : INotifyPropertyChanged
         }
     }
 
-    internal void PImageIdentityApply(LImageDraft stored)
+    internal long PImageId => _pImageRow;
+
+    internal LStateValue PImageLocationRead()
     {
-        ArgumentNullException.ThrowIfNull(stored);
-        _pImageRow = stored.LImageDraftId;
+        return LStateValue.LStateValueResolve(_pImageLocation, _pImageUnreadable);
     }
 
-    internal LImageDraft PImageDraftRead()
+    internal void PImageShow(LImageDraft written, bool pending)
     {
-        return new LImageDraft(
-            LStateValue.LStateValueResolve(_pImageLocation, _pImageUnreadable), _pImageRow);
+        ArgumentNullException.ThrowIfNull(written);
+
+        _pImageRow = written.LImageDraftId;
+        if (pending || PImageLocationRead() == written.LImageDraftLocation)
+        {
+            return;
+        }
+
+        _pImageLocation = written.LImageDraftLocation.LStateValueShow();
+        PImageRaise(nameof(PImageLocation));
+        PImageUnreadable = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
+        PImagePreviewUpdate();
     }
 
     internal static Uri? PImageAddressRead(string location)

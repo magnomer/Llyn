@@ -1,65 +1,47 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
 internal sealed partial class PCard
 {
-    public ObservableCollection<PVideo> PCardVideo { get; }
+    public ObservableCollection<PVideo> PCardVideo { get; } = [];
 
-    internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows)
-    {
-        PCardVideo.Clear();
-        foreach (LVideoDraft row in rows)
-        {
-            PCardVideo.Add(new PVideo(row));
-        }
-    }
+    internal Action<PVideo, string>? PCardVideoNotice { get; set; }
 
-    internal IReadOnlyList<LVideoDraft> PCardVideoRead()
+    internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows, Func<PVideo, string, bool> pending)
     {
-        List<LVideoDraft> rows = [];
-        foreach (PVideo row in PCardVideo)
-        {
-            LVideoDraft written = row.PVideoDraftRead();
-            if (written.LVideoDraftEmpty)
+        ArgumentNullException.ThrowIfNull(pending);
+
+        PCardRowShow(
+            PCardVideo,
+            rows,
+            static row => row.PVideoId,
+            static draft => draft.LVideoDraftId,
+            PCardVideoCreate,
+            (row, draft) =>
             {
-                continue;
-            }
-
-            rows.Add(written);
-        }
-
-        return rows;
+                row.PVideoShow(draft, field => pending(row, field));
+                return row;
+            });
     }
 
-    internal void PCardVideoApply(IReadOnlyList<LVideoDraft> stored)
+    private PVideo PCardVideoCreate(LVideoDraft draft)
     {
-        int index = 0;
-        foreach (PVideo row in PCardVideo)
+        PVideo row = new(draft);
+        row.PropertyChanged += PCardVideoChange;
+        return row;
+    }
+
+    private void PCardVideoChange(object? sender, PropertyChangedEventArgs arguments)
+    {
+        if (sender is PVideo row
+            && arguments.PropertyName is nameof(PVideo.PVideoLocation) or nameof(PVideo.PVideoTimestamp))
         {
-            if (row.PVideoDraftRead().LVideoDraftEmpty)
-            {
-                continue;
-            }
-
-            if (index < stored.Count)
-            {
-                row.PVideoIdentityApply(stored[index]);
-            }
-
-            index++;
+            PCardVideoNotice?.Invoke(row, arguments.PropertyName);
         }
-    }
-
-    internal void PCardVideoAdd()
-    {
-        PCardVideo.Add(new PVideo());
-    }
-
-    internal void PCardVideoRemove(PVideo row)
-    {
-        PCardVideo.Remove(row);
     }
 }

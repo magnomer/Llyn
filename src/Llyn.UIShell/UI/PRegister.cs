@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -23,7 +23,7 @@ internal sealed class PRegister
         PRegisterLanguage = language ?? string.Empty;
     }
 
-    public long PRegisterId { get; internal set; }
+    public long PRegisterId { get; }
 
     internal string PRegisterLanguage { get; }
 

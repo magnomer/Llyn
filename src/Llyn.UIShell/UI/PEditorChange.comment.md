@@ -1,4 +1,4 @@
-﻿# PEditorChange.cs
+# PEditorChange.cs
 
 ## `public partial class PEditor`
 
@@ -29,8 +29,8 @@ So the form says nothing while it is being rendered from the draft the engine an
 
 ### `private void PEditorChangeAttach(PCard card)`
 
-A card reports its own edits, since its fields are bound rather than typed into directly.
-Each list it carries reports its own additions and removals.
+A card reports its own text edits, since its fields are bound rather than typed into directly.
+Its lists report through their own attachments, one per list, made when the card is built.
 The handlers hold the editor rather than the other way round, so a dropped card is still collectible.
 
 ### `private void PCardChangeHandle(object? sender, PropertyChangedEventArgs e)`
@@ -62,6 +62,6 @@ A refusal or a locked file reaches the window instead of vanishing into a droppe
 The one place the pause ends.
 A render that drops a focused card raises a focus loss, which lands here mid-fill.
 Nothing is written then, and the wait is left running so the waiting requests still go.
-Waiting requests go first, then the chips, so the chip save never writes over a newer keystroke.
+Waiting requests go, and nothing else, because the chips and rows reached the engine as requests of their own.
 It also settles the buttons, so a write and what the buttons say never drift apart.
 A suspended form writes nothing, because its draft is the thing that failed.

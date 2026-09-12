@@ -150,7 +150,7 @@ public sealed class TVocabulary
 
         LEntry entry = engine.TEngineEntrySave(TVocabularyDraftCreate("Noun"));
 
-        Assert.ThrowsAny<Microsoft.Data.Sqlite.SqliteException>(() => engine.TEngineInflectionSet(entry.LEntryId, [
+        Assert.Throws<LRefusal>(() => engine.TEngineInflectionSet(entry.LEntryId, [
             TInterface.TInflectionCreate(entry.LEntryId, 0, "words", null, null,
                 [999999]),
         ]));

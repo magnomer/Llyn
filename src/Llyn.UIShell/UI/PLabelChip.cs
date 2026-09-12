@@ -8,7 +8,7 @@ internal sealed class PLabelChip
         PLabelChipName = name;
     }
 
-    internal long PLabelChipId { get; set; }
+    internal long PLabelChipId { get; }
 
     public string PLabelChipName { get; }
 }

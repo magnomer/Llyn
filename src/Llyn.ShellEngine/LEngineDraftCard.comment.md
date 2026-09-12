@@ -7,7 +7,7 @@ The form no longer counts its own cards, so every position comes from here.
 Both the move and the renumber end in one write, so the two cannot drift apart.
 The draft file itself is read and written by `LEngineDraftHold.cs`.
 
-## `public IReadOnlyList<LCardDraft> LEngineDraftMove(string id, bool collocation, int from, int target)`
+## `public IReadOnlyList<LCardDraft> LEngineDraftMove(long id, bool collocation, int from, int target)`
 
 Reorders one card inside the held content and hands the whole list back renumbered.
 Positions are rewritten from `1` so they stay contiguous whatever the drag did.
@@ -16,7 +16,7 @@ This is the only place card order is computed, so the form no longer keeps its o
 Both ends are clamped into range, because a drag can land past the last card.
 An empty list is written back untouched.
 
-## `public IReadOnlyList<LCardDraft> LEngineDraftNormalize(string id, bool collocation)`
+## `public IReadOnlyList<LCardDraft> LEngineDraftNormalize(long id, bool collocation)`
 
 Renumbers one card list without moving anything, and hands the whole list back.
 A removed card leaves a gap in the numbering that nothing else closes.

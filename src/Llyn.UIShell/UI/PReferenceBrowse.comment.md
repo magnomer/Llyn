@@ -23,6 +23,8 @@ The catalog, the ordering, and the search all need them, so a per-row read would
 ## `private void PReferenceBulletinHandle(LBulletin bulletin)`
 
 Re-reads the shelf and the authors whenever the engine announces a change, wherever it was made.
+A draft bulletin is the edit area's own typing coming back.
+It is handed to the area and nothing is re-read.
 The usage count beside a row and the credits under it are read with the shelf.
 A stored Source updates its own row.
 That is what the panel used to do by re-reading straight after its own commit.
@@ -37,18 +39,12 @@ The read area and the editor also stand on them.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open edit area keeps its selection either way, because the row may be the one being written.
 
-## `internal int PShelfReachRead(string author)`
+## `internal int PShelfReachRead(long author)`
 
 How many Sources one Author is credited on.
 The count is answered here, because the credit map is held here and the edit area only asks.
 
-## `internal bool PShelfCreditUpdate()`
-
-Reads the credit map again after the edit area writes a credit, and refills the shelf.
-The shelf shows credits too, so one write is one refill for both.
-It answers false on a failure, so the caller stops rather than refilling from a stale map.
-
-## `internal void PReferenceShow(string id)`
+## `internal void PReferenceShow(long id)`
 
 Reads one Source back and shows it with the sides citing it.
 An id the store no longer knows clears the selection and refills the shelf rather than failing.
@@ -59,7 +55,7 @@ A selection made while the edit area is open starts held work on the Source show
 Writes one three-state field into the read area.
 An unwritten value reads the unrecorded mark in the muted colour, so a blank line never stands for two facts.
 
-## `private void PFootnoteFind(string id)`
+## `private void PFootnoteFind(long id)`
 
 Reads everything citing the Source, and names each row by the kind of side it is.
 A Meaning, a Collocation and an Example cite on their own terms, so the row says which.

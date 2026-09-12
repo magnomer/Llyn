@@ -23,7 +23,7 @@ Binds the store to the workspace `database` it opens sessions through.
 Inserts `collocation` with a fresh opaque id at the end of its entry's order.
 Returns the stored collocation with that id and its assigned position filled in.
 
-## `public IReadOnlyList<LCollocation> LCollocationRead(string entryId)`
+## `public IReadOnlyList<LCollocation> LCollocationRead(long entryId)`
 
 Reads the entry's collocations in card order.
 
@@ -34,13 +34,13 @@ The id, owning entry, and position are untouched.
 Card order is changed by `LCollocationMove`, which has to renumber the whole set.
 Throws when no collocation carries that id.
 
-## `public void LCollocationMove(string id, int position)`
+## `public void LCollocationMove(long id, int position)`
 
 Moves the collocation identified by `id` to `position` in its entry's card order.
 It renumbers the whole set so positions stay `0 … n-1`.
 A position outside the set is clamped into it, and nothing moves when no collocation carries that id.
 
-## `public void LCollocationDelete(string id)`
+## `public void LCollocationDelete(long id)`
 
 Deletes the collocation identified by `id`.
 Its synonym interlinks go with it through the foreign-key cascade.
@@ -50,10 +50,10 @@ The collocations left under the same entry are renumbered so their positions sta
 
 ## Inline notes
 
-### `private static string? LCollocationHolderRead(SqliteConnection connection, string id)`
+### `private static string? LCollocationHolderRead(SqliteConnection connection, long id)`
 
 The entry a collocation belongs to, or null when no collocation carries the id.
 
-### `private static IReadOnlyList<string> LCollocationSiblingRead(SqliteConnection connection, string entryId)`
+### `private static IReadOnlyList<string> LCollocationSiblingRead(SqliteConnection connection, long? entryId)`
 
 The collocations of one entry, in card order.

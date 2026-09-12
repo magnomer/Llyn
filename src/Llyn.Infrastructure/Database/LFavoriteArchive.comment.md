@@ -6,17 +6,17 @@ Reads and writes the favorite marks of the workspace.
 A mark is one row keyed by the entry it stands on, so an entry is marked at most once.
 The row is deleted with its entry, so no mark outlives what it marks.
 
-## `public void LFavoriteSave(string entryId)`
+## `public void LFavoriteSave(long entryId)`
 
 Marks the entry a favorite, stamping the moment.
 Marking an entry that is already marked keeps the earlier stamp.
 
-## `public void LFavoriteDelete(string entryId)`
+## `public void LFavoriteDelete(long entryId)`
 
 Unmarks the entry.
 The entry itself stands untouched.
 
-## `public bool LFavoriteCheck(string entryId)`
+## `public bool LFavoriteCheck(long entryId)`
 
 Reports whether the entry is marked.
 

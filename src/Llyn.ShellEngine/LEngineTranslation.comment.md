@@ -18,31 +18,34 @@ So any other side is refused rather than guessed.
 The branch between the two sides is the engine's alone.
 The archive is handed a table and never learns which card kind asked.
 
-## `public IReadOnlyList<LTranslation> LEngineTranslationRead(string ownerId, LOwner owner)`
+## `public IReadOnlyList<LTranslation> LEngineTranslationRead(long ownerId, LOwner owner)`
 
 Reads the links the Meaning or Collocation identified by `ownerId` carries.
 They arrive in the order that card holds them.
 
-## `public void LEngineTranslationSave(string ownerId, IReadOnlyList<string> ids, LOwner owner)`
+## `public void LEngineTranslationSave(long ownerId, IReadOnlyList<long> ids, LOwner owner)`
 
 Writes that card's whole link line from the Entry ids given.
 Blank ids and repeats are dropped, and the surviving order is the order given.
 
-## `public IReadOnlyList<LEntry> LEngineTranslationFind(string query, string? entryId)`
+## `public IReadOnlyList<LEntry> LEngineTranslationFind(string query, long? entryId)`
 
 Every Entry whose headword contains `query`, across every language the workspace holds.
 A link crosses languages, so the search cannot be narrowed to the card's own one.
+The Entries whose whole headword reads as `query` come first, then the rest in search order.
+So a list the user is shown to choose from leads with the word they typed, whatever its language.
 An empty query names the whole workspace, which is what a just-opened dropdown shows.
 The Entry named by `entryId` is left out, because a card may not translate its own Entry.
 A null `entryId` leaves nothing out, which is what an unsaved Entry needs.
 
-## `public LEntry? LEngineTranslationResolve(string word, string? entryId)`
+## `public LEntry? LEngineTranslationResolve(string word, long? entryId)`
 
-The one Entry whose whole headword is `word`, or nothing when none or several are.
+The one Entry whose whole headword reads as `word`, or nothing when none or several do.
 The search behind it matches on containment, so a hit is not proof the user named it.
 Resolving asks for the headword itself, so `brea` never silently becomes `breakfast`.
-Case is ignored, because a headword is the same word however it was typed.
+Both sides are folded the way `LCatalog.LCatalogTextFold` folds, because a headword is the same word however it was typed.
 Several Entries sharing a headword are a question, so this answers nothing and the caller asks.
+The answer says nothing about language, so a form that takes it without asking must show the language it got.
 
 ## `public LEntry LEngineTranslationCreate(string headword, string language)`
 
@@ -53,18 +56,20 @@ A stub is a real Entry and is opened and filled in like any other later.
 So its making is recorded as a revision, exactly as any other new Entry is.
 The workspace row is moved onto that revision, so the pointer names the current revision whichever path opened it.
 
-## `public void LEngineTranslationDelete(string id)`
-
-Drops a stub the editor made and then discarded, so an abandoned edit leaves nothing behind.
-An Entry anything still links to is left standing, because it is no longer only a stub.
-
-## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(IReadOnlyList<string> ids)`
+## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(IReadOnlyList<long> ids)`
 
 The headword and language behind each link id, in the order asked for.
 A card holds ids and shows words, so the two are joined once for the whole card.
 An id no Entry answers is passed over rather than raised.
 
-## `public IReadOnlyList<LUsage> LEngineIncomingRead(string entryId)`
+## `public IReadOnlyList<LTranslationTarget> LEngineTargetRead(long ownerId, IReadOnlyList<long> ids)`
+
+The targets of `ids` as the draft `ownerId` sees them.
+An id no stored Entry answers is looked for among the draft's court links.
+Such a target shows the word and language the court recorded, until the target commits and the id settles.
+So a form renders a chip for a tentative translation from the same read as a stored one.
+
+## `public IReadOnlyList<LUsage> LEngineIncomingRead(long entryId)`
 
 Every card of either kind that links to the Entry identified by `entryId`.
 Links are stored one way, so an Entry's incoming list is read rather than held.

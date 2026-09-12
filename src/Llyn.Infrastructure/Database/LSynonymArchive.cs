@@ -104,6 +104,18 @@ public sealed class LSynonymArchive
         session.LDatabaseSessionCommit();
     }
 
+    public void LSynonymOrderSet(long collocationId, IReadOnlyList<long> order)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(collocationId);
+        ArgumentNullException.ThrowIfNull(order);
+
+        using LDatabaseSession session = _lSynonymArchiveDatabase.LDatabaseSessionStart();
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            session.LDatabaseSessionConnection, "collocation_synonym", "collocation_id = $owner",
+            collocationId, "id", order);
+        session.LDatabaseSessionCommit();
+    }
+
     public void LSynonymMove(long id, int position)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);

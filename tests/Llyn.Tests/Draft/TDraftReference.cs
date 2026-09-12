@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TDraftReference
 {
     [Fact]
-    public void ReferenceSave_HeldReference_SurvivesScan()
+    public void RequestApply_HeldReference_SurvivesScan()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
 
@@ -19,10 +19,7 @@ public sealed class TDraftReference
             LDraft started = engine.TEngineReferenceStart("Reference", null);
             held = started.LDraftId;
 
-            engine.TEngineReferenceSave(started with
-            {
-                LDraftReference = TDraftReferenceCreate(started, "the evening news"),
-            });
+            TDraftReferenceApply(engine, started, "the evening news");
 
             Assert.True(engine.TEngineDraftCheck(held));
         }
@@ -53,10 +50,7 @@ public sealed class TDraftReference
 
         LDraft started = engine.TEngineReferenceStart("Reference", null);
 
-        engine.TEngineReferenceSave(started with
-        {
-            LDraftReference = TDraftReferenceCreate(started, "the evening news"),
-        });
+        TDraftReferenceApply(engine, started, "the evening news");
 
         LReference stored = engine.TEngineReferenceCommit(started.LDraftId);
 
@@ -87,20 +81,16 @@ public sealed class TDraftReference
             swept = committed.LDraftId;
             kept = edited.LDraftId;
 
-            LReference reference = TDraftReferenceCreate(committed, "the evening news");
-            engine.TEngineReferenceSave(committed with { LDraftReference = reference });
+            LDraft written = TDraftReferenceApply(engine, committed, "the evening news");
 
-            LReference stored = engine.TEngineReferenceCreate(reference);
+            LReference stored = engine.TEngineReferenceCreate(written.LDraftReference!);
 
-            engine.TEngineReferenceSave(committed with
+            TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, written with
             {
                 LDraftEntryId = stored.LReferenceId,
                 LDraftReference = stored,
             });
-            engine.TEngineReferenceSave(edited with
-            {
-                LDraftReference = TDraftReferenceCreate(edited, "the morning paper"),
-            });
+            TDraftReferenceApply(engine, edited, "the morning paper");
         }
 
         using LEngine launched = workspace.TWorkspaceEngineStart();
@@ -112,13 +102,11 @@ public sealed class TDraftReference
         Assert.Contains(launched.TEngineLeftoverRead(), draft => draft.LDraftId == kept);
     }
 
-    private static LReference TDraftReferenceCreate(LDraft draft, string title)
+    private static LDraft TDraftReferenceApply(LEngine engine, LDraft draft, string title)
     {
         Assert.NotNull(draft.LDraftReference);
 
-        return draft.LDraftReference with
-        {
-            LReferenceTitle = TInterface.TStateValueCreate(title),
-        };
+        return engine.TEngineRequestApply(
+            TInterface.TReferenceTitleCreate(draft.LDraftId, TInterface.TStateValueCreate(title)));
     }
 }

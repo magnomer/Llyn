@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -42,7 +42,7 @@ public sealed partial class LEngine
 
             try
             {
-                LEngineDraftSave(target with
+                LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, target with
                 {
                     LDraftContent = target.LDraftContent with
                     {

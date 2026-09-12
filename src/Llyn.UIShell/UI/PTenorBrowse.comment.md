@@ -34,7 +34,7 @@ The rows a language pack ships and the rows the user wrote arrive as one shelf.
 The chosen Register is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
 A chosen Register the workspace no longer holds is dropped, and the panel falls back to every Entry.
 
-### `internal void PGamutRegisterShow(string id)`
+### `internal void PGamutRegisterShow(long id)`
 
 Browses by one Register for a caller outside the panel.
 That is how a register chip read on a card reaches this panel.
@@ -52,7 +52,7 @@ Rows sharing a headword are numbered afterwards, so the reader can tell them apa
 Clicking the chosen Register lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
 
-### `private void PCohortEntryUpdate(string id)`
+### `private void PCohortEntryUpdate(long id)`
 
 A store is answered by re-reading the catalog rather than the entry list alone.
 Storing may have marked a card with a Register nothing carried, or taken away the last card that carried one.

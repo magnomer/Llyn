@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -100,10 +100,7 @@ public sealed class TClaim
 
         Assert.NotNull(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, started.LDraftId));
 
-        engine.TEngineDraftSave(started with
-        {
-            LDraftContent = started.LDraftContent with { LEntryDraftHeadword = "kindle" },
-        });
+        engine.TRequestContentApply(started.LDraftId, started.LDraftContent with { LEntryDraftHeadword = "kindle" });
         engine.TEngineDraftCommit(started.LDraftId);
 
         Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, started.LDraftId));
@@ -126,10 +123,7 @@ public sealed class TClaim
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineDraftStart("Input", null);
 
-        engine.TEngineDraftSave(started with
-        {
-            LDraftContent = started.LDraftContent with { LEntryDraftHeadword = "kindle" },
-        });
+        engine.TRequestContentApply(started.LDraftId, started.LDraftContent with { LEntryDraftHeadword = "kindle" });
 
         return started.LDraftId;
     }

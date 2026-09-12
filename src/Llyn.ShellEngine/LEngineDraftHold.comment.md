@@ -1,4 +1,4 @@
-﻿# LEngineDraftHold.cs
+# LEngineDraftHold.cs
 
 ## `public sealed partial class LEngine`
 
@@ -22,7 +22,8 @@ The source followed this rule rather than inventing a second one.
 Each kind gets one nullable content field, null for every other kind.
 The sentence calls live in `LEngineDraftExample.cs`, the situation calls in `LEngineDraftSituation.cs` and the source calls in `LEngineDraftReference.cs`.
 Only the shared calls belong here.
-Start, save and commit differ per kind.
+Start and commit differ per kind.
+Every edit in between is a request, applied in `LEngineRequest.cs` for all kinds alike.
 The claim, the sweep, the recovery and the discard are one for all kinds.
 The sweep and the recovery live in `LEngineDraftLeftover.cs`.
 The card order calls live in `LEngineDraftCard.cs`.
@@ -30,7 +31,7 @@ The one-edit requests the form sends live in `LEngineRequest.cs`.
 The court rows live in `LEngineCourt.cs`.
 The field by field comparisons live in `LEngineDraftMatch.cs`.
 
-## `public LDraft LEngineDraftStart(string origin, string? entryId)`
+## `public LDraft LEngineDraftStart(string origin, long? entryId)`
 
 Mints an id, writes the first file, and returns the held draft.
 With no entry the content is blank, which is a new word being typed.
@@ -40,17 +41,7 @@ An entry that is gone is refused before a file is written, so no draft can point
 A claim naming this process is written beside the draft.
 Another launch reading the folder then knows the work is live.
 
-## `public LEntryDraft LEngineDraftSave(LDraft draft)`
-
-Overwrites that one file with the content given, and hands back the content it stored.
-The write goes through a pending file and a move, so a reader never sees half a draft.
-The moment is the caller's, because only the caller knows whether this write was a real edit.
-What is stored is not always what was sent, so the caller renders the answer rather than its own copy.
-A card arriving without an id is named here, which is what a draft written by an older launch carries.
-The content that came in is handed straight back when nothing needed naming.
-So the caller can tell a settled write from a corrected one without comparing field by field.
-
-## `public LDraft? LEngineDraftRead(string id)`
+## `public LDraft? LEngineDraftRead(long id)`
 
 Reads one held draft, or null when its file is gone or unreadable.
 A missing file is an ordinary answer here, unlike the calls that go on to act on the draft.
@@ -62,7 +53,7 @@ Every held draft the folder still carries.
 This is what a session offers back after a crash.
 A broken file is skipped rather than thrown, so one bad draft never hides the rest.
 
-## `public void LEngineDraftDelete(string id)`
+## `public void LEngineDraftDelete(long id)`
 
 Removes one held draft with its claim, after the links that draft owns are settled.
 A dropped draft that kept its rows would leave links no call can reach again.
@@ -70,7 +61,7 @@ A dropped draft that kept its rows would leave links no call can reach again.
 The rows pointing at this draft are left, because the caller dropping a chip already took its own row back.
 Abandoning work is `LEngineDraftCancel`, which settles those rows too.
 
-## `public bool LEngineDraftCheck(string id)`
+## `public bool LEngineDraftCheck(long id)`
 
 Whether held work differs from the record it was started from.
 This is the question the shell used to answer by holding a second copy of the form.
@@ -104,8 +95,11 @@ Such an id is left by a discarded target or by a draft an earlier launch wrote.
 The database has no row for it to point at.
 Sending it raises a foreign-key failure from the store rather than a refusal.
 That reaches the reader as a crash and not as an answer.
-The database write runs first and whole.
-A refusal from it therefore leaves the file on disk exactly as it was, so nothing typed is lost.
+The whole round, every target and the draft itself, runs inside one database session.
+A refusal anywhere in it rolls every entry of the round back, so a half-committed round never stands.
+The file side is settled only after that session commits.
+A held draft file and its claim go then, never before, so a rolled-back round leaves every file for a retry.
+A refusal from the store therefore leaves the file on disk exactly as it was, so nothing typed is lost.
 The draft file is rewritten with the stored entry id the moment the database write returns.
 A kill between the two writes would otherwise leave the entry stored and the file blank.
 Recommitting that file would store the word twice.
@@ -118,20 +112,26 @@ Reading the entry back makes the leftover match, which is what lets the sweep co
 Only after the entry exists is the court settled and each owner draft rewritten.
 Rewriting means the tentative id sitting in a translation list becomes the real entry id.
 An owner this same walk entered settles its own list through the map and is rewritten all the same.
-A store that fails after the targets committed then leaves a file naming real entries, so a retry keeps the links.
 An owner whose file has since gone is passed over rather than recreated.
-The held file is deleted last, so a failure anywhere above leaves the work recoverable.
+Two drafts naming each other cannot both settle through the map, because one commits before the other has an id.
+Such a link is held back and written once the round is through, when both ids are known.
+Neither direction of the pair is lost, and nothing is silently dropped.
 The id leaves the claimed set with the file, and the claim file goes too.
 No launch counts the draft again.
+Every entry the round stored is announced, not only the one the caller asked for.
 The caller asking for this commit owns its own draft, so the walk opens holding it.
 
-## `private LOutcome LEngineDraftCommit(long id, HashSet<long> entered, bool held)`
+## `private LOutcome LEngineDraftCommit(long id, bool held, Dictionary<long, LDraft> loaded, Dictionary<long, LOutcome> settled, List<LCourt> deferred, List<long> finished)`
 
-The same commit, carrying the drafts the walk has already entered and whether this frame holds its own draft.
+The same commit, carrying what the walk has already loaded and settled, whether this frame holds its own draft, the links held back and the drafts to finish.
 Each frame builds its own map, so a frame reports only the ids its own draft held.
 Two drafts naming each other would otherwise recurse until the stack died, which no catch can reach.
-A target already in the set is passed over, since the walk is settling it further up.
-The id is added before its targets are visited, so the draft cannot reach itself through them.
+A target already loaded is not entered again, since the walk is settling it further up.
+When that target has already settled, its entry id goes into this frame's map like any other.
+When it has not, the link is held back for the pass that runs once the round is through.
+The draft is loaded before its targets are visited, so it cannot reach itself through them.
+A frame that holds its draft names it as finished rather than deleting its file here.
+The files go only after the whole round's session has committed.
 A target is held only when a live claim names this process and this engine started it.
 A target claimed by another process or by an editor this engine never started is entered without being held.
 A target claimed by nothing at all is entered the same way.
@@ -147,7 +147,7 @@ Taking the file away would leave that editor saving into nothing, and every late
 The draft it keeps names a stored entry.
 The editor's own commit updates that entry rather than storing the word twice.
 
-## `public void LEngineDraftCancel(string id)`
+## `public void LEngineDraftCancel(long id)`
 
 Discards held work: the court first, the file second.
 It also drops what this draft's lookups and audio searches found, because closing is what frees a trove.
@@ -157,7 +157,7 @@ Each row pointing at it also has its tentative id struck from the draft that hel
 That id will never become an entry now.
 A chip left carrying it would be stored as a translation of a record that never existed.
 
-## `private bool LEngineHoldCheck(string id)`
+## `private bool LEngineHoldCheck(long id)`
 
 Whether this engine may take a draft away.
 It may only when a live claim names this process and its own set holds the id.
@@ -166,7 +166,7 @@ A claim naming another process answers no.
 So does a draft another editor in this process started, or one with no claim.
 Commit and cancel both ask this before deleting a file, so neither can empty an editor it does not own.
 
-## `private bool LEngineClaimCheck(string id)`
+## `private bool LEngineClaimCheck(long id)`
 
 Whether a copy of the program other than this one is still working on a draft.
 A live claim naming this very process is one this engine already knows about through its own set.
@@ -178,17 +178,37 @@ A stale claim is swept by the check itself and answers false.
 What a draft carrying no entry is measured against.
 A form that was never opened on an entry started from nothing.
 
-## `private void LEngineDraftValidate(string id)`
+## `private void LEngineDraftValidate(long id)`
 
 Refuses an id raised in a workspace this engine no longer holds.
 The folder such an id names is gone.
 A read would answer null and a write would land in the wrong workspace.
 A caller holding one is told so rather than being handed either silence.
 
-## `private LDraft LEngineDraftLoad(string id)`
+## `private LDraft LEngineDraftLoad(long id)`
 
 Reads a held draft that the caller is about to act on, refusing when it is gone.
 Another window may have stored or discarded it already.
+
+## `private void LEngineCourtApply(IReadOnlyDictionary<long, LDraft> loaded, IReadOnlyDictionary<long, LOutcome> settled, IReadOnlyList<LCourt> deferred)`
+
+Writes every link the walk held back, now that every draft of the round has an entry id.
+The owner's content as it was loaded says which cards carried the target's draft id.
+The owner's map says which stored card each of those became.
+A link whose owner or target did not settle is passed over, because there is nothing to write it against.
+
+## `private void LEngineCourtApply(IReadOnlyList<LCardDraft> cards, LOutcome made, long draftId, long entryId, bool collocation)`
+
+One card list of the owner walked for the target's draft id, children included.
+A card that carried it has the target's entry id appended to its stored translations.
+
+## `private static bool LEngineTranslationCheck(IReadOnlyList<long> translations, long id)`
+
+Whether one card's translation list carries `id`.
+
+## `private void LEngineTranslationAppend(long ownerId, long entryId, bool collocation)`
+
+Adds `entryId` to the end of one stored card's translations, unless the card already links it.
 
 ## `private LEntryDraft LEngineTranslationSettle(LEntryDraft content)`
 
@@ -197,6 +217,7 @@ Both card lists are settled, because a chip can sit on a meaning or on a colloca
 
 ## `private IReadOnlyList<LCardDraft> LEngineTranslationSettle(IReadOnlyList<LCardDraft> cards)`
 
-Keeps only the translations that still load as an entry.
-An id that loads nothing points at a record that was discarded or never arrived.
-There is nothing left to store it against.
+Keeps only the translations that still read as a stored entry.
+An id that reads nothing points at a record that was discarded, never arrived, or is still being committed in this round.
+There is nothing to store it against yet, and the round's last pass writes the ones that become real.
+The check is a single row read, not a load of the whole entry tree.

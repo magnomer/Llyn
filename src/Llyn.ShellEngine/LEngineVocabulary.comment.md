@@ -109,6 +109,7 @@ A draft that names nothing shows nothing.
 
 The parts of speech a draft carries, as the rows the store keeps.
 A draft linking a value row that still exists is stored under that link untouched.
+A draft linking a value row that is gone is refused rather than quietly dropped or rebound to its text.
 A draft carrying only typed text is looked up in the language's vocabulary first.
 Text that names a value is filed under that row.
 Text that names none is kept as it was typed.

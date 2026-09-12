@@ -23,7 +23,7 @@ A path outside the workspace has no relative form and is kept as it stands.
 
 Creates `pronunciation` with its syllables and representations as its ordered child rows and returns it with its assigned id.
 
-## `public LPronunciation? LEnginePronunciationRead(string entryId)`
+## `public LPronunciation? LEnginePronunciationRead(long entryId)`
 
 Reads the pronunciation the Entry identified by `entryId` keeps, with its syllables and representations, or `null` when it keeps none.
 
@@ -33,20 +33,20 @@ Rewrites the pronunciation `pronunciation` identifies, its syllables and its rep
 The audio hanging from it is untouched.
 Its id does not change, so the recording stays attached across an edit of the IPA.
 
-## `public void LEnginePronunciationDelete(string id)`
+## `public void LEnginePronunciationDelete(long id)`
 
 Deletes the pronunciation identified by `id` with its syllables, representations and audio row.
 The file on disk is not removed.
 The workspace owns it, and another entry may have been given the same recording.
 
-## `public void LEngineAudioSave(string pronunciationId, string file, string? source)`
+## `public void LEngineAudioSave(long pronunciationId, string file, string? source)`
 
 Saves `file` as the audio of the pronunciation identified by `pronunciationId`.
 It replaces whatever it played before.
 It records the `source` the recording came from.
 The path is stored relative to the workspace when it lies inside it, so a moved workspace keeps its audio.
 
-## `public LPronunciationAudio? LEngineAudioRead(string pronunciationId)`
+## `public LPronunciationAudio? LEngineAudioRead(long pronunciationId)`
 
 Reads the audio of the pronunciation identified by `pronunciationId`.
 Its file is resolved to a full path in the workspace in use now.
@@ -58,11 +58,11 @@ Saves `note` as the note of its Entry, replacing the one there.
 An Entry keeps at most one note, keyed by the Entry itself.
 So a save is a create or a rewrite, and the caller need not know which.
 
-## `public LNote? LEngineNoteRead(string entryId)`
+## `public LNote? LEngineNoteRead(long entryId)`
 
 Reads the note the Entry identified by `entryId` keeps, or `null` when it keeps none.
 
-## `public void LEngineNoteDelete(string entryId)`
+## `public void LEngineNoteDelete(long entryId)`
 
 Deletes the note of the Entry identified by `entryId`, if it has one.
 

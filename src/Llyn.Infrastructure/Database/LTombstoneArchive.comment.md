@@ -15,16 +15,16 @@ This store never deletes lexical data — `LEntryArchive.LEntryDelete` does that
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public LTombstone LTombstoneRecord(string entryId, string revisionId)`
+## `public LTombstone LTombstoneRecord(long entryId, long revisionId)`
 
 Records that the Entry identified by `entryId` was deleted under `revisionId`.
 It is stamped with the current UTC time.
 Returns the stored tombstone.
 
-## `public LTombstone? LTombstoneRead(string entryId)`
+## `public LTombstone? LTombstoneRead(long entryId)`
 
 Reads the tombstone for the Entry identified by `entryId`, or `null` when that Entry has never been deleted.
 
-## `public IReadOnlyList<LTombstone> LTombstoneRevisionRead(string revisionId)`
+## `public IReadOnlyList<LTombstone> LTombstoneRevisionRead(long revisionId)`
 
 Reads every tombstone filed under `revisionId`, oldest deletion first.

@@ -54,6 +54,42 @@ The delete control and the usage count follow the stored id the draft names, not
 A sentence the engine has not stored yet can be deleted from nothing.
 The control stays off until it names one.
 
+## `private void PTranscriptShow(LExample example)`
+
+Redraws each field from the held sentence only where the field says something else.
+The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
+
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+
+Writes one field and its mark from a value, unless the field already reads that value.
+
+## `private void PTranscriptShow(LExample example)`
+
+Redraws each field from the held sentence only where the field says something else.
+The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
+
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+
+Writes one field and its mark from a value, unless the field already reads that value.
+
+## `private void PTranscriptShow(LExample example)`
+
+Redraws each field from the held sentence only where the field says something else.
+The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
+
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+
+Writes one field and its mark from a value, unless the field already reads that value.
+
+## `private void PTranscriptShow(LExample example)`
+
+Redraws each field from the held sentence only where the field says something else.
+The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
+
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+
+Writes one field and its mark from a value, unless the field already reads that value.
+
 ## `private LExample PTranscriptRead(LExample held)`
 
 The held sentence with the control values written over it.

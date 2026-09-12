@@ -21,11 +21,18 @@ A reference points at the row and never at a copy of its text.
 Creates `situation` and returns it with its assigned id.
 Its title is not identity: the same words saved twice are two Situations.
 
-## `public LSituation? LEngineSituationRead(string id)`
+## `private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)`
+
+The one stored Situation whose title reads as `title`, or `null` when none or several do.
+Both sides are folded the way `LCatalog.LCatalogTextFold` folds, so case and edge spaces do not make a second row.
+Several rows sharing a title are a question the engine cannot answer, so a new row is made rather than one guessed.
+The engine holds this rule so the form, a commit and any other client all get one row for one wording.
+
+## `public LSituation? LEngineSituationRead(long id)`
 
 Reads the Situation for `id`, or `null` when none has that id.
 
-## `public IReadOnlyList<LSituation> LEngineSituationRead(string ownerId, LOwner owner)`
+## `public IReadOnlyList<LSituation> LEngineSituationRead(long ownerId, LOwner owner)`
 
 Reads the Situations the Meaning or Collocation identified by `ownerId` references, in the order that side holds them.
 
@@ -33,25 +40,25 @@ Reads the Situations the Meaning or Collocation identified by `ownerId` referenc
 
 Rewrites the title, description and kind of the Situation `situation` identifies.
 
-## `public void LEngineSituationAttach(string ownerId, string situationId, int position, LOwner owner)`
+## `public void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)`
 
 References the Situation identified by `situationId` from the side identified by `ownerId`.
 That side is a Meaning or a Collocation, and the reference goes in at `position`.
 The set is renumbered around it.
 
-## `public void LEngineSituationDetach(string ownerId, string situationId, LOwner owner)`
+## `public void LEngineSituationDetach(long ownerId, long situationId, LOwner owner)`
 
 Removes one side's reference to a Situation.
 The Situation and its other references survive — the rule a card edit follows.
 
-## `public void LEngineSituationRemove(string ownerId, string situationId, LOwner owner)`
+## `public void LEngineSituationRemove(long ownerId, long situationId, LOwner owner)`
 
 Removes one side's reference to a Situation and deletes the Situation when that was its last reference.
 Detach, count and delete share one session.
 So the row is judged against the references as they stand at that moment.
 No caller can compose the steps itself.
 
-## `public void LEngineSituationDelete(string id)`
+## `public void LEngineSituationDelete(long id)`
 
 Deletes the Situation identified by `id`.
 Refused while any Meaning or Collocation still references it.
@@ -61,7 +68,7 @@ Refused while any Meaning or Collocation still references it.
 
 Every Situation in the workspace, for the panel that browses the shelf itself rather than one card's references.
 
-## `public void LEngineSituationDelete(string id, bool detach)`
+## `public void LEngineSituationDelete(long id, bool detach)`
 
 Deletes the Situation, dropping every reference to it first when the user asked for that.
 Without `detach` it is the refusing delete above.

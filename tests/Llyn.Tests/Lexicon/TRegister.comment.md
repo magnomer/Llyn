@@ -20,6 +20,12 @@ A name no pack ships is stored as a written Register, belonging to no language.
 Two cards typing the same wording must reference one row.
 Otherwise the shelf would grow a duplicate every time a name was typed instead of chosen.
 
+## `public void RegisterSave_TwoEntriesWritingOneName_ReferenceOneRow()`
+
+Two cards typing the same wording without ever looking it up must still reference one row.
+The engine folds case and edge spaces when it looks the wording up, so the panel needs no matching rule of its own.
+A client that never consults the shelf, such as an import, gets the same shelf as the form.
+
 ## `public void RegisterFind_WorkspaceShelf_ReturnsMarkCounts()`
 
 The panel browsing the shelf must see a Register nothing is marked with, which no card read can reach.

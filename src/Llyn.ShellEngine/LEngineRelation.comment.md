@@ -45,7 +45,7 @@ Naming both an Entry and a Meaning is refused with `LRefusal.LRefusalTarget`.
 So is naming neither, or naming one that is not stored.
 Nothing is written in either case.
 
-## `public IReadOnlyList<LRelation> LEngineRelationRead(string meaningId)`
+## `public IReadOnlyList<LRelation> LEngineRelationRead(long meaningId)`
 
 Reads the relations originating from the Meaning identified by `meaningId`, in stored order.
 Each carries the single target it points at.
@@ -58,12 +58,12 @@ A relation is re-pointed by deleting it and creating the one that replaces it.
 So a target is only ever written alongside the check that resolved it.
 `LEngineRelationMove` owns the order.
 
-## `public void LEngineRelationMove(string id, int position)`
+## `public void LEngineRelationMove(long id, int position)`
 
 Moves the relation identified by `id` to `position` among the relations of its origin Meaning.
 It renumbers the set so its positions stay contiguous.
 
-## `public void LEngineRelationDelete(string id)`
+## `public void LEngineRelationDelete(long id)`
 
 Deletes the relation identified by `id`.
 The Entry or Meaning it pointed at is untouched.
@@ -76,7 +76,7 @@ The target is checked on the same terms as a relation's.
 It must be exactly one Entry or Meaning, and one that is stored.
 Otherwise the write is refused with `LRefusal.LRefusalTarget`.
 
-## `public IReadOnlyList<LSynonym> LEngineSynonymRead(string collocationId)`
+## `public IReadOnlyList<LSynonym> LEngineSynonymRead(long collocationId)`
 
 Reads the synonym interlinks hanging from the Collocation identified by `collocationId`, in stored order.
 Each carries the single target it points at.
@@ -88,11 +88,11 @@ A synonym holds nothing but its target.
 So the new target is resolved here on the same terms as a create.
 Both, neither, or an unstored target is refused with `LRefusal.LRefusalTarget`.
 
-## `public void LEngineSynonymMove(string id, int position)`
+## `public void LEngineSynonymMove(long id, int position)`
 
 Moves the synonym identified by `id` to `position` in its Collocation's order, renumbering the set so its positions stay contiguous.
 
-## `public void LEngineSynonymDelete(string id)`
+## `public void LEngineSynonymDelete(long id)`
 
 Deletes the synonym interlink identified by `id`.
 The Entry or Meaning it pointed at is untouched.

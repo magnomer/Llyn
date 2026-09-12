@@ -23,7 +23,7 @@ Their entry id and position are assigned from list order.
 Returns the stored entry with its id and timestamps filled in.
 The whole write is one transaction.
 
-## `public LEntry? LEntryRead(string id)`
+## `public LEntry? LEntryRead(long id)`
 
 Reads the entry row for `id`, or `null` when no entry has that id.
 
@@ -54,11 +54,11 @@ A tag is held on a meaning or a collocation, never on the entry itself.
 So both sides are asked and the entries they name are unioned.
 An entry tagged on several of its cards is still one row.
 
-## `public IReadOnlyList<LForm> LEntryFormRead(string id)`
+## `public IReadOnlyList<LForm> LEntryFormRead(long id)`
 
 Reads the entry's written forms, ordered by position.
 
-## `public IReadOnlyList<LSpeech> LEntrySpeechRead(string id)`
+## `public IReadOnlyList<LSpeech> LEntrySpeechRead(long id)`
 
 Reads the entry's part-of-speech assignments, ordered by position.
 
@@ -68,19 +68,19 @@ Updates the headword and metadata of the entry identified by `entry`'s id and st
 The id, forms, and POS are untouched.
 Throws when no entry carries that id, rather than reporting success for a write that reached nothing.
 
-## `public void LEntryFormSet(string id, IReadOnlyList<LForm> forms)`
+## `public void LEntryFormSet(long id, IReadOnlyList<LForm> forms)`
 
 Replaces the entry's forms with `forms` in list order.
 Existing form rows are cleared and the new set written.
 So reordering rewrites positions while the entry id stays fixed.
 
-## `public void LEntrySpeechSet(string id, IReadOnlyList<LSpeech> speeches)`
+## `public void LEntrySpeechSet(long id, IReadOnlyList<LSpeech> speeches)`
 
 Replaces the entry's part-of-speech assignments with `speeches` in list order, clearing the existing rows first.
 Reordering rewrites positions.
 The entry id stays fixed.
 
-## `public void LEntryDelete(string id)`
+## `public void LEntryDelete(long id)`
 
 Deletes the entry identified by `id` and everything it owns.
 The foreign-key cascade carries away its forms and parts of speech.
@@ -104,7 +104,7 @@ The guard and the delete share one transaction, so nothing can slip between them
 
 ## Inline notes
 
-### `private static void LEntryLinkValidate(SqliteConnection connection, string id)`
+### `private static void LEntryLinkValidate(SqliteConnection connection, long id)`
 
 Counts the lexical links that reach this entry from outside it.
 Those are relations elsewhere whose target is this entry or one of its meanings.
@@ -112,7 +112,7 @@ They are also collocation synonyms elsewhere pointing at either.
 The schema declares those columns without a cascade, precisely so they cannot be swept away silently.
 This turns the resulting foreign-key error into a message that names the reason.
 
-### `private static void LEntryLinkClear(SqliteConnection connection, string id)`
+### `private static void LEntryLinkClear(SqliteConnection connection, long id)`
 
 Clears the links this entry owns before the entry row goes.
 They would cascade anyway.

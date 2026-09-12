@@ -10,7 +10,7 @@ It lives beside it rather than inside it because the two share nothing but the d
 Creating writes rows in card order.
 Changing has to work out which stored row each card is first.
 
-## `public LEntry LEngineEntryUpdate(string id, LEntryDraft draft)`
+## `public LEntry LEngineEntryUpdate(long id, LEntryDraft draft)`
 
 Applies `draft` to the entry identified by `id` and returns the stored entry as it now stands.
 The entry keeps its opaque id and its `added_utc`.
@@ -56,13 +56,13 @@ A field that did not change writes no row and records no revision change.
 
 ## Inline notes
 
-### `private static void LEngineFormUpdate(LEntryArchive entries, string entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+### `private static void LEngineFormUpdate(LEntryArchive entries, long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
 
 The forms of the entry as the draft holds them, replacing what stood before.
 Positions are rewritten by the archive, so a reordered list stores as the new order.
 The comparison is over the text, the role and the label, because those are what a form is.
 
-### `private void LEngineInflectionUpdate(string entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+### `private void LEngineInflectionUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
 
 The inflections of the entry as the draft holds them, features and all.
 A feature list that differs at one place is a different inflection, so the whole set is rewritten.
@@ -96,7 +96,7 @@ That id is empty on the way in and filled on the way out.
 The parts of speech as words, for the revision change text.
 A linked value shows its current name, and custom text shows itself.
 
-### `private void LEngineNoteUpdate(string entryId, LEntryDraft draft, List<LRevisionChange> changes)`
+### `private void LEngineNoteUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
 
 The entry's note reconciled to the draft.
 Text replaces whatever was stored.

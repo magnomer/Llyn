@@ -31,12 +31,22 @@ Puts the caret at the end of the field when the empty space beside the chips is 
 
 The card whose Register field holds this chip or caret, or `null` when no shown card does.
 
+## `private bool PRegisterSend(PCard card, string text)`
+
+Turns a typed name into a request, and answers whether one went out.
+A name the card already carries goes nowhere.
+One that names a stored Register exactly is picked, and any other is added new.
+
+## `private void PRegisterSend(PCard card, long? id, string written)`
+
+Sends the pick or the addition at the place the caret stands.
+
+## `private void PRegisterRemove(PCard card, PRegister? chip)`
+
+Asks the engine to unlink the chip, when there is one to unlink.
+
 ## `private void PRegisterCommit(PCard card)`
 
-Turns what stands in the caret into a chip, marking a stored Register when the wording names one exactly.
-Otherwise the wording is committed as written, and the engine decides what row it becomes on save.
-
-## `private string? PRegisterResolve(string written)`
-
-The id of the stored Register whose name is exactly `written`, or `null` when none is.
-A shelf that cannot be read is the same as a shelf holding nothing, because a chip must still be typeable.
+Turns what stands in the caret into a chip and sends the wording to the engine as written.
+The engine decides whether the wording names a stored Register or starts a new one.
+The panel holds no matching rule of its own, so every client of the engine gets the same answer.

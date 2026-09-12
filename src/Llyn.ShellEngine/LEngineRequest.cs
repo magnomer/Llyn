@@ -21,14 +21,58 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalDraft);
             }
 
-            LDraft draft = LEngineDraftLoad(request.LRequestDraftId);
-            LEntryDraft content = LEngineDraftNormalize(LEngineRequestApply(draft.LDraftContent, request));
-            saved = draft with { LDraftContent = content };
+            LDraft draft = LEngineRequestApply(LEngineDraftLoad(request.LRequestDraftId), request);
+            saved = draft with { LDraftContent = LEngineDraftNormalize(draft.LDraftContent) };
             LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved);
         }
 
         LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
         return saved;
+    }
+
+    private LDraft LEngineRequestApply(LDraft draft, LRequest request)
+    {
+        return request switch
+        {
+            LRequestExampleText sent => LEngineExampleChange(
+                draft, example => example with { LExampleText = LEngineValueRead(sent.LRequestValue) }),
+            LRequestExampleTranslation sent => LEngineExampleChange(
+                draft, example => example with { LExampleTranslation = LEngineValueRead(sent.LRequestValue) }),
+            LRequestExampleLanguage sent => LEngineExampleChange(
+                draft, example => example with { LExampleLanguage = sent.LRequestLanguage ?? string.Empty }),
+            LRequestExampleReference sent => LEngineExampleChange(
+                draft,
+                example => example with { LExampleSource = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId) }),
+            LRequestReferenceTitle sent => LEngineReferenceChange(
+                draft, reference => reference with { LReferenceTitle = LEngineValueRead(sent.LRequestValue) }),
+            LRequestReferenceYear sent => LEngineReferenceChange(
+                draft, reference => reference with { LReferenceYear = LEngineValueRead(sent.LRequestValue) }),
+            LRequestReferenceKind sent => LEngineReferenceChange(
+                draft, reference => reference with { LReferenceKind = sent.LRequestKind }),
+            LRequestReferenceNote sent => LEngineReferenceChange(
+                draft, reference => reference with { LReferenceNote = LEngineValueRead(sent.LRequestValue) }),
+            LRequestReferenceUrl sent => LEngineReferenceChange(
+                draft, reference => reference with { LReferenceUrl = LEngineValueRead(sent.LRequestValue) }),
+            LRequestAuthorState sent => LEngineReferenceChange(
+                draft, reference => reference with { LReferenceAuthorState = sent.LRequestState }),
+            LRequestAuthorAddition sent => LEngineAuthorAdd(draft, sent),
+            LRequestAuthorPick sent => LEngineAuthorInsert(draft, sent),
+            LRequestAuthorRemoval sent => LEngineAuthorRemove(draft, sent.LRequestAuthorId),
+            LRequestAuthorShift sent => LEngineAuthorMove(draft, sent),
+            LRequestSituationTitle sent => LEngineSituationChange(
+                draft,
+                sent.LRequestSituationId,
+                situation => situation with { LSituationTitle = LEngineValueRead(sent.LRequestValue) }),
+            LRequestSituationDescription sent => LEngineSituationChange(
+                draft,
+                sent.LRequestSituationId,
+                situation => situation with { LSituationDescription = LEngineValueRead(sent.LRequestValue) }),
+            LRequestSituationKind sent => LEngineSituationChange(
+                draft,
+                sent.LRequestSituationId,
+                situation => situation with { LSituationKind = LEngineValueRead(sent.LRequestValue) }),
+            _ => draft with { LDraftContent = LEngineRequestApply(draft.LDraftContent, request) },
+        };
     }
 
     private LEntryDraft LEngineRequestApply(LEntryDraft content, LRequest request)
@@ -60,15 +104,15 @@ public sealed partial class LEngine
             LRequestCardTitle sent => LEngineCardChange(
                 content,
                 sent.LRequestCardId,
-                card => card with { LCardDraftTitle = sent.LRequestValue ?? LStateValue.LStateValueUnspecified }),
+                card => card with { LCardDraftTitle = LEngineValueRead(sent.LRequestValue) }),
             LRequestCardExpression sent => LEngineCardChange(
                 content,
                 sent.LRequestCardId,
-                card => card with { LCardDraftExpression = sent.LRequestValue ?? LStateValue.LStateValueUnspecified }),
+                card => card with { LCardDraftExpression = LEngineValueRead(sent.LRequestValue) }),
             LRequestCardMeaning sent => LEngineCardChange(
                 content,
                 sent.LRequestCardId,
-                card => card with { LCardDraftMeaning = sent.LRequestValue ?? LStateValue.LStateValueUnspecified }),
+                card => card with { LCardDraftMeaning = LEngineValueRead(sent.LRequestValue) }),
             LRequestCardGloss sent => LEngineCardChange(
                 content,
                 sent.LRequestCardId,
@@ -77,8 +121,13 @@ public sealed partial class LEngine
                 content,
                 sent.LRequestCardId,
                 card => card with { LCardDraftLabels = sent.LRequestText ?? string.Empty }),
-            _ => throw new ArgumentException("The request kind is not one the engine applies.", nameof(request)),
+            _ => LEngineListApply(content, request),
         };
+    }
+
+    private static LStateValue LEngineValueRead(LStateValue? value)
+    {
+        return value ?? LStateValue.LStateValueUnspecified;
     }
 
     private static LPronunciationDraft LEngineSoundRead(LEntryDraft content)

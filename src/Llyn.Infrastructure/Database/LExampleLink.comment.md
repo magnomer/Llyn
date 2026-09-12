@@ -16,7 +16,7 @@ It reaches one only through the cards beneath it, so there is no Entry arm to re
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public IReadOnlyList<LUsage> LExampleUsageRead(string id)`
+## `public IReadOnlyList<LUsage> LExampleUsageRead(long id)`
 
 Every card quoting one Example, itemized rather than counted.
 A Meaning or Collocation row names the Entry it belongs to.
@@ -24,7 +24,7 @@ A row carries the entry id it is followed through.
 It stays followable after the text it shows is edited.
 A quoting card with no wording of its own falls back to the definition or expression beneath it.
 
-## `internal static void LExampleLinkClear(SqliteConnection connection, string exampleId)`
+## `internal static void LExampleLinkClear(SqliteConnection connection, long exampleId)`
 
 Drops every reference to one Example from every association table.
 The Meaning and Collocation sides are handed to `LSentenceArchive`, which also clears it where it stands as a revision.

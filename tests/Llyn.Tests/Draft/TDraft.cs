@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text.Json;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -162,13 +162,10 @@ public sealed class TDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft started = engine.TEngineDraftStart("editor", null);
-        engine.TEngineDraftSave(started with
-        {
-            LDraftContent = TDraftCreate("editor", "kindle").LDraftContent with
+        engine.TRequestContentApply(started.LDraftId, TDraftCreate("editor", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-            },
-        });
+            });
 
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
 
@@ -204,9 +201,7 @@ public sealed class TDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft started = engine.TEngineDraftStart("editor", null);
-        engine.TEngineDraftSave(started with
-        {
-            LDraftContent = TDraftCreate("editor", "kindle").LDraftContent with
+        engine.TRequestContentApply(started.LDraftId, TDraftCreate("editor", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings =
                 [
@@ -214,8 +209,7 @@ public sealed class TDraft
                     TDraftCardCreate("second"),
                     TDraftCardCreate("third"),
                 ],
-            },
-        });
+            });
 
         IReadOnlyList<LCardDraft> moved = engine.TEngineDraftMove(started.LDraftId, false, 0, 2);
 
@@ -240,13 +234,10 @@ public sealed class TDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft first = engine.TEngineDraftStart("editor", null);
-        engine.TEngineDraftSave(first with
-        {
-            LDraftContent = TDraftCreate("editor", "kindle").LDraftContent with
+        engine.TRequestContentApply(first.LDraftId, TDraftCreate("editor", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-            },
-        });
+            });
 
         LEntry stored = engine.TEngineDraftCommit(first.LDraftId);
         LDraft opened = engine.TEngineDraftStart("editor", stored.LEntryId);
@@ -255,9 +246,7 @@ public sealed class TDraft
 
         LCardDraft card = opened.LDraftContent.LEntryDraftMeanings[0];
 
-        engine.TEngineDraftSave(opened with
-        {
-            LDraftContent = opened.LDraftContent with
+        engine.TRequestContentApply(opened.LDraftId, opened.LDraftContent with
             {
                 LEntryDraftMeanings =
                 [
@@ -266,8 +255,7 @@ public sealed class TDraft
                         LCardDraftVideo = [TInterface.TVideoDraftCreate("https://example.com/reel.mp4")],
                     },
                 ],
-            },
-        });
+            });
 
         Assert.True(engine.TEngineDraftCheck(opened.LDraftId));
     }
@@ -279,23 +267,17 @@ public sealed class TDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft first = engine.TEngineDraftStart("editor", null);
-        engine.TEngineDraftSave(first with
-        {
-            LDraftContent = TDraftCreate("editor", "kindle").LDraftContent with
+        engine.TRequestContentApply(first.LDraftId, TDraftCreate("editor", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-            },
-        });
+            });
 
         LEntry stored = engine.TEngineDraftCommit(first.LDraftId);
         LDraft opened = engine.TEngineDraftStart("editor", stored.LEntryId);
 
         Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
 
-        engine.TEngineDraftSave(opened with
-        {
-            LDraftContent = opened.LDraftContent with { LEntryDraftLanguage = "Korean" },
-        });
+        engine.TRequestContentApply(opened.LDraftId, opened.LDraftContent with { LEntryDraftLanguage = "Korean" });
 
         Assert.True(engine.TEngineDraftCheck(opened.LDraftId));
     }
@@ -308,10 +290,7 @@ public sealed class TDraft
 
         LDraft opened = engine.TEngineDraftStart("editor", null);
 
-        engine.TEngineDraftSave(opened with
-        {
-            LDraftContent = opened.LDraftContent with { LEntryDraftLanguage = "Korean" },
-        });
+        engine.TRequestContentApply(opened.LDraftId, opened.LDraftContent with { LEntryDraftLanguage = "Korean" });
 
         Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
     }
@@ -325,20 +304,14 @@ public sealed class TDraft
         LDraft first = engine.TEngineDraftStart("editor", null);
         LDraft second = engine.TEngineDraftStart("editor", null);
 
-        engine.TEngineDraftSave(first with
-        {
-            LDraftContent = TDraftCreate("editor", "kindle").LDraftContent with
+        engine.TRequestContentApply(first.LDraftId, TDraftCreate("editor", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-            },
-        });
-        engine.TEngineDraftSave(second with
-        {
-            LDraftContent = TDraftCreate("editor", "ember").LDraftContent with
+            });
+        engine.TRequestContentApply(second.LDraftId, TDraftCreate("editor", "ember").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("a glowing coal")],
-            },
-        });
+            });
 
         engine.TEngineCourtSave(first.LDraftId, second.LDraftId, "ember", "English");
         engine.TEngineCourtSave(second.LDraftId, first.LDraftId, "kindle", "English");
@@ -347,6 +320,41 @@ public sealed class TDraft
 
         Assert.Equal("kindle", stored.LEntryHeadword);
         Assert.Single(engine.TEngineEntryFind("ember"));
+        Assert.Empty(engine.TEngineDraftScan());
+        Assert.Empty(TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder));
+    }
+
+    [Fact]
+    public void DraftCommit_DraftsTranslatingEachOther_StoresBothLinks()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LDraft first = engine.TEngineDraftStart("editor", null);
+        LDraft second = engine.TEngineDraftStart("editor", null);
+
+        engine.TRequestContentApply(first.LDraftId, TDraftCreate("editor", "kindle").LDraftContent with
+            {
+                LEntryDraftMeanings = [TDraftCardCreate("set alight") with { LCardDraftTranslation = [second.LDraftId] }],
+            });
+        engine.TRequestContentApply(second.LDraftId, TDraftCreate("editor", "ember").LDraftContent with
+            {
+                LEntryDraftMeanings = [TDraftCardCreate("a glowing coal") with { LCardDraftTranslation = [first.LDraftId] }],
+            });
+
+        engine.TEngineCourtSave(first.LDraftId, second.LDraftId, "ember", "English");
+        engine.TEngineCourtSave(second.LDraftId, first.LDraftId, "kindle", "English");
+
+        LEntry kindle = engine.TEngineDraftCommit(first.LDraftId);
+        LEntry ember = Assert.Single(engine.TEngineEntryFind("ember"));
+
+        LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaning lit = Assert.Single(meanings.TMeaningRead(kindle.LEntryId));
+        LMeaning coal = Assert.Single(meanings.TMeaningRead(ember.LEntryId));
+
+        Assert.Equal(ember.LEntryId, Assert.Single(translations.TTranslationMeaningRead(lit.LMeaningId)).LTranslationEntryId);
+        Assert.Equal(kindle.LEntryId, Assert.Single(translations.TTranslationMeaningRead(coal.LMeaningId)).LTranslationEntryId);
         Assert.Empty(engine.TEngineDraftScan());
         Assert.Empty(TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder));
     }
@@ -392,20 +400,14 @@ public sealed class TDraft
             first = input.LDraftId;
             second = library.LDraftId;
 
-            engine.TEngineDraftSave(input with
-            {
-                LDraftContent = TDraftCreate("Input", "kindle").LDraftContent with
+            engine.TRequestContentApply(input.LDraftId, TDraftCreate("Input", "kindle").LDraftContent with
                 {
                     LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-                },
-            });
-            engine.TEngineDraftSave(library with
-            {
-                LDraftContent = TDraftCreate("Library", "ember").LDraftContent with
+                });
+            engine.TRequestContentApply(library.LDraftId, TDraftCreate("Library", "ember").LDraftContent with
                 {
                     LEntryDraftMeanings = [TDraftCardCreate("a glowing coal")],
-                },
-            });
+                });
 
             Assert.Empty(engine.TEngineLeftoverRead());
         }
@@ -435,15 +437,12 @@ public sealed class TDraft
             swept = committed.LDraftId;
             kept = edited.LDraftId;
 
-            LDraft written = committed with
-            {
-                LDraftContent = TDraftCreate("Input", "kindle").LDraftContent with
+            LDraft written = engine.TRequestContentApply(
+                committed.LDraftId,
+                TDraftCreate("Input", "kindle").LDraftContent with
                 {
                     LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-                },
-            };
-
-            engine.TEngineDraftSave(written);
+                });
 
             LEntry stored = engine.TEngineEntrySave(written.LDraftContent);
 
@@ -451,18 +450,15 @@ public sealed class TDraft
 
             Assert.NotNull(loaded);
 
-            engine.TEngineDraftSave(written with
+            TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, written with
             {
                 LDraftEntryId = stored.LEntryId,
                 LDraftContent = loaded,
             });
-            engine.TEngineDraftSave(edited with
-            {
-                LDraftContent = TDraftCreate("Library", "ember").LDraftContent with
+            engine.TRequestContentApply(edited.LDraftId, TDraftCreate("Library", "ember").LDraftContent with
                 {
                     LEntryDraftMeanings = [TDraftCardCreate("a glowing coal")],
-                },
-            });
+                });
         }
 
         using LEngine launched = workspace.TWorkspaceEngineStart();
@@ -542,19 +538,16 @@ public sealed class TDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft started = engine.TEngineDraftStart("Input", null);
-        LDraft written = started with
-        {
-            LDraftContent = TDraftCreate("Input", "kindle").LDraftContent with
+        LDraft written = engine.TRequestContentApply(
+            started.LDraftId,
+            TDraftCreate("Input", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-            },
-        };
-
-        engine.TEngineDraftSave(written);
+            });
 
         LEntry stored = engine.TEngineEntrySave(written.LDraftContent);
 
-        engine.TEngineDraftSave(written with { LDraftEntryId = stored.LEntryId });
+        TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, written with { LDraftEntryId = stored.LEntryId });
 
         LEntry recommitted = engine.TEngineDraftCommit(started.LDraftId);
 
@@ -570,21 +563,15 @@ public sealed class TDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft started = engine.TEngineDraftStart("Input", null);
-        engine.TEngineDraftSave(started with
-        {
-            LDraftContent = TDraftCreate("Input", "kindle").LDraftContent with
+        engine.TRequestContentApply(started.LDraftId, TDraftCreate("Input", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-            },
-        });
+            });
 
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
         LDraft opened = engine.TEngineDraftStart("Input", stored.LEntryId);
 
-        engine.TEngineDraftSave(opened with
-        {
-            LDraftContent = opened.LDraftContent with { LEntryDraftHeadword = "ember" },
-        });
+        engine.TRequestContentApply(opened.LDraftId, opened.LDraftContent with { LEntryDraftHeadword = "ember" });
 
         engine.TEngineEntryDelete(stored.LEntryId);
 
@@ -608,20 +595,14 @@ public sealed class TDraft
         LDraft owner = engine.TEngineDraftStart("Input", null);
         LDraft target = other.TEngineDraftStart("Library", null);
 
-        engine.TEngineDraftSave(owner with
-        {
-            LDraftContent = TDraftCreate("Input", "kindle").LDraftContent with
+        engine.TRequestContentApply(owner.LDraftId, TDraftCreate("Input", "kindle").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("set alight")],
-            },
-        });
-        other.TEngineDraftSave(target with
-        {
-            LDraftContent = TDraftCreate("Library", "ember").LDraftContent with
+            });
+        other.TRequestContentApply(target.LDraftId, TDraftCreate("Library", "ember").LDraftContent with
             {
                 LEntryDraftMeanings = [TDraftCardCreate("a glowing coal")],
-            },
-        });
+            });
 
         engine.TEngineCourtSave(owner.LDraftId, target.LDraftId, "ember", "English");
 
@@ -676,64 +657,6 @@ public sealed class TDraft
         Assert.Empty(TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder));
     }
 
-    [Fact]
-    public void DraftSave_EveryCardNamed_ReturnsTheContentSent()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LDraft started = engine.TEngineDraftStart("editor", null);
-        LEntryDraft sent = TDraftCreate("editor", "kindle").LDraftContent with
-        {
-            LEntryDraftMeanings = [TDraftCardCreate("set alight", TInterface.TIdentityCreate())],
-        };
-
-        LEntryDraft stored = engine.TEngineDraftSave(started with { LDraftContent = sent });
-
-        Assert.Same(sent, stored);
-    }
-
-    [Fact]
-    public void DraftSave_UnnamedCard_ReturnsFreshContentWithEveryCardNamed()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-
-        LDraft started = engine.TEngineDraftStart("editor", null);
-        LEntryDraft sent = TDraftCreate("editor", "kindle").LDraftContent with
-        {
-            LEntryDraftMeanings = [TDraftCardCreate("set alight", TInterface.TIdentityCreate())],
-            LEntryDraftCollocations = [TDraftCardCreate("kindle a hope")],
-        };
-
-        LEntryDraft stored = engine.TEngineDraftSave(started with { LDraftContent = sent });
-
-        Assert.NotSame(sent, stored);
-        Assert.Same(sent.LEntryDraftMeanings, stored.LEntryDraftMeanings);
-        Assert.All(
-            stored.LEntryDraftMeanings,
-            card => Assert.NotEqual(0, card.LCardDraftId));
-        Assert.All(
-            stored.LEntryDraftCollocations,
-            card => Assert.NotEqual(0, card.LCardDraftId));
-    }
-
-    private static LCardDraft TDraftCardCreate(string title, long id)
-    {
-        return TInterface.TCardDraftCreate(
-            TInterface.TStateValueCreate(title),
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            [],
-            [],
-            [],
-            string.Empty,
-            [],
-            [],
-            0,
-            id);
-    }
-
     private static LCardDraft TDraftCardCreate(string title)
     {
         return TInterface.TCardDraftCreate(
@@ -758,10 +681,10 @@ public sealed class TDraft
         using LEngine writer = workspace.TWorkspaceEngineStart();
 
         LDraft target = holder.TEngineDraftStart("Library", null);
-        holder.TEngineDraftSave(target with { LDraftContent = TDraftPlainCreate("ember") });
+        holder.TRequestContentApply(target.LDraftId, TDraftPlainCreate("ember"));
 
         LDraft owner = writer.TEngineDraftStart("Input", null);
-        writer.TEngineDraftSave(owner with { LDraftContent = TDraftPlainCreate("kindle") });
+        writer.TRequestContentApply(owner.LDraftId, TDraftPlainCreate("kindle"));
         writer.TEngineCourtSave(owner.LDraftId, target.LDraftId, "ember", "English");
 
         writer.TEngineDraftCommit(owner.LDraftId);
@@ -787,9 +710,7 @@ public sealed class TDraft
         LDraft target = engine.TEngineDraftStart("Library", null);
 
         LEntryDraft content = TDraftPlainCreate("kindle");
-        engine.TEngineDraftSave(owner with
-        {
-            LDraftContent = content with
+        engine.TRequestContentApply(owner.LDraftId, content with
             {
                 LEntryDraftMeanings =
                 [
@@ -798,8 +719,7 @@ public sealed class TDraft
                         LCardDraftTranslation = [target.LDraftId],
                     },
                 ],
-            },
-        });
+            });
         engine.TEngineCourtSave(owner.LDraftId, target.LDraftId, "ember", "English");
 
         engine.TEngineDraftCancel(target.LDraftId);
@@ -839,9 +759,7 @@ public sealed class TDraft
         LDraft started = engine.TEngineDraftStart("Input", null);
         LEntryDraft content = TDraftPlainCreate("kindle");
 
-        engine.TEngineDraftSave(started with
-        {
-            LDraftContent = content with
+        engine.TRequestContentApply(started.LDraftId, content with
             {
                 LEntryDraftMeanings =
                 [
@@ -850,8 +768,7 @@ public sealed class TDraft
                         LCardDraftTranslation = [9999],
                     },
                 ],
-            },
-        });
+            });
 
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
         LEntryDraft? loaded = engine.TEngineEntryLoad(stored.LEntryId);

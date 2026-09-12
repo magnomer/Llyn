@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -67,9 +67,6 @@ internal static partial class TInterface
 
     internal static LDraft? TEngineDraftRead(this LEngine engine, long id) =>
         engine.LEngineDraftRead(id);
-
-    internal static LEntryDraft TEngineDraftSave(this LEngine engine, LDraft draft) =>
-        engine.LEngineDraftSave(draft);
 
     internal static IReadOnlyList<LDraft> TEngineDraftScan(this LEngine engine) =>
         engine.LEngineDraftScan();

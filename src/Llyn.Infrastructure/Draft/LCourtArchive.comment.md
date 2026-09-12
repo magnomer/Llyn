@@ -18,7 +18,7 @@ The text goes to a `.json.tmp` file first and is then moved over the target.
 A move is atomic, so a reader never sees a half-written link.
 A crash mid-write leaves the previous file intact.
 
-## `public static LCourt? LCourtArchiveRead(string root, string id)`
+## `public static LCourt? LCourtArchiveRead(string root, long id)`
 
 The link stored under `id`, or `null` when no readable file holds it.
 A missing file and an unreadable one are the same answer to the caller.
@@ -30,12 +30,12 @@ A file that fails to parse or cannot be opened is skipped rather than thrown.
 Recovery lists leftovers after a crash, which is exactly when a truncated file is likely.
 One bad file must not hide the rest.
 
-## `public static void LCourtArchiveDelete(string root, string id)`
+## `public static void LCourtArchiveDelete(string root, long id)`
 
 Removes the file for `id`, which is how one link leaves the court on its own.
 A file already gone, or held open by the other copy of the program, is not an error.
 
-## `public static IReadOnlyList<LCourt> LCourtArchiveSettle(string root, string draftId)`
+## `public static IReadOnlyList<LCourt> LCourtArchiveSettle(string root, long draftId)`
 
 Settles every link pointing at `draftId`, whether that draft became a real entry or was abandoned.
 The link files disappear and the links themselves are returned.

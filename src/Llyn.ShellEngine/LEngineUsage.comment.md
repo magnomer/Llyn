@@ -19,7 +19,7 @@ The catalog shows the figure on every row, and it decides which delete may be of
 Reading it once per catalog fill costs one statement rather than one per row.
 Only an Example, a Situation and a Reference are counted this way, and any other side is refused.
 
-## `public IReadOnlyList<LUsage> LEngineUsageRead(string id, LOwner owner)`
+## `public IReadOnlyList<LUsage> LEngineUsageRead(long id, LOwner owner)`
 
 Where one object is used, itemized.
 A count says how many, this says which side cites it, and which id the row is followed by.

@@ -1,4 +1,4 @@
-﻿# LDraft.cs
+# LDraft.cs
 
 ## `public sealed record LDraft(`
 
@@ -28,3 +28,10 @@ The kind is read from the content rather than from a tag beside it, so the two c
   A file the current build did not write is not a draft.
   A reader that finds another number skips it.
   There is no compatibility read, because a field renamed underneath an old file would commit as a new entry.
+- `LDraftAuthor` — The authors credited on the source being written, in order.
+  Empty for a draft holding no source.
+  A credit with a minted id names an author commit creates before attaching.
+
+## `public IReadOnlyList<LAuthor> LDraftAuthor { get; init; }`
+
+Never null, so a reader walks it without a check.

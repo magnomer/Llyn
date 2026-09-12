@@ -1,4 +1,4 @@
-﻿# PLink.cs
+# PLink.cs
 
 ## `public partial class PEditor`
 
@@ -52,13 +52,18 @@ Redraws every card's chips once the workspace's flags have finished loading.
 
 ## Inline notes
 
-### `private void PLinkChipChange(object? sender, NotifyCollectionChangedEventArgs e)`
+### `private void PLinkRemove(PCard card, PLinkChip? chip)`
 
-Every path that takes a chip off a card arrives here, whatever key or button did it.
-A chip standing for an entry that does not exist yet takes its tentative entry with it.
-Nothing is dropped while the form is being filled, since a chip cleared then was never the user's.
+Asks the engine to unlink the chip, then closes the court link behind it if there was one.
+The chip is gone from the draft before the court is touched.
+So nothing points at a target being torn down.
 
-### `private void PLinkCourtDelete(string id)`
+### `private bool PLinkSend(PCard card, long id)`
+
+Asks the engine to link the Entry at the caret, unless the card already links it.
+Answers whether the word is settled, which an id of zero never is.
+
+### `private void PLinkCourtDelete(long id)`
 
 A chip naming a stored entry has no court row, and nothing happens.
 A chip naming a tentative one drops the row and the entry it was holding.
@@ -66,10 +71,12 @@ No other draft can name that entry, because it was made for this chip.
 
 ### `private bool PLinkResolve(PCard card, string text, bool offered)`
 
-One Entry whose whole headword is the word is not a choice, so it is linked without asking.
-Anything else is a question, and a question is only asked when the user is still in the field.
+While the user is still in the field, the word is always shown as a choice, with its language beside it.
+One Entry whose whole headword is the word is chosen already, so a single keystroke confirms it.
+A headword is the same in every language, and only the user knows which language they meant.
 That is what `offered` says.
-An unasked question leaves the word standing in the entry, where the user can still see it.
+When the field is left or a list is pasted, one whole-headword match is linked without asking, and anything else is left standing.
+An unasked question leaves the word in the entry, where the user can still see it.
 A search the workspace refuses raises a notice, because a silent nothing reads as no match.
 The entry being edited is asked of the draft, so a form never offers itself as its own translation.
 

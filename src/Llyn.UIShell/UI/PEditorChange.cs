@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Specialized;
+using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,12 +31,6 @@ public partial class PEditor
     private void PEditorChangeAttach(PCard card)
     {
         card.PropertyChanged += PCardChangeHandle;
-        card.PCardSentence.CollectionChanged += PEditorChangeHandle;
-        card.PCardContext.CollectionChanged += PEditorChangeHandle;
-        card.PCardLabel.CollectionChanged += PEditorChangeHandle;
-        card.PCardImage.CollectionChanged += PEditorChangeHandle;
-        card.PCardVideo.CollectionChanged += PEditorChangeHandle;
-        card.PCardLink.CollectionChanged += PLinkChipChange;
     }
 
     private void PCardChangeHandle(object? sender, PropertyChangedEventArgs e)
@@ -65,11 +58,6 @@ public partial class PEditor
                     new LRequestCardMeaning(_pEditorDraft, card.PCardId, card.PCardDefinitionRead()));
                 break;
         }
-    }
-
-    private void PEditorChangeHandle(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        PEditorChangeDefer();
     }
 
     private void PEditorTextHandle(object sender, TextChangedEventArgs e)
@@ -175,7 +163,6 @@ public partial class PEditor
         }
 
         PEditorRequestPersist();
-        PEditorDraftSave();
         PEditorChangeUpdate();
     }
 

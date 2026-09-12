@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -231,9 +231,7 @@ LStateAnchor.LStateAnchorUnspecified,
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft started = engine.TEngineDraftStart("editor", null);
-        engine.TEngineDraftSave(started with
-        {
-            LDraftContent = TInterface.TEntryDraftCreate(
+        engine.TRequestContentApply(started.LDraftId, TInterface.TEntryDraftCreate(
                 "word",
                 "English",
                 string.Empty,
@@ -249,8 +247,7 @@ LStateAnchor.LStateAnchorUnspecified,
                     [],
                     [],
                     0)],
-                []),
-        });
+                []));
 
         LEntry stored = engine.TEngineDraftCommit(started.LDraftId);
         LDraft opened = engine.TEngineDraftStart("editor", stored.LEntryId);
@@ -260,27 +257,24 @@ LStateAnchor.LStateAnchorUnspecified,
         Assert.Equal(LStateValue.LStateValueUnspecified, card.LCardDraftExpression);
         Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
 
-        engine.TEngineDraftSave(opened with
-        {
-            LDraftContent = opened.LDraftContent with
-            {
-                LEntryDraftMeanings =
-                [
-                    card with
-                    {
-                        LCardDraftTitle = TInterface.TStateValueResolve(
-                            card.LCardDraftTitle.TStateValueShow(),
-                            card.LCardDraftTitle.LStateValueState == LState.LStateUnknown),
-                        LCardDraftExpression = TInterface.TStateValueResolve(
-                            card.LCardDraftExpression.TStateValueShow(),
-                            card.LCardDraftExpression.LStateValueState == LState.LStateUnknown),
-                        LCardDraftMeaning = TInterface.TStateValueResolve(
-                            card.LCardDraftMeaning.TStateValueShow(),
-                            card.LCardDraftMeaning.LStateValueState == LState.LStateUnknown),
-                    },
-                ],
-            },
-        });
+        engine.TEngineRequestApply(TInterface.TRequestTitleCreate(
+            opened.LDraftId,
+            card.LCardDraftId,
+            TInterface.TStateValueResolve(
+                card.LCardDraftTitle.TStateValueShow(),
+                card.LCardDraftTitle.LStateValueState == LState.LStateUnknown)));
+        engine.TEngineRequestApply(TInterface.TRequestExpressionCreate(
+            opened.LDraftId,
+            card.LCardDraftId,
+            TInterface.TStateValueResolve(
+                card.LCardDraftExpression.TStateValueShow(),
+                card.LCardDraftExpression.LStateValueState == LState.LStateUnknown)));
+        engine.TEngineRequestApply(TInterface.TRequestMeaningCreate(
+            opened.LDraftId,
+            card.LCardDraftId,
+            TInterface.TStateValueResolve(
+                card.LCardDraftMeaning.TStateValueShow(),
+                card.LCardDraftMeaning.LStateValueState == LState.LStateUnknown)));
 
         Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
     }

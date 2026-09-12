@@ -1,4 +1,4 @@
-﻿# PVideo.cs
+# PVideo.cs
 
 ## `internal sealed class PVideo`
 
@@ -23,31 +23,39 @@ Half-typed text is a moment in the middle of typing.
 
 The row for a stored Video, holding the location and the span as the store knows them.
 
-## `internal void PVideoIdentityApply(LVideoDraft stored)`
+## `internal long PVideoId`
 
-Takes the id the engine gave this row when it saved the draft.
-The row never mints an id of its own.
+The id of the engine's row this one shows, which every request about it names.
 
-## `internal LVideoDraft PVideoDraftRead()`
+## `internal LStateValue PVideoLocationRead()`
 
-What the row says it is, the location and the span.
-Each reads as nothing written, unreadable, or the text it shows.
+What the row says its location is: nothing, unreadable, or the text it shows.
 
-## `public string PVideoTimestamp { get; set; }`
+## `internal LStateValue PVideoSpanRead()`
+
+What the row says its span is: nothing, unreadable, or the text it shows.
+
+## `internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)`
+
+Redraws the row from the engine's row, location and span apart, only where the field says something else.
+A field with a request still waiting is left as typed, which `pending` answers by field name.
+The id is always taken.
+
+## `public string PVideoTimestamp`
 
 The span as the user wrote it.
 Both ends are optional: nothing before the dash means from the start, nothing after it means to the end.
 
-## `public TimeSpan PVideoFrom { get; }`
+## `public TimeSpan PVideoFrom`
 
 Where the preview starts, read off the timestamp, and the start of the video when the timestamp says nothing.
 
-## `public TimeSpan? PVideoUntil { get; }`
+## `public TimeSpan? PVideoUntil`
 
 Where the preview goes back to the start.
 It is `null` when the timestamp named no end and the video plays out.
 
-## `public bool PVideoPlaying { get; set; }`
+## `public bool PVideoPlaying`
 
 Whether the preview should be running.
 It is the row's own state rather than the player's.

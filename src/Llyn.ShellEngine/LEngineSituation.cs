@@ -51,6 +51,36 @@ public sealed partial class LEngine
         }
     }
 
+    private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)
+    {
+        string written = LCatalog.LCatalogTextFold(title.LStateValueShow());
+        if (written.Length == 0)
+        {
+            return null;
+        }
+
+        LSituation? found = null;
+        foreach (LSituation situation in situations.LSituationRead())
+        {
+            if (!string.Equals(
+                    LCatalog.LCatalogTextFold(situation.LSituationTitle.LStateValueShow()),
+                    written,
+                    StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            if (found is not null)
+            {
+                return null;
+            }
+
+            found = situation;
+        }
+
+        return found;
+    }
+
     public LSituation? LEngineSituationRead(long id)
     {
         lock (_lEngineGate)

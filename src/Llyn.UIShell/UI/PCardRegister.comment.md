@@ -2,50 +2,59 @@
 
 ## `internal sealed partial class PCard`
 
-The Register field of one card: the chips it is marked with and the caret typed into.
-Both sit in one collection so they wrap together as a single field.
-It mirrors the Situation field, because a Register is shared data marked on a card the same way.
-A duplicate wording is never added twice, so the field can never ask the engine to mark one card twice.
+The Registers a card shows, held as the items of one field the way the Situations are.
+The collection is a run of Register chips with one open entry among them, which is the caret.
+The engine holds the chips, the card renders them by id, and every commit or removal is a request.
+Duplicates are refused before a request is sent, by id and by wording alike.
+
+## `internal Action<string>? PCardRegisterNotice { get; set; }`
+
+Where the entry's text goes as it is typed, so the editor can offer matching Registers.
+
+## `internal Func<string, bool>? PCardRegisterDispatcher { get; set; }`
+
+Where a typed name goes to become a chip, answering whether a request went out.
+
+## `internal string PCardRegisterText`
+
+What is standing in the entry.
+
+## `internal int PCardRegisterPosition`
+
+How many chips stand before the caret, which is the place a new chip is asked for.
 
 ## `internal void PCardRegisterShow(IReadOnlyList<LRegisterDraft> drafts)`
 
-Fills the field from a loaded card, dropping empty and repeated rows, and puts the caret back at the end.
+Makes the chips show the engine's Registers, matched by id, replacing a chip whose name changed.
 
-## `internal IReadOnlyList<LRegisterDraft> PCardRegisterRead()`
+## `internal PRegister? PCardRegisterFind(int step)`
 
-The field as the engine takes it, including whatever stands unfinished in the caret.
-Text left in the caret is not lost merely because the user never pressed Enter.
-
-## `internal void PCardRegisterApply(IReadOnlyList<LRegisterDraft> stored)`
-
-Writes the ids the engine minted back onto the chips, in the order the read listed them.
-A caret holding unfinished text counted as a row in the read, so it is stepped over here.
-
-## `internal void PCardRegisterRemove(PRegister chip)`
-
-Drops the chip the user clicked the cross on.
-
-## `internal void PCardRegisterRemove(int step)`
-
-Drops the chip on one side of the caret, for Backspace and Delete in an empty caret.
+The chip standing one step from the entry, before it or after it, or null.
 
 ## `internal bool PCardRegisterMove(int step)`
 
-Moves the caret one place along the field, for the arrow keys in an empty caret.
-
-## `internal void PCardRegisterCommit()`
-
-Turns whatever stands in the caret into a chip and empties the caret.
-
-## `internal bool PCardRegisterCommit(string id, string name)`
-
-Adds a chip for a Register already stored, chosen from the shelf.
-It refuses a Register the card already marks and a wording already shown.
+Steps the entry one place along the field and reports whether there was anywhere left to go.
 
 ## `internal void PCardRegisterClear()`
 
-Empties the caret without committing what stood in it.
+Empties the entry without reading it as a further edit.
 
-## `internal bool PCardRegisterMatch(string id)`
+## `internal bool PCardRegisterMatch(long? id)`
 
-Whether the card already marks the Register named by `id`, so the shelf never offers it twice.
+Whether the card already carries the stored Register.
+
+## `internal bool PCardRegisterCheck(string text)`
+
+Whether the card already carries a Register with this wording.
+
+## Inline notes
+
+### `private void PCardRegisterChange(object? sender, PropertyChangedEventArgs arguments)`
+
+The comma is read off the entry's text, so a pasted comma ends a name as a typed one does.
+Everything before the last comma is dispatched and the remainder stays in the entry.
+The guard around the rewrite keeps the handler from answering itself.
+
+### `private void PCardRegisterUpdate()`
+
+The hint belongs to the empty field and goes once a chip stands beside the entry.

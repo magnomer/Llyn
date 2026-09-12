@@ -42,7 +42,7 @@ It also settles the buttons, so a write and what the buttons say never drift apa
 Settles the discard and store controls against the engine's answer.
 Both read the same answer the closing warning reads, so the three cannot disagree.
 
-## `private LDraft? PScenarioDraftStart(string? situation)`
+## `private LDraft? PScenarioDraftStart(long? situation)`
 
 Starts a held Situation, on a stored one or on nothing, and hands back what was started.
 Whatever was held before is discarded first, so the panel never holds two.
@@ -54,10 +54,15 @@ Fills the controls from a draft just started, or empties them when none was.
 
 ## `private void PScenarioDraftSave()`
 
-Writes the control values onto the held Situation and renders what was stored.
-The engine hands back what it stored, which is not always what was sent.
-The controls are rebuilt only when those differ, or every keystroke would rebuild them under the caret.
+Sends one request per field whose control value differs from what the engine holds.
+The engine answers each with a bulletin, and the bulletin redraws only what differs, so nothing moves under the caret.
 A draft the engine no longer holds is left alone rather than recreated.
+
+## `private void PScenarioDraftRestore()`
+
+Reads the held Situation back and redraws the controls from it where they differ.
+This is what the panel's own draft bulletin does.
+Nothing is read while the controls are being filled, because filling raises the bulletin's own echo.
 
 ## `private void PScenarioDraftCancel()`
 
@@ -70,7 +75,7 @@ A failure here is swallowed, because the caller is already leaving the work behi
 The engine's answer to whether the held Situation differs from the one it opened on.
 A panel holding no draft has nothing to lose and answers false.
 
-## `private string? PScenarioSituationRead()`
+## `private long? PScenarioSituationRead()`
 
 The stored Situation the held work was opened on, or null for one nothing has stored.
 The delete control and the discard both read identity through this.

@@ -32,6 +32,8 @@ Position is compared with it, so a reorder is caught by what it changed rather t
 
 ## `private static bool LEngineVideoMatch(IReadOnlyList<LVideoDraft> one, IReadOnlyList<LVideoDraft> other)`
 
+Blank rows are left out first, as they are for sentences.
+
 Whether two video lists carry the same clips in the same order.
 
 ## `private static IReadOnlyList<LCardDraft> LEngineCardScan(IReadOnlyList<LCardDraft> cards)`
@@ -42,10 +44,12 @@ The cards that carry something, in their original order.
 
 Whether a card holds nothing at all.
 An open form always shows one such card, and offering it is not an edit.
+A blank sentence, image or video row counts as nothing, since the form offers those too.
 
 ## `private static bool LEngineSentenceMatch(IReadOnlyList<LSentenceDraft> one, IReadOnlyList<LSentenceDraft> other)`
 
 Whether two row lists say the same thing in the same order.
+Blank rows are left out first, so a row the form added and never filled is not a change.
 The frame counts, so writing a marker or a role and nothing else is a change and is saved.
 The stored row each names counts too, because a row that changed id is a different row.
 
@@ -63,6 +67,7 @@ All three stored fields count, not the title the card happens to show.
 ## `private static bool LEngineImageMatch(IReadOnlyList<LImageDraft> one, IReadOnlyList<LImageDraft> other)`
 
 Whether two image lists carry the same pictures in the same order.
+Blank rows are left out first, as they are for sentences.
 
 ## `private static bool LEngineTextMatch(IReadOnlyList<string> one, IReadOnlyList<string> other)`
 

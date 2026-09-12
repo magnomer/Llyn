@@ -42,7 +42,7 @@ It also settles the buttons, so a write and what the buttons say never drift apa
 Settles the discard and store controls against the engine's answer.
 Both read the same answer the closing warning reads, so the three cannot disagree.
 
-## `private LDraft? PImprintDraftStart(string? reference)`
+## `private LDraft? PImprintDraftStart(long? reference)`
 
 Starts a held Source, on a stored one or on nothing, and hands back what was started.
 Whatever was held before is discarded first, so the panel never holds two.
@@ -54,10 +54,19 @@ Fills the controls from a draft just started, or empties them when none was.
 
 ## `private void PImprintDraftSave()`
 
-Writes the control values onto the held Source and renders what was stored.
-The engine hands back what it stored, which is not always what was sent.
-The controls are rebuilt only when those differ, or every keystroke would rebuild them under the caret.
+Sends one request per field whose control value differs from what the engine holds.
+The engine answers each with a bulletin, and the bulletin redraws only what differs, so nothing moves under the caret.
 A draft the engine no longer holds is left alone rather than recreated.
+
+## `internal void PImprintDraftRestore(long id)`
+
+Redraws from the draft when `id` names the one this area holds, and ignores any other draft's bulletin.
+
+## `private void PImprintDraftRestore()`
+
+Reads the held Source back and redraws the controls from it where they differ.
+This is what the panel's own draft bulletin does.
+Nothing is read while the controls are being filled, because filling raises the bulletin's own echo.
 
 ## `internal void PImprintDraftCancel()`
 
@@ -70,7 +79,7 @@ A failure here is swallowed, because the caller is already leaving the work behi
 The engine's answer to whether the held Source differs from the one it opened on.
 A panel holding no draft has nothing to lose and answers false.
 
-## `private string? PImprintReferenceRead()`
+## `private long? PImprintReferenceRead()`
 
 The stored Source the held work was opened on, or null for one nothing has stored.
 The delete control, the citation figure and every credit call read identity through this.

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -173,11 +173,46 @@ public partial class PCorpus
             }
 
             LExample sent = PTranscriptRead(content);
-            LExample stored = _lEngine.LEngineExampleSave(held with { LDraftExample = sent });
-
-            if (!ReferenceEquals(stored, sent))
+            if (sent.LExampleText != content.LExampleText)
             {
-                PTranscriptApply(stored);
+                _lEngine.LEngineRequestApply(new LRequestExampleText(_pTranscriptDraft, sent.LExampleText));
+            }
+
+            if (sent.LExampleTranslation != content.LExampleTranslation)
+            {
+                _lEngine.LEngineRequestApply(
+                    new LRequestExampleTranslation(_pTranscriptDraft, sent.LExampleTranslation));
+            }
+
+            if (!string.Equals(sent.LExampleLanguage, content.LExampleLanguage, StringComparison.Ordinal))
+            {
+                _lEngine.LEngineRequestApply(new LRequestExampleLanguage(_pTranscriptDraft, sent.LExampleLanguage));
+            }
+
+            if (sent.LExampleSource != content.LExampleSource)
+            {
+                _lEngine.LEngineRequestApply(
+                    new LRequestExampleReference(_pTranscriptDraft, sent.LExampleSource.LStateAnchorShow()));
+            }
+        }
+        catch (Exception exception)
+        {
+            PTranscriptHoldSuspend(exception);
+        }
+    }
+
+    private void PTranscriptDraftRestore()
+    {
+        if (_pTranscriptDraft == 0 || _pTranscriptLoading)
+        {
+            return;
+        }
+
+        try
+        {
+            if (_lEngine.LEngineDraftRead(_pTranscriptDraft)?.LDraftExample is LExample held)
+            {
+                PTranscriptShow(held);
             }
         }
         catch (Exception exception)

@@ -34,17 +34,25 @@ Choosing a candidate empties the entry first, so the click that chose it commits
 
 ## Inline notes
 
+### `private bool PContextSend(PCard card, string text)`
+
+Turns a typed wording into a request, and answers whether one went out.
+A wording the card already carries goes nowhere.
+One that names a stored Situation exactly is picked, and any other is added new.
+
+### `private void PContextSend(PCard card, long? id, string written)`
+
+Sends the pick or the addition at the place the caret stands.
+
+### `private void PContextRemove(PCard card, PContext? chip)`
+
+Asks the engine to unlink the chip, when there is one to unlink.
+
 ### `private void PContextCommit(PCard card)`
 
-A wording already stored is attached under its own id rather than written again.
-So two cards sharing a wording share the Situation, and the workspace does not fill with twins.
-A wording nothing matches is committed as it stands, which is what writing a new Situation means.
-
-### `private string? PContextResolve(string written)`
-
-Only a title equal to the whole wording counts, ignoring case: a partial match is a suggestion, not an answer.
-The most used one wins when a workspace already holds several with that title.
-A workspace that cannot be read leaves the wording to be written as new, rather than stopping the user.
+The wording is sent to the engine as written, and the engine decides which Situation it names.
+A wording already stored is attached under its own id there, so the workspace does not fill with twins.
+The panel holds no matching rule of its own, so every client of the engine gets the same answer.
 
 ## `internal void PContextFocusHandle(object sender, MouseButtonEventArgs e)`
 

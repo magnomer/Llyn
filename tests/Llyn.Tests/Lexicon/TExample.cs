@@ -201,6 +201,65 @@ public sealed class TExample
     }
 
     [Fact]
+    public void EntryUpdate_SharedExampleEdited_LeavesOtherCardsSentence()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(
+                string.Empty, string.Empty, "a unit of language",
+                [TInterface.TSentenceDraftCreate("he said a word")],
+                [], [], string.Empty, [], [], 1)],
+            []));
+
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long exampleId = Assert.Single(engine.TEngineExampleRead(meaningId, LOwner.LOwnerMeaning)).LExampleId;
+
+        LEntry other = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "say", "English", string.Empty, string.Empty,
+            [TInterface.TCardDraftCreate(
+                string.Empty, string.Empty, "to utter", [], [], [], string.Empty, [], [], 1)],
+            []));
+        long otherMeaningId = engine.TEngineMeaningRead(other.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        engine.TEngineExampleAttach(otherMeaningId, exampleId, 0, LOwner.LOwnerMeaning);
+
+        LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        LCardDraft card = loaded.LEntryDraftMeanings[0];
+        LSentenceDraft cited = card.LCardDraftSentence[0];
+        engine.TEngineEntryUpdate(entry.LEntryId, loaded with
+        {
+            LEntryDraftMeanings =
+            [
+                card with
+                {
+                    LCardDraftSentence =
+                    [
+                        cited with
+                        {
+                            LSentenceDraftExample = TExampleDraftRead(cited) with
+                            {
+                                LExampleDraftText = "he said one word",
+                            },
+                        },
+                    ],
+                },
+            ],
+        });
+
+        LExample edited = Assert.Single(engine.TEngineExampleRead(meaningId, LOwner.LOwnerMeaning));
+        LExample kept = Assert.Single(engine.TEngineExampleRead(otherMeaningId, LOwner.LOwnerMeaning));
+        Assert.Equal("he said one word", edited.LExampleText.TStateValueShow());
+        Assert.Equal("he said a word", kept.LExampleText.TStateValueShow());
+        Assert.Equal(exampleId, kept.LExampleId);
+        Assert.NotEqual(exampleId, edited.LExampleId);
+    }
+
+    [Fact]
     public void ExampleRead_WorkspaceStock_ReturnsUsageCounts()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

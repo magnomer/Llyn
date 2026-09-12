@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -34,6 +35,14 @@ public partial class PImprint : UserControl
     internal void PImprintClear()
     {
         PImprintApply(null);
+    }
+
+    internal void PImprintBulletinHandle(LBulletin bulletin)
+    {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+        {
+            PImprintDraftRestore(bulletin.LBulletinId);
+        }
     }
 
     internal void PImprintClose()

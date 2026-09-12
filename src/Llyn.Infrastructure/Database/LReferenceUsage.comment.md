@@ -26,19 +26,19 @@ It is not the number of rows `LReferenceUsageRead(id)` returns, because that lis
 Counting cards and Examples together would count one citation twice, from two directions.
 So the badge showing this number says what it counts, through `Source.Tally`, and the Example rows of the list are what it agrees with.
 
-## `public IReadOnlyList<LUsage> LReferenceUsageRead(string id)`
+## `public IReadOnlyList<LUsage> LReferenceUsageRead(long id)`
 
 Reads the citing Meanings, Collocations and Examples of one Source, itemized, each with the id the row leads to.
 A card names its own id, the Entry it belongs to, that Entry's headword, and its title with the gloss or expression behind it.
 An Example names its sentence and its translation, because an Example belongs to no Entry of its own.
 A card holding two Examples of one Source is listed once, because the row leads to the card rather than the citation.
 
-## `internal static int LReferenceUsageRead(SqliteConnection connection, string id)`
+## `internal static int LReferenceUsageRead(SqliteConnection connection, long id)`
 
 Counts the citations of one Source inside a session the caller already holds.
 `LReferenceDelete` reads it after detaching, so the count and the delete stand in one session.
 
-## `internal static void LReferenceUsageClear(SqliteConnection connection, string id)`
+## `internal static void LReferenceUsageClear(SqliteConnection connection, long id)`
 
 Drops every citation of one Source.
 An Example is not deleted with the Source, so its citation is cleared back to Unspecified.

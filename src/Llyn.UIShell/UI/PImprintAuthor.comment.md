@@ -3,8 +3,9 @@
 ## `public partial class PImprint`
 
 The credited-author region of the Source edit area.
-An Author is shared data credited on any number of Sources, so editing one here reaches every one of them.
-Crediting and dropping write association rows only, and never the Author itself.
+An Author is shared data credited on any number of Sources, so renaming one here reaches every one of them.
+The credits themselves are a list the held draft carries, and every credit change is a request.
+So a source nothing has stored yet can already be credited, and nothing is written until it is saved.
 The order belongs to the Source alone, because another Source may order the same authors differently.
 
 ## Inline notes
@@ -15,54 +16,59 @@ Whether the authorship is unknown as against never having been filled in.
 It is a column on the `source` row.
 It is saved with the five fields rather than when a credit is made.
 
-## `private void PAuthorFind()`
+## `internal void PAuthorFind()`
 
 Reads every Author the workspace holds for the crediting menu.
 A workspace holding none shows that state rather than an empty list.
 
-## `private void PAuthorCreditFind(string? stored)`
+## `private void PAuthorShow(LDraft? draft)`
 
-Fills the credits from the map the shelf already holds, in the Source's own order.
-A Source not yet stored can carry no credit, because a credit is a row against a stored id.
-The stored id comes from the held draft, which is the only thing that knows whether one exists.
+Shows the credits and the author state of the held draft, or nothing when there is no draft.
+Crediting is offered whenever a draft is held, since the credits live on the draft now.
 
-## `private void PAuthorUpdate()`
+## `private void PAuthorCreditShow(IReadOnlyList<LAuthor> credits)`
 
-Asks the panel to read the credits again after a write, then refills the region.
-The shelf shows credits too, so one write is one refill for both.
+Refills the credit rows only when what they show differs from the list given.
+A bulletin that changed nothing here then costs no redraw.
 
-## `private void PAuthorAttach(string id)`
+## `private IReadOnlyList<LAuthor> PAuthorCreditRead(LDraft draft)`
 
-Credits an existing Author at the end of the order.
-An Author already credited is not credited twice.
-Crediting anyone moves the author state to Specified.
+The draft's credits with each stored Author's name read from the catalog.
+The draft carries the name it was given, and a rename made since is the catalog's to know.
+A minted credit is in no catalog and keeps its typed name.
+
+## `private void PAuthorAttach(long id)`
+
+Credits an existing Author at the end of the order, unless already credited.
 
 ## `private void PAuthorFreshHandle(object sender, RoutedEventArgs e)`
 
-Creates an Author from the typed name and credits it at once.
+Credits a new Author from the typed name at the end of the order.
+The Author row is created only when the Source is saved.
 
 ## `private void PAuthorCreditHandle(object sender, RoutedEventArgs e)`
 
 The one handler over every credit row, because the row template is a shared resource.
 A template kept in a dictionary can name no handler of its own.
 The button carrying the click says in its `Tag` which of the four actions it is.
-
-## `private void PAuthorRemove(PAuthorItem item)`
-
-Drops one credit and never the Author.
-The Author stays available to every other Source.
-Dropping the last credit does not move the author state back on its own.
+Dropping a credit never drops the Author, which stays available to every other Source.
 
 ## `private void PAuthorMove(PAuthorItem item, int step)`
 
 Moves one credit through the Source's order.
-Attaching at a position renumbers the whole set, so a reorder never collides mid-write.
 
 ## `private void PAuthorNameUpdate(PAuthorItem item)`
 
 Renames an Author to the name typed in the menu's box.
 The rename is an explicit action rather than a side effect of typing in the credit list.
-The name is rewritten and never the id, so every Source keeps pointing at the same Author.
+A stored Author is renamed in the store, and never its id, so every Source keeps pointing at it.
+A credit not stored yet is only a name on the draft.
+So it is dropped and credited again under the new name.
+
+## `private void PAuthorRequestSend(LRequest request)`
+
+Sends one credit request and redraws from what the engine answered.
+Typing still waiting in the five fields is written first, so the requests reach the engine in order.
 
 ## `private bool PAuthorRenameConfirm(PAuthorItem item)`
 

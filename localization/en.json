@@ -66,6 +66,8 @@
     "Refusal.DraftStale": "That draft belongs to a {terms.workspace} that is no longer open.",
     "Refusal.CollocationNested": "A collocation cannot hold a card inside it.",
     "Refusal.CardMissing": "That card is no longer in this draft.",
+    "Refusal.ItemMissing": "That item is no longer in this draft.",
+    "Refusal.LinkMissing": "Something this draft links to is no longer in this {terms.workspace}. Remove it and save again.",
     "Notice.Unexpected": "Something went wrong that {terms.product} did not expect.",
     "Notice.Recorded": "The technical details were written here, in case they help:",
     "List.Search": "Search entries",

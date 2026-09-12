@@ -8,6 +8,12 @@ All of it goes through `LEngine`.
 It also covers the lookup a caller resolves typed text with before it writes.
 It covers the refusal that meets a target which resolved to nothing.
 
+## `public void EntryUpdate_DraftCarryingRelations_StoresAndReconcilesThem()`
+
+A draft card carries its relations, so a commit must write them as it writes every other row the card holds.
+A relation the draft names by id is rewritten in place and keeps its id, one it stopped naming goes, and the rest are renumbered.
+Before this, the draft carried them, the unsaved check compared them, and the commit dropped them on the floor.
+
 ## Inline notes
 
 ### `LEntry resolved = Assert.Single(engine.LEngineEntryFind("term"));`

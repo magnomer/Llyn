@@ -7,6 +7,8 @@ namespace Llyn.Infrastructure;
 
 public sealed class LSentenceArchive
 {
+    private const long LSentenceShelf = 1_000_000_000L;
+
     private readonly LDatabase _lSentenceArchiveDatabase;
 
     public LSentenceArchive(LDatabase database)
@@ -148,15 +150,6 @@ public sealed class LSentenceArchive
         return sentences;
     }
 
-    private static void LSentenceOwnerClear(
-        SqliteConnection connection, string table, string column, long ownerId)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = $"DELETE FROM {table} WHERE {column} = $owner;";
-        command.Parameters.AddWithValue("$owner", ownerId);
-        command.ExecuteNonQuery();
-    }
-
     private static void LSentenceTableClear(
         SqliteConnection connection, string table, string column, long exampleId)
     {
@@ -221,6 +214,49 @@ public sealed class LSentenceArchive
         return (long)command.ExecuteScalar()!;
     }
 
+    private static bool LSentenceChange(
+        SqliteConnection connection, string table, string column, long ownerId, LSentence sentence, int position)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            $"""
+            UPDATE {table}
+            SET example_id = $example, position = $position,
+                particle_state = $particleState, particle = $particle,
+                dependence_state = $dependenceState, dependence = $dependence
+            WHERE id = $id AND {column} = $owner;
+            """;
+        command.Parameters.AddWithValue("$id", sentence.LSentenceId);
+        command.Parameters.AddWithValue("$owner", ownerId);
+        command.Parameters.AddWithValue(
+            "$example", (object?)sentence.LSentenceExample?.LExampleId ?? DBNull.Value);
+        command.Parameters.AddWithValue("$position", position);
+        LStateColumn.LStateColumnApply(command, "particle", sentence.LSentenceParticle);
+        LStateColumn.LStateColumnApply(command, "dependence", sentence.LSentenceDependence);
+        return command.ExecuteNonQuery() == 1;
+    }
+
+    private static void LSentencePositionAdjust(
+        SqliteConnection connection, string table, string column, long ownerId)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = $"UPDATE {table} SET position = position + $shift WHERE {column} = $owner;";
+        command.Parameters.AddWithValue("$shift", LSentenceShelf);
+        command.Parameters.AddWithValue("$owner", ownerId);
+        command.ExecuteNonQuery();
+    }
+
+    private static void LSentenceOwnerClear(
+        SqliteConnection connection, string table, string column, long ownerId)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            $"DELETE FROM {table} WHERE {column} = $owner AND position >= $shift;";
+        command.Parameters.AddWithValue("$shift", LSentenceShelf);
+        command.Parameters.AddWithValue("$owner", ownerId);
+        command.ExecuteNonQuery();
+    }
+
     private static LExample LSentenceExampleRead(SqliteDataReader reader, int start)
     {
         return new LExample(
@@ -248,12 +284,20 @@ public sealed class LSentenceArchive
         using LDatabaseSession session = _lSentenceArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        LSentenceOwnerClear(connection, table, column, ownerId);
+        LSentencePositionAdjust(connection, table, column, ownerId);
         List<long> written = new(sentences.Count);
         for (int position = 0; position < sentences.Count; position++)
         {
-            written.Add(LSentenceSave(connection, table, column, ownerId, sentences[position], position));
+            LSentence sentence = sentences[position];
+            bool kept = sentence.LSentenceId > 0
+                && !written.Contains(sentence.LSentenceId)
+                && LSentenceChange(connection, table, column, ownerId, sentence, position);
+            written.Add(kept
+                ? sentence.LSentenceId
+                : LSentenceSave(connection, table, column, ownerId, sentence, position));
         }
+
+        LSentenceOwnerClear(connection, table, column, ownerId);
 
         session.LDatabaseSessionCommit();
         return written;

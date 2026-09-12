@@ -23,7 +23,7 @@ Resolving it against the folder in use is the engine's job, because the workspac
 
 Binds the loader to the workspace `database` it reads through.
 
-## `public LEntryDraft? LEntryLoad(string id)`
+## `public LEntryDraft? LEntryLoad(long id)`
 
 Returns the draft for the entry identified by `id`, or `null` when no entry has that id.
 
@@ -102,14 +102,14 @@ The rows arrive ordered by the position each association carries.
 That is the order the save wrote them in, so the field reads back as it was typed.
 A row whose text is null reads as the empty string the draft uses for "nothing was typed".
 
-### `private IReadOnlyList<LRelationDraft> LEntryRelationRead(string meaningId)`
+### `private IReadOnlyList<LRelationDraft> LEntryRelationRead(long meaningId)`
 
 The lexical relations one Meaning holds, in stored order.
 Each carries the stored id of the row it points at, an Entry or another Meaning.
 The export turns that id into the key the file declares the row under.
 Only a Meaning is asked, because the store hangs a relation off a sense.
 
-### `private IReadOnlyList<LSynonymDraft> LEntrySynonymRead(string collocationId)`
+### `private IReadOnlyList<LSynonymDraft> LEntrySynonymRead(long collocationId)`
 
 The synonym links one Collocation holds, in stored order, by the same rule.
 These are the stored links and never the card's free-text Synonym field.

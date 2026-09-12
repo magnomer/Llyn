@@ -49,3 +49,8 @@ So "the situation" finds "This is the situation".
 Rows are ordered by how many cards already use them, so the settled wordings stand first.
 A Situation the card already carries is left out, since it cannot be attached twice.
 The list stays shut when nothing matches, rather than standing empty.
+
+### `private void PCandidateSelect(PCandidateItem item)`
+
+Asks the engine to link the row the user chose, at the caret, and empties the entry.
+A row the card already carries is not asked for again.

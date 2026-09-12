@@ -34,7 +34,7 @@ A pair already present keeps its row id and takes the name the pack now declares
 Seeding is therefore safe to run on every read of a language's shelf.
 A pack that renames a register keeps every mark.
 
-## `public LRegister? LRegisterRead(string id)`
+## `public LRegister? LRegisterRead(long id)`
 
 Reads the Register identified by `id`, or `null` when no such Register exists.
 
@@ -42,20 +42,20 @@ Reads the Register identified by `id`, or `null` when no such Register exists.
 
 Reads the whole shelf, the rows a language pack ships first and the written rows after.
 
-## `public IReadOnlyList<LRegister> LRegisterMeaningRead(string meaningId)`
+## `public IReadOnlyList<LRegister> LRegisterMeaningRead(long meaningId)`
 
 Reads the Registers a Meaning is marked with, in the order that Meaning gives them.
 
-## `public IReadOnlyList<LRegister> LRegisterCollocationRead(string collocationId)`
+## `public IReadOnlyList<LRegister> LRegisterCollocationRead(long collocationId)`
 
 Reads the Registers a Collocation is marked with, in the order that Collocation gives them.
 
-## `public void LRegisterNameUpdate(string registerId, LStateValue name)`
+## `public void LRegisterNameUpdate(long registerId, LStateValue name)`
 
 Rewrites the visible name of a written Register and never its id.
 A row a language pack ships is left as it stands, because the pack owns its wording.
 
-## `public int LRegisterReferenceRead(string id)`
+## `public int LRegisterReferenceRead(long id)`
 
 Counts how many Meanings and Collocations reference one Register.
 
@@ -64,29 +64,29 @@ Counts how many Meanings and Collocations reference one Register.
 Counts every referenced Register in one read, so a shelf never asks once per row.
 A Register nothing references is absent rather than present as zero.
 
-## `public void LRegisterDelete(string id)`
+## `public void LRegisterDelete(long id)`
 
 Deletes a written Register that nothing references.
 
-## `public void LRegisterDelete(string id, bool detach)`
+## `public void LRegisterDelete(long id, bool detach)`
 
 Deletes a written Register, first dropping every reference to it when `detach` is set.
 It refuses while any reference remains, so a delete is never silently partial.
 A row a language pack ships is left alone before anything is dropped, and not merely spared the final statement.
 Otherwise a delete aimed at a shipped row would strip its mark off every card and leave the row standing.
 
-## `public void LRegisterMeaningAttach(string meaningId, string registerId, int position)`
+## `public void LRegisterMeaningAttach(long meaningId, long registerId, int position)`
 
 Marks a Meaning with a Register at the index the caller names.
 
-## `public void LRegisterCollocationAttach(string collocationId, string registerId, int position)`
+## `public void LRegisterCollocationAttach(long collocationId, long registerId, int position)`
 
 Marks a Collocation with a Register at the index the caller names.
 
-## `public void LRegisterMeaningDetach(string meaningId, string registerId)`
+## `public void LRegisterMeaningDetach(long meaningId, long registerId)`
 
 Drops one Meaning's mark and renumbers what that Meaning still carries.
 
-## `public void LRegisterCollocationDetach(string collocationId, string registerId)`
+## `public void LRegisterCollocationDetach(long collocationId, long registerId)`
 
 Drops one Collocation's mark and renumbers what that Collocation still carries.

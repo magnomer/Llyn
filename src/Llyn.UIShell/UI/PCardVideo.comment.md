@@ -1,29 +1,29 @@
-﻿# PCardVideo.cs
+# PCardVideo.cs
 
 ## `internal sealed partial class PCard`
 
-The Video rows a card carries.
-A Video is kept with the card exactly as an Image is.
-A card that is saved and opened again shows the videos it was saved with.
+The Video rows a card shows, kept the way the Image rows are.
+A clip is an addition the user asks for.
+So a card starts with no row and offers none it is not given.
+The engine holds the rows, blank ones included, and the card renders them by id.
 
-## `internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows)`
+## `internal Action<PVideo, string>? PCardVideoNotice { get; set; }`
 
-Fills the rows from a stored card, one row per video, in the order given.
+Where a changed location or span goes, with the name of the one that changed.
+The editor sets it when it builds the card and turns the change into a request.
 
-## `internal IReadOnlyList<LVideoDraft> PCardVideoRead()`
+## `internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows, Func<PVideo, string, bool> pending)`
 
-What the rows state, skipping every row that names no video.
-A span without a location points at nothing, so it never keeps a row alive.
+Makes the rows show the engine's Videos, matched by id.
+A field with a request still waiting is left as typed, which `pending` answers per row and field.
 
-## `internal void PCardVideoApply(IReadOnlyList<LVideoDraft> stored)`
+## Inline notes
 
-Writes the ids the engine minted back onto the rows, in the order the read listed them.
-A row naming no clip was dropped by the read, so it is stepped over here.
+### `private PVideo PCardVideoCreate(LVideoDraft draft)`
 
-## `internal void PCardVideoAdd()`
+Builds one row from the engine's row and starts listening to it.
 
-Opens an empty video row at the end, which is what the card's Extra row asks for.
+### `private void PCardVideoChange(object? sender, PropertyChangedEventArgs arguments)`
 
-## `internal void PCardVideoRemove(PVideo row)`
-
-Drops the row outright.
+The location and the span are the engine's.
+The playback state and the preview are drawn from them and never reported.

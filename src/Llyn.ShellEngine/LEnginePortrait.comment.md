@@ -5,7 +5,7 @@
 Assembles the likeness of one entry from what the workspace holds.
 The panel reads the same records through the same engine, so both see one entry the same way.
 
-## `public LPortrait LEnginePortraitRead(string entryId, LPortraitLabel label)`
+## `public LPortrait LEnginePortraitRead(long entryId, LPortraitLabel label)`
 
 Everything the display gathers is gathered here, in the display's own order.
 The portrait carries the transcription and the names of the parts of speech, because a reader reads names.

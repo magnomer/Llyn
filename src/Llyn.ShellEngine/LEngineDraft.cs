@@ -42,6 +42,7 @@ public sealed partial class LEngine
 
             if (draft.LEntryDraftInflections.Count > 0)
             {
+                LEngineInflectionValidate(draft.LEntryDraftInflections);
                 new LInflectionArchive(_lEngineDatabase).LInflectionSet(
                     entry.LEntryId, draft.LEntryDraftInflections);
             }
@@ -66,7 +67,7 @@ public sealed partial class LEngine
                     card.LCardDraftMeaning));
 
                 LEngineIdentityRecord(identity, card.LCardDraftId, collocation.LCollocationId);
-                LEngineCardAttach(
+                LEngineCardSync(
                     collocation.LCollocationId, card, draft.LEntryDraftLanguage, true, identity);
             }
 
@@ -124,7 +125,7 @@ public sealed partial class LEngine
             card.LCardDraftLabels));
 
         LEngineIdentityRecord(identity, card.LCardDraftId, meaning.LMeaningId);
-        LEngineCardAttach(meaning.LMeaningId, card, language, false, identity);
+        LEngineCardSync(meaning.LMeaningId, card, language, false, identity);
 
         foreach (LCardDraft child in LEngineCardRead(card.LCardDraftChild))
         {
@@ -145,88 +146,6 @@ public sealed partial class LEngine
             {
                 throw new LRefusal(LRefusal.LRefusalCollocation);
             }
-        }
-    }
-
-    private void LEngineCardAttach(
-        long ownerId, LCardDraft card, string language, bool collocation, Dictionary<long, long> identity)
-    {
-        LEngineSentenceSync(ownerId, card.LCardDraftSentence, language, collocation, identity);
-
-        int position;
-
-        LSituationArchive situations = new(_lEngineDatabase);
-        position = 0;
-        HashSet<long> attachedSituations = [];
-        foreach (LSituationDraft draft in LEngineSituationRead(card.LCardDraftSituation))
-        {
-            long situationId = LEngineSituationResolve(situations, draft, identity);
-            if (!attachedSituations.Add(situationId))
-            {
-                continue;
-            }
-
-            if (collocation)
-            {
-                situations.LSituationCollocationAttach(ownerId, situationId, position);
-            }
-            else
-            {
-                situations.LSituationMeaningAttach(ownerId, situationId, position);
-            }
-
-            position++;
-        }
-
-        LEngineRegisterAttach(ownerId, card.LCardDraftRegister, language, collocation, identity);
-
-        LEngineTagSave(ownerId, card.LCardDraftTag, collocation, identity);
-        LEngineTranslationSave(ownerId, card.LCardDraftTranslation, collocation);
-
-        LImageArchive images = new(_lEngineDatabase);
-        position = 0;
-        HashSet<long> attachedImages = [];
-        foreach (LImageDraft draft in LEngineImageRead(card.LCardDraftImage))
-        {
-            long imageId = LEngineImageResolve(images, draft, identity);
-            if (!attachedImages.Add(imageId))
-            {
-                continue;
-            }
-
-            if (collocation)
-            {
-                images.LImageCollocationAttach(ownerId, imageId, position);
-            }
-            else
-            {
-                images.LImageMeaningAttach(ownerId, imageId, position);
-            }
-
-            position++;
-        }
-
-        LVideoArchive videos = new(_lEngineDatabase);
-        position = 0;
-        HashSet<long> attachedVideos = [];
-        foreach (LVideoDraft draft in LEngineVideoRead(card.LCardDraftVideo))
-        {
-            long videoId = LEngineVideoResolve(videos, draft, identity);
-            if (!attachedVideos.Add(videoId))
-            {
-                continue;
-            }
-
-            if (collocation)
-            {
-                videos.LVideoCollocationAttach(ownerId, videoId, position);
-            }
-            else
-            {
-                videos.LVideoMeaningAttach(ownerId, videoId, position);
-            }
-
-            position++;
         }
     }
 
@@ -252,40 +171,66 @@ public sealed partial class LEngine
         }
     }
 
-    private static LExample? LEngineExampleResolve(
-        LExampleArchive examples, LSentenceDraft draft, string language, Dictionary<long, long> identity)
+    private LExample? LEngineExampleResolve(
+        LExampleArchive examples,
+        LSentenceDraft draft,
+        string language,
+        long ownerId,
+        bool collocation,
+        Dictionary<long, long> identity)
     {
         if (draft.LSentenceDraftExample is not LExampleDraft written
-            || (written.LExampleDraftText.LStateValueEmpty && written.LExampleDraftId == 0))
+            || (written.LExampleDraftText.LStateValueEmpty && written.LExampleDraftId <= 0))
         {
             return null;
         }
 
-        return LEngineExampleResolve(examples, written, language, identity);
+        return LEngineExampleResolve(examples, written, language, ownerId, collocation, identity);
     }
 
-    private static LExample LEngineExampleResolve(
-        LExampleArchive examples, LExampleDraft written, string language, Dictionary<long, long> identity)
+    private LExample LEngineExampleResolve(
+        LExampleArchive examples,
+        LExampleDraft written,
+        string language,
+        long ownerId,
+        bool collocation,
+        Dictionary<long, long> identity)
     {
         if (written.LExampleDraftId > 0)
         {
-            LExample? stored = examples.LExampleRead(written.LExampleDraftId);
-            if (stored is not null)
+            LExample stored = examples.LExampleRead(written.LExampleDraftId)
+                ?? throw new LRefusal(LRefusal.LRefusalLink);
+
+            bool sameText = stored.LExampleText == written.LExampleDraftText;
+            bool sameSource = stored.LExampleSource == written.LExampleDraftReference;
+            if (sameText && sameSource)
             {
-                if (stored.LExampleText != written.LExampleDraftText)
-                {
-                    examples.LExampleTextUpdate(stored.LExampleId, written.LExampleDraftText);
-                    stored = stored with { LExampleText = written.LExampleDraftText };
-                }
-
-                if (stored.LExampleSource != written.LExampleDraftReference)
-                {
-                    examples.LExampleSourceUpdate(stored.LExampleId, written.LExampleDraftReference);
-                    stored = stored with { LExampleSource = written.LExampleDraftReference };
-                }
-
                 return stored;
             }
+
+            if (LEngineExampleShareCheck(stored.LExampleId, ownerId, collocation))
+            {
+                return examples.LExampleCreate(new LExample(
+                    0,
+                    stored.LExampleLanguage,
+                    written.LExampleDraftText,
+                    stored.LExampleTranslation,
+                    written.LExampleDraftReference));
+            }
+
+            if (!sameText)
+            {
+                examples.LExampleTextUpdate(stored.LExampleId, written.LExampleDraftText);
+                stored = stored with { LExampleText = written.LExampleDraftText };
+            }
+
+            if (!sameSource)
+            {
+                examples.LExampleSourceUpdate(stored.LExampleId, written.LExampleDraftReference);
+                stored = stored with { LExampleSource = written.LExampleDraftReference };
+            }
+
+            return stored;
         }
 
         LExample created = examples.LExampleCreate(new LExample(
@@ -296,6 +241,20 @@ public sealed partial class LEngine
             written.LExampleDraftReference));
         LEngineIdentityRecord(identity, written.LExampleDraftId, created.LExampleId);
         return created;
+    }
+
+    private bool LEngineExampleShareCheck(long exampleId, long ownerId, bool collocation)
+    {
+        LOwner owner = collocation ? LOwner.LOwnerCollocation : LOwner.LOwnerMeaning;
+        foreach (LUsage usage in new LExampleLink(_lEngineDatabase).LExampleUsageRead(exampleId))
+        {
+            if (usage.LUsageId != ownerId || usage.LUsageOwner != owner)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static IEnumerable<LSituationDraft> LEngineSituationRead(IReadOnlyList<LSituationDraft> drafts)
@@ -314,23 +273,27 @@ public sealed partial class LEngine
     {
         if (draft.LSituationDraftId > 0)
         {
-            LSituation? stored = situations.LSituationRead(draft.LSituationDraftId);
-            if (stored is not null)
+            LSituation stored = situations.LSituationRead(draft.LSituationDraftId)
+                ?? throw new LRefusal(LRefusal.LRefusalLink);
+            LSituation written = stored with
             {
-                LSituation written = stored with
-                {
-                    LSituationTitle = draft.LSituationDraftTitle,
-                    LSituationDescription = draft.LSituationDraftDescription,
-                    LSituationKind = draft.LSituationDraftKind,
-                };
+                LSituationTitle = draft.LSituationDraftTitle,
+                LSituationDescription = draft.LSituationDraftDescription,
+                LSituationKind = draft.LSituationDraftKind,
+            };
 
-                if (written != stored)
-                {
-                    situations.LSituationUpdate(written);
-                }
-
-                return stored.LSituationId;
+            if (written != stored)
+            {
+                situations.LSituationUpdate(written);
             }
+
+            return stored.LSituationId;
+        }
+
+        LSituation? found = LEngineSituationResolve(situations, draft.LSituationDraftTitle);
+        if (found is not null)
+        {
+            return found.LSituationId;
         }
 
         long created = situations.LSituationCreate(new LSituation(
@@ -367,9 +330,10 @@ public sealed partial class LEngine
     private static long LEngineImageResolve(
         LImageArchive images, LImageDraft draft, Dictionary<long, long> identity)
     {
-        if (draft.LImageDraftId > 0
-            && images.LImageRead(draft.LImageDraftId) is LImage stored)
+        if (draft.LImageDraftId > 0)
         {
+            LImage stored = images.LImageRead(draft.LImageDraftId)
+                ?? throw new LRefusal(LRefusal.LRefusalLink);
             if (stored.LImageLocation != draft.LImageDraftLocation)
             {
                 images.LImageUpdate(stored with { LImageLocation = draft.LImageDraftLocation });
@@ -386,9 +350,10 @@ public sealed partial class LEngine
     private static long LEngineVideoResolve(
         LVideoArchive videos, LVideoDraft draft, Dictionary<long, long> identity)
     {
-        if (draft.LVideoDraftId > 0
-            && videos.LVideoRead(draft.LVideoDraftId) is LVideo stored)
+        if (draft.LVideoDraftId > 0)
         {
+            LVideo stored = videos.LVideoRead(draft.LVideoDraftId)
+                ?? throw new LRefusal(LRefusal.LRefusalLink);
             LVideo written = stored with
             {
                 LVideoLocation = draft.LVideoDraftLocation,

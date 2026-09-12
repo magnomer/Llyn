@@ -49,6 +49,11 @@ public static class LCatalog
         };
     }
 
+    public static string LCatalogTextFold(string? text)
+    {
+        return (text ?? string.Empty).Trim().ToLowerInvariant();
+    }
+
     public static bool LCatalogTextMatch(string? text, string query)
     {
         ArgumentNullException.ThrowIfNull(query);

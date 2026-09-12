@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -154,7 +154,7 @@ public partial class PImprint
 
     private void PImprintDraftShow(LDraft? started)
     {
-        PImprintApply(started?.LDraftReference);
+        PImprintApply(started);
     }
 
     private void PImprintDraftSave()
@@ -173,11 +173,62 @@ public partial class PImprint
             }
 
             LReference sent = PImprintRead(content);
-            LReference stored = _lEngine.LEngineReferenceSave(held with { LDraftReference = sent });
-
-            if (!ReferenceEquals(stored, sent))
+            if (sent.LReferenceTitle != content.LReferenceTitle)
             {
-                PImprintApply(stored);
+                _lEngine.LEngineRequestApply(new LRequestReferenceTitle(_pImprintDraft, sent.LReferenceTitle));
+            }
+
+            if (sent.LReferenceYear != content.LReferenceYear)
+            {
+                _lEngine.LEngineRequestApply(new LRequestReferenceYear(_pImprintDraft, sent.LReferenceYear));
+            }
+
+            if (sent.LReferenceKind != content.LReferenceKind)
+            {
+                _lEngine.LEngineRequestApply(new LRequestReferenceKind(_pImprintDraft, sent.LReferenceKind));
+            }
+
+            if (sent.LReferenceNote != content.LReferenceNote)
+            {
+                _lEngine.LEngineRequestApply(new LRequestReferenceNote(_pImprintDraft, sent.LReferenceNote));
+            }
+
+            if (sent.LReferenceUrl != content.LReferenceUrl)
+            {
+                _lEngine.LEngineRequestApply(new LRequestReferenceUrl(_pImprintDraft, sent.LReferenceUrl));
+            }
+
+            if (sent.LReferenceAuthorState != content.LReferenceAuthorState)
+            {
+                _lEngine.LEngineRequestApply(new LRequestAuthorState(_pImprintDraft, sent.LReferenceAuthorState));
+            }
+        }
+        catch (Exception exception)
+        {
+            PImprintHoldSuspend(exception);
+        }
+    }
+
+    internal void PImprintDraftRestore(long id)
+    {
+        if (id == _pImprintDraft)
+        {
+            PImprintDraftRestore();
+        }
+    }
+
+    private void PImprintDraftRestore()
+    {
+        if (_pImprintDraft == 0 || _pImprintLoading)
+        {
+            return;
+        }
+
+        try
+        {
+            if (_lEngine.LEngineDraftRead(_pImprintDraft) is LDraft held)
+            {
+                PImprintShow(held);
             }
         }
         catch (Exception exception)

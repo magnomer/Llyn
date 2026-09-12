@@ -82,7 +82,7 @@ public sealed partial class LEngine
 
     private IReadOnlyList<LSentenceDraft> LEngineSentenceNormalize(IReadOnlyList<LSentenceDraft> drafts)
     {
-        return LEngineListNormalize(drafts, static draft => draft.LSentenceDraftEmpty, draft =>
+        return LEngineListNormalize(drafts, static _ => false, draft =>
         {
             LExampleDraft? example = draft.LSentenceDraftExample;
             if (example is not null && example.LExampleDraftId == 0)
@@ -139,7 +139,7 @@ public sealed partial class LEngine
     {
         return LEngineListNormalize(
             drafts,
-            static draft => draft.LImageDraftEmpty,
+            static _ => false,
             draft => draft.LImageDraftId == 0
                 ? draft with { LImageDraftId = LEngineIdentityCreate() }
                 : draft);
@@ -149,7 +149,7 @@ public sealed partial class LEngine
     {
         return LEngineListNormalize(
             drafts,
-            static draft => draft.LVideoDraftEmpty,
+            static _ => false,
             draft => draft.LVideoDraftId == 0
                 ? draft with { LVideoDraftId = LEngineIdentityCreate() }
                 : draft);

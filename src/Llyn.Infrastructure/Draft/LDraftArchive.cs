@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +12,7 @@ public static class LDraftArchive
     private const string LDraftArchiveExtension = ".json";
     private const string LDraftArchivePending = ".json.tmp";
 
-    public const int LDraftArchiveVersion = 1;
+    public const int LDraftArchiveVersion = 2;
 
     private static readonly TimeSpan LDraftArchiveStale = TimeSpan.FromHours(1);
 
@@ -197,6 +197,11 @@ public static class LDraftArchive
         if (draft.LDraftReference is LReference reference)
         {
             LDraftArchiveCheck(reference.LReferenceId, "reference");
+        }
+
+        foreach (LAuthor author in draft.LDraftAuthor)
+        {
+            LDraftArchiveCheck(author.LAuthorId, "author");
         }
 
         if (draft.LDraftContent.LEntryDraftPronunciation is LPronunciationDraft spoken)

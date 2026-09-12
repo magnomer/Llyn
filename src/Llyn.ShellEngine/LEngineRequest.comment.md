@@ -1,13 +1,16 @@
-﻿# LEngineRequest.cs
+# LEngineRequest.cs
 
 ## `public sealed partial class LEngine`
 
 The engine owns the draft.
 A form sends one edit at a time as an `LRequest`, and the engine applies it, saves, and announces.
 The form never assembles an `LEntryDraft` from its controls, so the engine's file is the only truth.
-Each request kind is applied by a pure function over the content, one per kind, returning new content.
-Cards are addressed by id wherever they nest, never by place.
-So a form and the engine cannot disagree about which card is meant.
+Each request kind is applied by a pure function, one per kind, returning a new draft or new content.
+Cards and the rows inside them are addressed by id wherever they nest, never by place.
+So a form and the engine cannot disagree about which item is meant.
+The entry-level fields and the card body are applied here.
+The lists inside a card are applied in `LEngineRequestList.cs` and the files beside it.
+The sentence, situation and source panels are applied in `LEngineRequestPanel.cs` and `LEngineRequestChip.cs`.
 
 ## `public LDraft LEngineRequestApply(LRequest request)`
 
@@ -20,12 +23,23 @@ The saved draft is returned as well, so a caller can read a minted id without wa
 
 ## Inline notes
 
+### `private LDraft LEngineRequestApply(LDraft draft, LRequest request)`
+
+The switch over the kinds that reach past the entry content.
+The example and source panels edit their own field of the draft, and the credits edit its author list.
+A situation field request may mean the panel's situation or a chip, so it is routed by id.
+Everything else is a change to the entry content and falls through to the content switch.
+
 ### `private LEntryDraft LEngineRequestApply(LEntryDraft content, LRequest request)`
 
-One switch over the request kinds.
-A kind the switch does not know is a programming error, not a refusal, since no form can send one.
+One switch over the entry and card kinds, ending in the list switch.
+A kind no switch knows is a programming error, not a refusal, since no form can send one.
 A null text or value is read as empty.
 So a request can never leave a null where the draft holds text.
+
+### `private static LStateValue LEngineValueRead(LStateValue? value)`
+
+The value sent, or the unspecified one where the form sent null.
 
 ### `private static LPronunciationDraft LEngineSoundRead(LEntryDraft content)`
 
@@ -48,6 +62,11 @@ The card is taken out of wherever it sits, then put back under the parent named.
 Its kind is remembered from where it was found, so a card never changes list by moving.
 A parent inside the card being moved is gone by the time it is looked for.
 So the move refuses rather than loops.
+
+### `private static LEntryDraft LEngineCardChange(LEntryDraft content, long id, Func<LCardDraft, LCardDraft> change)`
+
+Applies one change to the card named, wherever it nests, and refuses when no card carries the id.
+Every list request inside a card comes through here, so the card check is written once.
 
 ### `private static IReadOnlyList<LCardDraft> LEnginePositionUpdate(List<LCardDraft> cards)`
 

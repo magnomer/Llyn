@@ -152,6 +152,7 @@ public sealed partial class LEngine
             return;
         }
 
+        LEngineInflectionValidate(current);
         inflections.LInflectionSet(entryId, current);
         changes.Add(new LRevisionChange(
             0,

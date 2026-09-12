@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -26,6 +26,12 @@ public partial class PReference
 
     private void PReferenceBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+        {
+            PImprint.PImprintBulletinHandle(bulletin);
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             PReferenceReset();
@@ -83,22 +89,6 @@ public partial class PReference
         }
 
         return reach;
-    }
-
-    internal bool PShelfCreditUpdate()
-    {
-        try
-        {
-            _pShelfCredit = _lEngine.LEngineAuthorRead(LOwner.LOwnerReference);
-        }
-        catch (Exception exception)
-        {
-            _pReferenceHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            return false;
-        }
-
-        PShelfFind(PSurvey.Text ?? string.Empty);
-        return true;
     }
 
     internal int PShelfCountRead(long id)

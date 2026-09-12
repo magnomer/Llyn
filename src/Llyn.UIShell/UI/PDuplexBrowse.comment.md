@@ -21,7 +21,7 @@ An empty query stands for no matches rather than for every entry.
 The list hides itself when it has nothing to offer.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
-## `private bool PDuplexEntryShow(string id, PDisplay display)`
+## `private bool PDuplexEntryShow(long id, PDisplay display)`
 
 Loads one Entry back from the workspace onto the side that asked for it.
 An Entry that is gone leaves that side empty rather than showing what it was.

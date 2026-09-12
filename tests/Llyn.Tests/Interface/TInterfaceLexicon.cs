@@ -250,6 +250,19 @@ internal static partial class TInterface
             LStateAnchor.LStateAnchorRead(targetEntry),
             LStateAnchor.LStateAnchorRead(targetMeaning));
 
+    internal static LRelationDraft TRelationDraftCreate(
+        string type,
+        long? targetEntry,
+        long? targetMeaning,
+        long id = 0) =>
+        new(
+            type,
+            null,
+            null,
+            LStateAnchor.LStateAnchorRead(targetEntry),
+            LStateAnchor.LStateAnchorRead(targetMeaning),
+            id);
+
     internal static LMeaning TMeaningCreate(
         long id,
         long entryId,

@@ -29,7 +29,7 @@ Returns it with that id and its assigned position filled in.
 Exactly one of the target ids must be set.
 Naming both or neither throws an `InvalidOperationException` before anything is written.
 
-## `public IReadOnlyList<LSynonym> LSynonymRead(string collocationId)`
+## `public IReadOnlyList<LSynonym> LSynonymRead(long collocationId)`
 
 Reads the synonym interlinks hanging from the collocation identified by `collocationId`, ordered by position.
 Each comes with its single target resolved to a target Entry id or a target Meaning id.
@@ -45,13 +45,18 @@ Exactly one of the target ids must be set.
 Naming both or neither throws an `InvalidOperationException` before anything is written.
 So does an id no synonym carries.
 
-## `public void LSynonymMove(string id, int position)`
+## `public void LSynonymOrderSet(long collocationId, IReadOnlyList<long> order)`
+
+Renumbers the synonyms of `collocationId` so they follow `order`.
+A commit that reconciled the whole set calls this once, rather than moving each row.
+
+## `public void LSynonymMove(long id, int position)`
 
 Moves the synonym identified by `id` to `position` in its collocation's order.
 It renumbers the whole set so positions stay `0 … n-1`.
 A position outside the set is clamped into it, and nothing moves when no synonym carries that id.
 
-## `public void LSynonymDelete(string id)`
+## `public void LSynonymDelete(long id)`
 
 Deletes the synonym interlink identified by `id`.
 The Entry or Meaning it pointed at is untouched.
@@ -59,10 +64,10 @@ The synonyms left under the same collocation are renumbered so positions stay co
 
 ## Inline notes
 
-### `private static string? LSynonymHolderRead(SqliteConnection connection, string id)`
+### `private static string? LSynonymHolderRead(SqliteConnection connection, long id)`
 
 The collocation a synonym hangs from, or null when no synonym carries the id.
 
-### `private static IReadOnlyList<string> LSynonymSiblingRead(SqliteConnection connection, string collocationId)`
+### `private static IReadOnlyList<string> LSynonymSiblingRead(SqliteConnection connection, long? collocationId)`
 
 The synonyms of one collocation, in order.

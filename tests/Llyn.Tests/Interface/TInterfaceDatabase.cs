@@ -174,12 +174,12 @@ internal static partial class TInterface
         sentenceArchive.LSentenceMeaningDetach(meaningId, exampleId);
     }
 
-    internal static void TSentenceMeaningSave(
+    internal static IReadOnlyList<long> TSentenceMeaningSave(
         this LSentenceArchive sentenceArchive,
         long meaningId,
         IReadOnlyList<LSentence> sentences)
     {
-        sentenceArchive.LSentenceMeaningSave(meaningId, sentences);
+        return sentenceArchive.LSentenceMeaningSave(meaningId, sentences);
     }
 
     internal static IReadOnlyList<LSentence> TSentenceMeaningRead(

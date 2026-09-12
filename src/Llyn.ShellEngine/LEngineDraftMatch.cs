@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -124,6 +125,8 @@ public sealed partial class LEngine
 
     private static bool LEngineVideoMatch(IReadOnlyList<LVideoDraft> one, IReadOnlyList<LVideoDraft> other)
     {
+        one = [.. LEngineVideoRead(one)];
+        other = [.. LEngineVideoRead(other)];
         if (one.Count != other.Count)
         {
             return false;
@@ -160,19 +163,21 @@ public sealed partial class LEngine
             && card.LCardDraftTitle.LStateValueEmpty
             && card.LCardDraftExpression.LStateValueEmpty
             && card.LCardDraftMeaning.LStateValueEmpty
-            && card.LCardDraftSentence.Count == 0
+            && card.LCardDraftSentence.All(static row => row.LSentenceDraftEmpty)
             && card.LCardDraftSituation.Count == 0
             && card.LCardDraftRegister.Count == 0
             && card.LCardDraftTranslation.Count == 0
             && card.LCardDraftTag.Count == 0
-            && card.LCardDraftImage.Count == 0
-            && card.LCardDraftVideo.Count == 0
+            && card.LCardDraftImage.All(static row => row.LImageDraftEmpty)
+            && card.LCardDraftVideo.All(static row => row.LVideoDraftEmpty)
             && card.LCardDraftChild.Count == 0;
     }
 
     private static bool LEngineSentenceMatch(
         IReadOnlyList<LSentenceDraft> one, IReadOnlyList<LSentenceDraft> other)
     {
+        one = [.. LEngineSentenceRead(one)];
+        other = [.. LEngineSentenceRead(other)];
         if (one.Count != other.Count)
         {
             return false;
@@ -232,6 +237,8 @@ public sealed partial class LEngine
 
     private static bool LEngineImageMatch(IReadOnlyList<LImageDraft> one, IReadOnlyList<LImageDraft> other)
     {
+        one = [.. LEngineImageRead(one)];
+        other = [.. LEngineImageRead(other)];
         if (one.Count != other.Count)
         {
             return false;

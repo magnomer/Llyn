@@ -9,15 +9,6 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private LEntryDraft PEditorDraftRead(LEntryDraft held)
-    {
-        return held with
-        {
-            LEntryDraftMeanings = PCardRead(_pMeaningList, held.LEntryDraftMeanings),
-            LEntryDraftCollocations = PCardRead(_pCollocationList, held.LEntryDraftCollocations),
-        };
-    }
-
     private void PEditorDraftShow(LEntryDraft draft)
     {
         _pEditorFill = true;
@@ -39,6 +30,8 @@ public partial class PEditor
         {
             _pEditorFill = false;
         }
+
+        PSentencePrepare();
     }
 
     private void PEditorTextShow(TextBox box, string key, string text)
@@ -59,20 +52,6 @@ public partial class PEditor
         }
 
         PMarkerShow(speeches);
-    }
-
-    private void PEditorIdentityApply(LEntryDraft stored)
-    {
-        PCardIdentityApply(_pMeaningList, stored.LEntryDraftMeanings);
-        PCardIdentityApply(_pCollocationList, stored.LEntryDraftCollocations);
-    }
-
-    private static void PCardIdentityApply(IReadOnlyList<PCard> cards, IReadOnlyList<LCardDraft> stored)
-    {
-        foreach (LCardDraft draft in stored)
-        {
-            PCardFind(cards, draft.LCardDraftId)?.PCardIdentityApply(draft);
-        }
     }
 
     private void PEditorNoteShow(string note)

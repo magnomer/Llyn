@@ -1,4 +1,4 @@
-﻿namespace Llyn.Core;
+namespace Llyn.Core;
 
 public sealed record LSentenceDraft(
     LExampleDraft? LSentenceDraftExample,
@@ -15,7 +15,7 @@ public sealed record LSentenceDraft(
     public bool LSentenceDraftEmpty =>
         (LSentenceDraftExample is null
             || (LSentenceDraftExample.LExampleDraftText.LStateValueEmpty
-                && LSentenceDraftExample.LExampleDraftId == 0))
+                && LSentenceDraftExample.LExampleDraftId <= 0))
         && LSentenceDraftParticle.LStateValueEmpty
         && LSentenceDraftDependence.LStateValueEmpty;
 

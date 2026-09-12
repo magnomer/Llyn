@@ -6,7 +6,7 @@ Covers the sentence side of the drafts folder, the held work the corpus panel pu
 A sentence draft carries an Example where an entry draft carries a form.
 The folder holds both the same way.
 
-## `public void ExampleSave_HeldSentence_SurvivesScan()`
+## `public void RequestApply_HeldSentence_SurvivesScan()`
 
 A sentence typed and then lost with its launch is still on disk, and recovery offers it back.
 This is the loss the downstream exists to prevent: the panel used to hold the sentence in its controls alone.

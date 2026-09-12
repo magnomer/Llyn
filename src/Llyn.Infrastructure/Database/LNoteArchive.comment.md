@@ -17,11 +17,11 @@ Binds the store to the workspace `database` it opens sessions through.
 Writes `note` as the entry's Note, replacing any Note the entry already had.
 The text is stored exactly as given — see the format TODO on `LNote`.
 
-## `public LNote? LNoteRead(string entryId)`
+## `public LNote? LNoteRead(long entryId)`
 
 Reads the entry's Note, or `null` when it has none.
 
-## `public void LNoteDelete(string entryId)`
+## `public void LNoteDelete(long entryId)`
 
 Removes the entry's Note, if it has one.
 The entry itself is untouched.

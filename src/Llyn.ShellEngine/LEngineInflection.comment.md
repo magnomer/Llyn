@@ -23,24 +23,30 @@ They are not stored as words.
 A form knows it is plural.
 What "plural" is called in a language is a fact of that language's pack.
 
-## `public IReadOnlyList<LInflection> LEngineInflectionRead(string entryId)`
+## `public IReadOnlyList<LInflection> LEngineInflectionRead(long entryId)`
 
 Reads the inflected forms of the Entry identified by `entryId`, in stored order, each with its features in theirs.
 
-## `public void LEngineInflectionSet(string entryId, IReadOnlyList<LInflection> inflections)`
+## `public void LEngineInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)`
 
 Makes the stored inflections of the Entry identified by `entryId` exactly `inflections`.
 They are stored in the order given, and an empty list clears them.
 
-## `public void LEngineInflectionAppend(string entryId, IReadOnlyList<LInflection> inflections)`
+## `public void LEngineInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)`
 
 Appends `inflections` to the end of the Entry's list, leaving the forms already stored where they are.
 
-## `public void LEngineInflectionMove(string entryId, int position, int target)`
+## `private void LEngineInflectionValidate(IReadOnlyList<LInflection> inflections)`
+
+Refuses a list naming a part of speech or a morphology value the workspace no longer holds.
+The store would refuse it as a foreign-key failure, which reaches the reader as a crash and not as an answer.
+Every other link a draft carries is checked before it is written, and an inflection is no different.
+
+## `public void LEngineInflectionMove(long entryId, int position, int target)`
 
 Moves the inflection at `position` in the Entry's list to `target`, renumbering the list so the positions stay contiguous.
 
-## `public void LEngineInflectionDelete(string entryId, int position)`
+## `public void LEngineInflectionDelete(long entryId, int position)`
 
 Deletes the inflection at `position` in the Entry's list with its features.
 It renumbers the forms after it so the list stays contiguous.

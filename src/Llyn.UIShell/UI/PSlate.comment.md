@@ -47,3 +47,8 @@ The tag is matched anywhere inside a stored tag, ignoring case, because this is 
 So "verb" finds "phrasal verb".
 A tag the card already carries is left out, since it cannot be written twice.
 The list stays shut when nothing matches, rather than standing empty.
+
+### `private void PSlateSelect(PSlateItem item)`
+
+Asks the engine to link the Tag the user chose, at the caret, and empties the entry.
+A Tag the card already carries, by id or by text, is not asked for again.

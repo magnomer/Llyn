@@ -1,4 +1,4 @@
-﻿# PLabel.cs
+# PLabel.cs
 
 ## `public partial class PEditor`
 
@@ -38,3 +38,20 @@ So a Tag typed and abandoned is kept rather than silently dropped.
 
 Puts the caret in the entry when the field's empty space is clicked.
 So the whole box behaves as the one input it looks like, not only its trailing text.
+
+## `private void PLabelCommit(PCard card)`
+
+Closes what is standing in the entry into a request and clears the entry.
+
+## `private bool PLabelSend(PCard card, string text)`
+
+Asks the engine to add a new Tag with the typed text at the caret.
+A text the card already carries goes nowhere.
+
+## `private void PLabelSend(PCard card, long id)`
+
+Asks the engine to link the stored Tag the user picked, at the caret.
+
+## `private void PLabelRemove(PCard card, PLabelChip? chip)`
+
+Asks the engine to unlink the chip, when there is one to unlink.

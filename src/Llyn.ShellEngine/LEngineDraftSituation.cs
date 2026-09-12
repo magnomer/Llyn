@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -31,20 +31,6 @@ public sealed partial class LEngine
                 _lEngineWorkspace, LClaimArchive.LClaimArchiveCreate(draft.LDraftId));
             _lEngineDraftHeld.Add(draft.LDraftId);
             return draft;
-        }
-    }
-
-    public LSituation LEngineSituationSave(LDraft draft)
-    {
-        lock (_lEngineGate)
-        {
-            ArgumentNullException.ThrowIfNull(draft);
-            LEngineDraftValidate(draft.LDraftId);
-
-            LSituation sent = draft.LDraftSituation ?? throw new LRefusal(LRefusal.LRefusalSituation);
-            LSituation content = LEngineSituationNormalize(sent);
-            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, draft with { LDraftSituation = content });
-            return content;
         }
     }
 

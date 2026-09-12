@@ -21,20 +21,20 @@ Deleting an Entry takes its incoming rows with it, leaving the cards that pointe
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public IReadOnlyList<LTranslation> LTranslationMeaningRead(string meaningId)`
+## `public IReadOnlyList<LTranslation> LTranslationMeaningRead(long meaningId)`
 
 Reads the links a Meaning makes, in the order that Meaning gives them.
 
-## `public IReadOnlyList<LTranslation> LTranslationCollocationRead(string collocationId)`
+## `public IReadOnlyList<LTranslation> LTranslationCollocationRead(long collocationId)`
 
 Reads the links a Collocation makes, in the order that Collocation gives them.
 
-## `public void LTranslationMeaningSave(string meaningId, IReadOnlyList<LTranslation> translations)`
+## `public void LTranslationMeaningSave(long meaningId, IReadOnlyList<LTranslation> translations)`
 
 Writes a Meaning's whole Translation line, replacing whatever it carried.
 Ids are trimmed, blanks and repeats are dropped, and what survives is numbered from zero.
 
-## `public void LTranslationCollocationSave(string collocationId, IReadOnlyList<LTranslation> translations)`
+## `public void LTranslationCollocationSave(long collocationId, IReadOnlyList<LTranslation> translations)`
 
 The same write for a Collocation.
 
@@ -44,7 +44,7 @@ Reads the headword and language of every Entry named by `ids`, in the order the 
 A whole card's links resolve in one query rather than one query each.
 An id no Entry answers is skipped rather than reported, because a caller wants what it can show.
 
-## `public IReadOnlyList<LUsage> LTranslationIncomingRead(string entryId)`
+## `public IReadOnlyList<LUsage> LTranslationIncomingRead(long entryId)`
 
 Reads the Meanings and Collocations that point at this Entry.
 Each one is a Usage, so an Entry shows what renders it the way an Example shows what quotes it.

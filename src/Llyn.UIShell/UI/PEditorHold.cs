@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -71,31 +71,6 @@ public partial class PEditor
         }
         catch (Exception)
         {
-        }
-    }
-
-    private void PEditorDraftSave()
-    {
-        if (_pEditorDraft == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            LDraft? held = _lEngine.LEngineDraftRead(_pEditorDraft);
-            if (held is null)
-            {
-                return;
-            }
-
-            LEntryDraft sent = PEditorDraftRead(held.LDraftContent);
-            LEntryDraft stored = _lEngine.LEngineDraftSave(held with { LDraftContent = sent });
-            PEditorIdentityApply(stored);
-        }
-        catch (Exception exception)
-        {
-            PEditorHoldSuspend(exception);
         }
     }
 

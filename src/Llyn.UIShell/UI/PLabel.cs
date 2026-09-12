@@ -1,6 +1,7 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -9,13 +10,14 @@ public partial class PEditor
     internal void PLabelAttach(PCard card)
     {
         card.PCardLabelNotice = text => PSlateShow(card, text);
+        card.PCardLabelDispatcher = text => PLabelSend(card, text);
     }
 
     internal void PLabelChipHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PLabelChip chip })
+        if (sender is FrameworkElement { DataContext: PLabelChip chip } && PCardLabelFind(chip) is PCard card)
         {
-            PCardLabelFind(chip)?.PCardLabelRemove(chip);
+            PLabelRemove(card, chip);
         }
     }
 
@@ -41,7 +43,7 @@ public partial class PEditor
         if (e.Key == Key.Enter)
         {
             PSlateHide();
-            card.PCardLabelCommit();
+            PLabelCommit(card);
             e.Handled = true;
             return;
         }
@@ -53,14 +55,14 @@ public partial class PEditor
 
         if (e.Key == Key.Back && box.CaretIndex == 0)
         {
-            card.PCardLabelRemove(-1);
+            PLabelRemove(card, card.PCardLabelFind(-1));
             e.Handled = true;
             return;
         }
 
         if (e.Key == Key.Delete && box.CaretIndex == box.Text.Length)
         {
-            card.PCardLabelRemove(1);
+            PLabelRemove(card, card.PCardLabelFind(1));
             e.Handled = true;
             return;
         }
@@ -83,9 +85,40 @@ public partial class PEditor
     {
         PSlateHide();
 
-        if (sender is FrameworkElement { DataContext: PLabelCaret row })
+        if (sender is FrameworkElement { DataContext: PLabelCaret row } && PCardLabelFind(row) is PCard card)
         {
-            PCardLabelFind(row)?.PCardLabelCommit();
+            PLabelCommit(card);
+        }
+    }
+
+    private void PLabelCommit(PCard card)
+    {
+        PLabelSend(card, card.PCardLabelText);
+        card.PCardLabelClear();
+    }
+
+    private bool PLabelSend(PCard card, string text)
+    {
+        string written = (text ?? string.Empty).Trim();
+        if (written.Length == 0 || card.PCardLabelCheck(written))
+        {
+            return false;
+        }
+
+        PEditorRequestSend(new LRequestTagAddition(_pEditorDraft, card.PCardId, written, card.PCardLabelPosition));
+        return true;
+    }
+
+    private void PLabelSend(PCard card, long id)
+    {
+        PEditorRequestSend(new LRequestTagPick(_pEditorDraft, card.PCardId, id, card.PCardLabelPosition));
+    }
+
+    private void PLabelRemove(PCard card, PLabelChip? chip)
+    {
+        if (chip is not null)
+        {
+            PEditorRequestSend(new LRequestTagRemoval(_pEditorDraft, card.PCardId, chip.PLabelChipId));
         }
     }
 

@@ -18,14 +18,12 @@ public partial class PEditor
             PCard? card = PCardFind(cards, draft.LCardDraftId);
             if (card is null || shown.Contains(card))
             {
-                card = PCardCreate(prefix, draft, targets);
+                card = PCardCreate(prefix, draft);
                 cards.Add(card);
             }
-            else
-            {
-                PCardTextShow(card, draft);
-            }
 
+            PCardTextShow(card, draft);
+            PCardListShow(card, draft, targets);
             card.PCardPosition = draft.LCardDraftPosition;
             shown.Add(card);
         }
@@ -69,8 +67,7 @@ public partial class PEditor
         }
     }
 
-    private PCard PCardCreate(
-        string prefix, LCardDraft draft, IReadOnlyDictionary<long, LTranslationTarget> targets)
+    private PCard PCardCreate(string prefix, LCardDraft draft)
     {
         PCard card = new(
             _lEngine, prefix, draft.LCardDraftPosition, _pEditorCitation, _pEditorParticle, _pEditorDependence)
@@ -79,22 +76,27 @@ public partial class PEditor
         };
 
         card.PCardSentenceApply(_pEditorSentenceOrder);
-        card.PCardTitleShow(draft.LCardDraftTitle);
-        card.PCardExpressionShow(draft.LCardDraftExpression);
-        card.PCardDefinitionShow(draft.LCardDraftMeaning);
-        card.PCardSentenceShow(draft.LCardDraftSentence);
-        card.PCardContextShow(draft.LCardDraftSituation);
-        card.PCardRegisterShow(draft.LCardDraftRegister);
-        card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
+        PSentenceAttach(card);
         PLinkAttach(card);
         PContextAttach(card);
         PRegisterAttach(card);
         PLabelAttach(card);
+        PImageAttach(card);
+        PVideoAttach(card);
         PEditorChangeAttach(card);
-        card.PCardLabelShow(draft.LCardDraftTag);
-        card.PCardImageShow(draft.LCardDraftImage);
-        card.PCardVideoShow(draft.LCardDraftVideo);
         return card;
+    }
+
+    private void PCardListShow(
+        PCard card, LCardDraft draft, IReadOnlyDictionary<long, LTranslationTarget> targets)
+    {
+        card.PCardSentenceShow(draft.LCardDraftSentence, (row, field) => PSentencePendingCheck(card, row, field));
+        card.PCardContextShow(draft.LCardDraftSituation);
+        card.PCardRegisterShow(draft.LCardDraftRegister);
+        card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
+        card.PCardLabelShow(draft.LCardDraftTag);
+        card.PCardImageShow(draft.LCardDraftImage, row => PImagePendingCheck(card, row));
+        card.PCardVideoShow(draft.LCardDraftVideo, (row, field) => PVideoPendingCheck(card, row, field));
     }
 
     private void PCardPrepare()
@@ -136,28 +138,5 @@ public partial class PEditor
         }
 
         return found;
-    }
-
-    private static IReadOnlyList<LCardDraft> PCardRead(IReadOnlyList<PCard> cards, IReadOnlyList<LCardDraft> held)
-    {
-        List<LCardDraft> drafts = new(held.Count);
-        foreach (LCardDraft draft in held)
-        {
-            PCard? card = PCardFind(cards, draft.LCardDraftId);
-            drafts.Add(card is null
-                ? draft
-                : draft with
-                {
-                    LCardDraftSentence = card.PCardSentenceRead(),
-                    LCardDraftSituation = card.PCardContextRead(),
-                    LCardDraftRegister = card.PCardRegisterRead(),
-                    LCardDraftTranslation = card.PCardLinkRead(),
-                    LCardDraftTag = card.PCardLabelRead(),
-                    LCardDraftImage = card.PCardImageRead(),
-                    LCardDraftVideo = card.PCardVideoRead(),
-                });
-        }
-
-        return drafts;
     }
 }

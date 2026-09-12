@@ -1,4 +1,4 @@
-﻿# LDraftArchive.cs
+# LDraftArchive.cs
 
 ## `public static class LDraftArchive`
 
@@ -23,7 +23,14 @@ The draft handed in is not changed, so a caller keeps working with the value it 
 The save refuses a draft in which any item still carries id zero.
 Positive means a stored row and negative means an id the engine minted, so zero is never a saved state.
 Only the engine mints, and the guard here means no caller can slip past it.
+A credited author is an item too, so a credit with id zero is refused the same way.
 The entry id of the draft itself may be zero, because that names a new record rather than an item.
+
+## `public const int LDraftArchiveVersion = 2;`
+
+Shape of the draft file the current build writes.
+It moves whenever a draft-shaped record changes, so an older file is skipped rather than misread.
+Version two added the credited authors a source draft carries.
 
 ## `public static LDraft? LDraftArchiveRead(string root, long id)`
 
@@ -38,7 +45,7 @@ A file that fails to parse or cannot be opened is skipped rather than thrown.
 Recovery lists leftovers after a crash, which is exactly when a truncated file is likely.
 One bad file must not hide the rest.
 
-## `public static void LDraftArchiveDelete(string root, string id)`
+## `public static void LDraftArchiveDelete(string root, long id)`
 
 Removes the file for `id`, which is how a draft ends once its record is saved or abandoned.
 A file already gone, or held open by the other copy of the program, is not an error.

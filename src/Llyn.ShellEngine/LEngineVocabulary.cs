@@ -94,8 +94,13 @@ public sealed partial class LEngine
         List<LSpeech> speeches = [];
         foreach (LSpeechDraft draft in drafts)
         {
-            if (draft.LSpeechDraftValue > 0 && values.LSpeechValueRead(draft.LSpeechDraftValue) is not null)
+            if (draft.LSpeechDraftValue > 0)
             {
+                if (values.LSpeechValueRead(draft.LSpeechDraftValue) is null)
+                {
+                    throw new LRefusal(LRefusal.LRefusalLink);
+                }
+
                 speeches.Add(new LSpeech(entryId, speeches.Count, draft.LSpeechDraftValue));
                 continue;
             }

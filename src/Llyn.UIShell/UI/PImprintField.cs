@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -114,8 +114,9 @@ public partial class PImprint
         PImprintChangeDefer();
     }
 
-    private void PImprintApply(LReference? reference)
+    private void PImprintApply(LDraft? draft)
     {
+        LReference? reference = draft?.LDraftReference;
         _pImprintLoading = true;
 
         string unreadable = _pImprintHost.PLocalizationTextRead("Display.Unreadable");
@@ -134,11 +135,43 @@ public partial class PImprint
             ref _pImprintUrlUnreadable);
         PImprintKindShow(reference?.LReferenceKind ?? LReferenceKind.LReferenceKindUnspecified);
 
-        PAuthorApply(reference);
+        PAuthorShow(draft);
 
         long? stored = PImprintReferenceRead();
         PImprintRemoval.IsEnabled = stored is not null;
         PImprintCountShow(stored);
+
+        _pImprintLoading = false;
+
+        PImprintChangeUpdate();
+    }
+
+    private void PImprintShow(LDraft draft)
+    {
+        if (draft.LDraftReference is not LReference reference)
+        {
+            return;
+        }
+
+        _pImprintLoading = true;
+
+        string unreadable = _pImprintHost.PLocalizationTextRead("Display.Unreadable");
+
+        PImprintFieldShow(
+            PImprintTitle, PImprintTitleUnknown, reference.LReferenceTitle, unreadable, ref _pImprintTitleUnreadable, true);
+        PImprintFieldShow(
+            PImprintYear, PImprintYearUnknown, reference.LReferenceYear, unreadable, ref _pImprintYearUnreadable, true);
+        PImprintFieldShow(
+            PImprintNote, PImprintNoteUnknown, reference.LReferenceNote, unreadable, ref _pImprintNoteUnreadable, true);
+        PImprintFieldShow(
+            PImprintUrl, PImprintUrlUnknown, reference.LReferenceUrl, unreadable, ref _pImprintUrlUnreadable, true);
+
+        if (PImprintKindRead() != reference.LReferenceKind)
+        {
+            PImprintKindShow(reference.LReferenceKind);
+        }
+
+        PAuthorShow(draft);
 
         _pImprintLoading = false;
 
@@ -171,8 +204,13 @@ public partial class PImprint
     }
 
     private static void PImprintFieldShow(
-        TextBox field, ToggleButton mark, LStateValue? value, string unreadable, ref bool held)
+        TextBox field, ToggleButton mark, LStateValue? value, string unreadable, ref bool held, bool differing = false)
     {
+        if (differing && LStateValue.LStateValueResolve(field.Text, held) == (value ?? LStateValue.LStateValueUnspecified))
+        {
+            return;
+        }
+
         field.Text = value?.LStateValueShow() ?? string.Empty;
         held = value?.LStateValueState == LState.LStateUnknown;
         field.Tag = held ? unreadable : string.Empty;

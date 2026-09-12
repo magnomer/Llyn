@@ -20,7 +20,7 @@ A subscriber already attached is not added twice, so a surface re-attached keeps
 Stops announcing to `observer`.
 A surface that is closing detaches, so a dead control is never called.
 
-## `private void LEngineBulletinRaise(LSubject subject, string id)`
+## `private void LEngineBulletinRaise(LSubject subject, long id)`
 
 Announces one change to every subscriber.
 The list is copied under the gate and the calls are made outside it.

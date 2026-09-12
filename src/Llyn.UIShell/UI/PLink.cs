@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -45,9 +44,9 @@ public partial class PEditor
 
     internal void PLinkChipHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PLinkChip chip })
+        if (sender is FrameworkElement { DataContext: PLinkChip chip } && PCardLinkFind(chip) is PCard card)
         {
-            PCardLinkFind(chip)?.PCardLinkRemove(chip);
+            PLinkRemove(card, chip);
         }
     }
 
@@ -84,14 +83,14 @@ public partial class PEditor
 
         if (e.Key == Key.Back && box.CaretIndex == 0)
         {
-            card.PCardLinkRemove(-1);
+            PLinkRemove(card, card.PCardLinkFind(-1));
             e.Handled = true;
             return;
         }
 
         if (e.Key == Key.Delete && box.CaretIndex == box.Text.Length)
         {
-            card.PCardLinkRemove(1);
+            PLinkRemove(card, card.PCardLinkFind(1));
             e.Handled = true;
             return;
         }
@@ -157,25 +156,30 @@ public partial class PEditor
         }
     }
 
-    private void PLinkChipChange(object? sender, NotifyCollectionChangedEventArgs e)
+    private void PLinkRemove(PCard card, PLinkChip? chip)
     {
-        if (_pEditorFill)
+        if (chip is null)
         {
             return;
         }
 
-        if (e.OldItems is not null)
+        PEditorRequestSend(new LRequestTranslationRemoval(_pEditorDraft, card.PCardId, chip.PLinkChipId));
+        PLinkCourtDelete(chip.PLinkChipId);
+    }
+
+    private bool PLinkSend(PCard card, long id)
+    {
+        if (id == 0)
         {
-            foreach (object row in e.OldItems)
-            {
-                if (row is PLinkChip chip)
-                {
-                    PLinkCourtDelete(chip.PLinkChipId);
-                }
-            }
+            return false;
         }
 
-        PEditorChangeDefer();
+        if (!card.PCardLinkCheck(id))
+        {
+            PEditorRequestSend(new LRequestTranslationPick(_pEditorDraft, card.PCardId, id, card.PCardLinkPosition));
+        }
+
+        return true;
     }
 
     private void PLinkCourtDelete(long id)
@@ -215,7 +219,7 @@ public partial class PEditor
         {
             long? entry = PEditorEntryRead();
             single = _lEngine.LEngineTranslationResolve(word, entry);
-            found = single is null ? _lEngine.LEngineTranslationFind(word, entry) : [];
+            found = single is null || offered ? _lEngine.LEngineTranslationFind(word, entry) : [];
         }
         catch (Exception exception)
         {
@@ -223,16 +227,15 @@ public partial class PEditor
             return false;
         }
 
-        if (single is not null)
+        if (single is not null && !offered)
         {
             PProspectHide();
-            return card.PCardLinkCommit(
-                single.LEntryId, single.LEntryHeadword, single.LEntryLanguage);
+            return PLinkSend(card, single.LEntryId);
         }
 
         if (offered)
         {
-            PProspectShow(card, word, found);
+            PProspectShow(card, word, found, single is not null);
         }
 
         return false;

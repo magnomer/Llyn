@@ -1,4 +1,4 @@
-﻿# PCard.cs
+# PCard.cs
 
 ## Inline notes
 
@@ -9,12 +9,6 @@ It is negative for a card the engine minted and positive for a stored row.
 No control shows it and nothing on screen changes with it.
 It is an address into the draft the engine holds, not a value the card owns.
 Every request the card raises names it, and every bulletin's render finds the card by it.
-
-### `internal void PCardIdentityApply(LCardDraft stored)`
-
-Takes the ids the engine minted when it saved the chips and writes them into the chips and rows.
-Nothing is redrawn, so the caret and the focus stay where the user left them.
-Each field walks its own rows in the order the read handed them over, skipping what the read skipped.
 
 ### `public int PCardPosition`
 

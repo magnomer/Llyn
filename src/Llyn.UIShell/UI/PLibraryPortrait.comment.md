@@ -23,7 +23,7 @@ The whole attempt stands together, because a half-written document is of no use.
 The engine holds no localization, so the words the export needs are read here and passed in.
 They are the panel's own words, which is what keeps a document reading like the screen.
 
-## `private string PLibraryNameRead(string id)`
+## `private string PLibraryNameRead(long id)`
 
 The headword is offered as the file name, since that is what the reader would type.
 Characters a file name cannot hold are replaced rather than dropped, so nothing silently merges.

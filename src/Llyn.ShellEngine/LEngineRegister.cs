@@ -149,39 +149,6 @@ public sealed partial class LEngine
             });
     }
 
-    private void LEngineRegisterAttach(
-        long ownerId,
-        IReadOnlyList<LRegisterDraft> drafts,
-        string language,
-        bool collocation,
-        Dictionary<long, long> identity)
-    {
-        LEngineRegisterCreate(language);
-
-        LRegisterArchive registers = new(_lEngineDatabase);
-        int position = 0;
-        HashSet<long> attached = [];
-        foreach (LRegisterDraft draft in LEngineRegisterRead(drafts))
-        {
-            long registerId = LEngineRegisterResolve(registers, draft, identity);
-            if (!attached.Add(registerId))
-            {
-                continue;
-            }
-
-            if (collocation)
-            {
-                registers.LRegisterCollocationAttach(ownerId, registerId, position);
-            }
-            else
-            {
-                registers.LRegisterMeaningAttach(ownerId, registerId, position);
-            }
-
-            position++;
-        }
-    }
-
     private static bool LEngineRegisterMatch(
         IReadOnlyList<LRegisterDraft> one, IReadOnlyList<LRegisterDraft> other)
     {
@@ -213,21 +180,27 @@ public sealed partial class LEngine
         }
     }
 
-    private static long LEngineRegisterResolve(
+    private long LEngineRegisterResolve(
         LRegisterArchive registers, LRegisterDraft draft, Dictionary<long, long> identity)
     {
         if (draft.LRegisterDraftId > 0)
         {
-            LRegister? stored = registers.LRegisterRead(draft.LRegisterDraftId);
-            if (stored is not null)
+            LRegister stored = registers.LRegisterRead(draft.LRegisterDraftId)
+                ?? throw new LRefusal(LRefusal.LRefusalLink);
+            if (!stored.LRegisterBuiltin && stored.LRegisterName != draft.LRegisterDraftName)
             {
-                if (!stored.LRegisterBuiltin && stored.LRegisterName != draft.LRegisterDraftName)
-                {
-                    registers.LRegisterNameUpdate(stored.LRegisterId, draft.LRegisterDraftName);
-                }
-
-                return stored.LRegisterId;
+                registers.LRegisterNameUpdate(stored.LRegisterId, draft.LRegisterDraftName);
             }
+
+            return stored.LRegisterId;
+        }
+
+        LRegister? found = LEngineRegisterResolve(
+            draft.LRegisterDraftName.LStateValueShow(), draft.LRegisterDraftLanguage);
+        if (found is not null)
+        {
+            LEngineIdentityRecord(identity, draft.LRegisterDraftId, found.LRegisterId);
+            return found.LRegisterId;
         }
 
         long created = registers.LRegisterCreate(new LRegister(
@@ -236,5 +209,27 @@ public sealed partial class LEngine
             draft.LRegisterDraftLanguage)).LRegisterId;
         LEngineIdentityRecord(identity, draft.LRegisterDraftId, created);
         return created;
+    }
+
+    private LRegister? LEngineRegisterResolve(string name, string language)
+    {
+        string written = LCatalog.LCatalogTextFold(name);
+        if (written.Length == 0)
+        {
+            return null;
+        }
+
+        foreach (LRegister register in LEngineRegisterFind(string.Empty, language))
+        {
+            if (string.Equals(
+                    LCatalog.LCatalogTextFold(register.LRegisterName.LStateValueShow()),
+                    written,
+                    StringComparison.Ordinal))
+            {
+                return register;
+            }
+        }
+
+        return null;
     }
 }

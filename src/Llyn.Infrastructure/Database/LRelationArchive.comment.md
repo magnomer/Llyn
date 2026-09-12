@@ -28,26 +28,32 @@ Returns the stored relation with that id and its assigned position filled in.
 Exactly one of the target ids must be set.
 Naming both or neither throws an `InvalidOperationException` before anything is written.
 
-## `public IReadOnlyList<LRelation> LRelationRead(string meaningId)`
+## `public IReadOnlyList<LRelation> LRelationRead(long meaningId)`
 
 Reads the relations originating from the Meaning identified by `meaningId`, ordered by position.
 Each comes with its single target resolved to a target Entry id or a target Meaning id.
 
 ## `public void LRelationUpdate(LRelation relation)`
 
-Updates the type, label, and labels of the relation identified by `relation`'s id.
-The id, origin Meaning, target, and position are untouched.
+Updates the type, label, labels and target of the relation identified by `relation`'s id.
+The target row is replaced, so a relation can be re-aimed without losing its id.
+The id, origin Meaning and position are untouched.
 Where a relation sits among its siblings is changed by `LRelationMove`.
 That method has to renumber the whole set.
 Throws when no relation carries that id.
 
-## `public void LRelationMove(string id, int position)`
+## `public void LRelationOrderSet(long meaningId, IReadOnlyList<long> order)`
+
+Renumbers the relations of `meaningId` so they follow `order`.
+A commit that reconciled the whole set calls this once, rather than moving each row.
+
+## `public void LRelationMove(long id, int position)`
 
 Moves the relation identified by `id` to `position` among the relations of its origin Meaning.
 It renumbers the whole set so positions stay `0 … n-1`.
 A position outside the set is clamped into it, and nothing moves when no relation carries that id.
 
-## `public void LRelationDelete(string id)`
+## `public void LRelationDelete(long id)`
 
 Deletes the relation identified by `id`.
 Its target row is removed by the foreign-key cascade.
@@ -56,10 +62,10 @@ The relations left under the same origin Meaning are renumbered so their positio
 
 ## Inline notes
 
-### `private static string? LRelationHolderRead(SqliteConnection connection, string id)`
+### `private static string? LRelationHolderRead(SqliteConnection connection, long id)`
 
 The Meaning a relation hangs from, or null when no relation carries the id.
 
-### `private static IReadOnlyList<string> LRelationSiblingRead(SqliteConnection connection, string meaningId)`
+### `private static IReadOnlyList<string> LRelationSiblingRead(SqliteConnection connection, long? meaningId)`
 
 The relations of one origin Meaning, in order.

@@ -75,7 +75,11 @@ public partial class PEditor
             return;
         }
 
-        card.PCardLabelCommit(item.PSlateItemId, item.PSlateItemText);
+        if (!card.PCardLabelMatch(item.PSlateItemId) && !card.PCardLabelCheck(item.PSlateItemText))
+        {
+            PLabelSend(card, item.PSlateItemId);
+        }
+
         card.PCardLabelClear();
     }
 

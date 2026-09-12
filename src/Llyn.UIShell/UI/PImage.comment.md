@@ -20,7 +20,6 @@ So does a file that is not a picture.
 The location the user wrote is still standing.
 The row says what was meant, not what could be reached.
 
-## `internal PImage()`
 
 An empty row nothing has been written in, which is what the card's Extra row opens.
 
@@ -29,15 +28,19 @@ An empty row nothing has been written in, which is what the card's Extra row ope
 The row for a stored Image: the location as the store knows it, and the row it stands for.
 The row id is carried through untouched, so an edited location updates a picture rather than replacing it.
 
-## `internal void PImageIdentityApply(LImageDraft stored)`
+## `internal long PImageId`
 
-Takes the id the engine gave this row when it saved the draft.
-The row never mints an id of its own.
+The id of the engine's row this one shows, which every request about it names.
 
-## `internal LImageDraft PImageDraftRead()`
+## `internal LStateValue PImageLocationRead()`
 
-What the row says its Image is: nothing written, unreadable, or the text it shows.
-The stored row it came from travels back with it, empty for a row the user opened.
+What the row says its location is: nothing, unreadable, or the text it shows.
+
+## `internal void PImageShow(LImageDraft written, bool pending)`
+
+Redraws the row from the engine's row where the location differs.
+A location with a request still waiting is left as typed.
+The id is always taken.
 
 ## `internal static Uri? PImageAddressRead(string location)`
 

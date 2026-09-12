@@ -1,4 +1,4 @@
-﻿# PCorpusBrowse.cs
+# PCorpusBrowse.cs
 
 ## `public partial class PCorpus`
 
@@ -17,6 +17,10 @@ It also decides which delete the panel offers, so it is held rather than asked f
 ## `private async void PCorpusBulletinHandle(LBulletin bulletin)`
 
 Re-reads the workspace whenever the engine announces a change, wherever it was made.
+A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
+A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
+A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
+A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
 The citations are read with the catalog, because a Source stored elsewhere is what a row cites.
 A workspace that moved reloads the flags and the language menu first, since neither belongs to the old folder's rows.
 
@@ -28,7 +32,7 @@ A selection that survives the fill is kept, and one that no longer stands is dro
 An open editor keeps its selection either way, because the row may be the one being written.
 Rows sharing a sentence are numbered afterwards, so the reader can tell them apart.
 
-## `internal void PAnthologyExampleShow(string id)`
+## `internal void PAnthologyExampleShow(long id)`
 
 Reads one Example back and shows it with the sides quoting it.
 An open editor is restarted on the Example chosen, so what it writes into is the draft for that sentence.
@@ -40,7 +44,7 @@ The window calls it so a Source citing row can land on the Example it names.
 Writes one three-state field into the display.
 An unwritten value reads the unrecorded mark in the muted colour, so a blank row never stands for two facts.
 
-## `private void PQuotationFind(string id)`
+## `private void PQuotationFind(long id)`
 
 Reads everything quoting the Example, and names each row by the kind of side it is.
 A Meaning and a Collocation quote on their own terms, so the row says which.

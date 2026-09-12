@@ -6,16 +6,16 @@ Finds the marked entries whose headword carries the query.
 An empty query returns every marked entry.
 Each result carries the moment it was marked, so the caller can order by it.
 
-## `public bool LEngineFavoriteCheck(string entryId)`
+## `public bool LEngineFavoriteCheck(long entryId)`
 
 Reports whether the entry is marked.
 
-## `public void LEngineFavoriteSave(string entryId)`
+## `public void LEngineFavoriteSave(long entryId)`
 
 Marks the entry a favorite.
 Marking changes no lexical data and keeps the entry's identity.
 
-## `public void LEngineFavoriteDelete(string entryId)`
+## `public void LEngineFavoriteDelete(long entryId)`
 
 Unmarks the entry.
 The entry stands, still reachable through the entry catalog.

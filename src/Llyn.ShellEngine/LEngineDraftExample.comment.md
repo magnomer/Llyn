@@ -8,7 +8,7 @@ It sits apart from `LEngineDraftHold.cs`, which owns what every kind of draft sh
 Only starting, saving and committing differ by kind, and only those live here.
 The shared claim, sweep, recovery and discard read `LDraftExample` and branch where the kinds part.
 
-## `public LDraft LEngineExampleStart(string origin, string? exampleId)`
+## `public LDraft LEngineExampleStart(string origin, long? exampleId)`
 
 Mints a draft id, writes the first file, and returns the held sentence.
 With no Example the content is blank under an id minted for it.
@@ -19,14 +19,7 @@ A recovered draft names the same sentence it always did.
 An Example that is gone is refused before a file is written, so no draft can point at nothing.
 A claim naming this process is written beside the draft, as every other kind of draft does.
 
-## `public LExample LEngineExampleSave(LDraft draft)`
-
-Overwrites that one file with the sentence given, and hands back the sentence it stored.
-The content that came in is handed straight back when nothing needed naming.
-So the caller can tell a settled write from a corrected one without comparing field by field.
-A draft carrying no sentence is refused, because this call is the sentence side of the folder.
-
-## `public LExample LEngineExampleCommit(string id)`
+## `public LExample LEngineExampleCommit(long id)`
 
 Turns a held sentence into a stored Example and returns it.
 A draft naming no Example is a create, one naming an Example is a rewrite.
@@ -46,7 +39,7 @@ The language a new sentence opens in was chosen for it rather than typed.
 It is not by itself an edit.
 A draft whose Example has since gone is measured against that same empty sentence.
 
-## `private static LExample LEngineExampleNormalize(LExample content)`
+## `private LExample LEngineExampleNormalize(LExample content)`
 
 The same sentence with an id minted when it carries none.
 The sentence that came in is returned itself when it was already named.

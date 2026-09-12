@@ -279,7 +279,12 @@ public sealed class LTagArchive
             ArgumentNullException.ThrowIfNull(tag);
 
             long id = tag.LTagId;
-            if (id <= 0 || !LTagExist(connection, id))
+            if (id > 0 && !LTagExist(connection, id))
+            {
+                throw new LRefusal(LRefusal.LRefusalLink);
+            }
+
+            if (id <= 0)
             {
                 string text = tag.LTagText.Trim();
                 if (text.Length == 0)

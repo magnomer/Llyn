@@ -1,4 +1,4 @@
-﻿# LRefusal.cs
+# LRefusal.cs
 
 ## `public sealed class LRefusal : Exception`
 
@@ -59,6 +59,19 @@ An id of zero is one such card, because nothing in a draft is ever addressed by 
 
 Reason key for tentative work whose id was raised in a workspace no longer open.
 The id names nothing here, and a write under it would land in the wrong place.
+
+## `public const string LRefusalItem = "Refusal.ItemMissing";`
+
+Reason key for a request naming a list item the draft does not hold, or naming none.
+A sentence, chip, media row or credit is an item.
+A card has its own key, because the form treats a card and a row inside it differently.
+
+## `public const string LRefusalLink = "Refusal.LinkMissing";`
+
+Reason key for a commit that names a stored row no longer in the workspace.
+A chip, sentence, media row, credit or inflection value holds a positive id, and that id answers nothing.
+The commit refuses rather than making a fresh row from the text the draft still shows.
+A silent rebind would bind the card to a row the user never chose.
 
 ## `public LRefusal(string reason)`
 

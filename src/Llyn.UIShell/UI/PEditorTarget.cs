@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -22,7 +22,7 @@ public partial class PEditor
 
         try
         {
-            foreach (LTranslationTarget target in _lEngine.LEngineTargetRead(ids))
+            foreach (LTranslationTarget target in _lEngine.LEngineTargetRead(_pEditorDraft, ids))
             {
                 targets[target.LTranslationTargetId] = target;
             }

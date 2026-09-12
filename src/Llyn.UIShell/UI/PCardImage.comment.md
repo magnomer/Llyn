@@ -2,33 +2,29 @@
 
 ## `internal sealed partial class PCard`
 
-The Image rows a card carries.
+The Image rows a card shows.
 Unlike Example and Situation, a card starts with no Image row at all.
-It keeps none it is not given.
 A picture is an addition the user asks for through the card's Extra row.
-So an empty card shows no picture field.
-A card whose last picture is dropped goes back to showing none.
+So an empty card shows no picture field, and one whose last picture is dropped goes back to none.
+The engine holds the rows, blank ones included, and the card renders them by id.
 
-## `internal void PCardImageShow(IReadOnlyList<LImageDraft> rows)`
+## `internal Action<PImage>? PCardImageNotice { get; set; }`
 
-Replaces the rows with the stored Images of the card being loaded, one row per picture.
-It leaves the card with no rows when it references none.
+Where a changed location goes.
+The editor sets it when it builds the card and turns the change into a request.
 
-## `internal IReadOnlyList<LImageDraft> PCardImageRead()`
+## `internal void PCardImageShow(IReadOnlyList<LImageDraft> rows, Func<PImage, bool> pending)`
 
-What the card says its Images are.
-A row whose location stands empty is left out, so a row opened and never filled is written nowhere.
+Makes the rows show the engine's Images, matched by id.
+A location with a request still waiting is left as typed, which `pending` answers per row.
 
-## `internal void PCardImageApply(IReadOnlyList<LImageDraft> stored)`
+## Inline notes
 
-Writes the ids the engine minted back onto the rows, in the order the read listed them.
-A row naming no picture was dropped by the read, so it is stepped over here.
+### `private PImage PCardImageCreate(LImageDraft draft)`
 
-## `internal void PCardImageAdd()`
+Builds one row from the engine's row and starts listening to its location.
 
-Opens an empty picture row at the end, which is what the card's Extra row asks for.
+### `private void PCardImageChange(object? sender, PropertyChangedEventArgs arguments)`
 
-## `internal void PCardImageRemove(PImage row)`
-
-Drops the row outright.
-There is no last row to keep: a card carrying no picture is an ordinary card.
+Only the location is the engine's.
+The preview is drawn from it and never reported.

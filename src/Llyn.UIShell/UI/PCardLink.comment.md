@@ -1,21 +1,18 @@
-﻿# PCardLink.cs
+# PCardLink.cs
 
 ## `internal sealed partial class PCard`
 
-The Translations a card carries, held as the items of one field the way the Tags are.
-The collection is a run of committed links with one open entry among them.
-That entry is the caret the user types into, and it moves between links as a caret does.
+The Translations a card shows, held as the items of one field the way the Tags are.
+The collection is a run of link chips with one open entry among them, which is the caret.
 
-A committed link holds only the id of the Entry it points at.
+A link holds only the id of the Entry it points at.
 The headword, the language and the flag beside it are drawn from that Entry, not stored.
 So a chip is a pointer the field happens to be able to read aloud.
 
 Typed text is not a link until an Entry answers it.
 The card cannot ask, because the search belongs to the engine and the card holds no engine.
-So a word standing in the entry is handed to the editor, which resolves it and hands a link back.
-
-Duplicate ids are refused as they are committed rather than repaired afterwards.
-A word is refused by the id it resolved to, not by how it was spelled.
+So a word standing in the entry is handed to the editor, which resolves it and sends the request.
+The engine holds the links, and the card renders them by id from the targets the editor read.
 
 ## `internal Func<string, bool, bool>? PCardLinkDispatcher { get; set; }`
 
@@ -25,30 +22,31 @@ A card with none takes no new links, which is what an unattached card should do.
 The second argument says whether the editor may open a dropdown for a word it cannot settle.
 The answer says whether the word became a link, so the card knows to empty the entry.
 
+## `internal Action<string>? PCardLinkNotice { get; set; }`
+
+Where the entry's text goes as it is typed, so the editor can offer matching Entries.
+
+## `internal string PCardLinkText`
+
+What is standing in the entry.
+
+## `internal int PCardLinkPosition`
+
+How many chips stand before the caret, which is the place a new link is asked for.
+
 ## `internal void PCardLinkShow(IReadOnlyList<LTranslationTarget> targets)`
 
-Replaces the links with the stored ones of the card being loaded and reopens an empty entry after them.
+Makes the chips show the engine's links, matched by id.
 Each target carries the headword and language its id stands for, read once for the whole card.
+A chip whose word or language changed is replaced, since a chip is immutable.
 
-## `internal IReadOnlyList<string> PCardLinkRead()`
+## `internal PLinkChip? PCardLinkFind(int step)`
 
-The ids the card says it links to, in the order the field shows them.
-The entry text is left out, because a word no Entry answers has no id to save.
-
-## `internal void PCardLinkRemove(PLinkChip chip)`
-
-Drops one link the user closed.
-The Entry it pointed at is untouched.
-
-## `internal void PCardLinkRemove(int step)`
-
-Drops the link standing one step from the entry, before it or after it.
-That is what a backspace at the start, or a delete at the end, reaches for.
+The chip standing one step from the entry, before it or after it, or null.
 
 ## `internal bool PCardLinkMove(int step)`
 
-Steps the entry one place along the field, past the link on that side.
-Reports whether there was anywhere left to go.
+Steps the entry one place along the field and reports whether there was anywhere left to go.
 
 ## `internal void PCardLinkCommit()`
 
@@ -57,16 +55,14 @@ That is what pressing enter means.
 The entry is emptied only when the word became a link.
 Otherwise it is left standing, because the word may still be waiting on a choice.
 
-## `internal bool PCardLinkCommit(string id, string headword, string language)`
-
-Closes a resolved Entry into a link before the entry.
-Reports whether the card now holds that link, which a blank id does not make true.
-An id already linked reports true, because the link the user asked for is there.
-
 ## `internal void PCardLinkClear()`
 
 Empties the entry once the word standing in it became a link.
 The rewrite is marked so the comma reader does not answer it.
+
+## `internal bool PCardLinkCheck(long id)`
+
+Whether the card already links the Entry, which keeps a second pick from becoming a second request.
 
 ## `internal void PCardFlagUpdate()`
 

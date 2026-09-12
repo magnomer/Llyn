@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,13 +11,14 @@ public partial class PEditor
     internal void PRegisterAttach(PCard card)
     {
         card.PCardRegisterNotice = text => PCandidateRegisterShow(card, text);
+        card.PCardRegisterDispatcher = text => PRegisterSend(card, text);
     }
 
     internal void PRegisterChipHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PRegister chip })
+        if (sender is FrameworkElement { DataContext: PRegister chip } && PCardRegisterFind(chip) is PCard card)
         {
-            PCardRegisterFind(chip)?.PCardRegisterRemove(chip);
+            PRegisterRemove(card, chip);
         }
     }
 
@@ -54,14 +55,14 @@ public partial class PEditor
 
         if (e.Key == Key.Back && box.CaretIndex == 0)
         {
-            card.PCardRegisterRemove(-1);
+            PRegisterRemove(card, card.PCardRegisterFind(-1));
             e.Handled = true;
             return;
         }
 
         if (e.Key == Key.Delete && box.CaretIndex == box.Text.Length)
         {
-            card.PCardRegisterRemove(1);
+            PRegisterRemove(card, card.PCardRegisterFind(1));
             e.Handled = true;
             return;
         }
@@ -136,39 +137,35 @@ public partial class PEditor
     private void PRegisterCommit(PCard card)
     {
         PCandidateHide();
-
-        string written = card.PCardRegisterText.Trim();
-        long? id = written.Length == 0 ? null : PRegisterResolve(written);
-
-        if (id is null)
-        {
-            card.PCardRegisterCommit();
-            return;
-        }
-
-        card.PCardRegisterCommit(id, written);
+        PRegisterSend(card, card.PCardRegisterText);
         card.PCardRegisterClear();
     }
 
-    private long? PRegisterResolve(string written)
+    private bool PRegisterSend(PCard card, string text)
     {
-        try
+        string written = (text ?? string.Empty).Trim();
+        if (written.Length == 0 || card.PCardRegisterCheck(written))
         {
-            foreach (LRegister row in _lEngine.LEngineRegisterFind(written, _pSpeakerChoice))
-            {
-                if (string.Equals(
-                        row.LRegisterName.LStateValueShow().Trim(),
-                        written,
-                        StringComparison.CurrentCultureIgnoreCase))
-                {
-                    return row.LRegisterId;
-                }
-            }
-        }
-        catch (Exception)
-        {
+            return false;
         }
 
-        return null;
+        PRegisterSend(card, null, written);
+        return true;
+    }
+
+    private void PRegisterSend(PCard card, long? id, string written)
+    {
+        int position = card.PCardRegisterPosition;
+        PEditorRequestSend(id is long picked
+            ? new LRequestRegisterPick(_pEditorDraft, card.PCardId, picked, position)
+            : new LRequestRegisterAddition(_pEditorDraft, card.PCardId, written, position));
+    }
+
+    private void PRegisterRemove(PCard card, PRegister? chip)
+    {
+        if (chip is not null)
+        {
+            PEditorRequestSend(new LRequestRegisterRemoval(_pEditorDraft, card.PCardId, chip.PRegisterId));
+        }
     }
 }

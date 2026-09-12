@@ -27,7 +27,7 @@ Returns the stored revision.
 The whole write is one transaction.
 An empty change list records an empty revision.
 
-## `public LRevision? LRevisionRead(string id)`
+## `public LRevision? LRevisionRead(long id)`
 
 Reads the revision for `id`, or `null` when no revision has that id.
 
@@ -37,6 +37,6 @@ Reads the most recently opened revision, or `null` when the workspace has none y
 Ordering is by the stamped timestamp, then by id.
 So two revisions opened in the same tick still read back in one stable order.
 
-## `public IReadOnlyList<LRevisionChange> LRevisionChangeRead(string revisionId)`
+## `public IReadOnlyList<LRevisionChange> LRevisionChangeRead(long revisionId)`
 
 Reads the changes recorded under `revisionId`, in the order they were recorded.
