@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
@@ -12,7 +12,8 @@ public sealed partial class LEngine
     {
         return string.Equals(one.LEntryDraftHeadword, other.LEntryDraftHeadword, StringComparison.Ordinal)
             && string.Equals(one.LEntryDraftLanguage, other.LEntryDraftLanguage, StringComparison.Ordinal)
-            && LEngineSoundMatch(one.LEntryDraftPronunciation, other.LEntryDraftPronunciation)
+            && LEngineSoundMatch(one.LEntryDraftPronunciations, other.LEntryDraftPronunciations)
+            && LEngineSpellingMatch(one.LEntryDraftTranscriptions, other.LEntryDraftTranscriptions)
             && string.Equals(one.LEntryDraftNote, other.LEntryDraftNote, StringComparison.Ordinal)
             && LEngineSpeechMatch(one.LEntryDraftSpeeches, other.LEntryDraftSpeeches)
             && LEngineFormMatch(one.LEntryDraftForms, other.LEntryDraftForms)
@@ -21,24 +22,38 @@ public sealed partial class LEngine
             && LEngineCardMatch(one.LEntryDraftCollocations, other.LEntryDraftCollocations);
     }
 
-    private static bool LEngineSoundMatch(LPronunciationDraft? one, LPronunciationDraft? other)
+    private static bool LEngineSoundMatch(
+        IReadOnlyList<LPronunciationDraft> one, IReadOnlyList<LPronunciationDraft> other)
     {
-        if (one is null || other is null)
+        one = [.. LEnginePronunciationScan(one)];
+        other = [.. LEnginePronunciationScan(other)];
+        if (one.Count != other.Count)
         {
-            return one is null && other is null;
+            return false;
         }
 
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (!LEngineSoundMatch(one[index], other[index]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool LEngineSoundMatch(LPronunciationDraft one, LPronunciationDraft other)
+    {
         if (one.LPronunciationDraftId != other.LPronunciationDraftId
             || !string.Equals(one.LPronunciationDraftIpa, other.LPronunciationDraftIpa, StringComparison.Ordinal)
             || !string.Equals(
-                one.LPronunciationDraftLevel, other.LPronunciationDraftLevel, StringComparison.Ordinal)
+                one.LPronunciationDraftVariety, other.LPronunciationDraftVariety, StringComparison.Ordinal)
             || !string.Equals(
                 one.LPronunciationDraftAudio, other.LPronunciationDraftAudio, StringComparison.Ordinal)
             || !string.Equals(
                 one.LPronunciationDraftSource, other.LPronunciationDraftSource, StringComparison.Ordinal)
-            || one.LPronunciationDraftSyllables.Count != other.LPronunciationDraftSyllables.Count
-            || one.LPronunciationDraftRepresentations.Count
-                != other.LPronunciationDraftRepresentations.Count)
+            || one.LPronunciationDraftSyllables.Count != other.LPronunciationDraftSyllables.Count)
         {
             return false;
         }
@@ -51,10 +66,22 @@ public sealed partial class LEngine
             }
         }
 
-        for (int index = 0; index < one.LPronunciationDraftRepresentations.Count; index++)
+        return true;
+    }
+
+    private static bool LEngineSpellingMatch(
+        IReadOnlyList<LTranscriptionDraft> one, IReadOnlyList<LTranscriptionDraft> other)
+    {
+        one = [.. LEngineTranscriptionScan(one)];
+        other = [.. LEngineTranscriptionScan(other)];
+        if (one.Count != other.Count)
         {
-            if (one.LPronunciationDraftRepresentations[index]
-                != other.LPronunciationDraftRepresentations[index])
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index] != other[index])
             {
                 return false;
             }

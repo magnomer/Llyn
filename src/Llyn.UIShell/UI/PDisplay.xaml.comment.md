@@ -22,6 +22,7 @@ The draft keeps the stored value beside the name, and the panel shows only the n
 
 Draws `draft` as the entry being read.
 A field the draft left empty collapses instead of standing as a blank line.
+The note is Markdown, drawn as blocks by `PMarkdown` inside the note card.
 The playback tray appears only when the entry owns a recording that is still on disk.
 The volume is read from the workspace on every show.
 A level the editor set is the level this view plays at.

@@ -40,12 +40,13 @@ internal static class TPortraitSample
         return TInterface.TPortraitCreate(
             "kindle",
             "English",
-            "/ˈkɪnd(ə)l/",
+            [TInterface.TPortraitReadingCreate(string.Empty, "/ˈkɪnd(ə)l/")],
+            [],
             ["verb"],
             [sense],
             [phrase],
             [TInterface.TPortraitUsageCreate("불붙이다", "set alight", "Meaning", "Korean")],
-            "Chiefly literary.",
+            "Chiefly *literary*.\r\n\r\n- poetic\n- archaic",
             true,
             label);
     }

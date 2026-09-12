@@ -18,7 +18,7 @@ Reads an ordering back from its text, falling back where the text names none.
 A panel opens on its own fallback, because catalogs do not share a default ordering.
 Text the set does not know is never an error, because a stored choice can outlive the ordering it named.
 
-## `public static string LCatalogTextFold(string? text)`
+## `public static string LCatalogTextNormalize(string? text)`
 
 One text in the form two wordings are compared in: edge spaces gone and case lowered the invariant way.
 It is the same fold the database's `lfold` helper applies, so a match made in memory agrees with one made in a query.

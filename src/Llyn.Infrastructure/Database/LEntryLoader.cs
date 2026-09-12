@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -33,11 +33,8 @@ public sealed class LEntryLoader
             new LInflectionArchive(_lEntryLoaderDatabase).LInflectionRead(id);
 
         LNote? note = new LNoteArchive(_lEntryLoaderDatabase).LNoteRead(id);
-        LPronunciationArchive pronunciations = new(_lEntryLoaderDatabase);
-        LPronunciation? pronunciation = pronunciations.LPronunciationRead(id);
-        LPronunciationAudio? audio = pronunciation is null
-            ? null
-            : pronunciations.LPronunciationAudioRead(pronunciation.LPronunciationId);
+        IReadOnlyList<LPronunciationDraft> pronunciations = LEntrySoundRead(id);
+        IReadOnlyList<LTranscriptionDraft> transcriptions = LEntrySpellingRead(id);
 
         Dictionary<long, List<LMeaning>> senses = [];
         foreach (LMeaning meaning in new LMeaningArchive(_lEntryLoaderDatabase).LMeaningRead(id))
@@ -69,13 +66,14 @@ public sealed class LEntryLoader
         return new LEntryDraft(
             entry.LEntryHeadword,
             entry.LEntryLanguage,
-            LEntrySoundFormat(pronunciation, audio),
+            pronunciations,
             note?.LNoteText ?? string.Empty,
             meaningCards,
             collocationCards,
             speeches,
             forms,
-            inflections);
+            inflections,
+            transcriptions);
     }
 
     private IReadOnlyList<LCardDraft> LEntryChildRead(
@@ -107,22 +105,37 @@ public sealed class LEntryLoader
         return cards;
     }
 
-    private static LPronunciationDraft? LEntrySoundFormat(
-        LPronunciation? pronunciation, LPronunciationAudio? audio)
+    private IReadOnlyList<LPronunciationDraft> LEntrySoundRead(long id)
     {
-        if (pronunciation is null)
+        LPronunciationArchive pronunciations = new(_lEntryLoaderDatabase);
+        List<LPronunciationDraft> drafts = [];
+        foreach (LPronunciation pronunciation in pronunciations.LPronunciationRead(id))
         {
-            return null;
+            LPronunciationAudio? audio = pronunciations.LPronunciationAudioRead(pronunciation.LPronunciationId);
+            drafts.Add(new LPronunciationDraft(
+                pronunciation.LPronunciationIpa ?? string.Empty,
+                pronunciation.LPronunciationSyllables,
+                audio?.LPronunciationAudioFile ?? string.Empty,
+                audio?.LPronunciationAudioSource,
+                pronunciation.LPronunciationId,
+                pronunciation.LPronunciationVariety ?? string.Empty));
         }
 
-        return new LPronunciationDraft(
-            pronunciation.LPronunciationIpa ?? string.Empty,
-            pronunciation.LPronunciationLevel,
-            pronunciation.LPronunciationSyllables,
-            pronunciation.LPronunciationRepresentations,
-            audio?.LPronunciationAudioFile ?? string.Empty,
-            audio?.LPronunciationAudioSource,
-            pronunciation.LPronunciationId);
+        return drafts;
+    }
+
+    private IReadOnlyList<LTranscriptionDraft> LEntrySpellingRead(long id)
+    {
+        List<LTranscriptionDraft> drafts = [];
+        foreach (LTranscription transcription in new LTranscriptionArchive(_lEntryLoaderDatabase).LTranscriptionRead(id))
+        {
+            drafts.Add(new LTranscriptionDraft(
+                transcription.LTranscriptionScheme,
+                transcription.LTranscriptionText,
+                transcription.LTranscriptionId));
+        }
+
+        return drafts;
     }
 
     private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)

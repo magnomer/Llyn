@@ -213,7 +213,7 @@ public sealed partial class LEngine
 
     private LRegister? LEngineRegisterResolve(string name, string language)
     {
-        string written = LCatalog.LCatalogTextFold(name);
+        string written = LCatalog.LCatalogTextNormalize(name);
         if (written.Length == 0)
         {
             return null;
@@ -222,7 +222,7 @@ public sealed partial class LEngine
         foreach (LRegister register in LEngineRegisterFind(string.Empty, language))
         {
             if (string.Equals(
-                    LCatalog.LCatalogTextFold(register.LRegisterName.LStateValueShow()),
+                    LCatalog.LCatalogTextNormalize(register.LRegisterName.LStateValueShow()),
                     written,
                     StringComparison.Ordinal))
             {

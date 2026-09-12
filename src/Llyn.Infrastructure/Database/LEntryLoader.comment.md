@@ -6,7 +6,7 @@ Reads a stored entry back into the `LEntryDraft` the input form saved.
 It owns no SQL of its own.
 It composes what the archives already read into one value shape.
 That shape is what `LEngineEntrySave` consumes, so a save and a load are inverses.
-The parts are the entry row, its meanings and collocations, its note and pronunciation.
+The parts are the entry row, its meanings and collocations, its note, its pronunciations and its transcriptions.
 They include the entry's forms, its parts of speech and its inflections with their features.
 They also include every Example and Situation each card references and every Tag and Translation it carries.
 All of them arrive in stored order.
@@ -47,12 +47,16 @@ They are links between rows rather than text belonging to the card.
 
 ## Inline notes
 
-### `private static LPronunciationDraft? LEntrySoundFormat(LPronunciation? pronunciation, LPronunciationAudio? audio)`
+### `private IReadOnlyList<LPronunciationDraft> LEntrySoundRead(long id)`
 
-The stored pronunciation and its recording as the one value the draft carries.
-An entry with no pronunciation row carries none, rather than an empty one.
-The row's id travels with it, so a save updates that row instead of writing another.
+Every stored pronunciation of the entry and its recording, in stored order, as the values the draft carries.
+An entry with no pronunciation row carries an empty list.
+Each row's id travels with it, so a save updates that row instead of writing another.
 The audio's added time stays behind, because it is workspace bookkeeping.
+
+### `private IReadOnlyList<LTranscriptionDraft> LEntrySpellingRead(long id)`
+
+Every stored transcription of the entry, in stored order, each with its scheme and its id.
 
 ### `private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)`
 

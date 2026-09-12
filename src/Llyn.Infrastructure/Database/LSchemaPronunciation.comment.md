@@ -2,15 +2,18 @@
 
 ## `public static class LSchemaPronunciation`
 
-Creates the single pronunciation an Entry owns and its owned child structures.
+Creates the pronunciations an Entry owns, their syllables and their recordings.
 
 ## `public static void LSchemaPronunciationCreate(SqliteConnection connection)`
 
-An entry carries at most one pronunciation, enforced by the unique entry_id.
-The pronunciation itself carries no position.
-It owns ordered syllables and representations keyed by (pronunciation_id, position).
+An entry carries an ordered list of pronunciations, keyed by its own id and placed by (entry_id, position).
+The first row is the primary one every summary shows.
+A row may carry no ipa yet, because a recording is often fetched before the reading is typed.
+The variety says why the row stands beside the others, such as a region, and is NULL when there is one row.
+A pronunciation owns ordered syllables keyed by (pronunciation_id, position).
 A syllable requires only its nucleus.
-Every other syllable field and a representation's local_tone are optional.
+Its columns are the segments and the tone, never a spelling.
+Every other syllable field is optional.
 They store NULL when absent, which is distinct from empty.
 The pronunciation also owns at most one downloaded recording.
 pronunciation_audio has no id of its own, since pronunciation_id is its primary key.

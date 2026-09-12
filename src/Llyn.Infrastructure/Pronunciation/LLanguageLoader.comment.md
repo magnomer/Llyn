@@ -43,3 +43,9 @@ The flag is declared in the pack as an ISO 3166-1 alpha-2 country code.
 The image itself is not shipped.
 The engine downloads and caches it on demand.
 Absent code means no flag.
+
+### `private static IReadOnlyList<string> LLanguageSchemeScan(JsonElement root)`
+
+The pack declares its transcription schemes under `transcription` as a list of names.
+A missing or empty list turns the transcription line off for that language.
+Blank and repeated names are dropped, so the form never shows a nameless or doubled scheme.

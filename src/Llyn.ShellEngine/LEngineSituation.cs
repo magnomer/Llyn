@@ -53,7 +53,7 @@ public sealed partial class LEngine
 
     private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)
     {
-        string written = LCatalog.LCatalogTextFold(title.LStateValueShow());
+        string written = LCatalog.LCatalogTextNormalize(title.LStateValueShow());
         if (written.Length == 0)
         {
             return null;
@@ -63,7 +63,7 @@ public sealed partial class LEngine
         foreach (LSituation situation in situations.LSituationRead())
         {
             if (!string.Equals(
-                    LCatalog.LCatalogTextFold(situation.LSituationTitle.LStateValueShow()),
+                    LCatalog.LCatalogTextNormalize(situation.LSituationTitle.LStateValueShow()),
                     written,
                     StringComparison.Ordinal))
             {

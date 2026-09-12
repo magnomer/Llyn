@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -837,10 +837,10 @@ public sealed class TDraft
             []);
         content = content with
         {
-            LEntryDraftPronunciation = content.LEntryDraftPronunciation! with
-            {
-                LPronunciationDraftId = TInterface.TIdentityCreate(),
-            },
+            LEntryDraftPronunciations =
+            [
+                content.LEntryDraftPronunciation! with { LPronunciationDraftId = TInterface.TIdentityCreate() },
+            ],
         };
 
         return TInterface.TDraftCreate(

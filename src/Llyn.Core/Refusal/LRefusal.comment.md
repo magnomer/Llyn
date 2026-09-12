@@ -73,6 +73,11 @@ A chip, sentence, media row, credit or inflection value holds a positive id, and
 The commit refuses rather than making a fresh row from the text the draft still shows.
 A silent rebind would bind the card to a row the user never chose.
 
+## `public const string LRefusalScheme = "Refusal.SchemeDoubled";`
+
+Reason key for a transcription request naming a scheme another row of the same entry already carries.
+One scheme spells one reading one way, so a second row under that name would say nothing new.
+
 ## `public LRefusal(string reason)`
 
 Refuses a request for `reason`, a localization key.

@@ -1,0 +1,16 @@
+namespace Llyn.Core;
+
+public sealed record LRequestTranscriptionAddition(long LRequestDraftId, string LRequestScheme, int LRequestPosition)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestTranscriptionRemoval(long LRequestDraftId, long LRequestTranscriptionId)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestTranscriptionShift(long LRequestDraftId, long LRequestTranscriptionId, int LRequestPosition)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestTranscriptionScheme(long LRequestDraftId, long LRequestTranscriptionId, string LRequestText)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestTranscriptionText(long LRequestDraftId, long LRequestTranscriptionId, string LRequestText)
+    : LRequest(LRequestDraftId);

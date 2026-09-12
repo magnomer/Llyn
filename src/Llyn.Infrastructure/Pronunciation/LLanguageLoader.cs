@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Text.Json;
 using Llyn.Core;
@@ -15,6 +16,7 @@ public static class LLanguageLoader
     private const string LLanguageLoaderHarvest = "audio";
     private const string LLanguageLoaderFont = "font";
     private const string LLanguageLoaderExample = "example";
+    private const string LLanguageLoaderScheme = "transcription";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -96,7 +98,30 @@ public static class LLanguageLoader
             LLanguageFontRead(root, LLanguageLoaderFont),
             LLanguageFontRead(root, LLanguageLoaderExample),
             LLanguageSourceScan(root, LLanguageLoaderLookup),
-            LLanguageSourceScan(root, LLanguageLoaderHarvest));
+            LLanguageSourceScan(root, LLanguageLoaderHarvest),
+            LLanguageSchemeScan(root));
+    }
+
+    private static IReadOnlyList<string> LLanguageSchemeScan(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(LLanguageLoaderScheme, out JsonElement schemes) ||
+            schemes.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<string>();
+        }
+
+        List<string> names = new();
+        foreach (JsonElement scheme in schemes.EnumerateArray())
+        {
+            string name = scheme.ValueKind == JsonValueKind.String ? scheme.GetString()!.Trim() : string.Empty;
+            if (name.Length > 0 && !names.Contains(name, StringComparer.Ordinal))
+            {
+                names.Add(name);
+            }
+        }
+
+        return names;
     }
 
     private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(JsonElement root, string key)

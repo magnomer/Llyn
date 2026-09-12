@@ -49,7 +49,7 @@ public static class LCatalog
         };
     }
 
-    public static string LCatalogTextFold(string? text)
+    public static string LCatalogTextNormalize(string? text)
     {
         return (text ?? string.Empty).Trim().ToLowerInvariant();
     }

@@ -8,6 +8,7 @@ Builds the style part of a Word export from the display's theme.
 
 Each display role becomes one named style, so the body carries no inline formatting.
 Sizes are the panel's own, converted from device-independent pixels to half-points.
+The note adds a heading, quote and code style, since its Markdown carries those shapes.
 
 ## `public static string LFolioStyleNormalize(string color)`
 

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 37;
+    public const long LSchemaMigrationVersion = 39;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {
@@ -29,8 +29,7 @@ public static class LSchemaMigration
         {
             throw new InvalidOperationException(
                 $"The workspace database is at schema version {stored}, which this build cannot upgrade. " +
-                $"Version {LSchemaMigrationVersion} rebuilt row identity, so no upgrade path exists. " +
-                "Create a new workspace and import the old one.");
+                "No upgrade path exists before 1.0.0. Create a new workspace and import the old one.");
         }
     }
 }

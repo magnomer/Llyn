@@ -71,32 +71,17 @@ public sealed partial class LEngine
                     collocation.LCollocationId, card, draft.LEntryDraftLanguage, true, identity);
             }
 
-            if (!string.IsNullOrWhiteSpace(draft.LEntryDraftNote))
+            string note = LMarkdown.LMarkdownNormalize(draft.LEntryDraftNote);
+
+            if (note.Length > 0)
             {
-                new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, draft.LEntryDraftNote));
+                new LNoteArchive(_lEngineDatabase).LNoteSave(new LNote(entry.LEntryId, note));
             }
 
-            if (draft.LEntryDraftPronunciation is LPronunciationDraft spoken
-                && !spoken.LPronunciationDraftEmpty)
-            {
-                LPronunciationArchive pronunciations = new(_lEngineDatabase);
-                LPronunciation pronunciation = pronunciations.LPronunciationCreate(new LPronunciation(
-                0,
-                    entry.LEntryId,
-                    spoken.LPronunciationDraftLevel,
-                    spoken.LPronunciationDraftIpa,
-                    spoken.LPronunciationDraftSyllables,
-                    spoken.LPronunciationDraftRepresentations));
-
-                LEngineIdentityRecord(identity, spoken.LPronunciationDraftId, pronunciation.LPronunciationId);
-                if (spoken.LPronunciationDraftAudio.Length > 0)
-                {
-                    pronunciations.LPronunciationAudioSave(
-                        pronunciation.LPronunciationId,
-                        LEngineRecordingFormat(spoken.LPronunciationDraftAudio),
-                        spoken.LPronunciationDraftSource);
-                }
-            }
+            LEnginePronunciationSync(
+                entry.LEntryId, LEnginePronunciationReset(draft.LEntryDraftPronunciations), null, identity);
+            LEngineTranscriptionSync(
+                entry.LEntryId, LEngineTranscriptionReset(draft.LEntryDraftTranscriptions), null, identity);
 
             LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
             LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);
@@ -108,6 +93,30 @@ public sealed partial class LEngine
             session.LDatabaseSessionCommit();
             return entry;
         }
+    }
+
+    private static IReadOnlyList<LPronunciationDraft> LEnginePronunciationReset(
+        IReadOnlyList<LPronunciationDraft> drafts)
+    {
+        List<LPronunciationDraft> renewed = new(drafts.Count);
+        foreach (LPronunciationDraft draft in drafts)
+        {
+            renewed.Add(draft.LPronunciationDraftId > 0 ? draft with { LPronunciationDraftId = 0 } : draft);
+        }
+
+        return renewed;
+    }
+
+    private static IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionReset(
+        IReadOnlyList<LTranscriptionDraft> drafts)
+    {
+        List<LTranscriptionDraft> renewed = new(drafts.Count);
+        foreach (LTranscriptionDraft draft in drafts)
+        {
+            renewed.Add(draft.LTranscriptionDraftId > 0 ? draft with { LTranscriptionDraftId = 0 } : draft);
+        }
+
+        return renewed;
     }
 
     private void LEngineMeaningCreate(
@@ -208,7 +217,7 @@ public sealed partial class LEngine
                 return stored;
             }
 
-            if (LEngineExampleShareCheck(stored.LExampleId, ownerId, collocation))
+            if (LEngineShareCheck(stored.LExampleId, ownerId, collocation))
             {
                 return examples.LExampleCreate(new LExample(
                     0,
@@ -243,7 +252,7 @@ public sealed partial class LEngine
         return created;
     }
 
-    private bool LEngineExampleShareCheck(long exampleId, long ownerId, bool collocation)
+    private bool LEngineShareCheck(long exampleId, long ownerId, bool collocation)
     {
         LOwner owner = collocation ? LOwner.LOwnerCollocation : LOwner.LOwnerMeaning;
         foreach (LUsage usage in new LExampleLink(_lEngineDatabase).LExampleUsageRead(exampleId))

@@ -191,8 +191,7 @@ public sealed class TEntryLoad
             "Wiktionary"));
 
         LPronunciationArchive pronunciations = TInterface.TPronunciationArchiveCreate(workspace.TWorkspaceDatabase);
-        LPronunciation? pronunciation = pronunciations.TPronunciationRead(stored.LEntryId);
-        Assert.NotNull(pronunciation);
+        LPronunciation pronunciation = Assert.Single(pronunciations.TPronunciationRead(stored.LEntryId));
 
         LPronunciationAudio? audio = pronunciations.TPronunciationAudioRead(pronunciation.LPronunciationId);
         Assert.NotNull(audio);

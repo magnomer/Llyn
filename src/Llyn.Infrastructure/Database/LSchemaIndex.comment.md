@@ -43,7 +43,7 @@ Operational rows pointing at lexical rows and at history.
 
 The ordered sets that were left without a unique position.
 They are a relation within its Meaning and a collocation within its Entry.
-They are also a synonym within its Collocation.
+They are also a synonym within its Collocation, and a pronunciation or a transcription within its Entry.
 The translation links a card carries are ordered the same way and take the same index.
 Every other ordered set already has one.
 Without it a duplicate position is silently possible and the read order becomes arbitrary.

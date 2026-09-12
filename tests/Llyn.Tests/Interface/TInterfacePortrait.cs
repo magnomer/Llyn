@@ -1,4 +1,5 @@
-﻿using Llyn.Core;
+﻿using System.Collections.Generic;
+using Llyn.Core;
 using Llyn.Infrastructure;
 
 namespace Llyn.Tests;
@@ -59,7 +60,8 @@ internal static partial class TInterface
     internal static LPortrait TPortraitCreate(
         string headword,
         string language,
-        string pronunciation,
+        IReadOnlyList<LPortraitReading> pronunciation,
+        IReadOnlyList<LPortraitReading> transcription,
         IReadOnlyList<string> speech,
         IReadOnlyList<LPortraitCard> meaning,
         IReadOnlyList<LPortraitCard> collocation,
@@ -71,6 +73,7 @@ internal static partial class TInterface
             headword,
             language,
             pronunciation,
+            transcription,
             speech,
             meaning,
             collocation,
@@ -78,6 +81,8 @@ internal static partial class TInterface
             note,
             favorite,
             label);
+
+    internal static LPortraitReading TPortraitReadingCreate(string label, string text) => new(label, text);
 
     internal static LTheme TThemeLoad() => LTheme.LThemeLoad();
 
@@ -87,6 +92,11 @@ internal static partial class TInterface
         LSheet.LSheetFormat(portrait, theme);
 
     internal static string TOutlineFormat(LPortrait portrait) => LOutline.LOutlineFormat(portrait);
+
+    internal static string TMarkdownNormalize(string? text) => LMarkdown.LMarkdownNormalize(text);
+
+    internal static IReadOnlyList<LMarkdownBlock> TMarkdownParse(string? text) =>
+        LMarkdown.LMarkdownParse(text);
 
     internal static void TFolioSave(LPortrait portrait, LTheme theme, string path)
     {

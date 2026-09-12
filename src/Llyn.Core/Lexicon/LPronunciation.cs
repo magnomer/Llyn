@@ -5,7 +5,7 @@ namespace Llyn.Core;
 public sealed record LPronunciation(
     long LPronunciationId,
     long LPronunciationEntryId,
-    string? LPronunciationLevel,
+    int LPronunciationPosition,
+    string? LPronunciationVariety,
     string? LPronunciationIpa,
-    IReadOnlyList<LSyllable> LPronunciationSyllables,
-    IReadOnlyList<LRepresentation> LPronunciationRepresentations);
+    IReadOnlyList<LSyllable> LPronunciationSyllables);

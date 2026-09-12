@@ -8,4 +8,8 @@ public sealed record LLanguage(
     LFont LLanguageFont,
     LFont LLanguageExample,
     IReadOnlyList<LSourceSpec> LLanguageLookupSources,
-    IReadOnlyList<LSourceSpec> LLanguageHarvestSources);
+    IReadOnlyList<LSourceSpec> LLanguageHarvestSources,
+    IReadOnlyList<string>? LLanguageSchemes = null)
+{
+    public IReadOnlyList<string> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
+}

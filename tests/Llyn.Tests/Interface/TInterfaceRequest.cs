@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -105,6 +105,46 @@ internal static partial class TInterface
     internal static LRequest TAuthorShiftCreate(long draftId, long authorId, int position) =>
         new LRequestAuthorShift(draftId, authorId, position);
 
+    internal static LRequest TRequestIpaCreate(long draftId, string text) =>
+        new LRequestIpa(draftId, text);
+
+    internal static LRequest TRequestAudioCreate(long draftId, string file, string? source) =>
+        new LRequestAudio(draftId, file, source);
+
+    internal static LRequest TPronunciationAdditionCreate(long draftId, string ipa, int position) =>
+        new LRequestPronunciationAddition(draftId, ipa, position);
+
+    internal static LRequest TPronunciationRemovalCreate(long draftId, long pronunciationId) =>
+        new LRequestPronunciationRemoval(draftId, pronunciationId);
+
+    internal static LRequest TPronunciationShiftCreate(long draftId, long pronunciationId, int position) =>
+        new LRequestPronunciationShift(draftId, pronunciationId, position);
+
+    internal static LRequest TPronunciationIpaCreate(long draftId, long pronunciationId, string text) =>
+        new LRequestPronunciationIpa(draftId, pronunciationId, text);
+
+    internal static LRequest TPronunciationVarietyCreate(long draftId, long pronunciationId, string text) =>
+        new LRequestPronunciationVariety(draftId, pronunciationId, text);
+
+    internal static LRequest TPronunciationAudioCreate(
+        long draftId, long pronunciationId, string file, string? source) =>
+        new LRequestPronunciationAudio(draftId, pronunciationId, file, source);
+
+    internal static LRequest TTranscriptionAdditionCreate(long draftId, string scheme, int position) =>
+        new LRequestTranscriptionAddition(draftId, scheme, position);
+
+    internal static LRequest TTranscriptionRemovalCreate(long draftId, long transcriptionId) =>
+        new LRequestTranscriptionRemoval(draftId, transcriptionId);
+
+    internal static LRequest TTranscriptionShiftCreate(long draftId, long transcriptionId, int position) =>
+        new LRequestTranscriptionShift(draftId, transcriptionId, position);
+
+    internal static LRequest TTranscriptionSchemeCreate(long draftId, long transcriptionId, string text) =>
+        new LRequestTranscriptionScheme(draftId, transcriptionId, text);
+
+    internal static LRequest TTranscriptionTextCreate(long draftId, long transcriptionId, string text) =>
+        new LRequestTranscriptionText(draftId, transcriptionId, text);
+
     internal static LRequest TReferenceBodyCreate(long draftId, LReference reference) =>
         new LRequestReferenceBody(draftId, reference);
 
@@ -133,10 +173,7 @@ internal static partial class TInterface
             held = engine.LEngineRequestApply(new LRequestNote(draftId, content.LEntryDraftNote));
         }
 
-        if (!string.Equals(held.LDraftContent.LEntryDraftIpa, content.LEntryDraftIpa, StringComparison.Ordinal))
-        {
-            held = engine.LEngineRequestApply(new LRequestIpa(draftId, content.LEntryDraftIpa));
-        }
+        held = TRequestReadingApply(engine, draftId, held, content);
 
         if (content.LEntryDraftSpeeches.Count > 0)
         {
@@ -163,6 +200,45 @@ internal static partial class TInterface
         {
             held = TRequestCardApply(
                 engine, draftId, LCardKind.LCardKindCollocation, 0, index, content.LEntryDraftCollocations[index]);
+        }
+
+        return held;
+    }
+
+    private static LDraft TRequestReadingApply(LEngine engine, long draftId, LDraft held, LEntryDraft content)
+    {
+        foreach (LPronunciationDraft spoken in held.LDraftContent.LEntryDraftPronunciations)
+        {
+            held = engine.LEngineRequestApply(
+                new LRequestPronunciationRemoval(draftId, spoken.LPronunciationDraftId));
+        }
+
+        foreach (LTranscriptionDraft spelled in held.LDraftContent.LEntryDraftTranscriptions)
+        {
+            held = engine.LEngineRequestApply(
+                new LRequestTranscriptionRemoval(draftId, spelled.LTranscriptionDraftId));
+        }
+
+        for (int index = 0; index < content.LEntryDraftPronunciations.Count; index++)
+        {
+            LPronunciationDraft spoken = content.LEntryDraftPronunciations[index];
+            held = engine.LEngineRequestApply(
+                new LRequestPronunciationAddition(draftId, spoken.LPronunciationDraftIpa, index));
+            long spokenId = held.LDraftContent.LEntryDraftPronunciations[index].LPronunciationDraftId;
+            held = engine.LEngineRequestApply(
+                new LRequestPronunciationVariety(draftId, spokenId, spoken.LPronunciationDraftVariety));
+            held = engine.LEngineRequestApply(new LRequestPronunciationAudio(
+                draftId, spokenId, spoken.LPronunciationDraftAudio, spoken.LPronunciationDraftSource));
+        }
+
+        for (int index = 0; index < content.LEntryDraftTranscriptions.Count; index++)
+        {
+            LTranscriptionDraft spelled = content.LEntryDraftTranscriptions[index];
+            held = engine.LEngineRequestApply(
+                new LRequestTranscriptionAddition(draftId, spelled.LTranscriptionDraftScheme, index));
+            long spelledId = held.LDraftContent.LEntryDraftTranscriptions[index].LTranscriptionDraftId;
+            held = engine.LEngineRequestApply(
+                new LRequestTranscriptionText(draftId, spelledId, spelled.LTranscriptionDraftText));
         }
 
         return held;

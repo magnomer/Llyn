@@ -35,5 +35,4 @@ public static class LSchemaVersion
         command.CommandText = "SELECT ifnull(MAX(version), 0) FROM schema_version;";
         return Convert.ToInt64(command.ExecuteScalar());
     }
-
 }

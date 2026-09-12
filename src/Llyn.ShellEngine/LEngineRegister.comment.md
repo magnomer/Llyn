@@ -73,6 +73,6 @@ Only then is a new written Register created, recorded in the map under that id.
 ## `private LRegister? LEngineRegisterResolve(string name, string language)`
 
 The stored Register whose name reads as `name`, or `null` when none does.
-Both sides are folded the way `LCatalog.LCatalogTextFold` folds, so case and edge spaces do not make a second row.
+Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, so case and edge spaces do not make a second row.
 The shelf offered is the one `language` sees: its own pack rows and every written row.
 The engine holds this rule so the form, a commit and any other client all get one row for one wording.

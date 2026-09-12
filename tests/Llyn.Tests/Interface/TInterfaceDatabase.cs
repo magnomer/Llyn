@@ -293,10 +293,18 @@ internal static partial class TInterface
         long pronunciationId) =>
         pronunciationArchive.LPronunciationAudioRead(pronunciationId);
 
-    internal static LPronunciation? TPronunciationRead(
+    internal static IReadOnlyList<LPronunciation> TPronunciationRead(
         this LPronunciationArchive pronunciationArchive,
         long entryId) =>
         pronunciationArchive.LPronunciationRead(entryId);
+
+    internal static LTranscriptionArchive TTranscriptionArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static IReadOnlyList<LTranscription> TTranscriptionRead(
+        this LTranscriptionArchive transcriptionArchive,
+        long entryId) =>
+        transcriptionArchive.LTranscriptionRead(entryId);
 
     internal static LRelationArchive TRelationArchiveCreate(LDatabase database) =>
         new(database);

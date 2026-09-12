@@ -6,11 +6,10 @@ The single Note an entry owns: subordinate free text hanging from the entry itse
 An entry carries *at most one* Note, and the owning entry id is the identity.
 So saving a Note replaces whatever Note the entry had.
 
-TODO: `PNoteContents` edits WYSIWYG Markdown, but the serialized format is not yet prescribed.
-`LNoteText` therefore stores whatever the editor produced, as-is.
-Pin the format down and normalize on write once it is decided.
+The text is Markdown in the dialect `LMarkdown` reads.
+The engine normalizes it on write, so a stored Note is always in canonical form.
 
 **Parameters**
 
 - `LNoteEntryId` — Owning entry id — the Note's identity, one per entry.
-- `LNoteText` — The note text, stored exactly as the editor produced it.
+- `LNoteText` — The note text as normalized Markdown.

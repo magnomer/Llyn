@@ -22,7 +22,8 @@ public sealed class TPortraitSheet
         Assert.Contains("(+with)", page);
         Assert.Contains("불붙이다", page);
         Assert.Contains("<h2>Links here</h2>", page);
-        Assert.Contains("Chiefly literary.", page);
+        Assert.Contains("<p>Chiefly <em>literary</em>.</p>", page);
+        Assert.Contains("<ul>\n<li>poetic</li>\n<li>archaic</li>\n</ul>", page);
         Assert.Contains("★", page);
     }
 

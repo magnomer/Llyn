@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -8,32 +8,45 @@ public sealed partial class LEngine
 {
     private LEntryDraft LEngineDraftNormalize(LEntryDraft content)
     {
-        LPronunciationDraft? spoken = LEngineSoundNormalize(content.LEntryDraftPronunciation);
+        IReadOnlyList<LPronunciationDraft> spoken = LEngineSoundNormalize(content.LEntryDraftPronunciations);
+        IReadOnlyList<LTranscriptionDraft> spelled = LEngineSpellingNormalize(content.LEntryDraftTranscriptions);
         IReadOnlyList<LCardDraft> meanings = LEngineCardNormalize(content.LEntryDraftMeanings);
         IReadOnlyList<LCardDraft> collocations = LEngineCardNormalize(content.LEntryDraftCollocations);
 
-        return ReferenceEquals(spoken, content.LEntryDraftPronunciation)
+        return ReferenceEquals(spoken, content.LEntryDraftPronunciations)
+            && ReferenceEquals(spelled, content.LEntryDraftTranscriptions)
             && ReferenceEquals(meanings, content.LEntryDraftMeanings)
             && ReferenceEquals(collocations, content.LEntryDraftCollocations)
             ? content
             : content with
             {
-                LEntryDraftPronunciation = spoken,
+                LEntryDraftPronunciations = spoken,
+                LEntryDraftTranscriptions = spelled,
                 LEntryDraftMeanings = meanings,
                 LEntryDraftCollocations = collocations,
             };
     }
 
-    private LPronunciationDraft? LEngineSoundNormalize(LPronunciationDraft? spoken)
+    private IReadOnlyList<LPronunciationDraft> LEngineSoundNormalize(IReadOnlyList<LPronunciationDraft> drafts)
     {
-        if (spoken is null || spoken.LPronunciationDraftEmpty)
-        {
-            return null;
-        }
+        return LEngineListNormalize(
+            drafts,
+            static draft => draft.LPronunciationDraftId == 0 && draft.LPronunciationDraftEmpty,
+            draft => draft.LPronunciationDraftId == 0
+                ? draft with { LPronunciationDraftId = LEngineIdentityCreate() }
+                : draft);
+    }
 
-        return spoken.LPronunciationDraftId == 0
-            ? spoken with { LPronunciationDraftId = LEngineIdentityCreate() }
-            : spoken;
+    private IReadOnlyList<LTranscriptionDraft> LEngineSpellingNormalize(IReadOnlyList<LTranscriptionDraft> drafts)
+    {
+        return LEngineListNormalize(
+            drafts,
+            static draft => draft.LTranscriptionDraftId == 0
+                && draft.LTranscriptionDraftEmpty
+                && string.IsNullOrWhiteSpace(draft.LTranscriptionDraftScheme),
+            draft => draft.LTranscriptionDraftId == 0
+                ? draft with { LTranscriptionDraftId = LEngineIdentityCreate() }
+                : draft);
     }
 
     private IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)

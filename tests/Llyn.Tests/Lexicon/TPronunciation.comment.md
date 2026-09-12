@@ -1,11 +1,12 @@
-# TPronunciation.cs
+﻿# TPronunciation.cs
 
 ## `public sealed class TPronunciation`
 
 Covers the engine's stored-pronunciation seams.
-That is the pronunciation row an Entry keeps.
-It is also the audio hanging from it, stored workspace-relative and handed back resolved.
+That is the ordered pronunciation rows an Entry keeps, the first being the primary one.
+It is also the audio hanging from each, stored workspace-relative and handed back resolved.
 It is also the single note an Entry keeps beside them.
+It also covers the draft requests that edit the primary row alone or any row by id.
 
 ## Inline notes
 
@@ -18,6 +19,11 @@ Handed back full, so the shell plays a path without knowing where the workspace 
 
 The pronunciation going takes the audio row with it.
 The file on disk is the workspace's.
+
+### `public void EntryUpdate_ReorderedPronunciations_KeepsIdsAndAudio()`
+
+A row keeps its id across a save, so the recording hanging from it stays attached when the list is reordered.
+The first row after the save is the one every summary shows.
 
 ### `private static string TPronunciationFileRead(TWorkspace workspace)`
 

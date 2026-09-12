@@ -42,6 +42,9 @@ public static class LFolioStyle
         LFolioStyleAppend(styles, "Row", "Row", 22, false, ink, null, 60);
         LFolioStyleAppend(styles, "RowDetail", "Row Detail", 18, false, muted, null, 120);
         LFolioStyleAppend(styles, "Note", "Note", 21, false, ink, null, 100);
+        LFolioStyleAppend(styles, "NoteHeading", "Note Heading", 24, true, ink, null, 60);
+        LFolioStyleAppend(styles, "NoteQuote", "Note Quote", 21, false, muted, "Georgia", 100);
+        LFolioStyleAppend(styles, "NoteCode", "Note Code", 19, false, ink, "Consolas", 100);
 
         styles.Append("</w:styles>");
         return styles.ToString();

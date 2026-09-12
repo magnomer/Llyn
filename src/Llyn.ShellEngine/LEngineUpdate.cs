@@ -64,7 +64,8 @@ public sealed partial class LEngine
             LEngineFormUpdate(entries, id, draft, changes);
             LEngineInflectionUpdate(id, draft, changes);
             LEngineNoteUpdate(id, draft, changes);
-            LEnginePronunciationUpdate(id, draft, changes, identity);
+            LEnginePronunciationSync(id, draft.LEntryDraftPronunciations, changes, identity);
+            LEngineTranscriptionSync(id, draft.LEntryDraftTranscriptions, changes, identity);
 
             LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord(changes);
 
@@ -199,8 +200,9 @@ public sealed partial class LEngine
     {
         LNoteArchive notes = new(_lEngineDatabase);
         LNote? stored = notes.LNoteRead(entryId);
+        string text = LMarkdown.LMarkdownNormalize(draft.LEntryDraftNote);
 
-        if (string.IsNullOrWhiteSpace(draft.LEntryDraftNote))
+        if (text.Length == 0)
         {
             if (stored is not null)
             {
@@ -211,126 +213,14 @@ public sealed partial class LEngine
             return;
         }
 
-        if (string.Equals(stored?.LNoteText, draft.LEntryDraftNote, StringComparison.Ordinal))
+        if (string.Equals(stored?.LNoteText, text, StringComparison.Ordinal))
         {
             return;
         }
 
-        notes.LNoteSave(new LNote(entryId, draft.LEntryDraftNote));
+        notes.LNoteSave(new LNote(entryId, text));
         changes.Add(new LRevisionChange(
             0, entryId, "note", stored is null ? "create" : "update", null));
-    }
-
-    private void LEnginePronunciationUpdate(
-        long entryId, LEntryDraft draft, List<LRevisionChange> changes, Dictionary<long, long> identity)
-    {
-        LPronunciationArchive pronunciations = new(_lEngineDatabase);
-        LPronunciation? stored = pronunciations.LPronunciationRead(entryId);
-        LPronunciationDraft? written = draft.LEntryDraftPronunciation;
-
-        if (written is null || written.LPronunciationDraftEmpty)
-        {
-            if (stored is not null)
-            {
-                pronunciations.LPronunciationDelete(stored.LPronunciationId);
-                changes.Add(new LRevisionChange(
-                    0, stored.LPronunciationId, "pronunciation", "delete", stored.LPronunciationIpa));
-            }
-
-            return;
-        }
-
-        long pronunciationId;
-        if (stored is null)
-        {
-            LPronunciation created = pronunciations.LPronunciationCreate(new LPronunciation(
-                0,
-                entryId,
-                written.LPronunciationDraftLevel,
-                written.LPronunciationDraftIpa,
-                written.LPronunciationDraftSyllables,
-                written.LPronunciationDraftRepresentations));
-            pronunciationId = created.LPronunciationId;
-            changes.Add(new LRevisionChange(
-                0, pronunciationId, "pronunciation", "create", written.LPronunciationDraftIpa));
-        }
-        else
-        {
-            pronunciationId = stored.LPronunciationId;
-        }
-
-        LEngineIdentityRecord(identity, written.LPronunciationDraftId, pronunciationId);
-        if (stored is not null)
-        {
-            LPronunciation current = stored with
-            {
-                LPronunciationLevel = written.LPronunciationDraftLevel,
-                LPronunciationIpa = written.LPronunciationDraftIpa,
-                LPronunciationSyllables = written.LPronunciationDraftSyllables,
-                LPronunciationRepresentations = written.LPronunciationDraftRepresentations,
-            };
-
-            if (!LEngineSoundMatch(stored, current))
-            {
-                pronunciations.LPronunciationUpdate(current);
-                changes.Add(new LRevisionChange(
-                    0, pronunciationId, "pronunciation", "update", written.LPronunciationDraftIpa));
-            }
-        }
-
-        if (written.LPronunciationDraftAudio.Length == 0)
-        {
-            return;
-        }
-
-        string file = LEngineRecordingFormat(written.LPronunciationDraftAudio);
-        LPronunciationAudio? audio = pronunciations.LPronunciationAudioRead(pronunciationId);
-        if (string.Equals(audio?.LPronunciationAudioFile, file, StringComparison.Ordinal)
-            && string.Equals(
-                audio?.LPronunciationAudioSource,
-                written.LPronunciationDraftSource,
-                StringComparison.Ordinal))
-        {
-            return;
-        }
-
-        pronunciations.LPronunciationAudioSave(
-            pronunciationId, file, written.LPronunciationDraftSource);
-        changes.Add(new LRevisionChange(0, pronunciationId, "pronunciation", "update", file));
-    }
-
-    private static bool LEngineSoundMatch(LPronunciation stored, LPronunciation current)
-    {
-        if (!string.Equals(stored.LPronunciationIpa, current.LPronunciationIpa, StringComparison.Ordinal)
-            || !string.Equals(
-                stored.LPronunciationLevel, current.LPronunciationLevel, StringComparison.Ordinal)
-            || stored.LPronunciationSyllables.Count != current.LPronunciationSyllables.Count
-            || stored.LPronunciationRepresentations.Count != current.LPronunciationRepresentations.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < stored.LPronunciationSyllables.Count; index++)
-        {
-            if (stored.LPronunciationSyllables[index] with { LSyllablePronunciationId = 0 }
-                != current.LPronunciationSyllables[index] with { LSyllablePronunciationId = 0 })
-            {
-                return false;
-            }
-        }
-
-        for (int index = 0; index < stored.LPronunciationRepresentations.Count; index++)
-        {
-            if (stored.LPronunciationRepresentations[index]
-                    with { LRepresentationPronunciationId = 0 }
-                != current.LPronunciationRepresentations[index]
-                    with { LRepresentationPronunciationId = 0 })
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private static bool LEngineInflectionMatch(

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Llyn.Core;
@@ -93,11 +93,20 @@ public static class LSheet
 
         page.Append("</div>\n");
 
-        if (portrait.LPortraitPronunciation.Length > 0)
+        foreach (LPortraitReading reading in portrait.LPortraitPronunciation)
         {
-            page.Append("<div class=\"sound\"><em>[</em><b>")
-                .Append(LSheetNormalize(portrait.LPortraitPronunciation))
+            page.Append("<div class=\"sound\">");
+            LSheetReadingAppend(page, reading);
+            page.Append("<em>[</em><b>")
+                .Append(LSheetNormalize(reading.LPortraitReadingText))
                 .Append("</b><em>]</em></div>\n");
+        }
+
+        foreach (LPortraitReading reading in portrait.LPortraitTranscription)
+        {
+            page.Append("<div class=\"sound\">");
+            LSheetReadingAppend(page, reading);
+            page.Append("<b>").Append(LSheetNormalize(reading.LPortraitReadingText)).Append("</b></div>\n");
         }
 
         if (portrait.LPortraitSpeech.Count == 0)
@@ -112,6 +121,14 @@ public static class LSheet
         }
 
         page.Append("</div>\n");
+    }
+
+    private static void LSheetReadingAppend(StringBuilder page, LPortraitReading reading)
+    {
+        if (reading.LPortraitReadingLabel.Length > 0)
+        {
+            page.Append("<span>").Append(LSheetNormalize(reading.LPortraitReadingLabel)).Append("</span> ");
+        }
     }
 
     private static void LSheetBandAppend(
@@ -178,8 +195,8 @@ public static class LSheet
 
         page.Append("<section class=\"band\">\n<h2>")
             .Append(LSheetNormalize(portrait.LPortraitLabel.LPortraitLabelNote))
-            .Append("</h2>\n<div class=\"note\">")
-            .Append(LSheetNormalize(portrait.LPortraitNote))
-            .Append("</div>\n</section>\n");
+            .Append("</h2>\n<div class=\"note\">\n");
+        LSheetNote.LSheetNoteAppend(page, portrait.LPortraitNote);
+        page.Append("</div>\n</section>\n");
     }
 }

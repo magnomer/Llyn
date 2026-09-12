@@ -65,21 +65,23 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             LEntryDraft? draft = new LEntryLoader(_lEngineDatabase).LEntryLoad(id);
-            if (draft is null
-                || draft.LEntryDraftPronunciation is not LPronunciationDraft spoken
-                || spoken.LPronunciationDraftAudio.Length == 0)
+            if (draft is null)
             {
-                return draft;
+                return null;
             }
 
-            return draft with
+            List<LPronunciationDraft> resolved = new(draft.LEntryDraftPronunciations.Count);
+            foreach (LPronunciationDraft spoken in draft.LEntryDraftPronunciations)
             {
-                LEntryDraftPronunciation = spoken with
-                {
-                    LPronunciationDraftAudio =
-                        LEngineRecordingResolve(spoken.LPronunciationDraftAudio),
-                },
-            };
+                resolved.Add(spoken.LPronunciationDraftAudio.Length == 0
+                    ? spoken
+                    : spoken with
+                    {
+                        LPronunciationDraftAudio = LEngineRecordingResolve(spoken.LPronunciationDraftAudio),
+                    });
+            }
+
+            return draft with { LEntryDraftPronunciations = resolved };
         }
     }
 

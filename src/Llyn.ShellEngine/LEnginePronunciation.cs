@@ -16,7 +16,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LPronunciation? LEnginePronunciationRead(long entryId)
+    public IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)
     {
         lock (_lEngineGate)
         {
@@ -33,10 +33,10 @@ public sealed partial class LEngine
             List<LCatalogPronunciation> rows = [];
             foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(query))
             {
-                LPronunciation? pronunciation = pronunciations.LPronunciationRead(entry.LEntryId);
+                IReadOnlyList<LPronunciation> spoken = pronunciations.LPronunciationRead(entry.LEntryId);
                 rows.Add(LCatalogPronunciation.LCatalogPronunciationCreate(
                     entry,
-                    pronunciation?.LPronunciationIpa));
+                    spoken.Count == 0 ? null : spoken[0].LPronunciationIpa));
             }
 
             return LCatalogPronunciation.LCatalogPronunciationSort(rows, order);
@@ -88,7 +88,8 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(note);
-            new LNoteArchive(_lEngineDatabase).LNoteSave(note);
+            new LNoteArchive(_lEngineDatabase).LNoteSave(
+                note with { LNoteText = LMarkdown.LMarkdownNormalize(note.LNoteText) });
         }
     }
 

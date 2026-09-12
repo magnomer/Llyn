@@ -66,6 +66,8 @@ public static class LSchemaIndex
             """
             CREATE UNIQUE INDEX IF NOT EXISTS relation_position ON relation (sense_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_position ON collocation (entry_id, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS pronunciation_position ON pronunciation (entry_id, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS transcription_position ON transcription (entry_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_synonym_position
                 ON collocation_synonym (collocation_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS sense_translation_position

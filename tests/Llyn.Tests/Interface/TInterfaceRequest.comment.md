@@ -11,7 +11,7 @@ The list factories drop `Request` from their names, because four components afte
 Makes a held draft read as a fixture, one request at a time.
 Returns the draft as the engine last answered it.
 This is how a test written against the old whole-draft save is ported without losing its fixture.
-Every card the draft holds is removed first, so the fixture's cards land where the fixture puts them.
+Every card, pronunciation and transcription the draft holds is removed first, so the fixture's rows land where the fixture puts them.
 The ids the engine mints differ from the fixture's.
 So a test reads them from the answer and not from the fixture.
 

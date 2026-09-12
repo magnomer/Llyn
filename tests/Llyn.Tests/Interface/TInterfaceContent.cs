@@ -1,4 +1,4 @@
-using Llyn.Core;
+﻿using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -231,8 +231,18 @@ internal static partial class TInterface
         engine.LEnginePronunciationDelete(id);
     }
 
-    internal static LPronunciation? TEnginePronunciationRead(this LEngine engine, long entryId) =>
+    internal static IReadOnlyList<LPronunciation> TEnginePronunciationRead(this LEngine engine, long entryId) =>
         engine.LEnginePronunciationRead(entryId);
+
+    internal static IReadOnlyList<LTranscription> TEngineTranscriptionRead(this LEngine engine, long entryId) =>
+        engine.LEngineTranscriptionRead(entryId);
+
+    internal static IReadOnlyList<LTranscription> TEngineTranscriptionSet(
+        this LEngine engine, long entryId, IReadOnlyList<LTranscription> transcriptions) =>
+        engine.LEngineTranscriptionSet(entryId, transcriptions);
+
+    internal static IReadOnlyList<string> TEngineSchemeRead(this LEngine engine, string language) =>
+        engine.LEngineSchemeRead(language);
 
     internal static void TEnginePronunciationUpdate(this LEngine engine, LPronunciation pronunciation)
     {

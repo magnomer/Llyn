@@ -21,21 +21,27 @@ public sealed class LPronunciationArchive
         ArgumentNullException.ThrowIfNull(pronunciation);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(pronunciation.LPronunciationEntryId);
 
-        LPronunciation stored = pronunciation;
-
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        LPronunciation stored = pronunciation with
+        {
+            LPronunciationPosition = LPronunciationSiblingRead(connection, pronunciation.LPronunciationEntryId).Count,
+            LPronunciationVariety = LPronunciationVarietyRead(pronunciation.LPronunciationVariety),
+            LPronunciationIpa = LPronunciationVarietyRead(pronunciation.LPronunciationIpa),
+        };
 
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 """
-                INSERT INTO pronunciation (entry_id, level, ipa)
-                VALUES ($entry, $level, $ipa)
+                INSERT INTO pronunciation (entry_id, position, variety, ipa)
+                VALUES ($entry, $position, $variety, $ipa)
                 RETURNING id;
                 """;
             command.Parameters.AddWithValue("$entry", stored.LPronunciationEntryId);
-            command.Parameters.AddWithValue("$level", (object?)stored.LPronunciationLevel ?? DBNull.Value);
+            command.Parameters.AddWithValue("$position", stored.LPronunciationPosition);
+            command.Parameters.AddWithValue("$variety", (object?)stored.LPronunciationVariety ?? DBNull.Value);
             command.Parameters.AddWithValue("$ipa", (object?)stored.LPronunciationIpa ?? DBNull.Value);
             stored = stored with { LPronunciationId = (long)command.ExecuteScalar()! };
         }
@@ -44,51 +50,53 @@ public sealed class LPronunciationArchive
         stored = stored with
         {
             LPronunciationSyllables = LPronunciationSyllableBuild(id, stored.LPronunciationSyllables),
-            LPronunciationRepresentations =
-                LPronunciationRepresentationBuild(id, stored.LPronunciationRepresentations),
         };
 
         LPronunciationSyllableInsert(connection, id, stored.LPronunciationSyllables);
-        LPronunciationRepresentationInsert(connection, id, stored.LPronunciationRepresentations);
 
         session.LDatabaseSessionCommit();
         return stored;
     }
 
-    public LPronunciation? LPronunciationRead(long entryId)
+    public IReadOnlyList<LPronunciation> LPronunciationRead(long entryId)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        long id;
-        string? level;
-        string? ipa;
+        List<LPronunciation> rows = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                "SELECT id, level, ipa FROM pronunciation WHERE entry_id = $entry;";
+                """
+                SELECT id, position, variety, ipa
+                FROM pronunciation WHERE entry_id = $entry ORDER BY position;
+                """;
             command.Parameters.AddWithValue("$entry", entryId);
 
             using SqliteDataReader reader = command.ExecuteReader();
-            if (!reader.Read())
+            while (reader.Read())
             {
-                return null;
+                rows.Add(new LPronunciation(
+                    reader.GetInt64(0),
+                    entryId,
+                    reader.GetInt32(1),
+                    reader.IsDBNull(2) ? null : reader.GetString(2),
+                    reader.IsDBNull(3) ? null : reader.GetString(3),
+                    []));
             }
-
-            id = reader.GetInt64(0);
-            level = reader.IsDBNull(1) ? null : reader.GetString(1);
-            ipa = reader.IsDBNull(2) ? null : reader.GetString(2);
         }
 
-        return new LPronunciation(
-            id,
-            entryId,
-            level,
-            ipa,
-            LPronunciationSyllableRead(connection, id),
-            LPronunciationRepresentationRead(connection, id));
+        for (int index = 0; index < rows.Count; index++)
+        {
+            rows[index] = rows[index] with
+            {
+                LPronunciationSyllables = LPronunciationSyllableRead(connection, rows[index].LPronunciationId),
+            };
+        }
+
+        return rows;
     }
 
     public void LPronunciationUpdate(LPronunciation pronunciation)
@@ -104,9 +112,12 @@ public sealed class LPronunciationArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE pronunciation SET level = $level, ipa = $ipa WHERE id = $id;";
-            command.Parameters.AddWithValue("$level", (object?)pronunciation.LPronunciationLevel ?? DBNull.Value);
-            command.Parameters.AddWithValue("$ipa", (object?)pronunciation.LPronunciationIpa ?? DBNull.Value);
+                "UPDATE pronunciation SET variety = $variety, ipa = $ipa WHERE id = $id;";
+            command.Parameters.AddWithValue(
+                "$variety",
+                (object?)LPronunciationVarietyRead(pronunciation.LPronunciationVariety) ?? DBNull.Value);
+            command.Parameters.AddWithValue(
+                "$ipa", (object?)LPronunciationVarietyRead(pronunciation.LPronunciationIpa) ?? DBNull.Value);
             command.Parameters.AddWithValue("$id", id);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -114,11 +125,20 @@ public sealed class LPronunciationArchive
             }
         }
 
-        LPronunciationChildClear(connection, "syllable", id);
-        LPronunciationChildClear(connection, "representation", id);
+        LPronunciationSyllableClear(connection, id);
         LPronunciationSyllableInsert(connection, id, pronunciation.LPronunciationSyllables);
-        LPronunciationRepresentationInsert(connection, id, pronunciation.LPronunciationRepresentations);
 
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LPronunciationOrderSet(long entryId, IReadOnlyList<long> order)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentNullException.ThrowIfNull(order);
+
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        LDatabaseOrder.LDatabaseOrderNormalize(
+            session.LDatabaseSessionConnection, "pronunciation", "entry_id = $owner", entryId, "id", order);
         session.LDatabaseSessionCommit();
     }
 
@@ -127,11 +147,22 @@ public sealed class LPronunciationArchive
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        long? entryId = LPronunciationHolderRead(connection, id);
+
+        using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = "DELETE FROM pronunciation WHERE id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
+        }
+
+        if (entryId is not null)
+        {
+            LDatabaseOrder.LDatabaseOrderNormalize(
+                connection, "pronunciation", "entry_id = $owner", entryId,
+                "id", LPronunciationSiblingRead(connection, entryId.Value));
         }
 
         session.LDatabaseSessionCommit();
@@ -191,6 +222,25 @@ public sealed class LPronunciationArchive
             reader.GetString(3));
     }
 
+    private static long? LPronunciationHolderRead(SqliteConnection connection, long id)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT entry_id FROM pronunciation WHERE id = $id;";
+        command.Parameters.AddWithValue("$id", id);
+        object? holder = command.ExecuteScalar();
+        return holder is null or DBNull ? null : Convert.ToInt64(holder, CultureInfo.InvariantCulture);
+    }
+
+    private static IReadOnlyList<long> LPronunciationSiblingRead(SqliteConnection connection, long entryId)
+    {
+        return LDatabaseOrder.LDatabaseOrderRead(connection, "pronunciation", "entry_id = $owner", entryId, "id");
+    }
+
+    private static string? LPronunciationVarietyRead(string? text)
+    {
+        return string.IsNullOrWhiteSpace(text) ? null : text.Trim();
+    }
+
     private static IReadOnlyList<LSyllable> LPronunciationSyllableBuild(
         long id, IReadOnlyList<LSyllable> syllables)
     {
@@ -209,24 +259,6 @@ public sealed class LPronunciationArchive
         return rebased;
     }
 
-    private static IReadOnlyList<LRepresentation> LPronunciationRepresentationBuild(
-        long id, IReadOnlyList<LRepresentation> representations)
-    {
-        ArgumentNullException.ThrowIfNull(representations);
-
-        List<LRepresentation> rebased = [];
-        for (int position = 0; position < representations.Count; position++)
-        {
-            rebased.Add(representations[position] with
-            {
-                LRepresentationPronunciationId = id,
-                LRepresentationPosition = position,
-            });
-        }
-
-        return rebased;
-    }
-
     private static void LPronunciationSyllableInsert(
         SqliteConnection connection, long id, IReadOnlyList<LSyllable> syllables)
     {
@@ -236,44 +268,19 @@ public sealed class LPronunciationArchive
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO syllable (pronunciation_id, position, orthography, local, onset, medial,
-                    nucleus, coda, tone_number, tone_local, tone_points)
-                VALUES ($pronunciation, $position, $orthography, $local, $onset, $medial,
-                    $nucleus, $coda, $toneNumber, $toneLocal, $tonePoints);
+                INSERT INTO syllable (pronunciation_id, position, onset, medial,
+                    nucleus, coda, tone_number, tone_points)
+                VALUES ($pronunciation, $position, $onset, $medial,
+                    $nucleus, $coda, $toneNumber, $tonePoints);
                 """;
             command.Parameters.AddWithValue("$pronunciation", id);
             command.Parameters.AddWithValue("$position", position);
-            command.Parameters.AddWithValue("$orthography", (object?)syllable.LSyllableOrthography ?? DBNull.Value);
-            command.Parameters.AddWithValue("$local", (object?)syllable.LSyllableLocal ?? DBNull.Value);
             command.Parameters.AddWithValue("$onset", (object?)syllable.LSyllableOnset ?? DBNull.Value);
             command.Parameters.AddWithValue("$medial", (object?)syllable.LSyllableMedial ?? DBNull.Value);
             command.Parameters.AddWithValue("$nucleus", syllable.LSyllableNucleus);
             command.Parameters.AddWithValue("$coda", (object?)syllable.LSyllableCoda ?? DBNull.Value);
             command.Parameters.AddWithValue("$toneNumber", (object?)syllable.LSyllableToneNumber ?? DBNull.Value);
-            command.Parameters.AddWithValue("$toneLocal", (object?)syllable.LSyllableToneLocal ?? DBNull.Value);
             command.Parameters.AddWithValue("$tonePoints", (object?)syllable.LSyllableTonePoints ?? DBNull.Value);
-            command.ExecuteNonQuery();
-        }
-    }
-
-    private static void LPronunciationRepresentationInsert(
-        SqliteConnection connection, long id, IReadOnlyList<LRepresentation> representations)
-    {
-        for (int position = 0; position < representations.Count; position++)
-        {
-            LRepresentation representation = representations[position];
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText =
-                """
-                INSERT INTO representation (pronunciation_id, position, system, role, text, local_tone)
-                VALUES ($pronunciation, $position, $system, $role, $text, $localTone);
-                """;
-            command.Parameters.AddWithValue("$pronunciation", id);
-            command.Parameters.AddWithValue("$position", position);
-            command.Parameters.AddWithValue("$system", representation.LRepresentationSystem);
-            command.Parameters.AddWithValue("$role", representation.LRepresentationRole);
-            command.Parameters.AddWithValue("$text", representation.LRepresentationText);
-            command.Parameters.AddWithValue("$localTone", (object?)representation.LRepresentationLocalTone ?? DBNull.Value);
             command.ExecuteNonQuery();
         }
     }
@@ -283,8 +290,8 @@ public sealed class LPronunciationArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT pronunciation_id, position, orthography, local, onset, medial, nucleus, coda,
-                tone_number, tone_local, tone_points
+            SELECT pronunciation_id, position, onset, medial, nucleus, coda,
+                tone_number, tone_points
             FROM syllable WHERE pronunciation_id = $pronunciation ORDER BY position;
             """;
         command.Parameters.AddWithValue("$pronunciation", id);
@@ -298,49 +305,19 @@ public sealed class LPronunciationArchive
                 reader.GetInt32(1),
                 reader.IsDBNull(2) ? null : reader.GetString(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3),
-                reader.IsDBNull(4) ? null : reader.GetString(4),
+                reader.GetString(4),
                 reader.IsDBNull(5) ? null : reader.GetString(5),
-                reader.GetString(6),
-                reader.IsDBNull(7) ? null : reader.GetString(7),
-                reader.IsDBNull(8) ? null : reader.GetInt32(8),
-                reader.IsDBNull(9) ? null : reader.GetString(9),
-                reader.IsDBNull(10) ? null : reader.GetString(10)));
+                reader.IsDBNull(6) ? null : reader.GetInt32(6),
+                reader.IsDBNull(7) ? null : reader.GetString(7)));
         }
 
         return syllables;
     }
 
-    private static IReadOnlyList<LRepresentation> LPronunciationRepresentationRead(
-        SqliteConnection connection, long id)
+    private static void LPronunciationSyllableClear(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT pronunciation_id, position, system, role, text, local_tone
-            FROM representation WHERE pronunciation_id = $pronunciation ORDER BY position;
-            """;
-        command.Parameters.AddWithValue("$pronunciation", id);
-
-        List<LRepresentation> representations = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            representations.Add(new LRepresentation(
-                reader.GetInt64(0),
-                reader.GetInt32(1),
-                reader.GetString(2),
-                reader.GetString(3),
-                reader.GetString(4),
-                reader.IsDBNull(5) ? null : reader.GetString(5)));
-        }
-
-        return representations;
-    }
-
-    private static void LPronunciationChildClear(SqliteConnection connection, string table, long id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = $"DELETE FROM {table} WHERE pronunciation_id = $id;";
+        command.CommandText = "DELETE FROM syllable WHERE pronunciation_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         command.ExecuteNonQuery();
     }

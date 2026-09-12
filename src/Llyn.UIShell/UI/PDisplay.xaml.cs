@@ -155,7 +155,7 @@ public partial class PDisplay : UserControl
             ? Visibility.Collapsed
             : Visibility.Visible;
 
-        PDisplayNote.Text = draft.LEntryDraftNote;
+        PMarkdown.PMarkdownShow(PDisplayNote, draft.LEntryDraftNote);
         PDisplayNoteSection.Visibility = draft.LEntryDraftNote.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;

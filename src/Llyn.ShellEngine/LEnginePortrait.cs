@@ -61,7 +61,8 @@ public sealed partial class LEngine
         return new LPortrait(
             draft.LEntryDraftHeadword,
             draft.LEntryDraftLanguage,
-            draft.LEntryDraftIpa,
+            LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftPronunciations),
+            LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftTranscriptions),
             LEngineSpeechShow(draft.LEntryDraftSpeeches),
             LPortraitCard.LPortraitCardCreate(
                 draft.LEntryDraftMeanings, label.LPortraitLabelMeaning, order, mark, targets),

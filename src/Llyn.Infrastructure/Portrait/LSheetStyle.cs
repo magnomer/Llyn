@@ -45,6 +45,7 @@ public static class LSheetStyle
         sheet.Append(".sound{margin:12px 0 0 12px;font-size:19px;}");
         sheet.Append(".sound b{font-weight:500;color:var(--ink);margin:0 3px;}");
         sheet.Append(".sound em{font-style:normal;color:var(--muted);}");
+        sheet.Append(".sound span{font-size:14px;color:var(--muted);}");
 
         sheet.Append(".speech{margin:14px 0 0 12px;display:flex;flex-wrap:wrap;}");
         sheet.Append(".speech span{height:28px;line-height:28px;margin:0 7px 7px 0;padding:0 12px;")
@@ -126,7 +127,18 @@ public static class LSheetStyle
         sheet.Append(".row>.speak{font-size:12px;color:var(--muted);flex:0 0 auto;}");
 
         sheet.Append(".note{background:var(--surface);border:1px solid var(--line);border-radius:12px;")
-            .Append("padding:22px 26px;font-size:14px;line-height:21px;white-space:pre-wrap;}");
+            .Append("padding:22px 26px;font-size:14px;line-height:21px;}");
+        sheet.Append(".note>:first-child{margin-top:0;}.note>:last-child{margin-bottom:0;}");
+        sheet.Append(".note p,.note ul,.note ol,.note blockquote,.note pre{margin:0 0 10px;}");
+        sheet.Append(".note h3,.note h4,.note h5,.note h6{margin:14px 0 6px;font-size:15px;font-weight:600;}");
+        sheet.Append(".note ul,.note ol{padding-left:22px;}.note li{margin:2px 0;}");
+        sheet.Append(".note blockquote{border-left:3px solid var(--line);padding-left:12px;color:var(--muted);}");
+        sheet.Append(".note code{font-family:Consolas,monospace;font-size:13px;background:var(--accent-soft);")
+            .Append("padding:1px 4px;border-radius:4px;}");
+        sheet.Append(".note pre{white-space:pre-wrap;background:var(--accent-soft);padding:10px 12px;border-radius:8px;}");
+        sheet.Append(".note pre code{background:none;padding:0;}");
+        sheet.Append(".note hr{border:0;border-top:1px solid var(--line);margin:12px 0;}");
+        sheet.Append(".note a{color:var(--accent);}");
 
         sheet.Append("@page{size:A4;margin:12mm;}");
         sheet.Append("@media print{body{background:#fff;}.portrait{padding:0;max-width:none;}}");

@@ -4,22 +4,20 @@ namespace Llyn.Core;
 
 public sealed record LPronunciationDraft(
     string LPronunciationDraftIpa,
-    string? LPronunciationDraftLevel = null,
     IReadOnlyList<LSyllable>? LPronunciationDraftSyllables = null,
-    IReadOnlyList<LRepresentation>? LPronunciationDraftRepresentations = null,
     string LPronunciationDraftAudio = "",
     string? LPronunciationDraftSource = null,
-    long LPronunciationDraftId = 0)
+    long LPronunciationDraftId = 0,
+    string LPronunciationDraftVariety = "")
 {
     public string LPronunciationDraftIpa { get; init; } = LPronunciationDraftIpa ?? string.Empty;
 
     public string LPronunciationDraftAudio { get; init; } = LPronunciationDraftAudio ?? string.Empty;
 
+    public string LPronunciationDraftVariety { get; init; } = LPronunciationDraftVariety ?? string.Empty;
+
     public IReadOnlyList<LSyllable> LPronunciationDraftSyllables { get; init; } =
         LPronunciationDraftSyllables ?? [];
-
-    public IReadOnlyList<LRepresentation> LPronunciationDraftRepresentations { get; init; } =
-        LPronunciationDraftRepresentations ?? [];
 
     public static LPronunciationDraft? LPronunciationDraftCreate(string ipa, string audio, string? source)
     {
@@ -30,7 +28,5 @@ public sealed record LPronunciationDraft(
     public bool LPronunciationDraftEmpty =>
         LPronunciationDraftIpa.Length == 0
         && LPronunciationDraftAudio.Length == 0
-        && LPronunciationDraftSyllables.Count == 0
-        && LPronunciationDraftRepresentations.Count == 0
-        && string.IsNullOrEmpty(LPronunciationDraftLevel);
+        && LPronunciationDraftSyllables.Count == 0;
 }

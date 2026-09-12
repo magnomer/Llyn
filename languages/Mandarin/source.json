@@ -1,6 +1,7 @@
 {
   "language": "Mandarin",
   "flag": "cn",
+  "transcription": ["Pinyin", "Bopomofo"],
   "font": {
     "family": "Microsoft YaHei",
     "size": 40

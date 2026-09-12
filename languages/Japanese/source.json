@@ -1,6 +1,7 @@
 {
   "language": "Japanese",
   "flag": "jp",
+  "transcription": ["Romaji"],
   "font": {
     "family": "Yu Gothic UI",
     "size": 40

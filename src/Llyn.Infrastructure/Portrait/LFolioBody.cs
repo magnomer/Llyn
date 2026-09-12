@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Llyn.Core;
@@ -39,9 +39,14 @@ public static class LFolioBody
             marks.Add(portrait.LPortraitLanguage);
         }
 
-        if (portrait.LPortraitPronunciation.Length > 0)
+        foreach (LPortraitReading reading in portrait.LPortraitPronunciation)
         {
-            marks.Add("[ " + portrait.LPortraitPronunciation + " ]");
+            marks.Add(LFolioReadingFormat(reading, "[ ", " ]"));
+        }
+
+        foreach (LPortraitReading reading in portrait.LPortraitTranscription)
+        {
+            marks.Add(LFolioReadingFormat(reading, string.Empty, string.Empty));
         }
 
         if (portrait.LPortraitSpeech.Count > 0)
@@ -81,7 +86,7 @@ public static class LFolioBody
         if (portrait.LPortraitNote.Length > 0)
         {
             LFolioLine.LFolioLineAppend(body, "Band", portrait.LPortraitLabel.LPortraitLabelNote);
-            LFolioLine.LFolioLineAppend(body, "Note", portrait.LPortraitNote);
+            LFolioNote.LFolioNoteAppend(body, portrait.LPortraitNote);
         }
 
         body.Append("<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/>")
@@ -90,6 +95,12 @@ public static class LFolioBody
             .Append("</w:body></w:document>");
 
         return body.ToString();
+    }
+
+    private static string LFolioReadingFormat(LPortraitReading reading, string open, string close)
+    {
+        string text = open + reading.LPortraitReadingText + close;
+        return reading.LPortraitReadingLabel.Length == 0 ? text : reading.LPortraitReadingLabel + " " + text;
     }
 
     private static void LFolioBodyAppend(

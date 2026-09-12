@@ -2,14 +2,14 @@
 
 ## `public sealed record LCatalogPronunciation(`
 
-One entry as a phonology row: the stored entry and the pronunciation stored for it.
+One entry as a phonology row: the stored entry and the primary pronunciation stored for it.
 The sound travels with the row because two of the orderings read it and the row shows it.
 An entry with nothing stored carries an empty sound, which is what the pending ordering looks for.
 
 **Parameters**
 
 - `LCatalogPronunciationEntry` — The stored entry the row stands for.
-- `LCatalogPronunciationSound` — The stored pronunciation, empty where none is stored.
+- `LCatalogPronunciationSound` — The IPA of the primary pronunciation, the first of the entry, empty where none is stored.
 
 ## `public static LCatalogPronunciation LCatalogPronunciationCreate(LEntry entry, string? sound)`
 

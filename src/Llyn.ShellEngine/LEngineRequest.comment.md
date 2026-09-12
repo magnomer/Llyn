@@ -10,6 +10,7 @@ Cards and the rows inside them are addressed by id wherever they nest, never by 
 So a form and the engine cannot disagree about which item is meant.
 The entry-level fields and the card body are applied here.
 The lists inside a card are applied in `LEngineRequestList.cs` and the files beside it.
+The pronunciation and transcription lists of the entry are applied in `LEngineRequestReading.cs`.
 The sentence, situation and source panels are applied in `LEngineRequestPanel.cs` and `LEngineRequestChip.cs`.
 
 ## `public LDraft LEngineRequestApply(LRequest request)`
@@ -43,11 +44,6 @@ So a request can never leave a null where the draft holds text.
 ### `private static LStateValue LEngineValueRead(LStateValue? value)`
 
 The value sent, or the unspecified one where the form sent null.
-
-### `private static LPronunciationDraft LEngineSoundRead(LEntryDraft content)`
-
-The pronunciation as held, or a blank one to write over.
-The reading and the recording are two requests, and either may arrive first.
 
 ### `private LEntryDraft LEngineCardInsert(LEntryDraft content, LRequestCardAddition request)`
 

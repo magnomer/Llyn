@@ -43,7 +43,7 @@ A null `entryId` leaves nothing out, which is what an unsaved Entry needs.
 The one Entry whose whole headword reads as `word`, or nothing when none or several do.
 The search behind it matches on containment, so a hit is not proof the user named it.
 Resolving asks for the headword itself, so `brea` never silently becomes `breakfast`.
-Both sides are folded the way `LCatalog.LCatalogTextFold` folds, because a headword is the same word however it was typed.
+Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, because a headword is the same word however it was typed.
 Several Entries sharing a headword are a question, so this answers nothing and the caller asks.
 The answer says nothing about language, so a form that takes it without asking must show the language it got.
 

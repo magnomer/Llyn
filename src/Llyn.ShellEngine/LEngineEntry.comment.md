@@ -37,9 +37,9 @@ The overload takes a tag rather than text so the two searches cannot be confused
 ## `public LEntryDraft? LEngineEntryLoad(long id)`
 
 The stored entry as the input form would have handed it over.
-The recording comes out of the store relative to the workspace and leaves here as a full path.
+Every recording comes out of the store relative to the workspace and leaves here as a full path.
 The shell deals in full paths, and only the engine knows which folder the workspace stands in.
-An entry with no pronunciation, or one whose pronunciation carries no recording, is handed back untouched.
+A pronunciation row carrying no recording is handed back untouched.
 
 ## `public LRevision LEngineEntryDelete(long id)`
 

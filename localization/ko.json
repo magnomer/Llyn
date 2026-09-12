@@ -68,6 +68,7 @@
     "Refusal.CardMissing": "해당 카드는 이 초안에 더 이상 없습니다.",
     "Refusal.ItemMissing": "해당 항목은 이 초안에 더 이상 없습니다.",
     "Refusal.LinkMissing": "이 초안이 연결한 항목이 이 {terms.workspace}에 더 이상 없습니다. 제거한 뒤 다시 저장하세요.",
+    "Refusal.SchemeDoubled": "이 항목에는 이미 해당 표기법의 전사가 있습니다.",
     "Notice.Unexpected": "{terms.product}가 예상하지 못한 문제가 발생했습니다.",
     "Notice.Recorded": "기술적인 세부 내용은 다음 위치에 기록했습니다:",
     "List.Search": "항목 검색",

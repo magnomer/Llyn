@@ -15,8 +15,9 @@ public static class LSchemaPronunciation
             """
             CREATE TABLE IF NOT EXISTS pronunciation (
                 id INTEGER PRIMARY KEY,
-                entry_id INTEGER NOT NULL UNIQUE,
-                level TEXT,
+                entry_id INTEGER NOT NULL,
+                position INTEGER NOT NULL,
+                variety TEXT,
                 ipa TEXT,
                 FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
             );
@@ -24,26 +25,12 @@ public static class LSchemaPronunciation
             CREATE TABLE IF NOT EXISTS syllable (
                 pronunciation_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                orthography TEXT,
-                local TEXT,
                 onset TEXT,
                 medial TEXT,
                 nucleus TEXT NOT NULL,
                 coda TEXT,
                 tone_number INTEGER,
-                tone_local TEXT,
                 tone_points TEXT,
-                PRIMARY KEY (pronunciation_id, position),
-                FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
-            );
-
-            CREATE TABLE IF NOT EXISTS representation (
-                pronunciation_id INTEGER NOT NULL,
-                position INTEGER NOT NULL,
-                system TEXT NOT NULL,
-                role TEXT NOT NULL,
-                text TEXT NOT NULL,
-                local_tone TEXT,
                 PRIMARY KEY (pronunciation_id, position),
                 FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
             );

@@ -28,6 +28,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalLink = "Refusal.LinkMissing";
 
+    public const string LRefusalScheme = "Refusal.SchemeDoubled";
+
     public LRefusal(string reason)
         : base(reason)
     {

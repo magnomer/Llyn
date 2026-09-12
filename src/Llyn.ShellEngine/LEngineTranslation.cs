@@ -33,7 +33,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(query);
 
-            string written = LCatalog.LCatalogTextFold(query);
+            string written = LCatalog.LCatalogTextNormalize(query);
             List<LEntry> exact = [];
             List<LEntry> partial = [];
             foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(query))
@@ -43,7 +43,7 @@ public sealed partial class LEngine
                     continue;
                 }
 
-                if (string.Equals(LCatalog.LCatalogTextFold(entry.LEntryHeadword), written, StringComparison.Ordinal))
+                if (string.Equals(LCatalog.LCatalogTextNormalize(entry.LEntryHeadword), written, StringComparison.Ordinal))
                 {
                     exact.Add(entry);
                 }
@@ -70,11 +70,11 @@ public sealed partial class LEngine
                 return null;
             }
 
-            string folded = LCatalog.LCatalogTextFold(written);
+            string folded = LCatalog.LCatalogTextNormalize(written);
             LEntry? single = null;
             foreach (LEntry entry in LEngineTranslationFind(written, entryId))
             {
-                if (!string.Equals(LCatalog.LCatalogTextFold(entry.LEntryHeadword), folded, StringComparison.Ordinal))
+                if (!string.Equals(LCatalog.LCatalogTextNormalize(entry.LEntryHeadword), folded, StringComparison.Ordinal))
                 {
                     break;
                 }

@@ -1,6 +1,7 @@
 {
   "language": "Cantonese",
   "flag": "hk",
+  "transcription": ["Jyutping", "Yale"],
   "font": {
     "family": "Microsoft JhengHei",
     "size": 40

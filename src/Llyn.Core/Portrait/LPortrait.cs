@@ -1,11 +1,12 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Llyn.Core;
 
 public sealed record LPortrait(
     string LPortraitHeadword,
     string LPortraitLanguage,
-    string LPortraitPronunciation,
+    IReadOnlyList<LPortraitReading> LPortraitPronunciation,
+    IReadOnlyList<LPortraitReading> LPortraitTranscription,
     IReadOnlyList<string> LPortraitSpeech,
     IReadOnlyList<LPortraitCard> LPortraitMeaning,
     IReadOnlyList<LPortraitCard> LPortraitCollocation,

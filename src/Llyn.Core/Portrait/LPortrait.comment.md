@@ -1,4 +1,4 @@
-# LPortrait.cs
+﻿# LPortrait.cs
 
 ## `public sealed record LPortrait`
 
@@ -14,11 +14,12 @@ A writer that walks the record top to bottom reproduces the panel.
 
 - `LPortraitHeadword` - the entry word, shown large at the top.
 - `LPortraitLanguage` - the language chip beside the headword.
-- `LPortraitPronunciation` - the IPA text shown inside brackets, empty when none is stored.
+- `LPortraitPronunciation` - the pronunciations shown inside brackets, each with its variety, in stored order; empty when none is stored.
+- `LPortraitTranscription` - the transcriptions shown under them, each with its scheme, in stored order; empty when the entry carries none.
 - `LPortraitSpeech` - the part-of-speech chips, in stored order.
 - `LPortraitMeaning` - the meaning cards, in stored order.
 - `LPortraitCollocation` - the collocation cards, in stored order.
 - `LPortraitIncoming` - the entries whose cards link to this one.
-- `LPortraitNote` - the entry note, empty when none is written.
+- `LPortraitNote` - the entry note as Markdown, empty when none is written.
 - `LPortraitFavorite` - whether the star is filled.
 - `LPortraitLabel` - the localized headings and markers the writers need.

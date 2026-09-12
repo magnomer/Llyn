@@ -1,4 +1,4 @@
-# LSheet.cs
+﻿# LSheet.cs
 
 ## `public static class LSheet`
 
@@ -18,9 +18,15 @@ Entry text is written by the reader and may hold anything, including markup.
 
 ## `private static void LSheetCrestAppend(StringBuilder page, LPortrait portrait)`
 
-The headword, language, star, pronunciation and speech chips form the panel's masthead.
+The headword, language, star, pronunciations, transcriptions and speech chips form the panel's masthead.
 They are written together because the display draws them as one block above the sections.
-A missing pronunciation or an empty speech list draws nothing, as on screen.
+Each pronunciation and transcription takes a sound line of its own, in stored order.
+An empty pronunciation list, transcription list or speech list draws nothing, as on screen.
+
+## `private static void LSheetReadingAppend(StringBuilder page, LPortraitReading reading)`
+
+The label of a reading, the variety or the scheme, written muted before its text.
+A reading with no label writes nothing here.
 
 ## `private static void LSheetBandAppend(StringBuilder page, string heading, IReadOnlyList<LPortraitCard> cards)`
 
@@ -32,4 +38,4 @@ The rows carry no link, because an exported page cannot open another entry.
 
 ## `private static void LSheetNoteAppend(StringBuilder page, LPortrait portrait)`
 
-The note keeps its line breaks, which the style sheet preserves.
+The note is Markdown, so `LSheetNote` renders its blocks inside the note box.

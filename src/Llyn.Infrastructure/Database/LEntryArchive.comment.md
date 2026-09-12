@@ -87,7 +87,7 @@ The foreign-key cascade carries away its forms and parts of speech.
 It carries away its inflections and their features.
 It carries away its meanings, each with its inline definition field.
 It carries away the relations originating from those meanings.
-It carries away its single pronunciation with its syllables and representations.
+It carries away its pronunciations with their syllables and recordings, and its transcriptions.
 It carries away its collocations and its single note.
 It carries away every association row hanging from the entry, its meanings, or its collocations.
 The independent Examples, Tags, Situations, References, and Authors those associations pointed at are left standing.

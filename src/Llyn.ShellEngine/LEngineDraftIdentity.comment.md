@@ -14,10 +14,17 @@ The same content with every item named and every blank item dropped.
 The content that came in is returned itself when nothing needed naming or dropping.
 That sameness is the answer the form reads to know nothing was corrected.
 
-## `private LPronunciationDraft? LEngineSoundNormalize(LPronunciationDraft? spoken)`
+## `private IReadOnlyList<LPronunciationDraft> LEngineSoundNormalize(IReadOnlyList<LPronunciationDraft> drafts)`
 
-An empty pronunciation is dropped to null, because an empty one is not work.
-One that says anything is named when it carries no id.
+Every pronunciation row named when it carries no id.
+A nameless row saying nothing is dropped, because an empty one is not work.
+A named empty row is kept, because the form adds a row blank and fills it afterwards.
+
+## `private IReadOnlyList<LTranscriptionDraft> LEngineSpellingNormalize(IReadOnlyList<LTranscriptionDraft> drafts)`
+
+Every transcription row named when it carries no id.
+A nameless row with neither scheme nor text is dropped.
+A row that names its scheme is kept even before its text is typed.
 
 ## `private IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)`
 

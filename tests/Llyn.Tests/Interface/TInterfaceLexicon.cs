@@ -81,15 +81,31 @@ internal static partial class TInterface
         IReadOnlyList<LCardDraft> collocations,
         string audio = "",
         string? source = null,
-        IReadOnlyList<string>? speeches = null) =>
+        IReadOnlyList<string>? speeches = null,
+        IReadOnlyList<LTranscriptionDraft>? transcriptions = null) =>
         new(
             headword,
             language,
-            LPronunciationDraft.LPronunciationDraftCreate(pronunciation, audio, source),
+            TPronunciationListCreate(LPronunciationDraft.LPronunciationDraftCreate(pronunciation, audio, source)),
             note,
             meanings,
             collocations,
-            TSpeechDraftCreate(speeches));
+            TSpeechDraftCreate(speeches),
+            LEntryDraftTranscriptions: transcriptions);
+
+    internal static IReadOnlyList<LPronunciationDraft> TPronunciationListCreate(LPronunciationDraft? pronunciation) =>
+        pronunciation is null ? [] : [pronunciation];
+
+    internal static LPronunciationDraft TPronunciationDraftCreate(
+        string ipa,
+        string variety = "",
+        string audio = "",
+        string? source = null,
+        long id = 0) =>
+        new(ipa, null, audio, source, id, variety);
+
+    internal static LTranscriptionDraft TTranscriptionDraftCreate(string scheme, string text, long id = 0) =>
+        new(scheme, text, id);
 
     internal static IReadOnlyList<LSpeechDraft> TSpeechDraftCreate(IReadOnlyList<string>? speeches)
     {
@@ -215,11 +231,14 @@ internal static partial class TInterface
     internal static LPronunciation TPronunciationCreate(
         long id,
         long entryId,
-        string? level,
-        string? ipa,
+        string ipa,
         IReadOnlyList<LSyllable> syllables,
-        IReadOnlyList<LRepresentation> representations) =>
-        new(id, entryId, level, ipa, syllables, representations);
+        string? variety = null,
+        int position = 0) =>
+        new(id, entryId, position, variety, ipa, syllables);
+
+    internal static LTranscription TTranscriptionCreate(long id, long entryId, string scheme, string text) =>
+        new(id, entryId, 0, scheme, text);
 
     internal static LReference TReferenceCreate(
         long id,

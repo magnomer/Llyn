@@ -13,11 +13,20 @@ Field by field, whether two forms of an entry say the same thing.
 Language sits beside the headword, because changing only the tongue is still an edit.
 The lists inside are compared by their contents, since records compare them by reference.
 
-## `private static bool LEngineSoundMatch(LPronunciationDraft? one, LPronunciationDraft? other)`
+## `private static bool LEngineSoundMatch(IReadOnlyList<LPronunciationDraft> one, IReadOnlyList<LPronunciationDraft> other)`
 
-Whether two drafts record the same pronunciation.
-The lists inside a draft are compared by content, because two equal lists are rarely the same object.
+Whether two drafts record the same pronunciations in the same order.
+Blank rows are left out first, because a row the form added and never filled is not a change.
+
+## `private static bool LEngineSoundMatch(LPronunciationDraft one, LPronunciationDraft other)`
+
+Whether two rows record the same pronunciation.
+The lists inside a row are compared by content, because two equal lists are rarely the same object.
 A record comparison would call every reloaded draft a change and never settle.
+
+## `private static bool LEngineSpellingMatch(IReadOnlyList<LTranscriptionDraft> one, IReadOnlyList<LTranscriptionDraft> other)`
+
+Whether two drafts record the same transcriptions in the same order, blank rows left out.
 
 ## `private static bool LEngineSpeechMatch(IReadOnlyList<LSpeechDraft> one, IReadOnlyList<LSpeechDraft> other)`
 

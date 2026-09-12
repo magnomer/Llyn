@@ -47,8 +47,8 @@ public sealed class TEntrySave
         Assert.Equal("a note", TInterface.TNoteArchiveCreate(workspace.TWorkspaceDatabase).TNoteRead(entry.LEntryId)?.LNoteText);
         Assert.Equal(
             "wɜːd",
-            TInterface.TPronunciationArchiveCreate(workspace.TWorkspaceDatabase)
-                .TPronunciationRead(entry.LEntryId)?.LPronunciationIpa);
+            Assert.Single(TInterface.TPronunciationArchiveCreate(workspace.TWorkspaceDatabase)
+                .TPronunciationRead(entry.LEntryId)).LPronunciationIpa);
 
         LRevision? revision = TInterface.TRevisionArchiveCreate(workspace.TWorkspaceDatabase).TRevisionLatestRead();
         Assert.NotNull(revision);

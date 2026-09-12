@@ -15,7 +15,7 @@ Binds the store to the workspace `database` it opens sessions through.
 ## `public void LNoteSave(LNote note)`
 
 Writes `note` as the entry's Note, replacing any Note the entry already had.
-The text is stored exactly as given — see the format TODO on `LNote`.
+The text is stored exactly as given, and the engine hands it over as normalized Markdown.
 
 ## `public LNote? LNoteRead(long entryId)`
 

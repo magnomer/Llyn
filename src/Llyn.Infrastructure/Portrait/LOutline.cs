@@ -29,9 +29,14 @@ public static class LOutline
             crest.Add("*" + LOutlineNormalize(portrait.LPortraitLanguage) + "*");
         }
 
-        if (portrait.LPortraitPronunciation.Length > 0)
+        foreach (LPortraitReading reading in portrait.LPortraitPronunciation)
         {
-            crest.Add("**[" + LOutlineNormalize(portrait.LPortraitPronunciation) + "]**");
+            crest.Add(LOutlineReadingFormat(reading, "**[", "]**"));
+        }
+
+        foreach (LPortraitReading reading in portrait.LPortraitTranscription)
+        {
+            crest.Add(LOutlineReadingFormat(reading, "**", "**"));
         }
 
         if (portrait.LPortraitSpeech.Count > 0)
@@ -80,9 +85,8 @@ public static class LOutline
         {
             page.Append("## ")
                 .Append(LOutlineNormalize(portrait.LPortraitLabel.LPortraitLabelNote))
-                .Append("\n\n")
-                .Append(LOutlineNormalize(portrait.LPortraitNote))
-                .Append("\n");
+                .Append("\n\n");
+            LOutlineNote.LOutlineNoteAppend(page, portrait.LPortraitNote);
         }
 
         return page.ToString();
@@ -108,6 +112,14 @@ public static class LOutline
         }
 
         return safe.ToString();
+    }
+
+    private static string LOutlineReadingFormat(LPortraitReading reading, string open, string close)
+    {
+        string text = open + LOutlineNormalize(reading.LPortraitReadingText) + close;
+        return reading.LPortraitReadingLabel.Length == 0
+            ? text
+            : "*" + LOutlineNormalize(reading.LPortraitReadingLabel) + "* " + text;
     }
 
     private static void LOutlineBandAppend(

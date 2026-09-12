@@ -2,7 +2,7 @@
 
 ## `public sealed record LLanguage(`
 
-A loaded language pack: the language's name and the two source lists declared for it.
+A loaded language pack: the language's name, the two source lists declared for it, and its transcription schemes.
 Loaded from `languages//source.json`.
 The engine holds no language-specific facts of its own.
 Everything language-specific arrives through this record.
@@ -24,3 +24,6 @@ Everything language-specific arrives through this record.
 - `LLanguageHarvestSources` — The sources the pack declares for finding downloadable recordings.
   The two lists are independent.
   A site good for transcriptions need not serve audio, and either list may stand empty.
+- `LLanguageSchemes` — The transcription schemes the pack declares, such as Jyutping or Pinyin, in the order the form shows them.
+  An empty list turns the transcription line off for that language.
+  The list seeds new rows only; a stored row keeps its scheme after the pack changes.

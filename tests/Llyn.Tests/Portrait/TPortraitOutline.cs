@@ -30,4 +30,12 @@ public sealed class TPortraitOutline
         Assert.Contains(@"around a hearth \<cold\>", page);
         Assert.DoesNotContain("\n# Chiefly", page);
     }
+
+    [Fact]
+    public void OutlineFormat_MarkdownNote_KeepsTheNoteUnescaped()
+    {
+        string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitSampleCreate());
+
+        Assert.Contains("## Note\n\nChiefly *literary*.\n\n- poetic\n- archaic\n", page);
+    }
 }

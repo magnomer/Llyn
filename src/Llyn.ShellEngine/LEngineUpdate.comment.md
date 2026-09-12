@@ -99,20 +99,11 @@ A linked value shows its current name, and custom text shows itself.
 ### `private void LEngineNoteUpdate(long entryId, LEntryDraft draft, List<LRevisionChange> changes)`
 
 The entry's note reconciled to the draft.
+The text is normalized Markdown, brought to canonical form by `LMarkdown` before it is compared or stored.
 Text replaces whatever was stored.
 A note the user cleared is deleted rather than left standing as their last words.
 
-### `private void LEnginePronunciationUpdate(`
+### `LEnginePronunciationSync(id, draft.LEntryDraftPronunciations, changes, identity);`
 
-The entry's pronunciation reconciled to the draft.
-The row is what a recording hangs from.
-So it is created when either the IPA or a recording is present.
-It is deleted only when both are gone.
-Its id survives an edit of the IPA.
-So the recording hanging from it is not re-downloaded to stay attached.
-
-### `string file = LEngineRecordingFormat(draft.LEntryDraftAudio);`
-
-The draft carries the recording as a full path and the row stores it relative to the workspace.
-So the comparison is made in stored terms.
-An unchanged recording writes nothing.
+The pronunciations and the transcriptions are reconciled by their own files.
+Each is an ordered list the draft holds by id, and each is settled after the single fields.

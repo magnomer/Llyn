@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -94,21 +94,6 @@ public sealed partial class LEngine
             LRequestHeadword sent => content with { LEntryDraftHeadword = sent.LRequestText ?? string.Empty },
             LRequestLanguage sent => content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty },
             LRequestNote sent => content with { LEntryDraftNote = sent.LRequestText ?? string.Empty },
-            LRequestIpa sent => content with
-            {
-                LEntryDraftPronunciation = LEngineSoundRead(content) with
-                {
-                    LPronunciationDraftIpa = sent.LRequestText ?? string.Empty,
-                },
-            },
-            LRequestAudio sent => content with
-            {
-                LEntryDraftPronunciation = LEngineSoundRead(content) with
-                {
-                    LPronunciationDraftAudio = sent.LRequestFile ?? string.Empty,
-                    LPronunciationDraftSource = sent.LRequestSource,
-                },
-            },
             LRequestSpeech sent => content with { LEntryDraftSpeeches = sent.LRequestSpeeches ?? [] },
             LRequestCardAddition sent => LEngineCardInsert(content, sent),
             LRequestCardRemoval sent => LEngineCardRemove(content, sent.LRequestCardId),
@@ -133,18 +118,13 @@ public sealed partial class LEngine
                 content,
                 sent.LRequestCardId,
                 card => card with { LCardDraftLabels = sent.LRequestText ?? string.Empty }),
-            _ => LEngineListApply(content, request),
+            _ => LEngineReadingApply(content, request),
         };
     }
 
     private static LStateValue LEngineValueRead(LStateValue? value)
     {
         return value ?? LStateValue.LStateValueUnspecified;
-    }
-
-    private static LPronunciationDraft LEngineSoundRead(LEntryDraft content)
-    {
-        return content.LEntryDraftPronunciation ?? new LPronunciationDraft(string.Empty);
     }
 
     private LEntryDraft LEngineCardInsert(LEntryDraft content, LRequestCardAddition request)

@@ -61,7 +61,8 @@ public sealed class TPortraitFolio
             Assert.Contains("set alight", document);
             Assert.Contains("kindle interest", document);
             Assert.Contains("불붙이다", document);
-            Assert.Contains("Chiefly literary.", document);
+            Assert.Contains("Chiefly </w:t></w:r><w:r><w:rPr><w:i/></w:rPr><w:t xml:space=\"preserve\">literary", document);
+            Assert.Contains("<w:t>•</w:t></w:r><w:r><w:tab/></w:r><w:r><w:rPr></w:rPr><w:t xml:space=\"preserve\">poetic", document);
             Assert.Contains("around a hearth &lt;cold&gt;", document);
         }
         finally

@@ -14,6 +14,7 @@ Everything it writes shares one session, so an entry is written whole or not at 
 Saves the whole input form as one new entry.
 That is the headword row and its meanings and collocations in card order.
 It is also its note and pronunciation when they carry text.
+The note is stored as Markdown normalized by `LMarkdown`.
 It is also the revision recording the create.
 The workspace row is moved onto that revision.
 Returns the stored entry with its assigned id and timestamps.
@@ -71,7 +72,7 @@ Each takes a target the caller resolved through `LEngineEntryFind` or `LEngineMe
 
 The entry's forms and inflections are written with the entry, in the order the draft holds them.
 A part of speech is written as the language-pack value the draft names, or as the text it carries.
-The pronunciation is written whole: its level, reading, syllables, representations and recording.
+The pronunciation is written whole: its reading, syllables and recording.
 An entry recording no pronunciation writes no row, so an empty block is never stored.
 
 A new card's rows, chips, links and relations are written by `LEngineCardSync` in `LEngineCard.cs`.
@@ -108,11 +109,17 @@ A child needs its parent's id, which only exists once the parent row is written.
 Each is appended within its own sibling group, so card order becomes stored position.
 An empty child is skipped on the same terms an empty card is.
 
-### `if (!string.IsNullOrWhiteSpace(draft.LEntryDraftPronunciation) ||`
+### `LEnginePronunciationSync(`
 
-The pronunciation row is what a recording hangs from.
-So a downloaded recording creates one even when no IPA was typed.
-Without it the audio would have nothing to reference.
+The pronunciations and transcriptions of a new entry are written by the same reconciliation an update runs.
+On a fresh entry nothing is stored yet, so every row the draft carries is created.
+A positive id the draft still holds names a row of an entry since deleted, so it is reset to zero first.
+Otherwise the commit would refuse the row instead of writing it anew.
+
+### `private static IReadOnlyList<LPronunciationDraft> LEnginePronunciationReset(`
+
+Every pronunciation row of the draft as a row still to be created.
+A negative id is kept, because the identity map records what it became.
 
 ### `private static IEnumerable<LCardDraft> LEngineCardRead(IReadOnlyList<LCardDraft> cards)`
 
@@ -156,7 +163,7 @@ A row carrying a negative id gets a fresh Example, recorded in the map under the
 No row is ever matched by its wording, so two new rows with one sentence stay two rows.
 The language falls back to the entry's when the Example states none of its own.
 
-### `private bool LEngineExampleShareCheck(long exampleId, long ownerId, bool collocation)`
+### `private bool LEngineShareCheck(long exampleId, long ownerId, bool collocation)`
 
 Whether any card other than `ownerId` quotes the Example.
 The owner side matters, because a Meaning and a Collocation can carry one id each.
