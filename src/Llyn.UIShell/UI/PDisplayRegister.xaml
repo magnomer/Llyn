@@ -50,7 +50,7 @@
             <TextBlock FontSize="{DynamicResource Theme.Card.RegisterSize}" Foreground="{DynamicResource Theme.Helper}">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
-                        <Binding Path="LRegisterDraftText" />
+                        <Binding Path="LRegisterDraftName" />
                         <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </TextBlock.Text>

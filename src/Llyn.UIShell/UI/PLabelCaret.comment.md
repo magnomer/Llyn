@@ -12,15 +12,3 @@ The field grows in height instead of scrolling.
 The hint is carried here rather than fixed in the template.
 It belongs to the field's state.
 A card already carrying a Tag has nothing left to prompt for.
-
-## `internal long PLabelCaretId { get; set; }`
-
-The id the engine minted for the text standing in the caret, or zero before any save named it.
-The chip the caret closes into takes this id, so the item keeps its identity from typing to chip.
-Clearing the caret drops the id, because the item it named is gone.
-
-## `internal long PLabelCaretId { get; set; }`
-
-The id the engine minted for the text standing in the caret, or zero before any save named it.
-The chip the caret closes into takes this id, so the item keeps its identity from typing to chip.
-Clearing the caret drops the id, because the item it named is gone.

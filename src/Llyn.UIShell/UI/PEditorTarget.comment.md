@@ -9,11 +9,6 @@ The engine is asked, because the panel reaches no database of its own.
 
 ## Inline notes
 
-### `private static IReadOnlyDictionary<long, LTranslationTarget> PEditorTargetEmpty =>`
-
-What a form with nothing to resolve is shown from.
-An empty form links to nothing, so it asks nothing rather than asking for an empty list.
-
 ### `private IReadOnlyDictionary<long, LTranslationTarget> PEditorTargetRead(LEntryDraft draft)`
 
 Every card's link ids across both lists, asked for in one read.

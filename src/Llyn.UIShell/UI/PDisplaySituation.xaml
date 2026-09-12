@@ -50,7 +50,7 @@
             <TextBlock FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Situation}">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
-                        <Binding Path="LSituationDraftText" />
+                        <Binding Path="LSituationDraftTitle" />
                         <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </TextBlock.Text>

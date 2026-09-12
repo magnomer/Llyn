@@ -22,8 +22,6 @@ internal sealed partial class PCard
 
     internal Action<string>? PCardLinkNotice { get; set; }
 
-    internal string PCardLinkText => _pCardLinkCaret.PLinkCaretText;
-
     internal int PCardLinkPosition =>
         PCardRowResolve(PCardLink, _pCardLinkKey, PCardLink.IndexOf(_pCardLinkCaret));
 

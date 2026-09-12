@@ -8,8 +8,6 @@ internal sealed class PContextCaret : INotifyPropertyChanged
     private string _pContextCaretText = string.Empty;
     private string _pContextCaretHint = string.Empty;
 
-    internal long PContextCaretId { get; set; }
-
     public string PContextCaretText
     {
         get => _pContextCaretText;

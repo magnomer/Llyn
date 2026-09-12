@@ -26,10 +26,6 @@ The answer says whether the word became a link, so the card knows to empty the e
 
 Where the entry's text goes as it is typed, so the editor can offer matching Entries.
 
-## `internal string PCardLinkText`
-
-What is standing in the entry.
-
 ## `internal int PCardLinkPosition`
 
 How many chips stand before the caret, which is the place a new link is asked for.

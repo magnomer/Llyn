@@ -108,21 +108,6 @@
         <Setter Property="Margin" Value="0,0,-76,0" />
     </Style>
 
-    <Style x:Key="Theme.Card.Chips" TargetType="ItemsControl">
-        <Setter Property="Margin" Value="{StaticResource Theme.Card.ChipMargin}" />
-        <Setter Property="ItemsPanel">
-            <Setter.Value>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="Theme.Card.Tag" TargetType="ItemsControl" BasedOn="{StaticResource Theme.Card.Chips}">
-        <Setter Property="Margin" Value="{StaticResource Theme.Card.TagMargin}" />
-    </Style>
-
     <Style x:Key="Theme.Card.Example" TargetType="Border">
         <Setter Property="Margin" Value="{StaticResource Theme.Card.ExampleMargin}" />
         <Setter Property="Padding" Value="{StaticResource Theme.Card.ExamplePadding}" />

@@ -6,8 +6,6 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private static IReadOnlyDictionary<long, LTranslationTarget> PEditorTargetEmpty => new Dictionary<long, LTranslationTarget>();
-
     private IReadOnlyDictionary<long, LTranslationTarget> PEditorTargetRead(LEntryDraft draft)
     {
         List<long> ids = [];
