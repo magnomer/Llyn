@@ -17,7 +17,7 @@ A Situation nothing references is absent from the counts rather than present as 
 
 A count says how many places carry a Situation.
 This says which Meaning or Collocation, and under which Entry, so the relationship is never flattened into the Entry alone.
-A Meaning is named by its gloss and a Collocation by its expression when neither carries a title.
+A Meaning is named by its definition and a Collocation by its expression when neither carries a title.
 
 ## `public void SituationDelete_DetachingDelete_DropsAndRenumbers()`
 

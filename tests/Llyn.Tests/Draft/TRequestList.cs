@@ -316,7 +316,7 @@ public sealed class TRequestList
         Assert.Equal(2, answered.LDraftAuthor.Count);
         Assert.Equal(known.LAuthorId, answered.LDraftAuthor[0].LAuthorId);
         Assert.True(answered.LDraftAuthor[1].LAuthorId < 0);
-        Assert.Equal(LState.LStateSpecified, answered.LDraftReference!.LReferenceAuthorState);
+        Assert.Equal(LState.LStateSpecified, answered.LDraftReference!.LReferenceAuthorState.LStateMarkState);
         Assert.True(engine.TEngineDraftCheck(started.LDraftId));
 
         LReference stored = engine.TEngineReferenceCommit(started.LDraftId);

@@ -166,7 +166,7 @@ public partial class PCorpus
 
         try
         {
-            _lEngine.LEngineRequestApply(new LRequestExampleBody(_pTranscriptDraft, PTranscriptRead()));
+            _lEngine.LEngineRequestApply(PTranscriptRead(_pTranscriptDraft));
         }
         catch (Exception exception)
         {

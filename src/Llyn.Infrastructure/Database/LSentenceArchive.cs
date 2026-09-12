@@ -124,7 +124,7 @@ public sealed class LSentenceArchive
             SELECT link.{table}_id, link.{column}, link.position,
                    example.example_id, example.language, example.text_state, example.text,
                    example.translation_state, example.translation,
-                   example.source_state, example.source_ref,
+                   example.reference_state, example.reference_ref,
                    link.particle_state, link.particle,
                    link.dependence_state, link.dependence
             FROM {table} link

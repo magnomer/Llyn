@@ -19,7 +19,7 @@ public partial class PEditor
         if (sender is FrameworkElement { DataContext: PCard card })
         {
             PEditorRequestSend(new LRequestVideoAddition(
-                _pEditorDraft, card.PCardId, LStateValue.LStateValueUnspecified, card.PCardVideo.Count));
+                _pEditorDraft, card.PCardId, LStateWritten.LStateWrittenEmpty, card.PCardVideo.Count));
         }
     }
 

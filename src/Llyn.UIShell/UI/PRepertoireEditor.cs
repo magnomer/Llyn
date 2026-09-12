@@ -95,7 +95,7 @@ public partial class PRepertoire
 
     private static void PScenarioFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)
     {
-        if (LStateValue.LStateValueResolve(field.Text, held) == value)
+        if (new LStateWritten(field.Text, held).LStateWrittenMatch(value))
         {
             return;
         }
@@ -105,13 +105,14 @@ public partial class PRepertoire
         field.Tag = held ? unknown : string.Empty;
     }
 
-    private LSituation PScenarioRead()
+    private LRequestSituationBody PScenarioRead(long draft, long situation)
     {
-        return new LSituation(
-            0,
-            LStateValue.LStateValueResolve(PScenarioTitle.Text, _pScenarioTitleUnknown),
-            LStateValue.LStateValueResolve(PScenarioDescription.Text, _pScenarioDescriptionUnknown),
-            LStateValue.LStateValueResolve(PScenarioKind.Text, _pScenarioKindUnknown));
+        return new LRequestSituationBody(
+            draft,
+            situation,
+            new LStateWritten(PScenarioTitle.Text, _pScenarioTitleUnknown),
+            new LStateWritten(PScenarioDescription.Text, _pScenarioDescriptionUnknown),
+            new LStateWritten(PScenarioKind.Text, _pScenarioKindUnknown));
     }
 
     private void PScenarioDiscardHandle(object sender, RoutedEventArgs e)

@@ -1,7 +1,7 @@
 namespace Llyn.Core;
 
 public sealed record LRequestImageAddition(
-    long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue, int LRequestPosition)
+    long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestImagePick(
@@ -15,5 +15,5 @@ public sealed record LRequestImageShift(
     long LRequestDraftId, long LRequestCardId, long LRequestImageId, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestImageLocation(long LRequestDraftId, long LRequestImageId, LStateValue LRequestValue)
+public sealed record LRequestImageLocation(long LRequestDraftId, long LRequestImageId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);

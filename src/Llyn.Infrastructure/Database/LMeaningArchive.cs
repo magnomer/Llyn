@@ -35,21 +35,18 @@ public sealed class LMeaningArchive
             command.CommandText =
                 """
                 INSERT INTO sense (
-                    entry_parent, sense_parent, position, title_state, title, gloss,
-                    definition_language, definition_state, definition, labels)
+                    entry_parent, sense_parent, position, title_state, title,
+                    definition_state, definition)
                 VALUES (
-                    $entry, $parent, $position, $titleState, $title, $gloss,
-                    $language, $definitionState, $definition, $labels)
+                    $entry, $parent, $position, $titleState, $title,
+                    $definitionState, $definition)
                 RETURNING sense_id;
                 """;
             command.Parameters.AddWithValue("$entry", stored.LMeaningEntryId);
             command.Parameters.AddWithValue("$parent", (object?)stored.LMeaningParentId ?? DBNull.Value);
             command.Parameters.AddWithValue("$position", stored.LMeaningPosition);
             LStateColumn.LStateColumnApply(command, "title", stored.LMeaningTitle);
-            command.Parameters.AddWithValue("$gloss", (object?)stored.LMeaningGloss ?? DBNull.Value);
-            command.Parameters.AddWithValue("$language", (object?)stored.LMeaningDefinitionLanguage ?? DBNull.Value);
             LStateColumn.LStateColumnApply(command, "definition", stored.LMeaningDefinition);
-            command.Parameters.AddWithValue("$labels", stored.LMeaningLabels);
             stored = stored with { LMeaningId = (long)command.ExecuteScalar()! };
         }
 
@@ -65,8 +62,8 @@ public sealed class LMeaningArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT sense_id, entry_parent, sense_parent, position, title_state, title, gloss,
-                   definition_language, definition_state, definition, labels
+            SELECT sense_id, entry_parent, sense_parent, position, title_state, title,
+                   definition_state, definition
             FROM sense WHERE entry_parent = $entry
             ORDER BY ifnull(sense_parent, ''), position;
             """;
@@ -90,8 +87,8 @@ public sealed class LMeaningArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT sense_id, entry_parent, sense_parent, position, title_state, title, gloss,
-                   definition_language, definition_state, definition, labels
+            SELECT sense_id, entry_parent, sense_parent, position, title_state, title,
+                   definition_state, definition
             FROM sense WHERE sense_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -111,16 +108,12 @@ public sealed class LMeaningArchive
             command.CommandText =
                 """
                 UPDATE sense
-                SET title_state = $titleState, title = $title, gloss = $gloss,
-                    definition_language = $language,
-                    definition_state = $definitionState, definition = $definition, labels = $labels
+                SET title_state = $titleState, title = $title,
+                    definition_state = $definitionState, definition = $definition
                 WHERE sense_id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", meaning.LMeaningTitle);
-            command.Parameters.AddWithValue("$gloss", (object?)meaning.LMeaningGloss ?? DBNull.Value);
-            command.Parameters.AddWithValue("$language", (object?)meaning.LMeaningDefinitionLanguage ?? DBNull.Value);
             LStateColumn.LStateColumnApply(command, "definition", meaning.LMeaningDefinition);
-            command.Parameters.AddWithValue("$labels", meaning.LMeaningLabels);
             command.Parameters.AddWithValue("$id", meaning.LMeaningId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -312,9 +305,6 @@ public sealed class LMeaningArchive
             reader.IsDBNull(2) ? null : reader.GetInt64(2),
             reader.GetInt32(3),
             LStateColumn.LStateColumnRead(reader, 4),
-            reader.IsDBNull(6) ? null : reader.GetString(6),
-            reader.IsDBNull(7) ? null : reader.GetString(7),
-            LStateColumn.LStateColumnRead(reader, 8),
-            reader.GetString(10));
+            LStateColumn.LStateColumnRead(reader, 6));
     }
 }

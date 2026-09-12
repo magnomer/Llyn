@@ -166,7 +166,7 @@ public partial class PImprint
 
         try
         {
-            _lEngine.LEngineRequestApply(new LRequestReferenceBody(_pImprintDraft, PImprintRead()));
+            _lEngine.LEngineRequestApply(PImprintRead(_pImprintDraft));
         }
         catch (Exception exception)
         {

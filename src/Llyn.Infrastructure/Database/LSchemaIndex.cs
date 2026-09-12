@@ -15,7 +15,7 @@ public static class LSchemaIndex
             """
             CREATE INDEX IF NOT EXISTS sense_parent ON sense (sense_parent);
             CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_parent);
-            CREATE INDEX IF NOT EXISTS example_source ON example (source_ref);
+            CREATE INDEX IF NOT EXISTS example_reference ON example (reference_ref);
             """;
         command.ExecuteNonQuery();
 
@@ -33,7 +33,7 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS collocation_situation_member ON collocation_situation (situation_ref);
             CREATE INDEX IF NOT EXISTS sense_register_member ON sense_register (register_ref);
             CREATE INDEX IF NOT EXISTS collocation_register_member ON collocation_register (register_ref);
-            CREATE INDEX IF NOT EXISTS source_author_member ON source_author (author_ref);
+            CREATE INDEX IF NOT EXISTS reference_author_member ON reference_author (author_ref);
             CREATE INDEX IF NOT EXISTS part_of_speech_value ON part_of_speech (speech_value_ref);
             CREATE INDEX IF NOT EXISTS morphology_feature_speech ON morphology_feature (speech_value_parent);
             CREATE INDEX IF NOT EXISTS morphology_value_feature ON morphology_value (morphology_feature_parent);

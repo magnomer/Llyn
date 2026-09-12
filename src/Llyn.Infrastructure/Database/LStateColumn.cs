@@ -67,6 +67,32 @@ public static class LStateColumn
                 : DBNull.Value);
     }
 
+    public static void LStateColumnApply(SqliteCommand command, string field, LStateMark mark)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+        ArgumentNullException.ThrowIfNull(mark);
+
+        if (mark.LStateMarkUnreadable)
+        {
+            throw new LRefusal(LRefusal.LRefusalUnreadable);
+        }
+
+        command.Parameters.AddWithValue($"${field}State", LStateColumnFormat(mark.LStateMarkState));
+    }
+
+    public static LStateMark LStateColumnLoad(SqliteDataReader reader, int state)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+
+        string stored = reader.GetString(state);
+        if (!LStateColumnCheck(stored))
+        {
+            return new LStateMark(LState.LStateUnspecified, LStateMarkUnreadable: true);
+        }
+
+        return LStateMark.LStateMarkRead(LStateColumnParse(stored));
+    }
+
     public static LStateAnchor LStateColumnResolve(SqliteDataReader reader, int state)
     {
         ArgumentNullException.ThrowIfNull(reader);

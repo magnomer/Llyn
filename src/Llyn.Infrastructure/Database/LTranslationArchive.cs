@@ -119,8 +119,7 @@ public sealed class LTranslationArchive
             """
             SELECT link.sense_parent, sense.entry_parent, entry.headword, entry.language,
                    sense.title_state, sense.title,
-                   CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
-                   COALESCE(sense.gloss, sense.definition)
+                   sense.definition_state, sense.definition
             FROM sense_translation link
             JOIN sense ON sense.sense_id = link.sense_parent
             JOIN entry ON entry.entry_id = sense.entry_parent

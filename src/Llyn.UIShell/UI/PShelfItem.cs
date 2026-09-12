@@ -47,7 +47,7 @@ internal sealed class PShelfItem : INotifyPropertyChanged
             return string.Join(", ", names);
         }
 
-        return reference.LReferenceAuthorState == LState.LStateUnknown ? unknown : unset;
+        return reference.LReferenceAuthorState.LStateMarkState == LState.LStateUnknown ? unknown : unset;
     }
 
     private static string? PShelfValueRead(LStateValue value, string unknown)

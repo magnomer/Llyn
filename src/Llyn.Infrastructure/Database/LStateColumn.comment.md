@@ -33,6 +33,17 @@ Refuses an unreadable value, since a diagnosis is never a value to store.
 The state goes into `$<field>State` and the text into `$<field>`.
 The text is `NULL` for every value that states none.
 
+## `public static void LStateColumnApply(SqliteCommand command, string field, LStateMark mark)`
+
+Carries a bare state into `command`, for a field whose content lives in another table.
+Refuses an unreadable mark for the same reason a value is refused.
+Only `$<field>State` is set, since there is no text beside it.
+
+## `public static LStateMark LStateColumnLoad(SqliteDataReader reader, int state)`
+
+Reads the bare state at column `state`.
+A state wording the store does not know yields an unreadable mark.
+
 ## `public static LStateValue LStateColumnRead(SqliteDataReader reader, int state)`
 
 Reads the value whose state stands at column `state` and whose text stands directly after it.

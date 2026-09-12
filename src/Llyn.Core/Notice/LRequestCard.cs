@@ -11,17 +11,11 @@ public sealed record LRequestCardShift(
     long LRequestDraftId, long LRequestCardId, long LRequestParentId, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)
+public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestCardExpression(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)
+public sealed record LRequestCardExpression(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)
-    : LRequest(LRequestDraftId);
-
-public sealed record LRequestCardGloss(long LRequestDraftId, long LRequestCardId, string LRequestText)
-    : LRequest(LRequestDraftId);
-
-public sealed record LRequestCardLabels(long LRequestDraftId, long LRequestCardId, string LRequestText)
+public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);

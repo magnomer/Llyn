@@ -10,6 +10,7 @@ An Example is owned by nothing.
 It carries its own opaque id, its language and display text, and at most one Source reference.
 It is reached through the two association tables, one per card kind.
 Each association carries the position the Example takes for that referrer.
+An association id counts strictly upward and is never given to a later row once the row is gone, since a draft holds it while editing.
 So one Example may be first under a Meaning and third under a Collocation.
 The unique index per referrer keeps those orderings free of duplicates.
 sense_example and collocation_example carry data of their own, so each row carries its own opaque id.
@@ -26,7 +27,7 @@ So an Example survives every detach.
 The store refuses to delete one while any reference still points at it.
 The translation is a column on the Example row, so it goes when the row goes.
 
-example.source_ref points at the independent Reference that LSchemaReference creates.
+example.reference_ref points at the independent Reference that LSchemaReference creates.
 Its foreign key could only be declared once that source table existed.
 SQLite refuses to prepare any statement writing to a child table whose parent is missing.
 That holds even for NULL keys, which is why the reference tables are created first.

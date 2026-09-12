@@ -9,7 +9,7 @@ public sealed record LReference(
     LReferenceKind LReferenceKind,
     LStateValue LReferenceNote,
     LStateValue LReferenceUrl,
-    LState LReferenceAuthorState)
+    LStateMark LReferenceAuthorState)
 {
     public LStateValue LReferenceTitle { get; init; } = LReferenceTitle ?? LStateValue.LStateValueUnspecified;
 
@@ -19,6 +19,8 @@ public sealed record LReference(
 
     public LStateValue LReferenceUrl { get; init; } = LReferenceUrl ?? LStateValue.LStateValueUnspecified;
 
+    public LStateMark LReferenceAuthorState { get; init; } = LReferenceAuthorState ?? LStateMark.LStateMarkUnspecified;
+
     public LReference LReferenceNormalize()
     {
         return this with
@@ -27,6 +29,7 @@ public sealed record LReference(
             LReferenceYear = LReferenceYear.LStateValueNormalize(),
             LReferenceNote = LReferenceNote.LStateValueNormalize(),
             LReferenceUrl = LReferenceUrl.LStateValueNormalize(),
+            LReferenceAuthorState = LReferenceAuthorState.LStateMarkNormalize(),
         };
     }
 

@@ -128,10 +128,7 @@ public sealed partial class LEngine
             parentId,
             0,
             card.LCardDraftTitle,
-            card.LCardDraftGloss,
-            card.LCardDraftLanguage,
-            card.LCardDraftMeaning,
-            card.LCardDraftLabels));
+            card.LCardDraftMeaning));
 
         LEngineIdentityRecord(identity, card.LCardDraftId, meaning.LMeaningId);
         LEngineCardSync(meaning.LMeaningId, card, language, false, identity);

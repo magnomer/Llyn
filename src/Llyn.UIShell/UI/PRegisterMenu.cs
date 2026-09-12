@@ -158,7 +158,7 @@ public partial class PEditor
         int position = card.PCardRegisterPosition;
         PEditorRequestSend(id is long picked
             ? new LRequestRegisterPick(_pEditorDraft, card.PCardId, picked, position)
-            : new LRequestRegisterAddition(_pEditorDraft, card.PCardId, written, position));
+            : new LRequestRegisterAddition(_pEditorDraft, card.PCardId, new LStateWritten(written), position));
     }
 
     private void PRegisterRemove(PCard card, PRegister? chip)

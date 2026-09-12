@@ -328,6 +328,6 @@ public sealed class TSentence
 
         return meanings.TMeaningCreate(
             TInterface.TMeaningCreate(
-                0, entry.LEntryId, null, 0, null, definition, null, null, string.Empty)).LMeaningId;
+                0, entry.LEntryId, null, 0, null, definition)).LMeaningId;
     }
 }

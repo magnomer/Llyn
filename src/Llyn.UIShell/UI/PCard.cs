@@ -202,19 +202,19 @@ internal sealed partial class PCard : INotifyPropertyChanged
         }
     }
 
-    internal LStateValue PCardTitleRead()
+    internal LStateWritten PCardTitleRead()
     {
-        return LStateValue.LStateValueResolve(_pTitle, _pTitleUnknown);
+        return new LStateWritten(_pTitle, _pTitleUnknown);
     }
 
-    internal LStateValue PCardDefinitionRead()
+    internal LStateWritten PCardDefinitionRead()
     {
-        return LStateValue.LStateValueResolve(_pCardDefinition, _pCardDefinitionUnknown);
+        return new LStateWritten(_pCardDefinition, _pCardDefinitionUnknown);
     }
 
-    internal LStateValue PCardExpressionRead()
+    internal LStateWritten PCardExpressionRead()
     {
-        return LStateValue.LStateValueResolve(_pCardExpression, _pCardExpressionUnknown);
+        return new LStateWritten(_pCardExpression, _pCardExpressionUnknown);
     }
 
     internal void PCardTitleShow(LStateValue value)

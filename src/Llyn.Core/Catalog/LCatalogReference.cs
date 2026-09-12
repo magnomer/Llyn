@@ -35,7 +35,7 @@ public sealed record LCatalogReference(
                     StringComparer.CurrentCultureIgnoreCase)],
             LCatalogOrder.LCatalogOrderAuthor => [.. rows
                 .OrderBy(row => row.LCatalogReferenceCredit.Count == 0
-                    ? row.LCatalogReferenceStored.LReferenceAuthorState
+                    ? row.LCatalogReferenceStored.LReferenceAuthorState.LStateMarkState
                     : LState.LStateSpecified)
                 .ThenBy(
                     row => row.LCatalogReferenceCredit.Count == 0

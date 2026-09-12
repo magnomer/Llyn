@@ -174,7 +174,7 @@ public partial class PCorpus
         PExcerptAnchorShow(
             PExcerptCitation,
             example.LExampleSource,
-            PCitationNameRead(example.LExampleSource));
+            PCitationNameRead(example.LExampleSource.LStateAnchorShow()));
 
         PQuotationFind(id);
 
@@ -190,24 +190,31 @@ public partial class PCorpus
 
     private void PExcerptAnchorShow(TextBlock field, LStateAnchor value, string? shown)
     {
-        PExcerptValueShow(
+        PExcerptTextShow(
             field,
-            value.LStateAnchorState == LState.LStateUnknown
-                ? LStateValue.LStateValueUnknown
-                : LStateValue.LStateValueRead(shown),
-            shown);
+            value.LStateAnchorState switch
+            {
+                LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
+                LState.LStateSpecified when !string.IsNullOrEmpty(shown) => shown,
+                _ => null,
+            });
     }
 
-    private void PExcerptValueShow(TextBlock field, LStateValue value, string? shown = null)
+    private void PExcerptValueShow(TextBlock field, LStateValue value)
     {
-        string? text = value.LStateValueState switch
-        {
-            _ when value.LStateValueUnreadable => value.LStateValueShow(),
-            LState.LStateSpecified => shown ?? value.LStateValueShow(),
-            LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
-            _ => null,
-        };
+        PExcerptTextShow(
+            field,
+            value.LStateValueState switch
+            {
+                _ when value.LStateValueUnreadable => value.LStateValueShow(),
+                LState.LStateSpecified => value.LStateValueShow(),
+                LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
+                _ => null,
+            });
+    }
 
+    private void PExcerptTextShow(TextBlock field, string? text)
+    {
         field.Text = text ?? _pCorpusHost.PLocalizationTextRead("Example.Unset");
         field.SetResourceReference(
             TextBlock.ForegroundProperty,

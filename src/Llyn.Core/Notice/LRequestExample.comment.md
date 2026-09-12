@@ -20,9 +20,10 @@ Replaces the language.
 
 Names the source the sentence cites, or zero to cite nothing.
 
-## `public sealed record LRequestExampleBody(long LRequestDraftId, LExample LRequestExample)`
+## `public sealed record LRequestExampleBody`
 
-Carries every field of the sentence at once, as the form currently shows them.
-The engine takes the language, text, translation and source from it and keeps the held id.
+Carries every field of the sentence at once, as the form currently holds them.
+Text and translation travel as written, with their marks, and the source as the chosen id or zero.
+The engine resolves each and keeps the held id.
 A form sends this instead of comparing its controls against the draft field by field.
 So the decision of what changed lives in the engine, and an unchanged body saves and announces nothing.

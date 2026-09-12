@@ -49,19 +49,19 @@ public partial class PEditor
     private void PCardTextShow(PCard card, LCardDraft draft)
     {
         if (!PEditorRequestCheck(PEditorRequestFormat(card, nameof(PCard.PTitle)))
-            && card.PCardTitleRead() != draft.LCardDraftTitle)
+            && !card.PCardTitleRead().LStateWrittenMatch(draft.LCardDraftTitle))
         {
             card.PCardTitleShow(draft.LCardDraftTitle);
         }
 
         if (!PEditorRequestCheck(PEditorRequestFormat(card, nameof(PCard.PCardExpression)))
-            && card.PCardExpressionRead() != draft.LCardDraftExpression)
+            && !card.PCardExpressionRead().LStateWrittenMatch(draft.LCardDraftExpression))
         {
             card.PCardExpressionShow(draft.LCardDraftExpression);
         }
 
         if (!PEditorRequestCheck(PEditorRequestFormat(card, nameof(PCard.PCardDefinition)))
-            && card.PCardDefinitionRead() != draft.LCardDraftMeaning)
+            && !card.PCardDefinitionRead().LStateWrittenMatch(draft.LCardDraftMeaning))
         {
             card.PCardDefinitionShow(draft.LCardDraftMeaning);
         }

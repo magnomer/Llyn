@@ -1,7 +1,7 @@
 namespace Llyn.Core;
 
 public sealed record LRequestVideoAddition(
-    long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue, int LRequestPosition)
+    long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestVideoPick(
@@ -15,8 +15,8 @@ public sealed record LRequestVideoShift(
     long LRequestDraftId, long LRequestCardId, long LRequestVideoId, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestVideoLocation(long LRequestDraftId, long LRequestVideoId, LStateValue LRequestValue)
+public sealed record LRequestVideoLocation(long LRequestDraftId, long LRequestVideoId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestVideoSpan(long LRequestDraftId, long LRequestVideoId, LStateValue LRequestValue)
+public sealed record LRequestVideoSpan(long LRequestDraftId, long LRequestVideoId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);

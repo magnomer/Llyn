@@ -95,7 +95,7 @@ public sealed class TReference
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LState.LStateUnspecified));
+            LStateMark.LStateMarkUnspecified));
     }
 
     [Fact]
@@ -252,5 +252,29 @@ public sealed class TReference
 
         Assert.Empty(engine.TEngineUsageRead(credited.LAuthorId, LOwner.LOwnerAuthor));
         Assert.Empty(engine.TEngineUsageRead(uncredited.LAuthorId, LOwner.LOwnerAuthor));
+    }
+
+    [Fact]
+    public void ReferenceStart_BrokenAuthorStateWord_ReadsUnreadableAndRefusesCommit()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference stored = TReferenceCreate(engine, "A Dictionary");
+        workspace.TWorkspaceScriptRun("UPDATE reference SET author_state = 'broken';");
+
+        LDraft draft = engine.TEngineReferenceStart("test", stored.LReferenceId);
+        LReference held = draft.LDraftReference!;
+        Assert.True(held.LReferenceAuthorState.LStateMarkUnreadable);
+        Assert.Equal(LState.LStateUnspecified, held.LReferenceAuthorState.LStateMarkState);
+
+        LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineReferenceCommit(draft.LDraftId));
+        Assert.Equal(LRefusal.LRefusalUnreadable, refusal.LRefusalReason);
+
+        engine.TEngineDraftSweep(draft.LDraftId);
+        engine.TEngineReferenceCommit(draft.LDraftId);
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM reference WHERE author_state = 'unspecified';"));
     }
 }

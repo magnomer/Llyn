@@ -36,7 +36,7 @@ internal sealed partial class PCard
             static draft => draft.LRegisterDraftId,
             PCardRegisterCreate,
             static (row, draft) =>
-                row is PRegister chip && chip.PRegisterTextRead() == draft.LRegisterDraftName
+                row is PRegister chip && chip.PRegisterTextRead().LStateWrittenMatch(draft.LRegisterDraftName)
                     ? row
                     : PCardRegisterCreate(draft));
 

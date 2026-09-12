@@ -67,11 +67,11 @@ public sealed class TDatabaseSession
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one"));
         LMeaning second = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two"));
         LMeaning third = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three"));
 
         Assert.Equal([0, 1, 2], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
 
@@ -93,9 +93,9 @@ public sealed class TDatabaseSession
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
-        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
-        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one"));
+        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two"));
+        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three"));
 
         meanings.TMeaningDelete(first.LMeaningId);
 
@@ -113,7 +113,7 @@ public sealed class TDatabaseSession
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
         LMeaning meaning = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, null, null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, null));
 
         tags.TTagMeaningSave(
             meaning.LMeaningId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("archaic"), TInterface.TTagCreate("rare")]);

@@ -6,10 +6,7 @@ public sealed record LMeaning(
     long? LMeaningParentId,
     int LMeaningPosition,
     LStateValue LMeaningTitle,
-    string? LMeaningGloss,
-    string? LMeaningDefinitionLanguage,
-    LStateValue LMeaningDefinition,
-    string LMeaningLabels)
+    LStateValue LMeaningDefinition)
 {
     public LStateValue LMeaningTitle { get; init; } = LMeaningTitle ?? LStateValue.LStateValueUnspecified;
 

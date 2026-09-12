@@ -128,10 +128,6 @@ public sealed partial class LEngine
                 || written.LCardDraftExpression != held.LCardDraftExpression
                 || written.LCardDraftMeaning != held.LCardDraftMeaning
                 || written.LCardDraftId != held.LCardDraftId
-                || !string.Equals(written.LCardDraftGloss, held.LCardDraftGloss, StringComparison.Ordinal)
-                || !string.Equals(
-                    written.LCardDraftLanguage, held.LCardDraftLanguage, StringComparison.Ordinal)
-                || !string.Equals(written.LCardDraftLabels, held.LCardDraftLabels, StringComparison.Ordinal)
                 || !LEngineSentenceMatch(written.LCardDraftSentence, held.LCardDraftSentence)
                 || !LEngineSituationMatch(written.LCardDraftSituation, held.LCardDraftSituation)
                 || !LEngineRegisterMatch(written.LCardDraftRegister, held.LCardDraftRegister)
@@ -184,8 +180,7 @@ public sealed partial class LEngine
 
     private static bool LEngineCardCheck(LCardDraft card)
     {
-        return string.IsNullOrEmpty(card.LCardDraftGloss)
-            && card.LCardDraftTitle.LStateValueEmpty
+        return card.LCardDraftTitle.LStateValueEmpty
             && card.LCardDraftExpression.LStateValueEmpty
             && card.LCardDraftMeaning.LStateValueEmpty
             && card.LCardDraftSentence.All(static row => row.LSentenceDraftEmpty)

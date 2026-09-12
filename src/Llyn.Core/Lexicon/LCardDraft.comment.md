@@ -75,12 +75,9 @@ A comparison that means "the same card" walks the lists itself.
   Only a Meaning card nests, because only a sense names a parent in the store.
   A Collocation carrying children is refused rather than saved with them dropped.
   A child keeps its place among its siblings and never among the entry's top cards.
-- `LCardDraftGloss` — A Meaning's short gloss, `null` when none is written.
   No card template offers a control for it, so the form carries it through untouched.
-- `LCardDraftLanguage` — The language a Meaning's definition is written in, `null` when none is stated.
   It is the definition's language and never the entry's.
   A Collocation records no such language, so it leaves this empty.
-- `LCardDraftLabels` — A Meaning's labels, stored as the JSON array text the store keeps.
   These are not the card's Tags, which are their own list.
 - `LCardDraftId` — Id of the stored row this card was loaded from.
   It is empty for a card that has never been stored.

@@ -34,8 +34,8 @@ internal sealed class PContext
 
     public bool PContextUnknown => _pContextUnknown;
 
-    internal LStateValue PContextTextRead()
+    internal LStateWritten PContextTextRead()
     {
-        return LStateValue.LStateValueResolve(_pContextText, _pContextUnknown);
+        return new LStateWritten(_pContextText, _pContextUnknown);
     }
 }

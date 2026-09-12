@@ -137,7 +137,7 @@ public partial class PEditor
         int position = card.PCardContextPosition;
         PEditorRequestSend(id is long picked
             ? new LRequestSituationPick(_pEditorDraft, card.PCardId, picked, position)
-            : new LRequestSituationAddition(_pEditorDraft, card.PCardId, written, position));
+            : new LRequestSituationAddition(_pEditorDraft, card.PCardId, new LStateWritten(written), position));
     }
 
     private void PContextRemove(PCard card, PContext? chip)

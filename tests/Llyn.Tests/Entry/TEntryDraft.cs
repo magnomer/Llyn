@@ -241,21 +241,13 @@ public sealed class TEntryDraft
                     1,
                     video: [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
                     register: [TInterface.TRegisterDraftCreate(
-                        TInterface.TStateValueCreate("courtroom"), 0, "English")]) with
-                {
-                    LCardDraftGloss = "ignite",
-                    LCardDraftLanguage = "English",
-                    LCardDraftLabels = "[\"literal\"]",
-                },
+                        TInterface.TStateValueCreate("courtroom"), 0, "English")]),
             ],
             []));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
 
-        Assert.Equal("ignite", card.LCardDraftGloss);
-        Assert.Equal("English", card.LCardDraftLanguage);
-        Assert.Equal("[\"literal\"]", card.LCardDraftLabels);
         Assert.Equal([target.LEntryId], card.LCardDraftTranslation);
 
         LSituationDraft situation = Assert.Single(card.LCardDraftSituation);
@@ -274,8 +266,6 @@ public sealed class TEntryDraft
         engine.TEngineEntryUpdate(entry.LEntryId, loaded);
 
         LEntryDraft reread = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
-        Assert.Equal(card.LCardDraftGloss, Assert.Single(reread.LEntryDraftMeanings).LCardDraftGloss);
-        Assert.Equal(card.LCardDraftLabels, Assert.Single(reread.LEntryDraftMeanings).LCardDraftLabels);
         Assert.Equal(
             card.LCardDraftTranslation, Assert.Single(reread.LEntryDraftMeanings).LCardDraftTranslation);
     }
@@ -313,9 +303,6 @@ public sealed class TEntryDraft
                     video: [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
                     register: [TInterface.TRegisterDraftCreate("formal")]) with
                 {
-                    LCardDraftGloss = "ignite",
-                    LCardDraftLanguage = "English",
-                    LCardDraftLabels = "[\"literal\"]",
                     LCardDraftChild = [TEntryCardCreate("to rouse a feeling", 1)],
                 },
             ],

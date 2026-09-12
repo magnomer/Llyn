@@ -15,15 +15,15 @@ public sealed record LRequestSentenceExample(
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestSentenceText(
-    long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateValue LRequestValue)
+    long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestSentenceParticle(
-    long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateValue LRequestValue)
+    long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestSentenceDependence(
-    long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateValue LRequestValue)
+    long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestSentenceReference(

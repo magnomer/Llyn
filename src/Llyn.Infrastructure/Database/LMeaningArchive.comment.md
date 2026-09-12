@@ -38,7 +38,7 @@ That is the one-row read a caller needs when it holds a Meaning id alone.
 
 ## `public void LMeaningUpdate(LMeaning meaning)`
 
-Updates the title, gloss, definition (with its language), and labels of the meaning identified by `meaning`'s id.
+Updates the title and definition of the meaning identified by `meaning`'s id.
 The id, entry, parent link, and position are untouched.
 Where a Meaning sits among its siblings is changed by `LMeaningMove`.
 That method has to renumber the whole group.

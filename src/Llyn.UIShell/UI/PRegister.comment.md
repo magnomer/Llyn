@@ -20,6 +20,6 @@ The language rides along unread.
 No control on the card shows it, and a save that dropped it would erase what the pack declared.
 Whether a pack ships the Register is read from the stored row, so the chip carries no mark for it.
 
-## `internal LStateValue PRegisterTextRead()`
+## `internal LStateWritten PRegisterTextRead()`
 
-The wording as the engine takes it, with what is known about it put back.
+The wording as written, with its mark, for the engine to read.

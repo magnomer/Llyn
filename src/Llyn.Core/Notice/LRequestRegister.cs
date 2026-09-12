@@ -1,7 +1,7 @@
 namespace Llyn.Core;
 
 public sealed record LRequestRegisterAddition(
-    long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue, int LRequestPosition)
+    long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestRegisterPick(
@@ -15,5 +15,5 @@ public sealed record LRequestRegisterShift(
     long LRequestDraftId, long LRequestCardId, long LRequestRegisterId, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestRegisterName(long LRequestDraftId, long LRequestRegisterId, LStateValue LRequestValue)
+public sealed record LRequestRegisterName(long LRequestDraftId, long LRequestRegisterId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);

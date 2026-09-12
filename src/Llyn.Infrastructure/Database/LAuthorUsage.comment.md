@@ -9,7 +9,7 @@ Nothing here creates, changes, or deletes anything.
 
 The trace is computed on read and stored nowhere.
 No table links an Author to an Entry, so no stored row can contradict the chain.
-Every hop is already indexed: `source_author_member`, `example_source`, then the two card member indexes.
+Every hop is already indexed: `reference_author_member`, `example_reference`, then the two card member indexes.
 The return type is `LUsage`, which no write path accepts, so a trace cannot become an input.
 
 An Author credited on no Source, or on a Source no Example cites, traces to nothing.

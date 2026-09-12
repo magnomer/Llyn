@@ -246,7 +246,7 @@ internal static partial class TInterface
         LReferenceKind kind,
         LStateValue note,
         LStateValue url,
-        LState authorState) =>
+        LStateMark authorState) =>
         new(id, title, year, kind, note, url, authorState);
 
     internal static LMeaning TMeaningCreate(
@@ -255,11 +255,8 @@ internal static partial class TInterface
         long? parentId,
         int position,
         LStateValue title,
-        string? gloss,
-        string? definitionLanguage,
-        LStateValue definition,
-        string labels) =>
-        new(id, entryId, parentId, position, title, gloss, definitionLanguage, definition, labels);
+        LStateValue definition) =>
+        new(id, entryId, parentId, position, title, definition);
 
     internal static LRegister TRegisterCreate(long id, string name) =>
         new(id, LStateValue.LStateValueRead(name), string.Empty);
@@ -306,7 +303,10 @@ internal static partial class TInterface
         LStateValue.LStateValueCreate(text);
 
     internal static LStateValue TStateValueResolve(string? text, bool unknown) =>
-        LStateValue.LStateValueResolve(text, unknown);
+        new LStateWritten(text, unknown).LStateWrittenResolve();
+
+    internal static LStateWritten TStateWrittenRead(this LStateValue value) =>
+        LStateWritten.LStateWrittenRead(value);
 
     internal static string TStateValueShow(this LStateValue stateValue) =>
         stateValue.LStateValueShow();

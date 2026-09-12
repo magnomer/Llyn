@@ -1,7 +1,7 @@
 namespace Llyn.Core;
 
 public sealed record LRequestSituationAddition(
-    long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue, int LRequestPosition)
+    long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestSituationPick(
@@ -15,15 +15,20 @@ public sealed record LRequestSituationShift(
     long LRequestDraftId, long LRequestCardId, long LRequestSituationId, int LRequestPosition)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestSituationTitle(long LRequestDraftId, long LRequestSituationId, LStateValue LRequestValue)
+public sealed record LRequestSituationTitle(long LRequestDraftId, long LRequestSituationId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestSituationDescription(
-    long LRequestDraftId, long LRequestSituationId, LStateValue LRequestValue)
+    long LRequestDraftId, long LRequestSituationId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestSituationKind(long LRequestDraftId, long LRequestSituationId, LStateValue LRequestValue)
+public sealed record LRequestSituationKind(long LRequestDraftId, long LRequestSituationId, LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
-public sealed record LRequestSituationBody(long LRequestDraftId, long LRequestSituationId, LSituation LRequestSituation)
+public sealed record LRequestSituationBody(
+    long LRequestDraftId,
+    long LRequestSituationId,
+    LStateWritten LRequestTitle,
+    LStateWritten LRequestDescription,
+    LStateWritten LRequestKind)
     : LRequest(LRequestDraftId);

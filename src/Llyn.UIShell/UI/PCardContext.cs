@@ -36,7 +36,7 @@ internal sealed partial class PCard
             static draft => draft.LSituationDraftId,
             PCardContextCreate,
             static (row, draft) =>
-                row is PContext chip && chip.PContextTextRead() == draft.LSituationDraftTitle
+                row is PContext chip && chip.PContextTextRead().LStateWrittenMatch(draft.LSituationDraftTitle)
                     ? row
                     : PCardContextCreate(draft));
 

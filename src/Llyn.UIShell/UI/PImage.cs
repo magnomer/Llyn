@@ -74,9 +74,9 @@ internal sealed class PImage : INotifyPropertyChanged
 
     internal long PImageId => _pImageRow;
 
-    internal LStateValue PImageLocationRead()
+    internal LStateWritten PImageLocationRead()
     {
-        return LStateValue.LStateValueResolve(_pImageLocation, _pImageUnknown);
+        return new LStateWritten(_pImageLocation, _pImageUnknown);
     }
 
     internal void PImageShow(LImageDraft written, bool pending)
@@ -84,7 +84,7 @@ internal sealed class PImage : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(written);
 
         _pImageRow = written.LImageDraftId;
-        if (pending || PImageLocationRead() == written.LImageDraftLocation)
+        if (pending || PImageLocationRead().LStateWrittenMatch(written.LImageDraftLocation))
         {
             return;
         }

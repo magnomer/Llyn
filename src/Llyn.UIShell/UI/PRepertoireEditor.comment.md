@@ -23,12 +23,11 @@ Fills the three fields outright from a Situation, or empties them, when a draft 
 Redraws each field from the held Situation only where the field says something else.
 A field that already reads what the engine holds is left alone, caret included.
 
-## `private LSituation PScenarioRead()`
+## `private LRequestSituationBody PScenarioRead(long draft, long situation)`
 
-What the editor says the Situation is, as a Situation with no identity.
+The editor as written, for the engine to read into the Situation it holds.
+Each field travels with its mark, so the panel resolves no state.
 The engine keeps the id of the Situation it holds, because the panel mints nothing.
-A field standing empty says nothing was recorded, unless it still carries the mark it was loaded with.
-Then it says instead that the user marked it as not known.
 
 ## `private void PScenarioStoreHandle(object sender, RoutedEventArgs e)`
 

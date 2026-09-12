@@ -30,16 +30,16 @@ public sealed class LExampleArchive
                 """
                 INSERT INTO example (
                     language, text_state, text, translation_state, translation,
-                    source_state, source_ref)
+                    reference_state, reference_ref)
                 VALUES (
                     $language, $textState, $text, $translationState, $translation,
-                    $sourceState, $source)
+                    $referenceState, $reference)
                 RETURNING example_id;
                 """;
             command.Parameters.AddWithValue("$language", stored.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", stored.LExampleText);
             LStateColumn.LStateColumnApply(command, "translation", stored.LExampleTranslation);
-            LStateColumn.LStateColumnApply(command, "source", stored.LExampleSource);
+            LStateColumn.LStateColumnApply(command, "reference", stored.LExampleSource);
             stored = stored with { LExampleId = (long)command.ExecuteScalar()! };
         }
 
@@ -65,7 +65,7 @@ public sealed class LExampleArchive
         command.CommandText =
             """
             SELECT example_id, language, text_state, text, translation_state, translation,
-                   source_state, source_ref
+                   reference_state, reference_ref
             FROM example
             ORDER BY rowid;
             """;
@@ -100,13 +100,13 @@ public sealed class LExampleArchive
                 UPDATE example
                 SET language = $language, text_state = $textState, text = $text,
                     translation_state = $translationState, translation = $translation,
-                    source_state = $sourceState, source_ref = $source
+                    reference_state = $referenceState, reference_ref = $reference
                 WHERE example_id = $id;
                 """;
             command.Parameters.AddWithValue("$language", example.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", example.LExampleText);
             LStateColumn.LStateColumnApply(command, "translation", example.LExampleTranslation);
-            LStateColumn.LStateColumnApply(command, "source", example.LExampleSource);
+            LStateColumn.LStateColumnApply(command, "reference", example.LExampleSource);
             command.Parameters.AddWithValue("$id", example.LExampleId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -147,8 +147,8 @@ public sealed class LExampleArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET source_state = $sourceState, source_ref = $source WHERE example_id = $id;";
-            LStateColumn.LStateColumnApply(command, "source", source);
+                "UPDATE example SET reference_state = $referenceState, reference_ref = $reference WHERE example_id = $id;";
+            LStateColumn.LStateColumnApply(command, "reference", source);
             command.Parameters.AddWithValue("$id", exampleId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -244,7 +244,7 @@ public sealed class LExampleArchive
         command.CommandText =
             """
             SELECT language, text_state, text, translation_state, translation,
-                   source_state, source_ref
+                   reference_state, reference_ref
             FROM example WHERE example_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);

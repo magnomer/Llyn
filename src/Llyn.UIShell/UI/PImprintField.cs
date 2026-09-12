@@ -206,7 +206,7 @@ public partial class PImprint
     private static void PImprintFieldShow(
         TextBox field, ToggleButton mark, LStateValue? value, string unknown, ref bool held, bool differing = false)
     {
-        if (differing && LStateValue.LStateValueResolve(field.Text, held) == (value ?? LStateValue.LStateValueUnspecified))
+        if (differing && new LStateWritten(field.Text, held).LStateWrittenMatch(value))
         {
             return;
         }
@@ -230,15 +230,15 @@ public partial class PImprint
             + usage.ToString(CultureInfo.CurrentCulture);
     }
 
-    private LReference PImprintRead()
+    private LRequestReferenceBody PImprintRead(long draft)
     {
-        return new LReference(
-            0,
-            LStateValue.LStateValueResolve(PImprintTitle.Text, _pImprintTitleUnknown),
-            LStateValue.LStateValueResolve(PImprintYear.Text, _pImprintYearUnknown),
+        return new LRequestReferenceBody(
+            draft,
+            new LStateWritten(PImprintTitle.Text, _pImprintTitleUnknown),
+            new LStateWritten(PImprintYear.Text, _pImprintYearUnknown),
             PImprintKindRead(),
-            LStateValue.LStateValueResolve(PImprintNote.Text, _pImprintNoteUnknown),
-            LStateValue.LStateValueResolve(PImprintUrl.Text, _pImprintUrlUnknown),
+            new LStateWritten(PImprintNote.Text, _pImprintNoteUnknown),
+            new LStateWritten(PImprintUrl.Text, _pImprintUrlUnknown),
             _pAuthorState);
     }
 

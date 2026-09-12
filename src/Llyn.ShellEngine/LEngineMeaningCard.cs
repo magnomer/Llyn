@@ -96,10 +96,7 @@ public sealed partial class LEngine
                 meanings.LMeaningUpdate(row with
                 {
                     LMeaningTitle = card.LCardDraftTitle,
-                    LMeaningGloss = card.LCardDraftGloss,
-                    LMeaningDefinitionLanguage = card.LCardDraftLanguage,
                     LMeaningDefinition = card.LCardDraftMeaning,
-                    LMeaningLabels = card.LCardDraftLabels,
                 });
                 changes.Add(new LRevisionChange(
                     0, row.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
@@ -113,10 +110,7 @@ public sealed partial class LEngine
                     parentId,
                     0,
                     card.LCardDraftTitle,
-                    card.LCardDraftGloss,
-                    card.LCardDraftLanguage,
-                    card.LCardDraftMeaning,
-                    card.LCardDraftLabels));
+                    card.LCardDraftMeaning));
                 changes.Add(new LRevisionChange(
                     0,
                     created.LMeaningId,

@@ -26,7 +26,7 @@ public sealed class LReferenceArchive
         {
             command.CommandText =
                 """
-                INSERT INTO source (
+                INSERT INTO reference (
                     title_state, title,
                     year_state, year,
                     kind,
@@ -40,14 +40,14 @@ public sealed class LReferenceArchive
                     $noteState, $note,
                     $urlState, $url,
                     $authorState)
-                RETURNING source_id;
+                RETURNING reference_id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", stored.LReferenceTitle);
             LStateColumn.LStateColumnApply(command, "year", stored.LReferenceYear);
             command.Parameters.AddWithValue("$kind", LReference.LReferenceKindFormat(stored.LReferenceKind));
             LStateColumn.LStateColumnApply(command, "note", stored.LReferenceNote);
             LStateColumn.LStateColumnApply(command, "url", stored.LReferenceUrl);
-            command.Parameters.AddWithValue("$authorState", LStateColumn.LStateColumnFormat(stored.LReferenceAuthorState));
+            LStateColumn.LStateColumnApply(command, "author", stored.LReferenceAuthorState);
             stored = stored with { LReferenceId = (long)command.ExecuteScalar()! };
         }
 
@@ -69,14 +69,14 @@ public sealed class LReferenceArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT source_id,
+            SELECT reference_id,
                    title_state, title,
                    year_state, year,
                    kind,
                    note_state, note,
                    url_state, url,
                    author_state
-            FROM source
+            FROM reference
             ORDER BY title;
             """;
 
@@ -100,7 +100,7 @@ public sealed class LReferenceArchive
         long id;
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "SELECT source_ref FROM example WHERE example_id = $example;";
+            command.CommandText = "SELECT reference_ref FROM example WHERE example_id = $example;";
             command.Parameters.AddWithValue("$example", exampleId);
             using SqliteDataReader reader = command.ExecuteReader();
             if (!reader.Read() || reader.IsDBNull(0))
@@ -124,21 +124,21 @@ public sealed class LReferenceArchive
         {
             command.CommandText =
                 """
-                UPDATE source
+                UPDATE reference
                 SET title_state = $titleState, title = $title,
                     year_state = $yearState, year = $year,
                     kind = $kind,
                     note_state = $noteState, note = $note,
                     url_state = $urlState, url = $url,
                     author_state = $authorState
-                WHERE source_id = $id;
+                WHERE reference_id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", reference.LReferenceTitle);
             LStateColumn.LStateColumnApply(command, "year", reference.LReferenceYear);
             command.Parameters.AddWithValue("$kind", LReference.LReferenceKindFormat(reference.LReferenceKind));
             LStateColumn.LStateColumnApply(command, "note", reference.LReferenceNote);
             LStateColumn.LStateColumnApply(command, "url", reference.LReferenceUrl);
-            command.Parameters.AddWithValue("$authorState", LStateColumn.LStateColumnFormat(reference.LReferenceAuthorState));
+            LStateColumn.LStateColumnApply(command, "author", reference.LReferenceAuthorState);
             command.Parameters.AddWithValue("$id", reference.LReferenceId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -175,7 +175,7 @@ public sealed class LReferenceArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM source WHERE source_id = $id;";
+            command.CommandText = "DELETE FROM reference WHERE reference_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -188,7 +188,7 @@ public sealed class LReferenceArchive
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authorId);
 
-        LReferenceLinkAttach("source_author", "source_parent", "author_ref", referenceId, authorId, position);
+        LReferenceLinkAttach("reference_author", "reference_parent", "author_ref", referenceId, authorId, position);
     }
 
     public void LReferenceAuthorDetach(long referenceId, long authorId)
@@ -196,7 +196,7 @@ public sealed class LReferenceArchive
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authorId);
 
-        LReferenceLinkDetach("source_author", "source_parent", "author_ref", referenceId, authorId);
+        LReferenceLinkDetach("reference_author", "reference_parent", "author_ref", referenceId, authorId);
     }
 
     public void LReferenceExampleAttach(long exampleId, long referenceId)
@@ -220,7 +220,7 @@ public sealed class LReferenceArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET source_state = $referenceState, source_ref = $reference WHERE example_id = $example;";
+                "UPDATE example SET reference_state = $referenceState, reference_ref = $reference WHERE example_id = $example;";
             LStateColumn.LStateColumnApply(command, "reference", reference);
             command.Parameters.AddWithValue("$example", exampleId);
             if (command.ExecuteNonQuery() == 0)
@@ -298,8 +298,8 @@ public sealed class LReferenceArchive
                 note_state, note,
                 url_state, url,
                 author_state
-            FROM source
-            WHERE source_id = $id;
+            FROM reference
+            WHERE reference_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
@@ -320,7 +320,7 @@ public sealed class LReferenceArchive
             LReference.LReferenceKindParse(reader.GetString(first + 4)),
             LStateColumn.LStateColumnRead(reader, first + 5),
             LStateColumn.LStateColumnRead(reader, first + 7),
-            LStateColumn.LStateColumnParse(reader.GetString(first + 9)));
+            LStateColumn.LStateColumnLoad(reader, first + 9));
     }
 
 }

@@ -7,6 +7,7 @@ Creates the transcriptions an Entry owns.
 ## `public static void LSchemaTranscriptionCreate(SqliteConnection connection)`
 
 An entry carries an ordered list of transcriptions, keyed by its own id and placed by (entry_parent, position).
+Its id counts strictly upward and is never given to a later transcription once the row is gone.
 A transcription is the reading spelled in a named scheme, such as Jyutping, and is never IPA.
 IPA lives in pronunciation, which says how the word sounds.
 One scheme spells one reading one way, so (entry_parent, scheme) is unique.

@@ -30,7 +30,7 @@ Choosing one here would put a language on every sentence the user never named.
 Reads the whole shelf of Sources the citation may point at.
 Nothing here creates, changes or deletes a Source.
 
-## `private string PCitationNameRead(LStateValue source)`
+## `private string PCitationNameRead(long id)`
 
 The name a cited Source is shown under, falling back to its id when it names itself nowhere.
 The catalog, the search and the display all read a Source through this, so all three agree.
@@ -90,9 +90,10 @@ The language and the citation are compared the same way, so a bulletin that chan
 
 Writes one field and its mark from a value, unless the field already reads that value.
 
-## `private LExample PTranscriptRead()`
+## `private LRequestExampleBody PTranscriptRead(long draft)`
 
-The control values as a sentence with no identity.
+The controls as written, for the engine to read into the sentence it holds.
+Text and translation travel with their marks and the citation as the chosen id, so the panel resolves no state.
 The engine keeps the id of the sentence it holds, so the panel never mints or carries an id of its own.
 
 ## `private void PCorpusFreshHandle(object sender, RoutedEventArgs e)`

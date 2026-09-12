@@ -21,9 +21,9 @@ public sealed class LReferenceUsage
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT source_ref, COUNT(*) FROM example
-            WHERE source_ref IS NOT NULL
-            GROUP BY source_ref;
+            SELECT reference_ref, COUNT(*) FROM example
+            WHERE reference_ref IS NOT NULL
+            GROUP BY reference_ref;
             """;
 
         Dictionary<long, int> counts = [];
@@ -51,13 +51,12 @@ public sealed class LReferenceUsage
             """
             SELECT sense.sense_id, sense.entry_parent, entry.headword, entry.language,
                    sense.title_state, sense.title,
-                   CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
-                   COALESCE(sense.gloss, sense.definition)
+                   sense.definition_state, sense.definition
             FROM sense_example link
             JOIN example ON example.example_id = link.example_ref
             JOIN sense ON sense.sense_id = link.sense_parent
             JOIN entry ON entry.entry_id = sense.entry_parent
-            WHERE example.source_ref = $id
+            WHERE example.reference_ref = $id
             GROUP BY sense.sense_id
             ORDER BY entry.headword, sense.position;
             """));
@@ -73,7 +72,7 @@ public sealed class LReferenceUsage
             JOIN example ON example.example_id = link.example_ref
             JOIN collocation ON collocation.collocation_id = link.collocation_parent
             JOIN entry ON entry.entry_id = collocation.entry_parent
-            WHERE example.source_ref = $id
+            WHERE example.reference_ref = $id
             GROUP BY collocation.collocation_id
             ORDER BY entry.headword, collocation.position;
             """));
@@ -88,7 +87,7 @@ public sealed class LReferenceUsage
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT COUNT(*) FROM example WHERE source_ref = $id;
+            SELECT COUNT(*) FROM example WHERE reference_ref = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -100,7 +99,7 @@ public sealed class LReferenceUsage
 
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
-            "UPDATE example SET source_state = 'unspecified', source_ref = NULL WHERE source_ref = $id;";
+            "UPDATE example SET reference_state = 'unspecified', reference_ref = NULL WHERE reference_ref = $id;";
         command.Parameters.AddWithValue("$id", id);
         command.ExecuteNonQuery();
     }
@@ -146,7 +145,7 @@ public sealed class LReferenceUsage
                    example.text_state, example.text,
                    example.translation_state, example.translation
             FROM example
-            WHERE example.source_ref = $id
+            WHERE example.reference_ref = $id
             ORDER BY example.text;
             """;
         command.Parameters.AddWithValue("$id", id);

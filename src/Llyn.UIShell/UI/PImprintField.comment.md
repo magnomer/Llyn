@@ -52,9 +52,10 @@ With `differing` set it first checks whether the field already reads that value,
 Keeps the citation figure visible while editing.
 A user correcting a title must see how many places that correction reaches without leaving the area.
 
-## `private LReference PImprintRead()`
+## `private LRequestReferenceBody PImprintRead(long draft)`
 
-Reads the edit area into a Source with no identity.
+The edit area as written, for the engine to read into the Source it holds.
+Each text field travels with its mark, so the area resolves no state.
 The engine keeps the id of the Source it holds, so the area never learns or carries one.
 The author state comes from the credits region, because it is a column on the same row.
 

@@ -137,7 +137,7 @@ public sealed class TCatalogExample
             LReferenceKind.LReferenceKindUnspecified,
             unstated,
             unstated,
-            LState.LStateUnspecified));
+            LStateMark.LStateMarkUnspecified));
     }
 
     private static LEntry TCatalogEntryCreate(LEngine engine, string headword)

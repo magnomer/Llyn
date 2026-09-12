@@ -32,9 +32,9 @@ The row id is carried through untouched, so an edited location updates a picture
 
 The id of the engine's row this one shows, which every request about it names.
 
-## `internal LStateValue PImageLocationRead()`
+## `internal LStateWritten PImageLocationRead()`
 
-What the row says its location is: nothing, unknown, or the text it shows.
+The location as written, with its mark, for the engine to read.
 
 ## `internal void PImageShow(LImageDraft written, bool pending)`
 

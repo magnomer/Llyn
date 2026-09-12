@@ -14,7 +14,7 @@ public static class LSchemaTranscription
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS transcription (
-                transcription_id INTEGER PRIMARY KEY,
+                transcription_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 entry_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 scheme TEXT NOT NULL,

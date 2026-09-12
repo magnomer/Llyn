@@ -96,9 +96,6 @@ public sealed class LEntryLoader
                 meaning.LMeaningDefinition) with
             {
                 LCardDraftChild = LEntryChildRead(senses, meaning.LMeaningId),
-                LCardDraftGloss = meaning.LMeaningGloss,
-                LCardDraftLanguage = meaning.LMeaningDefinitionLanguage,
-                LCardDraftLabels = meaning.LMeaningLabels,
             });
         }
 

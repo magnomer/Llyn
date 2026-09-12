@@ -54,22 +54,6 @@ Only the writing side converts.
 A value never turns back into a string on its own.
 So no reader can lose the distinction by accident.
 
-## `public static LStateValue LStateValueResolve(string? text, bool unknown)`
-
-Reads a form field as a value.
-The text it holds and the mark that says it is not known are both used.
-This is the one rule for the three states, and every editor asks it rather than deciding for itself.
-
-The mark decides first.
-A marked field is unknown whatever its box holds, because an unknown value keeps no text.
-Every editor empties the box when the mark goes on, so nothing written is lost by this order.
-
-An unmarked field is read the way `LStateValueRead` reads it.
-Text that is blank or nothing but whitespace stands for nothing recorded.
-A field holding only spaces is therefore unspecified and not text.
-So a value written this way, stored, and read back maps to itself.
-An editor comparing what it sent against what is held sees no difference and does not report itself dirty.
-
 ## `public string LStateValueShow()`
 
 The text to show for the value, which is nothing at all unless the value states one or is unreadable.

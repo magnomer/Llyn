@@ -168,7 +168,7 @@ public sealed class TRequest
             LReferenceKind.LReferenceKindBook,
             TInterface.TStateValueCreate("a note"),
             TInterface.TStateValueCreate("https://example.org"),
-            LState.LStateUnknown);
+            LStateMark.LStateMarkUnknown);
 
         LDraft answered = engine.TEngineRequestApply(TInterface.TReferenceBodyCreate(started.LDraftId, sent));
 
@@ -179,7 +179,7 @@ public sealed class TRequest
         Assert.Equal(LReferenceKind.LReferenceKindBook, held.LReferenceKind);
         Assert.Equal("a note", held.LReferenceNote.TStateValueShow());
         Assert.Equal("https://example.org", held.LReferenceUrl.TStateValueShow());
-        Assert.Equal(LState.LStateUnknown, held.LReferenceAuthorState);
+        Assert.Equal(LState.LStateUnknown, held.LReferenceAuthorState.LStateMarkState);
     }
 
     [Fact]

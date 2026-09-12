@@ -113,7 +113,7 @@ A Situation nothing references is absent rather than present as zero.
 ## `public IReadOnlyList<LUsage> LSituationUsageRead(long id)`
 
 The referring sides of one Situation, named rather than counted.
-A Meaning is named by its title and, standing without one, by its gloss.
+A Meaning is named by its title and, standing without one, by its definition.
 A Collocation is named by its title and, standing without one, by its expression.
 The Entry each side belongs to is read with it, so a row is legible without a second query.
 

@@ -9,7 +9,7 @@ public static class LSchemaStamp
     [
         "entry",
         "example",
-        "source",
+        "reference",
         "author",
         "situation",
         "register",

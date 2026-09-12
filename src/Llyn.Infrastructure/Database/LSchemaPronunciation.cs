@@ -14,7 +14,7 @@ public static class LSchemaPronunciation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS pronunciation (
-                pronunciation_id INTEGER PRIMARY KEY,
+                pronunciation_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 entry_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 variety TEXT,

@@ -21,20 +21,20 @@ public static class LSchemaReference
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
-            CREATE TABLE IF NOT EXISTS source (
-                source_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            CREATE TABLE IF NOT EXISTS reference (
+                reference_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
-                year_state TEXT NOT NULL,
+                year_state TEXT NOT NULL DEFAULT 'unspecified',
                 year TEXT,
                 kind TEXT NOT NULL DEFAULT 'unspecified',
-                note_state TEXT NOT NULL,
+                note_state TEXT NOT NULL DEFAULT 'unspecified',
                 note TEXT,
-                url_state TEXT NOT NULL,
+                url_state TEXT NOT NULL DEFAULT 'unspecified',
                 url TEXT,
-                author_state TEXT NOT NULL,
+                author_state TEXT NOT NULL DEFAULT 'unspecified',
                 CHECK (title_state = 'specified' OR title IS NULL),
                 CHECK (year_state = 'specified' OR year IS NULL),
                 CHECK (note_state = 'specified' OR note IS NULL),
@@ -42,17 +42,17 @@ public static class LSchemaReference
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
-            CREATE TABLE IF NOT EXISTS source_author (
-                source_parent INTEGER NOT NULL,
+            CREATE TABLE IF NOT EXISTS reference_author (
+                reference_parent INTEGER NOT NULL,
                 author_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (source_parent, author_ref),
-                FOREIGN KEY (source_parent) REFERENCES source (source_id) ON DELETE CASCADE,
+                PRIMARY KEY (reference_parent, author_ref),
+                FOREIGN KEY (reference_parent) REFERENCES reference (reference_id) ON DELETE CASCADE,
                 FOREIGN KEY (author_ref) REFERENCES author (author_id)
             );
 
-            CREATE UNIQUE INDEX IF NOT EXISTS source_author_position
-                ON source_author (source_parent, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS reference_author_position
+                ON reference_author (reference_parent, position);
             """;
         command.ExecuteNonQuery();
     }

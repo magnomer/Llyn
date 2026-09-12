@@ -119,11 +119,11 @@ public sealed class TState
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM example WHERE source_state = 'unknown' AND source_ref IS NULL;"));
+                "SELECT COUNT(*) FROM example WHERE reference_state = 'unknown' AND reference_ref IS NULL;"));
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM example WHERE source_state = 'unspecified' AND source_ref IS NULL;"));
+                "SELECT COUNT(*) FROM example WHERE reference_state = 'unspecified' AND reference_ref IS NULL;"));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
         LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);

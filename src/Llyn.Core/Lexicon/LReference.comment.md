@@ -16,7 +16,7 @@ No code branches on it to choose which fields a Reference may carry.
 A kind that decided the shape would rebuild one record per kind, which is what this record exists to avoid.
 Whatever a kind alone cannot say goes in `LReferenceNote`, in the user's own words.
 Each field is an `LStateValue` so "never entered", "recorded as unknown", and "this value" stay distinct.
-`LReferenceAuthorState` is that same distinction for the authorship as a whole.
+`LReferenceAuthorState` is that same distinction for the authorship as a whole, carried as an `LStateMark`.
 The Authors themselves are separate rows attached in order.
 So a specified authorship may name one Author, several, or the specified Author `Anonymous`.
 
@@ -28,7 +28,7 @@ So a specified authorship may name one Author, several, or the specified Author 
 - `LReferenceKind` — What kind of material it is, as a label and never as a rule.
 - `LReferenceNote` — Anything further about the material, written by the user as free text.
 - `LReferenceUrl` — Address the material was found at.
-- `LReferenceAuthorState` — Whether the authorship is unspecified, unknown, or specified by attached Authors.
+- `LReferenceAuthorState` — Whether the authorship is unspecified, unknown, or specified by attached Authors, and whether the stored word could be read.
 
 ## `public string LReferenceNameRead()`
 

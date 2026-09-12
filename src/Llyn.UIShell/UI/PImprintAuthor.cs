@@ -46,7 +46,7 @@ public partial class PImprint
 
     private void PAuthorShow(LDraft? draft)
     {
-        _pAuthorState = draft?.LDraftReference?.LReferenceAuthorState ?? LState.LStateUnspecified;
+        _pAuthorState = draft?.LDraftReference?.LReferenceAuthorState.LStateMarkState ?? LState.LStateUnspecified;
         PAuthorUnknown.IsChecked = _pAuthorState == LState.LStateUnknown;
         PAuthorSwitch.IsEnabled = draft is not null;
         PAuthorCreditShow(draft is null ? [] : PAuthorCreditRead(draft));

@@ -18,7 +18,4 @@ There is no separate definition entity: each Meaning holds exactly one definitio
 - `LMeaningTitle` — Title typed on the Meaning card, and what is known about it.
   Nothing was recorded when none was typed.
   It is unknown when the user marked it as not known.
-- `LMeaningGloss` — Optional short gloss, unused by the input form.
-- `LMeaningDefinitionLanguage` — Optional language the definition is written in.
 - `LMeaningDefinition` — Single inline definition text, and what is known about it.
-- `LMeaningLabels` — Labels as JSON array text (for example `["figurative"]`).

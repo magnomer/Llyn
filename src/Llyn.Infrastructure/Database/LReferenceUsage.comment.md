@@ -8,7 +8,7 @@ Counting the citations of a Source is a different responsibility from storing on
 Nothing here creates, changes, or deletes a Source.
 
 A Situation is not counted, because a Situation is written rather than quoted and carries no Source column.
-Only an Example cites a Source, through its own `source_ref` column.
+Only an Example cites a Source, through its own `reference_ref` column.
 A Meaning or a Collocation is reported as citing because it holds such an Example, never because a row says so.
 So a card arm is a join back up the chain and detaching is clearing two columns on the Example.
 
@@ -29,7 +29,7 @@ So the badge showing this number says what it counts, through `Source.Tally`, an
 ## `public IReadOnlyList<LUsage> LReferenceUsageRead(long id)`
 
 Reads the citing Meanings, Collocations and Examples of one Source, itemized, each with the id the row leads to.
-A card names its own id, the Entry it belongs to, that Entry's headword, and its title with the gloss or expression behind it.
+A card names its own id, the Entry it belongs to, that Entry's headword, and its title with the definition or expression behind it.
 An Example names its sentence and its translation, because an Example belongs to no Entry of its own.
 A card holding two Examples of one Source is listed once, because the row leads to the card rather than the citation.
 

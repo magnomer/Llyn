@@ -27,13 +27,13 @@ The row for a stored Video, holding the location and the span as the store knows
 
 The id of the engine's row this one shows, which every request about it names.
 
-## `internal LStateValue PVideoLocationRead()`
+## `internal LStateWritten PVideoLocationRead()`
 
-What the row says its location is: nothing, unknown, or the text it shows.
+The location as written, with its mark, for the engine to read.
 
-## `internal LStateValue PVideoSpanRead()`
+## `internal LStateWritten PVideoSpanRead()`
 
-What the row says its span is: nothing, unknown, or the text it shows.
+The span as written, with its mark, for the engine to read.
 
 ## `internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)`
 

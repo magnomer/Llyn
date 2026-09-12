@@ -39,9 +39,10 @@ Replaces the description of the situation, wherever the draft holds it.
 
 Replaces the kind of the situation, wherever the draft holds it.
 
-## `public sealed record LRequestSituationBody(long LRequestDraftId, long LRequestSituationId, LSituation LRequestSituation)`
+## `public sealed record LRequestSituationBody`
 
-Carries the title, description and kind of one situation at once, as the form currently shows them.
-The engine takes those three fields from it and keeps the held id, wherever the draft holds that situation.
+Carries the title, description and kind of one situation at once, as the form currently holds them.
+Each travels as written, with its mark, and the engine resolves the state.
+The engine keeps the held id, wherever the draft holds that situation.
 A form sends this instead of comparing its controls against the draft field by field.
 So the decision of what changed lives in the engine, and an unchanged body saves and announces nothing.

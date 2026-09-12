@@ -16,13 +16,8 @@ public sealed record LCardDraft(
     IReadOnlyList<LVideoDraft> LCardDraftVideo,
     int LCardDraftPosition,
     long LCardDraftId = 0,
-    IReadOnlyList<LCardDraft>? LCardDraftChild = null,
-    string? LCardDraftGloss = null,
-    string? LCardDraftLanguage = null,
-    string LCardDraftLabels = "")
+    IReadOnlyList<LCardDraft>? LCardDraftChild = null)
 {
-    public string LCardDraftLabels { get; init; } = LCardDraftLabels ?? string.Empty;
-
     public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; } = LCardDraftChild ?? [];
 
     public LStateValue LCardDraftTitle { get; init; } =
@@ -54,8 +49,6 @@ public sealed record LCardDraft(
         LCardDraftTitle.LStateValueEmpty
         && LCardDraftExpression.LStateValueEmpty
         && LCardDraftMeaning.LStateValueEmpty
-        && string.IsNullOrWhiteSpace(LCardDraftGloss)
-        && string.IsNullOrWhiteSpace(LCardDraftLabels)
         && LCardDraftChild.Count == 0
         && LCardDraftSentence.All(static row => row.LSentenceDraftEmpty)
         && LCardDraftSituation.All(static row => row.LSituationDraftTitle.LStateValueEmpty)

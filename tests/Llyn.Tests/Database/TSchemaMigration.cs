@@ -180,7 +180,7 @@ public sealed class TSchemaMigration
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "sense_parent"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_example", "example_ref"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "tag_ref"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_ref"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "reference_author", "author_ref"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "tombstone", "revision_ref"));
     }
 

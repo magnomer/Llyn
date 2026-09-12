@@ -4,7 +4,7 @@
 
 Persists Authors — independent data no Reference owns.
 An Author is created once with an opaque id.
-It is then *referenced* by any number of References through `source_author`.
+It is then *referenced* by any number of References through `reference_author`.
 That row carries the position the Author takes on that Reference alone.
 Renaming rewrites the visible name and never the id.
 So every Reference keeps pointing at the same Author.

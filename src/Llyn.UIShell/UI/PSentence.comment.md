@@ -55,28 +55,25 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 Puts the marker and the role in the places the language pack states.
 The row states no order of its own, so it holds only what it was told.
 
-## `internal LStateValue PSentenceParticleRead()`
+## `internal LStateWritten PSentenceParticleRead()`
 
-What the row says its marker is: nothing written, unknown, or the text it shows.
+The marker as written, with its mark, for the engine to read.
 
-## `internal LStateValue PSentenceDependenceRead()`
+## `internal LStateWritten PSentenceDependenceRead()`
 
-What the row says its role is: nothing written, unknown, or the text it shows.
+The role as written, with its mark, for the engine to read.
 
-## `internal LStateValue PSentenceTextRead()`
+## `internal LStateWritten PSentenceTextRead()`
 
-What the row says its sentence is: nothing written, unknown, or the text it shows.
-
-## `internal LStateValue PSentenceCitationRead()`
-
-What the row says about the Source it cites: none, unknown, or the one it names.
+The sentence as written, with its mark, for the engine to read.
 
 ## `internal void PSentenceShow(LSentenceDraft draft, Func<string, bool> pending)`
 
 Redraws the row from the engine's row, field by field, only where the field says something else.
 A field with a request still waiting is left as typed, which `pending` answers by field name.
 The ids are always taken, because the engine is the only minter.
-A field that already reads what the engine holds is left alone, so the caret survives its own echo.
+A field that already stands for what the engine holds is left alone, so the caret survives its own echo.
+The engine answers that through the written field, since the row never resolves a state itself.
 
 ## `internal void PSentenceCitationShow()`
 

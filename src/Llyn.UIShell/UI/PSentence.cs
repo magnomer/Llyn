@@ -309,26 +309,19 @@ internal sealed class PSentence : INotifyPropertyChanged
         PSentenceDependenceColumn = order.LSentenceOrderDependence * 2;
     }
 
-    internal LStateValue PSentenceParticleRead()
+    internal LStateWritten PSentenceParticleRead()
     {
-        return LStateValue.LStateValueResolve(_pSentenceParticle, _pSentenceParticleUnknown);
+        return new LStateWritten(_pSentenceParticle, _pSentenceParticleUnknown);
     }
 
-    internal LStateValue PSentenceDependenceRead()
+    internal LStateWritten PSentenceDependenceRead()
     {
-        return LStateValue.LStateValueResolve(_pSentenceDependence, _pSentenceDependenceUnknown);
+        return new LStateWritten(_pSentenceDependence, _pSentenceDependenceUnknown);
     }
 
-    internal LStateValue PSentenceTextRead()
+    internal LStateWritten PSentenceTextRead()
     {
-        return LStateValue.LStateValueResolve(_pSentenceText, _pSentenceUnknown);
-    }
-
-    internal LStateAnchor PSentenceCitationRead()
-    {
-        return _pSentenceCitationUnknown
-            ? LStateAnchor.LStateAnchorUnknown
-            : LStateAnchor.LStateAnchorRead(_pSentenceCitation);
+        return new LStateWritten(_pSentenceText, _pSentenceUnknown);
     }
 
     internal void PSentenceShow(LSentenceDraft draft, Func<string, bool> pending)
@@ -342,14 +335,15 @@ internal sealed class PSentence : INotifyPropertyChanged
         _pSentenceRow = draft.LSentenceDraftId;
         PSentenceId = example.LExampleDraftId;
 
-        if (!pending(nameof(PSentenceText)) && PSentenceTextRead() != example.LExampleDraftText)
+        if (!pending(nameof(PSentenceText)) && !PSentenceTextRead().LStateWrittenMatch(example.LExampleDraftText))
         {
             _pSentenceText = example.LExampleDraftText.LStateValueShow();
             PSentenceRaise(nameof(PSentenceText));
             PSentenceUnknown = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
         }
 
-        if (PSentenceCitationRead() != example.LExampleDraftReference)
+        if (_pSentenceCitation != example.LExampleDraftReference.LStateAnchorShow()
+            || _pSentenceCitationUnknown != (example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown))
         {
             _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
             PSentenceRaise(nameof(PSentenceCitationId));
@@ -357,14 +351,14 @@ internal sealed class PSentence : INotifyPropertyChanged
             PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
         }
 
-        if (!pending(nameof(PSentenceParticle)) && PSentenceParticleRead() != draft.LSentenceDraftParticle)
+        if (!pending(nameof(PSentenceParticle)) && !PSentenceParticleRead().LStateWrittenMatch(draft.LSentenceDraftParticle))
         {
             _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
             PSentenceRaise(nameof(PSentenceParticle));
             PSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
         }
 
-        if (!pending(nameof(PSentenceDependence)) && PSentenceDependenceRead() != draft.LSentenceDraftDependence)
+        if (!pending(nameof(PSentenceDependence)) && !PSentenceDependenceRead().LStateWrittenMatch(draft.LSentenceDraftDependence))
         {
             _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
             PSentenceRaise(nameof(PSentenceDependence));

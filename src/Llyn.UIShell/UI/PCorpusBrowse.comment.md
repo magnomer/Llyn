@@ -39,10 +39,14 @@ An open editor is restarted on the Example chosen, so what it writes into is the
 An id the store no longer knows clears the selection and refills the catalog rather than failing.
 The window calls it so a Source citing row can land on the Example it names.
 
-## `private void PExcerptValueShow(TextBlock field, LStateValue value, string? shown = null)`
+## `private void PExcerptValueShow(TextBlock field, LStateValue value)`
 
 Writes one three-state field into the display.
-An unwritten value reads the unrecorded mark in the muted colour, so a blank row never stands for two facts.
+
+## `private void PExcerptTextShow(TextBlock field, string? text)`
+
+Writes the text a field shows, or the unrecorded mark in the muted colour when there is none.
+So a blank row never stands for two facts.
 
 ## `private void PQuotationFind(long id)`
 

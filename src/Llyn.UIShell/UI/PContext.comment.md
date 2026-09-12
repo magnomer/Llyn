@@ -24,6 +24,6 @@ An id the store never gave it stays empty, so loading a card does not read as ed
 The description and the kind ride along unread.
 No control on the card shows either, and a save that dropped them would erase what another panel wrote.
 
-## `internal LStateValue PContextTextRead()`
+## `internal LStateWritten PContextTextRead()`
 
-What the chip says its wording is: unknown, or the text it shows.
+The wording as written, with its mark, for the engine to read.

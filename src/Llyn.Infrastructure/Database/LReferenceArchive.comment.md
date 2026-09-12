@@ -4,7 +4,7 @@
 
 Persists bibliographic References — independent data no Entry, Example, or Author owns.
 A Reference is created once with an opaque id and is then cited one way.
-An Example cites at most one through its `example.source_ref` column.
+An Example cites at most one through its `example.reference_ref` column.
 An Entry reaches a Reference only through the Examples its cards quote, and holds no citation of its own.
 The citation is a pointer — clearing it leaves the Reference standing, and `LReferenceDelete` refuses to run while any citation remains.
 
@@ -12,7 +12,7 @@ Every text field is stored as a state column beside its value column.
 So "never filled in", "recorded as unknown", and "this value" stay three different facts.
 The value column is written only when the state is specified.
 The kind is written as a single word, because its own members already carry those three states.
-The Authors a Reference credits are attached in order through `source_author`.
+The Authors a Reference credits are attached in order through `reference_author`.
 Attaching and detaching write association rows only.
 Deleting the Reference drops those rows and never an Author.
 The Authors themselves live in `LAuthorArchive`.
@@ -91,7 +91,7 @@ Only the pointer is cleared: both the Example and the Reference stay exactly as 
 
 ### `using (SqliteCommand command = connection.CreateCommand())`
 
-source_author cascades from source, so the author links go with the row and the Authors stay.
+reference_author cascades from reference, so the author links go with the row and the Authors stay.
 
 ### `private void LReferenceLinkAttach(`
 

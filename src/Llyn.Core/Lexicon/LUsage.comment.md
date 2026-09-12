@@ -17,5 +17,5 @@ The Entry it carries is the way from the referring side to the panel holding it.
 - `LUsageHeadword` — Headword of that Entry, so the row reads without a second query.
 - `LUsageLanguage` — Language of that Entry.
 - `LUsageTitle` — What names the referring side, and what is known about it.
-  A Meaning is named by its title, and by its gloss when it carries no title.
+  A Meaning is named by its title, and by its definition when it carries no title.
   A Collocation is named by its title, and by its expression when it carries no title.

@@ -173,7 +173,7 @@ public partial class PRepertoire
             }
 
             _lEngine.LEngineRequestApply(
-                new LRequestSituationBody(_pScenarioDraft, content.LSituationId, PScenarioRead()));
+                PScenarioRead(_pScenarioDraft, content.LSituationId));
         }
         catch (Exception exception)
         {

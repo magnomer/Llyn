@@ -12,6 +12,7 @@ Ordering matters.
 `workspace` points at `entry` and at `revision`.
 So this block runs after `LSchema` has created the lexical tables.
 It creates `revision` before `workspace`.
+A revision id counts strictly upward and is never given to a later revision once the row is gone.
 SQLite refuses to prepare a statement writing to a child table whose parent is missing.
 That holds even for NULL keys.
 

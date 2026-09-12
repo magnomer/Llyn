@@ -86,7 +86,7 @@ public sealed class TExample
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LState.LStateUnspecified));
+            LStateMark.LStateMarkUnspecified));
 
         engine.TEngineExampleUpdate(example.LExampleId, TInterface.TStateAnchorRead(reference.LReferenceId));
         Assert.Equal(
@@ -150,7 +150,7 @@ public sealed class TExample
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LState.LStateUnspecified));
+            LStateMark.LStateMarkUnspecified));
         long citedId = TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftId;
         engine.TEngineExampleUpdate(citedId, TInterface.TStateAnchorRead(reference.LReferenceId));
 

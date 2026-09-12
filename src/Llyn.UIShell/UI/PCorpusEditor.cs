@@ -83,9 +83,8 @@ public partial class PCorpus
         PCitationEmpty.Visibility = _pCitationCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private string PCitationNameRead(LStateAnchor source)
+    private string PCitationNameRead(long id)
     {
-        long id = source.LStateAnchorShow();
         if (id == 0)
         {
             return string.Empty;
@@ -128,7 +127,7 @@ public partial class PCorpus
     {
         PCitationName.Text = _pTranscriptCitation == 0
             ? _pCorpusHost.PLocalizationTextRead("Reference.Assign")
-            : PCitationNameRead(LStateAnchor.LStateAnchorCreate(_pTranscriptCitation));
+            : PCitationNameRead(_pTranscriptCitation);
     }
 
     private void PTranscriptTextHandle(object sender, TextChangedEventArgs e)
@@ -231,7 +230,7 @@ public partial class PCorpus
 
     private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)
     {
-        if (LStateValue.LStateValueResolve(field.Text, held) == value)
+        if (new LStateWritten(field.Text, held).LStateWrittenMatch(value))
         {
             return;
         }
@@ -241,14 +240,14 @@ public partial class PCorpus
         field.Tag = held ? unknown : string.Empty;
     }
 
-    private LExample PTranscriptRead()
+    private LRequestExampleBody PTranscriptRead(long draft)
     {
-        return new LExample(
-            0,
+        return new LRequestExampleBody(
+            draft,
             _pTranscriptLanguage,
-            LStateValue.LStateValueResolve(PTranscriptText.Text, _pTranscriptTextUnknown),
-            LStateValue.LStateValueResolve(PTranscriptTranslation.Text, _pTranscriptTranslationUnknown),
-            LStateAnchor.LStateAnchorRead(_pTranscriptCitation));
+            new LStateWritten(PTranscriptText.Text, _pTranscriptTextUnknown),
+            new LStateWritten(PTranscriptTranslation.Text, _pTranscriptTranslationUnknown),
+            _pTranscriptCitation);
     }
 
     private void PCorpusFreshHandle(object sender, RoutedEventArgs e)

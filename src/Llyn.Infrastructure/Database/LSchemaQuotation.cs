@@ -22,17 +22,17 @@ public static class LSchemaQuotation
                 text TEXT,
                 translation_state TEXT NOT NULL DEFAULT 'unspecified',
                 translation TEXT,
-                source_state TEXT NOT NULL DEFAULT 'unspecified',
-                source_ref INTEGER,
+                reference_state TEXT NOT NULL DEFAULT 'unspecified',
+                reference_ref INTEGER,
                 CHECK (text_state = 'specified' OR text IS NULL),
                 CHECK (translation_state = 'specified' OR translation IS NULL),
-                CHECK (source_state = 'specified' OR source_ref IS NULL),
-                FOREIGN KEY (source_ref) REFERENCES source (source_id),
+                CHECK (reference_state = 'specified' OR reference_ref IS NULL),
+                FOREIGN KEY (reference_ref) REFERENCES reference (reference_id),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS sense_example (
-                sense_example_id INTEGER PRIMARY KEY,
+                sense_example_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 sense_parent INTEGER NOT NULL,
                 example_ref INTEGER,
                 position INTEGER NOT NULL,
@@ -53,7 +53,7 @@ public static class LSchemaQuotation
                 ON sense_example (sense_parent, position);
 
             CREATE TABLE IF NOT EXISTS collocation_example (
-                collocation_example_id INTEGER PRIMARY KEY,
+                collocation_example_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 collocation_parent INTEGER NOT NULL,
                 example_ref INTEGER,
                 position INTEGER NOT NULL,

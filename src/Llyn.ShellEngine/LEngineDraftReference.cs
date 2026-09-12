@@ -165,7 +165,7 @@ public sealed partial class LEngine
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LState.LStateUnspecified);
+            LStateMark.LStateMarkUnspecified);
 
     private static bool LEngineReferenceMatch(LReference one, LReference other)
     {

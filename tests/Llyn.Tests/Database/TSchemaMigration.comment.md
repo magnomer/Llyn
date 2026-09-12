@@ -14,7 +14,7 @@ A database in the shape an earlier build left behind is corrected, not merely re
 
 The shape an earlier build left behind.
 That is a version table that permits several rows.
-It is also an example table whose source_ref carries no foreign key.
+It is also an example table whose reference_ref carries no foreign key.
 The source table did not exist when the column was declared.
 
 ### `workspace.TWorkspaceScriptRun(`
@@ -58,7 +58,7 @@ The assignment already stored is a declared preset and stays one: it copies acro
 
 And the rebuilt table takes the row the editable field produces, which the old shape could not hold at all.
 
-### `INSERT INTO source VALUES (`
+### `INSERT INTO reference VALUES (`
 
 A database in the version-30 shape, holding one broadcast Source and one printed one.
 The broadcast row states both retired columns and the printed row states neither.

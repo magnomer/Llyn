@@ -14,7 +14,7 @@ public static class LSchemaRevision
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS revision (
-                revision_id INTEGER PRIMARY KEY,
+                revision_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 created_utc TEXT NOT NULL
             );
 

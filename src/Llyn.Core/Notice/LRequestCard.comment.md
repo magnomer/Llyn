@@ -31,11 +31,3 @@ Replaces the card's Expression.
 ## `public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)`
 
 Replaces the card's Meaning, which the meaning template shows as its Definition.
-
-## `public sealed record LRequestCardGloss(long LRequestDraftId, long LRequestCardId, string LRequestText)`
-
-Replaces the card's gloss.
-
-## `public sealed record LRequestCardLabels(long LRequestDraftId, long LRequestCardId, string LRequestText)`
-
-Replaces the card's labels text.

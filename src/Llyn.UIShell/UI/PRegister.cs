@@ -31,8 +31,8 @@ internal sealed class PRegister
 
     public bool PRegisterUnknown => _pRegisterUnknown;
 
-    internal LStateValue PRegisterTextRead()
+    internal LStateWritten PRegisterTextRead()
     {
-        return LStateValue.LStateValueResolve(_pRegisterText, _pRegisterUnknown);
+        return new LStateWritten(_pRegisterText, _pRegisterUnknown);
     }
 }

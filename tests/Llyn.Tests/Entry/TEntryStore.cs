@@ -48,7 +48,7 @@ public sealed class TEntryStore
             [TInterface.TFormCreate(0, 0, "word", null, "headword")],
             []);
         LMeaning meaning = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "a meaning", null, null, string.Empty));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "a meaning"));
         LExample example = examples.TExampleCreate(
             TInterface.TExampleCreate(
             0, "en", "a sentence", null, null));

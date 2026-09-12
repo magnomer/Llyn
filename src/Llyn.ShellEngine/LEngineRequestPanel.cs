@@ -19,52 +19,37 @@ public sealed partial class LEngine
         return draft with { LDraftReference = change(held) };
     }
 
-    private static LReference LEngineBodyApply(LReference held, LReference? sent)
+    private static LReference LEngineBodyApply(LReference held, LRequestReferenceBody sent)
     {
-        if (sent is null)
-        {
-            throw new LRefusal(LRefusal.LRefusalReference);
-        }
-
         return held with
         {
-            LReferenceTitle = LEngineValueRead(sent.LReferenceTitle),
-            LReferenceYear = LEngineValueRead(sent.LReferenceYear),
-            LReferenceKind = sent.LReferenceKind,
-            LReferenceNote = LEngineValueRead(sent.LReferenceNote),
-            LReferenceUrl = LEngineValueRead(sent.LReferenceUrl),
-            LReferenceAuthorState = sent.LReferenceAuthorState,
+            LReferenceTitle = LEngineValueRead(sent.LRequestTitle),
+            LReferenceYear = LEngineValueRead(sent.LRequestYear),
+            LReferenceKind = sent.LRequestKind,
+            LReferenceNote = LEngineValueRead(sent.LRequestNote),
+            LReferenceUrl = LEngineValueRead(sent.LRequestUrl),
+            LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestAuthorState),
         };
     }
 
-    private static LExample LEngineBodyApply(LExample held, LExample? sent)
+    private static LExample LEngineBodyApply(LExample held, LRequestExampleBody sent)
     {
-        if (sent is null)
-        {
-            throw new LRefusal(LRefusal.LRefusalExample);
-        }
-
         return held with
         {
-            LExampleLanguage = sent.LExampleLanguage ?? string.Empty,
-            LExampleText = LEngineValueRead(sent.LExampleText),
-            LExampleTranslation = LEngineValueRead(sent.LExampleTranslation),
-            LExampleSource = sent.LExampleSource ?? LStateAnchor.LStateAnchorUnspecified,
+            LExampleLanguage = sent.LRequestLanguage ?? string.Empty,
+            LExampleText = LEngineValueRead(sent.LRequestText),
+            LExampleTranslation = LEngineValueRead(sent.LRequestTranslation),
+            LExampleSource = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId),
         };
     }
 
-    private static LSituation LEngineBodyApply(LSituation held, LSituation? sent)
+    private static LSituation LEngineBodyApply(LSituation held, LRequestSituationBody sent)
     {
-        if (sent is null)
-        {
-            throw new LRefusal(LRefusal.LRefusalItem);
-        }
-
         return held with
         {
-            LSituationTitle = LEngineValueRead(sent.LSituationTitle),
-            LSituationDescription = LEngineValueRead(sent.LSituationDescription),
-            LSituationKind = LEngineValueRead(sent.LSituationKind),
+            LSituationTitle = LEngineValueRead(sent.LRequestTitle),
+            LSituationDescription = LEngineValueRead(sent.LRequestDescription),
+            LSituationKind = LEngineValueRead(sent.LRequestKind),
         };
     }
 
@@ -114,7 +99,7 @@ public sealed partial class LEngine
         IReadOnlyList<LAuthor> authors = change(draft.LDraftAuthor);
 
         LReference reference = credited && authors.Count > 0
-            ? held with { LReferenceAuthorState = LState.LStateSpecified }
+            ? held with { LReferenceAuthorState = LStateMark.LStateMarkSpecified }
             : held;
 
         return draft with { LDraftAuthor = authors, LDraftReference = reference };

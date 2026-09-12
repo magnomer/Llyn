@@ -60,13 +60,13 @@ public sealed partial class LEngine
             LRequestReferenceUrl sent => LEngineReferenceChange(
                 draft, reference => reference with { LReferenceUrl = LEngineValueRead(sent.LRequestValue) }),
             LRequestAuthorState sent => LEngineReferenceChange(
-                draft, reference => reference with { LReferenceAuthorState = sent.LRequestState }),
+                draft, reference => reference with { LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestState) }),
             LRequestReferenceBody sent => LEngineReferenceChange(
-                draft, reference => LEngineBodyApply(reference, sent.LRequestReference)),
+                draft, reference => LEngineBodyApply(reference, sent)),
             LRequestExampleBody sent => LEngineExampleChange(
-                draft, example => LEngineBodyApply(example, sent.LRequestExample)),
+                draft, example => LEngineBodyApply(example, sent)),
             LRequestSituationBody sent => LEngineSituationChange(
-                draft, sent.LRequestSituationId, situation => LEngineBodyApply(situation, sent.LRequestSituation)),
+                draft, sent.LRequestSituationId, situation => LEngineBodyApply(situation, sent)),
             LRequestAuthorAddition sent => LEngineAuthorAdd(draft, sent),
             LRequestAuthorPick sent => LEngineAuthorInsert(draft, sent),
             LRequestAuthorRemoval sent => LEngineAuthorRemove(draft, sent.LRequestAuthorId),
@@ -110,21 +110,13 @@ public sealed partial class LEngine
                 content,
                 sent.LRequestCardId,
                 card => card with { LCardDraftMeaning = LEngineValueRead(sent.LRequestValue) }),
-            LRequestCardGloss sent => LEngineCardChange(
-                content,
-                sent.LRequestCardId,
-                card => card with { LCardDraftGloss = sent.LRequestText }),
-            LRequestCardLabels sent => LEngineCardChange(
-                content,
-                sent.LRequestCardId,
-                card => card with { LCardDraftLabels = sent.LRequestText ?? string.Empty }),
             _ => LEngineReadingApply(content, request),
         };
     }
 
-    private static LStateValue LEngineValueRead(LStateValue? value)
+    private static LStateValue LEngineValueRead(LStateWritten? written)
     {
-        return value ?? LStateValue.LStateValueUnspecified;
+        return written?.LStateWrittenResolve() ?? LStateValue.LStateValueUnspecified;
     }
 
     private LEntryDraft LEngineCardInsert(LEntryDraft content, LRequestCardAddition request)

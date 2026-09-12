@@ -17,7 +17,7 @@ public partial class PEditor
         if (sender is FrameworkElement { DataContext: PCard card })
         {
             PEditorRequestSend(new LRequestImageAddition(
-                _pEditorDraft, card.PCardId, LStateValue.LStateValueUnspecified, card.PCardImage.Count));
+                _pEditorDraft, card.PCardId, LStateWritten.LStateWrittenEmpty, card.PCardImage.Count));
         }
     }
 

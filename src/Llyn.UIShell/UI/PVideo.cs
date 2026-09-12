@@ -142,14 +142,14 @@ internal sealed class PVideo : INotifyPropertyChanged
 
     internal long PVideoId => _pVideoRow;
 
-    internal LStateValue PVideoLocationRead()
+    internal LStateWritten PVideoLocationRead()
     {
-        return LStateValue.LStateValueResolve(_pVideoLocation, _pVideoUnknown);
+        return new LStateWritten(_pVideoLocation, _pVideoUnknown);
     }
 
-    internal LStateValue PVideoSpanRead()
+    internal LStateWritten PVideoSpanRead()
     {
-        return LStateValue.LStateValueResolve(_pVideoTimestamp, _pVideoUnwritten);
+        return new LStateWritten(_pVideoTimestamp, _pVideoUnwritten);
     }
 
     internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)
@@ -159,7 +159,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
         _pVideoRow = written.LVideoDraftId;
 
-        if (!pending(nameof(PVideoLocation)) && PVideoLocationRead() != written.LVideoDraftLocation)
+        if (!pending(nameof(PVideoLocation)) && !PVideoLocationRead().LStateWrittenMatch(written.LVideoDraftLocation))
         {
             _pVideoLocation = written.LVideoDraftLocation.LStateValueShow();
             PVideoRaise(nameof(PVideoLocation));
@@ -167,7 +167,7 @@ internal sealed class PVideo : INotifyPropertyChanged
             PVideoPreview = PImage.PImageAddressRead(_pVideoLocation);
         }
 
-        if (!pending(nameof(PVideoTimestamp)) && PVideoSpanRead() != written.LVideoDraftSpan)
+        if (!pending(nameof(PVideoTimestamp)) && !PVideoSpanRead().LStateWrittenMatch(written.LVideoDraftSpan))
         {
             _pVideoTimestamp = written.LVideoDraftSpan.LStateValueShow();
             _pVideoUnwritten = written.LVideoDraftSpan.LStateValueState == LState.LStateUnknown;

@@ -139,7 +139,7 @@ public sealed class TCatalogReference
             LReferenceKind.LReferenceKindUnspecified,
             note,
             url,
-            LState.LStateUnspecified));
+            LStateMark.LStateMarkUnspecified));
     }
 
     private static void TCatalogCreditAttach(LEngine engine, long referenceId, string name)

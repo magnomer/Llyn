@@ -361,7 +361,7 @@ public sealed class TTranslation
     {
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
         return meanings.TMeaningCreate(TInterface.TMeaningCreate(
-            0, entryId, null, 0, null, "a meaning", null, null, string.Empty)).LMeaningId;
+            0, entryId, null, 0, null, "a meaning")).LMeaningId;
     }
 
     private static long TTranslationCollocationCreate(TWorkspace workspace, long entryId)

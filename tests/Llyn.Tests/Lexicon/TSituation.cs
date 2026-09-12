@@ -132,7 +132,7 @@ public sealed class TSituation
             LReferenceKind.LReferenceKindUnspecified,
             LStateValue.LStateValueUnspecified,
             LStateValue.LStateValueUnspecified,
-            LState.LStateUnspecified));
+            LStateMark.LStateMarkUnspecified));
 
         engine.TEngineEntryUpdate(entry.LEntryId, loaded with
         {
