@@ -12,5 +12,10 @@ public sealed record LImageDraft(
         return new LImageDraft(location);
     }
 
+    public LImageDraft LImageDraftNormalize()
+    {
+        return this with { LImageDraftLocation = LImageDraftLocation.LStateValueNormalize() };
+    }
+
     public bool LImageDraftEmpty => LImageDraftLocation.LStateValueEmpty;
 }

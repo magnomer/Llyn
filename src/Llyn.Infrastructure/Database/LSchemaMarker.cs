@@ -14,7 +14,7 @@ public static class LSchemaMarker
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS tag (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 text TEXT NOT NULL UNIQUE,
@@ -23,49 +23,49 @@ public static class LSchemaMarker
             );
 
             CREATE TABLE IF NOT EXISTS sense_tag (
-                sense_id INTEGER NOT NULL,
+                sense_parent INTEGER NOT NULL,
                 tag_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, tag_ref),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_ref) REFERENCES tag (id)
+                PRIMARY KEY (sense_parent, tag_ref),
+                FOREIGN KEY (sense_parent) REFERENCES sense (sense_id) ON DELETE CASCADE,
+                FOREIGN KEY (tag_ref) REFERENCES tag (tag_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_tag_position
-                ON sense_tag (sense_id, position);
+                ON sense_tag (sense_parent, position);
 
             CREATE TABLE IF NOT EXISTS collocation_tag (
-                collocation_id INTEGER NOT NULL,
+                collocation_parent INTEGER NOT NULL,
                 tag_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, tag_ref),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_ref) REFERENCES tag (id)
+                PRIMARY KEY (collocation_parent, tag_ref),
+                FOREIGN KEY (collocation_parent) REFERENCES collocation (collocation_id) ON DELETE CASCADE,
+                FOREIGN KEY (tag_ref) REFERENCES tag (tag_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_tag_position
-                ON collocation_tag (collocation_id, position);
+                ON collocation_tag (collocation_parent, position);
 
             CREATE TABLE IF NOT EXISTS sense_translation (
-                sense_id INTEGER NOT NULL,
+                sense_parent INTEGER NOT NULL,
                 entry_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, entry_ref),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (entry_ref) REFERENCES entry (id) ON DELETE CASCADE
+                PRIMARY KEY (sense_parent, entry_ref),
+                FOREIGN KEY (sense_parent) REFERENCES sense (sense_id) ON DELETE CASCADE,
+                FOREIGN KEY (entry_ref) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS collocation_translation (
-                collocation_id INTEGER NOT NULL,
+                collocation_parent INTEGER NOT NULL,
                 entry_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, entry_ref),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (entry_ref) REFERENCES entry (id) ON DELETE CASCADE
+                PRIMARY KEY (collocation_parent, entry_ref),
+                FOREIGN KEY (collocation_parent) REFERENCES collocation (collocation_id) ON DELETE CASCADE,
+                FOREIGN KEY (entry_ref) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS situation (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                situation_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -81,28 +81,28 @@ public static class LSchemaMarker
             );
 
             CREATE TABLE IF NOT EXISTS sense_situation (
-                sense_id INTEGER NOT NULL,
+                sense_parent INTEGER NOT NULL,
                 situation_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, situation_ref),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (situation_ref) REFERENCES situation (id)
+                PRIMARY KEY (sense_parent, situation_ref),
+                FOREIGN KEY (sense_parent) REFERENCES sense (sense_id) ON DELETE CASCADE,
+                FOREIGN KEY (situation_ref) REFERENCES situation (situation_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_situation_position
-                ON sense_situation (sense_id, position);
+                ON sense_situation (sense_parent, position);
 
             CREATE TABLE IF NOT EXISTS collocation_situation (
-                collocation_id INTEGER NOT NULL,
+                collocation_parent INTEGER NOT NULL,
                 situation_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, situation_ref),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (situation_ref) REFERENCES situation (id)
+                PRIMARY KEY (collocation_parent, situation_ref),
+                FOREIGN KEY (collocation_parent) REFERENCES collocation (collocation_id) ON DELETE CASCADE,
+                FOREIGN KEY (situation_ref) REFERENCES situation (situation_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_situation_position
-                ON collocation_situation (collocation_id, position);
+                ON collocation_situation (collocation_parent, position);
             """;
         command.ExecuteNonQuery();
     }

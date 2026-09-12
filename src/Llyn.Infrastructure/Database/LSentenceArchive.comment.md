@@ -86,7 +86,7 @@ The language is the owning Entry's, not the cited Example's.
 A frame may stand with no Example at all.
 Reading the language off the Example would hide exactly those rows.
 The field that has to offer them would never see them.
-Only rows stating a value are offered, so an unreadable or an unwritten field adds nothing to the list.
+Only rows stating a value are offered, so an unknown or an unwritten field adds nothing to the list.
 The column name is a store-owned literal named by the two methods above and never caller input.
 
 ### `private static IReadOnlyList<LSentence> LSentenceOwnerRead(`

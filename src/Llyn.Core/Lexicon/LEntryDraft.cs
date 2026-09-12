@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace Llyn.Core;
@@ -36,4 +37,13 @@ public sealed record LEntryDraft(
 
     [JsonIgnore]
     public string LEntryDraftAudio => LEntryDraftPronunciation?.LPronunciationDraftAudio ?? string.Empty;
+
+    public LEntryDraft LEntryDraftNormalize()
+    {
+        return this with
+        {
+            LEntryDraftMeanings = LEntryDraftMeanings.Select(static card => card.LCardDraftNormalize()).ToList(),
+            LEntryDraftCollocations = LEntryDraftCollocations.Select(static card => card.LCardDraftNormalize()).ToList(),
+        };
+    }
 }

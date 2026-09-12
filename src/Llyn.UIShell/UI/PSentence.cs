@@ -9,15 +9,15 @@ internal sealed class PSentence : INotifyPropertyChanged
 {
     private long _pSentenceId;
     private string _pSentenceText;
-    private bool _pSentenceUnreadable;
+    private bool _pSentenceUnknown;
     private long _pSentenceCitation;
-    private bool _pSentenceCitationUnreadable;
+    private bool _pSentenceCitationUnknown;
     private string _pSentenceCitationName;
     private bool _pSentenceCitationVisible;
     private string _pSentenceParticle;
-    private bool _pSentenceParticleUnreadable;
+    private bool _pSentenceParticleUnknown;
     private string _pSentenceDependence;
-    private bool _pSentenceDependenceUnreadable;
+    private bool _pSentenceDependenceUnknown;
     private int _pSentenceParticleColumn;
     private int _pSentenceDependenceColumn = 2;
     private bool _pSentenceFrameVisible;
@@ -40,14 +40,14 @@ internal sealed class PSentence : INotifyPropertyChanged
         _pSentenceRow = draft.LSentenceDraftId;
         _pSentenceId = example.LExampleDraftId;
         _pSentenceText = example.LExampleDraftText.LStateValueShow();
-        _pSentenceUnreadable = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
+        _pSentenceUnknown = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
         _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
-        _pSentenceCitationUnreadable = example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown;
+        _pSentenceCitationUnknown = example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown;
         _pSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
         _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
-        _pSentenceParticleUnreadable = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
+        _pSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
         _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
-        _pSentenceDependenceUnreadable = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
+        _pSentenceDependenceUnknown = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
     }
 
     public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
@@ -84,23 +84,23 @@ internal sealed class PSentence : INotifyPropertyChanged
             }
 
             _pSentenceText = value;
-            PSentenceUnreadable = false;
+            PSentenceUnknown = false;
             PSentenceRaise(nameof(PSentenceText));
         }
     }
 
-    public bool PSentenceUnreadable
+    public bool PSentenceUnknown
     {
-        get => _pSentenceUnreadable;
+        get => _pSentenceUnknown;
         private set
         {
-            if (_pSentenceUnreadable == value)
+            if (_pSentenceUnknown == value)
             {
                 return;
             }
 
-            _pSentenceUnreadable = value;
-            PSentenceRaise(nameof(PSentenceUnreadable));
+            _pSentenceUnknown = value;
+            PSentenceRaise(nameof(PSentenceUnknown));
         }
     }
 
@@ -116,7 +116,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             }
 
             _pSentenceCitation = chosen;
-            PSentenceCitationUnreadable = false;
+            PSentenceCitationUnknown = false;
             PSentenceRaise(nameof(PSentenceCitationId));
 
             PSentenceCitationName = PSentenceCitationFind(chosen);
@@ -124,18 +124,18 @@ internal sealed class PSentence : INotifyPropertyChanged
         }
     }
 
-    public bool PSentenceCitationUnreadable
+    public bool PSentenceCitationUnknown
     {
-        get => _pSentenceCitationUnreadable;
+        get => _pSentenceCitationUnknown;
         private set
         {
-            if (_pSentenceCitationUnreadable == value)
+            if (_pSentenceCitationUnknown == value)
             {
                 return;
             }
 
-            _pSentenceCitationUnreadable = value;
-            PSentenceRaise(nameof(PSentenceCitationUnreadable));
+            _pSentenceCitationUnknown = value;
+            PSentenceRaise(nameof(PSentenceCitationUnknown));
         }
     }
 
@@ -181,7 +181,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             }
 
             _pSentenceParticle = chosen;
-            PSentenceParticleUnreadable = false;
+            PSentenceParticleUnknown = false;
             PSentenceRaise(nameof(PSentenceParticle));
             PSentenceRaise(nameof(PSentenceFrameVisible));
             PSentenceRaise(nameof(PSentenceFrameWritten));
@@ -189,18 +189,18 @@ internal sealed class PSentence : INotifyPropertyChanged
         }
     }
 
-    public bool PSentenceParticleUnreadable
+    public bool PSentenceParticleUnknown
     {
-        get => _pSentenceParticleUnreadable;
+        get => _pSentenceParticleUnknown;
         private set
         {
-            if (_pSentenceParticleUnreadable == value)
+            if (_pSentenceParticleUnknown == value)
             {
                 return;
             }
 
-            _pSentenceParticleUnreadable = value;
-            PSentenceRaise(nameof(PSentenceParticleUnreadable));
+            _pSentenceParticleUnknown = value;
+            PSentenceRaise(nameof(PSentenceParticleUnknown));
             PSentenceRaise(nameof(PSentenceFrameVisible));
             PSentenceRaise(nameof(PSentenceFrameWritten));
             PSentenceRaise(nameof(PSentenceFrameGap));
@@ -219,7 +219,7 @@ internal sealed class PSentence : INotifyPropertyChanged
             }
 
             _pSentenceDependence = chosen;
-            PSentenceDependenceUnreadable = false;
+            PSentenceDependenceUnknown = false;
             PSentenceRaise(nameof(PSentenceDependence));
             PSentenceRaise(nameof(PSentenceFrameVisible));
             PSentenceRaise(nameof(PSentenceFrameWritten));
@@ -227,18 +227,18 @@ internal sealed class PSentence : INotifyPropertyChanged
         }
     }
 
-    public bool PSentenceDependenceUnreadable
+    public bool PSentenceDependenceUnknown
     {
-        get => _pSentenceDependenceUnreadable;
+        get => _pSentenceDependenceUnknown;
         private set
         {
-            if (_pSentenceDependenceUnreadable == value)
+            if (_pSentenceDependenceUnknown == value)
             {
                 return;
             }
 
-            _pSentenceDependenceUnreadable = value;
-            PSentenceRaise(nameof(PSentenceDependenceUnreadable));
+            _pSentenceDependenceUnknown = value;
+            PSentenceRaise(nameof(PSentenceDependenceUnknown));
             PSentenceRaise(nameof(PSentenceFrameVisible));
             PSentenceRaise(nameof(PSentenceFrameWritten));
             PSentenceRaise(nameof(PSentenceFrameGap));
@@ -258,15 +258,15 @@ internal sealed class PSentence : INotifyPropertyChanged
     public bool PSentenceFrameWritten =>
         _pSentenceParticle.Length > 0
         || _pSentenceDependence.Length > 0
-        || _pSentenceParticleUnreadable
-        || _pSentenceDependenceUnreadable;
+        || _pSentenceParticleUnknown
+        || _pSentenceDependenceUnknown;
 
     public string PSentenceFrameGap
     {
         get
         {
-            bool particle = _pSentenceParticle.Length > 0 || _pSentenceParticleUnreadable;
-            bool dependence = _pSentenceDependence.Length > 0 || _pSentenceDependenceUnreadable;
+            bool particle = _pSentenceParticle.Length > 0 || _pSentenceParticleUnknown;
+            bool dependence = _pSentenceDependence.Length > 0 || _pSentenceDependenceUnknown;
             return particle && dependence ? " " : string.Empty;
         }
     }
@@ -311,22 +311,22 @@ internal sealed class PSentence : INotifyPropertyChanged
 
     internal LStateValue PSentenceParticleRead()
     {
-        return LStateValue.LStateValueResolve(_pSentenceParticle, _pSentenceParticleUnreadable);
+        return LStateValue.LStateValueResolve(_pSentenceParticle, _pSentenceParticleUnknown);
     }
 
     internal LStateValue PSentenceDependenceRead()
     {
-        return LStateValue.LStateValueResolve(_pSentenceDependence, _pSentenceDependenceUnreadable);
+        return LStateValue.LStateValueResolve(_pSentenceDependence, _pSentenceDependenceUnknown);
     }
 
     internal LStateValue PSentenceTextRead()
     {
-        return LStateValue.LStateValueResolve(_pSentenceText, _pSentenceUnreadable);
+        return LStateValue.LStateValueResolve(_pSentenceText, _pSentenceUnknown);
     }
 
     internal LStateAnchor PSentenceCitationRead()
     {
-        return _pSentenceCitationUnreadable
+        return _pSentenceCitationUnknown
             ? LStateAnchor.LStateAnchorUnknown
             : LStateAnchor.LStateAnchorRead(_pSentenceCitation);
     }
@@ -346,14 +346,14 @@ internal sealed class PSentence : INotifyPropertyChanged
         {
             _pSentenceText = example.LExampleDraftText.LStateValueShow();
             PSentenceRaise(nameof(PSentenceText));
-            PSentenceUnreadable = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
+            PSentenceUnknown = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
         }
 
         if (PSentenceCitationRead() != example.LExampleDraftReference)
         {
             _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
             PSentenceRaise(nameof(PSentenceCitationId));
-            PSentenceCitationUnreadable = example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown;
+            PSentenceCitationUnknown = example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown;
             PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
         }
 
@@ -361,14 +361,14 @@ internal sealed class PSentence : INotifyPropertyChanged
         {
             _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
             PSentenceRaise(nameof(PSentenceParticle));
-            PSentenceParticleUnreadable = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
+            PSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
         }
 
         if (!pending(nameof(PSentenceDependence)) && PSentenceDependenceRead() != draft.LSentenceDraftDependence)
         {
             _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
             PSentenceRaise(nameof(PSentenceDependence));
-            PSentenceDependenceUnreadable = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
+            PSentenceDependenceUnknown = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
         }
     }
 

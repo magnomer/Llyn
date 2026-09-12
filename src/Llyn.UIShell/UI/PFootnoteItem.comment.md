@@ -9,7 +9,7 @@ It has no one entry to name.
 `LUsage` is reused without a second identifier, because its entry field already means the id the row is followed by.
 For a card row that is the Entry holding it, and for an Example row it is the Example itself.
 
-## `internal PFootnoteItem(LUsage usage, string owner, string unreadable, string unnamed)`
+## `internal PFootnoteItem(LUsage usage, string owner, string unknown, string unnamed)`
 
 Builds the row from the stored usage and the word for the kind of side it is.
 An Example whose sentence is unwritten reads the unnamed mark, so no row stands blank beside the next.

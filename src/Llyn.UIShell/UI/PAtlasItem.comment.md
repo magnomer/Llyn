@@ -7,11 +7,11 @@ Carries the title, the kind, and the usage count the row shows, and the Situatio
 The id is identity and never displayed.
 Two Situations may carry the same title, so a row is never found by what it reads.
 A title standing empty is not one thing.
-It may never have been written, or it may have been written and be unreadable now.
+It may never have been written, or it may have been written and be unknown now.
 The row is given the mark for the second so the two stay distinct in the catalog.
 It is given the untitled text for the first so no row stands blank beside the next.
 
-## `internal PAtlasItem(LSituation situation, int usage, string unreadable, string untitled)`
+## `internal PAtlasItem(LSituation situation, int usage, string unknown, string untitled)`
 
 Builds the row from the stored Situation and the number of places referencing it.
 The two texts are handed in rather than read here.

@@ -17,4 +17,4 @@ An empty paragraph follows the table, which is how Word keeps two tables apart.
 
 Word sizes a picture in the document rather than by its own pixels.
 A picture wider than the text column is scaled down with its proportions kept.
-An unreadable size falls back to a plain widescreen frame.
+An unknown size falls back to a plain widescreen frame.

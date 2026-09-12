@@ -23,7 +23,7 @@ The half-written pending files both archives leave behind go too.
 Only files older than an hour, so a save in flight in the other copy is never taken.
 A draft file of another version goes with its claim and its court rows, as a cancel would take them.
 Such a file was written by another build, and reading it under this shape could commit a duplicate entry.
-Nothing here throws on a folder that is missing or unreadable.
+Nothing here throws on a folder that is missing or unknown.
 
 ## `public IReadOnlyList<LDraft> LEngineLeftoverRead()`
 

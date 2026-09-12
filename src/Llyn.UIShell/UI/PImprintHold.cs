@@ -40,7 +40,7 @@ public partial class PImprint
 
         try
         {
-            _lEngine.LEngineReferenceCommit(held);
+            _pImprintHost.PWindowCommitRun(held, _lEngine.LEngineReferenceCommit);
         }
         catch (Exception exception)
         {

@@ -8,7 +8,7 @@ The draft never owns them, because the id is the reference.
 An empty id means the row has not been stored as a Situation yet.
 Each field carries what is known about it.
 A row standing empty because nothing was written is never confused with another case.
-That case is a row standing empty because what was written cannot be read back.
+That case is a row standing empty because the user marked it as not known.
 
 The card shows the title alone, and the other two ride along untouched.
 They are stored data, so a save that dropped them would erase what another panel wrote.
@@ -23,3 +23,8 @@ They are stored data, so a save that dropped them would erase what another panel
 ## `public static LSituationDraft LSituationDraftCreate(string text)`
 
 A wording written with nothing else said about it, and no id yet.
+
+## `public LSituationDraft LSituationDraftNormalize()`
+
+The same situation with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

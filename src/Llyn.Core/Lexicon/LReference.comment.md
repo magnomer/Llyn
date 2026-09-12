@@ -56,3 +56,8 @@ An unspecified kind writes no leaf at all and an unknown one writes an empty lea
 The kind a stored word names.
 A word this build does not know reads as unspecified rather than as a failure.
 A workspace written by a later build must still open.
+
+## `public LReference LReferenceNormalize()`
+
+The same Reference with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

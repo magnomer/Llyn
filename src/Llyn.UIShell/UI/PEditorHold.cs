@@ -117,7 +117,7 @@ public partial class PEditor
 
         try
         {
-            _lEngine.LEngineDraftCommit(held);
+            _pEditorHost.PWindowCommitRun(held, _lEngine.LEngineDraftCommit);
         }
         catch (Exception exception)
         {

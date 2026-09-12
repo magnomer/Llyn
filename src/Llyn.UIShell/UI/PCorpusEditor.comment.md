@@ -16,7 +16,7 @@ The panel keeps no copy of a stored Example, and asks the engine what counts as 
 ### `private bool _pTranscriptLoading;`
 
 Set while fields are being filled from the held sentence.
-Filling a field raises the same change the user typing raises, and only the second may clear an unreadable mark.
+Filling a field raises the same change the user typing raises, and only the second may clear an unknown mark.
 It also holds the push back, so a fill never writes what it has just read.
 
 ## `private void PSpeakerLoad()`
@@ -42,8 +42,8 @@ The Source is left standing, because clearing a pointer is not deleting what it 
 
 ## `private void PTranscriptTranslationHandle(object sender, TextChangedEventArgs e)`
 
-Clears the unreadable mark on the translation as soon as the user types over it.
-Typing is a recording, so what stood there as unreadable stops being that the moment it is written.
+Clears the unknown mark on the translation as soon as the user types over it.
+Typing is a recording, so what stood there as unknown stops being that the moment it is written.
 
 ## `private void PTranscriptApply(LExample? example)`
 
@@ -59,7 +59,7 @@ The control stays off until it names one.
 Redraws each field from the held sentence only where the field says something else.
 The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
 
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
 
 Writes one field and its mark from a value, unless the field already reads that value.
 
@@ -68,7 +68,7 @@ Writes one field and its mark from a value, unless the field already reads that 
 Redraws each field from the held sentence only where the field says something else.
 The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
 
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
 
 Writes one field and its mark from a value, unless the field already reads that value.
 
@@ -77,7 +77,7 @@ Writes one field and its mark from a value, unless the field already reads that 
 Redraws each field from the held sentence only where the field says something else.
 The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
 
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
 
 Writes one field and its mark from a value, unless the field already reads that value.
 
@@ -86,7 +86,7 @@ Writes one field and its mark from a value, unless the field already reads that 
 Redraws each field from the held sentence only where the field says something else.
 The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
 
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)`
+## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
 
 Writes one field and its mark from a value, unless the field already reads that value.
 

@@ -15,7 +15,7 @@ A section the entry left empty is collapsed, and a collapsed section is not a pl
 The rows are built one dispatcher turn after the entry is shown.
 A card row points at the container the list generated for it, and containers do not exist until the layout pass has run.
 
-### `private void PCompassCardAdd(ItemsControl cards, string kind, string unreadable)`
+### `private void PCompassCardAdd(ItemsControl cards, string kind, string unknown)`
 
 A card is named by its own title.
 An untitled card is named by what kind of card it is, so the row is never blank.

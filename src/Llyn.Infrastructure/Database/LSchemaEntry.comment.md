@@ -8,10 +8,10 @@ Data-contract names (table and column identifiers) are persisted keys, so they s
 ## `public static void LSchemaEntryCreate(SqliteConnection connection)`
 
 The Entry root, its owned written forms and parts of speech, and the language's part-of-speech vocabulary.
-Owned child rows carry an (entry_id, position) identity and cascade when their Entry is deleted.
+Owned child rows carry an (entry_parent, position) identity and cascade when their Entry is deleted.
 
-speech_value has its own integer id and is unique on (language, pack_ref).
-pack_ref is the id the pack file gave the value.
+speech_value has its own integer id and is unique on (language, pack_code).
+pack_code is the id the pack file gave the value.
 So a re-seed upserts, and a rename keeps the row id.
 
 A part_of_speech row says its part of speech one of two ways and never both.

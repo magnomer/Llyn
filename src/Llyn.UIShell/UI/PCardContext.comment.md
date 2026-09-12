@@ -59,7 +59,7 @@ Whether the card already carries the stored Situation, which is what keeps the d
 ## `internal bool PCardContextCheck(string text)`
 
 Whether the card already carries a Situation with this wording.
-An unreadable Situation shows no wording, so it is never counted as a duplicate.
+An unknown Situation shows no wording, so it is never counted as a duplicate.
 Two of them on one card stand for two Situations the store could not read.
 
 ## Inline notes

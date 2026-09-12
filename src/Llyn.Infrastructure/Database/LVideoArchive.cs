@@ -28,7 +28,7 @@ public sealed class LVideoArchive
                 """
                 INSERT INTO video (location_state, location, span_state, span)
                 VALUES ($locationState, $location, $spanState, $span)
-                RETURNING id;
+                RETURNING video_id;
                 """;
             LStateColumn.LStateColumnApply(command, "location", stored.LVideoLocation);
             LStateColumn.LStateColumnApply(command, "span", stored.LVideoSpan);
@@ -49,12 +49,12 @@ public sealed class LVideoArchive
 
     public IReadOnlyList<LVideo> LVideoMeaningRead(long meaningId)
     {
-        return LVideoReferrerRead("sense_video", "sense_id", meaningId);
+        return LVideoReferrerRead("sense_video", "sense_parent", meaningId);
     }
 
     public IReadOnlyList<LVideo> LVideoCollocationRead(long collocationId)
     {
-        return LVideoReferrerRead("collocation_video", "collocation_id", collocationId);
+        return LVideoReferrerRead("collocation_video", "collocation_parent", collocationId);
     }
 
     public void LVideoUpdate(LVideo video)
@@ -70,7 +70,7 @@ public sealed class LVideoArchive
                 UPDATE video
                 SET location_state = $locationState, location = $location,
                     span_state = $spanState, span = $span
-                WHERE id = $id;
+                WHERE video_id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "location", video.LVideoLocation);
             LStateColumn.LStateColumnApply(command, "span", video.LVideoSpan);
@@ -121,7 +121,7 @@ public sealed class LVideoArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM video WHERE id = $id;";
+            command.CommandText = "DELETE FROM video WHERE video_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -131,22 +131,22 @@ public sealed class LVideoArchive
 
     public void LVideoMeaningAttach(long meaningId, long videoId, int position)
     {
-        LVideoReferenceAttach("sense_video", "sense_id", meaningId, videoId, position);
+        LVideoReferenceAttach("sense_video", "sense_parent", meaningId, videoId, position);
     }
 
     public void LVideoCollocationAttach(long collocationId, long videoId, int position)
     {
-        LVideoReferenceAttach("collocation_video", "collocation_id", collocationId, videoId, position);
+        LVideoReferenceAttach("collocation_video", "collocation_parent", collocationId, videoId, position);
     }
 
     public void LVideoMeaningDetach(long meaningId, long videoId)
     {
-        LVideoReferenceDetach("sense_video", "sense_id", meaningId, videoId);
+        LVideoReferenceDetach("sense_video", "sense_parent", meaningId, videoId);
     }
 
     public void LVideoCollocationDetach(long collocationId, long videoId)
     {
-        LVideoReferenceDetach("collocation_video", "collocation_id", collocationId, videoId);
+        LVideoReferenceDetach("collocation_video", "collocation_parent", collocationId, videoId);
     }
 
     private void LVideoReferenceAttach(string table, string column, long referrerId, long videoId, int position)
@@ -214,9 +214,9 @@ public sealed class LVideoArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT video.id, video.location_state, video.location, video.span_state, video.span
+            SELECT video.video_id, video.location_state, video.location, video.span_state, video.span
             FROM {table} link
-            JOIN video ON video.id = link.video_ref
+            JOIN video ON video.video_id = link.video_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;
@@ -238,7 +238,7 @@ public sealed class LVideoArchive
     private static LVideo? LVideoSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT location_state, location, span_state, span FROM video WHERE id = $id;";
+        command.CommandText = "SELECT location_state, location, span_state, span FROM video WHERE video_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
         if (!reader.Read())

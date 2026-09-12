@@ -2,7 +2,8 @@ namespace Llyn.Core;
 
 public sealed record LStateAnchor(
     LState LStateAnchorState,
-    long? LStateAnchorId)
+    long? LStateAnchorId,
+    bool LStateAnchorUnreadable = false)
 {
     public static LStateAnchor LStateAnchorUnspecified { get; } = new(LState.LStateUnspecified, null);
 
@@ -23,6 +24,11 @@ public sealed record LStateAnchor(
         return LStateAnchorState == LState.LStateSpecified && LStateAnchorId is not null
             ? LStateAnchorId.Value
             : 0;
+    }
+
+    public LStateAnchor LStateAnchorNormalize()
+    {
+        return LStateAnchorUnreadable ? LStateAnchorUnspecified : this;
     }
 
     public bool LStateAnchorEmpty => LStateAnchorState == LState.LStateUnspecified;

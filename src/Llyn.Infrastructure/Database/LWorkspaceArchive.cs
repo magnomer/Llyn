@@ -11,7 +11,7 @@ public sealed class LWorkspaceArchive
     private const string LWorkspaceArchiveDisplay = "Display";
 
     private const string LWorkspaceArchiveColumn =
-        "id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split, " +
+        "workspace_id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split, " +
         "library_order, phonology_order, favorite_order, taxonomy_order, " +
         "repertoire_order, reference_order, corpus_order, tenor_order";
 
@@ -36,7 +36,7 @@ public sealed class LWorkspaceArchive
                 VALUES (
                     $id, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                     NULL, NULL)
-                ON CONFLICT (id) DO NOTHING;
+                ON CONFLICT (workspace_id) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
             command.ExecuteNonQuery();
@@ -48,7 +48,7 @@ public sealed class LWorkspaceArchive
             read.CommandText =
                 $"""
                 SELECT {LWorkspaceArchiveColumn}
-                FROM workspace WHERE id = $id;
+                FROM workspace WHERE workspace_id = $id;
                 """;
             read.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
 
@@ -103,14 +103,14 @@ public sealed class LWorkspaceArchive
             command.CommandText =
                 """
                 INSERT INTO workspace (
-                    id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split,
+                    workspace_id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split,
                     library_order, phonology_order, favorite_order, taxonomy_order,
                     repertoire_order, reference_order, corpus_order, tenor_order)
                 VALUES (
                     $id, $left, $right, $revision, $floor, $mode, $split,
                     $library, $phonology, $favorite, $taxonomy,
                     $repertoire, $reference, $corpus, $tenor)
-                ON CONFLICT (id) DO UPDATE SET
+                ON CONFLICT (workspace_id) DO UPDATE SET
                     left_entry_ref = excluded.left_entry_ref,
                     right_entry_ref = excluded.right_entry_ref,
                     revision_ref = excluded.revision_ref,
@@ -156,9 +156,9 @@ public sealed class LWorkspaceArchive
         {
             command.CommandText =
                 """
-                INSERT INTO workspace (id, identity_floor)
+                INSERT INTO workspace (workspace_id, identity_floor)
                 VALUES ($id, -1)
-                ON CONFLICT (id) DO UPDATE SET identity_floor = identity_floor - 1
+                ON CONFLICT (workspace_id) DO UPDATE SET identity_floor = identity_floor - 1
                 RETURNING identity_floor;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);

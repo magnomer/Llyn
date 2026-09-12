@@ -11,6 +11,7 @@ public static class LPortraitText
 
         return value.LStateValueState switch
         {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => value.LStateValueShow(),
             LState.LStateUnknown => mark,
             _ => string.Empty,

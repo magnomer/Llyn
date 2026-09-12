@@ -7,11 +7,11 @@ namespace Llyn.UIShell;
 
 public partial class PRepertoire
 {
-    private bool _pScenarioTitleUnreadable;
+    private bool _pScenarioTitleUnknown;
 
-    private bool _pScenarioKindUnreadable;
+    private bool _pScenarioKindUnknown;
 
-    private bool _pScenarioDescriptionUnreadable;
+    private bool _pScenarioDescriptionUnknown;
 
     private bool _pScenarioLoading;
 
@@ -22,7 +22,7 @@ public partial class PRepertoire
             return;
         }
 
-        _pScenarioTitleUnreadable = false;
+        _pScenarioTitleUnknown = false;
         PScenarioTitle.Tag = string.Empty;
         PScenarioChangeDefer();
     }
@@ -34,7 +34,7 @@ public partial class PRepertoire
             return;
         }
 
-        _pScenarioKindUnreadable = false;
+        _pScenarioKindUnknown = false;
         PScenarioKind.Tag = string.Empty;
         PScenarioChangeDefer();
     }
@@ -46,7 +46,7 @@ public partial class PRepertoire
             return;
         }
 
-        _pScenarioDescriptionUnreadable = false;
+        _pScenarioDescriptionUnknown = false;
         PScenarioDescription.Tag = string.Empty;
         PScenarioChangeDefer();
     }
@@ -55,19 +55,19 @@ public partial class PRepertoire
     {
         _pScenarioLoading = true;
 
-        string unreadable = _pRepertoireHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pRepertoireHost.PLocalizationTextRead("Display.Unknown");
 
         PScenarioTitle.Text = situation?.LSituationTitle.LStateValueShow() ?? string.Empty;
         PScenarioKind.Text = situation?.LSituationKind.LStateValueShow() ?? string.Empty;
         PScenarioDescription.Text = situation?.LSituationDescription.LStateValueShow() ?? string.Empty;
 
-        _pScenarioTitleUnreadable = situation?.LSituationTitle.LStateValueState == LState.LStateUnknown;
-        _pScenarioKindUnreadable = situation?.LSituationKind.LStateValueState == LState.LStateUnknown;
-        _pScenarioDescriptionUnreadable = situation?.LSituationDescription.LStateValueState == LState.LStateUnknown;
+        _pScenarioTitleUnknown = situation?.LSituationTitle.LStateValueState == LState.LStateUnknown;
+        _pScenarioKindUnknown = situation?.LSituationKind.LStateValueState == LState.LStateUnknown;
+        _pScenarioDescriptionUnknown = situation?.LSituationDescription.LStateValueState == LState.LStateUnknown;
 
-        PScenarioTitle.Tag = _pScenarioTitleUnreadable ? unreadable : string.Empty;
-        PScenarioKind.Tag = _pScenarioKindUnreadable ? unreadable : string.Empty;
-        PScenarioDescription.Tag = _pScenarioDescriptionUnreadable ? unreadable : string.Empty;
+        PScenarioTitle.Tag = _pScenarioTitleUnknown ? unknown : string.Empty;
+        PScenarioKind.Tag = _pScenarioKindUnknown ? unknown : string.Empty;
+        PScenarioDescription.Tag = _pScenarioDescriptionUnknown ? unknown : string.Empty;
 
         long? stored = PScenarioSituationRead();
         PScenarioRemoval.IsEnabled = stored is not null;
@@ -81,19 +81,19 @@ public partial class PRepertoire
     {
         _pScenarioLoading = true;
 
-        string unreadable = _pRepertoireHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pRepertoireHost.PLocalizationTextRead("Display.Unknown");
 
-        PScenarioFieldShow(PScenarioTitle, situation.LSituationTitle, unreadable, ref _pScenarioTitleUnreadable);
-        PScenarioFieldShow(PScenarioKind, situation.LSituationKind, unreadable, ref _pScenarioKindUnreadable);
+        PScenarioFieldShow(PScenarioTitle, situation.LSituationTitle, unknown, ref _pScenarioTitleUnknown);
+        PScenarioFieldShow(PScenarioKind, situation.LSituationKind, unknown, ref _pScenarioKindUnknown);
         PScenarioFieldShow(
-            PScenarioDescription, situation.LSituationDescription, unreadable, ref _pScenarioDescriptionUnreadable);
+            PScenarioDescription, situation.LSituationDescription, unknown, ref _pScenarioDescriptionUnknown);
 
         _pScenarioLoading = false;
 
         PScenarioChangeUpdate();
     }
 
-    private static void PScenarioFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)
+    private static void PScenarioFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)
     {
         if (LStateValue.LStateValueResolve(field.Text, held) == value)
         {
@@ -102,16 +102,16 @@ public partial class PRepertoire
 
         field.Text = value.LStateValueShow();
         held = value.LStateValueState == LState.LStateUnknown;
-        field.Tag = held ? unreadable : string.Empty;
+        field.Tag = held ? unknown : string.Empty;
     }
 
     private LSituation PScenarioRead()
     {
         return new LSituation(
             0,
-            LStateValue.LStateValueResolve(PScenarioTitle.Text, _pScenarioTitleUnreadable),
-            LStateValue.LStateValueResolve(PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
-            LStateValue.LStateValueResolve(PScenarioKind.Text, _pScenarioKindUnreadable));
+            LStateValue.LStateValueResolve(PScenarioTitle.Text, _pScenarioTitleUnknown),
+            LStateValue.LStateValueResolve(PScenarioDescription.Text, _pScenarioDescriptionUnknown),
+            LStateValue.LStateValueResolve(PScenarioKind.Text, _pScenarioKindUnknown));
     }
 
     private void PScenarioDiscardHandle(object sender, RoutedEventArgs e)
@@ -137,7 +137,7 @@ public partial class PRepertoire
         LSituation stored;
         try
         {
-            stored = _lEngine.LEngineSituationCommit(held);
+            stored = _pRepertoireHost.PWindowCommitRun(held, _lEngine.LEngineSituationCommit);
         }
         catch (Exception exception)
         {

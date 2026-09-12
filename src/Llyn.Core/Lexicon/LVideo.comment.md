@@ -21,7 +21,7 @@ A row that named a film is not the same as a row that never named one.
 - `LVideoId` — Opaque, program-generated stable id.
 - `LVideoLocation` — Where the film is read from, a file path or a web address.
   It also carries what is known about that location.
-  A Video that is there but unreadable is not a Video that was never written.
+  A Video that is there but unknown is not a Video that was never written.
 - `LVideoSpan` — The stretch worth watching, written as `mm:ss - mm:ss`.
   The store keeps the text and reads no moments out of it.
   A span that says nothing is a film watched whole.

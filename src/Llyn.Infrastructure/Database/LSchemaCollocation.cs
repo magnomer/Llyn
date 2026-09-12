@@ -14,8 +14,8 @@ public static class LSchemaCollocation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS collocation (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                entry_id INTEGER NOT NULL,
+                collocation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                entry_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
@@ -26,13 +26,13 @@ public static class LSchemaCollocation
                 CHECK (title_state = 'specified' OR title IS NULL),
                 CHECK (expression_state = 'specified' OR expression IS NULL),
                 CHECK (meaning_state = 'specified' OR meaning IS NULL),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS note (
-                entry_id INTEGER NOT NULL PRIMARY KEY,
+                entry_parent INTEGER NOT NULL PRIMARY KEY,
                 text TEXT NOT NULL,
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
             """;
         command.ExecuteNonQuery();

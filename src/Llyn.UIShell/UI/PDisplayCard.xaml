@@ -31,7 +31,7 @@
                 <DataTrigger.Binding>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
                         <Binding Path="LCardDraftTitle" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </DataTrigger.Binding>
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -51,7 +51,7 @@
                 <DataTrigger.Binding>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
                         <Binding Path="LCardDraftTitle" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </DataTrigger.Binding>
                 <Setter Property="Visibility" Value="Visible" />
@@ -67,7 +67,7 @@
                 <DataTrigger.Binding>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
                         <Binding Path="LCardDraftMeaning" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </DataTrigger.Binding>
                 <Setter Property="Visibility" Value="Collapsed" />
@@ -83,7 +83,7 @@
                 <DataTrigger.Binding>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
                         <Binding Path="LCardDraftExpression" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </DataTrigger.Binding>
                 <Setter Property="Visibility" Value="Collapsed" />

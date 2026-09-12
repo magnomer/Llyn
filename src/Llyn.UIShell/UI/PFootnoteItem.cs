@@ -5,7 +5,7 @@ namespace Llyn.UIShell;
 
 internal sealed class PFootnoteItem
 {
-    internal PFootnoteItem(LUsage usage, string owner, string unreadable, string unnamed)
+    internal PFootnoteItem(LUsage usage, string owner, string unknown, string unnamed)
     {
         PFootnoteItemId = usage.LUsageEntry;
         PFootnoteItemOwner = usage.LUsageOwner;
@@ -14,8 +14,9 @@ internal sealed class PFootnoteItem
         PFootnoteItemLanguage = usage.LUsageLanguage;
         PFootnoteItemTitle = usage.LUsageTitle.LStateValueState switch
         {
+            _ when usage.LUsageTitle.LStateValueUnreadable => usage.LUsageTitle.LStateValueShow(),
             LState.LStateSpecified => usage.LUsageTitle.LStateValueShow(),
-            LState.LStateUnknown => unreadable,
+            LState.LStateUnknown => unknown,
             _ => unnamed,
         };
         PFootnoteItemFlag = PEnsign.PEnsignFind(usage.LUsageLanguage);

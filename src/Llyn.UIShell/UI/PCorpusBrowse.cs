@@ -100,7 +100,7 @@ public partial class PCorpus
             return;
         }
 
-        string unreadable = _pCorpusHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pCorpusHost.PLocalizationTextRead("Display.Unknown");
         string unwritten = _pCorpusHost.PLocalizationTextRead("Example.Unwritten");
 
         _pAnthologyList.Clear();
@@ -112,7 +112,7 @@ public partial class PCorpus
                 row.LCatalogExampleStored,
                 row.LCatalogExampleUsage,
                 row.LCatalogExampleSource,
-                unreadable,
+                unknown,
                 unwritten));
         }
 
@@ -202,8 +202,9 @@ public partial class PCorpus
     {
         string? text = value.LStateValueState switch
         {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => shown ?? value.LStateValueShow(),
-            LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unreadable"),
+            LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
             _ => null,
         };
 
@@ -226,7 +227,7 @@ public partial class PCorpus
             return;
         }
 
-        string unreadable = _pCorpusHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pCorpusHost.PLocalizationTextRead("Display.Unknown");
         string unnamed = _pCorpusHost.PLocalizationTextRead("Example.Unnamed");
         string meaning = _pCorpusHost.PLocalizationTextRead("Example.Meaning");
         string collocation = _pCorpusHost.PLocalizationTextRead("Example.Collocation");
@@ -237,7 +238,7 @@ public partial class PCorpus
             _pQuotationList.Add(new PUsageItem(
                 usage,
                 usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
-                unreadable,
+                unknown,
                 unnamed));
         }
 

@@ -35,12 +35,12 @@ public sealed class LMeaningArchive
             command.CommandText =
                 """
                 INSERT INTO sense (
-                    entry_id, parent_id, position, title_state, title, gloss,
+                    entry_parent, sense_parent, position, title_state, title, gloss,
                     definition_language, definition_state, definition, labels)
                 VALUES (
                     $entry, $parent, $position, $titleState, $title, $gloss,
                     $language, $definitionState, $definition, $labels)
-                RETURNING id;
+                RETURNING sense_id;
                 """;
             command.Parameters.AddWithValue("$entry", stored.LMeaningEntryId);
             command.Parameters.AddWithValue("$parent", (object?)stored.LMeaningParentId ?? DBNull.Value);
@@ -65,10 +65,10 @@ public sealed class LMeaningArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, parent_id, position, title_state, title, gloss,
+            SELECT sense_id, entry_parent, sense_parent, position, title_state, title, gloss,
                    definition_language, definition_state, definition, labels
-            FROM sense WHERE entry_id = $entry
-            ORDER BY ifnull(parent_id, ''), position;
+            FROM sense WHERE entry_parent = $entry
+            ORDER BY ifnull(sense_parent, ''), position;
             """;
         command.Parameters.AddWithValue("$entry", entryId);
 
@@ -90,9 +90,9 @@ public sealed class LMeaningArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, parent_id, position, title_state, title, gloss,
+            SELECT sense_id, entry_parent, sense_parent, position, title_state, title, gloss,
                    definition_language, definition_state, definition, labels
-            FROM sense WHERE id = $id;
+            FROM sense WHERE sense_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
 
@@ -114,7 +114,7 @@ public sealed class LMeaningArchive
                 SET title_state = $titleState, title = $title, gloss = $gloss,
                     definition_language = $language,
                     definition_state = $definitionState, definition = $definition, labels = $labels
-                WHERE id = $id;
+                WHERE sense_id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", meaning.LMeaningTitle);
             command.Parameters.AddWithValue("$gloss", (object?)meaning.LMeaningGloss ?? DBNull.Value);
@@ -155,7 +155,7 @@ public sealed class LMeaningArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE sense SET parent_id = $parent, position = $position WHERE id = $id;";
+                "UPDATE sense SET sense_parent = $parent, position = $position WHERE sense_id = $id;";
             command.Parameters.AddWithValue("$parent", (object?)parentId ?? DBNull.Value);
             command.Parameters.AddWithValue(
                 "$position", LMeaningSiblingRead(connection, entryId, parentId).Count);
@@ -200,7 +200,7 @@ public sealed class LMeaningArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM sense WHERE id = $id;";
+            command.CommandText = "DELETE FROM sense WHERE sense_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -215,17 +215,17 @@ public sealed class LMeaningArchive
 
     private const string LMeaningSubtreeQuery =
         """
-        WITH RECURSIVE subtree(id) AS (
-            SELECT id FROM sense WHERE id = $id
+        WITH RECURSIVE subtree(sense_id) AS (
+            SELECT sense_id FROM sense WHERE sense_id = $id
             UNION ALL
-            SELECT child.id FROM sense child JOIN subtree ON child.parent_id = subtree.id
+            SELECT child.sense_id FROM sense child JOIN subtree ON child.sense_parent = subtree.sense_id
         )
         """;
 
     private static (long? LMeaningEntry, long? LMeaningParent) LMeaningHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT entry_id, parent_id FROM sense WHERE id = $id;";
+        command.CommandText = "SELECT entry_parent, sense_parent FROM sense WHERE sense_id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -242,9 +242,9 @@ public sealed class LMeaningArchive
     {
         return parentId is null
             ? LDatabaseOrder.LDatabaseOrderRead(
-                connection, "sense", "entry_id = $owner AND parent_id IS NULL", entryId, "id")
+                connection, "sense", "entry_parent = $owner AND sense_parent IS NULL", entryId, "sense_id")
             : LDatabaseOrder.LDatabaseOrderRead(
-                connection, "sense", "parent_id = $owner", parentId, "id");
+                connection, "sense", "sense_parent = $owner", parentId, "sense_id");
     }
 
     private static void LMeaningSiblingNormalize(
@@ -253,12 +253,12 @@ public sealed class LMeaningArchive
         if (parentId is null)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, "sense", "entry_id = $owner AND parent_id IS NULL", entryId, "id", order);
+                connection, "sense", "entry_parent = $owner AND sense_parent IS NULL", entryId, "sense_id", order);
             return;
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "sense", "parent_id = $owner", parentId, "id", order);
+            connection, "sense", "sense_parent = $owner", parentId, "sense_id", order);
     }
 
     private static void LMeaningCycleValidate(
@@ -274,7 +274,7 @@ public sealed class LMeaningArchive
             LMeaningSubtreeQuery +
             """
 
-            SELECT COUNT(*) FROM subtree WHERE id = $parent;
+            SELECT COUNT(*) FROM subtree WHERE sense_id = $parent;
             """;
         command.Parameters.AddWithValue("$id", id);
         command.Parameters.AddWithValue("$parent", parentId);
@@ -293,7 +293,7 @@ public sealed class LMeaningArchive
         }
 
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT COUNT(*) FROM sense WHERE id = $parent AND entry_id = $entry;";
+        command.CommandText = "SELECT COUNT(*) FROM sense WHERE sense_id = $parent AND entry_parent = $entry;";
         command.Parameters.AddWithValue("$parent", parentId);
         command.Parameters.AddWithValue("$entry", entryId);
         long found = Convert.ToInt64(command.ExecuteScalar());

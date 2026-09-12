@@ -65,7 +65,7 @@ public sealed class TTranslation
                 .Select(translation => translation.LTranslationEntryId));
         Assert.Equal(
             [0, 1],
-            TTranslationPositionRead(workspace, "sense_translation", "sense_id", meaningId));
+            TTranslationPositionRead(workspace, "sense_translation", "sense_parent", meaningId));
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public sealed class TTranslation
         Assert.Equal(
             [0, 1],
             TTranslationPositionRead(
-                workspace, "collocation_translation", "collocation_id", collocationId));
+                workspace, "collocation_translation", "collocation_parent", collocationId));
     }
 
     [Fact]

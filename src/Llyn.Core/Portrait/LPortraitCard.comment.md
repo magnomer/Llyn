@@ -23,6 +23,6 @@ Which one it is shows only in the kind label and in whether an expression is set
 ## `public static IReadOnlyList<LPortraitCard> LPortraitCardCreate(IReadOnlyList<LCardDraft> cards, string kind, LSentenceOrder order, string mark, IReadOnlyDictionary<string, LPortraitLink> targets)`
 
 Turns stored card drafts into what the cards show.
-An unset field becomes empty text and an unreadable one becomes the mark, as the display does.
+An unset field becomes empty text and an unknown one becomes the mark, as the display does.
 A translation id with no loaded target is dropped rather than shown as a bare id.
 Media whose location was never written is skipped, because the display draws no empty plate.

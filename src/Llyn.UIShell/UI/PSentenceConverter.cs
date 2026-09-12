@@ -64,6 +64,7 @@ internal sealed class PSentenceConverter : IMultiValueConverter
 
         return state.LStateValueState switch
         {
+            _ when state.LStateValueUnreadable => state.LStateValueShow(),
             LState.LStateSpecified => state.LStateValueShow(),
             LState.LStateUnknown => mark,
             _ => string.Empty,

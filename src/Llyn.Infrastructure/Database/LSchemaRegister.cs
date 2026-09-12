@@ -14,44 +14,44 @@ public static class LSchemaRegister
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS register (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                register_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 name_state TEXT NOT NULL DEFAULT 'unspecified',
                 name TEXT,
                 language TEXT,
-                pack_ref INTEGER,
+                pack_code INTEGER,
                 CHECK (name_state = 'specified' OR name IS NULL),
-                CHECK (pack_ref IS NULL OR language IS NOT NULL),
+                CHECK (pack_code IS NULL OR language IS NOT NULL),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS register_pack
-            ON register (language, pack_ref) WHERE pack_ref IS NOT NULL;
+            ON register (language, pack_code) WHERE pack_code IS NOT NULL;
 
             CREATE TABLE IF NOT EXISTS sense_register (
-                sense_id INTEGER NOT NULL,
+                sense_parent INTEGER NOT NULL,
                 register_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, register_ref),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (register_ref) REFERENCES register (id)
+                PRIMARY KEY (sense_parent, register_ref),
+                FOREIGN KEY (sense_parent) REFERENCES sense (sense_id) ON DELETE CASCADE,
+                FOREIGN KEY (register_ref) REFERENCES register (register_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_register_position
-                ON sense_register (sense_id, position);
+                ON sense_register (sense_parent, position);
 
             CREATE TABLE IF NOT EXISTS collocation_register (
-                collocation_id INTEGER NOT NULL,
+                collocation_parent INTEGER NOT NULL,
                 register_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, register_ref),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (register_ref) REFERENCES register (id)
+                PRIMARY KEY (collocation_parent, register_ref),
+                FOREIGN KEY (collocation_parent) REFERENCES collocation (collocation_id) ON DELETE CASCADE,
+                FOREIGN KEY (register_ref) REFERENCES register (register_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_register_position
-                ON collocation_register (collocation_id, position);
+                ON collocation_register (collocation_parent, position);
             """;
         command.ExecuteNonQuery();
     }

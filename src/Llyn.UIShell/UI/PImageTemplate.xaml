@@ -48,8 +48,8 @@
                         Text="{Binding PImageLocation, UpdateSourceTrigger=PropertyChanged}">
                         <TextBox.Tag>
                             <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                <Binding Path="PImageUnreadable" />
-                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                                <Binding Path="PImageUnknown" />
+                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                                 <local:PLocalizationBinder PLocalizationBinderKey="Card.LocationHint" />
                             </MultiBinding>
                         </TextBox.Tag>

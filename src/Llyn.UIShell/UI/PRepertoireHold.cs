@@ -40,7 +40,7 @@ public partial class PRepertoire
 
         try
         {
-            _lEngine.LEngineSituationCommit(held);
+            _pRepertoireHost.PWindowCommitRun(held, _lEngine.LEngineSituationCommit);
         }
         catch (Exception exception)
         {

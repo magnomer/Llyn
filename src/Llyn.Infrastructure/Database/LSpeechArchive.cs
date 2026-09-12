@@ -33,11 +33,11 @@ public sealed class LSpeechArchive
         {
             command.CommandText =
                 """
-                INSERT INTO speech_value (language, pack_ref, name, position)
+                INSERT INTO speech_value (language, pack_code, name, position)
                 VALUES ($language, $pack, $name, $position)
-                ON CONFLICT (language, pack_ref)
+                ON CONFLICT (language, pack_code)
                 DO UPDATE SET name = excluded.name, position = excluded.position
-                RETURNING id;
+                RETURNING speech_value_id;
                 """;
             command.Parameters.AddWithValue("$language", value.LSpeechValueLanguage);
             command.Parameters.AddWithValue("$pack", packId);
@@ -61,7 +61,7 @@ public sealed class LSpeechArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, language, pack_ref, name, position FROM speech_value WHERE id = $id;
+            SELECT speech_value_id, language, pack_code, name, position FROM speech_value WHERE speech_value_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
 
@@ -77,8 +77,8 @@ public sealed class LSpeechArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, language, pack_ref, name, position FROM speech_value
-            WHERE language = $language ORDER BY position, id;
+            SELECT speech_value_id, language, pack_code, name, position FROM speech_value
+            WHERE language = $language ORDER BY position, speech_value_id;
             """;
         command.Parameters.AddWithValue("$language", language);
 
@@ -105,9 +105,9 @@ public sealed class LSpeechArchive
 
         command.CommandText =
             """
-            SELECT id, language, pack_ref, name, position FROM speech_value
+            SELECT speech_value_id, language, pack_code, name, position FROM speech_value
             WHERE language = $language AND trim(name) = trim($name) COLLATE NOCASE
-            ORDER BY position, id LIMIT 1;
+            ORDER BY position, speech_value_id LIMIT 1;
             """;
         command.Parameters.AddWithValue("$language", language);
         command.Parameters.AddWithValue("$name", name);
@@ -120,7 +120,7 @@ public sealed class LSpeechArchive
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
-            "SELECT min(0, ifnull(MIN(pack_ref), 0)) - 1 FROM speech_value WHERE language = $language;";
+            "SELECT min(0, ifnull(MIN(pack_code), 0)) - 1 FROM speech_value WHERE language = $language;";
         command.Parameters.AddWithValue("$language", language);
         return Convert.ToInt64(command.ExecuteScalar());
     }

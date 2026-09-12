@@ -21,7 +21,7 @@ public sealed record LPortraitUsage(
         {
             shown.Add(new LPortraitUsage(
                 usage.LUsageHeadword,
-                LPortraitText.LPortraitTextRead(usage.LUsageTitle, label.LPortraitLabelUnreadable),
+                LPortraitText.LPortraitTextRead(usage.LUsageTitle, label.LPortraitLabelUnknown),
                 usage.LUsageOwner == LOwner.LOwnerCollocation
                     ? label.LPortraitLabelCollocation
                     : label.LPortraitLabelMeaning,

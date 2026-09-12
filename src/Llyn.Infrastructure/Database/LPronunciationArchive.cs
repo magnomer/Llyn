@@ -35,9 +35,9 @@ public sealed class LPronunciationArchive
         {
             command.CommandText =
                 """
-                INSERT INTO pronunciation (entry_id, position, variety, ipa)
+                INSERT INTO pronunciation (entry_parent, position, variety, ipa)
                 VALUES ($entry, $position, $variety, $ipa)
-                RETURNING id;
+                RETURNING pronunciation_id;
                 """;
             command.Parameters.AddWithValue("$entry", stored.LPronunciationEntryId);
             command.Parameters.AddWithValue("$position", stored.LPronunciationPosition);
@@ -70,8 +70,8 @@ public sealed class LPronunciationArchive
         {
             command.CommandText =
                 """
-                SELECT id, position, variety, ipa
-                FROM pronunciation WHERE entry_id = $entry ORDER BY position;
+                SELECT pronunciation_id, position, variety, ipa
+                FROM pronunciation WHERE entry_parent = $entry ORDER BY position;
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
 
@@ -112,7 +112,7 @@ public sealed class LPronunciationArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE pronunciation SET variety = $variety, ipa = $ipa WHERE id = $id;";
+                "UPDATE pronunciation SET variety = $variety, ipa = $ipa WHERE pronunciation_id = $id;";
             command.Parameters.AddWithValue(
                 "$variety",
                 (object?)LPronunciationVarietyRead(pronunciation.LPronunciationVariety) ?? DBNull.Value);
@@ -138,7 +138,7 @@ public sealed class LPronunciationArchive
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         LDatabaseOrder.LDatabaseOrderNormalize(
-            session.LDatabaseSessionConnection, "pronunciation", "entry_id = $owner", entryId, "id", order);
+            session.LDatabaseSessionConnection, "pronunciation", "entry_parent = $owner", entryId, "pronunciation_id", order);
         session.LDatabaseSessionCommit();
     }
 
@@ -153,7 +153,7 @@ public sealed class LPronunciationArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM pronunciation WHERE id = $id;";
+            command.CommandText = "DELETE FROM pronunciation WHERE pronunciation_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -161,8 +161,8 @@ public sealed class LPronunciationArchive
         if (entryId is not null)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, "pronunciation", "entry_id = $owner", entryId,
-                "id", LPronunciationSiblingRead(connection, entryId.Value));
+                connection, "pronunciation", "entry_parent = $owner", entryId,
+                "pronunciation_id", LPronunciationSiblingRead(connection, entryId.Value));
         }
 
         session.LDatabaseSessionCommit();
@@ -178,11 +178,11 @@ public sealed class LPronunciationArchive
         {
             command.CommandText =
                 """
-                INSERT INTO pronunciation_audio (pronunciation_id, file, source, added_utc)
+                INSERT INTO pronunciation_audio (pronunciation_parent, file, site, added_utc)
                 VALUES ($pronunciation, $file, $source, $added)
-                ON CONFLICT (pronunciation_id) DO UPDATE SET
+                ON CONFLICT (pronunciation_parent) DO UPDATE SET
                     file = excluded.file,
-                    source = excluded.source,
+                    site = excluded.site,
                     added_utc = excluded.added_utc;
                 """;
             command.Parameters.AddWithValue("$pronunciation", pronunciationId);
@@ -204,8 +204,8 @@ public sealed class LPronunciationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT pronunciation_id, file, source, added_utc
-            FROM pronunciation_audio WHERE pronunciation_id = $pronunciation;
+            SELECT pronunciation_parent, file, site, added_utc
+            FROM pronunciation_audio WHERE pronunciation_parent = $pronunciation;
             """;
         command.Parameters.AddWithValue("$pronunciation", pronunciationId);
 
@@ -225,7 +225,7 @@ public sealed class LPronunciationArchive
     private static long? LPronunciationHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT entry_id FROM pronunciation WHERE id = $id;";
+        command.CommandText = "SELECT entry_parent FROM pronunciation WHERE pronunciation_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         object? holder = command.ExecuteScalar();
         return holder is null or DBNull ? null : Convert.ToInt64(holder, CultureInfo.InvariantCulture);
@@ -233,7 +233,7 @@ public sealed class LPronunciationArchive
 
     private static IReadOnlyList<long> LPronunciationSiblingRead(SqliteConnection connection, long entryId)
     {
-        return LDatabaseOrder.LDatabaseOrderRead(connection, "pronunciation", "entry_id = $owner", entryId, "id");
+        return LDatabaseOrder.LDatabaseOrderRead(connection, "pronunciation", "entry_parent = $owner", entryId, "pronunciation_id");
     }
 
     private static string? LPronunciationVarietyRead(string? text)
@@ -268,7 +268,7 @@ public sealed class LPronunciationArchive
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO syllable (pronunciation_id, position, onset, medial,
+                INSERT INTO syllable (pronunciation_parent, position, onset, medial,
                     nucleus, coda, tone_number, tone_points)
                 VALUES ($pronunciation, $position, $onset, $medial,
                     $nucleus, $coda, $toneNumber, $tonePoints);
@@ -290,9 +290,9 @@ public sealed class LPronunciationArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT pronunciation_id, position, onset, medial, nucleus, coda,
+            SELECT pronunciation_parent, position, onset, medial, nucleus, coda,
                 tone_number, tone_points
-            FROM syllable WHERE pronunciation_id = $pronunciation ORDER BY position;
+            FROM syllable WHERE pronunciation_parent = $pronunciation ORDER BY position;
             """;
         command.Parameters.AddWithValue("$pronunciation", id);
 
@@ -317,7 +317,7 @@ public sealed class LPronunciationArchive
     private static void LPronunciationSyllableClear(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM syllable WHERE pronunciation_id = $id;";
+        command.CommandText = "DELETE FROM syllable WHERE pronunciation_parent = $id;";
         command.Parameters.AddWithValue("$id", id);
         command.ExecuteNonQuery();
     }

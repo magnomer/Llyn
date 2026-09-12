@@ -27,4 +27,4 @@ They are the panel's own words, which is what keeps a document reading like the 
 
 The headword is offered as the file name, since that is what the reader would type.
 Characters a file name cannot hold are replaced rather than dropped, so nothing silently merges.
-An unreadable entry still offers a name, because the dialog must open either way.
+An unknown entry still offers a name, because the dialog must open either way.

@@ -14,7 +14,7 @@ public sealed partial class LEngine
         LEntryDraft draft = LEngineEntryLoad(entryId)
             ?? throw new InvalidOperationException("The entry no longer stands in the workspace.");
 
-        string mark = label.LPortraitLabelUnreadable;
+        string mark = label.LPortraitLabelUnknown;
         LSentenceOrder order = LEngineFrameRead(draft.LEntryDraftLanguage);
 
         List<long> ids = [];

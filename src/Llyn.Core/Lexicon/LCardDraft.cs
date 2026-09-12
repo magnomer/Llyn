@@ -34,6 +34,22 @@ public sealed record LCardDraft(
     public LStateValue LCardDraftMeaning { get; init; } =
         LCardDraftMeaning ?? LStateValue.LStateValueUnspecified;
 
+    public LCardDraft LCardDraftNormalize()
+    {
+        return this with
+        {
+            LCardDraftTitle = LCardDraftTitle.LStateValueNormalize(),
+            LCardDraftExpression = LCardDraftExpression.LStateValueNormalize(),
+            LCardDraftMeaning = LCardDraftMeaning.LStateValueNormalize(),
+            LCardDraftSentence = LCardDraftSentence.Select(static row => row.LSentenceDraftNormalize()).ToList(),
+            LCardDraftSituation = LCardDraftSituation.Select(static row => row.LSituationDraftNormalize()).ToList(),
+            LCardDraftRegister = LCardDraftRegister.Select(static row => row.LRegisterDraftNormalize()).ToList(),
+            LCardDraftImage = LCardDraftImage.Select(static row => row.LImageDraftNormalize()).ToList(),
+            LCardDraftVideo = LCardDraftVideo.Select(static row => row.LVideoDraftNormalize()).ToList(),
+            LCardDraftChild = LCardDraftChild.Select(static row => row.LCardDraftNormalize()).ToList(),
+        };
+    }
+
     public bool LCardDraftEmpty =>
         LCardDraftTitle.LStateValueEmpty
         && LCardDraftExpression.LStateValueEmpty

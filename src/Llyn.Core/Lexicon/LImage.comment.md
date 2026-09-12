@@ -21,4 +21,4 @@ A row that named a picture is not the same as a row that never named one.
 - `LImageId` — Opaque, program-generated stable id.
 - `LImageLocation` — Where the picture is read from, a file path or a web address.
   It also carries what is known about that location.
-  An Image that is there but unreadable is not an Image that was never written.
+  An Image that is there but unknown is not an Image that was never written.

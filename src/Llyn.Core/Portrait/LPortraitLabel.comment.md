@@ -8,7 +8,7 @@ Passing the words in keeps export out of the interface layer without moving tran
 
 **Parameters**
 
-- `LPortraitLabelUnreadable` - what stands in for a field that could not be read.
+- `LPortraitLabelUnknown` - what stands in for a field that could not be read.
 - `LPortraitLabelMeaning` - the singular word, used as a card kind.
 - `LPortraitLabelMeanings` - the plural word, used as a section heading.
 - `LPortraitLabelCollocation` - the singular word, used as a card kind.

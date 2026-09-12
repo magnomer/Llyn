@@ -1,4 +1,4 @@
-﻿# PWindowNotice.cs
+# PWindowNotice.cs
 
 ## `public partial class PWindow`
 
@@ -14,6 +14,13 @@ Those are a request that failed, and the question asked before work is thrown aw
 Presents a request that failed with nothing further to say about why.
 A disagreement the program noticed itself carries no refusal and no fault.
 The headline alone is the whole answer, and an empty detail line under it would read as a missing message.
+
+### `internal PWindowStored PWindowCommitRun<PWindowStored>(long held, Func<long, PWindowStored> commit)`
+
+Runs one commit of a held draft, and handles the one refusal the user can answer.
+When the engine refuses because a stored value cannot be read, a yes-or-no dialog asks whether to drop such values.
+Yes has the engine drop them and runs the commit once more.
+No, and every other failure, rethrows so the caller reports it as before.
 
 ### `internal void PWindowFailureShow(string key, Exception exception)`
 

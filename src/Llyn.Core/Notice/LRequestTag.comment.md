@@ -1,7 +1,7 @@
 # LRequestTag.cs
 
 The tag requests, shaped like the situation requests.
-A tag carries plain text rather than a state value, because a tag is never unreadable.
+A tag carries plain text rather than a state value, because a tag is never unknown.
 
 ## `public sealed record LRequestTagAddition(`
 

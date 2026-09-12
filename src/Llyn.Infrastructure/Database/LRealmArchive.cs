@@ -18,7 +18,7 @@ public sealed class LRealmArchive
     {
         using LDatabaseSession session = _lRealmArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT value FROM realm WHERE id = $id;";
+        command.CommandText = "SELECT value FROM realm WHERE realm_id = $id;";
         command.Parameters.AddWithValue("$id", LSchemaRealm.LSchemaRealmRow);
 
         using SqliteDataReader reader = command.ExecuteReader();

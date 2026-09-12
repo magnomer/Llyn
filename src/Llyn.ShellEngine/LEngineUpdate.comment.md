@@ -76,7 +76,7 @@ So the entry stays the record it was.
 ### `private void LEngineSpeechUpdate(`
 
 The entry's part of speech reconciled to the draft.
-The assignments are one owned set with an (entry_id, position) identity and nothing referencing them.
+The assignments are one owned set with an (entry_parent, position) identity and nothing referencing them.
 So they are replaced wholesale rather than matched row by row.
 The field holds one part of speech, and rewriting it is what the user did.
 A field cleared leaves the entry with no assignment, which is the set replaced by an empty one.

@@ -9,10 +9,10 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
 {
     private bool _pAnthologyItemChosen;
 
-    internal PAnthologyItem(LExample example, int usage, string source, string unreadable, string unwritten)
+    internal PAnthologyItem(LExample example, int usage, string source, string unknown, string unwritten)
     {
         PAnthologyItemId = example.LExampleId;
-        PAnthologyItemText = PAnthologyTextRead(example.LExampleText, unreadable) ?? unwritten;
+        PAnthologyItemText = PAnthologyTextRead(example.LExampleText, unknown) ?? unwritten;
         PAnthologyItemName = PAnthologyItemText;
         PAnthologyItemLanguage = example.LExampleLanguage;
         PAnthologyItemFlag = PEnsign.PEnsignFind(example.LExampleLanguage);
@@ -34,12 +34,13 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
 
     public string PAnthologyItemCount { get; }
 
-    private static string? PAnthologyTextRead(LStateValue value, string unreadable)
+    private static string? PAnthologyTextRead(LStateValue value, string unknown)
     {
         return value.LStateValueState switch
         {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => unreadable,
+            LState.LStateUnknown => unknown,
             _ => null,
         };
     }

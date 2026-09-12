@@ -30,7 +30,7 @@ public sealed class LRevisionArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                "INSERT INTO revision (created_utc) VALUES ($created) RETURNING id;";
+                "INSERT INTO revision (created_utc) VALUES ($created) RETURNING revision_id;";
             command.Parameters.AddWithValue("$created", stored.LRevisionCreatedUtc);
             stored = stored with { LRevisionId = (long)command.ExecuteScalar()! };
         }
@@ -41,7 +41,7 @@ public sealed class LRevisionArchive
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO revision_change (revision_id, position, target_ref, target_type, kind, summary)
+                INSERT INTO revision_change (revision_parent, position, target_ref, target_type, kind, summary)
                 VALUES ($revision, $position, $target, $type, $kind, $summary);
                 """;
             command.Parameters.AddWithValue("$revision", stored.LRevisionId);
@@ -63,7 +63,7 @@ public sealed class LRevisionArchive
 
         using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT id, created_utc FROM revision WHERE id = $id;";
+        command.CommandText = "SELECT revision_id, created_utc FROM revision WHERE revision_id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -80,7 +80,7 @@ public sealed class LRevisionArchive
         using LDatabaseSession session = _lRevisionArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT id, created_utc FROM revision ORDER BY created_utc DESC, id DESC LIMIT 1;";
+            "SELECT revision_id, created_utc FROM revision ORDER BY created_utc DESC, revision_id DESC LIMIT 1;";
 
         using SqliteDataReader reader = command.ExecuteReader();
         if (!reader.Read())
@@ -100,7 +100,7 @@ public sealed class LRevisionArchive
         command.CommandText =
             """
             SELECT position, target_ref, target_type, kind, summary
-            FROM revision_change WHERE revision_id = $revision ORDER BY position;
+            FROM revision_change WHERE revision_parent = $revision ORDER BY position;
             """;
         command.Parameters.AddWithValue("$revision", revisionId);
 

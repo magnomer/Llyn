@@ -17,7 +17,7 @@ There is no separate definition entity: each Meaning holds exactly one definitio
 - `LMeaningPosition` — Order within its siblings under the same parent.
 - `LMeaningTitle` — Title typed on the Meaning card, and what is known about it.
   Nothing was recorded when none was typed.
-  It is unreadable when what was typed cannot be read back.
+  It is unknown when the user marked it as not known.
 - `LMeaningGloss` — Optional short gloss, unused by the input form.
 - `LMeaningDefinitionLanguage` — Optional language the definition is written in.
 - `LMeaningDefinition` — Single inline definition text, and what is known about it.

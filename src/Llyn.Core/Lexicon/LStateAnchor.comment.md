@@ -11,6 +11,8 @@ Both are needed because a link slot has the same three answers a text slot does.
 
 `LStateAnchorId` is filled only when the state is specified.
 An unspecified or unknown anchor points at nothing, which is why the id is nullable.
+`LStateAnchorUnreadable` marks an anchor whose stored state word the engine could not read.
+Such an anchor is shown but refused on write until the user clears it.
 
 ## `public static LStateAnchor LStateAnchorCreate(long id)`
 
@@ -28,3 +30,7 @@ So it is the value a record carries before anything has been linked.
 The id this anchor points at, or zero when it points at nothing.
 
 Callers that only want to follow the link get one value to test rather than a state and an id.
+
+## `public LStateAnchor LStateAnchorNormalize()`
+
+This anchor when it is readable, and the unspecified anchor when it is not.

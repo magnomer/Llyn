@@ -115,7 +115,7 @@ public partial class PEditor
         LOutcome stored;
         try
         {
-            stored = _lEngine.LEngineDraftCommit(held);
+            stored = _pEditorHost.PWindowCommitRun(held, _lEngine.LEngineDraftCommit);
         }
         catch (Exception exception)
         {

@@ -25,7 +25,7 @@ Called by `LSchema.LSchemaCreate` once the lexical tables are in place.
 ### `command.CommandText =`
 
 A revision is a stamped point in history.
-Its changes are ordered rows identified by (revision_id, position).
+Its changes are ordered rows identified by (revision_parent, position).
 The position is the order within the revision.
 So a change has no id of its own and cascades when its revision is dropped.
 target_ref and target_type name what the change touched without a foreign key.
@@ -33,9 +33,9 @@ A change frequently records a row that no longer exists.
 That is the whole point of keeping the history.
 
 A tombstone is the same idea for a deleted Entry.
-entry_id deliberately carries no foreign key to entry.
+entry_ref deliberately carries no foreign key to entry.
 The row it names has been deleted by the time the tombstone is written.
-entry_id is the primary key, so one deleted Entry leaves exactly one tombstone.
+entry_ref is the primary key, so one deleted Entry leaves exactly one tombstone.
 The revision it was deleted under is a real reference that must exist.
 
 ### `command.CommandText =`

@@ -9,14 +9,14 @@ internal sealed class PShelfItem : INotifyPropertyChanged
 {
     private bool _pShelfItemChosen;
 
-    internal PShelfItem(LCatalogReference row, string unreadable, string unset)
+    internal PShelfItem(LCatalogReference row, string unknown, string unset)
     {
         LReference reference = row.LCatalogReferenceStored;
 
         PShelfItemId = reference.LReferenceId;
         PShelfItemName = row.LCatalogReferenceName;
-        PShelfItemAuthor = PShelfCreditRead(reference, row.LCatalogReferenceCredit, unreadable, unset);
-        PShelfItemYear = PShelfValueRead(reference.LReferenceYear, unreadable) ?? unset;
+        PShelfItemAuthor = PShelfCreditRead(reference, row.LCatalogReferenceCredit, unknown, unset);
+        PShelfItemYear = PShelfValueRead(reference.LReferenceYear, unknown) ?? unset;
         PShelfItemCount = row.LCatalogReferenceUsage.ToString(CultureInfo.CurrentCulture);
     }
 
@@ -33,7 +33,7 @@ internal sealed class PShelfItem : INotifyPropertyChanged
     internal static string PShelfCreditRead(
         LReference reference,
         IReadOnlyList<LAuthor> credits,
-        string unreadable,
+        string unknown,
         string unset)
     {
         if (credits.Count > 0)
@@ -47,15 +47,16 @@ internal sealed class PShelfItem : INotifyPropertyChanged
             return string.Join(", ", names);
         }
 
-        return reference.LReferenceAuthorState == LState.LStateUnknown ? unreadable : unset;
+        return reference.LReferenceAuthorState == LState.LStateUnknown ? unknown : unset;
     }
 
-    private static string? PShelfValueRead(LStateValue value, string unreadable)
+    private static string? PShelfValueRead(LStateValue value, string unknown)
     {
         return value.LStateValueState switch
         {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => unreadable,
+            LState.LStateUnknown => unknown,
             _ => null,
         };
     }

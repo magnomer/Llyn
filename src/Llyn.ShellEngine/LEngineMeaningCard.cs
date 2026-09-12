@@ -146,12 +146,12 @@ public sealed partial class LEngine
         if (parentId is null)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, "sense", "entry_id = $owner AND parent_id IS NULL", entryId, "id", order);
+                connection, "sense", "entry_parent = $owner AND sense_parent IS NULL", entryId, "sense_id", order);
             return;
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "sense", "parent_id = $owner", parentId, "id", order);
+            connection, "sense", "sense_parent = $owner", parentId, "sense_id", order);
     }
 
     private static void LEngineMeaningScan(

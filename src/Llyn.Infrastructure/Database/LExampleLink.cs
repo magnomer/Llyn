@@ -28,13 +28,13 @@ public sealed class LExampleLink
             id,
             LOwner.LOwnerMeaning,
             """
-            SELECT link.sense_id, sense.entry_id, entry.headword, entry.language,
+            SELECT link.sense_parent, sense.entry_parent, entry.headword, entry.language,
                    sense.title_state, sense.title,
                    CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
                    COALESCE(sense.gloss, sense.definition)
             FROM sense_example link
-            JOIN sense ON sense.id = link.sense_id
-            JOIN entry ON entry.id = sense.entry_id
+            JOIN sense ON sense.sense_id = link.sense_parent
+            JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE link.example_ref = $id
             ORDER BY entry.headword, sense.position;
             """));
@@ -43,12 +43,12 @@ public sealed class LExampleLink
             id,
             LOwner.LOwnerCollocation,
             """
-            SELECT link.collocation_id, collocation.entry_id, entry.headword, entry.language,
+            SELECT link.collocation_parent, collocation.entry_parent, entry.headword, entry.language,
                    collocation.title_state, collocation.title,
                    collocation.expression_state, collocation.expression
             FROM collocation_example link
-            JOIN collocation ON collocation.id = link.collocation_id
-            JOIN entry ON entry.id = collocation.entry_id
+            JOIN collocation ON collocation.collocation_id = link.collocation_parent
+            JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE link.example_ref = $id
             ORDER BY entry.headword, collocation.position;
             """));

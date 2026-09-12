@@ -13,7 +13,7 @@ A constant shift keeps the set unique against itself and clear of the final valu
 Each position is then written back as its index in the intended order.
 
 A set is named by a *scope*, a store-owned SQL predicate over `$owner`.
-`entry_id = $owner` and `entry_id = $owner AND parent_id IS NULL` are examples.
+`entry_ref = $owner` and `entry_ref = $owner AND sense_parent IS NULL` are examples.
 Scopes and column names are literals the calling store chooses, never caller input.
 Every value still travels as a parameter.
 

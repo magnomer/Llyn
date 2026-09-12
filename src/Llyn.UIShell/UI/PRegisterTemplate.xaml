@@ -12,8 +12,8 @@
                 <TextBlock VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.RegisterSize}" Foreground="{DynamicResource Theme.Helper}">
                     <TextBlock.Text>
                         <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                            <Binding Path="PRegisterUnreadable" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                            <Binding Path="PRegisterUnknown" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                             <Binding Path="PRegisterText" />
                         </MultiBinding>
                     </TextBlock.Text>

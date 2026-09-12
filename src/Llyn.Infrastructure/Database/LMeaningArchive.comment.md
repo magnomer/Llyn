@@ -73,7 +73,7 @@ Only the links go.
 
 ### `private const string LMeaningSubtreeQuery =`
 
-The named meaning and every meaning beneath it, walked with a recursive term over parent_id.
+The named meaning and every meaning beneath it, walked with a recursive term over sense_parent.
 The cycle check starts from this set.
 
 ### `private static (string? Entry, string? Parent) LMeaningHolderRead(SqliteConnection connection, long id)`

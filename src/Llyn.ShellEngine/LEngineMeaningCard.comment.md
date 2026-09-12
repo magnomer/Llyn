@@ -4,7 +4,7 @@
 
 The Meaning half of the card update, which is the half that has a shape.
 A Collocation list is flat and is reconciled where the other card kinds are.
-A Meaning list is a tree, because `sense.parent_id` names a Meaning in the same entry.
+A Meaning list is a tree, because `sense.sense_parent` names a Meaning in the same entry.
 So the same three questions are asked once per sibling group rather than once per entry.
 Those are which stored row each card is, what to do with the rows no card names, and what order they sit in.
 
@@ -19,7 +19,7 @@ The draft is walked whole before anything is deleted, so a card nested three dee
 ### `HashSet<string> gone = new(StringComparer.Ordinal);`
 
 The rows that are no longer there once the deletions have run.
-Deleting a parent takes its children with it, because the store cascades on `parent_id`.
+Deleting a parent takes its children with it, because the store cascades on `sense_parent`.
 So a child of a dropped parent is marked gone even when the draft still names it.
 That card is then written as a new row rather than onto a row that no longer exists.
 The stored rows arrive parents first, so a parent is always marked before its children are read.

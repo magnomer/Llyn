@@ -7,11 +7,11 @@ Carries the sentence, its language and flag, the cited Source, and the usage cou
 The id is identity and never displayed.
 Two Examples may carry the same sentence, so a row is never found by what it reads.
 A sentence standing empty is not one thing.
-It may never have been written, or it may have been written and be unreadable now.
+It may never have been written, or it may have been written and be unknown now.
 The row is given the mark for the second so the two stay distinct in the catalog.
 It is given the unwritten text for the first so no row stands blank beside the next.
 
-## `internal PAnthologyItem(LExample example, int usage, string source, string unreadable, string unwritten)`
+## `internal PAnthologyItem(LExample example, int usage, string source, string unknown, string unwritten)`
 
 Builds the row from the stored Example and the number of places quoting it.
 The Source arrives already resolved, because resolving it needs the shelf the panel holds.

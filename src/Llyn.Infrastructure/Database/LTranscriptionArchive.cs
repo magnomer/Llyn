@@ -25,8 +25,8 @@ public sealed class LTranscriptionArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, position, scheme, text
-            FROM transcription WHERE entry_id = $entry ORDER BY position;
+            SELECT transcription_id, position, scheme, text
+            FROM transcription WHERE entry_parent = $entry ORDER BY position;
             """;
         command.Parameters.AddWithValue("$entry", entryId);
 
@@ -98,7 +98,7 @@ public sealed class LTranscriptionArchive
     private static void LTranscriptionLeftoverDelete(SqliteConnection connection, long entryId, HashSet<long> kept)
     {
         foreach (long id in LDatabaseOrder.LDatabaseOrderRead(
-            connection, "transcription", "entry_id = $owner", entryId, "id"))
+            connection, "transcription", "entry_parent = $owner", entryId, "transcription_id"))
         {
             if (kept.Contains(id))
             {
@@ -106,7 +106,7 @@ public sealed class LTranscriptionArchive
             }
 
             using SqliteCommand command = connection.CreateCommand();
-            command.CommandText = "DELETE FROM transcription WHERE id = $id;";
+            command.CommandText = "DELETE FROM transcription WHERE transcription_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -119,7 +119,7 @@ public sealed class LTranscriptionArchive
             """
             UPDATE transcription
             SET position = position + $shift, scheme = char(0) || scheme
-            WHERE entry_id = $entry;
+            WHERE entry_parent = $entry;
             """;
         command.Parameters.AddWithValue("$shift", LTranscriptionArchiveShift);
         command.Parameters.AddWithValue("$entry", entryId);
@@ -132,7 +132,7 @@ public sealed class LTranscriptionArchive
         command.CommandText =
             """
             UPDATE transcription SET position = $position, scheme = $scheme, text = $text
-            WHERE id = $id AND entry_id = $entry;
+            WHERE transcription_id = $id AND entry_parent = $entry;
             """;
         command.Parameters.AddWithValue("$position", row.LTranscriptionPosition);
         command.Parameters.AddWithValue("$scheme", row.LTranscriptionScheme);
@@ -153,9 +153,9 @@ public sealed class LTranscriptionArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            INSERT INTO transcription (entry_id, position, scheme, text)
+            INSERT INTO transcription (entry_parent, position, scheme, text)
             VALUES ($entry, $position, $scheme, $text)
-            RETURNING id;
+            RETURNING transcription_id;
             """;
         command.Parameters.AddWithValue("$entry", row.LTranscriptionEntryId);
         command.Parameters.AddWithValue("$position", row.LTranscriptionPosition);

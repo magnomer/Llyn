@@ -16,10 +16,10 @@ It is called before the cards are handed over, so the templates find it ready.
 
 ## `public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)`
 
-Every caller passes the marker first, the role second, the example third and the unreadable mark last.
+Every caller passes the marker first, the role second, the example third and the unknown mark last.
 A field showing nothing is left out of the head rather than drawn as an empty place.
 The head is dropped whole when neither field says anything, because a frame around nothing frames nothing.
-A field that cannot be read back shows the mark the interface language gives for it.
+A field marked as not known shows the mark the interface language gives for it.
 That is how the rest of the card reads too.
 The parameter says which half of the line is wanted, the head or the example.
 The reading view asks for each half apart, so it can draw the head in its own face and colour.

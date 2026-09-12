@@ -49,16 +49,16 @@ public sealed class LReferenceUsage
             id,
             LOwner.LOwnerMeaning,
             """
-            SELECT sense.id, sense.entry_id, entry.headword, entry.language,
+            SELECT sense.sense_id, sense.entry_parent, entry.headword, entry.language,
                    sense.title_state, sense.title,
                    CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
                    COALESCE(sense.gloss, sense.definition)
             FROM sense_example link
-            JOIN example ON example.id = link.example_ref
-            JOIN sense ON sense.id = link.sense_id
-            JOIN entry ON entry.id = sense.entry_id
+            JOIN example ON example.example_id = link.example_ref
+            JOIN sense ON sense.sense_id = link.sense_parent
+            JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE example.source_ref = $id
-            GROUP BY sense.id
+            GROUP BY sense.sense_id
             ORDER BY entry.headword, sense.position;
             """));
         usages.AddRange(LReferenceCardRead(
@@ -66,15 +66,15 @@ public sealed class LReferenceUsage
             id,
             LOwner.LOwnerCollocation,
             """
-            SELECT collocation.id, collocation.entry_id, entry.headword, entry.language,
+            SELECT collocation.collocation_id, collocation.entry_parent, entry.headword, entry.language,
                    collocation.title_state, collocation.title,
                    collocation.expression_state, collocation.expression
             FROM collocation_example link
-            JOIN example ON example.id = link.example_ref
-            JOIN collocation ON collocation.id = link.collocation_id
-            JOIN entry ON entry.id = collocation.entry_id
+            JOIN example ON example.example_id = link.example_ref
+            JOIN collocation ON collocation.collocation_id = link.collocation_parent
+            JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE example.source_ref = $id
-            GROUP BY collocation.id
+            GROUP BY collocation.collocation_id
             ORDER BY entry.headword, collocation.position;
             """));
         usages.AddRange(LReferenceExampleRead(connection, id));
@@ -142,7 +142,7 @@ public sealed class LReferenceUsage
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT example.id, example.language,
+            SELECT example.example_id, example.language,
                    example.text_state, example.text,
                    example.translation_state, example.translation
             FROM example

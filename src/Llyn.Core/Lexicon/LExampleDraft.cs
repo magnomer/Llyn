@@ -18,6 +18,16 @@ public sealed record LExampleDraft(
 
     public string LExampleDraftLanguage { get; init; } = LExampleDraftLanguage ?? string.Empty;
 
+    public LExampleDraft LExampleDraftNormalize()
+    {
+        return this with
+        {
+            LExampleDraftText = LExampleDraftText.LStateValueNormalize(),
+            LExampleDraftReference = LExampleDraftReference.LStateAnchorNormalize(),
+            LExampleDraftTranslation = LExampleDraftTranslation.LStateValueNormalize(),
+        };
+    }
+
     public static LExampleDraft LExampleDraftCreate(string text)
     {
         return new LExampleDraft(

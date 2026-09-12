@@ -75,11 +75,11 @@ A Reference written by an older launch is what arrives here unnamed.
 
 What a draft naming no Reference is measured against.
 A source that was never opened on a stored one started from nothing.
-Its author state is unspecified, because nobody has been credited or ruled unreadable yet.
+Its author state is unspecified, because nobody has been credited or ruled unknown yet.
 
 ## `private static bool LEngineReferenceMatch(LReference one, LReference other)`
 
 Field by field, whether two References say the same thing.
 Identity is left out, because a held Reference is named before the record it becomes exists.
 The title, the year, the kind, the note and the address each count.
-The author state counts too, because ruling the writers unreadable is an edit nothing else records.
+The author state counts too, because ruling the writers unknown is an edit nothing else records.

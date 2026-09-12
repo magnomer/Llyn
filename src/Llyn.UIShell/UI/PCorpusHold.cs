@@ -40,7 +40,7 @@ public partial class PCorpus
 
         try
         {
-            _lEngine.LEngineExampleCommit(held);
+            _pCorpusHost.PWindowCommitRun(held, _lEngine.LEngineExampleCommit);
         }
         catch (Exception exception)
         {

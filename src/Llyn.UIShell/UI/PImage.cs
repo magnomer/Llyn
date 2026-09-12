@@ -10,7 +10,7 @@ namespace Llyn.UIShell;
 internal sealed class PImage : INotifyPropertyChanged
 {
     private string _pImageLocation;
-    private bool _pImageUnreadable;
+    private bool _pImageUnknown;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
 
@@ -20,7 +20,7 @@ internal sealed class PImage : INotifyPropertyChanged
 
         _pImageRow = written.LImageDraftId;
         _pImageLocation = written.LImageDraftLocation.LStateValueShow();
-        _pImageUnreadable = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
+        _pImageUnknown = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
         PImagePreviewUpdate();
     }
 
@@ -36,24 +36,24 @@ internal sealed class PImage : INotifyPropertyChanged
             }
 
             _pImageLocation = chosen;
-            PImageUnreadable = false;
+            PImageUnknown = false;
             PImageRaise(nameof(PImageLocation));
             PImagePreviewUpdate();
         }
     }
 
-    public bool PImageUnreadable
+    public bool PImageUnknown
     {
-        get => _pImageUnreadable;
+        get => _pImageUnknown;
         private set
         {
-            if (_pImageUnreadable == value)
+            if (_pImageUnknown == value)
             {
                 return;
             }
 
-            _pImageUnreadable = value;
-            PImageRaise(nameof(PImageUnreadable));
+            _pImageUnknown = value;
+            PImageRaise(nameof(PImageUnknown));
         }
     }
 
@@ -76,7 +76,7 @@ internal sealed class PImage : INotifyPropertyChanged
 
     internal LStateValue PImageLocationRead()
     {
-        return LStateValue.LStateValueResolve(_pImageLocation, _pImageUnreadable);
+        return LStateValue.LStateValueResolve(_pImageLocation, _pImageUnknown);
     }
 
     internal void PImageShow(LImageDraft written, bool pending)
@@ -91,7 +91,7 @@ internal sealed class PImage : INotifyPropertyChanged
 
         _pImageLocation = written.LImageDraftLocation.LStateValueShow();
         PImageRaise(nameof(PImageLocation));
-        PImageUnreadable = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
+        PImageUnknown = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
         PImagePreviewUpdate();
     }
 

@@ -26,7 +26,7 @@ A move is atomic, so the other copy of the program never reads half a claim.
 ## `public static LClaim? LClaimArchiveRead(string root, long draftId)`
 
 The claim held on `draftId`, or `null` when no readable file holds one.
-No claim and an unreadable claim are the same answer: nobody can be shown to hold the draft.
+No claim and an unknown claim are the same answer: nobody can be shown to hold the draft.
 
 ## `public static IReadOnlyList<LClaim> LClaimArchiveScan(string root)`
 
@@ -59,7 +59,7 @@ Refusing to answer counts as gone: a claim nothing can confirm must not hold wor
 
 ## `private static LClaim? LClaimArchiveLoad(string path)`
 
-One claim file read back, or `null` when it is missing, truncated, or unreadable.
+One claim file read back, or `null` when it is missing, truncated, or unknown.
 
 ## Inline notes
 

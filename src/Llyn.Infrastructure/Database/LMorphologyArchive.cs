@@ -28,11 +28,11 @@ public sealed class LMorphologyArchive
         {
             command.CommandText =
                 """
-                INSERT INTO morphology_feature (speech_value_id, pack_ref, name, position)
+                INSERT INTO morphology_feature (speech_value_parent, pack_code, name, position)
                 VALUES ($speech, $pack, $name, $position)
-                ON CONFLICT (speech_value_id, pack_ref)
+                ON CONFLICT (speech_value_parent, pack_code)
                 DO UPDATE SET name = excluded.name, position = excluded.position
-                RETURNING id;
+                RETURNING morphology_feature_id;
                 """;
             command.Parameters.AddWithValue("$speech", feature.LFeatureSpeechId);
             command.Parameters.AddWithValue("$pack", feature.LFeatureCode);
@@ -58,11 +58,11 @@ public sealed class LMorphologyArchive
         {
             command.CommandText =
                 """
-                INSERT INTO morphology_value (morphology_feature_id, pack_ref, name, position)
+                INSERT INTO morphology_value (morphology_feature_parent, pack_code, name, position)
                 VALUES ($feature, $pack, $name, $position)
-                ON CONFLICT (morphology_feature_id, pack_ref)
+                ON CONFLICT (morphology_feature_parent, pack_code)
                 DO UPDATE SET name = excluded.name, position = excluded.position
-                RETURNING id;
+                RETURNING morphology_value_id;
                 """;
             command.Parameters.AddWithValue("$feature", value.LMorphologyFeatureId);
             command.Parameters.AddWithValue("$pack", value.LMorphologyCode);
@@ -83,8 +83,8 @@ public sealed class LMorphologyArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, speech_value_id, pack_ref, name, position FROM morphology_feature
-            WHERE speech_value_id = $speech ORDER BY position, id;
+            SELECT morphology_feature_id, speech_value_parent, pack_code, name, position FROM morphology_feature
+            WHERE speech_value_parent = $speech ORDER BY position, morphology_feature_id;
             """;
         command.Parameters.AddWithValue("$speech", speechValueId);
 
@@ -110,9 +110,9 @@ public sealed class LMorphologyArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, speech_value_id, pack_ref, name, position FROM morphology_feature
-            WHERE speech_value_id = $speech AND trim(name) = trim($name) COLLATE NOCASE
-            ORDER BY position, id LIMIT 1;
+            SELECT morphology_feature_id, speech_value_parent, pack_code, name, position FROM morphology_feature
+            WHERE speech_value_parent = $speech AND trim(name) = trim($name) COLLATE NOCASE
+            ORDER BY position, morphology_feature_id LIMIT 1;
             """;
         command.Parameters.AddWithValue("$speech", speechValueId);
         command.Parameters.AddWithValue("$name", name);
@@ -132,7 +132,7 @@ public sealed class LMorphologyArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, morphology_feature_id, pack_ref, name, position FROM morphology_value WHERE id = $id;
+            SELECT morphology_value_id, morphology_feature_parent, pack_code, name, position FROM morphology_value WHERE morphology_value_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
 
@@ -148,8 +148,8 @@ public sealed class LMorphologyArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, morphology_feature_id, pack_ref, name, position FROM morphology_value
-            WHERE morphology_feature_id = $feature ORDER BY position, id;
+            SELECT morphology_value_id, morphology_feature_parent, pack_code, name, position FROM morphology_value
+            WHERE morphology_feature_parent = $feature ORDER BY position, morphology_value_id;
             """;
         command.Parameters.AddWithValue("$feature", featureId);
 
@@ -175,9 +175,9 @@ public sealed class LMorphologyArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, morphology_feature_id, pack_ref, name, position FROM morphology_value
-            WHERE morphology_feature_id = $feature AND trim(name) = trim($name) COLLATE NOCASE
-            ORDER BY position, id LIMIT 1;
+            SELECT morphology_value_id, morphology_feature_parent, pack_code, name, position FROM morphology_value
+            WHERE morphology_feature_parent = $feature AND trim(name) = trim($name) COLLATE NOCASE
+            ORDER BY position, morphology_value_id LIMIT 1;
             """;
         command.Parameters.AddWithValue("$feature", featureId);
         command.Parameters.AddWithValue("$name", name);

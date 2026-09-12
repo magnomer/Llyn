@@ -19,6 +19,17 @@ public sealed record LReference(
 
     public LStateValue LReferenceUrl { get; init; } = LReferenceUrl ?? LStateValue.LStateValueUnspecified;
 
+    public LReference LReferenceNormalize()
+    {
+        return this with
+        {
+            LReferenceTitle = LReferenceTitle.LStateValueNormalize(),
+            LReferenceYear = LReferenceYear.LStateValueNormalize(),
+            LReferenceNote = LReferenceNote.LStateValueNormalize(),
+            LReferenceUrl = LReferenceUrl.LStateValueNormalize(),
+        };
+    }
+
     public string LReferenceNameRead()
     {
         return LReferenceTextRead(LReferenceTitle)

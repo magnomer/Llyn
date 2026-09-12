@@ -8,7 +8,7 @@ namespace Llyn.Tests;
 public sealed class TState
 {
     [Fact]
-    public void EntrySave_UnreadableAndEmptyFields_StoresEachState()
+    public void EntrySave_UnknownAndEmptyFields_StoresEachState()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -90,7 +90,7 @@ public sealed class TState
     }
 
     [Fact]
-    public void EntrySave_UnreadableCitation_DiffersFromNoSource()
+    public void EntrySave_UnknownCitation_DiffersFromNoSource()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -137,7 +137,7 @@ LStateAnchor.LStateAnchorUnspecified,
     }
 
     [Fact]
-    public void EntryUpdate_ClearedUnreadableField_RecordsNothing()
+    public void EntryUpdate_ClearedUnknownField_RecordsNothing()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -200,11 +200,11 @@ LStateAnchor.LStateAnchorUnspecified,
     [InlineData("   ", true)]
     [InlineData(null, false)]
     [InlineData(null, true)]
-    public void StateValueResolve_TextAndMark_MapsOneStateEach(string? text, bool unreadable)
+    public void StateValueResolve_TextAndMark_MapsOneStateEach(string? text, bool unknown)
     {
-        LStateValue resolved = TInterface.TStateValueResolve(text, unreadable);
+        LStateValue resolved = TInterface.TStateValueResolve(text, unknown);
 
-        if (unreadable)
+        if (unknown)
         {
             Assert.Equal(LStateValue.LStateValueUnknown, resolved);
             Assert.Null(resolved.LStateValueText);
@@ -272,6 +272,75 @@ LStateAnchor.LStateAnchorUnspecified,
                 card.LCardDraftMeaning.LStateValueState == LState.LStateUnknown)));
 
         Assert.False(engine.TEngineDraftCheck(opened.LDraftId));
+    }
+
+    [Fact]
+    public void EntryLoad_BrokenStateWord_ReadsUnreadableAndRefusesSave()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(
+                TInterface.TStateValueCreate("a title"),
+                LStateValue.LStateValueUnspecified,
+                TInterface.TStateValueCreate("a unit of language"),
+                [], [], [], [], [], 1)],
+            []));
+
+        workspace.TWorkspaceScriptRun("UPDATE sense SET title_state = 'broken', title = NULL;");
+
+        LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
+        LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
+        Assert.True(card.LCardDraftTitle.LStateValueUnreadable);
+        Assert.Equal(LState.LStateUnspecified, card.LCardDraftTitle.LStateValueState);
+        Assert.Equal("broken", card.LCardDraftTitle.TStateValueShow());
+
+        LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineEntryUpdate(stored.LEntryId, loaded));
+        Assert.Equal(LRefusal.LRefusalUnreadable, refusal.LRefusalReason);
+    }
+
+    [Fact]
+    public void DraftNormalize_UnreadableField_DropsItAndCommits()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(
+                TInterface.TStateValueCreate("a title"),
+                LStateValue.LStateValueUnspecified,
+                TInterface.TStateValueCreate("a unit of language"),
+                [], [], [], [], [], 1)],
+            []));
+
+        workspace.TWorkspaceScriptRun("UPDATE sense SET title_state = 'broken', title = NULL;");
+
+        LDraft draft = engine.TEngineDraftStart("test", stored.LEntryId);
+        Assert.True(Assert.Single(draft.LDraftContent.LEntryDraftMeanings).LCardDraftTitle.LStateValueUnreadable);
+
+        LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineDraftCommit(draft.LDraftId));
+        Assert.Equal(LRefusal.LRefusalUnreadable, refusal.LRefusalReason);
+
+        engine.TEngineDraftSweep(draft.LDraftId);
+        LDraft cleared = Assert.IsType<LDraft>(engine.TEngineDraftRead(draft.LDraftId));
+        Assert.Equal(
+            LStateValue.LStateValueUnspecified,
+            Assert.Single(cleared.LDraftContent.LEntryDraftMeanings).LCardDraftTitle);
+
+        engine.TEngineDraftCommit(draft.LDraftId);
+        Assert.Equal(
+            1,
+            workspace.TWorkspaceCountRead(
+                "SELECT COUNT(*) FROM sense WHERE title_state = 'unspecified' AND title IS NULL;"));
     }
 
     private static LExampleDraft TExampleDraftRead(LSentenceDraft sentence)

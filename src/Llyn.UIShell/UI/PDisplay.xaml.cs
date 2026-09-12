@@ -304,7 +304,7 @@ public partial class PDisplay : UserControl
             incoming = [];
         }
 
-        string unreadable = _pDisplayHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pDisplayHost.PLocalizationTextRead("Display.Unknown");
         string meaning = _pDisplayHost.PLocalizationTextRead("Display.MeaningSingle");
         string collocation = _pDisplayHost.PLocalizationTextRead("Display.CollocationSingle");
 
@@ -313,7 +313,7 @@ public partial class PDisplay : UserControl
             _pDisplayIncoming.Add(new PUsageItem(
                 usage,
                 usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
-                unreadable,
+                unknown,
                 string.Empty));
         }
 

@@ -9,7 +9,7 @@ An empty id means the row has not been stored as an Example yet.
 Two cards quoting one sentence carry one id, and the save writes one stored row.
 The sentence, its rendering and the citation each carry what is known about them.
 A row standing empty because nothing was written is never confused with another case.
-That case is a row standing empty because what was written cannot be read back.
+That case is a row standing empty because the user marked it as not known.
 
 The frame a card reads the sentence under is not here.
 A marker and a role belong to the card holding the Example, never to the shared sentence.
@@ -27,3 +27,8 @@ A marker and a role belong to the card holding the Example, never to the shared 
 
 A sentence written with nothing else said about it.
 It has no id yet, no rendering, no Source cited, and no language stated.
+
+## `public LExampleDraft LExampleDraftNormalize()`
+
+The same example with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

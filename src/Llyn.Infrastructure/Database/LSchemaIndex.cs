@@ -13,8 +13,8 @@ public static class LSchemaIndex
 
         command.CommandText =
             """
-            CREATE INDEX IF NOT EXISTS sense_parent ON sense (parent_id);
-            CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_id);
+            CREATE INDEX IF NOT EXISTS sense_parent ON sense (sense_parent);
+            CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_parent);
             CREATE INDEX IF NOT EXISTS example_source ON example (source_ref);
             """;
         command.ExecuteNonQuery();
@@ -35,8 +35,8 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS collocation_register_member ON collocation_register (register_ref);
             CREATE INDEX IF NOT EXISTS source_author_member ON source_author (author_ref);
             CREATE INDEX IF NOT EXISTS part_of_speech_value ON part_of_speech (speech_value_ref);
-            CREATE INDEX IF NOT EXISTS morphology_feature_speech ON morphology_feature (speech_value_id);
-            CREATE INDEX IF NOT EXISTS morphology_value_feature ON morphology_value (morphology_feature_id);
+            CREATE INDEX IF NOT EXISTS morphology_feature_speech ON morphology_feature (speech_value_parent);
+            CREATE INDEX IF NOT EXISTS morphology_value_feature ON morphology_value (morphology_feature_parent);
             CREATE INDEX IF NOT EXISTS inflection_speech ON inflection (speech_value_ref);
             CREATE INDEX IF NOT EXISTS inflection_feature_value ON inflection_feature (morphology_value_ref);
             """;
@@ -53,13 +53,13 @@ public static class LSchemaIndex
 
         command.CommandText =
             """
-            CREATE UNIQUE INDEX IF NOT EXISTS collocation_position ON collocation (entry_id, position);
-            CREATE UNIQUE INDEX IF NOT EXISTS pronunciation_position ON pronunciation (entry_id, position);
-            CREATE UNIQUE INDEX IF NOT EXISTS transcription_position ON transcription (entry_id, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS collocation_position ON collocation (entry_parent, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS pronunciation_position ON pronunciation (entry_parent, position);
+            CREATE UNIQUE INDEX IF NOT EXISTS transcription_position ON transcription (entry_parent, position);
             CREATE UNIQUE INDEX IF NOT EXISTS sense_translation_position
-                ON sense_translation (sense_id, position);
+                ON sense_translation (sense_parent, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_translation_position
-                ON collocation_translation (collocation_id, position);
+                ON collocation_translation (collocation_parent, position);
             """;
         command.ExecuteNonQuery();
     }

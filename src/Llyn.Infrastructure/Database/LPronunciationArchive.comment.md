@@ -5,7 +5,7 @@
 Persists the ordered pronunciations an entry owns, each with its ordered syllables.
 A pronunciation's id is assigned here on creation.
 Its children are written as ordered rows.
-Their `pronunciation_id` and `position` come from that id and list order.
+Their `pronunciation_parent` and `position` come from that id and list order.
 So reordering rewrites positions only.
 A new pronunciation is appended after the entry's others, and `LPronunciationOrderSet` places the whole list.
 Reading returns every pronunciation of an entry in order.

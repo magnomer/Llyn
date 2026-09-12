@@ -19,11 +19,11 @@ public static class LSchemaVersion
         command.CommandText =
             """
             CREATE TABLE schema_version (
-                id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                schema_version_id INTEGER NOT NULL PRIMARY KEY CHECK (schema_version_id = 1),
                 version INTEGER NOT NULL
             );
 
-            INSERT INTO schema_version (id, version) VALUES (1, $version);
+            INSERT INTO schema_version (schema_version_id, version) VALUES (1, $version);
             """;
         command.Parameters.AddWithValue("$version", LSchemaMigration.LSchemaMigrationVersion);
         command.ExecuteNonQuery();

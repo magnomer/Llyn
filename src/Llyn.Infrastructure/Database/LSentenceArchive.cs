@@ -19,42 +19,42 @@ public sealed class LSentenceArchive
 
     public IReadOnlyList<LSentence> LSentenceMeaningRead(long meaningId)
     {
-        return LSentenceOwnerRead("sense_example", "sense_id", meaningId);
+        return LSentenceOwnerRead("sense_example", "sense_parent", meaningId);
     }
 
     public IReadOnlyList<LSentence> LSentenceCollocationRead(long collocationId)
     {
-        return LSentenceOwnerRead("collocation_example", "collocation_id", collocationId);
+        return LSentenceOwnerRead("collocation_example", "collocation_parent", collocationId);
     }
 
     public IReadOnlyList<long> LSentenceMeaningSave(long meaningId, IReadOnlyList<LSentence> sentences)
     {
-        return LSentenceOwnerSave("sense_example", "sense_id", meaningId, sentences);
+        return LSentenceOwnerSave("sense_example", "sense_parent", meaningId, sentences);
     }
 
     public IReadOnlyList<long> LSentenceCollocationSave(long collocationId, IReadOnlyList<LSentence> sentences)
     {
-        return LSentenceOwnerSave("collocation_example", "collocation_id", collocationId, sentences);
+        return LSentenceOwnerSave("collocation_example", "collocation_parent", collocationId, sentences);
     }
 
     public void LSentenceMeaningAttach(long meaningId, long exampleId, int position)
     {
-        LSentenceOwnerAttach("sense_example", "sense_id", meaningId, exampleId, position);
+        LSentenceOwnerAttach("sense_example", "sense_parent", meaningId, exampleId, position);
     }
 
     public void LSentenceCollocationAttach(long collocationId, long exampleId, int position)
     {
-        LSentenceOwnerAttach("collocation_example", "collocation_id", collocationId, exampleId, position);
+        LSentenceOwnerAttach("collocation_example", "collocation_parent", collocationId, exampleId, position);
     }
 
     public void LSentenceMeaningDetach(long meaningId, long exampleId)
     {
-        LSentenceOwnerDetach("sense_example", "sense_id", meaningId, exampleId);
+        LSentenceOwnerDetach("sense_example", "sense_parent", meaningId, exampleId);
     }
 
     public void LSentenceCollocationDetach(long collocationId, long exampleId)
     {
-        LSentenceOwnerDetach("collocation_example", "collocation_id", collocationId, exampleId);
+        LSentenceOwnerDetach("collocation_example", "collocation_parent", collocationId, exampleId);
     }
 
     public IReadOnlyList<string> LSentenceParticleRead(string language)
@@ -69,8 +69,8 @@ public sealed class LSentenceArchive
 
     internal static void LSentenceExampleClear(SqliteConnection connection, long exampleId)
     {
-        LSentenceTableClear(connection, "sense_example", "sense_id", exampleId);
-        LSentenceTableClear(connection, "collocation_example", "collocation_id", exampleId);
+        LSentenceTableClear(connection, "sense_example", "sense_parent", exampleId);
+        LSentenceTableClear(connection, "collocation_example", "collocation_parent", exampleId);
     }
 
     private IReadOnlyList<string> LSentenceFrameRead(string column, string language)
@@ -83,15 +83,15 @@ public sealed class LSentenceArchive
             $"""
             SELECT DISTINCT link.{column}
             FROM (
-                SELECT hold.{column}, hold.{column}_state, sense.entry_id
+                SELECT hold.{column}, hold.{column}_state, sense.entry_parent
                 FROM sense_example hold
-                JOIN sense ON sense.id = hold.sense_id
+                JOIN sense ON sense.sense_id = hold.sense_parent
                 UNION ALL
-                SELECT hold.{column}, hold.{column}_state, collocation.entry_id
+                SELECT hold.{column}, hold.{column}_state, collocation.entry_parent
                 FROM collocation_example hold
-                JOIN collocation ON collocation.id = hold.collocation_id
+                JOIN collocation ON collocation.collocation_id = hold.collocation_parent
             ) link
-            JOIN entry ON entry.id = link.entry_id
+            JOIN entry ON entry.entry_id = link.entry_parent
             WHERE entry.language = $language
               AND link.{column}_state = 'specified'
               AND link.{column} IS NOT NULL
@@ -121,14 +121,14 @@ public sealed class LSentenceArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT link.id, link.{column}, link.position,
-                   example.id, example.language, example.text_state, example.text,
+            SELECT link.{table}_id, link.{column}, link.position,
+                   example.example_id, example.language, example.text_state, example.text,
                    example.translation_state, example.translation,
                    example.source_state, example.source_ref,
                    link.particle_state, link.particle,
                    link.dependence_state, link.dependence
             FROM {table} link
-            LEFT JOIN example ON example.id = link.example_ref
+            LEFT JOIN example ON example.example_id = link.example_ref
             WHERE link.{column} = $owner
             ORDER BY link.position;
             """;
@@ -182,8 +182,8 @@ public sealed class LSentenceArchive
         foreach (long owner in owners)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, table, scope, owner, "id",
-                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, owner, "id"));
+                connection, table, scope, owner, $"{table}_id",
+                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, owner, $"{table}_id"));
         }
     }
 
@@ -203,7 +203,7 @@ public sealed class LSentenceArchive
                 $owner, $example, $position,
                 $particleState, $particle,
                 $dependenceState, $dependence)
-            RETURNING id;
+            RETURNING {table}_id;
             """;
         command.Parameters.AddWithValue("$owner", ownerId);
         command.Parameters.AddWithValue(
@@ -224,7 +224,7 @@ public sealed class LSentenceArchive
             SET example_ref = $example, position = $position,
                 particle_state = $particleState, particle = $particle,
                 dependence_state = $dependenceState, dependence = $dependence
-            WHERE id = $id AND {column} = $owner;
+            WHERE {table}_id = $id AND {column} = $owner;
             """;
         command.Parameters.AddWithValue("$id", sentence.LSentenceId);
         command.Parameters.AddWithValue("$owner", ownerId);
@@ -313,7 +313,7 @@ public sealed class LSentenceArchive
 
         string scope = LSentenceScopeCreate(column);
         IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, ownerId, "id");
+            connection, table, scope, ownerId, $"{table}_id");
 
         long id;
         using (SqliteCommand command = connection.CreateCommand())
@@ -322,7 +322,7 @@ public sealed class LSentenceArchive
                 $"""
                 INSERT INTO {table} ({column}, example_ref, position)
                 VALUES ($owner, $example, $position)
-                RETURNING id;
+                RETURNING {table}_id;
                 """;
             command.Parameters.AddWithValue("$owner", ownerId);
             command.Parameters.AddWithValue("$example", exampleId);
@@ -331,7 +331,7 @@ public sealed class LSentenceArchive
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, ownerId, "id",
+            connection, table, scope, ownerId, $"{table}_id",
             LDatabaseOrder.LDatabaseOrderInsert(current, id, position));
 
         session.LDatabaseSessionCommit();
@@ -356,8 +356,8 @@ public sealed class LSentenceArchive
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, ownerId, "id",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, ownerId, "id"));
+            connection, table, scope, ownerId, $"{table}_id",
+            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, ownerId, $"{table}_id"));
 
         session.LDatabaseSessionCommit();
     }

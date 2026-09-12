@@ -34,7 +34,7 @@ The workspace is the engine's to read, and this panel holds no part of it.
 ### `await Task.Run(() => _lEngine.LEngineMarkupImport(path));`
 
 Opening the file and importing it stand inside the same attempt.
-An unreadable file and an unusable one are the same thing to the reader.
+An unknown file and an unusable one are the same thing to the reader.
 The import did not happen.
 A long file is read and written away from the panel's own thread.
 So the window keeps drawing while the work runs.

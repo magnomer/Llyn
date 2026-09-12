@@ -13,4 +13,14 @@ public sealed record LExample(
         LExampleTranslation ?? LStateValue.LStateValueUnspecified;
 
     public LStateAnchor LExampleSource { get; init; } = LExampleSource ?? LStateAnchor.LStateAnchorUnspecified;
+
+    public LExample LExampleNormalize()
+    {
+        return this with
+        {
+            LExampleText = LExampleText.LStateValueNormalize(),
+            LExampleTranslation = LExampleTranslation.LStateValueNormalize(),
+            LExampleSource = LExampleSource.LStateAnchorNormalize(),
+        };
+    }
 }

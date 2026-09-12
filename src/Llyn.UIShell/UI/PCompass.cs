@@ -40,18 +40,18 @@ public partial class PDisplay
     {
         _pCompassRows.Clear();
 
-        string unreadable = _pDisplayHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pDisplayHost.PLocalizationTextRead("Display.Unknown");
 
         PCompassSectionAdd(PDisplaySpeechSection, _pDisplayHost.PLocalizationTextRead("Speech.Title"));
 
         if (PCompassSectionAdd(PDisplayMeaningSection, _pDisplayHost.PLocalizationTextRead("Display.MeaningPlural")))
         {
-            PCompassCardAdd(PDisplayMeaning, _pDisplayHost.PLocalizationTextRead("Display.MeaningSingle"), unreadable);
+            PCompassCardAdd(PDisplayMeaning, _pDisplayHost.PLocalizationTextRead("Display.MeaningSingle"), unknown);
         }
 
         if (PCompassSectionAdd(PDisplayCollocationSection, _pDisplayHost.PLocalizationTextRead("Display.Collocation")))
         {
-            PCompassCardAdd(PDisplayCollocation, _pDisplayHost.PLocalizationTextRead("Display.CollocationSingle"), unreadable);
+            PCompassCardAdd(PDisplayCollocation, _pDisplayHost.PLocalizationTextRead("Display.CollocationSingle"), unknown);
         }
 
         PCompassSectionAdd(PDisplayIncomingSection, _pDisplayHost.PLocalizationTextRead("Display.Translated"));
@@ -75,7 +75,7 @@ public partial class PDisplay
         return true;
     }
 
-    private void PCompassCardAdd(ItemsControl cards, string kind, string unreadable)
+    private void PCompassCardAdd(ItemsControl cards, string kind, string unknown)
     {
         for (int index = 0; index < cards.Items.Count; index++)
         {
@@ -91,8 +91,9 @@ public partial class PDisplay
 
             string label = card.LCardDraftTitle.LStateValueState switch
             {
+                _ when card.LCardDraftTitle.LStateValueUnreadable => card.LCardDraftTitle.LStateValueShow(),
                 LState.LStateSpecified => card.LCardDraftTitle.LStateValueShow(),
-                LState.LStateUnknown => unreadable,
+                LState.LStateUnknown => unknown,
                 _ => kind,
             };
 

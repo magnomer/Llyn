@@ -14,7 +14,7 @@ public static class LSchemaQuotation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS example (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                example_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 language TEXT NOT NULL,
@@ -27,13 +27,13 @@ public static class LSchemaQuotation
                 CHECK (text_state = 'specified' OR text IS NULL),
                 CHECK (translation_state = 'specified' OR translation IS NULL),
                 CHECK (source_state = 'specified' OR source_ref IS NULL),
-                FOREIGN KEY (source_ref) REFERENCES source (id),
+                FOREIGN KEY (source_ref) REFERENCES source (source_id),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS sense_example (
-                id INTEGER PRIMARY KEY,
-                sense_id INTEGER NOT NULL,
+                sense_example_id INTEGER PRIMARY KEY,
+                sense_parent INTEGER NOT NULL,
                 example_ref INTEGER,
                 position INTEGER NOT NULL,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -45,16 +45,16 @@ public static class LSchemaQuotation
                 CHECK (example_ref IS NOT NULL
                        OR particle_state <> 'unspecified'
                        OR dependence_state <> 'unspecified'),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_ref) REFERENCES example (id)
+                FOREIGN KEY (sense_parent) REFERENCES sense (sense_id) ON DELETE CASCADE,
+                FOREIGN KEY (example_ref) REFERENCES example (example_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_example_position
-                ON sense_example (sense_id, position);
+                ON sense_example (sense_parent, position);
 
             CREATE TABLE IF NOT EXISTS collocation_example (
-                id INTEGER PRIMARY KEY,
-                collocation_id INTEGER NOT NULL,
+                collocation_example_id INTEGER PRIMARY KEY,
+                collocation_parent INTEGER NOT NULL,
                 example_ref INTEGER,
                 position INTEGER NOT NULL,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -66,12 +66,12 @@ public static class LSchemaQuotation
                 CHECK (example_ref IS NOT NULL
                        OR particle_state <> 'unspecified'
                        OR dependence_state <> 'unspecified'),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_ref) REFERENCES example (id)
+                FOREIGN KEY (collocation_parent) REFERENCES collocation (collocation_id) ON DELETE CASCADE,
+                FOREIGN KEY (example_ref) REFERENCES example (example_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_example_position
-                ON collocation_example (collocation_id, position);
+                ON collocation_example (collocation_parent, position);
             """;
         command.ExecuteNonQuery();
     }

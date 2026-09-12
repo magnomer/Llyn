@@ -18,7 +18,7 @@ Such a row resolves against nothing and is displayed as it was typed.
 The vocabulary is seeded from the language packs, not from anything compiled in.
 Every pack on disk declaring a `vocabulary.json` is written into the workspace.
 It happens when the engine binds to it, in one session.
-The rows are keyed by `(language, pack_ref)` and their parents.
+The rows are keyed by `(language, pack_code)` and their parents.
 So a second run rewrites the same rows, keeps their ids, and adds nothing.
 That is why the tables are no longer empty on a fresh workspace.
 It is also why adding a language is still a folder rather than a change here.

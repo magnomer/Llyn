@@ -13,7 +13,7 @@ The note adds a heading, quote and code style, since its Markdown carries those 
 ## `public static string LFolioStyleNormalize(string color)`
 
 The format takes six hex digits with no leading hash and no alpha.
-An unreadable colour falls back to black rather than breaking the part.
+An unknown colour falls back to black rather than breaking the part.
 
 ## `private static void LFolioStyleAppend(StringBuilder styles, string id, string name, int size, bool bold, string color, string? family, int after)`
 

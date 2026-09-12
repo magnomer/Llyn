@@ -7,7 +7,7 @@ A tombstone is written after the Entry row is gone and names it as recorded text
 So it survives the deletion it describes.
 The revision it is filed under is a real reference and must already exist.
 
-One deleted Entry leaves exactly one tombstone, because `entry_id` is the primary key.
+One deleted Entry leaves exactly one tombstone, because `entry_ref` is the primary key.
 So recording the same Entry twice is a conflict rather than a second row.
 This store never deletes lexical data — `LEntryArchive.LEntryDelete` does that, and the caller records the tombstone afterwards.
 

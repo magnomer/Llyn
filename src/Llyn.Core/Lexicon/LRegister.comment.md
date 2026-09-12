@@ -12,7 +12,7 @@ Renaming it leaves the id and every reference to it untouched.
 A built-in Register is one a language pack ships, and it carries the integer id the pack declared it under.
 A written Register is one the user typed, and it carries no language.
 The name carries `LStateValue`, so a name standing empty says whether nothing was ever recorded.
-It says instead when something was recorded that cannot be read back.
+It says instead when the user marked the value as not known.
 
 **Parameters**
 

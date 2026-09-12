@@ -77,6 +77,11 @@ A silent rebind would bind the card to a row the user never chose.
 Reason key for a transcription request naming a scheme another row of the same entry already carries.
 One scheme spells one reading one way, so a second row under that name would say nothing new.
 
+## `public const string LRefusalUnreadable = "Refusal.ValueUnreadable";`
+
+A draft still carries a value the store could not read, and saving would write a diagnosis as data.
+The user clears the field first, and the unreadable data is lost on purpose.
+
 ## `public LRefusal(string reason)`
 
 Refuses a request for `reason`, a localization key.

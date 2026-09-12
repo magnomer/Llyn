@@ -51,7 +51,7 @@
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
                         <Binding Path="LRegisterDraftText" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>

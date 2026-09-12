@@ -34,3 +34,8 @@ The primary reading's IPA alone, for the surfaces that show only that.
 ## `public string LEntryDraftAudio`
 
 The primary reading's recording path alone, for the surfaces that play only that.
+
+## `public LEntryDraft LEntryDraftNormalize()`
+
+The same draft, across every meaning and collocation card with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

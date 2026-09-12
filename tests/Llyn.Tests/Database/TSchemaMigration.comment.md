@@ -14,7 +14,7 @@ A database in the shape an earlier build left behind is corrected, not merely re
 
 The shape an earlier build left behind.
 That is a version table that permits several rows.
-It is also an example table whose source_id carries no foreign key.
+It is also an example table whose source_ref carries no foreign key.
 The source table did not exist when the column was declared.
 
 ### `workspace.TWorkspaceScriptRun(`
@@ -64,7 +64,7 @@ A database in the version-30 shape, holding one broadcast Source and one printed
 The broadcast row states both retired columns and the printed row states neither.
 So the step is measured on the row it has text to carry and on the row it has none for.
 
-### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));`
+### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_ref"));`
 
 A child column with no index turns each parent delete into a full scan of the child table.
 So the index set is part of the schema rather than an optimization applied later.

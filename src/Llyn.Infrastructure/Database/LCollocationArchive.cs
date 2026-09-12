@@ -33,12 +33,12 @@ public sealed class LCollocationArchive
             command.CommandText =
                 """
                 INSERT INTO collocation (
-                    entry_id, position, title_state, title,
+                    entry_parent, position, title_state, title,
                     expression_state, expression, meaning_state, meaning)
                 VALUES (
                     $entry, $position, $titleState, $title,
                     $expressionState, $expression, $meaningState, $meaning)
-                RETURNING id;
+                RETURNING collocation_id;
                 """;
             command.Parameters.AddWithValue("$entry", stored.LCollocationEntryId);
             command.Parameters.AddWithValue("$position", stored.LCollocationPosition);
@@ -60,9 +60,9 @@ public sealed class LCollocationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, entry_id, position, title_state, title,
+            SELECT collocation_id, entry_parent, position, title_state, title,
                    expression_state, expression, meaning_state, meaning
-            FROM collocation WHERE entry_id = $entry
+            FROM collocation WHERE entry_parent = $entry
             ORDER BY position;
             """;
         command.Parameters.AddWithValue("$entry", entryId);
@@ -97,7 +97,7 @@ public sealed class LCollocationArchive
                 SET title_state = $titleState, title = $title,
                     expression_state = $expressionState, expression = $expression,
                     meaning_state = $meaningState, meaning = $meaning
-                WHERE id = $id;
+                WHERE collocation_id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", collocation.LCollocationTitle);
             LStateColumn.LStateColumnApply(command, "expression", collocation.LCollocationExpression);
@@ -129,7 +129,7 @@ public sealed class LCollocationArchive
         IReadOnlyList<long> order = LDatabaseOrder.LDatabaseOrderInsert(
             LCollocationSiblingRead(connection, entryId), id, position);
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "collocation", "entry_id = $owner", entryId, "id", order);
+            connection, "collocation", "entry_parent = $owner", entryId, "collocation_id", order);
 
         session.LDatabaseSessionCommit();
     }
@@ -145,7 +145,7 @@ public sealed class LCollocationArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM collocation WHERE id = $id;";
+            command.CommandText = "DELETE FROM collocation WHERE collocation_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -153,8 +153,8 @@ public sealed class LCollocationArchive
         if (entryId is not null)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, "collocation", "entry_id = $owner", entryId,
-                "id", LCollocationSiblingRead(connection, entryId));
+                connection, "collocation", "entry_parent = $owner", entryId,
+                "collocation_id", LCollocationSiblingRead(connection, entryId));
         }
 
         session.LDatabaseSessionCommit();
@@ -163,7 +163,7 @@ public sealed class LCollocationArchive
     private static long? LCollocationHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT entry_id FROM collocation WHERE id = $id;";
+        command.CommandText = "SELECT entry_parent FROM collocation WHERE collocation_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         return command.ExecuteScalar() as long?;
     }
@@ -171,6 +171,6 @@ public sealed class LCollocationArchive
     private static IReadOnlyList<long> LCollocationSiblingRead(SqliteConnection connection, long? entryId)
     {
         return LDatabaseOrder.LDatabaseOrderRead(
-            connection, "collocation", "entry_id = $owner", entryId, "id");
+            connection, "collocation", "entry_parent = $owner", entryId, "collocation_id");
     }
 }

@@ -13,6 +13,6 @@ It carries both an expression and the meaning that explains it, and the card has
 A meaning carries a definition instead.
 Reordering rewrites position only.
 The note table has no id and no position.
-entry_id is its primary key.
+entry_parent is its primary key.
 That makes at-most-one Note per entry a schema fact.
 Everything here cascades when its entry is deleted.

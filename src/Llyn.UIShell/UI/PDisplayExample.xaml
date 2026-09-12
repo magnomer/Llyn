@@ -41,7 +41,7 @@
                         <Binding Path="LExampleDraftParticle" />
                         <Binding Path="LExampleDraftDependence" />
                         <Binding Path="LExampleDraftText" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
@@ -64,7 +64,7 @@
                         <Binding Path="LExampleDraftParticle" />
                         <Binding Path="LExampleDraftDependence" />
                         <Binding Path="LExampleDraftText" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unreadable" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>

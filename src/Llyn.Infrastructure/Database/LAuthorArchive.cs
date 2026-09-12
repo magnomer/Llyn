@@ -25,7 +25,7 @@ public sealed class LAuthorArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "INSERT INTO author (name) VALUES ($name) RETURNING id;";
+                "INSERT INTO author (name) VALUES ($name) RETURNING author_id;";
             command.Parameters.AddWithValue("$name", stored.LAuthorName);
             stored = stored with { LAuthorId = (long)command.ExecuteScalar()! };
         }
@@ -50,10 +50,10 @@ public sealed class LAuthorArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT author.id, author.name
+            SELECT author.author_id, author.name
             FROM source_author link
-            JOIN author ON author.id = link.author_ref
-            WHERE link.source_id = $reference
+            JOIN author ON author.author_id = link.author_ref
+            WHERE link.source_parent = $reference
             ORDER BY link.position;
             """;
         command.Parameters.AddWithValue("$reference", referenceId);
@@ -72,7 +72,7 @@ public sealed class LAuthorArchive
     {
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT id, name FROM author ORDER BY name;";
+        command.CommandText = "SELECT author_id, name FROM author ORDER BY name;";
 
         List<LAuthor> authors = [];
         using SqliteDataReader reader = command.ExecuteReader();
@@ -90,10 +90,10 @@ public sealed class LAuthorArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT link.source_id, author.id, author.name
+            SELECT link.source_parent, author.author_id, author.name
             FROM source_author link
-            JOIN author ON author.id = link.author_ref
-            ORDER BY link.source_id, link.position;
+            JOIN author ON author.author_id = link.author_ref
+            ORDER BY link.source_parent, link.position;
             """;
 
         Dictionary<long, IReadOnlyList<LAuthor>> credits = [];
@@ -122,7 +122,7 @@ public sealed class LAuthorArchive
         using LDatabaseSession session = _lAuthorArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "UPDATE author SET name = $name WHERE id = $id;";
+            command.CommandText = "UPDATE author SET name = $name WHERE author_id = $id;";
             command.Parameters.AddWithValue("$name", author.LAuthorName);
             command.Parameters.AddWithValue("$id", author.LAuthorId);
             if (command.ExecuteNonQuery() == 0)
@@ -165,7 +165,7 @@ public sealed class LAuthorArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM author WHERE id = $id;";
+            command.CommandText = "DELETE FROM author WHERE author_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -178,7 +178,7 @@ public sealed class LAuthorArchive
         List<long> references = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "SELECT source_id FROM source_author WHERE author_ref = $id;";
+            command.CommandText = "SELECT source_parent FROM source_author WHERE author_ref = $id;";
             command.Parameters.AddWithValue("$id", id);
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -194,7 +194,7 @@ public sealed class LAuthorArchive
             command.ExecuteNonQuery();
         }
 
-        const string scope = "source_id = $owner";
+        const string scope = "source_parent = $owner";
         foreach (long reference in references)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
@@ -210,7 +210,7 @@ public sealed class LAuthorArchive
     private static LAuthor? LAuthorSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT name FROM author WHERE id = $id;";
+        command.CommandText = "SELECT name FROM author WHERE author_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
         return reader.Read() ? new LAuthor(id, reader.GetString(0)) : null;

@@ -7,14 +7,14 @@ namespace Llyn.Tests;
 internal static partial class TInterface
 {
     internal static LPortraitLabel TPortraitLabelCreate(
-        string unreadable,
+        string unknown,
         string meaning,
         string meanings,
         string collocation,
         string collocations,
         string incoming,
         string note) =>
-        new(unreadable, meaning, meanings, collocation, collocations, incoming, note);
+        new(unknown, meaning, meanings, collocation, collocations, incoming, note);
 
     internal static LPortraitLink TPortraitLinkCreate(long id, string headword, string language) =>
         new(id, headword, language);

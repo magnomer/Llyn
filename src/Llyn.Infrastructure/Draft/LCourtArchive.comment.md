@@ -21,7 +21,7 @@ A crash mid-write leaves the previous file intact.
 ## `public static LCourt? LCourtArchiveRead(string root, long id)`
 
 The link stored under `id`, or `null` when no readable file holds it.
-A missing file and an unreadable one are the same answer to the caller.
+A missing file and an unknown one are the same answer to the caller.
 
 ## `public static IReadOnlyList<LCourt> LCourtArchiveScan(string root)`
 

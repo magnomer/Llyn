@@ -16,4 +16,15 @@ public sealed record LDraft(
     IReadOnlyList<LAuthor>? LDraftAuthor = null)
 {
     public IReadOnlyList<LAuthor> LDraftAuthor { get; init; } = LDraftAuthor ?? [];
+
+    public LDraft LDraftNormalize()
+    {
+        return this with
+        {
+            LDraftContent = LDraftContent.LEntryDraftNormalize(),
+            LDraftExample = LDraftExample?.LExampleNormalize(),
+            LDraftSituation = LDraftSituation?.LSituationNormalize(),
+            LDraftReference = LDraftReference?.LReferenceNormalize(),
+        };
+    }
 }

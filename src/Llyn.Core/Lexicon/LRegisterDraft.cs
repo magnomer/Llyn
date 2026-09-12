@@ -10,6 +10,11 @@ public sealed record LRegisterDraft(
 
     public string LRegisterDraftLanguage { get; init; } = LRegisterDraftLanguage ?? string.Empty;
 
+    public LRegisterDraft LRegisterDraftNormalize()
+    {
+        return this with { LRegisterDraftName = LRegisterDraftName.LStateValueNormalize() };
+    }
+
     public static LRegisterDraft LRegisterDraftCreate(string text)
     {
         return new LRegisterDraft(LStateValue.LStateValueRead(text), 0);

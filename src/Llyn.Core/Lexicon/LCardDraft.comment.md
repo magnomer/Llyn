@@ -32,7 +32,7 @@ A comparison that means "the same card" walks the lists itself.
 
 - `LCardDraftTitle` — Title from the card's Title field, and what is known about it.
   Nothing was recorded when the field stands empty.
-  It is unreadable when it holds something that cannot be read back.
+  It is unknown when the user marked it as not known.
 - `LCardDraftExpression` — Expression text from a Collocation card's Expression field.
   It is always empty for a Meaning card, whose template has no Expression control.
 - `LCardDraftMeaning` — The card's meaning text: the Definition field of a Meaning card, the Meaning field of a Collocation card.
@@ -100,3 +100,8 @@ The save drops such a card, and the update reads it as a card the user removed.
 The test lives here rather than in the engine because the fields it walks live here.
 A field added to the record is added to this walk in the same file, at the same time.
 The engine restated the list by hand once, and fell three fields behind the record.
+
+## `public LCardDraft LCardDraftNormalize()`
+
+The same card, its rows, and its children with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

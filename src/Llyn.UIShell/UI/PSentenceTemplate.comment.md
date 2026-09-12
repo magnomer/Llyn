@@ -6,7 +6,7 @@ The Example row as the card shows it, on one line.
 That is the two frame fields, then the sentence field.
 The id the row will be stored under stands at its right.
 It is also the Source button and the buttons that open and drop rows.
-Each field's hint reads the unreadable mark when the row holds something it cannot read back.
+Each field's hint reads the unknown mark when the row holds something it cannot read back.
 So an empty-looking field says which kind of empty it is.
 
 The two frame fields sit in the first two columns.
@@ -26,7 +26,7 @@ That is why they live in this dictionary rather than beside a single template.
 What the Source button reads.
 It reads the cited Source's name.
 It reads the invitation to assign one when the row cites none.
-It reads the unreadable mark when the citation cannot be read back.
+It reads the unknown mark when the citation was marked as not known.
 
 ## `Theme.Sentence.Notice`
 

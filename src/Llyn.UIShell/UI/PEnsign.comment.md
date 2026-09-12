@@ -5,7 +5,7 @@
 Resolves a language pack's cached SVG flag into a frozen drawing, and keeps the resolved flags.
 It subscribes to the engine for one announcement only, the workspace moving, and throws the kept flags away on it.
 The editor's language picker, the read-only entry display, and every catalog row use it.
-A malformed or unreadable flag becomes no image, which lets each surface show its neutral globe fallback.
+A malformed or unknown flag becomes no image, which lets each surface show its neutral globe fallback.
 
 ## `internal static void PEnsignAttach(LEngine engine)`
 

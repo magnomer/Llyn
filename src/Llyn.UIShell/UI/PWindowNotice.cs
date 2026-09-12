@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Windows;
 using Llyn.Core;
@@ -20,6 +20,36 @@ public partial class PWindow
             PLocalizationTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);
+    }
+
+    internal PWindowStored PWindowCommitRun<PWindowStored>(long held, Func<long, PWindowStored> commit)
+    {
+        ArgumentNullException.ThrowIfNull(commit);
+
+        try
+        {
+            return commit(held);
+        }
+        catch (LRefusal refusal) when (refusal.LRefusalReason == LRefusal.LRefusalUnreadable)
+        {
+            if (!PWindowUnreadableConfirm())
+            {
+                throw;
+            }
+
+            _lEngine.LEngineDraftSweep(held);
+            return commit(held);
+        }
+    }
+
+    private bool PWindowUnreadableConfirm()
+    {
+        return MessageBox.Show(
+            this,
+            PLocalizationTextRead("Notice.UnreadableDrop"),
+            PLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning) == MessageBoxResult.Yes;
     }
 
     internal void PWindowFailureShow(string key, Exception exception)

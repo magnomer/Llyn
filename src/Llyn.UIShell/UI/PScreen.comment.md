@@ -24,7 +24,7 @@ A reader who wants one of them reads one file rather than a player split across 
 The span is enforced wherever the film is playing.
 A file is watched by a clock that sends it back to the start when it passes the end.
 A page is given the span before it loads, so the site's own player never plays outside it.
-An unreadable span is no span at all, and the film plays whole.
+An unknown span is no span at all, and the film plays whole.
 
 The Screen fills the width it is given and takes the height that keeps a film's shape.
 A card is read at the width of the window.

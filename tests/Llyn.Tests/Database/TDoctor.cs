@@ -38,7 +38,7 @@ public sealed class TDoctor
     }
 
     [Fact]
-    public void DoctorDatabaseCreate_UnreadableFile_StartsCleanDatabase()
+    public void DoctorDatabaseCreate_UnknownFile_StartsCleanDatabase()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         File.WriteAllText(TDoctorFileRead(workspace), "this is not a database");

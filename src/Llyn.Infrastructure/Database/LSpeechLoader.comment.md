@@ -13,7 +13,7 @@ A missing or malformed file yields an empty vocabulary rather than throwing.
 A language may legitimately declare no morphology at all.
 An isolating language has none to declare.
 So an empty result is an answer, not a failure.
-One unreadable pack never stops the others from loading.
+One unknown pack never stops the others from loading.
 
 ## `public static LSpeechPack LSpeechLoaderLoad(string language)`
 

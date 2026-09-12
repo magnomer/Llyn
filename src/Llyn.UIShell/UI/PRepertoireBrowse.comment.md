@@ -50,7 +50,7 @@ An open editor is restarted on the Situation shown, so the held draft and the re
 
 Draws one stored field as a row of the reading.
 A written value reads itself, or the name resolved for it when the value is an id.
-An unreadable one reads the mark, and one never written reads the unrecorded text in the muted colour.
+An unknown one reads the mark, and one never written reads the unrecorded text in the muted colour.
 The row is never hidden, because a missing row and an empty field are different claims about the store.
 
 ## `private void POccurrenceFind(long id)`

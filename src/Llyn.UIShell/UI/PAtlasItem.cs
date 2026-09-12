@@ -7,11 +7,11 @@ internal sealed class PAtlasItem : INotifyPropertyChanged
 {
     private bool _pAtlasItemChosen;
 
-    internal PAtlasItem(LSituation situation, int usage, string unreadable, string untitled)
+    internal PAtlasItem(LSituation situation, int usage, string unknown, string untitled)
     {
         PAtlasItemId = situation.LSituationId;
-        PAtlasItemTitle = PAtlasTextRead(situation.LSituationTitle, unreadable) ?? untitled;
-        PAtlasItemKind = PAtlasTextRead(situation.LSituationKind, unreadable) ?? string.Empty;
+        PAtlasItemTitle = PAtlasTextRead(situation.LSituationTitle, unknown) ?? untitled;
+        PAtlasItemKind = PAtlasTextRead(situation.LSituationKind, unknown) ?? string.Empty;
         PAtlasItemCount = usage.ToString(System.Globalization.CultureInfo.CurrentCulture);
     }
 
@@ -23,12 +23,13 @@ internal sealed class PAtlasItem : INotifyPropertyChanged
 
     public string PAtlasItemCount { get; }
 
-    private static string? PAtlasTextRead(LStateValue value, string unreadable)
+    private static string? PAtlasTextRead(LStateValue value, string unknown)
     {
         return value.LStateValueState switch
         {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => unreadable,
+            LState.LStateUnknown => unknown,
             _ => null,
         };
     }

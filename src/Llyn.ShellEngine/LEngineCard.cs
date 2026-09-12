@@ -110,7 +110,7 @@ public sealed partial class LEngine
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, "collocation", "entry_id = $owner", entryId, "id", order);
+            connection, "collocation", "entry_parent = $owner", entryId, "collocation_id", order);
     }
 
     private void LEngineCardSync(

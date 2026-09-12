@@ -19,6 +19,16 @@ public sealed record LSentenceDraft(
         && LSentenceDraftParticle.LStateValueEmpty
         && LSentenceDraftDependence.LStateValueEmpty;
 
+    public LSentenceDraft LSentenceDraftNormalize()
+    {
+        return this with
+        {
+            LSentenceDraftExample = LSentenceDraftExample?.LExampleDraftNormalize(),
+            LSentenceDraftParticle = LSentenceDraftParticle.LStateValueNormalize(),
+            LSentenceDraftDependence = LSentenceDraftDependence.LStateValueNormalize(),
+        };
+    }
+
     public static LSentenceDraft LSentenceDraftCreate(string text)
     {
         return new LSentenceDraft(

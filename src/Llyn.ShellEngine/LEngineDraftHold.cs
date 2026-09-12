@@ -109,6 +109,21 @@ public sealed partial class LEngine
         }
     }
 
+    public void LEngineDraftSweep(long id)
+    {
+        LDraft saved;
+        lock (_lEngineGate)
+        {
+            ArgumentOutOfRangeException.ThrowIfZero(id);
+            LEngineDraftValidate(id);
+
+            saved = LEngineDraftLoad(id).LDraftNormalize();
+            LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectDraft, saved.LDraftId);
+    }
+
     public LOutcome LEngineDraftCommit(long id)
     {
         LOutcome outcome;

@@ -129,7 +129,7 @@ public sealed class TDatabaseSession
             tags.TTagMeaningRead(meaning.LMeaningId).Select(tag => tag.LTagText));
         Assert.Equal(
             [0, 1],
-            TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaning.LMeaningId));
+            TDatabasePositionRead(workspace, "sense_tag", "sense_parent", meaning.LMeaningId));
     }
 
     [Fact]

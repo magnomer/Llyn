@@ -34,3 +34,8 @@ A span alone points at nothing, so it never keeps a row alive.
 The stored row this draft stands for, empty when the row is new.
 A card points at a video rather than owning one, and two cards may point at the same film.
 Carrying the row id beside the location is what lets a citation stay a citation.
+
+## `public LVideoDraft LVideoDraftNormalize()`
+
+The same row with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

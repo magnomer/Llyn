@@ -25,7 +25,7 @@ The roster is read again rather than reordered in place.
 
 Reads the marked entries the engine returns for the query and the chosen ordering.
 Ordering by the mark reads when the mark was made, never when the entry was written.
-An unreadable workspace leaves the roster empty and tells the user why.
+An unknown workspace leaves the roster empty and tells the user why.
 The empty line is shown only while no row stands.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 

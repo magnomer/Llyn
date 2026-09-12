@@ -2,7 +2,8 @@ namespace Llyn.Core;
 
 public sealed record LStateValue(
     LState LStateValueState,
-    string? LStateValueText)
+    string? LStateValueText,
+    bool LStateValueUnreadable = false)
 {
     public static LStateValue LStateValueUnspecified { get; } = new(LState.LStateUnspecified, null);
 
@@ -18,14 +19,14 @@ public sealed record LStateValue(
         return string.IsNullOrWhiteSpace(text) ? LStateValueUnspecified : LStateValueCreate(text);
     }
 
-    public static LStateValue LStateValueResolve(string? text, bool unreadable)
+    public static LStateValue LStateValueResolve(string? text, bool unknown)
     {
-        return unreadable ? LStateValueUnknown : LStateValueRead(text);
+        return unknown ? LStateValueUnknown : LStateValueRead(text);
     }
 
     public string LStateValueShow()
     {
-        return LStateValueState == LState.LStateSpecified && LStateValueText is not null
+        return LStateValueText is not null && (LStateValueState == LState.LStateSpecified || LStateValueUnreadable)
             ? LStateValueText
             : string.Empty;
     }
@@ -33,6 +34,11 @@ public sealed record LStateValue(
     public static implicit operator LStateValue(string? text)
     {
         return LStateValueRead(text);
+    }
+
+    public LStateValue LStateValueNormalize()
+    {
+        return LStateValueUnreadable ? LStateValueUnspecified : this;
     }
 
     public bool LStateValueEmpty => LStateValueState == LState.LStateUnspecified;

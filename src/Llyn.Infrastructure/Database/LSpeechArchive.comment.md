@@ -13,7 +13,7 @@ Binds the store to the workspace `database` it opens sessions through.
 
 ## `public LSpeechValue LSpeechValueCreate(LSpeechValue value)`
 
-Adds or replaces one vocabulary row, keyed by `(language, pack_ref)`, and returns it with its row id.
+Adds or replaces one vocabulary row, keyed by `(language, pack_code)`, and returns it with its row id.
 A pack that renames a value keeps the row id, so every entry that links it follows the rename.
 A value with code `0` is user-added and is given a negative code no pack can collide with.
 

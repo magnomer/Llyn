@@ -14,16 +14,16 @@ public static class LSchemaPronunciation
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS pronunciation (
-                id INTEGER PRIMARY KEY,
-                entry_id INTEGER NOT NULL,
+                pronunciation_id INTEGER PRIMARY KEY,
+                entry_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 variety TEXT,
                 ipa TEXT,
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS syllable (
-                pronunciation_id INTEGER NOT NULL,
+                pronunciation_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 onset TEXT,
                 medial TEXT,
@@ -31,16 +31,16 @@ public static class LSchemaPronunciation
                 coda TEXT,
                 tone_number INTEGER,
                 tone_points TEXT,
-                PRIMARY KEY (pronunciation_id, position),
-                FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
+                PRIMARY KEY (pronunciation_parent, position),
+                FOREIGN KEY (pronunciation_parent) REFERENCES pronunciation (pronunciation_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS pronunciation_audio (
-                pronunciation_id INTEGER NOT NULL PRIMARY KEY,
+                pronunciation_parent INTEGER NOT NULL PRIMARY KEY,
                 file TEXT NOT NULL,
-                source TEXT,
+                site TEXT,
                 added_utc TEXT NOT NULL,
-                FOREIGN KEY (pronunciation_id) REFERENCES pronunciation (id) ON DELETE CASCADE
+                FOREIGN KEY (pronunciation_parent) REFERENCES pronunciation (pronunciation_id) ON DELETE CASCADE
             );
             """;
         command.ExecuteNonQuery();

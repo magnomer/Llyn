@@ -47,3 +47,8 @@ Such an empty row records nothing and is never committed.
 
 A sentence quoted with nothing else said about it.
 The Example has no id yet and cites no Source, and the row states no frame.
+
+## `public LSentenceDraft LSentenceDraftNormalize()`
+
+The same row and its example with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

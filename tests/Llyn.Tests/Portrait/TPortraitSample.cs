@@ -7,7 +7,7 @@ internal static class TPortraitSample
     internal static LPortrait TPortraitSampleCreate()
     {
         LPortraitLabel label = TInterface.TPortraitLabelCreate(
-            "Unreadable", "Meaning", "Meanings", "Collocation", "Collocations", "Links here", "Note");
+            "Unknown", "Meaning", "Meanings", "Collocation", "Collocations", "Links here", "Note");
 
         LPortraitCard sense = TInterface.TPortraitCardCreate(
             1,

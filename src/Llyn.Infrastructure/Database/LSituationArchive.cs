@@ -32,7 +32,7 @@ public sealed class LSituationArchive
                 VALUES (
                     $titleState, $title, $descriptionState, $description,
                     $kindState, $kind)
-                RETURNING id;
+                RETURNING situation_id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", stored.LSituationTitle);
             LStateColumn.LStateColumnApply(command, "description", stored.LSituationDescription);
@@ -58,7 +58,7 @@ public sealed class LSituationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, title_state, title, description_state, description,
+            SELECT situation_id, title_state, title, description_state, description,
                    kind_state, kind
             FROM situation
             ORDER BY rowid;
@@ -80,12 +80,12 @@ public sealed class LSituationArchive
 
     public IReadOnlyList<LSituation> LSituationMeaningRead(long meaningId)
     {
-        return LSituationReferrerRead("sense_situation", "sense_id", meaningId);
+        return LSituationReferrerRead("sense_situation", "sense_parent", meaningId);
     }
 
     public IReadOnlyList<LSituation> LSituationCollocationRead(long collocationId)
     {
-        return LSituationReferrerRead("collocation_situation", "collocation_id", collocationId);
+        return LSituationReferrerRead("collocation_situation", "collocation_parent", collocationId);
     }
 
     public void LSituationUpdate(LSituation situation)
@@ -102,7 +102,7 @@ public sealed class LSituationArchive
                 SET title_state = $titleState, title = $title,
                     description_state = $descriptionState, description = $description,
                     kind_state = $kindState, kind = $kind
-                WHERE id = $id;
+                WHERE situation_id = $id;
                 """;
             LStateColumn.LStateColumnApply(command, "title", situation.LSituationTitle);
             LStateColumn.LStateColumnApply(command, "description", situation.LSituationDescription);
@@ -126,7 +126,7 @@ public sealed class LSituationArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE situation SET title_state = $titleState, title = $title WHERE id = $id;";
+                "UPDATE situation SET title_state = $titleState, title = $title WHERE situation_id = $id;";
             LStateColumn.LStateColumnApply(command, "title", title);
             command.Parameters.AddWithValue("$id", situationId);
             if (command.ExecuteNonQuery() == 0)
@@ -183,13 +183,13 @@ public sealed class LSituationArchive
             id,
             LOwner.LOwnerMeaning,
             """
-            SELECT link.sense_id, sense.entry_id, entry.headword, entry.language,
+            SELECT link.sense_parent, sense.entry_parent, entry.headword, entry.language,
                    sense.title_state, sense.title,
                    CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
                    COALESCE(sense.gloss, sense.definition)
             FROM sense_situation link
-            JOIN sense ON sense.id = link.sense_id
-            JOIN entry ON entry.id = sense.entry_id
+            JOIN sense ON sense.sense_id = link.sense_parent
+            JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE link.situation_ref = $id
             ORDER BY entry.headword, sense.position;
             """));
@@ -198,12 +198,12 @@ public sealed class LSituationArchive
             id,
             LOwner.LOwnerCollocation,
             """
-            SELECT link.collocation_id, collocation.entry_id, entry.headword, entry.language,
+            SELECT link.collocation_parent, collocation.entry_parent, entry.headword, entry.language,
                    collocation.title_state, collocation.title,
                    collocation.expression_state, collocation.expression
             FROM collocation_situation link
-            JOIN collocation ON collocation.id = link.collocation_id
-            JOIN entry ON entry.id = collocation.entry_id
+            JOIN collocation ON collocation.collocation_id = link.collocation_parent
+            JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE link.situation_ref = $id
             ORDER BY entry.headword, collocation.position;
             """));
@@ -283,7 +283,7 @@ public sealed class LSituationArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM situation WHERE id = $id;";
+            command.CommandText = "DELETE FROM situation WHERE situation_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -293,7 +293,7 @@ public sealed class LSituationArchive
 
     private static void LSituationLinkDelete(SqliteConnection connection, string table, long situationId)
     {
-        string column = table == "sense_situation" ? "sense_id" : "collocation_id";
+        string column = table == "sense_situation" ? "sense_parent" : "collocation_parent";
 
         List<long> referrers = [];
         using (SqliteCommand command = connection.CreateCommand())
@@ -330,22 +330,22 @@ public sealed class LSituationArchive
 
     public void LSituationMeaningAttach(long meaningId, long situationId, int position)
     {
-        LSituationReferenceAttach("sense_situation", "sense_id", meaningId, situationId, position);
+        LSituationReferenceAttach("sense_situation", "sense_parent", meaningId, situationId, position);
     }
 
     public void LSituationCollocationAttach(long collocationId, long situationId, int position)
     {
-        LSituationReferenceAttach("collocation_situation", "collocation_id", collocationId, situationId, position);
+        LSituationReferenceAttach("collocation_situation", "collocation_parent", collocationId, situationId, position);
     }
 
     public void LSituationMeaningDetach(long meaningId, long situationId)
     {
-        LSituationReferenceDetach("sense_situation", "sense_id", meaningId, situationId);
+        LSituationReferenceDetach("sense_situation", "sense_parent", meaningId, situationId);
     }
 
     public void LSituationCollocationDetach(long collocationId, long situationId)
     {
-        LSituationReferenceDetach("collocation_situation", "collocation_id", collocationId, situationId);
+        LSituationReferenceDetach("collocation_situation", "collocation_parent", collocationId, situationId);
     }
 
     private void LSituationReferenceAttach(
@@ -419,11 +419,11 @@ public sealed class LSituationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT situation.id, situation.title_state, situation.title,
+            SELECT situation.situation_id, situation.title_state, situation.title,
                    situation.description_state, situation.description,
                    situation.kind_state, situation.kind
             FROM {table} link
-            JOIN situation ON situation.id = link.situation_ref
+            JOIN situation ON situation.situation_id = link.situation_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;
@@ -450,7 +450,7 @@ public sealed class LSituationArchive
             """
             SELECT title_state, title, description_state, description,
                    kind_state, kind
-            FROM situation WHERE id = $id;
+            FROM situation WHERE situation_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();

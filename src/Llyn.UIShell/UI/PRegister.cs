@@ -6,7 +6,7 @@ namespace Llyn.UIShell;
 internal sealed class PRegister
 {
     private readonly string _pRegisterText;
-    private readonly bool _pRegisterUnreadable;
+    private readonly bool _pRegisterUnknown;
 
     internal PRegister(LStateValue text, long id)
         : this(text, id, string.Empty)
@@ -18,7 +18,7 @@ internal sealed class PRegister
         ArgumentNullException.ThrowIfNull(text);
 
         _pRegisterText = text.LStateValueShow();
-        _pRegisterUnreadable = text.LStateValueState == LState.LStateUnknown;
+        _pRegisterUnknown = text.LStateValueState == LState.LStateUnknown;
         PRegisterId = id;
         PRegisterLanguage = language ?? string.Empty;
     }
@@ -29,10 +29,10 @@ internal sealed class PRegister
 
     public string PRegisterText => _pRegisterText;
 
-    public bool PRegisterUnreadable => _pRegisterUnreadable;
+    public bool PRegisterUnknown => _pRegisterUnknown;
 
     internal LStateValue PRegisterTextRead()
     {
-        return LStateValue.LStateValueResolve(_pRegisterText, _pRegisterUnreadable);
+        return LStateValue.LStateValueResolve(_pRegisterText, _pRegisterUnknown);
     }
 }

@@ -30,6 +30,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalScheme = "Refusal.SchemeDoubled";
 
+    public const string LRefusalUnreadable = "Refusal.ValueUnreadable";
+
     public LRefusal(string reason)
         : base(reason)
     {

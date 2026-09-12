@@ -8,7 +8,7 @@ namespace Llyn.UIShell;
 internal sealed class PVideo : INotifyPropertyChanged
 {
     private string _pVideoLocation = string.Empty;
-    private bool _pVideoUnreadable;
+    private bool _pVideoUnknown;
     private bool _pVideoUnwritten;
     private string _pVideoTimestamp = string.Empty;
     private Uri? _pVideoPreview;
@@ -24,23 +24,23 @@ internal sealed class PVideo : INotifyPropertyChanged
         _pVideoRow = written.LVideoDraftId;
 
         PVideoLocation = written.LVideoDraftLocation.LStateValueShow();
-        PVideoUnreadable = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
+        PVideoUnknown = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
         PVideoTimestamp = written.LVideoDraftSpan.LStateValueShow();
         _pVideoUnwritten = written.LVideoDraftSpan.LStateValueState == LState.LStateUnknown;
     }
 
-    public bool PVideoUnreadable
+    public bool PVideoUnknown
     {
-        get => _pVideoUnreadable;
+        get => _pVideoUnknown;
         private set
         {
-            if (_pVideoUnreadable == value)
+            if (_pVideoUnknown == value)
             {
                 return;
             }
 
-            _pVideoUnreadable = value;
-            PVideoRaise(nameof(PVideoUnreadable));
+            _pVideoUnknown = value;
+            PVideoRaise(nameof(PVideoUnknown));
         }
     }
 
@@ -56,7 +56,7 @@ internal sealed class PVideo : INotifyPropertyChanged
             }
 
             _pVideoLocation = chosen;
-            PVideoUnreadable = false;
+            PVideoUnknown = false;
             PVideoRaise(nameof(PVideoLocation));
             PVideoPreview = PImage.PImageAddressRead(chosen);
         }
@@ -144,7 +144,7 @@ internal sealed class PVideo : INotifyPropertyChanged
 
     internal LStateValue PVideoLocationRead()
     {
-        return LStateValue.LStateValueResolve(_pVideoLocation, _pVideoUnreadable);
+        return LStateValue.LStateValueResolve(_pVideoLocation, _pVideoUnknown);
     }
 
     internal LStateValue PVideoSpanRead()
@@ -163,7 +163,7 @@ internal sealed class PVideo : INotifyPropertyChanged
         {
             _pVideoLocation = written.LVideoDraftLocation.LStateValueShow();
             PVideoRaise(nameof(PVideoLocation));
-            PVideoUnreadable = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
+            PVideoUnknown = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
             PVideoPreview = PImage.PImageAddressRead(_pVideoLocation);
         }
 

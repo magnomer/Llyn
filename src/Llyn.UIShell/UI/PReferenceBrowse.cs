@@ -120,7 +120,7 @@ public partial class PReference
             return;
         }
 
-        string unreadable = _pReferenceHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pReferenceHost.PLocalizationTextRead("Display.Unknown");
         string unset = _pReferenceHost.PLocalizationTextRead("Source.Unset");
 
         _pShelfList.Clear();
@@ -128,7 +128,7 @@ public partial class PReference
         foreach (LCatalogReference row in read)
         {
             kept |= row.LCatalogReferenceStored.LReferenceId == _pColophonReference;
-            _pShelfList.Add(new PShelfItem(row, unreadable, unset));
+            _pShelfList.Add(new PShelfItem(row, unknown, unset));
         }
 
         PShelfEmpty.Visibility = _pShelfList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -202,8 +202,9 @@ public partial class PReference
     {
         string? text = value.LStateValueState switch
         {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => _pReferenceHost.PLocalizationTextRead("Display.Unreadable"),
+            LState.LStateUnknown => _pReferenceHost.PLocalizationTextRead("Display.Unknown"),
             _ => null,
         };
 
@@ -219,7 +220,7 @@ public partial class PReference
         string text = PShelfItem.PShelfCreditRead(
             reference,
             credits,
-            _pReferenceHost.PLocalizationTextRead("Display.Unreadable"),
+            _pReferenceHost.PLocalizationTextRead("Display.Unknown"),
             _pReferenceHost.PLocalizationTextRead("Source.Unset"));
 
         PColophonAuthor.Text = text;
@@ -241,7 +242,7 @@ public partial class PReference
             return;
         }
 
-        string unreadable = _pReferenceHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pReferenceHost.PLocalizationTextRead("Display.Unknown");
         string unnamed = _pReferenceHost.PLocalizationTextRead("Source.Unnamed");
         string meaning = _pReferenceHost.PLocalizationTextRead("Source.Meaning");
         string collocation = _pReferenceHost.PLocalizationTextRead("Source.Collocation");
@@ -258,7 +259,7 @@ public partial class PReference
                     LOwner.LOwnerCollocation => collocation,
                     _ => example,
                 },
-                unreadable,
+                unknown,
                 unnamed));
         }
 

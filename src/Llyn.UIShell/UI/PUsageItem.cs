@@ -5,7 +5,7 @@ namespace Llyn.UIShell;
 
 internal sealed class PUsageItem
 {
-    internal PUsageItem(LUsage usage, string owner, string unreadable, string unnamed)
+    internal PUsageItem(LUsage usage, string owner, string unknown, string unnamed)
     {
         PUsageItemId = usage.LUsageId;
         PUsageItemEntry = usage.LUsageEntry;
@@ -15,8 +15,9 @@ internal sealed class PUsageItem
         PUsageItemOwner = owner;
         PUsageItemTitle = usage.LUsageTitle.LStateValueState switch
         {
+            _ when usage.LUsageTitle.LStateValueUnreadable => usage.LUsageTitle.LStateValueShow(),
             LState.LStateSpecified => usage.LUsageTitle.LStateValueShow(),
-            LState.LStateUnknown => unreadable,
+            LState.LStateUnknown => unknown,
             _ => unnamed,
         };
         PUsageItemFlag = PEnsign.PEnsignFind(usage.LUsageLanguage);

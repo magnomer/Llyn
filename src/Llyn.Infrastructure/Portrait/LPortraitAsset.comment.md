@@ -19,4 +19,4 @@ The bytes as an address a page can carry without a second file.
 Only a local file is read, because an export makes no network request.
 A remote picture is left to the page, which may still fetch it when opened.
 An oversized file is refused, since one picture must not make a document unopenable.
-A missing or unreadable file yields nothing, and the writer falls back to its address.
+A missing or unknown file yields nothing, and the writer falls back to its address.

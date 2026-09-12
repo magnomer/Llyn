@@ -19,5 +19,5 @@ Those lines take their family and size from card resources the reading view sets
 
 ### `private static LFont PFontRead(LEngine engine, string language)`
 
-A pack that is missing or unreadable must not stop a headword from being drawn.
+A pack that is missing or unknown must not stop a headword from being drawn.
 So a failed read is answered with a blank record and the theme's own typography.

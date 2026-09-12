@@ -14,7 +14,7 @@ public static class LSchemaReference
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS author (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                author_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 name TEXT NOT NULL,
@@ -22,7 +22,7 @@ public static class LSchemaReference
             );
 
             CREATE TABLE IF NOT EXISTS source (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                source_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -43,16 +43,16 @@ public static class LSchemaReference
             );
 
             CREATE TABLE IF NOT EXISTS source_author (
-                source_id INTEGER NOT NULL,
+                source_parent INTEGER NOT NULL,
                 author_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (source_id, author_ref),
-                FOREIGN KEY (source_id) REFERENCES source (id) ON DELETE CASCADE,
-                FOREIGN KEY (author_ref) REFERENCES author (id)
+                PRIMARY KEY (source_parent, author_ref),
+                FOREIGN KEY (source_parent) REFERENCES source (source_id) ON DELETE CASCADE,
+                FOREIGN KEY (author_ref) REFERENCES author (author_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS source_author_position
-                ON source_author (source_id, position);
+                ON source_author (source_parent, position);
             """;
         command.ExecuteNonQuery();
     }

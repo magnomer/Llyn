@@ -102,8 +102,8 @@ public sealed class LInflectionArchive
         {
             command.CommandText =
                 """
-                SELECT id, position, text, local, speech_value_ref
-                FROM inflection WHERE entry_id = $entry ORDER BY position;
+                SELECT inflection_id, position, text, local, speech_value_ref
+                FROM inflection WHERE entry_parent = $entry ORDER BY position;
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
 
@@ -141,7 +141,7 @@ public sealed class LInflectionArchive
     private static int LInflectionCountRead(SqliteConnection connection, long entryId)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT COUNT(*) FROM inflection WHERE entry_id = $entry;";
+        command.CommandText = "SELECT COUNT(*) FROM inflection WHERE entry_parent = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
         return Convert.ToInt32(command.ExecuteScalar());
     }
@@ -152,10 +152,10 @@ public sealed class LInflectionArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT inflection_feature.inflection_id, inflection_feature.morphology_value_ref
+            SELECT inflection_feature.inflection_parent, inflection_feature.morphology_value_ref
             FROM inflection_feature
-            JOIN inflection ON inflection.id = inflection_feature.inflection_id
-            WHERE inflection.entry_id = $entry
+            JOIN inflection ON inflection.inflection_id = inflection_feature.inflection_parent
+            WHERE inflection.entry_parent = $entry
             ORDER BY inflection.position, inflection_feature.position;
             """;
         command.Parameters.AddWithValue("$entry", entryId);
@@ -191,9 +191,9 @@ public sealed class LInflectionArchive
             {
                 command.CommandText =
                     """
-                    INSERT INTO inflection (entry_id, position, text, local, speech_value_ref)
+                    INSERT INTO inflection (entry_parent, position, text, local, speech_value_ref)
                     VALUES ($entry, $position, $text, $local, $speech)
-                    RETURNING id;
+                    RETURNING inflection_id;
                     """;
                 command.Parameters.AddWithValue("$entry", entryId);
                 command.Parameters.AddWithValue("$position", position);
@@ -224,7 +224,7 @@ public sealed class LInflectionArchive
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO inflection_feature (inflection_id, position, morphology_value_ref)
+                INSERT INTO inflection_feature (inflection_parent, position, morphology_value_ref)
                 VALUES ($inflection, $position, $value);
                 """;
             command.Parameters.AddWithValue("$inflection", inflectionId);
@@ -237,7 +237,7 @@ public sealed class LInflectionArchive
     private static void LInflectionClear(SqliteConnection connection, long entryId)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM inflection WHERE entry_id = $entry;";
+        command.CommandText = "DELETE FROM inflection WHERE entry_parent = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
         command.ExecuteNonQuery();
     }

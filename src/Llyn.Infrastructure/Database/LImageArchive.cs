@@ -28,7 +28,7 @@ public sealed class LImageArchive
                 """
                 INSERT INTO image (location_state, location)
                 VALUES ($locationState, $location)
-                RETURNING id;
+                RETURNING image_id;
                 """;
             LStateColumn.LStateColumnApply(command, "location", stored.LImageLocation);
             stored = stored with { LImageId = (long)command.ExecuteScalar()! };
@@ -48,12 +48,12 @@ public sealed class LImageArchive
 
     public IReadOnlyList<LImage> LImageMeaningRead(long meaningId)
     {
-        return LImageReferrerRead("sense_image", "sense_id", meaningId);
+        return LImageReferrerRead("sense_image", "sense_parent", meaningId);
     }
 
     public IReadOnlyList<LImage> LImageCollocationRead(long collocationId)
     {
-        return LImageReferrerRead("collocation_image", "collocation_id", collocationId);
+        return LImageReferrerRead("collocation_image", "collocation_parent", collocationId);
     }
 
     public void LImageUpdate(LImage image)
@@ -65,7 +65,7 @@ public sealed class LImageArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE image SET location_state = $locationState, location = $location WHERE id = $id;";
+                "UPDATE image SET location_state = $locationState, location = $location WHERE image_id = $id;";
             LStateColumn.LStateColumnApply(command, "location", image.LImageLocation);
             command.Parameters.AddWithValue("$id", image.LImageId);
             if (command.ExecuteNonQuery() == 0)
@@ -114,7 +114,7 @@ public sealed class LImageArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM image WHERE id = $id;";
+            command.CommandText = "DELETE FROM image WHERE image_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -124,22 +124,22 @@ public sealed class LImageArchive
 
     public void LImageMeaningAttach(long meaningId, long imageId, int position)
     {
-        LImageReferenceAttach("sense_image", "sense_id", meaningId, imageId, position);
+        LImageReferenceAttach("sense_image", "sense_parent", meaningId, imageId, position);
     }
 
     public void LImageCollocationAttach(long collocationId, long imageId, int position)
     {
-        LImageReferenceAttach("collocation_image", "collocation_id", collocationId, imageId, position);
+        LImageReferenceAttach("collocation_image", "collocation_parent", collocationId, imageId, position);
     }
 
     public void LImageMeaningDetach(long meaningId, long imageId)
     {
-        LImageReferenceDetach("sense_image", "sense_id", meaningId, imageId);
+        LImageReferenceDetach("sense_image", "sense_parent", meaningId, imageId);
     }
 
     public void LImageCollocationDetach(long collocationId, long imageId)
     {
-        LImageReferenceDetach("collocation_image", "collocation_id", collocationId, imageId);
+        LImageReferenceDetach("collocation_image", "collocation_parent", collocationId, imageId);
     }
 
     private void LImageReferenceAttach(string table, string column, long referrerId, long imageId, int position)
@@ -207,9 +207,9 @@ public sealed class LImageArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT image.id, image.location_state, image.location
+            SELECT image.image_id, image.location_state, image.location
             FROM {table} link
-            JOIN image ON image.id = link.image_ref
+            JOIN image ON image.image_id = link.image_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;
@@ -228,7 +228,7 @@ public sealed class LImageArchive
     private static LImage? LImageSingleRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT location_state, location FROM image WHERE id = $id;";
+        command.CommandText = "SELECT location_state, location FROM image WHERE image_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();
         if (!reader.Read())

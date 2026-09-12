@@ -12,7 +12,7 @@ Editing any of them leaves the id and every reference to it untouched.
 A Situation cites nothing: it is a description the user writes, not a passage quoted from a work.
 Every field here that can stand empty carries `LStateValue`.
 A field holding nothing says whether nothing was ever recorded.
-It says instead when something was recorded that cannot be read back.
+It says instead when the user marked the value as not known.
 
 **Parameters**
 
@@ -20,3 +20,8 @@ It says instead when something was recorded that cannot be read back.
 - `LSituationTitle` — The situation title and what is known about it, display text and never identity.
 - `LSituationDescription` — Description of the situation, and what is known about it.
 - `LSituationKind` — Situation/context classification, and what is known about it.
+
+## `public LSituation LSituationNormalize()`
+
+The same Situation with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

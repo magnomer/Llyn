@@ -43,7 +43,7 @@ Another launch reading the folder then knows the work is live.
 
 ## `public LDraft? LEngineDraftRead(long id)`
 
-Reads one held draft, or null when its file is gone or unreadable.
+Reads one held draft, or null when its file is gone or unknown.
 A missing file is an ordinary answer here, unlike the calls that go on to act on the draft.
 An id from a closed workspace is not a missing file and is refused rather than answered null.
 
@@ -76,6 +76,12 @@ Language counts against a standing entry, because the tongue it is filed under i
 A new word carries the tongue the shell already chose, so that alone leaves the draft unchanged.
 Cards holding nothing at all are left out too.
 The form always offers one empty card, and an empty card is not work.
+
+## `public void LEngineDraftSweep(long id)`
+
+Drops every unreadable value the held draft carries to unspecified and stores the draft again.
+A commit refuses a draft holding unreadable values, so the shell asks the user and then calls this before committing again.
+The data the store could not read is lost here, on purpose, and a draft bulletin follows so every view re-reads.
 
 ## `public LOutcome LEngineDraftCommit(long id)`
 

@@ -14,13 +14,13 @@ public static class LSchemaTranscription
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS transcription (
-                id INTEGER PRIMARY KEY,
-                entry_id INTEGER NOT NULL,
+                transcription_id INTEGER PRIMARY KEY,
+                entry_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 scheme TEXT NOT NULL,
                 text TEXT NOT NULL,
-                UNIQUE (entry_id, scheme),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                UNIQUE (entry_parent, scheme),
+                FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
             """;
         command.ExecuteNonQuery();

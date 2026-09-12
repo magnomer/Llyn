@@ -41,8 +41,8 @@ The reading of one Example, and the sides quoting it beneath.
 `PExcerpt` here stands on an Example rather than on an Entry.
 What it shares with the entry panels is the read-and-edit mechanism and the `PCorpusScribe` toggle, not the object.
 Each field is drawn whether or not it holds anything.
-A field is stored data, so a hidden row would hide the difference between never written and written-but-unreadable.
-A row therefore reads its value, the unreadable mark, or the unrecorded mark in the muted colour.
+A field is stored data, so a hidden row would hide the difference between never written and written-but-unknown.
+A row therefore reads its value, the unknown mark, or the unrecorded mark in the muted colour.
 
 ## `<ItemsControl x:Name="PQuotation">`
 

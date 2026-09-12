@@ -17,22 +17,22 @@ public sealed class LTagArchive
 
     public IReadOnlyList<LTag> LTagMeaningRead(long meaningId)
     {
-        return LTagReferrerRead("sense_tag", "sense_id", meaningId);
+        return LTagReferrerRead("sense_tag", "sense_parent", meaningId);
     }
 
     public IReadOnlyList<LTag> LTagCollocationRead(long collocationId)
     {
-        return LTagReferrerRead("collocation_tag", "collocation_id", collocationId);
+        return LTagReferrerRead("collocation_tag", "collocation_parent", collocationId);
     }
 
     public IReadOnlyList<long> LTagMeaningSave(long meaningId, IReadOnlyList<LTag> tags)
     {
-        return LTagReferrerSave("sense_tag", "sense_id", meaningId, tags);
+        return LTagReferrerSave("sense_tag", "sense_parent", meaningId, tags);
     }
 
     public IReadOnlyList<long> LTagCollocationSave(long collocationId, IReadOnlyList<LTag> tags)
     {
-        return LTagReferrerSave("collocation_tag", "collocation_id", collocationId, tags);
+        return LTagReferrerSave("collocation_tag", "collocation_parent", collocationId, tags);
     }
 
     public LTag? LTagRead(long id)
@@ -41,7 +41,7 @@ public sealed class LTagArchive
 
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT id, text FROM tag WHERE id = $id;";
+        command.CommandText = "SELECT tag_id, text FROM tag WHERE tag_id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -62,7 +62,7 @@ public sealed class LTagArchive
     {
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT id, text FROM tag ORDER BY text;";
+        command.CommandText = "SELECT tag_id, text FROM tag ORDER BY text;";
 
         List<LTag> tags = [];
         using SqliteDataReader reader = command.ExecuteReader();
@@ -109,7 +109,7 @@ public sealed class LTagArchive
         if (clash == 0)
         {
             using SqliteCommand command = connection.CreateCommand();
-            command.CommandText = "UPDATE tag SET text = $text WHERE id = $id;";
+            command.CommandText = "UPDATE tag SET text = $text WHERE tag_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.Parameters.AddWithValue("$text", text);
             command.ExecuteNonQuery();
@@ -117,8 +117,8 @@ public sealed class LTagArchive
             return;
         }
 
-        LTagLinkMove(connection, "sense_tag", "sense_id", id, clash);
-        LTagLinkMove(connection, "collocation_tag", "collocation_id", id, clash);
+        LTagLinkMove(connection, "sense_tag", "sense_parent", id, clash);
+        LTagLinkMove(connection, "collocation_tag", "collocation_parent", id, clash);
         LTagRowDelete(connection, id);
 
         session.LDatabaseSessionCommit();
@@ -131,8 +131,8 @@ public sealed class LTagArchive
         using LDatabaseSession session = _lTagArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        LTagLinkDelete(connection, "sense_tag", "sense_id", id);
-        LTagLinkDelete(connection, "collocation_tag", "collocation_id", id);
+        LTagLinkDelete(connection, "sense_tag", "sense_parent", id);
+        LTagLinkDelete(connection, "collocation_tag", "collocation_parent", id);
         LTagRowDelete(connection, id);
 
         session.LDatabaseSessionCommit();
@@ -146,7 +146,7 @@ public sealed class LTagArchive
     private static long LTagFind(SqliteConnection connection, string text)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT id FROM tag WHERE text = $text;";
+        command.CommandText = "SELECT tag_id FROM tag WHERE text = $text;";
         command.Parameters.AddWithValue("$text", text);
         return command.ExecuteScalar() is long id ? id : 0;
     }
@@ -154,7 +154,7 @@ public sealed class LTagArchive
     private static bool LTagExist(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT COUNT(*) FROM tag WHERE id = $id;";
+        command.CommandText = "SELECT COUNT(*) FROM tag WHERE tag_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt64(command.ExecuteScalar()) > 0;
     }
@@ -168,7 +168,7 @@ public sealed class LTagArchive
         }
 
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "INSERT INTO tag (text) VALUES ($text) RETURNING id;";
+        command.CommandText = "INSERT INTO tag (text) VALUES ($text) RETURNING tag_id;";
         command.Parameters.AddWithValue("$text", text);
         return (long)command.ExecuteScalar()!;
     }
@@ -176,7 +176,7 @@ public sealed class LTagArchive
     private static void LTagRowDelete(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM tag WHERE id = $id;";
+        command.CommandText = "DELETE FROM tag WHERE tag_id = $id;";
         command.Parameters.AddWithValue("$id", id);
         command.ExecuteNonQuery();
     }
@@ -324,9 +324,9 @@ public sealed class LTagArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT tag.id, tag.text
+            SELECT tag.tag_id, tag.text
             FROM {table} link
-            JOIN tag ON tag.id = link.tag_ref
+            JOIN tag ON tag.tag_id = link.tag_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;

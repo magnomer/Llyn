@@ -11,6 +11,15 @@ public sealed record LVideoDraft(
     public LStateValue LVideoDraftSpan { get; init; } =
         LVideoDraftSpan ?? LStateValue.LStateValueUnspecified;
 
+    public LVideoDraft LVideoDraftNormalize()
+    {
+        return this with
+        {
+            LVideoDraftLocation = LVideoDraftLocation.LStateValueNormalize(),
+            LVideoDraftSpan = LVideoDraftSpan.LStateValueNormalize(),
+        };
+    }
+
     public static LVideoDraft LVideoDraftCreate(LStateValue location)
     {
         return new LVideoDraft(location, LStateValue.LStateValueUnspecified);

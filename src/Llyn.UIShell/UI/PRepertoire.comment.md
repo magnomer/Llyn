@@ -33,8 +33,8 @@ The reading of one Situation, and the sides referencing it beneath.
 What it shares with the entry panels is the read-and-edit mechanism and the `PRepertoireScribe` toggle, not the object.
 The four fields stand as labeled rows for title, kind, description and source.
 Each is drawn whether or not it holds anything.
-A field is stored data, so a hidden row would hide the difference between never written and written-but-unreadable.
-A row therefore reads its value, the unreadable mark, or the unrecorded mark in the muted colour.
+A field is stored data, so a hidden row would hide the difference between never written and written-but-unknown.
+A row therefore reads its value, the unknown mark, or the unrecorded mark in the muted colour.
 
 ## `<ItemsControl x:Name="POccurrence">`
 

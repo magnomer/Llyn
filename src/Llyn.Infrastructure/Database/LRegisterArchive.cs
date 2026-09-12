@@ -26,9 +26,9 @@ public sealed class LRegisterArchive
         {
             command.CommandText =
                 """
-                INSERT INTO register (name_state, name, language, pack_ref)
+                INSERT INTO register (name_state, name, language, pack_code)
                 VALUES ($nameState, $name, $language, $packId)
-                RETURNING id;
+                RETURNING register_id;
                 """;
             LStateColumn.LStateColumnApply(command, "name", stored.LRegisterName);
             LRegisterLanguageApply(command, stored);
@@ -54,9 +54,9 @@ public sealed class LRegisterArchive
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO register (name_state, name, language, pack_ref)
+                INSERT INTO register (name_state, name, language, pack_code)
                 VALUES ($nameState, $name, $language, $packId)
-                ON CONFLICT (language, pack_ref) WHERE pack_ref IS NOT NULL
+                ON CONFLICT (language, pack_code) WHERE pack_code IS NOT NULL
                 DO UPDATE SET name_state = excluded.name_state, name = excluded.name;
                 """;
             LStateColumn.LStateColumnApply(command, "name", register.LRegisterName);
@@ -74,7 +74,7 @@ public sealed class LRegisterArchive
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT id, name_state, name, language, pack_ref FROM register WHERE id = $id;";
+            "SELECT register_id, name_state, name, language, pack_code FROM register WHERE register_id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -87,9 +87,9 @@ public sealed class LRegisterArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, name_state, name, language, pack_ref
+            SELECT register_id, name_state, name, language, pack_code
             FROM register
-            ORDER BY pack_ref IS NULL, rowid;
+            ORDER BY pack_code IS NULL, rowid;
             """;
 
         List<LRegister> registers = [];
@@ -104,12 +104,12 @@ public sealed class LRegisterArchive
 
     public IReadOnlyList<LRegister> LRegisterMeaningRead(long meaningId)
     {
-        return LRegisterReferrerRead("sense_register", "sense_id", meaningId);
+        return LRegisterReferrerRead("sense_register", "sense_parent", meaningId);
     }
 
     public IReadOnlyList<LRegister> LRegisterCollocationRead(long collocationId)
     {
-        return LRegisterReferrerRead("collocation_register", "collocation_id", collocationId);
+        return LRegisterReferrerRead("collocation_register", "collocation_parent", collocationId);
     }
 
     public void LRegisterNameUpdate(long registerId, LStateValue name)
@@ -121,7 +121,7 @@ public sealed class LRegisterArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE register SET name_state = $nameState, name = $name WHERE id = $id AND pack_ref IS NULL;";
+                "UPDATE register SET name_state = $nameState, name = $name WHERE register_id = $id AND pack_code IS NULL;";
             LStateColumn.LStateColumnApply(command, "name", name);
             command.Parameters.AddWithValue("$id", registerId);
             command.ExecuteNonQuery();
@@ -181,8 +181,8 @@ public sealed class LRegisterArchive
 
         if (detach)
         {
-            LRegisterLinkDelete(connection, "sense_register", "sense_id", id);
-            LRegisterLinkDelete(connection, "collocation_register", "collocation_id", id);
+            LRegisterLinkDelete(connection, "sense_register", "sense_parent", id);
+            LRegisterLinkDelete(connection, "collocation_register", "collocation_parent", id);
         }
 
         int references = LRegisterReferenceRead(connection, id);
@@ -194,7 +194,7 @@ public sealed class LRegisterArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM register WHERE id = $id AND pack_ref IS NULL;";
+            command.CommandText = "DELETE FROM register WHERE register_id = $id AND pack_code IS NULL;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -204,22 +204,22 @@ public sealed class LRegisterArchive
 
     public void LRegisterMeaningAttach(long meaningId, long registerId, int position)
     {
-        LRegisterReferenceAttach("sense_register", "sense_id", meaningId, registerId, position);
+        LRegisterReferenceAttach("sense_register", "sense_parent", meaningId, registerId, position);
     }
 
     public void LRegisterCollocationAttach(long collocationId, long registerId, int position)
     {
-        LRegisterReferenceAttach("collocation_register", "collocation_id", collocationId, registerId, position);
+        LRegisterReferenceAttach("collocation_register", "collocation_parent", collocationId, registerId, position);
     }
 
     public void LRegisterMeaningDetach(long meaningId, long registerId)
     {
-        LRegisterReferenceDetach("sense_register", "sense_id", meaningId, registerId);
+        LRegisterReferenceDetach("sense_register", "sense_parent", meaningId, registerId);
     }
 
     public void LRegisterCollocationDetach(long collocationId, long registerId)
     {
-        LRegisterReferenceDetach("collocation_register", "collocation_id", collocationId, registerId);
+        LRegisterReferenceDetach("collocation_register", "collocation_parent", collocationId, registerId);
     }
 
     private static void LRegisterLanguageApply(SqliteCommand command, LRegister register)
@@ -362,10 +362,10 @@ public sealed class LRegisterArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT register.id, register.name_state, register.name,
-                   register.language, register.pack_ref
+            SELECT register.register_id, register.name_state, register.name,
+                   register.language, register.pack_code
             FROM {table} link
-            JOIN register ON register.id = link.register_ref
+            JOIN register ON register.register_id = link.register_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;

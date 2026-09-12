@@ -12,7 +12,7 @@ So a keystroke never loses the caret to its own echo.
 ### `private bool _pScenarioLoading;`
 
 Set while fields are being filled from a held Situation.
-Filling a field raises the same change the user typing raises, and only the second may clear an unreadable mark.
+Filling a field raises the same change the user typing raises, and only the second may clear an unknown mark.
 
 ## `private void PScenarioApply(LSituation? situation)`
 
@@ -28,7 +28,7 @@ A field that already reads what the engine holds is left alone, caret included.
 What the editor says the Situation is, as a Situation with no identity.
 The engine keeps the id of the Situation it holds, because the panel mints nothing.
 A field standing empty says nothing was recorded, unless it still carries the mark it was loaded with.
-Then it says instead that something was recorded that cannot be read back.
+Then it says instead that the user marked it as not known.
 
 ## `private void PScenarioStoreHandle(object sender, RoutedEventArgs e)`
 

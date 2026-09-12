@@ -34,7 +34,7 @@ public sealed class LExampleArchive
                 VALUES (
                     $language, $textState, $text, $translationState, $translation,
                     $sourceState, $source)
-                RETURNING id;
+                RETURNING example_id;
                 """;
             command.Parameters.AddWithValue("$language", stored.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", stored.LExampleText);
@@ -64,7 +64,7 @@ public sealed class LExampleArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, language, text_state, text, translation_state, translation,
+            SELECT example_id, language, text_state, text, translation_state, translation,
                    source_state, source_ref
             FROM example
             ORDER BY rowid;
@@ -101,7 +101,7 @@ public sealed class LExampleArchive
                 SET language = $language, text_state = $textState, text = $text,
                     translation_state = $translationState, translation = $translation,
                     source_state = $sourceState, source_ref = $source
-                WHERE id = $id;
+                WHERE example_id = $id;
                 """;
             command.Parameters.AddWithValue("$language", example.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", example.LExampleText);
@@ -126,7 +126,7 @@ public sealed class LExampleArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET text_state = $textState, text = $text WHERE id = $id;";
+                "UPDATE example SET text_state = $textState, text = $text WHERE example_id = $id;";
             LStateColumn.LStateColumnApply(command, "text", text);
             command.Parameters.AddWithValue("$id", exampleId);
             if (command.ExecuteNonQuery() == 0)
@@ -147,7 +147,7 @@ public sealed class LExampleArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET source_state = $sourceState, source_ref = $source WHERE id = $id;";
+                "UPDATE example SET source_state = $sourceState, source_ref = $source WHERE example_id = $id;";
             LStateColumn.LStateColumnApply(command, "source", source);
             command.Parameters.AddWithValue("$id", exampleId);
             if (command.ExecuteNonQuery() == 0)
@@ -230,7 +230,7 @@ public sealed class LExampleArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM example WHERE id = $id;";
+            command.CommandText = "DELETE FROM example WHERE example_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -245,7 +245,7 @@ public sealed class LExampleArchive
             """
             SELECT language, text_state, text, translation_state, translation,
                    source_state, source_ref
-            FROM example WHERE id = $id;
+            FROM example WHERE example_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
         using SqliteDataReader reader = command.ExecuteReader();

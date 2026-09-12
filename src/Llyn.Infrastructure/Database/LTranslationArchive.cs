@@ -18,24 +18,24 @@ public sealed class LTranslationArchive
 
     public IReadOnlyList<LTranslation> LTranslationMeaningRead(long meaningId)
     {
-        return LTranslationReferrerRead("sense_translation", "sense_id", meaningId);
+        return LTranslationReferrerRead("sense_translation", "sense_parent", meaningId);
     }
 
     public IReadOnlyList<LTranslation> LTranslationCollocationRead(long collocationId)
     {
-        return LTranslationReferrerRead("collocation_translation", "collocation_id", collocationId);
+        return LTranslationReferrerRead("collocation_translation", "collocation_parent", collocationId);
     }
 
     public void LTranslationMeaningSave(long meaningId, IReadOnlyList<LTranslation> translations)
     {
-        LTranslationReferrerSave("sense_translation", "sense_id", meaningId, translations);
+        LTranslationReferrerSave("sense_translation", "sense_parent", meaningId, translations);
     }
 
     public void LTranslationCollocationSave(
         long collocationId, IReadOnlyList<LTranslation> translations)
     {
         LTranslationReferrerSave(
-            "collocation_translation", "collocation_id", collocationId, translations);
+            "collocation_translation", "collocation_parent", collocationId, translations);
     }
 
     public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<long> ids)
@@ -77,9 +77,9 @@ public sealed class LTranslationArchive
 
         command.CommandText =
             $"""
-            SELECT entry.id, entry.headword, entry.language
+            SELECT entry.entry_id, entry.headword, entry.language
             FROM entry
-            WHERE entry.id IN ({placeholders});
+            WHERE entry.entry_id IN ({placeholders});
             """;
 
         Dictionary<long, LTranslationTarget> found = [];
@@ -117,13 +117,13 @@ public sealed class LTranslationArchive
             entryId,
             LOwner.LOwnerMeaning,
             """
-            SELECT link.sense_id, sense.entry_id, entry.headword, entry.language,
+            SELECT link.sense_parent, sense.entry_parent, entry.headword, entry.language,
                    sense.title_state, sense.title,
                    CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
                    COALESCE(sense.gloss, sense.definition)
             FROM sense_translation link
-            JOIN sense ON sense.id = link.sense_id
-            JOIN entry ON entry.id = sense.entry_id
+            JOIN sense ON sense.sense_id = link.sense_parent
+            JOIN entry ON entry.entry_id = sense.entry_parent
             WHERE link.entry_ref = $id
             ORDER BY entry.headword, sense.position;
             """));
@@ -132,12 +132,12 @@ public sealed class LTranslationArchive
             entryId,
             LOwner.LOwnerCollocation,
             """
-            SELECT link.collocation_id, collocation.entry_id, entry.headword, entry.language,
+            SELECT link.collocation_parent, collocation.entry_parent, entry.headword, entry.language,
                    collocation.title_state, collocation.title,
                    collocation.expression_state, collocation.expression
             FROM collocation_translation link
-            JOIN collocation ON collocation.id = link.collocation_id
-            JOIN entry ON entry.id = collocation.entry_id
+            JOIN collocation ON collocation.collocation_id = link.collocation_parent
+            JOIN entry ON entry.entry_id = collocation.entry_parent
             WHERE link.entry_ref = $id
             ORDER BY entry.headword, collocation.position;
             """));

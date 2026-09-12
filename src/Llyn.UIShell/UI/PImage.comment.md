@@ -9,7 +9,7 @@ Both are places a picture lives, and neither is more the picture than the other.
 
 A location standing empty is not one thing.
 It may never have been written.
-Or it may have been written and be unreadable now.
+Or it may have been written and be unknown now.
 The second is marked rather than shown.
 The mark stands until the user writes over it or the row is dropped.
 Writing in the row is the user saying what the location is, which is why any edit ends the mark.
@@ -34,7 +34,7 @@ The id of the engine's row this one shows, which every request about it names.
 
 ## `internal LStateValue PImageLocationRead()`
 
-What the row says its location is: nothing, unreadable, or the text it shows.
+What the row says its location is: nothing, unknown, or the text it shows.
 
 ## `internal void PImageShow(LImageDraft written, bool pending)`
 

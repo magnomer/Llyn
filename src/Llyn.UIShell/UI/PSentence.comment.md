@@ -10,10 +10,10 @@ A row that has never been written shows an empty Example id until the engine nam
 
 A row standing empty is not one thing.
 The sentence may never have been written.
-Or it may have been written and be unreadable now.
+Or it may have been written and be unknown now.
 The second is marked rather than shown.
 The mark stands until the user writes over it or clears the row.
-So nothing unreadable is quietly turned into nothing at all.
+So nothing unknown is quietly turned into nothing at all.
 Writing in the row is the user saying what the sentence is, which is why any edit ends the mark.
 
 The row also carries the frame the card reads the sentence under, a marker and a role.
@@ -57,19 +57,19 @@ The row states no order of its own, so it holds only what it was told.
 
 ## `internal LStateValue PSentenceParticleRead()`
 
-What the row says its marker is: nothing written, unreadable, or the text it shows.
+What the row says its marker is: nothing written, unknown, or the text it shows.
 
 ## `internal LStateValue PSentenceDependenceRead()`
 
-What the row says its role is: nothing written, unreadable, or the text it shows.
+What the row says its role is: nothing written, unknown, or the text it shows.
 
 ## `internal LStateValue PSentenceTextRead()`
 
-What the row says its sentence is: nothing written, unreadable, or the text it shows.
+What the row says its sentence is: nothing written, unknown, or the text it shows.
 
 ## `internal LStateValue PSentenceCitationRead()`
 
-What the row says about the Source it cites: none, unreadable, or the one it names.
+What the row says about the Source it cites: none, unknown, or the one it names.
 
 ## `internal void PSentenceShow(LSentenceDraft draft, Func<string, bool> pending)`
 

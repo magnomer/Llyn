@@ -83,7 +83,7 @@ A pack that declares none has its keys removed, and the card's own fallback typo
 ### `private void PDisplayFavoriteShow(long id)`
 
 Reads whether the shown entry is marked and sets the star to match.
-An unreadable mark leaves the star empty rather than claiming the entry is marked.
+An unknown mark leaves the star empty rather than claiming the entry is marked.
 
 ### `private void PDisplayCardHandle(object sender, RoutedEventArgs e)`
 

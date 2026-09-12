@@ -17,7 +17,7 @@ The Translation a Meaning carries is instead a link to another Entry.
 The Source reference is a pointer, not ownership: clearing it or deleting the Example never touches the Source.
 Every field here that can stand empty carries `LStateValue`.
 A field holding nothing says whether nothing was ever recorded.
-It says instead when something was recorded that cannot be read back.
+It says instead when the user marked the value as not known.
 
 **Parameters**
 
@@ -26,7 +26,12 @@ It says instead when something was recorded that cannot be read back.
 - `LExampleText` — The example text and what is known about it, display text and never identity.
 - `LExampleTranslation` — The Example's own translation as text.
   Nothing was recorded when none is written.
-  It is unreadable when the translation cannot be read back.
+  It is unknown when the user marked the translation as not known.
 - `LExampleSource` — The single referenced Source, by its id when one is cited.
   Nothing was recorded when none is cited.
-  It is unreadable when the citation cannot be read back.
+  It is unknown when the user marked the citation as not known.
+
+## `public LExample LExampleNormalize()`
+
+The same Example with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

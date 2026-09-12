@@ -15,6 +15,16 @@ public sealed record LSituationDraft(
     public LStateValue LSituationDraftKind { get; init; } =
         LSituationDraftKind ?? LStateValue.LStateValueUnspecified;
 
+    public LSituationDraft LSituationDraftNormalize()
+    {
+        return this with
+        {
+            LSituationDraftTitle = LSituationDraftTitle.LStateValueNormalize(),
+            LSituationDraftDescription = LSituationDraftDescription.LStateValueNormalize(),
+            LSituationDraftKind = LSituationDraftKind.LStateValueNormalize(),
+        };
+    }
+
     public static LSituationDraft LSituationDraftCreate(string text)
     {
         return new LSituationDraft(

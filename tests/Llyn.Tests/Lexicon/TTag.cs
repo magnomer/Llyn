@@ -71,7 +71,7 @@ public sealed class TTag
             engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
         Assert.Equal(
             [0, 1],
-            TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
+            TDatabasePositionRead(workspace, "sense_tag", "sense_parent", meaningId));
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public sealed class TTag
         Assert.Equal(
             ["rare"],
             engine.TEngineTagRead(collocationId, LOwner.LOwnerCollocation).Select(tag => tag.LTagText));
-        Assert.Equal([0], TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
+        Assert.Equal([0], TDatabasePositionRead(workspace, "sense_tag", "sense_parent", meaningId));
         Assert.Equal(["rare"], engine.TEngineTagRead().Select(tag => tag.LTagText));
     }
 
@@ -214,7 +214,7 @@ public sealed class TTag
         Assert.Equal(
             ["formal", "spoken"],
             engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
-        Assert.Equal([0, 1], TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
+        Assert.Equal([0, 1], TDatabasePositionRead(workspace, "sense_tag", "sense_parent", meaningId));
         Assert.Empty(engine.TEngineTagRead().Where(tag => tag.LTagText == "rare"));
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM tag;"));
     }

@@ -10,12 +10,12 @@ The area no longer keeps a copy of the stored Source to compare itself against.
 
 ## Inline notes
 
-### `private bool _pImprintTitleUnreadable;`
+### `private bool _pImprintTitleUnknown;`
 
 Whether the title stands recorded as unknown rather than merely blank.
 One flag per field is the only per-field state the edit area holds, as the built panels do it.
 
-## `private void PImprintMarkClear(ref bool unreadable, TextBox field, ToggleButton mark)`
+## `private void PImprintMarkClear(ref bool unknown, TextBox field, ToggleButton mark)`
 
 Typing into a field drops its unknown mark, because a typed value is a stated one.
 The guard keeps a programmatic fill from reading as a user edit.

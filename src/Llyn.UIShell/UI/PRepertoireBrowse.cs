@@ -93,7 +93,7 @@ public partial class PRepertoire
             return;
         }
 
-        string unreadable = _pRepertoireHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pRepertoireHost.PLocalizationTextRead("Display.Unknown");
         string untitled = _pRepertoireHost.PLocalizationTextRead("Situation.Untitled");
 
         _pAtlasList.Clear();
@@ -104,7 +104,7 @@ public partial class PRepertoire
             _pAtlasList.Add(new PAtlasItem(
                 row.LCatalogSituationStored,
                 row.LCatalogSituationUsage,
-                unreadable,
+                unknown,
                 untitled));
         }
 
@@ -180,8 +180,9 @@ public partial class PRepertoire
     {
         string? text = value.LStateValueState switch
         {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => shown ?? value.LStateValueShow(),
-            LState.LStateUnknown => _pRepertoireHost.PLocalizationTextRead("Display.Unreadable"),
+            LState.LStateUnknown => _pRepertoireHost.PLocalizationTextRead("Display.Unknown"),
             _ => null,
         };
 
@@ -204,7 +205,7 @@ public partial class PRepertoire
             return;
         }
 
-        string unreadable = _pRepertoireHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pRepertoireHost.PLocalizationTextRead("Display.Unknown");
         string unnamed = _pRepertoireHost.PLocalizationTextRead("Situation.Unnamed");
         string meaning = _pRepertoireHost.PLocalizationTextRead("Situation.Meaning");
         string collocation = _pRepertoireHost.PLocalizationTextRead("Situation.Collocation");
@@ -215,7 +216,7 @@ public partial class PRepertoire
             _pOccurrenceList.Add(new PUsageItem(
                 usage,
                 usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
-                unreadable,
+                unknown,
                 unnamed));
         }
 

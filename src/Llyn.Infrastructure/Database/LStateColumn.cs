@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -26,10 +26,20 @@ public static class LStateColumn
         };
     }
 
+    public static bool LStateColumnCheck(string state)
+    {
+        return state is "unspecified" or "unknown" or "specified";
+    }
+
     public static void LStateColumnApply(SqliteCommand command, string field, LStateValue value)
     {
         ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(value);
+
+        if (value.LStateValueUnreadable)
+        {
+            throw new LRefusal(LRefusal.LRefusalUnreadable);
+        }
 
         command.Parameters.AddWithValue($"${field}State", LStateColumnFormat(value.LStateValueState));
         command.Parameters.AddWithValue(
@@ -44,6 +54,11 @@ public static class LStateColumn
         ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(anchor);
 
+        if (anchor.LStateAnchorUnreadable)
+        {
+            throw new LRefusal(LRefusal.LRefusalUnreadable);
+        }
+
         command.Parameters.AddWithValue($"${field}State", LStateColumnFormat(anchor.LStateAnchorState));
         command.Parameters.AddWithValue(
             $"${field}",
@@ -56,8 +71,14 @@ public static class LStateColumn
     {
         ArgumentNullException.ThrowIfNull(reader);
 
+        string stored = reader.GetString(state);
+        if (!LStateColumnCheck(stored))
+        {
+            return new LStateAnchor(LState.LStateUnspecified, null, LStateAnchorUnreadable: true);
+        }
+
         return new LStateAnchor(
-            LStateColumnParse(reader.GetString(state)),
+            LStateColumnParse(stored),
             reader.IsDBNull(state + 1) ? null : reader.GetInt64(state + 1));
     }
 
@@ -65,8 +86,13 @@ public static class LStateColumn
     {
         ArgumentNullException.ThrowIfNull(reader);
 
-        return new LStateValue(
-            LStateColumnParse(reader.GetString(state)),
-            reader.IsDBNull(state + 1) ? null : reader.GetString(state + 1));
+        string stored = reader.GetString(state);
+        string? text = reader.IsDBNull(state + 1) ? null : reader.GetString(state + 1);
+        if (!LStateColumnCheck(stored))
+        {
+            return new LStateValue(LState.LStateUnspecified, text ?? stored, LStateValueUnreadable: true);
+        }
+
+        return new LStateValue(LStateColumnParse(stored), text);
     }
 }

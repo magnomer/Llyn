@@ -11,7 +11,7 @@ public sealed class TEntryDraft
 {
     private static readonly string[] TEntryDraftQuery =
     [
-        "SELECT id, headword, language FROM entry;",
+        "SELECT entry_id, headword, language FROM entry;",
         "SELECT * FROM sense;",
         "SELECT * FROM collocation;",
         "SELECT * FROM example;",
@@ -176,14 +176,14 @@ public sealed class TEntryDraft
         Assert.Empty(loaded.LEntryDraftMeanings[1].LCardDraftChild);
 
         IReadOnlyList<string> before = workspace.TWorkspaceRowRead(
-            "SELECT id, ifnull(parent_id, ''), position FROM sense ORDER BY id;");
+            "SELECT sense_id, ifnull(sense_parent, ''), position FROM sense ORDER BY sense_id;");
 
         engine.TEngineEntryUpdate(entry.LEntryId, loaded);
 
         Assert.Equal(
             before,
             workspace.TWorkspaceRowRead(
-                "SELECT id, ifnull(parent_id, ''), position FROM sense ORDER BY id;"));
+                "SELECT sense_id, ifnull(sense_parent, ''), position FROM sense ORDER BY sense_id;"));
         Assert.Empty(workspace.TWorkspaceRowRead("PRAGMA foreign_key_check;"));
     }
 

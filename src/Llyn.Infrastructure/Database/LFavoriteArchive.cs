@@ -25,9 +25,9 @@ public sealed class LFavoriteArchive
         {
             command.CommandText =
                 """
-                INSERT INTO favorite (entry_id, marked_utc)
+                INSERT INTO favorite (entry_parent, marked_utc)
                 VALUES ($entry, $marked)
-                ON CONFLICT (entry_id) DO NOTHING;
+                ON CONFLICT (entry_parent) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
             command.Parameters.AddWithValue("$marked", DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
@@ -44,7 +44,7 @@ public sealed class LFavoriteArchive
         using LDatabaseSession session = _lFavoriteArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM favorite WHERE entry_id = $entry;";
+            command.CommandText = "DELETE FROM favorite WHERE entry_parent = $entry;";
             command.Parameters.AddWithValue("$entry", entryId);
             command.ExecuteNonQuery();
         }
@@ -58,7 +58,7 @@ public sealed class LFavoriteArchive
 
         using LDatabaseSession session = _lFavoriteArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT COUNT(*) FROM favorite WHERE entry_id = $entry;";
+        command.CommandText = "SELECT COUNT(*) FROM favorite WHERE entry_parent = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
         return Convert.ToInt64(command.ExecuteScalar(), CultureInfo.InvariantCulture) > 0;
     }
@@ -72,10 +72,10 @@ public sealed class LFavoriteArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry.id, entry.headword, entry.language, entry.proficiency, entry.frequency,
+            SELECT entry.entry_id, entry.headword, entry.language, entry.proficiency, entry.frequency,
                    entry.added_utc, entry.updated_utc, favorite.marked_utc
             FROM favorite
-            JOIN entry ON entry.id = favorite.entry_id
+            JOIN entry ON entry.entry_id = favorite.entry_parent
             WHERE $query = '' OR instr(lfold(entry.headword), lfold($query)) > 0
             ORDER BY entry.headword;
             """;

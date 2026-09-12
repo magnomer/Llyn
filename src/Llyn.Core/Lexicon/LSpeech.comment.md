@@ -3,7 +3,7 @@
 ## `public sealed record LSpeech(`
 
 One part-of-speech assignment on an entry, ordered within it.
-Identity is `(entry_id, position)`.
+Identity is `(entry_parent, position)`.
 A row says its part of speech in exactly one of two ways.
 The first is a link to a `LSpeechValue` row (`LSpeechValueId`).
 The display name is then read from that row and never copied here.

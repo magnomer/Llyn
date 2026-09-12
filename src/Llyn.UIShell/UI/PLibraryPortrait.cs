@@ -62,7 +62,7 @@ public partial class PLibrary
     private LPortraitLabel PLibraryLabelRead()
     {
         return new LPortraitLabel(
-            _pLibraryHost.PLocalizationTextRead("Display.Unreadable"),
+            _pLibraryHost.PLocalizationTextRead("Display.Unknown"),
             _pLibraryHost.PLocalizationTextRead("Display.MeaningSingle"),
             _pLibraryHost.PLocalizationTextRead("Display.MeaningPlural"),
             _pLibraryHost.PLocalizationTextRead("Display.CollocationSingle"),

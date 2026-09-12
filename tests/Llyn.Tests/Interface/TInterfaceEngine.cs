@@ -52,6 +52,11 @@ internal static partial class TInterface
     internal static LOutcome TEngineOutcomeCommit(this LEngine engine, long id) =>
         engine.LEngineDraftCommit(id);
 
+    internal static void TEngineDraftSweep(this LEngine engine, long id)
+    {
+        engine.LEngineDraftSweep(id);
+    }
+
     internal static void TEngineDraftDelete(this LEngine engine, long id)
     {
         engine.LEngineDraftDelete(id);

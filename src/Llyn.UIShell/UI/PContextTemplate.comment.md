@@ -14,7 +14,7 @@ A click on empty space inside it reaches the caret.
 ## `Theme.Context.Chip`
 
 One committed Situation: its wording and the button that closes it.
-The wording reads the unreadable mark when the store could not read it back.
+The wording reads the unknown mark when the store could not read it back.
 So a chip showing nothing else says which kind of empty it is.
 The chip carries its own cursor, so the field text cursor stops at its edge.
 A committed Situation is not text to edit, and its close button points at a click.

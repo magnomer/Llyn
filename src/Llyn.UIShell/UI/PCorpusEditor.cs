@@ -13,9 +13,9 @@ public partial class PCorpus
 
     private string _pTranscriptLanguage = string.Empty;
 
-    private bool _pTranscriptTextUnreadable;
+    private bool _pTranscriptTextUnknown;
 
-    private bool _pTranscriptTranslationUnreadable;
+    private bool _pTranscriptTranslationUnknown;
 
     private bool _pTranscriptLoading;
 
@@ -138,7 +138,7 @@ public partial class PCorpus
             return;
         }
 
-        _pTranscriptTextUnreadable = false;
+        _pTranscriptTextUnknown = false;
         PTranscriptText.Tag = string.Empty;
         PTranscriptChangeDefer();
     }
@@ -150,7 +150,7 @@ public partial class PCorpus
             return;
         }
 
-        _pTranscriptTranslationUnreadable = false;
+        _pTranscriptTranslationUnknown = false;
         PTranscriptTranslation.Tag = string.Empty;
         PTranscriptChangeDefer();
     }
@@ -159,16 +159,16 @@ public partial class PCorpus
     {
         _pTranscriptLoading = true;
 
-        string unreadable = _pCorpusHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pCorpusHost.PLocalizationTextRead("Display.Unknown");
 
         PTranscriptText.Text = example?.LExampleText.LStateValueShow() ?? string.Empty;
-        _pTranscriptTextUnreadable = example?.LExampleText.LStateValueState == LState.LStateUnknown;
-        PTranscriptText.Tag = _pTranscriptTextUnreadable ? unreadable : string.Empty;
+        _pTranscriptTextUnknown = example?.LExampleText.LStateValueState == LState.LStateUnknown;
+        PTranscriptText.Tag = _pTranscriptTextUnknown ? unknown : string.Empty;
 
         PTranscriptTranslation.Text = example?.LExampleTranslation.LStateValueShow() ?? string.Empty;
-        _pTranscriptTranslationUnreadable =
+        _pTranscriptTranslationUnknown =
             example?.LExampleTranslation.LStateValueState == LState.LStateUnknown;
-        PTranscriptTranslation.Tag = _pTranscriptTranslationUnreadable ? unreadable : string.Empty;
+        PTranscriptTranslation.Tag = _pTranscriptTranslationUnknown ? unknown : string.Empty;
 
         _pTranscriptLanguage = example?.LExampleLanguage ?? string.Empty;
 
@@ -204,11 +204,11 @@ public partial class PCorpus
     {
         _pTranscriptLoading = true;
 
-        string unreadable = _pCorpusHost.PLocalizationTextRead("Display.Unreadable");
+        string unknown = _pCorpusHost.PLocalizationTextRead("Display.Unknown");
 
-        PTranscriptFieldShow(PTranscriptText, example.LExampleText, unreadable, ref _pTranscriptTextUnreadable);
+        PTranscriptFieldShow(PTranscriptText, example.LExampleText, unknown, ref _pTranscriptTextUnknown);
         PTranscriptFieldShow(
-            PTranscriptTranslation, example.LExampleTranslation, unreadable, ref _pTranscriptTranslationUnreadable);
+            PTranscriptTranslation, example.LExampleTranslation, unknown, ref _pTranscriptTranslationUnknown);
 
         if (!string.Equals(_pTranscriptLanguage, example.LExampleLanguage, StringComparison.Ordinal))
         {
@@ -229,7 +229,7 @@ public partial class PCorpus
         PTranscriptChangeUpdate();
     }
 
-    private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unreadable, ref bool held)
+    private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)
     {
         if (LStateValue.LStateValueResolve(field.Text, held) == value)
         {
@@ -238,7 +238,7 @@ public partial class PCorpus
 
         field.Text = value.LStateValueShow();
         held = value.LStateValueState == LState.LStateUnknown;
-        field.Tag = held ? unreadable : string.Empty;
+        field.Tag = held ? unknown : string.Empty;
     }
 
     private LExample PTranscriptRead()
@@ -246,8 +246,8 @@ public partial class PCorpus
         return new LExample(
             0,
             _pTranscriptLanguage,
-            LStateValue.LStateValueResolve(PTranscriptText.Text, _pTranscriptTextUnreadable),
-            LStateValue.LStateValueResolve(PTranscriptTranslation.Text, _pTranscriptTranslationUnreadable),
+            LStateValue.LStateValueResolve(PTranscriptText.Text, _pTranscriptTextUnknown),
+            LStateValue.LStateValueResolve(PTranscriptTranslation.Text, _pTranscriptTranslationUnknown),
             LStateAnchor.LStateAnchorRead(_pTranscriptCitation));
     }
 
@@ -288,7 +288,7 @@ public partial class PCorpus
         LExample stored;
         try
         {
-            stored = _lEngine.LEngineExampleCommit(held);
+            stored = _pCorpusHost.PWindowCommitRun(held, _lEngine.LEngineExampleCommit);
         }
         catch (Exception exception)
         {

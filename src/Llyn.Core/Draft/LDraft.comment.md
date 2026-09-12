@@ -35,3 +35,8 @@ The kind is read from the content rather than from a tag beside it, so the two c
 ## `public IReadOnlyList<LAuthor> LDraftAuthor { get; init; }`
 
 Never null, so a reader walks it without a check.
+
+## `public LDraft LDraftNormalize()`
+
+The same draft, whichever kind of record it holds with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

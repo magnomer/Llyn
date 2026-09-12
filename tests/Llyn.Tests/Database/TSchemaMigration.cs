@@ -70,7 +70,7 @@ public sealed class TSchemaMigration
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
         SqliteException error = Assert.Throws<SqliteException>(() => workspace.TWorkspaceScriptRun(
-            "INSERT INTO realm (id, value) VALUES (2, randomblob(16));"));
+            "INSERT INTO realm (realm_id, value) VALUES (2, randomblob(16));"));
         Assert.Contains("CHECK", error.Message, StringComparison.Ordinal);
     }
 
@@ -84,8 +84,8 @@ public sealed class TSchemaMigration
             "VALUES ('word', 'English', '2026-01-01', '2026-01-01');");
 
         Assert.Equal(1, workspace.TWorkspaceCountRead(
-            "SELECT COUNT(*) FROM entry WHERE origin_id = id " +
-            "AND origin_realm = (SELECT value FROM realm WHERE id = 1);"));
+            "SELECT COUNT(*) FROM entry WHERE origin_id = entry_id " +
+            "AND origin_realm = (SELECT value FROM realm WHERE realm_id = 1);"));
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public sealed class TSchemaMigration
 
         Assert.Equal(1, workspace.TWorkspaceCountRead(
             "SELECT COUNT(*) FROM entry WHERE origin_id = 7 " +
-            "AND origin_realm <> (SELECT value FROM realm WHERE id = 1);"));
+            "AND origin_realm <> (SELECT value FROM realm WHERE realm_id = 1);"));
     }
 
     [Fact]
@@ -176,8 +176,8 @@ public sealed class TSchemaMigration
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
-        Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_parent"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "sense_parent"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_example", "example_ref"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "tag_ref"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_ref"));

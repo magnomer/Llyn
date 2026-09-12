@@ -3,7 +3,7 @@
 ## `public sealed class LNoteArchive`
 
 Persists the single Note an entry owns.
-The note table is keyed by `entry_id`, so at most one Note exists per entry.
+The note table is keyed by `entry_parent`, so at most one Note exists per entry.
 That is a schema fact.
 Saving a Note for an entry that already has one replaces it rather than adding a second.
 Deleting the entry removes its Note through the foreign-key cascade.

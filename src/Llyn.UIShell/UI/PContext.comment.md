@@ -8,7 +8,7 @@ A Situation whose wording should change is closed and written again rather than 
 
 A Situation the store could not read back is marked rather than shown.
 The mark stands until the user closes the chip and writes the wording again.
-So nothing unreadable is quietly turned into nothing at all.
+So nothing unknown is quietly turned into nothing at all.
 
 ## `internal PContext(LStateValue text, long id)`
 
@@ -26,4 +26,4 @@ No control on the card shows either, and a save that dropped them would erase wh
 
 ## `internal LStateValue PContextTextRead()`
 
-What the chip says its wording is: unreadable, or the text it shows.
+What the chip says its wording is: unknown, or the text it shows.

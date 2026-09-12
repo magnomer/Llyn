@@ -16,4 +16,4 @@ None of them is the entry itself, and none is worth refusing an export over.
 
 ## `private LSentenceOrder LEngineFrameRead(string language)`
 
-An unknown or unreadable language falls back to the default order, exactly as the panel does.
+An unknown or unknown language falls back to the default order, exactly as the panel does.

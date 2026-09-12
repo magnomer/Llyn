@@ -17,6 +17,6 @@ The id never changes.
 - `LCollocationPosition` — Order among the entry's collocations.
 - `LCollocationTitle` — Title typed on the Collocation card, and what is known about it.
   Nothing was recorded when none was typed.
-  It is unreadable when what was typed cannot be read back.
+  It is unknown when the user marked it as not known.
 - `LCollocationExpression` — The collocation expression text, and what is known about it.
 - `LCollocationMeaning` — What the expression means, and what is known about it.

@@ -32,9 +32,9 @@ public static class LSchemaStamp
                 WHEN NEW.origin_id = 0
                 BEGIN
                     UPDATE {table}
-                    SET origin_realm = (SELECT value FROM realm WHERE id = {LSchemaRealm.LSchemaRealmRow}),
-                        origin_id = NEW.id
-                    WHERE id = NEW.id;
+                    SET origin_realm = (SELECT value FROM realm WHERE realm_id = {LSchemaRealm.LSchemaRealmRow}),
+                        origin_id = NEW.{table}_id
+                    WHERE {table}_id = NEW.{table}_id;
                 END;
 
                 CREATE UNIQUE INDEX IF NOT EXISTS {table}_origin_unique

@@ -38,7 +38,7 @@ public sealed class LEntryArchive
                 """
                 INSERT INTO entry (headword, language, proficiency, frequency, added_utc, updated_utc)
                 VALUES ($headword, $language, $proficiency, $frequency, $added, $updated)
-                RETURNING id;
+                RETURNING entry_id;
                 """;
             command.Parameters.AddWithValue("$headword", stored.LEntryHeadword);
             command.Parameters.AddWithValue("$language", stored.LEntryLanguage);
@@ -64,8 +64,8 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
-            FROM entry WHERE id = $id;
+            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            FROM entry WHERE entry_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
 
@@ -82,7 +82,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
             FROM entry
             WHERE $query = '' OR instr(lfold(headword), lfold($query)) > 0
             ORDER BY headword;
@@ -107,18 +107,18 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
             FROM entry
             WHERE $tag = 0
-               OR id IN (
-                      SELECT sense.entry_id
+               OR entry_id IN (
+                      SELECT sense.entry_parent
                       FROM sense_tag
-                      JOIN sense ON sense.id = sense_tag.sense_id
+                      JOIN sense ON sense.sense_id = sense_tag.sense_parent
                       WHERE sense_tag.tag_ref = $tag
                       UNION
-                      SELECT collocation.entry_id
+                      SELECT collocation.entry_parent
                       FROM collocation_tag
-                      JOIN collocation ON collocation.id = collocation_tag.collocation_id
+                      JOIN collocation ON collocation.collocation_id = collocation_tag.collocation_parent
                       WHERE collocation_tag.tag_ref = $tag)
             ORDER BY headword;
             """;
@@ -142,18 +142,18 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
             FROM entry
             WHERE $register = 0
-               OR id IN (
-                      SELECT sense.entry_id
+               OR entry_id IN (
+                      SELECT sense.entry_parent
                       FROM sense_register
-                      JOIN sense ON sense.id = sense_register.sense_id
+                      JOIN sense ON sense.sense_id = sense_register.sense_parent
                       WHERE sense_register.register_ref = $register
                       UNION
-                      SELECT collocation.entry_id
+                      SELECT collocation.entry_parent
                       FROM collocation_register
-                      JOIN collocation ON collocation.id = collocation_register.collocation_id
+                      JOIN collocation ON collocation.collocation_id = collocation_register.collocation_parent
                       WHERE collocation_register.register_ref = $register)
             ORDER BY headword;
             """;
@@ -177,8 +177,8 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, position, text, local, role
-            FROM form WHERE entry_id = $id ORDER BY position;
+            SELECT entry_parent, position, text, local, role
+            FROM form WHERE entry_parent = $id ORDER BY position;
             """;
         command.Parameters.AddWithValue("$id", id);
 
@@ -205,8 +205,8 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, position, speech_value_ref, custom_name
-            FROM part_of_speech WHERE entry_id = $id ORDER BY position;
+            SELECT entry_parent, position, speech_value_ref, custom_name
+            FROM part_of_speech WHERE entry_parent = $id ORDER BY position;
             """;
         command.Parameters.AddWithValue("$id", id);
 
@@ -239,7 +239,7 @@ public sealed class LEntryArchive
                 UPDATE entry
                 SET headword = $headword, language = $language, proficiency = $proficiency,
                     frequency = $frequency, updated_utc = $updated
-                WHERE id = $id;
+                WHERE entry_id = $id;
                 """;
             command.Parameters.AddWithValue("$headword", entry.LEntryHeadword);
             command.Parameters.AddWithValue("$language", entry.LEntryLanguage);
@@ -289,7 +289,7 @@ public sealed class LEntryArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM entry WHERE id = $id;";
+            command.CommandText = "DELETE FROM entry WHERE entry_id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -317,7 +317,7 @@ public sealed class LEntryArchive
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO form (entry_id, position, text, local, role)
+                INSERT INTO form (entry_parent, position, text, local, role)
                 VALUES ($entry, $position, $text, $local, $role);
                 """;
             command.Parameters.AddWithValue("$entry", id);
@@ -339,7 +339,7 @@ public sealed class LEntryArchive
             bool declared = speech.LSpeechValueId is > 0;
             command.CommandText =
                 """
-                INSERT INTO part_of_speech (entry_id, position, speech_value_ref, custom_name)
+                INSERT INTO part_of_speech (entry_parent, position, speech_value_ref, custom_name)
                 VALUES ($entry, $position, $value, $custom);
                 """;
             command.Parameters.AddWithValue("$entry", id);
@@ -354,7 +354,7 @@ public sealed class LEntryArchive
     private static void LEntryChildClear(SqliteConnection connection, string table, long id)
     {
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = $"DELETE FROM {table} WHERE entry_id = $id;";
+        command.CommandText = $"DELETE FROM {table} WHERE entry_parent = $id;";
         command.Parameters.AddWithValue("$id", id);
         command.ExecuteNonQuery();
     }

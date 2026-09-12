@@ -19,9 +19,9 @@ public sealed class TVocabulary
         IReadOnlyList<long> values;
         using (workspace.TWorkspaceEngineStart())
         {
-            parts = workspace.TWorkspaceColumnRead("SELECT id FROM speech_value ORDER BY id;");
-            features = workspace.TWorkspaceColumnRead("SELECT id FROM morphology_feature ORDER BY id;");
-            values = workspace.TWorkspaceColumnRead("SELECT id FROM morphology_value ORDER BY id;");
+            parts = workspace.TWorkspaceColumnRead("SELECT speech_value_id FROM speech_value ORDER BY speech_value_id;");
+            features = workspace.TWorkspaceColumnRead("SELECT morphology_feature_id FROM morphology_feature ORDER BY morphology_feature_id;");
+            values = workspace.TWorkspaceColumnRead("SELECT morphology_value_id FROM morphology_value ORDER BY morphology_value_id;");
         }
 
         using LEngine reopened = workspace.TWorkspaceEngineStart();
@@ -29,9 +29,9 @@ public sealed class TVocabulary
         Assert.NotEmpty(parts);
         Assert.NotEmpty(features);
         Assert.NotEmpty(values);
-        Assert.Equal(parts, workspace.TWorkspaceColumnRead("SELECT id FROM speech_value ORDER BY id;"));
-        Assert.Equal(features, workspace.TWorkspaceColumnRead("SELECT id FROM morphology_feature ORDER BY id;"));
-        Assert.Equal(values, workspace.TWorkspaceColumnRead("SELECT id FROM morphology_value ORDER BY id;"));
+        Assert.Equal(parts, workspace.TWorkspaceColumnRead("SELECT speech_value_id FROM speech_value ORDER BY speech_value_id;"));
+        Assert.Equal(features, workspace.TWorkspaceColumnRead("SELECT morphology_feature_id FROM morphology_feature ORDER BY morphology_feature_id;"));
+        Assert.Equal(values, workspace.TWorkspaceColumnRead("SELECT morphology_value_id FROM morphology_value ORDER BY morphology_value_id;"));
     }
 
     [Fact]
@@ -82,11 +82,11 @@ public sealed class TVocabulary
         Assert.Equal(
             ["Verb, ergative"],
             workspace.TWorkspaceRowRead(
-                $"SELECT custom_name FROM part_of_speech WHERE entry_id = {entry.LEntryId};"));
+                $"SELECT custom_name FROM part_of_speech WHERE entry_parent = {entry.LEntryId};"));
         Assert.Equal(
             0,
             workspace.TWorkspaceCountRead(
-                $"SELECT COUNT(*) FROM part_of_speech WHERE entry_id = {entry.LEntryId} AND speech_value_ref IS NOT NULL;"));
+                $"SELECT COUNT(*) FROM part_of_speech WHERE entry_parent = {entry.LEntryId} AND speech_value_ref IS NOT NULL;"));
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public sealed class TVocabulary
         Assert.Equal(
             [verb.LSpeechValueId],
             workspace.TWorkspaceColumnRead(
-                $"SELECT speech_value_ref FROM part_of_speech WHERE entry_id = {entry.LEntryId};"));
+                $"SELECT speech_value_ref FROM part_of_speech WHERE entry_parent = {entry.LEntryId};"));
         Assert.Equal(
             "Verb",
             Assert.Single(TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!)));
@@ -136,7 +136,7 @@ public sealed class TVocabulary
         Assert.Equal(plural.LMorphologyId, Assert.Single(stored.LInflectionMorphology));
         Assert.Equal(
             [stored.LInflectionId],
-            workspace.TWorkspaceColumnRead("SELECT inflection_id FROM inflection_feature;"));
+            workspace.TWorkspaceColumnRead("SELECT inflection_parent FROM inflection_feature;"));
         Assert.Equal(
             number.LFeatureId,
             engine.TEngineMorphologyRead(plural.LMorphologyId)?.LMorphologyFeatureId);

@@ -24,8 +24,8 @@ public sealed class LNoteArchive
         {
             command.CommandText =
                 """
-                INSERT INTO note (entry_id, text) VALUES ($entry, $text)
-                ON CONFLICT (entry_id) DO UPDATE SET text = excluded.text;
+                INSERT INTO note (entry_parent, text) VALUES ($entry, $text)
+                ON CONFLICT (entry_parent) DO UPDATE SET text = excluded.text;
                 """;
             command.Parameters.AddWithValue("$entry", note.LNoteEntryId);
             command.Parameters.AddWithValue("$text", note.LNoteText);
@@ -41,7 +41,7 @@ public sealed class LNoteArchive
 
         using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "SELECT entry_id, text FROM note WHERE entry_id = $entry;";
+        command.CommandText = "SELECT entry_parent, text FROM note WHERE entry_parent = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -55,7 +55,7 @@ public sealed class LNoteArchive
         using LDatabaseSession session = _lNoteArchiveDatabase.LDatabaseSessionStart();
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM note WHERE entry_id = $entry;";
+            command.CommandText = "DELETE FROM note WHERE entry_parent = $entry;";
             command.Parameters.AddWithValue("$entry", entryId);
             command.ExecuteNonQuery();
         }

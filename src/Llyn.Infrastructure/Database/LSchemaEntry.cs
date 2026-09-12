@@ -14,7 +14,7 @@ public static class LSchemaEntry
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS entry (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                entry_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 headword TEXT NOT NULL,
@@ -27,33 +27,33 @@ public static class LSchemaEntry
             );
 
             CREATE TABLE IF NOT EXISTS form (
-                entry_id INTEGER NOT NULL,
+                entry_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 text TEXT NOT NULL,
                 local TEXT,
                 role TEXT NOT NULL,
-                PRIMARY KEY (entry_id, position),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                PRIMARY KEY (entry_parent, position),
+                FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS speech_value (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                speech_value_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 language TEXT NOT NULL,
-                pack_ref INTEGER NOT NULL,
+                pack_code INTEGER NOT NULL,
                 name TEXT NOT NULL,
                 position INTEGER NOT NULL,
-                UNIQUE (language, pack_ref)
+                UNIQUE (language, pack_code)
             );
 
             CREATE TABLE IF NOT EXISTS part_of_speech (
-                entry_id INTEGER NOT NULL,
+                entry_parent INTEGER NOT NULL,
                 position INTEGER NOT NULL,
                 speech_value_ref INTEGER,
                 custom_name TEXT,
-                PRIMARY KEY (entry_id, position),
+                PRIMARY KEY (entry_parent, position),
                 CHECK ((speech_value_ref IS NULL) <> (custom_name IS NULL)),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
-                FOREIGN KEY (speech_value_ref) REFERENCES speech_value (id)
+                FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE,
+                FOREIGN KEY (speech_value_ref) REFERENCES speech_value (speech_value_id)
             );
             """;
         command.ExecuteNonQuery();

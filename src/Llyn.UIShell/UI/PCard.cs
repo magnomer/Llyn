@@ -9,7 +9,7 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard : INotifyPropertyChanged
 {
-    internal const string PCardUnreadableMark = "(?)";
+    internal const string PCardUnknownMark = "(?)";
 
     private readonly LEngine _pCardEngine;
     private readonly string _pCardPrefix;
@@ -20,11 +20,11 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private string _pCardPositionText;
     private bool _pCardPositionActive;
     private string _pTitle;
-    private bool _pTitleUnreadable;
+    private bool _pTitleUnknown;
     private string _pCardDefinition;
-    private bool _pCardDefinitionUnreadable;
+    private bool _pCardDefinitionUnknown;
     private string _pCardExpression;
-    private bool _pCardExpressionUnreadable;
+    private bool _pCardExpressionUnknown;
 
     internal PCard(
         LEngine engine,
@@ -120,23 +120,23 @@ internal sealed partial class PCard : INotifyPropertyChanged
             }
 
             _pTitle = value;
-            PTitleUnreadable = false;
+            PTitleUnknown = false;
             PCardRaise(nameof(PTitle));
         }
     }
 
-    public bool PTitleUnreadable
+    public bool PTitleUnknown
     {
-        get => _pTitleUnreadable;
+        get => _pTitleUnknown;
         private set
         {
-            if (_pTitleUnreadable == value)
+            if (_pTitleUnknown == value)
             {
                 return;
             }
 
-            _pTitleUnreadable = value;
-            PCardRaise(nameof(PTitleUnreadable));
+            _pTitleUnknown = value;
+            PCardRaise(nameof(PTitleUnknown));
         }
     }
 
@@ -151,23 +151,23 @@ internal sealed partial class PCard : INotifyPropertyChanged
             }
 
             _pCardDefinition = value;
-            PCardDefinitionUnreadable = false;
+            PCardDefinitionUnknown = false;
             PCardRaise(nameof(PCardDefinition));
         }
     }
 
-    public bool PCardDefinitionUnreadable
+    public bool PCardDefinitionUnknown
     {
-        get => _pCardDefinitionUnreadable;
+        get => _pCardDefinitionUnknown;
         private set
         {
-            if (_pCardDefinitionUnreadable == value)
+            if (_pCardDefinitionUnknown == value)
             {
                 return;
             }
 
-            _pCardDefinitionUnreadable = value;
-            PCardRaise(nameof(PCardDefinitionUnreadable));
+            _pCardDefinitionUnknown = value;
+            PCardRaise(nameof(PCardDefinitionUnknown));
         }
     }
 
@@ -182,39 +182,39 @@ internal sealed partial class PCard : INotifyPropertyChanged
             }
 
             _pCardExpression = value;
-            PCardExpressionUnreadable = false;
+            PCardExpressionUnknown = false;
             PCardRaise(nameof(PCardExpression));
         }
     }
 
-    public bool PCardExpressionUnreadable
+    public bool PCardExpressionUnknown
     {
-        get => _pCardExpressionUnreadable;
+        get => _pCardExpressionUnknown;
         private set
         {
-            if (_pCardExpressionUnreadable == value)
+            if (_pCardExpressionUnknown == value)
             {
                 return;
             }
 
-            _pCardExpressionUnreadable = value;
-            PCardRaise(nameof(PCardExpressionUnreadable));
+            _pCardExpressionUnknown = value;
+            PCardRaise(nameof(PCardExpressionUnknown));
         }
     }
 
     internal LStateValue PCardTitleRead()
     {
-        return LStateValue.LStateValueResolve(_pTitle, _pTitleUnreadable);
+        return LStateValue.LStateValueResolve(_pTitle, _pTitleUnknown);
     }
 
     internal LStateValue PCardDefinitionRead()
     {
-        return LStateValue.LStateValueResolve(_pCardDefinition, _pCardDefinitionUnreadable);
+        return LStateValue.LStateValueResolve(_pCardDefinition, _pCardDefinitionUnknown);
     }
 
     internal LStateValue PCardExpressionRead()
     {
-        return LStateValue.LStateValueResolve(_pCardExpression, _pCardExpressionUnreadable);
+        return LStateValue.LStateValueResolve(_pCardExpression, _pCardExpressionUnknown);
     }
 
     internal void PCardTitleShow(LStateValue value)
@@ -223,7 +223,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
         _pTitle = value.LStateValueShow();
         PCardRaise(nameof(PTitle));
-        PTitleUnreadable = value.LStateValueState == LState.LStateUnknown;
+        PTitleUnknown = value.LStateValueState == LState.LStateUnknown;
     }
 
     internal void PCardDefinitionShow(LStateValue value)
@@ -232,7 +232,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
         _pCardDefinition = value.LStateValueShow();
         PCardRaise(nameof(PCardDefinition));
-        PCardDefinitionUnreadable = value.LStateValueState == LState.LStateUnknown;
+        PCardDefinitionUnknown = value.LStateValueState == LState.LStateUnknown;
     }
 
     internal void PCardExpressionShow(LStateValue value)
@@ -241,7 +241,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
         _pCardExpression = value.LStateValueShow();
         PCardRaise(nameof(PCardExpression));
-        PCardExpressionUnreadable = value.LStateValueState == LState.LStateUnknown;
+        PCardExpressionUnknown = value.LStateValueState == LState.LStateUnknown;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

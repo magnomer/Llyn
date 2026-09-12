@@ -36,7 +36,7 @@ Version three made the pronunciation a list and added the transcriptions beside 
 ## `public static LDraft? LDraftArchiveRead(string root, long id)`
 
 The draft stored under `id`, or `null` when no readable file holds it.
-A missing file and an unreadable one are the same answer to the caller.
+A missing file and an unknown one are the same answer to the caller.
 So is a file of another version, because a draft the current build did not write is not a draft.
 
 ## `public static IReadOnlyList<LDraft> LDraftArchiveScan(string root)`

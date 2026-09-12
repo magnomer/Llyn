@@ -16,7 +16,7 @@ public static class LSchemaRealm
             command.CommandText =
                 """
                 CREATE TABLE IF NOT EXISTS realm (
-                    id INTEGER NOT NULL PRIMARY KEY CHECK (id = 1),
+                    realm_id INTEGER NOT NULL PRIMARY KEY CHECK (realm_id = 1),
                     value BLOB NOT NULL CHECK (length(value) = 16)
                 );
                 """;
@@ -27,9 +27,9 @@ public static class LSchemaRealm
         {
             command.CommandText =
                 """
-                INSERT INTO realm (id, value)
+                INSERT INTO realm (realm_id, value)
                 VALUES ($id, $value)
-                ON CONFLICT (id) DO NOTHING;
+                ON CONFLICT (realm_id) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$id", LSchemaRealmRow);
             command.Parameters.AddWithValue("$value", Guid.NewGuid().ToByteArray());

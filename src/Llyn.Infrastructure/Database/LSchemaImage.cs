@@ -14,7 +14,7 @@ public static class LSchemaImage
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS image (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                image_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 origin_realm BLOB NOT NULL DEFAULT X'',
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 location_state TEXT NOT NULL DEFAULT 'unspecified',
@@ -24,28 +24,28 @@ public static class LSchemaImage
             );
 
             CREATE TABLE IF NOT EXISTS sense_image (
-                sense_id INTEGER NOT NULL,
+                sense_parent INTEGER NOT NULL,
                 image_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, image_ref),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (image_ref) REFERENCES image (id)
+                PRIMARY KEY (sense_parent, image_ref),
+                FOREIGN KEY (sense_parent) REFERENCES sense (sense_id) ON DELETE CASCADE,
+                FOREIGN KEY (image_ref) REFERENCES image (image_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_image_position
-                ON sense_image (sense_id, position);
+                ON sense_image (sense_parent, position);
 
             CREATE TABLE IF NOT EXISTS collocation_image (
-                collocation_id INTEGER NOT NULL,
+                collocation_parent INTEGER NOT NULL,
                 image_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, image_ref),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (image_ref) REFERENCES image (id)
+                PRIMARY KEY (collocation_parent, image_ref),
+                FOREIGN KEY (collocation_parent) REFERENCES collocation (collocation_id) ON DELETE CASCADE,
+                FOREIGN KEY (image_ref) REFERENCES image (image_id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_image_position
-                ON collocation_image (collocation_id, position);
+                ON collocation_image (collocation_parent, position);
             """;
         command.ExecuteNonQuery();
     }

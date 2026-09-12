@@ -24,3 +24,8 @@ Every caller that knew only locations still means exactly that.
 ### `public bool LImageDraftEmpty`
 
 A row is empty when it names no picture.
+
+## `public LImageDraft LImageDraftNormalize()`
+
+The same row with every unreadable value dropped to unspecified.
+Called only after the user agreed to lose what the store could not read.

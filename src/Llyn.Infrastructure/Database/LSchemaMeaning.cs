@@ -14,9 +14,9 @@ public static class LSchemaMeaning
         command.CommandText =
             """
             CREATE TABLE IF NOT EXISTS sense (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                entry_id INTEGER NOT NULL,
-                parent_id INTEGER,
+                sense_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                entry_parent INTEGER NOT NULL,
+                sense_parent INTEGER,
                 position INTEGER NOT NULL,
                 title_state TEXT NOT NULL DEFAULT 'unspecified',
                 title TEXT,
@@ -27,12 +27,12 @@ public static class LSchemaMeaning
                 labels TEXT NOT NULL,
                 CHECK (title_state = 'specified' OR title IS NULL),
                 CHECK (definition_state = 'specified' OR definition IS NULL),
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE,
-                FOREIGN KEY (parent_id) REFERENCES sense (id) ON DELETE CASCADE
+                FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE,
+                FOREIGN KEY (sense_parent) REFERENCES sense (sense_id) ON DELETE CASCADE
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_sibling_position
-                ON sense (entry_id, ifnull(parent_id, ''), position);
+                ON sense (entry_parent, ifnull(sense_parent, ''), position);
             """;
         command.ExecuteNonQuery();
     }

@@ -10,7 +10,7 @@ Both are what the card says about the video.
 The address is not: it is read off the location whenever the location changes.
 
 A location standing empty is not one thing.
-It may never have been written, or it may have been written and be unreadable now.
+It may never have been written, or it may have been written and be unknown now.
 The second is marked rather than shown, and any edit ends the mark.
 
 The timestamp is written the way it is read, as `00:30 - 04:20`.
@@ -29,11 +29,11 @@ The id of the engine's row this one shows, which every request about it names.
 
 ## `internal LStateValue PVideoLocationRead()`
 
-What the row says its location is: nothing, unreadable, or the text it shows.
+What the row says its location is: nothing, unknown, or the text it shows.
 
 ## `internal LStateValue PVideoSpanRead()`
 
-What the row says its span is: nothing, unreadable, or the text it shows.
+What the row says its span is: nothing, unknown, or the text it shows.
 
 ## `internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)`
 

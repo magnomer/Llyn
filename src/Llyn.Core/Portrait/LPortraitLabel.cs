@@ -1,7 +1,7 @@
 namespace Llyn.Core;
 
 public sealed record LPortraitLabel(
-    string LPortraitLabelUnreadable,
+    string LPortraitLabelUnknown,
     string LPortraitLabelMeaning,
     string LPortraitLabelMeanings,
     string LPortraitLabelCollocation,
@@ -10,7 +10,7 @@ public sealed record LPortraitLabel(
     string LPortraitLabelNote)
 {
     public static LPortraitLabel LPortraitLabelDefault { get; } = new(
-        "Unreadable",
+        "Unknown",
         "Meaning",
         "Meanings",
         "Collocation",

@@ -43,7 +43,7 @@ The open badge is checked, so a badge closed by Escape is not read again.
 Moves the card to the place the typed number names, counting from one.
 A number above the count lands the card last and a number below one lands it first.
 That is the answer a writer means by "9 of 3", rather than a refusal.
-Anything unreadable as a number changes no order at all.
+Anything unknown as a number changes no order at all.
 The move is then handed to the engine exactly as a drag is.
 
 ### `private void PCardMove(PCard card, int target)`

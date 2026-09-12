@@ -59,7 +59,7 @@ Treat all applicable rules as requirements, not optional style guidance.
 
 ## 4. Wording `(T-WO)`
 
-**No articles `(T-WOAR)`** Omit `A`, `An`, and `The` unless the name is unreadable without them.
+**No articles `(T-WOAR)`** Omit `A`, `An`, and `The` unless the name is unknown without them.
 
 **No pronouns `(T-WOPR)`** Omit `It`, `Its`, `Them`, `Their`, and `That` where the sentence still reads.
 

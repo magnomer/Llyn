@@ -305,8 +305,8 @@ internal static partial class TInterface
     internal static LStateValue TStateValueCreate(string text) =>
         LStateValue.LStateValueCreate(text);
 
-    internal static LStateValue TStateValueResolve(string? text, bool unreadable) =>
-        LStateValue.LStateValueResolve(text, unreadable);
+    internal static LStateValue TStateValueResolve(string? text, bool unknown) =>
+        LStateValue.LStateValueResolve(text, unknown);
 
     internal static string TStateValueShow(this LStateValue stateValue) =>
         stateValue.LStateValueShow();
