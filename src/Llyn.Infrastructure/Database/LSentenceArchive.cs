@@ -123,7 +123,6 @@ public sealed class LSentenceArchive
             $"""
             SELECT link.{table}_id, link.{column}, link.position,
                    example.example_id, example.language, example.text_state, example.text,
-                   example.translation_state, example.translation,
                    example.reference_state, example.reference_ref,
                    link.particle_state, link.particle,
                    link.dependence_state, link.dependence
@@ -144,15 +143,15 @@ public sealed class LSentenceArchive
                     reader.GetInt64(1),
                     reader.GetInt32(2),
                     reader.IsDBNull(3) ? null : LSentenceExampleRead(reader, 3),
-                    LStateColumn.LStateColumnRead(reader, 11),
-                    LStateColumn.LStateColumnRead(reader, 13)));
+                    LStateColumn.LStateColumnRead(reader, 9),
+                    LStateColumn.LStateColumnRead(reader, 11)));
             }
         }
 
-        return LSentenceMentionLoad(connection, sentences);
+        return LSentenceListLoad(connection, sentences);
     }
 
-    private static IReadOnlyList<LSentence> LSentenceMentionLoad(
+    private static IReadOnlyList<LSentence> LSentenceListLoad(
         SqliteConnection connection, IReadOnlyList<LSentence> sentences)
     {
         List<LExample> examples = [];
@@ -170,7 +169,7 @@ public sealed class LSentenceArchive
         }
 
         Dictionary<long, LExample> filled = [];
-        foreach (LExample example in LExampleArchive.LExampleMentionLoad(connection, examples))
+        foreach (LExample example in LExampleArchive.LExampleListLoad(connection, examples))
         {
             filled[example.LExampleId] = example;
         }
@@ -299,8 +298,7 @@ public sealed class LSentenceArchive
             reader.GetInt64(start),
             reader.GetString(start + 1),
             LStateColumn.LStateColumnRead(reader, start + 2),
-            LStateColumn.LStateColumnRead(reader, start + 4),
-            LStateColumn.LStateColumnResolve(reader, start + 6));
+            LStateColumn.LStateColumnResolve(reader, start + 4));
     }
 
     private IReadOnlyList<LSentence> LSentenceOwnerRead(string table, string column, long ownerId)

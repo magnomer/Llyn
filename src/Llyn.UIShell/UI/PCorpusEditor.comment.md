@@ -40,11 +40,6 @@ The catalog, the search and the display all read a Source through this, so all t
 Drops the citation.
 The Source is left standing, because clearing a pointer is not deleting what it pointed at.
 
-## `private void PTranscriptTranslationHandle(object sender, TextChangedEventArgs e)`
-
-Clears the unknown mark on the translation as soon as the user types over it.
-Typing is a recording, so what stood there as unknown stops being that the moment it is written.
-
 ## `private void PTranscriptApply(LExample? example)`
 
 Fills every field from the held sentence, or empties them when no draft stands.
@@ -94,7 +89,8 @@ Writes one field and its mark from a value, unless the field already reads that 
 ## `private LRequestExampleBody PTranscriptRead(long draft)`
 
 The controls as written, for the engine to read into the sentence it holds.
-Text and translation travel with their marks and the citation as the chosen id, so the panel resolves no state.
+Text travels with its mark and the citation as the chosen id, so the panel resolves no state.
+The Gloss rows are not in the body, because each travels as its own request from [PCorpusGloss](PCorpusGloss.comment.md).
 The engine keeps the id of the sentence it holds.
 The panel therefore never mints or carries an id of its own.
 

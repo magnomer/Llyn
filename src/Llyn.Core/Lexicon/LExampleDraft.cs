@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,8 +8,8 @@ public sealed record LExampleDraft(
     LStateValue LExampleDraftText,
     long LExampleDraftId,
     LStateAnchor LExampleDraftReference,
-    LStateValue LExampleDraftTranslation,
     string LExampleDraftLanguage = "",
+    IReadOnlyList<LGlossDraft>? LExampleDraftGloss = null,
     IReadOnlyList<LMentionDraft>? LExampleDraftMention = null) : IEquatable<LExampleDraft>
 {
     public LStateValue LExampleDraftText { get; init; } =
@@ -18,10 +18,9 @@ public sealed record LExampleDraft(
     public LStateAnchor LExampleDraftReference { get; init; } =
         LExampleDraftReference ?? LStateAnchor.LStateAnchorUnspecified;
 
-    public LStateValue LExampleDraftTranslation { get; init; } =
-        LExampleDraftTranslation ?? LStateValue.LStateValueUnspecified;
-
     public string LExampleDraftLanguage { get; init; } = LExampleDraftLanguage ?? string.Empty;
+
+    public IReadOnlyList<LGlossDraft> LExampleDraftGloss { get; init; } = LExampleDraftGloss ?? [];
 
     public IReadOnlyList<LMentionDraft> LExampleDraftMention { get; init; } = LExampleDraftMention ?? [];
 
@@ -31,8 +30,8 @@ public sealed record LExampleDraft(
             && LExampleDraftId == other.LExampleDraftId
             && LExampleDraftText.Equals(other.LExampleDraftText)
             && LExampleDraftReference.Equals(other.LExampleDraftReference)
-            && LExampleDraftTranslation.Equals(other.LExampleDraftTranslation)
             && LExampleDraftLanguage == other.LExampleDraftLanguage
+            && LExampleDraftGloss.SequenceEqual(other.LExampleDraftGloss)
             && LExampleDraftMention.SequenceEqual(other.LExampleDraftMention);
     }
 
@@ -42,8 +41,8 @@ public sealed record LExampleDraft(
             LExampleDraftId,
             LExampleDraftText,
             LExampleDraftReference,
-            LExampleDraftTranslation,
             LExampleDraftLanguage,
+            LExampleDraftGloss.Count,
             LExampleDraftMention.Count);
     }
 
@@ -53,7 +52,7 @@ public sealed record LExampleDraft(
         {
             LExampleDraftText = LExampleDraftText.LStateValueNormalize(),
             LExampleDraftReference = LExampleDraftReference.LStateAnchorNormalize(),
-            LExampleDraftTranslation = LExampleDraftTranslation.LStateValueNormalize(),
+            LExampleDraftGloss = LGlossDraft.LGlossDraftNormalize(LExampleDraftGloss),
             LExampleDraftMention = LMentionDraft.LMentionDraftSort(LExampleDraftMention),
         };
     }
@@ -63,7 +62,31 @@ public sealed record LExampleDraft(
         return new LExampleDraft(
             LStateValue.LStateValueRead(text),
             0,
-            LStateAnchor.LStateAnchorUnspecified,
-            LStateValue.LStateValueUnspecified);
+            LStateAnchor.LStateAnchorUnspecified);
+    }
+
+    public static LExampleDraft LExampleDraftCreate(LExample example)
+    {
+        ArgumentNullException.ThrowIfNull(example);
+
+        List<LGlossDraft> glosses = new(example.LExampleGloss.Count);
+        foreach (LGloss gloss in example.LExampleGloss)
+        {
+            glosses.Add(LGlossDraft.LGlossDraftCreate(gloss));
+        }
+
+        List<LMentionDraft> mentions = new(example.LExampleMention.Count);
+        foreach (LMention mention in example.LExampleMention)
+        {
+            mentions.Add(LMentionDraft.LMentionDraftCreate(mention));
+        }
+
+        return new LExampleDraft(
+            example.LExampleText,
+            example.LExampleId,
+            example.LExampleSource,
+            example.LExampleLanguage,
+            glosses,
+            mentions);
     }
 }

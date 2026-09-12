@@ -21,13 +21,13 @@ A marker and a role belong to the card holding the Example, never to the shared 
 - `LExampleDraftText` — The sentence the row shows, and what is known about it.
 - `LExampleDraftId` — The id of the Example the row edits, empty until one is given.
 - `LExampleDraftReference` — The Source the sentence cites, and what is known about it.
-- `LExampleDraftTranslation` — The sentence rendered in another language, and what is known about it.
 - `LExampleDraftLanguage` — The language the sentence is written in, empty when none is stated.
+- `LExampleDraftGloss` — The sentence rendered in other languages, as [LGlossDraft](LGlossDraft.comment.md) rows in the order the Example keeps them.
 - `LExampleDraftMention` — The words of the sentence that stand for an Entry, as [LMentionDraft](LMentionDraft.comment.md) rows ordered by start.
 
 ## `public bool Equals(LExampleDraft? other)`
 
-Two drafts are equal when every field is equal and the Mention lists match row by row.
+Two drafts are equal when every field is equal and the Gloss and Mention lists match row by row.
 A record compares a list by reference, which would make every load a change.
 
 ## `public override int GetHashCode()`

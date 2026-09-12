@@ -190,7 +190,33 @@ public sealed class TDatabaseSession
         LExample? read = examples.TExampleRead(stored.LExampleId);
         Assert.NotNull(read);
         Assert.Equal("a changed sentence", read.LExampleText);
-        Assert.Equal("one translation", read.LExampleTranslation);
+        Assert.Equal("one translation", Assert.Single(read.LExampleGloss).LGlossText);
+    }
+
+    [Fact]
+    public void ExampleUpdate_ReorderedGlosses_KeepsRowIdsAndNewOrder()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
+
+        LExample stored = examples.TExampleCreate(
+            TInterface.TExampleCreate(0, "en", "a sentence", null, null) with
+            {
+                LExampleGloss =
+                [
+                    TInterface.TGlossCreate(0, "ko", "한 문장"),
+                    TInterface.TGlossCreate(0, "fr", "une phrase"),
+                ],
+            });
+        long korean = stored.LExampleGloss[0].LGlossId;
+        long french = stored.LExampleGloss[1].LGlossId;
+
+        examples.TExampleUpdate(stored with { LExampleGloss = [stored.LExampleGloss[1], stored.LExampleGloss[0]] });
+
+        LExample read = examples.TExampleRead(stored.LExampleId)!;
+        Assert.Equal([french, korean], read.LExampleGloss.Select(gloss => gloss.LGlossId));
+        Assert.Equal(["fr", "ko"], read.LExampleGloss.Select(gloss => gloss.LGlossLanguage));
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example_translation;"));
     }
 
     [Fact]

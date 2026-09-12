@@ -20,16 +20,27 @@ public static class LSchemaQuotation
                 language TEXT NOT NULL,
                 text_state TEXT NOT NULL DEFAULT 'unspecified',
                 text TEXT,
-                translation_state TEXT NOT NULL DEFAULT 'unspecified',
-                translation TEXT,
                 reference_state TEXT NOT NULL DEFAULT 'unspecified',
                 reference_ref INTEGER,
                 CHECK (text_state = 'specified' OR text IS NULL),
-                CHECK (translation_state = 'specified' OR translation IS NULL),
                 CHECK (reference_state = 'specified' OR reference_ref IS NULL),
                 FOREIGN KEY (reference_ref) REFERENCES reference (reference_id),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
+
+            CREATE TABLE IF NOT EXISTS example_translation (
+                example_translation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                example_parent INTEGER NOT NULL,
+                position INTEGER NOT NULL,
+                language TEXT NOT NULL,
+                text_state TEXT NOT NULL DEFAULT 'unspecified',
+                text TEXT,
+                CHECK (text_state = 'specified' OR text IS NULL),
+                FOREIGN KEY (example_parent) REFERENCES example (example_id) ON DELETE CASCADE
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS example_translation_position
+                ON example_translation (example_parent, position);
 
             CREATE TABLE IF NOT EXISTS example_mention (
                 example_mention_id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -70,7 +70,13 @@ public partial class PEditor
     private PCard PCardCreate(string prefix, LCardDraft draft)
     {
         PCard card = new(
-            _lEngine, prefix, draft.LCardDraftPosition, _pEditorCitation, _pEditorParticle, _pEditorDependence)
+            _lEngine,
+            prefix,
+            draft.LCardDraftPosition,
+            _pEditorCitation,
+            _pEditorParticle,
+            _pEditorDependence,
+            _pLanguageItem)
         {
             PCardId = draft.LCardDraftId,
         };

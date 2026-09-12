@@ -12,7 +12,7 @@ public static class LDraftArchive
     private const string LDraftArchiveExtension = ".json";
     private const string LDraftArchivePending = ".json.tmp";
 
-    public const int LDraftArchiveVersion = 3;
+    public const int LDraftArchiveVersion = 4;
 
     private static readonly TimeSpan LDraftArchiveStale = TimeSpan.FromHours(1);
 

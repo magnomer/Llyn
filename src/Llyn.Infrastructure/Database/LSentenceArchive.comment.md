@@ -96,9 +96,9 @@ The table and the owner column are store-owned literals named by the methods abo
 They are never caller input, so composing them into the statement text opens no injection seam.
 Every value still travels as a parameter.
 
-### `private static IReadOnlyList<LSentence> LSentenceMentionLoad(`
+### `private static IReadOnlyList<LSentence> LSentenceListLoad(`
 
-Fills the Mentions of every cited Example after the rows are read, in one further statement.
+Fills the Glosses and Mentions of every cited Example after the rows are read, in two further statements.
 A row citing nothing is passed through as it stands.
 
 ### `private static bool LSentenceChange(`

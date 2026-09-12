@@ -79,9 +79,9 @@ Shared with `LExampleLink`, which resolves a whole referrer's set at once.
 
 ## Inline notes
 
-### `internal static IReadOnlyList<LExample> LExampleMentionLoad(`
+### `internal static IReadOnlyList<LExample> LExampleListLoad(`
 
-Gives every Example in a list its Mentions, read in one statement for the whole list.
+Gives every Example in a list its Glosses and its Mentions, each read in one statement for the whole list.
 The sentence reader shares it, so a card's sentences are filled in one round trip.
 
 ### `private static int LExampleReferenceRead(SqliteConnection connection, long id)`

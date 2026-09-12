@@ -205,6 +205,7 @@ public sealed partial class LEngine
     {
         IReadOnlyList<LMentionDraft> drafts = LEngineMentionResolve(written);
         IReadOnlyList<LMention> mentions = LEngineMentionRead(drafts);
+        IReadOnlyList<LGloss> glosses = LEngineGlossRead(written.LExampleDraftGloss);
 
         if (written.LExampleDraftId > 0)
         {
@@ -213,8 +214,9 @@ public sealed partial class LEngine
 
             bool sameText = stored.LExampleText == written.LExampleDraftText;
             bool sameSource = stored.LExampleSource == written.LExampleDraftReference;
+            bool sameGloss = stored.LExampleGloss.SequenceEqual(glosses);
             bool sameMention = stored.LExampleMention.SequenceEqual(mentions);
-            if (sameText && sameSource && sameMention)
+            if (sameText && sameSource && sameGloss && sameMention)
             {
                 return stored;
             }
@@ -225,9 +227,10 @@ public sealed partial class LEngine
                     0,
                     stored.LExampleLanguage,
                     written.LExampleDraftText,
-                    stored.LExampleTranslation,
                     written.LExampleDraftReference,
+                    glosses,
                     mentions));
+                LEngineGlossRecord(identity, written.LExampleDraftGloss, forked.LExampleGloss);
                 LEngineMentionRecord(identity, drafts, forked.LExampleMention);
                 return forked;
             }
@@ -242,6 +245,14 @@ public sealed partial class LEngine
             {
                 examples.LExampleSourceUpdate(stored.LExampleId, written.LExampleDraftReference);
                 stored = stored with { LExampleSource = written.LExampleDraftReference };
+            }
+
+            if (!sameGloss)
+            {
+                LGlossArchive rows = new(_lEngineDatabase);
+                rows.LGlossExampleSave(stored.LExampleId, glosses);
+                stored = stored with { LExampleGloss = rows.LGlossExampleRead(stored.LExampleId) };
+                LEngineGlossRecord(identity, written.LExampleDraftGloss, stored.LExampleGloss);
             }
 
             if (!sameText || !sameMention)
@@ -259,10 +270,11 @@ public sealed partial class LEngine
             0,
             written.LExampleDraftLanguage.Length == 0 ? language : written.LExampleDraftLanguage,
             written.LExampleDraftText,
-            written.LExampleDraftTranslation,
             written.LExampleDraftReference,
+            glosses,
             mentions));
         LEngineIdentityRecord(identity, written.LExampleDraftId, created.LExampleId);
+        LEngineGlossRecord(identity, written.LExampleDraftGloss, created.LExampleGloss);
         LEngineMentionRecord(identity, drafts, created.LExampleMention);
         return created;
     }

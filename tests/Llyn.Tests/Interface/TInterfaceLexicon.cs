@@ -140,9 +140,17 @@ internal static partial class TInterface
         long id,
         string language,
         LStateValue text,
-        LStateValue translation,
+        LStateValue? translation,
         LStateAnchor source) =>
-        new(id, language, text, translation, source);
+        new(
+            id,
+            language,
+            text,
+            source,
+            translation is null || translation.LStateValueEmpty ? [] : [TGlossCreate(0, string.Empty, translation)]);
+
+    internal static LGloss TGlossCreate(long id, string language, LStateValue text) =>
+        new(id, language, text);
 
     internal static LMention TMentionCreate(long id, int start, int length, long entryId, long senseId = 0) =>
         new(id, start, length, entryId, senseId);
@@ -169,9 +177,8 @@ internal static partial class TInterface
         LStateValue text,
         long id,
         LStateAnchor reference,
-        LStateValue? translation = null,
         string language = "") =>
-        new(text, id, reference, translation ?? LStateValue.LStateValueUnspecified, language);
+        new(text, id, reference, language);
 
     internal static LSentenceDraft TSentenceDraftCreate(
         LStateValue text,

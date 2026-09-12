@@ -71,12 +71,9 @@ Position is per sibling group, which is what the store's unique index counts.
 The Example a card's row quotes, or `null` when the row quotes none.
 A row states a frame and no sentence when the store holds no Example for it.
 That row is real data and must load as itself rather than as an empty sentence.
-The stored Mentions travel with the Example as drafts under their positive ids.
-A commit that dropped them would otherwise delete every link the sentence carried.
-
-### `private static IReadOnlyList<LMentionDraft> LEntryMentionRead(IReadOnlyList<LMention> mentions)`
-
-The stored Mentions as drafts, ids kept.
+The stored Glosses and Mentions travel with the Example as drafts under their positive ids.
+A commit that dropped them would otherwise delete every rendering and link the sentence carried.
+The draft is built by [LExampleDraft](../../Llyn.Core/Lexicon/LExampleDraft.comment.md), so every loader reads a stored Example the same way.
 
 ### `private LCardDraft LEntryCardRead(`
 

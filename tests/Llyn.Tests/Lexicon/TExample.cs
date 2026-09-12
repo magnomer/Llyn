@@ -30,7 +30,7 @@ public sealed class TExample
         Assert.NotEqual(0, example.LExampleId);
         Assert.Equal(
             "그가 그 말을 했다",
-            engine.TEngineExampleRead(example.LExampleId)!.LExampleTranslation.TStateValueShow());
+            Assert.Single(engine.TEngineExampleRead(example.LExampleId)!.LExampleGloss).LGlossText.TStateValueShow());
 
         engine.TEngineExampleAttach(meaningId, example.LExampleId, 0, LOwner.LOwnerMeaning);
         engine.TEngineExampleAttach(collocationId, example.LExampleId, 0, LOwner.LOwnerCollocation);
@@ -287,7 +287,7 @@ public sealed class TExample
             engine.TEngineExampleRead().Select(row => row.LExampleText.TStateValueShow()));
         Assert.Equal(
             "그가 그 말을 했다",
-            engine.TEngineExampleRead()[0].LExampleTranslation.TStateValueShow());
+            Assert.Single(engine.TEngineExampleRead()[0].LExampleGloss).LGlossText.TStateValueShow());
 
         IReadOnlyDictionary<long, int> counts = engine.TEngineUsageRead(LOwner.LOwnerExample);
         Assert.Equal(2, counts[shared.LExampleId]);

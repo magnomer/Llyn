@@ -16,6 +16,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private readonly ObservableCollection<PCitationItem> _pCardCitation;
     private readonly ObservableCollection<string> _pCardParticle;
     private readonly ObservableCollection<string> _pCardDependence;
+    private readonly ObservableCollection<PLanguageItem> _pCardLanguage;
     private int _pCardPosition;
     private string _pCardPositionText;
     private bool _pCardPositionActive;
@@ -32,7 +33,8 @@ internal sealed partial class PCard : INotifyPropertyChanged
         int position,
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
-        ObservableCollection<string> dependences)
+        ObservableCollection<string> dependences,
+        ObservableCollection<PLanguageItem> languages)
     {
         ArgumentNullException.ThrowIfNull(engine);
 
@@ -43,6 +45,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pCardCitation = catalog;
         _pCardParticle = particles;
         _pCardDependence = dependences;
+        _pCardLanguage = languages;
         _pTitle = string.Empty;
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;

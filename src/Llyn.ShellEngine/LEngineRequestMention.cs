@@ -118,13 +118,7 @@ public sealed partial class LEngine
         if (cardId == 0 && sentenceId == 0)
         {
             LExample held = draft.LDraftExample ?? throw new LRefusal(LRefusal.LRefusalExample);
-            LExampleDraft written = new(
-                held.LExampleText,
-                held.LExampleId,
-                held.LExampleSource,
-                held.LExampleTranslation,
-                held.LExampleLanguage,
-                LEngineMentionRead(held.LExampleMention));
+            LExampleDraft written = LExampleDraft.LExampleDraftCreate(held);
 
             return draft with { LDraftExample = held with { LExampleMention = LEngineMentionRead(change(written)) } };
         }

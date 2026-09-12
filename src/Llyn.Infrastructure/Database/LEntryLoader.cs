@@ -218,26 +218,7 @@ public sealed class LEntryLoader
 
     private static LExampleDraft? LEntryExampleRead(LExample? example)
     {
-        return example is null
-            ? null
-            : new LExampleDraft(
-                example.LExampleText,
-                example.LExampleId,
-                example.LExampleSource,
-                example.LExampleTranslation,
-                example.LExampleLanguage,
-                LEntryMentionRead(example.LExampleMention));
-    }
-
-    private static IReadOnlyList<LMentionDraft> LEntryMentionRead(IReadOnlyList<LMention> mentions)
-    {
-        List<LMentionDraft> drafts = new(mentions.Count);
-        foreach (LMention mention in mentions)
-        {
-            drafts.Add(LMentionDraft.LMentionDraftCreate(mention));
-        }
-
-        return drafts;
+        return example is null ? null : LExampleDraft.LExampleDraftCreate(example);
     }
 
     private static IReadOnlyList<LSituationDraft> LEntrySituationRead(IReadOnlyList<LSituation> situations)

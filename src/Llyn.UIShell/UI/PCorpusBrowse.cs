@@ -174,7 +174,7 @@ public partial class PCorpus
             : [];
         PExcerptLanguage.Text = example.LExampleLanguage;
         PExcerptFlag.Source = PEnsign.PEnsignFind(example.LExampleLanguage);
-        PExcerptValueShow(PExcerptTranslation, example.LExampleTranslation);
+        PExcerptGlossShow(example.LExampleGloss);
         PExcerptAnchorShow(
             PExcerptCitation,
             example.LExampleSource,

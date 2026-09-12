@@ -105,6 +105,7 @@
                 <CommandBinding CanExecute="PSentenceSenseCheck" Command="{x:Static local:PMentionCommand.PMentionCommandChoose}" Executed="PSentenceSenseHandle" />
                 <CommandBinding CanExecute="PSentenceLinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandSilence}" Executed="PSentenceSilenceHandle" />
                 <CommandBinding CanExecute="PSentenceUnlinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandUnlink}" Executed="PSentenceUnlinkHandle" />
+                <CommandBinding Command="{x:Static local:PGlossCommand.PGlossCommandRemoval}" Executed="PGlossRemoveHandle" />
             </Grid.CommandBindings>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -243,6 +244,7 @@
                             </TextBox.Tag>
                         </TextBox>
                         <ItemsControl x:Name="PSentenceMentionLine" ItemTemplate="{DynamicResource Theme.Mention.Chip}" ItemsSource="{Binding PSentenceChip.PMentionLineChip}" Style="{DynamicResource Theme.Mention.Line}" />
+                        <ItemsControl x:Name="PSentenceGlossLine" ItemTemplate="{DynamicResource Theme.Gloss.Row}" ItemsSource="{Binding PSentenceGloss}" Style="{DynamicResource Theme.Gloss.Line}" />
                     </StackPanel>
                 </Grid>
 
@@ -250,6 +252,9 @@
                     <StackPanel.Style>
                         <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Sentence.Control}" />
                     </StackPanel.Style>
+                    <Button Margin="0,0,6,0" Click="PGlossAddHandle" Style="{DynamicResource Theme.Card.Handle}" ToolTip="{DynamicResource Gloss.Add}">
+                        <Path Width="11" Height="11" Data="M 5.5,2.5 L 5.5,8.5 M 2.5,5.5 L 8.5,5.5 M 5.5,0.5 A 5,5 0 1 0 5.5,10.5 A 5,5 0 1 0 5.5,0.5" Stroke="{DynamicResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.2" />
+                    </Button>
                     <ToggleButton
                         x:Name="PSentenceCitationId"
                         MaxWidth="124"

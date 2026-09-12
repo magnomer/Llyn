@@ -256,6 +256,7 @@
     "Example.Text": "Sentence",
     "Example.Language": "Language",
     "Example.Translation": "Translation",
+    "Gloss.Add": "Add translation",
     "Example.Usage": "Used by",
     "Example.UsageEmpty": "Nothing quotes this example",
     "Example.Meaning": "Meaning",

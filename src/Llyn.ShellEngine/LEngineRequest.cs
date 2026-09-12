@@ -45,8 +45,10 @@ public sealed partial class LEngine
             LRequestMentionAddition sent => LEngineMentionAdd(draft, sent),
             LRequestMentionRemoval sent => LEngineMentionRemove(draft, sent),
             LRequestMentionSense sent => LEngineMentionChange(draft, sent),
-            LRequestExampleTranslation sent => LEngineExampleChange(
-                draft, example => example with { LExampleTranslation = LEngineValueRead(sent.LRequestValue) }),
+            LRequestGlossAddition sent => LEngineGlossAdd(draft, sent),
+            LRequestGlossRemoval sent => LEngineGlossRemove(draft, sent),
+            LRequestGlossText sent => LEngineGlossChange(draft, sent),
+            LRequestGlossLanguage sent => LEngineGlossChange(draft, sent),
             LRequestExampleLanguage sent => LEngineExampleChange(
                 draft, example => example with { LExampleLanguage = sent.LRequestLanguage ?? string.Empty }),
             LRequestExampleReference sent => LEngineExampleChange(

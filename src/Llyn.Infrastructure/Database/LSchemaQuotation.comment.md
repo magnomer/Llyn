@@ -6,7 +6,7 @@ Creates the independent Example and the association tables that reach it.
 
 ## `public static void LSchemaQuotationCreate(SqliteConnection connection)`
 
-Creates the Example, its own Mention list, and the two association tables that cite it.
+Creates the Example, its own Gloss and Mention lists, and the two association tables that cite it.
 
 An Example is owned by nothing.
 It carries its own opaque id, its language and display text, and at most one Source reference.
@@ -28,7 +28,13 @@ Deleting a referrer removes only its own association rows, by ON DELETE CASCADE 
 The example_ref foreign keys deliberately have no cascade.
 So an Example survives every detach.
 The store refuses to delete one while any reference still points at it.
-The translation is a column on the Example row, so it goes when the row goes.
+
+example_translation is one Gloss: the sentence rendered as text in one language.
+A row holds the language it is written in, the text with its state, and the position it takes among the Example's Glosses.
+The row lives on the Example and goes with it by ON DELETE CASCADE, because a rendering of a sentence says nothing without the sentence.
+The unique index per Example keeps the positions free of duplicates, as the association tables do for their referrers.
+One Example may carry several rows in one language, since two renderings of one sentence are both worth keeping.
+The table is named after the Translation the schema already speaks of, while the code names the row a Gloss.
 
 example_mention is one word of the sentence that stands for an Entry.
 A row holds the span the word occupies, as a start and a length counted in code points.

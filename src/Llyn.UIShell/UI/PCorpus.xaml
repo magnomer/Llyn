@@ -217,6 +217,7 @@
                             <local:PMention x:Name="PExcerptText" Margin="0,5,0,0" FontFamily="{DynamicResource Theme.Font}" FontSize="20" PMentionClick="PExcerptMentionHandle" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Example.Translation}" />
+                            <ItemsControl x:Name="PExcerptGloss" ItemTemplate="{DynamicResource Theme.Gloss.Display}" Style="{DynamicResource Theme.Gloss.Line}" />
                             <TextBlock x:Name="PExcerptTranslation" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" TextWrapping="Wrap" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Reference.Title}" />
@@ -273,6 +274,7 @@
                         <CommandBinding CanExecute="PTranscriptSenseCheck" Command="{x:Static local:PMentionCommand.PMentionCommandChoose}" Executed="PTranscriptSenseHandle" />
                         <CommandBinding CanExecute="PTranscriptLinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandSilence}" Executed="PTranscriptSilenceHandle" />
                         <CommandBinding CanExecute="PTranscriptUnlinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandUnlink}" Executed="PTranscriptUnlinkHandle" />
+                        <CommandBinding Command="{x:Static local:PGlossCommand.PGlossCommandRemoval}" Executed="PGlossRemoveHandle" />
                     </Grid.CommandBindings>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -328,16 +330,15 @@
                             <ItemsControl x:Name="PTranscriptMentionLine" ItemTemplate="{DynamicResource Theme.Mention.Chip}" Style="{DynamicResource Theme.Mention.Line}" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Example.Translation}" />
-                            <TextBox
-                                x:Name="PTranscriptTranslation"
-                                MinHeight="88"
+                            <ItemsControl x:Name="PTranscriptGlossLine" ItemTemplate="{DynamicResource Theme.Gloss.Field}" />
+                            <Button
+                                x:Name="PTranscriptAddition"
+                                Height="36"
                                 Margin="0,7,0,0"
-                                Padding="12,9"
-                                AcceptsReturn="True"
-                                Style="{StaticResource Theme.Input.Field}"
-                                TextChanged="PTranscriptTranslationHandle"
-                                TextWrapping="Wrap"
-                                VerticalContentAlignment="Top" />
+                                HorizontalAlignment="Left"
+                                Click="PGlossAddHandle"
+                                Content="{DynamicResource Gloss.Add}"
+                                Style="{StaticResource Theme.Input.Pill}" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Reference.Title}" />
                             <Grid Margin="0,7,0,0" HorizontalAlignment="Left">

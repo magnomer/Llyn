@@ -30,8 +30,9 @@ The field is a plain box until something is written in it.
 ## `internal PSentence(`
 
 The row for one of the engine's rows, blank or filled.
-It holds the sentence, the Source it cites, and the frame as the draft holds them.
+It holds the sentence, the Source it cites, the frame, and the Gloss rows as the draft holds them.
 All of it stands under the ids that name it.
+The language catalog is handed in for the Gloss pickers, shared with every other row.
 
 ## `internal long PSentenceRow`
 

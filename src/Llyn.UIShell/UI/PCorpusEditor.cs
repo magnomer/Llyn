@@ -15,8 +15,6 @@ public partial class PCorpus
 
     private bool _pTranscriptTextUnknown;
 
-    private bool _pTranscriptTranslationUnknown;
-
     private bool _pTranscriptLoading;
 
     private void PSpeakerLoad()
@@ -142,18 +140,6 @@ public partial class PCorpus
         PTranscriptChangeDefer();
     }
 
-    private void PTranscriptTranslationHandle(object sender, TextChangedEventArgs e)
-    {
-        if (_pTranscriptLoading)
-        {
-            return;
-        }
-
-        _pTranscriptTranslationUnknown = false;
-        PTranscriptTranslation.Tag = string.Empty;
-        PTranscriptChangeDefer();
-    }
-
     private void PTranscriptApply(LExample? example)
     {
         _pTranscriptLoading = true;
@@ -164,10 +150,8 @@ public partial class PCorpus
         _pTranscriptTextUnknown = example?.LExampleText.LStateValueState == LState.LStateUnknown;
         PTranscriptText.Tag = _pTranscriptTextUnknown ? unknown : string.Empty;
 
-        PTranscriptTranslation.Text = example?.LExampleTranslation.LStateValueShow() ?? string.Empty;
-        _pTranscriptTranslationUnknown =
-            example?.LExampleTranslation.LStateValueState == LState.LStateUnknown;
-        PTranscriptTranslation.Tag = _pTranscriptTranslationUnknown ? unknown : string.Empty;
+        _pTranscriptGlossDirty.Clear();
+        PTranscriptGlossShow(example);
 
         _pTranscriptLanguage = example?.LExampleLanguage ?? string.Empty;
 
@@ -208,8 +192,7 @@ public partial class PCorpus
         string unknown = _pCorpusHost.PLocalizationTextRead("Display.Unknown");
 
         PTranscriptFieldShow(PTranscriptText, example.LExampleText, unknown, ref _pTranscriptTextUnknown);
-        PTranscriptFieldShow(
-            PTranscriptTranslation, example.LExampleTranslation, unknown, ref _pTranscriptTranslationUnknown);
+        PTranscriptGlossShow(example);
 
         if (!string.Equals(_pTranscriptLanguage, example.LExampleLanguage, StringComparison.Ordinal))
         {
@@ -250,7 +233,6 @@ public partial class PCorpus
             draft,
             _pTranscriptLanguage,
             new LStateWritten(PTranscriptText.Text, _pTranscriptTextUnknown),
-            new LStateWritten(PTranscriptTranslation.Text, _pTranscriptTranslationUnknown),
             _pTranscriptCitation);
     }
 

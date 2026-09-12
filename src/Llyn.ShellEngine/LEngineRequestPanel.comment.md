@@ -22,7 +22,8 @@ The caller drops the result when it equals what was held.
 
 ## `private static LExample LEngineBodyApply(LExample held, LRequestExampleBody sent)`
 
-Resolves the written text and translation and the chosen source of the sent sentence.
+Resolves the written text and the chosen source of the sent sentence.
+The Glosses are left as held, because each is a row the Gloss requests edit on its own.
 It lays them, with the language, over the held one, keeping the held id.
 
 ## `private static LSituation LEngineBodyApply(LSituation held, LRequestSituationBody sent)`

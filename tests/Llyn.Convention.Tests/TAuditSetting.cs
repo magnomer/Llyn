@@ -191,6 +191,7 @@ internal static class TAuditSetting
         "Form",
         "Funnel",
         "Gamut",
+        "Gloss",
         "Grade",
         "Harvest",
         "Headline",

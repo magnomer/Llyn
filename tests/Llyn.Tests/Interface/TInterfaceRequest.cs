@@ -52,6 +52,21 @@ internal static partial class TInterface
     internal static LRequest TMentionRemovalCreate(long draftId, long cardId, long sentenceId, long mentionId) =>
         new LRequestMentionRemoval(draftId, cardId, sentenceId, mentionId);
 
+    internal static LRequest TGlossAdditionCreate(
+        long draftId, long cardId, long sentenceId, string language, int position) =>
+        new LRequestGlossAddition(draftId, cardId, sentenceId, language, position);
+
+    internal static LRequest TGlossRemovalCreate(long draftId, long cardId, long sentenceId, long glossId) =>
+        new LRequestGlossRemoval(draftId, cardId, sentenceId, glossId);
+
+    internal static LRequest TGlossTextCreate(
+        long draftId, long cardId, long sentenceId, long glossId, LStateValue value) =>
+        new LRequestGlossText(draftId, cardId, sentenceId, glossId, value.TStateWrittenRead());
+
+    internal static LRequest TGlossLanguageCreate(
+        long draftId, long cardId, long sentenceId, long glossId, string language) =>
+        new LRequestGlossLanguage(draftId, cardId, sentenceId, glossId, language);
+
     internal static LRequest TMentionSenseCreate(
         long draftId, long cardId, long sentenceId, long mentionId, long senseId) =>
         new LRequestMentionSense(draftId, cardId, sentenceId, mentionId, senseId);
@@ -171,7 +186,6 @@ internal static partial class TInterface
             draftId,
             example.LExampleLanguage,
             example.LExampleText.TStateWrittenRead(),
-            example.LExampleTranslation.TStateWrittenRead(),
             example.LExampleSource.LStateAnchorShow());
 
     internal static LRequest TSituationBodyCreate(long draftId, long situationId, LSituation situation) =>

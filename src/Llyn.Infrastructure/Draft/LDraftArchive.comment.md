@@ -26,7 +26,7 @@ Only the engine mints, and the guard here means no caller can slip past it.
 A credited author is an item too, so a credit with id zero is refused the same way.
 The entry id of the draft itself may be zero, because that names a new record rather than an item.
 
-## `public const int LDraftArchiveVersion = 3;`
+## `public const int LDraftArchiveVersion = 4;`
 
 Shape of the draft file the current build writes.
 It moves whenever a draft-shaped record changes, so an older file is skipped rather than misread.

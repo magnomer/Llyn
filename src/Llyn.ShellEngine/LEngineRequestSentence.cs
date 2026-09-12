@@ -48,13 +48,7 @@ public sealed partial class LEngine
         LExample stored = new LExampleArchive(_lEngineDatabase).LExampleRead(request.LRequestExampleId)
             ?? throw new LRefusal(LRefusal.LRefusalExample);
 
-        LExampleDraft example = new(
-            stored.LExampleText,
-            stored.LExampleId,
-            stored.LExampleSource,
-            stored.LExampleTranslation,
-            stored.LExampleLanguage,
-            LEngineMentionRead(stored.LExampleMention));
+        LExampleDraft example = LExampleDraft.LExampleDraftCreate(stored);
 
         return LEngineSentenceChange(
             content,
@@ -71,13 +65,13 @@ public sealed partial class LEngine
             LExampleDraft? example = change(sentence.LSentenceDraftExample ?? new LExampleDraft(
                 LStateValue.LStateValueUnspecified,
                 0,
-                LStateAnchor.LStateAnchorUnspecified,
-                LStateValue.LStateValueUnspecified));
+                LStateAnchor.LStateAnchorUnspecified));
 
             if (example.LExampleDraftId == 0)
             {
                 bool blank = example.LExampleDraftText.LStateValueEmpty
-                    && example.LExampleDraftReference.LStateAnchorEmpty;
+                    && example.LExampleDraftReference.LStateAnchorEmpty
+                    && example.LExampleDraftGloss.Count == 0;
                 example = blank ? null : example with { LExampleDraftId = LEngineIdentityCreate() };
             }
 

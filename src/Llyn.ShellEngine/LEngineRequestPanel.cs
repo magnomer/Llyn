@@ -37,7 +37,6 @@ public sealed partial class LEngine
         return LEngineMentionUpdate(held, LEngineValueRead(sent.LRequestText)) with
         {
             LExampleLanguage = sent.LRequestLanguage ?? string.Empty,
-            LExampleTranslation = LEngineValueRead(sent.LRequestTranslation),
             LExampleSource = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId),
         };
     }

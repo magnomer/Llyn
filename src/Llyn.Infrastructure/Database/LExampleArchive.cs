@@ -30,22 +30,20 @@ public sealed class LExampleArchive
             command.CommandText =
                 """
                 INSERT INTO example (
-                    language, text_state, text, translation_state, translation,
-                    reference_state, reference_ref)
+                    language, text_state, text, reference_state, reference_ref)
                 VALUES (
-                    $language, $textState, $text, $translationState, $translation,
-                    $referenceState, $reference)
+                    $language, $textState, $text, $referenceState, $reference)
                 RETURNING example_id;
                 """;
             command.Parameters.AddWithValue("$language", stored.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", stored.LExampleText);
-            LStateColumn.LStateColumnApply(command, "translation", stored.LExampleTranslation);
             LStateColumn.LStateColumnApply(command, "reference", stored.LExampleSource);
             stored = stored with { LExampleId = (long)command.ExecuteScalar()! };
         }
 
+        LGlossArchive.LGlossExampleSave(connection, stored.LExampleId, stored.LExampleGloss);
         LMentionArchive.LMentionExampleSave(connection, stored.LExampleId, stored.LExampleMention);
-        stored = LExampleMentionLoad(connection, [stored])[0];
+        stored = LExampleListLoad(connection, [stored])[0];
 
         session.LDatabaseSessionCommit();
 
@@ -68,8 +66,7 @@ public sealed class LExampleArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT example_id, language, text_state, text, translation_state, translation,
-                   reference_state, reference_ref
+            SELECT example_id, language, text_state, text, reference_state, reference_ref
             FROM example
             ORDER BY rowid;
             """;
@@ -83,12 +80,11 @@ public sealed class LExampleArchive
                     reader.GetInt64(0),
                     reader.GetString(1),
                     LStateColumn.LStateColumnRead(reader, 2),
-                    LStateColumn.LStateColumnRead(reader, 4),
-                    LStateColumn.LStateColumnResolve(reader, 6)));
+                    LStateColumn.LStateColumnResolve(reader, 4)));
             }
         }
 
-        return LExampleMentionLoad(connection, examples);
+        return LExampleListLoad(connection, examples);
     }
 
     public void LExampleUpdate(LExample example)
@@ -105,13 +101,11 @@ public sealed class LExampleArchive
                 """
                 UPDATE example
                 SET language = $language, text_state = $textState, text = $text,
-                    translation_state = $translationState, translation = $translation,
                     reference_state = $referenceState, reference_ref = $reference
                 WHERE example_id = $id;
                 """;
             command.Parameters.AddWithValue("$language", example.LExampleLanguage);
             LStateColumn.LStateColumnApply(command, "text", example.LExampleText);
-            LStateColumn.LStateColumnApply(command, "translation", example.LExampleTranslation);
             LStateColumn.LStateColumnApply(command, "reference", example.LExampleSource);
             command.Parameters.AddWithValue("$id", example.LExampleId);
             if (command.ExecuteNonQuery() == 0)
@@ -120,6 +114,7 @@ public sealed class LExampleArchive
             }
         }
 
+        LGlossArchive.LGlossExampleSave(connection, example.LExampleId, example.LExampleGloss);
         LMentionArchive.LMentionExampleSave(connection, example.LExampleId, example.LExampleMention);
 
         session.LDatabaseSessionCommit();
@@ -254,8 +249,7 @@ public sealed class LExampleArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT language, text_state, text, translation_state, translation,
-                   reference_state, reference_ref
+            SELECT language, text_state, text, reference_state, reference_ref
             FROM example WHERE example_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -271,14 +265,13 @@ public sealed class LExampleArchive
                 id,
                 reader.GetString(0),
                 LStateColumn.LStateColumnRead(reader, 1),
-                LStateColumn.LStateColumnRead(reader, 3),
-                LStateColumn.LStateColumnResolve(reader, 5));
+                LStateColumn.LStateColumnResolve(reader, 3));
         }
 
-        return LExampleMentionLoad(connection, [example])[0];
+        return LExampleListLoad(connection, [example])[0];
     }
 
-    internal static IReadOnlyList<LExample> LExampleMentionLoad(
+    internal static IReadOnlyList<LExample> LExampleListLoad(
         SqliteConnection connection, IReadOnlyList<LExample> examples)
     {
         if (examples.Count == 0)
@@ -286,16 +279,22 @@ public sealed class LExampleArchive
             return examples;
         }
 
-        IReadOnlyDictionary<long, IReadOnlyList<LMention>> mentions = LMentionArchive.LMentionExampleRead(
-            connection, examples.Select(static example => example.LExampleId).ToList());
+        List<long> ids = examples.Select(static example => example.LExampleId).ToList();
+        IReadOnlyDictionary<long, IReadOnlyList<LGloss>> glosses =
+            LGlossArchive.LGlossExampleRead(connection, ids);
+        IReadOnlyDictionary<long, IReadOnlyList<LMention>> mentions =
+            LMentionArchive.LMentionExampleRead(connection, ids);
 
         List<LExample> filled = new(examples.Count);
         foreach (LExample example in examples)
         {
             filled.Add(example with
             {
-                LExampleMention = mentions.TryGetValue(example.LExampleId, out IReadOnlyList<LMention>? read)
-                    ? read
+                LExampleGloss = glosses.TryGetValue(example.LExampleId, out IReadOnlyList<LGloss>? gloss)
+                    ? gloss
+                    : [],
+                LExampleMention = mentions.TryGetValue(example.LExampleId, out IReadOnlyList<LMention>? mention)
+                    ? mention
                     : [],
             });
         }

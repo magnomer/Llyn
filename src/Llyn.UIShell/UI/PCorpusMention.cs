@@ -25,7 +25,7 @@ public partial class PCorpus
             PMentionSelection.PMentionSelectionPlace(PTranscriptText),
             PTranscriptText.SelectedText.Trim(),
             _pTranscriptLanguage,
-            entryId => PTranscriptMentionSend(
+            entryId => PTranscriptRequestSend(
                 new LRequestMentionAddition(_pTranscriptDraft, 0, 0, offset, length, entryId, 0)));
     }
 
@@ -42,7 +42,7 @@ public partial class PCorpus
             PTranscriptText,
             PMentionSelection.PMentionSelectionPlace(PTranscriptText),
             mention.LMentionDraftEntry,
-            senseId => PTranscriptMentionSend(
+            senseId => PTranscriptRequestSend(
                 new LRequestMentionSense(_pTranscriptDraft, 0, 0, mention.LMentionDraftId, senseId)));
     }
 
@@ -54,7 +54,7 @@ public partial class PCorpus
             return;
         }
 
-        PTranscriptMentionSend(new LRequestMentionAddition(_pTranscriptDraft, 0, 0, offset, length, 0, 0));
+        PTranscriptRequestSend(new LRequestMentionAddition(_pTranscriptDraft, 0, 0, offset, length, 0, 0));
     }
 
     private void PTranscriptUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
@@ -67,7 +67,7 @@ public partial class PCorpus
             return;
         }
 
-        PTranscriptMentionSend(new LRequestMentionRemoval(_pTranscriptDraft, 0, 0, id));
+        PTranscriptRequestSend(new LRequestMentionRemoval(_pTranscriptDraft, 0, 0, id));
     }
 
     private void PTranscriptLinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -92,7 +92,7 @@ public partial class PCorpus
         return PMentionSelection.PMentionSelectionFind(_pTranscriptMention, offset, length);
     }
 
-    private void PTranscriptMentionSend(LRequest request)
+    private void PTranscriptRequestSend(LRequest request)
     {
         PTranscriptChangeSave();
 

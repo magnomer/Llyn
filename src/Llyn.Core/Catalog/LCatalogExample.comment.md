@@ -23,4 +23,4 @@ Ordering by Source orders by the resolved name rather than the id, because the i
 
 ## `public bool LCatalogExampleMatch(string query)`
 
-Whether one Example answers the query, over its sentence, its translation and its Source name.
+Whether one Example answers the query, over its sentence, the text of every Gloss it carries, and its Source name.

@@ -143,8 +143,10 @@ public sealed class LReferenceUsage
             """
             SELECT example.example_id, example.language,
                    example.text_state, example.text,
-                   example.translation_state, example.translation
+                   COALESCE(gloss.text_state, 'unspecified'), gloss.text
             FROM example
+            LEFT JOIN example_translation gloss
+                ON gloss.example_parent = example.example_id AND gloss.position = 0
             WHERE example.reference_ref = $id
             ORDER BY example.text;
             """;

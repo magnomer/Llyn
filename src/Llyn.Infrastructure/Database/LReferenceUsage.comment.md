@@ -34,7 +34,8 @@ The Example rows of the list are what it agrees with.
 Reads the citing Meanings, Collocations and Examples of one Source, itemized, each with the id the row leads to.
 A card names its own id, the Entry it belongs to, and that Entry's headword.
 It also names its title with the definition or expression behind it.
-An Example names its sentence and its translation, because an Example belongs to no Entry of its own.
+An Example names its sentence and its first Gloss, because an Example belongs to no Entry of its own.
+The first Gloss is joined by position zero, and an Example without one reads as unspecified.
 A card holding two Examples of one Source is listed once.
 The row leads to the card rather than the citation.
 

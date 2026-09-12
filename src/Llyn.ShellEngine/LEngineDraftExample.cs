@@ -94,15 +94,14 @@ public sealed partial class LEngine
             0,
             string.Empty,
             LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
             LStateAnchor.LStateAnchorUnspecified);
 
     private static bool LEngineExampleMatch(LExample one, LExample other)
     {
         return string.Equals(one.LExampleLanguage, other.LExampleLanguage, StringComparison.Ordinal)
             && one.LExampleText == other.LExampleText
-            && one.LExampleTranslation == other.LExampleTranslation
             && one.LExampleSource == other.LExampleSource
+            && one.LExampleGloss.SequenceEqual(other.LExampleGloss)
             && one.LExampleMention.SequenceEqual(other.LExampleMention);
     }
 }

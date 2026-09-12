@@ -27,6 +27,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
+        ObservableCollection<PLanguageItem> languages,
         LSentenceDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
@@ -37,6 +38,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceCitationCatalog = catalog;
         PSentenceParticleCatalog = particles;
         PSentenceDependenceCatalog = dependences;
+        PSentenceLanguageCatalog = languages;
         _pSentenceRow = draft.LSentenceDraftId;
         _pSentenceId = example.LExampleDraftId;
         _pSentenceText = example.LExampleDraftText.LStateValueShow();
@@ -49,9 +51,12 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
         _pSentenceDependenceUnknown = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
         _pSentenceMention = example.LExampleDraftMention;
+        PSentenceGlossShow(example.LExampleDraftGloss, static (_, _) => false);
     }
 
     public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
+
+    public ObservableCollection<PLanguageItem> PSentenceLanguageCatalog { get; }
 
     public ObservableCollection<string> PSentenceParticleCatalog { get; }
 
@@ -336,6 +341,7 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         _pSentenceRow = draft.LSentenceDraftId;
         PSentenceId = example.LExampleDraftId;
         _pSentenceMention = example.LExampleDraftMention;
+        PSentenceGlossShow(example.LExampleDraftGloss, (gloss, field) => pending(PSentenceGlossFormat(gloss, field)));
 
         if (!pending(nameof(PSentenceText)) && !PSentenceTextRead().LStateWrittenMatch(example.LExampleDraftText))
         {

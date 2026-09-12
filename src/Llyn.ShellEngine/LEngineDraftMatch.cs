@@ -228,7 +228,7 @@ public sealed partial class LEngine
         return one.LExampleDraftText == other.LExampleDraftText
             && one.LExampleDraftId == other.LExampleDraftId
             && one.LExampleDraftReference == other.LExampleDraftReference
-            && one.LExampleDraftTranslation == other.LExampleDraftTranslation
+            && one.LExampleDraftGloss.SequenceEqual(other.LExampleDraftGloss)
             && string.Equals(
                 one.LExampleDraftLanguage, other.LExampleDraftLanguage, StringComparison.Ordinal)
             && one.LExampleDraftMention.SequenceEqual(other.LExampleDraftMention);

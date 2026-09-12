@@ -45,7 +45,8 @@ public sealed record LCatalogExample(
 
         return query.Length == 0
             || LCatalog.LCatalogTextMatch(LCatalogExampleStored.LExampleText.LStateValueShow(), query)
-            || LCatalog.LCatalogTextMatch(LCatalogExampleStored.LExampleTranslation.LStateValueShow(), query)
+            || LCatalogExampleStored.LExampleGloss.Any(
+                gloss => LCatalog.LCatalogTextMatch(gloss.LGlossText.LStateValueShow(), query))
             || LCatalog.LCatalogTextMatch(LCatalogExampleSource, query);
     }
 }

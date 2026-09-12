@@ -249,6 +249,12 @@ public partial class PEditor
 
     private void PSentenceChangeHandle(PCard card, PSentence row, string field)
     {
+        if (row.PSentenceGlossFind(field, out string name) is PGloss gloss)
+        {
+            PGlossChangeHandle(card, row, gloss, name);
+            return;
+        }
+
         switch (field)
         {
             case nameof(PSentence.PSentenceText):

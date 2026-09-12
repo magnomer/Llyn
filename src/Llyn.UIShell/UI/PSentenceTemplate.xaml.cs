@@ -28,6 +28,16 @@ public partial class PSentenceTemplate : ResourceDictionary
         _pSentenceHost.PSentenceCitationClear(sender, e);
     }
 
+    private void PGlossAddHandle(object sender, RoutedEventArgs e)
+    {
+        _pSentenceHost.PGlossAddHandle(sender, e);
+    }
+
+    private void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        _pSentenceHost.PGlossRemoveHandle(sender, e);
+    }
+
     private void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
         _pSentenceHost.PSentenceLinkHandle(sender, e);

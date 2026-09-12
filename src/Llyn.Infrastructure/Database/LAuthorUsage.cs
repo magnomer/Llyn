@@ -100,9 +100,11 @@ public sealed class LAuthorUsage
             """
             SELECT example.example_id, example.language,
                    example.text_state, example.text,
-                   example.translation_state, example.translation
+                   COALESCE(gloss.text_state, 'unspecified'), gloss.text
             FROM reference_author credit
             JOIN example ON example.reference_ref = credit.reference_parent
+            LEFT JOIN example_translation gloss
+                ON gloss.example_parent = example.example_id AND gloss.position = 0
             WHERE credit.author_ref = $id
             GROUP BY example.example_id
             ORDER BY example.text;

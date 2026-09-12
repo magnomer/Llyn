@@ -167,6 +167,10 @@ public partial class PCorpus
         try
         {
             _lEngine.LEngineRequestApply(PTranscriptRead(_pTranscriptDraft));
+            foreach (LRequest request in PTranscriptGlossRead(_pTranscriptDraft))
+            {
+                _lEngine.LEngineRequestApply(request);
+            }
         }
         catch (Exception exception)
         {

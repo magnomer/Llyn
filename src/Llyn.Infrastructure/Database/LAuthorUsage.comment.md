@@ -23,7 +23,8 @@ Binds the store to the workspace `database` it opens sessions through.
 
 Reads the Meanings, Collocations and Examples citing any Source the Author is credited on.
 A card names its own id, the Entry it belongs to, that Entry's headword, and its title.
-An Example names its sentence and its translation, because an Example belongs to no Entry of its own.
+An Example names its sentence and its first Gloss, because an Example belongs to no Entry of its own.
+The first Gloss is joined by position zero, and an Example without one reads as unspecified.
 A card is listed once however many credited Examples it holds, because the row leads to the card.
 
 The count of an Author is the Example rows, which are the citations themselves.
