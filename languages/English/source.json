@@ -148,21 +148,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "Free Dictionary",
-      "note": "dictionaryapi.dev returns a JSON array, which the 'json' strategy cannot walk, so the transcription is read straight off the response body with a regex.",
-      "attempts": [
-        {
-          "urls": [
-            "https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
-          ],
-          "strategy": "regex",
-          "match": "\"text\"\\s*:\\s*\"(/[^\"]+/)\"",
-          "group": 1,
-          "normalize": true
-        }
-      ]
     }
   ],
   "audio": [

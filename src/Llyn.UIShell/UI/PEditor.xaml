@@ -149,14 +149,13 @@
                         </ToggleButton>
                         <Popup
                             x:Name="PNotation"
-                            Width="320"
                             Margin="0,6,0,0"
                             AllowsTransparency="True"
                             IsOpen="{Binding IsChecked, ElementName=PTranscriber}"
                             Placement="Bottom"
                             PlacementTarget="{Binding ElementName=PTranscriber}"
                             StaysOpen="False">
-                            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                            <Border Margin="10" MinWidth="300" MaxWidth="640" Style="{StaticResource Theme.Popup.Surface}">
                                 <StackPanel>
                                     <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Transcriber.Title}" />
                                     <Border x:Name="PNotationProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
