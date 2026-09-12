@@ -1,4 +1,4 @@
-# PEditorEntry.cs
+﻿# PEditorEntry.cs
 
 ## `public partial class PEditor`
 
@@ -12,11 +12,13 @@ That is why a session that opened on an entry no longer saves a second copy of i
 What a store and a discard leave behind afterwards differs by host.
 So each is handed on rather than assumed here.
 
-## `internal void PEditorEntryShow(string id)`
+## `internal void PEditorEntryShow(long id)`
 
-Starts a draft on one entry and fills the form from it.
+Starts a draft on one entry and renders the form from it.
 That is what makes the next store a modification of it rather than a copy of it.
 The controls are filled from the draft rather than from a second read of the entry.
+The sentence frames are loaded before the cards are built, because each card takes their order as it is built.
+A list the entry leaves empty is given one card to type into, asked for like any other.
 An entry that no longer loads leaves the form empty.
 An id that has gone stale is a normal cost of remembering one, not an error.
 

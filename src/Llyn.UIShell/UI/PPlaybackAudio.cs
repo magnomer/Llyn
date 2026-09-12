@@ -60,12 +60,13 @@ public partial class PEditor
 
     private void PHeadwordHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pRecordingStored)
+        if (_pRecordingStored || _pEditorFill || _pRecording is null)
         {
             return;
         }
 
         PRecordingClear();
+        PEditorAudioSend();
     }
 
     private void PRecordingClear()

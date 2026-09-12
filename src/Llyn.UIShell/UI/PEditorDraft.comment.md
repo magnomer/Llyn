@@ -1,67 +1,44 @@
-﻿# PEditorDraft.cs
+# PEditorDraft.cs
 
 ## `public partial class PEditor`
 
-The editing form read as a value, filled from one, and reset to its opening state.
-This is the only place the shell walks its own controls.
-Everything on screen is copied into an `LEntryDraft` once.
-The engine is handed that value instead of the window.
+The editing form rendered from the draft the engine holds, and reset to its opening state.
 The form keeps no copy of the entry it is editing.
-What holds that value between keystrokes, and what is done with it, is the file beside this one.
+The engine's draft is the truth, and an id on a control is an address into it.
+Rendering is a diff: a control whose value already matches the draft is left alone.
+So the caret and the selection survive every answer the engine gives.
+What the form still assembles itself is the chip lists of each card, until plan06 moves those too.
 
 ## Inline notes
 
-### `private LEntryDraft? _pEditorDetail;`
+### `private LEntryDraft PEditorDraftRead(LEntryDraft held)`
 
-The draft the form was last filled from, kept for the fields the form has no control for.
-Forms, inflections, syllables and representations are stored detail this panel never shows.
-Reading the form back over the draft it was filled from is how that detail survives a save.
-
-### `private LPronunciationDraft? PEditorSoundRead()`
-
-The pronunciation as the form holds it, written over the pronunciation it was filled from.
-The typed reading and the chosen recording are the two parts this panel owns.
-The level, the syllables and the representations go back exactly as they came.
-A form holding neither reading nor recording carries no pronunciation at all.
-
-### `private IReadOnlyList<LSpeechDraft> PEditorSpeechRead()`
-
-The parts of speech as the chips carry them.
-A chip that knows its value row links it by id.
-A chip the user typed is a name, and the engine decides at the write whether a value names it.
-
-### `_pRecording ?? string.Empty,`
-
-The downloaded recording is form state like any field.
-It travels in the draft.
-So the save writes its row inside the same transaction as the rest of the entry.
+The draft the engine holds with the chip lists of each card written over it.
+Only the chips still travel this way.
+Every other field reached the engine as a request, so the held value already carries it.
+A card the form does not show goes back exactly as it came.
 
 ### `private void PEditorDraftShow(LEntryDraft draft)`
 
-Fills the form from a stored entry.
-It is the inverse of PEditorDraftRead.
-It is the other half of the round trip the session restore rides on.
+Renders the draft over what is shown, changing only what differs.
+It runs on every draft bulletin, so it must be cheap and must not move the caret.
+The fill guard is held for the whole pass, because filling raises the same events typing does.
+
+### `private void PEditorTextShow(TextBox box, string key, string text)`
+
+Writes the draft's text into a box only when the box does not already show it.
+A box with a request still waiting is skipped, because the draft is about to change to what it holds.
+Writing the older value first would move the caret and then write it back.
+
+### `private void PEditorSpeechShow(IReadOnlyList<LSpeechDraft> speeches)`
+
+Rebuilds the chips only when they disagree with the draft.
+A rebuild clears the typing field, so it is not done for nothing.
 
 ### `private void PEditorIdentityApply(LEntryDraft stored)`
 
-Takes the ids the engine minted on a save and hands them to each card.
-The saved content becomes the detail behind the form, so the pronunciation carries its id too.
-Cards are matched by place, because a save never adds, drops or reorders a card.
-
-### `PHeadword.Text = draft.LEntryDraftHeadword;`
-
-Headword first, and the recording last.
-Typing into the headword clears the recording.
-So filling them the other way round would wipe the audio this entry was saved with.
-
-### `IReadOnlyDictionary<string, LTranslationTarget> targets = PEditorTargetRead(draft);`
-
-A card stores link ids and the field shows words, so the two are joined before any card is built.
-Every card's ids are asked for together, so an entry of many cards still asks once.
-
-### `_pEditorFill = false;`
-
-Filling is over, so what the controls raise from here on is the user's.
+Takes the ids the engine minted on a chip save and hands them to each card.
+Cards are matched by id, because the draft may hold cards in an order the form has not shown yet.
 
 ### `private void PEditorNoteShow(string note)`
 
@@ -74,7 +51,8 @@ The control will offer it again when the store can hold it.
 
 ### `private void PEditorRecordingShow(LEntryDraft draft)`
 
-Restores the recording the entry was saved with, and only when the file is still there.
+Restores the recording the draft carries, and only when the file is still there.
+A recording already shown is left playing, so an unrelated answer does not stop it.
 A workspace whose audio folder was removed shows no play control rather than one that fails.
 
 ### `_pRecordingStored = true;`
@@ -92,7 +70,12 @@ It does not belong to the empty form the next entry is typed into.
 An empty form stands on no entry, so its language is nobody's.
 The language menu may move it onto an installed pack.
 
-### `PCardShow(_pMeaningList, "Meaning", [], PEditorTargetEmpty);`
+### `PEditorLanguageSend();`
 
-No cards to show is the empty form, which is one empty card of each kind.
-An empty form links to nothing, so there is nothing to look words up for.
+A blank draft has no language until the form says which one it is typed in.
+The chosen language is sent at once, so the first keystroke lands in a draft that knows it.
+
+### `PCardPrepare();`
+
+An empty form is one empty card of each kind.
+Those cards are asked for, so they carry engine ids before anything is typed into them.

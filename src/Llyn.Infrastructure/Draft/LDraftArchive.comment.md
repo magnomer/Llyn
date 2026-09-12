@@ -1,4 +1,4 @@
-# LDraftArchive.cs
+﻿# LDraftArchive.cs
 
 ## `public static class LDraftArchive`
 
@@ -17,15 +17,19 @@ The text goes to a `.json.tmp` file first and is then moved over the target.
 A move is atomic, so a reader never sees a half-written draft.
 A crash mid-write leaves the previous file intact.
 
+The file is stamped with the archive's version number before it is written.
+The draft handed in is not changed, so a caller keeps working with the value it holds.
+
 The save refuses a draft in which any item still carries id zero.
 Positive means a stored row and negative means an id the engine minted, so zero is never a saved state.
 Only the engine mints, and the guard here means no caller can slip past it.
 The entry id of the draft itself may be zero, because that names a new record rather than an item.
 
-## `public static LDraft? LDraftArchiveRead(string root, string id)`
+## `public static LDraft? LDraftArchiveRead(string root, long id)`
 
 The draft stored under `id`, or `null` when no readable file holds it.
 A missing file and an unreadable one are the same answer to the caller.
+So is a file of another version, because a draft the current build did not write is not a draft.
 
 ## `public static IReadOnlyList<LDraft> LDraftArchiveScan(string root)`
 
@@ -39,9 +43,13 @@ One bad file must not hide the rest.
 Removes the file for `id`, which is how a draft ends once its record is saved or abandoned.
 A file already gone, or held open by the other copy of the program, is not an error.
 
-## `public static void LDraftArchiveSweep(string root)`
+## `public static IReadOnlyList<long> LDraftArchiveSweep(string root)`
 
 Deletes every half-written `.json.tmp` in the drafts folder that is older than an hour.
+It also deletes every draft file of another version and returns the ids they carried.
+The engine drops the claim and the court rows of each returned id, which only it can reach.
+A file that does not read as a draft at all is of no version and goes the same way.
+Such a file is deleted and not returned, since nothing else can name it.
 A save writes its pending file and then moves it over the target.
 A kill between the two leaves a file the listing rightly ignores and nothing collects.
 The hour keeps a file another copy of the program is writing out of reach.

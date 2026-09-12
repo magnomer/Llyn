@@ -1,4 +1,4 @@
-# PCardDrag.cs
+﻿# PCardDrag.cs
 
 ## `public partial class PEditor`
 
@@ -56,10 +56,10 @@ That is the top of it on the way up and the bottom of it on the way down.
 So either direction swaps at the same half-card.
 It is the same half-card whatever the grip was.
 
-### `PEditorChangeSave();`
+### `PCardMove(_pCardDragCard!, target);`
 
-The cards are written in the order they are still in, and the move is handed over after.
-Writing them already moved would ask the engine to move them a second time.
+The move is one shift request, and the list is moved by the answer, not here.
+Moving it first would show an order the engine may yet refuse.
 
 ### `if (index < current && top < middle)`
 

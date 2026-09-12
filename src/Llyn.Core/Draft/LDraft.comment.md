@@ -24,3 +24,7 @@ The kind is read from the content rather than from a tag beside it, so the two c
 - `LDraftExample` — The sentence being written, or null when this draft holds no sentence.
 - `LDraftSituation` — The context being written, or null when this draft holds no context.
 - `LDraftReference` — The source being written, or null when this draft holds no source.
+- `LDraftVersion` — Shape of the file this draft was read from, stamped by the archive on every write.
+  A file the current build did not write is not a draft.
+  A reader that finds another number skips it.
+  There is no compatibility read, because a field renamed underneath an old file would commit as a new entry.

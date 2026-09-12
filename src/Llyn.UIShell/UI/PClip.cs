@@ -154,6 +154,7 @@ public partial class PEditor : LListener
             _pRecordingStored = false;
             PPlayback.Visibility = Visibility.Visible;
             PVolumeLoad();
+            PEditorAudioSend();
 
             PDownloader.IsChecked = false;
         }

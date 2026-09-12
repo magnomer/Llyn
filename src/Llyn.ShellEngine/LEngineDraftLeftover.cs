@@ -11,8 +11,13 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            LDraftArchive.LDraftArchiveSweep(_lEngineWorkspace);
+            IReadOnlyList<long> dropped = LDraftArchive.LDraftArchiveSweep(_lEngineWorkspace);
             LCourtArchive.LCourtArchiveSweep(_lEngineWorkspace);
+
+            foreach (long id in dropped)
+            {
+                LEngineDraftCancel(id);
+            }
 
             foreach (LDraft draft in LDraftArchive.LDraftArchiveScan(_lEngineWorkspace))
             {

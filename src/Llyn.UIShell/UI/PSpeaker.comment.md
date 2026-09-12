@@ -1,4 +1,4 @@
-# PSpeaker.cs
+﻿# PSpeaker.cs
 
 ## `public partial class PEditor`
 
@@ -38,6 +38,7 @@ The rows are added afterwards, in the order the packs were read.
 A form standing on an entry keeps that entry's language even when no pack answers to it.
 The fallback is for a form that stands on nothing.
 Such a form would otherwise name a pack that is not installed.
+A fallback that moved the choice sends it, because the blank draft was started under the old one.
 
 ### `PMarkerLoad();`
 
@@ -47,10 +48,12 @@ The parts of speech on offer are the chosen language's, so a fallback that moved
 
 Chosen by hand, so the language is no longer the loaded entry's.
 
-### `PEditorChangeDefer();`
+### `PEditorLanguageSend();`
 
 A language chosen by hand belongs in the held draft like anything else typed.
+It is chosen whole, so its request goes at once rather than after a pause.
 It is not counted as unsaved work, because the tongue on offer is the panel's state.
+The recording was fetched for the old language, so its clearing is sent right behind it.
 
 ### `PMarkerLoad();`
 

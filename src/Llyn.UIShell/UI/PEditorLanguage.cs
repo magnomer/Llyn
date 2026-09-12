@@ -8,24 +8,19 @@ public partial class PEditor
 {
     private void PEditorLanguageShow(string language)
     {
-        PEditorExampleShow(language);
-
-        if (language.Length == 0)
+        if (language.Length == 0 || string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
         {
             return;
         }
 
         _pSpeakerEntry = true;
-        PHeadwordFontApply(language);
-
-        if (string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
-        {
-            return;
-        }
-
         _pSpeakerChoice = language;
         PSpeakerName.Text = language;
         PSpeakerFlagUpdate();
+        PHeadwordFontApply(language);
+        PEditorExampleShow(language);
+        PSentenceFrameLoad(language);
+        PCategoryLoad();
     }
 
     private void PEditorExampleShow(string language)

@@ -16,7 +16,9 @@ public partial class PEditor
             return;
         }
 
+        PSentenceFrameLoad(started.LDraftContent.LEntryDraftLanguage);
         PEditorDraftShow(started.LDraftContent);
+        PCardPrepare();
         PEditorChangeUpdate();
         PEditorFavoriteShow();
     }

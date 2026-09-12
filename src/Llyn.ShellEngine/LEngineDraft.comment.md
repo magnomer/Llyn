@@ -1,4 +1,4 @@
-# LEngineDraft.cs
+﻿# LEngineDraft.cs
 
 ## `public sealed partial class LEngine`
 
@@ -17,6 +17,10 @@ It is also its note and pronunciation when they carry text.
 It is also the revision recording the create.
 The workspace row is moved onto that revision.
 Returns the stored entry with its assigned id and timestamps.
+
+The draft is normalized before anything is written, so an item still carrying id zero is named here.
+Positive means a stored row and negative means an id the engine minted, so zero is never a saved state.
+Only the engine mints, and normalizing here means no caller can slip a zero past it.
 
 A blank headword is refused before any connection opens, so a save that cannot be made costs nothing.
 Everything after that runs inside one session, which makes a half-written entry impossible.

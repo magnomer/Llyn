@@ -159,9 +159,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorChangeSave();
-        list.Move(current, target);
-        PCardOrderApply(list, current, target);
+        PCardMove(_pCardDragCard!, target);
     }
 
     private void PCardDragReset()

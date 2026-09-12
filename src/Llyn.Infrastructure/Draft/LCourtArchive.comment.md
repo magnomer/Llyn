@@ -1,4 +1,4 @@
-# LCourtArchive.cs
+﻿# LCourtArchive.cs
 
 ## `public static class LCourtArchive`
 
@@ -48,6 +48,7 @@ The caller already knows what to put in place of the tentative id.
 ## `public static void LCourtArchiveSweep(string root)`
 
 Deletes every half-written `.json.tmp` in the court that is older than an hour.
+It also deletes every link file of another version, or of no readable shape, which a read already skips.
 A save writes its pending file and then moves it over the target.
 A kill between the two leaves a file the listing rightly ignores and nothing collects.
 The hour keeps a file another copy of the program is writing out of reach.

@@ -1,0 +1,27 @@
+namespace Llyn.Core;
+
+public sealed record LRequestCardAddition(
+    long LRequestDraftId, LCardKind LRequestKind, long LRequestParentId, int LRequestPosition)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestCardRemoval(long LRequestDraftId, long LRequestCardId)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestCardShift(
+    long LRequestDraftId, long LRequestCardId, long LRequestParentId, int LRequestPosition)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestCardExpression(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateValue LRequestValue)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestCardGloss(long LRequestDraftId, long LRequestCardId, string LRequestText)
+    : LRequest(LRequestDraftId);
+
+public sealed record LRequestCardLabels(long LRequestDraftId, long LRequestCardId, string LRequestText)
+    : LRequest(LRequestDraftId);

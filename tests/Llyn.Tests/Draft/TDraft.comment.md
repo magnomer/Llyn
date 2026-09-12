@@ -85,6 +85,13 @@ Such a draft is what a kill just after a commit leaves, and nothing else ever co
 It is not reported as a leftover either, because the file it was is gone.
 A draft holding work the entry does not have survives the sweep and is still offered back.
 
+## `public void LeftoverSweep_DraftFileOfAnotherVersion_DropsItWithClaimAndLinks()`
+
+A draft file stamped with another version is not read.
+The sweep drops it with its claim and the links naming it.
+A file written before a field rename would otherwise read back naming no entry and commit as a duplicate.
+The draft owning the swept link is left alone, because it is of the current shape.
+
 ## `public void LeftoverSweep_StalePendingFile_RemovesIt()`
 
 A half-written `.json.tmp` older than an hour is deleted from the drafts folder and from the court.

@@ -1,4 +1,4 @@
-﻿namespace Llyn.Core;
+namespace Llyn.Core;
 
 public enum LSubject
 {
@@ -19,4 +19,6 @@ public enum LSubject
     LSubjectFavorite,
 
     LSubjectWorkspace,
+
+    LSubjectDraft,
 }

@@ -23,6 +23,8 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalHeadword);
             }
 
+            draft = LEngineDraftNormalize(draft);
+
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
             LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(

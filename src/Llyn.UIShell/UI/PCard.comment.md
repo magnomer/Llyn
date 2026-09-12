@@ -2,25 +2,17 @@
 
 ## Inline notes
 
-### `public string PCardId { get; set; } = string.Empty;`
+### `public long PCardId { get; set; }`
 
-Id of the stored row this card was loaded from, empty for a card typed into an empty form.
+Id of the draft card this control shows.
+It is negative for a card the engine minted and positive for a stored row.
 No control shows it and nothing on screen changes with it.
-It travels with the card so a saved form can say which stored row each card is.
-That is what lets an update change the row a card came from instead of writing it again.
-
-### `internal LCardDraft? PCardDraft { get; set; }`
-
-The draft this card was built from, held so the read can hand back what no control shows.
-Those are a Meaning's gloss, its definition language, its labels, and the cards nested under it.
-It is `null` for a card typed into an empty form, which carries none of them yet.
-Reading a card writes the form's fields over this value rather than building one from nothing.
-So a field the editor never drew is never blanked by an edit that never saw it.
+It is an address into the draft the engine holds, not a value the card owns.
+Every request the card raises names it, and every bulletin's render finds the card by it.
 
 ### `internal void PCardIdentityApply(LCardDraft stored)`
 
-Takes the ids the engine minted when it saved the draft and writes them into the chips and rows.
-The saved card is kept as the draft behind the card, so nested cards carry their ids too.
+Takes the ids the engine minted when it saved the chips and writes them into the chips and rows.
 Nothing is redrawn, so the caret and the focus stay where the user left them.
 Each field walks its own rows in the order the read handed them over, skipping what the read skipped.
 

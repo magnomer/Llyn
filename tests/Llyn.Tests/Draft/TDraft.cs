@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -475,6 +476,36 @@ public sealed class TDraft
 
         Assert.Single(leftovers);
         Assert.Equal(kept, leftovers[0].LDraftId);
+    }
+
+    [Fact]
+    public void LeftoverSweep_DraftFileOfAnotherVersion_DropsItWithClaimAndLinks()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        LDraft draft = TDraftCreate("Input", "kindle");
+        LDraft owner = TDraftCreate("Library", "ember");
+        LCourt link = TDraftLinkCreate(owner.LDraftId, draft.LDraftId, "kindle");
+
+        TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, owner);
+        TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, link);
+        TInterface.TClaimArchiveSave(
+            workspace.TWorkspaceFolder, TInterface.TClaimCreate(draft.LDraftId, 1, DateTimeOffset.UtcNow));
+
+        string folder = TInterface.TWorkspaceDraftRead(workspace.TWorkspaceFolder);
+        string path = Path.Combine(folder, draft.LDraftId + ".json");
+        File.WriteAllText(path, JsonSerializer.Serialize(draft with { LDraftVersion = 0 }));
+
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        Assert.Null(engine.TEngineDraftRead(draft.LDraftId));
+
+        engine.TEngineLeftoverSweep();
+
+        Assert.False(File.Exists(path));
+        Assert.DoesNotContain(engine.TEngineDraftScan(), held => held.LDraftId == draft.LDraftId);
+        Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, draft.LDraftId));
+        Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, link.LCourtId));
+        Assert.NotNull(engine.TEngineDraftRead(owner.LDraftId));
     }
 
     [Fact]

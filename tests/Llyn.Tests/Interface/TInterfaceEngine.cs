@@ -131,6 +131,14 @@ internal static partial class TInterface
         engine.LEngineLeftoverSweep();
     }
 
+    internal static void TEngineObserverAttach(this LEngine engine, LObserver observer)
+    {
+        engine.LEngineObserverAttach(observer);
+    }
+
+    internal static LDraft TEngineRequestApply(this LEngine engine, LRequest request) =>
+        engine.LEngineRequestApply(request);
+
     internal static IReadOnlyList<LEntry> TEngineMarkupImport(this LEngine engine, string path) =>
         engine.LEngineMarkupImport(path);
 

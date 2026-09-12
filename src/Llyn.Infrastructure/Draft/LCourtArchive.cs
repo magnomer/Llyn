@@ -12,6 +12,8 @@ public static class LCourtArchive
     private const string LCourtArchiveExtension = ".json";
     private const string LCourtArchivePending = ".json.tmp";
 
+    public const int LCourtArchiveVersion = 1;
+
     private static readonly TimeSpan LCourtArchiveStale = TimeSpan.FromHours(1);
 
     private static readonly JsonSerializerOptions LCourtArchiveIndent = new() { WriteIndented = true };
@@ -26,7 +28,9 @@ public static class LCourtArchive
         string pending = Path.Combine(folder, link.LCourtId.ToString(CultureInfo.InvariantCulture) + LCourtArchivePending);
         string path = Path.Combine(folder, link.LCourtId.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
 
-        File.WriteAllText(pending, JsonSerializer.Serialize(link, LCourtArchiveIndent));
+        File.WriteAllText(
+            pending,
+            JsonSerializer.Serialize(link with { LCourtVersion = LCourtArchiveVersion }, LCourtArchiveIndent));
         File.Move(pending, path, true);
     }
 
@@ -120,10 +124,12 @@ public static class LCourtArchive
 
         string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
 
+        string[] pending;
         string[] files;
         try
         {
-            files = Directory.GetFiles(folder, "*" + LCourtArchivePending);
+            pending = Directory.GetFiles(folder, "*" + LCourtArchivePending);
+            files = Directory.GetFiles(folder, "*" + LCourtArchiveExtension);
         }
         catch (IOException)
         {
@@ -135,7 +141,7 @@ public static class LCourtArchive
         }
 
         DateTime edge = DateTime.UtcNow - LCourtArchiveStale;
-        foreach (string file in files)
+        foreach (string file in pending)
         {
             if (!file.EndsWith(LCourtArchivePending, StringComparison.OrdinalIgnoreCase))
             {
@@ -158,13 +164,41 @@ public static class LCourtArchive
             {
             }
         }
+
+        foreach (string file in files)
+        {
+            if (!file.EndsWith(LCourtArchiveExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            LCourt? link = LCourtArchiveLoad(file, false);
+            if (link is not null && link.LCourtVersion == LCourtArchiveVersion)
+            {
+                continue;
+            }
+
+            try
+            {
+                File.Delete(file);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+        }
     }
 
-    private static LCourt? LCourtArchiveLoad(string path)
+    private static LCourt? LCourtArchiveLoad(string path, bool checking = true)
     {
         try
         {
-            return JsonSerializer.Deserialize<LCourt>(File.ReadAllText(path), LCourtArchiveIndent);
+            LCourt? link = JsonSerializer.Deserialize<LCourt>(File.ReadAllText(path), LCourtArchiveIndent);
+            return checking && link is not null && link.LCourtVersion != LCourtArchiveVersion
+                ? null
+                : link;
         }
         catch (JsonException)
         {

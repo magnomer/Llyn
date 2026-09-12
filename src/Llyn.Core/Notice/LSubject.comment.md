@@ -1,4 +1,4 @@
-# LSubject.cs
+﻿# LSubject.cs
 
 ## `public enum LSubject`
 
@@ -40,3 +40,8 @@ An Entry was marked or unmarked as a favorite.
 ## `LSubjectWorkspace,`
 
 The workspace folder changed, so every stored record a subscriber holds is stale.
+
+## `LSubjectDraft,`
+
+A held Draft changed because a Request was applied to it.
+The id is the draft's, and the surface holding that draft re-reads it and renders what differs.

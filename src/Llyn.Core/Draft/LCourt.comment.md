@@ -1,4 +1,4 @@
-# LCourt.cs
+﻿# LCourt.cs
 
 ## `public sealed record LCourt(`
 
@@ -13,3 +13,5 @@ The court is the register these links live in, so one row is one court entry.
 - `LCourtTargetId` — Draft id of the tentative entry the link points at.
 - `LCourtHeadword` — Headword of the target, shown before the target is real.
 - `LCourtLanguage` — Language of the target.
+- `LCourtVersion` — Shape of the file this link was read from, stamped by the archive on every write.
+  A file of another shape is skipped and swept, as a draft file is.

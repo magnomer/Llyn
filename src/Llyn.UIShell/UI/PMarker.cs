@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -18,6 +18,7 @@ public partial class PEditor
         {
             _pMarkerChip.Remove(chip);
             PCategoryUpdate();
+            PEditorSpeechSend();
         }
     }
 
@@ -71,6 +72,28 @@ public partial class PEditor
         }
 
         PCategoryUpdate();
+        PEditorSpeechSend();
+    }
+
+    private bool PMarkerMatch(IReadOnlyList<LSpeechDraft> speeches)
+    {
+        IReadOnlyList<LSpeechDraft> shown = PMarkerRead();
+        if (shown.Count != speeches.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < shown.Count; index++)
+        {
+            if (shown[index].LSpeechDraftValue != speeches[index].LSpeechDraftValue
+                || !string.Equals(
+                    shown[index].LSpeechDraftName, speeches[index].LSpeechDraftName, StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private bool PMarkerFind(string name)

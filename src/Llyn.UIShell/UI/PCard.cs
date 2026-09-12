@@ -58,14 +58,10 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     public long PCardId { get; set; }
 
-    internal LCardDraft? PCardDraft { get; set; }
-
     internal void PCardIdentityApply(LCardDraft stored)
     {
         ArgumentNullException.ThrowIfNull(stored);
 
-        PCardId = stored.LCardDraftId;
-        PCardDraft = stored;
         PCardSentenceApply(stored.LCardDraftSentence);
         PCardContextApply(stored.LCardDraftSituation);
         PCardRegisterApply(stored.LCardDraftRegister);

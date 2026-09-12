@@ -12,6 +12,8 @@ public static class LDraftArchive
     private const string LDraftArchiveExtension = ".json";
     private const string LDraftArchivePending = ".json.tmp";
 
+    public const int LDraftArchiveVersion = 1;
+
     private static readonly TimeSpan LDraftArchiveStale = TimeSpan.FromHours(1);
 
     private static readonly JsonSerializerOptions LDraftArchiveIndent = new() { WriteIndented = true };
@@ -27,7 +29,9 @@ public static class LDraftArchive
         string pending = Path.Combine(folder, draft.LDraftId.ToString(CultureInfo.InvariantCulture) + LDraftArchivePending);
         string path = Path.Combine(folder, draft.LDraftId.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
 
-        File.WriteAllText(pending, JsonSerializer.Serialize(draft, LDraftArchiveIndent));
+        File.WriteAllText(
+            pending,
+            JsonSerializer.Serialize(draft with { LDraftVersion = LDraftArchiveVersion }, LDraftArchiveIndent));
         File.Move(pending, path, true);
     }
 
@@ -95,28 +99,30 @@ public static class LDraftArchive
         }
     }
 
-    public static void LDraftArchiveSweep(string root)
+    public static IReadOnlyList<long> LDraftArchiveSweep(string root)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
 
         string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
 
+        string[] pending;
         string[] files;
         try
         {
-            files = Directory.GetFiles(folder, "*" + LDraftArchivePending);
+            pending = Directory.GetFiles(folder, "*" + LDraftArchivePending);
+            files = Directory.GetFiles(folder, "*" + LDraftArchiveExtension);
         }
         catch (IOException)
         {
-            return;
+            return [];
         }
         catch (UnauthorizedAccessException)
         {
-            return;
+            return [];
         }
 
         DateTime edge = DateTime.UtcNow - LDraftArchiveStale;
-        foreach (string file in files)
+        foreach (string file in pending)
         {
             if (!file.EndsWith(LDraftArchivePending, StringComparison.OrdinalIgnoreCase))
             {
@@ -139,6 +145,41 @@ public static class LDraftArchive
             {
             }
         }
+
+        List<long> dropped = [];
+        foreach (string file in files)
+        {
+            if (!file.EndsWith(LDraftArchiveExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            LDraft? draft = LDraftArchiveLoad(file, false);
+            if (draft is not null && draft.LDraftVersion == LDraftArchiveVersion)
+            {
+                continue;
+            }
+
+            try
+            {
+                File.Delete(file);
+            }
+            catch (IOException)
+            {
+                continue;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                continue;
+            }
+
+            if (draft is not null && draft.LDraftId != 0)
+            {
+                dropped.Add(draft.LDraftId);
+            }
+        }
+
+        return dropped;
     }
 
     private static void LDraftArchiveValidate(LDraft draft)
@@ -234,11 +275,14 @@ public static class LDraftArchive
         }
     }
 
-    private static LDraft? LDraftArchiveLoad(string path)
+    private static LDraft? LDraftArchiveLoad(string path, bool checking = true)
     {
         try
         {
-            return JsonSerializer.Deserialize<LDraft>(File.ReadAllText(path), LDraftArchiveIndent);
+            LDraft? draft = JsonSerializer.Deserialize<LDraft>(File.ReadAllText(path), LDraftArchiveIndent);
+            return checking && draft is not null && draft.LDraftVersion != LDraftArchiveVersion
+                ? null
+                : draft;
         }
         catch (JsonException)
         {

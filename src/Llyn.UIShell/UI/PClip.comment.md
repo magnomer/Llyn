@@ -1,4 +1,4 @@
-# PClip.cs
+﻿# PClip.cs
 
 ## `public partial class PEditor : LListener`
 
@@ -78,6 +78,7 @@ But it is audio of a word the form no longer holds.
 ### `_pRecordingStored = false;`
 
 Fetched for the headword as it stands now, so a further edit of it drops this.
+The recording is sent as a request at once, because a pick is a whole action.
 
 ### `PDownloader.IsChecked = false;`
 

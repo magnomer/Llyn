@@ -5,4 +5,5 @@ public sealed record LCourt(
     long LCourtOwnerId,
     long LCourtTargetId,
     string LCourtHeadword,
-    string LCourtLanguage);
+    string LCourtLanguage,
+    int LCourtVersion = 0);

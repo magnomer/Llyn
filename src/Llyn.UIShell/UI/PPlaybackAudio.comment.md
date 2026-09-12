@@ -1,4 +1,4 @@
-# PPlaybackAudio.cs
+﻿# PPlaybackAudio.cs
 
 ## `public partial class PEditor`
 
@@ -41,4 +41,5 @@ A recording the downloader fetched is audio of one spelling.
 So changing the spelling throws it away rather than leaving the wrong word attached.
 A recording that came back with a loaded entry is the entry's own.
 Correcting a typo in the headword must not delete it.
-Dropping it here is what made the next save write the entry with no audio row.
+The clearing is sent as a request at once, so the draft drops the audio when the form does.
+A render writing the headword is not an edit, so it drops nothing.

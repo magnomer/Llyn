@@ -1,99 +1,106 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private LEntryDraft? _pEditorDetail;
-
-    private LEntryDraft PEditorDraftRead()
+    private LEntryDraft PEditorDraftRead(LEntryDraft held)
     {
-        return new LEntryDraft(
-            PHeadword.Text ?? string.Empty,
-            _pSpeakerChoice,
-            PEditorSoundRead(),
-            PEditorNoteRead(),
-            PCardRead(_pMeaningList),
-            PCardRead(_pCollocationList),
-            PEditorSpeechRead(),
-            _pEditorDetail?.LEntryDraftForms ?? [],
-            _pEditorDetail?.LEntryDraftInflections ?? []);
-    }
-
-    private LPronunciationDraft? PEditorSoundRead()
-    {
-        LPronunciationDraft held = _pEditorDetail?.LEntryDraftPronunciation
-            ?? new LPronunciationDraft(string.Empty);
-
-        LPronunciationDraft written = held with
+        return held with
         {
-            LPronunciationDraftIpa = PPronunciation.Text ?? string.Empty,
-            LPronunciationDraftAudio = _pRecording ?? string.Empty,
-            LPronunciationDraftSource = _pRecordingSource,
+            LEntryDraftMeanings = PCardRead(_pMeaningList, held.LEntryDraftMeanings),
+            LEntryDraftCollocations = PCardRead(_pCollocationList, held.LEntryDraftCollocations),
         };
-
-        return written.LPronunciationDraftEmpty ? null : written;
-    }
-
-    private IReadOnlyList<LSpeechDraft> PEditorSpeechRead()
-    {
-        return PMarkerRead();
     }
 
     private void PEditorDraftShow(LEntryDraft draft)
     {
         _pEditorFill = true;
-        _pEditorDetail = draft;
-        PSentenceFrameLoad(draft.LEntryDraftLanguage);
+        try
+        {
+            PEditorTextShow(PHeadword, PEditorRequestHeadword, draft.LEntryDraftHeadword);
+            PEditorTextShow(PPronunciation, PEditorRequestIpa, draft.LEntryDraftIpa);
+            PEditorSpeechShow(draft.LEntryDraftSpeeches);
+            PEditorLanguageShow(draft.LEntryDraftLanguage);
 
-        PHeadword.Text = draft.LEntryDraftHeadword;
-        PPronunciation.Text = draft.LEntryDraftIpa;
-        PMarkerShow(draft.LEntryDraftSpeeches);
-        PEditorLanguageShow(draft.LEntryDraftLanguage);
+            IReadOnlyDictionary<long, LTranslationTarget> targets = PEditorTargetRead(draft);
+            PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets);
+            PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets);
 
-        IReadOnlyDictionary<long, LTranslationTarget> targets = PEditorTargetRead(draft);
-        PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets);
-        PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets);
+            PEditorNoteShow(draft.LEntryDraftNote);
+            PEditorRecordingShow(draft);
+        }
+        finally
+        {
+            _pEditorFill = false;
+        }
+    }
 
-        PEditorNoteShow(draft.LEntryDraftNote);
-        PEditorRecordingShow(draft);
+    private void PEditorTextShow(TextBox box, string key, string text)
+    {
+        if (PEditorRequestCheck(key) || string.Equals(box.Text, text, StringComparison.Ordinal))
+        {
+            return;
+        }
 
-        _pEditorFill = false;
+        box.Text = text;
+    }
+
+    private void PEditorSpeechShow(IReadOnlyList<LSpeechDraft> speeches)
+    {
+        if (PEditorRequestCheck(PEditorRequestSpeech) || PMarkerMatch(speeches))
+        {
+            return;
+        }
+
+        PMarkerShow(speeches);
     }
 
     private void PEditorIdentityApply(LEntryDraft stored)
     {
-        _pEditorDetail = stored;
         PCardIdentityApply(_pMeaningList, stored.LEntryDraftMeanings);
         PCardIdentityApply(_pCollocationList, stored.LEntryDraftCollocations);
     }
 
     private static void PCardIdentityApply(IReadOnlyList<PCard> cards, IReadOnlyList<LCardDraft> stored)
     {
-        for (int index = 0; index < cards.Count && index < stored.Count; index++)
+        foreach (LCardDraft draft in stored)
         {
-            cards[index].PCardIdentityApply(stored[index]);
+            PCardFind(cards, draft.LCardDraftId)?.PCardIdentityApply(draft);
         }
     }
 
     private void PEditorNoteShow(string note)
     {
+        if (PEditorRequestCheck(PEditorRequestNote)
+            || string.Equals(PEditorNoteRead(), note, StringComparison.Ordinal))
+        {
+            return;
+        }
+
         PNoteContents.Text = note;
     }
 
     private void PEditorRecordingShow(LEntryDraft draft)
     {
-        PRecordingClear();
-        if (draft.LEntryDraftAudio.Length == 0 || !File.Exists(draft.LEntryDraftAudio))
+        string audio = draft.LEntryDraftAudio;
+        if (string.Equals(_pRecording ?? string.Empty, audio, StringComparison.Ordinal))
         {
             return;
         }
 
-        _pRecording = draft.LEntryDraftAudio;
+        PRecordingClear();
+        if (audio.Length == 0 || !File.Exists(audio))
+        {
+            return;
+        }
+
+        _pRecording = audio;
         _pRecordingSource = draft.LEntryDraftPronunciation?.LPronunciationDraftSource;
         _pRecordingStored = true;
         PPlayback.Visibility = Visibility.Visible;
@@ -105,7 +112,6 @@ public partial class PEditor
         PEditorDraftStart(null);
 
         _pEditorFill = true;
-        _pEditorDetail = null;
 
         PHeadword.Text = string.Empty;
         PPronunciation.Text = string.Empty;
@@ -113,15 +119,15 @@ public partial class PEditor
         PRecordingClear();
         _pSpeakerEntry = false;
         PHeadwordFontApply(_pSpeakerChoice);
+        PEditorExampleShow(_pSpeakerChoice);
         PSentenceFrameLoad(_pSpeakerChoice);
-
-        PCardShow(_pMeaningList, "Meaning", [], PEditorTargetEmpty);
-        PCardShow(_pCollocationList, "Collocation", [], PEditorTargetEmpty);
 
         PNoteContents.Text = string.Empty;
 
         _pEditorFill = false;
 
+        PEditorLanguageSend();
+        PCardPrepare();
         PEditorChangeUpdate();
         PEditorFavoriteShow();
     }

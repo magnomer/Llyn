@@ -253,6 +253,7 @@ internal static class TAuditSetting
         "Relation",
         "Repertoire",
         "Representation",
+        "Request",
         "Revision",
         "Right",
         "Roof",

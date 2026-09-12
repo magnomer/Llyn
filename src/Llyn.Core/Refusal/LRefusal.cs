@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Llyn.Core;
 
@@ -21,6 +21,8 @@ public sealed class LRefusal : Exception
     public const string LRefusalStale = "Refusal.DraftStale";
 
     public const string LRefusalCollocation = "Refusal.CollocationNested";
+
+    public const string LRefusalCard = "Refusal.CardMissing";
 
     public LRefusal(string reason)
         : base(reason)

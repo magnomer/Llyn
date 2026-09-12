@@ -28,9 +28,11 @@ public partial class PEditor
             _pLanguageItem.Add(new PLanguageItem(language, PEnsign.PEnsignFind(language)));
         }
 
+        bool switched = false;
         if (!_pSpeakerEntry && languages.Count > 0 && !languages.Contains(_pSpeakerChoice))
         {
             _pSpeakerChoice = languages[0];
+            switched = true;
         }
 
         PSpeakerName.Text = _pSpeakerChoice;
@@ -39,6 +41,12 @@ public partial class PEditor
         PLinkFlagUpdate();
         PCategoryLoad();
         PSentenceFrameLoad(_pSpeakerChoice);
+
+        if (switched)
+        {
+            PEditorExampleShow(_pSpeakerChoice);
+            PEditorLanguageSend();
+        }
     }
 
     internal void PSpeakerHandle(object sender, RoutedEventArgs e)
@@ -55,7 +63,9 @@ public partial class PEditor
             _pSpeakerEntry = false;
             PCategoryLoad();
             PSentenceFrameLoad(language);
-            PEditorChangeDefer();
+            PEditorExampleShow(language);
+            PEditorLanguageSend();
+            PEditorAudioSend();
         }
         PSpeakerName.Text = language;
         PHeadwordFontApply(language);

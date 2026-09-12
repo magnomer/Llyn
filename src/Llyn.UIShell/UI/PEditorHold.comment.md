@@ -9,17 +9,19 @@ A downstream that refuses any of those takes the form out of the user's hands un
 
 ## Inline notes
 
-### `private string _pEditorDraft = string.Empty;`
+### `private long _pEditorDraft;`
 
 Which held draft this form is editing.
 It is the form's only claim on anything outside itself.
 The draft carries the entry it was started from, so the form no longer remembers that.
-Empty means the engine refused to start one, and every write here is skipped.
+Zero means the engine refused to start one, and every write here is skipped.
 
-### `private LDraft? PEditorDraftStart(string? entry)`
+### `private LDraft? PEditorDraftStart(long? entry)`
 
 Hands the current draft back and asks the engine for a new one.
 Everything the form shows from then on belongs to that draft.
+The card lists are emptied first, because a card's id is an address into the draft that is gone.
+A stored entry reopened would otherwise find its old cards by id and keep their stale chips.
 An entry that no longer loads is refused before a file is written, and the form comes up empty.
 A refusal is reported and the form is suspended.
 A control may buffer keystrokes only while a draft waits for them.
@@ -43,8 +45,8 @@ The id is dropped first, so a failure to delete cannot leave the form writing in
 
 ### `private void PEditorDraftSave()`
 
-Copies what the controls hold into the held draft, and shows back whatever was stored instead.
-The draft is read back first, because it carries the entry and the origin this form does not.
+Writes the chip lists over the held draft, and takes back whatever was stored instead.
+The draft is read back first, because every other field already reached it as a request.
 A draft that reads back null is gone, which is an ordinary answer and leaves the form alone.
 A write that fails is not, so the form is suspended and the failure reported.
 The engine may correct what it was sent, and it names every new chip and row.
@@ -54,8 +56,8 @@ The controls keep what they hold and learn which row it will become.
 
 ### `private void PEditorDraftRestore()`
 
-Fills the form back from the draft as stored.
-This is what a form does when it can no longer tell whether what it shows is what is held.
+Reads the draft as stored and renders it over the form.
+This is what every draft bulletin does, and what a form does when it doubts what it shows.
 A draft that reads back null leaves the form alone, since there is nothing left to agree with.
 
 ### `internal bool PEditorDraftFinish(bool store)`

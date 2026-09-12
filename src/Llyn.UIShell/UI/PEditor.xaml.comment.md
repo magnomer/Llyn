@@ -1,4 +1,4 @@
-# PEditor.xaml.cs
+﻿# PEditor.xaml.cs
 
 ## `public partial class PEditor : UserControl`
 
@@ -32,7 +32,8 @@ The workspace's volume is put on the grip last, once there is a form for it to s
 
 ## `internal void PEditorClose()`
 
-Stops the editor: searches in flight are called off and playback is released.
+Stops the editor.
+Searches in flight are called off, playback is released, and the draft bulletins are no longer watched.
 
 ## Inline notes
 
@@ -79,6 +80,12 @@ After the language is settled, because the presets on offer are that language's.
 
 Every text box in the editor reports through one handler, caught as the event bubbles.
 Cards and their rows come and go, and none of them has to be subscribed to by hand.
+Focus leaving any of them is caught the same way, so unsent typing goes before the focus does.
+
+### `_pEditorObserver = new PObserver(this, PEditorBulletinHandle);`
+
+The editor watches for its own draft's bulletins, which is how every answer reaches the form.
+The observer marshals onto this control's dispatcher, so an answer from any thread renders on the right one.
 
 ### `<ToggleButton x:Name="PSpeaker" Style="{StaticResource Theme.Language.Toggle}">`
 

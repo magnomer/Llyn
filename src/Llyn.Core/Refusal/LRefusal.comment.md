@@ -50,6 +50,11 @@ A Collocation was handed a card to hold inside it.
 Only a Meaning nests, because only a sense names a parent in the store.
 The format cannot write such a document either, so the save refuses rather than dropping the card.
 
+## `public const string LRefusalCard = "Refusal.CardMissing";`
+
+Reason key for a request naming a card, or a parent card, the held draft does not carry.
+An id of zero is one such card, because nothing in a draft is ever addressed by zero.
+
 ## `public const string LRefusalStale = "Refusal.DraftStale";`
 
 Reason key for tentative work whose id was raised in a workspace no longer open.

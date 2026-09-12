@@ -13,6 +13,8 @@ public partial class PEditor
     {
         PEditorChangeStop();
         PEditorDraftCancel();
+        _pMeaningList.Clear();
+        _pCollocationList.Clear();
 
         try
         {
@@ -61,6 +63,7 @@ public partial class PEditor
 
         long held = _pEditorDraft;
         _pEditorDraft = 0;
+        _pEditorRequestPending.Clear();
 
         try
         {
@@ -86,7 +89,7 @@ public partial class PEditor
                 return;
             }
 
-            LEntryDraft sent = PEditorDraftRead();
+            LEntryDraft sent = PEditorDraftRead(held.LDraftContent);
             LEntryDraft stored = _lEngine.LEngineDraftSave(held with { LDraftContent = sent });
             PEditorIdentityApply(stored);
         }

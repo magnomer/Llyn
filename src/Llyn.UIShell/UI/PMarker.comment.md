@@ -1,4 +1,4 @@
-# PMarker.cs
+﻿# PMarker.cs
 
 ## `public partial class PEditor`
 
@@ -20,6 +20,7 @@ Whether typed text names a preset stays the engine's decision at the write.
 
 A chip dropped is a name the menu may offer again unmarked.
 So the menu is rebuilt with the chip gone.
+The chips are sent at once, since dropping one is a whole action.
 
 ### `private void PMarkerFieldHandle(object sender, KeyEventArgs e)`
 
@@ -40,6 +41,12 @@ Blank text and a name already carried both add no chip.
 The box is cleared either way, so a repeated name does not sit there looking unread.
 A name the presets do not hold is declared as one, so the menu offers it next time.
 The chip takes the declared row's id and name, or the bare text when declaring failed.
+The chips are sent at once, since adding one is a whole action.
+
+### `private bool PMarkerMatch(IReadOnlyList<LSpeechDraft> speeches)`
+
+Whether the chips already say what the draft says, name for name and id for id.
+The render asks before rebuilding, because a rebuild clears the typing field.
 
 ### `private IReadOnlyList<LSpeechDraft> PMarkerRead()`
 
