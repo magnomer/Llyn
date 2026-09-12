@@ -12,7 +12,8 @@ So the same Example can sit first under one Entry and third under a Meaning.
 Two Examples with identical text remain distinct rows.
 
 An Example carries its own Glosses in `LExampleGloss` and references *at most one* Source through `LExampleSource`.
-A Gloss is the sentence rendered as plain text in one language, and one Example may carry any number of them.
+A Gloss is the sentence rendered as plain text in one language.
+One Example may carry any number of them.
 The Translation a Meaning carries is instead a link to another Entry.
 The Source reference is a pointer, not ownership: clearing it or deleting the Example never touches the Source.
 Every field here that can stand empty carries `LStateValue`.
@@ -45,5 +46,6 @@ The hash that agrees with that equality.
 
 ## `public LExample LExampleNormalize()`
 
-The same Example with every unreadable value dropped to unspecified, each Gloss normalized the same way, and its Mentions sorted by start.
+The same Example with every unreadable value dropped to unspecified.
+Each Gloss is normalized the same way, and its Mentions are sorted by start.
 Called only after the user agreed to lose what the store could not read.

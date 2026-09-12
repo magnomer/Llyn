@@ -3,7 +3,8 @@
 ## `public enum LFontRole`
 
 Which of a language pack's declared typographies is being asked for.
-A pack declares one for the word itself, one for the sentences that show it in use, and one for the Glosses that render those sentences.
+A pack declares one for the word itself and one for the sentences that show it in use.
+A third serves the Glosses that render those sentences.
 The two are separate because a headword is read as a specimen and an example is read as prose.
 
 - `LFontRoleHeadword` — The typography the pack declares for its own words.

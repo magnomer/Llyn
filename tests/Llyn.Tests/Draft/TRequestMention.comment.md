@@ -6,7 +6,8 @@ Covers the Mention requests and what commit makes of them.
 A word is linked on a card row and on the corpus panel through the same three requests.
 A span overlapping a Mention replaces it, and a Meaning of another Entry is refused.
 A text edit shifts, keeps or drops the Mentions by where the edit fell.
-Commit writes the rows, maps the minted ids, edits a shared row in place for a Mention-only change and forks it for a text change.
+Commit writes the rows and maps the minted ids.
+It edits a shared row in place for a Mention-only change and forks it for a text change.
 The draft file round-trips a minted negative id and a Mention standing for nothing.
 The sequences the editor's four gestures send are run as the editor sends them.
 A selection past a surrogate pair carries code-point offsets, link then choose then unlink leaves nothing.

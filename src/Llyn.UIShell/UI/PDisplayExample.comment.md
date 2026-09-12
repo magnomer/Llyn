@@ -33,10 +33,13 @@ The fallback for a pack that declares none is written once, with the rest of a c
 
 ### `<DataTemplate x:Key="Display.Card.ExampleGloss">`
 
-One Gloss under the sentence: the flag of its language and the text, or the unknown mark when the text is not known.
-It takes the family, size and slant the entry's language pack declares for a Gloss, in the muted colour, as the writing side sets the same row.
+One Gloss under the sentence: the flag of its language and the text.
+The unknown mark stands in when the text is not known.
+It takes the family, size and slant the entry's language pack declares for a Gloss.
+It uses the muted colour, as the writing side sets the same row.
 The flag and the globe come from the shared Gloss theme, so both modes draw the same language mark.
-Its top margin equals the bottom margin the writing side's sentence field carries, so a Gloss sits the same distance under its sentence in both modes.
+Its top margin equals the bottom margin the writing side's sentence field carries.
+So a Gloss sits the same distance under its sentence in both modes.
 
 ### `<ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleGloss}" ...>`
 

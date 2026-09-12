@@ -6,7 +6,8 @@ Persists bibliographic References — independent data no Entry, Example, or Aut
 A Reference is created once with an opaque id and is then cited one way.
 An Example cites at most one through its `example.reference_ref` column.
 An Entry reaches a Reference only through the Examples its cards quote, and holds no citation of its own.
-The citation is a pointer — clearing it leaves the Reference standing, and `LReferenceDelete` refuses to run while any citation remains.
+The citation is a pointer, so clearing it leaves the Reference standing.
+`LReferenceDelete` refuses to run while any citation remains.
 
 Every text field is stored as a state column beside its value column.
 So "never filled in", "recorded as unknown", and "this value" stay three different facts.

@@ -6,7 +6,8 @@ The one control that draws a sentence a reader may click word by word.
 It knows where every Mention lies and reports a click as a code-point offset.
 It never talks to the engine.
 The host that placed it asks the engine what the offset means and decides what to open.
-So the display panel and the corpus panel draw a sentence the same way and answer a click each in their own way.
+So the display panel and the corpus panel draw a sentence the same way.
+Each answers a click in its own way.
 
 ### `public static readonly DependencyProperty PMentionTextProperty`
 
@@ -41,7 +42,8 @@ Each run keeps its piece in its tag, which is how a click finds its offset.
 
 Where the character at a code-point offset is drawn, relative to the control.
 The window asks so the menu can hang under the clicked word rather than under the sentence's left edge.
-The offset is the one the engine settled on, so an unlinked word inside a wide gap still places the menu on the word.
+The offset is the one the engine settled on.
+So an unlinked word inside a wide gap still places the menu on the word.
 An offset no run covers answers the control's bottom left, which is where the popup would hang anyway.
 
 ### `private int? PMentionOffsetRead(Point point)`

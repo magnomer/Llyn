@@ -16,7 +16,8 @@ The editor keys its pending request by it, and the redraw asks by it.
 
 ## `internal PGloss? PSentenceGlossFind(string field, out string name)`
 
-Splits a field name of that shape back into the Gloss it names and the property, or null for any other field.
+Splits a field name of that shape back into the Gloss it names and the property.
+Any other field gives null.
 
 ## `private void PSentenceGlossShow(IReadOnlyList<LGlossDraft> drafts, Func<PGloss, string, bool> pending)`
 

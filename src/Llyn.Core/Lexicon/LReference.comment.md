@@ -28,7 +28,8 @@ So a specified authorship may name one Author, several, or the specified Author 
 - `LReferenceKind` — What kind of material it is, as a label and never as a rule.
 - `LReferenceNote` — Anything further about the material, written by the user as free text.
 - `LReferenceUrl` — Address the material was found at.
-- `LReferenceAuthorState` — Whether the authorship is unspecified, unknown, or specified by attached Authors, and whether the stored word could be read.
+- `LReferenceAuthorState` — Whether the authorship is unspecified, unknown, or specified by attached Authors.
+  It also says whether the stored word could be read.
 
 ## `public string LReferenceNameRead()`
 

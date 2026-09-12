@@ -4,7 +4,8 @@
 
 Writes the frame a card's example is read under, ahead of the example itself.
 The editor gives the frame two fields side by side, and the reader has one line to read.
-So the marker and the role are drawn as a parenthesised head, as `(+of Something) This is an example of ...`.
+So the marker and the role are drawn as a parenthesised head.
+An example is `(+of Something) This is an example of ...`.
 
 The order of the two fields belongs to the language, not to the row.
 The display holds one converter for the shown entry, so the order is read once for the whole entry.

@@ -2,7 +2,8 @@
 
 ## `internal sealed class PGloss`
 
-One Gloss row as the UI shows it: the language it is written in, its flag, and the text with its unknown mark.
+One Gloss row as the UI shows it: the language it is written in and its flag.
+The text comes with its unknown mark.
 The card editor and the corpus panel both draw it, through the templates in `PThemeGloss.xaml`.
 The row raises a property change for every edit and lets its owner decide what to send.
 It resolves no state of its own: the text and the mark travel to the engine as written.

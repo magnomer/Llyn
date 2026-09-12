@@ -1,11 +1,13 @@
 # PThemeGloss.xaml
 
 The look of a Gloss row, shared by the card editor and the corpus panel.
-The input part is merged so the remove control and the boxed field stand on the same styles as every other input.
+The input part is merged.
+So the remove control and the boxed field stand on the same styles as every other input.
 
 ## `<local:PStateConverter x:Key="Theme.Gloss.State" />`
 
-Turns the unknown mark of a row into the placeholder its field shows, with the localized hint when the row is blank.
+Turns the unknown mark of a row into the placeholder its field shows.
+The localized hint appears when the row is blank.
 
 ## `<Style x:Key="Theme.Gloss.Line" TargetType="ItemsControl">`
 
@@ -40,15 +42,19 @@ It raises `PGlossCommand.PGlossCommandRemoval` with the row as its parameter, so
 
 ## `<DataTemplate x:Key="Theme.Gloss.Row">`
 
-The inline row under a card's sentence: the flag that opens the picker, the bare text field in the muted colour, and the cross.
+The inline row under a card's sentence: the flag that opens the picker and the bare text field.
+The field is in the muted colour, and the cross follows it.
 The margin under each row keeps two neighbouring frames apart for the same reason.
 The flag toggle is pulled left by its own padding, so the flag starts where the sentence above starts.
-The text takes the family, size and slant the entry's language pack declares for a Gloss, through the card resources the panel sets.
+The text takes the family, size and slant the entry's language pack declares for a Gloss.
+They come through the card resources the panel sets.
 
 ## `<DataTemplate x:Key="Theme.Gloss.Field">`
 
-The boxed row of the corpus edit area: the language toggle with flag and name, the boxed text field, and the cross.
+The boxed row of the corpus edit area: the language toggle with flag and name.
+The boxed text field and the cross follow it.
 
 ## `<DataTemplate x:Key="Theme.Gloss.Display">`
 
-The read-only line of the corpus read area: the flag and the text, or the unknown mark when the text is not known.
+The read-only line of the corpus read area: the flag and the text.
+The unknown mark stands in when the text is not known.

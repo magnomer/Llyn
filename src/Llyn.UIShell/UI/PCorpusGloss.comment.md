@@ -6,7 +6,8 @@ The Gloss rows of the corpus panel: the ones the read area lists and the ones th
 
 ## `private void PExcerptGlossShow(IReadOnlyList<LGloss> glosses)`
 
-Lists every Gloss of the shown Example in the read area, and shows the unset mark instead when there is none.
+Lists every Gloss of the shown Example in the read area.
+Shows the unset mark instead when there is none.
 
 ## `private void PTranscriptGlossShow(LExample? example)`
 

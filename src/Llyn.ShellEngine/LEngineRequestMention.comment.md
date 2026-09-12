@@ -9,7 +9,8 @@ The text handlers of both panels call the shift routine here, so a Mention follo
 ## `private LDraft LEngineMentionAdd(LDraft draft, LRequestMentionAddition request)`
 
 Links one span to an Entry, replacing every Mention the span overlaps.
-A span of no length, one past the end of the text, an Entry no row carries, or a Meaning of another Entry is refused.
+A span of no length or one past the end of the text is refused.
+So is an Entry no row carries, or a Meaning of another Entry.
 The new Mention gets a minted id and the list is sorted by offset.
 
 ## `private static LDraft LEngineMentionRemove(LDraft draft, LRequestMentionRemoval request)`

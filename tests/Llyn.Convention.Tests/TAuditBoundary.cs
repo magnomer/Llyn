@@ -14,10 +14,17 @@ public sealed class TAuditBoundary
     ];
 
     [Fact]
-    public void AuditRun_ShellSources_BuildNoStateValue()
+    public void AuditBoundary_ShellSources_BuildNoStateValue()
     {
         string repoRoot = TAuditSource.TAuditRootRead();
-        IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot);
+        TAuditScope scope = new(
+            [],
+            TAuditNameSetting.TAuditSourceInclude,
+            TAuditNameSetting.TAuditExcludedSegments,
+            TAuditNameSetting.TAuditExcludedSuffixes,
+            TAuditNameSetting.TAuditExcludedPrefixes,
+            []);
+        IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot, scope);
         string shell = Path.Combine(repoRoot, "src", "Llyn.UIShell") + Path.DirectorySeparatorChar;
 
         List<string> hits = [];

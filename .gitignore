@@ -103,3 +103,4 @@ $RECYCLE.BIN/
 
 # Local line-audit configuration
 /auditlines.json
+/auditcomments.json

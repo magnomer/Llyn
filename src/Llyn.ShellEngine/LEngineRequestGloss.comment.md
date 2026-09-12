@@ -28,7 +28,8 @@ The one place a Gloss row is found by id and rewritten, refusing when no row car
 ## `private static LDraft LEngineGlossApply(`
 
 Routes one list change to the Example the request names.
-Card 0 and sentence 0 name the draft's own Example, held by the corpus panel, whose stored rows are read as drafts and written back resolved.
+Card 0 and sentence 0 name the draft's own Example, held by the corpus panel.
+Its stored rows are read as drafts and written back resolved.
 Any other pair names a card row, whose Example draft takes the changed list directly.
 
 ## `private static void LEngineGlossRecord(`

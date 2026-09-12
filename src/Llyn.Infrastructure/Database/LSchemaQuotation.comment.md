@@ -30,8 +30,10 @@ So an Example survives every detach.
 The store refuses to delete one while any reference still points at it.
 
 example_translation is one Gloss: the sentence rendered as text in one language.
-A row holds the language it is written in, the text with its state, and the position it takes among the Example's Glosses.
-The row lives on the Example and goes with it by ON DELETE CASCADE, because a rendering of a sentence says nothing without the sentence.
+A row holds the language it is written in and the text with its state.
+It also holds the position it takes among the Example's Glosses.
+The row lives on the Example and goes with it by ON DELETE CASCADE.
+A rendering of a sentence says nothing without the sentence.
 The unique index per Example keeps the positions free of duplicates, as the association tables do for their referrers.
 One Example may carry several rows in one language, since two renderings of one sentence are both worth keeping.
 The table is named after the Translation the schema already speaks of, while the code names the row a Gloss.

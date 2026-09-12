@@ -6,7 +6,8 @@ The Gloss gestures of a card's sentence row, turned into requests against the he
 
 ## `internal void PGlossAddHandle(object sender, RoutedEventArgs e)`
 
-Adds a Gloss at the end of the row's list, in the first loaded language that is not the entry's own.
+Adds a Gloss at the end of the row's list.
+It takes the first loaded language that is not the entry's own.
 
 ## `internal void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
 
