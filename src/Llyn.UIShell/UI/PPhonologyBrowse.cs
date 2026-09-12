@@ -76,7 +76,10 @@ public partial class PPhonology
         }
 
         PTwin.PTwinNameApply(
-            _pInventoryList, row => row.PInventoryItemHeadword, (row, name) => row.PInventoryItemName = name);
+            _pInventoryList,
+            row => row.PInventoryItemHeadword,
+            (row, name) => row.PInventoryItemName = name,
+            row => row.PInventoryItemId);
 
         PInventoryEmpty.Visibility = _pInventoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 

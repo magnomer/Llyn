@@ -9,6 +9,11 @@
     "family": "Georgia, Segoe UI",
     "size": 15
   },
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
   "varieties": {
     "shown": "flag",
     "list": [
@@ -16,7 +21,7 @@
       { "name": "American", "flag": "us" }
     ]
   },
-  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. The 'pronunciation' and 'audio' lists are independent: a site listed for transcriptions need not be listed for recordings, and either list may stand empty. Each list is shown in the order it is written here, whatever order the answers arrive in, so reordering a list reorders the menu. The 'font' block is the typography a headword is drawn in; the 'example' block is the typography example sentences are drawn in. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities. 'prefix' = made absolute when the captured address is site-relative. 'varieties' declares the regional varieties this language distinguishes: 'list' rows carry a 'name' and an ISO 3166-1 alpha-2 'flag', and 'shown' is 'flag' or 'text' (default 'text') for how the UI labels each reading. A pronunciation attempt may replace its flat extraction keys with a 'readings' list; each row carries the same strategy/match/group/path/normalize keys plus 'variety' (a name from the list, or omitted for untagged) and 'skip' (how many earlier matches to pass over, default 0). All readings run on the same fetched body. A flat attempt without 'readings' is one untagged reading. Audio attempts are always flat.",
+  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. The 'pronunciation' and 'audio' lists are independent: a site listed for transcriptions need not be listed for recordings, and either list may stand empty. Each list is shown in the order it is written here, whatever order the answers arrive in, so reordering a list reorders the menu. The 'font' block is the typography a headword is drawn in; the 'example' block is the typography example sentences are drawn in; the 'gloss' block is the typography the translations under those example sentences are drawn in, and 'style' may be 'italic' or 'oblique'. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities. 'prefix' = made absolute when the captured address is site-relative. 'varieties' declares the regional varieties this language distinguishes: 'list' rows carry a 'name' and an ISO 3166-1 alpha-2 'flag', and 'shown' is 'flag' or 'text' (default 'text') for how the UI labels each reading. A pronunciation attempt may replace its flat extraction keys with a 'readings' list; each row carries the same strategy/match/group/path/normalize keys plus 'variety' (a name from the list, or omitted for untagged) and 'skip' (how many earlier matches to pass over, default 0). All readings run on the same fetched body. A flat attempt without 'readings' is one untagged reading. Audio attempts are always flat.",
   "pronunciation": [
     {
       "name": "Longman",

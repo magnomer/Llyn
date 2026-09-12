@@ -12,9 +12,12 @@ public sealed record LLanguage(
     IReadOnlyList<string>? LLanguageSchemes = null,
     bool LLanguageSeparated = true,
     IReadOnlyList<LVariety>? LLanguageVarieties = null,
-    bool LLanguageVarietyFlagged = true)
+    bool LLanguageVarietyFlagged = true,
+    LFont? LLanguageGloss = null)
 {
     public IReadOnlyList<string> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
     public IReadOnlyList<LVariety> LLanguageVarieties { get; init; } = LLanguageVarieties ?? [];
+
+    public LFont LLanguageGloss { get; init; } = LLanguageGloss ?? new LFont(null, 0);
 }

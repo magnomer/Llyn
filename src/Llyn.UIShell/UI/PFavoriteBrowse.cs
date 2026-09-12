@@ -87,7 +87,10 @@ public partial class PFavorite
         }
 
         PTwin.PTwinNameApply(
-            _pRosterList, row => row.PRosterItemHeadword, (row, name) => row.PRosterItemName = name);
+            _pRosterList,
+            row => row.PRosterItemHeadword,
+            (row, name) => row.PRosterItemName = name,
+            row => row.PRosterItemId);
 
         PRosterEmpty.Visibility = _pRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 

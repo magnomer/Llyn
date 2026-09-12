@@ -31,7 +31,7 @@ public partial class PEditor
         IReadOnlyList<LEntry> found;
         try
         {
-            found = _lEngine.LEngineTranslationFind(word, PEditorEntryRead());
+            found = _lEngine.LEngineTranslationFind(word, null);
         }
         catch (Exception)
         {
@@ -219,7 +219,7 @@ public partial class PEditor
         {
             long? entry = PEditorEntryRead();
             single = _lEngine.LEngineTranslationResolve(word, entry);
-            found = single is null || offered ? _lEngine.LEngineTranslationFind(word, entry) : [];
+            found = single is null || offered ? _lEngine.LEngineTranslationFind(word, null) : [];
         }
         catch (Exception exception)
         {

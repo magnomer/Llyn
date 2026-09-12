@@ -24,10 +24,23 @@ internal static class PFont
         }
     }
 
-    internal static LFont PFontExampleRead(LEngine engine, string language)
+    internal static void PFontExampleApply(ResourceDictionary resources, LEngine engine, string language)
     {
+        ArgumentNullException.ThrowIfNull(resources);
         ArgumentNullException.ThrowIfNull(engine);
 
+        LFont example = PFontRoleRead(engine, language, LFontRole.LFontRoleExample);
+        PFontResourceSet(resources, "Theme.Card.ExampleFamily", example.LFontFamily is string named ? new FontFamily(named) : null);
+        PFontResourceSet(resources, "Theme.Card.ExampleSize", example.LFontSize > 0 ? example.LFontSize : null);
+
+        LFont gloss = PFontRoleRead(engine, language, LFontRole.LFontRoleGloss);
+        PFontResourceSet(resources, "Theme.Card.GlossFamily", gloss.LFontFamily is string glossed ? new FontFamily(glossed) : null);
+        PFontResourceSet(resources, "Theme.Card.GlossSize", gloss.LFontSize > 0 ? gloss.LFontSize : null);
+        PFontResourceSet(resources, "Theme.Card.GlossStyle", PFontStyleRead(gloss.LFontStyle));
+    }
+
+    private static LFont PFontRoleRead(LEngine engine, string language, LFontRole role)
+    {
         if (string.IsNullOrWhiteSpace(language))
         {
             return new LFont(null, 0);
@@ -35,12 +48,38 @@ internal static class PFont
 
         try
         {
-            return engine.LEngineFontRead(language, LFontRole.LFontRoleExample);
+            return engine.LEngineFontRead(language, role);
         }
         catch (Exception)
         {
             return new LFont(null, 0);
         }
+    }
+
+    private static FontStyle? PFontStyleRead(string? style)
+    {
+        if (string.Equals(style, "italic", StringComparison.OrdinalIgnoreCase))
+        {
+            return FontStyles.Italic;
+        }
+
+        if (string.Equals(style, "oblique", StringComparison.OrdinalIgnoreCase))
+        {
+            return FontStyles.Oblique;
+        }
+
+        return null;
+    }
+
+    private static void PFontResourceSet(ResourceDictionary resources, string key, object? value)
+    {
+        if (value is null)
+        {
+            resources.Remove(key);
+            return;
+        }
+
+        resources[key] = value;
     }
 
     private static LFont PFontRead(LEngine engine, string language)

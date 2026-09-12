@@ -16,6 +16,7 @@ public static class LLanguageLoader
     private const string LLanguageLoaderHarvest = "audio";
     private const string LLanguageLoaderFont = "font";
     private const string LLanguageLoaderExample = "example";
+    private const string LLanguageLoaderGloss = "gloss";
     private const string LLanguageLoaderScheme = "transcription";
     private const string LLanguageLoaderSeparator = "separator";
     private const string LLanguageLoaderVarieties = "varieties";
@@ -105,7 +106,8 @@ public static class LLanguageLoader
             LLanguageSchemeScan(root),
             LLanguageSeparatorRead(root),
             LLanguageVarietyScan(root),
-            LLanguageFlaggedCheck(root));
+            LLanguageFlaggedCheck(root),
+            LLanguageFontRead(root, LLanguageLoaderGloss));
     }
 
     private static bool LLanguageSeparatorRead(JsonElement root)
@@ -173,8 +175,12 @@ public static class LLanguageLoader
 
         string? family = LLanguageTextRead(font, "family");
         double size = LLanguageMeasureRead(font, "size");
+        string? style = LLanguageTextRead(font, "style");
 
-        return new LFont(string.IsNullOrWhiteSpace(family) ? null : family, size);
+        return new LFont(
+            string.IsNullOrWhiteSpace(family) ? null : family,
+            size,
+            string.IsNullOrWhiteSpace(style) ? null : style.Trim());
     }
 
     private static LSourceSpec? LLanguageSourceRead(JsonElement source)

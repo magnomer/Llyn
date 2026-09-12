@@ -78,12 +78,25 @@ public partial class PEditor
         }
 
         PProspectHide();
+
+        List<PProspectItem> stored = new(found.Count);
         foreach (LEntry entry in found)
         {
-            if (language.Length == 0 || string.Equals(entry.LEntryLanguage, language, StringComparison.Ordinal))
+            stored.Add(new PProspectItem(
+                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
+        }
+
+        PTwin.PTwinNameApply(
+            stored,
+            row => row.PProspectItemHeadword,
+            (row, name) => row.PProspectItemName = name,
+            row => row.PProspectItemId);
+
+        foreach (PProspectItem item in stored)
+        {
+            if (language.Length == 0 || string.Equals(item.PProspectItemLanguage, language, StringComparison.Ordinal))
             {
-                _pProspectItem.Add(new PProspectItem(
-                    entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
+                _pProspectItem.Add(item);
             }
         }
 
@@ -91,9 +104,6 @@ public partial class PEditor
         {
             return;
         }
-
-        PTwin.PTwinNameApply(
-            _pProspectItem, row => row.PProspectItemHeadword, (row, name) => row.PProspectItemName = name);
 
         _pProspectChosen = chosen;
         PProspect.PlacementTarget = anchor;
@@ -154,30 +164,39 @@ public partial class PEditor
         PProspectHide();
     }
 
-    private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found)
-    {
-        PProspectShow(card, word, found, true);
-    }
-
     private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)
     {
         _pProspectItem.Clear();
         _pProspectChosen = null;
         PProspect.HorizontalOffset = 0;
         PProspect.VerticalOffset = 0;
+
+        List<PProspectItem> stored = new(found.Count);
         foreach (LEntry entry in found)
         {
-            _pProspectItem.Add(new PProspectItem(
+            stored.Add(new PProspectItem(
                 entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
+        }
+
+        PTwin.PTwinNameApply(
+            stored,
+            row => row.PProspectItemHeadword,
+            (row, name) => row.PProspectItemName = name,
+            row => row.PProspectItemId);
+
+        long? self = PEditorEntryRead();
+        foreach (PProspectItem item in stored)
+        {
+            if (self is null || item.PProspectItemId != self)
+            {
+                _pProspectItem.Add(item);
+            }
         }
 
         foreach (string language in PProspectLanguageRead())
         {
             _pProspectItem.Add(new PProspectItem(0, word, language, true));
         }
-
-        PTwin.PTwinNameApply(
-            _pProspectItem, row => row.PProspectItemHeadword, (row, name) => row.PProspectItemName = name);
 
         _pProspectCard = card;
         PProspect.PlacementTarget = PLinkBoxFind(card) ?? (UIElement)PContents;

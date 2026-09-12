@@ -143,7 +143,10 @@ public partial class PTaxonomy
         }
 
         PTwin.PTwinNameApply(
-            _pMembershipList, row => row.PMembershipItemHeadword, (row, name) => row.PMembershipItemName = name);
+            _pMembershipList,
+            row => row.PMembershipItemHeadword,
+            (row, name) => row.PMembershipItemName = name,
+            row => row.PMembershipItemId);
 
         PMembershipEmpty.Visibility = _pMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 

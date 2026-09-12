@@ -270,25 +270,7 @@ public partial class PDisplay : UserControl
 
     private void PDisplayExampleShow(string language)
     {
-        LFont font = PFont.PFontExampleRead(_lEngine, language);
-
-        if (font.LFontFamily is string named)
-        {
-            Resources["Theme.Card.ExampleFamily"] = new FontFamily(named);
-        }
-        else
-        {
-            Resources.Remove("Theme.Card.ExampleFamily");
-        }
-
-        if (font.LFontSize > 0)
-        {
-            Resources["Theme.Card.ExampleSize"] = font.LFontSize;
-        }
-        else
-        {
-            Resources.Remove("Theme.Card.ExampleSize");
-        }
+        PFont.PFontExampleApply(Resources, _lEngine, language);
     }
 
     private void PDisplayIncomingShow(long id)

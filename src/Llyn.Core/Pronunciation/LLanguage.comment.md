@@ -38,3 +38,6 @@ Everything language-specific arrives through this record.
 - `LLanguageVarietyFlagged` — Whether the UI draws a variety as its flag rather than as its name.
   `true` shows the flag, `false` shows the text.
   A pack that omits the key is read as flagged.
+- `LLanguageGloss` — The typography the pack declares for the Glosses under its example sentences, held as an [LFont](LFont.comment.md).
+  A Gloss takes the pack of the sentence it renders, since it is read beside that sentence.
+  A pack that declares none carries a blank record, and the reading view's own typography stands.

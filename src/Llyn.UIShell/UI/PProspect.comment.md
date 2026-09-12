@@ -21,6 +21,7 @@ The corpus scribe reaches the second through the window, so the popup is still d
 Opens the dropdown over a selected word, listing the Entries the word matches in the given language.
 No create row is offered, because a Mention may only point at an Entry that already exists.
 The match is the translation lookup, exact headwords first, and an empty language filters nothing.
+Twin numbers are given before the language filter runs, so a row keeps the number the catalog shows.
 The dropdown stands at the selection's rectangle rather than under the field, so it opens where the word is.
 A word matching nothing opens nothing.
 On pick the chosen Entry id is handed to the caller, and the dropdown closes.
@@ -58,7 +59,9 @@ One opened because a committed word was ambiguous selects its first row, since t
 
 The create row stands after the matches rather than among them.
 It carries the typed word untouched, because that word is what the tentative entry will be called.
-Rows sharing a headword are numbered afterwards, so the reader can tell two entries apart.
+Rows sharing a headword are numbered by entry id, so each keeps the number the catalog shows.
+The entry being edited joins that numbering and is dropped only afterwards, so its twin keeps its own number.
+Create rows take no number, because their styling already sets them apart.
 
 ### `private IReadOnlyList<string> PProspectLanguageRead()`
 

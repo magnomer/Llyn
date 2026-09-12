@@ -15,3 +15,6 @@ The editor and the reading view are given the same record, so they never drift a
 - `LFontSize` — The point size the pack declares for the role.
   It is `0` when the pack declares none.
   The theme's own size then stands.
+- `LFontStyle` — The slant the pack declares for the role, `italic` or `oblique`.
+  It is `null` when the pack declares none, and the text stands upright.
+  English glosses are set in italic, as a translation under a sentence is by convention.

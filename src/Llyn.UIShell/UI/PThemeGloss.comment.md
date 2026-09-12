@@ -10,6 +10,8 @@ Turns the unknown mark of a row into the placeholder its field shows, with the l
 ## `<Style x:Key="Theme.Gloss.Line" TargetType="ItemsControl">`
 
 The list of rows, folded away while it holds none.
+A bare field draws its hover frame past its own bounds, above and below the text.
+The margin above the list keeps the first row's frame clear of the sentence's frame.
 
 ## `<Style x:Key="Theme.Gloss.Choice" TargetType="ListBoxItem">`
 
@@ -39,6 +41,9 @@ It raises `PGlossCommand.PGlossCommandRemoval` with the row as its parameter, so
 ## `<DataTemplate x:Key="Theme.Gloss.Row">`
 
 The inline row under a card's sentence: the flag that opens the picker, the bare text field in the muted colour, and the cross.
+The margin under each row keeps two neighbouring frames apart for the same reason.
+The flag toggle is pulled left by its own padding, so the flag starts where the sentence above starts.
+The text takes the family, size and slant the entry's language pack declares for a Gloss, through the card resources the panel sets.
 
 ## `<DataTemplate x:Key="Theme.Gloss.Field">`
 

@@ -153,7 +153,10 @@ public partial class PTenor
         }
 
         PTwin.PTwinNameApply(
-            _pCohortList, row => row.PCohortItemHeadword, (row, name) => row.PCohortItemName = name);
+            _pCohortList,
+            row => row.PCohortItemHeadword,
+            (row, name) => row.PCohortItemName = name,
+            row => row.PCohortItemId);
 
         PCohortEmpty.Visibility = _pCohortList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 

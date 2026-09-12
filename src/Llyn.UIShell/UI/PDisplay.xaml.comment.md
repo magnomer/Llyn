@@ -77,7 +77,7 @@ A track click and an arrow key are gestures of their own, so each ends with a wr
 ### `private void PDisplayExampleShow(string language)`
 
 Example lines are drawn inside card templates, where no code can reach one line at a time.
-So the pack's example typography is put into two view resources the templates read.
+So the pack's example and Gloss typography is put into view resources the templates read.
 A pack that declares none has its keys removed, and the card's own fallback typography stands.
 
 ### `private void PDisplayFavoriteShow(long id)`

@@ -86,7 +86,12 @@ public sealed partial class LEngine : IDisposable
 
         LLanguage pack = LLanguageLoader.LLanguageLoaderLoad(language);
 
-        return role == LFontRole.LFontRoleExample ? pack.LLanguageExample : pack.LLanguageFont;
+        return role switch
+        {
+            LFontRole.LFontRoleExample => pack.LLanguageExample,
+            LFontRole.LFontRoleGloss => pack.LLanguageGloss,
+            _ => pack.LLanguageFont,
+        };
     }
 
     public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)

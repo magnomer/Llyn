@@ -31,6 +31,19 @@ Examples are drawn in the typography the language pack declares for them.
 Both modes read the same two keys, and each sets them on itself for the entry it shows.
 The fallback for a pack that declares none is written once, with the rest of a card's measurements.
 
+### `<DataTemplate x:Key="Display.Card.ExampleGloss">`
+
+One Gloss under the sentence: the flag of its language and the text, or the unknown mark when the text is not known.
+It takes the family, size and slant the entry's language pack declares for a Gloss, in the muted colour, as the writing side sets the same row.
+The flag and the globe come from the shared Gloss theme, so both modes draw the same language mark.
+Its top margin equals the bottom margin the writing side's sentence field carries, so a Gloss sits the same distance under its sentence in both modes.
+
+### `<ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleGloss}" ...>`
+
+The Glosses stand under the sentence, aligned with its first character rather than with the frame.
+They come from the draft through `PGlossConverter`, which wraps each in the row the editor already resolves a flag for.
+The list folds away when the Example carries none.
+
 ### `<local:PSentenceConverter x:Key="Display.Card.Frame" />`
 
 The sentence order and the inset are read nowhere but here.

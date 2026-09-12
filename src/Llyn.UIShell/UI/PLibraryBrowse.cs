@@ -72,7 +72,10 @@ public partial class PLibrary
         }
 
         PTwin.PTwinNameApply(
-            _pIndexList, row => row.PIndexItemHeadword, (row, name) => row.PIndexItemName = name);
+            _pIndexList,
+            row => row.PIndexItemHeadword,
+            (row, name) => row.PIndexItemName = name,
+            row => row.PIndexItemId);
 
         PIndexEmpty.Visibility = _pIndexList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 

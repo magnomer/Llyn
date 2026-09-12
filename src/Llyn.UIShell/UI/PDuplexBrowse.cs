@@ -57,7 +57,10 @@ public partial class PDuplex
         }
 
         PTwin.PTwinNameApply(
-            catalog, row => row.PIndexItemHeadword, (row, name) => row.PIndexItemName = name);
+            catalog,
+            row => row.PIndexItemHeadword,
+            (row, name) => row.PIndexItemName = name,
+            row => row.PIndexItemId);
 
         index.Visibility = catalog.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
     }

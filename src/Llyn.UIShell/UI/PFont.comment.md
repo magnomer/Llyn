@@ -11,11 +11,18 @@ A pack that declares nothing clears the local value, so the theme's own family a
 Takes any element that carries text, because a text box and a text block share the same font properties.
 Both read them from `TextElement`, so one attached property serves either.
 
-### `internal static LFont PFontExampleRead(LEngine engine, string language)`
+### `internal static void PFontExampleApply(ResourceDictionary resources, LEngine engine, string language)`
 
-Reads the typography a pack declares for its example sentences.
-It is handed back rather than applied, because example lines are drawn inside item templates.
-Those lines take their family and size from card resources the reading view sets.
+Puts the typography a pack declares for its example sentences, and for the Glosses under them, into card resources.
+Example lines are drawn inside item templates, so they are reached through resources rather than one line at a time.
+The editor and the reading view hand in their own dictionaries, and both are filled the same way.
+The language is the entry's, since a sentence and its Glosses stand under the entry's word.
+A part the pack leaves out has its key removed, so the theme's own value stands.
+
+### `private static FontStyle? PFontStyleRead(string? style)`
+
+A pack writes its slant as a word, `italic` or `oblique`.
+Any other word, or none, is answered with nothing, so the theme's upright stands.
 
 ### `private static LFont PFontRead(LEngine engine, string language)`
 
