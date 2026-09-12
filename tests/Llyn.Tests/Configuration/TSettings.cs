@@ -54,4 +54,40 @@ public sealed class TSettings
         Assert.Equal("ko", settings.LSettingsLocalization);
         Assert.Equal(640, settings.LSettingsWindow?.LWindowStateWidth);
     }
+
+    [Fact]
+    public void SettingsSave_Respelled_LoadsTrue()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", respelled: true));
+
+        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsRespelled);
+    }
+
+    [Theory]
+    [InlineData("{ \"localization\": \"en\" }")]
+    [InlineData("{ \"localization\": \"en\", \"respelling\": \"yes\" }")]
+    [InlineData("{ \"localization\": \"en\", \"respelling\": 1 }")]
+    public void SettingsLoad_KeyAbsentOrNotBoolean_LoadsFalse(string json)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), json);
+
+        Assert.False(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsRespelled);
+    }
+
+    [Fact]
+    public void RespellingSave_True_ReadsBackAndWritesKey()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineRespellingSave(true);
+
+        Assert.True(engine.TEngineSettingsRead().LSettingsRespelled);
+        Assert.Contains(
+            "\"respelling\": true",
+            File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+    }
 }

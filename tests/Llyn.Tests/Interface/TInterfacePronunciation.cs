@@ -14,6 +14,24 @@ internal static partial class TInterface
     internal static LAnswer TAnswerCreate(IReadOnlyList<LReading> readings) =>
         LAnswer.LAnswerCreate(readings);
 
+    internal static string TReadingNormalize(string phonetic) =>
+        LReading.LReadingNormalize(phonetic);
+
+    internal static LRespellingRule TRespellingRuleCreate(string pattern, string replacement) =>
+        new LRespellingRule(pattern, replacement);
+
+    internal static LRespelling TRespellingCreate(
+        string name,
+        IReadOnlyList<string> varieties,
+        IReadOnlyList<LRespellingRule> rules) =>
+        new LRespelling(name, varieties, rules);
+
+    internal static string TRespellingResolve(this LRespelling group, string phonetic, string variety) =>
+        group.LRespellingResolve(phonetic, variety);
+
+    internal static string TRespellingScan(IReadOnlyList<LRespelling> groups, string phonetic, string variety) =>
+        LRespelling.LRespellingScan(groups, phonetic, variety);
+
     internal static LCandidate TCandidateCreate(
         string source,
         string? phonetic,
@@ -49,8 +67,37 @@ internal static partial class TInterface
     internal static Task<LAnswer> TSourceFind(this LSource source, string word, CancellationToken cancellation) =>
         source.LSourceFind(word, cancellation);
 
-    internal static LSeeker TLookupCreate(IReadOnlyList<LSource> sources) =>
-        new LLookup(sources);
+    internal static LVariety TVarietyCreate(string name, string? flag = null) =>
+        new LVariety(name, flag);
+
+    internal static LSeeker TLookupCreate(
+        IReadOnlyList<LSource> sources,
+        IReadOnlyList<LVariety>? varieties = null,
+        IReadOnlyList<LRespelling>? cleanups = null) =>
+        new LLookup(sources, varieties ?? [], cleanups ?? []);
+
+    internal static LReceiver TReceiverRespellingCreate(LReceiver inner, IReadOnlyList<LRespelling> groups) =>
+        new LReceiverRespelling(inner, groups);
+
+    internal static void TReceiverSourceStart(this LReceiver receiver, string source, int order)
+    {
+        receiver.LReceiverSourceStart(source, order);
+    }
+
+    internal static void TReceiverCandidateAdd(this LReceiver receiver, LCandidate candidate)
+    {
+        receiver.LReceiverCandidateAdd(candidate);
+    }
+
+    internal static void TReceiverLookupFinish(this LReceiver receiver)
+    {
+        receiver.LReceiverLookupFinish();
+    }
+
+    internal static IReadOnlyList<LReading> TLookupReadingScan(
+        IReadOnlyList<LReading> readings,
+        IReadOnlyList<LVariety> varieties) =>
+        LLookup.LLookupReadingScan(readings, varieties);
 
     internal static Task<IReadOnlyList<LCandidate>> TLookupStart(
         this LSeeker seeker,

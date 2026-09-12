@@ -42,3 +42,11 @@ Its files are named after link ids, so a listing of the drafts folder itself nev
 The folder inside the drafts folder that holds one file per claim on a tentative record, created if needed.
 A claim sits under `drafts` because it means nothing once the draft it names is gone.
 Its files are named after draft ids, so a listing of the drafts folder itself never picks them up.
+
+## `public static void LWorkspacePendingCommit(string pending, string path)`
+
+Moves a fully written pending file over its final path, replacing what was there.
+The move is retried a few times with a growing pause because Windows scanners hold a fresh file briefly.
+That hold surfaces as an access-denied or sharing error on the very first move and clears within milliseconds.
+The last attempt lets the error through, since a path that stays locked is a real fault.
+Every draft, link and claim archive completes its save through this one place.

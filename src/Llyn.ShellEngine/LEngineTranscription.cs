@@ -10,9 +10,7 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<string> LEngineSchemeRead(string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
-        return LLanguageLoader.LLanguageLoaderLoad(language).LLanguageSchemes;
+        return LEngineLanguageLoad(language).LLanguageSchemes;
     }
 
     public IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)

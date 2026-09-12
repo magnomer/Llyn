@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 
 namespace Llyn.Infrastructure;
 
@@ -11,6 +12,9 @@ public static class LWorkspaceRoot
     private const string LWorkspaceRootDrafts = "drafts";
     private const string LWorkspaceRootCourt = "court";
     private const string LWorkspaceRootClaim = "claim";
+    private const int LWorkspacePendingAttempt = 5;
+
+    private static readonly TimeSpan LWorkspacePendingDelay = TimeSpan.FromMilliseconds(20);
 
     public static string LWorkspaceRootRead()
     {
@@ -60,6 +64,31 @@ public static class LWorkspaceRoot
         string folder = Path.Combine(LWorkspaceDraftRead(root), LWorkspaceRootClaim);
         Directory.CreateDirectory(folder);
         return folder;
+    }
+
+    public static void LWorkspacePendingCommit(string pending, string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(pending);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        TimeSpan delay = LWorkspacePendingDelay;
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                File.Move(pending, path, true);
+                return;
+            }
+            catch (IOException) when (attempt < LWorkspacePendingAttempt)
+            {
+            }
+            catch (UnauthorizedAccessException) when (attempt < LWorkspacePendingAttempt)
+            {
+            }
+
+            Thread.Sleep(delay);
+            delay += delay;
+        }
     }
 
     private static string LWorkspaceDefaultRead()

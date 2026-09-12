@@ -21,6 +21,8 @@ public static class LLanguageLoader
     private const string LLanguageLoaderSeparator = "separator";
     private const string LLanguageLoaderVarieties = "varieties";
     private const string LLanguageLoaderReadings = "readings";
+    private const string LLanguageLoaderCleanup = "cleanup";
+    private const string LLanguageLoaderRespelling = "respelling";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -95,6 +97,8 @@ public static class LLanguageLoader
     private static LLanguage LLanguageRead(string language, JsonElement root)
     {
         string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag") : null;
+        IReadOnlyList<LVariety> varieties = LLanguageVarietyScan(root);
+        bool scoped = varieties.Count > 0;
 
         return new LLanguage(
             language,
@@ -105,9 +109,76 @@ public static class LLanguageLoader
             LLanguageSourceScan(root, LLanguageLoaderHarvest),
             LLanguageSchemeScan(root),
             LLanguageSeparatorRead(root),
-            LLanguageVarietyScan(root),
+            varieties,
             LLanguageFlaggedCheck(root),
-            LLanguageFontRead(root, LLanguageLoaderGloss));
+            LLanguageFontRead(root, LLanguageLoaderGloss),
+            LLanguageRespellingScan(root, LLanguageLoaderCleanup, scoped),
+            LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped));
+    }
+
+    private static IReadOnlyList<LRespelling> LLanguageRespellingScan(JsonElement root, string key, bool scoped)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(key, out JsonElement groups) ||
+            groups.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<LRespelling>();
+        }
+
+        List<LRespelling> respellings = new();
+        foreach (JsonElement group in groups.EnumerateArray())
+        {
+            LRespelling? respelling = LLanguageRespellingRead(group);
+            if (respelling is not null && (!scoped || respelling.LRespellingVarieties.Count > 0))
+            {
+                respellings.Add(respelling);
+            }
+        }
+
+        return respellings;
+    }
+
+    private static LRespelling? LLanguageRespellingRead(JsonElement group)
+    {
+        if (group.ValueKind != JsonValueKind.Object ||
+            !group.TryGetProperty("rules", out JsonElement rows) ||
+            rows.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        string name = LLanguageTextRead(group, "name")?.Trim() ?? string.Empty;
+        List<string> varieties = new();
+        if (group.TryGetProperty(LLanguageLoaderVarieties, out JsonElement names) && names.ValueKind == JsonValueKind.Array)
+        {
+            foreach (JsonElement variety in names.EnumerateArray())
+            {
+                string tag = variety.ValueKind == JsonValueKind.String ? variety.GetString()!.Trim() : string.Empty;
+                if (tag.Length > 0)
+                {
+                    varieties.Add(tag);
+                }
+            }
+        }
+
+        try
+        {
+            List<LRespellingRule> rules = new();
+            foreach (JsonElement row in rows.EnumerateArray())
+            {
+                if (row.ValueKind == JsonValueKind.Array && row.GetArrayLength() == 2 &&
+                    row[0].ValueKind == JsonValueKind.String && row[1].ValueKind == JsonValueKind.String)
+                {
+                    rules.Add(new LRespellingRule(row[0].GetString()!, row[1].GetString()!));
+                }
+            }
+
+            return rules.Count == 0 ? null : new LRespelling(name, varieties, rules);
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
     }
 
     private static bool LLanguageSeparatorRead(JsonElement root)

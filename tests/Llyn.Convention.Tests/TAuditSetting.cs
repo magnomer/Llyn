@@ -257,6 +257,7 @@ internal static class TAuditSetting
         "Register",
         "Repertoire",
         "Request",
+        "Respelling",
         "Revision",
         "Right",
         "Roof",

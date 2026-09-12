@@ -41,7 +41,7 @@ public sealed partial class LEngine
             }
 
             LEntryArchive entries = new(_lEngineDatabase);
-            bool separated = language.Length == 0 || LLanguageLoader.LLanguageLoaderLoad(language).LLanguageSeparated;
+            bool separated = language.Length == 0 || LEngineLanguageLoad(language).LLanguageSeparated;
             List<Rune> runes = LEngineRuneRead(text);
 
             (int start, int length) = separated

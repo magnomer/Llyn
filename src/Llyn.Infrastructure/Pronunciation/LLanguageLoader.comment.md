@@ -70,6 +70,24 @@ The pack declares its regional varieties under `varieties.list`, each with a nam
 The flag is an ISO 3166-1 alpha-2 code resolved through the same workspace path as the language flag.
 A missing block reads as no varieties, and a repeated name keeps its first row.
 
+### `private static IReadOnlyList<LRespelling> LLanguageRespellingScan(JsonElement root, string key, bool scoped)`
+
+One reader serves both rewrite blocks, `cleanup` for the always-on groups and `respelling` for the switched ones.
+The two blocks carry the same shape, a list of groups each with a name, optional varieties, and rules.
+A missing block reads as an empty list.
+`scoped` says the pack declares varieties, and then a group without a non-empty `varieties` list is dropped.
+It is dropped the same way a broken regex is, so nothing shared can load for English.
+A pack without varieties keeps such groups, so Spanish works without the key.
+
+### `private static LRespelling? LLanguageRespellingRead(JsonElement group)`
+
+A group's `rules` rows are two-string arrays, and a row of any other shape is skipped.
+`varieties` names the pack varieties the group applies to, and an absent or empty list applies it to every reading.
+That unscoped form survives only in a pack without varieties, as the scan above enforces.
+A group with no valid rule is dropped.
+A group whose regex fails to compile is dropped too, so one typo never blanks the pack.
+The record constructor throws on the bad pattern, and this reader catches it per group.
+
 ### `private static bool LLanguageFlaggedCheck(JsonElement root)`
 
 `varieties.shown` chooses how the UI labels each reading, `flag` for the flag image or `text` for the name.

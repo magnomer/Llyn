@@ -21,7 +21,56 @@
       { "name": "American", "flag": "us" }
     ]
   },
-  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. The 'pronunciation' and 'audio' lists are independent: a site listed for transcriptions need not be listed for recordings, and either list may stand empty. Each list is shown in the order it is written here, whatever order the answers arrive in, so reordering a list reorders the menu. The 'font' block is the typography a headword is drawn in; the 'example' block is the typography example sentences are drawn in; the 'gloss' block is the typography the translations under those example sentences are drawn in, and 'style' may be 'italic' or 'oblique'. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities. 'prefix' = made absolute when the captured address is site-relative. 'varieties' declares the regional varieties this language distinguishes: 'list' rows carry a 'name' and an ISO 3166-1 alpha-2 'flag', and 'shown' is 'flag' or 'text' (default 'text') for how the UI labels each reading. A pronunciation attempt may replace its flat extraction keys with a 'readings' list; each row carries the same strategy/match/group/path/normalize keys plus 'variety' (a name from the list, or omitted for untagged) and 'skip' (how many earlier matches to pass over, default 0). All readings run on the same fetched body. A flat attempt without 'readings' is one untagged reading. Audio attempts are always flat.",
+  "cleanup": [],
+  "respelling": [
+    {
+      "name": "British",
+      "varieties": ["British"],
+      "note": "Diphthongs and long vowels written with their glide, and the open-mid front vowel as plain e, then the British-only vowels, then the bare weak i and u that Cambridge and Oxford write without a length mark. Digraphs come before their parts so a longer match wins, ɛ becomes e before eə becomes eː, and the bare i and u rows skip what the long-vowel rows already turned into ij and uw.",
+      "rules": [
+        ["eɪ", "ej"],
+        ["aɪ", "aj"],
+        ["ɔɪ", "oj"],
+        ["əʊ", "əw"],
+        ["oʊ", "ow"],
+        ["aʊ", "aw"],
+        ["iː", "ij"],
+        ["uː", "uw"],
+        ["ɛ", "e"],
+        ["æ", "a"],
+        ["ʌ", "ə"],
+        ["ɜː", "əː"],
+        ["ɪə", "ɪː"],
+        ["eə", "eː"],
+        ["i(?![jː])", "ij"],
+        ["u(?![wː])", "uw"]
+      ]
+    },
+    {
+      "name": "American",
+      "varieties": ["American"],
+      "note": "The same glide and open-mid rows as the British group, then every spelling of the rhotic vowel (Cambridge ɝː and ɚ, Longman and Oxford ɜːr, Dictionary.com ɜr) as ər, then the bare i and u most American sources write for FLEECE and GOOSE. The bare rows skip what the long-vowel rows already turned into ij and uw.",
+      "rules": [
+        ["eɪ", "ej"],
+        ["aɪ", "aj"],
+        ["ɔɪ", "oj"],
+        ["əʊ", "əw"],
+        ["oʊ", "ow"],
+        ["aʊ", "aw"],
+        ["iː", "ij"],
+        ["uː", "uw"],
+        ["ɛ", "e"],
+        ["ɝː", "ər"],
+        ["ɝ", "ər"],
+        ["ɚ", "ər"],
+        ["ɜːr", "ər"],
+        ["ɜr", "ər"],
+        ["i(?![jː])", "ij"],
+        ["u(?![wː])", "uw"]
+      ]
+    }
+  ],
+  "note": "Language pack for English. Every URL and extraction rule is data — edit here, no recompile. Add a language by creating languages/<Name>/source.json. The 'pronunciation' and 'audio' lists are independent: a site listed for transcriptions need not be listed for recordings, and either list may stand empty. Each list is shown in the order it is written here, whatever order the answers arrive in, so reordering a list reorders the menu. The 'font' block is the typography a headword is drawn in; the 'example' block is the typography example sentences are drawn in; the 'gloss' block is the typography the translations under those example sentences are drawn in, and 'style' may be 'italic' or 'oblique'. Strategies: 'regex' (capture group on body), 'json' (follow dot 'path', then optional 'match'), 'span' (tolerant nested-span IPA reader). 'group' = regex capture group. 'confirm' = regex (with {word}) the body must match. 'normalize' = strip IPA delimiters/entities. 'prefix' = made absolute when the captured address is site-relative. 'varieties' declares the regional varieties this language distinguishes: 'list' rows carry a 'name' and an ISO 3166-1 alpha-2 'flag', and 'shown' is 'flag' or 'text' (default 'text') for how the UI labels each reading. A pronunciation attempt may replace its flat extraction keys with a 'readings' list; each row carries the same strategy/match/group/path/normalize keys plus 'variety' (a name from the list, or omitted for untagged) and 'skip' (how many earlier matches to pass over, default 0). All readings run on the same fetched body. A flat attempt without 'readings' is one untagged reading. Audio attempts are always flat. 'respelling' declares ordered regex rewrite groups that recast a looked-up transcription into this pack's preferred symbol convention when the user switches respelling on: each group carries a 'name', a 'varieties' list naming which tagged readings it applies to, and 'rules' as [pattern, replacement] pairs run in written order, each on the previous rule's output; 'cleanup' has the same shape but always runs, for source quirks the built-in dot-and-space removal cannot know. In a pack that declares varieties every group must name the varieties it serves, and a group without a non-empty 'varieties' list is skipped; an untagged reading from a source is shown once per declared variety, each row carrying the same transcription under its own flag. In a pack without varieties 'varieties' may be omitted and untagged readings stay untagged. The respelling switch lives in the Settings panel and is off by default.",
   "pronunciation": [
     {
       "name": "Longman",
@@ -124,7 +173,7 @@
     },
     {
       "name": "Dictionary.com",
-      "note": "Dictionary.com prints US and British transcriptions in one <span class=\"txt-ipa\">, comma-separated when a headword has variants, American first. The American reading takes the text before the first comma and the British one the text after it, so a headword without a comma yields American only.",
+      "note": "Dictionary.com prints one <span class=\"txt-ipa\"> per variety, each a few hundred characters after a heading that says American or British, and a comma inside one span separates variants of that same variety, sometimes abbreviated with hyphens. Each reading anchors on its heading, allows no other span in between, and takes only the first variant, so a headword without a British section yields American only.",
       "attempts": [
         {
           "urls": [
@@ -134,14 +183,14 @@
             {
               "variety": "American",
               "strategy": "regex",
-              "match": "<span[^>]*class=\"[^\"]*\\btxt-ipa\\b[^\"]*\"[^>]*>\\s*/?\\s*([^,/<]+?)\\s*[,/<]",
+              "match": "American(?:(?!txt-ipa)[\\s\\S]){0,800}?<span[^>]*class=\"[^\"]*\\btxt-ipa\\b[^\"]*\"[^>]*>\\s*/?\\s*([^,/<]+?)\\s*[,/<]",
               "group": 1,
               "normalize": true
             },
             {
               "variety": "British",
               "strategy": "regex",
-              "match": "<span[^>]*class=\"[^\"]*\\btxt-ipa\\b[^\"]*\"[^>]*>[^<,]*,\\s*([^,/<]+?)\\s*[/<]",
+              "match": "British(?:(?!txt-ipa)[\\s\\S]){0,800}?<span[^>]*class=\"[^\"]*\\btxt-ipa\\b[^\"]*\"[^>]*>\\s*/?\\s*([^,/<]+?)\\s*[,/<]",
               "group": 1,
               "normalize": true
             }

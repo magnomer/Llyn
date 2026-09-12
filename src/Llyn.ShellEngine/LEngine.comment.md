@@ -28,6 +28,7 @@ A lock held across an await would stall the shell for a whole network call.
 This class is also the composition root.
 It owns the shared `HttpClient`.
 It loads each language pack on first use through `LLanguageLoader`.
+It keeps each loaded pack by language name, so the file is parsed once and not per lookup.
 It builds that language's transcription and recording sources separately through `LSourceFactory`.
 The two sets are cached apart.
 A lookup never reaches an audio source and a download never reaches a transcription one.
@@ -73,10 +74,12 @@ So the UI never reaches into the `languages/` folder itself.
 
 Returns the regional varieties the language pack declares, in the pack's order.
 Empty when the pack declares none, so a language without varieties shows plain rows.
+It reads the pack from the engine's cache, so a menu reopened does not reparse the file.
 
 ## `public bool LEngineFlaggedCheck(string language)`
 
 Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
+It reads the cached pack as `LEngineVarietyRead` does.
 
 ## `public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
 
@@ -124,6 +127,7 @@ A claim only means something against the folder the file sits in.
 Each forgotten id is marked stale rather than simply dropped.
 A shell still holding one is refused instead of writing here.
 The cached source lists go too, because a language keeps whichever lists the workspace it was read from declared.
+The cached packs go with them, since the source lists were built from those packs.
 The move is then announced, so every surface holding a stored record learns that all of it is stale.
 One announcement replaces the list of panels the settings panel used to reset by name.
 A panel added later is current without that list being edited.
@@ -150,6 +154,11 @@ No caller can write a volume the player cannot take.
 Every view plays through the same level.
 A change made in one is the level the next one opens at.
 
+## `public void LEngineRespellingSave(bool respelled)`
+
+Persists whether looked-up transcriptions are recast through the pack's respelling groups and keeps it current.
+The next lookup reads the switch, cached or fresh, so no search is run again to honour a flip.
+
 ## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
 Applies `change` to the settings held here and writes the result out, under the engine gate.
@@ -163,6 +172,11 @@ The task completes when every source finishes.
 `session` is the draft the asking editor holds, and it names the trove the answer is kept in.
 A lookup already answered under that draft is replayed instead of searched again.
 So reopening the menu on an unchanged headword costs no network at all.
+When the respelling switch is on and the pack declares groups, the receiver is wrapped in `LReceiverRespelling`.
+Both the fresh search and the replay stream through that wrapper, so the switch shapes what the transcriber sees.
+The trove is never wrapped and keeps cleaned but un-respelled text.
+So flipping the switch changes the next replay without any refetch, and nothing stored is touched.
+The pack is read under the gate whatever the switch says, because the fresh path needs its cleanup groups.
 
 ## `public Task LEngineRecordingFind(string session, string word, string language, LListener listener, CancellationToken cancellation)`
 
@@ -170,9 +184,11 @@ Starts an audio-recording discovery for `word` in `language` and streams results
 The task completes when every source finishes.
 It reuses what the same draft already found, exactly as the lookup does.
 
-## `private async Task LEngineCandidateScan(string session, string word, string language, IReadOnlyList<LSource> sources, LReceiver receiver, CancellationToken cancellation)`
+## `private async Task LEngineCandidateScan(string session, string word, string language, IReadOnlyList<LSource> sources, LLanguage pack, LReceiver receiver, CancellationToken cancellation)`
 
 Runs a real lookup and keeps what it returned in the trove under `session`.
+The lookup is handed the pack's declared varieties, so untagged readings fan out per variety.
+It is handed the pack's cleanup groups too, so what reaches the trove is already cleaned.
 The receiver still sees each candidate stream in, because the search is unchanged.
 Nothing is kept when the search is cancelled, since the task then ends by throwing.
 
@@ -189,6 +205,12 @@ The task is already complete, because nothing was awaited.
 ## `private static Task LEngineRecordingPublish(IReadOnlyList<LRecording> held, LListener listener)`
 
 The recording counterpart of `LEngineCandidatePublish`.
+
+## `private LLanguage LEngineLanguageLoad(string language)`
+
+The one place a language pack is read, kept by name after the first read.
+Every reader of a pack's declarations goes through here, so no path parses the file twice.
+It takes the gate itself, and a caller already holding it re-enters without harm.
 
 ## `public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 

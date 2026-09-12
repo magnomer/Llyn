@@ -15,5 +15,8 @@
             <TextBox x:Name="PWorkspacePath" Width="360" VerticalContentAlignment="Center" LostKeyboardFocus="PWorkspacePathHandle" />
             <Button x:Name="PWorkspaceDialog" Margin="8,0,0,0" Padding="12,4" Content="{DynamicResource Workspace.Browse}" Click="PWorkspaceDialogHandle" />
         </StackPanel>
+
+        <TextBlock FontSize="18" FontWeight="SemiBold" Margin="0,28,0,0" Text="{DynamicResource Settings.Respelling}" />
+        <CheckBox x:Name="PRespelling" Margin="0,12,0,0" Content="{DynamicResource Respelling.Switch}" Click="PRespellingHandle" />
     </StackPanel>
 </UserControl>

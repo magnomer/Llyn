@@ -37,7 +37,7 @@ public static class LClaimArchive
         string path = Path.Combine(folder, claim.LClaimDraft.ToString(CultureInfo.InvariantCulture) + LClaimArchiveExtension);
 
         File.WriteAllText(pending, JsonSerializer.Serialize(claim, LClaimArchiveIndent));
-        File.Move(pending, path, true);
+        LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 
     public static LClaim? LClaimArchiveRead(string root, long draftId)

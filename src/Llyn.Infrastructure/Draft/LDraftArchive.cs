@@ -32,7 +32,7 @@ public static class LDraftArchive
         File.WriteAllText(
             pending,
             JsonSerializer.Serialize(draft with { LDraftVersion = LDraftArchiveVersion }, LDraftArchiveIndent));
-        File.Move(pending, path, true);
+        LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 
     public static LDraft? LDraftArchiveRead(string root, long id)

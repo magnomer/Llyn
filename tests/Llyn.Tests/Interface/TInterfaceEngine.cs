@@ -1,4 +1,5 @@
 using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 
 namespace Llyn.Tests;
@@ -172,6 +173,26 @@ internal static partial class TInterface
     internal static void TEngineWindowSave(this LEngine engine, LWindowState window)
     {
         engine.LEngineWindowSave(window);
+    }
+
+    internal static void TEngineRespellingSave(this LEngine engine, bool respelled)
+    {
+        engine.LEngineRespellingSave(respelled);
+    }
+
+    internal static LSettings TSettingsCreate(
+        string localization,
+        LWindowState? window = null,
+        double volume = 1,
+        bool respelled = false) =>
+        new(localization, window, volume, respelled);
+
+    internal static LSettings TSettingsLoad(string root) =>
+        LSettingsLoader.LSettingsLoaderLoad(root);
+
+    internal static void TSettingsSave(string root, LSettings settings)
+    {
+        LSettingsLoader.LSettingsLoaderSave(root, settings);
     }
 
     internal static LWindowState TWindowStateCreate(

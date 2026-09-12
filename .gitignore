@@ -100,3 +100,6 @@ $RECYCLE.BIN/
 /docs/
 # Local structure-audit configuration
 /auditstructure.json
+
+# Local line-audit configuration
+/auditlines.json

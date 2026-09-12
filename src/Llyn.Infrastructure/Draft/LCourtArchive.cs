@@ -31,7 +31,7 @@ public static class LCourtArchive
         File.WriteAllText(
             pending,
             JsonSerializer.Serialize(link with { LCourtVersion = LCourtArchiveVersion }, LCourtArchiveIndent));
-        File.Move(pending, path, true);
+        LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 
     public static LCourt? LCourtArchiveRead(string root, long id)

@@ -41,3 +41,11 @@ Everything language-specific arrives through this record.
 - `LLanguageGloss` — The typography the pack declares for the Glosses under its example sentences, held as an [LFont](LFont.comment.md).
   A Gloss takes the pack of the sentence it renders, since it is read beside that sentence.
   A pack that declares none carries a blank record, and the reading view's own typography stands.
+- `LLanguageCleanups` — The rewrite groups the pack declares under `cleanup`, held as [LRespelling](LRespelling.comment.md) records.
+  They always run on a reading, after the built-in cleanup and before the trove caches it.
+  They exist for site quirks the built-in step cannot know, such as a source writing `ɡ` as `g`.
+  A pack that declares none carries an empty list.
+- `LLanguageRespellings` — The rewrite groups the pack declares under `respelling`, held as [LRespelling](LRespelling.comment.md) records.
+  They recast a cleaned transcription into the pack's preferred symbol convention.
+  They run only when the user switches respelling on.
+  A pack that declares none carries an empty list.

@@ -16,6 +16,7 @@ public sealed partial class LEngine : IDisposable
     private readonly HttpClient _lEngineClient;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineHarvestSources = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, LLanguage> _lEngineLanguages = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
@@ -82,9 +83,7 @@ public sealed partial class LEngine : IDisposable
 
     public LFont LEngineFontRead(string language, LFontRole role)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
-        LLanguage pack = LLanguageLoader.LLanguageLoaderLoad(language);
+        LLanguage pack = LEngineLanguageLoad(language);
 
         return role switch
         {
@@ -96,32 +95,24 @@ public sealed partial class LEngine : IDisposable
 
     public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
-        string? code = LLanguageLoader.LLanguageLoaderLoad(language).LLanguageFlag;
+        string? code = LEngineLanguageLoad(language).LLanguageFlag;
         return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
     }
 
     public IReadOnlyList<LVariety> LEngineVarietyRead(string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
-        return LLanguageLoader.LLanguageLoaderLoad(language).LLanguageVarieties;
+        return LEngineLanguageLoad(language).LLanguageVarieties;
     }
 
     public bool LEngineFlaggedCheck(string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
-        return LLanguageLoader.LLanguageLoaderLoad(language).LLanguageVarietyFlagged;
+        return LEngineLanguageLoad(language).LLanguageVarietyFlagged;
     }
 
     public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
         string? code = null;
-        foreach (LVariety declared in LLanguageLoader.LLanguageLoaderLoad(language).LLanguageVarieties)
+        foreach (LVariety declared in LEngineLanguageLoad(language).LLanguageVarieties)
         {
             if (string.Equals(declared.LVarietyName, variety, StringComparison.Ordinal))
             {
@@ -195,6 +186,7 @@ public sealed partial class LEngine : IDisposable
             _lEngineDraftHeld.Clear();
             _lEngineLookupSources.Clear();
             _lEngineHarvestSources.Clear();
+            _lEngineLanguages.Clear();
             _lEngineTrove.LTroveClear();
             LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
@@ -234,6 +226,11 @@ public sealed partial class LEngine : IDisposable
         LEngineSettingsChange(settings => settings with { LSettingsVolume = level });
     }
 
+    public void LEngineRespellingSave(bool respelled)
+    {
+        LEngineSettingsChange(settings => settings with { LSettingsRespelled = respelled });
+    }
+
     private void LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
         lock (_lEngineGate)
@@ -267,14 +264,20 @@ public sealed partial class LEngine : IDisposable
 
         IReadOnlyList<LCandidate>? held;
         IReadOnlyList<LSource> sources;
+        LLanguage pack;
         lock (_lEngineGate)
         {
             held = _lEngineTrove.LTroveCandidateRead(session, word, language);
             sources = held is null ? LEngineLookupRead(language) : [];
+            pack = LEngineLanguageLoad(language);
+            if (_lEngineSettings.LSettingsRespelled && pack.LLanguageRespellings.Count > 0)
+            {
+                receiver = new LReceiverRespelling(receiver, pack.LLanguageRespellings);
+            }
         }
 
         return held is null
-            ? LEngineCandidateScan(session, word, language, sources, receiver, cancellation)
+            ? LEngineCandidateScan(session, word, language, sources, pack, receiver, cancellation)
             : LEngineCandidatePublish(held, receiver);
     }
 
@@ -305,11 +308,14 @@ public sealed partial class LEngine : IDisposable
         string word,
         string language,
         IReadOnlyList<LSource> sources,
+        LLanguage pack,
         LReceiver receiver,
         CancellationToken cancellation)
     {
         IReadOnlyList<LCandidate> found =
-            await new LLookup(sources).LSeekerStart(word, receiver, cancellation).ConfigureAwait(false);
+            await new LLookup(sources, pack.LLanguageVarieties, pack.LLanguageCleanups)
+                .LSeekerStart(word, receiver, cancellation)
+                .ConfigureAwait(false);
 
         lock (_lEngineGate)
         {
@@ -398,13 +404,27 @@ public sealed partial class LEngine : IDisposable
             nameof(owner), owner, "This entity has no reference from that kind of row.");
     }
 
-    private IReadOnlyList<LSource> LEngineLookupRead(string language)
+    private LLanguage LEngineLanguageLoad(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
+        lock (_lEngineGate)
+        {
+            if (!_lEngineLanguages.TryGetValue(language, out LLanguage? pack))
+            {
+                pack = LLanguageLoader.LLanguageLoaderLoad(language);
+                _lEngineLanguages[language] = pack;
+            }
+
+            return pack;
+        }
+    }
+
+    private IReadOnlyList<LSource> LEngineLookupRead(string language)
+    {
         if (!_lEngineLookupSources.TryGetValue(language, out IReadOnlyList<LSource>? sources))
         {
-            LLanguage pack = LLanguageLoader.LLanguageLoaderLoad(language);
+            LLanguage pack = LEngineLanguageLoad(language);
             sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageLookupSources, _lEngineClient);
             _lEngineLookupSources[language] = sources;
         }
@@ -414,11 +434,9 @@ public sealed partial class LEngine : IDisposable
 
     private IReadOnlyList<LSource> LEngineHarvestRead(string language)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
         if (!_lEngineHarvestSources.TryGetValue(language, out IReadOnlyList<LSource>? sources))
         {
-            LLanguage pack = LLanguageLoader.LLanguageLoaderLoad(language);
+            LLanguage pack = LEngineLanguageLoad(language);
             sources = LSourceFactory.LSourceFactoryCreate(pack.LLanguageHarvestSources, _lEngineClient);
             _lEngineHarvestSources[language] = sources;
         }
