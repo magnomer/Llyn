@@ -76,8 +76,8 @@ public sealed class TRequestGloss
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineDraftStart("Input", null);
         (long card, long sentence) = TGlossSentenceAdd(engine, started.LDraftId, "she knelt to kindle the damp logs");
-        TGlossWrite(engine, started.LDraftId, card, sentence, "Korean", "그녀는 무릎을 꿇었다");
-        TGlossWrite(engine, started.LDraftId, card, sentence, "French", "elle s'agenouilla");
+        TGlossAdd(engine, started.LDraftId, card, sentence, "Korean", "그녀는 무릎을 꿇었다");
+        TGlossAdd(engine, started.LDraftId, card, sentence, "French", "elle s'agenouilla");
 
         LEntry entry = engine.TEngineDraftCommit(started.LDraftId);
 
@@ -107,7 +107,7 @@ public sealed class TRequestGloss
         long gloss = Assert.Single(TGlossRead(picked, card)).LGlossDraftId;
         engine.TEngineRequestApply(TInterface.TGlossTextCreate(
             started.LDraftId, card, sentence, gloss, TInterface.TStateValueCreate("그녀는 불을 지폈다")));
-        TGlossWrite(engine, started.LDraftId, card, sentence, "French", "elle s'agenouilla");
+        TGlossAdd(engine, started.LDraftId, card, sentence, "French", "elle s'agenouilla");
         LEntry second = engine.TEngineDraftCommit(started.LDraftId);
 
         LExampleDraft kept = TGlossExampleRead(engine, first);
@@ -144,7 +144,7 @@ public sealed class TRequestGloss
         Assert.Equal("한 줄", stored.LGlossText.TStateValueShow());
     }
 
-    private static void TGlossWrite(
+    private static void TGlossAdd(
         LEngine engine, long draftId, long card, long sentence, string language, string text)
     {
         LDraft added = engine.TEngineRequestApply(

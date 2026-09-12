@@ -4,11 +4,7 @@ namespace Llyn.Core;
 
 public sealed record LSourceAttempt(
     IReadOnlyList<string> LSourceAttemptUrls,
-    string LSourceAttemptStrategy,
-    string? LSourceAttemptPattern,
-    int LSourceAttemptGroup,
-    string? LSourceAttemptPath,
+    IReadOnlyList<LSourceReading> LSourceAttemptReadings,
     string? LSourceAttemptGuard,
-    bool LSourceAttemptPhonetic,
     IReadOnlyDictionary<string, string>? LSourceAttemptHeaders,
     string? LSourceAttemptPrefix);

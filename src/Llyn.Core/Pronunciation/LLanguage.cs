@@ -10,7 +10,11 @@ public sealed record LLanguage(
     IReadOnlyList<LSourceSpec> LLanguageLookupSources,
     IReadOnlyList<LSourceSpec> LLanguageHarvestSources,
     IReadOnlyList<string>? LLanguageSchemes = null,
-    bool LLanguageSeparated = true)
+    bool LLanguageSeparated = true,
+    IReadOnlyList<LVariety>? LLanguageVarieties = null,
+    bool LLanguageVarietyFlagged = true)
 {
     public IReadOnlyList<string> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
+
+    public IReadOnlyList<LVariety> LLanguageVarieties { get; init; } = LLanguageVarieties ?? [];
 }

@@ -49,3 +49,28 @@ Absent code means no flag.
 The pack declares its transcription schemes under `transcription` as a list of names.
 A missing or empty list turns the transcription line off for that language.
 Blank and repeated names are dropped, so the form never shows a nameless or doubled scheme.
+
+### `private static IReadOnlyList<LSourceReading> LLanguageReadingScan(JsonElement row)`
+
+An attempt declares its extractions either as a `readings` list or as flat keys on the attempt itself.
+The flat form is the legacy shape and reads as one reading with an empty variety tag.
+Audio attempts always use the flat form, so the harvest path sees one untagged reading.
+A reading row without a strategy is dropped, and an attempt with no readings left is dropped too.
+
+### `private static LSourceReading? LLanguageReadingRead(JsonElement element)`
+
+One reader serves both the flat attempt and a row of its `readings` list, because the keys are the same.
+`variety` names a variety the pack declares, or is absent for an untagged reading.
+`skip` counts earlier matches to pass over, so a page can yield its second variety from its second span.
+Both default to empty and zero.
+
+### `private static IReadOnlyList<LVariety> LLanguageVarietyScan(JsonElement root)`
+
+The pack declares its regional varieties under `varieties.list`, each with a name and a flag code.
+The flag is an ISO 3166-1 alpha-2 code resolved through the same workspace path as the language flag.
+A missing block reads as no varieties, and a repeated name keeps its first row.
+
+### `private static bool LLanguageFlaggedCheck(JsonElement root)`
+
+`varieties.shown` chooses how the UI labels each reading, `flag` for the flag image or `text` for the name.
+The default is `text`, so a pack that lists varieties without choosing shows names.

@@ -32,3 +32,9 @@ Everything language-specific arrives through this record.
   The pack states it with the top-level key `separator`, `space` or `none`.
   A pack that omits the key is read as separated.
   Japanese, Mandarin and Cantonese declare `none`, so a word there is a run of one script.
+- `LLanguageVarieties` — The regional varieties the pack declares, held as [LVariety](LVariety.comment.md) records.
+  A reading names its variety by one of these names.
+  A pack that declares none carries an empty list, and every reading stands untagged.
+- `LLanguageVarietyFlagged` — Whether the UI draws a variety as its flag rather than as its name.
+  `true` shows the flag, `false` shows the text.
+  A pack that omits the key is read as flagged.

@@ -18,6 +18,8 @@ public static class LLanguageLoader
     private const string LLanguageLoaderExample = "example";
     private const string LLanguageLoaderScheme = "transcription";
     private const string LLanguageLoaderSeparator = "separator";
+    private const string LLanguageLoaderVarieties = "varieties";
+    private const string LLanguageLoaderReadings = "readings";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -101,7 +103,9 @@ public static class LLanguageLoader
             LLanguageSourceScan(root, LLanguageLoaderLookup),
             LLanguageSourceScan(root, LLanguageLoaderHarvest),
             LLanguageSchemeScan(root),
-            LLanguageSeparatorRead(root));
+            LLanguageSeparatorRead(root),
+            LLanguageVarietyScan(root),
+            LLanguageFlaggedCheck(root));
     }
 
     private static bool LLanguageSeparatorRead(JsonElement root)
@@ -221,22 +225,116 @@ public static class LLanguageLoader
             }
         }
 
-        string strategy = LLanguageTextRead(row, "strategy") ?? string.Empty;
-        if (urls.Count == 0 || strategy.Length == 0)
+        IReadOnlyList<LSourceReading> readings = LLanguageReadingScan(row);
+        if (urls.Count == 0 || readings.Count == 0)
         {
             return null;
         }
 
         return new LSourceAttempt(
             urls,
-            strategy,
-            LLanguageTextRead(row, "match"),
-            LLanguageNumberRead(row, "group"),
-            LLanguageTextRead(row, "path"),
+            readings,
             LLanguageTextRead(row, "confirm"),
-            LLanguageBooleanRead(row, "normalize"),
             LLanguageHeaderRead(row),
             LLanguageTextRead(row, "prefix"));
+    }
+
+    private static IReadOnlyList<LSourceReading> LLanguageReadingScan(JsonElement row)
+    {
+        if (!row.TryGetProperty(LLanguageLoaderReadings, out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
+        {
+            LSourceReading? flat = LLanguageReadingRead(row);
+            return flat is null ? Array.Empty<LSourceReading>() : [flat];
+        }
+
+        List<LSourceReading> readings = new();
+        foreach (JsonElement element in rows.EnumerateArray())
+        {
+            LSourceReading? reading = LLanguageReadingRead(element);
+            if (reading is not null)
+            {
+                readings.Add(reading);
+            }
+        }
+
+        return readings;
+    }
+
+    private static LSourceReading? LLanguageReadingRead(JsonElement element)
+    {
+        if (element.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        string strategy = LLanguageTextRead(element, "strategy") ?? string.Empty;
+        if (strategy.Length == 0)
+        {
+            return null;
+        }
+
+        return new LSourceReading(
+            LLanguageTextRead(element, "variety")?.Trim() ?? string.Empty,
+            strategy,
+            LLanguageTextRead(element, "match"),
+            LLanguageNumberRead(element, "group"),
+            LLanguageTextRead(element, "path"),
+            LLanguageBooleanRead(element, "normalize"),
+            LLanguageNumberRead(element, "skip"));
+    }
+
+    private static IReadOnlyList<LVariety> LLanguageVarietyScan(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(LLanguageLoaderVarieties, out JsonElement block) ||
+            block.ValueKind != JsonValueKind.Object ||
+            !block.TryGetProperty("list", out JsonElement rows) ||
+            rows.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<LVariety>();
+        }
+
+        List<LVariety> varieties = new();
+        foreach (JsonElement row in rows.EnumerateArray())
+        {
+            LVariety? variety = LLanguageVarietyRead(row);
+            if (variety is not null && varieties.All(known => !string.Equals(known.LVarietyName, variety.LVarietyName, StringComparison.Ordinal)))
+            {
+                varieties.Add(variety);
+            }
+        }
+
+        return varieties;
+    }
+
+    private static LVariety? LLanguageVarietyRead(JsonElement row)
+    {
+        if (row.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        string name = LLanguageTextRead(row, "name")?.Trim() ?? string.Empty;
+        if (name.Length == 0)
+        {
+            return null;
+        }
+
+        string? flag = LLanguageTextRead(row, "flag")?.Trim();
+        return new LVariety(name, string.IsNullOrEmpty(flag) ? null : flag);
+    }
+
+    private static bool LLanguageFlaggedCheck(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(LLanguageLoaderVarieties, out JsonElement block) ||
+            block.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        string? shown = LLanguageTextRead(block, "shown");
+        return string.Equals(shown?.Trim(), "flag", StringComparison.OrdinalIgnoreCase);
     }
 
     private static IReadOnlyDictionary<string, string>? LLanguageHeaderRead(JsonElement row)
