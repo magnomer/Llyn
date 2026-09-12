@@ -11,6 +11,20 @@ A card built at runtime could not declare a popup of its own anyway.
 It sits beside the other candidate popups the editor owns rather than under the field that opens it.
 The pronunciation lookup, the recording search and the part-of-speech menu are the same shape.
 
+It has two callers.
+A typed translation opens it at a card's link caret, offering matches and then a create row per language.
+A selected word opens it at the selection in a sentence field, offering matches only, and hands back the pick.
+The corpus scribe reaches the second through the window, so the popup is still declared once.
+
+## `internal void PProspectShow(FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)`
+
+Opens the dropdown over a selected word, listing the Entries the word matches in the given language.
+No create row is offered, because a Mention may only point at an Entry that already exists.
+The match is the translation lookup, exact headwords first, and an empty language filters nothing.
+The dropdown stands at the selection's rectangle rather than under the field, so it opens where the word is.
+A word matching nothing opens nothing.
+On pick the chosen Entry id is handed to the caller, and the dropdown closes.
+
 ## `internal void PProspectHandle(object sender, MouseButtonEventArgs e)`
 
 Takes the row the pointer chose out of the dropdown and links it.
@@ -26,7 +40,8 @@ Reports whether the dropdown used the key, so an unused one falls through to the
 
 ### `private void PProspectSelect(PProspectItem item)`
 
-Links the chosen row and closes the dropdown, starting a tentative entry first on a create row.
+When a selection opened the dropdown, hands the row's Entry to the caller and closes.
+Otherwise links the chosen row and closes the dropdown, starting a tentative entry first on a create row.
 No database row is written for it, so an edit thrown away leaves nothing behind.
 The tentative entry carries the typed word and the chosen language, ready to be stored.
 A court row ties it to this draft, and storing this draft stores it too.

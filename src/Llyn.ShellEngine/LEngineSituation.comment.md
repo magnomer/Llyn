@@ -25,8 +25,10 @@ Its title is not identity: the same words saved twice are two Situations.
 
 The one stored Situation whose title reads as `title`, or `null` when none or several do.
 Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, so case and edge spaces do not make a second row.
-Several rows sharing a title are a question the engine cannot answer, so a new row is made rather than one guessed.
-The engine holds this rule so the form, a commit and any other client all get one row for one wording.
+Several rows sharing a title are a question the engine cannot answer.
+A new row is made rather than one guessed.
+The engine holds this rule.
+The form, a commit and any other client therefore all get one row for one wording.
 
 ## `public LSituation? LEngineSituationRead(long id)`
 

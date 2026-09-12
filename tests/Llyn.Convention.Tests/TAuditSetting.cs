@@ -125,6 +125,7 @@ internal static class TAuditSetting
     {
         ["IAsyncDisposable"] = ["DisposeAsync"],
         ["IDisposable"] = ["Dispose"],
+        ["IEquatable"] = ["Equals"],
         ["IMultiValueConverter"] = ["Convert", "ConvertBack"],
         ["INotifyPropertyChanged"] = ["PropertyChanged"],
         ["INotifyPropertyChanging"] = ["PropertyChanging"],
@@ -222,6 +223,7 @@ internal static class TAuditSetting
         "Markup",
         "Meaning",
         "Membership",
+        "Mention",
         "Morphology",
         "Navigation",
         "Notation",

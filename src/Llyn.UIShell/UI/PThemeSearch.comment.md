@@ -3,8 +3,10 @@
 ## `<Style x:Key="Theme.Search.Bar" TargetType="Border">`
 
 The ground every panel's ordering control and search field stand on together.
-The outline is clear at rest and appears under the pointer or on keyboard focus, so an edge marks what the control is doing rather than that it exists.
-It is held at one pixel throughout, so a bar that gains its edge does not shift the row beneath it.
+The outline is clear at rest and appears under the pointer or on keyboard focus.
+An edge therefore marks what the control is doing rather than that it exists.
+It is held at one pixel throughout.
+A bar that gains its edge therefore does not shift the row beneath it.
 The bar is the placement target of the ordering dropdown, so the dropdown falls from the whole control.
 
 ## `<Style x:Key="Theme.Search.Dropper" TargetType="ToggleButton">`
@@ -21,7 +23,10 @@ The bar around it already frames the dropper, the divider and the field as one c
 
 ## `<Style x:Key="Theme.Search.Helper" TargetType="ToggleButton">`
 
-A folding control standing next to the bar rather than inside it, for a panel the search bar does not own.
+A folding control standing next to the bar rather than inside it.
+It serves a panel the search bar does not own.
 It borrows the bar's height and corner, so the two shapes read as one row of controls over the catalog.
-It carries a marked label like the command row does, and the mark is left out when no icon is named.
-An open panel is shown by the soft accent ground the mode buttons use, because the fold is a state and not an action.
+It carries a marked label like the command row does.
+The mark is left out when no icon is named.
+An open panel is shown by the soft accent ground the mode buttons use.
+The fold is a state and not an action.

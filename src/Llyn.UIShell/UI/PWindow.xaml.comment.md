@@ -43,6 +43,12 @@ A copy of the program left open for days would otherwise collect nothing it wrot
 
 Geometry is applied before any panel is attached, while the window is still unshown.
 
+### `Resources.MergedDictionaries.Add(new PMentionMenuTemplate(this));`
+
+The word menu's rows are drawn by a dictionary that forwards their clicks here.
+The list is fed from the window's own collection, and the window's preview keys and deactivation drive the menu.
+The popup itself is declared in the markup beside the panels, once, because the window owns it.
+
 ### `Closing += PWindowClosingHandle;`
 
 Closing runs while the window is still up and can be called off.

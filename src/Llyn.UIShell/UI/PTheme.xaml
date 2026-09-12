@@ -24,6 +24,7 @@
         <ResourceDictionary Source="/Llyn;component/UI/PThemeCommand.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeSearch.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeCatalog.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeMention.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

@@ -7,6 +7,7 @@ The rows themselves hold no engine.
 So every change in a row arrives here and leaves as a request naming the card and the row.
 The card that owns the row is found and the engine is asked.
 One list of Sources serves every row on the form, Example and Situation alike.
+The linking gesture on a row's sentence is answered here too, four commands sent as Mention requests.
 The frame the rows read a sentence under is settled here too.
 That is the order its two fields take and what each has been saved holding.
 Both follow the language the entry is written in.
@@ -40,6 +41,46 @@ Asks for a further Example row directly under the row the user asked from.
 
 Asks the engine to drop the Example row the user asked from.
 A card left with no row is given a blank one again by the prepare that follows every redraw.
+
+## `internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Opens the Entry picker over the selected word.
+On pick it asks for a Mention of that Entry on the span.
+The gesture lives in the editor and not the display.
+A link is an edit, and every edit goes through a draft.
+The span is read in code points before anything reaches a request.
+The card and row ids are taken before the picker opens, since the pick answers later.
+
+## `internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Opens the window's Meaning menu on the Entry the Mention under the selection stands for.
+The chosen sense goes out as a request naming the Mention, and the redraw shows it on the chip.
+
+## `internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Marks the selection as standing for nothing, which is an addition with Entry 0.
+
+## `internal void PSentenceUnlinkHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Drops the Mention under the selection, or the one whose chip was asked from.
+The row is read from the element the command was bound on, because a chip button is not the field.
+
+## `internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Link and silence apply when the selection has length.
+
+## `internal void PSentenceSenseCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Choose applies when the selection lies inside a Mention that has an Entry.
+
+## `internal void PSentenceUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Unlink applies from a chip always, and from the field when the selection lies inside any Mention.
+
+## `internal void PSentenceMentionShow(PCard card)`
+
+Redraws every row's chip line after the card was redrawn, since the rows hold no engine.
+A headword read that fails is reported once and the rest of the card is left as drawn.
 
 ## `internal void PSentenceCitationClear(object sender, RoutedEventArgs e)`
 

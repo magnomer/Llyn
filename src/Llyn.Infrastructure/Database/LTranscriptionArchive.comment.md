@@ -5,7 +5,8 @@
 Persists the ordered transcriptions an entry owns, one row per scheme.
 A transcription's id is assigned here on insertion and survives every later save.
 So a draft and a shell may hold that id across saves.
-The whole list of an entry is written at once, because the rows are few and their order and schemes are one fact.
+The whole list of an entry is written at once.
+The rows are few, and their order and schemes are one fact.
 
 ## `public LTranscriptionArchive(LDatabase database)`
 

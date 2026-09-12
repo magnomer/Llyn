@@ -23,15 +23,18 @@ The stored entry, loaded back, carries those same rows under those same ids.
 ## `public void DraftCommit_LinkedRowGone_Refuses()`
 
 A draft naming a stored row by id, when that row has since been deleted, is refused rather than rebound.
-The old path made a fresh row from the text the chip still showed, and the card silently pointed somewhere new.
+The old path made a fresh row from the text the chip still showed.
+The card silently pointed somewhere new.
 The refusal names the link, nothing is written, and the draft file stays for the user to mend.
 
 ## `public void RequestApply_WrittenNameStoredAlready_PicksTheStoredRow()`
 
 A wording typed into a chip is looked up by the engine before it is added.
 A Situation or Register the workspace already holds under that wording is picked by id, case and edge spaces folded.
-So the form and any other client of the engine get one row for one wording, and the shelf grows no twins.
-A wording nothing matches is minted as new, and a later draft typing it finds the row the first one made.
+So the form and any other client of the engine get one row for one wording.
+The shelf grows no twins.
+A wording nothing matches is minted as new.
+A later draft typing it finds the row the first one made.
 
 ## `public void DraftArchiveSave_ItemWithoutId_Refuses()`
 

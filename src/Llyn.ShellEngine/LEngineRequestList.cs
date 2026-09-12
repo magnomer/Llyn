@@ -18,7 +18,7 @@ public sealed partial class LEngine
                 content,
                 sent.LRequestCardId,
                 sent.LRequestSentenceId,
-                example => example with { LExampleDraftText = LEngineValueRead(sent.LRequestValue) }),
+                example => LEngineMentionUpdate(example, LEngineValueRead(sent.LRequestValue))),
             LRequestSentenceParticle sent => LEngineSentenceChange(
                 content,
                 sent.LRequestCardId,

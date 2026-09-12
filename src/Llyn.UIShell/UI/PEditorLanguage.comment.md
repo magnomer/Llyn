@@ -24,5 +24,6 @@ A blank draft carries the language the selector chose, which tells the language 
 ### `private void PEditorExampleShow(string language)`
 
 The example typography a language declares, put where every card's example field reads it.
-It is set on the panel's resources rather than on each card, so a card added later is already in it.
+It is set on the panel's resources rather than on each card.
+A card added later is therefore already in it.
 A language declaring neither family nor size leaves the theme's own value standing.

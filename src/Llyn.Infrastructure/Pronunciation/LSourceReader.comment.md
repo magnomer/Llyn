@@ -29,4 +29,4 @@ A per-request timeout (HttpClient.Timeout), not a user cancellation: retry.
 
 ### `return status == HttpStatusCode.RequestTimeout`
 
-408 429 5xx
+Retried statuses are 408, 429 and 5xx.

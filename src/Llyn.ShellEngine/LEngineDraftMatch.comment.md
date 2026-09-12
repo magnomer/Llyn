@@ -67,6 +67,7 @@ The stored row each names counts too, because a row that changed id is a differe
 Whether two rows quote the same Example on the same terms.
 A row quoting none matches only another quoting none.
 The citation counts, so retagging a sentence is a change.
+The Mentions count too, so a word linked or unlinked marks the draft dirty.
 
 ## `private static bool LEngineSituationMatch(IReadOnlyList<LSituationDraft> one, IReadOnlyList<LSituationDraft> other)`
 

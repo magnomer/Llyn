@@ -81,3 +81,9 @@ The example keeps the reading face and its own weight.
 The frame is never read as part of the sentence.
 The invisible copies behind the written fields carry the same weight.
 A bold field would otherwise outgrow the room measured for it.
+
+## `<Storyboard x:Key="Theme.Card.Spotlight">`
+
+One dip and return of a card's opacity, played when a click on a word lands on that card.
+The reader's eye is led to the card without any colour the card does not already wear.
+The display begins it on the card container after the card is scrolled into view.

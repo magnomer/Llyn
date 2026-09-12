@@ -13,7 +13,8 @@ This is the same read half of the entry round trip the library panel offers, rea
 ### `private string? _pGamutChoice;`
 
 The Register the entry list stands on, held by its id rather than its name.
-A name may be rewritten while the panel stands on it; an id never is.
+A name may be rewritten while the panel stands on it.
+An id never is.
 Null is not an absence to be corrected: it is the whole workspace, which is what the panel shows first.
 
 ### `private LCatalogOrder _pDegreeChoice;`
@@ -24,7 +25,8 @@ It starts as whatever the workspace stored, which the window applies before the 
 ### `private async void PTenorBulletinHandle(LBulletin bulletin)`
 
 The panel answers the engine rather than its own visibility.
-So a Register written on a card in the input panel is in the catalog at once, with no tab switch.
+So a Register written on a card in the input panel is in the catalog at once.
+No tab switch is needed.
 A workspace that moved is the one announcement that empties the panel first.
 
 ### `private void PGamutFind(string query)`
@@ -38,7 +40,8 @@ A chosen Register the workspace no longer holds is dropped, and the panel falls 
 
 Browses by one Register for a caller outside the panel.
 That is how a register chip read on a card reaches this panel.
-The query is emptied first, or a Register left out by the standing query would be chosen and dropped at once.
+The query is emptied first.
+Otherwise a Register left out by the standing query would be chosen and dropped at once.
 
 ### `private void PCohortFind()`
 

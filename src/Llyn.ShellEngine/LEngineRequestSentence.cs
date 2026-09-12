@@ -53,7 +53,8 @@ public sealed partial class LEngine
             stored.LExampleId,
             stored.LExampleSource,
             stored.LExampleTranslation,
-            stored.LExampleLanguage);
+            stored.LExampleLanguage,
+            LEngineMentionRead(stored.LExampleMention));
 
         return LEngineSentenceChange(
             content,

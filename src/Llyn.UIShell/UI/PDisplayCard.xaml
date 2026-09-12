@@ -100,7 +100,7 @@
                 ItemsSource="{Binding LCardDraftTranslation, Converter={StaticResource Display.Card.Translation}}"
                 Style="{StaticResource Display.Card.Chips}" />
             <Border Style="{StaticResource Display.Card.Example}">
-                <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleLine}" ItemsSource="{Binding LCardDraftExample}" />
+                <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleLine}" ItemsSource="{Binding LCardDraftSentence}" />
             </Border>
             <ItemsControl ItemTemplate="{StaticResource Display.Card.TagChip}" ItemsSource="{Binding LCardDraftTag}" Style="{StaticResource Display.Card.Tag}" />
             <ItemsControl

@@ -1,6 +1,6 @@
 # PSentence.cs
 
-## `internal sealed class PSentence`
+## `internal sealed partial class PSentence`
 
 One Example row on a card.
 The row carries the id of the Example it edits, and the id of the row itself.
@@ -15,6 +15,8 @@ The second is marked rather than shown.
 The mark stands until the user writes over it or clears the row.
 So nothing unknown is quietly turned into nothing at all.
 Writing in the row is the user saying what the sentence is, which is why any edit ends the mark.
+
+The row's Mentions and the chip line that shows them live in `PSentenceMention.cs`.
 
 The row also carries the frame the card reads the sentence under, a marker and a role.
 Nothing offers a value for either, because nothing ships one.
@@ -70,6 +72,7 @@ The sentence as written, with its mark, for the engine to read.
 ## `internal void PSentenceShow(LSentenceDraft draft, Func<string, bool> pending)`
 
 Redraws the row from the engine's row, field by field, only where the field says something else.
+The Mentions are always taken, since the row only shows them and never types into them.
 A field with a request still waiting is left as typed, which `pending` answers by field name.
 The ids are always taken, because the engine is the only minter.
 A field that already stands for what the engine holds is left alone, so the caret survives its own echo.

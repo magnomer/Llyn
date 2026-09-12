@@ -7,6 +7,7 @@ An Example is independent data owned by nothing, so this panel is not a view of 
 It holds the host and the engine the browsing side calls, and nothing else.
 The browsing behavior lives in `PCorpusBrowse.cs` and the editing in `PCorpusEditor.cs`, one file per responsibility.
 The held draft the editor writes into lives in `PCorpusHold.cs`, apart from the controls it reads.
+The linking gesture over the transcript lives in `PCorpusMention.cs`.
 
 ## `internal void PCorpusAttach(PWindow host, LEngine engine)`
 

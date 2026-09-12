@@ -272,4 +272,12 @@
         <Setter Property="FontWeight" Value="Bold" />
     </Style>
 
+    <Storyboard x:Key="Theme.Card.Spotlight">
+        <DoubleAnimation
+            AutoReverse="True"
+            Storyboard.TargetProperty="Opacity"
+            To="0.35"
+            Duration="0:0:0.3" />
+    </Storyboard>
+
 </ResourceDictionary>

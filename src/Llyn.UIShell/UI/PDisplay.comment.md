@@ -18,7 +18,8 @@ The heading says "Links here": it names the direction without claiming that the 
 Each source is a standalone link card rather than a choice row nested inside a form card.
 An arrow establishes direction, the source headword leads, and the referring Meaning or Collocation is a compact badge.
 The side's title and source language remain secondary context.
-When no entry links here, the whole section collapses; an empty relationship does not occupy the page.
+When no entry links here, the whole section collapses.
+An empty relationship does not occupy the page.
 
 ## `<ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" ...>`
 
@@ -54,11 +55,13 @@ Sharing the pronunciation row put them beside a chip that the editor puts a butt
 ## `<StackPanel x:Name="PCompass" HorizontalAlignment="Right" VerticalAlignment="Top" ...>`
 
 The floating contents stand over the reading surface rather than beside it.
-A column of their own would take width from the entry, and the panel is already narrowed by the seam beside it.
+A column of their own would take width from the entry.
+The panel is already narrowed by the seam beside it.
 Floating also lets the comparison panel carry one on each side without either half paying for it.
 The reader who wants that width back folds the panel away with the toggle above it.
 The toggle stays, because a fold the reader cannot undo is a feature they have lost.
 The toggle stands at the left edge of the panel it opens rather than the right.
 The right edge of that row belongs to the delete button every panel holding a Display puts there.
-The column keeps its width while folded, so the toggle does not slide under that button when the panel goes away.
+The column keeps its width while folded.
+The toggle therefore does not slide under that button when the panel goes away.
 The behavior lives in [PCompass.cs](PCompass.comment.md).

@@ -46,6 +46,20 @@ The query is trimmed before it is matched.
 So trailing space left by typing does not narrow the result.
 A query of spaces alone lists everything, exactly as an empty box does.
 
+## `public IReadOnlyList<LEntry> LEntryHeadwordFind(string language, string headword)`
+
+Every Entry of one language whose headword is `headword`, letter case folded, in headword order.
+This is the candidate list for a clicked word, and zero rows is a legitimate answer.
+
+## `public IReadOnlyList<LEntry> LEntryHeadwordScan(string language, string text)`
+
+Every Entry of one language whose headword appears inside `text`, longest headword first.
+One query serves a language without word separators, where the engine tries each hit against the click.
+
+## `private static IReadOnlyList<LEntry> LEntryListRead(SqliteCommand command)`
+
+The rows a prepared query yields, in the order the query states.
+
 ## `public IReadOnlyList<LEntry> LEntryTagFind(long tagId)`
 
 Returns the entries carrying the Tag `tagId` names, ordered by headword.

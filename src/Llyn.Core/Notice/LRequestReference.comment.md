@@ -1,6 +1,7 @@
 # LRequestReference.cs
 
-The requests of the sources panel, one per stated field of the source a draft holds, and one for the whole body.
+The requests of the sources panel.
+There is one per stated field of the source a draft holds, and one for the whole body.
 They name only the draft, because a draft holds one source.
 The credited authors have their own family beside this one.
 

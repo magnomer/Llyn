@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -114,6 +116,127 @@ public partial class PEditor
         }
 
         PEditorRequestSend(new LRequestSentenceRemoval(_pEditorDraft, card.PCardId, row.PSentenceRow));
+    }
+
+    internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Source is not TextBox { DataContext: PSentence row } box || PCardSentenceFind(row) is not PCard card)
+        {
+            return;
+        }
+
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box);
+        if (length == 0)
+        {
+            return;
+        }
+
+        long cardId = card.PCardId;
+        long rowId = row.PSentenceRow;
+        PProspectShow(
+            box,
+            PMentionSelection.PMentionSelectionPlace(box),
+            box.SelectedText.Trim(),
+            _pSpeakerChoice,
+            entryId => PEditorRequestSend(
+                new LRequestMentionAddition(_pEditorDraft, cardId, rowId, offset, length, entryId, 0)));
+    }
+
+    internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Source is not TextBox { DataContext: PSentence row } box
+            || PCardSentenceFind(row) is not PCard card
+            || PSentenceMentionFind(box, row) is not LMentionDraft mention
+            || mention.LMentionDraftEntry == 0)
+        {
+            return;
+        }
+
+        long cardId = card.PCardId;
+        long rowId = row.PSentenceRow;
+        _pEditorHost.PWindowSenseShow(
+            box,
+            PMentionSelection.PMentionSelectionPlace(box),
+            mention.LMentionDraftEntry,
+            senseId => PEditorRequestSend(
+                new LRequestMentionSense(_pEditorDraft, cardId, rowId, mention.LMentionDraftId, senseId)));
+    }
+
+    internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Source is not TextBox { DataContext: PSentence row } box || PCardSentenceFind(row) is not PCard card)
+        {
+            return;
+        }
+
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box);
+        if (length == 0)
+        {
+            return;
+        }
+
+        PEditorRequestSend(
+            new LRequestMentionAddition(_pEditorDraft, card.PCardId, row.PSentenceRow, offset, length, 0, 0));
+    }
+
+    internal void PSentenceUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PSentence row } || PCardSentenceFind(row) is not PCard card)
+        {
+            return;
+        }
+
+        long? mentionId = e.Parameter is PMentionChip chip
+            ? chip.PMentionChipId
+            : e.Source is TextBox box
+                ? PSentenceMentionFind(box, row)?.LMentionDraftId
+                : null;
+        if (mentionId is not long id)
+        {
+            return;
+        }
+
+        PEditorRequestSend(new LRequestMentionRemoval(_pEditorDraft, card.PCardId, row.PSentenceRow, id));
+    }
+
+    internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = e.Source is TextBox box && PMentionSelection.PMentionSelectionRead(box).PMentionSelectionLength > 0;
+    }
+
+    internal void PSentenceSenseCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = e.Source is TextBox { DataContext: PSentence row } box
+            && PSentenceMentionFind(box, row) is { LMentionDraftEntry: not 0 };
+    }
+
+    internal void PSentenceUnlinkCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = e.Parameter is PMentionChip
+            || (e.Source is TextBox { DataContext: PSentence row } box && PSentenceMentionFind(box, row) is not null);
+    }
+
+    internal void PSentenceMentionShow(PCard card)
+    {
+        string silent = _pEditorHost.PLocalizationTextRead("Mention.Silent");
+        foreach (PSentence row in card.PCardSentence)
+        {
+            try
+            {
+                row.PSentenceMentionShow(_lEngine, silent);
+            }
+            catch (Exception exception)
+            {
+                _pEditorHost.PWindowFailureShow("Mention.FindFailed", exception);
+                return;
+            }
+        }
+    }
+
+    private static LMentionDraft? PSentenceMentionFind(TextBox box, PSentence row)
+    {
+        (int offset, int length) = PMentionSelection.PMentionSelectionRead(box);
+        return PMentionSelection.PMentionSelectionFind(row.PSentenceMention, offset, length);
     }
 
     internal void PSentenceCitationClear(object sender, RoutedEventArgs e)

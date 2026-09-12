@@ -16,6 +16,8 @@ It is never created, updated, or deleted from here.
 The association tables live in `LExampleLink`.
 That file owns attaching, detaching, and reading an Example set by referrer.
 This file owns the Example itself.
+The Mentions an Example carries are its own rows, kept by `LMentionArchive`.
+Every read here fills them, and every create and update writes them in the same session.
 
 ## `public LExampleArchive(LDatabase database)`
 
@@ -35,9 +37,16 @@ Reads the Example identified by `id`, or `null` when no such Example exists.
 ## `public void LExampleUpdate(LExample example)`
 
 Rewrites the Example identified by `example`'s id.
-It rewrites its language, text, translation, and Source reference.
+It rewrites its language, text, translation, Source reference, and Mention list.
 The Example's own id and every reference pointing at it are untouched.
 So an update never changes where the Example appears or in what order.
+Throws when no Example carries that id.
+
+## `public void LExampleTextUpdate(long exampleId, LStateValue text)`
+
+Rewrites only the text of the Example identified by `exampleId`.
+A Mention whose span no longer fits the new text is dropped, and the rest are kept as they stand.
+Shifting a span to follow an edit is the engine's work, not the store's.
 Throws when no Example carries that id.
 
 ## `public void LExampleSourceUpdate(long exampleId, string? sourceId)`
@@ -69,6 +78,11 @@ Reads one Example on a connection the caller already holds.
 Shared with `LExampleLink`, which resolves a whole referrer's set at once.
 
 ## Inline notes
+
+### `internal static IReadOnlyList<LExample> LExampleMentionLoad(`
+
+Gives every Example in a list its Mentions, read in one statement for the whole list.
+The sentence reader shares it, so a card's sentences are filled in one round trip.
 
 ### `private static int LExampleReferenceRead(SqliteConnection connection, long id)`
 

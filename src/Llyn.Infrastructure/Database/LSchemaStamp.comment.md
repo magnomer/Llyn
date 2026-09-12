@@ -5,7 +5,8 @@
 Makes stand-alone rows record which realm first created them.
 
 Only a row that can exist on its own carries the mark.
-An owned child knows its realm by following the reference to its parent, so marking it again would store the same fact twice.
+An owned child knows its realm by following the reference to its parent.
+Marking it again would store the same fact twice.
 
 ## `private static readonly string[] LSchemaStampTable`
 
@@ -17,7 +18,8 @@ Creates, for each of those tables, the trigger that fills the mark and the index
 
 The trigger runs only when the inserted row left `origin_id` at zero, which is what a row made here does.
 It then writes this workspace's realm value and the id the row was just given.
-A row arriving from a merge already carries both, so the trigger passes it over and the mark it was born with survives the trip.
+A row arriving from a merge already carries both.
+The trigger passes it over, and the mark it was born with survives the trip.
 
 Filling the mark in the database rather than in each store keeps every insert path honest.
 A store cannot forget to stamp a row, because it never stamps one.

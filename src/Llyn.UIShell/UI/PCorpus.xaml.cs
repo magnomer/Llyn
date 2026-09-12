@@ -26,6 +26,7 @@ public partial class PCorpus : UserControl
         PQuotation.ItemsSource = _pQuotationList;
         PCitationList.ItemsSource = _pCitationCatalog;
         PLanguageList.ItemsSource = _pLanguageItem;
+        PTranscriptMentionLine.ItemsSource = _pTranscriptChip.PMentionLineChip;
 
         _pCorpusObserver = new PObserver(this, PCorpusBulletinHandle);
         engine.LEngineObserverAttach(_pCorpusObserver);

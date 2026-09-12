@@ -14,6 +14,7 @@ A new row with a minted id, no Example and an empty frame, at the place asked fo
 
 Puts the stored Example named under the row, in place of whatever the row quoted.
 The row's copy carries the stored id, so commit updates that row rather than making one.
+The copy carries the stored Mentions under their positive ids, so a word already linked stays linked.
 An id naming no stored Example is refused.
 
 ## `private LEntryDraft LEngineExampleChange(`

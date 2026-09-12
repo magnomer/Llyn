@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -101,6 +102,7 @@ public sealed partial class LEngine
         return string.Equals(one.LExampleLanguage, other.LExampleLanguage, StringComparison.Ordinal)
             && one.LExampleText == other.LExampleText
             && one.LExampleTranslation == other.LExampleTranslation
-            && one.LExampleSource == other.LExampleSource;
+            && one.LExampleSource == other.LExampleSource
+            && one.LExampleMention.SequenceEqual(other.LExampleMention);
     }
 }

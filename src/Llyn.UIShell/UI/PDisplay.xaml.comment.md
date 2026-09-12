@@ -117,6 +117,12 @@ The language shown now is compared before the image is set.
 The reading view draws a headword exactly as the editor does.
 Both ask the same pack, so the two views never differ in family or size.
 
+### `AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));`
+
+Every sentence on every card raises the same bubbling event.
+One handler on the control above them all answers it, so a card template stays free of handlers.
+The answer itself lives in [PDisplayMention.cs](PDisplayMention.comment.md).
+
 ### `PCompassUpdate();`
 
 The contents are rebuilt at the end of showing an entry, after every section has been given its visibility.

@@ -62,7 +62,8 @@ And the rebuilt table takes the row the editable field produces, which the old s
 
 A database in the version-30 shape, holding one broadcast Source and one printed one.
 The broadcast row states both retired columns and the printed row states neither.
-So the step is measured on the row it has text to carry and on the row it has none for.
+So the step is measured on the row it has text to carry.
+It is measured on the row it has none for as well.
 
 ### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_ref"));`
 

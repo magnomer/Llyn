@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -43,6 +44,9 @@ public sealed class LExampleArchive
             stored = stored with { LExampleId = (long)command.ExecuteScalar()! };
         }
 
+        LMentionArchive.LMentionExampleSave(connection, stored.LExampleId, stored.LExampleMention);
+        stored = LExampleMentionLoad(connection, [stored])[0];
+
         session.LDatabaseSessionCommit();
 
         return stored;
@@ -71,18 +75,20 @@ public sealed class LExampleArchive
             """;
 
         List<LExample> examples = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
+        using (SqliteDataReader reader = command.ExecuteReader())
         {
-            examples.Add(new LExample(
-                reader.GetInt64(0),
-                reader.GetString(1),
-                LStateColumn.LStateColumnRead(reader, 2),
-                LStateColumn.LStateColumnRead(reader, 4),
-                LStateColumn.LStateColumnResolve(reader, 6)));
+            while (reader.Read())
+            {
+                examples.Add(new LExample(
+                    reader.GetInt64(0),
+                    reader.GetString(1),
+                    LStateColumn.LStateColumnRead(reader, 2),
+                    LStateColumn.LStateColumnRead(reader, 4),
+                    LStateColumn.LStateColumnResolve(reader, 6)));
+            }
         }
 
-        return examples;
+        return LExampleMentionLoad(connection, examples);
     }
 
     public void LExampleUpdate(LExample example)
@@ -114,6 +120,8 @@ public sealed class LExampleArchive
             }
         }
 
+        LMentionArchive.LMentionExampleSave(connection, example.LExampleId, example.LExampleMention);
+
         session.LDatabaseSessionCommit();
     }
 
@@ -123,7 +131,8 @@ public sealed class LExampleArchive
         ArgumentNullException.ThrowIfNull(text);
 
         using LDatabaseSession session = _lExampleArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+        using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 "UPDATE example SET text_state = $textState, text = $text WHERE example_id = $id;";
@@ -134,6 +143,8 @@ public sealed class LExampleArchive
                 throw new InvalidOperationException($"No Example carries the id '{exampleId}'.");
             }
         }
+
+        LMentionArchive.LMentionExampleSweep(connection, exampleId);
 
         session.LDatabaseSessionCommit();
     }
@@ -248,17 +259,47 @@ public sealed class LExampleArchive
             FROM example WHERE example_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
-        using SqliteDataReader reader = command.ExecuteReader();
-        if (!reader.Read())
+        LExample? example;
+        using (SqliteDataReader reader = command.ExecuteReader())
         {
-            return null;
+            if (!reader.Read())
+            {
+                return null;
+            }
+
+            example = new LExample(
+                id,
+                reader.GetString(0),
+                LStateColumn.LStateColumnRead(reader, 1),
+                LStateColumn.LStateColumnRead(reader, 3),
+                LStateColumn.LStateColumnResolve(reader, 5));
         }
 
-        return new LExample(
-            id,
-            reader.GetString(0),
-            LStateColumn.LStateColumnRead(reader, 1),
-            LStateColumn.LStateColumnRead(reader, 3),
-            LStateColumn.LStateColumnResolve(reader, 5));
+        return LExampleMentionLoad(connection, [example])[0];
+    }
+
+    internal static IReadOnlyList<LExample> LExampleMentionLoad(
+        SqliteConnection connection, IReadOnlyList<LExample> examples)
+    {
+        if (examples.Count == 0)
+        {
+            return examples;
+        }
+
+        IReadOnlyDictionary<long, IReadOnlyList<LMention>> mentions = LMentionArchive.LMentionExampleRead(
+            connection, examples.Select(static example => example.LExampleId).ToList());
+
+        List<LExample> filled = new(examples.Count);
+        foreach (LExample example in examples)
+        {
+            filled.Add(example with
+            {
+                LExampleMention = mentions.TryGetValue(example.LExampleId, out IReadOnlyList<LMention>? read)
+                    ? read
+                    : [],
+            });
+        }
+
+        return filled;
     }
 }

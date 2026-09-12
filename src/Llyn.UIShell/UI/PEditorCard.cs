@@ -91,6 +91,7 @@ public partial class PEditor
         PCard card, LCardDraft draft, IReadOnlyDictionary<long, LTranslationTarget> targets)
     {
         card.PCardSentenceShow(draft.LCardDraftSentence, (row, field) => PSentencePendingCheck(card, row, field));
+        PSentenceMentionShow(card);
         card.PCardContextShow(draft.LCardDraftSituation);
         card.PCardRegisterShow(draft.LCardDraftRegister);
         card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));

@@ -230,7 +230,8 @@ public sealed partial class LEngine
             && one.LExampleDraftReference == other.LExampleDraftReference
             && one.LExampleDraftTranslation == other.LExampleDraftTranslation
             && string.Equals(
-                one.LExampleDraftLanguage, other.LExampleDraftLanguage, StringComparison.Ordinal);
+                one.LExampleDraftLanguage, other.LExampleDraftLanguage, StringComparison.Ordinal)
+            && one.LExampleDraftMention.SequenceEqual(other.LExampleDraftMention);
     }
 
     private static bool LEngineSituationMatch(

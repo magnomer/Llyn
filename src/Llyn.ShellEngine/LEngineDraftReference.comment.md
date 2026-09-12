@@ -29,7 +29,8 @@ The credits of a stored Reference are read into the draft, so the panel shows th
 Turns a held Reference into a stored one and returns it.
 A draft naming no Reference is a create, one naming a Reference is a rewrite.
 A Reference id naming a record since deleted is a create as well, because there is nothing left to rewrite.
-The Reference and its credits are written in one session, so a kill between them cannot leave a source with no authors.
+The Reference and its credits are written in one session.
+A kill between them therefore cannot leave a source with no authors.
 The database write runs first and whole, so a refusal from it leaves the file exactly as it was.
 The draft file is rewritten with the stored id and the stored content the moment that write returns.
 A kill between the two writes would otherwise leave the Reference stored and the file still nameless.
@@ -54,7 +55,8 @@ The Authors the store credits on one Reference, in order.
 
 Makes the stored credits of the Reference read as the draft's list.
 A credit with a minted id is created by name first.
-A credit naming an Author that is gone is refused, because the source would otherwise credit someone the user never chose.
+A credit naming an Author that is gone is refused.
+The source would otherwise credit someone the user never chose.
 Each is then attached at its place in the list, which also moves one already attached.
 A stored credit the list no longer names is detached last.
 A name credited twice is attached once, at its first place.

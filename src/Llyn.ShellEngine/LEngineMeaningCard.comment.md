@@ -6,7 +6,8 @@ The Meaning half of the card update, which is the half that has a shape.
 A Collocation list is flat and is reconciled where the other card kinds are.
 A Meaning list is a tree, because `sense.sense_parent` names a Meaning in the same entry.
 So the same three questions are asked once per sibling group rather than once per entry.
-Those are which stored row each card is, what to do with the rows no card names, and what order they sit in.
+Those are which stored row each card is and what to do with the rows no card names.
+The third is what order they sit in.
 
 ## Inline notes
 

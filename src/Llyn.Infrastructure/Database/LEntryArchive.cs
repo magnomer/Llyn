@@ -99,6 +99,58 @@ public sealed class LEntryArchive
         return entries;
     }
 
+    public IReadOnlyList<LEntry> LEntryHeadwordFind(string language, string headword)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(headword);
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            FROM entry
+            WHERE language = $language AND lfold(headword) = lfold($headword)
+            ORDER BY headword, entry_id;
+            """;
+        command.Parameters.AddWithValue("$language", language);
+        command.Parameters.AddWithValue("$headword", headword);
+
+        return LEntryListRead(command);
+    }
+
+    public IReadOnlyList<LEntry> LEntryHeadwordScan(string language, string text)
+    {
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(text);
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            FROM entry
+            WHERE language = $language AND headword <> '' AND instr(lfold($text), lfold(headword)) > 0
+            ORDER BY length(headword) DESC, headword, entry_id;
+            """;
+        command.Parameters.AddWithValue("$language", language);
+        command.Parameters.AddWithValue("$text", text);
+
+        return LEntryListRead(command);
+    }
+
+    private static IReadOnlyList<LEntry> LEntryListRead(SqliteCommand command)
+    {
+        List<LEntry> entries = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            entries.Add(LEntryRowRead(reader));
+        }
+
+        return entries;
+    }
+
     public IReadOnlyList<LEntry> LEntryTagFind(long tagId)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(tagId);

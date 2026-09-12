@@ -5,7 +5,7 @@ using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-internal sealed class PSentence : INotifyPropertyChanged
+internal sealed partial class PSentence : INotifyPropertyChanged
 {
     private long _pSentenceId;
     private string _pSentenceText;
@@ -48,6 +48,7 @@ internal sealed class PSentence : INotifyPropertyChanged
         _pSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
         _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
         _pSentenceDependenceUnknown = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
+        _pSentenceMention = example.LExampleDraftMention;
     }
 
     public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
@@ -334,6 +335,7 @@ internal sealed class PSentence : INotifyPropertyChanged
 
         _pSentenceRow = draft.LSentenceDraftId;
         PSentenceId = example.LExampleDraftId;
+        _pSentenceMention = example.LExampleDraftMention;
 
         if (!pending(nameof(PSentenceText)) && !PSentenceTextRead().LStateWrittenMatch(example.LExampleDraftText))
         {

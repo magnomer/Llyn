@@ -48,6 +48,7 @@ Typing is a recording, so what stood there as unknown stops being that the momen
 ## `private void PTranscriptApply(LExample? example)`
 
 Fills every field from the held sentence, or empties them when no draft stands.
+The chip line is redrawn from the sentence's Mentions along with the fields.
 The language is taken as the sentence carries it, an empty one included.
 Keeping the last shown language would write it onto a sentence imported without one.
 The delete control and the usage count follow the stored id the draft names, not the sentence being written.
@@ -94,7 +95,8 @@ Writes one field and its mark from a value, unless the field already reads that 
 
 The controls as written, for the engine to read into the sentence it holds.
 Text and translation travel with their marks and the citation as the chosen id, so the panel resolves no state.
-The engine keeps the id of the sentence it holds, so the panel never mints or carries an id of its own.
+The engine keeps the id of the sentence it holds.
+The panel therefore never mints or carries an id of its own.
 
 ## `private void PCorpusFreshHandle(object sender, RoutedEventArgs e)`
 

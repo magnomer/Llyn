@@ -7,3 +7,4 @@ Each part names the styles of a single subject and merges only the parts it draw
 A part therefore resolves its own StaticResource and BasedOn references without reaching sideways.
 This file merges the parts in dependency order and holds no style of its own.
 App.xaml keeps merging this one file, so the theme has one address.
+The Mention part is merged last, because its run styles stand on the palette alone.

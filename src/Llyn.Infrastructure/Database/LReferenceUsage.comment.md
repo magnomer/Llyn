@@ -9,7 +9,8 @@ Nothing here creates, changes, or deletes a Source.
 
 A Situation is not counted, because a Situation is written rather than quoted and carries no Source column.
 Only an Example cites a Source, through its own `reference_ref` column.
-A Meaning or a Collocation is reported as citing because it holds such an Example, never because a row says so.
+A Meaning or a Collocation is reported as citing because it holds such an Example.
+It is never reported so because a row says so.
 So a card arm is a join back up the chain and detaching is clearing two columns on the Example.
 
 ## `public LReferenceUsage(LDatabase database)`
@@ -22,16 +23,20 @@ Counts the citations of every Source at once, for the catalog, the ordering, and
 A Source nothing cites is absent from the map rather than present at zero.
 
 The unit is the citing Example, which is the only thing that cites at all.
-It is not the number of rows `LReferenceUsageRead(id)` returns, because that list also names each citing card as the way up to the citation.
+It is not the number of rows `LReferenceUsageRead(id)` returns.
+That list also names each citing card as the way up to the citation.
 Counting cards and Examples together would count one citation twice, from two directions.
-So the badge showing this number says what it counts, through `Source.Tally`, and the Example rows of the list are what it agrees with.
+So the badge showing this number says what it counts, through `Source.Tally`.
+The Example rows of the list are what it agrees with.
 
 ## `public IReadOnlyList<LUsage> LReferenceUsageRead(long id)`
 
 Reads the citing Meanings, Collocations and Examples of one Source, itemized, each with the id the row leads to.
-A card names its own id, the Entry it belongs to, that Entry's headword, and its title with the definition or expression behind it.
+A card names its own id, the Entry it belongs to, and that Entry's headword.
+It also names its title with the definition or expression behind it.
 An Example names its sentence and its translation, because an Example belongs to no Entry of its own.
-A card holding two Examples of one Source is listed once, because the row leads to the card rather than the citation.
+A card holding two Examples of one Source is listed once.
+The row leads to the card rather than the citation.
 
 ## `internal static int LReferenceUsageRead(SqliteConnection connection, long id)`
 

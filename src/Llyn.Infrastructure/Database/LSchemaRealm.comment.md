@@ -25,5 +25,6 @@ A second row would give one workspace two identities.
 
 Creates the table when it is absent and seeds the realm row when that is absent.
 
-The seeded value is minted once and never again, because the insert names the one row and yields to the row already there.
+The seeded value is minted once and never again.
+The insert names the one row and yields to the row already there.
 Minting it twice would give one workspace two identities and break every stamp already written.

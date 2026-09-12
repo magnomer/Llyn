@@ -2,7 +2,8 @@
 
 ## `public sealed record LStateWritten`
 
-A form field as the user left it: the text in the box and the mark that says the value is not known.
+A form field as the user left it.
+It is the text in the box and the mark that says the value is not known.
 
 It carries no state, because the shell never decides what a field means.
 The shell sends what was written, the engine resolves it, and the shell shows what the engine holds.

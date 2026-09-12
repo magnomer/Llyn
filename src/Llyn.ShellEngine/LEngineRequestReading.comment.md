@@ -3,7 +3,8 @@
 ## `public sealed partial class LEngine`
 
 The pronunciation and transcription rows of a draft.
-Each is an ordered list the draft holds by id, edited one request at a time like the lists inside a card.
+Each is an ordered list the draft holds by id.
+It is edited one request at a time like the lists inside a card.
 A row is added blank or with what the form already has, and filled afterwards.
 So a blank row is held and named, and the commit leaves it out.
 
@@ -36,7 +37,8 @@ Renames the scheme of one transcription row, refusing a name another row already
 
 ## `private static void LEngineSchemeValidate(IReadOnlyList<LTranscriptionDraft> drafts, string scheme, long ownId)`
 
-The one-scheme rule at request time, so the form learns of a doubled scheme as it is typed rather than at commit.
+The one-scheme rule at request time.
+The form learns of a doubled scheme as it is typed rather than at commit.
 A blank scheme passes, because a row still being named collides with nothing.
 
 ## `private static LEntryDraft LEngineTranscriptionChange(`

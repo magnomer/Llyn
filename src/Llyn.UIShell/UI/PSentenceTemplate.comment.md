@@ -15,6 +15,23 @@ So a language writing the role first draws the role first, and nothing about the
 Both are typed into and both offer what the workspace has already saved for the language.
 Neither offers anything on a workspace that has saved none, because nothing ships a marker or a role.
 
+## `<Grid.CommandBindings>`
+
+The four Mention commands are bound on the row.
+So both the field's menu and the chip line reach the same handlers.
+The menu names the field as its target and a chip names itself as parameter.
+The handlers tell the two apart by what arrived.
+
+## `<TextBox x:Name="PSentenceLine" ContextMenu="{DynamicResource Theme.Mention.Menu}">`
+
+The sentence field carries the shared linking menu.
+Its selection is what the menu's items read when they decide whether they apply.
+
+## `<ItemsControl x:Name="PSentenceMentionLine">`
+
+The chip line under the sentence, one chip per Mention, collapsed while there is none.
+It stands in the sentence column so it reads as part of the sentence and not of the row's controls.
+
 ## `Theme.Reference.Row`, `Theme.Reference.Item`
 
 One Source in the list a row cites from, and the row it sits in.

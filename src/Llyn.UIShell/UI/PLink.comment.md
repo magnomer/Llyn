@@ -71,11 +71,13 @@ No other draft can name that entry, because it was made for this chip.
 
 ### `private bool PLinkResolve(PCard card, string text, bool offered)`
 
-While the user is still in the field, the word is always shown as a choice, with its language beside it.
+While the user is still in the field, the word is always shown as a choice.
+Its language stands beside it.
 One Entry whose whole headword is the word is chosen already, so a single keystroke confirms it.
 A headword is the same in every language, and only the user knows which language they meant.
 That is what `offered` says.
-When the field is left or a list is pasted, one whole-headword match is linked without asking, and anything else is left standing.
+When the field is left or a list is pasted, one whole-headword match is linked without asking.
+Anything else is left standing.
 An unasked question leaves the word in the entry, where the user can still see it.
 A search the workspace refuses raises a notice, because a silent nothing reads as no match.
 The entry being edited is asked of the draft, so a form never offers itself as its own translation.

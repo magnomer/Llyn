@@ -1,4 +1,4 @@
-# PCorpusBrowse.cs
+﻿# PCorpusBrowse.cs
 
 ## `public partial class PCorpus`
 
@@ -47,6 +47,16 @@ Writes one three-state field into the display.
 
 Writes the text a field shows, or the unrecorded mark in the muted colour when there is none.
 So a blank row never stands for two facts.
+The sentence field is the clickable control, and it takes its text through its own property.
+Its Mentions are handed over only when the text shown is the stored sentence.
+The unknown mark and the unrecorded mark have no words for a Mention to lie on.
+
+## `private void PExcerptMentionHandle(object? sender, PMentionArgument e)`
+
+A click on a word of the open Example asks the engine what stands at that offset.
+The engine reads the stored sentence itself, so the panel passes the id and the offset and nothing more.
+The window decides what the answer opens, as it does for the display cards.
+An open draft is confirmed first, because landing on an Entry leaves the corpus panel.
 
 ## `private void PQuotationFind(long id)`
 

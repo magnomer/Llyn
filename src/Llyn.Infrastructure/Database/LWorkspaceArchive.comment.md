@@ -54,7 +54,8 @@ So the caller always receives a state rather than `null`.
 Writes `state` back into the workspace row, creating the row when it is absent.
 The row written is always this store's single one, whatever id the state carries.
 The identity floor is written only downward.
-A state read before another engine issued an id would otherwise raise the floor and let that id come round again.
+A state read before another engine issued an id would otherwise raise the floor.
+That id could then come round again.
 
 ## `public long LWorkspaceFloorAdjust()`
 

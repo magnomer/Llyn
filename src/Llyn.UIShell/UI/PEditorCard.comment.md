@@ -37,6 +37,7 @@ So a new card and a kept one take one path.
 Shows one card every list the draft card holds, each list diffed by id.
 A field with a request still waiting is handed the check so the row is not overwritten under the caret.
 Each card takes its own words out of the one translation answer, in the order the card holds them.
+The chip lines under the rows are redrawn after, because the rows hold no engine to read headwords from.
 An id the answer does not name is passed over, as a chip with no Entry has nothing to say.
 
 ### `private void PCardPrepare()`

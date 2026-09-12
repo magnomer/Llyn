@@ -5,12 +5,13 @@
 
     <local:PSentenceConverter x:Key="Display.Card.Frame" />
     <local:PFontConverter x:Key="Display.Card.Inset" />
+    <local:PMentionConverter x:Key="Display.Card.Mention" />
 
     <Style x:Key="Display.Card.Example" TargetType="Border">
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.ExampleMargin}" />
         <Setter Property="Padding" Value="{DynamicResource Theme.Card.ExamplePadding}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding LCardDraftExample.Count}" Value="0">
+            <DataTrigger Binding="{Binding LCardDraftSentence.Count}" Value="0">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
         </Style.Triggers>
@@ -38,36 +39,35 @@
             <TextBlock x:Name="PExampleFrame" Grid.Column="1" Style="{StaticResource Display.Card.ExampleFrame}">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Display.Card.Frame}" ConverterParameter="Head">
-                        <Binding Path="LExampleDraftParticle" />
-                        <Binding Path="LExampleDraftDependence" />
-                        <Binding Path="LExampleDraftText" />
+                        <Binding Path="LSentenceDraftParticle" />
+                        <Binding Path="LSentenceDraftDependence" />
+                        <Binding Path="LSentenceDraftExample.LExampleDraftText" />
                         <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
 
-            <TextBlock
+            <local:PMention
                 Grid.Column="2"
-                FontFamily="{DynamicResource Theme.Card.ExampleFamily}"
-                FontSize="{DynamicResource Theme.Card.ExampleSize}"
-                TextWrapping="Wrap">
-                <TextBlock.Margin>
+                PMentionLanguage="{Binding LSentenceDraftExample.LExampleDraftLanguage}"
+                PMentionMention="{Binding LSentenceDraftExample.LExampleDraftMention, Converter={StaticResource Display.Card.Mention}}">
+                <local:PMention.Margin>
                     <MultiBinding Converter="{StaticResource Display.Card.Inset}">
                         <Binding Path="FontFamily" ElementName="PExampleFrame" />
                         <Binding Path="FontSize" ElementName="PExampleFrame" />
                         <Binding Path="FontFamily" RelativeSource="{RelativeSource Self}" />
                         <Binding Path="FontSize" RelativeSource="{RelativeSource Self}" />
                     </MultiBinding>
-                </TextBlock.Margin>
-                <TextBlock.Text>
+                </local:PMention.Margin>
+                <local:PMention.PMentionText>
                     <MultiBinding Converter="{StaticResource Display.Card.Frame}" ConverterParameter="Text">
-                        <Binding Path="LExampleDraftParticle" />
-                        <Binding Path="LExampleDraftDependence" />
-                        <Binding Path="LExampleDraftText" />
+                        <Binding Path="LSentenceDraftParticle" />
+                        <Binding Path="LSentenceDraftDependence" />
+                        <Binding Path="LSentenceDraftExample.LExampleDraftText" />
                         <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
+                </local:PMention.PMentionText>
+            </local:PMention>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

@@ -177,6 +177,8 @@ public partial class PCorpus
         PCitationList.SelectedValue = _pTranscriptCitation == 0 ? null : _pTranscriptCitation;
         PCitationUpdate();
 
+        PTranscriptMentionShow(example);
+
         long? stored = PTranscriptExampleRead();
         PTranscriptRemoval.IsEnabled = stored is not null;
         PTranscriptCountShow(stored);
@@ -222,6 +224,8 @@ public partial class PCorpus
             PCitationList.SelectedValue = citation == 0 ? null : citation;
             PCitationUpdate();
         }
+
+        PTranscriptMentionShow(example);
 
         _pTranscriptLoading = false;
 

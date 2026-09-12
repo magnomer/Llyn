@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -202,6 +203,9 @@ public sealed partial class LEngine
         bool collocation,
         Dictionary<long, long> identity)
     {
+        IReadOnlyList<LMentionDraft> drafts = LEngineMentionResolve(written);
+        IReadOnlyList<LMention> mentions = LEngineMentionRead(drafts);
+
         if (written.LExampleDraftId > 0)
         {
             LExample stored = examples.LExampleRead(written.LExampleDraftId)
@@ -209,19 +213,23 @@ public sealed partial class LEngine
 
             bool sameText = stored.LExampleText == written.LExampleDraftText;
             bool sameSource = stored.LExampleSource == written.LExampleDraftReference;
-            if (sameText && sameSource)
+            bool sameMention = stored.LExampleMention.SequenceEqual(mentions);
+            if (sameText && sameSource && sameMention)
             {
                 return stored;
             }
 
-            if (LEngineShareCheck(stored.LExampleId, ownerId, collocation))
+            if ((!sameText || !sameSource) && LEngineShareCheck(stored.LExampleId, ownerId, collocation))
             {
-                return examples.LExampleCreate(new LExample(
+                LExample forked = examples.LExampleCreate(new LExample(
                     0,
                     stored.LExampleLanguage,
                     written.LExampleDraftText,
                     stored.LExampleTranslation,
-                    written.LExampleDraftReference));
+                    written.LExampleDraftReference,
+                    mentions));
+                LEngineMentionRecord(identity, drafts, forked.LExampleMention);
+                return forked;
             }
 
             if (!sameText)
@@ -236,6 +244,14 @@ public sealed partial class LEngine
                 stored = stored with { LExampleSource = written.LExampleDraftReference };
             }
 
+            if (!sameText || !sameMention)
+            {
+                LMentionArchive rows = new(_lEngineDatabase);
+                rows.LMentionExampleSave(stored.LExampleId, mentions);
+                stored = stored with { LExampleMention = rows.LMentionExampleRead(stored.LExampleId) };
+                LEngineMentionRecord(identity, drafts, stored.LExampleMention);
+            }
+
             return stored;
         }
 
@@ -244,9 +260,49 @@ public sealed partial class LEngine
             written.LExampleDraftLanguage.Length == 0 ? language : written.LExampleDraftLanguage,
             written.LExampleDraftText,
             written.LExampleDraftTranslation,
-            written.LExampleDraftReference));
+            written.LExampleDraftReference,
+            mentions));
         LEngineIdentityRecord(identity, written.LExampleDraftId, created.LExampleId);
+        LEngineMentionRecord(identity, drafts, created.LExampleMention);
         return created;
+    }
+
+    private static IReadOnlyList<LMentionDraft> LEngineMentionResolve(LExampleDraft written)
+    {
+        int length = LEngineRuneRead(written.LExampleDraftText.LStateValueShow()).Count;
+        List<LMentionDraft> kept = new(written.LExampleDraftMention.Count);
+        foreach (LMentionDraft mention in written.LExampleDraftMention)
+        {
+            if (mention.LMentionDraftOffset >= 0
+                && mention.LMentionDraftLength > 0
+                && mention.LMentionDraftOffset + mention.LMentionDraftLength <= length)
+            {
+                kept.Add(mention);
+            }
+        }
+
+        return LMentionDraft.LMentionDraftSort(kept);
+    }
+
+    private static void LEngineMentionRecord(
+        Dictionary<long, long> identity, IReadOnlyList<LMentionDraft> drafts, IReadOnlyList<LMention> stored)
+    {
+        foreach (LMentionDraft draft in drafts)
+        {
+            if (draft.LMentionDraftId >= 0)
+            {
+                continue;
+            }
+
+            foreach (LMention mention in stored)
+            {
+                if (mention.LMentionOffset == draft.LMentionDraftOffset)
+                {
+                    LEngineIdentityRecord(identity, draft.LMentionDraftId, mention.LMentionId);
+                    break;
+                }
+            }
+        }
     }
 
     private bool LEngineShareCheck(long exampleId, long ownerId, bool collocation)

@@ -125,6 +125,17 @@ internal static partial class TInterface
         engine.LEngineFavoriteSave(entryId);
     }
 
+    internal static LMentionResult TEngineMentionFind(this LEngine engine, long exampleId, int offset) =>
+        engine.LEngineMentionFind(exampleId, offset);
+
+    internal static LMentionResult TEngineMentionFind(
+        this LEngine engine,
+        string text,
+        string language,
+        int offset,
+        IReadOnlyList<LMention> mentions) =>
+        engine.LEngineMentionFind(text, language, offset, mentions);
+
     internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine) =>
         engine.LEngineLeftoverRead();
 

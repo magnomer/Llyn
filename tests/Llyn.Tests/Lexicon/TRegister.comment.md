@@ -3,7 +3,8 @@
 ## `public sealed class TRegister`
 
 Covers the engine's Register seam, which mirrors the Situation one on a card.
-It covers the two kinds of row that share the shelf: the ones a language pack ships and the ones the user writes.
+It covers the two kinds of row that share the shelf.
+Those are the ones a language pack ships and the ones the user writes.
 
 ## `public void RegisterSave_CardCarryingPresetNames_StoresLanguagePackRows()`
 
@@ -23,7 +24,8 @@ Otherwise the shelf would grow a duplicate every time a name was typed instead o
 ## `public void RegisterSave_TwoEntriesWritingOneName_ReferenceOneRow()`
 
 Two cards typing the same wording without ever looking it up must still reference one row.
-The engine folds case and edge spaces when it looks the wording up, so the panel needs no matching rule of its own.
+The engine folds case and edge spaces when it looks the wording up.
+The panel therefore needs no matching rule of its own.
 A client that never consults the shelf, such as an import, gets the same shelf as the form.
 
 ## `public void RegisterFind_WorkspaceShelf_ReturnsMarkCounts()`

@@ -9,7 +9,8 @@ Colors come from the theme brushes, so a theme change recolors a drawn note.
 ## `internal static void PMarkdownShow(Panel target, string? markdown)`
 
 Empties `target` and fills it with the note's blocks in reading order.
-A list item is a grid with its bullet or number in a fixed lead column, indented one step per level.
+A list item is a grid with its bullet or number in a fixed lead column.
+It is indented one step per level.
 Numbers count up while consecutive items stay on one level and restart otherwise.
 The gap above a block depends on what it is, so list items sit close and headings stand off.
 

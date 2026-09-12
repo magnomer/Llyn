@@ -20,7 +20,8 @@ The engine normalizes it at commit, so the draft keeps what was typed.
 
 ## `public sealed record LRequestIpa(long LRequestDraftId, string LRequestText)`
 
-Replaces the typed reading of the primary pronunciation, the first of the list, leaving its recording and its stored detail alone.
+Replaces the typed reading of the primary pronunciation, the first of the list.
+Its recording and its stored detail are left alone.
 When the list is empty the request creates that first row.
 A pronunciation with neither reading nor recording is dropped by the engine, not by the request.
 A form that edits every row sends [LRequestPronunciationIpa](LRequestPronunciation.comment.md) instead.

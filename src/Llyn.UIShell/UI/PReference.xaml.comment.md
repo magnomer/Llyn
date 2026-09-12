@@ -12,7 +12,8 @@ The browsing lives in `PReferenceBrowse.cs`, and the editing in the `PImprint` c
 
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
-It attaches the edit area to the same host and engine, and to itself, because the area reads the shelf's answers through it.
+It attaches the edit area to the same host and engine, and to itself.
+The area reads the shelf's answers through it.
 The window fills the source shelf when it restores the stored ordering.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.

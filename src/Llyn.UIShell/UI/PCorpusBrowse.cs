@@ -168,6 +168,10 @@ public partial class PCorpus
         PAnthologySelect(id);
 
         PExcerptValueShow(PExcerptText, example.LExampleText);
+        PExcerptText.PMentionLanguage = example.LExampleLanguage;
+        PExcerptText.PMentionMention = example.LExampleText.LStateValueState == LState.LStateSpecified
+            ? example.LExampleMention
+            : [];
         PExcerptLanguage.Text = example.LExampleLanguage;
         PExcerptFlag.Source = PEnsign.PEnsignFind(example.LExampleLanguage);
         PExcerptValueShow(PExcerptTranslation, example.LExampleTranslation);
@@ -215,10 +219,40 @@ public partial class PCorpus
 
     private void PExcerptTextShow(TextBlock field, string? text)
     {
-        field.Text = text ?? _pCorpusHost.PLocalizationTextRead("Example.Unset");
+        string shown = text ?? _pCorpusHost.PLocalizationTextRead("Example.Unset");
+        if (field is PMention sentence)
+        {
+            sentence.PMentionText = shown;
+        }
+        else
+        {
+            field.Text = shown;
+        }
+
         field.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");
+    }
+
+    private void PExcerptMentionHandle(object? sender, PMentionArgument e)
+    {
+        if (_pExcerptExample is not long id || !PCorpusLeaveConfirm())
+        {
+            return;
+        }
+
+        LMentionResult result;
+        try
+        {
+            result = _lEngine.LEngineMentionFind(id, e.PMentionArgumentOffset);
+        }
+        catch (Exception exception)
+        {
+            _pCorpusHost.PWindowFailureShow("Mention.FindFailed", exception);
+            return;
+        }
+
+        _pCorpusHost.PWindowMentionHandle(PExcerptText, result);
     }
 
     private void PQuotationFind(long id)

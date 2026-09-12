@@ -1,9 +1,10 @@
-# PCorpus.xaml
+﻿# PCorpus.xaml
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
 The seams that part the example catalog from the example it opens.
-The row seam runs under the ordering bar and the command row, bled past the panel margin so it meets the navigation's own edge.
+The row seam runs under the ordering bar and the command row.
+It is bled past the panel margin so it meets the navigation's own edge.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
 Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
 
@@ -27,6 +28,12 @@ This panel is the only place such an Example can arise.
 Elsewhere one is written from the card that quotes it.
 Export and print are mock-up controls and are not wired.
 
+## `<Grid x:Name="PTranscript">`
+
+The scribe binds the four Mention commands on its root.
+So the transcript's menu and its chip line reach the same handlers.
+The transcript field carries the shared linking menu, and the chip line stands right under it.
+
 ## `<ItemsControl x:Name="PAnthology">`
 
 The catalog of every Example the workspace holds, including one nothing quotes.
@@ -43,6 +50,13 @@ What it shares with the entry panels is the read-and-edit mechanism and the `PCo
 Each field is drawn whether or not it holds anything.
 A field is stored data, so a hidden row would hide the difference between never written and written-but-unknown.
 A row therefore reads its value, the unknown mark, or the unrecorded mark in the muted colour.
+
+### `<local:PMention x:Name="PExcerptText" ...>`
+
+The sentence is drawn by the same control the display cards use, so a word of it can be clicked.
+It keeps the interface face rather than the card example face.
+This row is a record field and not a card line.
+The click is answered by the panel, which knows which Example is open.
 
 ## `<ItemsControl x:Name="PQuotation">`
 

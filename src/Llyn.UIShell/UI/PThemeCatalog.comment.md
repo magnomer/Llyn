@@ -22,7 +22,8 @@ It never takes the pointer, so a click through it still reaches the catalog.
 ## Catalog frame and scrolling styles
 
 Theme.Catalog.HeaderMargin brings each catalog's sort and search row to the same horizontal edges as its list rows.
-It offsets the panel's 34-pixel inset, leaving the shared 6-pixel outer gutter, and ends where the row surface ends before the scroll rail.
+It offsets the panel's 34-pixel inset, leaving the shared 6-pixel outer gutter.
+It ends where the row surface ends before the scroll rail.
 Theme.Catalog.Frame offsets the 34-pixel panel margin to leave a 6-pixel left gutter.
 Theme.Catalog.Middle offsets the seam 16 pixels before an interior column to leave the same 6-pixel gutter.
 Both end at the next seam, where Theme.Catalog.Scroll opens its lane once the rows outrun the panel.

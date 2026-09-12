@@ -1,4 +1,4 @@
-{
+﻿{
   "generation": 7,
   "project": "Llyn",
   "sources": {
@@ -94,6 +94,9 @@
     "commandSuffix": "Command",
     "commandCancelSuffix": "CancelCommand",
     "frameworkContracts": {
+      "IEquatable": [
+        "Equals"
+      ],
       "IDisposable": [
         "Dispose"
       ],

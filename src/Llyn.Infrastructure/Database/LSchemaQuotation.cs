@@ -31,6 +31,24 @@ public static class LSchemaQuotation
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
+            CREATE TABLE IF NOT EXISTS example_mention (
+                example_mention_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                example_parent INTEGER NOT NULL,
+                start INTEGER NOT NULL,
+                length INTEGER NOT NULL,
+                entry_ref INTEGER,
+                sense_ref INTEGER,
+                CHECK (start >= 0),
+                CHECK (length > 0),
+                CHECK (entry_ref IS NOT NULL OR sense_ref IS NULL),
+                FOREIGN KEY (example_parent) REFERENCES example (example_id) ON DELETE CASCADE,
+                FOREIGN KEY (entry_ref) REFERENCES entry (entry_id) ON DELETE CASCADE,
+                FOREIGN KEY (sense_ref) REFERENCES sense (sense_id) ON DELETE SET NULL
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS example_mention_start
+                ON example_mention (example_parent, start);
+
             CREATE TABLE IF NOT EXISTS sense_example (
                 sense_example_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 sense_parent INTEGER NOT NULL,

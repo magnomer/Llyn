@@ -1,9 +1,10 @@
-# LExampleDraft.cs
+﻿# LExampleDraft.cs
 
 ## `public sealed record LExampleDraft(`
 
 One Example as a draft carries it.
-It holds the id of the Example the row edits, the sentence shown, what renders it, and the Reference it cites.
+It holds the id of the Example the row edits and the sentence shown.
+It also holds what renders the sentence and the Reference it cites.
 The draft never owns the sentence, because the id is the reference.
 An empty id means the row has not been stored as an Example yet.
 Two cards quoting one sentence carry one id, and the save writes one stored row.
@@ -22,6 +23,16 @@ A marker and a role belong to the card holding the Example, never to the shared 
 - `LExampleDraftReference` — The Source the sentence cites, and what is known about it.
 - `LExampleDraftTranslation` — The sentence rendered in another language, and what is known about it.
 - `LExampleDraftLanguage` — The language the sentence is written in, empty when none is stated.
+- `LExampleDraftMention` — The words of the sentence that stand for an Entry, as [LMentionDraft](LMentionDraft.comment.md) rows ordered by start.
+
+## `public bool Equals(LExampleDraft? other)`
+
+Two drafts are equal when every field is equal and the Mention lists match row by row.
+A record compares a list by reference, which would make every load a change.
+
+## `public override int GetHashCode()`
+
+The hash that agrees with that equality.
 
 ## `public static LExampleDraft LExampleDraftCreate(string text)`
 
@@ -30,5 +41,5 @@ It has no id yet, no rendering, no Source cited, and no language stated.
 
 ## `public LExampleDraft LExampleDraftNormalize()`
 
-The same example with every unreadable value dropped to unspecified.
+The same example with every unreadable value dropped to unspecified and its Mentions sorted by start.
 Called only after the user agreed to lose what the store could not read.

@@ -41,6 +41,36 @@ Panel switching is the window's to do, so a panel asks for it rather than reachi
 The library is asked first, because the tab guard above passes over a library that is already the target.
 Opening the entry would otherwise cancel the draft being written in that panel without a word.
 
+## `internal void PWindowMentionHandle(PMention anchor, LMentionResult result)`
+
+What a click on a word of a shown sentence opens, decided once for every panel that draws one.
+Any menu already open is closed first, so a second click never stacks two.
+A word stored as standing for an Entry opens that Entry.
+The card it is narrowed to is scrolled into view.
+A word stored as standing for nothing opens nothing.
+An unlinked word with exactly one candidate Entry opens it.
+An unlinked word with several opens the menu under that word, and the reader picks.
+The word's place is read off the control that drew it, at the offset the engine settled on.
+An unlinked word with no candidate opens nothing.
+
+## `internal void PWindowSenseShow(FrameworkElement anchor, Rect place, long entryId, Action<long> chosen)`
+
+Opens the menu in Sense mode on the Meanings of one Entry.
+The window reads the Meanings, because the menu holds no engine.
+A read that fails is reported the way a failed word lookup is, and nothing opens.
+The linking gesture is the caller, and it passes what to do with the chosen sense.
+Both the card row and the corpus scribe call it.
+
+## `internal void PWindowProspectShow(FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)`
+
+Passes the corpus scribe's ask for the Entry picker through to the editor that owns it.
+The popup is declared once, in the editor, and the window is the only path between the two panels.
+
+## `private void PMentionLeaveHandle(object? sender, EventArgs e)`
+
+The menu closes when the window loses activation.
+A popup that stays open over another window would answer keys meant for that window.
+
 ## `internal void PWindowSituationShow(long id)`
 
 Switches to the repertoire panel and opens one Situation there.

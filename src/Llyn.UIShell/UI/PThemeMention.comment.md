@@ -1,0 +1,36 @@
+# PThemeMention.xaml
+
+## `<Style x:Key="Theme.Mention.Linked" TargetType="Run">`
+
+A word that stands for an Entry is underlined in the accent colour.
+A reader tells at a glance which words of a sentence lead somewhere.
+
+## `<Style x:Key="Theme.Mention.Silent" TargetType="Run">`
+
+A word marked as standing for nothing is drawn plain.
+It is still a piece of its own, so a click on it is answered without asking the engine.
+
+## `<ContextMenu x:Key="Theme.Mention.Menu">`
+
+The menu the linking gesture is asked through, built once and attached to every sentence field by key.
+Link, choose, silence and unlink each carry one of the four Mention commands.
+Each item names the field the menu opened over as its target, so the command reaches the field's host.
+Which items are enabled follows the selection, answered by the host's command checks when the menu opens.
+Cut, copy and paste stand below a separator, because a custom menu replaces the field's own.
+
+## `<Style x:Key="Theme.Mention.Line" TargetType="ItemsControl">`
+
+The chip line under a sentence field, wrapped, and collapsed while it holds nothing.
+A row without Mentions is as tall as it was before the line existed.
+
+## `<Style x:Key="Theme.Mention.Sense" TargetType="TextBlock">`
+
+The Meaning title on a chip, hidden when the Mention stands for the whole Entry.
+
+## `<DataTemplate x:Key="Theme.Mention.Chip">`
+
+One Mention: the word, an arrow, the headword it stands for, and the Meaning when narrowed.
+A word standing for nothing shows the silent mark in place of a headword.
+The remove button asks the unlink command with the chip as its parameter.
+The chip is drawn as a badge rather than a pellet.
+It reports a link and is not the link itself.

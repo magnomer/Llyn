@@ -261,6 +261,30 @@ internal static partial class TInterface
         long entryId) =>
         inflectionArchive.LInflectionRead(entryId);
 
+    internal static LMentionArchive TMentionArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static IReadOnlyList<LMention> TMentionRead(
+        this LMentionArchive mentionArchive,
+        long exampleId) =>
+        mentionArchive.LMentionExampleRead(exampleId);
+
+    internal static IReadOnlyList<long> TMentionSave(
+        this LMentionArchive mentionArchive,
+        long exampleId,
+        IReadOnlyList<LMention> mentions) =>
+        mentionArchive.LMentionExampleSave(exampleId, mentions);
+
+    internal static void TMentionCopy(this LMentionArchive mentionArchive, long fromId, long toId)
+    {
+        mentionArchive.LMentionExampleCopy(fromId, toId);
+    }
+
+    internal static void TExampleTextUpdate(this LExampleArchive exampleArchive, long exampleId, LStateValue text)
+    {
+        exampleArchive.LExampleTextUpdate(exampleId, text);
+    }
+
     internal static LMorphologyArchive TMorphologyArchiveCreate(LDatabase database) =>
         new(database);
 

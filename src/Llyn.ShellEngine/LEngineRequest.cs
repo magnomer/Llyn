@@ -41,7 +41,10 @@ public sealed partial class LEngine
         return request switch
         {
             LRequestExampleText sent => LEngineExampleChange(
-                draft, example => example with { LExampleText = LEngineValueRead(sent.LRequestValue) }),
+                draft, example => LEngineMentionUpdate(example, LEngineValueRead(sent.LRequestValue))),
+            LRequestMentionAddition sent => LEngineMentionAdd(draft, sent),
+            LRequestMentionRemoval sent => LEngineMentionRemove(draft, sent),
+            LRequestMentionSense sent => LEngineMentionChange(draft, sent),
             LRequestExampleTranslation sent => LEngineExampleChange(
                 draft, example => example with { LExampleTranslation = LEngineValueRead(sent.LRequestValue) }),
             LRequestExampleLanguage sent => LEngineExampleChange(

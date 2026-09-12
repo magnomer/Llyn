@@ -4,7 +4,8 @@
 
 One transcription of an entry as one value the input form carries.
 An entry holds an ordered list of these, one per scheme the form shows.
-A row with a scheme but no text is a row still being filled, kept in the draft and dropped on commit.
+A row with a scheme but no text is a row still being filled.
+It is kept in the draft and dropped on commit.
 
 **Parameters**
 

@@ -25,6 +25,7 @@ The lane is zero until the rail is actually shown, and only on the axis showing 
 An empty lane beside a short popup would read as a margin nobody asked for.
 The computed visibility is what opens the lane, so a disabled or unneeded axis stays closed.
 Each rail is given the lane size and the matching rail template here rather than by a style.
-A style written beside the scroll viewer never reaches a rail the template makes, so the rail would keep its default thickness.
+A style written beside the scroll viewer never reaches a rail the template makes.
+The rail would keep its default thickness.
 WPF requires the parts to be named "PART_ScrollContentPresenter", "PART_VerticalScrollBar" and "PART_HorizontalScrollBar".
 They stay in code for the same reason the track name does.

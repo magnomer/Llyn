@@ -17,7 +17,8 @@ The state is the whole of what is known.
 
 A fourth case is not a state but a diagnosis.
 The store may hold a state word the engine cannot read.
-Such a value is unreadable: its state stands unspecified, it keeps the stored text for showing, and it can never be written back.
+Such a value is unreadable.
+Its state stands unspecified, it keeps the stored text for showing, and it can never be written back.
 Only a store reading produces it, never a form.
 
 **Parameters**
@@ -67,4 +68,5 @@ An unknown value is not empty by this reading: something is there, and only its 
 ## `public LStateValue LStateValueNormalize()`
 
 This value when it is readable, and the unspecified value when it is not.
-The stored text an unreadable value carried is lost here, which is why only the engine calls it and only after the user agreed.
+The stored text an unreadable value carried is lost here.
+That is why only the engine calls it, and only after the user agreed.

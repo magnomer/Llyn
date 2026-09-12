@@ -3,7 +3,8 @@
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
 The seams that part the situation catalog from the situation it opens.
-The row seam runs under the ordering bar and the command row, bled past the panel margin so it meets the navigation's own edge.
+The row seam runs under the ordering bar and the command row.
+It is bled past the panel margin so it meets the navigation's own edge.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
 Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.
 

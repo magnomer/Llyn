@@ -45,6 +45,17 @@ internal static partial class TInterface
         long draftId, long cardId, long sentenceId, long referenceId) =>
         new LRequestSentenceReference(draftId, cardId, sentenceId, referenceId);
 
+    internal static LRequest TMentionAdditionCreate(
+        long draftId, long cardId, long sentenceId, int offset, int length, long entryId, long senseId = 0) =>
+        new LRequestMentionAddition(draftId, cardId, sentenceId, offset, length, entryId, senseId);
+
+    internal static LRequest TMentionRemovalCreate(long draftId, long cardId, long sentenceId, long mentionId) =>
+        new LRequestMentionRemoval(draftId, cardId, sentenceId, mentionId);
+
+    internal static LRequest TMentionSenseCreate(
+        long draftId, long cardId, long sentenceId, long mentionId, long senseId) =>
+        new LRequestMentionSense(draftId, cardId, sentenceId, mentionId, senseId);
+
     internal static LRequest TSituationAdditionCreate(long draftId, long cardId, string title, int position) =>
         new LRequestSituationAddition(draftId, cardId, TStateValueCreate(title).TStateWrittenRead(), position);
 

@@ -22,7 +22,8 @@ The file on disk is the workspace's.
 
 ### `public void EntryUpdate_ReorderedPronunciations_KeepsIdsAndAudio()`
 
-A row keeps its id across a save, so the recording hanging from it stays attached when the list is reordered.
+A row keeps its id across a save.
+The recording hanging from it therefore stays attached when the list is reordered.
 The first row after the save is the one every summary shows.
 
 ### `private static string TPronunciationFileRead(TWorkspace workspace)`

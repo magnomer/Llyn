@@ -135,19 +135,55 @@ public sealed class LSentenceArchive
         command.Parameters.AddWithValue("$owner", ownerId);
 
         List<LSentence> sentences = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
+        using (SqliteDataReader reader = command.ExecuteReader())
         {
-            sentences.Add(new LSentence(
-                reader.GetInt64(0),
-                reader.GetInt64(1),
-                reader.GetInt32(2),
-                reader.IsDBNull(3) ? null : LSentenceExampleRead(reader, 3),
-                LStateColumn.LStateColumnRead(reader, 11),
-                LStateColumn.LStateColumnRead(reader, 13)));
+            while (reader.Read())
+            {
+                sentences.Add(new LSentence(
+                    reader.GetInt64(0),
+                    reader.GetInt64(1),
+                    reader.GetInt32(2),
+                    reader.IsDBNull(3) ? null : LSentenceExampleRead(reader, 3),
+                    LStateColumn.LStateColumnRead(reader, 11),
+                    LStateColumn.LStateColumnRead(reader, 13)));
+            }
         }
 
-        return sentences;
+        return LSentenceMentionLoad(connection, sentences);
+    }
+
+    private static IReadOnlyList<LSentence> LSentenceMentionLoad(
+        SqliteConnection connection, IReadOnlyList<LSentence> sentences)
+    {
+        List<LExample> examples = [];
+        foreach (LSentence sentence in sentences)
+        {
+            if (sentence.LSentenceExample is not null)
+            {
+                examples.Add(sentence.LSentenceExample);
+            }
+        }
+
+        if (examples.Count == 0)
+        {
+            return sentences;
+        }
+
+        Dictionary<long, LExample> filled = [];
+        foreach (LExample example in LExampleArchive.LExampleMentionLoad(connection, examples))
+        {
+            filled[example.LExampleId] = example;
+        }
+
+        List<LSentence> result = new(sentences.Count);
+        foreach (LSentence sentence in sentences)
+        {
+            result.Add(sentence.LSentenceExample is null
+                ? sentence
+                : sentence with { LSentenceExample = filled[sentence.LSentenceExample.LExampleId] });
+        }
+
+        return result;
     }
 
     private static void LSentenceTableClear(

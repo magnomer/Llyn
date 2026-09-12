@@ -1,4 +1,4 @@
-# LExample.cs
+﻿# LExample.cs
 
 ## `public sealed record LExample(`
 
@@ -30,8 +30,20 @@ It says instead when the user marked the value as not known.
 - `LExampleSource` — The single referenced Source, by its id when one is cited.
   Nothing was recorded when none is cited.
   It is unknown when the user marked the citation as not known.
+- `LExampleMention` — The words of the sentence that stand for an Entry, as [LMention](LMention.comment.md) rows ordered by start.
+  The list is the Example's own, so every card quoting the sentence reads the same words the same way.
+  It stands empty until one is drawn.
+
+## `public bool Equals(LExample? other)`
+
+Two Examples are equal when every field is equal and the Mention lists match row by row.
+A record compares a list by reference, which would make every read a change.
+
+## `public override int GetHashCode()`
+
+The hash that agrees with that equality.
 
 ## `public LExample LExampleNormalize()`
 
-The same Example with every unreadable value dropped to unspecified.
+The same Example with every unreadable value dropped to unspecified and its Mentions sorted by start.
 Called only after the user agreed to lose what the store could not read.

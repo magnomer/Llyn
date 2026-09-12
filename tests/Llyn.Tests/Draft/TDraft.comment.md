@@ -112,7 +112,8 @@ Taking the update branch would refuse it forever, and the work would sit unsaved
 ## `public void DraftCommit_DraftsTranslatingEachOther_StoresBothLinks()`
 
 Two drafts each naming the other as a translation must both keep their link once committed.
-The second draft commits inside the first, before the first has an id, so its link cannot settle in the ordinary pass.
+The second draft commits inside the first, before the first has an id.
+Its link therefore cannot settle in the ordinary pass.
 The engine holds that link back and writes it once every entry in the round has its id.
 Losing it silently was the old behaviour, and nothing told the user.
 

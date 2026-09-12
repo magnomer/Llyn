@@ -3,7 +3,8 @@
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
 The seams that part the tag catalog, the entries under a tag, and the entry itself.
-The row seam runs under the ordering bar and the command row, bled past the panel margin so it meets the navigation's own edge.
+The row seam runs under the ordering bar and the command row.
+It is bled past the panel margin so it meets the navigation's own edge.
 There are two column seams here rather than one, because this panel reads across three columns and not two.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
 Neither seam encloses anything, which is the whole rule: a line marks a division, a box would claim an object.

@@ -23,14 +23,16 @@ Ascending is the right figure here, because a register catalog is a range and no
 ## The third ordering
 
 A register catalog offers most-marked-first, which the tag catalog does not.
-A Register carries a real count of the cards marked with it, so it is a question worth asking of the shelf.
+A Register carries a real count of the cards marked with it.
+It is therefore a question worth asking of the shelf.
 A tag catalog has no such count to sort on.
 
 ## The shipped label
 
 The language of the pack that ships a row is shown on that row alone.
 A row the user wrote belongs to no language and shows nothing there.
-It is what tells the two kinds of row apart, and a shipped row is the kind that refuses a rename.
+It is what tells the two kinds of row apart.
+A shipped row is the kind that refuses a rename.
 
 ## The chosen mark
 
@@ -46,4 +48,5 @@ Each row carries the flag, the headword and the language, in the library catalog
 ## `<local:PRail Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ...>`
 
 The entry actions over the reader, and the reader/editor toggle.
-Export and Print are absent here, unlike the taxonomy panel, because this panel is not a place work is exported from.
+Export and Print are absent here, unlike the taxonomy panel.
+This panel is not a place work is exported from.

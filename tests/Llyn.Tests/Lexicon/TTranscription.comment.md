@@ -3,7 +3,8 @@
 ## `public sealed class TTranscription`
 
 Covers the transcriptions an Entry keeps, one row per scheme, beside its pronunciations.
-That is their order and ids across a save, the one-scheme rule the engine refuses on, and the list the language pack declares.
+That is their order and ids across a save, and the one-scheme rule the engine refuses on.
+It also covers the list the language pack declares.
 It also covers the draft requests that add, move, rename and drop a transcription row before a save.
 
 ## Inline notes

@@ -17,15 +17,18 @@ Applies one change to the source the draft holds, and refuses a draft holding no
 ## `private static LReference LEngineBodyApply(LReference held, LRequestReferenceBody sent)`
 
 Resolves each written field of the sent source and lays it over the held one, keeping the held id.
-Nothing is compared here; the caller drops the result when it equals what was held.
+Nothing is compared here.
+The caller drops the result when it equals what was held.
 
 ## `private static LExample LEngineBodyApply(LExample held, LRequestExampleBody sent)`
 
-Resolves the written text and translation and the chosen source of the sent sentence and lays them, with the language, over the held one, keeping the held id.
+Resolves the written text and translation and the chosen source of the sent sentence.
+It lays them, with the language, over the held one, keeping the held id.
 
 ## `private static LSituation LEngineBodyApply(LSituation held, LRequestSituationBody sent)`
 
-Resolves the written title, description and kind of the sent situation and lays them over the held one, keeping the held id.
+Resolves the written title, description and kind of the sent situation.
+It lays them over the held one, keeping the held id.
 The situation panel and the chips both route here through `LEngineSituationChange`.
 
 ## `private LDraft LEngineAuthorAdd(LDraft draft, LRequestAuthorAddition request)`

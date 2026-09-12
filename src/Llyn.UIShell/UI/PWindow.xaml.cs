@@ -18,6 +18,11 @@ public partial class PWindow : Window
 
         InitializeComponent();
 
+        Resources.MergedDictionaries.Add(new PMentionMenuTemplate(this));
+        PMentionList.ItemsSource = _pMentionItem;
+        PreviewKeyDown += PMentionKeyHandle;
+        Deactivated += PMentionLeaveHandle;
+
         PWindowStateRestore();
         PWindowStateAttach();
 

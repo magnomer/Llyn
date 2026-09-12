@@ -30,7 +30,8 @@ A frame saved before any sentence was written still reaches the field that offer
 
 A row the owner names again by its id is rewritten in place, so its id survives the save.
 A row the owner stopped naming goes, and a row named by no id is new.
-The row is a thing with content of its own, so a caller holding its id must find the same row after a save.
+The row is a thing with content of its own.
+A caller holding its id must therefore find the same row after a save.
 
 ## `public void SentenceSave_SharedExample_KeepsEachMeaningsFrame()`
 

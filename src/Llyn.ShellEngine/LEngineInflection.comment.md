@@ -39,7 +39,8 @@ Appends `inflections` to the end of the Entry's list, leaving the forms already 
 ## `private void LEngineInflectionValidate(IReadOnlyList<LInflection> inflections)`
 
 Refuses a list naming a part of speech or a morphology value the workspace no longer holds.
-The store would refuse it as a foreign-key failure, which reaches the reader as a crash and not as an answer.
+The store would refuse it as a foreign-key failure.
+That reaches the reader as a crash and not as an answer.
 Every other link a draft carries is checked before it is written, and an inflection is no different.
 
 ## `public void LEngineInflectionMove(long entryId, int position, int target)`

@@ -3,7 +3,8 @@
 ## `public partial class PEditor`
 
 The Entries an entry's cards link to, resolved once for the whole form.
-A card stores link ids and its field shows words, so something has to join the two before a card is built.
+A card stores link ids and its field shows words.
+Something has to join the two before a card is built.
 The engine is asked, because the panel reaches no database of its own.
 
 ## Inline notes

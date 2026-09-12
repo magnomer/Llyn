@@ -3,7 +3,8 @@
 ## `<Style x:Key="Theme.Command.Group" TargetType="Border">`
 
 The tray a panel's commands sit in, and the same tray the input header's pair sits in.
-It has no ground, no edge and no shadow of its own, so the commands read as commands rather than as a boxed group.
+It has no ground, no edge and no shadow of its own.
+The commands therefore read as commands rather than as a boxed group.
 Each command keeps its own hover and press, which is where a button says it is a button.
 A disabled tray is dimmed whole, there being no edge left to pale.
 

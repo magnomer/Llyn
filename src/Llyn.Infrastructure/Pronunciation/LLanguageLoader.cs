@@ -17,6 +17,7 @@ public static class LLanguageLoader
     private const string LLanguageLoaderFont = "font";
     private const string LLanguageLoaderExample = "example";
     private const string LLanguageLoaderScheme = "transcription";
+    private const string LLanguageLoaderSeparator = "separator";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -99,7 +100,16 @@ public static class LLanguageLoader
             LLanguageFontRead(root, LLanguageLoaderExample),
             LLanguageSourceScan(root, LLanguageLoaderLookup),
             LLanguageSourceScan(root, LLanguageLoaderHarvest),
-            LLanguageSchemeScan(root));
+            LLanguageSchemeScan(root),
+            LLanguageSeparatorRead(root));
+    }
+
+    private static bool LLanguageSeparatorRead(JsonElement root)
+    {
+        string? separator = root.ValueKind == JsonValueKind.Object
+            ? LLanguageTextRead(root, LLanguageLoaderSeparator)
+            : null;
+        return !string.Equals(separator?.Trim(), "none", StringComparison.OrdinalIgnoreCase);
     }
 
     private static IReadOnlyList<string> LLanguageSchemeScan(JsonElement root)

@@ -1,4 +1,4 @@
-# LLanguage.cs
+﻿# LLanguage.cs
 
 ## `public sealed record LLanguage(`
 
@@ -26,4 +26,9 @@ Everything language-specific arrives through this record.
   A site good for transcriptions need not serve audio, and either list may stand empty.
 - `LLanguageSchemes` — The transcription schemes the pack declares, such as Jyutping or Pinyin, in the order the form shows them.
   An empty list turns the transcription line off for that language.
-  The list seeds new rows only; a stored row keeps its scheme after the pack changes.
+  The list seeds new rows only.
+  A stored row keeps its scheme after the pack changes.
+- `LLanguageSeparated` — Whether the language writes a space between its words.
+  The pack states it with the top-level key `separator`, `space` or `none`.
+  A pack that omits the key is read as separated.
+  Japanese, Mandarin and Cantonese declare `none`, so a word there is a run of one script.

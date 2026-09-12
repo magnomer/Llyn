@@ -66,8 +66,10 @@ The rows of the field that hold something, in the order the card gives them.
 
 Turns one row of the field into the id of a stored Register.
 A row that names a stored Register keeps it, and a renamed written row rewrites that row's name.
-A positive id nothing is stored under is refused, because the card would otherwise be bound to a row the user never chose.
-A row carrying a negative id is looked up by its wording first, so a name the shelf already holds is shared rather than doubled.
+A positive id nothing is stored under is refused.
+The card would otherwise be bound to a row the user never chose.
+A row carrying a negative id is looked up by its wording first.
+A name the shelf already holds is shared rather than doubled.
 Only then is a new written Register created, recorded in the map under that id.
 
 ## `private LRegister? LEngineRegisterResolve(string name, string language)`
@@ -75,4 +77,5 @@ Only then is a new written Register created, recorded in the map under that id.
 The stored Register whose name reads as `name`, or `null` when none does.
 Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, so case and edge spaces do not make a second row.
 The shelf offered is the one `language` sees: its own pack rows and every written row.
-The engine holds this rule so the form, a commit and any other client all get one row for one wording.
+The engine holds this rule.
+The form, a commit and any other client therefore all get one row for one wording.

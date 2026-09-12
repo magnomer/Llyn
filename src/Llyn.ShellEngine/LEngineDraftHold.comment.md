@@ -80,8 +80,10 @@ The form always offers one empty card, and an empty card is not work.
 ## `public void LEngineDraftSweep(long id)`
 
 Drops every unreadable value the held draft carries to unspecified and stores the draft again.
-A commit refuses a draft holding unreadable values, so the shell asks the user and then calls this before committing again.
-The data the store could not read is lost here, on purpose, and a draft bulletin follows so every view re-reads.
+A commit refuses a draft holding unreadable values.
+The shell asks the user and then calls this before committing again.
+The data the store could not read is lost here, on purpose.
+A draft bulletin follows so every view re-reads.
 
 ## `public LOutcome LEngineDraftCommit(long id)`
 
@@ -104,7 +106,8 @@ That reaches the reader as a crash and not as an answer.
 The whole round, every target and the draft itself, runs inside one database session.
 A refusal anywhere in it rolls every entry of the round back, so a half-committed round never stands.
 The file side is settled only after that session commits.
-A held draft file and its claim go then, never before, so a rolled-back round leaves every file for a retry.
+A held draft file and its claim go then, never before.
+A rolled-back round therefore leaves every file for a retry.
 A refusal from the store therefore leaves the file on disk exactly as it was, so nothing typed is lost.
 The draft file is rewritten with the stored entry id the moment the database write returns.
 A kill between the two writes would otherwise leave the entry stored and the file blank.
@@ -129,7 +132,8 @@ The caller asking for this commit owns its own draft, so the walk opens holding 
 
 ## `private LOutcome LEngineDraftCommit(long id, bool held, Dictionary<long, LDraft> loaded, Dictionary<long, LOutcome> settled, List<LCourt> deferred, List<long> finished)`
 
-The same commit, carrying what the walk has already loaded and settled, whether this frame holds its own draft, the links held back and the drafts to finish.
+The same commit, carrying what the walk has already loaded and settled.
+It also carries whether this frame holds its own draft, the links held back and the drafts to finish.
 Each frame builds its own map, so a frame reports only the ids its own draft held.
 Two drafts naming each other would otherwise recurse until the stack died, which no catch can reach.
 A target already loaded is not entered again, since the walk is settling it further up.
@@ -224,6 +228,7 @@ Both card lists are settled, because a chip can sit on a meaning or on a colloca
 ## `private IReadOnlyList<LCardDraft> LEngineTranslationSettle(IReadOnlyList<LCardDraft> cards)`
 
 Keeps only the translations that still read as a stored entry.
-An id that reads nothing points at a record that was discarded, never arrived, or is still being committed in this round.
+An id that reads nothing points at a record that was discarded or never arrived.
+It may also be one still being committed in this round.
 There is nothing to store it against yet, and the round's last pass writes the ones that become real.
 The check is a single row read, not a load of the whole entry tree.

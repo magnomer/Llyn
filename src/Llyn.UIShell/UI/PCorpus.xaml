@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Llyn.UIShell.PCorpus"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -214,7 +214,7 @@
                             </StackPanel>
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Example.Text}" />
-                            <TextBlock x:Name="PExcerptText" Margin="0,5,0,0" FontSize="20" TextWrapping="Wrap" />
+                            <local:PMention x:Name="PExcerptText" Margin="0,5,0,0" FontFamily="{DynamicResource Theme.Font}" FontSize="20" PMentionClick="PExcerptMentionHandle" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Example.Translation}" />
                             <TextBlock x:Name="PExcerptTranslation" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" TextWrapping="Wrap" />
@@ -268,6 +268,12 @@
                 </Grid>
 
                 <Grid x:Name="PTranscript" Visibility="Collapsed">
+                    <Grid.CommandBindings>
+                        <CommandBinding CanExecute="PTranscriptLinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandLink}" Executed="PTranscriptLinkHandle" />
+                        <CommandBinding CanExecute="PTranscriptSenseCheck" Command="{x:Static local:PMentionCommand.PMentionCommandChoose}" Executed="PTranscriptSenseHandle" />
+                        <CommandBinding CanExecute="PTranscriptLinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandSilence}" Executed="PTranscriptSilenceHandle" />
+                        <CommandBinding CanExecute="PTranscriptUnlinkCheck" Command="{x:Static local:PMentionCommand.PMentionCommandUnlink}" Executed="PTranscriptUnlinkHandle" />
+                    </Grid.CommandBindings>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
@@ -314,10 +320,12 @@
                                 Margin="0,7,0,0"
                                 Padding="12,9"
                                 AcceptsReturn="True"
+                                ContextMenu="{DynamicResource Theme.Mention.Menu}"
                                 Style="{StaticResource Theme.Input.Field}"
                                 TextChanged="PTranscriptTextHandle"
                                 TextWrapping="Wrap"
                                 VerticalContentAlignment="Top" />
+                            <ItemsControl x:Name="PTranscriptMentionLine" ItemTemplate="{DynamicResource Theme.Mention.Chip}" Style="{DynamicResource Theme.Mention.Line}" />
 
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Example.Translation}" />
                             <TextBox

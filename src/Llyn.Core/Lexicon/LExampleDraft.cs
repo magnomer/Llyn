@@ -1,11 +1,16 @@
-﻿namespace Llyn.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Llyn.Core;
 
 public sealed record LExampleDraft(
     LStateValue LExampleDraftText,
     long LExampleDraftId,
     LStateAnchor LExampleDraftReference,
     LStateValue LExampleDraftTranslation,
-    string LExampleDraftLanguage = "")
+    string LExampleDraftLanguage = "",
+    IReadOnlyList<LMentionDraft>? LExampleDraftMention = null) : IEquatable<LExampleDraft>
 {
     public LStateValue LExampleDraftText { get; init; } =
         LExampleDraftText ?? LStateValue.LStateValueUnspecified;
@@ -18,6 +23,30 @@ public sealed record LExampleDraft(
 
     public string LExampleDraftLanguage { get; init; } = LExampleDraftLanguage ?? string.Empty;
 
+    public IReadOnlyList<LMentionDraft> LExampleDraftMention { get; init; } = LExampleDraftMention ?? [];
+
+    public bool Equals(LExampleDraft? other)
+    {
+        return other is not null
+            && LExampleDraftId == other.LExampleDraftId
+            && LExampleDraftText.Equals(other.LExampleDraftText)
+            && LExampleDraftReference.Equals(other.LExampleDraftReference)
+            && LExampleDraftTranslation.Equals(other.LExampleDraftTranslation)
+            && LExampleDraftLanguage == other.LExampleDraftLanguage
+            && LExampleDraftMention.SequenceEqual(other.LExampleDraftMention);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(
+            LExampleDraftId,
+            LExampleDraftText,
+            LExampleDraftReference,
+            LExampleDraftTranslation,
+            LExampleDraftLanguage,
+            LExampleDraftMention.Count);
+    }
+
     public LExampleDraft LExampleDraftNormalize()
     {
         return this with
@@ -25,6 +54,7 @@ public sealed record LExampleDraft(
             LExampleDraftText = LExampleDraftText.LStateValueNormalize(),
             LExampleDraftReference = LExampleDraftReference.LStateAnchorNormalize(),
             LExampleDraftTranslation = LExampleDraftTranslation.LStateValueNormalize(),
+            LExampleDraftMention = LMentionDraft.LMentionDraftSort(LExampleDraftMention),
         };
     }
 

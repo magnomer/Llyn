@@ -57,3 +57,4 @@ Field by field, whether two sentences say the same thing.
 Identity is left out, because a held sentence is named before the Example it becomes exists.
 The language counts, because the tongue a sentence is written in is part of the sentence.
 The cited Source counts too, so recitation is a change like any other.
+The Mentions count as well, so linking a word is an edit the panel reports and commit writes.

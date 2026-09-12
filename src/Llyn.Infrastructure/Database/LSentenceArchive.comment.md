@@ -37,7 +37,8 @@ A row the list names by a positive id of this Meaning is rewritten in place and 
 A row named by no id, or by an id this Meaning does not hold, is inserted fresh.
 A row the list stopped naming is deleted, so the list handed in is the list that stands.
 The answer lists the ids in the order given, so the caller can map a draft id to its row.
-A row is a thing with content of its own, so a caller holding its id finds the same row after the save.
+A row is a thing with content of its own.
+A caller holding its id therefore finds the same row after the save.
 
 ## `public IReadOnlyList<long> LSentenceCollocationSave(long collocationId, IReadOnlyList<LSentence> sentences)`
 
@@ -95,10 +96,16 @@ The table and the owner column are store-owned literals named by the methods abo
 They are never caller input, so composing them into the statement text opens no injection seam.
 Every value still travels as a parameter.
 
+### `private static IReadOnlyList<LSentence> LSentenceMentionLoad(`
+
+Fills the Mentions of every cited Example after the rows are read, in one further statement.
+A row citing nothing is passed through as it stands.
+
 ### `private static bool LSentenceChange(`
 
 Rewrites one row in place, and answers whether a row of this owner carried that id.
-The owner is part of the match, so an id that belongs to another owner is not touched and reads as new.
+The owner is part of the match.
+An id that belongs to another owner is not touched and reads as new.
 
 ### `private static void LSentencePositionAdjust(`
 

@@ -12,7 +12,8 @@ The mode toggle is not in here, because it sits in the panel's action row.
 ## `<Style x:Key="Imprint.Unknown" ...>`
 
 The `?` toggle every stated field carries.
-It stays in this file rather than the merged dictionary, because a style built on another must be resolved where that other is reachable.
+It stays in this file rather than the merged dictionary.
+A style built on another must be resolved where that other is reachable.
 
 ## `<Grid x:Name="PAuthor" Margin="0,7,0,0">`
 

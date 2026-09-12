@@ -225,7 +225,19 @@ public sealed class LEntryLoader
                 example.LExampleId,
                 example.LExampleSource,
                 example.LExampleTranslation,
-                example.LExampleLanguage);
+                example.LExampleLanguage,
+                LEntryMentionRead(example.LExampleMention));
+    }
+
+    private static IReadOnlyList<LMentionDraft> LEntryMentionRead(IReadOnlyList<LMention> mentions)
+    {
+        List<LMentionDraft> drafts = new(mentions.Count);
+        foreach (LMention mention in mentions)
+        {
+            drafts.Add(LMentionDraft.LMentionDraftCreate(mention));
+        }
+
+        return drafts;
     }
 
     private static IReadOnlyList<LSituationDraft> LEntrySituationRead(IReadOnlyList<LSituation> situations)

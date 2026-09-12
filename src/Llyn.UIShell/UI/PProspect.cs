@@ -13,6 +13,8 @@ public partial class PEditor
 
     private PCard? _pProspectCard;
 
+    private Action<long>? _pProspectChosen;
+
     internal void PProspectHandle(object sender, MouseButtonEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PProspectItem item })
@@ -59,8 +61,57 @@ public partial class PEditor
         return false;
     }
 
+    internal void PProspectShow(FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)
+    {
+        ArgumentNullException.ThrowIfNull(anchor);
+        ArgumentNullException.ThrowIfNull(chosen);
+
+        IReadOnlyList<LEntry> found;
+        try
+        {
+            found = _lEngine.LEngineTranslationFind(word, null);
+        }
+        catch (Exception exception)
+        {
+            _pEditorHost.PWindowFailureShow("Mention.FindFailed", exception);
+            return;
+        }
+
+        PProspectHide();
+        foreach (LEntry entry in found)
+        {
+            if (language.Length == 0 || string.Equals(entry.LEntryLanguage, language, StringComparison.Ordinal))
+            {
+                _pProspectItem.Add(new PProspectItem(
+                    entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
+            }
+        }
+
+        if (_pProspectItem.Count == 0)
+        {
+            return;
+        }
+
+        PTwin.PTwinNameApply(
+            _pProspectItem, row => row.PProspectItemHeadword, (row, name) => row.PProspectItemName = name);
+
+        _pProspectChosen = chosen;
+        PProspect.PlacementTarget = anchor;
+        PProspect.HorizontalOffset = place.X;
+        PProspect.VerticalOffset = place.Bottom - anchor.ActualHeight;
+        PProspect.IsOpen = true;
+        PProspectList.SelectedIndex = 0;
+    }
+
     private void PProspectSelect(PProspectItem item)
     {
+        if (_pProspectChosen is Action<long> chosen)
+        {
+            PProspectHide();
+            chosen(item.PProspectItemId);
+            return;
+        }
+
         PCard? card = _pProspectCard;
         if (card is null)
         {
@@ -111,6 +162,9 @@ public partial class PEditor
     private void PProspectShow(PCard card, string word, IReadOnlyList<LEntry> found, bool chosen)
     {
         _pProspectItem.Clear();
+        _pProspectChosen = null;
+        PProspect.HorizontalOffset = 0;
+        PProspect.VerticalOffset = 0;
         foreach (LEntry entry in found)
         {
             _pProspectItem.Add(new PProspectItem(
@@ -134,9 +188,12 @@ public partial class PEditor
     private void PProspectHide()
     {
         PProspect.IsOpen = false;
+        PProspect.HorizontalOffset = 0;
+        PProspect.VerticalOffset = 0;
         PProspectList.SelectedIndex = -1;
         _pProspectItem.Clear();
         _pProspectCard = null;
+        _pProspectChosen = null;
     }
 
     private IReadOnlyList<string> PProspectLanguageRead()

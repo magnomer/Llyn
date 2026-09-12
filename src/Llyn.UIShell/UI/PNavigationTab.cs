@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
@@ -108,6 +109,7 @@ public partial class PWindow
 
     internal void PWindowEntryShow(long id)
     {
+        PMentionMenuHide();
         if (!PLibrary.PLibraryLeaveConfirm())
         {
             return;
@@ -115,6 +117,71 @@ public partial class PWindow
 
         PNavigationHandle(PNavigationLibrary, new RoutedEventArgs());
         PLibrary.PIndexEntryShow(id);
+    }
+
+    internal void PWindowMentionHandle(PMention anchor, LMentionResult result)
+    {
+        ArgumentNullException.ThrowIfNull(anchor);
+        ArgumentNullException.ThrowIfNull(result);
+
+        PMentionMenuHide();
+
+        if (result.LMentionResultStored is LMention stored)
+        {
+            if (stored.LMentionEntryId == 0)
+            {
+                return;
+            }
+
+            PWindowEntryShow(stored.LMentionEntryId);
+            if (stored.LMentionSenseId != 0)
+            {
+                PLibrary.PDisplay.PDisplayCardScroll(stored.LMentionSenseId);
+            }
+
+            return;
+        }
+
+        if (result.LMentionResultEntry.Count == 1)
+        {
+            PWindowEntryShow(result.LMentionResultEntry[0].LTranslationTargetId);
+            return;
+        }
+
+        if (result.LMentionResultEntry.Count > 1)
+        {
+            PMentionMenuShow(anchor, anchor.PMentionPieceRead(result.LMentionResultOffset), result);
+        }
+    }
+
+    internal void PWindowSenseShow(FrameworkElement anchor, Rect place, long entryId, Action<long> chosen)
+    {
+        ArgumentNullException.ThrowIfNull(anchor);
+        ArgumentNullException.ThrowIfNull(chosen);
+
+        IReadOnlyList<LMeaning> meanings;
+        try
+        {
+            meanings = _lEngine.LEngineMeaningRead(entryId, LOwner.LOwnerEntry);
+        }
+        catch (Exception exception)
+        {
+            PWindowFailureShow("Mention.FindFailed", exception);
+            return;
+        }
+
+        PMentionMenuShow(anchor, place, entryId, meanings, chosen);
+    }
+
+    internal void PWindowProspectShow(
+        FrameworkElement anchor, Rect place, string word, string language, Action<long> chosen)
+    {
+        PInput.PEditor.PProspectShow(anchor, place, word, language, chosen);
+    }
+
+    private void PMentionLeaveHandle(object? sender, EventArgs e)
+    {
+        PMentionMenuHide();
     }
 
     internal void PWindowSituationShow(long id)

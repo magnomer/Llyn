@@ -34,10 +34,9 @@ public sealed partial class LEngine
 
     private static LExample LEngineBodyApply(LExample held, LRequestExampleBody sent)
     {
-        return held with
+        return LEngineMentionUpdate(held, LEngineValueRead(sent.LRequestText)) with
         {
             LExampleLanguage = sent.LRequestLanguage ?? string.Empty,
-            LExampleText = LEngineValueRead(sent.LRequestText),
             LExampleTranslation = LEngineValueRead(sent.LRequestTranslation),
             LExampleSource = LStateAnchor.LStateAnchorRead(sent.LRequestReferenceId),
         };

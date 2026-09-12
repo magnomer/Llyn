@@ -13,14 +13,16 @@ The entry-level detail travels as the shapes the archives store, never as flatte
 
 - `LEntryDraftHeadword` — Headword text as typed.
 - `LEntryDraftLanguage` — Language chosen in the language selector.
-- `LEntryDraftPronunciations` — Every pronunciation in list order, the first being the primary one; empty when the entry records none.
+- `LEntryDraftPronunciations` — Every pronunciation in list order, the first being the primary one.
+  Empty when the entry records none.
 - `LEntryDraftNote` — Markdown text of the note editor.
 - `LEntryDraftMeanings` — Meaning cards in list order, whose Expression is always empty.
 - `LEntryDraftCollocations` — Collocation cards in list order.
 - `LEntryDraftSpeeches` — Parts of speech in order, each a language-pack value or a typed name.
 - `LEntryDraftForms` — Variant forms in order, each with its role and its localized label.
 - `LEntryDraftInflections` — Inflections in order, each owning its ordered features.
-- `LEntryDraftTranscriptions` — Transcriptions in list order, one per scheme; empty when the language shows none.
+- `LEntryDraftTranscriptions` — Transcriptions in list order, one per scheme.
+  Empty when the language shows none.
 
 ## `public LPronunciationDraft? LEntryDraftPronunciation`
 

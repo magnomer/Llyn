@@ -37,6 +37,7 @@ public partial class PDisplay : UserControl
         PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
         PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
         PVolume.AddHandler(KeyUpEvent, new KeyEventHandler(PVolumeSave), true);
+        AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
 
         PCompassAttach();
     }

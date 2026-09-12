@@ -21,8 +21,12 @@ Its example begins where an unframed example begins on the writing side.
 A line set the same way in both views does not move.
 A reader who begins to write finds it unchanged.
 
-### `FontFamily="{DynamicResource Theme.Card.ExampleFamily}"`
+### `<local:PMention Grid.Column="2" ...>`
 
+The sentence is drawn by the control that knows its words, so a reader can click one.
+Its text still comes through the frame converter in text mode, so the frame stays out of the sentence.
+Its Mentions come from the draft through `PMentionConverter`, since the control reads the stored shape.
+Its language is the Example's own, because the sentence may be written in a language the entry is not.
 Examples are drawn in the typography the language pack declares for them.
 Both modes read the same two keys, and each sets them on itself for the entry it shows.
 The fallback for a pack that declares none is written once, with the rest of a card's measurements.

@@ -35,6 +35,28 @@ public sealed class TMeaning
     }
 
     [Fact]
+    public void MeaningRead_SubSensesUnderParent_CarryParentAndPosition()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = TMeaningEntryCreate(engine);
+        LMeaning parent = Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry));
+        LMeaning firstChild = engine.TEngineMeaningCreate(TInterface.TMeaningCreate(
+            0, entry.LEntryId, parent.LMeaningId, 0, null, "first sub-sense"));
+        LMeaning secondChild = engine.TEngineMeaningCreate(TInterface.TMeaningCreate(
+            0, entry.LEntryId, parent.LMeaningId, 0, null, "second sub-sense"));
+
+        IReadOnlyList<LMeaning> read = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry);
+
+        Assert.Equal(3, read.Count);
+        LMeaning[] children = read.Where(row => row.LMeaningParentId == parent.LMeaningId)
+            .OrderBy(row => row.LMeaningPosition).ToArray();
+        Assert.Equal([firstChild.LMeaningId, secondChild.LMeaningId], children.Select(row => row.LMeaningId));
+        Assert.Null(read.Single(row => row.LMeaningId == parent.LMeaningId).LMeaningParentId);
+    }
+
+    [Fact]
     public void CollocationCreate_OneRowAtATime_ReadsBackEachStep()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

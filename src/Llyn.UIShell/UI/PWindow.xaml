@@ -119,6 +119,26 @@
                 </Grid>
             </Grid>
 
+            <Popup
+                x:Name="PMentionMenu"
+                Grid.Row="1"
+                Width="320"
+                AllowsTransparency="True"
+                Placement="Bottom"
+                StaysOpen="False">
+                <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                    <StackPanel>
+                        <TextBlock x:Name="PMentionTitle" Style="{StaticResource Theme.Popup.Title}" />
+                        <ListBox
+                            x:Name="PMentionList"
+                            MaxHeight="264"
+                            ItemContainerStyle="{DynamicResource Theme.Mention.Item}"
+                            ItemTemplate="{DynamicResource Theme.Mention.Row}"
+                            Style="{DynamicResource Theme.Mention.List}" />
+                    </StackPanel>
+                </Border>
+            </Popup>
+
         </Grid>
     </Border>
 </Window>

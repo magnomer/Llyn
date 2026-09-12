@@ -26,9 +26,12 @@ The paper it was built for is compared, because typing quickly starts more loads
 ## `private WebView2CompositionControl PScreenBrowserCreate()`
 
 The composition-hosted browser is used rather than the ordinary one.
-The ordinary control is a window of its own, and a window of its own is drawn by the system over everything the program draws.
-Such a player ignored the scroll region it sat in and covered the entry list, the command row and the title bar.
-No draw order, opacity or arrangement reaches a separate window, so the fix could only be to stop it being one.
+The ordinary control is a window of its own.
+A window of its own is drawn by the system over everything the program draws.
+Such a player ignored the scroll region it sat in.
+It covered the entry list, the command row and the title bar.
+No draw order, opacity or arrangement reaches a separate window.
+The fix could only be to stop it being one.
 The composition control draws into the program's own surface and is therefore clipped, layered and moved like every other element.
 It builds its surface through the Windows projection, so the shell is targeted at a Windows-versioned framework to carry it.
 Lowering that target again removes the projection and the player then fails the moment a card holding one is drawn.

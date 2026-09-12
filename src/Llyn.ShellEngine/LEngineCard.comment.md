@@ -69,7 +69,8 @@ Nothing is created or detached for one, and no target row is touched.
 A name that is no Entry is dropped rather than written.
 An import points a card at an Entry the same file declares, and that Entry may not exist yet.
 A newly created card has nothing attached yet, so the same path attaches its whole set.
-A stale positive id anywhere in the card is refused rather than rebound, so the card never points where the user did not.
+A stale positive id anywhere in the card is refused rather than rebound.
+The card therefore never points where the user did not.
 
 ### `private void LEngineSentenceSync(`
 

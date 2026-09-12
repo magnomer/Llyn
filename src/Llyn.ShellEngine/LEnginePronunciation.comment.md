@@ -21,11 +21,13 @@ A path outside the workspace has no relative form and is kept as it stands.
 
 ## `public LPronunciation LEnginePronunciationCreate(LPronunciation pronunciation)`
 
-Creates `pronunciation` after the Entry's others, with its syllables as its ordered child rows, and returns it with its assigned id and position.
+Creates `pronunciation` after the Entry's others, with its syllables as its ordered child rows.
+Returns it with its assigned id and position.
 
 ## `public IReadOnlyList<LPronunciation> LEnginePronunciationRead(long entryId)`
 
-Reads the pronunciations the Entry identified by `entryId` keeps, in order, each with its syllables; empty when it keeps none.
+Reads the pronunciations the Entry identified by `entryId` keeps, in order, each with its syllables.
+Empty when it keeps none.
 
 ## `public void LEnginePronunciationUpdate(LPronunciation pronunciation)`
 

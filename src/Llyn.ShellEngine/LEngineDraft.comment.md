@@ -105,7 +105,8 @@ An empty child is skipped on the same terms an empty card is.
 
 The pronunciations and transcriptions of a new entry are written by the same reconciliation an update runs.
 On a fresh entry nothing is stored yet, so every row the draft carries is created.
-A positive id the draft still holds names a row of an entry since deleted, so it is reset to zero first.
+A positive id the draft still holds names a row of an entry since deleted.
+It is reset to zero first.
 Otherwise the commit would refuse the row instead of writing it anew.
 
 ### `private static IReadOnlyList<LPronunciationDraft> LEnginePronunciationReset(`
@@ -148,12 +149,32 @@ An Example carrying an id names a stored row, however little its sentence says.
 ### `private LExample LEngineExampleResolve(`
 
 The stored Example a row's positive id names, updated to what the row now says.
-A positive id nothing is stored under is refused, because the card would otherwise be bound to a row the user never chose.
-An Example other cards also quote is pool data, so an edit made through this card gives this card a fresh row instead.
+A positive id nothing is stored under is refused.
+The card would otherwise be bound to a row the user never chose.
+An Example other cards also quote is pool data.
+An edit made through this card gives this card a fresh row instead.
 The other cards keep the row they quoted, unchanged, because nobody edited it there.
 A row carrying a negative id gets a fresh Example, recorded in the map under the negative id it replaces.
 No row is ever matched by its wording, so two new rows with one sentence stay two rows.
 The language falls back to the entry's when the Example states none of its own.
+The Mentions count as part of what the row says.
+A row whose text and Source are unchanged but whose Mentions differ rewrites the Mention rows in place.
+That holds whoever else quotes the Example.
+A Mention is the Example's own, so every card citing one sentence reads the same words the same way.
+A fork made for a text or Source edit is created with the row's Mentions, already shifted by the edit.
+The old row keeps its own.
+A fresh Example is created with its Mentions in one call.
+Every Mention written under a negative id is recorded in the map, matched by its offset.
+
+### `private static IReadOnlyList<LMentionDraft> LEngineMentionResolve(LExampleDraft written)`
+
+The Mentions of a row that still fit its text, sorted by offset.
+A span past the end is dropped here rather than refused.
+A text set without the shift therefore cannot block a commit.
+
+### `private static void LEngineMentionRecord(`
+
+Records every negative Mention id under the stored id at the same offset.
 
 ### `private bool LEngineShareCheck(long exampleId, long ownerId, bool collocation)`
 
@@ -164,7 +185,8 @@ The owner side matters, because a Meaning and a Collocation can carry one id eac
 
 The stored Situation a chip's positive id names, updated to what the chip now says.
 A positive id nothing is stored under is refused rather than rebound.
-A chip carrying a negative id is looked up by its title first, so a wording the workspace already holds is shared rather than doubled.
+A chip carrying a negative id is looked up by its title first.
+A wording the workspace already holds is shared rather than doubled.
 Only then is a fresh Situation made, recorded in the map under the negative id it replaces.
 
 ### `private static bool LEngineImageCheck(IReadOnlyList<LImageDraft> rows)`

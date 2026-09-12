@@ -2,7 +2,8 @@
 
 ## `public sealed partial class LEngine`
 
-The transcription side of the engine: the ordered rows an Entry keeps, one per scheme, and the schemes a language declares.
+The transcription side of the engine.
+It covers the ordered rows an Entry keeps, one per scheme, and the schemes a language declares.
 A transcription is a spelling of the reading in a named scheme, never IPA.
 So it lives beside the pronunciation rather than inside it, and neither points at the other.
 
@@ -13,7 +14,8 @@ An empty list means the language shows no transcription line.
 
 ## `public IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)`
 
-Reads the transcriptions the Entry identified by `entryId` keeps, in order; empty when it keeps none.
+Reads the transcriptions the Entry identified by `entryId` keeps, in order.
+Empty when it keeps none.
 
 ## `public IReadOnlyList<LTranscription> LEngineTranscriptionSet(long entryId, IReadOnlyList<LTranscription> transcriptions)`
 

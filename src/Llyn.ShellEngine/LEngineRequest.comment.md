@@ -19,7 +19,8 @@ Applies one request to the held draft it names and returns the draft as saved.
 The draft must be held by this engine, so a request for a leftover or another copy's draft is refused.
 The content is normalized after the change, so anything the change left unnamed is named before the write.
 A request that leaves the draft equal to what was held writes nothing and raises nothing.
-So a form may send the whole body of a panel on every pause, and only a real change is announced.
+So a form may send the whole body of a panel on every pause.
+Only a real change is announced.
 The bulletin is raised outside the gate, after the file is written.
 So a subscriber that re-reads on the bulletin reads what was announced, and never deadlocks on the gate.
 The saved draft is returned as well, so a caller can read a minted id without waiting for the bulletin.

@@ -32,7 +32,8 @@ The caret is put after the inserted character, so a second character continues t
 
 ### `private void PArticulationPlace(double lane)`
 
-The lane is asked for one row of charts and takes a second only when the two do not fit across it.
+The lane is asked for one row of charts.
+It takes a second only when the two do not fit across it.
 The consonant chart is the one that moves, because the vowel chart is the narrower of the two.
 The widths come from what each card asked for rather than from what it was given.
 The lane measures its content unbounded, so those widths stay the natural ones in either arrangement.

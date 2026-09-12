@@ -144,6 +144,27 @@ internal static partial class TInterface
         LStateAnchor source) =>
         new(id, language, text, translation, source);
 
+    internal static LMention TMentionCreate(long id, int start, int length, long entryId, long senseId = 0) =>
+        new(id, start, length, entryId, senseId);
+
+    internal static (int LMentionSpanOffset, int LMentionSpanLength) TMentionSpanResolve(string text, int offset, bool separated) =>
+        LMentionSpan.LMentionSpanResolve(text, offset, separated);
+
+    internal static IReadOnlyList<LMentionPiece> TMentionSpanDivide(string text, IReadOnlyList<LMention> mentions) =>
+        LMentionSpan.LMentionSpanDivide(text, mentions);
+
+    internal static int TMentionOffsetRead(string text, int unit) =>
+        LMentionSpan.LMentionOffsetRead(text, unit);
+
+    internal static int TMentionUnitRead(string text, int offset) =>
+        LMentionSpan.LMentionUnitRead(text, offset);
+
+    internal static LMentionDraft TMentionDraftCreate(long id, int start, int length, long entryId, long senseId = 0) =>
+        new(id, start, length, entryId, senseId);
+
+    internal static LMention TMentionDraftResolve(LMentionDraft draft) =>
+        draft.LMentionDraftResolve();
+
     internal static LExampleDraft TExampleDraftCreate(
         LStateValue text,
         long id,

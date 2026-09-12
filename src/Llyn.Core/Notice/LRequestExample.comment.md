@@ -1,6 +1,7 @@
 # LRequestExample.cs
 
-The requests of the example panel, one per field of the sentence a draft holds on its own, and one for the whole body.
+The requests of the example panel.
+There is one per field of the sentence a draft holds on its own, and one for the whole body.
 They name only the draft, because a draft holds one such sentence.
 A sentence inside a card is edited through the sentence requests instead.
 
