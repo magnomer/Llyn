@@ -3,6 +3,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Llyn.UIShell.PNotationTemplate">
 
+    <DataTemplate x:Key="Theme.Notation.Reading">
+        <Button x:Name="PNotationSelector" Margin="0,3,6,3" VerticalAlignment="Center" Click="PNotationSelectorHandle" Style="{DynamicResource Theme.Popup.RowReading}" ToolTip="{Binding PNotationReadingLabel}">
+            <StackPanel Orientation="Horizontal">
+                <Image x:Name="PNotationReadingFlag" Width="19" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Source="{Binding PNotationReadingFlag}" Stretch="Uniform" />
+                <TextBlock x:Name="PNotationReadingLabel" Margin="0,0,6,0" VerticalAlignment="Center" FontSize="11" Text="{Binding PNotationReadingLabel}">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PNotationReadingFlag}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding PNotationReadingLabel}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock x:Name="PNotationReadingPhonetic" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold"><Run Text="[" /><Run Text="{Binding PNotationReadingPhonetic, Mode=OneWay}" /><Run Text="]" /></TextBlock>
+            </StackPanel>
+        </Button>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding PNotationReadingFlag}" Value="{x:Null}">
+                <Setter TargetName="PNotationReadingFlag" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="PNotationSelector" Property="ToolTip" Value="{x:Null}" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
     <DataTemplate x:Key="Theme.Notation.Row">
         <Border x:Name="PNotationRow" Style="{DynamicResource Theme.Popup.RowSurface}">
             <Grid>
@@ -12,27 +42,25 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemSource}" TextTrimming="CharacterEllipsis" />
-                <TextBlock x:Name="PNotationReading" Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"><Run Foreground="{DynamicResource Theme.Muted}" Text="[" /><Run Foreground="{DynamicResource Theme.Ink}" Text="{Binding PNotationItemReading, Mode=OneWay}" /><Run Foreground="{DynamicResource Theme.Muted}" Text="]" /></TextBlock>
+                <ItemsControl x:Name="PNotationReadingList" Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center" ItemTemplate="{DynamicResource Theme.Notation.Reading}" ItemsSource="{Binding PNotationItemReading}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
                 <TextBlock x:Name="PNotationNote" Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center" FontSize="11" FontStyle="Italic" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemNotice}" TextTrimming="CharacterEllipsis" Visibility="Collapsed" />
-                <Button x:Name="PNotationSelector" Grid.Column="2" VerticalAlignment="Center" Click="PNotationSelectorHandle" Content="{DynamicResource Transcriber.Use}" Style="{DynamicResource Theme.Popup.RowChoice}" />
+                <Button x:Name="PNotationAll" Grid.Column="2" VerticalAlignment="Center" Click="PNotationAllHandle" Content="{DynamicResource Transcriber.All}" Style="{DynamicResource Theme.Popup.RowChoice}" Visibility="Collapsed" />
             </Grid>
         </Border>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding PNotationItemReady}" Value="False">
-                <Setter TargetName="PNotationReading" Property="Visibility" Value="Collapsed" />
-                <Setter TargetName="PNotationSelector" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="PNotationReadingList" Property="Visibility" Value="Collapsed" />
                 <Setter TargetName="PNotationNote" Property="Visibility" Value="Visible" />
             </DataTrigger>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding IsMouseOver, ElementName=PNotationRow}" Value="True" />
-                    <Condition Binding="{Binding IsMouseOver, ElementName=PNotationSelector}" Value="False" />
-                    <Condition Binding="{Binding PNotationItemReady}" Value="True" />
-                </MultiDataTrigger.Conditions>
-                <Setter TargetName="PNotationSelector" Property="Foreground" Value="{DynamicResource Theme.Accent}" />
-                <Setter TargetName="PNotationSelector" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
-                <Setter TargetName="PNotationSelector" Property="BorderBrush" Value="{DynamicResource Theme.AccentEdge}" />
-            </MultiDataTrigger>
+            <DataTrigger Binding="{Binding PNotationItemPlural}" Value="True">
+                <Setter TargetName="PNotationAll" Property="Visibility" Value="Visible" />
+            </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
 </ResourceDictionary>

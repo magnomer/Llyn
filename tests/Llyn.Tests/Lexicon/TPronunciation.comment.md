@@ -7,6 +7,7 @@ That is the ordered pronunciation rows an Entry keeps, the first being the prima
 It is also the audio hanging from each, stored workspace-relative and handed back resolved.
 It is also the single note an Entry keeps beside them.
 It also covers the draft requests that edit the primary row alone or any row by id.
+It also covers the variety label reaching the stored row and counting as a change on its own.
 
 ## Inline notes
 

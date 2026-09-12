@@ -32,14 +32,32 @@ A catalog row must be built the moment its list is filled, so it cannot wait for
 Every surface that shows a flag awaits this first, and then reads without waiting.
 A pack installed while the program runs is picked up by the next call.
 
+## `internal static async Task PEnsignVarietyLoad(LEngine engine, string language, IEnumerable<string> varieties)`
+
+Resolves the flag of every named variety of `language`, and keeps each one under `language/variety`.
+A variety already resolved is left as it is, so a warm call reads nothing.
+The pronunciation menu awaits this before its search, then reads each reading's flag without waiting.
+It shares the gate and the generation with the language flags, so a moved workspace discards it the same way.
+
+## `internal static string PEnsignVarietyFormat(string language, string variety)`
+
+The key a variety's flag is kept under, which is its language and its name joined by a slash.
+A variety name alone would collide across languages that both declare one.
+
 ## `private static async Task<string?> PEnsignRead(LEngine engine, string language)`
 
 The path of one language's flag, or null when the pack declares none.
 A pack that is no longer on disk fails here rather than in the surface that asked.
 
+## `private static async Task<string?> PEnsignVarietyRead(LEngine engine, string language, string variety)`
+
+The path of one variety's flag, or null when the pack declares none for it.
+A failure to fetch it answers null too, so one missing flag never stops the search.
+
 ## `internal static ImageSource? PEnsignFind(string language)`
 
 The flag kept for `language`, or null when none was resolved for it.
+A `language/variety` key reads a variety's flag the same way.
 
 ## Inline notes
 

@@ -94,6 +94,42 @@ public sealed partial class LEngine : IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
         string? code = LLanguageLoader.LLanguageLoaderLoad(language).LLanguageFlag;
+        return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
+    }
+
+    public IReadOnlyList<LVariety> LEngineVarietyRead(string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        return LLanguageLoader.LLanguageLoaderLoad(language).LLanguageVarieties;
+    }
+
+    public bool LEngineFlaggedCheck(string language)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        return LLanguageLoader.LLanguageLoaderLoad(language).LLanguageVarietyFlagged;
+    }
+
+    public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+
+        string? code = null;
+        foreach (LVariety declared in LLanguageLoader.LLanguageLoaderLoad(language).LLanguageVarieties)
+        {
+            if (string.Equals(declared.LVarietyName, variety, StringComparison.Ordinal))
+            {
+                code = declared.LVarietyFlag;
+                break;
+            }
+        }
+
+        return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
+    }
+
+    private async Task<string?> LEngineFlagResolve(string? code, CancellationToken cancellation)
+    {
         if (string.IsNullOrWhiteSpace(code))
         {
             return null;

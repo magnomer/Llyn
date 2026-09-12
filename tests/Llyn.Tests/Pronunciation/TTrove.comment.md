@@ -1,0 +1,8 @@
+﻿# TTrove.cs
+
+## `public sealed class TTrove`
+
+Covers the per-session trove holding the candidates a lookup found.
+Several candidates sharing one order survive a save and a read unchanged.
+A hold is read back only for the same word and language.
+A find with no phonetic at all is not held.

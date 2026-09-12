@@ -4,7 +4,7 @@ public sealed record LStateWritten(
     string? LStateWrittenText,
     bool LStateWrittenUnknown = false)
 {
-    public static LStateWritten LStateWrittenEmpty { get; } = new(null);
+    public static LStateWritten LStateWrittenEmpty { get; } = new(null, false);
 
     public static LStateWritten LStateWrittenRead(LStateValue value)
     {

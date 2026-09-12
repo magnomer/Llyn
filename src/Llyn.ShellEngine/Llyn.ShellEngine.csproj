@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Llyn.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Llyn.Core\Llyn.Core.csproj" />
     <ProjectReference Include="..\Llyn.Application\Llyn.Application.csproj" />
     <ProjectReference Include="..\Llyn.Infrastructure\Llyn.Infrastructure.csproj" />

@@ -107,11 +107,78 @@ internal static class PEnsign
         }
     }
 
+    internal static async Task PEnsignVarietyLoad(LEngine engine, string language, IEnumerable<string> varieties)
+    {
+        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+        ArgumentNullException.ThrowIfNull(varieties);
+
+        await PEnsignGate.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            int age;
+            string[] missing;
+            lock (PEnsignStore)
+            {
+                age = _pEnsignAge;
+                missing = varieties
+                    .Where(variety => !PEnsignStore.ContainsKey(PEnsignVarietyFormat(language, variety)))
+                    .Distinct(StringComparer.Ordinal)
+                    .ToArray();
+            }
+
+            if (missing.Length == 0)
+            {
+                return;
+            }
+
+            string?[] paths = await Task.WhenAll(
+                missing.Select(variety => PEnsignVarietyRead(engine, language, variety)));
+
+            lock (PEnsignStore)
+            {
+                if (age != _pEnsignAge)
+                {
+                    return;
+                }
+
+                for (int index = 0; index < missing.Length; index++)
+                {
+                    string? path = paths[index];
+                    PEnsignStore[PEnsignVarietyFormat(language, missing[index])] = path is not null && File.Exists(path)
+                        ? PEnsignResolve(path)
+                        : null;
+                }
+            }
+        }
+        finally
+        {
+            PEnsignGate.Release();
+        }
+    }
+
+    internal static string PEnsignVarietyFormat(string language, string variety)
+    {
+        return string.Concat(language, "/", variety);
+    }
+
     private static async Task<string?> PEnsignRead(LEngine engine, string language)
     {
         try
         {
             return await engine.LEngineFlagRead(language, CancellationToken.None);
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private static async Task<string?> PEnsignVarietyRead(LEngine engine, string language, string variety)
+    {
+        try
+        {
+            return await engine.LEngineVarietyResolve(language, variety, CancellationToken.None);
         }
         catch (Exception)
         {

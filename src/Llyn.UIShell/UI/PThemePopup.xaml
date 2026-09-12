@@ -126,6 +126,43 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Popup.RowReading" TargetType="Button">
+        <Setter Property="Height" Value="26" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border
+                        x:Name="PSurface"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="13">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.Accent}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentPress}" />
+                            <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.AccentPress}" />
+                            <Setter Property="Foreground" Value="{StaticResource Theme.Roof}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="Theme.Popup.IconAction" TargetType="Button">
         <Setter Property="Width" Value="28" />
         <Setter Property="Height" Value="28" />

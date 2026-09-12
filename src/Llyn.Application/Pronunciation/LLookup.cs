@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -43,8 +44,7 @@ public sealed class LLookup : LSeeker
             }
         }
 
-        found.Sort(static (one, other) => one.LCandidateOrder.CompareTo(other.LCandidateOrder));
-        return found;
+        return found.OrderBy(static candidate => candidate.LCandidateOrder).ToList();
     }
 
     private static async Task LLookupSourceRun(
@@ -60,13 +60,29 @@ public sealed class LLookup : LSeeker
         LAnswer answer = await LLookupAnswerRead(source, word, cancellation).ConfigureAwait(false);
         cancellation.ThrowIfCancellationRequested();
 
-        LCandidate candidate = new(source.LSourceName, answer.LAnswerValue, order, answer.LAnswerReached);
-        lock (found)
+        List<LCandidate> candidates = new(Math.Max(1, answer.LAnswerReadings.Count));
+        if (answer.LAnswerEmpty)
         {
-            found.Add(candidate);
+            candidates.Add(new LCandidate(source.LSourceName, null, order, answer.LAnswerReached, string.Empty));
+        }
+        else
+        {
+            foreach (LReading reading in answer.LAnswerReadings)
+            {
+                candidates.Add(new LCandidate(
+                    source.LSourceName, reading.LReadingPhonetic, order, answer.LAnswerReached, reading.LReadingVariety));
+            }
         }
 
-        receiver.LReceiverCandidateAdd(candidate);
+        lock (found)
+        {
+            found.AddRange(candidates);
+        }
+
+        foreach (LCandidate candidate in candidates)
+        {
+            receiver.LReceiverCandidateAdd(candidate);
+        }
     }
 
     private static async Task<LAnswer> LLookupAnswerRead(

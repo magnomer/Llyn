@@ -21,6 +21,8 @@ One draft holds one answer, so editing a headword repeatedly cannot pile entries
 A search where no source produced a value is not kept.
 One run against dead hosts can be tried again.
 Rows saying a source failed are kept alongside the readings, so a replay redraws the whole menu it first showed.
+A source may hold several rows at one position, one per variety.
+Any row with a phonetic makes the set worth keeping.
 A draftless caller keeps nothing, because there would be no close to free it at.
 
 ## `internal void LTroveClear(string session)`

@@ -31,6 +31,13 @@ A row can offer more than one action, so every action is its own button.
 The row itself takes no click.
 Transcriber and downloader rows are the same row.
 
+## `<Style x:Key="Theme.Popup.RowReading" TargetType="Button">`
+
+One reading on a transcriber row, taken by clicking it.
+It presents whatever content the reading gives it, a flag or a name beside the transcription.
+The taking button carries one word and cannot hold an image, which is why this is a second style.
+It lights up the same way as every other row action when pointed at.
+
 ## `<Style x:Key="Theme.Popup.IconAction" TargetType="Button">`
 
 A row's second action, carrying an icon instead of a word.

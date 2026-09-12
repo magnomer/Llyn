@@ -12,6 +12,11 @@ public partial class PWindow
         return TryFindResource(key) as string ?? key;
     }
 
+    internal string? PLocalizationTextFind(string key)
+    {
+        return TryFindResource(key) as string;
+    }
+
     internal void PWindowFailureShow(string key)
     {
         MessageBox.Show(

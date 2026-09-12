@@ -69,6 +69,26 @@ The pack declares only an ISO country code.
 The engine downloads the matching flag from the flag-icons set and caches it in the workspace.
 So the UI never reaches into the `languages/` folder itself.
 
+## `public IReadOnlyList<LVariety> LEngineVarietyRead(string language)`
+
+Returns the regional varieties the language pack declares, in the pack's order.
+Empty when the pack declares none, so a language without varieties shows plain rows.
+
+## `public bool LEngineFlaggedCheck(string language)`
+
+Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
+
+## `public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
+
+Returns the local path to the flag image of one named variety of the language.
+It returns `null` when the pack does not declare that variety, declares no flag for it, or the download fails.
+The name is matched exactly, because it is the tag the pack's own readings carry.
+
+## `private async Task<string?> LEngineFlagResolve(string? code, CancellationToken cancellation)`
+
+The shared tail of both flag entry points.
+A null or blank code answers null, any other is fetched through the workspace cache.
+
 ## `public LDoctorRescue LEngineRescueRead()`
 
 Reports what the workspace doctor had to do to the database this engine opened.

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -12,6 +14,8 @@ public partial class PEditor : LReceiver
     private readonly ObservableCollection<PNotationItem> _pNotationItem = [];
     private CancellationTokenSource? _pNotationCancellation;
     private bool _pNotationSearching;
+    private bool _pNotationFlagged;
+    private string _pNotationLanguage = string.Empty;
 
     private async void PTranscriberCheckedHandle(object sender, RoutedEventArgs e)
     {
@@ -25,18 +29,87 @@ public partial class PEditor : LReceiver
 
     internal void PNotationSelectorHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PNotationItem candidate })
+        if (sender is not FrameworkElement { DataContext: PNotationReading reading })
         {
             return;
         }
 
-        if (!candidate.PNotationItemReady)
-        {
-            return;
-        }
-
-        PPronunciation.Text = candidate.PNotationItemReading;
+        PNotationPrimaryApply(reading);
         PTranscriber.IsChecked = false;
+    }
+
+    internal void PNotationAllHandle(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { DataContext: PNotationItem row } || !row.PNotationItemReady)
+        {
+            return;
+        }
+
+        PNotationReading[] readings = [.. row.PNotationItemReading];
+        PNotationPrimaryApply(readings[0]);
+
+        foreach (PNotationReading reading in readings.Skip(1))
+        {
+            PNotationReadingAdd(reading);
+        }
+
+        PTranscriber.IsChecked = false;
+    }
+
+    private void PNotationPrimaryApply(PNotationReading reading)
+    {
+        PPronunciation.Text = reading.PNotationReadingPhonetic;
+        PEditorChangeSave();
+
+        PNotationVarietySend(
+            PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0,
+            reading.PNotationReadingVariety);
+    }
+
+    private void PNotationReadingAdd(PNotationReading reading)
+    {
+        PEditorRequestSend(
+            new LRequestPronunciationAddition(_pEditorDraft, reading.PNotationReadingPhonetic, int.MaxValue));
+
+        PNotationVarietySend(
+            PNotationDraftRead()?.LEntryDraftPronunciations[^1].LPronunciationDraftId ?? 0,
+            reading.PNotationReadingVariety);
+    }
+
+    private void PNotationVarietySend(long pronunciationId, string variety)
+    {
+        if (pronunciationId == 0 || variety.Length == 0)
+        {
+            return;
+        }
+
+        PEditorRequestSend(new LRequestPronunciationVariety(_pEditorDraft, pronunciationId, variety));
+    }
+
+    private LEntryDraft? PNotationDraftRead()
+    {
+        if (_pEditorHalted || _pEditorDraft == 0)
+        {
+            return null;
+        }
+
+        return _lEngine.LEngineDraftRead(_pEditorDraft)?.LDraftContent;
+    }
+
+    private PNotationReading PNotationReadingCreate(LCandidate candidate)
+    {
+        string variety = candidate.LCandidateVariety;
+        if (variety.Length == 0)
+        {
+            return new PNotationReading(variety, string.Empty, null, candidate.LCandidatePhonetic ?? string.Empty);
+        }
+
+        string label = _pEditorHost.PLocalizationTextFind(string.Concat("Variety.", variety)) ?? variety;
+        ImageSource? flag = _pNotationFlagged
+            ? PEnsign.PEnsignFind(PEnsign.PEnsignVarietyFormat(_pNotationLanguage, variety))
+            : null;
+
+        return new PNotationReading(variety, label, flag, candidate.LCandidatePhonetic ?? string.Empty);
     }
 
     private async Task PNotationStart()
@@ -54,11 +127,23 @@ public partial class PEditor : LReceiver
         }
 
         _pNotationCancellation = new CancellationTokenSource();
+        CancellationToken cancellation = _pNotationCancellation.Token;
 
         try
         {
+            _pNotationLanguage = _pSpeakerChoice;
+            _pNotationFlagged = _lEngine.LEngineFlaggedCheck(_pNotationLanguage);
+            if (_pNotationFlagged)
+            {
+                await PEnsign.PEnsignVarietyLoad(
+                    _lEngine,
+                    _pNotationLanguage,
+                    _lEngine.LEngineVarietyRead(_pNotationLanguage).Select(variety => variety.LVarietyName));
+                cancellation.ThrowIfCancellationRequested();
+            }
+
             await _lEngine.LEnginePronunciationFind(
-                _pEditorDraft, word, _pSpeakerChoice, this, _pNotationCancellation.Token);
+                _pEditorDraft, word, _pNotationLanguage, this, cancellation);
         }
         catch (OperationCanceledException)
         {
@@ -129,6 +214,7 @@ public partial class PEditor : LReceiver
         {
             PNotationPlace(candidate.LCandidateSource, candidate.LCandidateOrder).PNotationItemShow(
                 candidate,
+                PNotationReadingCreate(candidate),
                 _pEditorHost.PLocalizationTextRead("Transcriber.Missing"),
                 _pEditorHost.PLocalizationTextRead("Transcriber.Broken"));
             PNotationUpdate();

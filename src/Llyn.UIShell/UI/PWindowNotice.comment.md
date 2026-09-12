@@ -9,6 +9,12 @@ Those are a request that failed, and the question asked before work is thrown aw
 
 ## Inline notes
 
+### `internal string? PLocalizationTextFind(string key)`
+
+The localized text under `key`, or null when no locale declares it.
+The plain read answers the key itself on a miss, which a caller cannot tell from a translation.
+A variety name is shown raw when its key is missing, so the miss has to be visible.
+
 ### `internal void PWindowFailureShow(string key)`
 
 Presents a request that failed with nothing further to say about why.

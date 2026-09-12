@@ -7,8 +7,10 @@ It runs the whole set, because the caller hands it the transcription sources alo
 Each candidate carries the position its source holds in that set, so a slow source keeps its declared place.
 Streams each result back to the receiver as it arrives.
 One slow or failing source never blocks or fails the others.
-Every source produces exactly one candidate, whether it answered, had nothing, or was never reached.
+A source that answered produces one candidate per reading, all sharing the source's position and each carrying its variety.
+A source that had nothing or was never reached still produces one candidate with no phonetic.
 So the menu can name a broken source rather than leaving its row silently absent.
+The returned set is ordered by source position with a stable sort, so readings keep their order inside a source.
 Each source runs under its own minute-long deadline, linked to the caller's cancellation.
 A host that neither answers nor refuses is written off at that deadline instead of holding the whole lookup open.
 The deadline is per source, so one dead host never eats another's budget.

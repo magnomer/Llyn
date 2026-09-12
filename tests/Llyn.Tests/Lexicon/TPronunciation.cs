@@ -207,6 +207,66 @@ public sealed class TPronunciation
         Assert.Equal("US", answered.LDraftContent.LEntryDraftPronunciation?.LPronunciationDraftVariety);
     }
 
+    [Fact]
+    public void PronunciationSync_VarietyRequest_StoresVariety()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TPronunciationDraftCreate(
+            [TInterface.TPronunciationDraftCreate("təˈmɑːtəʊ", "UK")]));
+        long stored = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationId;
+        LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
+
+        engine.TEngineRequestApply(TInterface.TPronunciationVarietyCreate(started.LDraftId, stored, "British"));
+        engine.TEngineDraftCommit(started.LDraftId);
+
+        LPronunciation kept = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId));
+        Assert.Equal(stored, kept.LPronunciationId);
+        Assert.Equal("British", kept.LPronunciationVariety);
+        Assert.Equal("təˈmɑːtəʊ", kept.LPronunciationIpa);
+    }
+
+    [Fact]
+    public void SoundMatch_VarietyOnlyChange_ReportsUpdate()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TPronunciationDraftCreate(
+            [TInterface.TPronunciationDraftCreate("təˈmɑːtəʊ", "UK")]));
+        LEntryDraft loaded = engine.TEngineEntryLoad(entry.LEntryId)!;
+        long stored = loaded.LEntryDraftPronunciations[0].LPronunciationDraftId;
+
+        engine.TEngineEntryUpdate(entry.LEntryId, loaded with
+        {
+            LEntryDraftPronunciations =
+                [loaded.LEntryDraftPronunciations[0] with { LPronunciationDraftVariety = "British" }],
+        });
+
+        Assert.Equal("British", Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationVariety);
+        LRevision revision = Assert.IsType<LRevision>(engine.TEngineRevisionRead());
+        Assert.Contains(engine.TEngineChangeRead(revision.LRevisionId), change =>
+            change.LRevisionChangeKind == "update" && change.LRevisionChangeTarget == stored);
+    }
+
+    [Fact]
+    public void DraftCheck_VarietyOnlyChange_ReportsChanged()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TPronunciationDraftCreate(
+            [TInterface.TPronunciationDraftCreate("təˈmɑːtəʊ", "UK")]));
+        long stored = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationId;
+        LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
+        Assert.False(engine.TEngineDraftCheck(started.LDraftId));
+
+        engine.TEngineRequestApply(TInterface.TPronunciationVarietyCreate(started.LDraftId, stored, "British"));
+
+        Assert.True(engine.TEngineDraftCheck(started.LDraftId));
+    }
+
     private static LEntryDraft TPronunciationDraftCreate(IReadOnlyList<LPronunciationDraft> pronunciations)
     {
         return TInterface.TEntryDraftCreate(

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Llyn.Core;
 
@@ -6,9 +7,9 @@ namespace Llyn.UIShell;
 
 internal sealed class PNotationItem : INotifyPropertyChanged
 {
-    private string _pNotationItemReading = string.Empty;
     private string _pNotationItemNotice;
     private bool _pNotationItemReady;
+    private bool _pNotationItemPlural;
 
     internal PNotationItem(string sourceLabel, int order, string notice)
     {
@@ -23,11 +24,7 @@ internal sealed class PNotationItem : INotifyPropertyChanged
 
     internal int PNotationItemOrder { get; }
 
-    public string PNotationItemReading
-    {
-        get => _pNotationItemReading;
-        private set => PNotationItemChange(ref _pNotationItemReading, value, nameof(PNotationItemReading));
-    }
+    public ObservableCollection<PNotationReading> PNotationItemReading { get; } = [];
 
     public string PNotationItemNotice
     {
@@ -41,17 +38,28 @@ internal sealed class PNotationItem : INotifyPropertyChanged
         private set => PNotationItemChange(ref _pNotationItemReady, value, nameof(PNotationItemReady));
     }
 
-    internal void PNotationItemShow(LCandidate candidate, string missing, string broken)
+    public bool PNotationItemPlural
     {
-        if (!string.IsNullOrEmpty(candidate.LCandidatePhonetic))
+        get => _pNotationItemPlural;
+        private set => PNotationItemChange(ref _pNotationItemPlural, value, nameof(PNotationItemPlural));
+    }
+
+    internal void PNotationItemShow(LCandidate candidate, PNotationReading? reading, string missing, string broken)
+    {
+        if (reading is not null)
         {
-            PNotationItemReading = candidate.LCandidatePhonetic;
+            PNotationItemReading.Add(reading);
             PNotationItemNotice = string.Empty;
             PNotationItemReady = true;
+            PNotationItemPlural = PNotationItemReading.Count > 1;
             return;
         }
 
-        PNotationItemReading = string.Empty;
+        if (PNotationItemReading.Count > 0)
+        {
+            return;
+        }
+
         PNotationItemNotice = candidate.LCandidateReached ? missing : broken;
         PNotationItemReady = false;
     }

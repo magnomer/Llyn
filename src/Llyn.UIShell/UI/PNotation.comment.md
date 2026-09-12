@@ -4,8 +4,9 @@
 
 Pronunciation lookup as the editor shows it.
 Opening the menu starts a search for the headword.
-Candidates stream in from the engine and fill the list.
-Picking one writes it into the pronunciation field.
+Candidates stream in from the engine and fill the list, one reading per variety a source returned.
+Picking one writes it into the pronunciation field and stores its variety on the primary pronunciation row.
+Taking a whole row writes the first reading there and adds every further one as its own pronunciation row.
 This is the shell side of `LReceiver`.
 The engine calls back on a worker thread.
 So every arrival is marshalled onto the dispatcher here.
@@ -22,6 +23,13 @@ A new row opens saying it is searching.
 That makes every declared source visible before any of them answers.
 
 ## Inline notes
+
+### `_pNotationFlagged = _lEngine.LEngineFlaggedCheck(_pNotationLanguage);`
+
+Whether the pack shows its varieties as flags is asked once, when the search starts.
+In flag mode every declared variety's flag is resolved before the search.
+A reading's flag is then ready the moment the reading lands.
+The language is kept with the answer, because the speaker choice may change while the search is still running.
 
 ### `await _lEngine.LEnginePronunciationFind(`
 
@@ -66,7 +74,21 @@ The row is resolved in place rather than replaced, so it never jumps under the p
 A source that was reached and had nothing reads differently from one that was never reached.
 Silence would have said a word is missing from a dictionary that was in fact down.
 
-### `if (!candidate.PNotationItemReady)`
+### `private void PNotationPrimaryApply(PNotationReading reading)`
 
-A row with no reading carries nothing to take.
-Its taking button is hidden, so this only guards a click the template should never have offered.
+Writes the reading into the pronunciation field, then tags the primary pronunciation row with its variety.
+The field change defers the IPA request, so the pending save is run here before the row is read back.
+The primary row exists only once that request has run, and its id is what the variety request needs.
+A reading without a variety writes the field alone.
+
+### `private void PNotationReadingAdd(PNotationReading reading)`
+
+Adds one more pronunciation row for a further reading, then tags it.
+The row is appended at the end, so the last row of the draft read back is the new one.
+The id is read from the draft rather than made up here, because the engine alone mints ids.
+
+### `private PNotationReading? PNotationReadingCreate(LCandidate candidate)`
+
+Builds the button for one candidate, or nothing when the candidate carries no transcription.
+A variety's label is its localized `Variety.*` text when one exists and its raw name otherwise.
+Its flag is looked up only in flag mode, under the language the search was started for.
