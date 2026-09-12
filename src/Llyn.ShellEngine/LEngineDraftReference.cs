@@ -62,20 +62,20 @@ public sealed partial class LEngine
                 draft.LDraftReference ?? throw new LRefusal(LRefusal.LRefusalReference));
 
             LReference stored;
-            if (draft.LDraftEntry == 0 || LEngineReferenceRead(draft.LDraftEntry) is null)
+            if (draft.LDraftEntryId == 0 || LEngineReferenceRead(draft.LDraftEntryId) is null)
             {
                 stored = LEngineReferenceCreate(sending);
             }
             else
             {
-                LReference written = sending with { LReferenceId = draft.LDraftEntry };
+                LReference written = sending with { LReferenceId = draft.LDraftEntryId };
                 LEngineReferenceUpdate(written);
-                stored = LEngineReferenceRead(draft.LDraftEntry) ?? written;
+                stored = LEngineReferenceRead(draft.LDraftEntryId) ?? written;
             }
 
             LDraftArchive.LDraftArchiveSave(
                 _lEngineWorkspace,
-                draft with { LDraftEntry = stored.LReferenceId, LDraftReference = stored });
+                draft with { LDraftEntryId = stored.LReferenceId, LDraftReference = stored });
 
             _lEngineDraftHeld.Remove(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
@@ -89,9 +89,9 @@ public sealed partial class LEngine
 
     private bool LEngineReferenceCheck(LDraft draft, LReference held)
     {
-        LReference origin = draft.LDraftEntry == 0
+        LReference origin = draft.LDraftEntryId == 0
             ? LEngineReferenceBlank
-            : LEngineReferenceRead(draft.LDraftEntry) ?? LEngineReferenceBlank;
+            : LEngineReferenceRead(draft.LDraftEntryId) ?? LEngineReferenceBlank;
 
         return !LEngineReferenceMatch(origin, held);
     }

@@ -90,7 +90,7 @@ public partial class PEditor
             return null;
         }
 
-        return held?.LDraftEntry is null or 0 ? null : held.LDraftEntry;
+        return held?.LDraftEntryId is null or 0 ? null : held.LDraftEntryId;
     }
 
     private void PEditorStoreHandle(object sender, RoutedEventArgs e)
@@ -110,7 +110,7 @@ public partial class PEditor
 
         long? entry = PEditorEntryRead();
 
-        LEntry stored;
+        LOutcome stored;
         try
         {
             stored = _lEngine.LEngineDraftCommit(held);
@@ -125,7 +125,7 @@ public partial class PEditor
 
         if (entry is not null)
         {
-            PEditorEntryShow(stored.LEntryId);
+            PEditorEntryShow(stored.LOutcomeEntry.LEntryId);
             return;
         }
 

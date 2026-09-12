@@ -9,5 +9,6 @@ That thing is a language shipping no Registers, never a failure the caller has t
 
 ## `public static IReadOnlyList<LRegister> LRegisterLoaderLoad(string language)`
 
-Reads one language's Registers, each carrying the language it came from and marked as shipped.
-The id is the language and the pack id joined, so two packs never collide on the same word.
+Reads one language's Registers, each carrying the language it came from and the integer id the pack declared.
+A row whose id is not a positive integer, or whose name is missing, is skipped.
+The store keys a shipped row by language and pack id, so two packs never collide on the same number.

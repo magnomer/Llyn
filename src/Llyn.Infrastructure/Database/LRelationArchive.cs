@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -81,8 +81,8 @@ public sealed class LRelationArchive
                 reader.GetString(3),
                 reader.IsDBNull(4) ? null : reader.GetString(4),
                 reader.IsDBNull(5) ? null : reader.GetString(5),
-                reader.IsDBNull(6) ? null : reader.GetInt64(6),
-                reader.IsDBNull(7) ? null : reader.GetInt64(7)));
+                LStateAnchor.LStateAnchorRead(reader.IsDBNull(6) ? null : reader.GetInt64(6)),
+                LStateAnchor.LStateAnchorRead(reader.IsDBNull(7) ? null : reader.GetInt64(7))));
         }
 
         return relations;
@@ -178,8 +178,8 @@ public sealed class LRelationArchive
 
     private static void LRelationTargetValidate(LRelation relation)
     {
-        bool hasEntry = relation.LRelationTargetEntry is not null;
-        bool hasMeaning = relation.LRelationTargetMeaning is not null;
+        bool hasEntry = !relation.LRelationTargetEntry.LStateAnchorEmpty;
+        bool hasMeaning = !relation.LRelationTargetMeaning.LStateAnchorEmpty;
         if (hasEntry == hasMeaning)
         {
             throw new InvalidOperationException(
@@ -190,19 +190,19 @@ public sealed class LRelationArchive
     private static void LRelationTargetInsert(SqliteConnection connection, LRelation relation)
     {
         using SqliteCommand command = connection.CreateCommand();
-        if (relation.LRelationTargetEntry is not null)
+        if (!relation.LRelationTargetEntry.LStateAnchorEmpty)
         {
             command.CommandText =
                 "INSERT INTO relation_entry (relation_id, entry_id) VALUES ($relation, $entry);";
             command.Parameters.AddWithValue("$relation", relation.LRelationId);
-            command.Parameters.AddWithValue("$entry", relation.LRelationTargetEntry);
+            command.Parameters.AddWithValue("$entry", relation.LRelationTargetEntry.LStateAnchorShow());
         }
         else
         {
             command.CommandText =
                 "INSERT INTO relation_sense (relation_id, sense_id) VALUES ($relation, $sense);";
             command.Parameters.AddWithValue("$relation", relation.LRelationId);
-            command.Parameters.AddWithValue("$sense", relation.LRelationTargetMeaning);
+            command.Parameters.AddWithValue("$sense", relation.LRelationTargetMeaning.LStateAnchorShow());
         }
 
         command.ExecuteNonQuery();

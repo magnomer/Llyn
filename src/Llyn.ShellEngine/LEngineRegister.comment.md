@@ -25,7 +25,8 @@ An empty query offers the whole shelf.
 
 The shelf the tenor panel browses: every Register, counted and ordered.
 Unlike the card's shelf, this one holds every pack's rows at once, because a workspace holds Entries of any language.
-A row is answered by its name or by the language of the pack that ships it, so a shelf of several packs can be narrowed.
+A row is answered by its name or by the language of the pack that ships it.
+So a shelf of several packs can be narrowed.
 
 ## `public void LEngineRegisterChange(string registerId, string renamed)`
 
@@ -65,9 +66,11 @@ Whether any row of the field holds something, so an otherwise empty card is not 
 
 The rows of the field that hold something, in the order the card gives them.
 
-## `private static string LEngineRegisterResolve(LRegisterArchive registers, LRegisterDraft draft)`
+## `private static long LEngineRegisterResolve(`
 
 Turns one row of the field into the id of a stored Register.
 A row that names a stored Register keeps it, and a renamed written row rewrites that row's name.
-A row naming nothing stored is matched against the shelf by wording, so typing a name twice never doubles the shelf.
-Only a wording nothing on the shelf carries creates a new written Register.
+A row carrying a negative id creates a new written Register, recorded in the map under that id.
+Nothing is matched by wording.
+A row meant to reuse a shelf Register arrives with that Register's id.
+The user picked it from the list.

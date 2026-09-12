@@ -10,10 +10,10 @@ internal static partial class TInterface
         long revisionId) =>
         engine.LEngineChangeRead(revisionId);
 
-    internal static LCourtLink? TEngineCourtFind(this LEngine engine, long ownerId, long targetId) =>
+    internal static LCourt? TEngineCourtFind(this LEngine engine, long ownerId, long targetId) =>
         engine.LEngineCourtFind(ownerId, targetId);
 
-    internal static LCourtLink TEngineCourtStart(
+    internal static LCourt TEngineCourtStart(
         this LEngine engine,
         long ownerId,
         string origin,
@@ -30,7 +30,7 @@ internal static partial class TInterface
         bool collocation) =>
         engine.LEngineDraftNormalize(id, collocation);
 
-    internal static LCourtLink TEngineCourtSave(
+    internal static LCourt TEngineCourtSave(
         this LEngine engine,
         long ownerId,
         long targetId,
@@ -47,6 +47,9 @@ internal static partial class TInterface
         engine.LEngineDraftCheck(id);
 
     internal static LEntry TEngineDraftCommit(this LEngine engine, long id) =>
+        engine.LEngineDraftCommit(id).LOutcomeEntry;
+
+    internal static LOutcome TEngineOutcomeCommit(this LEngine engine, long id) =>
         engine.LEngineDraftCommit(id);
 
     internal static void TEngineDraftDelete(this LEngine engine, long id)

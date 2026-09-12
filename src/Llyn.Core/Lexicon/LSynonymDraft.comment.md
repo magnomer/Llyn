@@ -14,12 +14,13 @@ This draft is the stored link, and the two are never merged.
 
 **Parameters**
 
-- `LSynonymDraftEntry` — The entry the link points at, empty when it points at a sense.
-- `LSynonymDraftMeaning` — The sense the link points at, empty when it points at an entry.
+- `LSynonymDraftEntry` — Anchor of the entry the link points at, empty when it points at a sense.
+- `LSynonymDraftMeaning` — Anchor of the sense the link points at, empty when it points at an entry.
+- `LSynonymDraftId` — Id of the stored synonym row, negative before the row exists.
 
 ## Inline notes
 
 ### `public bool LSynonymDraftEmpty`
 
-A link is empty when it names no target at all.
+A link is empty when both anchors are empty.
 The reader refuses such a link, and the writer has nothing to write for one.

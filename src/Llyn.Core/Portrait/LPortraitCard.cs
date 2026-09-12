@@ -65,6 +65,12 @@ public sealed record LPortraitCard(
                         mark)));
             }
 
+            List<string> tags = new List<string>();
+            foreach (LTagDraft tag in card.LCardDraftTag)
+            {
+                tags.Add(tag.LTagDraftText);
+            }
+
             List<LPortraitMedia> images = new List<LPortraitMedia>();
             foreach (LImageDraft image in card.LCardDraftImage)
             {
@@ -99,7 +105,7 @@ public sealed record LPortraitCard(
                 registers,
                 links,
                 examples,
-                card.LCardDraftTag,
+                tags,
                 images,
                 videos));
         }

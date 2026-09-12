@@ -1,8 +1,15 @@
-﻿namespace Llyn.Core;
+namespace Llyn.Core;
 
 public sealed record LSynonym(
     long LSynonymId,
     long LSynonymCollocationId,
     int LSynonymPosition,
-    long? LSynonymTargetEntry,
-    long? LSynonymTargetMeaning);
+    LStateAnchor LSynonymTargetEntry,
+    LStateAnchor LSynonymTargetMeaning)
+{
+    public LStateAnchor LSynonymTargetEntry { get; init; } =
+        LSynonymTargetEntry ?? LStateAnchor.LStateAnchorUnspecified;
+
+    public LStateAnchor LSynonymTargetMeaning { get; init; } =
+        LSynonymTargetMeaning ?? LStateAnchor.LStateAnchorUnspecified;
+}

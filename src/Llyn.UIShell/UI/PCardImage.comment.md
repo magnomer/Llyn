@@ -19,6 +19,11 @@ It leaves the card with no rows when it references none.
 What the card says its Images are.
 A row whose location stands empty is left out, so a row opened and never filled is written nowhere.
 
+## `internal void PCardImageApply(IReadOnlyList<LImageDraft> stored)`
+
+Writes the ids the engine minted back onto the rows, in the order the read listed them.
+A row naming no picture was dropped by the read, so it is stepped over here.
+
 ## `internal void PCardImageAdd()`
 
 Opens an empty picture row at the end, which is what the card's Extra row asks for.

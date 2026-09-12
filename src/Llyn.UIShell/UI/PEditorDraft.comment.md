@@ -42,6 +42,12 @@ Fills the form from a stored entry.
 It is the inverse of PEditorDraftRead.
 It is the other half of the round trip the session restore rides on.
 
+### `private void PEditorIdentityApply(LEntryDraft stored)`
+
+Takes the ids the engine minted on a save and hands them to each card.
+The saved content becomes the detail behind the form, so the pronunciation carries its id too.
+Cards are matched by place, because a save never adds, drops or reorders a card.
+
 ### `PHeadword.Text = draft.LEntryDraftHeadword;`
 
 Headword first, and the recording last.

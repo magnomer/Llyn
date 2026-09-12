@@ -99,10 +99,9 @@ public sealed class LEntryArchive
         return entries;
     }
 
-    public IReadOnlyList<LEntry> LEntryTagFind(string tag)
+    public IReadOnlyList<LEntry> LEntryTagFind(long tagId)
     {
-        ArgumentNullException.ThrowIfNull(tag);
-        tag = tag.Trim();
+        ArgumentOutOfRangeException.ThrowIfNegative(tagId);
 
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -110,20 +109,20 @@ public sealed class LEntryArchive
             """
             SELECT id, headword, language, proficiency, frequency, added_utc, updated_utc
             FROM entry
-            WHERE $tag = ''
+            WHERE $tag = 0
                OR id IN (
                       SELECT sense.entry_id
                       FROM sense_tag
                       JOIN sense ON sense.id = sense_tag.sense_id
-                      WHERE sense_tag.text = $tag
+                      WHERE sense_tag.tag_id = $tag
                       UNION
                       SELECT collocation.entry_id
                       FROM collocation_tag
                       JOIN collocation ON collocation.id = collocation_tag.collocation_id
-                      WHERE collocation_tag.text = $tag)
+                      WHERE collocation_tag.tag_id = $tag)
             ORDER BY headword;
             """;
-        command.Parameters.AddWithValue("$tag", tag);
+        command.Parameters.AddWithValue("$tag", tagId);
 
         List<LEntry> entries = [];
         using SqliteDataReader reader = command.ExecuteReader();

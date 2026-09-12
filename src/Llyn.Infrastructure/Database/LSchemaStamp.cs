@@ -13,6 +13,7 @@ public static class LSchemaStamp
         "author",
         "situation",
         "register",
+        "tag",
         "image",
         "video",
     ];

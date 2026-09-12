@@ -22,8 +22,14 @@ internal static partial class TInterface
         IReadOnlyList<LVideoDraft>? video = null,
         IReadOnlyList<LRegisterDraft>? register = null) =>
         new(
-            title, expression, meaning, sentence, situation, register ?? [], translation, synonym, tag,
-            image, video ?? [], position, id);
+            title, expression, meaning, sentence, situation, register ?? [], translation, synonym,
+            [.. tag.Select(LTagDraft.LTagDraftCreate)], image, video ?? [], position, id);
+
+    internal static IReadOnlyList<string> TTagDraftRead(IReadOnlyList<LTagDraft> tags) =>
+        [.. tags.Select(tag => tag.LTagDraftText)];
+
+    internal static IReadOnlyList<LTagDraft> TTagDraftCreate(params string[] texts) =>
+        [.. texts.Select(LTagDraft.LTagDraftCreate)];
 
     internal static LVideoDraft TVideoDraftCreate(string location, string span = "", long id = 0) =>
         new(LStateValue.LStateValueRead(location), LStateValue.LStateValueRead(span), id);
@@ -40,7 +46,7 @@ internal static partial class TInterface
         LStateValue meaning) =>
         new(id, entryId, position, title, expression, meaning);
 
-    internal static LCourtLink TCourtLinkCreate(
+    internal static LCourt TCourtLinkCreate(
         long id,
         long owner,
         long target,
@@ -234,7 +240,15 @@ internal static partial class TInterface
         string? labels,
         long? targetEntry,
         long? targetMeaning) =>
-        new(id, meaningId, position, type, label, labels, targetEntry, targetMeaning);
+        new(
+            id,
+            meaningId,
+            position,
+            type,
+            label,
+            labels,
+            LStateAnchor.LStateAnchorRead(targetEntry),
+            LStateAnchor.LStateAnchorRead(targetMeaning));
 
     internal static LMeaning TMeaningCreate(
         long id,
@@ -249,14 +263,14 @@ internal static partial class TInterface
         new(id, entryId, parentId, position, title, gloss, definitionLanguage, definition, labels);
 
     internal static LRegister TRegisterCreate(long id, string name) =>
-        new(id, LStateValue.LStateValueRead(name), string.Empty, false);
+        new(id, LStateValue.LStateValueRead(name), string.Empty);
 
     internal static LRegisterDraft TRegisterDraftCreate(string text) =>
         LRegisterDraft.LRegisterDraftCreate(text);
 
     internal static LRegisterDraft TRegisterDraftCreate(
-        LStateValue name, long id, string language = "", bool builtin = false) =>
-        new(name, id, language, builtin);
+        LStateValue name, long id, string language = "") =>
+        new(name, id, language);
 
     internal static LSituation TSituationCreate(
         long id,
@@ -310,10 +324,18 @@ internal static partial class TInterface
         int position,
         long? targetEntry,
         long? targetMeaning) =>
-        new(id, collocationId, position, targetEntry, targetMeaning);
+        new(
+            id,
+            collocationId,
+            position,
+            LStateAnchor.LStateAnchorRead(targetEntry),
+            LStateAnchor.LStateAnchorRead(targetMeaning));
 
     internal static LTag TTagCreate(string text) =>
-        new(text);
+        new(0, text);
+
+    internal static LTag TTagCreate(long id, string text) =>
+        new(id, text);
 
     internal static LTranslation TTranslationCreate(long entryId, int position) =>
         new(entryId, position);

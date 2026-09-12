@@ -23,6 +23,11 @@ Half-typed text is a moment in the middle of typing.
 
 The row for a stored Video, holding the location and the span as the store knows them.
 
+## `internal void PVideoIdentityApply(LVideoDraft stored)`
+
+Takes the id the engine gave this row when it saved the draft.
+The row never mints an id of its own.
+
 ## `internal LVideoDraft PVideoDraftRead()`
 
 What the row says it is, the location and the span.

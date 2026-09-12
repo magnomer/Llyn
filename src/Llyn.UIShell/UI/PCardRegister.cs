@@ -27,8 +27,7 @@ internal sealed partial class PCard
             PRegister chip = new(
                 draft.LRegisterDraftName,
                 draft.LRegisterDraftId,
-                draft.LRegisterDraftLanguage,
-                draft.LRegisterDraftBuiltin);
+                draft.LRegisterDraftLanguage);
             if (chip.PRegisterTextRead().LStateValueEmpty || PCardRegisterCheck(chip.PRegisterText))
             {
                 continue;
@@ -52,15 +51,17 @@ internal sealed partial class PCard
                 drafts.Add(new LRegisterDraft(
                     chip.PRegisterTextRead(),
                     chip.PRegisterId,
-                    chip.PRegisterLanguage,
-                    chip.PRegisterBuiltin));
+                    chip.PRegisterLanguage));
                 continue;
             }
 
             string written = _pCardRegisterCaret.PRegisterCaretText.Trim();
             if (written.Length != 0 && !PCardRegisterCheck(written))
             {
-                drafts.Add(LRegisterDraft.LRegisterDraftCreate(written));
+                drafts.Add(LRegisterDraft.LRegisterDraftCreate(written) with
+                {
+                    LRegisterDraftId = _pCardRegisterCaret.PRegisterCaretId,
+                });
             }
         }
 
@@ -125,6 +126,7 @@ internal sealed partial class PCard
     {
         _pCardRegisterBusy = true;
         _pCardRegisterCaret.PRegisterCaretText = string.Empty;
+        _pCardRegisterCaret.PRegisterCaretId = 0;
         _pCardRegisterBusy = false;
         PCardRegisterUpdate();
     }
@@ -191,7 +193,38 @@ internal sealed partial class PCard
         }
 
         int index = PCardRegister.IndexOf(_pCardRegisterCaret);
-        PCardRegister.Insert(index < 0 ? PCardRegister.Count : index, new PRegister(LStateValue.LStateValueRead(written), _pCardEngine.LEngineIdentityCreate()));
+        PCardRegister.Insert(
+            index < 0 ? PCardRegister.Count : index,
+            new PRegister(LStateValue.LStateValueRead(written), _pCardRegisterCaret.PRegisterCaretId));
+        _pCardRegisterCaret.PRegisterCaretId = 0;
+    }
+
+    internal void PCardRegisterApply(IReadOnlyList<LRegisterDraft> stored)
+    {
+        int index = 0;
+        foreach (object row in PCardRegister)
+        {
+            if (row is PRegister chip)
+            {
+                if (index < stored.Count)
+                {
+                    chip.PRegisterId = stored[index].LRegisterDraftId;
+                }
+
+                index++;
+                continue;
+            }
+
+            if (_pCardRegisterCaret.PRegisterCaretText.Trim().Length != 0)
+            {
+                if (index < stored.Count)
+                {
+                    _pCardRegisterCaret.PRegisterCaretId = stored[index].LRegisterDraftId;
+                }
+
+                index++;
+            }
+        }
     }
 
     private bool PCardRegisterCheck(string text)

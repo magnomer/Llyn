@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -206,8 +206,9 @@ public sealed class LEntryLoader
                 relation.LRelationType,
                 relation.LRelationLabel,
                 relation.LRelationLabels,
-                relation.LRelationTargetEntry ?? 0,
-                relation.LRelationTargetMeaning ?? 0));
+                relation.LRelationTargetEntry,
+                relation.LRelationTargetMeaning,
+                relation.LRelationId));
         }
 
         return drafts;
@@ -222,8 +223,9 @@ public sealed class LEntryLoader
         foreach (LSynonym synonym in stored)
         {
             drafts.Add(new LSynonymDraft(
-                synonym.LSynonymTargetEntry ?? 0,
-                synonym.LSynonymTargetMeaning ?? 0));
+                synonym.LSynonymTargetEntry,
+                synonym.LSynonymTargetMeaning,
+                synonym.LSynonymId));
         }
 
         return drafts;
@@ -279,8 +281,7 @@ public sealed class LEntryLoader
             drafts.Add(new LRegisterDraft(
                 register.LRegisterName,
                 register.LRegisterId,
-                register.LRegisterLanguage,
-                register.LRegisterBuiltin));
+                register.LRegisterLanguage));
         }
 
         return drafts;
@@ -320,14 +321,14 @@ public sealed class LEntryLoader
         return ids;
     }
 
-    private static IReadOnlyList<string> LEntryTagRead(IReadOnlyList<LTag> tags)
+    private static IReadOnlyList<LTagDraft> LEntryTagRead(IReadOnlyList<LTag> tags)
     {
-        List<string> texts = new(tags.Count);
+        List<LTagDraft> drafts = new(tags.Count);
         foreach (LTag tag in tags)
         {
-            texts.Add(tag.LTagText);
+            drafts.Add(new LTagDraft(tag.LTagId, tag.LTagText));
         }
 
-        return texts;
+        return drafts;
     }
 }

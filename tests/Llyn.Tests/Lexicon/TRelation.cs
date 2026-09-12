@@ -28,8 +28,8 @@ public sealed class TRelation
         LRelation read = Assert.Single(engine.TEngineRelationRead(meaningId));
         Assert.Equal(stored.LRelationId, read.LRelationId);
         Assert.Equal("synonym", read.LRelationType);
-        Assert.Equal(target.LEntryId, read.LRelationTargetEntry);
-        Assert.Null(read.LRelationTargetMeaning);
+        Assert.Equal(target.LEntryId, read.LRelationTargetEntry.TStateAnchorShow());
+        Assert.True(read.LRelationTargetMeaning.LStateAnchorEmpty);
     }
 
     [Fact]
@@ -50,8 +50,8 @@ public sealed class TRelation
             0, meaningId, 0, "synonym", null, null, null, chosen.LMeaningId));
 
         LRelation read = Assert.Single(engine.TEngineRelationRead(meaningId));
-        Assert.Equal(chosen.LMeaningId, read.LRelationTargetMeaning);
-        Assert.Null(read.LRelationTargetEntry);
+        Assert.Equal(chosen.LMeaningId, read.LRelationTargetMeaning.TStateAnchorShow());
+        Assert.True(read.LRelationTargetEntry.LStateAnchorEmpty);
     }
 
     [Fact]
@@ -74,12 +74,16 @@ public sealed class TRelation
         Assert.Equal(
             LRefusal.LRefusalTarget,
             Assert.Throws<LRefusal>(() => engine.TEngineRelationCreate(
-                unresolved with { LRelationTargetEntry = origin.LEntryId, LRelationTargetMeaning = meaningId }))
+                unresolved with
+                {
+                    LRelationTargetEntry = TInterface.TStateAnchorRead(origin.LEntryId),
+                    LRelationTargetMeaning = TInterface.TStateAnchorRead(meaningId),
+                }))
                 .LRefusalReason);
         Assert.Equal(
             LRefusal.LRefusalTarget,
             Assert.Throws<LRefusal>(() => engine.TEngineRelationCreate(
-                unresolved with { LRelationTargetEntry = null })).LRefusalReason);
+                unresolved with { LRelationTargetEntry = TInterface.TStateAnchorRead(null) })).LRefusalReason);
 
         Assert.Empty(engine.TEngineRelationRead(meaningId));
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));
@@ -140,17 +144,21 @@ public sealed class TRelation
         LMeaning chosen = Assert.Single(engine.TEngineMeaningFind("term"));
         engine.TEngineSynonymUpdate(first with
         {
-            LSynonymTargetEntry = null,
-            LSynonymTargetMeaning = chosen.LMeaningId,
+            LSynonymTargetEntry = TInterface.TStateAnchorRead(null),
+            LSynonymTargetMeaning = TInterface.TStateAnchorRead(chosen.LMeaningId),
         });
         LSynonym repointed = engine.TEngineSynonymRead(collocationId)[0];
-        Assert.Equal(chosen.LMeaningId, repointed.LSynonymTargetMeaning);
-        Assert.Null(repointed.LSynonymTargetEntry);
+        Assert.Equal(chosen.LMeaningId, repointed.LSynonymTargetMeaning.TStateAnchorShow());
+        Assert.True(repointed.LSynonymTargetEntry.LStateAnchorEmpty);
 
         Assert.Equal(
             LRefusal.LRefusalTarget,
             Assert.Throws<LRefusal>(() => engine.TEngineSynonymUpdate(
-                first with { LSynonymTargetEntry = 9999, LSynonymTargetMeaning = null }))
+                first with
+                {
+                    LSynonymTargetEntry = TInterface.TStateAnchorRead(9999),
+                    LSynonymTargetMeaning = TInterface.TStateAnchorRead(null),
+                }))
                 .LRefusalReason);
         Assert.Equal(
             LRefusal.LRefusalTarget,

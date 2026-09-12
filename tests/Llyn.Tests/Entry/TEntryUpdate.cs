@@ -99,7 +99,7 @@ public sealed class TEntryUpdate
                 card with
                 {
                     LCardDraftSentence = [card.LCardDraftSentence[1], card.LCardDraftSentence[0]],
-                    LCardDraftTag = ["kept"],
+                    LCardDraftTag = TInterface.TTagDraftCreate("kept"),
                 },
             ],
         });

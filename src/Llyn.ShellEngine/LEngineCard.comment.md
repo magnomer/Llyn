@@ -52,11 +52,12 @@ A card the draft still names is written onto the row it names and keeps that row
 Any other card is appended as a new row.
 The renumber that follows the whole set puts it where the draft holds it.
 
-### `private void LEngineCardSync(string ownerId, LCardDraft card, string language, bool collocation)`
+### `private void LEngineCardSync(`
 
 Re-attaches the rows and Situations one card references and rewrites the Tags it carries so they match the draft.
-A row whose text the card still lists is kept and moved to its new place.
-A text the card gained gets a row of its own.
+A row the card names by a positive id is kept and moved to its new place.
+A row the card names by a negative id gets a row of its own.
+The map records which one.
 A row the card dropped is detached only.
 Those rows are independent data the card references.
 So the last reference going does not take the row with it.
@@ -72,22 +73,28 @@ A newly created card has nothing attached yet, so the same path attaches its who
 ### `private void LEngineSentenceSync(`
 
 Writes the whole row list of one card over what the store holds for it.
-Each row carries the id of the stored row it edits, so an untouched save rewrites the same ids.
+The store hands back the id of every row it wrote.
+A negative row id is mapped to its new row.
 A row states which Example it quotes, and two cards quoting one sentence name one Example row.
 A row naming no Example is written with none, which is what the store's check allows for a bare frame.
+
+### `private void LEngineTagSave(`
+
+Writes the whole Tag line of one card over what the store holds for it.
+The store resolves each Tag to its row, by id when it has one and by wording otherwise.
+The wording is the Tag's identity in the store, so a written Tag can only ever name one row.
+A negative Tag id is mapped to the row the store answered with.
 
 ### `private static void LEngineFieldSync<TRow>(`
 
 One card field reconciled against the rows it already references.
-Example, Situation and Image differ only in two things.
-Those are which store creates a row, and which pair of methods attaches and detaches it.
+Situation, Register, Image and Video differ only in two things.
+Those are which resolver turns a value into a row id, and which pair of methods attaches and detaches it.
 So they are handed in and the reconciliation itself is written once.
 
-A value is matched to a referenced row by its text, which is what the shell can say about it.
-The form holds typed text and no picker exists to name a row.
-So keeping the row a value already had is the most an update can honour.
-Each row matches at most one value.
-So a card listing the same text twice keeps one row and creates the second.
+A value names its row by id and nothing else.
+A positive id keeps that row, and a negative id creates one.
+A card naming one id twice keeps one association.
 Blank values are dropped on the same terms the save drops them.
 
 ### `for (int position = 0; position < targets.Count; position++)`

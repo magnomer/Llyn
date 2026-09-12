@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LCourtLink LEngineCourtSave(
+    public LCourt LEngineCourtSave(
         long ownerId, long targetId, string headword, string language)
     {
         lock (_lEngineGate)
@@ -16,7 +16,7 @@ public sealed partial class LEngine
             ArgumentOutOfRangeException.ThrowIfZero(targetId);
             ArgumentException.ThrowIfNullOrWhiteSpace(headword);
 
-            LCourtLink link = new(
+            LCourt link = new(
                 LEngineIdentityCreate(),
                 ownerId,
                 targetId,
@@ -28,7 +28,7 @@ public sealed partial class LEngine
         }
     }
 
-    public LCourtLink LEngineCourtStart(
+    public LCourt LEngineCourtStart(
         long ownerId, string origin, string headword, string language)
     {
         lock (_lEngineGate)
@@ -70,16 +70,16 @@ public sealed partial class LEngine
         }
     }
 
-    public LCourtLink? LEngineCourtFind(long ownerId, long targetId)
+    public LCourt? LEngineCourtFind(long ownerId, long targetId)
     {
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(ownerId);
             ArgumentOutOfRangeException.ThrowIfZero(targetId);
 
-            foreach (LCourtLink link in LEngineCourtScan(ownerId))
+            foreach (LCourt link in LEngineCourtScan(ownerId))
             {
-                if (link.LCourtLinkTarget == targetId)
+                if (link.LCourtTargetId == targetId)
                 {
                     return link;
                 }
@@ -91,57 +91,57 @@ public sealed partial class LEngine
 
     private void LEngineCourtRemove(long id)
     {
-        IReadOnlyList<LCourtLink> court = LCourtArchive.LCourtArchiveScan(_lEngineWorkspace);
+        IReadOnlyList<LCourt> court = LCourtArchive.LCourtArchiveScan(_lEngineWorkspace);
 
-        foreach (LCourtLink link in court)
+        foreach (LCourt link in court)
         {
-            if (link.LCourtLinkOwner != id)
+            if (link.LCourtOwnerId != id)
             {
-                if (LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkOwner) is null)
+                if (LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtOwnerId) is null)
                 {
-                    LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtLinkId);
+                    LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtId);
                 }
 
                 continue;
             }
 
-            LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtLinkId);
+            LCourtArchive.LCourtArchiveDelete(_lEngineWorkspace, link.LCourtId);
 
-            if (link.LCourtLinkTarget == id)
+            if (link.LCourtTargetId == id)
             {
                 continue;
             }
 
             bool claimed = false;
-            foreach (LCourtLink other in court)
+            foreach (LCourt other in court)
             {
-                if (other.LCourtLinkOwner != id
-                    && other.LCourtLinkTarget == link.LCourtLinkTarget)
+                if (other.LCourtOwnerId != id
+                    && other.LCourtTargetId == link.LCourtTargetId)
                 {
                     claimed = true;
                     break;
                 }
             }
 
-            LDraft? target = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkTarget);
+            LDraft? target = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtTargetId);
 
-            if (claimed || target is null || !LEngineHoldCheck(link.LCourtLinkTarget))
+            if (claimed || target is null || !LEngineHoldCheck(link.LCourtTargetId))
             {
                 continue;
             }
 
-            _lEngineDraftHeld.Remove(link.LCourtLinkTarget);
-            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, link.LCourtLinkTarget);
-            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, link.LCourtLinkTarget);
+            _lEngineDraftHeld.Remove(link.LCourtTargetId);
+            LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, link.LCourtTargetId);
+            LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, link.LCourtTargetId);
         }
     }
 
-    private IReadOnlyList<LCourtLink> LEngineCourtScan(long ownerId)
+    private IReadOnlyList<LCourt> LEngineCourtScan(long ownerId)
     {
-        List<LCourtLink> owned = [];
-        foreach (LCourtLink link in LCourtArchive.LCourtArchiveScan(_lEngineWorkspace))
+        List<LCourt> owned = [];
+        foreach (LCourt link in LCourtArchive.LCourtArchiveScan(_lEngineWorkspace))
         {
-            if (link.LCourtLinkOwner == ownerId)
+            if (link.LCourtOwnerId == ownerId)
             {
                 owned.Add(link);
             }
@@ -150,9 +150,9 @@ public sealed partial class LEngine
         return owned;
     }
 
-    private void LEngineCourtUpdate(LCourtLink link, long realId)
+    private void LEngineCourtUpdate(LCourt link, long realId)
     {
-        LDraft? owner = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkOwner);
+        LDraft? owner = LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtOwnerId);
         if (owner is null)
         {
             return;
@@ -161,9 +161,9 @@ public sealed partial class LEngine
         LEntryDraft content = owner.LDraftContent with
         {
             LEntryDraftMeanings =
-                LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftMeanings, link.LCourtLinkTarget, realId),
+                LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftMeanings, link.LCourtTargetId, realId),
             LEntryDraftCollocations =
-                LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftCollocations, link.LCourtLinkTarget, realId),
+                LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftCollocations, link.LCourtTargetId, realId),
         };
 
         LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, owner with { LDraftContent = content });

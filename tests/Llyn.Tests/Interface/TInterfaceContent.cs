@@ -444,14 +444,14 @@ internal static partial class TInterface
         engine.LEngineSynonymUpdate(synonym);
     }
 
-    internal static void TEngineTagChange(this LEngine engine, string text, string renamed)
+    internal static void TEngineTagChange(this LEngine engine, long tagId, string renamed)
     {
-        engine.LEngineTagChange(text, renamed);
+        engine.LEngineTagChange(tagId, renamed);
     }
 
-    internal static void TEngineTagDelete(this LEngine engine, string text)
+    internal static void TEngineTagDelete(this LEngine engine, long tagId)
     {
-        engine.LEngineTagDelete(text);
+        engine.LEngineTagDelete(tagId);
     }
 
     internal static IReadOnlyList<LTag> TEngineTagRead(this LEngine engine) =>

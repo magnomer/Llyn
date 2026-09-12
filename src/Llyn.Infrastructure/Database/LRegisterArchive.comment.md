@@ -9,10 +9,10 @@ Attaching and detaching therefore only ever write association rows.
 Detaching leaves the Register and its other references untouched.
 
 Two kinds of row share the table.
-A row a language pack ships carries `builtin = 1` and the language it came from.
-Its id is fixed, so seeding the same pack twice adds nothing.
-A row the user wrote carries `builtin = 0` and no language, and its id is opaque.
-Only a written row may be renamed or deleted, which is why those statements name `builtin = 0`.
+A row a language pack ships carries the pack id the pack declared and the language it came from.
+That pair is unique, so seeding the same pack twice adds nothing.
+A row the user wrote carries no pack id and no language, and its id is opaque.
+Only a written row may be renamed or deleted, which is why those statements name `pack_id IS NULL`.
 
 A referrer's order is a unique index.
 So attaching and detaching renumber that referrer's whole set through `LDatabaseOrder`.
@@ -29,9 +29,10 @@ The new Register is referenced by nothing until it is attached to a referrer.
 
 ## `public void LRegisterDefaultCreate(IReadOnlyList<LRegister> registers)`
 
-Writes the rows a language pack ships, skipping every id already present.
+Writes the rows a language pack ships, keyed by `(language, pack_id)`.
+A pair already present keeps its row id and takes the name the pack now declares.
 Seeding is therefore safe to run on every read of a language's shelf.
-A default the user later renamed is never overwritten, because a built-in id is never rewritten here.
+A pack that renames a register keeps every mark.
 
 ## `public LRegister? LRegisterRead(string id)`
 

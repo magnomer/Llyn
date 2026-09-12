@@ -144,6 +144,12 @@ internal sealed class PVideo : INotifyPropertyChanged
         }
     }
 
+    internal void PVideoIdentityApply(LVideoDraft stored)
+    {
+        ArgumentNullException.ThrowIfNull(stored);
+        _pVideoRow = stored.LVideoDraftId;
+    }
+
     internal LVideoDraft PVideoDraftRead()
     {
         return new LVideoDraft(

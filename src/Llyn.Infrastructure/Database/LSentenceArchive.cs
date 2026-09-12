@@ -25,14 +25,14 @@ public sealed class LSentenceArchive
         return LSentenceOwnerRead("collocation_example", "collocation_id", collocationId);
     }
 
-    public void LSentenceMeaningSave(long meaningId, IReadOnlyList<LSentence> sentences)
+    public IReadOnlyList<long> LSentenceMeaningSave(long meaningId, IReadOnlyList<LSentence> sentences)
     {
-        LSentenceOwnerSave("sense_example", "sense_id", meaningId, sentences);
+        return LSentenceOwnerSave("sense_example", "sense_id", meaningId, sentences);
     }
 
-    public void LSentenceCollocationSave(long collocationId, IReadOnlyList<LSentence> sentences)
+    public IReadOnlyList<long> LSentenceCollocationSave(long collocationId, IReadOnlyList<LSentence> sentences)
     {
-        LSentenceOwnerSave("collocation_example", "collocation_id", collocationId, sentences);
+        return LSentenceOwnerSave("collocation_example", "collocation_id", collocationId, sentences);
     }
 
     public void LSentenceMeaningAttach(long meaningId, long exampleId, int position)
@@ -194,7 +194,7 @@ public sealed class LSentenceArchive
         }
     }
 
-    private static void LSentenceSave(
+    private static long LSentenceSave(
         SqliteConnection connection, string table, string column, long ownerId, LSentence sentence, int position)
     {
         ArgumentNullException.ThrowIfNull(sentence);
@@ -209,7 +209,8 @@ public sealed class LSentenceArchive
             VALUES (
                 $owner, $example, $position,
                 $particleState, $particle,
-                $dependenceState, $dependence);
+                $dependenceState, $dependence)
+            RETURNING id;
             """;
         command.Parameters.AddWithValue("$owner", ownerId);
         command.Parameters.AddWithValue(
@@ -217,7 +218,7 @@ public sealed class LSentenceArchive
         command.Parameters.AddWithValue("$position", position);
         LStateColumn.LStateColumnApply(command, "particle", sentence.LSentenceParticle);
         LStateColumn.LStateColumnApply(command, "dependence", sentence.LSentenceDependence);
-        command.ExecuteNonQuery();
+        return (long)command.ExecuteScalar()!;
     }
 
     private static LExample LSentenceExampleRead(SqliteDataReader reader, int start)
@@ -238,7 +239,8 @@ public sealed class LSentenceArchive
         return LSentenceOwnerRead(session.LDatabaseSessionConnection, table, column, ownerId);
     }
 
-    private void LSentenceOwnerSave(string table, string column, long ownerId, IReadOnlyList<LSentence> sentences)
+    private IReadOnlyList<long> LSentenceOwnerSave(
+        string table, string column, long ownerId, IReadOnlyList<LSentence> sentences)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(ownerId);
         ArgumentNullException.ThrowIfNull(sentences);
@@ -247,12 +249,14 @@ public sealed class LSentenceArchive
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
         LSentenceOwnerClear(connection, table, column, ownerId);
+        List<long> written = new(sentences.Count);
         for (int position = 0; position < sentences.Count; position++)
         {
-            LSentenceSave(connection, table, column, ownerId, sentences[position], position);
+            written.Add(LSentenceSave(connection, table, column, ownerId, sentences[position], position));
         }
 
         session.LDatabaseSessionCommit();
+        return written;
     }
 
     private void LSentenceOwnerAttach(string table, string column, long ownerId, long exampleId, int position)

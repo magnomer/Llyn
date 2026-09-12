@@ -5,7 +5,7 @@ namespace Llyn.Infrastructure;
 
 public static class LSchemaMigration
 {
-    public const long LSchemaMigrationVersion = 36;
+    public const long LSchemaMigrationVersion = 37;
 
     public static void LSchemaMigrationApply(SqliteConnection connection)
     {

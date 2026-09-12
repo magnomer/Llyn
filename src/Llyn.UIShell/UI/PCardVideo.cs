@@ -34,6 +34,25 @@ internal sealed partial class PCard
         return rows;
     }
 
+    internal void PCardVideoApply(IReadOnlyList<LVideoDraft> stored)
+    {
+        int index = 0;
+        foreach (PVideo row in PCardVideo)
+        {
+            if (row.PVideoDraftRead().LVideoDraftEmpty)
+            {
+                continue;
+            }
+
+            if (index < stored.Count)
+            {
+                row.PVideoIdentityApply(stored[index]);
+            }
+
+            index++;
+        }
+    }
+
     internal void PCardVideoAdd()
     {
         PCardVideo.Add(new PVideo());

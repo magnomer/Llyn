@@ -65,6 +65,21 @@ public partial class PEditor
         _pEditorFill = false;
     }
 
+    private void PEditorIdentityApply(LEntryDraft stored)
+    {
+        _pEditorDetail = stored;
+        PCardIdentityApply(_pMeaningList, stored.LEntryDraftMeanings);
+        PCardIdentityApply(_pCollocationList, stored.LEntryDraftCollocations);
+    }
+
+    private static void PCardIdentityApply(IReadOnlyList<PCard> cards, IReadOnlyList<LCardDraft> stored)
+    {
+        for (int index = 0; index < cards.Count && index < stored.Count; index++)
+        {
+            cards[index].PCardIdentityApply(stored[index]);
+        }
+    }
+
     private void PEditorNoteShow(string note)
     {
         PNoteContents.Text = note;

@@ -12,18 +12,25 @@ Only a comma ends a Tag.
 Duplicates are refused as they are committed rather than repaired afterwards.
 So what the field shows is what the store will hold.
 
-## `internal void PCardLabelShow(IReadOnlyList<string> texts)`
+## `internal void PCardLabelShow(IReadOnlyList<LTagDraft> drafts)`
 
 Replaces the Tags with the stored ones of the card being loaded and reopens an empty entry after them.
+Each chip keeps the id of the stored Tag it came from.
 
-## `internal IReadOnlyList<string> PCardLabelRead()`
+## `internal IReadOnlyList<LTagDraft> PCardLabelRead()`
 
 What the card says its Tags are.
 That is the committed Tags and the entry text, each in the order the field shows them.
+A committed chip carries the id it was loaded or chosen with, and the entry text carries none.
 So a Tag typed but never followed by a comma is not lost on save.
 Reading does not change the field.
 An unsaved-change check runs this while the user is still typing.
 Closing a half-typed word into a Tag there would edit the card behind them.
+
+## `internal void PCardLabelApply(IReadOnlyList<LTagDraft> stored)`
+
+Writes the ids the engine minted back onto the chips, in the order the read listed them.
+A caret holding unfinished text counted as a row in the read, so it is stepped over here.
 
 ## `internal void PCardLabelRemove(PLabelChip chip)`
 
@@ -52,8 +59,14 @@ That is what leaving the field or pressing enter means.
 
 ## `internal void PCardLabelCommit(string text)`
 
-Closes one given word into a Tag before the entry.
-That is what a comma in the text, and a row taken from the dropdown, both reach for.
+Closes one given word into a Tag before the entry, with no stored Tag resolved for it.
+That is what a comma in the text reaches for.
+
+## `internal void PCardLabelCommit(long id, string text)`
+
+Closes one word into a Tag before the entry, linking the stored Tag `id` names.
+That is what a row taken from the dropdown reaches for.
+The save links the row rather than matching its text.
 
 ## `internal void PCardLabelClear()`
 

@@ -137,7 +137,7 @@ public partial class PTenor
         try
         {
             read = _lEngine.LEngineEntryFind(new LRegister(
-                _pGamutChoice ?? 0, LStateValue.LStateValueUnspecified, string.Empty, false));
+                _pGamutChoice ?? 0, LStateValue.LStateValueUnspecified, string.Empty));
         }
         catch (Exception exception)
         {

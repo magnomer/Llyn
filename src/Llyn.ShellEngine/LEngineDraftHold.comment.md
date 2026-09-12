@@ -85,13 +85,16 @@ A new word carries the tongue the shell already chose, so that alone leaves the 
 Cards holding nothing at all are left out too.
 The form always offers one empty card, and an empty card is not work.
 
-## `public LEntry LEngineDraftCommit(string id)`
+## `public LOutcome LEngineDraftCommit(long id)`
 
-Turns held work into a stored entry and returns it.
+Turns held work into a stored entry and returns it with the identity map.
+The map pairs every negative id the draft held with the row id the database gave it.
+It is an output the caller may read, never something the engine reads back in.
 Every tentative target this draft links to is committed first.
 It opens the walk with nothing entered yet.
 A chip naming a word that does not exist yet becomes a real entry that way.
-Settling those targets rewrites this draft's file, so it is read back afterwards.
+The entry id such a target became is recorded in the map under the target's draft id.
+The translation list is settled through the map, so the draft file is not read back for it.
 A draft carrying no entry id is a create, one carrying an entry id is an update.
 An entry id naming a record since deleted is a create as well, because there is nothing left to update.
 Such a draft is otherwise trapped: it reports itself unsaved forever and every commit is refused.
@@ -113,15 +116,18 @@ The sweep passes it over and every launch offers work that was already saved.
 Reading the entry back makes the leftover match, which is what lets the sweep collect it.
 Only after the entry exists is the court settled and each owner draft rewritten.
 Rewriting means the tentative id sitting in a translation list becomes the real entry id.
+An owner this same walk entered settles its own list through the map and is rewritten all the same.
+A store that fails after the targets committed then leaves a file naming real entries, so a retry keeps the links.
 An owner whose file has since gone is passed over rather than recreated.
 The held file is deleted last, so a failure anywhere above leaves the work recoverable.
 The id leaves the claimed set with the file, and the claim file goes too.
 No launch counts the draft again.
 The caller asking for this commit owns its own draft, so the walk opens holding it.
 
-## `private LEntry LEngineDraftCommit(string id, HashSet<string> entered, bool held)`
+## `private LOutcome LEngineDraftCommit(long id, HashSet<long> entered, bool held)`
 
 The same commit, carrying the drafts the walk has already entered and whether this frame holds its own draft.
+Each frame builds its own map, so a frame reports only the ids its own draft held.
 Two drafts naming each other would otherwise recurse until the stack died, which no catch can reach.
 A target already in the set is passed over, since the walk is settling it further up.
 The id is added before its targets are visited, so the draft cannot reach itself through them.
@@ -165,18 +171,6 @@ Whether a copy of the program other than this one is still working on a draft.
 A live claim naming this very process is one this engine already knows about through its own set.
 So only another process's claim answers true, which is the case an in-memory set can say nothing about.
 A stale claim is swept by the check itself and answers false.
-
-## `private static LEntryDraft LEngineDraftNormalize(LEntryDraft content)`
-
-The same content with every card named.
-The content that came in is returned itself when both lists were already named.
-That sameness is the answer the form reads to know nothing was corrected.
-
-## `private static IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)`
-
-The same cards with an id minted for each one carrying none.
-The list that came in is returned itself when every card was already named.
-A copy is taken only from the first unnamed card, because a settled list is the ordinary case.
 
 ## `private static LEntryDraft LEngineDraftBlank`
 

@@ -26,12 +26,12 @@ Each of the two frame fields offers what has already been saved for the language
 Nothing is shipped, so an empty store offers nothing.
 The field is a plain box until something is written in it.
 
-## `internal PSentence(LEngine engine, ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences)`
 
 An empty row nothing has been written in.
-The `engine` is what the row asks for an id once a sentence is written in it.
+It carries id zero until the engine names it on the next draft save.
 
-## `internal PSentence(LEngine engine, ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, LSentenceDraft draft)`
+## `internal PSentence(ObservableCollection<PCitationItem> catalog, ObservableCollection<string> particles, ObservableCollection<string> dependences, LSentenceDraft draft)`
 
 The row for a stored Example.
 It holds the sentence, the Source it cites, and the frame as the store knows them.
@@ -84,9 +84,14 @@ A frame written on a row with no sentence still stands, so the row is read rathe
 
 ## `internal void PSentenceIdentityApply()`
 
-Gives the row the id its Example will be stored under, once the row holds a sentence.
-An id, once given, stays with the row while the sentence does.
-Emptying the sentence takes the id with it, because the row then holds a frame and no Example to name.
+Emptying the sentence takes the Example id with it.
+The row then holds a frame and no Example to name.
+The row never mints an id of its own.
+
+## `internal void PSentenceIdentityApply(LSentenceDraft stored)`
+
+Takes the ids the engine gave this row and its Example when it saved the draft.
+The engine is the only minter, so the row learns its identity from the saved content and nowhere else.
 
 ## `internal void PSentenceClear()`
 

@@ -97,7 +97,7 @@ public sealed class TDraftExample
 
             engine.TEngineExampleSave(committed with
             {
-                LDraftEntry = stored.LExampleId,
+                LDraftEntryId = stored.LExampleId,
                 LDraftExample = stored,
             });
             engine.TEngineExampleSave(edited with

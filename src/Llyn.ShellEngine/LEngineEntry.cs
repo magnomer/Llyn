@@ -47,7 +47,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(tag);
-            return new LEntryArchive(_lEngineDatabase).LEntryTagFind(tag.LTagText);
+            return new LEntryArchive(_lEngineDatabase).LEntryTagFind(tag.LTagId);
         }
     }
 

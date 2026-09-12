@@ -50,6 +50,8 @@ A store within a keystroke of the last change would otherwise write the form as 
 
 ### `stored = _lEngine.LEngineDraftCommit(held);`
 
+The answer is the stored entry with the map from every temporary id to its real one.
+This form only needs the entry, because it reloads the whole record from the store.
 The write is deliberately synchronous.
 LDatabase keeps its ambient session in a plain instance field.
 LEngine is built on the UI thread, so it stays on it.

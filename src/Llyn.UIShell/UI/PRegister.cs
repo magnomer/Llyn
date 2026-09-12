@@ -9,11 +9,11 @@ internal sealed class PRegister
     private readonly bool _pRegisterUnreadable;
 
     internal PRegister(LStateValue text, long id)
-        : this(text, id, string.Empty, false)
+        : this(text, id, string.Empty)
     {
     }
 
-    internal PRegister(LStateValue text, long id, string language, bool builtin)
+    internal PRegister(LStateValue text, long id, string language)
     {
         ArgumentNullException.ThrowIfNull(text);
 
@@ -21,14 +21,11 @@ internal sealed class PRegister
         _pRegisterUnreadable = text.LStateValueState == LState.LStateUnknown;
         PRegisterId = id;
         PRegisterLanguage = language ?? string.Empty;
-        PRegisterBuiltin = builtin;
     }
 
-    public long PRegisterId { get; }
+    public long PRegisterId { get; internal set; }
 
     internal string PRegisterLanguage { get; }
-
-    internal bool PRegisterBuiltin { get; }
 
     public string PRegisterText => _pRegisterText;
 

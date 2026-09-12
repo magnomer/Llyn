@@ -30,13 +30,14 @@ The Example is joined loosely, because a row may state a frame and cite no Examp
 
 Reads what a Collocation holds over its Examples, on the same terms as a Meaning.
 
-## `public void LSentenceMeaningSave(string meaningId, IReadOnlyList<LSentence> sentences)`
+## `public IReadOnlyList<long> LSentenceMeaningSave(long meaningId, IReadOnlyList<LSentence> sentences)`
 
 Writes a Meaning's whole set at once, in the order given.
 What the Meaning held before is dropped, so the list handed in is the list that stands.
-A row naming no id is given one, since a row is only identity once it is stored.
+Every row is given a fresh id, since a row is only identity once it is stored.
+The answer lists those ids in the order given, so the caller can map a draft id to its row.
 
-## `public void LSentenceCollocationSave(string collocationId, IReadOnlyList<LSentence> sentences)`
+## `public IReadOnlyList<long> LSentenceCollocationSave(long collocationId, IReadOnlyList<LSentence> sentences)`
 
 Writes a Collocation's whole set at once, on the same terms as a Meaning.
 

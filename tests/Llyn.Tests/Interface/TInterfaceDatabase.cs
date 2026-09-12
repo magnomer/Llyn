@@ -46,18 +46,18 @@ internal static partial class TInterface
         collocationArchive.LCollocationDelete(id);
     }
 
-    internal static LCourtLink? TCourtArchiveRead(string root, long id) =>
+    internal static LCourt? TCourtArchiveRead(string root, long id) =>
         LCourtArchive.LCourtArchiveRead(root, id);
 
-    internal static void TCourtArchiveSave(string root, LCourtLink link)
+    internal static void TCourtArchiveSave(string root, LCourt link)
     {
         LCourtArchive.LCourtArchiveSave(root, link);
     }
 
-    internal static IReadOnlyList<LCourtLink> TCourtArchiveScan(string root) =>
+    internal static IReadOnlyList<LCourt> TCourtArchiveScan(string root) =>
         LCourtArchive.LCourtArchiveScan(root);
 
-    internal static IReadOnlyList<LCourtLink> TCourtArchiveSettle(string root, long draftId) =>
+    internal static IReadOnlyList<LCourt> TCourtArchiveSettle(string root, long draftId) =>
         LCourtArchive.LCourtArchiveSettle(root, draftId);
 
     internal static void TCourtArchiveSweep(string root)

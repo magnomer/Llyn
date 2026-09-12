@@ -9,6 +9,11 @@ public sealed partial class LEngine
 {
     public LEntry LEngineEntryUpdate(long id, LEntryDraft draft)
     {
+        return LEngineEntryUpdate(id, draft, []);
+    }
+
+    private LEntry LEngineEntryUpdate(long id, LEntryDraft draft, Dictionary<long, long> identity)
+    {
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -43,21 +48,23 @@ public sealed partial class LEngine
                 id,
                 draft.LEntryDraftMeanings,
                 draft.LEntryDraftLanguage,
-                collocation: false,
-                changes);
+                false,
+                changes,
+                identity);
             LEngineCardUpdate(
                 session.LDatabaseSessionConnection,
                 id,
                 draft.LEntryDraftCollocations,
                 draft.LEntryDraftLanguage,
-                collocation: true,
-                changes);
+                true,
+                changes,
+                identity);
 
             LEngineSpeechUpdate(entries, id, draft, changes);
             LEngineFormUpdate(entries, id, draft, changes);
             LEngineInflectionUpdate(id, draft, changes);
             LEngineNoteUpdate(id, draft, changes);
-            LEnginePronunciationUpdate(id, draft, changes);
+            LEnginePronunciationUpdate(id, draft, changes, identity);
 
             LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord(changes);
 
@@ -214,7 +221,7 @@ public sealed partial class LEngine
     }
 
     private void LEnginePronunciationUpdate(
-        long entryId, LEntryDraft draft, List<LRevisionChange> changes)
+        long entryId, LEntryDraft draft, List<LRevisionChange> changes, Dictionary<long, long> identity)
     {
         LPronunciationArchive pronunciations = new(_lEngineDatabase);
         LPronunciation? stored = pronunciations.LPronunciationRead(entryId);
@@ -249,6 +256,11 @@ public sealed partial class LEngine
         else
         {
             pronunciationId = stored.LPronunciationId;
+        }
+
+        LEngineIdentityRecord(identity, written.LPronunciationDraftId, pronunciationId);
+        if (stored is not null)
+        {
             LPronunciation current = stored with
             {
                 LPronunciationLevel = written.LPronunciationDraftLevel,

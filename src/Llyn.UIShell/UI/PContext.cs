@@ -24,7 +24,7 @@ internal sealed class PContext
         PContextKind = kind ?? LStateValue.LStateValueUnspecified;
     }
 
-    public long PContextId { get; }
+    public long PContextId { get; internal set; }
 
     internal LStateValue PContextDescription { get; }
 

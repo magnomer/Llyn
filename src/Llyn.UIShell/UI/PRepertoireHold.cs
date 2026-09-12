@@ -240,7 +240,7 @@ public partial class PRepertoire
             return null;
         }
 
-        return held?.LDraftEntry is null or 0 ? null : held.LDraftEntry;
+        return held?.LDraftEntryId is null or 0 ? null : held.LDraftEntryId;
     }
 
     private void PScenarioHoldSuspend(Exception exception)

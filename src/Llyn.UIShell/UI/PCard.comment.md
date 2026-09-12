@@ -17,6 +17,13 @@ It is `null` for a card typed into an empty form, which carries none of them yet
 Reading a card writes the form's fields over this value rather than building one from nothing.
 So a field the editor never drew is never blanked by an edit that never saw it.
 
+### `internal void PCardIdentityApply(LCardDraft stored)`
+
+Takes the ids the engine minted when it saved the draft and writes them into the chips and rows.
+The saved card is kept as the draft behind the card, so nested cards carry their ids too.
+Nothing is redrawn, so the caret and the focus stay where the user left them.
+Each field walks its own rows in the order the read handed them over, skipping what the read skipped.
+
 ### `public int PCardPosition`
 
 The number this card is shown by, counted from one.

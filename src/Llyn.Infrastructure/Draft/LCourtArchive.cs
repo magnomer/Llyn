@@ -16,21 +16,21 @@ public static class LCourtArchive
 
     private static readonly JsonSerializerOptions LCourtArchiveIndent = new() { WriteIndented = true };
 
-    public static void LCourtArchiveSave(string root, LCourtLink link)
+    public static void LCourtArchiveSave(string root, LCourt link)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(link);
-        ArgumentOutOfRangeException.ThrowIfZero(link.LCourtLinkId);
+        ArgumentOutOfRangeException.ThrowIfZero(link.LCourtId);
 
         string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
-        string pending = Path.Combine(folder, link.LCourtLinkId.ToString(CultureInfo.InvariantCulture) + LCourtArchivePending);
-        string path = Path.Combine(folder, link.LCourtLinkId.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
+        string pending = Path.Combine(folder, link.LCourtId.ToString(CultureInfo.InvariantCulture) + LCourtArchivePending);
+        string path = Path.Combine(folder, link.LCourtId.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
 
         File.WriteAllText(pending, JsonSerializer.Serialize(link, LCourtArchiveIndent));
         File.Move(pending, path, true);
     }
 
-    public static LCourtLink? LCourtArchiveRead(string root, long id)
+    public static LCourt? LCourtArchiveRead(string root, long id)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
@@ -39,7 +39,7 @@ public static class LCourtArchive
         return LCourtArchiveLoad(path);
     }
 
-    public static IReadOnlyList<LCourtLink> LCourtArchiveScan(string root)
+    public static IReadOnlyList<LCourt> LCourtArchiveScan(string root)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
 
@@ -59,7 +59,7 @@ public static class LCourtArchive
             return [];
         }
 
-        List<LCourtLink> links = [];
+        List<LCourt> links = [];
         foreach (string file in files)
         {
             if (!file.EndsWith(LCourtArchiveExtension, StringComparison.OrdinalIgnoreCase))
@@ -67,7 +67,7 @@ public static class LCourtArchive
                 continue;
             }
 
-            if (LCourtArchiveLoad(file) is LCourtLink link)
+            if (LCourtArchiveLoad(file) is LCourt link)
             {
                 links.Add(link);
             }
@@ -94,20 +94,20 @@ public static class LCourtArchive
         }
     }
 
-    public static IReadOnlyList<LCourtLink> LCourtArchiveSettle(string root, long draftId)
+    public static IReadOnlyList<LCourt> LCourtArchiveSettle(string root, long draftId)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(draftId);
 
-        List<LCourtLink> settled = [];
-        foreach (LCourtLink link in LCourtArchiveScan(root))
+        List<LCourt> settled = [];
+        foreach (LCourt link in LCourtArchiveScan(root))
         {
-            if (link.LCourtLinkTarget != draftId)
+            if (link.LCourtTargetId != draftId)
             {
                 continue;
             }
 
-            LCourtArchiveDelete(root, link.LCourtLinkId);
+            LCourtArchiveDelete(root, link.LCourtId);
             settled.Add(link);
         }
 
@@ -160,11 +160,11 @@ public static class LCourtArchive
         }
     }
 
-    private static LCourtLink? LCourtArchiveLoad(string path)
+    private static LCourt? LCourtArchiveLoad(string path)
     {
         try
         {
-            return JsonSerializer.Deserialize<LCourtLink>(File.ReadAllText(path), LCourtArchiveIndent);
+            return JsonSerializer.Deserialize<LCourt>(File.ReadAllText(path), LCourtArchiveIndent);
         }
         catch (JsonException)
         {

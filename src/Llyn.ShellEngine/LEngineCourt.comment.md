@@ -7,13 +7,13 @@ A chip naming a word the user has not stored is such a target.
 The row outlives neither end: committing settles it and cancelling drops it.
 The draft calls that open and end that work live in `LEngineDraftHold.cs`.
 
-## `public LCourtLink LEngineCourtSave(string ownerId, string targetId, string headword, string language)`
+## `public LCourt LEngineCourtSave(string ownerId, string targetId, string headword, string language)`
 
 Writes one court row: a link from a held draft to a target that is not an entry yet.
 The headword and language travel with it, because the chip is shown long before the target is real.
 Returns the row so the caller can drop it again by id.
 
-## `public LCourtLink LEngineCourtStart(string ownerId, string origin, string headword, string language)`
+## `public LCourt LEngineCourtStart(string ownerId, string origin, string headword, string language)`
 
 Starts a tentative target and records the row naming it, as one call.
 The word and the language are written into the target before the row is made.
@@ -26,7 +26,7 @@ So the workspace holds either the target with its row or neither.
 
 Removes one court row, for a chip the user took back.
 
-## `public LCourtLink? LEngineCourtFind(string ownerId, string targetId)`
+## `public LCourt? LEngineCourtFind(string ownerId, string targetId)`
 
 The court row one draft holds against one target, or null when there is none.
 A chip the user takes back is dropped by finding its row this way.
@@ -51,12 +51,12 @@ A row whose owner draft is gone is dropped as well, wherever the sweep meets one
 Such a row can no longer be reached by owner or by target, so nothing else would ever collect it.
 Cancelling and deleting share this, because both end a draft and both leave its links behind otherwise.
 
-## `private IReadOnlyList<LCourtLink> LEngineCourtScan(string ownerId)`
+## `private IReadOnlyList<LCourt> LEngineCourtScan(string ownerId)`
 
 Every court row one draft holds, whatever it points at.
 Committing and cancelling both act on the whole set.
 
-## `private void LEngineCourtUpdate(LCourtLink link, string realId)`
+## `private void LEngineCourtUpdate(LCourt link, string realId)`
 
 Rewrites the one draft that held a settled link.
 

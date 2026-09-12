@@ -47,10 +47,9 @@ Switches to the repertoire panel and opens one Situation there.
 It is the way a situation chip read on a card reaches the record it names.
 The repertoire is asked first, for the reason the library is asked above.
 
-## `internal void PWindowTagShow(string text)`
+## `internal void PWindowTagShow(long id)`
 
-Switches to the taxonomy panel and browses by one tag.
-A tag is its own text, so the panel is given the text and not an id.
+Switches to the taxonomy panel and browses by one tag, named by its id.
 The taxonomy is asked first, for the reason the library is asked above.
 
 ## `internal void PWindowExampleShow(string id)`

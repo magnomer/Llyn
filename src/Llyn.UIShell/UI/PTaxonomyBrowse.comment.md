@@ -44,7 +44,7 @@ The entries under a tag stay in headword order, which the database already gives
 The chosen tag is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
 A chosen tag that the workspace no longer holds is dropped, and the panel falls back to every entry.
 
-### `internal void PDirectoryTagShow(string text)`
+### `internal void PDirectoryTagShow(long id)`
 
 Browses by one tag for a caller outside the panel.
 That is how a tag chip read on a card reaches this panel.
@@ -63,7 +63,7 @@ The entry list is never refilled on its own.
 It is refilled whenever the catalog is, because the chosen tag may have just changed or vanished.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
 
-### `_pDirectoryChoice = item.PDirectoryItemChosen ? null : item.PDirectoryItemText;`
+### `_pDirectoryChoice = item.PDirectoryItemChosen ? 0 : item.PDirectoryItemId;`
 
 Clicking the chosen tag lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.

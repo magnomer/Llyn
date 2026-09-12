@@ -16,6 +16,11 @@ Fills the field from a loaded card, dropping empty and repeated rows, and puts t
 The field as the engine takes it, including whatever stands unfinished in the caret.
 Text left in the caret is not lost merely because the user never pressed Enter.
 
+## `internal void PCardRegisterApply(IReadOnlyList<LRegisterDraft> stored)`
+
+Writes the ids the engine minted back onto the chips, in the order the read listed them.
+A caret holding unfinished text counted as a row in the read, so it is stepped over here.
+
 ## `internal void PCardRegisterRemove(PRegister chip)`
 
 Drops the chip the user clicked the cross on.

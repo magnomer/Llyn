@@ -13,7 +13,7 @@ public partial class PTaxonomy
 
     private readonly ObservableCollection<PMembershipItem> _pMembershipList = [];
 
-    private string? _pDirectoryChoice;
+    private long _pDirectoryChoice;
 
     private long? _pDisplayEntry;
 
@@ -61,7 +61,7 @@ public partial class PTaxonomy
 
     private void PDirectoryReset()
     {
-        _pDirectoryChoice = null;
+        _pDirectoryChoice = 0;
     }
 
     private void PDirectoryFind(string query)
@@ -81,14 +81,14 @@ public partial class PTaxonomy
         bool kept = false;
         foreach (LTag tag in read)
         {
-            bool chosen = string.Equals(tag.LTagText, _pDirectoryChoice, StringComparison.Ordinal);
+            bool chosen = tag.LTagId == _pDirectoryChoice;
             kept |= chosen;
-            _pDirectoryList.Add(new PDirectoryItem(tag.LTagText, chosen));
+            _pDirectoryList.Add(new PDirectoryItem(tag.LTagId, tag.LTagText, chosen));
         }
 
         if (!kept)
         {
-            _pDirectoryChoice = null;
+            _pDirectoryChoice = 0;
         }
 
         PDirectoryEmpty.Visibility = _pDirectoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -102,13 +102,13 @@ public partial class PTaxonomy
             return;
         }
 
-        _pDirectoryChoice = item.PDirectoryItemChosen ? null : item.PDirectoryItemText;
+        _pDirectoryChoice = item.PDirectoryItemChosen ? 0 : item.PDirectoryItemId;
         PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 
-    internal void PDirectoryTagShow(string text)
+    internal void PDirectoryTagShow(long id)
     {
-        _pDirectoryChoice = text;
+        _pDirectoryChoice = id;
         PExploration.Text = string.Empty;
         PDirectoryFind(string.Empty);
     }
@@ -127,7 +127,7 @@ public partial class PTaxonomy
         IReadOnlyList<LEntry> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(new LTag(_pDirectoryChoice ?? string.Empty));
+            read = _lEngine.LEngineEntryFind(new LTag(_pDirectoryChoice, string.Empty));
         }
         catch (Exception exception)
         {

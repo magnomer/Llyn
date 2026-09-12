@@ -11,19 +11,19 @@ Nothing here reaches SQLite and nothing here edits a draft file.
 Two copies of the program may run against one workspace.
 Every operation touches a single named file and holds nothing open.
 
-## `public static void LCourtArchiveSave(string root, LCourtLink link)`
+## `public static void LCourtArchiveSave(string root, LCourt link)`
 
-Writes `link` to `drafts/court/<LCourtLinkId>.json`, replacing whatever was there.
+Writes `link` to `drafts/court/<LCourtId>.json`, replacing whatever was there.
 The text goes to a `.json.tmp` file first and is then moved over the target.
 A move is atomic, so a reader never sees a half-written link.
 A crash mid-write leaves the previous file intact.
 
-## `public static LCourtLink? LCourtArchiveRead(string root, string id)`
+## `public static LCourt? LCourtArchiveRead(string root, string id)`
 
 The link stored under `id`, or `null` when no readable file holds it.
 A missing file and an unreadable one are the same answer to the caller.
 
-## `public static IReadOnlyList<LCourtLink> LCourtArchiveScan(string root)`
+## `public static IReadOnlyList<LCourt> LCourtArchiveScan(string root)`
 
 Every link the court holds.
 A file that fails to parse or cannot be opened is skipped rather than thrown.
@@ -35,7 +35,7 @@ One bad file must not hide the rest.
 Removes the file for `id`, which is how one link leaves the court on its own.
 A file already gone, or held open by the other copy of the program, is not an error.
 
-## `public static IReadOnlyList<LCourtLink> LCourtArchiveSettle(string root, string draftId)`
+## `public static IReadOnlyList<LCourt> LCourtArchiveSettle(string root, string draftId)`
 
 Settles every link pointing at `draftId`, whether that draft became a real entry or was abandoned.
 The link files disappear and the links themselves are returned.

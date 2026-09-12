@@ -114,55 +114,56 @@ public sealed partial class LEngine
                 return LEngineReferenceCheck(draft, reference);
             }
 
-            LEntryDraft origin = draft.LDraftEntry <= 0
+            LEntryDraft origin = draft.LDraftEntryId <= 0
                 ? LEngineDraftBlank with { LEntryDraftLanguage = draft.LDraftContent.LEntryDraftLanguage }
-                : LEngineEntryLoad(draft.LDraftEntry) ?? LEngineDraftBlank;
+                : LEngineEntryLoad(draft.LDraftEntryId) ?? LEngineDraftBlank;
 
             return !LEngineDraftMatch(origin, draft.LDraftContent);
         }
     }
 
-    public LEntry LEngineDraftCommit(long id)
+    public LOutcome LEngineDraftCommit(long id)
     {
-        LEntry stored;
+        LOutcome outcome;
         lock (_lEngineGate)
         {
             ArgumentOutOfRangeException.ThrowIfZero(id);
             LEngineDraftValidate(id);
-            stored = LEngineDraftCommit(id, [], true);
+            outcome = LEngineDraftCommit(id, [], true);
             _lEngineTrove.LTroveClear(id);
         }
 
-        LEngineBulletinRaise(LSubject.LSubjectEntry, stored.LEntryId);
-        return stored;
+        LEngineBulletinRaise(LSubject.LSubjectEntry, outcome.LOutcomeEntry.LEntryId);
+        return outcome;
     }
 
-    private LEntry LEngineDraftCommit(long id, HashSet<long> entered, bool held)
+    private LOutcome LEngineDraftCommit(long id, HashSet<long> entered, bool held)
     {
         entered.Add(id);
+        LDraft draft = LEngineDraftLoad(id);
+        Dictionary<long, long> identity = [];
 
-        foreach (LCourtLink link in LEngineCourtScan(id))
+        foreach (LCourt link in LEngineCourtScan(id))
         {
-            if (entered.Contains(link.LCourtLinkTarget) ||
-                LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtLinkTarget) is null)
+            if (entered.Contains(link.LCourtTargetId) ||
+                LDraftArchive.LDraftArchiveRead(_lEngineWorkspace, link.LCourtTargetId) is null)
             {
                 continue;
             }
 
-            LEngineDraftCommit(
-                link.LCourtLinkTarget, entered, LEngineHoldCheck(link.LCourtLinkTarget));
+            LOutcome target = LEngineDraftCommit(
+                link.LCourtTargetId, entered, LEngineHoldCheck(link.LCourtTargetId));
+            LEngineIdentityRecord(identity, link.LCourtTargetId, target.LOutcomeEntry.LEntryId);
         }
 
-        LDraft draft = LEngineDraftLoad(id);
+        LEntryDraft sending = LEngineTranslationSettle(draft.LDraftContent, identity);
 
-        LEntryDraft sending = LEngineTranslationSettle(draft.LDraftContent);
+        LEntry entry = draft.LDraftEntryId <= 0
+            || LEngineEntryLoad(draft.LDraftEntryId) is null
+            ? LEngineEntrySave(sending, identity)
+            : LEngineEntryUpdate(draft.LDraftEntryId, sending, identity);
 
-        LEntry entry = draft.LDraftEntry <= 0
-            || LEngineEntryLoad(draft.LDraftEntry) is null
-            ? LEngineEntrySave(sending)
-            : LEngineEntryUpdate(draft.LDraftEntry, sending);
-
-        LDraft settled = draft with { LDraftEntry = entry.LEntryId };
+        LDraft settled = draft with { LDraftEntryId = entry.LEntryId };
         if (LEngineEntryLoad(entry.LEntryId) is LEntryDraft written)
         {
             settled = settled with { LDraftContent = written };
@@ -170,7 +171,7 @@ public sealed partial class LEngine
 
         LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, settled);
 
-        foreach (LCourtLink link in
+        foreach (LCourt link in
             LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
         {
             LEngineCourtUpdate(link, entry.LEntryId);
@@ -178,13 +179,13 @@ public sealed partial class LEngine
 
         if (!held)
         {
-            return entry;
+            return new LOutcome(entry, identity);
         }
 
         _lEngineDraftHeld.Remove(id);
         LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
         LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
-        return entry;
+        return new LOutcome(entry, identity);
     }
 
     public void LEngineDraftCancel(long id)
@@ -196,7 +197,7 @@ public sealed partial class LEngine
 
             LEngineCourtRemove(id);
 
-            foreach (LCourtLink link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+            foreach (LCourt link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
             {
                 LEngineCourtUpdate(link, 0);
             }
@@ -230,47 +231,6 @@ public sealed partial class LEngine
         return claim is not null && claim.LClaimProcess != Environment.ProcessId;
     }
 
-    private LEntryDraft LEngineDraftNormalize(LEntryDraft content)
-    {
-        IReadOnlyList<LCardDraft> meanings = LEngineCardNormalize(content.LEntryDraftMeanings);
-        IReadOnlyList<LCardDraft> collocations = LEngineCardNormalize(content.LEntryDraftCollocations);
-
-        return ReferenceEquals(meanings, content.LEntryDraftMeanings)
-            && ReferenceEquals(collocations, content.LEntryDraftCollocations)
-            ? content
-            : content with
-            {
-                LEntryDraftMeanings = meanings,
-                LEntryDraftCollocations = collocations,
-            };
-    }
-
-    private IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)
-    {
-        List<LCardDraft>? named = null;
-        for (int index = 0; index < cards.Count; index++)
-        {
-            if (cards[index].LCardDraftId != 0)
-            {
-                named?.Add(cards[index]);
-                continue;
-            }
-
-            if (named is null)
-            {
-                named = new List<LCardDraft>(cards.Count);
-                for (int earlier = 0; earlier < index; earlier++)
-                {
-                    named.Add(cards[earlier]);
-                }
-            }
-
-            named.Add(cards[index] with { LCardDraftId = LEngineIdentityCreate() });
-        }
-
-        return named ?? cards;
-    }
-
     private static LEntryDraft LEngineDraftBlank =>
         new(string.Empty, string.Empty, null, string.Empty, [], []);
 
@@ -290,30 +250,37 @@ public sealed partial class LEngine
             ?? throw new LRefusal(LRefusal.LRefusalDraft);
     }
 
-    private LEntryDraft LEngineTranslationSettle(LEntryDraft content)
+    private LEntryDraft LEngineTranslationSettle(
+        LEntryDraft content, IReadOnlyDictionary<long, long> identity)
     {
         return content with
         {
-            LEntryDraftMeanings = LEngineTranslationSettle(content.LEntryDraftMeanings),
-            LEntryDraftCollocations = LEngineTranslationSettle(content.LEntryDraftCollocations),
+            LEntryDraftMeanings = LEngineTranslationSettle(content.LEntryDraftMeanings, identity),
+            LEntryDraftCollocations = LEngineTranslationSettle(content.LEntryDraftCollocations, identity),
         };
     }
 
-    private IReadOnlyList<LCardDraft> LEngineTranslationSettle(IReadOnlyList<LCardDraft> cards)
+    private IReadOnlyList<LCardDraft> LEngineTranslationSettle(
+        IReadOnlyList<LCardDraft> cards, IReadOnlyDictionary<long, long> identity)
     {
         List<LCardDraft> written = new(cards.Count);
         foreach (LCardDraft card in cards)
         {
             List<long> translations = new(card.LCardDraftTranslation.Count);
-            foreach (long translation in card.LCardDraftTranslation)
+            foreach (long held in card.LCardDraftTranslation)
             {
+                long translation = identity.TryGetValue(held, out long settled) ? settled : held;
                 if (translation > 0 && LEngineEntryLoad(translation) is not null)
                 {
                     translations.Add(translation);
                 }
             }
 
-            written.Add(card with { LCardDraftTranslation = translations });
+            written.Add(card with
+            {
+                LCardDraftTranslation = translations,
+                LCardDraftChild = LEngineTranslationSettle(card.LCardDraftChild, identity),
+            });
         }
 
         return written;

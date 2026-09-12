@@ -17,6 +17,11 @@ The text goes to a `.json.tmp` file first and is then moved over the target.
 A move is atomic, so a reader never sees a half-written draft.
 A crash mid-write leaves the previous file intact.
 
+The save refuses a draft in which any item still carries id zero.
+Positive means a stored row and negative means an id the engine minted, so zero is never a saved state.
+Only the engine mints, and the guard here means no caller can slip past it.
+The entry id of the draft itself may be zero, because that names a new record rather than an item.
+
 ## `public static LDraft? LDraftArchiveRead(string root, string id)`
 
 The draft stored under `id`, or `null` when no readable file holds it.

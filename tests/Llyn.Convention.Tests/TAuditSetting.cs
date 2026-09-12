@@ -228,6 +228,7 @@ internal static class TAuditSetting
         "Observer",
         "Occurrence",
         "Order",
+        "Outcome",
         "Outline",
         "Owner",
         "Panel",

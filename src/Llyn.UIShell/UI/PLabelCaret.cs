@@ -8,6 +8,8 @@ internal sealed class PLabelCaret : INotifyPropertyChanged
     private string _pLabelCaretText = string.Empty;
     private string _pLabelCaretHint = string.Empty;
 
+    internal long PLabelCaretId { get; set; }
+
     public string PLabelCaretText
     {
         get => _pLabelCaretText;

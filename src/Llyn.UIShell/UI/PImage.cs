@@ -12,7 +12,7 @@ internal sealed class PImage : INotifyPropertyChanged
     private string _pImageLocation;
     private bool _pImageUnreadable;
     private ImageSource? _pImagePreview;
-    private readonly long _pImageRow;
+    private long _pImageRow;
 
     internal PImage()
         : this(new LImageDraft(LStateValue.LStateValueUnspecified))
@@ -75,6 +75,12 @@ internal sealed class PImage : INotifyPropertyChanged
             _pImagePreview = value;
             PImageRaise(nameof(PImagePreview));
         }
+    }
+
+    internal void PImageIdentityApply(LImageDraft stored)
+    {
+        ArgumentNullException.ThrowIfNull(stored);
+        _pImageRow = stored.LImageDraftId;
     }
 
     internal LImageDraft PImageDraftRead()

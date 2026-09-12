@@ -47,10 +47,10 @@ Copies what the controls hold into the held draft, and shows back whatever was s
 The draft is read back first, because it carries the entry and the origin this form does not.
 A draft that reads back null is gone, which is an ordinary answer and leaves the form alone.
 A write that fails is not, so the form is suspended and the failure reported.
-The engine may correct what it was sent.
+The engine may correct what it was sent, and it names every new chip and row.
 A form that assumed otherwise would drift from the draft with no way to notice.
-The content handed back is the content that went in whenever nothing was corrected, so the ordinary keystroke redraws nothing.
-Filling from the answer is guarded as any other fill is, so showing it starts no further write.
+Only ids are taken from the answer, so no keystroke redraws the form.
+The controls keep what they hold and learn which row it will become.
 
 ### `private void PEditorDraftRestore()`
 

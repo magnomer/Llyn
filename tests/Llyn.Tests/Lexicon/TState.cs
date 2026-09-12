@@ -57,7 +57,7 @@ public sealed class TState
         Assert.Equal(
             LStateValue.LStateValueUnknown,
             Assert.Single(card.LCardDraftSituation).LSituationDraftTitle);
-        Assert.Equal(["spoken"], card.LCardDraftTag);
+        Assert.Equal(["spoken"], TInterface.TTagDraftRead(card.LCardDraftTag));
     }
 
     [Fact]

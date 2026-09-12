@@ -47,7 +47,7 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pCardDefinition = string.Empty;
         _pCardExpression = string.Empty;
         PCardSentence = [];
-        PCardSentenceAdd(new PSentence(engine, catalog, particles, dependences));
+        PCardSentenceAdd(new PSentence(catalog, particles, dependences));
         PCardContextStart();
         PCardRegisterStart();
         PCardLinkStart();
@@ -59,6 +59,20 @@ internal sealed partial class PCard : INotifyPropertyChanged
     public long PCardId { get; set; }
 
     internal LCardDraft? PCardDraft { get; set; }
+
+    internal void PCardIdentityApply(LCardDraft stored)
+    {
+        ArgumentNullException.ThrowIfNull(stored);
+
+        PCardId = stored.LCardDraftId;
+        PCardDraft = stored;
+        PCardSentenceApply(stored.LCardDraftSentence);
+        PCardContextApply(stored.LCardDraftSituation);
+        PCardRegisterApply(stored.LCardDraftRegister);
+        PCardLabelApply(stored.LCardDraftTag);
+        PCardImageApply(stored.LCardDraftImage);
+        PCardVideoApply(stored.LCardDraftVideo);
+    }
 
     public int PCardPosition
     {

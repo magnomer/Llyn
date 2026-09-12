@@ -20,17 +20,14 @@ public static class LSchemaRegister
                 name_state TEXT NOT NULL DEFAULT 'unspecified',
                 name TEXT,
                 language TEXT,
-                builtin INTEGER NOT NULL DEFAULT 0,
-                pack_key TEXT,
+                pack_id INTEGER,
                 CHECK (name_state = 'specified' OR name IS NULL),
-                CHECK (builtin IN (0, 1)),
-                CHECK (builtin = 0 OR language IS NOT NULL),
-                CHECK (builtin = 0 OR pack_key IS NOT NULL),
+                CHECK (pack_id IS NULL OR language IS NOT NULL),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
-            CREATE UNIQUE INDEX IF NOT EXISTS register_pack_key
-            ON register (language, pack_key) WHERE builtin = 1;
+            CREATE UNIQUE INDEX IF NOT EXISTS register_pack
+            ON register (language, pack_id) WHERE pack_id IS NOT NULL;
 
             CREATE TABLE IF NOT EXISTS sense_register (
                 sense_id INTEGER NOT NULL,

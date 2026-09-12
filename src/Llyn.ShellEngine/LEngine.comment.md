@@ -45,12 +45,13 @@ The folder is given, so there is nothing to resolve.
 Changing the user's workspace is `LEngineWorkspaceChange`.
 This only says which folder to open.
 
-## `public long LEngineIdentityCreate()`
+## `private long LEngineIdentityCreate()`
 
 Issues the next temporary id for a draft row of the open workspace.
 
 The engine owns the issuer, because the floor it counts from belongs to the workspace and changes with it.
-The UI calls this for chips it builds until a later plan moves that minting below the UI entirely.
+It is private because only the engine mints.
+A chip the UI builds carries id zero until the next draft save names it.
 
 ## `public LRealm LEngineRealmRead()`
 

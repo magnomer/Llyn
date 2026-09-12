@@ -242,7 +242,7 @@
                         <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Sentence.Control}" />
                     </StackPanel.Style>
                     <ToggleButton
-                        x:Name="PSentenceCitation"
+                        x:Name="PSentenceCitationId"
                         MaxWidth="124"
                         Height="20"
                         Padding="8,0"
@@ -258,7 +258,7 @@
                         AllowsTransparency="True"
                         IsOpen="{Binding PSentenceCitationVisible, Mode=TwoWay}"
                         Placement="Bottom"
-                        PlacementTarget="{Binding ElementName=PSentenceCitation}"
+                        PlacementTarget="{Binding ElementName=PSentenceCitationId}"
                         StaysOpen="False">
                         <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
                             <StackPanel>
@@ -273,7 +273,7 @@
                                     ItemTemplate="{StaticResource Theme.Reference.Row}"
                                     ItemsSource="{Binding PSentenceCitationCatalog}"
                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    SelectedValue="{Binding PSentenceCitation, Mode=TwoWay}"
+                                    SelectedValue="{Binding PSentenceCitationId, Mode=TwoWay}"
                                     SelectedValuePath="PCitationItemId" />
                                 <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSentenceCitationClear" Foreground="{DynamicResource Theme.Muted}">
                                     <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />

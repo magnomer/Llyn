@@ -2,8 +2,8 @@
 
 ## `internal sealed class PSlateItem`
 
-One stored tag offered in the dropdown: the text it is written as, which is its whole identity.
-There is no id to carry, so choosing a row writes the same text the workspace already files under.
+One stored tag offered in the dropdown: the id of the stored Tag and the text it reads.
+Choosing a row links that Tag by id, so a rename in the workspace follows the card.
 
 ## `public string PSlateItemLead`
 

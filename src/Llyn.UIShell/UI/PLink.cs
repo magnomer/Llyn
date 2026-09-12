@@ -187,13 +187,13 @@ public partial class PEditor
 
         try
         {
-            LCourtLink? link = _lEngine.LEngineCourtFind(_pEditorDraft, id);
+            LCourt? link = _lEngine.LEngineCourtFind(_pEditorDraft, id);
             if (link is null)
             {
                 return;
             }
 
-            _lEngine.LEngineCourtDelete(link.LCourtLinkId);
+            _lEngine.LEngineCourtDelete(link.LCourtId);
             _lEngine.LEngineDraftDelete(id);
         }
         catch (Exception)

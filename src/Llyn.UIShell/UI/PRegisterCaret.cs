@@ -8,6 +8,8 @@ internal sealed class PRegisterCaret : INotifyPropertyChanged
     private string _pRegisterCaretText = string.Empty;
     private string _pRegisterCaretHint = string.Empty;
 
+    internal long PRegisterCaretId { get; set; }
+
     public string PRegisterCaretText
     {
         get => _pRegisterCaretText;

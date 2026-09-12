@@ -60,20 +60,20 @@ public sealed partial class LEngine
                 draft.LDraftExample ?? throw new LRefusal(LRefusal.LRefusalExample));
 
             LExample stored;
-            if (draft.LDraftEntry == 0 || LEngineExampleRead(draft.LDraftEntry) is null)
+            if (draft.LDraftEntryId == 0 || LEngineExampleRead(draft.LDraftEntryId) is null)
             {
                 stored = LEngineExampleCreate(sending);
             }
             else
             {
-                LExample written = sending with { LExampleId = draft.LDraftEntry };
+                LExample written = sending with { LExampleId = draft.LDraftEntryId };
                 LEngineExampleUpdate(written);
-                stored = LEngineExampleRead(draft.LDraftEntry) ?? written;
+                stored = LEngineExampleRead(draft.LDraftEntryId) ?? written;
             }
 
             LDraftArchive.LDraftArchiveSave(
                 _lEngineWorkspace,
-                draft with { LDraftEntry = stored.LExampleId, LDraftExample = stored });
+                draft with { LDraftEntryId = stored.LExampleId, LDraftExample = stored });
 
             _lEngineDraftHeld.Remove(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
@@ -88,9 +88,9 @@ public sealed partial class LEngine
     private bool LEngineExampleCheck(LDraft draft, LExample held)
     {
         LExample blank = LEngineExampleBlank with { LExampleLanguage = held.LExampleLanguage };
-        LExample origin = draft.LDraftEntry == 0
+        LExample origin = draft.LDraftEntryId == 0
             ? blank
-            : LEngineExampleRead(draft.LDraftEntry) ?? blank;
+            : LEngineExampleRead(draft.LDraftEntryId) ?? blank;
 
         return !LEngineExampleMatch(origin, held);
     }

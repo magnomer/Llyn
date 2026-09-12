@@ -346,9 +346,9 @@ public partial class PDisplay : UserControl
                 e.Handled = true;
                 _pDisplayHost.PWindowEntryShow(link.PLinkChipId);
                 break;
-            case string tag when tag.Length != 0:
+            case LTagDraft tag when tag.LTagDraftId != 0:
                 e.Handled = true;
-                _pDisplayHost.PWindowTagShow(tag);
+                _pDisplayHost.PWindowTagShow(tag.LTagDraftId);
                 break;
         }
     }

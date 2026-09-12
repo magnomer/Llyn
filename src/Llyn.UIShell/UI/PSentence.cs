@@ -2,13 +2,11 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Llyn.Core;
-using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 internal sealed class PSentence : INotifyPropertyChanged
 {
-    private readonly LEngine _pSentenceEngine;
     private long _pSentenceId;
     private string _pSentenceText;
     private bool _pSentenceUnreadable;
@@ -28,25 +26,20 @@ internal sealed class PSentence : INotifyPropertyChanged
     private string _pSentenceLanguage = string.Empty;
 
     internal PSentence(
-        LEngine engine,
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences)
-        : this(engine, catalog, particles, dependences, LSentenceDraft.LSentenceDraftCreate(string.Empty))
+        : this(catalog, particles, dependences, LSentenceDraft.LSentenceDraftCreate(string.Empty))
     {
     }
 
     internal PSentence(
-        LEngine engine,
         ObservableCollection<PCitationItem> catalog,
         ObservableCollection<string> particles,
         ObservableCollection<string> dependences,
         LSentenceDraft draft)
     {
-        ArgumentNullException.ThrowIfNull(engine);
         ArgumentNullException.ThrowIfNull(draft);
-
-        _pSentenceEngine = engine;
 
         LExampleDraft example = draft.LSentenceDraftExample
             ?? LExampleDraft.LExampleDraftCreate(string.Empty);
@@ -121,7 +114,7 @@ internal sealed class PSentence : INotifyPropertyChanged
         }
     }
 
-    public long PSentenceCitation
+    public long PSentenceCitationId
     {
         get => _pSentenceCitation;
         set
@@ -134,7 +127,7 @@ internal sealed class PSentence : INotifyPropertyChanged
 
             _pSentenceCitation = chosen;
             PSentenceCitationUnreadable = false;
-            PSentenceRaise(nameof(PSentenceCitation));
+            PSentenceRaise(nameof(PSentenceCitationId));
 
             PSentenceCitationName = PSentenceCitationFind(chosen);
             PSentenceCitationVisible = false;
@@ -376,15 +369,18 @@ internal sealed class PSentence : INotifyPropertyChanged
         if (PSentenceTextRead().LStateValueEmpty)
         {
             PSentenceId = 0;
-            return;
         }
+    }
 
-        if (_pSentenceId != 0)
+    internal void PSentenceIdentityApply(LSentenceDraft stored)
+    {
+        ArgumentNullException.ThrowIfNull(stored);
+
+        _pSentenceRow = stored.LSentenceDraftId;
+        if (stored.LSentenceDraftExample is LExampleDraft example)
         {
-            return;
+            PSentenceId = example.LExampleDraftId;
         }
-
-        PSentenceId = _pSentenceEngine.LEngineIdentityCreate();
     }
 
     internal void PSentenceClear()
@@ -392,7 +388,7 @@ internal sealed class PSentence : INotifyPropertyChanged
         _pSentenceRow = 0;
         PSentenceText = string.Empty;
         PSentenceUnreadable = false;
-        PSentenceCitation = 0;
+        PSentenceCitationId = 0;
         PSentenceCitationUnreadable = false;
         PSentenceId = 0;
         PSentenceParticle = string.Empty;

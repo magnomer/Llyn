@@ -12,7 +12,7 @@ public sealed record LCardDraft(
     IReadOnlyList<LRegisterDraft> LCardDraftRegister,
     IReadOnlyList<long> LCardDraftTranslation,
     string LCardDraftSynonym,
-    IReadOnlyList<string> LCardDraftTag,
+    IReadOnlyList<LTagDraft> LCardDraftTag,
     IReadOnlyList<LImageDraft> LCardDraftImage,
     IReadOnlyList<LVideoDraft> LCardDraftVideo,
     int LCardDraftPosition,
@@ -22,12 +22,9 @@ public sealed record LCardDraft(
     string? LCardDraftLanguage = null,
     string LCardDraftLabels = "",
     IReadOnlyList<LRelationDraft>? LCardDraftRelation = null,
-    IReadOnlyList<LSynonymDraft>? LCardDraftInterlink = null,
-    string LCardDraftKey = "")
+    IReadOnlyList<LSynonymDraft>? LCardDraftInterlink = null)
 {
     public string LCardDraftLabels { get; init; } = LCardDraftLabels ?? string.Empty;
-
-    public string LCardDraftKey { get; init; } = LCardDraftKey ?? string.Empty;
 
     public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; } = LCardDraftChild ?? [];
 
@@ -58,7 +55,7 @@ public sealed record LCardDraft(
         && LCardDraftSituation.All(static row => row.LSituationDraftTitle.LStateValueEmpty)
         && LCardDraftRegister.All(static row => row.LRegisterDraftName.LStateValueEmpty)
         && LCardDraftTranslation.All(static id => id == 0)
-        && LCardDraftTag.All(static text => string.IsNullOrWhiteSpace(text))
+        && LCardDraftTag.All(static row => string.IsNullOrWhiteSpace(row.LTagDraftText))
         && LCardDraftImage.All(static row => row.LImageDraftEmpty)
         && LCardDraftVideo.All(static row => row.LVideoDraftEmpty)
         && LCardDraftRelation.All(static row => row.LRelationDraftEmpty)

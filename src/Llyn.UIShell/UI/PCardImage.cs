@@ -34,6 +34,25 @@ internal sealed partial class PCard
         return rows;
     }
 
+    internal void PCardImageApply(IReadOnlyList<LImageDraft> stored)
+    {
+        int index = 0;
+        foreach (PImage row in PCardImage)
+        {
+            if (row.PImageDraftRead().LImageDraftEmpty)
+            {
+                continue;
+            }
+
+            if (index < stored.Count)
+            {
+                row.PImageIdentityApply(stored[index]);
+            }
+
+            index++;
+        }
+    }
+
     internal void PCardImageAdd()
     {
         PCardImage.Add(new PImage());

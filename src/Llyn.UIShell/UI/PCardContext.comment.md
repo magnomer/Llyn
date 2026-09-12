@@ -25,6 +25,11 @@ Reading does not change the field.
 An unsaved-change check runs this while the user is still typing.
 Closing a half-typed wording into a Situation there would edit the card behind them.
 
+## `internal void PCardContextApply(IReadOnlyList<LSituationDraft> stored)`
+
+Writes the ids the engine minted back onto the chips, in the order the read listed them.
+A caret holding unfinished text counted as a row in the read, so it is stepped over here.
+
 ## `internal bool PCardContextCommit(string id, string title)`
 
 Attaches a stored Situation the user chose from the dropdown, under the id it is stored beneath.

@@ -128,7 +128,7 @@ public partial class PWindow
         PRepertoire.PAtlasSituationShow(id);
     }
 
-    internal void PWindowTagShow(string text)
+    internal void PWindowTagShow(long id)
     {
         if (!PTaxonomy.PTaxonomyLeaveConfirm())
         {
@@ -136,7 +136,7 @@ public partial class PWindow
         }
 
         PNavigationHandle(PNavigationTaxonomy, new RoutedEventArgs());
-        PTaxonomy.PDirectoryTagShow(text);
+        PTaxonomy.PDirectoryTagShow(id);
     }
 
     internal void PWindowRegisterShow(long id)

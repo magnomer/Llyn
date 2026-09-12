@@ -20,7 +20,7 @@ public sealed class TDraft
         Assert.NotNull(loaded);
         Assert.Equal(draft.LDraftId, loaded.LDraftId);
         Assert.Equal(draft.LDraftOrigin, loaded.LDraftOrigin);
-        Assert.Equal(draft.LDraftEntry, loaded.LDraftEntry);
+        Assert.Equal(draft.LDraftEntryId, loaded.LDraftEntryId);
         Assert.Equal(draft.LDraftMoment, loaded.LDraftMoment);
         Assert.Equal(draft.LDraftContent.LEntryDraftHeadword, loaded.LDraftContent.LEntryDraftHeadword);
         Assert.Equal(draft.LDraftContent.LEntryDraftLanguage, loaded.LDraftContent.LEntryDraftLanguage);
@@ -95,23 +95,23 @@ public sealed class TDraft
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         long target = TInterface.TIdentityCreate();
-        LCourtLink first = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
-        LCourtLink second = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
+        LCourt first = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
+        LCourt second = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
 
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, first);
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, second);
 
-        IReadOnlyList<LCourtLink> settled = TInterface.TCourtArchiveSettle(
+        IReadOnlyList<LCourt> settled = TInterface.TCourtArchiveSettle(
             workspace.TWorkspaceFolder,
             target);
 
         Assert.Equal(2, settled.Count);
-        Assert.Contains(settled, link => link.LCourtLinkId == first.LCourtLinkId);
-        Assert.Contains(settled, link => link.LCourtLinkId == second.LCourtLinkId);
-        Assert.Contains(settled, link => link.LCourtLinkOwner == first.LCourtLinkOwner);
-        Assert.Contains(settled, link => link.LCourtLinkOwner == second.LCourtLinkOwner);
-        Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, first.LCourtLinkId));
-        Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, second.LCourtLinkId));
+        Assert.Contains(settled, link => link.LCourtId == first.LCourtId);
+        Assert.Contains(settled, link => link.LCourtId == second.LCourtId);
+        Assert.Contains(settled, link => link.LCourtOwnerId == first.LCourtOwnerId);
+        Assert.Contains(settled, link => link.LCourtOwnerId == second.LCourtOwnerId);
+        Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, first.LCourtId));
+        Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, second.LCourtId));
         Assert.Empty(TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder));
     }
 
@@ -121,37 +121,37 @@ public sealed class TDraft
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         long target = TInterface.TIdentityCreate();
         long other = TInterface.TIdentityCreate();
-        LCourtLink settled = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
-        LCourtLink kept = TDraftLinkCreate(TInterface.TIdentityCreate(), other, "ember");
+        LCourt settled = TDraftLinkCreate(TInterface.TIdentityCreate(), target, "hearth");
+        LCourt kept = TDraftLinkCreate(TInterface.TIdentityCreate(), other, "ember");
 
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, settled);
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, kept);
         TInterface.TCourtArchiveSettle(workspace.TWorkspaceFolder, target);
 
-        IReadOnlyList<LCourtLink> remaining = TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder);
+        IReadOnlyList<LCourt> remaining = TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder);
 
         Assert.Single(remaining);
-        Assert.Equal(kept.LCourtLinkId, remaining[0].LCourtLinkId);
-        Assert.Equal(other, remaining[0].LCourtLinkTarget);
+        Assert.Equal(kept.LCourtId, remaining[0].LCourtId);
+        Assert.Equal(other, remaining[0].LCourtTargetId);
 
         Assert.Empty(TInterface.TCourtArchiveSettle(workspace.TWorkspaceFolder, target));
-        Assert.NotNull(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, kept.LCourtLinkId));
+        Assert.NotNull(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, kept.LCourtId));
     }
 
     [Fact]
     public void CourtArchiveSave_TentativeLink_ReadsBackAsWritten()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
-        LCourtLink link = TDraftLinkCreate(TInterface.TIdentityCreate(), TInterface.TIdentityCreate(), "hearth");
+        LCourt link = TDraftLinkCreate(TInterface.TIdentityCreate(), TInterface.TIdentityCreate(), "hearth");
 
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, link);
-        LCourtLink? loaded = TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, link.LCourtLinkId);
+        LCourt? loaded = TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, link.LCourtId);
 
         Assert.NotNull(loaded);
-        Assert.Equal(link.LCourtLinkOwner, loaded.LCourtLinkOwner);
-        Assert.Equal(link.LCourtLinkTarget, loaded.LCourtLinkTarget);
-        Assert.Equal(link.LCourtLinkHeadword, loaded.LCourtLinkHeadword);
-        Assert.Equal(link.LCourtLinkLanguage, loaded.LCourtLinkLanguage);
+        Assert.Equal(link.LCourtOwnerId, loaded.LCourtOwnerId);
+        Assert.Equal(link.LCourtTargetId, loaded.LCourtTargetId);
+        Assert.Equal(link.LCourtHeadword, loaded.LCourtHeadword);
+        Assert.Equal(link.LCourtLanguage, loaded.LCourtLanguage);
     }
 
     [Fact]
@@ -452,7 +452,7 @@ public sealed class TDraft
 
             engine.TEngineDraftSave(written with
             {
-                LDraftEntry = stored.LEntryId,
+                LDraftEntryId = stored.LEntryId,
                 LDraftContent = loaded,
             });
             engine.TEngineDraftSave(edited with
@@ -523,7 +523,7 @@ public sealed class TDraft
 
         LEntry stored = engine.TEngineEntrySave(written.LDraftContent);
 
-        engine.TEngineDraftSave(written with { LDraftEntry = stored.LEntryId });
+        engine.TEngineDraftSave(written with { LDraftEntryId = stored.LEntryId });
 
         LEntry recommitted = engine.TEngineDraftCommit(started.LDraftId);
 
@@ -601,13 +601,13 @@ public sealed class TDraft
         Assert.Null(engine.TEngineDraftRead(owner.LDraftId));
         Assert.NotNull(kept);
         Assert.Single(engine.TEngineEntryFind("ember"));
-        Assert.Equal(engine.TEngineEntryFind("ember")[0].LEntryId, kept.LDraftEntry);
+        Assert.Equal(engine.TEngineEntryFind("ember")[0].LEntryId, kept.LDraftEntryId);
         Assert.True(TInterface.TClaimArchiveCheck(workspace.TWorkspaceFolder, target.LDraftId));
         Assert.Empty(TInterface.TCourtArchiveScan(workspace.TWorkspaceFolder));
 
         LEntry recommitted = other.TEngineDraftCommit(target.LDraftId);
 
-        Assert.Equal(kept.LDraftEntry, recommitted.LEntryId);
+        Assert.Equal(kept.LDraftEntryId, recommitted.LEntryId);
         Assert.Single(engine.TEngineEntryFind("ember"));
     }
 
@@ -635,7 +635,7 @@ public sealed class TDraft
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LDraft held = engine.TEngineDraftStart("Input", null);
-        LCourtLink stranded = TDraftLinkCreate(
+        LCourt stranded = TDraftLinkCreate(
             TInterface.TIdentityCreate(), TInterface.TIdentityCreate(), "hearth");
 
         TInterface.TCourtArchiveSave(workspace.TWorkspaceFolder, stranded);
@@ -738,8 +738,8 @@ public sealed class TDraft
         LDraft? kept = writer.TEngineDraftRead(target.LDraftId);
 
         Assert.NotNull(kept);
-        Assert.NotEqual(0, kept.LDraftEntry);
-        Assert.NotNull(writer.TEngineEntryLoad(kept.LDraftEntry));
+        Assert.NotEqual(0, kept.LDraftEntryId);
+        Assert.NotNull(writer.TEngineEntryLoad(kept.LDraftEntryId));
         Assert.NotEqual(
             0,
             kept.LDraftContent.LEntryDraftMeanings[0].LCardDraftId);
@@ -846,24 +846,39 @@ public sealed class TDraft
         return TInterface.TEntryDraftCreate(headword, "English", string.Empty, string.Empty, [meaning], []);
     }
 
-    private static LCourtLink TDraftLinkCreate(long owner, long target, string headword)
+    private static LCourt TDraftLinkCreate(long owner, long target, string headword)
     {
         return TInterface.TCourtLinkCreate(TInterface.TIdentityCreate(), owner, target, headword, "English");
     }
 
     private static LDraft TDraftCreate(string origin, string headword)
     {
+        LSentenceDraft sentence = TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs");
+        LSituationDraft situation = TInterface.TSituationDraftCreate("around a hearth");
         LCardDraft meaning = TInterface.TCardDraftCreate(
             TInterface.TStateValueCreate("set alight"),
             LStateValue.LStateValueUnspecified,
             TInterface.TStateValueCreate("to set something burning"),
-            [TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs")],
-            [TInterface.TSituationDraftCreate("around a hearth")],
+            [
+                sentence with
+                {
+                    LSentenceDraftId = TInterface.TIdentityCreate(),
+                    LSentenceDraftExample = sentence.LSentenceDraftExample! with
+                    {
+                        LExampleDraftId = TInterface.TIdentityCreate(),
+                    },
+                },
+            ],
+            [situation with { LSituationDraftId = TInterface.TIdentityCreate() }],
             [],
             "ignite",
-            ["literal"],
             [],
-            0);
+            [],
+            0,
+            TInterface.TIdentityCreate()) with
+        {
+            LCardDraftTag = [TInterface.TTagDraftCreate("literal")[0] with { LTagDraftId = TInterface.TIdentityCreate() }],
+        };
 
         LEntryDraft content = TInterface.TEntryDraftCreate(
             headword,
@@ -872,6 +887,13 @@ public sealed class TDraft
             "Chiefly literary.",
             [meaning],
             []);
+        content = content with
+        {
+            LEntryDraftPronunciation = content.LEntryDraftPronunciation! with
+            {
+                LPronunciationDraftId = TInterface.TIdentityCreate(),
+            },
+        };
 
         return TInterface.TDraftCreate(
             TInterface.TIdentityCreate(),

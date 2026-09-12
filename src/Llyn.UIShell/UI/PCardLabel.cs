@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -16,18 +17,18 @@ internal sealed partial class PCard
 
     internal Action<string>? PCardLabelNotice { get; set; }
 
-    internal void PCardLabelShow(IReadOnlyList<string> texts)
+    internal void PCardLabelShow(IReadOnlyList<LTagDraft> drafts)
     {
         PCardLabel.Clear();
-        foreach (string text in texts)
+        foreach (LTagDraft draft in drafts)
         {
-            string written = (text ?? string.Empty).Trim();
+            string written = draft.LTagDraftText.Trim();
             if (written.Length == 0 || PCardLabelCheck(written))
             {
                 continue;
             }
 
-            PCardLabel.Add(new PLabelChip(written));
+            PCardLabel.Add(new PLabelChip(draft.LTagDraftId, written));
         }
 
         _pCardLabelCaret.PLabelCaretText = string.Empty;
@@ -35,25 +36,56 @@ internal sealed partial class PCard
         PCardLabelUpdate();
     }
 
-    internal IReadOnlyList<string> PCardLabelRead()
+    internal IReadOnlyList<LTagDraft> PCardLabelRead()
     {
-        List<string> texts = [];
+        List<LTagDraft> drafts = [];
         foreach (object row in PCardLabel)
         {
             if (row is PLabelChip chip)
             {
-                texts.Add(chip.PLabelChipName);
+                drafts.Add(new LTagDraft(chip.PLabelChipId, chip.PLabelChipName));
                 continue;
             }
 
             string written = _pCardLabelCaret.PLabelCaretText.Trim();
             if (written.Length != 0 && !PCardLabelCheck(written))
             {
-                texts.Add(written);
+                drafts.Add(LTagDraft.LTagDraftCreate(written) with
+                {
+                    LTagDraftId = _pCardLabelCaret.PLabelCaretId,
+                });
             }
         }
 
-        return texts;
+        return drafts;
+    }
+
+    internal void PCardLabelApply(IReadOnlyList<LTagDraft> stored)
+    {
+        int index = 0;
+        foreach (object row in PCardLabel)
+        {
+            if (row is PLabelChip chip)
+            {
+                if (index < stored.Count)
+                {
+                    chip.PLabelChipId = stored[index].LTagDraftId;
+                }
+
+                index++;
+                continue;
+            }
+
+            if (_pCardLabelCaret.PLabelCaretText.Trim().Length != 0)
+            {
+                if (index < stored.Count)
+                {
+                    _pCardLabelCaret.PLabelCaretId = stored[index].LTagDraftId;
+                }
+
+                index++;
+            }
+        }
     }
 
     internal void PCardLabelRemove(PLabelChip chip)
@@ -97,6 +129,7 @@ internal sealed partial class PCard
     {
         _pCardLabelBusy = true;
         _pCardLabelCaret.PLabelCaretText = string.Empty;
+        _pCardLabelCaret.PLabelCaretId = 0;
         _pCardLabelBusy = false;
         PCardLabelUpdate();
     }
@@ -136,6 +169,12 @@ internal sealed partial class PCard
 
     internal void PCardLabelCommit(string text)
     {
+        PCardLabelCommit(_pCardLabelCaret.PLabelCaretId, text);
+        _pCardLabelCaret.PLabelCaretId = 0;
+    }
+
+    internal void PCardLabelCommit(long id, string text)
+    {
         string written = (text ?? string.Empty).Trim();
         if (written.Length == 0 || PCardLabelCheck(written))
         {
@@ -143,7 +182,7 @@ internal sealed partial class PCard
         }
 
         int index = PCardLabel.IndexOf(_pCardLabelCaret);
-        PCardLabel.Insert(index < 0 ? PCardLabel.Count : index, new PLabelChip(written));
+        PCardLabel.Insert(index < 0 ? PCardLabel.Count : index, new PLabelChip(id, written));
     }
 
     internal bool PCardLabelCheck(string text)

@@ -88,11 +88,7 @@ public partial class PEditor
 
             LEntryDraft sent = PEditorDraftRead();
             LEntryDraft stored = _lEngine.LEngineDraftSave(held with { LDraftContent = sent });
-
-            if (!ReferenceEquals(stored, sent))
-            {
-                PEditorDraftShow(stored);
-            }
+            PEditorIdentityApply(stored);
         }
         catch (Exception exception)
         {

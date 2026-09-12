@@ -96,7 +96,7 @@ public sealed class TDraftSituation
 
             engine.TEngineSituationSave(committed with
             {
-                LDraftEntry = stored.LSituationId,
+                LDraftEntryId = stored.LSituationId,
                 LDraftSituation = stored,
             });
             engine.TEngineSituationSave(edited with

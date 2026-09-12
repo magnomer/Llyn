@@ -7,12 +7,12 @@ It covers the Tags a card carries, read and written as a line.
 It also covers the two operations that reach across every card at once.
 Those are renaming a Tag and deleting it.
 
-A Tag is its own text.
-There is nothing to create and nothing to attach.
-A card carries a Tag by writing it, and stops carrying it by not writing it.
-That is why the card seam is a whole-line write rather than an attach and a detach.
+A Tag is a shared row a card links by id.
+A card still hands its Tags over as a whole line rather than as an attach and a detach.
 The shell holds what the card should say, not a diff against what it said before.
-No row is left over to leak when a Tag drops off the last card that mentioned it.
+A Tag carrying an id links that row.
+A Tag carrying only text is resolved to the row reading the same, created if absent.
+A row no card links any longer stays in the catalog until the taxonomy panel deletes it.
 
 Which side an id names arrives as an `LOwner` rather than in the method's name.
 A name carries three components after its prefix, and a method per side would need four.
@@ -30,18 +30,19 @@ Reads the Tags the Meaning or Collocation identified by `ownerId` carries, in th
 ## `public void LEngineTagSave(string ownerId, IReadOnlyList<LTag> written, LOwner owner)`
 
 Writes that card's whole Tag line.
+Each Tag is resolved to its row by id, or by text when it carries none.
 Blank texts and repeats are dropped, and the surviving order is the order given.
 
-## `public void LEngineTagChange(string text, string renamed)`
+## `public void LEngineTagChange(long tagId, string renamed)`
 
-Renames a Tag on every card that carries it.
-Since the text is the Tag, this is the only way a Tag can be renamed at all.
-A card that already carries `renamed` ends with one Tag rather than the same words twice.
+Renames the Tag `tagId` names, and every card linking it follows.
+When another Tag already reads `renamed`, the two fold into one.
+A card that carried both ends with one Tag rather than the same words twice.
 
-## `public void LEngineTagDelete(string text)`
+## `public void LEngineTagDelete(long tagId)`
 
-Takes a Tag off every card that carries it.
-Nothing but the Tag goes: the cards stay exactly as they were, one label shorter.
+Takes a Tag off every card that carries it and deletes its row.
+Nothing else goes: the cards stay exactly as they were, one label shorter.
 
 ## `public IReadOnlyList<LTag> LEngineTagFind(string query, LCatalogOrder order)`
 

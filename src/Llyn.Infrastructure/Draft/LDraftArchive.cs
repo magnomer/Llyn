@@ -21,6 +21,7 @@ public static class LDraftArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentNullException.ThrowIfNull(draft);
         ArgumentOutOfRangeException.ThrowIfZero(draft.LDraftId);
+        LDraftArchiveValidate(draft);
 
         string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
         string pending = Path.Combine(folder, draft.LDraftId.ToString(CultureInfo.InvariantCulture) + LDraftArchivePending);
@@ -137,6 +138,99 @@ public static class LDraftArchive
             catch (UnauthorizedAccessException)
             {
             }
+        }
+    }
+
+    private static void LDraftArchiveValidate(LDraft draft)
+    {
+        if (draft.LDraftExample is LExample example)
+        {
+            LDraftArchiveCheck(example.LExampleId, "example");
+        }
+
+        if (draft.LDraftSituation is LSituation situation)
+        {
+            LDraftArchiveCheck(situation.LSituationId, "situation");
+        }
+
+        if (draft.LDraftReference is LReference reference)
+        {
+            LDraftArchiveCheck(reference.LReferenceId, "reference");
+        }
+
+        if (draft.LDraftContent.LEntryDraftPronunciation is LPronunciationDraft spoken)
+        {
+            LDraftArchiveCheck(spoken.LPronunciationDraftId, "pronunciation");
+        }
+
+        LDraftArchiveCheck(draft.LDraftContent.LEntryDraftMeanings);
+        LDraftArchiveCheck(draft.LDraftContent.LEntryDraftCollocations);
+    }
+
+    private static void LDraftArchiveCheck(IReadOnlyList<LCardDraft> cards)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            LDraftArchiveCheck(card.LCardDraftId, "card");
+
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
+            {
+                LDraftArchiveCheck(sentence.LSentenceDraftId, "sentence");
+                if (sentence.LSentenceDraftExample is LExampleDraft example)
+                {
+                    LDraftArchiveCheck(example.LExampleDraftId, "example");
+                }
+            }
+
+            foreach (LSituationDraft situation in card.LCardDraftSituation)
+            {
+                LDraftArchiveCheck(situation.LSituationDraftId, "situation");
+            }
+
+            foreach (LRegisterDraft register in card.LCardDraftRegister)
+            {
+                LDraftArchiveCheck(register.LRegisterDraftId, "register");
+            }
+
+            foreach (long translation in card.LCardDraftTranslation)
+            {
+                LDraftArchiveCheck(translation, "translation");
+            }
+
+            foreach (LTagDraft tag in card.LCardDraftTag)
+            {
+                LDraftArchiveCheck(tag.LTagDraftId, "tag");
+            }
+
+            foreach (LImageDraft image in card.LCardDraftImage)
+            {
+                LDraftArchiveCheck(image.LImageDraftId, "image");
+            }
+
+            foreach (LVideoDraft video in card.LCardDraftVideo)
+            {
+                LDraftArchiveCheck(video.LVideoDraftId, "video");
+            }
+
+            foreach (LRelationDraft relation in card.LCardDraftRelation)
+            {
+                LDraftArchiveCheck(relation.LRelationDraftId, "relation");
+            }
+
+            foreach (LSynonymDraft synonym in card.LCardDraftInterlink)
+            {
+                LDraftArchiveCheck(synonym.LSynonymDraftId, "synonym");
+            }
+
+            LDraftArchiveCheck(card.LCardDraftChild);
+        }
+    }
+
+    private static void LDraftArchiveCheck(long id, string kind)
+    {
+        if (id == 0)
+        {
+            throw new InvalidOperationException($"A draft {kind} carries no id.");
         }
     }
 

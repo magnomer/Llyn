@@ -18,14 +18,14 @@ public sealed partial class LEngine
             {
                 if (_lEngineDraftHeld.Contains(draft.LDraftId)
                     || LEngineClaimCheck(draft.LDraftId)
-                    || draft.LDraftEntry <= 0)
+                    || draft.LDraftEntryId <= 0)
                 {
                     continue;
                 }
 
                 if (draft.LDraftExample is LExample sentence)
                 {
-                    if (LEngineExampleRead(draft.LDraftEntry) is LExample kept
+                    if (LEngineExampleRead(draft.LDraftEntryId) is LExample kept
                         && LEngineExampleMatch(kept, sentence))
                     {
                         LEngineDraftCancel(draft.LDraftId);
@@ -36,7 +36,7 @@ public sealed partial class LEngine
 
                 if (draft.LDraftSituation is LSituation situation)
                 {
-                    if (LEngineSituationRead(draft.LDraftEntry) is LSituation standing
+                    if (LEngineSituationRead(draft.LDraftEntryId) is LSituation standing
                         && LEngineSituationMatch(standing, situation))
                     {
                         LEngineDraftCancel(draft.LDraftId);
@@ -47,7 +47,7 @@ public sealed partial class LEngine
 
                 if (draft.LDraftReference is LReference reference)
                 {
-                    if (LEngineReferenceRead(draft.LDraftEntry) is LReference cited
+                    if (LEngineReferenceRead(draft.LDraftEntryId) is LReference cited
                         && LEngineReferenceMatch(cited, reference))
                     {
                         LEngineDraftCancel(draft.LDraftId);
@@ -56,7 +56,7 @@ public sealed partial class LEngine
                     continue;
                 }
 
-                LEntryDraft? stored = LEngineEntryLoad(draft.LDraftEntry);
+                LEntryDraft? stored = LEngineEntryLoad(draft.LDraftEntryId);
                 if (stored is null || !LEngineDraftMatch(stored, draft.LDraftContent))
                 {
                     continue;

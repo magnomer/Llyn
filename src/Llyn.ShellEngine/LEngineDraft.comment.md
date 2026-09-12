@@ -163,8 +163,10 @@ An Example carrying an id names a stored row, however little its sentence says.
 ### `private static LExample LEngineExampleResolve(`
 
 The stored Example a row's id names, updated to what the row now says.
-A row carrying no id, or one nothing is stored under, gets a fresh Example instead.
+A row carrying a negative id, or one nothing is stored under, gets a fresh Example instead.
+The fresh row is recorded in the map under the negative id it replaces.
 Two rows naming one id therefore write one row, which is what sharing a sentence means.
+No row is ever matched by its wording, so two new rows with one sentence stay two rows.
 The language falls back to the entry's when the Example states none of its own.
 
 ### `private static bool LEngineImageCheck(IReadOnlyList<LImageDraft> rows)`
@@ -180,13 +182,14 @@ Rows naming no picture are dropped here rather than written.
 So a list the shell built out of a control cannot leave an empty row behind.
 The positions stay a gapless 0, 1, 2 over what is actually stored.
 
-### `private static string LEngineImageResolve(LImageArchive images, LImageDraft draft)`
+### `private static long LEngineImageResolve(`
 
 The stored Image a row's id names, updated to the location the row now says.
-A row carrying no id, or one nothing is stored under, gets a fresh Image instead.
+A row carrying a negative id, or one nothing is stored under, gets a fresh Image instead.
+The fresh row is recorded in the map under the negative id it replaces.
 Two cards naming one id therefore reference one row, which is what sharing a picture means.
 An imported card names the row the catalog created, so a file that declared one picture stores one.
 
-### `private static string LEngineVideoResolve(LVideoArchive videos, LVideoDraft draft)`
+### `private static long LEngineVideoResolve(`
 
 The same rule for a Video, whose location and span are both updated when either changed.

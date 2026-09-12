@@ -90,7 +90,7 @@ public sealed class TTag
         engine.TEngineTagSave(
             collocationId, [TInterface.TTagCreate("formal")], LOwner.LOwnerCollocation);
 
-        engine.TEngineTagChange("formal", "rare");
+        engine.TEngineTagChange(TTagIdRead(engine, "formal"), "rare");
 
         Assert.Equal(
             ["rare"],
@@ -99,6 +99,100 @@ public sealed class TTag
             ["rare"],
             engine.TEngineTagRead(collocationId, LOwner.LOwnerCollocation).Select(tag => tag.LTagText));
         Assert.Equal([0], TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
+        Assert.Equal(["rare"], engine.TEngineTagRead().Select(tag => tag.LTagText));
+    }
+
+    [Fact]
+    public void TagChange_RenamedTag_KeepsIdAndFollowsOnEveryCard()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = TTagEntryCreate(engine);
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
+            engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
+
+        engine.TEngineTagSave(
+            meaningId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare")], LOwner.LOwnerMeaning);
+        engine.TEngineTagSave(
+            collocationId, [TInterface.TTagCreate("formal")], LOwner.LOwnerCollocation);
+
+        long formal = TTagIdRead(engine, "formal");
+        engine.TEngineTagChange(formal, "literary");
+
+        Assert.Equal(formal, TTagIdRead(engine, "literary"));
+        Assert.Equal(
+            ["literary", "rare"],
+            engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
+        Assert.Equal(
+            ["literary"],
+            engine.TEngineTagRead(collocationId, LOwner.LOwnerCollocation).Select(tag => tag.LTagText));
+
+        LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
+        LTagDraft chip = Assert.Single(loaded.LEntryDraftCollocations)
+            .LCardDraftTag.Single();
+        Assert.Equal(formal, chip.LTagDraftId);
+        Assert.Equal("literary", chip.LTagDraftText);
+    }
+
+    [Fact]
+    public void TagSave_TwoCardsSameText_LinkOneRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = TTagEntryCreate(engine);
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
+            engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
+
+        engine.TEngineTagSave(meaningId, [TInterface.TTagCreate("formal")], LOwner.LOwnerMeaning);
+        engine.TEngineTagSave(collocationId, [TInterface.TTagCreate("formal")], LOwner.LOwnerCollocation);
+
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM tag;"));
+        Assert.Equal(
+            Assert.Single(engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning)).LTagId,
+            Assert.Single(engine.TEngineTagRead(collocationId, LOwner.LOwnerCollocation)).LTagId);
+    }
+
+    [Fact]
+    public void TagSave_KnownId_LinksThatRowWhateverTheText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = TTagEntryCreate(engine);
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+        long collocationId =
+            engine.TEngineCollocationRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LCollocationId;
+
+        engine.TEngineTagSave(meaningId, [TInterface.TTagCreate("formal")], LOwner.LOwnerMeaning);
+        long formal = TTagIdRead(engine, "formal");
+
+        engine.TEngineTagSave(
+            collocationId, [TInterface.TTagCreate(formal, "stale")], LOwner.LOwnerCollocation);
+
+        Assert.Equal(
+            "formal",
+            Assert.Single(engine.TEngineTagRead(collocationId, LOwner.LOwnerCollocation)).LTagText);
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM tag;"));
+    }
+
+    [Fact]
+    public void TagSave_DroppedFromEveryCard_KeepsRowInCatalog()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = TTagEntryCreate(engine);
+        long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
+
+        engine.TEngineTagSave(meaningId, [TInterface.TTagCreate("formal")], LOwner.LOwnerMeaning);
+        engine.TEngineTagSave(meaningId, [], LOwner.LOwnerMeaning);
+
+        Assert.Equal(["formal"], engine.TEngineTagRead().Select(tag => tag.LTagText));
+        Assert.Empty(engine.TEngineEntryFind(TInterface.TTagCreate(TTagIdRead(engine, "formal"), "formal")));
     }
 
     [Fact]
@@ -115,13 +209,14 @@ public sealed class TTag
             [TInterface.TTagCreate("formal"), TInterface.TTagCreate("rare"), TInterface.TTagCreate("spoken")],
             LOwner.LOwnerMeaning);
 
-        engine.TEngineTagDelete("rare");
+        engine.TEngineTagDelete(TTagIdRead(engine, "rare"));
 
         Assert.Equal(
             ["formal", "spoken"],
             engine.TEngineTagRead(meaningId, LOwner.LOwnerMeaning).Select(tag => tag.LTagText));
         Assert.Equal([0, 1], TDatabasePositionRead(workspace, "sense_tag", "sense_id", meaningId));
         Assert.Empty(engine.TEngineTagRead().Where(tag => tag.LTagText == "rare"));
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM tag;"));
     }
 
     [Fact]
@@ -136,6 +231,11 @@ public sealed class TTag
             engine.TEngineTagSave(entry.LEntryId, [TInterface.TTagCreate("formal")], LOwner.LOwnerEntry));
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             engine.TEngineTagRead(entry.LEntryId, LOwner.LOwnerEntry));
+    }
+
+    private static long TTagIdRead(LEngine engine, string text)
+    {
+        return engine.TEngineTagRead().Single(tag => tag.LTagText == text).LTagId;
     }
 
     private static IReadOnlyList<long> TDatabasePositionRead(

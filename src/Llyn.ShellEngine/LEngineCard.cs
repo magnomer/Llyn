@@ -14,13 +14,14 @@ public sealed partial class LEngine
         IReadOnlyList<LCardDraft> cards,
         string language,
         bool collocation,
-        List<LRevisionChange> changes)
+        List<LRevisionChange> changes,
+        Dictionary<long, long> identity)
     {
         LEngineCardValidate(cards, collocation);
 
         if (!collocation)
         {
-            LEngineMeaningUpdate(connection, entryId, cards, language, changes);
+            LEngineMeaningUpdate(connection, entryId, cards, language, changes, identity);
             return;
         }
 
@@ -101,23 +102,25 @@ public sealed partial class LEngine
                     "create",
                     card.LCardDraftExpression.LStateValueShow()));
                 rowId = row.LCollocationId;
+                LEngineIdentityRecord(identity, card.LCardDraftId, rowId);
             }
 
             order.Add(rowId);
-            LEngineCardSync(rowId, card, language, collocation: true);
+            LEngineCardSync(rowId, card, language, true, identity);
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
             connection, "collocation", "entry_id = $owner", entryId, "id", order);
     }
 
-    private void LEngineCardSync(long ownerId, LCardDraft card, string language, bool collocation)
+    private void LEngineCardSync(
+        long ownerId, LCardDraft card, string language, bool collocation, Dictionary<long, long> identity)
     {
-        LEngineSentenceSync(ownerId, card.LCardDraftSentence, language, collocation);
-        LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation);
-        LEngineRegisterSync(ownerId, card.LCardDraftRegister, language, collocation);
+        LEngineSentenceSync(ownerId, card.LCardDraftSentence, language, collocation, identity);
+        LEngineSituationSync(ownerId, card.LCardDraftSituation, collocation, identity);
+        LEngineRegisterSync(ownerId, card.LCardDraftRegister, language, collocation, identity);
 
-        LEngineTagSave(ownerId, card.LCardDraftTag, collocation);
+        LEngineTagSave(ownerId, card.LCardDraftTag, collocation, identity);
         LEngineTranslationSave(ownerId, card.LCardDraftTranslation, collocation);
 
         LImageArchive images = new(_lEngineDatabase);
@@ -125,10 +128,7 @@ public sealed partial class LEngine
             LEngineImageRead(card.LCardDraftImage),
             collocation ? images.LImageCollocationRead(ownerId) : images.LImageMeaningRead(ownerId),
             row => row.LImageId,
-            row => new LImageDraft(row.LImageLocation, row.LImageId),
-            written => images.LImageCreate(
-                new LImage(
-                0, written.LImageDraftLocation)).LImageId,
+            written => LEngineImageResolve(images, written, identity),
             rowId =>
             {
                 if (collocation)
@@ -155,10 +155,7 @@ public sealed partial class LEngine
             LEngineVideoRead(card.LCardDraftVideo),
             collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId),
             row => row.LVideoId,
-            row => new LVideoDraft(row.LVideoLocation, row.LVideoSpan, row.LVideoId),
-            written => videos.LVideoCreate(
-                new LVideo(
-                0, written.LVideoDraftLocation, written.LVideoDraftSpan)).LVideoId,
+            written => LEngineVideoResolve(videos, written, identity),
             rowId =>
             {
                 if (collocation)
@@ -182,7 +179,11 @@ public sealed partial class LEngine
     }
 
     private void LEngineSentenceSync(
-        long ownerId, IReadOnlyList<LSentenceDraft> drafts, string language, bool collocation)
+        long ownerId,
+        IReadOnlyList<LSentenceDraft> drafts,
+        string language,
+        bool collocation,
+        Dictionary<long, long> identity)
     {
         LExampleArchive exampleRows = new(_lEngineDatabase);
 
@@ -193,87 +194,75 @@ public sealed partial class LEngine
                 draft.LSentenceDraftId,
                 ownerId,
                 rows.Count,
-                LEngineExampleResolve(exampleRows, draft, language),
+                LEngineExampleResolve(exampleRows, draft, language, identity),
                 draft.LSentenceDraftParticle,
                 draft.LSentenceDraftDependence));
         }
 
         LSentenceArchive sentences = new(_lEngineDatabase);
-        if (collocation)
-        {
-            sentences.LSentenceCollocationSave(ownerId, rows);
-            return;
-        }
+        IReadOnlyList<long> written = collocation
+            ? sentences.LSentenceCollocationSave(ownerId, rows)
+            : sentences.LSentenceMeaningSave(ownerId, rows);
 
-        sentences.LSentenceMeaningSave(ownerId, rows);
+        for (int index = 0; index < rows.Count; index++)
+        {
+            LEngineIdentityRecord(identity, rows[index].LSentenceId, written[index]);
+        }
     }
 
     private void LEngineSituationSync(
-        long ownerId, IReadOnlyList<LSituationDraft> drafts, bool collocation)
+        long ownerId, IReadOnlyList<LSituationDraft> drafts, bool collocation, Dictionary<long, long> identity)
     {
         LSituationArchive situations = new(_lEngineDatabase);
 
-        IReadOnlyList<LSituation> attached = collocation
-            ? situations.LSituationCollocationRead(ownerId)
-            : situations.LSituationMeaningRead(ownerId);
-
-        List<long> targets = [];
-        HashSet<long> kept = [];
-        foreach (LSituationDraft draft in LEngineSituationRead(drafts))
-        {
-            long id = LEngineSituationResolve(situations, draft);
-            if (!kept.Add(id))
+        LEngineFieldSync(
+            LEngineSituationRead(drafts),
+            collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationMeaningRead(ownerId),
+            row => row.LSituationId,
+            written => LEngineSituationResolve(situations, written, identity),
+            rowId =>
             {
-                continue;
-            }
+                if (collocation)
+                {
+                    situations.LSituationCollocationDetach(ownerId, rowId);
+                    return;
+                }
 
-            targets.Add(id);
-        }
-
-        foreach (LSituation row in attached)
-        {
-            if (kept.Contains(row.LSituationId))
+                situations.LSituationMeaningDetach(ownerId, rowId);
+            },
+            (rowId, position) =>
             {
-                continue;
-            }
+                if (collocation)
+                {
+                    situations.LSituationCollocationAttach(ownerId, rowId, position);
+                    return;
+                }
 
-            if (collocation)
-            {
-                situations.LSituationCollocationDetach(ownerId, row.LSituationId);
-                continue;
-            }
-
-            situations.LSituationMeaningDetach(ownerId, row.LSituationId);
-        }
-
-        for (int position = 0; position < targets.Count; position++)
-        {
-            if (collocation)
-            {
-                situations.LSituationCollocationAttach(ownerId, targets[position], position);
-                continue;
-            }
-
-            situations.LSituationMeaningAttach(ownerId, targets[position], position);
-        }
+                situations.LSituationMeaningAttach(ownerId, rowId, position);
+            });
     }
 
-    private void LEngineTagSave(long ownerId, IReadOnlyList<string> texts, bool collocation)
+    private void LEngineTagSave(
+        long ownerId, IReadOnlyList<LTagDraft> drafts, bool collocation, Dictionary<long, long> identity)
     {
-        List<LTag> written = new(texts.Count);
-        foreach (string text in texts)
+        List<LTag> written = new(drafts.Count);
+        foreach (LTagDraft draft in drafts)
         {
-            written.Add(new LTag(text));
+            written.Add(new LTag(draft.LTagDraftId, draft.LTagDraftText));
         }
 
         LTagArchive tags = new(_lEngineDatabase);
-        if (collocation)
-        {
-            tags.LTagCollocationSave(ownerId, written);
-            return;
-        }
+        IReadOnlyList<long> resolved = collocation
+            ? tags.LTagCollocationSave(ownerId, written)
+            : tags.LTagMeaningSave(ownerId, written);
 
-        tags.LTagMeaningSave(ownerId, written);
+        for (int index = 0; index < drafts.Count; index++)
+        {
+            if (resolved[index] != 0)
+            {
+                LEngineIdentityRecord(identity, drafts[index].LTagDraftId, resolved[index]);
+            }
+        }
     }
 
     private void LEngineTranslationSave(
@@ -303,8 +292,7 @@ public sealed partial class LEngine
         IEnumerable<LEngineWritten> written,
         IReadOnlyList<LEngineRow> attached,
         Func<LEngineRow, long> identify,
-        Func<LEngineRow, LEngineWritten> read,
-        Func<LEngineWritten, long> create,
+        Func<LEngineWritten, long> resolve,
         Action<long> detach,
         Action<long, int> attach)
     {
@@ -312,19 +300,12 @@ public sealed partial class LEngine
         HashSet<long> kept = [];
         foreach (LEngineWritten text in written)
         {
-            long? found = null;
-            foreach (LEngineRow row in attached)
+            long settled = resolve(text);
+            if (!kept.Add(settled))
             {
-                if (!kept.Contains(identify(row))
-                    && EqualityComparer<LEngineWritten>.Default.Equals(read(row), text))
-                {
-                    found = identify(row);
-                    break;
-                }
+                continue;
             }
 
-            long settled = found ?? create(text);
-            kept.Add(settled);
             targets.Add(settled);
         }
 

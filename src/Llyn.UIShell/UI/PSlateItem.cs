@@ -4,8 +4,9 @@ namespace Llyn.UIShell;
 
 internal sealed class PSlateItem
 {
-    internal PSlateItem(string text, string word)
+    internal PSlateItem(long id, string text, string word)
     {
+        PSlateItemId = id;
         PSlateItemText = text;
 
         int found = -1;
@@ -28,6 +29,8 @@ internal sealed class PSlateItem
         PSlateItemMark = text.Substring(found, size);
         PSlateItemTail = text[(found + size)..];
     }
+
+    internal long PSlateItemId { get; }
 
     public string PSlateItemText { get; }
 

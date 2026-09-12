@@ -61,20 +61,20 @@ public sealed partial class LEngine
                 draft.LDraftSituation ?? throw new LRefusal(LRefusal.LRefusalSituation));
 
             LSituation stored;
-            if (draft.LDraftEntry == 0 || LEngineSituationRead(draft.LDraftEntry) is null)
+            if (draft.LDraftEntryId == 0 || LEngineSituationRead(draft.LDraftEntryId) is null)
             {
                 stored = LEngineSituationCreate(sending);
             }
             else
             {
-                LSituation written = sending with { LSituationId = draft.LDraftEntry };
+                LSituation written = sending with { LSituationId = draft.LDraftEntryId };
                 LEngineSituationUpdate(written);
-                stored = LEngineSituationRead(draft.LDraftEntry) ?? written;
+                stored = LEngineSituationRead(draft.LDraftEntryId) ?? written;
             }
 
             LDraftArchive.LDraftArchiveSave(
                 _lEngineWorkspace,
-                draft with { LDraftEntry = stored.LSituationId, LDraftSituation = stored });
+                draft with { LDraftEntryId = stored.LSituationId, LDraftSituation = stored });
 
             _lEngineDraftHeld.Remove(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
@@ -88,9 +88,9 @@ public sealed partial class LEngine
 
     private bool LEngineSituationCheck(LDraft draft, LSituation held)
     {
-        LSituation origin = draft.LDraftEntry == 0
+        LSituation origin = draft.LDraftEntryId == 0
             ? LEngineSituationBlank
-            : LEngineSituationRead(draft.LDraftEntry) ?? LEngineSituationBlank;
+            : LEngineSituationRead(draft.LDraftEntryId) ?? LEngineSituationBlank;
 
         return !LEngineSituationMatch(origin, held);
     }

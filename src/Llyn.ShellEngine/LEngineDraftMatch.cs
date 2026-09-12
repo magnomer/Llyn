@@ -27,7 +27,8 @@ public sealed partial class LEngine
             return one is null && other is null;
         }
 
-        if (!string.Equals(one.LPronunciationDraftIpa, other.LPronunciationDraftIpa, StringComparison.Ordinal)
+        if (one.LPronunciationDraftId != other.LPronunciationDraftId
+            || !string.Equals(one.LPronunciationDraftIpa, other.LPronunciationDraftIpa, StringComparison.Ordinal)
             || !string.Equals(
                 one.LPronunciationDraftLevel, other.LPronunciationDraftLevel, StringComparison.Ordinal)
             || !string.Equals(
@@ -107,9 +108,11 @@ public sealed partial class LEngine
                 || !LEngineSituationMatch(written.LCardDraftSituation, held.LCardDraftSituation)
                 || !LEngineRegisterMatch(written.LCardDraftRegister, held.LCardDraftRegister)
                 || !LEngineLinkMatch(written.LCardDraftTranslation, held.LCardDraftTranslation)
-                || !LEngineTextMatch(written.LCardDraftTag, held.LCardDraftTag)
+                || !LEngineTagMatch(written.LCardDraftTag, held.LCardDraftTag)
                 || !LEngineImageMatch(written.LCardDraftImage, held.LCardDraftImage)
                 || !LEngineVideoMatch(written.LCardDraftVideo, held.LCardDraftVideo)
+                || !LEngineRelationMatch(written.LCardDraftRelation, held.LCardDraftRelation)
+                || !LEngineSynonymMatch(written.LCardDraftInterlink, held.LCardDraftInterlink)
                 || !LEngineCardMatch(written.LCardDraftChild, held.LCardDraftChild))
             {
                 return false;
@@ -245,6 +248,44 @@ public sealed partial class LEngine
         return true;
     }
 
+    private static bool LEngineRelationMatch(
+        IReadOnlyList<LRelationDraft> one, IReadOnlyList<LRelationDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index] != other[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool LEngineSynonymMatch(
+        IReadOnlyList<LSynonymDraft> one, IReadOnlyList<LSynonymDraft> other)
+    {
+        if (one.Count != other.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < one.Count; index++)
+        {
+            if (one[index] != other[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static bool LEngineLinkMatch(IReadOnlyList<long> one, IReadOnlyList<long> other)
     {
         if (one.Count != other.Count)
@@ -263,7 +304,7 @@ public sealed partial class LEngine
         return true;
     }
 
-    private static bool LEngineTextMatch(IReadOnlyList<string> one, IReadOnlyList<string> other)
+    private static bool LEngineTagMatch(IReadOnlyList<LTagDraft> one, IReadOnlyList<LTagDraft> other)
     {
         if (one.Count != other.Count)
         {
@@ -272,7 +313,8 @@ public sealed partial class LEngine
 
         for (int index = 0; index < one.Count; index++)
         {
-            if (!string.Equals(one[index], other[index], StringComparison.Ordinal))
+            if (one[index].LTagDraftId != other[index].LTagDraftId
+                || !string.Equals(one[index].LTagDraftText, other[index].LTagDraftText, StringComparison.Ordinal))
             {
                 return false;
             }

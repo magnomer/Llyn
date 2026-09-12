@@ -19,12 +19,13 @@ The two links differ in what they may point at and in which table stores them.
 - `LRelationDraftType` — The kind of relation the user named, such as a synonym or an antonym.
 - `LRelationDraftLabel` — What the relation displays, or null when it displays nothing.
 - `LRelationDraftLabels` — The localized form of that label, or null when there is none.
-- `LRelationDraftEntry` — The entry the relation points at, empty when it points at a sense.
-- `LRelationDraftMeaning` — The sense the relation points at, empty when it points at an entry.
+- `LRelationDraftEntry` — Anchor of the entry the relation points at, empty when it points at a sense.
+- `LRelationDraftMeaning` — Anchor of the sense the relation points at, empty when it points at an entry.
+- `LRelationDraftId` — Id of the stored relation row, negative before the row exists.
 
 ## Inline notes
 
 ### `public bool LRelationDraftEmpty`
 
-A relation is empty when it names no target at all.
+A relation is empty when both anchors are empty.
 The reader refuses such a relation, and the writer has nothing to write for one.

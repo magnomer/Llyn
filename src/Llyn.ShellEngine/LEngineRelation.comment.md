@@ -99,10 +99,10 @@ The Entry or Meaning it pointed at is untouched.
 
 ## Inline notes
 
-### `private void LEngineTargetValidate(string? entryId, string? meaningId)`
+### `private void LEngineTargetValidate(LStateAnchor entry, LStateAnchor meaning)`
 
 The one place a link's target is checked, for both kinds of link.
-Exactly one of the two ids is set.
+Exactly one of the two anchors points at a row.
 The row it names is in this workspace.
 Both conditions are the same refusal, because they are the same failure seen from two sides.
 The caller did not hand over one resolved target.

@@ -94,7 +94,7 @@ public sealed class TDraftReference
 
             engine.TEngineReferenceSave(committed with
             {
-                LDraftEntry = stored.LReferenceId,
+                LDraftEntryId = stored.LReferenceId,
                 LDraftReference = stored,
             });
             engine.TEngineReferenceSave(edited with

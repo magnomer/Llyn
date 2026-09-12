@@ -25,6 +25,11 @@ A row nothing was written in is left out rather than read as an empty Example.
 A row stating a frame and no sentence is kept.
 The frame is the card's own and is lost nowhere else.
 
+## `internal void PCardSentenceApply(IReadOnlyList<LSentenceDraft> stored)`
+
+Hands each row the ids the engine minted for it and its Example, in the order the read listed them.
+A row saying nothing was dropped by the read, so it is stepped over here.
+
 ## `internal void PCardSentenceInsert(PSentence row)`
 
 Opens a new row directly beneath the one the user asked from.

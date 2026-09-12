@@ -83,7 +83,7 @@ public partial class PEditor
             return;
         }
 
-        LCourtLink link;
+        LCourt link;
         try
         {
             link = _lEngine.LEngineCourtStart(
@@ -100,7 +100,7 @@ public partial class PEditor
         }
 
         card.PCardLinkCommit(
-            link.LCourtLinkTarget, item.PProspectItemHeadword, item.PProspectItemLanguage);
+            link.LCourtTargetId, item.PProspectItemHeadword, item.PProspectItemLanguage);
         card.PCardLinkClear();
         PProspectHide();
     }

@@ -75,7 +75,7 @@ public partial class PEditor
             return;
         }
 
-        card.PCardLabelCommit(item.PSlateItemText);
+        card.PCardLabelCommit(item.PSlateItemId, item.PSlateItemText);
         card.PCardLabelClear();
     }
 
@@ -108,7 +108,7 @@ public partial class PEditor
                 continue;
             }
 
-            _pSlateItem.Add(new PSlateItem(written, word));
+            _pSlateItem.Add(new PSlateItem(tag.LTagId, written, word));
 
             if (_pSlateItem.Count == PSlateLimit)
             {

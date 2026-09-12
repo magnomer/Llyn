@@ -5,7 +5,7 @@ namespace Llyn.Core;
 public sealed record LDraft(
     long LDraftId,
     string LDraftOrigin,
-    long LDraftEntry,
+    long LDraftEntryId,
     LEntryDraft LDraftContent,
     DateTimeOffset LDraftMoment,
     LExample? LDraftExample = null,

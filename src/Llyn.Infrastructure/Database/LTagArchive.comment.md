@@ -1,83 +1,90 @@
-﻿# LTagArchive.cs
+# LTagArchive.cs
 
 ## `public sealed class LTagArchive`
 
 Persists Tags.
-A Tag has no identity apart from the text it reads.
-So there is no Tag row to create and no id to carry.
-A Tag exists exactly where a Meaning or a Collocation writes it.
-Two cards writing the same words hold the same Tag by saying the same thing.
-The association tables are therefore the whole of the storage.
-Each row is one card, one text and the position that text takes on that card alone.
-The catalog of Tags is read back out of them rather than kept beside them.
+A Tag is a row of its own, and a card links it by id.
+Two cards carrying the same word link one row rather than each writing the word.
+The text is kept unique, so a word names at most one row.
+The association tables hold one row per card, Tag and the position that Tag takes on that card alone.
+The catalog of Tags is the tag table itself, whether or not any card still links a row.
+A row no card links stays until the taxonomy panel deletes it.
 
 A card's Tag line is written as a whole rather than edited a reference at a time.
-The old rows go and the new ones are numbered from zero in the order given.
+The old links go and the new ones are numbered from zero in the order given.
+A Tag carrying an id links that row.
+A Tag carrying only text links the row reading the same, created if absent.
 Blank texts and repeats are dropped on the way.
 Editing a card is exactly that write.
 So no caller has to work out which Tags were added and which were taken away.
 A card's positions are contiguous by construction rather than by repair.
 
-Renaming and deleting a Tag reach across every card that wrote it, because that is what a Tag is.
-Both fold and close.
-Renaming onto a text a card already carries leaves that card one Tag, not two.
-Deleting closes the gap the removed text left in every card's order.
+Renaming a Tag changes one row and every card follows.
+Renaming onto a text another row already reads folds the two rows into one.
+A card carrying both keeps one link, not two, and its order closes over the link that folded away.
+Deleting a Tag unlinks every card and closes the gap in each card's order before the row goes.
 
 ## `public LTagArchive(LDatabase database)`
 
 Binds the store to the workspace `database` it opens sessions through.
 
-## `public IReadOnlyList<LTag> LTagMeaningRead(string meaningId)`
+## `public IReadOnlyList<LTag> LTagMeaningRead(long meaningId)`
 
 Reads the Tags a Meaning carries, in the order that Meaning gives them.
 
-## `public IReadOnlyList<LTag> LTagCollocationRead(string collocationId)`
+## `public IReadOnlyList<LTag> LTagCollocationRead(long collocationId)`
 
 Reads the Tags a Collocation carries, in the order that Collocation gives them.
 
-## `public void LTagMeaningSave(string meaningId, IReadOnlyList<LTag> tags)`
+## `public IReadOnlyList<long> LTagMeaningSave(long meaningId, IReadOnlyList<LTag> tags)`
 
 Writes a Meaning's whole Tag line, replacing whatever it carried.
-Texts are trimmed, blanks and repeats are dropped, and what survives is numbered from zero in the order given.
+Each Tag is resolved to a row by id, or by trimmed text when it carries no stored id.
+Blanks and repeats are dropped, and what survives is numbered from zero in the order given.
+The answer holds one row id per Tag handed in, zero for a blank.
+The caller maps a draft id to its row from it.
 
-## `public void LTagCollocationSave(string collocationId, IReadOnlyList<LTag> tags)`
+## `public IReadOnlyList<long> LTagCollocationSave(long collocationId, IReadOnlyList<LTag> tags)`
 
 The same write for a Collocation.
 
+## `public LTag? LTagRead(long id)`
+
+Reads one Tag by id, `null` when no row carries it.
+
+## `public long LTagResolve(string text)`
+
+The id of the row reading `text`, created when no row reads it yet.
+
 ## `public IReadOnlyList<LTag> LTagCatalogRead()`
 
-Reads every Tag any card carries, once each, in alphabetical order.
+Reads every Tag row, in alphabetical order.
 That is the Tag list itself.
-It is gathered from the cards that write it, because nothing else holds it.
 
-## `public int LTagReferenceRead(string text)`
+## `public int LTagReferenceRead(long id)`
 
-Counts the cards carrying `text`.
-A Tag no card carries is not a Tag that was deleted.
-It simply is not written anywhere.
+Counts the cards linking the Tag.
 
-## `public void LTagChange(string text, string renamed)`
+## `public void LTagChange(long id, string renamed)`
 
-Renames a Tag everywhere it is written.
-A card already carrying `renamed` keeps one Tag rather than gaining a duplicate.
-That card's order closes over the row that folded away.
+Renames a Tag everywhere it is linked by rewriting its one row.
+When another row already reads `renamed`, the two fold into that row.
+A card already carrying both keeps one link rather than gaining a duplicate.
+That card's order closes over the link that folded away.
 
-## `public void LTagDelete(string text)`
+## `public void LTagDelete(long id)`
 
-Takes a Tag off every card that carries it, closing the gap it leaves in each card's order.
+Unlinks a Tag from every card that carries it and closes the gap it leaves in each card's order.
+Then it deletes the row.
 Nothing else is deleted: a card that carried only this Tag stays, now carrying none.
 
 ## Inline notes
 
-### `private static void LTagOwnerNormalize(SqliteConnection connection, string table, string column, string owner)`
-
-One card's rows are read in order, deleted and written back numbered from zero.
-The rewrite rather than an in-place shift keeps the unique index on (card, position) satisfied.
-A shift would have to pass through a position another row still holds.
-
-### `private void LTagReferrerSave(string table, string column, string referrerId, IReadOnlyList<LTag> tags)`
+### `private void LTagReferrerSave(string table, string column, long referrerId, IReadOnlyList<LTag> tags)`
 
 The two association tables differ only in their name and their card column, so the write is one implementation.
 Both identifiers are store-owned literals chosen by the methods above, never caller input.
 So composing them into the statement text opens no injection seam.
 Every value still travels as a parameter.
+An id the caller hands over that names no row is treated as text.
+A Tag deleted under an open card should still save as the word it shows.

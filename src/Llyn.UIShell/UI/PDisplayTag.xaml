@@ -42,7 +42,7 @@
 
     <DataTemplate x:Key="Display.Card.TagChip">
         <Button Style="{StaticResource Display.Card.TagLink}">
-            <TextBlock FontSize="12" Foreground="{DynamicResource Theme.Muted}" Text="{Binding}" />
+            <TextBlock FontSize="12" Foreground="{DynamicResource Theme.Muted}" Text="{Binding LTagDraftText}" />
         </Button>
     </DataTemplate>
 </ResourceDictionary>

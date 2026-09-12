@@ -1,4 +1,4 @@
-﻿namespace Llyn.Core;
+namespace Llyn.Core;
 
 public sealed record LRelation(
     long LRelationId,
@@ -7,5 +7,12 @@ public sealed record LRelation(
     string LRelationType,
     string? LRelationLabel,
     string? LRelationLabels,
-    long? LRelationTargetEntry,
-    long? LRelationTargetMeaning);
+    LStateAnchor LRelationTargetEntry,
+    LStateAnchor LRelationTargetMeaning)
+{
+    public LStateAnchor LRelationTargetEntry { get; init; } =
+        LRelationTargetEntry ?? LStateAnchor.LStateAnchorUnspecified;
+
+    public LStateAnchor LRelationTargetMeaning { get; init; } =
+        LRelationTargetMeaning ?? LStateAnchor.LStateAnchorUnspecified;
+}

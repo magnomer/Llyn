@@ -51,7 +51,7 @@ public sealed partial class LEngine : IDisposable
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
     }
 
-    public long LEngineIdentityCreate()
+    private long LEngineIdentityCreate()
     {
         lock (_lEngineGate)
         {

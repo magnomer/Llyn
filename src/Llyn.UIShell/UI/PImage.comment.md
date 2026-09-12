@@ -29,6 +29,11 @@ An empty row nothing has been written in, which is what the card's Extra row ope
 The row for a stored Image: the location as the store knows it, and the row it stands for.
 The row id is carried through untouched, so an edited location updates a picture rather than replacing it.
 
+## `internal void PImageIdentityApply(LImageDraft stored)`
+
+Takes the id the engine gave this row when it saved the draft.
+The row never mints an id of its own.
+
 ## `internal LImageDraft PImageDraftRead()`
 
 What the row says its Image is: nothing written, unreadable, or the text it shows.

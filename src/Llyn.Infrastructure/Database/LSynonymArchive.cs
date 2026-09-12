@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
@@ -39,8 +39,8 @@ public sealed class LSynonymArchive
                 """;
             command.Parameters.AddWithValue("$collocation", stored.LSynonymCollocationId);
             command.Parameters.AddWithValue("$position", stored.LSynonymPosition);
-            command.Parameters.AddWithValue("$entry", (object?)stored.LSynonymTargetEntry ?? DBNull.Value);
-            command.Parameters.AddWithValue("$sense", (object?)stored.LSynonymTargetMeaning ?? DBNull.Value);
+            command.Parameters.AddWithValue("$entry", LSynonymAnchorRead(stored.LSynonymTargetEntry));
+            command.Parameters.AddWithValue("$sense", LSynonymAnchorRead(stored.LSynonymTargetMeaning));
             stored = stored with { LSynonymId = (long)command.ExecuteScalar()! };
         }
 
@@ -70,8 +70,8 @@ public sealed class LSynonymArchive
                 reader.GetInt64(0),
                 reader.GetInt64(1),
                 reader.GetInt32(2),
-                reader.IsDBNull(3) ? null : reader.GetInt64(3),
-                reader.IsDBNull(4) ? null : reader.GetInt64(4)));
+                LStateAnchor.LStateAnchorRead(reader.IsDBNull(3) ? null : reader.GetInt64(3)),
+                LStateAnchor.LStateAnchorRead(reader.IsDBNull(4) ? null : reader.GetInt64(4))));
         }
 
         return synonyms;
@@ -92,8 +92,8 @@ public sealed class LSynonymArchive
                 SET target_entry_id = $entry, target_sense_id = $sense
                 WHERE id = $id;
                 """;
-            command.Parameters.AddWithValue("$entry", (object?)synonym.LSynonymTargetEntry ?? DBNull.Value);
-            command.Parameters.AddWithValue("$sense", (object?)synonym.LSynonymTargetMeaning ?? DBNull.Value);
+            command.Parameters.AddWithValue("$entry", LSynonymAnchorRead(synonym.LSynonymTargetEntry));
+            command.Parameters.AddWithValue("$sense", LSynonymAnchorRead(synonym.LSynonymTargetMeaning));
             command.Parameters.AddWithValue("$id", synonym.LSynonymId);
             if (command.ExecuteNonQuery() == 0)
             {
@@ -165,10 +165,15 @@ public sealed class LSynonymArchive
             connection, "collocation_synonym", "collocation_id = $owner", collocationId, "id");
     }
 
+    private static object LSynonymAnchorRead(LStateAnchor anchor)
+    {
+        return anchor.LStateAnchorEmpty ? DBNull.Value : anchor.LStateAnchorShow();
+    }
+
     private static void LSynonymTargetValidate(LSynonym synonym)
     {
-        bool hasEntry = synonym.LSynonymTargetEntry is not null;
-        bool hasMeaning = synonym.LSynonymTargetMeaning is not null;
+        bool hasEntry = !synonym.LSynonymTargetEntry.LStateAnchorEmpty;
+        bool hasMeaning = !synonym.LSynonymTargetMeaning.LStateAnchorEmpty;
         if (hasEntry == hasMeaning)
         {
             throw new InvalidOperationException(

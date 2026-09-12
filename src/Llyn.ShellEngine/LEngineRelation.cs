@@ -119,18 +119,18 @@ public sealed partial class LEngine
         }
     }
 
-    private void LEngineTargetValidate(long? entryId, long? meaningId)
+    private void LEngineTargetValidate(LStateAnchor entry, LStateAnchor meaning)
     {
-        bool hasEntry = entryId > 0;
-        bool hasMeaning = meaningId > 0;
+        bool hasEntry = entry.LStateAnchorShow() > 0;
+        bool hasMeaning = meaning.LStateAnchorShow() > 0;
         if (hasEntry == hasMeaning)
         {
             throw new LRefusal(LRefusal.LRefusalTarget);
         }
 
         bool found = hasEntry
-            ? new LEntryArchive(_lEngineDatabase).LEntryRead(entryId!.Value) is not null
-            : new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(meaningId!.Value) is not null;
+            ? new LEntryArchive(_lEngineDatabase).LEntryRead(entry.LStateAnchorShow()) is not null
+            : new LMeaningArchive(_lEngineDatabase).LMeaningSingleRead(meaning.LStateAnchorShow()) is not null;
         if (!found)
         {
             throw new LRefusal(LRefusal.LRefusalTarget);

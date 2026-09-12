@@ -16,7 +16,7 @@ The kind is read from the content rather than from a tag beside it, so the two c
 - `LDraftId` — Throwaway id of this draft, valid only while the draft is unsaved.
 - `LDraftOrigin` — Panel that started the draft.
   The input panel and the library can each hold one at the same time.
-- `LDraftEntry` — Id of the real record being edited, or empty for a new one.
+- `LDraftEntryId` — Id of the real record being edited, or empty for a new one.
   It names an entry, an example, a situation or a source, whichever kind the draft holds.
 - `LDraftContent` — The entry form contents as one immutable value.
   A draft of another kind carries a blank one here, because its work lives in its own field.

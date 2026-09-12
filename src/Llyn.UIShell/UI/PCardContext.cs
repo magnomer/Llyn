@@ -60,7 +60,10 @@ internal sealed partial class PCard
             string written = _pCardContextCaret.PContextCaretText.Trim();
             if (written.Length != 0 && !PCardContextCheck(written))
             {
-                drafts.Add(LSituationDraft.LSituationDraftCreate(written));
+                drafts.Add(LSituationDraft.LSituationDraftCreate(written) with
+                {
+                    LSituationDraftId = _pCardContextCaret.PContextCaretId,
+                });
             }
         }
 
@@ -124,6 +127,7 @@ internal sealed partial class PCard
     {
         _pCardContextBusy = true;
         _pCardContextCaret.PContextCaretText = string.Empty;
+        _pCardContextCaret.PContextCaretId = 0;
         _pCardContextBusy = false;
         PCardContextUpdate();
     }
@@ -189,7 +193,38 @@ internal sealed partial class PCard
         }
 
         int index = PCardContext.IndexOf(_pCardContextCaret);
-        PCardContext.Insert(index < 0 ? PCardContext.Count : index, new PContext(LStateValue.LStateValueRead(written), _pCardEngine.LEngineIdentityCreate()));
+        PCardContext.Insert(
+            index < 0 ? PCardContext.Count : index,
+            new PContext(LStateValue.LStateValueRead(written), _pCardContextCaret.PContextCaretId));
+        _pCardContextCaret.PContextCaretId = 0;
+    }
+
+    internal void PCardContextApply(IReadOnlyList<LSituationDraft> stored)
+    {
+        int index = 0;
+        foreach (object row in PCardContext)
+        {
+            if (row is PContext chip)
+            {
+                if (index < stored.Count)
+                {
+                    chip.PContextId = stored[index].LSituationDraftId;
+                }
+
+                index++;
+                continue;
+            }
+
+            if (_pCardContextCaret.PContextCaretText.Trim().Length != 0)
+            {
+                if (index < stored.Count)
+                {
+                    _pCardContextCaret.PContextCaretId = stored[index].LSituationDraftId;
+                }
+
+                index++;
+            }
+        }
     }
 
     private bool PCardContextCheck(string text)

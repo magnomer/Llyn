@@ -63,23 +63,23 @@ public sealed partial class LEngine
         }
     }
 
-    public void LEngineTagChange(string text, string renamed)
+    public void LEngineTagChange(long tagId, string renamed)
     {
         lock (_lEngineGate)
         {
-            new LTagArchive(_lEngineDatabase).LTagChange(text, renamed);
+            new LTagArchive(_lEngineDatabase).LTagChange(tagId, renamed);
         }
 
-        LEngineBulletinRaise(LSubject.LSubjectTag, 0);
+        LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
     }
 
-    public void LEngineTagDelete(string text)
+    public void LEngineTagDelete(long tagId)
     {
         lock (_lEngineGate)
         {
-            new LTagArchive(_lEngineDatabase).LTagDelete(text);
+            new LTagArchive(_lEngineDatabase).LTagDelete(tagId);
         }
 
-        LEngineBulletinRaise(LSubject.LSubjectTag, 0);
+        LEngineBulletinRaise(LSubject.LSubjectTag, tagId);
     }
 }

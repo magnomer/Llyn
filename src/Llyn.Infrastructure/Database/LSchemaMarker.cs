@@ -13,13 +13,22 @@ public static class LSchemaMarker
 
         command.CommandText =
             """
+            CREATE TABLE IF NOT EXISTS tag (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                origin_realm BLOB NOT NULL DEFAULT X'',
+                origin_id INTEGER NOT NULL DEFAULT 0,
+                text TEXT NOT NULL UNIQUE,
+                CHECK (length(text) > 0),
+                CHECK (length(origin_realm) = 16 OR origin_id = 0)
+            );
+
             CREATE TABLE IF NOT EXISTS sense_tag (
                 sense_id INTEGER NOT NULL,
-                text TEXT NOT NULL,
+                tag_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, text),
-                CHECK (length(text) > 0),
-                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE
+                PRIMARY KEY (sense_id, tag_id),
+                FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
+                FOREIGN KEY (tag_id) REFERENCES tag (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_tag_position
@@ -27,11 +36,11 @@ public static class LSchemaMarker
 
             CREATE TABLE IF NOT EXISTS collocation_tag (
                 collocation_id INTEGER NOT NULL,
-                text TEXT NOT NULL,
+                tag_id INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, text),
-                CHECK (length(text) > 0),
-                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE
+                PRIMARY KEY (collocation_id, tag_id),
+                FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
+                FOREIGN KEY (tag_id) REFERENCES tag (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_tag_position

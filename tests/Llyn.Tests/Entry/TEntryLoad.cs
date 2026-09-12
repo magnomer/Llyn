@@ -161,7 +161,9 @@ public sealed class TEntryLoad
             Assert.Equal(
                 TEntrySituationRead(expected[index].LCardDraftSituation),
                 TEntrySituationRead(actual[index].LCardDraftSituation));
-            Assert.Equal(expected[index].LCardDraftTag, actual[index].LCardDraftTag);
+            Assert.Equal(
+                TInterface.TTagDraftRead(expected[index].LCardDraftTag),
+                TInterface.TTagDraftRead(actual[index].LCardDraftTag));
             Assert.Equal(
                 expected[index].LCardDraftTranslation, actual[index].LCardDraftTranslation);
         }
@@ -294,14 +296,14 @@ public sealed class TEntryLoad
         Assert.NotNull(loaded);
 
         LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
-        Assert.Equal(["verb", "formal", "spoken"], card.LCardDraftTag);
+        Assert.Equal(["verb", "formal", "spoken"], TInterface.TTagDraftRead(card.LCardDraftTag));
         Assert.Equal(
             ["he said a word", "not a word was spoken"],
             TEntryExampleRead(card.LCardDraftSentence));
         Assert.Equal(["conversation"], TEntrySituationRead(card.LCardDraftSituation));
 
         LCardDraft phrase = Assert.Single(loaded.LEntryDraftCollocations);
-        Assert.Equal(["written", "idiom"], phrase.LCardDraftTag);
+        Assert.Equal(["written", "idiom"], TInterface.TTagDraftRead(phrase.LCardDraftTag));
         Assert.Equal(["in a word, no"], TEntryExampleRead(phrase.LCardDraftSentence));
         Assert.Equal(["summary", "writing"], TEntrySituationRead(phrase.LCardDraftSituation));
     }

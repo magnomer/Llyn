@@ -240,7 +240,7 @@ public partial class PImprint
             return null;
         }
 
-        return held?.LDraftEntry is null or 0 ? null : held.LDraftEntry;
+        return held?.LDraftEntryId is null or 0 ? null : held.LDraftEntryId;
     }
 
     private void PImprintHoldSuspend(Exception exception)

@@ -7,19 +7,19 @@
   "note": "Display vocabulary for English: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Every id is an integer that never changes once published; renaming a preset keeps its id, so every entry linking it follows the rename. 'parts' lists the parts of speech, 'features' the grammatical features each part takes ('part' names the part id), and 'values' the values each feature takes ('feature' names the feature id). The names are what the shell shows. Order is the order of these lists. Add a language by creating languages/<Name>/vocabulary.json. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names.",
   "registers": [
     {
-      "id": "formal",
+      "id": 1,
       "name": "Formal"
     },
     {
-      "id": "informal",
+      "id": 2,
       "name": "Informal"
     },
     {
-      "id": "polite",
+      "id": 3,
       "name": "Polite"
     },
     {
-      "id": "impolite",
+      "id": 4,
       "name": "Impolite"
     }
   ],

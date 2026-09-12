@@ -59,8 +59,11 @@ A comparison that means "the same card" walks the lists itself.
   The link a Collocation stores is `LCardDraftInterlink`, which is a different member.
   The two share a word and are never merged.
   The member is kept so the card shape stays one shape for both kinds.
-- `LCardDraftTag` — The Tags the card carries, each one its own text, in the order they are shown.
-  A Tag is its name, so the list holds plain text and no Tag is ever blank.
+- `LCardDraftTag` — The Tags the card carries, in the order they are shown.
+  Each carries the id of the stored Tag it links and the text it shows.
+  A Tag is shared data, so two cards carrying the same word link one stored row.
+  A row typed on the card carries no id yet.
+  The engine names it on the next draft save.
 - `LCardDraftImage` — The Images the card references, in the order they are shown.
   Each carries the location it is loaded from, a file on this machine or a web address.
   Each also carries what is known about that location, and the stored row it stands for.
@@ -101,9 +104,6 @@ A comparison that means "the same card" walks the lists itself.
   Only a Collocation holds them, because the store hangs the link off a collocation.
   Each names an Entry or a Meaning by the same rule a relation target follows.
   It is the stored link and never the free text `LCardDraftSynonym` carries.
-- `LCardDraftKey` — The key the file declared this card under, empty for a card from the workspace.
-  A relation in another entry may name this card, and the key is how it does.
-  It never reaches the store, because a key means nothing outside the file that wrote it.
 
 ## Inline notes
 

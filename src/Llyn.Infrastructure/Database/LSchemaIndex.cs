@@ -38,8 +38,8 @@ public static class LSchemaIndex
             CREATE INDEX IF NOT EXISTS sense_image_member ON sense_image (image_id);
             CREATE INDEX IF NOT EXISTS collocation_image_member ON collocation_image (image_id);
             CREATE INDEX IF NOT EXISTS collocation_example_member ON collocation_example (example_id);
-            CREATE INDEX IF NOT EXISTS sense_tag_member ON sense_tag (text);
-            CREATE INDEX IF NOT EXISTS collocation_tag_member ON collocation_tag (text);
+            CREATE INDEX IF NOT EXISTS sense_tag_member ON sense_tag (tag_id);
+            CREATE INDEX IF NOT EXISTS collocation_tag_member ON collocation_tag (tag_id);
             CREATE INDEX IF NOT EXISTS sense_situation_member ON sense_situation (situation_id);
             CREATE INDEX IF NOT EXISTS collocation_situation_member ON collocation_situation (situation_id);
             CREATE INDEX IF NOT EXISTS sense_register_member ON sense_register (register_id);

@@ -112,59 +112,49 @@ public sealed partial class LEngine
     }
 
     private void LEngineRegisterSync(
-        long ownerId, IReadOnlyList<LRegisterDraft> drafts, string language, bool collocation)
+        long ownerId,
+        IReadOnlyList<LRegisterDraft> drafts,
+        string language,
+        bool collocation,
+        Dictionary<long, long> identity)
     {
         LEngineRegisterCreate(language);
 
         LRegisterArchive registers = new(_lEngineDatabase);
 
-        IReadOnlyList<LRegister> attached = collocation
-            ? registers.LRegisterCollocationRead(ownerId)
-            : registers.LRegisterMeaningRead(ownerId);
-
-        List<long> targets = [];
-        HashSet<long> kept = [];
-        foreach (LRegisterDraft draft in LEngineRegisterRead(drafts))
-        {
-            long id = LEngineRegisterResolve(registers, draft);
-            if (!kept.Add(id))
+        LEngineFieldSync(
+            LEngineRegisterRead(drafts),
+            collocation ? registers.LRegisterCollocationRead(ownerId) : registers.LRegisterMeaningRead(ownerId),
+            row => row.LRegisterId,
+            written => LEngineRegisterResolve(registers, written, identity),
+            rowId =>
             {
-                continue;
-            }
+                if (collocation)
+                {
+                    registers.LRegisterCollocationDetach(ownerId, rowId);
+                    return;
+                }
 
-            targets.Add(id);
-        }
-
-        foreach (LRegister row in attached)
-        {
-            if (kept.Contains(row.LRegisterId))
+                registers.LRegisterMeaningDetach(ownerId, rowId);
+            },
+            (rowId, position) =>
             {
-                continue;
-            }
+                if (collocation)
+                {
+                    registers.LRegisterCollocationAttach(ownerId, rowId, position);
+                    return;
+                }
 
-            if (collocation)
-            {
-                registers.LRegisterCollocationDetach(ownerId, row.LRegisterId);
-                continue;
-            }
-
-            registers.LRegisterMeaningDetach(ownerId, row.LRegisterId);
-        }
-
-        for (int position = 0; position < targets.Count; position++)
-        {
-            if (collocation)
-            {
-                registers.LRegisterCollocationAttach(ownerId, targets[position], position);
-                continue;
-            }
-
-            registers.LRegisterMeaningAttach(ownerId, targets[position], position);
-        }
+                registers.LRegisterMeaningAttach(ownerId, rowId, position);
+            });
     }
 
     private void LEngineRegisterAttach(
-        long ownerId, IReadOnlyList<LRegisterDraft> drafts, string language, bool collocation)
+        long ownerId,
+        IReadOnlyList<LRegisterDraft> drafts,
+        string language,
+        bool collocation,
+        Dictionary<long, long> identity)
     {
         LEngineRegisterCreate(language);
 
@@ -173,7 +163,7 @@ public sealed partial class LEngine
         HashSet<long> attached = [];
         foreach (LRegisterDraft draft in LEngineRegisterRead(drafts))
         {
-            long registerId = LEngineRegisterResolve(registers, draft);
+            long registerId = LEngineRegisterResolve(registers, draft, identity);
             if (!attached.Add(registerId))
             {
                 continue;
@@ -223,7 +213,8 @@ public sealed partial class LEngine
         }
     }
 
-    private static long LEngineRegisterResolve(LRegisterArchive registers, LRegisterDraft draft)
+    private static long LEngineRegisterResolve(
+        LRegisterArchive registers, LRegisterDraft draft, Dictionary<long, long> identity)
     {
         if (draft.LRegisterDraftId > 0)
         {
@@ -239,22 +230,11 @@ public sealed partial class LEngine
             }
         }
 
-        string written = draft.LRegisterDraftName.LStateValueShow().Trim();
-        foreach (LRegister row in registers.LRegisterRead())
-        {
-            if (string.Equals(
-                    row.LRegisterName.LStateValueShow().Trim(),
-                    written,
-                    StringComparison.CurrentCultureIgnoreCase))
-            {
-                return row.LRegisterId;
-            }
-        }
-
-        return registers.LRegisterCreate(new LRegister(
-                0,
+        long created = registers.LRegisterCreate(new LRegister(
+            0,
             draft.LRegisterDraftName,
-            draft.LRegisterDraftLanguage,
-            draft.LRegisterDraftBuiltin)).LRegisterId;
+            draft.LRegisterDraftLanguage)).LRegisterId;
+        LEngineIdentityRecord(identity, draft.LRegisterDraftId, created);
+        return created;
     }
 }

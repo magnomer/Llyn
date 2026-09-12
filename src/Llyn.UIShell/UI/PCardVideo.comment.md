@@ -15,6 +15,11 @@ Fills the rows from a stored card, one row per video, in the order given.
 What the rows state, skipping every row that names no video.
 A span without a location points at nothing, so it never keeps a row alive.
 
+## `internal void PCardVideoApply(IReadOnlyList<LVideoDraft> stored)`
+
+Writes the ids the engine minted back onto the rows, in the order the read listed them.
+A row naming no clip was dropped by the read, so it is stepped over here.
+
 ## `internal void PCardVideoAdd()`
 
 Opens an empty video row at the end, which is what the card's Extra row asks for.

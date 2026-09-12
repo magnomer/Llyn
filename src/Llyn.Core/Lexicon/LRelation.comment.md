@@ -18,5 +18,5 @@ This is also the synonym/collocation interlink mechanism later jobs reuse, so th
 - `LRelationType` — Stable relation-type id (for example the synonym or antonym type).
 - `LRelationLabel` — Optional single label text.
 - `LRelationLabels` — Labels as JSON array text (same format as job04), or `null`.
-- `LRelationTargetEntry` — Target Entry id when the relation points at an Entry, else `null`.
-- `LRelationTargetMeaning` — Target Meaning id when the relation points at a Meaning, else `null`.
+- `LRelationTargetEntry` — Anchor of the target Entry when the relation points at an Entry, else empty.
+- `LRelationTargetMeaning` — Anchor of the target Meaning when the relation points at a Meaning, else empty.

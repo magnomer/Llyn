@@ -29,8 +29,8 @@ So an accented headword is found typed in either case.
 
 ## `public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag)`
 
-Returns the entries carrying `tag`, ordered by headword.
-An empty tag text stands for no tag chosen and returns every entry.
+Returns the entries carrying `tag`, matched by its id, ordered by headword.
+A zero id stands for no tag chosen and returns every entry.
 That is the list the taxonomy panel shows beside its tag catalog.
 The overload takes a tag rather than text so the two searches cannot be confused.
 

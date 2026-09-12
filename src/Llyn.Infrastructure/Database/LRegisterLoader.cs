@@ -47,21 +47,31 @@ public static class LRegisterLoader
         List<LRegister> values = [];
         foreach (JsonElement register in registers.EnumerateArray())
         {
-            string? key = LRegisterTextRead(register, "id");
-            if (key is null)
+            long? id = LRegisterNumberRead(register, "id");
+            string? name = LRegisterTextRead(register, "name");
+            if (id is null || name is null)
             {
                 continue;
             }
 
-            values.Add(new LRegister(
-                0,
-                LStateValue.LStateValueRead(LRegisterTextRead(register, "name") ?? key),
-                language,
-                true,
-                key));
+            values.Add(new LRegister(0, LStateValue.LStateValueRead(name), language, id));
         }
 
         return values;
+    }
+
+    private static long? LRegisterNumberRead(JsonElement element, string property)
+    {
+        if (element.ValueKind != JsonValueKind.Object
+            || !element.TryGetProperty(property, out JsonElement value)
+            || value.ValueKind != JsonValueKind.Number
+            || !value.TryGetInt64(out long number)
+            || number <= 0)
+        {
+            return null;
+        }
+
+        return number;
     }
 
     private static string? LRegisterTextRead(JsonElement element, string property)

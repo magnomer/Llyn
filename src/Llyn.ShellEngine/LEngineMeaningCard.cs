@@ -13,7 +13,8 @@ public sealed partial class LEngine
         long entryId,
         IReadOnlyList<LCardDraft> cards,
         string language,
-        List<LRevisionChange> changes)
+        List<LRevisionChange> changes,
+        Dictionary<long, long> identity)
     {
         LMeaningArchive meanings = new(_lEngineDatabase);
 
@@ -59,7 +60,8 @@ public sealed partial class LEngine
             meanings,
             stored,
             gone,
-            new HashSet<long>());
+            new HashSet<long>(),
+            identity);
     }
 
     private void LEngineMeaningApply(
@@ -72,7 +74,8 @@ public sealed partial class LEngine
         LMeaningArchive meanings,
         IReadOnlyDictionary<long, LMeaning> stored,
         ISet<long> gone,
-        ISet<long> applied)
+        ISet<long> applied,
+        Dictionary<long, long> identity)
     {
         List<long> order = [];
         foreach (LCardDraft card in LEngineCardRead(cards))
@@ -121,10 +124,11 @@ public sealed partial class LEngine
                     "create",
                     card.LCardDraftMeaning.LStateValueShow()));
                 rowId = created.LMeaningId;
+                LEngineIdentityRecord(identity, card.LCardDraftId, rowId);
             }
 
             order.Add(rowId);
-            LEngineCardSync(rowId, card, language, collocation: false);
+            LEngineCardSync(rowId, card, language, false, identity);
             LEngineMeaningApply(
                 connection,
                 entryId,
@@ -135,7 +139,8 @@ public sealed partial class LEngine
                 meanings,
                 stored,
                 gone,
-                applied);
+                applied,
+                identity);
         }
 
         if (parentId is null)

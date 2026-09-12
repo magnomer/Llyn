@@ -46,10 +46,10 @@ The query is trimmed before it is matched.
 So trailing space left by typing does not narrow the result.
 A query of spaces alone lists everything, exactly as an empty box does.
 
-## `public IReadOnlyList<LEntry> LEntryTagFind(string tag)`
+## `public IReadOnlyList<LEntry> LEntryTagFind(long tagId)`
 
-Returns the entries carrying `tag`, ordered by headword.
-It returns every entry when `tag` is empty or holds nothing but whitespace.
+Returns the entries carrying the Tag `tagId` names, ordered by headword.
+It returns every entry when `tagId` is zero.
 A tag is held on a meaning or a collocation, never on the entry itself.
 So both sides are asked and the entries they name are unioned.
 An entry tagged on several of its cards is still one row.

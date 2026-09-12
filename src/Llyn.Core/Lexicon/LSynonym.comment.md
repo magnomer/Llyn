@@ -21,5 +21,5 @@ Tighten it once the rules are decided.
 - `LSynonymId` — Opaque, program-generated stable id.
 - `LSynonymCollocationId` — Origin Collocation id the synonym hangs from.
 - `LSynonymPosition` — Order among the origin Collocation's synonyms.
-- `LSynonymTargetEntry` — Target Entry id when the synonym points at an Entry, else `null`.
-- `LSynonymTargetMeaning` — Target Meaning id when the synonym points at a Meaning, else `null`.
+- `LSynonymTargetEntry` — Anchor of the target Entry when the synonym points at an Entry, else empty.
+- `LSynonymTargetMeaning` — Anchor of the target Meaning when the synonym points at a Meaning, else empty.
