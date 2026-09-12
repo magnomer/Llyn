@@ -20,22 +20,22 @@ public static class LSchemaRegister
                 name_state TEXT NOT NULL DEFAULT 'unspecified',
                 name TEXT,
                 language TEXT,
-                pack_id INTEGER,
+                pack_ref INTEGER,
                 CHECK (name_state = 'specified' OR name IS NULL),
-                CHECK (pack_id IS NULL OR language IS NOT NULL),
+                CHECK (pack_ref IS NULL OR language IS NOT NULL),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS register_pack
-            ON register (language, pack_id) WHERE pack_id IS NOT NULL;
+            ON register (language, pack_ref) WHERE pack_ref IS NOT NULL;
 
             CREATE TABLE IF NOT EXISTS sense_register (
                 sense_id INTEGER NOT NULL,
-                register_id INTEGER NOT NULL,
+                register_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, register_id),
+                PRIMARY KEY (sense_id, register_ref),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (register_id) REFERENCES register (id)
+                FOREIGN KEY (register_ref) REFERENCES register (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_register_position
@@ -43,11 +43,11 @@ public static class LSchemaRegister
 
             CREATE TABLE IF NOT EXISTS collocation_register (
                 collocation_id INTEGER NOT NULL,
-                register_id INTEGER NOT NULL,
+                register_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, register_id),
+                PRIMARY KEY (collocation_id, register_ref),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (register_id) REFERENCES register (id)
+                FOREIGN KEY (register_ref) REFERENCES register (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_register_position

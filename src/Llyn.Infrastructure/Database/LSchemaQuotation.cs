@@ -23,18 +23,18 @@ public static class LSchemaQuotation
                 translation_state TEXT NOT NULL DEFAULT 'unspecified',
                 translation TEXT,
                 source_state TEXT NOT NULL DEFAULT 'unspecified',
-                source_id INTEGER,
+                source_ref INTEGER,
                 CHECK (text_state = 'specified' OR text IS NULL),
                 CHECK (translation_state = 'specified' OR translation IS NULL),
-                CHECK (source_state = 'specified' OR source_id IS NULL),
-                FOREIGN KEY (source_id) REFERENCES source (id),
+                CHECK (source_state = 'specified' OR source_ref IS NULL),
+                FOREIGN KEY (source_ref) REFERENCES source (id),
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 
             CREATE TABLE IF NOT EXISTS sense_example (
                 id INTEGER PRIMARY KEY,
                 sense_id INTEGER NOT NULL,
-                example_id INTEGER,
+                example_ref INTEGER,
                 position INTEGER NOT NULL,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
                 particle TEXT,
@@ -42,11 +42,11 @@ public static class LSchemaQuotation
                 dependence TEXT,
                 CHECK (particle_state = 'specified' OR particle IS NULL),
                 CHECK (dependence_state = 'specified' OR dependence IS NULL),
-                CHECK (example_id IS NOT NULL
+                CHECK (example_ref IS NOT NULL
                        OR particle_state <> 'unspecified'
                        OR dependence_state <> 'unspecified'),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_id) REFERENCES example (id)
+                FOREIGN KEY (example_ref) REFERENCES example (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_example_position
@@ -55,7 +55,7 @@ public static class LSchemaQuotation
             CREATE TABLE IF NOT EXISTS collocation_example (
                 id INTEGER PRIMARY KEY,
                 collocation_id INTEGER NOT NULL,
-                example_id INTEGER,
+                example_ref INTEGER,
                 position INTEGER NOT NULL,
                 particle_state TEXT NOT NULL DEFAULT 'unspecified',
                 particle TEXT,
@@ -63,11 +63,11 @@ public static class LSchemaQuotation
                 dependence TEXT,
                 CHECK (particle_state = 'specified' OR particle IS NULL),
                 CHECK (dependence_state = 'specified' OR dependence IS NULL),
-                CHECK (example_id IS NOT NULL
+                CHECK (example_ref IS NOT NULL
                        OR particle_state <> 'unspecified'
                        OR dependence_state <> 'unspecified'),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (example_id) REFERENCES example (id)
+                FOREIGN KEY (example_ref) REFERENCES example (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_example_position

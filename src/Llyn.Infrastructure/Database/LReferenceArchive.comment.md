@@ -4,7 +4,7 @@
 
 Persists bibliographic References — independent data no Entry, Example, or Author owns.
 A Reference is created once with an opaque id and is then cited one way.
-An Example cites at most one through its `example.source_id` column.
+An Example cites at most one through its `example.source_ref` column.
 An Entry reaches a Reference only through the Examples its cards quote, and holds no citation of its own.
 The citation is a pointer — clearing it leaves the Reference standing, and `LReferenceDelete` refuses to run while any citation remains.
 

@@ -30,7 +30,7 @@ public sealed class LExampleArchive
                 """
                 INSERT INTO example (
                     language, text_state, text, translation_state, translation,
-                    source_state, source_id)
+                    source_state, source_ref)
                 VALUES (
                     $language, $textState, $text, $translationState, $translation,
                     $sourceState, $source)
@@ -65,7 +65,7 @@ public sealed class LExampleArchive
         command.CommandText =
             """
             SELECT id, language, text_state, text, translation_state, translation,
-                   source_state, source_id
+                   source_state, source_ref
             FROM example
             ORDER BY rowid;
             """;
@@ -100,7 +100,7 @@ public sealed class LExampleArchive
                 UPDATE example
                 SET language = $language, text_state = $textState, text = $text,
                     translation_state = $translationState, translation = $translation,
-                    source_state = $sourceState, source_id = $source
+                    source_state = $sourceState, source_ref = $source
                 WHERE id = $id;
                 """;
             command.Parameters.AddWithValue("$language", example.LExampleLanguage);
@@ -147,7 +147,7 @@ public sealed class LExampleArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET source_state = $sourceState, source_id = $source WHERE id = $id;";
+                "UPDATE example SET source_state = $sourceState, source_ref = $source WHERE id = $id;";
             LStateColumn.LStateColumnApply(command, "source", source);
             command.Parameters.AddWithValue("$id", exampleId);
             if (command.ExecuteNonQuery() == 0)
@@ -173,8 +173,8 @@ public sealed class LExampleArchive
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM sense_example WHERE example_id = $id)
-                + (SELECT COUNT(*) FROM collocation_example WHERE example_id = $id);
+                (SELECT COUNT(*) FROM sense_example WHERE example_ref = $id)
+                + (SELECT COUNT(*) FROM collocation_example WHERE example_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -186,12 +186,12 @@ public sealed class LExampleArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT example_id, COUNT(*) FROM (
-                SELECT example_id FROM sense_example WHERE example_id IS NOT NULL
+            SELECT example_ref, COUNT(*) FROM (
+                SELECT example_ref FROM sense_example WHERE example_ref IS NOT NULL
                 UNION ALL
-                SELECT example_id FROM collocation_example WHERE example_id IS NOT NULL
+                SELECT example_ref FROM collocation_example WHERE example_ref IS NOT NULL
             )
-            GROUP BY example_id;
+            GROUP BY example_ref;
             """;
 
         Dictionary<long, int> counts = [];
@@ -244,7 +244,7 @@ public sealed class LExampleArchive
         command.CommandText =
             """
             SELECT language, text_state, text, translation_state, translation,
-                   source_state, source_id
+                   source_state, source_ref
             FROM example WHERE id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);

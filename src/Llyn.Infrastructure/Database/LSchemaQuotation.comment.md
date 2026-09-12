@@ -17,16 +17,16 @@ A row holds the frame its owner reads the Example under, a marker and a role.
 Each carries what is known about it.
 The frame lives on the association and never on the Example.
 So two owners citing one Example keep their own frame.
-Its example_id is nullable, so a row may state a frame and cite no Example at all.
+Its example_ref is nullable, so a row may state a frame and cite no Example at all.
 The frame is the owner's, so writing one before any sentence exists must not wait on a sentence.
 A row citing nothing and stating no frame says nothing, and the CHECK refuses it.
 Deleting a referrer removes only its own association rows, by ON DELETE CASCADE on that side.
-The example_id foreign keys deliberately have no cascade.
+The example_ref foreign keys deliberately have no cascade.
 So an Example survives every detach.
 The store refuses to delete one while any reference still points at it.
 The translation is a column on the Example row, so it goes when the row goes.
 
-example.source_id points at the independent Reference that LSchemaReference creates.
+example.source_ref points at the independent Reference that LSchemaReference creates.
 Its foreign key could only be declared once that source table existed.
 SQLite refuses to prepare any statement writing to a child table whose parent is missing.
 That holds even for NULL keys, which is why the reference tables are created first.

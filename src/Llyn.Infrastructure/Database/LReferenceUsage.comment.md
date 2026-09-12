@@ -8,7 +8,7 @@ Counting the citations of a Source is a different responsibility from storing on
 Nothing here creates, changes, or deletes a Source.
 
 A Situation is not counted, because a Situation is written rather than quoted and carries no Source column.
-Only an Example cites a Source, through its own `source_id` column.
+Only an Example cites a Source, through its own `source_ref` column.
 A Meaning or a Collocation is reported as citing because it holds such an Example, never because a row says so.
 So a card arm is a join back up the chain and detaching is clearing two columns on the Example.
 

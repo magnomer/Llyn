@@ -86,7 +86,7 @@ public sealed class TVocabulary
         Assert.Equal(
             0,
             workspace.TWorkspaceCountRead(
-                $"SELECT COUNT(*) FROM part_of_speech WHERE entry_id = {entry.LEntryId} AND speech_value_id IS NOT NULL;"));
+                $"SELECT COUNT(*) FROM part_of_speech WHERE entry_id = {entry.LEntryId} AND speech_value_ref IS NOT NULL;"));
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public sealed class TVocabulary
         Assert.Equal(
             [verb.LSpeechValueId],
             workspace.TWorkspaceColumnRead(
-                $"SELECT speech_value_id FROM part_of_speech WHERE entry_id = {entry.LEntryId};"));
+                $"SELECT speech_value_ref FROM part_of_speech WHERE entry_id = {entry.LEntryId};"));
         Assert.Equal(
             "Verb",
             Assert.Single(TInterface.TSpeechNameRead(engine.TEngineEntryLoad(entry.LEntryId)!)));

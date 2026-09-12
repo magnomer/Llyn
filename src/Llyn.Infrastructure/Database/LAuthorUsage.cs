@@ -33,11 +33,11 @@ public sealed class LAuthorUsage
                    CASE WHEN sense.gloss IS NOT NULL THEN 'specified' ELSE sense.definition_state END,
                    COALESCE(sense.gloss, sense.definition)
             FROM source_author credit
-            JOIN example ON example.source_id = credit.source_id
-            JOIN sense_example link ON link.example_id = example.id
+            JOIN example ON example.source_ref = credit.source_id
+            JOIN sense_example link ON link.example_ref = example.id
             JOIN sense ON sense.id = link.sense_id
             JOIN entry ON entry.id = sense.entry_id
-            WHERE credit.author_id = $id
+            WHERE credit.author_ref = $id
             GROUP BY sense.id
             ORDER BY entry.headword, sense.position;
             """));
@@ -50,11 +50,11 @@ public sealed class LAuthorUsage
                    collocation.title_state, collocation.title,
                    collocation.expression_state, collocation.expression
             FROM source_author credit
-            JOIN example ON example.source_id = credit.source_id
-            JOIN collocation_example link ON link.example_id = example.id
+            JOIN example ON example.source_ref = credit.source_id
+            JOIN collocation_example link ON link.example_ref = example.id
             JOIN collocation ON collocation.id = link.collocation_id
             JOIN entry ON entry.id = collocation.entry_id
-            WHERE credit.author_id = $id
+            WHERE credit.author_ref = $id
             GROUP BY collocation.id
             ORDER BY entry.headword, collocation.position;
             """));
@@ -103,8 +103,8 @@ public sealed class LAuthorUsage
                    example.text_state, example.text,
                    example.translation_state, example.translation
             FROM source_author credit
-            JOIN example ON example.source_id = credit.source_id
-            WHERE credit.author_id = $id
+            JOIN example ON example.source_ref = credit.source_id
+            WHERE credit.author_ref = $id
             GROUP BY example.id
             ORDER BY example.text;
             """;

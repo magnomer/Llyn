@@ -124,7 +124,7 @@ public sealed class LTranslationArchive
             FROM sense_translation link
             JOIN sense ON sense.id = link.sense_id
             JOIN entry ON entry.id = sense.entry_id
-            WHERE link.entry_id = $id
+            WHERE link.entry_ref = $id
             ORDER BY entry.headword, sense.position;
             """));
         usages.AddRange(LTranslationIncomingRead(
@@ -138,7 +138,7 @@ public sealed class LTranslationArchive
             FROM collocation_translation link
             JOIN collocation ON collocation.id = link.collocation_id
             JOIN entry ON entry.id = collocation.entry_id
-            WHERE link.entry_id = $id
+            WHERE link.entry_ref = $id
             ORDER BY entry.headword, collocation.position;
             """));
 
@@ -189,7 +189,7 @@ public sealed class LTranslationArchive
         {
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
-                $"INSERT INTO {table} ({column}, entry_id, position) VALUES ($owner, $entry, $position);";
+                $"INSERT INTO {table} ({column}, entry_ref, position) VALUES ($owner, $entry, $position);";
             command.Parameters.AddWithValue("$owner", owner);
             command.Parameters.AddWithValue("$entry", entryId);
             command.Parameters.AddWithValue("$position", position);
@@ -241,7 +241,7 @@ public sealed class LTranslationArchive
         using LDatabaseSession session = _lTranslationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            $"SELECT entry_id, position FROM {table} WHERE {column} = $referrer ORDER BY position;";
+            $"SELECT entry_ref, position FROM {table} WHERE {column} = $referrer ORDER BY position;";
         command.Parameters.AddWithValue("$referrer", referrerId);
 
         List<LTranslation> translations = [];

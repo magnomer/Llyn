@@ -4,7 +4,7 @@
 
 Creates the independent Author and the independent bibliographic Reference.
 They are created before the Example tables.
-So example.source_id can carry its foreign key.
+So example.source_ref can carry its foreign key.
 
 ## `public static void LSchemaReferenceCreate(SqliteConnection connection)`
 
@@ -21,5 +21,5 @@ author_state has no value column of its own, because the authors themselves are 
 They are attached in order through source_author.
 That table cascades from its Reference.
 So deleting a Reference drops its author links and never an Author.
-So the source_id and author_id foreign keys deliberately have no cascade.
+So the example.source_ref and author_ref foreign keys deliberately have no cascade.
 The stores refuse to delete a Reference or an Author while anything still points at it.

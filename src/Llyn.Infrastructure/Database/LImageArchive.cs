@@ -91,8 +91,8 @@ public sealed class LImageArchive
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM sense_image WHERE image_id = $id)
-                + (SELECT COUNT(*) FROM collocation_image WHERE image_id = $id);
+                (SELECT COUNT(*) FROM sense_image WHERE image_ref = $id)
+                + (SELECT COUNT(*) FROM collocation_image WHERE image_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -152,15 +152,15 @@ public sealed class LImageArchive
 
         string scope = $"{column} = $owner";
         IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, referrerId, "image_id");
+            connection, table, scope, referrerId, "image_ref");
 
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 $"""
-                INSERT INTO {table} ({column}, image_id, position)
+                INSERT INTO {table} ({column}, image_ref, position)
                 VALUES ($referrer, $image, $position)
-                ON CONFLICT ({column}, image_id) DO NOTHING;
+                ON CONFLICT ({column}, image_ref) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$image", imageId);
@@ -169,7 +169,7 @@ public sealed class LImageArchive
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "image_id",
+            connection, table, scope, referrerId, "image_ref",
             LDatabaseOrder.LDatabaseOrderInsert(current, imageId, position));
 
         session.LDatabaseSessionCommit();
@@ -186,15 +186,15 @@ public sealed class LImageArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND image_id = $image;";
+            command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND image_ref = $image;";
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$image", imageId);
             command.ExecuteNonQuery();
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "image_id",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "image_id"));
+            connection, table, scope, referrerId, "image_ref",
+            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "image_ref"));
 
         session.LDatabaseSessionCommit();
     }
@@ -209,7 +209,7 @@ public sealed class LImageArchive
             $"""
             SELECT image.id, image.location_state, image.location
             FROM {table} link
-            JOIN image ON image.id = link.image_id
+            JOIN image ON image.id = link.image_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;

@@ -114,12 +114,12 @@ public sealed class LEntryArchive
                       SELECT sense.entry_id
                       FROM sense_tag
                       JOIN sense ON sense.id = sense_tag.sense_id
-                      WHERE sense_tag.tag_id = $tag
+                      WHERE sense_tag.tag_ref = $tag
                       UNION
                       SELECT collocation.entry_id
                       FROM collocation_tag
                       JOIN collocation ON collocation.id = collocation_tag.collocation_id
-                      WHERE collocation_tag.tag_id = $tag)
+                      WHERE collocation_tag.tag_ref = $tag)
             ORDER BY headword;
             """;
         command.Parameters.AddWithValue("$tag", tagId);
@@ -149,12 +149,12 @@ public sealed class LEntryArchive
                       SELECT sense.entry_id
                       FROM sense_register
                       JOIN sense ON sense.id = sense_register.sense_id
-                      WHERE sense_register.register_id = $register
+                      WHERE sense_register.register_ref = $register
                       UNION
                       SELECT collocation.entry_id
                       FROM collocation_register
                       JOIN collocation ON collocation.id = collocation_register.collocation_id
-                      WHERE collocation_register.register_id = $register)
+                      WHERE collocation_register.register_ref = $register)
             ORDER BY headword;
             """;
         command.Parameters.AddWithValue("$register", registerId);
@@ -205,7 +205,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, position, speech_value_id, custom_name
+            SELECT entry_id, position, speech_value_ref, custom_name
             FROM part_of_speech WHERE entry_id = $id ORDER BY position;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -339,7 +339,7 @@ public sealed class LEntryArchive
             bool declared = speech.LSpeechValueId is > 0;
             command.CommandText =
                 """
-                INSERT INTO part_of_speech (entry_id, position, speech_value_id, custom_name)
+                INSERT INTO part_of_speech (entry_id, position, speech_value_ref, custom_name)
                 VALUES ($entry, $position, $value, $custom);
                 """;
             command.Parameters.AddWithValue("$entry", id);

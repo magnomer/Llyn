@@ -98,8 +98,8 @@ public sealed class LVideoArchive
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM sense_video WHERE video_id = $id)
-                + (SELECT COUNT(*) FROM collocation_video WHERE video_id = $id);
+                (SELECT COUNT(*) FROM sense_video WHERE video_ref = $id)
+                + (SELECT COUNT(*) FROM collocation_video WHERE video_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -159,15 +159,15 @@ public sealed class LVideoArchive
 
         string scope = $"{column} = $owner";
         IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, referrerId, "video_id");
+            connection, table, scope, referrerId, "video_ref");
 
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 $"""
-                INSERT INTO {table} ({column}, video_id, position)
+                INSERT INTO {table} ({column}, video_ref, position)
                 VALUES ($referrer, $video, $position)
-                ON CONFLICT ({column}, video_id) DO NOTHING;
+                ON CONFLICT ({column}, video_ref) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$video", videoId);
@@ -176,7 +176,7 @@ public sealed class LVideoArchive
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "video_id",
+            connection, table, scope, referrerId, "video_ref",
             LDatabaseOrder.LDatabaseOrderInsert(current, videoId, position));
 
         session.LDatabaseSessionCommit();
@@ -193,15 +193,15 @@ public sealed class LVideoArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND video_id = $video;";
+            command.CommandText = $"DELETE FROM {table} WHERE {column} = $referrer AND video_ref = $video;";
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$video", videoId);
             command.ExecuteNonQuery();
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "video_id",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "video_id"));
+            connection, table, scope, referrerId, "video_ref",
+            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "video_ref"));
 
         session.LDatabaseSessionCommit();
     }
@@ -216,7 +216,7 @@ public sealed class LVideoArchive
             $"""
             SELECT video.id, video.location_state, video.location, video.span_state, video.span
             FROM {table} link
-            JOIN video ON video.id = link.video_id
+            JOIN video ON video.id = link.video_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;

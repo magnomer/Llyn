@@ -31,7 +31,7 @@ public sealed class LTombstoneArchive
         {
             command.CommandText =
                 """
-                INSERT INTO tombstone (entry_id, revision_id, deleted_utc)
+                INSERT INTO tombstone (entry_id, revision_ref, deleted_utc)
                 VALUES ($entry, $revision, $deleted);
                 """;
             command.Parameters.AddWithValue("$entry", stored.LTombstoneEntryId);
@@ -51,7 +51,7 @@ public sealed class LTombstoneArchive
         using LDatabaseSession session = _lTombstoneArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT entry_id, revision_id, deleted_utc FROM tombstone WHERE entry_id = $entry;";
+            "SELECT entry_id, revision_ref, deleted_utc FROM tombstone WHERE entry_id = $entry;";
         command.Parameters.AddWithValue("$entry", entryId);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -71,8 +71,8 @@ public sealed class LTombstoneArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, revision_id, deleted_utc
-            FROM tombstone WHERE revision_id = $revision ORDER BY deleted_utc, entry_id;
+            SELECT entry_id, revision_ref, deleted_utc
+            FROM tombstone WHERE revision_ref = $revision ORDER BY deleted_utc, entry_id;
             """;
         command.Parameters.AddWithValue("$revision", revisionId);
 

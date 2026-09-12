@@ -28,11 +28,11 @@ public static class LSchemaVideo
 
             CREATE TABLE IF NOT EXISTS sense_video (
                 sense_id INTEGER NOT NULL,
-                video_id INTEGER NOT NULL,
+                video_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, video_id),
+                PRIMARY KEY (sense_id, video_ref),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (video_id) REFERENCES video (id)
+                FOREIGN KEY (video_ref) REFERENCES video (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_video_position
@@ -40,11 +40,11 @@ public static class LSchemaVideo
 
             CREATE TABLE IF NOT EXISTS collocation_video (
                 collocation_id INTEGER NOT NULL,
-                video_id INTEGER NOT NULL,
+                video_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, video_id),
+                PRIMARY KEY (collocation_id, video_ref),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (video_id) REFERENCES video (id)
+                FOREIGN KEY (video_ref) REFERENCES video (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_video_position

@@ -68,7 +68,7 @@ public sealed class TIdentity
         Assert.DoesNotContain(example.LExampleId, outcome.LOutcomeIdentity.Keys);
         Assert.Equal(
             example.LExampleId,
-            workspace.TWorkspaceCountRead("SELECT example_id FROM sense_example;"));
+            workspace.TWorkspaceCountRead("SELECT example_ref FROM sense_example;"));
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public sealed class TIdentity
 
         Assert.NotEqual(0, first.LEntryId);
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation;"));
-        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM register WHERE pack_id IS NULL;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM register WHERE pack_ref IS NULL;"));
     }
 
     [Fact]

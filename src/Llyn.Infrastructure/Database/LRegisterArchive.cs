@@ -26,7 +26,7 @@ public sealed class LRegisterArchive
         {
             command.CommandText =
                 """
-                INSERT INTO register (name_state, name, language, pack_id)
+                INSERT INTO register (name_state, name, language, pack_ref)
                 VALUES ($nameState, $name, $language, $packId)
                 RETURNING id;
                 """;
@@ -54,9 +54,9 @@ public sealed class LRegisterArchive
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO register (name_state, name, language, pack_id)
+                INSERT INTO register (name_state, name, language, pack_ref)
                 VALUES ($nameState, $name, $language, $packId)
-                ON CONFLICT (language, pack_id) WHERE pack_id IS NOT NULL
+                ON CONFLICT (language, pack_ref) WHERE pack_ref IS NOT NULL
                 DO UPDATE SET name_state = excluded.name_state, name = excluded.name;
                 """;
             LStateColumn.LStateColumnApply(command, "name", register.LRegisterName);
@@ -74,7 +74,7 @@ public sealed class LRegisterArchive
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT id, name_state, name, language, pack_id FROM register WHERE id = $id;";
+            "SELECT id, name_state, name, language, pack_ref FROM register WHERE id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -87,9 +87,9 @@ public sealed class LRegisterArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, name_state, name, language, pack_id
+            SELECT id, name_state, name, language, pack_ref
             FROM register
-            ORDER BY pack_id IS NULL, rowid;
+            ORDER BY pack_ref IS NULL, rowid;
             """;
 
         List<LRegister> registers = [];
@@ -121,7 +121,7 @@ public sealed class LRegisterArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE register SET name_state = $nameState, name = $name WHERE id = $id AND pack_id IS NULL;";
+                "UPDATE register SET name_state = $nameState, name = $name WHERE id = $id AND pack_ref IS NULL;";
             LStateColumn.LStateColumnApply(command, "name", name);
             command.Parameters.AddWithValue("$id", registerId);
             command.ExecuteNonQuery();
@@ -144,12 +144,12 @@ public sealed class LRegisterArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT register_id, COUNT(*) FROM (
-                SELECT register_id FROM sense_register
+            SELECT register_ref, COUNT(*) FROM (
+                SELECT register_ref FROM sense_register
                 UNION ALL
-                SELECT register_id FROM collocation_register
+                SELECT register_ref FROM collocation_register
             )
-            GROUP BY register_id;
+            GROUP BY register_ref;
             """;
 
         Dictionary<long, int> counts = [];
@@ -194,7 +194,7 @@ public sealed class LRegisterArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM register WHERE id = $id AND pack_id IS NULL;";
+            command.CommandText = "DELETE FROM register WHERE id = $id AND pack_ref IS NULL;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -245,8 +245,8 @@ public sealed class LRegisterArchive
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM sense_register WHERE register_id = $id)
-                + (SELECT COUNT(*) FROM collocation_register WHERE register_id = $id);
+                (SELECT COUNT(*) FROM sense_register WHERE register_ref = $id)
+                + (SELECT COUNT(*) FROM collocation_register WHERE register_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -261,7 +261,7 @@ public sealed class LRegisterArchive
         List<long> referrers = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"SELECT {column} FROM {table} WHERE register_id = $register;";
+            command.CommandText = $"SELECT {column} FROM {table} WHERE register_ref = $register;";
             command.Parameters.AddWithValue("$register", registerId);
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -277,7 +277,7 @@ public sealed class LRegisterArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE register_id = $register;";
+            command.CommandText = $"DELETE FROM {table} WHERE register_ref = $register;";
             command.Parameters.AddWithValue("$register", registerId);
             command.ExecuteNonQuery();
         }
@@ -286,8 +286,8 @@ public sealed class LRegisterArchive
         foreach (long referrer in referrers)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, table, scope, referrer, "register_id",
-                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrer, "register_id"));
+                connection, table, scope, referrer, "register_ref",
+                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrer, "register_ref"));
         }
     }
 
@@ -306,15 +306,15 @@ public sealed class LRegisterArchive
 
         string scope = $"{column} = $owner";
         IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, referrerId, "register_id");
+            connection, table, scope, referrerId, "register_ref");
 
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 $"""
-                INSERT INTO {table} ({column}, register_id, position)
+                INSERT INTO {table} ({column}, register_ref, position)
                 VALUES ($referrer, $register, $position)
-                ON CONFLICT ({column}, register_id) DO NOTHING;
+                ON CONFLICT ({column}, register_ref) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$register", registerId);
@@ -323,7 +323,7 @@ public sealed class LRegisterArchive
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "register_id",
+            connection, table, scope, referrerId, "register_ref",
             LDatabaseOrder.LDatabaseOrderInsert(current, registerId, position));
 
         session.LDatabaseSessionCommit();
@@ -341,15 +341,15 @@ public sealed class LRegisterArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                $"DELETE FROM {table} WHERE {column} = $referrer AND register_id = $register;";
+                $"DELETE FROM {table} WHERE {column} = $referrer AND register_ref = $register;";
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$register", registerId);
             command.ExecuteNonQuery();
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "register_id",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "register_id"));
+            connection, table, scope, referrerId, "register_ref",
+            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "register_ref"));
 
         session.LDatabaseSessionCommit();
     }
@@ -363,9 +363,9 @@ public sealed class LRegisterArchive
         command.CommandText =
             $"""
             SELECT register.id, register.name_state, register.name,
-                   register.language, register.pack_id
+                   register.language, register.pack_ref
             FROM {table} link
-            JOIN register ON register.id = link.register_id
+            JOIN register ON register.id = link.register_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;

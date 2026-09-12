@@ -28,7 +28,7 @@ A revision is a stamped point in history.
 Its changes are ordered rows identified by (revision_id, position).
 The position is the order within the revision.
 So a change has no id of its own and cascades when its revision is dropped.
-target_id and target_type name what the change touched without a foreign key.
+target_ref and target_type name what the change touched without a foreign key.
 A change frequently records a row that no longer exists.
 That is the whole point of keeping the history.
 

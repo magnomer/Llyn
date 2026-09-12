@@ -83,8 +83,8 @@ public sealed class LTagArchive
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM sense_tag WHERE tag_id = $id)
-                + (SELECT COUNT(*) FROM collocation_tag WHERE tag_id = $id);
+                (SELECT COUNT(*) FROM sense_tag WHERE tag_ref = $id)
+                + (SELECT COUNT(*) FROM collocation_tag WHERE tag_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -186,7 +186,7 @@ public sealed class LTagArchive
     {
         List<long> owners = [];
         using SqliteCommand command = connection.CreateCommand();
-        command.CommandText = $"SELECT {column} FROM {table} WHERE tag_id = $tag;";
+        command.CommandText = $"SELECT {column} FROM {table} WHERE tag_ref = $tag;";
         command.Parameters.AddWithValue("$tag", tagId);
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
@@ -207,10 +207,10 @@ public sealed class LTagArchive
             carried.CommandText =
                 $"""
                 DELETE FROM {table}
-                WHERE tag_id = $id
+                WHERE tag_ref = $id
                   AND EXISTS (
                       SELECT 1 FROM {table} kept
-                      WHERE kept.{column} = {table}.{column} AND kept.tag_id = $clash);
+                      WHERE kept.{column} = {table}.{column} AND kept.tag_ref = $clash);
                 """;
             carried.Parameters.AddWithValue("$id", id);
             carried.Parameters.AddWithValue("$clash", clash);
@@ -219,7 +219,7 @@ public sealed class LTagArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"UPDATE {table} SET tag_id = $clash WHERE tag_id = $id;";
+            command.CommandText = $"UPDATE {table} SET tag_ref = $clash WHERE tag_ref = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.Parameters.AddWithValue("$clash", clash);
             command.ExecuteNonQuery();
@@ -235,7 +235,7 @@ public sealed class LTagArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE tag_id = $tag;";
+            command.CommandText = $"DELETE FROM {table} WHERE tag_ref = $tag;";
             command.Parameters.AddWithValue("$tag", tagId);
             command.ExecuteNonQuery();
         }
@@ -250,8 +250,8 @@ public sealed class LTagArchive
         foreach (long owner in owners)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, table, scope, owner, "tag_id",
-                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, owner, "tag_id"));
+                connection, table, scope, owner, "tag_ref",
+                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, owner, "tag_ref"));
         }
     }
 
@@ -304,7 +304,7 @@ public sealed class LTagArchive
 
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
-                $"INSERT INTO {table} ({column}, tag_id, position) VALUES ($owner, $tag, $position);";
+                $"INSERT INTO {table} ({column}, tag_ref, position) VALUES ($owner, $tag, $position);";
             command.Parameters.AddWithValue("$owner", referrerId);
             command.Parameters.AddWithValue("$tag", id);
             command.Parameters.AddWithValue("$position", position);
@@ -326,7 +326,7 @@ public sealed class LTagArchive
             $"""
             SELECT tag.id, tag.text
             FROM {table} link
-            JOIN tag ON tag.id = link.tag_id
+            JOIN tag ON tag.id = link.tag_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;

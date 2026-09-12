@@ -25,11 +25,11 @@ public static class LSchemaImage
 
             CREATE TABLE IF NOT EXISTS sense_image (
                 sense_id INTEGER NOT NULL,
-                image_id INTEGER NOT NULL,
+                image_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, image_id),
+                PRIMARY KEY (sense_id, image_ref),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (image_id) REFERENCES image (id)
+                FOREIGN KEY (image_ref) REFERENCES image (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_image_position
@@ -37,11 +37,11 @@ public static class LSchemaImage
 
             CREATE TABLE IF NOT EXISTS collocation_image (
                 collocation_id INTEGER NOT NULL,
-                image_id INTEGER NOT NULL,
+                image_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, image_id),
+                PRIMARY KEY (collocation_id, image_ref),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (image_id) REFERENCES image (id)
+                FOREIGN KEY (image_ref) REFERENCES image (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_image_position

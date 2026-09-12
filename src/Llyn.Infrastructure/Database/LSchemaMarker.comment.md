@@ -16,9 +16,9 @@ Both cascade with the card, since a Tag no card writes is not data left behind.
 The translation tables beside them are the links a card carries to another Entry.
 A link stores the target's id and never its text, so it is one card, one entry, one position.
 The primary key on (card, entry) stops a card linking the same Entry twice.
-The entry_id cascade is deliberate, since deleting a target Entry drops the links pointing at it.
+The entry_ref cascade is deliberate, since deleting a target Entry drops the links pointing at it.
 Situation is the opposite and keeps the older shape.
 It carries its own opaque id, and its visible data is never identity.
 It is reached only through the association tables below it.
-Their situation_id foreign keys deliberately have no cascade.
+Their situation_ref foreign keys deliberately have no cascade.
 So the row survives every detach.

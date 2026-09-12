@@ -13,12 +13,12 @@ Binds the store to the workspace `database` it opens sessions through.
 
 ## `public LFeature LFeatureCreate(LFeature feature)`
 
-Adds or replaces one feature, keyed by `(speech_value_id, pack_id)`, and returns it with its row id.
+Adds or replaces one feature, keyed by `(speech_value_id, pack_ref)`, and returns it with its row id.
 A pack that renames a feature keeps the row id.
 
 ## `public LMorphology LMorphologyCreate(LMorphology value)`
 
-Adds or replaces one value, keyed by `(morphology_feature_id, pack_id)`, and returns it with its row id.
+Adds or replaces one value, keyed by `(morphology_feature_id, pack_ref)`, and returns it with its row id.
 A pack that renames a value keeps the row id, so every inflection that links it follows the rename.
 
 ## `public IReadOnlyList<LFeature> LFeatureRead(long speechValueId)`

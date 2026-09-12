@@ -124,11 +124,11 @@ public sealed class LSentenceArchive
             SELECT link.id, link.{column}, link.position,
                    example.id, example.language, example.text_state, example.text,
                    example.translation_state, example.translation,
-                   example.source_state, example.source_id,
+                   example.source_state, example.source_ref,
                    link.particle_state, link.particle,
                    link.dependence_state, link.dependence
             FROM {table} link
-            LEFT JOIN example ON example.id = link.example_id
+            LEFT JOIN example ON example.id = link.example_ref
             WHERE link.{column} = $owner
             ORDER BY link.position;
             """;
@@ -157,7 +157,7 @@ public sealed class LSentenceArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                $"SELECT DISTINCT {column} FROM {table} WHERE example_id = $example;";
+                $"SELECT DISTINCT {column} FROM {table} WHERE example_ref = $example;";
             command.Parameters.AddWithValue("$example", exampleId);
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -173,7 +173,7 @@ public sealed class LSentenceArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE example_id = $example;";
+            command.CommandText = $"DELETE FROM {table} WHERE example_ref = $example;";
             command.Parameters.AddWithValue("$example", exampleId);
             command.ExecuteNonQuery();
         }
@@ -196,7 +196,7 @@ public sealed class LSentenceArchive
         command.CommandText =
             $"""
             INSERT INTO {table} (
-                {column}, example_id, position,
+                {column}, example_ref, position,
                 particle_state, particle,
                 dependence_state, dependence)
             VALUES (
@@ -221,7 +221,7 @@ public sealed class LSentenceArchive
         command.CommandText =
             $"""
             UPDATE {table}
-            SET example_id = $example, position = $position,
+            SET example_ref = $example, position = $position,
                 particle_state = $particleState, particle = $particle,
                 dependence_state = $dependenceState, dependence = $dependence
             WHERE id = $id AND {column} = $owner;
@@ -320,7 +320,7 @@ public sealed class LSentenceArchive
         {
             command.CommandText =
                 $"""
-                INSERT INTO {table} ({column}, example_id, position)
+                INSERT INTO {table} ({column}, example_ref, position)
                 VALUES ($owner, $example, $position)
                 RETURNING id;
                 """;
@@ -349,7 +349,7 @@ public sealed class LSentenceArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                $"DELETE FROM {table} WHERE {column} = $owner AND example_id = $example;";
+                $"DELETE FROM {table} WHERE {column} = $owner AND example_ref = $example;";
             command.Parameters.AddWithValue("$owner", ownerId);
             command.Parameters.AddWithValue("$example", exampleId);
             command.ExecuteNonQuery();

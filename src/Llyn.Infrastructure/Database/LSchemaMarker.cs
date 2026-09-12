@@ -24,11 +24,11 @@ public static class LSchemaMarker
 
             CREATE TABLE IF NOT EXISTS sense_tag (
                 sense_id INTEGER NOT NULL,
-                tag_id INTEGER NOT NULL,
+                tag_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, tag_id),
+                PRIMARY KEY (sense_id, tag_ref),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_id) REFERENCES tag (id)
+                FOREIGN KEY (tag_ref) REFERENCES tag (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_tag_position
@@ -36,11 +36,11 @@ public static class LSchemaMarker
 
             CREATE TABLE IF NOT EXISTS collocation_tag (
                 collocation_id INTEGER NOT NULL,
-                tag_id INTEGER NOT NULL,
+                tag_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, tag_id),
+                PRIMARY KEY (collocation_id, tag_ref),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (tag_id) REFERENCES tag (id)
+                FOREIGN KEY (tag_ref) REFERENCES tag (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_tag_position
@@ -48,20 +48,20 @@ public static class LSchemaMarker
 
             CREATE TABLE IF NOT EXISTS sense_translation (
                 sense_id INTEGER NOT NULL,
-                entry_id INTEGER NOT NULL,
+                entry_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, entry_id),
+                PRIMARY KEY (sense_id, entry_ref),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                FOREIGN KEY (entry_ref) REFERENCES entry (id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS collocation_translation (
                 collocation_id INTEGER NOT NULL,
-                entry_id INTEGER NOT NULL,
+                entry_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, entry_id),
+                PRIMARY KEY (collocation_id, entry_ref),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (entry_id) REFERENCES entry (id) ON DELETE CASCADE
+                FOREIGN KEY (entry_ref) REFERENCES entry (id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS situation (
@@ -82,11 +82,11 @@ public static class LSchemaMarker
 
             CREATE TABLE IF NOT EXISTS sense_situation (
                 sense_id INTEGER NOT NULL,
-                situation_id INTEGER NOT NULL,
+                situation_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (sense_id, situation_id),
+                PRIMARY KEY (sense_id, situation_ref),
                 FOREIGN KEY (sense_id) REFERENCES sense (id) ON DELETE CASCADE,
-                FOREIGN KEY (situation_id) REFERENCES situation (id)
+                FOREIGN KEY (situation_ref) REFERENCES situation (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS sense_situation_position
@@ -94,11 +94,11 @@ public static class LSchemaMarker
 
             CREATE TABLE IF NOT EXISTS collocation_situation (
                 collocation_id INTEGER NOT NULL,
-                situation_id INTEGER NOT NULL,
+                situation_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (collocation_id, situation_id),
+                PRIMARY KEY (collocation_id, situation_ref),
                 FOREIGN KEY (collocation_id) REFERENCES collocation (id) ON DELETE CASCADE,
-                FOREIGN KEY (situation_id) REFERENCES situation (id)
+                FOREIGN KEY (situation_ref) REFERENCES situation (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_situation_position

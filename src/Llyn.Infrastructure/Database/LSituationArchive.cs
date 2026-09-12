@@ -152,12 +152,12 @@ public sealed class LSituationArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT situation_id, COUNT(*) FROM (
-                SELECT situation_id FROM sense_situation
+            SELECT situation_ref, COUNT(*) FROM (
+                SELECT situation_ref FROM sense_situation
                 UNION ALL
-                SELECT situation_id FROM collocation_situation
+                SELECT situation_ref FROM collocation_situation
             )
-            GROUP BY situation_id;
+            GROUP BY situation_ref;
             """;
 
         Dictionary<long, int> counts = [];
@@ -190,7 +190,7 @@ public sealed class LSituationArchive
             FROM sense_situation link
             JOIN sense ON sense.id = link.sense_id
             JOIN entry ON entry.id = sense.entry_id
-            WHERE link.situation_id = $id
+            WHERE link.situation_ref = $id
             ORDER BY entry.headword, sense.position;
             """));
         usages.AddRange(LSituationUsageRead(
@@ -204,7 +204,7 @@ public sealed class LSituationArchive
             FROM collocation_situation link
             JOIN collocation ON collocation.id = link.collocation_id
             JOIN entry ON entry.id = collocation.entry_id
-            WHERE link.situation_id = $id
+            WHERE link.situation_ref = $id
             ORDER BY entry.headword, collocation.position;
             """));
 
@@ -249,8 +249,8 @@ public sealed class LSituationArchive
         command.CommandText =
             """
             SELECT
-                (SELECT COUNT(*) FROM sense_situation WHERE situation_id = $id)
-                + (SELECT COUNT(*) FROM collocation_situation WHERE situation_id = $id);
+                (SELECT COUNT(*) FROM sense_situation WHERE situation_ref = $id)
+                + (SELECT COUNT(*) FROM collocation_situation WHERE situation_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -298,7 +298,7 @@ public sealed class LSituationArchive
         List<long> referrers = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"SELECT {column} FROM {table} WHERE situation_id = $situation;";
+            command.CommandText = $"SELECT {column} FROM {table} WHERE situation_ref = $situation;";
             command.Parameters.AddWithValue("$situation", situationId);
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -314,7 +314,7 @@ public sealed class LSituationArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = $"DELETE FROM {table} WHERE situation_id = $situation;";
+            command.CommandText = $"DELETE FROM {table} WHERE situation_ref = $situation;";
             command.Parameters.AddWithValue("$situation", situationId);
             command.ExecuteNonQuery();
         }
@@ -323,8 +323,8 @@ public sealed class LSituationArchive
         foreach (long referrer in referrers)
         {
             LDatabaseOrder.LDatabaseOrderNormalize(
-                connection, table, scope, referrer, "situation_id",
-                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrer, "situation_id"));
+                connection, table, scope, referrer, "situation_ref",
+                LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrer, "situation_ref"));
         }
     }
 
@@ -363,15 +363,15 @@ public sealed class LSituationArchive
 
         string scope = $"{column} = $owner";
         IReadOnlyList<long> current = LDatabaseOrder.LDatabaseOrderRead(
-            connection, table, scope, referrerId, "situation_id");
+            connection, table, scope, referrerId, "situation_ref");
 
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 $"""
-                INSERT INTO {table} ({column}, situation_id, position)
+                INSERT INTO {table} ({column}, situation_ref, position)
                 VALUES ($referrer, $situation, $position)
-                ON CONFLICT ({column}, situation_id) DO NOTHING;
+                ON CONFLICT ({column}, situation_ref) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$situation", situationId);
@@ -380,7 +380,7 @@ public sealed class LSituationArchive
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "situation_id",
+            connection, table, scope, referrerId, "situation_ref",
             LDatabaseOrder.LDatabaseOrderInsert(current, situationId, position));
 
         session.LDatabaseSessionCommit();
@@ -398,15 +398,15 @@ public sealed class LSituationArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                $"DELETE FROM {table} WHERE {column} = $referrer AND situation_id = $situation;";
+                $"DELETE FROM {table} WHERE {column} = $referrer AND situation_ref = $situation;";
             command.Parameters.AddWithValue("$referrer", referrerId);
             command.Parameters.AddWithValue("$situation", situationId);
             command.ExecuteNonQuery();
         }
 
         LDatabaseOrder.LDatabaseOrderNormalize(
-            connection, table, scope, referrerId, "situation_id",
-            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "situation_id"));
+            connection, table, scope, referrerId, "situation_ref",
+            LDatabaseOrder.LDatabaseOrderRead(connection, table, scope, referrerId, "situation_ref"));
 
         session.LDatabaseSessionCommit();
     }
@@ -423,7 +423,7 @@ public sealed class LSituationArchive
                    situation.description_state, situation.description,
                    situation.kind_state, situation.kind
             FROM {table} link
-            JOIN situation ON situation.id = link.situation_id
+            JOIN situation ON situation.id = link.situation_ref
             WHERE link.{column} = $referrer
             ORDER BY link.position;
             """;

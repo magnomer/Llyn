@@ -41,7 +41,7 @@ public sealed class LRevisionArchive
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO revision_change (revision_id, position, target_id, target_type, kind, summary)
+                INSERT INTO revision_change (revision_id, position, target_ref, target_type, kind, summary)
                 VALUES ($revision, $position, $target, $type, $kind, $summary);
                 """;
             command.Parameters.AddWithValue("$revision", stored.LRevisionId);
@@ -99,7 +99,7 @@ public sealed class LRevisionArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT position, target_id, target_type, kind, summary
+            SELECT position, target_ref, target_type, kind, summary
             FROM revision_change WHERE revision_id = $revision ORDER BY position;
             """;
         command.Parameters.AddWithValue("$revision", revisionId);

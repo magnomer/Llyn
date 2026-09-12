@@ -102,7 +102,7 @@ public sealed class LInflectionArchive
         {
             command.CommandText =
                 """
-                SELECT id, position, text, local, speech_value_id
+                SELECT id, position, text, local, speech_value_ref
                 FROM inflection WHERE entry_id = $entry ORDER BY position;
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
@@ -152,7 +152,7 @@ public sealed class LInflectionArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT inflection_feature.inflection_id, inflection_feature.morphology_value_id
+            SELECT inflection_feature.inflection_id, inflection_feature.morphology_value_ref
             FROM inflection_feature
             JOIN inflection ON inflection.id = inflection_feature.inflection_id
             WHERE inflection.entry_id = $entry
@@ -191,7 +191,7 @@ public sealed class LInflectionArchive
             {
                 command.CommandText =
                     """
-                    INSERT INTO inflection (entry_id, position, text, local, speech_value_id)
+                    INSERT INTO inflection (entry_id, position, text, local, speech_value_ref)
                     VALUES ($entry, $position, $text, $local, $speech)
                     RETURNING id;
                     """;
@@ -224,7 +224,7 @@ public sealed class LInflectionArchive
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO inflection_feature (inflection_id, position, morphology_value_id)
+                INSERT INTO inflection_feature (inflection_id, position, morphology_value_ref)
                 VALUES ($inflection, $position, $value);
                 """;
             command.Parameters.AddWithValue("$inflection", inflectionId);

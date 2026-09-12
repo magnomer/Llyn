@@ -11,7 +11,7 @@ public sealed class LWorkspaceArchive
     private const string LWorkspaceArchiveDisplay = "Display";
 
     private const string LWorkspaceArchiveColumn =
-        "id, left_entry_id, right_entry_id, revision_id, identity_floor, mode, split, " +
+        "id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split, " +
         "library_order, phonology_order, favorite_order, taxonomy_order, " +
         "repertoire_order, reference_order, corpus_order, tenor_order";
 
@@ -103,7 +103,7 @@ public sealed class LWorkspaceArchive
             command.CommandText =
                 """
                 INSERT INTO workspace (
-                    id, left_entry_id, right_entry_id, revision_id, identity_floor, mode, split,
+                    id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split,
                     library_order, phonology_order, favorite_order, taxonomy_order,
                     repertoire_order, reference_order, corpus_order, tenor_order)
                 VALUES (
@@ -111,9 +111,9 @@ public sealed class LWorkspaceArchive
                     $library, $phonology, $favorite, $taxonomy,
                     $repertoire, $reference, $corpus, $tenor)
                 ON CONFLICT (id) DO UPDATE SET
-                    left_entry_id = excluded.left_entry_id,
-                    right_entry_id = excluded.right_entry_id,
-                    revision_id = excluded.revision_id,
+                    left_entry_ref = excluded.left_entry_ref,
+                    right_entry_ref = excluded.right_entry_ref,
+                    revision_ref = excluded.revision_ref,
                     identity_floor = min(identity_floor, excluded.identity_floor),
                     mode = excluded.mode,
                     split = excluded.split,

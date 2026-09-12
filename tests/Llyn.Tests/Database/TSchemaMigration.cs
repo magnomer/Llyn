@@ -178,10 +178,10 @@ public sealed class TSchemaMigration
 
         Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "sense_example", "example_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "tag_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "tombstone", "revision_id"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "sense_example", "example_ref"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "tag_ref"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "source_author", "author_ref"));
+        Assert.Equal(1, TSchemaIndexRead(workspace, "tombstone", "revision_ref"));
     }
 
     private static long TSchemaIndexRead(TWorkspace workspace, string table, string column)

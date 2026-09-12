@@ -11,7 +11,7 @@ The cascade of an Entry delete reaches a dozen of them.
 
 Only the columns no existing key already covers are listed here.
 A composite primary key indexes its leading column.
-So `form (entry_id, position)` and `source_author (source_id, author_id)` need nothing for their first column.
+So `form (entry_id, position)` and `source_author (source_id, author_ref)` need nothing for their first column.
 It is the second column that needs an index of its own.
 That is the one an association is searched by from the other direction.
 

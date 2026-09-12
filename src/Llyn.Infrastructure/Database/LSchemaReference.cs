@@ -44,11 +44,11 @@ public static class LSchemaReference
 
             CREATE TABLE IF NOT EXISTS source_author (
                 source_id INTEGER NOT NULL,
-                author_id INTEGER NOT NULL,
+                author_ref INTEGER NOT NULL,
                 position INTEGER NOT NULL,
-                PRIMARY KEY (source_id, author_id),
+                PRIMARY KEY (source_id, author_ref),
                 FOREIGN KEY (source_id) REFERENCES source (id) ON DELETE CASCADE,
-                FOREIGN KEY (author_id) REFERENCES author (id)
+                FOREIGN KEY (author_ref) REFERENCES author (id)
             );
 
             CREATE UNIQUE INDEX IF NOT EXISTS source_author_position

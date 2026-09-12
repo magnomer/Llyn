@@ -65,7 +65,7 @@ public sealed class TEntryDraft
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM sense_example WHERE example_id IS NULL;"));
+                "SELECT COUNT(*) FROM sense_example WHERE example_ref IS NULL;"));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LSentenceDraft sentence = Assert.Single(
@@ -81,7 +81,7 @@ public sealed class TEntryDraft
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM sense_example WHERE example_id IS NULL;"));
+                "SELECT COUNT(*) FROM sense_example WHERE example_ref IS NULL;"));
         Assert.Empty(workspace.TWorkspaceRowRead("PRAGMA foreign_key_check;"));
     }
 

@@ -33,9 +33,9 @@ public sealed class LSpeechArchive
         {
             command.CommandText =
                 """
-                INSERT INTO speech_value (language, pack_id, name, position)
+                INSERT INTO speech_value (language, pack_ref, name, position)
                 VALUES ($language, $pack, $name, $position)
-                ON CONFLICT (language, pack_id)
+                ON CONFLICT (language, pack_ref)
                 DO UPDATE SET name = excluded.name, position = excluded.position
                 RETURNING id;
                 """;
@@ -61,7 +61,7 @@ public sealed class LSpeechArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, language, pack_id, name, position FROM speech_value WHERE id = $id;
+            SELECT id, language, pack_ref, name, position FROM speech_value WHERE id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
 
@@ -77,7 +77,7 @@ public sealed class LSpeechArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT id, language, pack_id, name, position FROM speech_value
+            SELECT id, language, pack_ref, name, position FROM speech_value
             WHERE language = $language ORDER BY position, id;
             """;
         command.Parameters.AddWithValue("$language", language);
@@ -105,7 +105,7 @@ public sealed class LSpeechArchive
 
         command.CommandText =
             """
-            SELECT id, language, pack_id, name, position FROM speech_value
+            SELECT id, language, pack_ref, name, position FROM speech_value
             WHERE language = $language AND trim(name) = trim($name) COLLATE NOCASE
             ORDER BY position, id LIMIT 1;
             """;
@@ -120,7 +120,7 @@ public sealed class LSpeechArchive
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
-            "SELECT min(0, ifnull(MIN(pack_id), 0)) - 1 FROM speech_value WHERE language = $language;";
+            "SELECT min(0, ifnull(MIN(pack_ref), 0)) - 1 FROM speech_value WHERE language = $language;";
         command.Parameters.AddWithValue("$language", language);
         return Convert.ToInt64(command.ExecuteScalar());
     }

@@ -100,7 +100,7 @@ public sealed class LReferenceArchive
         long id;
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "SELECT source_id FROM example WHERE id = $example;";
+            command.CommandText = "SELECT source_ref FROM example WHERE id = $example;";
             command.Parameters.AddWithValue("$example", exampleId);
             using SqliteDataReader reader = command.ExecuteReader();
             if (!reader.Read() || reader.IsDBNull(0))
@@ -188,7 +188,7 @@ public sealed class LReferenceArchive
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authorId);
 
-        LReferenceLinkAttach("source_author", "source_id", "author_id", referenceId, authorId, position);
+        LReferenceLinkAttach("source_author", "source_id", "author_ref", referenceId, authorId, position);
     }
 
     public void LReferenceAuthorDetach(long referenceId, long authorId)
@@ -196,7 +196,7 @@ public sealed class LReferenceArchive
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(referenceId);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(authorId);
 
-        LReferenceLinkDetach("source_author", "source_id", "author_id", referenceId, authorId);
+        LReferenceLinkDetach("source_author", "source_id", "author_ref", referenceId, authorId);
     }
 
     public void LReferenceExampleAttach(long exampleId, long referenceId)
@@ -220,7 +220,7 @@ public sealed class LReferenceArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET source_state = $referenceState, source_id = $reference WHERE id = $example;";
+                "UPDATE example SET source_state = $referenceState, source_ref = $reference WHERE id = $example;";
             LStateColumn.LStateColumnApply(command, "reference", reference);
             command.Parameters.AddWithValue("$example", exampleId);
             if (command.ExecuteNonQuery() == 0)

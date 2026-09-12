@@ -52,7 +52,7 @@ public sealed class LAuthorArchive
             """
             SELECT author.id, author.name
             FROM source_author link
-            JOIN author ON author.id = link.author_id
+            JOIN author ON author.id = link.author_ref
             WHERE link.source_id = $reference
             ORDER BY link.position;
             """;
@@ -92,7 +92,7 @@ public sealed class LAuthorArchive
             """
             SELECT link.source_id, author.id, author.name
             FROM source_author link
-            JOIN author ON author.id = link.author_id
+            JOIN author ON author.id = link.author_ref
             ORDER BY link.source_id, link.position;
             """;
 
@@ -153,7 +153,7 @@ public sealed class LAuthorArchive
 
         using (SqliteCommand guard = connection.CreateCommand())
         {
-            guard.CommandText = "SELECT COUNT(*) FROM source_author WHERE author_id = $id;";
+            guard.CommandText = "SELECT COUNT(*) FROM source_author WHERE author_ref = $id;";
             guard.Parameters.AddWithValue("$id", id);
             long references = Convert.ToInt64(guard.ExecuteScalar());
             if (references > 0)
@@ -178,7 +178,7 @@ public sealed class LAuthorArchive
         List<long> references = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "SELECT source_id FROM source_author WHERE author_id = $id;";
+            command.CommandText = "SELECT source_id FROM source_author WHERE author_ref = $id;";
             command.Parameters.AddWithValue("$id", id);
             using SqliteDataReader reader = command.ExecuteReader();
             while (reader.Read())
@@ -189,7 +189,7 @@ public sealed class LAuthorArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM source_author WHERE author_id = $id;";
+            command.CommandText = "DELETE FROM source_author WHERE author_ref = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -202,8 +202,8 @@ public sealed class LAuthorArchive
                 "source_author",
                 scope,
                 reference,
-                "author_id",
-                LDatabaseOrder.LDatabaseOrderRead(connection, "source_author", scope, reference, "author_id"));
+                "author_ref",
+                LDatabaseOrder.LDatabaseOrderRead(connection, "source_author", scope, reference, "author_ref"));
         }
     }
 
