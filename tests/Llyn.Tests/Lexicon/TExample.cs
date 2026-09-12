@@ -127,7 +127,6 @@ public sealed class TExample
                 ],
                 [],
                 [],
-                string.Empty,
                 [], [], 1)],
             []));
 
@@ -214,7 +213,7 @@ public sealed class TExample
             [TInterface.TCardDraftCreate(
                 string.Empty, string.Empty, "a unit of language",
                 [TInterface.TSentenceDraftCreate("he said a word")],
-                [], [], string.Empty, [], [], 1)],
+                [], [], [], [], 1)],
             []));
 
         long meaningId = engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
@@ -223,7 +222,7 @@ public sealed class TExample
         LEntry other = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "say", "English", string.Empty, string.Empty,
             [TInterface.TCardDraftCreate(
-                string.Empty, string.Empty, "to utter", [], [], [], string.Empty, [], [], 1)],
+                string.Empty, string.Empty, "to utter", [], [], [], [], [], 1)],
             []));
         long otherMeaningId = engine.TEngineMeaningRead(other.LEntryId, LOwner.LOwnerEntry)[0].LMeaningId;
         engine.TEngineExampleAttach(otherMeaningId, exampleId, 0, LOwner.LOwnerMeaning);
@@ -337,8 +336,8 @@ public sealed class TExample
             "English",
             string.Empty,
             string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
-            [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
+            [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], [], [], 1)]));
     }
 
     private static LExampleDraft TExampleDraftRead(LSentenceDraft sentence)

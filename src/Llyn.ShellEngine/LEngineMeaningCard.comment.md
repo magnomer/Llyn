@@ -35,7 +35,7 @@ The unique sibling index rejects a swap done row by row, which is what LDatabase
 ### `if (!string.Equals(row.LMeaningParentId, parentId, StringComparison.Ordinal))`
 
 A card that moved to another parent moves its stored row with it.
-The row is not deleted and written again, because its id is what every relation and example hangs from.
+The row is not deleted and written again, because its id is what every example and link hangs from.
 
 ### `ISet<string> applied`
 

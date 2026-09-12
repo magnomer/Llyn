@@ -26,12 +26,6 @@ The save is recorded as history and the workspace row is moved onto it.
 
 Each field became a row of its own that the card now references, not a column on the card.
 
-### `Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));`
-
-The meaning card's Synonym text is deliberately dropped.
-The relation it would become targets an Entry or a Meaning by id.
-The field holds free text, so nothing can resolve it yet.
-
 ### `LEntry second = engine.LEngineEntrySave(draft);`
 
 Saving the same text again matches nothing.

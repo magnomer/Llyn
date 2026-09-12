@@ -59,8 +59,6 @@ public sealed partial class LEngine
             IReadOnlyList<LTagDraft> tags = LEngineTagNormalize(card.LCardDraftTag);
             IReadOnlyList<LImageDraft> images = LEngineImageNormalize(card.LCardDraftImage);
             IReadOnlyList<LVideoDraft> videos = LEngineVideoNormalize(card.LCardDraftVideo);
-            IReadOnlyList<LRelationDraft> relations = LEngineRelationNormalize(card.LCardDraftRelation);
-            IReadOnlyList<LSynonymDraft> synonyms = LEngineSynonymNormalize(card.LCardDraftInterlink);
             IReadOnlyList<LCardDraft> children = LEngineCardNormalize(card.LCardDraftChild);
 
             if (card.LCardDraftId != 0
@@ -70,8 +68,6 @@ public sealed partial class LEngine
                 && ReferenceEquals(tags, card.LCardDraftTag)
                 && ReferenceEquals(images, card.LCardDraftImage)
                 && ReferenceEquals(videos, card.LCardDraftVideo)
-                && ReferenceEquals(relations, card.LCardDraftRelation)
-                && ReferenceEquals(synonyms, card.LCardDraftInterlink)
                 && ReferenceEquals(children, card.LCardDraftChild))
             {
                 return card;
@@ -86,8 +82,6 @@ public sealed partial class LEngine
                 LCardDraftTag = tags,
                 LCardDraftImage = images,
                 LCardDraftVideo = videos,
-                LCardDraftRelation = relations,
-                LCardDraftInterlink = synonyms,
                 LCardDraftChild = children,
             };
         });
@@ -165,26 +159,6 @@ public sealed partial class LEngine
             static _ => false,
             draft => draft.LVideoDraftId == 0
                 ? draft with { LVideoDraftId = LEngineIdentityCreate() }
-                : draft);
-    }
-
-    private IReadOnlyList<LRelationDraft> LEngineRelationNormalize(IReadOnlyList<LRelationDraft> drafts)
-    {
-        return LEngineListNormalize(
-            drafts,
-            static _ => false,
-            draft => draft.LRelationDraftId == 0
-                ? draft with { LRelationDraftId = LEngineIdentityCreate() }
-                : draft);
-    }
-
-    private IReadOnlyList<LSynonymDraft> LEngineSynonymNormalize(IReadOnlyList<LSynonymDraft> drafts)
-    {
-        return LEngineListNormalize(
-            drafts,
-            static _ => false,
-            draft => draft.LSynonymDraftId == 0
-                ? draft with { LSynonymDraftId = LEngineIdentityCreate() }
                 : draft);
     }
 

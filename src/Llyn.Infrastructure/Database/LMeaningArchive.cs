@@ -100,34 +100,6 @@ public sealed class LMeaningArchive
         return reader.Read() ? LMeaningRowRead(reader) : null;
     }
 
-    public IReadOnlyList<LMeaning> LMeaningFind(string query)
-    {
-        ArgumentNullException.ThrowIfNull(query);
-        query = query.Trim();
-
-        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
-        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT s.id, s.entry_id, s.parent_id, s.position, s.title_state, s.title, s.gloss,
-                   s.definition_language, s.definition_state, s.definition, s.labels
-            FROM sense s
-            JOIN entry e ON e.id = s.entry_id
-            WHERE $query = '' OR instr(lfold(e.headword), lfold($query)) > 0
-            ORDER BY e.headword, ifnull(s.parent_id, ''), s.position;
-            """;
-        command.Parameters.AddWithValue("$query", query);
-
-        List<LMeaning> meanings = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            meanings.Add(LMeaningRowRead(reader));
-        }
-
-        return meanings;
-    }
-
     public void LMeaningUpdate(LMeaning meaning)
     {
         ArgumentNullException.ThrowIfNull(meaning);
@@ -226,9 +198,6 @@ public sealed class LMeaningArchive
 
         (long? entryId, long? parentId) = LMeaningHolderRead(connection, id);
 
-        LMeaningLinkValidate(connection, id);
-        LMeaningLinkClear(connection, id);
-
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = "DELETE FROM sense WHERE id = $id;";
@@ -290,48 +259,6 @@ public sealed class LMeaningArchive
 
         LDatabaseOrder.LDatabaseOrderNormalize(
             connection, "sense", "parent_id = $owner", parentId, "id", order);
-    }
-
-    private static void LMeaningLinkValidate(SqliteConnection connection, long id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            LMeaningSubtreeQuery +
-            """
-
-            SELECT
-                (SELECT COUNT(*) FROM relation_sense target
-                    JOIN relation origin ON origin.id = target.relation_id
-                 WHERE target.sense_id IN (SELECT id FROM subtree)
-                   AND origin.sense_id NOT IN (SELECT id FROM subtree))
-                + (SELECT COUNT(*) FROM collocation_synonym link
-                   WHERE link.target_sense_id IN (SELECT id FROM subtree));
-            """;
-        command.Parameters.AddWithValue("$id", id);
-        long links = Convert.ToInt64(command.ExecuteScalar());
-        if (links > 0)
-        {
-            throw new InvalidOperationException(
-                $"Meaning {id} is still the target of {links} lexical link(s) from outside it; remove those links before deleting it.");
-        }
-    }
-
-    private static void LMeaningLinkClear(SqliteConnection connection, long id)
-    {
-        string[] tables = ["relation_entry", "relation_sense"];
-        foreach (string table in tables)
-        {
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText =
-                LMeaningSubtreeQuery +
-                $"""
-
-                DELETE FROM {table} WHERE relation_id IN
-                    (SELECT id FROM relation WHERE sense_id IN (SELECT id FROM subtree));
-                """;
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
     }
 
     private static void LMeaningCycleValidate(

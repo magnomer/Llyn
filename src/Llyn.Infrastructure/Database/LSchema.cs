@@ -13,7 +13,6 @@ public static class LSchema
         LSchemaEntry.LSchemaEntryCreate(connection);
         LSchemaInflection.LSchemaInflectionCreate(connection);
         LSchemaMeaning.LSchemaMeaningCreate(connection);
-        LSchemaRelation.LSchemaRelationCreate(connection);
         LSchemaPronunciation.LSchemaPronunciationCreate(connection);
         LSchemaTranscription.LSchemaTranscriptionCreate(connection);
         LSchemaCollocation.LSchemaCollocationCreate(connection);

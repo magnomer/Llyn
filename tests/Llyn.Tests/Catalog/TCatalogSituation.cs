@@ -107,7 +107,6 @@ public sealed class TCatalogSituation
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)],
@@ -118,7 +117,6 @@ public sealed class TCatalogSituation
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)]));

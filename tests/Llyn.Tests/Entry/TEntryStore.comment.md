@@ -4,7 +4,6 @@
 
 Covers what an Entry owns and what it must not take with it.
 That is the cascade that removes everything beneath a deleted Entry.
-It is also the guard that refuses the delete while another Entry still links to it.
 It is also the refusal to report success for an update that reached no row.
 
 ## Inline notes

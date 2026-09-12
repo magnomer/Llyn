@@ -177,7 +177,6 @@ public sealed class TSchemaMigration
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
         Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_id"));
-        Assert.Equal(1, TSchemaIndexRead(workspace, "relation", "sense_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense", "parent_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_example", "example_id"));
         Assert.Equal(1, TSchemaIndexRead(workspace, "sense_tag", "tag_id"));

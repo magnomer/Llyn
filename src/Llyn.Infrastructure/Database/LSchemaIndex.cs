@@ -14,19 +14,8 @@ public static class LSchemaIndex
         command.CommandText =
             """
             CREATE INDEX IF NOT EXISTS sense_parent ON sense (parent_id);
-            CREATE INDEX IF NOT EXISTS relation_sense_origin ON relation (sense_id);
             CREATE INDEX IF NOT EXISTS collocation_entry ON collocation (entry_id);
             CREATE INDEX IF NOT EXISTS example_source ON example (source_id);
-            """;
-        command.ExecuteNonQuery();
-
-        command.CommandText =
-            """
-            CREATE INDEX IF NOT EXISTS relation_entry_target ON relation_entry (entry_id);
-            CREATE INDEX IF NOT EXISTS relation_sense_target ON relation_sense (sense_id);
-            CREATE INDEX IF NOT EXISTS collocation_synonym_owner ON collocation_synonym (collocation_id);
-            CREATE INDEX IF NOT EXISTS collocation_synonym_entry ON collocation_synonym (target_entry_id);
-            CREATE INDEX IF NOT EXISTS collocation_synonym_sense ON collocation_synonym (target_sense_id);
             """;
         command.ExecuteNonQuery();
 
@@ -64,12 +53,9 @@ public static class LSchemaIndex
 
         command.CommandText =
             """
-            CREATE UNIQUE INDEX IF NOT EXISTS relation_position ON relation (sense_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_position ON collocation (entry_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS pronunciation_position ON pronunciation (entry_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS transcription_position ON transcription (entry_id, position);
-            CREATE UNIQUE INDEX IF NOT EXISTS collocation_synonym_position
-                ON collocation_synonym (collocation_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS sense_translation_position
                 ON sense_translation (sense_id, position);
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_translation_position

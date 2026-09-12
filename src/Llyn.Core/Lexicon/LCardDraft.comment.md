@@ -4,7 +4,7 @@
 
 One card of the input form, captured as an immutable value.
 A Meaning card and a Collocation card are the same card.
-Both carry Title, a meaning text, Sentence, Situation, Register, Translation, Synonym and Tags.
+Both carry Title, a meaning text, Sentence, Situation, Register, Translation and Tags.
 So they are the same value here.
 The Collocation's own Expression field is the single member a Meaning card leaves empty.
 A field added to the form is therefore added once.
@@ -53,12 +53,6 @@ A comparison that means "the same card" walks the lists itself.
   The word a chip shows is read back from that Entry, so a renamed headword follows.
   A link crosses languages, so a target sits in a language pack the card's own entry does not.
   The list is one way: the target holds nothing pointing back.
-- `LCardDraftSynonym` — Always empty.
-  Neither card template offers a Synonym control.
-  This is free text the card would own, and it points at nothing.
-  The link a Collocation stores is `LCardDraftInterlink`, which is a different member.
-  The two share a word and are never merged.
-  The member is kept so the card shape stays one shape for both kinds.
 - `LCardDraftTag` — The Tags the card carries, in the order they are shown.
   Each carries the id of the stored Tag it links and the text it shows.
   A Tag is shared data, so two cards carrying the same word link one stored row.
@@ -96,14 +90,6 @@ A comparison that means "the same card" walks the lists itself.
   That would move one card's text onto another card's row.
   A card carrying no id is a new card and is created.
   The form builds its cards without one, so nothing in the shell carries it until it chooses to.
-- `LCardDraftRelation` — The lexical relations this Meaning holds, in the order they are shown.
-  Only a Meaning holds them, because the store hangs a relation off a sense.
-  Each names an Entry or another Meaning, and exactly one of the two.
-  The name is a document key while the card comes from a file, and a stored id otherwise.
-- `LCardDraftInterlink` — The synonym links this Collocation holds, in the order they are shown.
-  Only a Collocation holds them, because the store hangs the link off a collocation.
-  Each names an Entry or a Meaning by the same rule a relation target follows.
-  It is the stored link and never the free text `LCardDraftSynonym` carries.
 
 ## Inline notes
 

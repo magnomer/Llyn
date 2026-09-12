@@ -23,9 +23,8 @@ Reason key for an update whose entry is not in the workspace.
 
 ## `public const string LRefusalTarget = "Refusal.TargetMissing";`
 
-Reason key for a relation or synonym whose target is not one lexical row of this workspace.
+Reason key for a translation pick naming no stored Entry.
 The text may have resolved to nothing.
-Or the request may name both an Entry and a Meaning, or neither.
 
 ## `public const string LRefusalExample = "Refusal.ExampleMissing";`
 

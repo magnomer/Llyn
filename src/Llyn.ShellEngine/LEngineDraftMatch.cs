@@ -139,8 +139,6 @@ public sealed partial class LEngine
                 || !LEngineTagMatch(written.LCardDraftTag, held.LCardDraftTag)
                 || !LEngineImageMatch(written.LCardDraftImage, held.LCardDraftImage)
                 || !LEngineVideoMatch(written.LCardDraftVideo, held.LCardDraftVideo)
-                || !LEngineRelationMatch(written.LCardDraftRelation, held.LCardDraftRelation)
-                || !LEngineSynonymMatch(written.LCardDraftInterlink, held.LCardDraftInterlink)
                 || !LEngineCardMatch(written.LCardDraftChild, held.LCardDraftChild))
             {
                 return false;
@@ -266,44 +264,6 @@ public sealed partial class LEngine
     {
         one = [.. LEngineImageRead(one)];
         other = [.. LEngineImageRead(other)];
-        if (one.Count != other.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < one.Count; index++)
-        {
-            if (one[index] != other[index])
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static bool LEngineRelationMatch(
-        IReadOnlyList<LRelationDraft> one, IReadOnlyList<LRelationDraft> other)
-    {
-        if (one.Count != other.Count)
-        {
-            return false;
-        }
-
-        for (int index = 0; index < one.Count; index++)
-        {
-            if (one[index] != other[index])
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static bool LEngineSynonymMatch(
-        IReadOnlyList<LSynonymDraft> one, IReadOnlyList<LSynonymDraft> other)
-    {
         if (one.Count != other.Count)
         {
             return false;

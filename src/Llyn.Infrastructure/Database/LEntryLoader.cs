@@ -194,7 +194,6 @@ public sealed class LEntryLoader
                 collocation
                     ? translations.LTranslationCollocationRead(ownerId)
                     : translations.LTranslationMeaningRead(ownerId)),
-            string.Empty,
             LEntryTagRead(
                 collocation ? tags.LTagCollocationRead(ownerId) : tags.LTagMeaningRead(ownerId)),
             LEntryImageRead(
@@ -202,46 +201,7 @@ public sealed class LEntryLoader
             LEntryVideoRead(
                 collocation ? videos.LVideoCollocationRead(ownerId) : videos.LVideoMeaningRead(ownerId)),
             position,
-            ownerId,
-            LCardDraftRelation: collocation ? [] : LEntryRelationRead(ownerId),
-            LCardDraftInterlink: collocation ? LEntrySynonymRead(ownerId) : []);
-    }
-
-    private IReadOnlyList<LRelationDraft> LEntryRelationRead(long meaningId)
-    {
-        IReadOnlyList<LRelation> stored =
-            new LRelationArchive(_lEntryLoaderDatabase).LRelationRead(meaningId);
-
-        List<LRelationDraft> drafts = new(stored.Count);
-        foreach (LRelation relation in stored)
-        {
-            drafts.Add(new LRelationDraft(
-                relation.LRelationType,
-                relation.LRelationLabel,
-                relation.LRelationLabels,
-                relation.LRelationTargetEntry,
-                relation.LRelationTargetMeaning,
-                relation.LRelationId));
-        }
-
-        return drafts;
-    }
-
-    private IReadOnlyList<LSynonymDraft> LEntrySynonymRead(long collocationId)
-    {
-        IReadOnlyList<LSynonym> stored =
-            new LSynonymArchive(_lEntryLoaderDatabase).LSynonymRead(collocationId);
-
-        List<LSynonymDraft> drafts = new(stored.Count);
-        foreach (LSynonym synonym in stored)
-        {
-            drafts.Add(new LSynonymDraft(
-                synonym.LSynonymTargetEntry,
-                synonym.LSynonymTargetMeaning,
-                synonym.LSynonymId));
-        }
-
-        return drafts;
+            ownerId);
     }
 
     private static IReadOnlyList<LSentenceDraft> LEntrySentenceRead(IReadOnlyList<LSentence> sentences)

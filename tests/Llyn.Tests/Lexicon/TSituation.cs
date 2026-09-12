@@ -109,7 +109,6 @@ public sealed class TSituation
                     TInterface.TSituationDraftCreate("at home"),
                 ],
                 [],
-                string.Empty,
                 [], [], 1)],
             []));
 
@@ -278,7 +277,7 @@ public sealed class TSituation
             "English",
             string.Empty,
             string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
-            [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
+            [TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], [], [], 1)]));
     }
 }

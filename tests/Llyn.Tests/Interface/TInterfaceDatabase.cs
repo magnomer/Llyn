@@ -306,12 +306,6 @@ internal static partial class TInterface
         long entryId) =>
         transcriptionArchive.LTranscriptionRead(entryId);
 
-    internal static LRelationArchive TRelationArchiveCreate(LDatabase database) =>
-        new(database);
-
-    internal static LRelation TRelationCreate(this LRelationArchive relationArchive, LRelation relation) =>
-        relationArchive.LRelationCreate(relation);
-
     internal static LRevisionArchive TRevisionArchiveCreate(LDatabase database) =>
         new(database);
 

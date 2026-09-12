@@ -80,7 +80,6 @@ public sealed class TCatalogFavorite
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)],

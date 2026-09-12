@@ -11,14 +11,9 @@ They exist whether or not a control does.
 
 Both are ordered within their Entry, so both carry a move, and both delete downwards.
 A Meaning takes its subordinate Meanings and its association rows with it.
-A Collocation takes its synonym interlinks and its association rows.
+A Collocation takes its association rows.
 The independent Examples, Tags and Situations either referenced are left standing.
 Only the links go.
-
-A Meaning is refused deletion while a link still points at it.
-That link is a relation from outside the subtree, or any Collocation synonym.
-A link is a statement about a Meaning that exists.
-A cascade must not decide on its own to unmake someone else's statement.
 
 ## `public LMeaning LEngineMeaningCreate(LMeaning meaning)`
 
@@ -47,9 +42,7 @@ A position outside the group is clamped into it.
 ## `public void LEngineMeaningDelete(long id)`
 
 Deletes the Meaning identified by `id` with everything it owns.
-That is its subordinate Meanings and the relations originating inside that subtree.
-It is also its Example, Tag and Situation association rows.
-Refused while a relation from outside the subtree or a Collocation synonym still points at one of these Meanings.
+That is its subordinate Meanings and its Example, Tag and Situation association rows.
 
 ## `public LCollocation LEngineCollocationCreate(LCollocation collocation)`
 
@@ -71,6 +64,6 @@ It renumbers the set so the positions stay contiguous.
 ## `public void LEngineCollocationDelete(long id)`
 
 Deletes the Collocation identified by `id`.
-Its synonym interlinks and its association rows go with it.
+Its association rows go with it.
 The independent Examples, Tags and Situations they pointed at are left standing.
 The Collocations left under the Entry are renumbered.

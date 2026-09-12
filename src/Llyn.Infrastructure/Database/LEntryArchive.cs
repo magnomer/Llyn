@@ -287,9 +287,6 @@ public sealed class LEntryArchive
         using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        LEntryLinkValidate(connection, id);
-        LEntryLinkClear(connection, id);
-
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = "DELETE FROM entry WHERE id = $id;";
@@ -298,69 +295,6 @@ public sealed class LEntryArchive
         }
 
         session.LDatabaseSessionCommit();
-    }
-
-    private static void LEntryLinkValidate(SqliteConnection connection, long id)
-    {
-        using SqliteCommand command = connection.CreateCommand();
-        command.CommandText =
-            """
-            SELECT
-                (SELECT COUNT(*) FROM relation_entry target
-                    JOIN relation origin ON origin.id = target.relation_id
-                    JOIN sense holder ON holder.id = origin.sense_id
-                 WHERE target.entry_id = $id AND holder.entry_id <> $id)
-                + (SELECT COUNT(*) FROM relation_sense target
-                    JOIN relation origin ON origin.id = target.relation_id
-                    JOIN sense holder ON holder.id = origin.sense_id
-                    JOIN sense aimed ON aimed.id = target.sense_id
-                   WHERE aimed.entry_id = $id AND holder.entry_id <> $id)
-                + (SELECT COUNT(*) FROM collocation_synonym link
-                    JOIN collocation holder ON holder.id = link.collocation_id
-                   WHERE link.target_entry_id = $id AND holder.entry_id <> $id)
-                + (SELECT COUNT(*) FROM collocation_synonym link
-                    JOIN collocation holder ON holder.id = link.collocation_id
-                    JOIN sense aimed ON aimed.id = link.target_sense_id
-                   WHERE aimed.entry_id = $id AND holder.entry_id <> $id);
-            """;
-        command.Parameters.AddWithValue("$id", id);
-        long links = Convert.ToInt64(command.ExecuteScalar());
-        if (links > 0)
-        {
-            throw new InvalidOperationException(
-                $"Entry {id} is still the target of {links} lexical link(s) from other entries; remove those links before deleting it.");
-        }
-    }
-
-    private static void LEntryLinkClear(SqliteConnection connection, long id)
-    {
-        string[] statements =
-        [
-            """
-            DELETE FROM relation_entry WHERE relation_id IN
-                (SELECT origin.id FROM relation origin
-                    JOIN sense holder ON holder.id = origin.sense_id
-                 WHERE holder.entry_id = $id);
-            """,
-            """
-            DELETE FROM relation_sense WHERE relation_id IN
-                (SELECT origin.id FROM relation origin
-                    JOIN sense holder ON holder.id = origin.sense_id
-                 WHERE holder.entry_id = $id);
-            """,
-            """
-            DELETE FROM collocation_synonym WHERE collocation_id IN
-                (SELECT id FROM collocation WHERE entry_id = $id);
-            """,
-        ];
-
-        foreach (string statement in statements)
-        {
-            using SqliteCommand command = connection.CreateCommand();
-            command.CommandText = statement;
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
-        }
     }
 
     private static LEntry LEntryRowRead(SqliteDataReader reader)

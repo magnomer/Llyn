@@ -154,7 +154,6 @@ public sealed class TCatalogExample
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)],

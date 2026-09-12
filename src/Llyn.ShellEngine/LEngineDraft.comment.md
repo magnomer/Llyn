@@ -61,21 +61,13 @@ So renaming the preset renames it wherever it was used.
 Text naming no preset is stored as typed, because the field is editable.
 A part of speech a language pack has not thought of is still the one the user meant.
 An empty field writes no row at all.
-**Synonyms are not written**, and no card offers one to type.
-An `LSynonym` targets an Entry or a Meaning by id.
-A meaning-card synonym is an `LRelation` with the same requirement.
-Free text is neither, and no picker exists to resolve it.
-So the field was removed from the form rather than left to discard what was typed.
-`LCardDraftSynonym` therefore arrives empty from both card kinds.
-Writing a link is its own seam, `LEngineRelationCreate` and `LEngineSynonymCreate`.
-Each takes a target the caller resolved through `LEngineEntryFind` or `LEngineMeaningFind` first.
 
 The entry's forms and inflections are written with the entry, in the order the draft holds them.
 A part of speech is written as the language-pack value the draft names, or as the text it carries.
 The pronunciation is written whole: its reading, syllables and recording.
 An entry recording no pronunciation writes no row, so an empty block is never stored.
 
-A new card's rows, chips, links and relations are written by `LEngineCardSync` in `LEngineCard.cs`.
+A new card's rows, chips and links are written by `LEngineCardSync` in `LEngineCard.cs`.
 A card just created references nothing yet, so the reconcile that updates a stored card attaches a new one whole.
 One write path for both keeps the two from drifting apart.
 

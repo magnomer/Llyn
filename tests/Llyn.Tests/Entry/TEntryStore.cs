@@ -65,53 +65,6 @@ public sealed class TEntryStore
     }
 
     [Fact]
-    public void EntryDelete_LinkedFromAnotherEntry_Throws()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
-        LRelationArchive relations = TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase);
-
-        LEntry target = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "target", "en", null, null, null, null), [], []);
-        LEntry origin = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "origin", "en", null, null, null, null), [], []);
-        LMeaning meaning = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, origin.LEntryId, null, 0, null, null, null, null, string.Empty));
-        relations.TRelationCreate(
-            TInterface.TRelationCreate(0, meaning.LMeaningId, 0, "synonym", null, null, target.LEntryId, null));
-
-        InvalidOperationException error =
-            Assert.Throws<InvalidOperationException>(() => entries.TEntryDelete(target.LEntryId));
-
-        Assert.Contains("lexical link", error.Message, StringComparison.Ordinal);
-        Assert.NotNull(entries.TEntryRead(target.LEntryId));
-    }
-
-    [Fact]
-    public void EntryDelete_LinksIntoItself_ClearsThem()
-    {
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
-        LRelationArchive relations = TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase);
-
-        LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "word", "en", null, null, null, null), [], []);
-        LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one", null, null, string.Empty));
-        LMeaning second = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two", null, null, string.Empty));
-        relations.TRelationCreate(
-            TInterface.TRelationCreate(0, first.LMeaningId, 0, "related", null, null, null, second.LMeaningId));
-
-        entries.TEntryDelete(entry.LEntryId);
-
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation_sense;"));
-    }
-
-    [Fact]
     public void EntryFind_AccentedOtherCase_FindsEntry()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

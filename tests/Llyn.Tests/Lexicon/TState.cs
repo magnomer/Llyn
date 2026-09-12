@@ -26,7 +26,6 @@ public sealed class TState
                     LStateValue.LStateValueUnknown, 0, LStateAnchor.LStateAnchorUnspecified)],
                 [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, 0)],
                 [],
-                string.Empty,
                 ["spoken"], [], 1)],
             []));
 
@@ -83,7 +82,6 @@ public sealed class TState
                 ],
                 [],
                 [],
-                string.Empty,
                 [], [], 1)],
             []));
 
@@ -115,7 +113,6 @@ public sealed class TState
                 ],
                 [],
                 [],
-                string.Empty,
                 [], [], 1)],
             []));
 
@@ -157,7 +154,6 @@ LStateAnchor.LStateAnchorUnspecified,
                 [],
                 [TInterface.TSituationDraftCreate(LStateValue.LStateValueUnknown, 0)],
                 [],
-                string.Empty,
                 [], [], 1)],
             []));
 
@@ -243,7 +239,6 @@ LStateAnchor.LStateAnchorUnspecified,
                     [],
                     [],
                     [],
-                    string.Empty,
                     [],
                     [],
                     0)],

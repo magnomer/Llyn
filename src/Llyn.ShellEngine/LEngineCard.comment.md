@@ -68,27 +68,8 @@ Translations are written over the same way, because a link is an id the card hol
 Nothing is created or detached for one, and no target row is touched.
 A name that is no Entry is dropped rather than written.
 An import points a card at an Entry the same file declares, and that Entry may not exist yet.
-A Meaning's relations and a Collocation's synonyms are reconciled here too, since the draft carries them.
 A newly created card has nothing attached yet, so the same path attaches its whole set.
 A stale positive id anywhere in the card is refused rather than rebound, so the card never points where the user did not.
-
-### `private void LEngineRelationSync(`
-
-Reconciles one Meaning's relations to the rows the draft card lists.
-A relation the card names by a positive id of this Meaning is rewritten in place and keeps its id.
-One named by a negative id is created and recorded in the map.
-One the card stopped naming is deleted, and the surviving set is renumbered to draft order.
-A relation with no type, or with neither or both targets after settling, is not a relation and is skipped.
-
-### `private void LEngineSynonymSync(`
-
-The same reconcile for a Collocation's synonyms, which carry only a target.
-
-### `private LStateAnchor LEngineAnchorSettle(LStateAnchor anchor, IReadOnlyDictionary<long, long> identity, bool entry)`
-
-One relation target as the store can hold it.
-A negative id is the draft's own card or a court target, and is read through the map or dropped when the map lacks it.
-A positive id must still name a stored Entry or Meaning, or the commit is refused.
 
 ### `private void LEngineSentenceSync(`
 

@@ -24,7 +24,6 @@ public sealed class TImage
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [
                     TInterface.TImageDraftCreate(@"D:\pictures\word.png"),
@@ -38,7 +37,6 @@ public sealed class TImage
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [TInterface.TImageDraftCreate("https://example.com/phrase.png")],
                 1)]));
@@ -68,7 +66,7 @@ public sealed class TImage
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [TInterface.TImageDraftCreate("first.png"), TInterface.TImageDraftCreate("second.png")],
+                string.Empty, string.Empty, "a meaning", [], [], [], [], [TInterface.TImageDraftCreate("first.png"), TInterface.TImageDraftCreate("second.png")],
                 1)],
             []));
 
@@ -105,7 +103,7 @@ public sealed class TImage
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [TInterface.TImageDraftCreate("   ")], 1)],
+                string.Empty, string.Empty, "a meaning", [], [], [], [], [TInterface.TImageDraftCreate("   ")], 1)],
             []));
 
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);

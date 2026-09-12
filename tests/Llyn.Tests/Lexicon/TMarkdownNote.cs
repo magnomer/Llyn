@@ -94,7 +94,7 @@ public sealed class TMarkdownNote
             "English",
             string.Empty,
             note,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
             []);
     }
 }

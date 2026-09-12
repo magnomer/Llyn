@@ -269,7 +269,6 @@ public sealed class TRequestList
                     [TInterface.TSentenceDraftCreate("she knelt to kindle the damp logs")],
                     [TInterface.TSituationDraftCreate("around a hearth")],
                     [],
-                    string.Empty,
                     ["fire", "literary"],
                     [TInterface.TImageDraftCreate("media/fire.jpg")],
                     0,

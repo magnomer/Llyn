@@ -4,7 +4,7 @@
 
 One Meaning owned by an entry: a node in the entry's self-referential Meaning tree, carrying a single inline definition field.
 `LMeaningId` is the identity, an opaque and program-generated stable id.
-It is the base every later relation, tag, situation, and example association targets.
+It is the base every later tag, situation, and example association targets.
 A Meaning nests under another through `LMeaningParentId`, which always names a Meaning in the same entry.
 A root Meaning has no parent.
 There is no separate definition entity: each Meaning holds exactly one definition (with its own optional language), empty when unset.

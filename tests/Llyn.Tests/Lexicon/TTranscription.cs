@@ -175,7 +175,7 @@ public sealed class TTranscription
             "Cantonese",
             string.Empty,
             string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "Hong Kong", [], [], [], string.Empty, [], [], 1)],
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "Hong Kong", [], [], [], [], [], 1)],
             [],
             transcriptions: transcriptions);
     }

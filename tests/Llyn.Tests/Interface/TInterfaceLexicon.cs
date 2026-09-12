@@ -14,7 +14,6 @@ internal static partial class TInterface
         IReadOnlyList<LSentenceDraft> sentence,
         IReadOnlyList<LSituationDraft> situation,
         IReadOnlyList<long> translation,
-        string synonym,
         IReadOnlyList<string> tag,
         IReadOnlyList<LImageDraft> image,
         int position,
@@ -22,7 +21,7 @@ internal static partial class TInterface
         IReadOnlyList<LVideoDraft>? video = null,
         IReadOnlyList<LRegisterDraft>? register = null) =>
         new(
-            title, expression, meaning, sentence, situation, register ?? [], translation, synonym,
+            title, expression, meaning, sentence, situation, register ?? [], translation,
             [.. tag.Select(LTagDraft.LTagDraftCreate)], image, video ?? [], position, id);
 
     internal static IReadOnlyList<string> TTagDraftRead(IReadOnlyList<LTagDraft> tags) =>
@@ -250,38 +249,6 @@ internal static partial class TInterface
         LState authorState) =>
         new(id, title, year, kind, note, url, authorState);
 
-    internal static LRelation TRelationCreate(
-        long id,
-        long meaningId,
-        int position,
-        string type,
-        string? label,
-        string? labels,
-        long? targetEntry,
-        long? targetMeaning) =>
-        new(
-            id,
-            meaningId,
-            position,
-            type,
-            label,
-            labels,
-            LStateAnchor.LStateAnchorRead(targetEntry),
-            LStateAnchor.LStateAnchorRead(targetMeaning));
-
-    internal static LRelationDraft TRelationDraftCreate(
-        string type,
-        long? targetEntry,
-        long? targetMeaning,
-        long id = 0) =>
-        new(
-            type,
-            null,
-            null,
-            LStateAnchor.LStateAnchorRead(targetEntry),
-            LStateAnchor.LStateAnchorRead(targetMeaning),
-            id);
-
     internal static LMeaning TMeaningCreate(
         long id,
         long entryId,
@@ -349,19 +316,6 @@ internal static partial class TInterface
 
     internal static LStateAnchor TStateAnchorRead(long? id) =>
         LStateAnchor.LStateAnchorRead(id);
-
-    internal static LSynonym TSynonymCreate(
-        long id,
-        long collocationId,
-        int position,
-        long? targetEntry,
-        long? targetMeaning) =>
-        new(
-            id,
-            collocationId,
-            position,
-            LStateAnchor.LStateAnchorRead(targetEntry),
-            LStateAnchor.LStateAnchorRead(targetMeaning));
 
     internal static LTag TTagCreate(string text) =>
         new(0, text);

@@ -666,7 +666,6 @@ public sealed class TDraft
             [],
             [],
             [],
-            string.Empty,
             [],
             [],
             0);
@@ -786,7 +785,6 @@ public sealed class TDraft
             [],
             [],
             [],
-            string.Empty,
             [],
             [],
             1);
@@ -819,7 +817,6 @@ public sealed class TDraft
             ],
             [situation with { LSituationDraftId = TInterface.TIdentityCreate() }],
             [],
-            "ignite",
             [],
             [],
             0,

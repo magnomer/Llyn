@@ -25,7 +25,7 @@ public sealed class TEntryLoad
                     [TInterface.TSentenceDraftCreate(
                         LStateValue.LStateValueUnspecified, 0,
                         LStateAnchor.LStateAnchorUnspecified, "for", "Patient")],
-                    [], [], string.Empty, [], [], 1),
+                    [], [], [], [], 1),
             ],
             []));
 
@@ -54,7 +54,7 @@ public sealed class TEntryLoad
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "to set alight",
-                    [], [], [], string.Empty, [], [], 1,
+                    [], [], [], [], [], 1,
                     video:
                     [
                         TInterface.TVideoDraftCreate(
@@ -84,12 +84,12 @@ public sealed class TEntryLoad
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a unit of language",
-                    [TInterface.TSentenceDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [], string.Empty, ["spoken"], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "a promise", [], [], [], string.Empty, [], [], 2),
+                    [TInterface.TSentenceDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [], ["spoken"], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "a promise", [], [], [], [], [], 2),
             ],
             [
                 TInterface.TCardDraftCreate(
-                    string.Empty, "in a word", "briefly", [TInterface.TSentenceDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [], string.Empty,
+                    string.Empty, "in a word", "briefly", [TInterface.TSentenceDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [],
                     ["written"], [], 1),
             ]);
 
@@ -98,7 +98,7 @@ public sealed class TEntryLoad
             "English",
             "sɔːd",
             string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a bladed weapon", [], [], [], string.Empty, [], [], 1)],
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a bladed weapon", [], [], [], [], [], 1)],
             []);
 
         LEntry stored = engine.TEngineEntrySave(word);
@@ -154,7 +154,6 @@ public sealed class TEntryLoad
             Assert.Equal(expected[index].LCardDraftTitle, actual[index].LCardDraftTitle);
             Assert.Equal(expected[index].LCardDraftExpression, actual[index].LCardDraftExpression);
             Assert.Equal(expected[index].LCardDraftMeaning, actual[index].LCardDraftMeaning);
-            Assert.Equal(expected[index].LCardDraftSynonym, actual[index].LCardDraftSynonym);
             Assert.Equal(
                 TEntryExampleRead(expected[index].LCardDraftSentence),
                 TEntryExampleRead(actual[index].LCardDraftSentence));
@@ -233,9 +232,9 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [TInterface.TCardDraftCreate("the plain meaning", string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
+            [TInterface.TCardDraftCreate("the plain meaning", string.Empty, "a meaning", [], [], [], [], [], 1)],
             [TInterface.TCardDraftCreate(
-                "the set phrase", "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
+                "the set phrase", "in a word", "briefly", [], [], [], [], [], 1)]));
 
         LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
         Assert.Equal("the plain meaning", meaning.LMeaningTitle);
@@ -270,7 +269,6 @@ public sealed class TEntryLoad
                 [TInterface.TSentenceDraftCreate("he said a word"), TInterface.TSentenceDraftCreate("not a word was spoken")],
                 [TInterface.TSituationDraftCreate("conversation")],
                 [],
-                string.Empty,
                 ["verb", "formal", "spoken"], [], 1)],
             [TInterface.TCardDraftCreate(
                 string.Empty,
@@ -279,7 +277,6 @@ public sealed class TEntryLoad
                 [TInterface.TSentenceDraftCreate("in a word, no")],
                 [TInterface.TSituationDraftCreate("summary"), TInterface.TSituationDraftCreate("writing")],
                 [],
-                string.Empty,
                 ["written", "idiom"], [], 1)]));
 
         LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
@@ -318,7 +315,7 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [TInterface.TSentenceDraftCreate("  ")], [], [], string.Empty, [], [], 1)],
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [TInterface.TSentenceDraftCreate("  ")], [], [], [], [], 1)],
             []));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));
@@ -345,9 +342,9 @@ public sealed class TEntryLoad
             string.Empty,
             string.Empty,
             [
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], string.Empty, [], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "second", [], [], [], string.Empty, [], [], 2),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "third", [], [], [], string.Empty, [], [], 3),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], [], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "second", [], [], [], [], [], 2),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "third", [], [], [], [], [], 3),
             ],
             []));
 

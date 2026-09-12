@@ -19,12 +19,12 @@ public sealed class TEntrySave
             "wɜːd",
             "a note",
             [
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the first meaning", [], [], [], string.Empty, [], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the second meaning", [], [], [], string.Empty, [], [], 2),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the first meaning", [], [], [], [], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the second meaning", [], [], [], [], [], 2),
             ],
             [
                 TInterface.TCardDraftCreate(
-                    string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1),
+                    string.Empty, "in a word", "briefly", [], [], [], [], [], 1),
             ]));
 
         Assert.NotEqual(0, entry.LEntryId);
@@ -74,10 +74,10 @@ public sealed class TEntrySave
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                string.Empty, string.Empty, "a meaning", [TInterface.TSentenceDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [], "term",
+                string.Empty, string.Empty, "a meaning", [TInterface.TSentenceDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [],
                 ["spoken"], [], 1)],
             [TInterface.TCardDraftCreate(
-                string.Empty, "in a word", "briefly", [TInterface.TSentenceDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [], string.Empty,
+                string.Empty, "in a word", "briefly", [TInterface.TSentenceDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [],
                 ["written"], [], 1)]);
 
         LEntry entry = engine.TEngineEntrySave(draft);
@@ -109,9 +109,6 @@ public sealed class TEntrySave
             "written",
             Assert.Single(tags.TTagCollocationRead(collocation.LCollocationId)).LTagText);
 
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM relation;"));
-        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation_synonym;"));
-
         LEntry second = engine.TEngineEntrySave(draft);
         LMeaning other = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(second.LEntryId));
 
@@ -138,7 +135,7 @@ public sealed class TEntrySave
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LCardDraft blank = TInterface.TCardDraftCreate(
-            string.Empty, string.Empty, string.Empty, [], [], [], string.Empty, [], [], 1);
+            string.Empty, string.Empty, string.Empty, [], [], [], [], [], 1);
 
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "word", "English", string.Empty, string.Empty, [blank], [blank]));
@@ -165,14 +162,14 @@ public sealed class TEntrySave
             string.Empty,
             string.Empty,
             [
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the first meaning", [], [], [], string.Empty, [], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "   ", [], [], [], string.Empty, ["  "], [], 2),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the second meaning", [], [], [], string.Empty, [], [], 3),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the first meaning", [], [], [], [], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "   ", [], [], [], ["  "], [], 2),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "the second meaning", [], [], [], [], [], 3),
             ],
             [
-                TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, string.Empty, [], [], [], string.Empty, [], [], 2),
-                TInterface.TCardDraftCreate(string.Empty, "word for word", "exactly", [], [], [], string.Empty, [], [], 3),
+                TInterface.TCardDraftCreate(string.Empty, "in a word", "briefly", [], [], [], [], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, string.Empty, [], [], [], [], [], 2),
+                TInterface.TCardDraftCreate(string.Empty, "word for word", "exactly", [], [], [], [], [], 3),
             ]));
 
         IReadOnlyList<LMeaning> meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);
@@ -216,7 +213,7 @@ public sealed class TEntrySave
             "English",
             string.Empty,
             "a note",
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], string.Empty, [], [], 1)],
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [], [], [], [], [], 1)],
             [])));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));

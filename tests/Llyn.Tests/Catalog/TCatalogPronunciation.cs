@@ -97,7 +97,6 @@ public sealed class TCatalogPronunciation
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)],

@@ -11,7 +11,6 @@ public sealed record LCardDraft(
     IReadOnlyList<LSituationDraft> LCardDraftSituation,
     IReadOnlyList<LRegisterDraft> LCardDraftRegister,
     IReadOnlyList<long> LCardDraftTranslation,
-    string LCardDraftSynonym,
     IReadOnlyList<LTagDraft> LCardDraftTag,
     IReadOnlyList<LImageDraft> LCardDraftImage,
     IReadOnlyList<LVideoDraft> LCardDraftVideo,
@@ -20,19 +19,11 @@ public sealed record LCardDraft(
     IReadOnlyList<LCardDraft>? LCardDraftChild = null,
     string? LCardDraftGloss = null,
     string? LCardDraftLanguage = null,
-    string LCardDraftLabels = "",
-    IReadOnlyList<LRelationDraft>? LCardDraftRelation = null,
-    IReadOnlyList<LSynonymDraft>? LCardDraftInterlink = null)
+    string LCardDraftLabels = "")
 {
     public string LCardDraftLabels { get; init; } = LCardDraftLabels ?? string.Empty;
 
     public IReadOnlyList<LCardDraft> LCardDraftChild { get; init; } = LCardDraftChild ?? [];
-
-    public IReadOnlyList<LRelationDraft> LCardDraftRelation { get; init; } =
-        LCardDraftRelation ?? [];
-
-    public IReadOnlyList<LSynonymDraft> LCardDraftInterlink { get; init; } =
-        LCardDraftInterlink ?? [];
 
     public LStateValue LCardDraftTitle { get; init; } =
         LCardDraftTitle ?? LStateValue.LStateValueUnspecified;
@@ -47,7 +38,6 @@ public sealed record LCardDraft(
         LCardDraftTitle.LStateValueEmpty
         && LCardDraftExpression.LStateValueEmpty
         && LCardDraftMeaning.LStateValueEmpty
-        && string.IsNullOrWhiteSpace(LCardDraftSynonym)
         && string.IsNullOrWhiteSpace(LCardDraftGloss)
         && string.IsNullOrWhiteSpace(LCardDraftLabels)
         && LCardDraftChild.Count == 0
@@ -57,7 +47,5 @@ public sealed record LCardDraft(
         && LCardDraftTranslation.All(static id => id == 0)
         && LCardDraftTag.All(static row => string.IsNullOrWhiteSpace(row.LTagDraftText))
         && LCardDraftImage.All(static row => row.LImageDraftEmpty)
-        && LCardDraftVideo.All(static row => row.LVideoDraftEmpty)
-        && LCardDraftRelation.All(static row => row.LRelationDraftEmpty)
-        && LCardDraftInterlink.All(static row => row.LSynonymDraftEmpty);
+        && LCardDraftVideo.All(static row => row.LVideoDraftEmpty);
 }

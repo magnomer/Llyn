@@ -86,40 +86,13 @@ Deletes the entry identified by `id` and everything it owns.
 The foreign-key cascade carries away its forms and parts of speech.
 It carries away its inflections and their features.
 It carries away its meanings, each with its inline definition field.
-It carries away the relations originating from those meanings.
 It carries away its pronunciations with their syllables and recordings, and its transcriptions.
 It carries away its collocations and its single note.
 It carries away every association row hanging from the entry, its meanings, or its collocations.
 The independent Examples, Tags, Situations, References, and Authors those associations pointed at are left standing.
 Only the rows linking them to this entry disappear.
 
-Guarded against the one thing a cascade must not decide on its own.
-That is a lexical link from *another* entry pointing at this entry or one of its meanings.
-Such a link is a relation target or a collocation synonym.
-While any such link exists nothing is deleted and an `InvalidOperationException` is thrown.
-Remove those links first.
-Links pointing here from inside this entry are cleared as part of the delete.
-They are owned by rows that are going anyway.
-The guard and the delete share one transaction, so nothing can slip between them.
-
 ## Inline notes
-
-### `private static void LEntryLinkValidate(SqliteConnection connection, long id)`
-
-Counts the lexical links that reach this entry from outside it.
-Those are relations elsewhere whose target is this entry or one of its meanings.
-They are also collocation synonyms elsewhere pointing at either.
-The schema declares those columns without a cascade, precisely so they cannot be swept away silently.
-This turns the resulting foreign-key error into a message that names the reason.
-
-### `private static void LEntryLinkClear(SqliteConnection connection, long id)`
-
-Clears the links this entry owns before the entry row goes.
-They would cascade anyway.
-A relation's target row hangs from the relation, and a synonym from its collocation.
-But a link pointing back at this same entry would be checked against a row already going.
-The order the cascade visits tables in is not ours to rely on.
-Removing them first makes the delete deterministic.
 
 ### `private static LEntry LEntryRowRead(SqliteDataReader reader)`
 

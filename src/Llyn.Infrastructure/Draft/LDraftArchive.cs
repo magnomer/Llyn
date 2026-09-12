@@ -263,16 +263,6 @@ public static class LDraftArchive
                 LDraftArchiveCheck(video.LVideoDraftId, "video");
             }
 
-            foreach (LRelationDraft relation in card.LCardDraftRelation)
-            {
-                LDraftArchiveCheck(relation.LRelationDraftId, "relation");
-            }
-
-            foreach (LSynonymDraft synonym in card.LCardDraftInterlink)
-            {
-                LDraftArchiveCheck(synonym.LSynonymDraftId, "synonym");
-            }
-
             LDraftArchiveCheck(card.LCardDraftChild);
         }
     }

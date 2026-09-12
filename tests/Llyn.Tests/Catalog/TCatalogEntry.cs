@@ -100,7 +100,6 @@ public sealed class TCatalogEntry
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)],

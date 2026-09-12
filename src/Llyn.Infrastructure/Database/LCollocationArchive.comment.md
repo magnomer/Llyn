@@ -6,9 +6,7 @@ Persists the collocations an entry owns.
 A collocation is a stable-id row assigned an opaque id here on creation.
 It is ordered within its entry.
 Updating rewrites its title, expression and meaning, so ids survive reordering.
-Its synonym interlinks are not owned text and live in their own store (`LSynonymArchive`).
-They are removed with the collocation by the foreign-key cascade.
-Deleting the entry removes its collocations and, with them, their synonyms.
+Deleting the entry removes its collocations.
 
 Order within the entry is a unique index, so a position is never written one row at a time.
 A new collocation is appended to the end.
@@ -43,8 +41,7 @@ A position outside the set is clamped into it, and nothing moves when no colloca
 ## `public void LCollocationDelete(long id)`
 
 Deletes the collocation identified by `id`.
-Its synonym interlinks go with it through the foreign-key cascade.
-So do its example, tag, and situation association rows.
+Its example, tag, and situation association rows go with it through the foreign-key cascade.
 The independent Examples, Tags, and Situations they pointed at are left standing.
 The collocations left under the same entry are renumbered so their positions stay contiguous.
 

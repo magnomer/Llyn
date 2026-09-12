@@ -294,27 +294,6 @@ internal static partial class TInterface
         LOwner owner) =>
         engine.LEngineReferenceRead(ownerId, owner);
 
-    internal static LRelation TEngineRelationCreate(this LEngine engine, LRelation relation) =>
-        engine.LEngineRelationCreate(relation);
-
-    internal static void TEngineRelationDelete(this LEngine engine, long id)
-    {
-        engine.LEngineRelationDelete(id);
-    }
-
-    internal static void TEngineRelationMove(this LEngine engine, long id, int position)
-    {
-        engine.LEngineRelationMove(id, position);
-    }
-
-    internal static IReadOnlyList<LRelation> TEngineRelationRead(this LEngine engine, long meaningId) =>
-        engine.LEngineRelationRead(meaningId);
-
-    internal static void TEngineRelationUpdate(this LEngine engine, LRelation relation)
-    {
-        engine.LEngineRelationUpdate(relation);
-    }
-
     internal static LMeaning TEngineMeaningCreate(this LEngine engine, LMeaning meaning) =>
         engine.LEngineMeaningCreate(meaning);
 
@@ -322,9 +301,6 @@ internal static partial class TInterface
     {
         engine.LEngineMeaningDelete(id);
     }
-
-    internal static IReadOnlyList<LMeaning> TEngineMeaningFind(this LEngine engine, string query) =>
-        engine.LEngineMeaningFind(query);
 
     internal static void TEngineMeaningMove(this LEngine engine, long id, int position)
     {
@@ -423,27 +399,6 @@ internal static partial class TInterface
 
     internal static LSpeechValue? TEngineSpeechRead(this LEngine engine, long id) =>
         engine.LEngineSpeechRead(id);
-
-    internal static LSynonym TEngineSynonymCreate(this LEngine engine, LSynonym synonym) =>
-        engine.LEngineSynonymCreate(synonym);
-
-    internal static void TEngineSynonymDelete(this LEngine engine, long id)
-    {
-        engine.LEngineSynonymDelete(id);
-    }
-
-    internal static void TEngineSynonymMove(this LEngine engine, long id, int position)
-    {
-        engine.LEngineSynonymMove(id, position);
-    }
-
-    internal static IReadOnlyList<LSynonym> TEngineSynonymRead(this LEngine engine, long collocationId) =>
-        engine.LEngineSynonymRead(collocationId);
-
-    internal static void TEngineSynonymUpdate(this LEngine engine, LSynonym synonym)
-    {
-        engine.LEngineSynonymUpdate(synonym);
-    }
 
     internal static void TEngineTagChange(this LEngine engine, long tagId, string renamed)
     {

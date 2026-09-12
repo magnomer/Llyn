@@ -9,7 +9,6 @@ The card has a field for each, so a collocation keeps both, beside the `LColloca
 `LCollocationId` is the identity — an opaque, program-generated stable id — and is the base the job08/job09 associations target.
 Reordering collocation cards rewrites `LCollocationPosition` only.
 The id never changes.
-A collocation's synonym is not text held here: it is an interlink, modelled by `LCollocationSynonym`.
 
 **Parameters**
 

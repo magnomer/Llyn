@@ -62,7 +62,6 @@ public sealed class TCatalogTag
                 [],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)],

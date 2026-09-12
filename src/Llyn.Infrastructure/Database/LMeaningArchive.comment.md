@@ -34,20 +34,7 @@ Siblings arrive already in order.
 ## `public LMeaning? LMeaningSingleRead(long id)`
 
 Reads the single meaning identified by `id`, or `null` when no meaning carries that id.
-That is the existence check a caller needs before pointing a relation at a Meaning.
-
-## `public IReadOnlyList<LMeaning> LMeaningFind(string query)`
-
-Returns the meanings whose owning entry's headword contains `query`.
-They are ordered by that headword and then by the meaning's place in its entry.
-It returns every meaning when `query` is empty or all whitespace.
-This is the meaning-level twin of `LEntryFind`.
-A caller holding typed text gets back the Meanings that text could name, and picks one.
-No store invents a target for words nobody matched.
-
-Matching is a contains whose case is folded over the whole of Unicode.
-It is the same as `LEntryFind`, so an accented headword is found typed in either case.
-Sub-meanings are included: a relation may point at any Meaning, not only a top-level one.
+That is the one-row read a caller needs when it holds a Meaning id alone.
 
 ## `public void LMeaningUpdate(LMeaning meaning)`
 
@@ -76,26 +63,18 @@ Nothing moves when no meaning carries that id.
 
 Deletes the meaning identified by `id` together with everything it owns.
 That is its inline definition field, held in columns of the row itself.
-It is also the relations originating from it.
 It is also its subordinate meanings, with the same treatment applied down the tree.
 It is also its example, tag, and situation association rows.
 Sibling and ancestor meanings are untouched and are renumbered so positions stay contiguous.
 The independent Examples, Tags, and Situations it referenced are left standing.
 Only the links go.
 
-Guarded where a cascade must not decide alone.
-A relation outside the deleted subtree may still point at one of these meanings.
-So may any collocation synonym.
-While one does, nothing is deleted and an `InvalidOperationException` is thrown.
-Links originating inside the subtree are cleared as part of the delete.
-They belong to rows that are going anyway.
-
 ## Inline notes
 
 ### `private const string LMeaningSubtreeQuery =`
 
-The meanings this delete removes: the named one and every meaning beneath it, walked with a recursive term over parent_id.
-Both link statements below start from this set.
+The named meaning and every meaning beneath it, walked with a recursive term over parent_id.
+The cycle check starts from this set.
 
 ### `private static (string? Entry, string? Parent) LMeaningHolderRead(SqliteConnection connection, long id)`
 
@@ -116,19 +95,3 @@ Root meanings have no parent id to key on.
 So their group is the entry's parentless meanings.
 That is the same group the ifnull() expression index treats as one.
 
-### `private static void LMeaningLinkValidate(SqliteConnection connection, long id)`
-
-Counts the links reaching the subtree from outside it.
-Those are a relation held by a meaning that survives, and any collocation synonym.
-A collocation is not deleted when a meaning is.
-So every synonym pointing here counts as an outside link.
-The schema keeps those columns cascade-free on purpose.
-This turns the foreign-key error they would raise into a message that names the reason.
-
-### `private static void LMeaningLinkClear(SqliteConnection connection, long id)`
-
-Clears the target rows of the relations the subtree owns before the meanings go.
-They would cascade with their relation anyway.
-But a relation inside the subtree pointing at another meaning in the subtree is a problem.
-It would be checked against a row already being deleted.
-The order the cascade visits tables in is not ours to rely on.

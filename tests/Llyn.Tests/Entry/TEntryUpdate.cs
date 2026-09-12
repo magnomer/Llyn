@@ -19,9 +19,9 @@ public sealed class TEntryUpdate
             string.Empty,
             string.Empty,
             [
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], string.Empty, [], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "second", [], [], [], string.Empty, [], [], 2),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "third", [], [], [], string.Empty, [], [], 3),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], [], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "second", [], [], [], [], [], 2),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "third", [], [], [], [], [], 3),
             ],
             []));
 
@@ -38,7 +38,7 @@ public sealed class TEntryUpdate
             [
                 loaded.LEntryDraftMeanings[0] with { LCardDraftMeaning = "first, reworded" },
                 loaded.LEntryDraftMeanings[2],
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "fourth", [], [], [], string.Empty, [], [], 3),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "fourth", [], [], [], [], [], 3),
             ],
         };
 
@@ -84,8 +84,7 @@ public sealed class TEntryUpdate
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "meaning", [TInterface.TSentenceDraftCreate("one"), TInterface.TSentenceDraftCreate("two")], [],
-                    [],
-                    string.Empty, ["kept", "dropped"], [], 1),
+                    [], ["kept", "dropped"], [], 1),
             ],
             []));
 
@@ -131,33 +130,32 @@ public sealed class TEntryUpdate
             string.Empty,
             "a note",
             [
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], string.Empty, [], [], 1),
-                TInterface.TCardDraftCreate(string.Empty, string.Empty, "second", [], [], [], string.Empty, [], [], 2),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], [], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "second", [], [], [], [], [], 2),
             ],
             []));
 
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
-        IReadOnlyList<LMeaning> saved = meanings.TMeaningRead(entry.LEntryId);
-
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
-        LEntry origin = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "origin", "English", null, null, null, null), [], []);
-        LMeaning source = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, origin.LEntryId, null, 0, null, null, null, "links", string.Empty));
-        TInterface.TRelationArchiveCreate(workspace.TWorkspaceDatabase).TRelationCreate(
-            TInterface.TRelationCreate(0, source.LMeaningId, 0, "synonym", null, null, null, saved[1].LMeaningId));
-
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LRevision? before = engine.TEngineRevisionRead();
 
-        Assert.Throws<InvalidOperationException>(() => engine.TEngineEntryUpdate(
+        LRefusal refusal = Assert.Throws<LRefusal>(() => engine.TEngineEntryUpdate(
             entry.LEntryId,
             loaded with
             {
                 LEntryDraftHeadword = "rewritten",
                 LEntryDraftNote = "a different note",
-                LEntryDraftMeanings = [loaded.LEntryDraftMeanings[0] with { LCardDraftMeaning = "changed" }],
+                LEntryDraftMeanings =
+                [
+                    loaded.LEntryDraftMeanings[0] with
+                    {
+                        LCardDraftMeaning = "changed",
+                        LCardDraftTag = [TInterface.TTagDraftCreate("stale")[0] with { LTagDraftId = 9999 }],
+                    },
+                ],
             }));
+        Assert.Equal(LRefusal.LRefusalLink, refusal.LRefusalReason);
 
         LEntry? stored = entries.TEntryRead(entry.LEntryId);
         Assert.Equal("word", stored?.LEntryHeadword);

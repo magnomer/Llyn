@@ -43,10 +43,10 @@ Reordering re-attached the rows that were already there rather than writing new 
 
 The dropped Tag was detached, not deleted: it is independent data the card only referenced.
 
-### `LEntryArchive entries = new(workspace.TWorkspaceDatabase);`
+### `LRefusal refusal = Assert.Throws<LRefusal>(() => engine.LEngineEntryUpdate(`
 
-Another entry links to the second Meaning, so deleting that Meaning is refused.
-That failure is reached only after the entry row and the first card have been written.
+The first card names a Tag row nobody stores, so the tag write is refused.
+That failure is reached only after the entry row and the card text have been written.
 
 ### `Assert.Equal(before?.LRevisionId, engine.LEngineRevisionRead()?.LRevisionId);`
 

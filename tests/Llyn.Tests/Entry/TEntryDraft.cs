@@ -55,7 +55,6 @@ public sealed class TEntryDraft
                         TInterface.TStateValueCreate("for"), TInterface.TStateValueCreate("Patient"))],
                     [],
                     [],
-                    string.Empty,
                     [],
                     [],
                     1),
@@ -104,12 +103,11 @@ public sealed class TEntryDraft
                 [TInterface.TSentenceDraftCreate("he said a word")],
                 [],
                 [],
-                string.Empty,
                 [],
                 [],
                 1)],
             [TInterface.TCardDraftCreate(
-                string.Empty, "in a word", "briefly", [], [], [], string.Empty, [], [], 1)]));
+                string.Empty, "in a word", "briefly", [], [], [], [], [], 1)]));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(entry.LEntryId));
         LSentenceDraft quoted = Assert.Single(
@@ -238,7 +236,6 @@ public sealed class TEntryDraft
                         TInterface.TStateValueCreate("the register an institution expects"),
                         TInterface.TStateValueCreate("writing"))],
                     [target.LEntryId],
-                    string.Empty,
                     [],
                     [],
                     1,
@@ -310,7 +307,6 @@ public sealed class TEntryDraft
                     ],
                     [TInterface.TSituationDraftCreate("story telling")],
                     [target.LEntryId],
-                    string.Empty,
                     ["fire", "literary"],
                     [TInterface.TImageDraftCreate("media/fire.jpg")],
                     1,
@@ -330,7 +326,6 @@ public sealed class TEntryDraft
                 [TInterface.TSentenceDraftCreate("the speech kindled a hope")],
                 [],
                 [target.LEntryId],
-                string.Empty,
                 ["idiom"],
                 [],
                 1)]));
@@ -347,7 +342,7 @@ public sealed class TEntryDraft
     private static LCardDraft TEntryCardCreate(string meaning, int position)
     {
         return TInterface.TCardDraftCreate(
-            string.Empty, string.Empty, meaning, [], [], [], string.Empty, [], [], position);
+            string.Empty, string.Empty, meaning, [], [], [], [], [], position);
     }
 
     private static LExampleDraft TEntryExampleRead(LSentenceDraft sentence)
