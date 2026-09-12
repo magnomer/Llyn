@@ -20,7 +20,10 @@ Every caller wants both, so the pair is offered as one call.
 
 ## `internal void PImprintBulletinHandle(LBulletin bulletin)`
 
-Takes the draft bulletins the owning panel receives, since this area holds no observer of its own.
+Takes the bulletins the owning panel receives, since this area holds no observer of its own.
+A draft bulletin redraws the held draft when it is the one named.
+Any other bulletin re-reads the author catalog, and an author bulletin redraws the credits too.
+So a rename shows its new name in the credit list without the area re-reading after its own call.
 
 ## `internal void PImprintClear()`
 

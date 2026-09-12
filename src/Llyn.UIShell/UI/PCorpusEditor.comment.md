@@ -90,10 +90,10 @@ The language and the citation are compared the same way, so a bulletin that chan
 
 Writes one field and its mark from a value, unless the field already reads that value.
 
-## `private LExample PTranscriptRead(LExample held)`
+## `private LExample PTranscriptRead()`
 
-The held sentence with the control values written over it.
-Identity travels on the record given, so the panel never mints or carries an id of its own.
+The control values as a sentence with no identity.
+The engine keeps the id of the sentence it holds, so the panel never mints or carries an id of its own.
 
 ## `private void PCorpusFreshHandle(object sender, RoutedEventArgs e)`
 

@@ -166,42 +166,7 @@ public partial class PImprint
 
         try
         {
-            LDraft? held = _lEngine.LEngineDraftRead(_pImprintDraft);
-            if (held?.LDraftReference is not LReference content)
-            {
-                return;
-            }
-
-            LReference sent = PImprintRead(content);
-            if (sent.LReferenceTitle != content.LReferenceTitle)
-            {
-                _lEngine.LEngineRequestApply(new LRequestReferenceTitle(_pImprintDraft, sent.LReferenceTitle));
-            }
-
-            if (sent.LReferenceYear != content.LReferenceYear)
-            {
-                _lEngine.LEngineRequestApply(new LRequestReferenceYear(_pImprintDraft, sent.LReferenceYear));
-            }
-
-            if (sent.LReferenceKind != content.LReferenceKind)
-            {
-                _lEngine.LEngineRequestApply(new LRequestReferenceKind(_pImprintDraft, sent.LReferenceKind));
-            }
-
-            if (sent.LReferenceNote != content.LReferenceNote)
-            {
-                _lEngine.LEngineRequestApply(new LRequestReferenceNote(_pImprintDraft, sent.LReferenceNote));
-            }
-
-            if (sent.LReferenceUrl != content.LReferenceUrl)
-            {
-                _lEngine.LEngineRequestApply(new LRequestReferenceUrl(_pImprintDraft, sent.LReferenceUrl));
-            }
-
-            if (sent.LReferenceAuthorState != content.LReferenceAuthorState)
-            {
-                _lEngine.LEngineRequestApply(new LRequestAuthorState(_pImprintDraft, sent.LReferenceAuthorState));
-            }
+            _lEngine.LEngineRequestApply(new LRequestReferenceBody(_pImprintDraft, PImprintRead()));
         }
         catch (Exception exception)
         {

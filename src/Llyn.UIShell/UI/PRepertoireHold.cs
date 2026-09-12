@@ -172,24 +172,8 @@ public partial class PRepertoire
                 return;
             }
 
-            LSituation sent = PScenarioRead(content);
-            if (sent.LSituationTitle != content.LSituationTitle)
-            {
-                _lEngine.LEngineRequestApply(
-                    new LRequestSituationTitle(_pScenarioDraft, content.LSituationId, sent.LSituationTitle));
-            }
-
-            if (sent.LSituationDescription != content.LSituationDescription)
-            {
-                _lEngine.LEngineRequestApply(new LRequestSituationDescription(
-                    _pScenarioDraft, content.LSituationId, sent.LSituationDescription));
-            }
-
-            if (sent.LSituationKind != content.LSituationKind)
-            {
-                _lEngine.LEngineRequestApply(
-                    new LRequestSituationKind(_pScenarioDraft, content.LSituationId, sent.LSituationKind));
-            }
+            _lEngine.LEngineRequestApply(
+                new LRequestSituationBody(_pScenarioDraft, content.LSituationId, PScenarioRead()));
         }
         catch (Exception exception)
         {

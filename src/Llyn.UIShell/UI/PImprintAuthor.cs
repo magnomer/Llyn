@@ -219,8 +219,6 @@ public partial class PImprint
         }
 
         PAuthorName.Text = string.Empty;
-        PAuthorFind();
-        PImprintDraftRestore();
     }
 
     private void PAuthorRequestSend(LRequest request)
@@ -242,7 +240,6 @@ public partial class PImprint
             return;
         }
 
-        PImprintDraftRestore();
         PImprintChangeUpdate();
     }
 

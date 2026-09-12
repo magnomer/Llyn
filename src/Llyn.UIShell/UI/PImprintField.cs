@@ -230,21 +230,16 @@ public partial class PImprint
             + usage.ToString(CultureInfo.CurrentCulture);
     }
 
-    private LReference PImprintRead(LReference held)
+    private LReference PImprintRead()
     {
-        return held with
-        {
-            LReferenceTitle =
-                LStateValue.LStateValueResolve(PImprintTitle.Text, _pImprintTitleUnreadable),
-            LReferenceYear =
-                LStateValue.LStateValueResolve(PImprintYear.Text, _pImprintYearUnreadable),
-            LReferenceKind = PImprintKindRead(),
-            LReferenceNote =
-                LStateValue.LStateValueResolve(PImprintNote.Text, _pImprintNoteUnreadable),
-            LReferenceUrl =
-                LStateValue.LStateValueResolve(PImprintUrl.Text, _pImprintUrlUnreadable),
-            LReferenceAuthorState = _pAuthorState,
-        };
+        return new LReference(
+            0,
+            LStateValue.LStateValueResolve(PImprintTitle.Text, _pImprintTitleUnreadable),
+            LStateValue.LStateValueResolve(PImprintYear.Text, _pImprintYearUnreadable),
+            PImprintKindRead(),
+            LStateValue.LStateValueResolve(PImprintNote.Text, _pImprintNoteUnreadable),
+            LStateValue.LStateValueResolve(PImprintUrl.Text, _pImprintUrlUnreadable),
+            _pAuthorState);
     }
 
     private void PImprintDiscardHandle(object sender, RoutedEventArgs e)

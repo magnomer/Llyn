@@ -241,17 +241,14 @@ public partial class PCorpus
         field.Tag = held ? unreadable : string.Empty;
     }
 
-    private LExample PTranscriptRead(LExample held)
+    private LExample PTranscriptRead()
     {
-        return held with
-        {
-            LExampleLanguage = _pTranscriptLanguage,
-            LExampleText =
-                LStateValue.LStateValueResolve(PTranscriptText.Text, _pTranscriptTextUnreadable),
-            LExampleTranslation = LStateValue.LStateValueResolve(
-                PTranscriptTranslation.Text, _pTranscriptTranslationUnreadable),
-            LExampleSource = LStateAnchor.LStateAnchorRead(_pTranscriptCitation),
-        };
+        return new LExample(
+            0,
+            _pTranscriptLanguage,
+            LStateValue.LStateValueResolve(PTranscriptText.Text, _pTranscriptTextUnreadable),
+            LStateValue.LStateValueResolve(PTranscriptTranslation.Text, _pTranscriptTranslationUnreadable),
+            LStateAnchor.LStateAnchorRead(_pTranscriptCitation));
     }
 
     private void PCorpusFreshHandle(object sender, RoutedEventArgs e)

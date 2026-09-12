@@ -19,6 +19,55 @@ public sealed partial class LEngine
         return draft with { LDraftReference = change(held) };
     }
 
+    private static LReference LEngineBodyApply(LReference held, LReference? sent)
+    {
+        if (sent is null)
+        {
+            throw new LRefusal(LRefusal.LRefusalReference);
+        }
+
+        return held with
+        {
+            LReferenceTitle = LEngineValueRead(sent.LReferenceTitle),
+            LReferenceYear = LEngineValueRead(sent.LReferenceYear),
+            LReferenceKind = sent.LReferenceKind,
+            LReferenceNote = LEngineValueRead(sent.LReferenceNote),
+            LReferenceUrl = LEngineValueRead(sent.LReferenceUrl),
+            LReferenceAuthorState = sent.LReferenceAuthorState,
+        };
+    }
+
+    private static LExample LEngineBodyApply(LExample held, LExample? sent)
+    {
+        if (sent is null)
+        {
+            throw new LRefusal(LRefusal.LRefusalExample);
+        }
+
+        return held with
+        {
+            LExampleLanguage = sent.LExampleLanguage ?? string.Empty,
+            LExampleText = LEngineValueRead(sent.LExampleText),
+            LExampleTranslation = LEngineValueRead(sent.LExampleTranslation),
+            LExampleSource = sent.LExampleSource ?? LStateAnchor.LStateAnchorUnspecified,
+        };
+    }
+
+    private static LSituation LEngineBodyApply(LSituation held, LSituation? sent)
+    {
+        if (sent is null)
+        {
+            throw new LRefusal(LRefusal.LRefusalItem);
+        }
+
+        return held with
+        {
+            LSituationTitle = LEngineValueRead(sent.LSituationTitle),
+            LSituationDescription = LEngineValueRead(sent.LSituationDescription),
+            LSituationKind = LEngineValueRead(sent.LSituationKind),
+        };
+    }
+
     private LDraft LEngineAuthorAdd(LDraft draft, LRequestAuthorAddition request)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(request.LRequestText);

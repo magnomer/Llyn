@@ -166,34 +166,7 @@ public partial class PCorpus
 
         try
         {
-            LDraft? held = _lEngine.LEngineDraftRead(_pTranscriptDraft);
-            if (held?.LDraftExample is not LExample content)
-            {
-                return;
-            }
-
-            LExample sent = PTranscriptRead(content);
-            if (sent.LExampleText != content.LExampleText)
-            {
-                _lEngine.LEngineRequestApply(new LRequestExampleText(_pTranscriptDraft, sent.LExampleText));
-            }
-
-            if (sent.LExampleTranslation != content.LExampleTranslation)
-            {
-                _lEngine.LEngineRequestApply(
-                    new LRequestExampleTranslation(_pTranscriptDraft, sent.LExampleTranslation));
-            }
-
-            if (!string.Equals(sent.LExampleLanguage, content.LExampleLanguage, StringComparison.Ordinal))
-            {
-                _lEngine.LEngineRequestApply(new LRequestExampleLanguage(_pTranscriptDraft, sent.LExampleLanguage));
-            }
-
-            if (sent.LExampleSource != content.LExampleSource)
-            {
-                _lEngine.LEngineRequestApply(
-                    new LRequestExampleReference(_pTranscriptDraft, sent.LExampleSource.LStateAnchorShow()));
-            }
+            _lEngine.LEngineRequestApply(new LRequestExampleBody(_pTranscriptDraft, PTranscriptRead()));
         }
         catch (Exception exception)
         {

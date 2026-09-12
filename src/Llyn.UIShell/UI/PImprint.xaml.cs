@@ -42,6 +42,14 @@ public partial class PImprint : UserControl
         if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
         {
             PImprintDraftRestore(bulletin.LBulletinId);
+            return;
+        }
+
+        PAuthorFind();
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectAuthor)
+        {
+            PImprintDraftRestore();
         }
     }
 

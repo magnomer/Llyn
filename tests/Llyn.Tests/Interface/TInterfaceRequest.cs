@@ -105,6 +105,15 @@ internal static partial class TInterface
     internal static LRequest TAuthorShiftCreate(long draftId, long authorId, int position) =>
         new LRequestAuthorShift(draftId, authorId, position);
 
+    internal static LRequest TReferenceBodyCreate(long draftId, LReference reference) =>
+        new LRequestReferenceBody(draftId, reference);
+
+    internal static LRequest TExampleBodyCreate(long draftId, LExample example) =>
+        new LRequestExampleBody(draftId, example);
+
+    internal static LRequest TSituationBodyCreate(long draftId, long situationId, LSituation situation) =>
+        new LRequestSituationBody(draftId, situationId, situation);
+
     internal static LDraft TRequestContentApply(this LEngine engine, long draftId, LEntryDraft content)
     {
         LDraft held = engine.LEngineDraftRead(draftId)!;

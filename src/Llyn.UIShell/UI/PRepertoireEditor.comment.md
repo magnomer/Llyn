@@ -23,10 +23,10 @@ Fills the three fields outright from a Situation, or empties them, when a draft 
 Redraws each field from the held Situation only where the field says something else.
 A field that already reads what the engine holds is left alone, caret included.
 
-## `private LSituation PScenarioRead(LSituation held)`
+## `private LSituation PScenarioRead()`
 
-What the editor says the Situation is, written onto the Situation the engine holds.
-Identity comes from the held draft rather than from the panel, because the panel mints nothing.
+What the editor says the Situation is, as a Situation with no identity.
+The engine keeps the id of the Situation it holds, because the panel mints nothing.
 A field standing empty says nothing was recorded, unless it still carries the mark it was loaded with.
 Then it says instead that something was recorded that cannot be read back.
 

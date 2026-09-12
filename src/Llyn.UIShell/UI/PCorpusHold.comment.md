@@ -55,9 +55,9 @@ Fills the controls from a draft just started, or empties them when none was.
 
 ## `private void PTranscriptDraftSave()`
 
-Sends one request per field whose control value differs from what the engine holds.
-The engine answers each with a bulletin, and the bulletin redraws only what differs, so nothing moves under the caret.
-A draft the engine no longer holds is left alone rather than recreated.
+Sends the whole body of the form as one request and lets the engine decide what changed.
+An unchanged body is dropped by the engine without a bulletin, so nothing is redrawn under the caret.
+A changed body answers with one bulletin, and the bulletin redraws only what differs.
 
 ## `private void PTranscriptDraftRestore()`
 

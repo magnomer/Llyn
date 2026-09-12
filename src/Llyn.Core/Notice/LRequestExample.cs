@@ -11,3 +11,6 @@ public sealed record LRequestExampleLanguage(long LRequestDraftId, string LReque
 
 public sealed record LRequestExampleReference(long LRequestDraftId, long LRequestReferenceId)
     : LRequest(LRequestDraftId);
+
+public sealed record LRequestExampleBody(long LRequestDraftId, LExample LRequestExample)
+    : LRequest(LRequestDraftId);

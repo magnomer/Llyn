@@ -37,7 +37,7 @@ public partial class PReference
             PReferenceReset();
         }
 
-        PImprint.PAuthorFind();
+        PImprint.PImprintBulletinHandle(bulletin);
         PShelfFind(PSurvey.Text ?? string.Empty);
     }
 

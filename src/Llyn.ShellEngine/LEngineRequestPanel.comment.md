@@ -14,6 +14,21 @@ Applies one change to the sentence the draft holds, and refuses a draft holding 
 
 Applies one change to the source the draft holds, and refuses a draft holding none.
 
+## `private static LReference LEngineBodyApply(LReference held, LReference? sent)`
+
+Lays the stated fields of the sent source over the held one and keeps the held id.
+A null body is refused, since the form always sends the record it shows.
+Nothing is compared here; the caller drops the result when it equals what was held.
+
+## `private static LExample LEngineBodyApply(LExample held, LExample? sent)`
+
+Lays the language, text, translation and source of the sent sentence over the held one and keeps the held id.
+
+## `private static LSituation LEngineBodyApply(LSituation held, LSituation? sent)`
+
+Lays the title, description and kind of the sent situation over the held one and keeps the held id.
+The situation panel and the chips both route here through `LEngineSituationChange`.
+
 ## `private LDraft LEngineAuthorAdd(LDraft draft, LRequestAuthorAddition request)`
 
 Credits a new Author with the trimmed name and a minted id, at the place asked for.

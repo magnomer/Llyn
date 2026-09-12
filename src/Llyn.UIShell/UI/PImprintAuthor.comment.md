@@ -64,10 +64,11 @@ The rename is an explicit action rather than a side effect of typing in the cred
 A stored Author is renamed in the store, and never its id, so every Source keeps pointing at it.
 A credit not stored yet is only a name on the draft.
 So it is dropped and credited again under the new name.
+The engine announces the rename as an author bulletin, and that bulletin re-reads the catalog and the credits.
 
 ## `private void PAuthorRequestSend(LRequest request)`
 
-Sends one credit request and redraws from what the engine answered.
+Sends one credit request and leaves the redraw to the draft bulletin the engine raises.
 Typing still waiting in the five fields is written first, so the requests reach the engine in order.
 
 ## `private bool PAuthorRenameConfirm(PAuthorItem item)`

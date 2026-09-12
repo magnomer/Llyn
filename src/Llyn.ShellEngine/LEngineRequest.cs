@@ -21,8 +21,14 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalDraft);
             }
 
-            LDraft draft = LEngineRequestApply(LEngineDraftLoad(request.LRequestDraftId), request);
+            LDraft held = LEngineDraftLoad(request.LRequestDraftId);
+            LDraft draft = LEngineRequestApply(held, request);
             saved = draft with { LDraftContent = LEngineDraftNormalize(draft.LDraftContent) };
+            if (saved == held)
+            {
+                return held;
+            }
+
             LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved);
         }
 
@@ -55,6 +61,12 @@ public sealed partial class LEngine
                 draft, reference => reference with { LReferenceUrl = LEngineValueRead(sent.LRequestValue) }),
             LRequestAuthorState sent => LEngineReferenceChange(
                 draft, reference => reference with { LReferenceAuthorState = sent.LRequestState }),
+            LRequestReferenceBody sent => LEngineReferenceChange(
+                draft, reference => LEngineBodyApply(reference, sent.LRequestReference)),
+            LRequestExampleBody sent => LEngineExampleChange(
+                draft, example => LEngineBodyApply(example, sent.LRequestExample)),
+            LRequestSituationBody sent => LEngineSituationChange(
+                draft, sent.LRequestSituationId, situation => LEngineBodyApply(situation, sent.LRequestSituation)),
             LRequestAuthorAddition sent => LEngineAuthorAdd(draft, sent),
             LRequestAuthorPick sent => LEngineAuthorInsert(draft, sent),
             LRequestAuthorRemoval sent => LEngineAuthorRemove(draft, sent.LRequestAuthorId),

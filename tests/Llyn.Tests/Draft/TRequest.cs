@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -153,6 +153,75 @@ public sealed class TRequest
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TRequestAdditionCreate(draftId, LCardKind.LCardKindMeaning, 0, position));
         return answered.LDraftContent.LEntryDraftMeanings[position].LCardDraftId;
+    }
+
+    [Fact]
+    public void RequestApply_ReferenceBody_LaysEveryFieldAndKeepsTheHeldId()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineReferenceStart("Reference", null);
+        LReference sent = TInterface.TReferenceCreate(
+            999,
+            TInterface.TStateValueCreate("the evening news"),
+            TInterface.TStateValueCreate("1999"),
+            LReferenceKind.LReferenceKindBook,
+            TInterface.TStateValueCreate("a note"),
+            TInterface.TStateValueCreate("https://example.org"),
+            LState.LStateUnknown);
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TReferenceBodyCreate(started.LDraftId, sent));
+
+        LReference held = answered.LDraftReference!;
+        Assert.Equal(started.LDraftReference!.LReferenceId, held.LReferenceId);
+        Assert.Equal("the evening news", held.LReferenceTitle.TStateValueShow());
+        Assert.Equal("1999", held.LReferenceYear.TStateValueShow());
+        Assert.Equal(LReferenceKind.LReferenceKindBook, held.LReferenceKind);
+        Assert.Equal("a note", held.LReferenceNote.TStateValueShow());
+        Assert.Equal("https://example.org", held.LReferenceUrl.TStateValueShow());
+        Assert.Equal(LState.LStateUnknown, held.LReferenceAuthorState);
+    }
+
+    [Fact]
+    public void RequestApply_UnchangedBody_WritesNothingAndRaisesNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineExampleStart("Example", null);
+        LExample sent = TInterface.TExampleCreate(
+            0, "en", TInterface.TStateValueCreate("a line"), LStateValue.LStateValueUnspecified, LStateAnchor.LStateAnchorUnspecified);
+        LDraft changed = engine.TEngineRequestApply(TInterface.TExampleBodyCreate(started.LDraftId, sent));
+        TRequestObserver observer = new();
+        engine.TEngineObserverAttach(observer);
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TExampleBodyCreate(started.LDraftId, sent));
+
+        Assert.Equal(changed.LDraftVersion, answered.LDraftVersion);
+        Assert.Equal(changed.LDraftExample, answered.LDraftExample);
+        Assert.Equal(started.LDraftExample!.LExampleId, answered.LDraftExample!.LExampleId);
+        Assert.Equal("a line", answered.LDraftExample.LExampleText.TStateValueShow());
+        Assert.Empty(observer.TRequestObserverBulletins);
+    }
+
+    [Fact]
+    public void RequestApply_SituationBody_ChangesThePanelSituation()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineSituationStart("Situation", null);
+        long id = started.LDraftSituation!.LSituationId;
+        LSituation sent = TInterface.TSituationCreate(
+            0,
+            TInterface.TStateValueCreate("around a hearth"),
+            TInterface.TStateValueCreate("a fireside"),
+            TInterface.TStateValueCreate("place"));
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TSituationBodyCreate(started.LDraftId, id, sent));
+
+        Assert.Equal(id, answered.LDraftSituation!.LSituationId);
+        Assert.Equal("around a hearth", answered.LDraftSituation.LSituationTitle.TStateValueShow());
+        Assert.Equal("a fireside", answered.LDraftSituation.LSituationDescription.TStateValueShow());
+        Assert.Equal("place", answered.LDraftSituation.LSituationKind.TStateValueShow());
     }
 
     private sealed class TRequestObserver : LObserver

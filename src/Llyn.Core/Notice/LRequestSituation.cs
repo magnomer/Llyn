@@ -24,3 +24,6 @@ public sealed record LRequestSituationDescription(
 
 public sealed record LRequestSituationKind(long LRequestDraftId, long LRequestSituationId, LStateValue LRequestValue)
     : LRequest(LRequestDraftId);
+
+public sealed record LRequestSituationBody(long LRequestDraftId, long LRequestSituationId, LSituation LRequestSituation)
+    : LRequest(LRequestDraftId);

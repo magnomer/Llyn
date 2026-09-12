@@ -25,6 +25,7 @@ The catalog, the ordering, and the search all need them, so a per-row read would
 Re-reads the shelf and the authors whenever the engine announces a change, wherever it was made.
 A draft bulletin is the edit area's own typing coming back.
 It is handed to the area and nothing is re-read.
+Every other bulletin is handed to the area as well, so it re-reads its author catalog beside the shelf.
 The usage count beside a row and the credits under it are read with the shelf.
 A stored Source updates its own row.
 That is what the panel used to do by re-reading straight after its own commit.

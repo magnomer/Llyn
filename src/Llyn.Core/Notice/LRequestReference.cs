@@ -14,3 +14,6 @@ public sealed record LRequestReferenceNote(long LRequestDraftId, LStateValue LRe
 
 public sealed record LRequestReferenceUrl(long LRequestDraftId, LStateValue LRequestValue)
     : LRequest(LRequestDraftId);
+
+public sealed record LRequestReferenceBody(long LRequestDraftId, LReference LRequestReference)
+    : LRequest(LRequestDraftId);

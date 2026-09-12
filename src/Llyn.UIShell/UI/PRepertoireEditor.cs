@@ -105,17 +105,13 @@ public partial class PRepertoire
         field.Tag = held ? unreadable : string.Empty;
     }
 
-    private LSituation PScenarioRead(LSituation held)
+    private LSituation PScenarioRead()
     {
-        return held with
-        {
-            LSituationTitle =
-                LStateValue.LStateValueResolve(PScenarioTitle.Text, _pScenarioTitleUnreadable),
-            LSituationDescription = LStateValue.LStateValueResolve(
-                PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
-            LSituationKind =
-                LStateValue.LStateValueResolve(PScenarioKind.Text, _pScenarioKindUnreadable),
-        };
+        return new LSituation(
+            0,
+            LStateValue.LStateValueResolve(PScenarioTitle.Text, _pScenarioTitleUnreadable),
+            LStateValue.LStateValueResolve(PScenarioDescription.Text, _pScenarioDescriptionUnreadable),
+            LStateValue.LStateValueResolve(PScenarioKind.Text, _pScenarioKindUnreadable));
     }
 
     private void PScenarioDiscardHandle(object sender, RoutedEventArgs e)
