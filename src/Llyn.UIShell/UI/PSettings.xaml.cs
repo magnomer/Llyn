@@ -24,6 +24,7 @@ public partial class PSettings : UserControl
         PWorkspacePath.Text = engine.LEngineWorkspaceRead();
         PLocalization.SelectedValue = engine.LEngineSettingsRead().LSettingsLocalization;
         PRespelling.IsChecked = engine.LEngineSettingsRead().LSettingsRespelled;
+        PFrequency.IsChecked = engine.LEngineSettingsRead().LSettingsFrequency;
         _pSettingsReady = true;
     }
 }

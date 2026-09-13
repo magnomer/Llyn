@@ -20,6 +20,10 @@ In flag mode it is the tooltip of the flag rather than visible text.
 The variety's flag, resolved when the language pack shows varieties as flags and the pack declares one.
 Null means the label stands in for it.
 
+## `public bool PNotationReadingBracketed`
+
+Whether the reading is drawn between brackets, which IPA is and a transcription is not.
+
 ## `public string PNotationReadingPhonetic`
 
 The transcription itself, which is what taking the reading writes into the pronunciation field.

@@ -103,6 +103,21 @@ public sealed class TLookup
     }
 
     [Fact]
+    public async Task LookupStart_Literal_KeepsSpacesAndSkipsCleanup()
+    {
+        LSeeker lookup = TInterface.TLookupCreate(
+            [TPronunciationHelper.TSourceStubCreate(TInterface.TReadingCreate(string.Empty, " nǐ hǎo "))],
+            null,
+            [TInterface.TRespellingCreate("Tidy", [], [TInterface.TRespellingRuleCreate("ǐ", "i")])],
+            true);
+
+        IReadOnlyList<LCandidate> found = await lookup.TLookupStart(
+            "你好", TPronunciationHelper.TReceiverCreate(), CancellationToken.None);
+
+        Assert.Equal("nǐ hǎo", Assert.Single(found).LCandidatePhonetic);
+    }
+
+    [Fact]
     public async Task LookupStart_CleanupGroup_AppliesWithoutSwitch()
     {
         LSeeker lookup = TInterface.TLookupCreate(

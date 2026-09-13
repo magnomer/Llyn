@@ -18,6 +18,7 @@ The note is stored as Markdown normalized by `LMarkdown`.
 It is also the revision recording the create.
 The workspace row is moved onto that revision.
 Returns the stored entry with its assigned id and timestamps.
+A background frequency fill starts once the commit is through, which `LEngineFrequency.cs` owns.
 
 The draft is normalized before anything is written, so an item still carrying id zero is named here.
 Positive means a stored row and negative means an id the engine minted, so zero is never a saved state.

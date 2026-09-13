@@ -18,3 +18,6 @@ A part_of_speech row says its part of speech one of two ways and never both.
 speech_value_ref links a value the language declares, whose name lives on that row.
 custom_name carries text the user typed that no value names.
 The CHECK keeps the two from drifting into a row that is half link, half name.
+
+grasp is the user's own half-step score of how well they know the word, zero until rated.
+The CHECK keeps it within the ten half steps five stars hold.

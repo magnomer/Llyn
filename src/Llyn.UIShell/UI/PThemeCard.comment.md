@@ -23,6 +23,7 @@ Reserving the strip in both modes makes a line wrap identically whether or not t
 
 A row inside the body reaching back out into that strip.
 The row's text keeps the body's width and its handles hang in the gutter beside it.
+The transparent background makes the whole row hit-testable so hovering the gutter reveals the handles.
 
 ## `<Style x:Key="Theme.Card.Pellet" TargetType="Border">`
 

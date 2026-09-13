@@ -2,7 +2,7 @@
 
 ## `internal sealed class LTrove`
 
-The tentative store of what a pronunciation lookup or an audio discovery already returned.
+The tentative store of what a pronunciation lookup, a transcription lookup or an audio discovery already returned.
 An answer is kept against the draft the asking editor holds, never against the word alone.
 So two editors open at once keep their own answers, and neither reads the other's.
 An entry lives exactly as long as its draft does, and the engine drops it when that draft closes.
@@ -35,6 +35,15 @@ A row that gained a flag therefore reads the same hold rather than searching aga
 
 The recording counterpart of `LTroveCandidateSave`.
 Any row with an address makes the set worth keeping.
+
+## `internal IReadOnlyList<LCandidate>? LTroveTranscriptionRead(long session, string word, string language, string scheme)`
+
+The transcription counterpart of `LTroveCandidateRead`, held once per scheme.
+A draft with two schemes keeps two answers, because each was found by that scheme's own sources.
+
+## `internal void LTroveTranscriptionSave(long session, string word, string language, string scheme, IReadOnlyList<LCandidate> found)`
+
+The transcription counterpart of `LTroveCandidateSave`, kept under the scheme it was found for.
 
 ## `internal void LTroveClear(string session)`
 

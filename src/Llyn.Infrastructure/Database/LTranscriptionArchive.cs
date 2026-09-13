@@ -58,7 +58,7 @@ public sealed class LTranscriptionArchive
         foreach (LTranscription transcription in transcriptions)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(transcription.LTranscriptionScheme);
-            ArgumentException.ThrowIfNullOrWhiteSpace(transcription.LTranscriptionText);
+            ArgumentNullException.ThrowIfNull(transcription.LTranscriptionText);
             if (!schemes.Add(transcription.LTranscriptionScheme.Trim()))
             {
                 throw new InvalidOperationException(

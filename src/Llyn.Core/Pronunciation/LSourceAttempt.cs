@@ -7,4 +7,5 @@ public sealed record LSourceAttempt(
     IReadOnlyList<LSourceReading> LSourceAttemptReadings,
     string? LSourceAttemptGuard,
     IReadOnlyDictionary<string, string>? LSourceAttemptHeaders,
-    string? LSourceAttemptPrefix);
+    string? LSourceAttemptPrefix,
+    LSourceReading? LSourceAttemptFollow = null);

@@ -45,6 +45,11 @@ Its example, tag, and situation association rows go with it through the foreign-
 The independent Examples, Tags, and Situations they pointed at are left standing.
 The collocations left under the same entry are renumbered so their positions stay contiguous.
 
+## `public long? LCollocationHolderRead(long id)`
+
+Which entry holds the collocation, or nothing when no row carries the id.
+The engine uses it to stamp the entry when a collocation changes on its own.
+
 ## Inline notes
 
 ### `private static string? LCollocationHolderRead(SqliteConnection connection, long id)`

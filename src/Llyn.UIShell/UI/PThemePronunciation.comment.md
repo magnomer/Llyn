@@ -9,6 +9,13 @@ The reading view wears the same height, so a reading stands where it stands in t
 Without a box the reading has to hold the eye on its own.
 It is set larger than the buttons around it.
 
+## `<Style x:Key="Theme.Pronunciation.Lead" TargetType="StackPanel">`
+
+The flag and name, or the scheme, that a row leads with.
+Every row puts it in a grid column of the shared size group `PReadingLabel`.
+The editor and the reading view each open one such scope over their pronunciation and transcription rows.
+So every row's reading starts at one x, whatever the row leads with, in any language and any mix.
+
 ## `<Style x:Key="Theme.Pronunciation.Bracket" TargetType="TextBlock">`
 
 The two brackets that hold the reading.
@@ -28,6 +35,8 @@ It stands in where the pack draws no flags or none resolves.
 
 The pronunciation as it reads.
 It takes exactly the width its text needs.
+It is set in the phonetic face, as the field and the measure are.
+So the IPA stays whole whatever face the headword's language pack chose.
 A ceiling keeps a long reading from pushing the row wide.
 
 ## `<Style x:Key="Theme.Pronunciation.Measure" TargetType="TextBlock">`

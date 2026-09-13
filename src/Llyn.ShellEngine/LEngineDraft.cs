@@ -33,7 +33,7 @@ public sealed partial class LEngine
                     0,
                     draft.LEntryDraftHeadword,
                     draft.LEntryDraftLanguage,
-                    null,
+                    0,
                     null,
                     null,
                     null),
@@ -92,6 +92,7 @@ public sealed partial class LEngine
             workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             session.LDatabaseSessionCommit();
+            LEngineFrequencyStart(entry.LEntryId);
             return entry;
         }
     }

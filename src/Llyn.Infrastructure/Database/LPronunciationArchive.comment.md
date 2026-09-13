@@ -63,3 +63,8 @@ So a second save for the same pronunciation replaces the first rather than addin
 Reads the recording the pronunciation owns, or `null` when it has none.
 The file path comes back exactly as stored, relative to the workspace folder.
 So the caller that knows the workspace resolves it against the folder in use now.
+
+## `public long? LPronunciationHolderRead(long id)`
+
+Which entry holds the pronunciation, or nothing when no row carries the id.
+The engine uses it to stamp the entry when a pronunciation or its recording changes on its own.

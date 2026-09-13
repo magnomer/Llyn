@@ -112,6 +112,7 @@
 
     <Style x:Key="Theme.Card.Reach" TargetType="Grid">
         <Setter Property="Margin" Value="0,0,-76,0" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style x:Key="Theme.Card.Example" TargetType="Border">

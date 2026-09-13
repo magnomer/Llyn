@@ -2,7 +2,60 @@
   "language": "Cantonese",
   "flag": "hk",
   "separator": "none",
-  "transcription": ["Jyutping", "Yale"],
+  "transcription": [
+    {
+      "name": "Jyutping",
+      "note": "The wikitext attempt reads the |c= parameter of the {{zh-pron}} template, which Wiktionary keeps as the canonical Cantonese reading; a comma starts an alternative reading and is not taken. A simplified-form or variant-form page only points at its main form through {{zh-see}}, so the wikitext attempt follows that pointer and the later attempts ask for the form it named.",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+              ],
+              "follow": {
+                "strategy": "json",
+                "path": "parse.wikitext.*",
+                "match": "\\{\\{zh-see\\|([^|}]+)",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "json",
+              "path": "parse.wikitext.*",
+              "match": "\\{\\{zh-pron[^}]*?\\|c=([^|},\\n]+)",
+              "group": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Yale",
+      "note": "Cantonese Yale. Wiktionary derives it from the Jyutping at render time, so only the rendered page carries it. The Mandarin box prints a Yale line too, so the match anchors on the link to the Cantonese Yale article. The span strategy is required because a tone mark with an alternative is wrapped in a help span, which a flat pattern would truncate. The article page is asked before the REST rendering, because the REST host rejects bursts with 429.",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/wiki/{word}",
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+              ],
+              "follow": {
+                "strategy": "regex",
+                "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "span",
+              "match": "title=\"w:Yale romanization of Cantonese\"[^>]*>Yale</a></i></small>: <span class=\"zhpron-monospace\">"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "font": {
     "family": "Microsoft JhengHei",
     "size": 40
@@ -22,6 +75,12 @@
             "https://en.wiktionary.org/wiki/{word}",
             "https://en.m.wiktionary.org/wiki/{word}"
           ],
+          "follow": {
+            "strategy": "regex",
+            "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
           "strategy": "span",
           "match": "title=\"w:Cantonese phonology\"[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">"
         }
@@ -52,6 +111,12 @@
             "https://en.wiktionary.org/wiki/{word}",
             "https://en.m.wiktionary.org/wiki/{word}"
           ],
+          "follow": {
+            "strategy": "regex",
+            "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
           "strategy": "regex",
           "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q9186_%28yue%29-[^\"/]*\\.mp3)",
           "group": 1,
@@ -62,6 +127,12 @@
             "https://en.wiktionary.org/wiki/{word}",
             "https://en.m.wiktionary.org/wiki/{word}"
           ],
+          "follow": {
+            "strategy": "regex",
+            "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
           "strategy": "regex",
           "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Zh-yue-[^\"/]*\\.mp3)",
           "group": 1,

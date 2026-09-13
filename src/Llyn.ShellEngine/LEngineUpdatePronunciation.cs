@@ -69,7 +69,7 @@ public sealed partial class LEngine
         List<LPronunciationDraft> filled = [];
         foreach (LPronunciationDraft draft in drafts)
         {
-            if (!draft.LPronunciationDraftEmpty)
+            if (!draft.LPronunciationDraftSeeded || !draft.LPronunciationDraftEmpty)
             {
                 filled.Add(draft with { LPronunciationDraftIpa = draft.LPronunciationDraftIpa.Trim() });
             }

@@ -14,13 +14,16 @@
         <ResourceDictionary Source="/Llyn;component/UI/PThemeChoice.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePronunciation.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeAccent.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeTranscription.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePlayback.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeVolume.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeSpeech.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeFrequency.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeMarker.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeCategory.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeLanguage.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeFavorite.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeGrasp.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePanel.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeCommand.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeSearch.xaml" />

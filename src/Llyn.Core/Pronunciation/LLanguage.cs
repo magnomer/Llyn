@@ -9,21 +9,27 @@ public sealed record LLanguage(
     LFont LLanguageExample,
     IReadOnlyList<LSourceSpec> LLanguageLookupSources,
     IReadOnlyList<LSourceSpec> LLanguageHarvestSources,
-    IReadOnlyList<string>? LLanguageSchemes = null,
+    IReadOnlyList<LScheme>? LLanguageSchemes = null,
     bool LLanguageSeparated = true,
     IReadOnlyList<LVariety>? LLanguageVarieties = null,
     bool LLanguageVarietyFlagged = true,
     LFont? LLanguageGloss = null,
     IReadOnlyList<LRespelling>? LLanguageCleanups = null,
-    IReadOnlyList<LRespelling>? LLanguageRespellings = null)
+    IReadOnlyList<LRespelling>? LLanguageRespellings = null,
+    IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null,
+    IReadOnlyList<LBand>? LLanguageBands = null)
 {
-    public IReadOnlyList<string> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
+    public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
     public IReadOnlyList<LVariety> LLanguageVarieties { get; init; } = LLanguageVarieties ?? [];
 
     public IReadOnlyList<LRespelling> LLanguageCleanups { get; init; } = LLanguageCleanups ?? [];
 
     public IReadOnlyList<LRespelling> LLanguageRespellings { get; init; } = LLanguageRespellings ?? [];
+
+    public IReadOnlyList<LSourceSpec> LLanguageFrequencies { get; init; } = LLanguageFrequencies ?? [];
+
+    public IReadOnlyList<LBand> LLanguageBands { get; init; } = LLanguageBands ?? [];
 
     public LFont LLanguageGloss { get; init; } = LLanguageGloss ?? new LFont(null, 0);
 }

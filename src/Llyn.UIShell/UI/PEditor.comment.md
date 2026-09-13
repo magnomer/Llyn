@@ -38,9 +38,12 @@ So a part of speech no pack declares can still be written down.
 The pronunciation rows, laid out as the reading view lays them out.
 The primary pronunciation stands on the first row with the volume tray beside it.
 Every further pronunciation stands on a row of its own beneath, in the accent list.
+The transcription rows follow beneath those, one per scheme, only for a language whose pack declares schemes.
 Every row, the primary one included, wears the same play, lookup and download buttons after its brackets.
-Every row ends with the plus and minus pair the example rows carry, shown on hover, adding a row beneath or dropping the row.
-The row commands are bound here, above the primary row and the accent list, so both reach the editor that owns the draft and the menus.
+Every row ends with the plus and minus pair the example rows carry, shown on hover.
+The plus adds a row beneath and the minus drops the row.
+The row commands are bound here, above the primary row and the accent list.
+So both reach the editor that owns the draft and the menus.
 Pronunciation and volume tray carry the theme's shared styles, so switching mode moves neither of them.
 The rows start at the headword's own margin, because an indent here read as a different position.
 
@@ -56,6 +59,11 @@ The plus and minus carry no row, which the handlers read as the primary.
 ## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />`
 
 The further pronunciations, one editable row each, drawn by the shared accent template.
+
+## `<ItemsControl x:Name="PTranscription" ItemTemplate="{StaticResource Theme.Transcription.Row}" Visibility="Collapsed" />`
+
+The transcriptions, one editable row each, drawn by the shared transcription template.
+It stays collapsed until a draft in a language with schemes is rendered, so English shows no such line.
 
 ## `<Grid Margin="3,0,1,0">`
 

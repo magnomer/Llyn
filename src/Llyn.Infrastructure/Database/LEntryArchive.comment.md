@@ -94,6 +94,28 @@ Replaces the entry's part-of-speech assignments with `speeches` in list order, c
 Reordering rewrites positions.
 The entry id stays fixed.
 
+## `public void LEntryUpdatedSet(long id)`
+
+Moves `updated_utc` alone to now.
+The engine calls it when a part of the entry changes through its own seam.
+An id no entry carries is not an error here, since nothing was meant to be read back.
+
+## `public void LEntryFrequencySet(long entryId, string? frequency)`
+
+Writes the fetched frequency alone onto the entry `entryId` names.
+`updated_utc` is left where it stands, because a machine fill is not a user edit.
+A null clears the value, so a source that no longer answers leaves nothing stale behind.
+Throws when no entry carries that id, as `LEntryUpdate` does.
+`LEntryUpdate` still writes `frequency` from its record, so a read-then-update round trip keeps the value.
+
+## `public void LEntryGraspSet(long entryId, int grasp)`
+
+Writes the user's grasp alone onto the entry `entryId` names.
+`updated_utc` is left where it stands, because the word did not change, only the user's view of it.
+The value must pass [LGrasp](../../Llyn.Core/Lexicon/LGrasp.comment.md) `LGraspCheck`, so nothing outside zero to ten reaches the row.
+Throws when no entry carries that id, as `LEntryUpdate` does.
+`LEntryCreate` and `LEntryUpdate` never mention the column, so an editor save can never clobber a rating.
+
 ## `public void LEntryDelete(long id)`
 
 Deletes the entry identified by `id` and everything it owns.

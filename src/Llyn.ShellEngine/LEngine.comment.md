@@ -32,6 +32,10 @@ It keeps each loaded pack by language name, so the file is parsed once and not p
 It builds that language's transcription and recording sources separately through `LSourceFactory`.
 The two sets are cached apart.
 A lookup never reaches an audio source and a download never reaches a transcription one.
+The frequency sources of each language are cached in a third set, which `LEngineFrequency.cs` owns.
+Beside them sit the pending fills, one cancellation source per Entry.
+A third set names the Entries whose sources answered with nothing this session.
+A pending set of entry ids beside it stops the same Entry from filling twice at once.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
 
 ## `public LEngine()`
@@ -164,6 +168,11 @@ A change made in one is the level the next one opens at.
 
 Persists whether looked-up transcriptions are recast through the pack's respelling groups and keeps it current.
 The next lookup reads the switch, cached or fresh, so no search is run again to honour a flip.
+
+## `public void LEngineFrequencySave(bool frequency)`
+
+Persists whether an entry's frequency is fetched from the pack's web source and keeps it current.
+The next fill reads the switch, so a flip neither refetches what is stored nor drops it.
 
 ## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
 

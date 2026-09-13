@@ -4,12 +4,13 @@ namespace Llyn.UIShell;
 
 internal sealed class PNotationReading
 {
-    internal PNotationReading(string variety, string label, ImageSource? flag, string phonetic)
+    internal PNotationReading(string variety, string label, ImageSource? flag, string phonetic, bool bracketed)
     {
         PNotationReadingVariety = variety;
         PNotationReadingLabel = label;
         PNotationReadingFlag = flag;
         PNotationReadingPhonetic = phonetic;
+        PNotationReadingBracketed = bracketed;
     }
 
     public string PNotationReadingVariety { get; }
@@ -19,4 +20,6 @@ internal sealed class PNotationReading
     public ImageSource? PNotationReadingFlag { get; }
 
     public string PNotationReadingPhonetic { get; }
+
+    public bool PNotationReadingBracketed { get; }
 }

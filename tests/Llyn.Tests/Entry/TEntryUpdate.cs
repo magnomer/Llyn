@@ -1,4 +1,5 @@
-﻿using Llyn.Core;
+﻿using System.Threading;
+using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
@@ -68,6 +69,89 @@ public sealed class TEntryUpdate
             change.LRevisionChangeKind == "create" && change.LRevisionChangeSummary == "fourth");
 
         Assert.Equal(revision.LRevisionId, engine.TEngineStateRead().LWorkspaceStateRevision);
+    }
+
+    [Fact]
+    public void EntryUpdate_SameDraft_KeepsUpdatedStamp()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], [], [], 1)],
+            []));
+
+        LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
+        Assert.NotNull(loaded);
+
+        Thread.Sleep(20);
+        LEntry updated = engine.TEngineEntryUpdate(entry.LEntryId, loaded);
+
+        Assert.Equal(entry.LEntryUpdatedUtc, updated.LEntryUpdatedUtc);
+    }
+
+    [Fact]
+    public void EntryUpdate_MeaningChangedAlone_StampsEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], [], [], 1),
+                TInterface.TCardDraftCreate(string.Empty, string.Empty, "second", [], [], [], [], [], 2),
+            ],
+            []));
+
+        LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
+        Assert.NotNull(loaded);
+        LEntryDraft edited = loaded with
+        {
+            LEntryDraftMeanings =
+            [
+                loaded.LEntryDraftMeanings[0] with { LCardDraftMeaning = "first, reworded" },
+                loaded.LEntryDraftMeanings[1],
+            ],
+        };
+
+        Thread.Sleep(20);
+        LEntry updated = engine.TEngineEntryUpdate(entry.LEntryId, edited);
+
+        Assert.Equal("word", updated.LEntryHeadword);
+        Assert.NotEqual(entry.LEntryUpdatedUtc, updated.LEntryUpdatedUtc);
+    }
+
+    [Fact]
+    public void EntryUpdate_MeaningUpdatedDirectly_StampsEntry()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "word",
+            "English",
+            string.Empty,
+            string.Empty,
+            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "first", [], [], [], [], [], 1)],
+            []));
+
+        LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
+        LMeaning stored = meanings.TMeaningRead(entry.LEntryId)[0];
+
+        Thread.Sleep(20);
+        engine.TEngineMeaningUpdate(stored with { LMeaningDefinition = "reworded" });
+
+        LEntry? updated = engine.TEngineEntryRead(entry.LEntryId);
+        Assert.NotNull(updated);
+        Assert.NotEqual(entry.LEntryUpdatedUtc, updated.LEntryUpdatedUtc);
     }
 
     [Fact]

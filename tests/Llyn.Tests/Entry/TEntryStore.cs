@@ -13,7 +13,7 @@ public sealed class TEntryStore
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry stored = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "word", "en", null, null, null, null),
+            TInterface.TEntryCreate(0, "word", "en", 0, null, null, null),
             [TInterface.TFormCreate(0, 0, "word", null, "headword"),
              TInterface.TFormCreate(0, 0, "words", null, "plural")],
             [TInterface.TSpeechCreate(0, 0, null, "noun")]);
@@ -31,7 +31,7 @@ public sealed class TEntryStore
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
 
         Assert.Throws<InvalidOperationException>(
-            () => entries.TEntryUpdate(TInterface.TEntryCreate(9999, "word", "en", null, null, null, null)));
+            () => entries.TEntryUpdate(TInterface.TEntryCreate(9999, "word", "en", 0, null, null, null)));
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public sealed class TEntryStore
         LSentenceArchive links = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "word", "en", null, null, null, null),
+            TInterface.TEntryCreate(0, "word", "en", 0, null, null, null),
             [TInterface.TFormCreate(0, 0, "word", null, "headword")],
             []);
         LMeaning meaning = meanings.TMeaningCreate(
@@ -70,8 +70,8 @@ public sealed class TEntryStore
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
 
-        entries.TEntryCreate(TInterface.TEntryCreate(0, "Äpfel", "de", null, null, null, null), [], []);
-        entries.TEntryCreate(TInterface.TEntryCreate(0, "straße", "de", null, null, null, null), [], []);
+        entries.TEntryCreate(TInterface.TEntryCreate(0, "Äpfel", "de", 0, null, null, null), [], []);
+        entries.TEntryCreate(TInterface.TEntryCreate(0, "straße", "de", 0, null, null, null), [], []);
 
         Assert.Equal("Äpfel", Assert.Single(entries.TEntryFind("äpfel")).LEntryHeadword);
         Assert.Equal("Äpfel", Assert.Single(entries.TEntryFind("ÄPF")).LEntryHeadword);

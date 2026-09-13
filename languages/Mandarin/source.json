@@ -2,7 +2,74 @@
   "language": "Mandarin",
   "flag": "cn",
   "separator": "none",
-  "transcription": ["Pinyin", "Bopomofo"],
+  "transcription": [
+    {
+      "name": "Pinyin",
+      "note": "Hanyu Pinyin. The wikitext attempt reads the |m= parameter of the {{zh-pron}} template, which Wiktionary keeps as the canonical Mandarin reading; a comma starts an alternative reading and is not taken. The HTML attempt is the fallback, reading the Latn span of the Hanyu Pinyin line of the rendered pronunciation box with the span strategy, because the line nests a link and a phonetic note the flat pattern would take too. The article page is asked before the REST rendering, because the REST host rejects bursts with 429. A simplified-form or variant-form page carries no reading of its own and only points at its main form through {{zh-see}}, so the wikitext attempt follows that pointer and the later attempts ask for the form it named.",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+              ],
+              "follow": {
+                "strategy": "json",
+                "path": "parse.wikitext.*",
+                "match": "\\{\\{zh-see\\|([^|}]+)",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "json",
+              "path": "parse.wikitext.*",
+              "match": "\\{\\{zh-pron[^}]*?\\|m=([^|},\\n]+)",
+              "group": 1
+            },
+            {
+              "urls": [
+                "https://en.wiktionary.org/wiki/{word}",
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+              ],
+              "follow": {
+                "strategy": "regex",
+                "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "span",
+              "match": "Hanyu Pinyin</a></i></small>: <span class=\"zhpron-monospace\"[^>]*><span class=\"Latn\"[^>]*>"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bopomofo",
+      "note": "Zhuyin. Wiktionary derives it from the Pinyin at render time, so only the rendered page carries it, as the Bopo span of the Zhuyin line. The article page is asked before the REST rendering, because the REST host rejects bursts with 429. A simplified-form page only points at its main form, so the attempt follows the see link of the rendered page.",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/wiki/{word}",
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+              ],
+              "follow": {
+                "strategy": "regex",
+                "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "span",
+              "match": "<span lang=\"cmn-Bopo\" class=\"Bopo\">"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "font": {
     "family": "Microsoft YaHei",
     "size": 40
@@ -11,7 +78,67 @@
     "family": "SimSun, Microsoft YaHei",
     "size": 16
   },
-  "note": "Language selector pack for Mandarin. Pronunciation and audio sources are listed separately and can be added without changing the application.",
-  "pronunciation": [],
-  "audio": []
+  "note": "Language pack for Mandarin. Every URL and extraction rule is data — edit here, no recompile. The 'pronunciation' and 'audio' lists are independent and each is shown in the order written here. Mandarin transcriptions are read as IPA here, while Pinyin and Zhuyin are the transcription schemes above. Every source is read from an ordinary article page rather than a machine API, because the article hosts impose no request ceiling while the REST endpoints reject bursts with 429, which the reader would report as an unreachable source. A simplified-form page only points at its traditional form, so every attempt follows the see link of the rendered page.",
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "note": "The Chinese pronunciation table of an entry carries one row per variety. Only the Mandarin row links its IPA key to the Mandarin pronunciation appendix, so that link anchors the reader to the right row and keeps Cantonese, Hakka and Min readings out. The span strategy is required because the transcription nests tone-note spans inside the IPA span, which a flat pattern would truncate. An entry with no Mandarin section carries no anchor, so the attempt simply yields nothing.",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.m.wiktionary.org/wiki/{word}"
+          ],
+          "follow": {
+            "strategy": "regex",
+            "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
+          "strategy": "span",
+          "match": "title=\"Appendix:Mandarin pronunciation\"[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">"
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Wiktionary",
+      "note": "Wiktionary embeds Commons recordings as protocol-relative addresses, so 'prefix' supplies the scheme. Only the transcoded mp3 rendition is taken, because the original is OGG or WAV. The first attempt takes a Zh- filename that is not a Zh-yue- (Cantonese) or Zh-nan- (Min Nan) one, and the second a Lingua Libre LL-Q9192_%28cmn%29- filename, both marking the recording as Mandarin.",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.m.wiktionary.org/wiki/{word}"
+          ],
+          "follow": {
+            "strategy": "regex",
+            "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Zh-(?!yue-|nan-)[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.m.wiktionary.org/wiki/{word}"
+          ],
+          "follow": {
+            "strategy": "regex",
+            "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q9192_%28cmn%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ]
 }

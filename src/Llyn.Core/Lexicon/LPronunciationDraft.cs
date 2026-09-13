@@ -8,7 +8,8 @@ public sealed record LPronunciationDraft(
     string LPronunciationDraftAudio = "",
     string? LPronunciationDraftSource = null,
     long LPronunciationDraftId = 0,
-    string LPronunciationDraftVariety = "")
+    string LPronunciationDraftVariety = "",
+    bool LPronunciationDraftSeeded = false)
 {
     public string LPronunciationDraftIpa { get; init; } = LPronunciationDraftIpa ?? string.Empty;
 

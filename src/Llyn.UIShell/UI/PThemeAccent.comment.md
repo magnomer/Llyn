@@ -56,7 +56,9 @@ The minus is drawn by a template, since one shared element could stand in only o
 
 A row as the editor draws it: chip, bracketed field, play, lookup, download, and the plus and minus pair.
 The field is bound to the row so typing reaches the row model, which the editor listens to.
+The chip sits in the shared lead column, so the bracket starts where every other row's reading starts.
 
 ## `<DataTemplate x:Key="Theme.Accent.Display">`
 
 A row as the reading view draws it: chip, bracketed text and play, nothing to type into.
+Its chip sits in the shared lead column too.

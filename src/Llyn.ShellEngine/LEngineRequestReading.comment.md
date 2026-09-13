@@ -17,6 +17,8 @@ Routes every reading request to its handler, and hands any other request on to t
 
 Applies a change to the first pronunciation row, minting that row when the list is empty.
 The reading and the recording are two requests, and either may arrive first.
+The minted row is seeded, because the primary field stands on the form before anything was typed.
+So it counts as a pronunciation only once it carries something.
 
 ## `private LEntryDraft LEnginePronunciationAdd(LEntryDraft content, LRequestPronunciationAddition request)`
 

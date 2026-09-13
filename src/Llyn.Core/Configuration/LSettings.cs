@@ -4,4 +4,5 @@ public sealed record LSettings(
     string LSettingsLocalization,
     LWindowState? LSettingsWindow = null,
     double LSettingsVolume = 1,
-    bool LSettingsRespelled = false);
+    bool LSettingsRespelled = false,
+    bool LSettingsFrequency = true);

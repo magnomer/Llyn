@@ -7,6 +7,9 @@ The entry keeps its identity while its cards are reconciled to the draft.
 The revision says what actually moved.
 An entry that is no longer there is refused.
 An update that fails part-way leaves the stored entry exactly as it was.
+The update stamp moves only when the draft differs from what is stored.
+A change to any card alone moves it, because the stamp belongs to the whole entry.
+A card changed through its own seam, outside the draft, moves it as well.
 
 ## Inline notes
 

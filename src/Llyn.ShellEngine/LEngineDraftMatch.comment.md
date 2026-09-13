@@ -16,7 +16,8 @@ The lists inside are compared by their contents, since records compare them by r
 ## `private static bool LEngineSoundMatch(IReadOnlyList<LPronunciationDraft> one, IReadOnlyList<LPronunciationDraft> other)`
 
 Whether two drafts record the same pronunciations in the same order.
-Blank rows are left out first, because a row the form added and never filled is not a change.
+A seeded row still blank is left out first, because the form offered it and nobody asked for it.
+A row the user added counts even blank, so adding one is a change.
 
 ## `private static bool LEngineSoundMatch(LPronunciationDraft one, LPronunciationDraft other)`
 
@@ -26,7 +27,8 @@ A record comparison would call every reloaded draft a change and never settle.
 
 ## `private static bool LEngineSpellingMatch(IReadOnlyList<LTranscriptionDraft> one, IReadOnlyList<LTranscriptionDraft> other)`
 
-Whether two drafts record the same transcriptions in the same order, blank rows left out.
+Whether two drafts record the same transcriptions in the same order.
+A seeded row still blank is left out, as it is for pronunciations.
 
 ## `private static bool LEngineSpeechMatch(IReadOnlyList<LSpeechDraft> one, IReadOnlyList<LSpeechDraft> other)`
 

@@ -156,8 +156,8 @@ internal static partial class TInterface
         long draftId, long pronunciationId, string file, string? source) =>
         new LRequestPronunciationAudio(draftId, pronunciationId, file, source);
 
-    internal static LRequest TTranscriptionAdditionCreate(long draftId, string scheme, int position) =>
-        new LRequestTranscriptionAddition(draftId, scheme, position);
+    internal static LRequest TTranscriptionAdditionCreate(long draftId, string scheme, int position, bool seeded = false) =>
+        new LRequestTranscriptionAddition(draftId, scheme, position, seeded);
 
     internal static LRequest TTranscriptionRemovalCreate(long draftId, long transcriptionId) =>
         new LRequestTranscriptionRemoval(draftId, transcriptionId);

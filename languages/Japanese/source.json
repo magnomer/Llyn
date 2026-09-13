@@ -2,7 +2,27 @@
   "language": "Japanese",
   "flag": "jp",
   "separator": "none",
-  "transcription": ["Romaji"],
+  "transcription": [
+    {
+      "name": "Romaji",
+      "note": "Hepburn romaji as Wiktionary prints it after the Japanese headword, inside the headword-tr span. The lang attribute keeps other languages' transliterations out, and the span strategy strips the link a romaji with its own entry is wrapped in. The article page is asked before the REST rendering, because the REST host rejects bursts with 429.",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/wiki/{word}",
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+              ],
+              "strategy": "span",
+              "match": "<span class=\"headword-tr tr\"[^>]*><span class=\"Latn\" lang=\"ja\">"
+            }
+          ]
+        }
+      ]
+    }
+  ],
   "font": {
     "family": "Yu Gothic UI",
     "size": 40

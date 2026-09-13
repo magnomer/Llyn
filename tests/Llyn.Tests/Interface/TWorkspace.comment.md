@@ -36,6 +36,8 @@ The engine imports from a path, so a test with a document in hand needs a file t
 ## `public LEngine TWorkspaceEngineStart()`
 
 Binds an engine to this workspace folder, so a test never constructs one itself.
+Its sources fetch through a stub that answers 404 to every address, so no test reaches the network.
+A saved entry starts a background frequency fetch, and a real client would hit the language pack's web sources.
 
 ## `public LEngine TWorkspaceEngineStart(HttpClient client)`
 

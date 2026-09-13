@@ -4,7 +4,7 @@ public sealed record LEntry(
     long LEntryId,
     string LEntryHeadword,
     string LEntryLanguage,
-    string? LEntryProficiency,
+    int LEntryGrasp,
     string? LEntryFrequency,
     string? LEntryAddedUtc,
     string? LEntryUpdatedUtc);

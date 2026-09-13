@@ -197,6 +197,7 @@ public sealed partial class LEngine
                 examples.LExampleDelete(exampleId);
             }
 
+            LEngineUpdatedSet(ownerId, LEngineOwnerCheck(owner));
             session.LDatabaseSessionCommit();
         }
     }

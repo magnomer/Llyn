@@ -5,8 +5,10 @@
 The further pronunciation rows of the input panel, rendered from the draft the engine holds.
 The primary pronunciation keeps its own field above them.
 Every pronunciation after it stands on its own row beneath, with its variety, its IPA and its controls.
-The controls are play when the row has audio, lookup, download and the plus and minus pair, the same set the primary row wears.
-A row edit becomes a request on that row's id, a plus an addition request after it, and a minus a removal request.
+The controls are play when the row has audio, lookup, download and the plus and minus pair.
+That is the same set the primary row wears.
+A row edit becomes a request on that row's id.
+A plus becomes an addition request after it, and a minus a removal request.
 Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
@@ -18,7 +20,8 @@ The pending-request key of one row's IPA, so a draft render skips a row whose ed
 ## `internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Adds a blank pronunciation after the row carried as the command parameter, or after the primary when none is.
-A primary the draft does not yet hold is added first, so the new row lands beneath it rather than in its place.
+A primary the draft does not yet hold is added first.
+So the new row lands beneath it rather than in its place.
 
 ## `internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
 

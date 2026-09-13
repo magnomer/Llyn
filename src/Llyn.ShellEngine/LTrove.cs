@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.ShellEngine;
@@ -9,6 +10,8 @@ internal sealed class LTrove
     private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)> _lTroveCandidate = [];
 
     private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound)> _lTroveRecording = [];
+
+    private readonly Dictionary<(long LTroveSession, string LTroveScheme), (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)> _lTroveTranscription = [];
 
     internal IReadOnlyList<LCandidate>? LTroveCandidateRead(long session, string word, string language)
     {
@@ -56,16 +59,44 @@ internal sealed class LTrove
         _lTroveRecording[session] = (word, language, found);
     }
 
+    internal IReadOnlyList<LCandidate>? LTroveTranscriptionRead(long session, string word, string language, string scheme)
+    {
+        if (session == 0 ||
+            !_lTroveTranscription.TryGetValue((session, scheme),
+                out (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound) held))
+        {
+            return null;
+        }
+
+        return LTroveHoldMatch(held.LTroveWord, held.LTroveLanguage, word, language) ? held.LTroveFound : null;
+    }
+
+    internal void LTroveTranscriptionSave(
+        long session, string word, string language, string scheme, IReadOnlyList<LCandidate> found)
+    {
+        if (session == 0 || !LTroveCandidateCheck(found))
+        {
+            return;
+        }
+
+        _lTroveTranscription[(session, scheme)] = (word, language, found);
+    }
+
     internal void LTroveClear(long session)
     {
         _lTroveCandidate.Remove(session);
         _lTroveRecording.Remove(session);
+        foreach ((long LTroveSession, string LTroveScheme) key in _lTroveTranscription.Keys.Where(key => key.LTroveSession == session).ToList())
+        {
+            _lTroveTranscription.Remove(key);
+        }
     }
 
     internal void LTroveClear()
     {
         _lTroveCandidate.Clear();
         _lTroveRecording.Clear();
+        _lTroveTranscription.Clear();
     }
 
     private static bool LTroveCandidateCheck(IReadOnlyList<LCandidate> found)

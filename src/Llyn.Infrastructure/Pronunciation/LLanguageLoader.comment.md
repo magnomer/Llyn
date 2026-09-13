@@ -27,9 +27,24 @@ So it is settled here, not in the UI.
 
 ### `private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(JsonElement root, string key)`
 
-The pack declares its sources under `pronunciation` and `audio`, and this reads one of those lists.
-Neither list is required, and a missing one simply reads as empty.
+The pack declares its sources under `pronunciation`, `audio` and `frequency`, and this reads one of those lists.
+No list is required, and a missing one simply reads as empty.
 A source declares no kind, because the list it sits in already says what it is for.
+The `frequency` list has the same shape, so a figure is fetched the way a transcription is.
+`normalize` defaults off there as everywhere, so the raw figure survives untouched.
+
+### `private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)`
+
+The pack declares its frequency bands under `bands`, in the order they are tried.
+A missing block reads as no bands, and the raw figure then shows without a label.
+Order is kept because the first matching band wins.
+
+### `private static LBand? LLanguageBandRead(JsonElement row)`
+
+A band row carries a `name` and either an `upTo` integer or a `match` regex.
+`upTo` is read first, so a row carrying both is a limit band.
+A row with a blank name, with neither key, or with a regex that fails to compile is skipped.
+The regex is compiled once here so one typo never blanks the pack.
 
 ### `private static LFont LLanguageFontRead(JsonElement root, string key)`
 
@@ -44,11 +59,17 @@ The image itself is not shipped.
 The engine downloads and caches it on demand.
 Absent code means no flag.
 
-### `private static IReadOnlyList<string> LLanguageSchemeScan(JsonElement root)`
+### `private static IReadOnlyList<LScheme> LLanguageSchemeScan(JsonElement root)`
 
-The pack declares its transcription schemes under `transcription` as a list of names.
-A missing or empty list turns the transcription line off for that language.
+The pack declares its transcription schemes under `transcription`, in the order the form shows them.
+A missing or empty list turns the transcription rows off for that language.
 Blank and repeated names are dropped, so the form never shows a nameless or doubled scheme.
+
+### `private static LScheme? LLanguageSchemeRead(JsonElement scheme)`
+
+A scheme is either a bare name or an object carrying a `name` and a `sources` list.
+The `sources` list has the shape of the `pronunciation` list, so a scheme is looked up the way IPA is.
+A bare name carries no sources, and the row for it is typed by hand.
 
 ### `private static IReadOnlyList<LSourceReading> LLanguageReadingScan(JsonElement row)`
 
@@ -63,6 +84,14 @@ One reader serves both the flat attempt and a row of its `readings` list, becaus
 `variety` names a variety the pack declares, or is absent for an untagged reading.
 `skip` counts earlier matches to pass over, so a page can yield its second variety from its second span.
 Both default to empty and zero.
+
+### `private static LSourceReading? LLanguageFollowRead(JsonElement row)`
+
+An attempt may carry a `follow` object shaped like one reading.
+It names how the page's pointer to another headword is captured.
+The captured value is a headword and never a transcription.
+So IPA normalization is switched off on it whatever the pack wrote.
+An attempt without it, or with a follow row lacking a strategy, never follows.
 
 ### `private static IReadOnlyList<LVariety> LLanguageVarietyScan(JsonElement root)`
 

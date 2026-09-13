@@ -17,14 +17,18 @@ public sealed class LLookup : LSeeker
 
     private readonly IReadOnlyList<LRespelling> _lLookupCleanups;
 
+    private readonly bool _lLookupLiteral;
+
     public LLookup(
         IReadOnlyList<LSource> sources,
         IReadOnlyList<LVariety> varieties,
-        IReadOnlyList<LRespelling> cleanups)
+        IReadOnlyList<LRespelling> cleanups,
+        bool literal = false)
     {
         _lLookupSources = sources ?? throw new ArgumentNullException(nameof(sources));
         _lLookupVarieties = varieties ?? throw new ArgumentNullException(nameof(varieties));
         _lLookupCleanups = cleanups ?? throw new ArgumentNullException(nameof(cleanups));
+        _lLookupLiteral = literal;
     }
 
     public async Task<IReadOnlyList<LCandidate>> LSeekerStart(
@@ -39,7 +43,7 @@ public sealed class LLookup : LSeeker
         for (int order = 0; order < _lLookupSources.Count; order++)
         {
             pending.Add(LLookupSourceRun(
-                _lLookupSources[order], order, word, _lLookupVarieties, _lLookupCleanups, receiver, found, cancellation));
+                _lLookupSources[order], order, word, _lLookupVarieties, _lLookupCleanups, _lLookupLiteral, receiver, found, cancellation));
         }
 
         try
@@ -63,6 +67,7 @@ public sealed class LLookup : LSeeker
         string word,
         IReadOnlyList<LVariety> varieties,
         IReadOnlyList<LRespelling> cleanups,
+        bool literal,
         LReceiver receiver,
         List<LCandidate> found,
         CancellationToken cancellation)
@@ -82,8 +87,10 @@ public sealed class LLookup : LSeeker
         {
             foreach (LReading reading in readings)
             {
-                string cleaned = LRespelling.LRespellingScan(
-                    cleanups, LReading.LReadingNormalize(reading.LReadingPhonetic), reading.LReadingVariety);
+                string cleaned = literal
+                    ? reading.LReadingPhonetic.Trim()
+                    : LRespelling.LRespellingScan(
+                        cleanups, LReading.LReadingNormalize(reading.LReadingPhonetic), reading.LReadingVariety);
                 candidates.Add(new LCandidate(
                     source.LSourceName, cleaned, order, answer.LAnswerReached, reading.LReadingVariety));
             }

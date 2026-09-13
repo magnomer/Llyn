@@ -91,3 +91,9 @@ The observer marshals onto this control's dispatcher, so an answer from any thre
 
 The language pill is drawn as the reading view draws it, so one entry reads the same in both.
 The toggle keeps its arrow and its menu, because here the language is chosen rather than reported.
+
+### `<Border x:Name="PEditorFrequencyChip" ...>`
+
+The frequency chip sits after the star, drawn as the reading view draws it.
+It is read only here as there, since a frequency is fetched rather than typed.
+A form standing on nothing hides it, and nothing beside it moves when it does.

@@ -14,6 +14,8 @@ The fan-out comes first so a cleanup group scoped to one variety sees the variet
 Cleanup is mandatory and knows no switch, so every candidate leaving here carries cleaned text.
 The returned set therefore holds cleaned text too, and a cache built on it never needs a second fetch.
 The user's optional respelling is not applied here, because the cache must stay free of it.
+A literal lookup skips the normalization and the cleanup both, keeping each reading as the source wrote it.
+That is the transcription path, where a scheme such as Pinyin keeps its spaces and knows no IPA cleanup.
 A source that had nothing or was never reached still produces one candidate with no phonetic.
 So the menu can name a broken source rather than leaving its row silently absent.
 The returned set is ordered by source position with a stable sort, so readings keep their order inside a source.

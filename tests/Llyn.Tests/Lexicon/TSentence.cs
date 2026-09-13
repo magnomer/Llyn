@@ -301,7 +301,7 @@ public sealed class TSentence
         LCollocationArchive collocations = TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "word", "en", null, null, null, null),
+            TInterface.TEntryCreate(0, "word", "en", 0, null, null, null),
             [TInterface.TFormCreate(0, 0, "word", null, "headword")],
             []);
 
@@ -322,7 +322,7 @@ public sealed class TSentence
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "word", language, null, null, null, null),
+            TInterface.TEntryCreate(0, "word", language, 0, null, null, null),
             [TInterface.TFormCreate(0, 0, "word", null, "headword")],
             []);
 

@@ -38,6 +38,7 @@ internal static class PThemeLoader
             ["warning"] = "Theme.Warning.Color",
             ["warningSoft"] = "Theme.WarningSoft.Color",
             ["warningStrong"] = "Theme.WarningStrong.Color",
+            ["favorite"] = "Theme.Favorite.Color",
             ["disabledLine"] = "Theme.DisabledLine.Color",
             ["disabledInk"] = "Theme.DisabledInk.Color"
         };

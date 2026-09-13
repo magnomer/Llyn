@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -62,7 +63,7 @@ public sealed class TTranscription
     }
 
     [Fact]
-    public void EntryUpdate_BlankText_DropsTheRow()
+    public void EntryUpdate_BlankText_KeepsTheRowEmpty()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -76,7 +77,48 @@ public sealed class TTranscription
             LEntryDraftTranscriptions = [loaded.LEntryDraftTranscriptions[0] with { LTranscriptionDraftText = " " }],
         });
 
-        Assert.Empty(engine.TEngineTranscriptionRead(entry.LEntryId));
+        LTranscription kept = Assert.Single(engine.TEngineTranscriptionRead(entry.LEntryId));
+        Assert.Equal("Jyutping", kept.LTranscriptionScheme);
+        Assert.Equal(string.Empty, kept.LTranscriptionText);
+    }
+
+    [Fact]
+    public void EntrySave_SeededBlankRow_DropsOnlyThatRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TTranscriptionDraftCreate(
+            [
+                TInterface.TTranscriptionDraftCreate("Jyutping", string.Empty, seeded: true),
+                TInterface.TTranscriptionDraftCreate("Yale", string.Empty),
+            ]));
+
+        LTranscription kept = Assert.Single(engine.TEngineTranscriptionRead(entry.LEntryId));
+        Assert.Equal("Yale", kept.LTranscriptionScheme);
+    }
+
+    [Fact]
+    public void DraftCheck_SeededBlankRow_IsNoChangeUntilFilledOrAsked()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+
+        LDraft answered = engine.TEngineRequestApply(
+            TInterface.TTranscriptionAdditionCreate(started.LDraftId, "Jyutping", 0, seeded: true));
+        Assert.False(engine.TEngineDraftCheck(started.LDraftId));
+
+        engine.TEngineRequestApply(TInterface.TTranscriptionAdditionCreate(started.LDraftId, "Yale", 1));
+        Assert.True(engine.TEngineDraftCheck(started.LDraftId));
+
+        long yale = engine.TEngineDraftRead(started.LDraftId)!.LDraftContent.LEntryDraftTranscriptions[1].LTranscriptionDraftId;
+        engine.TEngineRequestApply(TInterface.TTranscriptionRemovalCreate(started.LDraftId, yale));
+        Assert.False(engine.TEngineDraftCheck(started.LDraftId));
+
+        long jyutping = answered.LDraftContent.LEntryDraftTranscriptions[0].LTranscriptionDraftId;
+        engine.TEngineRequestApply(TInterface.TTranscriptionTextCreate(started.LDraftId, jyutping, "hoeng1 gong2"));
+        Assert.True(engine.TEngineDraftCheck(started.LDraftId));
     }
 
     [Fact]
@@ -156,6 +198,47 @@ public sealed class TTranscription
 
         answered = engine.TEngineRequestApply(TInterface.TTranscriptionRemovalCreate(started.LDraftId, jyutping));
         Assert.Equal(yale, Assert.Single(answered.LDraftContent.LEntryDraftTranscriptions).LTranscriptionDraftId);
+    }
+
+    private const string TTranscriptionPack =
+        """
+        { "transcription": [
+            { "name": "Pinyin", "sources": [ { "name": "Wiktionary", "attempts": [
+                { "urls": ["https://example.test/{word}"], "strategy": "regex", "match": "m=([^;]+)", "group": 1 } ] } ] },
+            "Bopomofo" ] }
+        """;
+
+    [Fact]
+    public async Task TranscriptionFind_SchemeSources_ReturnsLiteralReading()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TTranscriptionPack);
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("m=nǐ hǎo;", HttpStatusCode.OK));
+        TReceiverStub receiver = TPronunciationHelper.TReceiverCreate();
+
+        await engine.TEngineTranscriptionFind(
+            0, "你好", pack.TLanguageFixtureName, "Pinyin", receiver, CancellationToken.None);
+
+        LCandidate candidate = Assert.Single(receiver.TReceiverStubCandidates);
+        Assert.Equal(("Wiktionary", "nǐ hǎo", string.Empty), (candidate.LCandidateSource, candidate.LCandidatePhonetic, candidate.LCandidateVariety));
+        Assert.Equal(1, receiver.TReceiverStubFinished);
+    }
+
+    [Fact]
+    public async Task TranscriptionFind_SchemeWithoutSources_FinishesEmpty()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TTranscriptionPack);
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("m=nǐ hǎo;", HttpStatusCode.OK));
+        TReceiverStub receiver = TPronunciationHelper.TReceiverCreate();
+
+        await engine.TEngineTranscriptionFind(
+            0, "你好", pack.TLanguageFixtureName, "Bopomofo", receiver, CancellationToken.None);
+
+        Assert.Empty(receiver.TReceiverStubCandidates);
+        Assert.Equal(1, receiver.TReceiverStubFinished);
     }
 
     [Fact]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -35,6 +36,7 @@ public partial class PDisplay : UserControl
         InitializeComponent();
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
         PDisplayAccent.ItemsSource = _pDisplayAccent;
+        PDisplayTranscription.ItemsSource = _pDisplayTranscription;
 
         PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
         PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
@@ -67,6 +69,26 @@ public partial class PDisplay : UserControl
             if (shown == bulletin.LBulletinId)
             {
                 PDisplayFavoriteShow(shown);
+            }
+
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectGrasp)
+        {
+            if (shown == bulletin.LBulletinId)
+            {
+                PDisplayGraspShow(shown);
+            }
+
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectFrequency)
+        {
+            if (shown == bulletin.LBulletinId)
+            {
+                PDisplayFrequencyShow(shown);
             }
 
             return;
@@ -123,6 +145,7 @@ public partial class PDisplay : UserControl
 
         _pDisplayEntry = id;
         PDisplayFavoriteShow(id);
+        PDisplayGraspShow(id);
 
         _pDisplayRecording = draft.LEntryDraftAudio.Length > 0 && File.Exists(draft.LEntryDraftAudio)
             ? draft.LEntryDraftAudio
@@ -137,6 +160,7 @@ public partial class PDisplay : UserControl
             ? Visibility.Collapsed
             : Visibility.Visible;
         PDisplayAccentShow(draft);
+        PDisplayTranscriptionShow(draft);
         PDisplayPlaybackShow();
 
         PDisplayFrameShow(draft.LEntryDraftLanguage);
@@ -148,6 +172,7 @@ public partial class PDisplay : UserControl
         PDisplaySpeechSection.Visibility = draft.LEntryDraftSpeeches.Count == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
+        PDisplayFrequencyShow(id);
         PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;
         PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
         PDisplayMeaningSection.Visibility = draft.LEntryDraftMeanings.Count == 0
@@ -162,16 +187,76 @@ public partial class PDisplay : UserControl
             ? Visibility.Collapsed
             : Visibility.Visible;
 
+        PDisplayStampShow(id);
+
         PDisplayEmpty.Visibility = Visibility.Collapsed;
         PDisplayContents.Visibility = Visibility.Visible;
 
         PCompassUpdate();
     }
 
+    private void PDisplayStampShow(long id)
+    {
+        LEntry? entry;
+        try
+        {
+            entry = _lEngine.LEngineEntryRead(id);
+        }
+        catch (Exception)
+        {
+            entry = null;
+        }
+
+        PDisplayStampAdded.Text = PDisplayStampFormat(entry?.LEntryAddedUtc);
+        PDisplayStampUpdated.Text = PDisplayStampFormat(entry?.LEntryUpdatedUtc);
+        PDisplayStampSection.Visibility = entry is null
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+    }
+
+    private void PDisplayFrequencyShow(long id)
+    {
+        LFrequency? frequency;
+        try
+        {
+            frequency = _lEngine.LEngineFrequencyRead(id);
+        }
+        catch (Exception)
+        {
+            frequency = null;
+        }
+
+        if (frequency is null)
+        {
+            PDisplayFrequency.Text = string.Empty;
+            PDisplayFrequencyChip.ToolTip = null;
+            PDisplayFrequencySection.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        PDisplayFrequency.Text = PFrequencyLabel.PFrequencyLabelName(frequency);
+        PDisplayFrequencyChip.ToolTip = PFrequencyLabel.PFrequencyLabelTip(
+            frequency, _pDisplayHost.PLocalizationTextRead("Frequency.Unit"));
+        PDisplayFrequencySection.Visibility = Visibility.Visible;
+    }
+
+    private static string PDisplayStampFormat(string? utc)
+    {
+        if (utc is null
+            || !DateTimeOffset.TryParse(utc, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset parsed))
+        {
+            return string.Empty;
+        }
+
+        return parsed.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
+    }
+
     internal void PDisplayClear()
     {
         _pDisplayEntry = null;
         PDisplayFavorite.IsChecked = false;
+        PDisplayGrasp.PGraspStep = 0;
+        PDisplayGraspLabel.Text = string.Empty;
         _pDisplayRecording = null;
         _pDisplayPlayer.Stop();
         PDisplayLanguage.Text = string.Empty;
@@ -180,8 +265,12 @@ public partial class PDisplay : UserControl
         PPlaybackAction.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
         PDisplayAccentClear();
+        _pDisplayTranscription.Clear();
         PDisplaySpeech.ItemsSource = null;
         PDisplaySpeechSection.Visibility = Visibility.Collapsed;
+        PDisplayFrequency.Text = string.Empty;
+        PDisplayFrequencyChip.ToolTip = null;
+        PDisplayFrequencySection.Visibility = Visibility.Collapsed;
         _pDisplayIncoming.Clear();
         PDisplayIncomingSection.Visibility = Visibility.Collapsed;
         PDisplayTranslationRead().PLinkConverterClear();
@@ -190,6 +279,7 @@ public partial class PDisplay : UserControl
         PDisplayMeaningSection.Visibility = Visibility.Collapsed;
         PDisplayCollocationSection.Visibility = Visibility.Collapsed;
         PDisplayNoteSection.Visibility = Visibility.Collapsed;
+        PDisplayStampSection.Visibility = Visibility.Collapsed;
         PDisplayContents.Visibility = Visibility.Collapsed;
         PDisplayEmpty.Visibility = Visibility.Visible;
 
@@ -361,6 +451,51 @@ public partial class PDisplay : UserControl
         }
 
         PDisplayLanguageFlag.Source = PEnsign.PEnsignFind(language);
+    }
+
+    private void PDisplayGraspShow(long id)
+    {
+        try
+        {
+            PDisplayGrasp.PGraspStep = _lEngine.LEngineGraspRead(id);
+        }
+        catch (Exception)
+        {
+            PDisplayGrasp.PGraspStep = 0;
+        }
+
+        PDisplayGraspLabel.Text = PDisplayGraspFormat(PDisplayGrasp.PGraspStep);
+    }
+
+    private string PDisplayGraspFormat(int step)
+    {
+        return _pDisplayEntry is null
+            ? string.Empty
+            : _pDisplayHost.PLocalizationTextRead(PGrasp.PGraspLabelResolve(step));
+    }
+
+    private void PDisplayHoverHandle(object sender, RoutedEventArgs e)
+    {
+        PDisplayGraspLabel.Text = PDisplayGraspFormat(PDisplayGrasp.PGraspHover ?? PDisplayGrasp.PGraspStep);
+    }
+
+    private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
+    {
+        if (_pDisplayEntry is not long shown)
+        {
+            PDisplayGrasp.PGraspStep = 0;
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineGraspSave(shown, PDisplayGrasp.PGraspStep);
+        }
+        catch (Exception exception)
+        {
+            PDisplayGraspShow(shown);
+            _pDisplayHost.PWindowFailureShow("Grasp.MarkFailed", exception);
+        }
     }
 
     private void PDisplayFavoriteShow(long id)

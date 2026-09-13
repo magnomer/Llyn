@@ -215,6 +215,14 @@ public sealed class LMeaningArchive
         )
         """;
 
+    public long? LMeaningHolderRead(long id)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+
+        using LDatabaseSession session = _lMeaningArchiveDatabase.LDatabaseSessionStart();
+        return LMeaningHolderRead(session.LDatabaseSessionConnection, id).LMeaningEntry;
+    }
+
     private static (long? LMeaningEntry, long? LMeaningParent) LMeaningHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();

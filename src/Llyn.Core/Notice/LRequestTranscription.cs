@@ -1,6 +1,7 @@
 namespace Llyn.Core;
 
-public sealed record LRequestTranscriptionAddition(long LRequestDraftId, string LRequestScheme, int LRequestPosition)
+public sealed record LRequestTranscriptionAddition(
+    long LRequestDraftId, string LRequestScheme, int LRequestPosition, bool LRequestSeeded = false)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestTranscriptionRemoval(long LRequestDraftId, long LRequestTranscriptionId)

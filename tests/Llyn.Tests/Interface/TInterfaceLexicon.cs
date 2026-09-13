@@ -65,11 +65,11 @@ internal static partial class TInterface
         long id,
         string headword,
         string language,
-        string? proficiency,
+        int grasp,
         string? frequency,
         string? addedUtc,
         string? updatedUtc) =>
-        new(id, headword, language, proficiency, frequency, addedUtc, updatedUtc);
+        new(id, headword, language, grasp, frequency, addedUtc, updatedUtc);
 
     internal static LEntryDraft TEntryDraftCreate(
         string headword,
@@ -103,8 +103,8 @@ internal static partial class TInterface
         long id = 0) =>
         new(ipa, null, audio, source, id, variety);
 
-    internal static LTranscriptionDraft TTranscriptionDraftCreate(string scheme, string text, long id = 0) =>
-        new(scheme, text, id);
+    internal static LTranscriptionDraft TTranscriptionDraftCreate(string scheme, string text, long id = 0, bool seeded = false) =>
+        new(scheme, text, id, seeded);
 
     internal static IReadOnlyList<LSpeechDraft> TSpeechDraftCreate(IReadOnlyList<string>? speeches)
     {
@@ -353,4 +353,10 @@ internal static partial class TInterface
 
     internal static LTranslation TTranslationCreate(long entryId, int position) =>
         new(entryId, position);
+
+    internal static bool TGraspCheck(int grasp) =>
+        LGrasp.LGraspCheck(grasp);
+
+    internal static string TGraspFormat(int grasp) =>
+        LGrasp.LGraspFormat(grasp);
 }

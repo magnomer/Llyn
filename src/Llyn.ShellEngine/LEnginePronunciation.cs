@@ -12,7 +12,9 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(pronunciation);
-            return new LPronunciationArchive(_lEngineDatabase).LPronunciationCreate(pronunciation);
+            LPronunciation created = new LPronunciationArchive(_lEngineDatabase).LPronunciationCreate(pronunciation);
+            LEngineUpdatedSet(created.LPronunciationEntryId);
+            return created;
         }
     }
 
@@ -49,6 +51,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(pronunciation);
             new LPronunciationArchive(_lEngineDatabase).LPronunciationUpdate(pronunciation);
+            LEngineUpdatedSet(pronunciation.LPronunciationEntryId);
         }
     }
 
@@ -56,7 +59,13 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            new LPronunciationArchive(_lEngineDatabase).LPronunciationDelete(id);
+            LPronunciationArchive pronunciations = new(_lEngineDatabase);
+            long? entryId = pronunciations.LPronunciationHolderRead(id);
+            pronunciations.LPronunciationDelete(id);
+            if (entryId is long held)
+            {
+                LEngineUpdatedSet(held);
+            }
         }
     }
 
@@ -66,8 +75,12 @@ public sealed partial class LEngine
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(file);
 
-            new LPronunciationArchive(_lEngineDatabase).LPronunciationAudioSave(
-                pronunciationId, LEngineRecordingFormat(file), source);
+            LPronunciationArchive pronunciations = new(_lEngineDatabase);
+            pronunciations.LPronunciationAudioSave(pronunciationId, LEngineRecordingFormat(file), source);
+            if (pronunciations.LPronunciationHolderRead(pronunciationId) is long held)
+            {
+                LEngineUpdatedSet(held);
+            }
         }
     }
 
@@ -90,6 +103,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(note);
             new LNoteArchive(_lEngineDatabase).LNoteSave(
                 note with { LNoteText = LMarkdown.LMarkdownNormalize(note.LNoteText) });
+            LEngineUpdatedSet(note.LNoteEntryId);
         }
     }
 
@@ -106,6 +120,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             new LNoteArchive(_lEngineDatabase).LNoteDelete(entryId);
+            LEngineUpdatedSet(entryId);
         }
     }
 }

@@ -62,7 +62,7 @@ public partial class PEditor
 
     private void PEditorTextHandle(object sender, TextChangedEventArgs e)
     {
-        if (e.OriginalSource is TextBox { DataContext: PCard or PAccentItem })
+        if (e.OriginalSource is TextBox { DataContext: PCard or PAccentItem or PTranscriptionItem })
         {
             return;
         }

@@ -16,6 +16,7 @@ public partial class PEditor : LReceiver
     private bool _pNotationFlagged;
     private string _pNotationLanguage = string.Empty;
     private long _pNotationTarget;
+    private string _pNotationScheme = string.Empty;
 
     private async void PPhoneticianHandle(object sender, RoutedEventArgs e)
     {
@@ -40,8 +41,14 @@ public partial class PEditor : LReceiver
 
     private async Task PNotationOpen(UIElement anchor, long target)
     {
+        await PNotationOpen(anchor, target, string.Empty);
+    }
+
+    private async Task PNotationOpen(UIElement anchor, long target, string scheme)
+    {
         PNotation.IsOpen = false;
         _pNotationTarget = target;
+        _pNotationScheme = scheme;
         PNotation.PlacementTarget = anchor;
         PNotation.IsOpen = true;
         await PNotationStart();
@@ -50,6 +57,18 @@ public partial class PEditor : LReceiver
     private void PNotationApply(PNotationReading reading)
     {
         long id = _pNotationTarget;
+        if (_pNotationScheme.Length > 0)
+        {
+            PTranscriptionItem? spelled = PTranscriptionFind(id);
+            if (spelled is not null)
+            {
+                spelled.PTranscriptionItemText = reading.PNotationReadingPhonetic;
+                PEditorChangeSave();
+            }
+
+            return;
+        }
+
         if (id == 0)
         {
             PPronunciationField.Text = reading.PNotationReadingPhonetic;
@@ -94,16 +113,19 @@ public partial class PEditor : LReceiver
     private PNotationReading PNotationReadingCreate(LCandidate candidate)
     {
         string variety = candidate.LCandidateVariety;
+        bool bracketed = _pNotationScheme.Length == 0;
         if (variety.Length == 0)
         {
-            return new PNotationReading(variety, string.Empty, null, candidate.LCandidatePhonetic ?? string.Empty);
+            return new PNotationReading(
+                variety, string.Empty, null, candidate.LCandidatePhonetic ?? string.Empty, bracketed);
         }
 
         return new PNotationReading(
             variety,
             PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
             PAccentItem.PAccentFlagFind(_pNotationLanguage, _pNotationFlagged, variety),
-            candidate.LCandidatePhonetic ?? string.Empty);
+            candidate.LCandidatePhonetic ?? string.Empty,
+            bracketed);
     }
 
     private async Task PNotationStart()
@@ -127,7 +149,7 @@ public partial class PEditor : LReceiver
         {
             _pNotationLanguage = _pSpeakerChoice;
             _pNotationFlagged = _lEngine.LEngineFlaggedCheck(_pNotationLanguage);
-            if (_pNotationFlagged)
+            if (_pNotationFlagged && _pNotationScheme.Length == 0)
             {
                 await PEnsign.PEnsignVarietyLoad(
                     _lEngine,
@@ -136,8 +158,16 @@ public partial class PEditor : LReceiver
                 cancellation.ThrowIfCancellationRequested();
             }
 
-            await _lEngine.LEnginePronunciationFind(
-                _pEditorDraft, word, _pNotationLanguage, this, cancellation);
+            if (_pNotationScheme.Length > 0)
+            {
+                await _lEngine.LEngineTranscriptionFind(
+                    _pEditorDraft, word, _pNotationLanguage, _pNotationScheme, this, cancellation);
+            }
+            else
+            {
+                await _lEngine.LEnginePronunciationFind(
+                    _pEditorDraft, word, _pNotationLanguage, this, cancellation);
+            }
         }
         catch (OperationCanceledException)
         {
@@ -189,7 +219,9 @@ public partial class PEditor : LReceiver
         }
 
         PNotationNotice.Text = _pEditorHost.PLocalizationTextRead(
-            _pNotationSearching ? "Phonetician.Searching" : "Phonetician.Empty");
+            _pNotationSearching ? "Phonetician.Searching"
+            : _pNotationScheme.Length > 0 ? "Transcription.Empty"
+            : "Phonetician.Empty");
         PNotationNotice.Visibility = Visibility.Visible;
     }
 

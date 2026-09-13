@@ -71,9 +71,13 @@
                 </Popup>
             </Grid>
 
-            <ToggleButton x:Name="PEditorFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="PEditorFavoriteHandle" Style="{StaticResource Theme.Favorite.Mark}" ToolTip="{DynamicResource Favorite.Mark}">
-                <Path Style="{StaticResource Editor.Field.Mark}" />
-            </ToggleButton>
+            <StackPanel Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
+                <ToggleButton x:Name="PEditorFavorite" Width="42" Height="42" Margin="12,0,0,0" Padding="0" Click="PEditorFavoriteHandle" Style="{StaticResource Theme.Favorite.Mark}" ToolTip="{DynamicResource Favorite.Mark}">
+                    <Path Style="{StaticResource Editor.Field.Mark}" />
+                </ToggleButton>
+                <local:PGrasp x:Name="PEditorGrasp" Margin="2,0,0,0" VerticalAlignment="Center" PGraspChanged="PEditorGraspHandle" PGraspHovered="PEditorHoverHandle" ToolTip="{DynamicResource Grasp.Mark}" />
+                <TextBlock x:Name="PEditorGraspLabel" Margin="6,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Grasp.Label}" />
+            </StackPanel>
 
             <Border
                 x:Name="PEditorCommand"
@@ -100,34 +104,45 @@
             </Border>
         </Grid>
 
-        <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left">
+        <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left" Grid.IsSharedSizeScope="True">
             <StackPanel.CommandBindings>
                 <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandAddition}" Executed="PAccentAddHandle" />
                 <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandRemoval}" Executed="PAccentRemoveHandle" />
                 <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandNotation}" Executed="PAccentNotationHandle" />
                 <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandClip}" Executed="PAccentClipHandle" />
                 <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandPlayback}" Executed="PAccentPlaybackHandle" />
+                <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandAddition}" CanExecute="PTranscriptionAddCheck" Executed="PTranscriptionAddHandle" />
+                <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandRemoval}" Executed="PTranscriptionRemoveHandle" />
+                <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandNotation}" Executed="PTranscriptionNotationHandle" />
             </StackPanel.CommandBindings>
             <StackPanel Orientation="Horizontal">
 
                 <Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">
-                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                        <Image x:Name="PPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
-                        <TextBlock x:Name="PPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
-                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                        <Grid Margin="3,0">
-                            <TextBlock Style="{StaticResource Editor.Field.Measure}" />
-                            <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
-                        </Grid>
-                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                        <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="pack://application:,,,/Llyn;component/icons/play.svg" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
-                        <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" ToolTip="{DynamicResource Phonetician.Title}" />
-                        <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" ToolTip="{DynamicResource Downloader.Title}" />
-                        <StackPanel Style="{StaticResource Theme.Accent.Control}">
-                            <Button Style="{StaticResource Theme.Accent.Addition}" />
-                            <Button Style="{StaticResource Theme.Accent.Remove}" />
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
+                            <Image x:Name="PPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
+                            <TextBlock x:Name="PPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
                         </StackPanel>
-                    </StackPanel>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                            <Grid Margin="3,0">
+                                <TextBlock Style="{StaticResource Editor.Field.Measure}" />
+                                <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
+                            </Grid>
+                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                            <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="pack://application:,,,/Llyn;component/icons/play.svg" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
+                            <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" ToolTip="{DynamicResource Phonetician.Title}" />
+                            <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" ToolTip="{DynamicResource Downloader.Title}" />
+                            <StackPanel Style="{StaticResource Theme.Accent.Control}">
+                                <Button Style="{StaticResource Theme.Accent.Addition}" />
+                                <Button Style="{StaticResource Theme.Accent.Remove}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
                 </Border>
 
                 <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
@@ -137,54 +152,63 @@
             </StackPanel>
 
             <ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />
+            <ItemsControl x:Name="PTranscription" ItemTemplate="{StaticResource Theme.Transcription.Row}" Visibility="Collapsed" />
         </StackPanel>
 
-        <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,0" Orientation="Horizontal">
+        <StackPanel Grid.Row="2">
+            <WrapPanel x:Name="PMarker" Margin="12,14,0,0" Orientation="Horizontal">
 
-            <ItemsControl x:Name="PMarkerList" MaxWidth="{Binding ActualWidth, ElementName=PMarker}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                <ItemsControl x:Name="PMarkerList" MaxWidth="{Binding ActualWidth, ElementName=PMarker}" VerticalAlignment="Top" ItemTemplate="{DynamicResource Theme.Marker.Chip}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-            <Grid VerticalAlignment="Top">
-                <Border x:Name="PMarkerSurface" Style="{StaticResource Theme.Marker.Field}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                <Grid VerticalAlignment="Top">
+                    <Border x:Name="PMarkerSurface" Style="{StaticResource Theme.Marker.Field}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />
-                        <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Style="{StaticResource Theme.Marker.Switch}">
-                            <Path Width="7" Height="3.5" Data="M 0,0 L 3.5,3.5 L 7,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeThickness="1.4" />
-                        </ToggleButton>
-                    </Grid>
-                </Border>
-                <Popup
-                    x:Name="PCategory"
-                    AllowsTransparency="True"
-                    HorizontalOffset="-8"
-                    IsOpen="{Binding IsChecked, ElementName=PMarkerSwitch, Mode=TwoWay}"
-                    Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PMarkerSurface}"
-                    PopupAnimation="Fade"
-                    StaysOpen="False"
-                    VerticalOffset="-4">
-                    <Border MinWidth="190" MaxWidth="320" Margin="8" Style="{StaticResource Theme.Marker.Menu}">
-                        <StackPanel>
-                            <TextBlock x:Name="PCategoryNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Empty}" Visibility="Collapsed" />
-                            <TextBlock x:Name="PCategoryAbsent" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Absent}" Visibility="Collapsed" />
-                            <ScrollViewer MaxHeight="252" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="PCategoryList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Category.Row}" />
-                            </ScrollViewer>
-                        </StackPanel>
+                            <TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />
+                            <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Style="{StaticResource Theme.Marker.Switch}">
+                                <Path Width="7" Height="3.5" Data="M 0,0 L 3.5,3.5 L 7,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeThickness="1.4" />
+                            </ToggleButton>
+                        </Grid>
                     </Border>
-                </Popup>
-            </Grid>
-        </WrapPanel>
+                    <Popup
+                        x:Name="PCategory"
+                        AllowsTransparency="True"
+                        HorizontalOffset="-8"
+                        IsOpen="{Binding IsChecked, ElementName=PMarkerSwitch, Mode=TwoWay}"
+                        Placement="Bottom"
+                        PlacementTarget="{Binding ElementName=PMarkerSurface}"
+                        PopupAnimation="Fade"
+                        StaysOpen="False"
+                        VerticalOffset="-4">
+                        <Border MinWidth="190" MaxWidth="320" Margin="8" Style="{StaticResource Theme.Marker.Menu}">
+                            <StackPanel>
+                                <TextBlock x:Name="PCategoryNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Empty}" Visibility="Collapsed" />
+                                <TextBlock x:Name="PCategoryAbsent" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Speech.Absent}" Visibility="Collapsed" />
+                                <ScrollViewer MaxHeight="252" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl x:Name="PCategoryList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Category.Row}" />
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </WrapPanel>
+
+            <StackPanel x:Name="PEditorFrequencySection" Margin="12,10,0,0" Visibility="Collapsed">
+                <Border x:Name="PEditorFrequencyChip" Style="{StaticResource Theme.Frequency.Chip}">
+                    <TextBlock x:Name="PEditorFrequency" Style="{StaticResource Theme.Frequency.Name}" />
+                </Border>
+            </StackPanel>
+        </StackPanel>
 
         <Border Grid.Row="3" Padding="0,0,0,8" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
             <Grid x:Name="PStack" Margin="27,0,0,0" HorizontalAlignment="Left" Loaded="PStackPillHandle">

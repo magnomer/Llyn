@@ -19,7 +19,7 @@ public static class LSchemaEntry
                 origin_id INTEGER NOT NULL DEFAULT 0,
                 headword TEXT NOT NULL,
                 language TEXT NOT NULL,
-                proficiency TEXT,
+                grasp INTEGER NOT NULL DEFAULT 0 CHECK (grasp BETWEEN 0 AND 10),
                 frequency TEXT,
                 added_utc TEXT,
                 updated_utc TEXT,

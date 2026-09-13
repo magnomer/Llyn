@@ -17,6 +17,7 @@ public partial class PEditor
             PEditorTextShow(PHeadword, PEditorRequestHeadword, draft.LEntryDraftHeadword);
             PEditorTextShow(PPronunciationField, PEditorRequestIpa, draft.LEntryDraftIpa);
             PAccentShow(draft);
+            PTranscriptionShow(draft);
             PEditorSpeechShow(draft.LEntryDraftSpeeches);
             PEditorLanguageShow(draft.LEntryDraftLanguage);
 
@@ -33,6 +34,7 @@ public partial class PEditor
             _pEditorFill = false;
         }
 
+        PTranscriptionPrepare(draft);
         PSentencePrepare();
     }
 
@@ -97,6 +99,7 @@ public partial class PEditor
         PHeadword.Text = string.Empty;
         PPronunciationField.Text = string.Empty;
         PAccentClear();
+        PTranscriptionClear();
         PMarkerShow(null);
         PRecordingClear();
         _pSpeakerEntry = false;
@@ -112,6 +115,8 @@ public partial class PEditor
         PCardPrepare();
         PEditorChangeUpdate();
         PEditorFavoriteShow();
+        PEditorGraspShow();
+        PEditorFrequencyShow();
     }
 
     private string PEditorNoteRead()

@@ -69,6 +69,11 @@ Sibling and ancestor meanings are untouched and are renumbered so positions stay
 The independent Examples, Tags, and Situations it referenced are left standing.
 Only the links go.
 
+## `public long? LMeaningHolderRead(long id)`
+
+Which entry holds the meaning, or nothing when no row carries the id.
+The engine uses it to stamp the entry when a meaning changes on its own.
+
 ## Inline notes
 
 ### `private const string LMeaningSubtreeQuery =`

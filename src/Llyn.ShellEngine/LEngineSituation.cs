@@ -154,6 +154,7 @@ public sealed partial class LEngine
                 situations.LSituationDelete(situationId);
             }
 
+            LEngineUpdatedSet(ownerId, LEngineOwnerCheck(owner));
             session.LDatabaseSessionCommit();
         }
     }

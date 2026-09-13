@@ -15,6 +15,7 @@ public sealed class LSourceGeneric : LSource
     private const string LSourceGenericJson = "json";
     private const string LSourceGenericSpan = "span";
     private const string LSourceGenericToken = "{word}";
+    private const int LSourceGenericHops = 2;
 
     private readonly LSourceSpec _lSourceGenericSpec;
     private readonly HttpClient _lSourceGenericClient;
@@ -36,13 +37,13 @@ public sealed class LSourceGeneric : LSource
             return LAnswer.LAnswerBlank;
         }
 
-        string trimmed = word.Trim();
+        string current = word.Trim();
         bool reached = false;
         Dictionary<string, LReading> filled = new(StringComparer.Ordinal);
         List<LReading> readings = [];
         foreach (LSourceAttempt attempt in _lSourceGenericSpec.LSourceSpecAttempts)
         {
-            LAnswer answer = await LSourceAttemptRun(attempt, trimmed, cancellation).ConfigureAwait(false);
+            (LAnswer answer, current) = await LSourceAttemptResolve(attempt, current, cancellation).ConfigureAwait(false);
             reached |= answer.LAnswerReached;
             foreach (LReading reading in answer.LAnswerReadings)
             {
@@ -80,7 +81,26 @@ public sealed class LSourceGeneric : LSource
         return varieties;
     }
 
-    private async Task<LAnswer> LSourceAttemptRun(
+    private async Task<(LAnswer, string)> LSourceAttemptResolve(
+        LSourceAttempt attempt,
+        string word,
+        CancellationToken cancellation)
+    {
+        HashSet<string> visited = new(StringComparer.Ordinal) { word };
+        string current = word;
+        for (int hop = 0; ; hop++)
+        {
+            (LAnswer answer, string? next) = await LSourceAttemptRun(attempt, current, cancellation).ConfigureAwait(false);
+            if (!answer.LAnswerEmpty || next is null || hop >= LSourceGenericHops || !visited.Add(next))
+            {
+                return (answer, current);
+            }
+
+            current = next;
+        }
+    }
+
+    private async Task<(LAnswer, string?)> LSourceAttemptRun(
         LSourceAttempt attempt,
         string word,
         CancellationToken cancellation)
@@ -97,33 +117,44 @@ public sealed class LSourceGeneric : LSource
             .ConfigureAwait(false);
         if (fetched.LAnswerValue is not string body)
         {
-            return fetched;
+            return (fetched, null);
         }
 
         if (!LSourceConfirm(attempt, body, word))
         {
-            return LAnswer.LAnswerBlank;
+            return (LAnswer.LAnswerBlank, null);
         }
 
         List<LReading> readings = [];
         foreach (LSourceReading reading in attempt.LSourceAttemptReadings)
         {
-            string? value = reading.LSourceReadingStrategy switch
-            {
-                LSourceGenericSpan => LSourceSpanRead(reading, body),
-                LSourceGenericJson => LSourceJsonRead(reading, body),
-                LSourceGenericRegex => LSourceRegexRead(reading, body),
-                _ => null
-            };
-
-            string? address = LSourceAddressResolve(attempt, value);
+            string? address = LSourceAddressResolve(attempt, LSourceValueRead(reading, body));
             if (!string.IsNullOrEmpty(address))
             {
                 readings.Add(new LReading(reading.LSourceReadingVariety, address));
             }
         }
 
-        return readings.Count == 0 ? LAnswer.LAnswerBlank : LAnswer.LAnswerCreate(readings);
+        if (readings.Count > 0)
+        {
+            return (LAnswer.LAnswerCreate(readings), null);
+        }
+
+        string? next = attempt.LSourceAttemptFollow is null
+            ? null
+            : LSourceValueRead(attempt.LSourceAttemptFollow, body)?.Trim();
+        return (LAnswer.LAnswerBlank, string.IsNullOrEmpty(next) ? null : next);
+    }
+
+    private static string? LSourceValueRead(LSourceReading reading, string body)
+    {
+        return reading.LSourceReadingStrategy switch
+        {
+            LSourceGenericSpan => LSourceSpanRead(reading, body),
+            LSourceGenericJson => LSourceJsonRead(reading, body),
+            LSourceGenericRegex => LSourceRegexRead(reading, body),
+            _ => null
+        };
     }
 
     private static string? LSourceAddressResolve(LSourceAttempt attempt, string? value)

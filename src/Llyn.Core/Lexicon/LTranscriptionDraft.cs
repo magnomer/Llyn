@@ -3,7 +3,8 @@ namespace Llyn.Core;
 public sealed record LTranscriptionDraft(
     string LTranscriptionDraftScheme,
     string LTranscriptionDraftText = "",
-    long LTranscriptionDraftId = 0)
+    long LTranscriptionDraftId = 0,
+    bool LTranscriptionDraftSeeded = false)
 {
     public string LTranscriptionDraftScheme { get; init; } = LTranscriptionDraftScheme ?? string.Empty;
 

@@ -24,10 +24,11 @@ Everything language-specific arrives through this record.
 - `LLanguageHarvestSources` — The sources the pack declares for finding downloadable recordings.
   The two lists are independent.
   A site good for transcriptions need not serve audio, and either list may stand empty.
-- `LLanguageSchemes` — The transcription schemes the pack declares, such as Jyutping or Pinyin, in the order the form shows them.
-  An empty list turns the transcription line off for that language.
+- `LLanguageSchemes` — The transcription schemes the pack declares, held as [LScheme](LScheme.comment.md) records, in the order the form shows them.
+  An empty list turns the transcription rows off for that language.
   The list seeds new rows only.
   A stored row keeps its scheme after the pack changes.
+  Each scheme carries the sources its lookup asks, so a scheme declared as a bare name is typed by hand.
 - `LLanguageSeparated` — Whether the language writes a space between its words.
   The pack states it with the top-level key `separator`, `space` or `none`.
   A pack that omits the key is read as separated.
@@ -49,3 +50,9 @@ Everything language-specific arrives through this record.
   They recast a cleaned transcription into the pack's preferred symbol convention.
   They run only when the user switches respelling on.
   A pack that declares none carries an empty list.
+- `LLanguageFrequencies` — The sources the pack declares for fetching an entry's frequency, held as [LSourceSpec](LSourceSpec.comment.md) records.
+  The engine asks them in order and keeps the first figure returned.
+  A pack that declares none carries an empty list, and no frequency is fetched for that language.
+- `LLanguageBands` — The frequency bands the pack declares, held as [LBand](LBand.comment.md) records, in the order they are tried.
+  A fetched figure earns the name of the first band that matches it.
+  A pack that declares none carries an empty list, and the raw figure stands unlabelled.

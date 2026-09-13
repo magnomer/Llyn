@@ -43,6 +43,7 @@ public partial class PDisplay
         string unknown = _pDisplayHost.PLocalizationTextRead("Display.Unknown");
 
         PCompassSectionAdd(PDisplaySpeechSection, _pDisplayHost.PLocalizationTextRead("Speech.Title"));
+        PCompassSectionAdd(PDisplayFrequencySection, _pDisplayHost.PLocalizationTextRead("Frequency.Title"));
 
         if (PCompassSectionAdd(PDisplayMeaningSection, _pDisplayHost.PLocalizationTextRead("Display.MeaningPlural")))
         {

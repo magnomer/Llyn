@@ -18,5 +18,8 @@
 
         <TextBlock FontSize="18" FontWeight="SemiBold" Margin="0,28,0,0" Text="{DynamicResource Settings.Respelling}" />
         <CheckBox x:Name="PRespelling" Margin="0,12,0,0" Content="{DynamicResource Respelling.Switch}" Click="PRespellingHandle" />
+
+        <TextBlock FontSize="18" FontWeight="SemiBold" Margin="0,28,0,0" Text="{DynamicResource Settings.Frequency}" />
+        <CheckBox x:Name="PFrequency" Margin="0,12,0,0" Content="{DynamicResource Frequency.Switch}" Click="PFrequencyHandle" />
     </StackPanel>
 </UserControl>

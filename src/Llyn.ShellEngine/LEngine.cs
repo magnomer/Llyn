@@ -16,6 +16,10 @@ public sealed partial class LEngine : IDisposable
     private readonly HttpClient _lEngineClient;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineHarvestSources = new(StringComparer.Ordinal);
+    private readonly Dictionary<(string LEngineLanguage, string LEngineScheme), IReadOnlyList<LSource>> _lEngineSchemeSources = [];
+    private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineFrequencySources = new(StringComparer.Ordinal);
+    private readonly Dictionary<long, CancellationTokenSource> _lEngineFrequencyPending = [];
+    private readonly HashSet<long> _lEngineFrequencyMissed = [];
     private readonly Dictionary<string, LLanguage> _lEngineLanguages = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
     private string _lEngineWorkspace;
@@ -191,6 +195,8 @@ public sealed partial class LEngine : IDisposable
             _lEngineDraftHeld.Clear();
             _lEngineLookupSources.Clear();
             _lEngineHarvestSources.Clear();
+            _lEngineFrequencySources.Clear();
+            LEngineFrequencyClear();
             _lEngineLanguages.Clear();
             _lEngineTrove.LTroveClear();
             LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
@@ -234,6 +240,11 @@ public sealed partial class LEngine : IDisposable
     public void LEngineRespellingSave(bool respelled)
     {
         LEngineSettingsChange(settings => settings with { LSettingsRespelled = respelled });
+    }
+
+    public void LEngineFrequencySave(bool frequency)
+    {
+        LEngineSettingsChange(settings => settings with { LSettingsFrequency = frequency });
     }
 
     private void LEngineSettingsChange(Func<LSettings, LSettings> change)
@@ -492,6 +503,7 @@ public sealed partial class LEngine : IDisposable
     {
         lock (_lEngineGate)
         {
+            LEngineFrequencyClear();
             _lEngineClient.Dispose();
         }
     }

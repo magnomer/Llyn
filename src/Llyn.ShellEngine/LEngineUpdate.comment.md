@@ -15,6 +15,11 @@ Changing has to work out which stored row each card is first.
 Applies `draft` to the entry identified by `id` and returns the stored entry as it now stands.
 The entry keeps its opaque id and its `added_utc`.
 Only `updated_utc` moves, so an edit is the same record, not a new one.
+It moves only when the draft differs from the entry as loaded, judged by `LEngineDraftMatch`.
+Saving the same draft again leaves the stamp where it was.
+A change anywhere in the draft, a card included, moves it, because the stamp belongs to the whole entry.
+A changed headword or language clears the stored frequency and starts a fresh fill after the commit.
+So a stale figure never shows under the new headword.
 
 A blank headword and an id no entry carries are both refused before anything is written.
 Each carries a reason key the shell localizes.
@@ -53,6 +58,17 @@ The workspace row is moved onto that revision, as the save and the delete both d
 
 Forms, parts of speech, inflections and the pronunciation are each compared before they are written.
 A field that did not change writes no row and records no revision change.
+
+## `private void LEngineUpdatedSet(long entryId)`
+
+Moves the entry's `updated_utc` to now.
+Every seam that changes one part of an entry outside the draft path calls this.
+Otherwise the stamp would say the entry stood still while a card or a pronunciation moved.
+
+## `private void LEngineUpdatedSet(long ownerId, bool collocation)`
+
+The same, reached from a card rather than the entry.
+The card's holder is looked up first, and a card nobody holds moves nothing.
 
 ## Inline notes
 

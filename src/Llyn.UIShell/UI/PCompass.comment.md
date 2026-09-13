@@ -10,6 +10,7 @@ The editor has none, because a writer already knows where the card they are typi
 
 The rows are built from what the view is actually showing, never from the draft.
 A section the entry left empty is collapsed, and a collapsed section is not a place a reader can go.
+The frequency row follows the parts of speech, in the order the sections stand on the page.
 
 ### `private void PCompassUpdate()`
 

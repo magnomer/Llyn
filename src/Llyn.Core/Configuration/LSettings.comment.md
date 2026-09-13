@@ -14,3 +14,4 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsWindow` — The window geometry from the last run, or nothing before a first close.
 - `LSettingsVolume` — How loud a stored pronunciation is played, from silence at zero to full at one.
 - `LSettingsRespelled` — Whether looked-up transcriptions are recast through the pack's respelling groups, off by default.
+- `LSettingsFrequency` — Whether an entry's frequency is fetched and shown, on by default.

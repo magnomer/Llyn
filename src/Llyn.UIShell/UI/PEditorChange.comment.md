@@ -43,6 +43,7 @@ The number and the header a card raises are the engine's answers, so they raise 
 One handler for every text box in the editor, caught as the event bubbles.
 Fields are added to the form often, and each new one would otherwise need remembering.
 A card's own boxes are passed over here, because the card already reported them by property.
+A pronunciation row's box and a transcription row's box are passed over for the same reason.
 The entry-level boxes become their own requests, and anything else is a chip and takes the older path.
 
 ### `private void PEditorFocusHandle(object sender, RoutedEventArgs e)`

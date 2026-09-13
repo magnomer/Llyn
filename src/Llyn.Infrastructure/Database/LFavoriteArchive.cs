@@ -72,7 +72,7 @@ public sealed class LFavoriteArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry.entry_id, entry.headword, entry.language, entry.proficiency, entry.frequency,
+            SELECT entry.entry_id, entry.headword, entry.language, entry.grasp, entry.frequency,
                    entry.added_utc, entry.updated_utc, favorite.marked_utc
             FROM favorite
             JOIN entry ON entry.entry_id = favorite.entry_parent
@@ -90,7 +90,7 @@ public sealed class LFavoriteArchive
                     reader.GetInt64(0),
                     reader.GetString(1),
                     reader.GetString(2),
-                    reader.IsDBNull(3) ? null : reader.GetString(3),
+                    reader.GetInt32(3),
                     reader.IsDBNull(4) ? null : reader.GetString(4),
                     reader.IsDBNull(5) ? null : reader.GetString(5),
                     reader.IsDBNull(6) ? null : reader.GetString(6)),

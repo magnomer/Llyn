@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Llyn.Application;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -10,7 +13,67 @@ public sealed partial class LEngine
 {
     public IReadOnlyList<string> LEngineSchemeRead(string language)
     {
-        return LEngineLanguageLoad(language).LLanguageSchemes;
+        return LEngineLanguageLoad(language).LLanguageSchemes.Select(static scheme => scheme.LSchemeName).ToList();
+    }
+
+    public Task LEngineTranscriptionFind(
+        long session,
+        string word,
+        string language,
+        string scheme,
+        LReceiver receiver,
+        CancellationToken cancellation)
+    {
+        ArgumentNullException.ThrowIfNull(receiver);
+        ArgumentException.ThrowIfNullOrWhiteSpace(scheme);
+
+        IReadOnlyList<LCandidate>? held;
+        IReadOnlyList<LSource> sources;
+        lock (_lEngineGate)
+        {
+            held = _lEngineTrove.LTroveTranscriptionRead(session, word, language, scheme);
+            sources = held is null ? LEngineSchemeLoad(language, scheme) : [];
+        }
+
+        return held is null
+            ? LEngineTranscriptionScan(session, word, language, scheme, sources, receiver, cancellation)
+            : LEngineCandidatePublish(held, receiver);
+    }
+
+    private async Task LEngineTranscriptionScan(
+        long session,
+        string word,
+        string language,
+        string scheme,
+        IReadOnlyList<LSource> sources,
+        LReceiver receiver,
+        CancellationToken cancellation)
+    {
+        IReadOnlyList<LCandidate> found =
+            await new LLookup(sources, [], [], true)
+                .LSeekerStart(word, receiver, cancellation)
+                .ConfigureAwait(false);
+
+        lock (_lEngineGate)
+        {
+            _lEngineTrove.LTroveTranscriptionSave(session, word, language, scheme, found);
+        }
+    }
+
+    private IReadOnlyList<LSource> LEngineSchemeLoad(string language, string scheme)
+    {
+        if (_lEngineSchemeSources.TryGetValue((language, scheme), out IReadOnlyList<LSource>? sources))
+        {
+            return sources;
+        }
+
+        LScheme? declared = LEngineLanguageLoad(language).LLanguageSchemes
+            .FirstOrDefault(known => string.Equals(known.LSchemeName, scheme, StringComparison.Ordinal));
+        sources = declared is null
+            ? []
+            : LSourceFactory.LSourceFactoryCreate(declared.LSchemeSources, _lEngineClient);
+        _lEngineSchemeSources[(language, scheme)] = sources;
+        return sources;
     }
 
     public IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)
@@ -27,7 +90,10 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(transcriptions);
-            return new LTranscriptionArchive(_lEngineDatabase).LTranscriptionSet(entryId, transcriptions);
+            IReadOnlyList<LTranscription> saved =
+                new LTranscriptionArchive(_lEngineDatabase).LTranscriptionSet(entryId, transcriptions);
+            LEngineUpdatedSet(entryId);
+            return saved;
         }
     }
 
@@ -74,7 +140,7 @@ public sealed partial class LEngine
         List<LTranscriptionDraft> filled = [];
         foreach (LTranscriptionDraft draft in drafts)
         {
-            if (!draft.LTranscriptionDraftEmpty)
+            if (!draft.LTranscriptionDraftSeeded || !draft.LTranscriptionDraftEmpty)
             {
                 filled.Add(draft);
             }

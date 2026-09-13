@@ -9,6 +9,9 @@ It is also the single note an Entry keeps beside them.
 It also covers the draft requests that edit the primary row alone or any row by id.
 It also covers the variety label reaching the stored row and counting as a change on its own.
 
+The primary field is seeded, so a reading typed and cleared again is no change and stores nothing.
+A row the user added counts even blank and is stored empty, so it stands again next edit.
+
 ## Inline notes
 
 ### `Assert.Equal(`

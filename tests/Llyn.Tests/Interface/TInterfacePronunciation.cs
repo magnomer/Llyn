@@ -58,8 +58,9 @@ internal static partial class TInterface
         IReadOnlyList<LSourceReading> readings,
         string? guard,
         IReadOnlyDictionary<string, string>? headers,
-        string? prefix) =>
-        new LSourceAttempt(urls, readings, guard, headers, prefix);
+        string? prefix,
+        LSourceReading? follow = null) =>
+        new LSourceAttempt(urls, readings, guard, headers, prefix, follow);
 
     internal static LSourceSpec TSourceSpecCreate(string name, IReadOnlyList<LSourceAttempt> attempts) =>
         new LSourceSpec(name, attempts);
@@ -76,8 +77,9 @@ internal static partial class TInterface
     internal static LSeeker TLookupCreate(
         IReadOnlyList<LSource> sources,
         IReadOnlyList<LVariety>? varieties = null,
-        IReadOnlyList<LRespelling>? cleanups = null) =>
-        new LLookup(sources, varieties ?? [], cleanups ?? []);
+        IReadOnlyList<LRespelling>? cleanups = null,
+        bool literal = false) =>
+        new LLookup(sources, varieties ?? [], cleanups ?? [], literal);
 
     internal static LReceiver TReceiverRespellingCreate(LReceiver inner, IReadOnlyList<LRespelling> groups) =>
         new LReceiverRespelling(inner, groups);
@@ -170,6 +172,30 @@ internal static partial class TInterface
         string language) =>
         trove.LTroveRecordingRead(session, word, language);
 
+    internal static void TTroveTranscriptionSave(
+        this LTrove trove,
+        long session,
+        string word,
+        string language,
+        string scheme,
+        IReadOnlyList<LCandidate> found)
+    {
+        trove.LTroveTranscriptionSave(session, word, language, scheme, found);
+    }
+
+    internal static IReadOnlyList<LCandidate>? TTroveTranscriptionRead(
+        this LTrove trove,
+        long session,
+        string word,
+        string language,
+        string scheme) =>
+        trove.LTroveTranscriptionRead(session, word, language, scheme);
+
+    internal static void TTroveClear(this LTrove trove, long session)
+    {
+        trove.LTroveClear(session);
+    }
+
     internal static IReadOnlyList<LRecording> THarvestRecordingScan(
         IReadOnlyList<LRecording> recordings,
         string variety) =>
@@ -201,9 +227,28 @@ internal static partial class TInterface
         CancellationToken cancellation) =>
         engine.LEngineRecordingFind(session, word, language, target, listener, cancellation);
 
+    internal static Task TEngineTranscriptionFind(
+        this LEngine engine,
+        long session,
+        string word,
+        string language,
+        string scheme,
+        LReceiver receiver,
+        CancellationToken cancellation) =>
+        engine.LEngineTranscriptionFind(session, word, language, scheme, receiver, cancellation);
+
     internal static IReadOnlyList<LVariety> TEngineVarietyRead(this LEngine engine, string language) =>
         engine.LEngineVarietyRead(language);
 
     internal static bool TEngineFlaggedCheck(this LEngine engine, string language) =>
         engine.LEngineFlaggedCheck(language);
+
+    internal static LFrequency TFrequencyCreate(string source, string raw, string? band) =>
+        new LFrequency(source, raw, band);
+
+    internal static LFrequency TFrequencyParse(string stored) =>
+        LFrequency.LFrequencyParse(stored);
+
+    internal static string TFrequencyFormat(this LFrequency frequency) =>
+        frequency.LFrequencyFormat();
 }

@@ -126,6 +126,14 @@ internal static partial class TInterface
         engine.LEngineFavoriteSave(entryId);
     }
 
+    internal static int TEngineGraspRead(this LEngine engine, long entryId) =>
+        engine.LEngineGraspRead(entryId);
+
+    internal static void TEngineGraspSave(this LEngine engine, long entryId, int grasp)
+    {
+        engine.LEngineGraspSave(entryId, grasp);
+    }
+
     internal static LMentionResult TEngineMentionFind(this LEngine engine, long exampleId, int offset) =>
         engine.LEngineMentionFind(exampleId, offset);
 
@@ -180,12 +188,36 @@ internal static partial class TInterface
         engine.LEngineRespellingSave(respelled);
     }
 
+    internal static void TEngineFrequencySave(this LEngine engine, bool frequency)
+    {
+        engine.LEngineFrequencySave(frequency);
+    }
+
+    internal static Task<LFrequency?> TEngineFrequencyFind(
+        this LEngine engine,
+        string word,
+        string language,
+        CancellationToken cancellation) =>
+        engine.LEngineFrequencyFind(word, language, cancellation);
+
+    internal static string? TEngineBandResolve(this LEngine engine, string language, string raw) =>
+        engine.LEngineBandResolve(language, raw);
+
+    internal static LFrequency? TEngineFrequencyRead(this LEngine engine, long entryId) =>
+        engine.LEngineFrequencyRead(entryId);
+
+    internal static void TEngineFrequencyStart(this LEngine engine, long entryId)
+    {
+        engine.LEngineFrequencyStart(entryId);
+    }
+
     internal static LSettings TSettingsCreate(
         string localization,
         LWindowState? window = null,
         double volume = 1,
-        bool respelled = false) =>
-        new(localization, window, volume, respelled);
+        bool respelled = false,
+        bool frequency = true) =>
+        new(localization, window, volume, respelled, frequency);
 
     internal static LSettings TSettingsLoad(string root) =>
         LSettingsLoader.LSettingsLoaderLoad(root);

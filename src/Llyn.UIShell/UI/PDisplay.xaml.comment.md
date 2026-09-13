@@ -30,6 +30,23 @@ A level the editor set is the level this view plays at.
 The id is taken as well as the draft, because a draft does not say which entry it is.
 That id is what the incoming cards are looked up by.
 
+## `private void PDisplayStampShow(long id)`
+
+Fills the creation and update times from the stored entry, since the draft carries no clock.
+The stamps collapse when the entry cannot be read.
+
+## `private void PDisplayFrequencyShow(long id)`
+
+Fills the frequency chip from the stored entry, since the draft does not carry it.
+The chip and its tooltip are worded by the shared label, so the editor shows the same.
+The section collapses when the entry has no frequency yet or the read fails.
+An entry with no value asks the engine to fill it, and the fill announces itself when done.
+
+## `private static string PDisplayStampFormat(string? utc)`
+
+Turns a stored ISO 8601 UTC stamp into local time in the short general format of the current culture.
+A missing or unreadable stamp shows as nothing.
+
 ## `private void PDisplayPlaybackShow()`
 
 Shows the volume tray while the primary or any further row has a recording.
@@ -43,7 +60,8 @@ Playback stops, because what it was playing belonged to the entry that was shown
 
 What the view does when the engine announces that stored data changed.
 It answers only for the entry it stands on, and ignores every announcement about another.
-A mark set from another tab moves the star.
+A mark set from another tab moves the heart.
+A frequency the engine finished fetching fills the chip alone, because nothing else on the page changed.
 A headword written elsewhere is read back and redrawn, so two views of one entry never disagree.
 An entry that is gone leaves the unselected notice, because there is nothing left to show.
 A workspace that moved empties the view, since the id it stood on means nothing in the new database.
@@ -85,10 +103,15 @@ Example lines are drawn inside card templates, where no code can reach one line 
 So the pack's example and Gloss typography is put into view resources the templates read.
 A pack that declares none has its keys removed, and the card's own fallback typography stands.
 
+### `private void PDisplayGraspShow(long id)`
+
+Reads the shown entry's grasp and sets the star row to match.
+A failed read leaves the row empty rather than claiming a rating.
+
 ### `private void PDisplayFavoriteShow(long id)`
 
-Reads whether the shown entry is marked and sets the star to match.
-An unknown mark leaves the star empty rather than claiming the entry is marked.
+Reads whether the shown entry is marked and sets the heart to match.
+An unknown mark leaves the heart empty rather than claiming the entry is marked.
 
 ### `private void PDisplayCardHandle(object sender, RoutedEventArgs e)`
 
@@ -104,10 +127,25 @@ The chip is read off what was clicked rather than off the click's source.
 A click leaving a template is re-sourced to the presenter that drew it.
 A chip naming a record the card never saved leads nowhere.
 
+### `private string PDisplayGraspFormat(int step)`
+
+The words a step is shown as beside the stars, empty while no entry is shown.
+The key is resolved by the row itself, so both surfaces word a step the same way.
+
+### `private void PDisplayHoverHandle(object sender, RoutedEventArgs e)`
+
+Re-words the label as the pointer moves across the stars, and back to the stored step when it leaves.
+
+### `private void PDisplayGraspHandle(object sender, RoutedEventArgs e)`
+
+Writes the step the click left on the star row onto the shown entry.
+A refused write re-reads the stored step, so the row never shows a rating the workspace does not hold.
+Rating creates no entry and changes no lexical data.
+
 ### `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
 
-Marks or unmarks the shown entry, following the state the click left on the star.
-A refused write puts the star back where it stood.
+Marks or unmarks the shown entry, following the state the click left on the heart.
+A refused write puts the heart back where it stood.
 It never shows a mark the workspace does not hold.
 Marking creates no entry and changes no lexical data.
 

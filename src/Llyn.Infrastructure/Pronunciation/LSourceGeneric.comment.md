@@ -24,6 +24,27 @@ Merges readings across attempts, keeping the first value seen for each variety.
 An untagged reading counts as a variety of its own, so a flat attempt still answers once.
 The loop stops once every variety the spec declares is filled, so a later attempt is not fetched for nothing.
 Readings come back in the order they were first seen, which keeps the pack's declared order on the menu.
+The headword an attempt followed to carries over, so later attempts ask for the page that has readings.
+
+## `private async Task<(LAnswer, string)> LSourceAttemptResolve(LSourceAttempt attempt, string word, CancellationToken cancellation)`
+
+Runs one attempt and follows the pointer it captures when the page held no reading.
+Each hop fetches the attempt again for the headword the pointer named.
+At most two hops are taken.
+A headword already visited ends the chase, so two pages pointing at each other cannot loop.
+The answer comes back with the headword it was found under.
+
+## `private async Task<(LAnswer, string?)> LSourceAttemptRun(LSourceAttempt attempt, string word, CancellationToken cancellation)`
+
+Fetches and extracts once.
+The second value is the headword the attempt's `follow` reading captured, or `null` when there is none to follow.
+A pointer is only read when every reading came up empty, so a page with readings is never left.
+A page the guard rejects is not followed either.
+
+## `private static string? LSourceValueRead(LSourceReading reading, string body)`
+
+Dispatches one reading to its declared strategy.
+The follow reading and the ordinary readings share it, so a pointer is captured with the same three strategies.
 
 ## `private static HashSet<string> LSourceVarietyScan(LSourceSpec spec)`
 

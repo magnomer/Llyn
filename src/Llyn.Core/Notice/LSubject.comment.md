@@ -45,3 +45,13 @@ The workspace folder changed, so every stored record a subscriber holds is stale
 
 A held Draft changed because a Request was applied to it.
 The id is the draft's, and the surface holding that draft re-reads it and renders what differs.
+
+## `LSubjectFrequency,`
+
+An Entry's stored Frequency was fetched or cleared.
+The id is the entry's, and the surface showing that entry re-reads its frequency alone.
+
+## `LSubjectGrasp,`
+
+An Entry's stored Grasp was set or cleared by the user.
+The id is the entry's, and the surface showing that entry re-reads its grasp alone.

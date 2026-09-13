@@ -13,7 +13,7 @@ The headword is never identity, so two entries with the same headword stay disti
 - `LEntryId` — Opaque, program-generated stable id.
 - `LEntryHeadword` — Main headword, which is display text and not an identifier.
 - `LEntryLanguage` — Language identifier the entry belongs to.
-- `LEntryProficiency` — Optional proficiency information.
+- `LEntryGrasp` — Half-step count of how well the user knows the entry, zero when unrated, see [LGrasp](LGrasp.comment.md).
 - `LEntryFrequency` — Optional frequency information.
 - `LEntryAddedUtc` — Optional creation timestamp, ISO 8601 UTC.
 - `LEntryUpdatedUtc` — Optional last-modification timestamp, ISO 8601 UTC.

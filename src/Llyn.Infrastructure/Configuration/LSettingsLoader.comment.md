@@ -24,6 +24,11 @@ A missing number means full, so a workspace written before this setting existed 
 The respelling switch is read only as a JSON boolean, and anything else means off.
 A missing key means off, so a workspace written before the switch existed shows source transcriptions as before.
 
+### `fetch.ValueKind != JsonValueKind.False;`
+
+The frequency switch defaults on, so only an explicit JSON `false` turns the fetch off.
+A missing key means on, so an older workspace starts fetching without being edited.
+
 ### `if (settings.LSettingsWindow is LWindowState window)`
 
 A window block is written only once a window has closed and reported its geometry.

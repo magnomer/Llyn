@@ -53,13 +53,17 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(written);
 
             LTagArchive tags = new(_lEngineDatabase);
-            if (LEngineOwnerCheck(owner))
+            bool collocation = LEngineOwnerCheck(owner);
+            if (collocation)
             {
                 tags.LTagCollocationSave(ownerId, written);
-                return;
+            }
+            else
+            {
+                tags.LTagMeaningSave(ownerId, written);
             }
 
-            tags.LTagMeaningSave(ownerId, written);
+            LEngineUpdatedSet(ownerId, collocation);
         }
     }
 

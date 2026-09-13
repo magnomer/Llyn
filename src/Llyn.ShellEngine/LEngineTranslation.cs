@@ -23,7 +23,9 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(ids);
-            LEngineTranslationSave(ownerId, ids, LEngineOwnerCheck(owner));
+            bool collocation = LEngineOwnerCheck(owner);
+            LEngineTranslationSave(ownerId, ids, collocation);
+            LEngineUpdatedSet(ownerId, collocation);
         }
     }
 
@@ -101,7 +103,7 @@ public sealed partial class LEngine
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
             LEntry entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
-                new LEntry(0, headword.Trim(), language, null, null, null, null),
+                new LEntry(0, headword.Trim(), language, 0, null, null, null),
                 forms: [],
                 speeches: []);
 
@@ -113,6 +115,7 @@ public sealed partial class LEngine
             workspace.LWorkspaceStateSave(state with { LWorkspaceStateRevision = revision.LRevisionId });
 
             session.LDatabaseSessionCommit();
+            LEngineFrequencyStart(entry.LEntryId);
             return entry;
         }
     }

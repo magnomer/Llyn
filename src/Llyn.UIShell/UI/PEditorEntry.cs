@@ -21,6 +21,39 @@ public partial class PEditor
         PCardPrepare();
         PEditorChangeUpdate();
         PEditorFavoriteShow();
+        PEditorGraspShow();
+        PEditorFrequencyShow();
+    }
+
+    internal void PEditorFrequencyShow()
+    {
+        long? entry = PEditorEntryRead();
+        LFrequency? frequency = null;
+
+        if (entry is not null)
+        {
+            try
+            {
+                frequency = _lEngine.LEngineFrequencyRead(entry.Value);
+            }
+            catch (Exception)
+            {
+                frequency = null;
+            }
+        }
+
+        if (frequency is null)
+        {
+            PEditorFrequency.Text = string.Empty;
+            PEditorFrequencyChip.ToolTip = null;
+            PEditorFrequencySection.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        PEditorFrequency.Text = PFrequencyLabel.PFrequencyLabelName(frequency);
+        PEditorFrequencyChip.ToolTip = PFrequencyLabel.PFrequencyLabelTip(
+            frequency, _pEditorHost.PLocalizationTextRead("Frequency.Unit"));
+        PEditorFrequencySection.Visibility = Visibility.Visible;
     }
 
     internal void PEditorFavoriteShow()
@@ -72,6 +105,65 @@ public partial class PEditor
         {
             PEditorFavorite.IsChecked = !marked;
             _pEditorHost.PWindowFailureShow("Favorite.MarkFailed", exception);
+        }
+    }
+
+    internal void PEditorGraspShow()
+    {
+        long? entry = PEditorEntryRead();
+
+        if (entry is null)
+        {
+            PEditorGrasp.IsEnabled = false;
+            PEditorGrasp.PGraspStep = 0;
+            PEditorGraspLabel.Text = string.Empty;
+            return;
+        }
+
+        PEditorGrasp.IsEnabled = true;
+
+        try
+        {
+            PEditorGrasp.PGraspStep = _lEngine.LEngineGraspRead(entry.Value);
+        }
+        catch (Exception)
+        {
+            PEditorGrasp.PGraspStep = 0;
+        }
+
+        PEditorGraspLabel.Text = PEditorGraspFormat(PEditorGrasp.PGraspStep);
+    }
+
+    private string PEditorGraspFormat(int step)
+    {
+        return PEditorEntryRead() is null
+            ? string.Empty
+            : _pEditorHost.PLocalizationTextRead(PGrasp.PGraspLabelResolve(step));
+    }
+
+    private void PEditorHoverHandle(object sender, RoutedEventArgs e)
+    {
+        PEditorGraspLabel.Text = PEditorGraspFormat(PEditorGrasp.PGraspHover ?? PEditorGrasp.PGraspStep);
+    }
+
+    private void PEditorGraspHandle(object sender, RoutedEventArgs e)
+    {
+        long? entry = PEditorEntryRead();
+
+        if (entry is null)
+        {
+            PEditorGrasp.PGraspStep = 0;
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineGraspSave(entry.Value, PEditorGrasp.PGraspStep);
+        }
+        catch (Exception exception)
+        {
+            PEditorGraspShow();
+            _pEditorHost.PWindowFailureShow("Grasp.MarkFailed", exception);
         }
     }
 

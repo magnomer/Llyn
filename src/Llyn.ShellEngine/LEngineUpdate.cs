@@ -28,18 +28,25 @@ public sealed partial class LEngine
 
             LEntryArchive entries = new(_lEngineDatabase);
             LEntry stored = entries.LEntryRead(id) ?? throw new LRefusal(LRefusal.LRefusalEntry);
+            LEntryDraft? origin = LEngineEntryLoad(id);
 
             List<LRevisionChange> changes = [];
 
-            entries.LEntryUpdate(stored with
+            if (origin is null || !LEngineDraftMatch(origin, draft))
             {
-                LEntryHeadword = draft.LEntryDraftHeadword,
-                LEntryLanguage = draft.LEntryDraftLanguage,
-            });
+                entries.LEntryUpdate(stored with
+                {
+                    LEntryHeadword = draft.LEntryDraftHeadword,
+                    LEntryLanguage = draft.LEntryDraftLanguage,
+                });
+            }
 
-            if (!string.Equals(stored.LEntryHeadword, draft.LEntryDraftHeadword, StringComparison.Ordinal) ||
-                !string.Equals(stored.LEntryLanguage, draft.LEntryDraftLanguage, StringComparison.Ordinal))
+            bool renamed =
+                !string.Equals(stored.LEntryHeadword, draft.LEntryDraftHeadword, StringComparison.Ordinal) ||
+                !string.Equals(stored.LEntryLanguage, draft.LEntryDraftLanguage, StringComparison.Ordinal);
+            if (renamed)
             {
+                entries.LEntryFrequencySet(id, null);
                 changes.Add(new LRevisionChange(0, id, "entry", "update", draft.LEntryDraftHeadword));
             }
 
@@ -75,7 +82,29 @@ public sealed partial class LEngine
 
             LEntry updated = entries.LEntryRead(id) ?? stored;
             session.LDatabaseSessionCommit();
+            if (renamed)
+            {
+                LEngineFrequencyStart(id);
+            }
+
             return updated;
+        }
+    }
+
+    private void LEngineUpdatedSet(long entryId)
+    {
+        new LEntryArchive(_lEngineDatabase).LEntryUpdatedSet(entryId);
+    }
+
+    private void LEngineUpdatedSet(long ownerId, bool collocation)
+    {
+        long? entryId = collocation
+            ? new LCollocationArchive(_lEngineDatabase).LCollocationHolderRead(ownerId)
+            : new LMeaningArchive(_lEngineDatabase).LMeaningHolderRead(ownerId);
+
+        if (entryId is long held)
+        {
+            LEngineUpdatedSet(held);
         }
     }
 

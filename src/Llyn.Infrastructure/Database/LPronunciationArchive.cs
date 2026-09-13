@@ -222,6 +222,14 @@ public sealed class LPronunciationArchive
             reader.GetString(3));
     }
 
+    public long? LPronunciationHolderRead(long id)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        return LPronunciationHolderRead(session.LDatabaseSessionConnection, id);
+    }
+
     private static long? LPronunciationHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();

@@ -354,7 +354,7 @@ public sealed class TTranslation
         LEntryArchive entries, string headword, string language)
     {
         return entries.TEntryCreate(
-            TInterface.TEntryCreate(0, headword, language, null, null, null, null), [], []);
+            TInterface.TEntryCreate(0, headword, language, 0, null, null, null), [], []);
     }
 
     private static long TTranslationMeaningCreate(TWorkspace workspace, long entryId)

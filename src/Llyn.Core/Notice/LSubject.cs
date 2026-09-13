@@ -21,4 +21,8 @@ public enum LSubject
     LSubjectWorkspace,
 
     LSubjectDraft,
+
+    LSubjectFrequency,
+
+    LSubjectGrasp,
 }

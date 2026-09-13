@@ -126,36 +126,52 @@
 
     <DataTemplate x:Key="Theme.Accent.Row">
         <Border Style="{StaticResource Theme.Pronunciation.Surface}">
-            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <Image Style="{StaticResource Theme.Accent.Flag}" />
-                <TextBlock Style="{StaticResource Theme.Accent.Label}" />
-                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                <Grid Margin="3,0">
-                    <TextBlock Style="{StaticResource Theme.Accent.Measure}" />
-                    <TextBox Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" Text="{Binding PAccentItemIpa, UpdateSourceTrigger=PropertyChanged}" />
-                </Grid>
-                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                <Button Style="{StaticResource Theme.Accent.Playback}" />
-                <Button Style="{StaticResource Theme.Accent.Phonetician}" />
-                <Button Style="{StaticResource Theme.Accent.Downloader}" />
-                <StackPanel Style="{StaticResource Theme.Accent.Control}">
-                    <Button Style="{StaticResource Theme.Accent.Addition}" />
-                    <Button Style="{StaticResource Theme.Accent.Remove}" />
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
+                    <Image Style="{StaticResource Theme.Accent.Flag}" />
+                    <TextBlock Style="{StaticResource Theme.Accent.Label}" />
                 </StackPanel>
-            </StackPanel>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                    <Grid Margin="3,0">
+                        <TextBlock Style="{StaticResource Theme.Accent.Measure}" />
+                        <TextBox Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" Text="{Binding PAccentItemIpa, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                    <Button Style="{StaticResource Theme.Accent.Playback}" />
+                    <Button Style="{StaticResource Theme.Accent.Phonetician}" />
+                    <Button Style="{StaticResource Theme.Accent.Downloader}" />
+                    <StackPanel Style="{StaticResource Theme.Accent.Control}">
+                        <Button Style="{StaticResource Theme.Accent.Addition}" />
+                        <Button Style="{StaticResource Theme.Accent.Remove}" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
         </Border>
     </DataTemplate>
 
     <DataTemplate x:Key="Theme.Accent.Display">
         <Border Style="{StaticResource Theme.Pronunciation.Surface}">
-            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <Image Style="{StaticResource Theme.Accent.Flag}" />
-                <TextBlock Style="{StaticResource Theme.Accent.Label}" />
-                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PAccentItemIpa}" />
-                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                <Button Style="{StaticResource Theme.Accent.Playback}" />
-            </StackPanel>
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
+                    <Image Style="{StaticResource Theme.Accent.Flag}" />
+                    <TextBlock Style="{StaticResource Theme.Accent.Label}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PAccentItemIpa}" />
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                    <Button Style="{StaticResource Theme.Accent.Playback}" />
+                </StackPanel>
+            </Grid>
         </Border>
     </DataTemplate>
 

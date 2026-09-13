@@ -108,6 +108,33 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
+    public void LanguageLoad_SchemeObject_ReadsNameAndSources()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "transcription": [
+                { "name": "Pinyin", "sources": [ { "name": "Wiktionary", "attempts": [
+                    { "urls": ["https://example.test/{word}"], "strategy": "regex", "match": "m=(\\S+)", "group": 1 } ] } ] },
+                "Bopomofo",
+                " ",
+                "Pinyin" ] }
+            """);
+
+        Assert.Equal(["Pinyin", "Bopomofo"], language.LLanguageSchemes.Select(scheme => scheme.LSchemeName));
+        Assert.Equal("Wiktionary", Assert.Single(language.LLanguageSchemes[0].LSchemeSources).LSourceSpecName);
+        Assert.Empty(language.LLanguageSchemes[1].LSchemeSources);
+    }
+
+    [Fact]
+    public void LanguageLoad_MandarinPack_ReadsSourcedSchemes()
+    {
+        LLanguage language = TInterface.TLanguageLoad("Mandarin");
+
+        Assert.Equal(["Pinyin", "Bopomofo"], language.LLanguageSchemes.Select(scheme => scheme.LSchemeName));
+        Assert.All(language.LLanguageSchemes, scheme => Assert.NotEmpty(scheme.LSchemeSources));
+    }
+
+    [Fact]
     public void LanguageLoad_PackWithoutRespelling_ReadsNone()
     {
         LLanguage language = TInterface.TLanguageLoad("Spanish");
@@ -148,6 +175,77 @@ public sealed class TLanguageLoader
         Assert.Equal(
             [("Good", ""), ("Last", "American")],
             language.LLanguageRespellings.Select(group => (group.LRespellingName, string.Join(",", group.LRespellingVarieties))));
+    }
+
+    [Fact]
+    public void LanguageLoad_FollowObject_ReadsUnnormalizedReading()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "pronunciation": [ { "name": "Stub", "attempts": [
+                { "urls": ["https://example.test/{word}"], "strategy": "regex", "match": "m=(.+)", "group": 1,
+                  "follow": { "strategy": "regex", "match": "see=(.+)", "group": 1, "normalize": true } } ] } ] }
+            """);
+
+        LSourceAttempt attempt = Assert.Single(Assert.Single(language.LLanguageLookupSources).LSourceSpecAttempts);
+        Assert.NotNull(attempt.LSourceAttemptFollow);
+        Assert.Equal("see=(.+)", attempt.LSourceAttemptFollow.LSourceReadingPattern);
+        Assert.False(attempt.LSourceAttemptFollow.LSourceReadingPhonetic);
+    }
+
+    [Fact]
+    public void LanguageLoad_NoFollow_LeavesAttemptNull()
+    {
+        LSourceSpec longman = TLanguageSourceFind("English", "Longman");
+
+        Assert.Null(Assert.Single(longman.LSourceSpecAttempts).LSourceAttemptFollow);
+    }
+
+    [Fact]
+    public void LanguageLoad_FrequencyAndBands_ReadsBothInWrittenOrder()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "frequency": [
+                { "name": "First", "attempts": [
+                    { "urls": ["https://example.test/a/{word}"], "strategy": "regex", "match": "a=(\\S+)", "group": 1 } ] },
+                { "name": "Second", "attempts": [
+                    { "urls": ["https://example.test/b/{word}"], "strategy": "regex", "match": "b=(\\S+)", "group": 1 } ] } ],
+              "bands": [
+                { "upTo": 10, "name": "Common" },
+                { "match": "^[SW]1$", "name": "Very common" } ] }
+            """);
+
+        Assert.Equal(["First", "Second"], language.LLanguageFrequencies.Select(source => source.LSourceSpecName));
+        Assert.Equal(
+            [("Common", 10, null), ("Very common", null, "^[SW]1$")],
+            language.LLanguageBands.Select(band => (band.LBandName, band.LBandLimit, band.LBandPattern)));
+    }
+
+    [Fact]
+    public void LanguageLoad_MalformedBandRows_SkipsEachOne()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "bands": [
+                { "upTo": 10 },
+                { "name": " ", "upTo": 10 },
+                { "name": "Bare" },
+                { "name": "Broken", "match": "(" },
+                { "name": "Kept", "match": "^S1$" } ] }
+            """);
+
+        LBand kept = Assert.Single(language.LLanguageBands);
+        Assert.Equal("Kept", kept.LBandName);
+    }
+
+    [Fact]
+    public void LanguageLoad_PackWithoutFrequency_ReadsEmptyLists()
+    {
+        LLanguage language = TInterface.TLanguageLoad("Spanish");
+
+        Assert.Empty(language.LLanguageFrequencies);
+        Assert.Empty(language.LLanguageBands);
     }
 
     private static LLanguage TLanguageFixtureLoad(string json)

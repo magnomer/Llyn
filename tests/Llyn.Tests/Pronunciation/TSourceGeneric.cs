@@ -99,6 +99,80 @@ public sealed class TSourceGeneric
     }
 
     [Fact]
+    public async Task SourceFind_FollowPointer_ReadsTargetPage()
+    {
+        LSource source = TInterface.TSourceGenericCreate(
+            TInterface.TSourceSpecCreate(
+                "Stub",
+                [
+                    TPronunciationHelper.TSourceFollowCreate(
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
+                ]),
+            TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>
+            {
+                ["https://example.test/%E4%B8%AD%E5%9B%BD"] = "see=中國;",
+                ["https://example.test/%E4%B8%AD%E5%9C%8B"] = "m=zhōngguó;",
+            }));
+
+        LAnswer answer = await source.TSourceFind("中国", CancellationToken.None);
+
+        Assert.Equal("zhōngguó", answer.LAnswerValue);
+    }
+
+    [Fact]
+    public async Task SourceFind_FollowLoop_StopsAtHopLimit()
+    {
+        LSource source = TInterface.TSourceGenericCreate(
+            TInterface.TSourceSpecCreate(
+                "Stub",
+                [
+                    TPronunciationHelper.TSourceFollowCreate(
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
+                ]),
+            TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>
+            {
+                ["https://example.test/a"] = "see=b;",
+                ["https://example.test/b"] = "see=a;",
+            }));
+
+        LAnswer answer = await source.TSourceFind("a", CancellationToken.None);
+
+        Assert.True(answer.LAnswerEmpty);
+        Assert.True(answer.LAnswerReached);
+    }
+
+    [Fact]
+    public async Task SourceFind_FollowPointer_CarriesToNextAttempt()
+    {
+        LSource source = TInterface.TSourceGenericCreate(
+            TInterface.TSourceSpecCreate(
+                "Stub",
+                [
+                    TPronunciationHelper.TSourceFollowCreate(
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "m=([^;]+);", 1, null, false, 0)),
+                    TInterface.TSourceAttemptCreate(
+                        ["https://example.test/html/{word}"],
+                        [TInterface.TSourceReadingCreate(string.Empty, "regex", "b=([^;]+);", 1, null, false, 0)],
+                        null,
+                        null,
+                        null),
+                ]),
+            TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>
+            {
+                ["https://example.test/a"] = "see=b;",
+                ["https://example.test/b"] = "none",
+                ["https://example.test/html/b"] = "b=ㄅ;",
+            }));
+
+        LAnswer answer = await source.TSourceFind("a", CancellationToken.None);
+
+        Assert.Equal("ㄅ", answer.LAnswerValue);
+    }
+
+    [Fact]
     public async Task SourceFind_ServerFailure_ReturnsLost()
     {
         LSource source = TSourceGenericCreate(

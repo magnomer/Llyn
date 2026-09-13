@@ -160,6 +160,14 @@ public sealed class LCollocationArchive
         session.LDatabaseSessionCommit();
     }
 
+    public long? LCollocationHolderRead(long id)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+
+        using LDatabaseSession session = _lCollocationArchiveDatabase.LDatabaseSessionStart();
+        return LCollocationHolderRead(session.LDatabaseSessionConnection, id);
+    }
+
     private static long? LCollocationHolderRead(SqliteConnection connection, long id)
     {
         using SqliteCommand command = connection.CreateCommand();

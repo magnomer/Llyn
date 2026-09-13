@@ -13,5 +13,11 @@ A fixture pack without varieties keeps such groups, so the key stays optional th
 A pack without either block loads none.
 A `cleanup` block loads its rules in order and skips malformed rows.
 A group with a broken regex is dropped while its neighbours survive.
+A `transcription` entry loads as a scheme whether it is a bare name or an object with sources.
+Blank and doubled scheme names are dropped.
+The Mandarin pack declares its two schemes with sources, so its rows can be looked up.
+A `frequency` list and a `bands` list load in written order, limit rows and pattern rows alike.
+A band row without a name, without a limit or pattern, or with a broken regex is skipped alone.
+A pack without the two keys loads two empty lists.
 The packs are copied beside the test binary, so these tests read the shipped data.
 A throwaway pack is written beside them for the fixture cases and removed again.

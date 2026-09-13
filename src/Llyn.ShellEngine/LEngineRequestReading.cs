@@ -66,7 +66,8 @@ public sealed partial class LEngine
     {
         if (content.LEntryDraftPronunciations.Count == 0)
         {
-            LPronunciationDraft spoken = change(new LPronunciationDraft(string.Empty, LPronunciationDraftId: LEngineIdentityCreate()));
+            LPronunciationDraft spoken = change(new LPronunciationDraft(
+                string.Empty, LPronunciationDraftId: LEngineIdentityCreate(), LPronunciationDraftSeeded: true));
             return content with { LEntryDraftPronunciations = [spoken] };
         }
 
@@ -100,7 +101,8 @@ public sealed partial class LEngine
         string scheme = (request.LRequestScheme ?? string.Empty).Trim();
         LEngineSchemeValidate(content.LEntryDraftTranscriptions, scheme, 0);
 
-        LTranscriptionDraft spelled = new(scheme, LTranscriptionDraftId: LEngineIdentityCreate());
+        LTranscriptionDraft spelled = new(
+            scheme, LTranscriptionDraftId: LEngineIdentityCreate(), LTranscriptionDraftSeeded: request.LRequestSeeded);
         return LEngineTranscriptionApply(content, list => LEngineListAdd(list, spelled, request.LRequestPosition));
     }
 

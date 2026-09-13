@@ -36,13 +36,12 @@ public sealed class LEntryArchive
         {
             command.CommandText =
                 """
-                INSERT INTO entry (headword, language, proficiency, frequency, added_utc, updated_utc)
-                VALUES ($headword, $language, $proficiency, $frequency, $added, $updated)
+                INSERT INTO entry (headword, language, frequency, added_utc, updated_utc)
+                VALUES ($headword, $language, $frequency, $added, $updated)
                 RETURNING entry_id;
                 """;
             command.Parameters.AddWithValue("$headword", stored.LEntryHeadword);
             command.Parameters.AddWithValue("$language", stored.LEntryLanguage);
-            command.Parameters.AddWithValue("$proficiency", (object?)stored.LEntryProficiency ?? DBNull.Value);
             command.Parameters.AddWithValue("$frequency", (object?)stored.LEntryFrequency ?? DBNull.Value);
             command.Parameters.AddWithValue("$added", (object?)stored.LEntryAddedUtc ?? DBNull.Value);
             command.Parameters.AddWithValue("$updated", (object?)stored.LEntryUpdatedUtc ?? DBNull.Value);
@@ -64,7 +63,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry WHERE entry_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -82,7 +81,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry
             WHERE $query = '' OR instr(lfold(headword), lfold($query)) > 0
             ORDER BY headword;
@@ -108,7 +107,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry
             WHERE language = $language AND lfold(headword) = lfold($headword)
             ORDER BY headword, entry_id;
@@ -128,7 +127,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry
             WHERE language = $language AND headword <> '' AND instr(lfold($text), lfold(headword)) > 0
             ORDER BY length(headword) DESC, headword, entry_id;
@@ -159,7 +158,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry
             WHERE $tag = 0
                OR entry_id IN (
@@ -194,7 +193,7 @@ public sealed class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, proficiency, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry
             WHERE $register = 0
                OR entry_id IN (
@@ -289,13 +288,12 @@ public sealed class LEntryArchive
             command.CommandText =
                 """
                 UPDATE entry
-                SET headword = $headword, language = $language, proficiency = $proficiency,
-                    frequency = $frequency, updated_utc = $updated
+                SET headword = $headword, language = $language, frequency = $frequency,
+                    updated_utc = $updated
                 WHERE entry_id = $id;
                 """;
             command.Parameters.AddWithValue("$headword", entry.LEntryHeadword);
             command.Parameters.AddWithValue("$language", entry.LEntryLanguage);
-            command.Parameters.AddWithValue("$proficiency", (object?)entry.LEntryProficiency ?? DBNull.Value);
             command.Parameters.AddWithValue("$frequency", (object?)entry.LEntryFrequency ?? DBNull.Value);
             command.Parameters.AddWithValue("$updated", now);
             command.Parameters.AddWithValue("$id", entry.LEntryId);
@@ -332,6 +330,66 @@ public sealed class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
+    public void LEntryUpdatedSet(long id)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+
+        string now = DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture);
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "UPDATE entry SET updated_utc = $updated WHERE entry_id = $id;";
+            command.Parameters.AddWithValue("$updated", now);
+            command.Parameters.AddWithValue("$id", id);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LEntryFrequencySet(long entryId, string? frequency)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "UPDATE entry SET frequency = $frequency WHERE entry_id = $id;";
+            command.Parameters.AddWithValue("$frequency", (object?)frequency ?? DBNull.Value);
+            command.Parameters.AddWithValue("$id", entryId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No entry carries the id '{entryId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
+    public void LEntryGraspSet(long entryId, int grasp)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        if (!LGrasp.LGraspCheck(grasp))
+        {
+            throw new ArgumentOutOfRangeException(nameof(grasp));
+        }
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "UPDATE entry SET grasp = $grasp WHERE entry_id = $id;";
+            command.Parameters.AddWithValue("$grasp", grasp);
+            command.Parameters.AddWithValue("$id", entryId);
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new InvalidOperationException($"No entry carries the id '{entryId}'.");
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
     public void LEntryDelete(long id)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
@@ -355,7 +413,7 @@ public sealed class LEntryArchive
             reader.GetInt64(0),
             reader.GetString(1),
             reader.GetString(2),
-            reader.IsDBNull(3) ? null : reader.GetString(3),
+            reader.GetInt32(3),
             reader.IsDBNull(4) ? null : reader.GetString(4),
             reader.IsDBNull(5) ? null : reader.GetString(5),
             reader.IsDBNull(6) ? null : reader.GetString(6));

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Llyn.Core;
 
 namespace Llyn.Infrastructure;
@@ -18,11 +19,15 @@ public static class LLanguageLoader
     private const string LLanguageLoaderExample = "example";
     private const string LLanguageLoaderGloss = "gloss";
     private const string LLanguageLoaderScheme = "transcription";
+    private const string LLanguageLoaderSources = "sources";
     private const string LLanguageLoaderSeparator = "separator";
     private const string LLanguageLoaderVarieties = "varieties";
     private const string LLanguageLoaderReadings = "readings";
     private const string LLanguageLoaderCleanup = "cleanup";
     private const string LLanguageLoaderRespelling = "respelling";
+    private const string LLanguageLoaderFollow = "follow";
+    private const string LLanguageLoaderFrequency = "frequency";
+    private const string LLanguageLoaderBands = "bands";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -113,7 +118,69 @@ public static class LLanguageLoader
             LLanguageFlaggedCheck(root),
             LLanguageFontRead(root, LLanguageLoaderGloss),
             LLanguageRespellingScan(root, LLanguageLoaderCleanup, scoped),
-            LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped));
+            LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped),
+            LLanguageSourceScan(root, LLanguageLoaderFrequency),
+            LLanguageBandScan(root));
+    }
+
+    private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(LLanguageLoaderBands, out JsonElement rows) ||
+            rows.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<LBand>();
+        }
+
+        List<LBand> bands = new();
+        foreach (JsonElement row in rows.EnumerateArray())
+        {
+            LBand? band = LLanguageBandRead(row);
+            if (band is not null)
+            {
+                bands.Add(band);
+            }
+        }
+
+        return bands;
+    }
+
+    private static LBand? LLanguageBandRead(JsonElement row)
+    {
+        if (row.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        string name = LLanguageTextRead(row, "name")?.Trim() ?? string.Empty;
+        if (name.Length == 0)
+        {
+            return null;
+        }
+
+        if (row.TryGetProperty("upTo", out JsonElement limit) &&
+            limit.ValueKind == JsonValueKind.Number &&
+            limit.TryGetDouble(out double upTo))
+        {
+            return new LBand(name, upTo, null);
+        }
+
+        string? pattern = LLanguageTextRead(row, "match");
+        if (string.IsNullOrEmpty(pattern))
+        {
+            return null;
+        }
+
+        try
+        {
+            _ = new Regex(pattern);
+        }
+        catch (ArgumentException)
+        {
+            return null;
+        }
+
+        return new LBand(name, null, pattern);
     }
 
     private static IReadOnlyList<LRespelling> LLanguageRespellingScan(JsonElement root, string key, bool scoped)
@@ -189,26 +256,43 @@ public static class LLanguageLoader
         return !string.Equals(separator?.Trim(), "none", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static IReadOnlyList<string> LLanguageSchemeScan(JsonElement root)
+    private static IReadOnlyList<LScheme> LLanguageSchemeScan(JsonElement root)
     {
         if (root.ValueKind != JsonValueKind.Object ||
             !root.TryGetProperty(LLanguageLoaderScheme, out JsonElement schemes) ||
             schemes.ValueKind != JsonValueKind.Array)
         {
-            return Array.Empty<string>();
+            return Array.Empty<LScheme>();
         }
 
-        List<string> names = new();
+        List<LScheme> declared = new();
         foreach (JsonElement scheme in schemes.EnumerateArray())
         {
-            string name = scheme.ValueKind == JsonValueKind.String ? scheme.GetString()!.Trim() : string.Empty;
-            if (name.Length > 0 && !names.Contains(name, StringComparer.Ordinal))
+            LScheme? read = LLanguageSchemeRead(scheme);
+            if (read is not null && declared.All(known => !string.Equals(known.LSchemeName, read.LSchemeName, StringComparison.Ordinal)))
             {
-                names.Add(name);
+                declared.Add(read);
             }
         }
 
-        return names;
+        return declared;
+    }
+
+    private static LScheme? LLanguageSchemeRead(JsonElement scheme)
+    {
+        if (scheme.ValueKind == JsonValueKind.String)
+        {
+            string bare = scheme.GetString()!.Trim();
+            return bare.Length == 0 ? null : new LScheme(bare, Array.Empty<LSourceSpec>());
+        }
+
+        if (scheme.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        string name = LLanguageTextRead(scheme, "name")?.Trim() ?? string.Empty;
+        return name.Length == 0 ? null : new LScheme(name, LLanguageSourceScan(scheme, LLanguageLoaderSources));
     }
 
     private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(JsonElement root, string key)
@@ -313,7 +397,19 @@ public static class LLanguageLoader
             readings,
             LLanguageTextRead(row, "confirm"),
             LLanguageHeaderRead(row),
-            LLanguageTextRead(row, "prefix"));
+            LLanguageTextRead(row, "prefix"),
+            LLanguageFollowRead(row));
+    }
+
+    private static LSourceReading? LLanguageFollowRead(JsonElement row)
+    {
+        if (!row.TryGetProperty(LLanguageLoaderFollow, out JsonElement follow))
+        {
+            return null;
+        }
+
+        LSourceReading? reading = LLanguageReadingRead(follow);
+        return reading is null ? null : reading with { LSourceReadingPhonetic = false };
     }
 
     private static IReadOnlyList<LSourceReading> LLanguageReadingScan(JsonElement row)

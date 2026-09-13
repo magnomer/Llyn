@@ -186,6 +186,37 @@ public sealed class TPronunciation
     }
 
     [Fact]
+    public void DraftCheck_PrimaryClearedAgain_IsNoChangeWhereAddedBlankRowIs()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+
+        engine.TEngineRequestApply(TInterface.TRequestIpaCreate(started.LDraftId, "wɜːd"));
+        Assert.True(engine.TEngineDraftCheck(started.LDraftId));
+        engine.TEngineRequestApply(TInterface.TRequestIpaCreate(started.LDraftId, string.Empty));
+        Assert.False(engine.TEngineDraftCheck(started.LDraftId));
+
+        engine.TEngineRequestApply(TInterface.TPronunciationAdditionCreate(started.LDraftId, string.Empty, 1));
+        Assert.True(engine.TEngineDraftCheck(started.LDraftId));
+    }
+
+    [Fact]
+    public void EntrySave_AddedBlankRow_StoresItEmpty()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+
+        engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "word"));
+        engine.TEngineRequestApply(TInterface.TPronunciationAdditionCreate(started.LDraftId, string.Empty, 1));
+        LEntry entry = engine.TEngineDraftCommit(started.LDraftId);
+
+        LPronunciation kept = Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId));
+        Assert.True(string.IsNullOrEmpty(kept.LPronunciationIpa));
+    }
+
+    [Fact]
     public void RequestApply_PronunciationShift_MakesTheMovedRowPrimary()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

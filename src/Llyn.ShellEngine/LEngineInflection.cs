@@ -22,6 +22,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(inflections);
             LEngineInflectionValidate(inflections);
             new LInflectionArchive(_lEngineDatabase).LInflectionSet(entryId, inflections);
+            LEngineUpdatedSet(entryId);
         }
     }
 
@@ -62,6 +63,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             new LInflectionArchive(_lEngineDatabase).LInflectionMove(entryId, position, target);
+            LEngineUpdatedSet(entryId);
         }
     }
 
@@ -70,6 +72,7 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             new LInflectionArchive(_lEngineDatabase).LInflectionDelete(entryId, position);
+            LEngineUpdatedSet(entryId);
         }
     }
 }

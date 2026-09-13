@@ -103,6 +103,26 @@ public partial class PEditor
 
     private void PEditorBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectFrequency)
+        {
+            if (bulletin.LBulletinId == PEditorEntryRead())
+            {
+                PEditorFrequencyShow();
+            }
+
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectGrasp)
+        {
+            if (bulletin.LBulletinId == PEditorEntryRead())
+            {
+                PEditorGraspShow();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject != LSubject.LSubjectDraft
             || _pEditorDraft == 0
             || bulletin.LBulletinId != _pEditorDraft)

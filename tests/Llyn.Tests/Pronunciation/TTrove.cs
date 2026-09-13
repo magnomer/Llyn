@@ -51,6 +51,36 @@ public sealed class TTrove
     }
 
     [Fact]
+    public void TroveTranscriptionRead_TwoSchemes_ReadsEachBack()
+    {
+        LTrove trove = TInterface.TTroveCreate();
+        LCandidate[] pinyin = [TInterface.TCandidateCreate("Wiktionary", "nǐ hǎo", 0, true, string.Empty)];
+        LCandidate[] bopomofo = [TInterface.TCandidateCreate("Wiktionary", "ㄋㄧˇ ㄏㄠˇ", 0, true, string.Empty)];
+
+        trove.TTroveTranscriptionSave(7, "你好", "Mandarin", "Pinyin", pinyin);
+        trove.TTroveTranscriptionSave(7, "你好", "Mandarin", "Bopomofo", bopomofo);
+
+        Assert.Equal(pinyin, trove.TTroveTranscriptionRead(7, "你好", "Mandarin", "Pinyin"));
+        Assert.Equal(bopomofo, trove.TTroveTranscriptionRead(7, "你好", "Mandarin", "Bopomofo"));
+        Assert.Null(trove.TTroveTranscriptionRead(7, "你好", "Mandarin", "Yale"));
+        Assert.Null(trove.TTroveTranscriptionRead(7, "再見", "Mandarin", "Pinyin"));
+    }
+
+    [Fact]
+    public void TroveClear_Session_DropsEveryScheme()
+    {
+        LTrove trove = TInterface.TTroveCreate();
+        LCandidate[] found = [TInterface.TCandidateCreate("Wiktionary", "nǐ hǎo", 0, true, string.Empty)];
+        trove.TTroveTranscriptionSave(7, "你好", "Mandarin", "Pinyin", found);
+        trove.TTroveTranscriptionSave(8, "你好", "Mandarin", "Pinyin", found);
+
+        trove.TTroveClear(7);
+
+        Assert.Null(trove.TTroveTranscriptionRead(7, "你好", "Mandarin", "Pinyin"));
+        Assert.Equal(found, trove.TTroveTranscriptionRead(8, "你好", "Mandarin", "Pinyin"));
+    }
+
+    [Fact]
     public void TroveRecordingSave_NoAddress_KeepsNothing()
     {
         LTrove trove = TInterface.TTroveCreate();

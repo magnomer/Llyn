@@ -23,9 +23,16 @@ An empty relationship does not occupy the page.
 
 ## `<ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" ...>`
 
-The star stands beside the headword, so the mark is made where the entry is read.
+The heart stands beside the headword, so the mark is made where the entry is read.
 Every entry-browsing tab carries it, because the mark belongs to the entry and not to one panel.
-A filled star says the entry is marked.
+A filled heart says the entry is marked.
+
+## `<local:PGrasp x:Name="PDisplayGrasp" ...>`
+
+The star row follows the heart, where the entry is read.
+It shows how well the user says they know the word, and a click sets it there.
+It draws the stored step alone, never a value the store has not confirmed.
+The words after it say what the shown step means, and follow the pointer while it hovers.
 
 ## `<Grid>`
 
@@ -45,6 +52,10 @@ The chip collapses when the entry carries no pronunciation.
 The further pronunciations of the entry, one row each beneath the primary, drawn by the shared accent template.
 The playback command is bound here, so a row's play button reaches this view's player.
 
+## `<ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />`
+
+The transcriptions of the entry, one row each beneath the pronunciations, drawn by the shared transcription template.
+
 ## `<Border x:Name="PPlayback" Height="37" Background="Transparent" BorderThickness="0" ...>`
 
 The volume tray: the level every row's recording is played at, drawn bare.
@@ -59,6 +70,13 @@ A recording is played the same way where it is read and where it is chosen.
 The parts of speech stand on a row of their own, as they do in the editor.
 Sharing the pronunciation row put them beside a chip that the editor puts a button beside.
 
+## `<StackPanel x:Name="PDisplayFrequencySection" Margin="12,10,0,0" ...>`
+
+The frequency of the headword, one chip under the parts of speech.
+It is read-only here and absent from the editor, because the engine fetches it and the user never types it.
+The chip carries the tooltip, so hovering anywhere on it names the source and the raw figure.
+The section collapses until the engine has a value for the entry.
+
 ## `<StackPanel x:Name="PCompass" HorizontalAlignment="Right" VerticalAlignment="Top" ...>`
 
 The floating contents stand over the reading surface rather than beside it.
@@ -72,3 +90,10 @@ The right edge of that row belongs to the delete button every panel holding a Di
 The column keeps its width while folded.
 The toggle therefore does not slide under that button when the panel goes away.
 The behavior lives in [PCompass.cs](PCompass.comment.md).
+
+## `<StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">`
+
+The entry's creation and last update times, closing the page beneath one hairline.
+Two bare rows, no card, because the stamps are a footnote and not content.
+The times come from the stored entry rather than the draft, since the draft carries no clock.
+Each is shown in local time in the short general format of the current culture.
