@@ -27,6 +27,7 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderRespelling = "respelling";
     private const string LLanguageLoaderFollow = "follow";
     private const string LLanguageLoaderFrequency = "frequency";
+    private const string LLanguageLoaderMorphology = "morphology";
     private const string LLanguageLoaderBands = "bands";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
@@ -120,7 +121,8 @@ public static partial class LLanguageLoader
             LLanguageRespellingScan(root, LLanguageLoaderCleanup, scoped),
             LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped),
             LLanguageSourceScan(root, LLanguageLoaderFrequency),
-            LLanguageBandScan(root));
+            LLanguageBandScan(root),
+            LLanguageSourceScan(root, LLanguageLoaderMorphology));
     }
 
     private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)

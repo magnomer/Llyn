@@ -19,7 +19,7 @@ public static class LSpeechLoader
             AppContext.BaseDirectory, LSpeechLoaderFolder, language, LSpeechLoaderFile);
         if (!File.Exists(path))
         {
-            return new LSpeechPack([], [], []);
+            return new LSpeechPack([], [], [], []);
         }
 
         try
@@ -30,7 +30,7 @@ public static class LSpeechLoader
         }
         catch (Exception exception) when (exception is IOException or JsonException or UnauthorizedAccessException)
         {
-            return new LSpeechPack([], [], []);
+            return new LSpeechPack([], [], [], []);
         }
     }
 
@@ -38,7 +38,7 @@ public static class LSpeechLoader
     {
         if (root.ValueKind != JsonValueKind.Object)
         {
-            return new LSpeechPack([], [], []);
+            return new LSpeechPack([], [], [], []);
         }
 
         List<LSpeechValue> values = [];
@@ -51,7 +51,8 @@ public static class LSpeechLoader
                 continue;
             }
 
-            values.Add(new LSpeechValue(0, language, id.Value, name, values.Count));
+            long parent = LSpeechNumberRead(part, "parent") ?? 0;
+            values.Add(new LSpeechValue(0, language, id.Value, name, values.Count, parent));
         }
 
         List<LFeature> features = [];
@@ -88,7 +89,57 @@ public static class LSpeechLoader
             morphology.Add(new LMorphology(0, feature.Value, id.Value, name, position));
         }
 
-        return new LSpeechPack(values, features, morphology);
+        List<LParadigm> paradigms = [];
+        foreach (JsonElement row in LSpeechRowRead(root, "paradigms"))
+        {
+            long? part = LSpeechNumberRead(row, "part");
+            IReadOnlyList<long>? codes = LSpeechNumbersRead(row, "values");
+            if (part is null || codes is null)
+            {
+                continue;
+            }
+
+            paradigms.Add(new LParadigm(
+                part.Value,
+                codes,
+                LSpeechRuleScan(row, "regular"),
+                LSpeechNumbersRead(row, "except") ?? []));
+        }
+
+        return new LSpeechPack(values, features, morphology, paradigms);
+    }
+
+    private static IReadOnlyList<LParadigmRule> LSpeechRuleScan(JsonElement element, string name)
+    {
+        if (element.ValueKind != JsonValueKind.Object ||
+            !element.TryGetProperty(name, out JsonElement rows) ||
+            rows.ValueKind != JsonValueKind.Array)
+        {
+            return [];
+        }
+
+        List<LParadigmRule> rules = [];
+        foreach (JsonElement row in rows.EnumerateArray())
+        {
+            if (row.ValueKind != JsonValueKind.Array ||
+                row.GetArrayLength() != 2 ||
+                row[0].ValueKind != JsonValueKind.String ||
+                row[1].ValueKind != JsonValueKind.String ||
+                string.IsNullOrEmpty(row[0].GetString()))
+            {
+                continue;
+            }
+
+            try
+            {
+                rules.Add(new LParadigmRule(row[0].GetString()!, row[1].GetString()!));
+            }
+            catch (ArgumentException)
+            {
+            }
+        }
+
+        return rules;
     }
 
     private static IEnumerable<JsonElement> LSpeechRowRead(JsonElement root, string name)
@@ -113,6 +164,31 @@ public static class LSpeechLoader
         }
 
         return number;
+    }
+
+    private static IReadOnlyList<long>? LSpeechNumbersRead(JsonElement element, string name)
+    {
+        if (element.ValueKind != JsonValueKind.Object ||
+            !element.TryGetProperty(name, out JsonElement found) ||
+            found.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        List<long> numbers = [];
+        foreach (JsonElement item in found.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.Number ||
+                !item.TryGetInt64(out long number) ||
+                number <= 0)
+            {
+                return null;
+            }
+
+            numbers.Add(number);
+        }
+
+        return numbers;
     }
 
     private static string? LSpeechTextRead(JsonElement element, string name)

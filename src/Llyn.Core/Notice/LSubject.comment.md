@@ -55,3 +55,8 @@ The id is the entry's, and the surface showing that entry re-reads its frequency
 
 An Entry's stored Grasp was set or cleared by the user.
 The id is the entry's, and the surface showing that entry re-reads its grasp alone.
+
+## `LSubjectInflection,`
+
+An Entry's inflected form was stored by a morphology fetch.
+The id is the entry's, and the surface showing that entry re-reads its forms alone.

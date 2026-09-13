@@ -37,6 +37,8 @@ The frequency sources of each language are cached in a third set, which `LEngine
 Beside them sit the pending fills, one cancellation source per Entry.
 A third set names the Entries whose sources answered with nothing this session.
 A pending set of entry ids beside it stops the same Entry from filling twice at once.
+The morphology sources of each language are cached in a fourth set, which `LEngineInflectionFetch.cs` owns.
+Its pending fetches, its missed slots per Entry, and the Entries it lost sit beside them and are cleared with the frequency ones.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
 
 ## `public LEngine()`

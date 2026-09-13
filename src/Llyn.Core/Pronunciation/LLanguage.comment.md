@@ -56,3 +56,6 @@ Everything language-specific arrives through this record.
 - `LLanguageBands` — The frequency bands the pack declares, held as [LBand](LBand.comment.md) records, in the order they are tried.
   A fetched figure earns the name of the first band that matches it.
   A pack that declares none carries an empty list, and the raw figure stands unlabelled.
+- `LLanguageMorphologies` — The sources the pack declares for fetching inflected forms, held as [LSourceSpec](LSourceSpec.comment.md) records.
+  Each reading is keyed on a morphology value code written as a decimal string.
+  A pack that declares none carries an empty list, and no form is fetched for that language.

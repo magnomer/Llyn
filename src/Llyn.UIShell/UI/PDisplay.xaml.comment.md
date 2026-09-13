@@ -6,7 +6,7 @@ The shared read-only entry view as a control.
 It is handed a loaded draft and draws it.
 It never loads one itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
-Playback, the heart and the star row each sit in a part of their own.
+Playback, the heart, the star row and the paradigm box each sit in a part of their own.
 
 ## `internal void PDisplayAttach(PWindow host, LEngine engine)`
 

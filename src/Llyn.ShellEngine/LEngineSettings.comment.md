@@ -39,6 +39,12 @@ The next lookup reads the switch, cached or fresh, so no search is run again to 
 Persists whether an entry's frequency is fetched from the pack's web source and keeps it current.
 The next fill reads the switch, so a flip neither refetches what is stored nor drops it.
 
+## `public void LEngineMorphologySave(bool morphology)`
+
+Persists whether an entry's inflected forms are looked up on the web and keeps it current.
+Turning the switch off cancels every fetch still in flight, so no form lands after the user said no.
+Forms already stored stay, because the switch governs asking, not keeping.
+
 ## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
 Applies `change` to the settings held here and writes the result out, under the engine gate.

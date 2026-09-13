@@ -14,6 +14,7 @@ public static class LSettingsLoader
     private const string LSettingsLoaderVolume = "volume";
     private const string LSettingsLoaderRespelling = "respelling";
     private const string LSettingsLoaderFrequency = "frequency";
+    private const string LSettingsLoaderMorphology = "morphology";
     private const string LSettingsLoaderDefault = "en";
     private const double LSettingsLoaderLoudest = 1;
 
@@ -59,7 +60,11 @@ public static class LSettingsLoader
                 !document.RootElement.TryGetProperty(LSettingsLoaderFrequency, out JsonElement fetch) ||
                 fetch.ValueKind != JsonValueKind.False;
 
-            return new LSettings(localization, window, volume, respelled, frequency);
+            bool morphology =
+                !document.RootElement.TryGetProperty(LSettingsLoaderMorphology, out JsonElement inflect) ||
+                inflect.ValueKind != JsonValueKind.False;
+
+            return new LSettings(localization, window, volume, respelled, frequency, morphology);
         }
         catch (JsonException)
         {
@@ -83,7 +88,8 @@ public static class LSettingsLoader
             [LSettingsLoaderLocalization] = settings.LSettingsLocalization,
             [LSettingsLoaderVolume] = Math.Clamp(settings.LSettingsVolume, 0, LSettingsLoaderLoudest),
             [LSettingsLoaderRespelling] = settings.LSettingsRespelled,
-            [LSettingsLoaderFrequency] = settings.LSettingsFrequency
+            [LSettingsLoaderFrequency] = settings.LSettingsFrequency,
+            [LSettingsLoaderMorphology] = settings.LSettingsMorphology
         };
 
         if (settings.LSettingsWindow is LWindowState window)

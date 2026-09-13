@@ -193,6 +193,11 @@ internal static partial class TInterface
         engine.LEngineFrequencySave(frequency);
     }
 
+    internal static void TEngineMorphologySave(this LEngine engine, bool morphology)
+    {
+        engine.LEngineMorphologySave(morphology);
+    }
+
     internal static Task<LFrequency?> TEngineFrequencyFind(
         this LEngine engine,
         string word,
@@ -211,13 +216,22 @@ internal static partial class TInterface
         engine.LEngineFrequencyStart(entryId);
     }
 
+    internal static void TEngineInflectionStart(this LEngine engine, long entryId)
+    {
+        engine.LEngineInflectionStart(entryId);
+    }
+
+    internal static bool TEngineInflectionCheck(this LEngine engine, long entryId) =>
+        engine.LEngineInflectionCheck(entryId);
+
     internal static LSettings TSettingsCreate(
         string localization,
         LWindowState? window = null,
         double volume = 1,
         bool respelled = false,
-        bool frequency = true) =>
-        new(localization, window, volume, respelled, frequency);
+        bool frequency = true,
+        bool morphology = true) =>
+        new(localization, window, volume, respelled, frequency, morphology);
 
     internal static LSettings TSettingsLoad(string root) =>
         LSettingsLoader.LSettingsLoaderLoad(root);

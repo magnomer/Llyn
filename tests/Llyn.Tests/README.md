@@ -32,6 +32,7 @@ The first part names the operation the test drives, the second the condition it 
 - `Entry/` — saving, loading, updating, and deleting an entry.
 - `Draft/` — held drafts and the tentative links waiting on them.
 - `Lexicon/` — the records an entry owns or refers to.
+- `Engine/` — the answers the engine composes above the stores, such as an entry's expected forms.
 - `Catalog/` — the orderings and matches a browsed catalog is listed under.
 - `Pronunciation/` — the lookup seams below the engine: sources, readings, the language pack, and the trove.
 - `Markup/` — the markup reader and its import into a workspace.

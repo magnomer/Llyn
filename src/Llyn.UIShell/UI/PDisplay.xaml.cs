@@ -85,6 +85,16 @@ public partial class PDisplay : UserControl
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectInflection)
+        {
+            if (shown == bulletin.LBulletinId)
+            {
+                PDisplayParadigmShow(shown);
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             PDisplayClear();
@@ -164,6 +174,7 @@ public partial class PDisplay : UserControl
             ? Visibility.Collapsed
             : Visibility.Visible;
         PDisplayFrequencyShow(id);
+        PDisplayParadigmShow(id);
         PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;
         PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
         PDisplayMeaningSection.Visibility = draft.LEntryDraftMeanings.Count == 0
@@ -262,6 +273,7 @@ public partial class PDisplay : UserControl
         PDisplayFrequency.Text = string.Empty;
         PDisplayFrequencyChip.ToolTip = null;
         PDisplayFrequencySection.Visibility = Visibility.Collapsed;
+        PDisplayParadigm.PParadigmItems = null;
         _pDisplayIncoming.Clear();
         PDisplayIncomingSection.Visibility = Visibility.Collapsed;
         PDisplayTranslationRead().PLinkConverterClear();

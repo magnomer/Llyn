@@ -5,4 +5,5 @@ public sealed record LSpeechValue(
     string LSpeechValueLanguage,
     long LSpeechValueCode,
     string LSpeechValueName,
-    int LSpeechValuePosition);
+    int LSpeechValuePosition,
+    long LSpeechValueParent = 0);

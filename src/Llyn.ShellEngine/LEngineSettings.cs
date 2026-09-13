@@ -42,6 +42,18 @@ public sealed partial class LEngine
         LEngineSettingsChange(settings => settings with { LSettingsFrequency = frequency });
     }
 
+    public void LEngineMorphologySave(bool morphology)
+    {
+        lock (_lEngineGate)
+        {
+            LEngineSettingsChange(settings => settings with { LSettingsMorphology = morphology });
+            if (!morphology)
+            {
+                LEngineInflectionClear();
+            }
+        }
+    }
+
     private void LEngineSettingsChange(Func<LSettings, LSettings> change)
     {
         lock (_lEngineGate)

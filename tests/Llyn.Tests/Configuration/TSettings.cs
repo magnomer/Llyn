@@ -103,6 +103,31 @@ public sealed class TSettings
     }
 
     [Fact]
+    public void SettingsSave_MorphologyOff_RoundTripsFalse()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", morphology: false));
+
+        Assert.False(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsMorphology);
+        Assert.Contains(
+            "\"morphology\": false",
+            File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+    }
+
+    [Theory]
+    [InlineData("{ \"localization\": \"en\" }")]
+    [InlineData("{ \"localization\": \"en\", \"morphology\": true }")]
+    [InlineData("{ \"localization\": \"en\", \"morphology\": \"no\" }")]
+    public void SettingsLoad_MorphologyAbsentOrNotFalse_LoadsTrue(string json)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), json);
+
+        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsMorphology);
+    }
+
+    [Fact]
     public void RespellingSave_True_ReadsBackAndWritesKey()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

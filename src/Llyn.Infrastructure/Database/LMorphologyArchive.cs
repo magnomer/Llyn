@@ -186,6 +186,34 @@ public sealed class LMorphologyArchive
         return reader.Read() ? LMorphologyRowRead(reader) : null;
     }
 
+    public LMorphology? LMorphologyCodeFind(string language, long speechCode, long featureCode, long code)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(language);
+        if (speechCode <= 0 || featureCode <= 0 || code <= 0)
+        {
+            return null;
+        }
+
+        using LDatabaseSession session = _lMorphologyArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT v.morphology_value_id, v.morphology_feature_parent, v.pack_code, v.name, v.position
+            FROM morphology_value v
+            JOIN morphology_feature f ON f.morphology_feature_id = v.morphology_feature_parent
+            JOIN speech_value s ON s.speech_value_id = f.speech_value_parent
+            WHERE s.language = $language AND s.pack_code = $speech AND f.pack_code = $feature AND v.pack_code = $code
+            LIMIT 1;
+            """;
+        command.Parameters.AddWithValue("$language", language);
+        command.Parameters.AddWithValue("$speech", speechCode);
+        command.Parameters.AddWithValue("$feature", featureCode);
+        command.Parameters.AddWithValue("$code", code);
+
+        using SqliteDataReader reader = command.ExecuteReader();
+        return reader.Read() ? LMorphologyRowRead(reader) : null;
+    }
+
     private static LFeature LFeatureRowRead(SqliteDataReader reader)
     {
         return new LFeature(

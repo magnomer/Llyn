@@ -28,6 +28,9 @@ Each part of speech takes its display order from its place in the list.
 Each feature takes its order from its place among the features of the same part.
 Each value takes its order from its place among the values of the same feature.
 So the file states order by listing rather than by numbering it.
+A part may name the part it specialises, and a paradigm names its part, both by code.
+A paradigm row is skipped when its part or any of its values is not a positive integer.
+A paradigm may except parts by code and may carry regular-form rules as pattern and replacement pairs.
 
 ### `private static IEnumerable<JsonElement> LSpeechRowRead(JsonElement root, string name)`
 
@@ -37,6 +40,16 @@ The rows of one list, or none when the property is absent or not an array.
 
 One declared positive integer, or null when the property is absent, not a number, or not positive.
 A code must be positive because user-added values take the negative range.
+
+### `private static IReadOnlyList<long>? LSpeechNumbersRead(JsonElement element, string name)`
+
+One declared list of positive integers, or null when the property is absent, not an array, or holds anything else.
+A paradigm naming one value nothing can resolve is no paradigm at all.
+
+### `private static IReadOnlyList<LParadigmRule> LSpeechRuleScan(JsonElement element, string name)`
+
+The declared rules of a paradigm, each a two-string array, or none when the property is absent.
+A row that is not such a pair, has an empty pattern, or does not parse as a regular expression is skipped.
 
 ### `private static string? LSpeechTextRead(JsonElement element, string name)`
 

@@ -17,7 +17,8 @@ public sealed record LLanguage(
     IReadOnlyList<LRespelling>? LLanguageCleanups = null,
     IReadOnlyList<LRespelling>? LLanguageRespellings = null,
     IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null,
-    IReadOnlyList<LBand>? LLanguageBands = null)
+    IReadOnlyList<LBand>? LLanguageBands = null,
+    IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
@@ -30,6 +31,8 @@ public sealed record LLanguage(
     public IReadOnlyList<LSourceSpec> LLanguageFrequencies { get; init; } = LLanguageFrequencies ?? [];
 
     public IReadOnlyList<LBand> LLanguageBands { get; init; } = LLanguageBands ?? [];
+
+    public IReadOnlyList<LSourceSpec> LLanguageMorphologies { get; init; } = LLanguageMorphologies ?? [];
 
     public LFont LLanguageGloss { get; init; } = LLanguageGloss ?? new LFont(null, 0);
 }

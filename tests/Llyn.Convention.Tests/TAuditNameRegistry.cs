@@ -126,6 +126,7 @@ internal static class TAuditNameRegistry
         "Outline",
         "Owner",
         "Panel",
+        "Paradigm",
         "Phonetician",
         "Phonology",
         "Playback",

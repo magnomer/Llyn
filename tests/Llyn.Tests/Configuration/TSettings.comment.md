@@ -10,3 +10,4 @@ A missing key or a non-boolean value loads as off, so an older or hand-edited fi
 The engine's save reaches both the held settings and the file under the `respelling` key.
 The frequency switch round-trips under the `frequency` key and is written even when off.
 A missing key or a non-false value loads as on, so only an explicit false turns the fill off.
+The morphology switch round-trips under the `morphology` key with the same rule.

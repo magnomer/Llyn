@@ -25,4 +25,6 @@ public enum LSubject
     LSubjectFrequency,
 
     LSubjectGrasp,
+
+    LSubjectInflection,
 }

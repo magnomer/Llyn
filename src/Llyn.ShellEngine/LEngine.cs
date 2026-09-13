@@ -20,7 +20,12 @@ public sealed partial class LEngine : IDisposable
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineFrequencySources = new(StringComparer.Ordinal);
     private readonly Dictionary<long, CancellationTokenSource> _lEngineFrequencyPending = [];
     private readonly HashSet<long> _lEngineFrequencyMissed = [];
+    private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineInflectionSources = new(StringComparer.Ordinal);
+    private readonly Dictionary<long, CancellationTokenSource> _lEngineInflectionPending = [];
+    private readonly Dictionary<long, HashSet<long>> _lEngineInflectionMissed = [];
+    private readonly HashSet<long> _lEngineInflectionLost = [];
     private readonly Dictionary<string, LLanguage> _lEngineLanguages = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
     private string _lEngineWorkspace;
     private LSettings _lEngineSettings;
@@ -123,7 +128,10 @@ public sealed partial class LEngine : IDisposable
             _lEngineHarvestSources.Clear();
             _lEngineFrequencySources.Clear();
             LEngineFrequencyClear();
+            _lEngineInflectionSources.Clear();
+            LEngineInflectionClear();
             _lEngineLanguages.Clear();
+            _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
             LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
@@ -369,6 +377,7 @@ public sealed partial class LEngine : IDisposable
         lock (_lEngineGate)
         {
             LEngineFrequencyClear();
+            LEngineInflectionClear();
             _lEngineClient.Dispose();
         }
     }

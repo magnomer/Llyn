@@ -8,3 +8,4 @@ A part therefore resolves its own StaticResource and BasedOn references without 
 This file merges the parts in dependency order and holds no style of its own.
 App.xaml keeps merging this one file, so the theme has one address.
 The Mention and Gloss parts are merged last, because they stand on the palette and the input part alone.
+The Paradigm part follows them, standing on the palette alone.

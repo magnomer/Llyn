@@ -77,6 +77,12 @@ It is read-only here and absent from the editor, because the engine fetches it a
 The chip carries the tooltip, so hovering anywhere on it names the source and the raw figure.
 The section collapses until the engine has a value for the entry.
 
+## `<local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />`
+
+The inflected forms of the headword, one row each, boxed above the first meaning.
+It is read-only here, because the engine fetches the forms and the editor edits them as inflection rows.
+The box collapses by itself while the headword has no form to show.
+
 ## `<StackPanel x:Name="PCompass" HorizontalAlignment="Right" VerticalAlignment="Top" ...>`
 
 The floating contents stand over the reading surface rather than beside it.

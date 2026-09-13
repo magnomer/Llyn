@@ -15,3 +15,4 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsVolume` — How loud a stored pronunciation is played, from silence at zero to full at one.
 - `LSettingsRespelled` — Whether looked-up transcriptions are recast through the pack's respelling groups, off by default.
 - `LSettingsFrequency` — Whether an entry's frequency is fetched and shown, on by default.
+- `LSettingsMorphology` — Whether an entry's inflected forms are fetched from the pack's morphology sources, on by default.

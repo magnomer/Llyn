@@ -259,6 +259,8 @@
                     </Border>
                 </StackPanel>
 
+                <local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
+
                 <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
                     <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />
                     <ItemsControl x:Name="PDisplayMeaning" Button.Click="PDisplayCardHandle" ItemTemplate="{StaticResource Display.Meaning.Card}" />

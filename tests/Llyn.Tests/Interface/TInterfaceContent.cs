@@ -208,6 +208,15 @@ internal static partial class TInterface
         this LEngine engine, long featureId, string name) =>
         engine.LEngineMorphologyFind(featureId, name);
 
+    internal static IReadOnlyList<LParadigmSlot> TEngineParadigmRead(this LEngine engine, long entryId) =>
+        engine.LEngineParadigmRead(entryId);
+
+    internal static IReadOnlyList<LParadigmSlot> TEngineParadigmShow(this LEngine engine, long entryId) =>
+        engine.LEngineParadigmShow(entryId);
+
+    internal static bool TEngineParadigmMatch(LParadigm paradigm, string headword, string form) =>
+        LEngine.LEngineParadigmMatch(paradigm, headword, form);
+
     internal static void TEngineNoteDelete(this LEngine engine, long entryId)
     {
         engine.LEngineNoteDelete(entryId);

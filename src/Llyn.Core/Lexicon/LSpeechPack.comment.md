@@ -15,3 +15,4 @@ Their parent links hold the parent's code, and the import resolves those to row 
 - `LSpeechPackValues` — The parts of speech, in the order the pack lists them.
 - `LSpeechPackFeatures` — The features, in the order the pack lists them.
 - `LSpeechPackMorphology` — The feature values, in the order the pack lists them.
+- `LSpeechPackParadigms` — The paradigms, in the order the pack lists them, each naming its part by code.

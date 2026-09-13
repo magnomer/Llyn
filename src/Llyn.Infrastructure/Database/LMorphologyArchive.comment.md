@@ -42,3 +42,9 @@ Reads every value the feature takes, in display order.
 
 Resolves the value `name` names under the feature, or `null` when none does.
 Matching is a trimmed, case-insensitive comparison of the display name.
+
+## `public LMorphology? LMorphologyCodeFind(string language, long speechCode, long featureCode, long code)`
+
+Resolves the value a language pack names by `code` under the feature and part it declares, or `null` when the language holds none.
+A value code is only unique within its feature, so the feature and part codes bind the row exactly.
+The join runs from the value through its feature to the part of speech, matching the pack code at each step.

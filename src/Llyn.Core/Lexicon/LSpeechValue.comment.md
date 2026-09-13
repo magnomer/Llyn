@@ -15,3 +15,4 @@ A value the user added from the editor carries a negative code, which no pack ca
 - `LSpeechValueCode` — Number the pack file gave the value, negative for user-added values.
 - `LSpeechValueName` — Display name for the language (for example `Noun`).
 - `LSpeechValuePosition` — Display order within the language's vocabulary.
+- `LSpeechValueParent` — Pack code of the part this one specialises, `0` when none, carried from the pack and never stored.

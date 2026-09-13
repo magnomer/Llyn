@@ -298,6 +298,14 @@ internal static partial class TInterface
         LMorphology value) =>
         morphologyArchive.LMorphologyCreate(value);
 
+    internal static LMorphology? TMorphologyCodeFind(
+        this LMorphologyArchive morphologyArchive,
+        string language,
+        long speechCode,
+        long featureCode,
+        long code) =>
+        morphologyArchive.LMorphologyCodeFind(language, speechCode, featureCode, code);
+
     internal static LNoteArchive TNoteArchiveCreate(LDatabase database) =>
         new(database);
 
@@ -404,6 +412,9 @@ internal static partial class TInterface
 
     internal static LSpeechArchive TSpeechArchiveCreate(LDatabase database) =>
         new(database);
+
+    internal static LSpeechPack TSpeechPackLoad(string language) =>
+        LSpeechLoader.LSpeechLoaderLoad(language);
 
     internal static LSpeechValue TSpeechValueCreate(
         this LSpeechArchive speechArchive,

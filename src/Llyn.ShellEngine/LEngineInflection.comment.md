@@ -31,6 +31,7 @@ Reads the inflected forms of the Entry identified by `entryId`, in stored order,
 
 Makes the stored inflections of the Entry identified by `entryId` exactly `inflections`.
 They are stored in the order given, and an empty list clears them.
+A pending fetch is cancelled and the Entry's misses and loss are forgotten, since a hand edit is a reason to ask the web again.
 
 ## `public void LEngineInflectionAppend(long entryId, IReadOnlyList<LInflection> inflections)`
 
@@ -51,3 +52,4 @@ Moves the inflection at `position` in the Entry's list to `target`, renumbering 
 
 Deletes the inflection at `position` in the Entry's list with its features.
 It renumbers the forms after it so the list stays contiguous.
+A pending fetch is cancelled and the Entry's misses and loss are forgotten, as a set does.

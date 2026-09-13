@@ -25,6 +25,7 @@ public partial class PSettings : UserControl
         PLocalization.SelectedValue = engine.LEngineSettingsRead().LSettingsLocalization;
         PRespelling.IsChecked = engine.LEngineSettingsRead().LSettingsRespelled;
         PFrequency.IsChecked = engine.LEngineSettingsRead().LSettingsFrequency;
+        PMorphology.IsChecked = engine.LEngineSettingsRead().LSettingsMorphology;
         _pSettingsReady = true;
     }
 }

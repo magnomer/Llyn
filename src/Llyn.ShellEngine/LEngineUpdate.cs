@@ -70,6 +70,7 @@ public sealed partial class LEngine
             LEngineSpeechUpdate(entries, id, draft, changes);
             LEngineFormUpdate(entries, id, draft, changes);
             LEngineInflectionUpdate(id, draft, changes);
+            LEngineInflectionReset(id);
             LEngineNoteUpdate(id, draft, changes);
             LEnginePronunciationSync(id, draft.LEntryDraftPronunciations, changes, identity);
             LEngineTranscriptionSync(id, draft.LEntryDraftTranscriptions, changes, identity);
