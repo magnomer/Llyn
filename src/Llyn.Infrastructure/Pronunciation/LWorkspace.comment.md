@@ -9,11 +9,26 @@ A language's flag image is fetched by country code and cached for reuse.
 The engine calls these once a source or language is chosen.
 Nothing about which source or language is baked in here.
 
+## `public static async Task<string> LWorkspaceRecordingSave(`
+
+Downloads a chosen recording into the workspace and returns the saved path.
+The file sits under `audio/<language>/` and is named by the headword and the recording's variety.
+A recording carrying no variety keeps the bare headword name, so a pack without varieties is unchanged.
+
+## `private static string LWorkspaceStemRead(string word, string variety)`
+
+The file stem a saved recording takes, before its extension.
+A tagged recording appends the variety after a dot, so `tomato.British.mp3` and `tomato.American.mp3` sit side by side.
+An untagged one is the headword alone, so `tomato.mp3` stays what it was.
+Both parts are normalized, so a variety name never carries a path character into the file name.
+
 ## `public static async Task<string> LWorkspaceRecordingPrepare(`
 
 Downloads a recording to a temporary cache file for immediate playback and returns its path.
 Playing a local file is reliable, whereas streaming a remote, token-bearing URL through the media stack is not.
-The file name derives from the audio's own name, so replaying reuses it.
+The file is named by a digest of the full address, so two sources' same-named files never collide.
+A file already in the cache is returned as it stands, without another fetch.
+Rewriting it would fail anyway, since the player keeps the file it last played open.
 
 ## `public static async Task<string?> LWorkspaceFlagRead(`
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Llyn.Core;
 
@@ -6,18 +7,13 @@ namespace Llyn.UIShell;
 
 internal sealed class PClipItem : INotifyPropertyChanged
 {
-    private LRecording? _lRecording;
-
-    private string _pClipItemAction;
     private string _pClipItemNotice;
-    private bool _pClipItemFound;
-    private bool _pClipItemReady = true;
+    private bool _pClipItemReady;
 
-    internal PClipItem(string sourceLabel, int order, string action, string notice)
+    internal PClipItem(string sourceLabel, int order, string notice)
     {
         PClipItemSource = sourceLabel;
         PClipItemOrder = order;
-        _pClipItemAction = action;
         _pClipItemNotice = notice;
     }
 
@@ -27,11 +23,7 @@ internal sealed class PClipItem : INotifyPropertyChanged
 
     internal int PClipItemOrder { get; }
 
-    public string PClipItemAction
-    {
-        get => _pClipItemAction;
-        set => PClipItemChange(ref _pClipItemAction, value, nameof(PClipItemAction));
-    }
+    public ObservableCollection<PClipReading> PClipItemReading { get; } = [];
 
     public string PClipItemNotice
     {
@@ -39,33 +31,29 @@ internal sealed class PClipItem : INotifyPropertyChanged
         private set => PClipItemChange(ref _pClipItemNotice, value, nameof(PClipItemNotice));
     }
 
-    public bool PClipItemFound
-    {
-        get => _pClipItemFound;
-        private set => PClipItemChange(ref _pClipItemFound, value, nameof(PClipItemFound));
-    }
-
     public bool PClipItemReady
     {
         get => _pClipItemReady;
-        set => PClipItemChange(ref _pClipItemReady, value, nameof(PClipItemReady));
+        private set => PClipItemChange(ref _pClipItemReady, value, nameof(PClipItemReady));
     }
 
-    internal LRecording PClipItemModel => _lRecording ?? throw new InvalidOperationException();
-
-    internal void PClipItemShow(LRecording recording, string missing, string broken)
+    internal void PClipItemShow(LRecording recording, PClipReading? reading, string missing, string broken)
     {
-        if (!string.IsNullOrEmpty(recording.LRecordingAddress))
+        if (reading is not null)
         {
-            _lRecording = recording;
+            PClipItemReading.Add(reading);
             PClipItemNotice = string.Empty;
-            PClipItemFound = true;
+            PClipItemReady = true;
             return;
         }
 
-        _lRecording = null;
+        if (PClipItemReading.Count > 0)
+        {
+            return;
+        }
+
         PClipItemNotice = recording.LRecordingReached ? missing : broken;
-        PClipItemFound = false;
+        PClipItemReady = false;
     }
 
     private void PClipItemChange(ref string held, string value, string name)

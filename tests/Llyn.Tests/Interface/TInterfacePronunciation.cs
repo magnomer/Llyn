@@ -14,6 +14,9 @@ internal static partial class TInterface
     internal static LAnswer TAnswerCreate(IReadOnlyList<LReading> readings) =>
         LAnswer.LAnswerCreate(readings);
 
+    internal static LAnswer TAnswerLostRead() =>
+        LAnswer.LAnswerLost;
+
     internal static string TReadingNormalize(string phonetic) =>
         LReading.LReadingNormalize(phonetic);
 
@@ -94,10 +97,10 @@ internal static partial class TInterface
         receiver.LReceiverLookupFinish();
     }
 
-    internal static IReadOnlyList<LReading> TLookupReadingScan(
+    internal static IReadOnlyList<LReading> TReadingScan(
         IReadOnlyList<LReading> readings,
         IReadOnlyList<LVariety> varieties) =>
-        LLookup.LLookupReadingScan(readings, varieties);
+        LReading.LReadingScan(readings, varieties);
 
     internal static Task<IReadOnlyList<LCandidate>> TLookupStart(
         this LSeeker seeker,
@@ -105,6 +108,27 @@ internal static partial class TInterface
         LReceiver receiver,
         CancellationToken cancellation) =>
         seeker.LSeekerStart(word, receiver, cancellation);
+
+    internal static LRecording TRecordingCreate(
+        string source,
+        string? address,
+        int order,
+        bool reached,
+        string variety) =>
+        new LRecording(source, address, order, reached, variety);
+
+    internal static LHarvest THarvestCreate(
+        IReadOnlyList<LSource> sources,
+        IReadOnlyList<LVariety>? varieties = null) =>
+        new LHarvest(sources, varieties ?? []);
+
+    internal static Task<IReadOnlyList<LRecording>> THarvestStart(
+        this LHarvest harvest,
+        string word,
+        string variety,
+        LListener listener,
+        CancellationToken cancellation) =>
+        harvest.LHarvestStart(word, variety, listener, cancellation);
 
     internal static LLanguage TLanguageLoad(string language) =>
         LLanguageLoader.LLanguageLoaderLoad(language);
@@ -128,6 +152,54 @@ internal static partial class TInterface
         string word,
         string language) =>
         trove.LTroveCandidateRead(session, word, language);
+
+    internal static void TTroveRecordingSave(
+        this LTrove trove,
+        long session,
+        string word,
+        string language,
+        IReadOnlyList<LRecording> found)
+    {
+        trove.LTroveRecordingSave(session, word, language, found);
+    }
+
+    internal static IReadOnlyList<LRecording>? TTroveRecordingRead(
+        this LTrove trove,
+        long session,
+        string word,
+        string language) =>
+        trove.LTroveRecordingRead(session, word, language);
+
+    internal static IReadOnlyList<LRecording> THarvestRecordingScan(
+        IReadOnlyList<LRecording> recordings,
+        string variety) =>
+        LHarvest.LHarvestRecordingScan(recordings, variety);
+
+    internal static Task<string> TWorkspaceRecordingSave(
+        LRecording recording,
+        string word,
+        string language,
+        string root,
+        HttpClient client,
+        CancellationToken cancellation) =>
+        LWorkspace.LWorkspaceRecordingSave(recording, word, language, root, client, cancellation);
+
+    internal static Task<string> TWorkspaceRecordingPrepare(
+        LRecording recording,
+        string root,
+        HttpClient client,
+        CancellationToken cancellation) =>
+        LWorkspace.LWorkspaceRecordingPrepare(recording, root, client, cancellation);
+
+    internal static Task TEngineRecordingFind(
+        this LEngine engine,
+        long session,
+        string word,
+        string language,
+        long target,
+        LListener listener,
+        CancellationToken cancellation) =>
+        engine.LEngineRecordingFind(session, word, language, target, listener, cancellation);
 
     internal static IReadOnlyList<LVariety> TEngineVarietyRead(this LEngine engine, string language) =>
         engine.LEngineVarietyRead(language);

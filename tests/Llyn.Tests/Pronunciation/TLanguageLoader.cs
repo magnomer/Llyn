@@ -48,6 +48,20 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
+    public void LanguageLoad_AudioReadingsList_ReadsTwoVarieties()
+    {
+        LSourceSpec oxford = Assert.Single(
+            TInterface.TLanguageLoad("English").LLanguageHarvestSources,
+            source => source.LSourceSpecName == "Oxford");
+
+        LSourceAttempt attempt = Assert.Single(oxford.LSourceSpecAttempts);
+        Assert.Equal(
+            [("British", "regex"), ("American", "regex")],
+            attempt.LSourceAttemptReadings.Select(reading => (reading.LSourceReadingVariety, reading.LSourceReadingStrategy)));
+        Assert.All(attempt.LSourceAttemptReadings, reading => Assert.False(reading.LSourceReadingPhonetic));
+    }
+
+    [Fact]
     public void LanguageLoad_EnglishPack_ReadsTwoScopedRespellingGroups()
     {
         LLanguage language = TInterface.TLanguageLoad("English");

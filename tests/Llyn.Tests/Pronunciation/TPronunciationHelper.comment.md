@@ -6,6 +6,8 @@ The fixtures a pronunciation lookup test builds from.
 A client over a stub handler stands in for the network.
 A reading and an attempt are built with the fields a test names and defaults for the rest.
 A source stub answers with fixed readings and a receiver stub records what it was told.
+A lost source stub answers as a host that was never reached.
+A listener stub is the recording counterpart of the receiver stub.
 
 ## `internal const string TPronunciationHelperUrl`
 

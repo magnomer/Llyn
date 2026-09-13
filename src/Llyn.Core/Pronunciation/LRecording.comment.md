@@ -1,9 +1,10 @@
 # LRecording.cs
 
-## `public sealed record LRecording(string LRecordingSource, string? LRecordingAddress, int LRecordingOrder, bool LRecordingReached)`
+## `public sealed record LRecording(string LRecordingSource, string? LRecordingAddress, int LRecordingOrder, bool LRecordingReached, string LRecordingVariety)`
 
 What one audio source had to say about a headword.
-Every source produces exactly one, exactly as `LCandidate` does for a lookup.
+A source that answered produces one per reading it returned, exactly as `LCandidate` does for a lookup.
+A source that had nothing or was never reached still produces exactly one.
 
 **Parameters**
 
@@ -15,3 +16,6 @@ Every source produces exactly one, exactly as `LCandidate` does for a lookup.
   It carries the declared order to the menu, which fetching in parallel would otherwise lose.
 - `LRecordingReached` — Whether the source answered at all.
   A row with no address reads as "no entry" or as "failed to retrieve" from this alone.
+- `LRecordingVariety` — The regional variety the recording belongs to, matching one the language pack declares.
+  It is empty when the source does not say, or when the row carries no address.
+  It mirrors `LCandidateVariety` and names the saved file's variety suffix.

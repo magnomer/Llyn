@@ -31,6 +31,11 @@ public sealed partial class LEngine : IDisposable
     }
 
     public LEngine(string workspace)
+        : this(workspace, null)
+    {
+    }
+
+    internal LEngine(string workspace, HttpClient? client)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(workspace);
 
@@ -44,7 +49,7 @@ public sealed partial class LEngine : IDisposable
 
         LEngineLanguageImport();
 
-        _lEngineClient = new HttpClient
+        _lEngineClient = client ?? new HttpClient
         {
             Timeout = TimeSpan.FromSeconds(10)
         };
@@ -285,6 +290,7 @@ public sealed partial class LEngine : IDisposable
         long session,
         string word,
         string language,
+        long target,
         LListener listener,
         CancellationToken cancellation)
     {
@@ -292,15 +298,49 @@ public sealed partial class LEngine : IDisposable
 
         IReadOnlyList<LRecording>? held;
         IReadOnlyList<LSource> sources;
+        LLanguage pack;
+        string variety;
         lock (_lEngineGate)
         {
+            variety = LEngineVarietyResolve(session, target);
             held = _lEngineTrove.LTroveRecordingRead(session, word, language);
             sources = held is null ? LEngineHarvestRead(language) : [];
+            pack = LEngineLanguageLoad(language);
         }
 
         return held is null
-            ? LEngineRecordingScan(session, word, language, sources, listener, cancellation)
-            : LEngineRecordingPublish(held, listener);
+            ? LEngineRecordingScan(session, word, language, variety, sources, pack, listener, cancellation)
+            : LEngineRecordingPublish(LHarvest.LHarvestRecordingScan(held, variety), listener);
+    }
+
+    private string LEngineVarietyResolve(long session, long target)
+    {
+        if (session == 0)
+        {
+            return string.Empty;
+        }
+
+        IReadOnlyList<LPronunciationDraft>? rows =
+            LEngineDraftRead(session)?.LDraftContent.LEntryDraftPronunciations;
+        if (rows is null)
+        {
+            return string.Empty;
+        }
+
+        if (target == 0)
+        {
+            return rows.Count == 0 ? string.Empty : rows[0].LPronunciationDraftVariety.Trim();
+        }
+
+        foreach (LPronunciationDraft row in rows)
+        {
+            if (row.LPronunciationDraftId == target)
+            {
+                return row.LPronunciationDraftVariety.Trim();
+            }
+        }
+
+        return string.Empty;
     }
 
     private async Task LEngineCandidateScan(
@@ -327,12 +367,16 @@ public sealed partial class LEngine : IDisposable
         long session,
         string word,
         string language,
+        string variety,
         IReadOnlyList<LSource> sources,
+        LLanguage pack,
         LListener listener,
         CancellationToken cancellation)
     {
         IReadOnlyList<LRecording> found =
-            await new LHarvest(sources).LHarvestStart(word, listener, cancellation).ConfigureAwait(false);
+            await new LHarvest(sources, pack.LLanguageVarieties)
+                .LHarvestStart(word, variety, listener, cancellation)
+                .ConfigureAwait(false);
 
         lock (_lEngineGate)
         {

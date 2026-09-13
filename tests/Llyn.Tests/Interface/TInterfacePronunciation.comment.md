@@ -4,6 +4,7 @@
 
 The relays for the pronunciation lookup seams below the engine.
 That is the reading and answer records, the respelling rules, the generic source over a client, and the lookup fan-out.
+The recording records, the harvest fan-out, the workspace download, and the engine discovery are relayed here too.
 The language pack loader and the per-session trove are relayed here too.
 Each relay is transparent and carries no test logic of its own.
 
@@ -22,9 +23,26 @@ The cleanups default to none too, so a test without a pack sees only the built-i
 Returns the respelling wrapper as the receiver interface, so a test drives it as the engine would.
 The three receiver relays below it let a test push one callback at a time through that interface.
 
-## `internal static IReadOnlyList<LReading> TLookupReadingScan(IReadOnlyList<LReading> readings, IReadOnlyList<LVariety> varieties)`
+## `internal static IReadOnlyList<LReading> TReadingScan(IReadOnlyList<LReading> readings, IReadOnlyList<LVariety> varieties)`
 
-Relays the static fan-out so it can be checked without a source or receiver.
+Relays the static fan-out so it can be checked without a source, receiver, or listener.
+
+## `internal static LHarvest THarvestCreate(IReadOnlyList<LSource> sources, IReadOnlyList<LVariety>? varieties = null)`
+
+The recording counterpart of `TLookupCreate`.
+The varieties default to none, so a test without a pack behaves like a language without varieties.
+
+## `internal static IReadOnlyList<LRecording> THarvestRecordingScan(IReadOnlyList<LRecording> recordings, string variety)`
+
+Relays the static narrowing, so a test can check a kept set narrowed to one row's variety.
+
+## `internal static Task<string> TWorkspaceRecordingPrepare(LRecording recording, string root, HttpClient client, CancellationToken cancellation)`
+
+Relays the preview download into the workspace cache.
+
+## `internal static Task TEngineRecordingFind(this LEngine engine, long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
+
+Relays the engine-level discovery, so a test can see the draft's row variety narrow the search.
 
 ## `internal static LTrove TTroveCreate()`
 

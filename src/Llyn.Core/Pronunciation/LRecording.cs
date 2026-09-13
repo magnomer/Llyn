@@ -4,4 +4,5 @@ public sealed record LRecording(
     string LRecordingSource,
     string? LRecordingAddress,
     int LRecordingOrder,
-    bool LRecordingReached);
+    bool LRecordingReached,
+    string LRecordingVariety);

@@ -25,6 +25,17 @@ A source may hold several rows at one position, one per variety.
 Any row with a phonetic makes the set worth keeping.
 A draftless caller keeps nothing, because there would be no close to free it at.
 
+## `internal IReadOnlyList<LRecording>? LTroveRecordingRead(long session, string word, string language)`
+
+The recording counterpart of `LTroveCandidateRead`.
+The hold carries every variety the sources gave, so the engine narrows it to the opening row's variety.
+A row that gained a flag therefore reads the same hold rather than searching again.
+
+## `internal void LTroveRecordingSave(long session, string word, string language, IReadOnlyList<LRecording> found)`
+
+The recording counterpart of `LTroveCandidateSave`.
+Any row with an address makes the set worth keeping.
+
 ## `internal void LTroveClear(string session)`
 
 Drops what one draft held, called where a draft is committed, cancelled or deleted.

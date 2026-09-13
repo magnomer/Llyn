@@ -33,4 +33,31 @@ public sealed class TTrove
 
         Assert.Null(trove.TTroveCandidateRead(7, "tomato", "English"));
     }
+
+    [Fact]
+    public void TroveRecordingRead_SeveralPerOrder_ReadsAllBack()
+    {
+        LTrove trove = TInterface.TTroveCreate();
+        LRecording[] found =
+        [
+            TInterface.TRecordingCreate("Oxford", "https://example.test/tomato-gb.mp3", 0, true, "British"),
+            TInterface.TRecordingCreate("Oxford", "https://example.test/tomato-us.mp3", 0, true, "American"),
+        ];
+
+        trove.TTroveRecordingSave(7, "tomato", "English", found);
+
+        Assert.Equal(found, trove.TTroveRecordingRead(7, "tomato", "English"));
+        Assert.Null(trove.TTroveRecordingRead(7, "potato", "English"));
+    }
+
+    [Fact]
+    public void TroveRecordingSave_NoAddress_KeepsNothing()
+    {
+        LTrove trove = TInterface.TTroveCreate();
+
+        trove.TTroveRecordingSave(
+            7, "tomato", "English", [TInterface.TRecordingCreate("Oxford", null, 0, false, string.Empty)]);
+
+        Assert.Null(trove.TTroveRecordingRead(7, "tomato", "English"));
+    }
 }

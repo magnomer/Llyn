@@ -37,6 +37,10 @@ The engine imports from a path, so a test with a document in hand needs a file t
 
 Binds an engine to this workspace folder, so a test never constructs one itself.
 
+## `public LEngine TWorkspaceEngineStart(HttpClient client)`
+
+Binds an engine whose sources fetch through `client`, so a discovery test runs against a stub handler.
+
 ## `public SqliteConnection TWorkspaceConnectionRead()`
 
 Opens a raw connection to the workspace database, bypassing the store layer.

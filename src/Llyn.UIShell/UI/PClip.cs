@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +13,8 @@ public partial class PEditor : LListener
     private readonly ObservableCollection<PClipItem> _pClipItem = [];
     private CancellationTokenSource? _pClipCancellation;
     private bool _pClipSearching;
+    private bool _pClipFlagged;
+    private string _pClipLanguage = string.Empty;
     private long _pClipTarget;
 
     private async void PDownloaderHandle(object sender, RoutedEventArgs e)
@@ -48,11 +51,23 @@ public partial class PEditor : LListener
         }
 
         _pClipCancellation = new CancellationTokenSource();
+        CancellationToken cancellation = _pClipCancellation.Token;
 
         try
         {
+            _pClipLanguage = _pSpeakerChoice;
+            _pClipFlagged = _lEngine.LEngineFlaggedCheck(_pClipLanguage);
+            if (_pClipFlagged)
+            {
+                await PEnsign.PEnsignVarietyLoad(
+                    _lEngine,
+                    _pClipLanguage,
+                    _lEngine.LEngineVarietyRead(_pClipLanguage).Select(variety => variety.LVarietyName));
+                cancellation.ThrowIfCancellationRequested();
+            }
+
             await _lEngine.LEngineRecordingFind(
-                _pEditorDraft, word, _pSpeakerChoice, this, _pClipCancellation.Token);
+                _pEditorDraft, word, _pClipLanguage, _pClipTarget, this, cancellation);
         }
         catch (OperationCanceledException)
         {
@@ -85,13 +100,25 @@ public partial class PEditor : LListener
             return _pClipItem[position];
         }
 
-        PClipItem row = new(
-            source,
-            order,
-            _pEditorHost.PLocalizationTextRead("Downloader.Use"),
-            _pEditorHost.PLocalizationTextRead("Downloader.Searching"));
+        PClipItem row = new(source, order, _pEditorHost.PLocalizationTextRead("Downloader.Searching"));
         _pClipItem.Insert(position, row);
         return row;
+    }
+
+    private PClipReading PClipReadingCreate(LRecording recording)
+    {
+        string variety = recording.LRecordingVariety;
+        string action = _pEditorHost.PLocalizationTextRead("Downloader.Use");
+        if (variety.Length == 0)
+        {
+            return new PClipReading(recording, string.Empty, null, action);
+        }
+
+        return new PClipReading(
+            recording,
+            PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
+            PAccentItem.PAccentFlagFind(_pClipLanguage, _pClipFlagged, variety),
+            action);
     }
 
     private void PClipUpdate()
@@ -114,14 +141,14 @@ public partial class PEditor : LListener
 
     internal async void PClipPreviewHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PClipItem recording } || !recording.PClipItemFound)
+        if (sender is not FrameworkElement { DataContext: PClipReading reading })
         {
             return;
         }
 
         try
         {
-            string path = await _lEngine.LEngineRecordingPrepare(recording.PClipItemModel, CancellationToken.None);
+            string path = await _lEngine.LEngineRecordingPrepare(reading.PClipReadingModel, CancellationToken.None);
             _pDownloaderPlayer.Open(new Uri(path));
             _pDownloaderPlayer.Play();
         }
@@ -132,7 +159,7 @@ public partial class PEditor : LListener
 
     internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PClipItem recording } || !recording.PClipItemFound)
+        if (sender is not FrameworkElement { DataContext: PClipReading reading } || !reading.PClipReadingReady)
         {
             return;
         }
@@ -143,16 +170,17 @@ public partial class PEditor : LListener
             return;
         }
 
-        string language = _pSpeakerChoice;
+        string language = _pClipLanguage;
         long target = _pClipTarget;
+        LRecording recording = reading.PClipReadingModel;
 
-        recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");
-        recording.PClipItemReady = false;
+        reading.PClipReadingAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");
+        reading.PClipReadingReady = false;
 
         try
         {
-            string path = await _lEngine.LEngineRecordingSave(recording.PClipItemModel, word, language, CancellationToken.None);
-            recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Saved");
+            string path = await _lEngine.LEngineRecordingSave(recording, word, language, CancellationToken.None);
+            reading.PClipReadingAction = _pEditorHost.PLocalizationTextRead("Downloader.Saved");
 
             if (!string.Equals(PHeadword.Text?.Trim(), word, StringComparison.Ordinal) ||
                 !string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
@@ -160,29 +188,32 @@ public partial class PEditor : LListener
                 return;
             }
 
+            long id = target;
             if (target == 0)
             {
                 _pRecording = path;
-                _pRecordingSource = recording.PClipItemSource;
+                _pRecordingSource = recording.LRecordingSource;
                 _pRecordingStored = false;
                 PPlaybackAction.Visibility = Visibility.Visible;
                 PEditorAudioSend();
+                id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
             }
             else
             {
                 _pRecordingFresh.Add(target);
                 PEditorRequestSend(
-                    new LRequestPronunciationAudio(_pEditorDraft, target, path, recording.PClipItemSource));
+                    new LRequestPronunciationAudio(_pEditorDraft, target, path, recording.LRecordingSource));
             }
 
+            PNotationVarietySend(id, reading.PClipReadingVariety);
             PPlaybackTrayShow();
             PVolumeLoad();
             PClip.IsOpen = false;
         }
         catch (Exception)
         {
-            recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Retry");
-            recording.PClipItemReady = true;
+            reading.PClipReadingAction = _pEditorHost.PLocalizationTextRead("Downloader.Retry");
+            reading.PClipReadingReady = true;
         }
     }
 
@@ -201,6 +232,7 @@ public partial class PEditor : LListener
         {
             PClipPlace(recording.LRecordingSource, recording.LRecordingOrder).PClipItemShow(
                 recording,
+                string.IsNullOrEmpty(recording.LRecordingAddress) ? null : PClipReadingCreate(recording),
                 _pEditorHost.PLocalizationTextRead("Downloader.Missing"),
                 _pEditorHost.PLocalizationTextRead("Downloader.Broken"));
             PClipUpdate();

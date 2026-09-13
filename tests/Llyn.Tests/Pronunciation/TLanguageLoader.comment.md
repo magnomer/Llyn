@@ -6,6 +6,7 @@ Covers the language pack loader reading the variety block, the readings list, an
 The English pack declares two flagged varieties and a pack without the block declares none.
 A readings list loads in written order with its skip counts.
 A flat attempt still loads as one untagged reading.
+An audio attempt with a readings list loads one non-phonetic reading per variety.
 The English pack loads exactly two respelling groups, both scoped, and an empty cleanup list.
 A fixture pack that declares varieties drops every group without a non-empty `varieties` list and keeps the rest.
 A fixture pack without varieties keeps such groups, so the key stays optional there.

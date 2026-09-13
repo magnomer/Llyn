@@ -89,20 +89,6 @@ public sealed class TLookup
         Assert.Equal(string.Empty, candidate.LCandidateVariety);
     }
 
-    [Fact]
-    public void LookupReadingScan_UndeclaredTagAndUntagged_KeepsTagFirst()
-    {
-        IReadOnlyList<LReading> expanded = TInterface.TLookupReadingScan(
-            [
-                TInterface.TReadingCreate(string.Empty, "a"),
-                TInterface.TReadingCreate("Scottish", "b"),
-            ],
-            [TInterface.TVarietyCreate("British"), TInterface.TVarietyCreate("American")]);
-
-        Assert.Equal(
-            [("Scottish", "b"), ("British", "a"), ("American", "a")],
-            expanded.Select(reading => (reading.LReadingVariety, reading.LReadingPhonetic)));
-    }
 
     [Fact]
     public async Task LookupStart_DottedReading_ReturnsNormalizedCandidate()

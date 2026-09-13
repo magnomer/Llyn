@@ -46,6 +46,12 @@ The folder is given, so there is nothing to resolve.
 Changing the user's workspace is `LEngineWorkspaceChange`.
 This only says which folder to open.
 
+## `internal LEngine(string workspace, HttpClient? client)`
+
+The constructor the public ones share, taking the client every source and download goes through.
+A null client builds the real one with its timeout and browser-like agent.
+The test suite hands in a client over a stub handler, so an engine-level search runs offline.
+
 ## `private long LEngineIdentityCreate()`
 
 Issues the next temporary id for a draft row of the open workspace.
@@ -178,11 +184,23 @@ The trove is never wrapped and keeps cleaned but un-respelled text.
 So flipping the switch changes the next replay without any refetch, and nothing stored is touched.
 The pack is read under the gate whatever the switch says, because the fresh path needs its cleanup groups.
 
-## `public Task LEngineRecordingFind(string session, string word, string language, LListener listener, CancellationToken cancellation)`
+## `public Task LEngineRecordingFind(long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
 
 Starts an audio-recording discovery for `word` in `language` and streams results to `listener`.
 The task completes when every source finishes.
-It reuses what the same draft already found, exactly as the lookup does.
+`target` is the pronunciation row the menu was opened from, and `0` names the primary row.
+The row's variety is read from the draft here, so the shell never decides which case applies.
+An empty variety returns every variety, tagged rows under their tag and untagged rows fanned out per declared variety.
+A named variety returns that variety only, an untagged row collapsing to one under it.
+It reuses what the same draft already found, narrowed to the row's variety, so no row's menu fetches twice.
+The pack is read under the gate, because the fresh path needs its declared varieties.
+
+## `private string LEngineVarietyResolve(long session, long target)`
+
+The variety of the pronunciation row `target` in draft `session`, trimmed, or empty when there is none.
+`target` of `0` reads the primary row, the first in the draft's list.
+A draftless session, a missing draft, or a row no longer present all read as no variety.
+So the menu still opens and shows every variety rather than failing.
 
 ## `private async Task LEngineCandidateScan(string session, string word, string language, IReadOnlyList<LSource> sources, LLanguage pack, LReceiver receiver, CancellationToken cancellation)`
 
@@ -192,9 +210,11 @@ It is handed the pack's cleanup groups too, so what reaches the trove is already
 The receiver still sees each candidate stream in, because the search is unchanged.
 Nothing is kept when the search is cancelled, since the task then ends by throwing.
 
-## `private async Task LEngineRecordingScan(string session, string word, string language, IReadOnlyList<LSource> sources, LListener listener, CancellationToken cancellation)`
+## `private async Task LEngineRecordingScan(long session, string word, string language, string variety, IReadOnlyList<LSource> sources, LLanguage pack, LListener listener, CancellationToken cancellation)`
 
 The recording counterpart of `LEngineCandidateScan`.
+The harvest gets the pack's declared varieties and the row's variety, so it fans out and narrows its stream.
+What it returns holds every variety, and that whole set is kept in the trove for any row to narrow.
 
 ## `private static Task LEngineCandidatePublish(IReadOnlyList<LCandidate> held, LReceiver receiver)`
 
@@ -205,6 +225,7 @@ The task is already complete, because nothing was awaited.
 ## `private static Task LEngineRecordingPublish(IReadOnlyList<LRecording> held, LListener listener)`
 
 The recording counterpart of `LEngineCandidatePublish`.
+The caller narrows the kept set to the opening row's variety first, as the harvest narrows a live stream.
 
 ## `private LLanguage LEngineLanguageLoad(string language)`
 
@@ -215,6 +236,7 @@ It takes the gate itself, and a caller already holding it re-enters without harm
 ## `public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
 Downloads the chosen `recording` into the workspace and returns the saved path.
+The recording carries its own variety, and the workspace names the file by it.
 
 ## `public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
 

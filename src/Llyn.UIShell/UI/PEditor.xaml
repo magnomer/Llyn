@@ -255,13 +255,12 @@
         <Popup
             x:Name="PClip"
             Grid.Row="4"
-            Width="320"
             Margin="0,6,0,0"
             AllowsTransparency="True"
             Closed="PClipClosedHandle"
             Placement="Bottom"
             StaysOpen="False">
-            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+            <Border Margin="10" MinWidth="300" MaxWidth="640" Style="{StaticResource Theme.Popup.Surface}">
                 <StackPanel>
                     <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Downloader.Title}" />
                     <Border x:Name="PClipProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
@@ -269,7 +268,7 @@
                     </Border>
                     <TextBlock x:Name="PClipNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Downloader.Searching}" Visibility="Collapsed" />
                     <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="PClipList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Clip.Row}" Visibility="Collapsed" />
+                        <ItemsControl x:Name="PClipList" Grid.IsSharedSizeScope="True" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Clip.Row}" Visibility="Collapsed" />
                     </ScrollViewer>
                 </StackPanel>
             </Border>

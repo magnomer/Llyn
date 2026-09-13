@@ -20,6 +20,12 @@ internal static class TPronunciationHelper
     internal static LSource TSourceStubCreate(params LReading[] readings) =>
         new TSourceStub(TInterface.TAnswerCreate(readings));
 
+    internal static LSource TSourceLostCreate() =>
+        new TSourceStub(TInterface.TAnswerLostRead());
+
     internal static TReceiverStub TReceiverCreate() =>
+        new();
+
+    internal static TListenerStub TListenerCreate() =>
         new();
 }

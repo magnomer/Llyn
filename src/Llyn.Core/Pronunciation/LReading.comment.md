@@ -22,3 +22,16 @@ Stress marks, length marks, tie bars, and delimiters survive.
 So `ˈdɪf.ər.əns` and `ˈdɪf ər əns` both become `ˈdɪfərəns`.
 A multi-word headword loses its inner space by design.
 Site quirks this step cannot know are left to the pack's `cleanup` groups.
+
+## `public static IReadOnlyList<LReading> LReadingScan(IReadOnlyList<LReading> readings, IReadOnlyList<LVariety> varieties)`
+
+Expands a source's readings so nothing untagged reaches the menu in a language that declares varieties.
+Both the lookup and the harvest call it, so a transcription and a recording fan out the same way.
+A pack without varieties returns the readings untouched, so Spanish keeps its untagged rows.
+Otherwise every untagged reading becomes one reading per declared variety, in pack order, all carrying the same text.
+A variety the same answer already tags is skipped, so Cambridge's British, American, and untagged rows never double up.
+Tagged readings pass through unchanged, even one naming a variety the pack does not declare.
+That mismatch is the pack author's to fix, and the UI label makes it visible.
+Tagged readings come first in answer order, then the fan-out rows, so a page's own tags always lead.
+An empty answer stays empty here and still yields the single no-value row.
+It is static and takes no source, so a test can drive it directly.

@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -38,7 +40,8 @@ public static class LWorkspace
         string directory = Path.Combine(root, LWorkspaceBucket, LWorkspaceNormalize(language));
         Directory.CreateDirectory(directory);
 
-        string path = Path.Combine(directory, LWorkspaceNormalize(word) + LWorkspaceExtensionRead(address));
+        string path = Path.Combine(
+            directory, LWorkspaceStemRead(word, recording.LRecordingVariety) + LWorkspaceExtensionRead(address));
         await File.WriteAllBytesAsync(path, audio, cancellation).ConfigureAwait(false);
         return path;
     }
@@ -55,12 +58,15 @@ public static class LWorkspace
         ArgumentException.ThrowIfNullOrWhiteSpace(recording.LRecordingAddress);
 
         string address = recording.LRecordingAddress;
-        byte[] audio = await client.GetByteArrayAsync(address, cancellation).ConfigureAwait(false);
-
         string directory = Path.Combine(root, LWorkspaceCache);
-        Directory.CreateDirectory(directory);
-
         string path = Path.Combine(directory, LWorkspaceNameRead(address));
+        if (File.Exists(path))
+        {
+            return path;
+        }
+
+        byte[] audio = await client.GetByteArrayAsync(address, cancellation).ConfigureAwait(false);
+        Directory.CreateDirectory(directory);
         await File.WriteAllBytesAsync(path, audio, cancellation).ConfigureAwait(false);
         return path;
     }
@@ -99,21 +105,16 @@ public static class LWorkspace
         }
     }
 
+    private static string LWorkspaceStemRead(string word, string variety)
+    {
+        string stem = LWorkspaceNormalize(word);
+        return variety.Length == 0 ? stem : stem + "." + LWorkspaceNormalize(variety);
+    }
+
     private static string LWorkspaceNameRead(string address)
     {
-        try
-        {
-            string leaf = Path.GetFileName(new Uri(address).AbsolutePath);
-            if (leaf.Length > 0)
-            {
-                return LWorkspaceNormalize(leaf);
-            }
-        }
-        catch (UriFormatException)
-        {
-        }
-
-        return "audio" + LWorkspaceExtension;
+        string digest = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(address)))[..16];
+        return digest + LWorkspaceExtensionRead(address);
     }
 
     private static string LWorkspaceExtensionRead(string address)

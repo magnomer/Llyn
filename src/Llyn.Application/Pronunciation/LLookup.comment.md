@@ -8,7 +8,7 @@ Each candidate carries the position its source holds in that set, so a slow sour
 Streams each result back to the receiver as it arrives.
 One slow or failing source never blocks or fails the others.
 A source that answered produces one candidate per reading, all sharing the source's position and each carrying its variety.
-The readings pass through `LLookupReadingScan` first, so an untagged reading fans out over the pack's declared varieties.
+The readings pass through `LReading.LReadingScan` first, so an untagged reading fans out over the pack's declared varieties.
 Each fanned-out reading is then normalized and run through the pack's cleanup groups before it becomes a candidate.
 The fan-out comes first so a cleanup group scoped to one variety sees the variety it targets.
 Cleanup is mandatory and knows no switch, so every candidate leaving here carries cleaned text.
@@ -25,18 +25,6 @@ It also returns the whole set it streamed, in source order, for a caller that wa
 Collecting it here costs nothing, since every candidate already passes through this one place.
 The sources are supplied ready-built and language-agnostic (see `LSource`).
 This orchestrator knows nothing about any particular source or language.
-
-## `public static IReadOnlyList<LReading> LLookupReadingScan(IReadOnlyList<LReading> readings, IReadOnlyList<LVariety> varieties)`
-
-Expands a source's readings so nothing untagged reaches the phonetician in a language that declares varieties.
-A pack without varieties returns the readings untouched, so Spanish keeps its untagged rows.
-Otherwise every untagged reading becomes one reading per declared variety, in pack order, all carrying the same text.
-A variety the same answer already tags is skipped, so Cambridge's British, American, and untagged rows never double up.
-Tagged readings pass through unchanged, even one naming a variety the pack does not declare.
-That mismatch is the pack author's to fix, and the UI label makes it visible.
-Tagged readings come first in answer order, then the fan-out rows, so a page's own tags always lead.
-An empty answer stays empty here and still yields the single no-phonetic candidate.
-It is static and takes no source, so a test can drive it directly.
 
 ## `private static Task<LAnswer> LLookupAnswerRead(LSource source, string word, CancellationToken cancellation)`
 

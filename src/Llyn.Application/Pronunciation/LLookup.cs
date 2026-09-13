@@ -57,39 +57,6 @@ public sealed class LLookup : LSeeker
         return found.OrderBy(static candidate => candidate.LCandidateOrder).ToList();
     }
 
-    public static IReadOnlyList<LReading> LLookupReadingScan(
-        IReadOnlyList<LReading> readings,
-        IReadOnlyList<LVariety> varieties)
-    {
-        ArgumentNullException.ThrowIfNull(readings);
-        ArgumentNullException.ThrowIfNull(varieties);
-
-        if (varieties.Count == 0)
-        {
-            return readings;
-        }
-
-        List<LReading> tagged = readings.Where(static reading => reading.LReadingVariety.Length > 0).ToList();
-        List<LReading> expanded = new(tagged);
-        foreach (LReading reading in readings)
-        {
-            if (reading.LReadingVariety.Length > 0)
-            {
-                continue;
-            }
-
-            foreach (LVariety variety in varieties)
-            {
-                if (tagged.All(known => !string.Equals(known.LReadingVariety, variety.LVarietyName, StringComparison.Ordinal)))
-                {
-                    expanded.Add(reading with { LReadingVariety = variety.LVarietyName });
-                }
-            }
-        }
-
-        return expanded;
-    }
-
     private static async Task LLookupSourceRun(
         LSource source,
         int order,
@@ -105,7 +72,7 @@ public sealed class LLookup : LSeeker
         LAnswer answer = await LLookupAnswerRead(source, word, cancellation).ConfigureAwait(false);
         cancellation.ThrowIfCancellationRequested();
 
-        IReadOnlyList<LReading> readings = LLookupReadingScan(answer.LAnswerReadings, varieties);
+        IReadOnlyList<LReading> readings = LReading.LReadingScan(answer.LAnswerReadings, varieties);
         List<LCandidate> candidates = new(Math.Max(1, readings.Count));
         if (readings.Count == 0)
         {
