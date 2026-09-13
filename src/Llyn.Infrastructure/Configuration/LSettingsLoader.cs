@@ -17,6 +17,10 @@ public static class LSettingsLoader
     private const string LSettingsLoaderMorphology = "morphology";
     private const string LSettingsLoaderLayout = "layout";
     private const string LSettingsLoaderLinked = "linked";
+    private const string LSettingsLoaderMode = "mode";
+    private const string LSettingsLoaderSplit = "split";
+    private const string LSettingsLoaderEditor = "Editor";
+    private const string LSettingsLoaderDisplay = "Display";
     private const string LSettingsLoaderDefault = "en";
     private const double LSettingsLoaderLoudest = 1;
 
@@ -74,7 +78,20 @@ public static class LSettingsLoader
                 !document.RootElement.TryGetProperty(LSettingsLoaderLinked, out JsonElement share) ||
                 share.ValueKind != JsonValueKind.False;
 
-            return new LSettings(localization, window, volume, respelled, frequency, morphology, layout, linked);
+            string? mode =
+                document.RootElement.TryGetProperty(LSettingsLoaderMode, out JsonElement tab) &&
+                tab.ValueKind == JsonValueKind.String &&
+                !string.IsNullOrWhiteSpace(tab.GetString())
+                    ? tab.GetString()
+                    : null;
+
+            bool split =
+                document.RootElement.TryGetProperty(LSettingsLoaderSplit, out JsonElement side) &&
+                side.ValueKind == JsonValueKind.String &&
+                string.Equals(side.GetString(), LSettingsLoaderEditor, StringComparison.Ordinal);
+
+            return new LSettings(
+                localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split);
         }
         catch (JsonException)
         {
@@ -100,8 +117,14 @@ public static class LSettingsLoader
             [LSettingsLoaderRespelling] = settings.LSettingsRespelled,
             [LSettingsLoaderFrequency] = settings.LSettingsFrequency,
             [LSettingsLoaderMorphology] = settings.LSettingsMorphology,
-            [LSettingsLoaderLinked] = settings.LSettingsLinked
+            [LSettingsLoaderLinked] = settings.LSettingsLinked,
+            [LSettingsLoaderSplit] = settings.LSettingsSplit ? LSettingsLoaderEditor : LSettingsLoaderDisplay
         };
+
+        if (!string.IsNullOrWhiteSpace(settings.LSettingsMode))
+        {
+            payload[LSettingsLoaderMode] = settings.LSettingsMode;
+        }
 
         if (settings.LSettingsLayout is { Count: > 0 } layout)
         {

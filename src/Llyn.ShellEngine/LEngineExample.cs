@@ -65,13 +65,6 @@ public sealed partial class LEngine
         }
     }
 
-    public IReadOnlyList<LCatalogExample> LEngineExampleFind(string query, LCatalogOrder order, LCatalogFilter filter)
-    {
-        ArgumentNullException.ThrowIfNull(filter);
-        return filter.LCatalogFilterApply(
-            LEngineExampleFind(query, order), row => row.LCatalogExampleStored.LExampleLanguage);
-    }
-
     public IReadOnlyDictionary<long, string> LEngineCitationRead()
     {
         lock (_lEngineGate)

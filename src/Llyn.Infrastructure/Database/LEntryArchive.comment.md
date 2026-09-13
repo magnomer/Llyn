@@ -60,6 +60,29 @@ One query serves a language without word separators, where the engine tries each
 
 The rows a prepared query yields, in the order the query states.
 
+## `public IReadOnlyList<LEntry> LEntrySituationFind(long situationId)`
+
+Returns the entries referencing the Situation `situationId` names, ordered by headword.
+It returns every entry when `situationId` is zero.
+A situation is held on a meaning or a collocation, so both sides are unioned into one row per entry.
+
+## `public IReadOnlyList<LEntry> LEntryExampleFind(long exampleId)`
+
+Returns the entries quoting the Example `exampleId` names, ordered by headword.
+It returns every entry when `exampleId` is zero.
+An example is quoted on a meaning or a collocation, so both sides are unioned into one row per entry.
+
+## `public IReadOnlyList<LEntry> LEntryReferenceFind(long referenceId)`
+
+Returns the entries citing the Source `referenceId` names, ordered by headword.
+It returns every entry when `referenceId` is zero.
+A card cites a Source by holding an Example that cites it, so the walk goes through the example row.
+
+## `private IReadOnlyList<LEntry> LEntryOwnerFind(long ownerId, string statement)`
+
+Runs one of the owner-shaped finds above, binding the owner id as `$owner`.
+The three statements differ only in the link tables they walk, so they share the reading.
+
 ## `public IReadOnlyList<LEntry> LEntryTagFind(long tagId)`
 
 Returns the entries carrying the Tag `tagId` names, ordered by headword.

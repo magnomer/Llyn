@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -26,6 +27,9 @@ public partial class PReference : UserControl
         PFootnote.ItemsSource = _pFootnoteList;
 
         PImprint.PImprintAttach(host, engine, this);
+        PDisplay.PDisplayAttach(host, engine);
+        PEditor.PEditorAttach(host, engine, "Reference", null);
+        PEditor.PEditorChangeNotice = changed => PReferenceStore.IsEnabled = changed;
 
         _pReferenceObserver = new PObserver(this, PReferenceBulletinHandle);
         engine.LEngineObserverAttach(_pReferenceObserver);
@@ -61,12 +65,16 @@ public partial class PReference : UserControl
 
     internal bool PReferenceChangeCheck()
     {
-        return PImprint.PImprintChangeCheck();
+        return PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorChangeCheck()
+            : PImprint.PImprintChangeCheck();
     }
 
     internal bool PReferenceDraftFinish(bool store)
     {
-        return PImprint.PImprintDraftFinish(store);
+        return PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorDraftFinish(store)
+            : PImprint.PImprintDraftFinish(store);
     }
 
     internal void PReferenceClose()
@@ -78,6 +86,9 @@ public partial class PReference : UserControl
         }
 
         PImprint.PImprintClose();
+        PEditor.PEditorClose();
+        PDisplay.PDisplayClose();
         PGradeDropdown.IsOpen = false;
+        PTrellisDropdown.IsOpen = false;
     }
 }

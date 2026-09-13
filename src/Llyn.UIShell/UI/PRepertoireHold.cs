@@ -17,7 +17,7 @@ public partial class PRepertoire
 
     private bool _pScenarioHalted;
 
-    internal bool PRepertoireDraftFinish(bool store)
+    private bool PScenarioDraftFinish(bool store)
     {
         if (_pScenarioPending is not null)
         {

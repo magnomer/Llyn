@@ -17,7 +17,7 @@ public partial class PCorpus
 
     private bool _pTranscriptHalted;
 
-    internal bool PCorpusDraftFinish(bool store)
+    private bool PTranscriptDraftFinish(bool store)
     {
         if (_pTranscriptPending is not null)
         {

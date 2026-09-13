@@ -4,7 +4,8 @@
 
 Browsing and editing behavior of the Repertoire panel.
 `PAtlas` lists every Situation the workspace holds, including one nothing references.
-A chosen row is read back and shown with everything referencing it, and `PRepertoireScribe` swaps that reading for the editor.
+A chosen row is read back and shown, and the middle column narrows to the entries referencing it.
+`PRepertoireScribe` swaps the reading for the editor.
 The editor's own fields live in `PRepertoireEditor.cs`.
 The panel answers two questions rather than one: what this Situation is, and where it is used.
 
@@ -42,7 +43,7 @@ The guard belongs to the caller, because the panel is left before the tab is swi
 
 ## `private void PRepertoireShow(long id)`
 
-Reads one Situation back and shows it with the sides referencing it.
+Reads one Situation back, shows it, and narrows the middle column to the entries referencing it.
 A Situation that is gone leaves the panel unselected rather than showing a stale reading.
 An open editor is restarted on the Situation shown, so the held draft and the reading never name different records.
 
@@ -53,11 +54,58 @@ A written value reads itself, or the name resolved for it when the value is an i
 An unknown one reads the mark, and one never written reads the unrecorded text in the muted colour.
 The row is never hidden, because a missing row and an empty field are different claims about the store.
 
-## `private void POccurrenceFind(long id)`
+## `private void POccurrenceFind()`
 
-Reads the referring sides of one Situation, itemized rather than counted.
-An empty result is shown rather than hidden: a Situation nothing references is reachable only here.
+Refills the middle column with the entries referencing the chosen Situation, or every Entry while none is chosen.
+The engine matches the typed text and drops the hidden languages, so the panel decides nothing about what matches.
+An empty result is shown rather than hidden, and its text says whether nothing references the Situation or nothing matches.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
+The shown Entry is re-marked after every fill, so its row keeps the mark across a re-filter.
+
+### `private long? _pDisplayEntry;`
+
+The Entry the right-hand side stands on, held as an id, while it shows an Entry and not a Situation.
+The right-hand side shows one or the other and never both.
+An Entry row swaps the Situation reading for the entry display in place, and a Situation row swaps it back.
+The chosen Situation keeps its mark meanwhile, because it still narrows the middle column.
+
+## `private void POccurrenceEntryShow(long id)`
+
+Reads one Entry back and shows it in the panel's own display, without leaving the tab.
+An open Situation editor is cancelled first, after the caller has asked about its draft.
+An editing side already open stays open, so the Entry lands in `PEditor` rather than in the display.
+An Entry that is gone leaves the right-hand side on the Situation and refills the middle column.
+
+## `private void POccurrenceEntryUpdate(long id)`
+
+A store announced by the engine redraws the shown Entry when the store touched it.
+A store that deleted it falls back to the chosen Situation, or clears the panel when none is chosen.
+
+## `private void POccurrenceScribeHandle(bool editing)`
+
+The mode toggle while an Entry is shown, mirroring the tenor panel.
+Entering the editor starts a draft on the shown Entry, and leaving it asks first, then re-reads it.
+`PRepertoireScribeHandle` routes here whenever an Entry rather than a Situation is shown.
+
+## `private void POccurrenceScribeShow(bool editing)`
+
+Swaps the entry display for the entry editor and back, and shows the rail save button with the editor.
+The toggle marks follow, so the rail and the cell never disagree.
+
+## `private void PRepertoireStoreHandle(object sender, RoutedEventArgs e)`
+
+Saves the Entry open in the editor, which the editor does for itself.
+
+## `private void POccurrenceEntryHide()`
+
+Puts the right-hand side back on the Situation side, on the same reading or editing side it stood on.
+An open entry editor is reset first, so no entry draft outlives the Entry it was opened on.
+The mode toggle comes back only while a Situation is chosen.
+
+### `internal void PMeshRestore(LCatalogFilter filter)`
+
+Puts the language filter back on the languages the settings stored, and builds the menu over the loaded languages.
+The window calls it once on attach, so the panel never reads the stored state for itself.
 
 ## `private void PCitationFind()`
 

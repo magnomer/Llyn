@@ -8,6 +8,7 @@ internal static class TAuditLineSetting
     public static readonly string[] TAuditLineRoots =
     [
         "src",
+        "tests",
     ];
 
     public static readonly string[] TAuditLineInclude =

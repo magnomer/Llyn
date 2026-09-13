@@ -1,69 +1,20 @@
-# TSchemaMigration.cs
+﻿# TSchemaMigration.cs
 
 ## `public sealed class TSchemaMigration`
 
-Covers the schema runner and the migration that brings an older database up to date.
+Covers the schema runner and the migration that rebuilds a database another build wrote.
 Creating twice changes nothing.
 The version is recorded and read back.
-A database written by a newer build is refused.
-A database in the shape an earlier build left behind is corrected, not merely restamped.
+A database at any other version, older or newer, is rebuilt in the current shape rather than refused.
+Every column both shapes know carries across, and a column only the old shape knew is dropped.
+The old file stays beside the new one under its version.
+The realm the workspace was minted under survives the rebuild, so rows made here keep their stamp.
+A row the current schema cannot hold, such as a child whose parent is gone, is dropped.
+The launch goes on without it.
+The id counters carry across, so a rebuilt workspace never hands out an id a tombstone remembers.
+The realm row is single, minted once, and stamps every row made here.
 
 ## Inline notes
-
-### `workspace.TWorkspaceScriptRun(`
-
-The shape an earlier build left behind.
-That is a version table that permits several rows.
-It is also an example table whose reference_ref carries no foreign key.
-The source table did not exist when the column was declared.
-
-### `workspace.TWorkspaceScriptRun(`
-
-Version 13: every table this build creates except pronunciation_audio, which did not exist.
-
-### `workspace.TWorkspaceScriptRun(`
-
-Two collocations sharing one position under the same entry.
-That was possible before the unique index existed, and is fatal to creating it now.
-
-### `workspace.TWorkspaceScriptRun(`
-
-A database in the version-12 shape: the collocation table as it stood, with a row in it.
-CREATE TABLE IF NOT EXISTS never reaches it, so only the migration step can add the column.
-
-### `Assert.Equal(`
-
-The row that was there before the column existed survives, expression intact, meaning empty.
-
-### `workspace.TWorkspaceScriptRun(`
-
-A database in the version-14 shape: neither card table had a title column, and both hold a row.
-CREATE TABLE IF NOT EXISTS never reaches an existing table, so only the step adds them.
-
-### `Assert.Equal(`
-
-Both tables end up the same shape for this field, and both rows survive with a NULL title.
-
-### `workspace.TWorkspaceScriptRun(`
-
-A database in the version-15 shape.
-part_of_speech held a stable id and nothing else, and an entry is filed under one.
-The column and the nullability the editable field needs are table shape, so only the rebuild step delivers them.
-
-### `Assert.Equal(`
-
-The assignment already stored is a declared preset and stays one: it copies across with no custom text beside it.
-
-### `workspace.TWorkspaceScriptRun(`
-
-And the rebuilt table takes the row the editable field produces, which the old shape could not hold at all.
-
-### `INSERT INTO reference VALUES (`
-
-A database in the version-30 shape, holding one broadcast Source and one printed one.
-The broadcast row states both retired columns and the printed row states neither.
-So the step is measured on the row it has text to carry.
-It is measured on the row it has none for as well.
 
 ### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_ref"));`
 

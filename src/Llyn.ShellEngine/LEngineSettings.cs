@@ -70,7 +70,15 @@ public sealed partial class LEngine
 
             foreach (LLayout tab in layout)
             {
-                merged[tab.LLayoutTab] = tab;
+                merged[tab.LLayoutTab] = merged.TryGetValue(tab.LLayoutTab, out LLayout? held)
+                    ? held with
+                    {
+                        LLayoutLeft = tab.LLayoutLeft ?? held.LLayoutLeft,
+                        LLayoutMiddle = tab.LLayoutMiddle ?? held.LLayoutMiddle,
+                        LLayoutOrder = tab.LLayoutOrder ?? held.LLayoutOrder,
+                        LLayoutFilter = tab.LLayoutFilter ?? held.LLayoutFilter,
+                    }
+                    : tab;
             }
 
             List<LLayout> list = [.. merged.Values];

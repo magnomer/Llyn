@@ -8,9 +8,10 @@ It writes what it holds instead, and asks the engine whether that differs.
 Typing is written once the user stops, because a write per keystroke is a write per keystroke.
 This mirrors `PCorpusHold.cs` field for field, so the three editors cannot drift apart.
 
-## `internal bool PRepertoireDraftFinish(bool store)`
+## `private bool PScenarioDraftFinish(bool store)`
 
-Ends the held Situation when the window closes, committing it or discarding it.
+Ends the held Situation when the panel is left, committing it or discarding it.
+The panel routes here only while the Situation editor is the side in front.
 Typing still waiting to be written is written first, whatever the answer was.
 A refused commit puts the id back and answers false, so the window stays open over work still on disk.
 

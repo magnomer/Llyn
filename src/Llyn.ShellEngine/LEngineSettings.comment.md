@@ -47,8 +47,11 @@ Forms already stored stay, because the switch governs asking, not keeping.
 
 ## `public void LEngineLayoutSave(IEnumerable<LLayout> layout)`
 
-Persists the panel widths of the tabs given and keeps them current.
-Each tab given replaces its own record, and every tab not given keeps the record it had.
+Persists the panel widths, ordering and hidden languages of the tabs given and keeps them current.
+Each field a tab gives replaces that field of its own record.
+A field left empty keeps what the record had.
+Every tab not given keeps the record it had.
+A drag therefore never drops the ordering a panel chose, and an ordering never drops a dragged width.
 The merge runs under the gate, so one drag never drops what another tab wrote.
 A linked drag hands over every tab at once, so the file is written once, not once per tab.
 

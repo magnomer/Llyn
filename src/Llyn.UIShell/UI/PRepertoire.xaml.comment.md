@@ -11,6 +11,8 @@ The browsing behavior lives in `PRepertoireBrowse.cs`, one file per responsibili
 
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
+It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
+The editor's change notice drives `PRepertoireStore`, as it drives the save button of the tenor panel.
 The window fills the situation catalog when it restores the stored ordering.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.
@@ -24,6 +26,12 @@ Drops the selection and reads the catalog again, for when the workspace undernea
 Whether the panel holds a draft the engine says differs from what is stored.
 The window asks before anything can leave the panel.
 The answer is the engine's, so the panel decides nothing about what counts as a change.
+The entry editor answers while it is in front, and the Situation editor otherwise.
+
+## `internal bool PRepertoireDraftFinish(bool store)`
+
+Ends whichever draft is in front, committing it or discarding it.
+The entry editor finishes its own draft, and the Situation editor finishes its own.
 
 ## `internal void PRepertoireClose()`
 

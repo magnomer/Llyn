@@ -1,4 +1,4 @@
-# LEngineState.cs
+﻿# LEngineState.cs
 
 ## `public sealed partial class LEngine`
 
@@ -9,6 +9,17 @@ Every push is a field of its own.
 Two panels changing two different things in one session both keep their change.
 A shell that read the state, changed a field and wrote the whole record back would lose work.
 Whatever another panel had written in between would be gone.
+
+The Entry each duplex side stands on names a row of the workspace database, so it is stored beside it.
+The open tab, its split, each panel's ordering and its hidden languages name only panels.
+Those go to the settings file, one per tab in its layout record, through the same one-field pushes.
+The signatures stay one per panel, so a panel never learns which file its choice lands in.
+
+## `private const string LEngineStateLibrary = "library";`
+
+The lowercase tab names the layout records are keyed by, one per browse panel.
+They match the names the shell attaches its panel widths under.
+So a panel's ordering, filter and widths share one record.
 
 ## `public LWorkspaceState LEngineStateRead()`
 
@@ -47,6 +58,10 @@ Stores the ordering the favorites panel lists favorite entries in.
 
 Stores the ordering the taxonomy panel lists tags in.
 
+## `public void LEngineDegreeSave(LCatalogOrder order)`
+
+Stores the ordering the tenor panel lists registers in.
+
 ## `public void LEngineTierSave(LCatalogOrder order)`
 
 Stores the ordering the repertoire panel lists situations in.
@@ -79,9 +94,17 @@ Stores the languages the taxonomy panel hides from the entries of the chosen tag
 
 Stores the languages the tenor panel hides from the entries of the chosen register.
 
-## `public void LEnginePrismSave(LCatalogFilter filter)`
+## `public void LEngineMeshSave(LCatalogFilter filter)`
 
-Stores the languages the corpus panel hides.
+Stores the languages the repertoire panel hides from the entries referencing the chosen situation.
+
+## `public void LEngineGauzeSave(LCatalogFilter filter)`
+
+Stores the languages the corpus panel hides from the entries quoting the chosen example.
+
+## `public void LEngineTrellisSave(LCatalogFilter filter)`
+
+Stores the languages the sources panel hides from the entries citing the chosen source.
 
 ## `private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)`
 

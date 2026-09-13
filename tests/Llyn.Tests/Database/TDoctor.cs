@@ -21,7 +21,7 @@ public sealed class TDoctor
     }
 
     [Fact]
-    public void DoctorDatabaseCreate_NewerBuild_StartsCleanDatabase()
+    public void DoctorDatabaseCreate_OtherVersion_RebuildsWithoutRescue()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         workspace.TWorkspaceScriptRun(
@@ -29,9 +29,8 @@ public sealed class TDoctor
 
         LDoctorRescue rescue = TInterface.TDoctorDatabaseCreate(workspace.TWorkspaceDatabase);
 
-        Assert.True(rescue.LDoctorRescueDone);
-        Assert.NotNull(rescue.LDoctorRescueBackup);
-        Assert.True(File.Exists(rescue.LDoctorRescueBackup));
+        Assert.False(rescue.LDoctorRescueDone);
+        Assert.Empty(TDoctorBackupRead(workspace));
         Assert.Equal(
             LSchemaMigration.LSchemaMigrationVersion,
             workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));

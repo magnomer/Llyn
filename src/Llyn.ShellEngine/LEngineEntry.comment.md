@@ -59,6 +59,40 @@ The filtered entries marked with `register` narrowed to those whose headword mat
 The match is the catalog match, so `*` and `?` work as in every search field.
 An empty or blank `query` narrows nothing.
 
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation)`
+
+Returns the entries referencing `situation`, matched by its id, ordered by headword.
+A zero id stands for no situation chosen and returns every entry.
+That is the list the repertoire panel shows beside its situation catalog.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation, string query, LCatalogFilter filter)`
+
+The entries referencing `situation`, those in a hidden language left out, narrowed to headwords matching `query`.
+The match is the catalog match, and an empty or blank `query` narrows nothing.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LExample example)`
+
+Returns the entries quoting `example`, matched by its id, ordered by headword.
+A zero id stands for no example chosen and returns every entry.
+That is the list the corpus panel shows beside its example catalog.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LExample example, string query, LCatalogFilter filter)`
+
+The entries quoting `example`, those in a hidden language left out, narrowed to headwords matching `query`.
+The match is the catalog match, and an empty or blank `query` narrows nothing.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference)`
+
+Returns the entries citing `reference`, matched by its id, ordered by headword.
+A card cites a Source through the Example it holds, so the walk goes through that Example.
+A zero id stands for no source chosen and returns every entry.
+That is the list the sources panel shows beside its shelf.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference, string query, LCatalogFilter filter)`
+
+The entries citing `reference`, those in a hidden language left out, narrowed to headwords matching `query`.
+The match is the catalog match, and an empty or blank `query` narrows nothing.
+
 ## `public LEntryDraft? LEngineEntryLoad(long id)`
 
 The stored entry as the input form would have handed it over.

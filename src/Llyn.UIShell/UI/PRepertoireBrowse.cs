@@ -11,14 +11,17 @@ public partial class PRepertoire
 {
     private readonly ObservableCollection<PAtlasItem> _pAtlasList = [];
 
-    private readonly ObservableCollection<PUsageItem> _pOccurrenceList = [];
-
+    private readonly ObservableCollection<POccurrenceItem> _pOccurrenceList = [];
 
     private IReadOnlyDictionary<long, int> _pAtlasCount = new Dictionary<long, int>();
 
     private long? _pVignetteSituation;
 
+    private long? _pDisplayEntry;
+
     private LCatalogOrder _pTierChoice;
+
+    private LCatalogFilter _pMeshChoice = LCatalogFilter.LCatalogFilterEmpty;
 
     private async void PRepertoireBulletinHandle(LBulletin bulletin)
     {
@@ -40,11 +43,35 @@ public partial class PRepertoire
         }
 
         PAtlasFind(PInquest.Text ?? string.Empty);
+        POccurrenceEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PInquestHandle(object sender, TextChangedEventArgs e)
     {
         PAtlasFind(PInquest.Text ?? string.Empty);
+    }
+
+    private void PSortieHandle(object sender, TextChangedEventArgs e)
+    {
+        POccurrenceFind();
+    }
+
+    private void PMeshHandle(object sender, RoutedEventArgs e)
+    {
+        _pMeshChoice = PChoice.PChoiceFilterRead(PMeshList);
+        _lEngine.LEngineMeshSave(_pMeshChoice);
+        PMeshMark.Visibility = _pMeshChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        POccurrenceFind();
+    }
+
+    internal async void PMeshRestore(LCatalogFilter filter)
+    {
+        _pMeshChoice = filter;
+        PMeshMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PMeshList, _lEngine.LEngineLanguageRead(), filter, PMeshHandle);
     }
 
     private void PTierHandle(object sender, RoutedEventArgs e)
@@ -116,6 +143,8 @@ public partial class PRepertoire
         {
             PRepertoireClear();
         }
+
+        POccurrenceFind();
     }
 
     private void PAtlasHandle(object sender, RoutedEventArgs e)
@@ -160,11 +189,12 @@ public partial class PRepertoire
 
         _pVignetteSituation = id;
         PAtlasSelect(id);
+        POccurrenceEntryHide();
 
         PVignetteValueShow(PVignetteTitle, situation.LSituationTitle);
         PVignetteValueShow(PVignetteKind, situation.LSituationKind);
         PVignetteValueShow(PVignetteDescription, situation.LSituationDescription);
-        POccurrenceFind(id);
+        POccurrenceFind();
 
         PVignetteBody.Visibility = Visibility.Visible;
         PVignetteUnselected.Visibility = Visibility.Collapsed;
@@ -192,12 +222,15 @@ public partial class PRepertoire
             text is null ? "Theme.Muted" : "Theme.Ink");
     }
 
-    private void POccurrenceFind(long id)
+    private void POccurrenceFind()
     {
-        IReadOnlyList<LUsage> read;
+        IReadOnlyList<LEntry> read;
         try
         {
-            read = _lEngine.LEngineUsageRead(id, LOwner.LOwnerSituation);
+            read = _lEngine.LEngineEntryFind(
+                new LSituation(_pVignetteSituation ?? 0, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified),
+                PSortie.Text ?? string.Empty,
+                _pMeshChoice);
         }
         catch (Exception exception)
         {
@@ -205,30 +238,39 @@ public partial class PRepertoire
             return;
         }
 
-        string unknown = _pRepertoireHost.PLocalizationTextRead("Display.Unknown");
-        string unnamed = _pRepertoireHost.PLocalizationTextRead("Situation.Unnamed");
-        string meaning = _pRepertoireHost.PLocalizationTextRead("Situation.Meaning");
-        string collocation = _pRepertoireHost.PLocalizationTextRead("Situation.Collocation");
-
         _pOccurrenceList.Clear();
-        foreach (LUsage usage in read)
+        foreach (LEntry entry in read)
         {
-            _pOccurrenceList.Add(new PUsageItem(
-                usage,
-                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
-                unknown,
-                unnamed));
+            _pOccurrenceList.Add(new POccurrenceItem(
+                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
         }
 
         PTwin.PTwinNameApply(
-            _pOccurrenceList, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
+            _pOccurrenceList,
+            row => row.POccurrenceItemHeadword,
+            (row, name) => row.POccurrenceItemName = name,
+            row => row.POccurrenceItemId);
 
+        POccurrenceEmpty.SetResourceReference(
+            TextBlock.TextProperty,
+            string.IsNullOrWhiteSpace(PSortie.Text) ? "Situation.Vacant" : "Situation.Unmatched");
         POccurrenceEmpty.Visibility = _pOccurrenceList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        POccurrenceSelect(_pDisplayEntry);
+    }
+
+    private void POccurrenceSelect(long? id)
+    {
+        foreach (POccurrenceItem item in _pOccurrenceList)
+        {
+            item.POccurrenceItemChosen = id is not null
+                && item.POccurrenceItemId == id;
+        }
     }
 
     private void POccurrenceHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement row || row.DataContext is not PUsageItem item)
+        if (sender is not FrameworkElement row || row.DataContext is not POccurrenceItem item)
         {
             return;
         }
@@ -238,7 +280,138 @@ public partial class PRepertoire
             return;
         }
 
-        _pRepertoireHost.PWindowEntryShow(item.PUsageItemEntry);
+        POccurrenceEntryShow(item.POccurrenceItemId);
+    }
+
+    private void POccurrenceEntryShow(long id)
+    {
+        LEntryDraft? draft;
+        try
+        {
+            draft = _lEngine.LEngineEntryLoad(id);
+        }
+        catch (Exception exception)
+        {
+            _pRepertoireHost.PWindowFailureShow("List.LoadFailed", exception);
+            return;
+        }
+
+        if (draft is null)
+        {
+            POccurrenceEntryHide();
+            POccurrenceFind();
+            return;
+        }
+
+        bool editing = PScenario.Visibility == Visibility.Visible
+            || PEditor.Visibility == Visibility.Visible;
+        PScenarioDraftCancel();
+        PScenario.Visibility = Visibility.Collapsed;
+        PVignette.Visibility = Visibility.Collapsed;
+
+        _pDisplayEntry = id;
+        POccurrenceSelect(id);
+        PDisplay.PDisplayShow(id, draft);
+        PRepertoireMode.IsEnabled = true;
+
+        if (editing)
+        {
+            PEditor.PEditorEntryShow(id);
+        }
+
+        POccurrenceScribeShow(editing);
+    }
+
+    private void POccurrenceScribeHandle(bool editing)
+    {
+        if (_pDisplayEntry is not long id || editing == (PEditor.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
+        {
+            if (!PRepertoireLeaveConfirm())
+            {
+                POccurrenceScribeShow(true);
+                return;
+            }
+
+            POccurrenceScribeShow(false);
+            POccurrenceEntryShow(id);
+            return;
+        }
+
+        PEditor.PEditorEntryShow(id);
+        POccurrenceScribeShow(true);
+    }
+
+    private void POccurrenceScribeShow(bool editing)
+    {
+        _lEngine.LEngineSplitSave(editing);
+
+        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
+        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
+        PRepertoireStore.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
+        PRepertoireViewer.IsChecked = !editing;
+        PRepertoireScribe.IsChecked = editing;
+    }
+
+    private void PRepertoireStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PEditorEntrySave();
+    }
+
+    private void POccurrenceEntryUpdate(long id)
+    {
+        if (_pDisplayEntry is not long shown
+            || (id > 0 && shown != id))
+        {
+            return;
+        }
+
+        LEntryDraft? draft;
+        try
+        {
+            draft = _lEngine.LEngineEntryLoad(shown);
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
+        if (draft is null)
+        {
+            if (_pVignetteSituation is long kept)
+            {
+                PRepertoireShow(kept);
+                return;
+            }
+
+            PRepertoireClear();
+            return;
+        }
+
+        PDisplay.PDisplayShow(shown, draft);
+    }
+
+    private void POccurrenceEntryHide()
+    {
+        bool editing = PScenario.Visibility == Visibility.Visible
+            || PEditor.Visibility == Visibility.Visible;
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PEditorReset();
+        }
+
+        _pDisplayEntry = null;
+        POccurrenceSelect(null);
+        PDisplay.PDisplayClear();
+        PDisplay.Visibility = Visibility.Collapsed;
+        PEditor.Visibility = Visibility.Collapsed;
+        PRepertoireStore.Visibility = Visibility.Collapsed;
+        PRepertoireScribeShow(editing);
+        PRepertoireMode.IsEnabled = _pVignetteSituation is not null;
     }
 
     private void PRepertoireFreshHandle(object sender, RoutedEventArgs e)
@@ -257,6 +430,12 @@ public partial class PRepertoire
     private void PRepertoireScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PRepertoireScribe);
+        if (_pDisplayEntry is not null)
+        {
+            POccurrenceScribeHandle(editing);
+            return;
+        }
+
         if (editing == (PScenario.Visibility == Visibility.Visible))
         {
             return;
@@ -329,7 +508,8 @@ public partial class PRepertoire
 
         _pVignetteSituation = null;
         PAtlasSelect(null);
-        _pOccurrenceList.Clear();
+        POccurrenceEntryHide();
+        POccurrenceFind();
 
         PVignetteBody.Visibility = Visibility.Collapsed;
         PVignetteUnselected.Visibility = Visibility.Visible;

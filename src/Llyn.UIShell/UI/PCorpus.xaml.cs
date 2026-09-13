@@ -30,6 +30,10 @@ public partial class PCorpus : UserControl
         PTranscriptGlossLine.ItemsSource = _pTranscriptGloss;
         PExcerptGloss.ItemsSource = _pExcerptGloss;
 
+        PDisplay.PDisplayAttach(host, engine);
+        PEditor.PEditorAttach(host, engine, PTranscriptOrigin, null);
+        PEditor.PEditorChangeNotice = changed => PCorpusStore.IsEnabled = changed;
+
         _pCorpusObserver = new PObserver(this, PCorpusBulletinHandle);
         engine.LEngineObserverAttach(_pCorpusObserver);
     }
@@ -42,7 +46,16 @@ public partial class PCorpus : UserControl
 
     internal bool PCorpusChangeCheck()
     {
-        return PTranscriptChangeCheck();
+        return PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorChangeCheck()
+            : PTranscriptChangeCheck();
+    }
+
+    internal bool PCorpusDraftFinish(bool store)
+    {
+        return PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorDraftFinish(store)
+            : PTranscriptDraftFinish(store);
     }
 
     internal void PCorpusClose()
@@ -53,8 +66,11 @@ public partial class PCorpus : UserControl
             _pCorpusObserver = null;
         }
 
+        PEditor.PEditorClose();
+        PDisplay.PDisplayClose();
         PCitationDrawer.IsOpen = false;
         PLanguage.IsOpen = false;
         PRankDropdown.IsOpen = false;
+        PGauzeDropdown.IsOpen = false;
     }
 }

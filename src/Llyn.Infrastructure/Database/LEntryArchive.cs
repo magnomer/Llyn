@@ -220,6 +220,97 @@ public sealed class LEntryArchive
         return entries;
     }
 
+    public IReadOnlyList<LEntry> LEntrySituationFind(long situationId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(situationId);
+
+        return LEntryOwnerFind(
+            situationId,
+            """
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            FROM entry
+            WHERE $owner = 0
+               OR entry_id IN (
+                      SELECT sense.entry_parent
+                      FROM sense_situation
+                      JOIN sense ON sense.sense_id = sense_situation.sense_parent
+                      WHERE sense_situation.situation_ref = $owner
+                      UNION
+                      SELECT collocation.entry_parent
+                      FROM collocation_situation
+                      JOIN collocation ON collocation.collocation_id = collocation_situation.collocation_parent
+                      WHERE collocation_situation.situation_ref = $owner)
+            ORDER BY headword;
+            """);
+    }
+
+    public IReadOnlyList<LEntry> LEntryExampleFind(long exampleId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(exampleId);
+
+        return LEntryOwnerFind(
+            exampleId,
+            """
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            FROM entry
+            WHERE $owner = 0
+               OR entry_id IN (
+                      SELECT sense.entry_parent
+                      FROM sense_example
+                      JOIN sense ON sense.sense_id = sense_example.sense_parent
+                      WHERE sense_example.example_ref = $owner
+                      UNION
+                      SELECT collocation.entry_parent
+                      FROM collocation_example
+                      JOIN collocation ON collocation.collocation_id = collocation_example.collocation_parent
+                      WHERE collocation_example.example_ref = $owner)
+            ORDER BY headword;
+            """);
+    }
+
+    public IReadOnlyList<LEntry> LEntryReferenceFind(long referenceId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(referenceId);
+
+        return LEntryOwnerFind(
+            referenceId,
+            """
+            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            FROM entry
+            WHERE $owner = 0
+               OR entry_id IN (
+                      SELECT sense.entry_parent
+                      FROM sense_example
+                      JOIN example ON example.example_id = sense_example.example_ref
+                      JOIN sense ON sense.sense_id = sense_example.sense_parent
+                      WHERE example.reference_ref = $owner
+                      UNION
+                      SELECT collocation.entry_parent
+                      FROM collocation_example
+                      JOIN example ON example.example_id = collocation_example.example_ref
+                      JOIN collocation ON collocation.collocation_id = collocation_example.collocation_parent
+                      WHERE example.reference_ref = $owner)
+            ORDER BY headword;
+            """);
+    }
+
+    private IReadOnlyList<LEntry> LEntryOwnerFind(long ownerId, string statement)
+    {
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText = statement;
+        command.Parameters.AddWithValue("$owner", ownerId);
+
+        List<LEntry> entries = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            entries.Add(LEntryRowRead(reader));
+        }
+
+        return entries;
+    }
+
     public IReadOnlyList<LForm> LEntryFormRead(long id)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);

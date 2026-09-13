@@ -31,6 +31,11 @@ The path of the database file this instance is bound to.
 Opens the database, creating the file if absent.
 Applies the workspace pragmas.
 Returns the connection open and ready to use.
+
+## `public static SqliteConnection LDatabaseConnectionRead(string file)`
+
+The same opening for a file named by the caller.
+The migration builds its fresh file through it, so the fresh file carries the same pragmas and functions.
 The caller owns the connection and disposes it.
 Stores use `LDatabaseSessionStart` instead, so this is for the schema runner and for tests.
 
@@ -54,7 +59,8 @@ Nesting is how one operation composes several stores, and that only ever happens
 ## `public void LDatabaseCreate()`
 
 Initializes the database on first use.
-It opens a connection and runs the schema.
+A file written at another schema version is rebuilt in the current shape first.
+It then opens a connection and runs the schema.
 So the file, its tables, and its indexes exist and its version is current.
 Idempotent — running it against an already-initialized database creates nothing and migrates only what is behind.
 

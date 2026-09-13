@@ -14,6 +14,8 @@ Binds the panel to the window it asks for confirmations and panel switches throu
 It binds its lists and subscribes to the engine, and reads nothing yet.
 It attaches the edit area to the same host and engine, and to itself.
 The area reads the shelf's answers through it.
+It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
+The editor's change notice drives `PReferenceStore`, as it drives the save button of the tenor panel.
 The window fills the source shelf when it restores the stored ordering.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.
@@ -28,10 +30,12 @@ Whether the panel holds work nothing has saved yet.
 The window asks before anything can leave the panel.
 The engine answers it, so the panel decides nothing about what counts as a change.
 Credits are not compared, because they are written when they are made rather than on save.
+The entry editor answers while it is in front, and the edit area otherwise.
 
 ## `internal bool PReferenceDraftFinish(bool store)`
 
-Ends the held Source when the window closes, which the edit area answers for.
+Ends whichever draft is in front, committing it or discarding it.
+The entry editor finishes its own draft, and the edit area finishes the held Source.
 The window asks the panel, because the panel is what the window knows.
 
 ## `internal void PReferenceClose()`

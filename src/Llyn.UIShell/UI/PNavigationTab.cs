@@ -75,17 +75,17 @@ public partial class PWindow
         }
     }
 
-    internal void PNavigationRestore(LWorkspaceState state)
+    internal void PNavigationRestore(LSettings settings)
     {
         foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
         {
-            if (!string.Equals(mode, state.LWorkspaceStateMode, StringComparison.Ordinal))
+            if (!string.Equals(mode, settings.LSettingsMode, StringComparison.Ordinal))
             {
                 continue;
             }
 
             PNavigationHandle(button, new RoutedEventArgs());
-            scribe?.Invoke(state.LWorkspaceStateSplit);
+            scribe?.Invoke(settings.LSettingsSplit);
             return;
         }
     }
@@ -217,16 +217,5 @@ public partial class PWindow
 
         PNavigationHandle(PNavigationTenor, new RoutedEventArgs());
         PTenor.PGamutRegisterShow(id);
-    }
-
-    internal void PWindowExampleShow(long id)
-    {
-        if (!PCorpus.PCorpusLeaveConfirm())
-        {
-            return;
-        }
-
-        PNavigationHandle(PNavigationCorpus, new RoutedEventArgs());
-        PCorpus.PAnthologyExampleShow(id);
     }
 }

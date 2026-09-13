@@ -24,9 +24,16 @@ public sealed class LDatabase
 
     public SqliteConnection LDatabaseConnectionRead()
     {
+        return LDatabaseConnectionRead(_lDatabaseFile);
+    }
+
+    public static SqliteConnection LDatabaseConnectionRead(string file)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(file);
+
         SqliteConnectionStringBuilder builder = new()
         {
-            DataSource = _lDatabaseFile,
+            DataSource = file,
             Mode = SqliteOpenMode.ReadWriteCreate,
         };
 
@@ -85,8 +92,19 @@ public sealed class LDatabase
 
     public void LDatabaseCreate()
     {
-        using SqliteConnection connection = LDatabaseConnectionRead();
-        LSchema.LSchemaCreate(connection);
+        bool stale;
+        using (SqliteConnection connection = LDatabaseConnectionRead())
+        {
+            stale = LSchemaMigration.LSchemaMigrationCheck(connection);
+        }
+
+        if (stale)
+        {
+            LSchemaMigration.LSchemaMigrationRun(_lDatabaseFile);
+        }
+
+        using SqliteConnection fresh = LDatabaseConnectionRead();
+        LSchema.LSchemaCreate(fresh);
     }
 
     internal void LDatabaseSessionClear(LDatabaseSession session)

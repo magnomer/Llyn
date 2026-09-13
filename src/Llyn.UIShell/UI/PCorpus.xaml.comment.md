@@ -13,6 +13,8 @@ The linking gesture over the transcript lives in `PCorpusMention.cs`.
 
 Binds the panel to the window it asks for confirmations and panel switches through.
 It binds its lists and subscribes to the engine, and reads nothing yet.
+It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
+The editor's change notice drives `PCorpusStore`, as it drives the save button of the tenor panel.
 The window fills the example catalog when it restores the stored ordering.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.
@@ -26,7 +28,12 @@ Drops the selection and reads the catalog again, for when the workspace undernea
 Whether the editor holds work nothing has saved yet.
 The engine answers it against the held draft rather than the panel against a copy of a stored record.
 The window asks before anything can leave the panel.
-No visibility test guards it, because a draft is held only while the editor is open.
+The entry editor answers while it is in front, and the Example editor otherwise.
+
+## `internal bool PCorpusDraftFinish(bool store)`
+
+Ends whichever draft is in front, committing it or discarding it.
+The entry editor finishes its own draft, and the Example editor finishes its own.
 
 ## `internal void PCorpusClose()`
 

@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Controls;
 using Llyn.ShellEngine;
 
@@ -24,6 +25,10 @@ public partial class PRepertoire : UserControl
         PAtlas.ItemsSource = _pAtlasList;
         POccurrence.ItemsSource = _pOccurrenceList;
 
+        PDisplay.PDisplayAttach(host, engine);
+        PEditor.PEditorAttach(host, engine, PScenarioOrigin, null);
+        PEditor.PEditorChangeNotice = changed => PRepertoireStore.IsEnabled = changed;
+
         _pRepertoireObserver = new PObserver(this, PRepertoireBulletinHandle);
         engine.LEngineObserverAttach(_pRepertoireObserver);
     }
@@ -36,7 +41,16 @@ public partial class PRepertoire : UserControl
 
     internal bool PRepertoireChangeCheck()
     {
-        return PScenarioChangeCheck();
+        return PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorChangeCheck()
+            : PScenarioChangeCheck();
+    }
+
+    internal bool PRepertoireDraftFinish(bool store)
+    {
+        return PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorDraftFinish(store)
+            : PScenarioDraftFinish(store);
     }
 
     internal void PRepertoireClose()
@@ -47,6 +61,9 @@ public partial class PRepertoire : UserControl
             _pRepertoireObserver = null;
         }
 
+        PEditor.PEditorClose();
+        PDisplay.PDisplayClose();
         PTierDropdown.IsOpen = false;
+        PMeshDropdown.IsOpen = false;
     }
 }

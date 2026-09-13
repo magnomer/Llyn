@@ -10,6 +10,8 @@ public static class LLayoutLoader
 {
     private const string LLayoutLoaderLeft = "left";
     private const string LLayoutLoaderMiddle = "middle";
+    private const string LLayoutLoaderOrder = "order";
+    private const string LLayoutLoaderFilter = "filter";
 
     public static IReadOnlyList<LLayout> LLayoutLoaderRead(JsonElement layout)
     {
@@ -29,13 +31,15 @@ public static class LLayoutLoader
 
             double? left = LLayoutLoaderResolve(tab.Value, LLayoutLoaderLeft);
             double? middle = LLayoutLoaderResolve(tab.Value, LLayoutLoaderMiddle);
+            LCatalogOrder? order = LLayoutOrderResolve(tab.Value);
+            LCatalogFilter? filter = LLayoutFilterResolve(tab.Value);
 
-            if (left is null && middle is null)
+            if (left is null && middle is null && order is null && filter is null)
             {
                 continue;
             }
 
-            list.Add(new LLayout(tab.Name, left, middle));
+            list.Add(new LLayout(tab.Name, left, middle, order, filter));
         }
 
         return list;
@@ -59,6 +63,16 @@ public static class LLayoutLoader
             if (tab.LLayoutMiddle is double middle)
             {
                 widths[LLayoutLoaderMiddle] = middle;
+            }
+
+            if (tab.LLayoutOrder is LCatalogOrder order)
+            {
+                widths[LLayoutLoaderOrder] = LCatalog.LCatalogOrderFormat(order);
+            }
+
+            if (tab.LLayoutFilter is LCatalogFilter filter)
+            {
+                widths[LLayoutLoaderFilter] = LCatalog.LCatalogFilterFormat(filter);
             }
 
             if (widths.Count > 0)
@@ -89,5 +103,28 @@ public static class LLayoutLoader
         }
 
         return null;
+    }
+
+    private static LCatalogOrder? LLayoutOrderResolve(JsonElement tab)
+    {
+        if (!tab.TryGetProperty(LLayoutLoaderOrder, out JsonElement value) || value.ValueKind != JsonValueKind.String)
+        {
+            return null;
+        }
+
+        string? text = value.GetString();
+        LCatalogOrder parsed = LCatalog.LCatalogOrderParse(text, LCatalogOrder.LCatalogOrderName);
+
+        return string.Equals(LCatalog.LCatalogOrderFormat(parsed), text, StringComparison.Ordinal) ? parsed : null;
+    }
+
+    private static LCatalogFilter? LLayoutFilterResolve(JsonElement tab)
+    {
+        if (!tab.TryGetProperty(LLayoutLoaderFilter, out JsonElement value) || value.ValueKind != JsonValueKind.String)
+        {
+            return null;
+        }
+
+        return LCatalog.LCatalogFilterParse(value.GetString());
     }
 }

@@ -10,4 +10,6 @@ public sealed record LSettings(
     bool LSettingsFrequency = true,
     bool LSettingsMorphology = true,
     IReadOnlyList<LLayout>? LSettingsLayout = null,
-    bool LSettingsLinked = true);
+    bool LSettingsLinked = true,
+    string? LSettingsMode = null,
+    bool LSettingsSplit = false);

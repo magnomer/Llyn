@@ -157,7 +157,7 @@ public partial class PImprint
 
     private void PAuthorCreditHandle(object sender, RoutedEventArgs e)
     {
-        if (e.Source is not FrameworkElement { Tag: string action, DataContext: PAuthorItem item })
+        if (e.OriginalSource is not FrameworkElement { Tag: string action, DataContext: PAuthorItem item })
         {
             return;
         }

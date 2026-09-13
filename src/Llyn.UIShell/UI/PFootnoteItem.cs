@@ -1,38 +1,46 @@
-﻿using System.Windows.Media;
-using Llyn.Core;
+﻿using System.ComponentModel;
+using System.Windows.Media;
 
 namespace Llyn.UIShell;
 
-internal sealed class PFootnoteItem
+internal sealed class PFootnoteItem : INotifyPropertyChanged
 {
-    internal PFootnoteItem(LUsage usage, string owner, string unknown, string unnamed)
+    private bool _pFootnoteItemChosen;
+
+    internal PFootnoteItem(long id, string headword, string language)
     {
-        PFootnoteItemId = usage.LUsageEntry;
-        PFootnoteItemOwner = usage.LUsageOwner;
-        PFootnoteItemKind = owner;
-        PFootnoteItemName = usage.LUsageHeadword.Length > 0 ? usage.LUsageHeadword : unnamed;
-        PFootnoteItemLanguage = usage.LUsageLanguage;
-        PFootnoteItemTitle = usage.LUsageTitle.LStateValueState switch
-        {
-            _ when usage.LUsageTitle.LStateValueUnreadable => usage.LUsageTitle.LStateValueShow(),
-            LState.LStateSpecified => usage.LUsageTitle.LStateValueShow(),
-            LState.LStateUnknown => unknown,
-            _ => unnamed,
-        };
-        PFootnoteItemFlag = PEnsign.PEnsignFind(usage.LUsageLanguage);
+        PFootnoteItemId = id;
+        PFootnoteItemHeadword = headword;
+        PFootnoteItemName = headword;
+        PFootnoteItemLanguage = language;
+        PFootnoteItemFlag = PEnsign.PEnsignFind(language);
     }
 
     public long PFootnoteItemId { get; }
 
-    public LOwner PFootnoteItemOwner { get; }
+    public string PFootnoteItemHeadword { get; }
 
-    public string PFootnoteItemKind { get; }
-
-    public string PFootnoteItemName { get; }
+    public string PFootnoteItemName { get; internal set; }
 
     public string PFootnoteItemLanguage { get; }
 
-    public string PFootnoteItemTitle { get; }
-
     public ImageSource? PFootnoteItemFlag { get; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public bool PFootnoteItemChosen
+    {
+        get => _pFootnoteItemChosen;
+
+        set
+        {
+            if (_pFootnoteItemChosen == value)
+            {
+                return;
+            }
+
+            _pFootnoteItemChosen = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PFootnoteItemChosen)));
+        }
+    }
 }

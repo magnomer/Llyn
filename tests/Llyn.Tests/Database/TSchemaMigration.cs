@@ -30,15 +30,66 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void DatabaseCreate_OlderBuild_Throws()
+    public void DatabaseCreate_OlderBuild_CarriesKnownColumnsAcross()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        Guid realm = TRealmValueRead(workspace);
+
+        workspace.TWorkspaceScriptRun(
+            "ALTER TABLE entry ADD COLUMN mystery TEXT; " +
+            "INSERT INTO entry (headword, language, added_utc, updated_utc, mystery) " +
+            "VALUES ('word', 'English', '2026-01-01', '2026-01-01', 'gone'); " +
+            "UPDATE schema_version SET version = 32;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry WHERE headword = 'word';"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM pragma_table_info('entry') WHERE name = 'mystery';"));
+        Assert.Equal(realm, TRealmValueRead(workspace));
+        Assert.Single(Directory.GetFiles(workspace.TWorkspaceFolder, "*.v32.db"));
+    }
+
+    [Fact]
+    public void DatabaseCreate_OlderBuild_DropsRowsTheSchemaRefuses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
-        workspace.TWorkspaceScriptRun("UPDATE schema_version SET version = 32;");
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (headword, language, added_utc, updated_utc) " +
+            "VALUES ('word', 'English', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO collocation (entry_parent, position) SELECT entry_id, 0 FROM entry; " +
+            "PRAGMA foreign_keys = OFF; " +
+            "UPDATE collocation SET entry_parent = entry_parent + 100; " +
+            "UPDATE schema_version SET version = 32;");
 
-        InvalidOperationException error =
-            Assert.Throws<InvalidOperationException>(workspace.TWorkspaceDatabase.LDatabaseCreate);
-        Assert.Contains("cannot upgrade", error.Message, StringComparison.Ordinal);
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM collocation;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM pragma_foreign_key_check;"));
+    }
+
+    [Fact]
+    public void DatabaseCreate_OlderBuild_KeepsTheIdCounter()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (headword, language, added_utc, updated_utc) " +
+            "VALUES ('word', 'English', '2026-01-01', '2026-01-01'); " +
+            "DELETE FROM entry; " +
+            "UPDATE schema_version SET version = 32;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (headword, language, added_utc, updated_utc) " +
+            "VALUES ('again', 'English', '2026-01-01', '2026-01-01');");
+
+        Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT entry_id FROM entry;"));
     }
 
     [Fact]
@@ -159,16 +210,24 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
-    public void DatabaseCreate_NewerBuild_Throws()
+    public void DatabaseCreate_NewerBuild_CarriesKnownColumnsAcross()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
 
         workspace.TWorkspaceScriptRun(
+            "CREATE TABLE future (future_id INTEGER PRIMARY KEY, note TEXT); " +
+            "INSERT INTO entry (headword, language, added_utc, updated_utc) " +
+            "VALUES ('word', 'English', '2026-01-01', '2026-01-01'); " +
             $"UPDATE schema_version SET version = {LSchemaMigration.LSchemaMigrationVersion + 5};");
 
-        InvalidOperationException error =
-            Assert.Throws<InvalidOperationException>(workspace.TWorkspaceDatabase.LDatabaseCreate);
-        Assert.Contains("newer than the version", error.Message, StringComparison.Ordinal);
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM sqlite_master WHERE name = 'future';"));
     }
 
     [Fact]

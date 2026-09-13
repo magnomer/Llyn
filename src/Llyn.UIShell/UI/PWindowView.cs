@@ -1,4 +1,6 @@
-﻿using Llyn.Core;
+﻿using System;
+using System.Collections.Generic;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -6,24 +8,48 @@ public partial class PWindow
 {
     internal void PWindowViewRestore(LWorkspaceState state)
     {
-        PLibrary.PSieveRestore(state.LWorkspaceStateSieve ?? LCatalogFilter.LCatalogFilterEmpty);
-        PPhonology.PLensRestore(state.LWorkspaceStateLens ?? LCatalogFilter.LCatalogFilterEmpty);
-        PFavorite.PStrainerRestore(state.LWorkspaceStateStrainer ?? LCatalogFilter.LCatalogFilterEmpty);
-        PTaxonomy.PLatticeRestore(state.LWorkspaceStateLattice ?? LCatalogFilter.LCatalogFilterEmpty);
-        PTenor.PGrilleRestore(state.LWorkspaceStateGrille ?? LCatalogFilter.LCatalogFilterEmpty);
-        PCorpus.PPrismRestore(state.LWorkspaceStatePrism ?? LCatalogFilter.LCatalogFilterEmpty);
+        LSettings settings = _lEngine.LEngineSettingsRead();
+        Dictionary<string, LLayout> layout = new(StringComparer.Ordinal);
 
-        PLibrary.POrderRestore(state.LWorkspaceStateOrder);
-        PPhonology.PSequenceRestore(state.LWorkspaceStateSequence);
-        PFavorite.PSeriesRestore(state.LWorkspaceStateSeries);
-        PTaxonomy.PFunnelRestore(state.LWorkspaceStateFunnel);
-        PTenor.PDegreeRestore(state.LWorkspaceStateDegree);
-        PRepertoire.PTierRestore(state.LWorkspaceStateTier);
-        PReference.PGradeRestore(state.LWorkspaceStateGrade);
-        PCorpus.PRankRestore(state.LWorkspaceStateRank);
+        foreach (LLayout record in settings.LSettingsLayout ?? [])
+        {
+            layout[record.LLayoutTab] = record;
+        }
+
+        PLibrary.PSieveRestore(PWindowFilterRead(layout, "library"));
+        PPhonology.PLensRestore(PWindowFilterRead(layout, "phonology"));
+        PFavorite.PStrainerRestore(PWindowFilterRead(layout, "favorite"));
+        PTaxonomy.PLatticeRestore(PWindowFilterRead(layout, "taxonomy"));
+        PTenor.PGrilleRestore(PWindowFilterRead(layout, "tenor"));
+        PRepertoire.PMeshRestore(PWindowFilterRead(layout, "repertoire"));
+        PCorpus.PGauzeRestore(PWindowFilterRead(layout, "corpus"));
+        PReference.PTrellisRestore(PWindowFilterRead(layout, "reference"));
+
+        PLibrary.POrderRestore(PWindowOrderRead(layout, "library", LCatalogOrder.LCatalogOrderHeadword));
+        PPhonology.PSequenceRestore(PWindowOrderRead(layout, "phonology", LCatalogOrder.LCatalogOrderHeadword));
+        PFavorite.PSeriesRestore(PWindowOrderRead(layout, "favorite", LCatalogOrder.LCatalogOrderHeadword));
+        PTaxonomy.PFunnelRestore(PWindowOrderRead(layout, "taxonomy", LCatalogOrder.LCatalogOrderName));
+        PTenor.PDegreeRestore(PWindowOrderRead(layout, "tenor", LCatalogOrder.LCatalogOrderName));
+        PRepertoire.PTierRestore(PWindowOrderRead(layout, "repertoire", LCatalogOrder.LCatalogOrderName));
+        PReference.PGradeRestore(PWindowOrderRead(layout, "reference", LCatalogOrder.LCatalogOrderName));
+        PCorpus.PRankRestore(PWindowOrderRead(layout, "corpus", LCatalogOrder.LCatalogOrderText));
 
         PDuplex.PDuplexRestore(state);
 
-        PNavigationRestore(state);
+        PNavigationRestore(settings);
+    }
+
+    private static LCatalogFilter PWindowFilterRead(Dictionary<string, LLayout> layout, string tab)
+    {
+        return layout.TryGetValue(tab, out LLayout? record)
+            ? record.LLayoutFilter ?? LCatalogFilter.LCatalogFilterEmpty
+            : LCatalogFilter.LCatalogFilterEmpty;
+    }
+
+    private static LCatalogOrder PWindowOrderRead(Dictionary<string, LLayout> layout, string tab, LCatalogOrder fallback)
+    {
+        return layout.TryGetValue(tab, out LLayout? record)
+            ? record.LLayoutOrder ?? fallback
+            : fallback;
     }
 }

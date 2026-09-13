@@ -6,6 +6,15 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
+    private const string LEngineStateLibrary = "library";
+    private const string LEngineStatePhonology = "phonology";
+    private const string LEngineStateFavorite = "favorite";
+    private const string LEngineStateTaxonomy = "taxonomy";
+    private const string LEngineStateTenor = "tenor";
+    private const string LEngineStateRepertoire = "repertoire";
+    private const string LEngineStateReference = "reference";
+    private const string LEngineStateCorpus = "corpus";
+
     public LWorkspaceState LEngineStateRead()
     {
         lock (_lEngineGate)
@@ -27,82 +36,100 @@ public sealed partial class LEngine
     public void LEngineModeSave(string mode)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(mode);
-        LEngineStateChange(state => state with { LWorkspaceStateMode = mode });
+        LEngineSettingsChange(settings => settings with { LSettingsMode = mode });
     }
 
     public void LEngineSplitSave(bool split)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateSplit = split });
+        LEngineSettingsChange(settings => settings with { LSettingsSplit = split });
     }
 
     public void LEngineOrderSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateOrder = order });
+        LEngineLayoutSave([new LLayout(LEngineStateLibrary, LLayoutOrder: order)]);
     }
 
     public void LEngineSequenceSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateSequence = order });
+        LEngineLayoutSave([new LLayout(LEngineStatePhonology, LLayoutOrder: order)]);
     }
 
     public void LEngineSeriesSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateSeries = order });
+        LEngineLayoutSave([new LLayout(LEngineStateFavorite, LLayoutOrder: order)]);
     }
 
     public void LEngineFunnelSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateFunnel = order });
+        LEngineLayoutSave([new LLayout(LEngineStateTaxonomy, LLayoutOrder: order)]);
     }
 
     public void LEngineDegreeSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateDegree = order });
+        LEngineLayoutSave([new LLayout(LEngineStateTenor, LLayoutOrder: order)]);
     }
 
     public void LEngineTierSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateTier = order });
+        LEngineLayoutSave([new LLayout(LEngineStateRepertoire, LLayoutOrder: order)]);
     }
 
     public void LEngineGradeSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateGrade = order });
+        LEngineLayoutSave([new LLayout(LEngineStateReference, LLayoutOrder: order)]);
     }
 
     public void LEngineRankSave(LCatalogOrder order)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateRank = order });
+        LEngineLayoutSave([new LLayout(LEngineStateCorpus, LLayoutOrder: order)]);
     }
 
     public void LEngineSieveSave(LCatalogFilter filter)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateSieve = filter });
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateLibrary, LLayoutFilter: filter)]);
     }
 
     public void LEngineLensSave(LCatalogFilter filter)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateLens = filter });
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStatePhonology, LLayoutFilter: filter)]);
     }
 
     public void LEngineStrainerSave(LCatalogFilter filter)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateStrainer = filter });
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateFavorite, LLayoutFilter: filter)]);
     }
 
     public void LEngineLatticeSave(LCatalogFilter filter)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateLattice = filter });
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateTaxonomy, LLayoutFilter: filter)]);
     }
 
     public void LEngineGrilleSave(LCatalogFilter filter)
     {
-        LEngineStateChange(state => state with { LWorkspaceStateGrille = filter });
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateTenor, LLayoutFilter: filter)]);
     }
 
-    public void LEnginePrismSave(LCatalogFilter filter)
+    public void LEngineMeshSave(LCatalogFilter filter)
     {
-        LEngineStateChange(state => state with { LWorkspaceStatePrism = filter });
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateRepertoire, LLayoutFilter: filter)]);
+    }
+
+    public void LEngineGauzeSave(LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateCorpus, LLayoutFilter: filter)]);
+    }
+
+    public void LEngineTrellisSave(LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateReference, LLayoutFilter: filter)]);
     }
 
     private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)

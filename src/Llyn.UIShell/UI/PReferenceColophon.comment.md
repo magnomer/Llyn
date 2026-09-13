@@ -2,8 +2,8 @@
 
 ## `ResourceDictionary`
 
-The label and value styles of the read area, and the citation row it lists.
-The citation row leads to the Entry or Example holding it, and carries that side's language.
+The label and value styles of the read area, and the row of the entry list beside it.
+The row reads the flag, the headword and the language, as a cohort row does, and leads to that Entry.
 It is a dictionary rather than markup in the panel, because the panel outgrew one file.
 
 ## Inline notes

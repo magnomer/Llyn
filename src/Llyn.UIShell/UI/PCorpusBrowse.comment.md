@@ -4,7 +4,8 @@
 
 Browsing behavior of the Corpus panel.
 `PAnthology` lists every Example the workspace holds, including one nothing quotes.
-A chosen row is read back and shown with everything quoting it, and `PCorpusScribe` swaps that reading for the editor.
+A chosen row is read back and shown, and the middle column narrows to the entries quoting it.
+`PCorpusScribe` swaps the reading for the editor.
 The panel answers two questions rather than one: what this sentence is, and where it is quoted.
 
 ## Inline notes
@@ -58,17 +59,53 @@ The engine reads the stored sentence itself, so the panel passes the id and the 
 The window decides what the answer opens, as it does for the display cards.
 An open draft is confirmed first, because landing on an Entry leaves the corpus panel.
 
-## `private void PQuotationFind(long id)`
+## `private void PQuotationFind()`
 
-Reads everything quoting the Example, and names each row by the kind of side it is.
-A Meaning and a Collocation quote on their own terms, so the row says which.
-No Entry quotes an Example, because an Entry owns cards and a card owns the quotation.
+Refills the middle column with the entries quoting the chosen Example, or every Entry while none is chosen.
+The engine matches the typed text and drops the hidden languages, so the panel decides nothing about what matches.
+An empty result is shown rather than hidden, and its text says whether nothing quotes the Example or nothing matches.
 Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
+The shown Entry is re-marked after every fill, so its row keeps the mark across a re-filter.
 
-## `private void PQuotationHandle(object sender, RoutedEventArgs e)`
+### `private long? _pDisplayEntry;`
 
-Leaves for the Entry the chosen row belongs to.
-The panel asks the window for the switch, because navigation is never driven by the pointer alone.
+The Entry the right-hand side stands on, held as an id, while it shows an Entry and not an Example.
+The right-hand side shows one or the other and never both.
+An Entry row swaps the Example reading for the entry display in place, and an Example row swaps it back.
+The chosen Example keeps its mark meanwhile, because it still narrows the middle column.
+
+## `private void PQuotationEntryShow(long id)`
+
+Reads one Entry back and shows it in the panel's own display, without leaving the tab.
+An open Example editor is cancelled first, after the caller has asked about its draft.
+An editing side already open stays open, so the Entry lands in `PEditor` rather than in the display.
+An Entry that is gone leaves the right-hand side on the Example and refills the middle column.
+
+## `private void PQuotationEntryUpdate(long id)`
+
+A store announced by the engine redraws the shown Entry when the store touched it.
+A store that deleted it falls back to the chosen Example, or clears the panel when none is chosen.
+
+## `private void PQuotationScribeHandle(bool editing)`
+
+The mode toggle while an Entry is shown, mirroring the tenor panel.
+Entering the editor starts a draft on the shown Entry, and leaving it asks first, then re-reads it.
+`PCorpusScribeHandle` routes here whenever an Entry rather than an Example is shown.
+
+## `private void PQuotationScribeShow(bool editing)`
+
+Swaps the entry display for the entry editor and back, and shows the rail save button with the editor.
+The toggle marks follow, so the rail and the cell never disagree.
+
+## `private void PCorpusStoreHandle(object sender, RoutedEventArgs e)`
+
+Saves the Entry open in the editor, which the editor does for itself.
+
+## `private void PQuotationEntryHide()`
+
+Puts the right-hand side back on the Example side, on the same reading or editing side it stood on.
+An open entry editor is reset first, so no entry draft outlives the Entry it was opened on.
+The mode toggle comes back only while an Example is chosen.
 
 ## `private void PCorpusScribeHandle(object sender, RoutedEventArgs e)`
 
@@ -89,7 +126,12 @@ The held draft goes first, because nothing may write into a draft the panel no l
 
 ### `internal void PRankRestore(LCatalogOrder order)`
 
-Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
+Puts the panel back on the ordering the settings stored, and moves the dropdown mark onto it.
+The window calls it once on attach, so the panel never reads the stored state for itself.
+
+### `internal void PGauzeRestore(LCatalogFilter filter)`
+
+Puts the language filter back on the languages the settings stored, and builds the menu over the loaded languages.
 The window calls it once on attach, so the panel never reads the stored state for itself.
 
 ### `internal void PCorpusScribeRestore(bool editing)`

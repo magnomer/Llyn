@@ -11,7 +11,7 @@ public partial class PCorpus
 {
     private readonly ObservableCollection<PAnthologyItem> _pAnthologyList = [];
 
-    private readonly ObservableCollection<PUsageItem> _pQuotationList = [];
+    private readonly ObservableCollection<PQuotationItem> _pQuotationList = [];
 
     private readonly ObservableCollection<PCitationItem> _pCitationCatalog = [];
 
@@ -21,9 +21,11 @@ public partial class PCorpus
 
     private long? _pExcerptExample;
 
+    private long? _pDisplayEntry;
+
     private LCatalogOrder _pRankChoice;
 
-    private LCatalogFilter _pPrismChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LCatalogFilter _pGauzeChoice = LCatalogFilter.LCatalogFilterEmpty;
 
     private async void PCorpusBulletinHandle(LBulletin bulletin)
     {
@@ -47,6 +49,7 @@ public partial class PCorpus
 
         PCitationFind();
         PAnthologyFind(PQuery.Text ?? string.Empty);
+        PQuotationEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PQueryHandle(object sender, TextChangedEventArgs e)
@@ -79,22 +82,27 @@ public partial class PCorpus
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 
-    private void PPrismHandle(object sender, RoutedEventArgs e)
+    private void PDredgeHandle(object sender, TextChangedEventArgs e)
     {
-        _pPrismChoice = PChoice.PChoiceFilterRead(PPrismList);
-        _lEngine.LEnginePrismSave(_pPrismChoice);
-        PPrismMark.Visibility = _pPrismChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        PQuotationFind();
     }
 
-    internal async void PPrismRestore(LCatalogFilter filter)
+    private void PGauzeHandle(object sender, RoutedEventArgs e)
     {
-        _pPrismChoice = filter;
-        PPrismMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        _pGauzeChoice = PChoice.PChoiceFilterRead(PGauzeList);
+        _lEngine.LEngineGauzeSave(_pGauzeChoice);
+        PGauzeMark.Visibility = _pGauzeChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        PQuotationFind();
+    }
+
+    internal async void PGauzeRestore(LCatalogFilter filter)
+    {
+        _pGauzeChoice = filter;
+        PGauzeMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PChoice.PChoiceFilterBuild(PPrismList, _lEngine.LEngineLanguageRead(), filter, PPrismHandle);
+        PChoice.PChoiceFilterBuild(PGauzeList, _lEngine.LEngineLanguageRead(), filter, PGauzeHandle);
     }
 
     private void PAnthologySelect(long? id)
@@ -111,7 +119,7 @@ public partial class PCorpus
         IReadOnlyList<LCatalogExample> read;
         try
         {
-            read = _lEngine.LEngineExampleFind(query, _pRankChoice, _pPrismChoice);
+            read = _lEngine.LEngineExampleFind(query, _pRankChoice);
             _pAnthologyCount = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
         }
         catch (Exception exception)
@@ -147,6 +155,8 @@ public partial class PCorpus
         {
             PCorpusClear();
         }
+
+        PQuotationFind();
     }
 
     private void PAnthologyHandle(object sender, RoutedEventArgs e)
@@ -186,6 +196,7 @@ public partial class PCorpus
 
         _pExcerptExample = id;
         PAnthologySelect(id);
+        PQuotationEntryHide();
 
         PExcerptValueShow(PExcerptText, example.LExampleText);
         PExcerptText.PMentionLanguage = example.LExampleLanguage;
@@ -200,7 +211,7 @@ public partial class PCorpus
             example.LExampleSource,
             PCitationNameRead(example.LExampleSource.LStateAnchorShow()));
 
-        PQuotationFind(id);
+        PQuotationFind();
 
         PExcerptBody.Visibility = Visibility.Visible;
         PExcerptUnselected.Visibility = Visibility.Collapsed;
@@ -275,12 +286,19 @@ public partial class PCorpus
         _pCorpusHost.PWindowMentionHandle(PExcerptText, result);
     }
 
-    private void PQuotationFind(long id)
+    private void PQuotationFind()
     {
-        IReadOnlyList<LUsage> read;
+        IReadOnlyList<LEntry> read;
         try
         {
-            read = _lEngine.LEngineUsageRead(id, LOwner.LOwnerExample);
+            read = _lEngine.LEngineEntryFind(
+                new LExample(
+                    _pExcerptExample ?? 0,
+                    string.Empty,
+                    LStateValue.LStateValueUnspecified,
+                    LStateAnchor.LStateAnchorUnspecified),
+                PDredge.Text ?? string.Empty,
+                _pGauzeChoice);
         }
         catch (Exception exception)
         {
@@ -288,30 +306,39 @@ public partial class PCorpus
             return;
         }
 
-        string unknown = _pCorpusHost.PLocalizationTextRead("Display.Unknown");
-        string unnamed = _pCorpusHost.PLocalizationTextRead("Example.Unnamed");
-        string meaning = _pCorpusHost.PLocalizationTextRead("Example.Meaning");
-        string collocation = _pCorpusHost.PLocalizationTextRead("Example.Collocation");
-
         _pQuotationList.Clear();
-        foreach (LUsage usage in read)
+        foreach (LEntry entry in read)
         {
-            _pQuotationList.Add(new PUsageItem(
-                usage,
-                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
-                unknown,
-                unnamed));
+            _pQuotationList.Add(new PQuotationItem(
+                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
         }
 
         PTwin.PTwinNameApply(
-            _pQuotationList, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
+            _pQuotationList,
+            row => row.PQuotationItemHeadword,
+            (row, name) => row.PQuotationItemName = name,
+            row => row.PQuotationItemId);
 
+        PQuotationEmpty.SetResourceReference(
+            TextBlock.TextProperty,
+            string.IsNullOrWhiteSpace(PDredge.Text) ? "Example.Vacant" : "Example.Unmatched");
         PQuotationEmpty.Visibility = _pQuotationList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+
+        PQuotationSelect(_pDisplayEntry);
+    }
+
+    private void PQuotationSelect(long? id)
+    {
+        foreach (PQuotationItem item in _pQuotationList)
+        {
+            item.PQuotationItemChosen = id is not null
+                && item.PQuotationItemId == id;
+        }
     }
 
     private void PQuotationHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement row || row.DataContext is not PUsageItem item)
+        if (sender is not FrameworkElement row || row.DataContext is not PQuotationItem item)
         {
             return;
         }
@@ -321,12 +348,149 @@ public partial class PCorpus
             return;
         }
 
-        _pCorpusHost.PWindowEntryShow(item.PUsageItemEntry);
+        PQuotationEntryShow(item.PQuotationItemId);
+    }
+
+    private void PQuotationEntryShow(long id)
+    {
+        LEntryDraft? draft;
+        try
+        {
+            draft = _lEngine.LEngineEntryLoad(id);
+        }
+        catch (Exception exception)
+        {
+            _pCorpusHost.PWindowFailureShow("List.LoadFailed", exception);
+            return;
+        }
+
+        if (draft is null)
+        {
+            PQuotationEntryHide();
+            PQuotationFind();
+            return;
+        }
+
+        bool editing = PTranscript.Visibility == Visibility.Visible
+            || PEditor.Visibility == Visibility.Visible;
+        PTranscriptDraftCancel();
+        PTranscript.Visibility = Visibility.Collapsed;
+        PExcerpt.Visibility = Visibility.Collapsed;
+
+        _pDisplayEntry = id;
+        PQuotationSelect(id);
+        PDisplay.PDisplayShow(id, draft);
+        PCorpusMode.IsEnabled = true;
+
+        if (editing)
+        {
+            PEditor.PEditorEntryShow(id);
+        }
+
+        PQuotationScribeShow(editing);
+    }
+
+    private void PQuotationScribeHandle(bool editing)
+    {
+        if (_pDisplayEntry is not long id || editing == (PEditor.Visibility == Visibility.Visible))
+        {
+            return;
+        }
+
+        if (!editing)
+        {
+            if (!PCorpusLeaveConfirm())
+            {
+                PQuotationScribeShow(true);
+                return;
+            }
+
+            PQuotationScribeShow(false);
+            PQuotationEntryShow(id);
+            return;
+        }
+
+        PEditor.PEditorEntryShow(id);
+        PQuotationScribeShow(true);
+    }
+
+    private void PQuotationScribeShow(bool editing)
+    {
+        _lEngine.LEngineSplitSave(editing);
+
+        PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
+        PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
+        PCorpusStore.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
+        PCorpusViewer.IsChecked = !editing;
+        PCorpusScribe.IsChecked = editing;
+    }
+
+    private void PCorpusStoreHandle(object sender, RoutedEventArgs e)
+    {
+        PEditor.PEditorEntrySave();
+    }
+
+    private void PQuotationEntryUpdate(long id)
+    {
+        if (_pDisplayEntry is not long shown
+            || (id > 0 && shown != id))
+        {
+            return;
+        }
+
+        LEntryDraft? draft;
+        try
+        {
+            draft = _lEngine.LEngineEntryLoad(shown);
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
+        if (draft is null)
+        {
+            if (_pExcerptExample is long kept)
+            {
+                PAnthologyExampleShow(kept);
+                return;
+            }
+
+            PCorpusClear();
+            return;
+        }
+
+        PDisplay.PDisplayShow(shown, draft);
+    }
+
+    private void PQuotationEntryHide()
+    {
+        bool editing = PTranscript.Visibility == Visibility.Visible
+            || PEditor.Visibility == Visibility.Visible;
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PEditorReset();
+        }
+
+        _pDisplayEntry = null;
+        PQuotationSelect(null);
+        PDisplay.PDisplayClear();
+        PDisplay.Visibility = Visibility.Collapsed;
+        PEditor.Visibility = Visibility.Collapsed;
+        PCorpusStore.Visibility = Visibility.Collapsed;
+        PCorpusScribeShow(editing);
+        PCorpusMode.IsEnabled = _pExcerptExample is not null;
     }
 
     private void PCorpusScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PCorpusScribe);
+        if (_pDisplayEntry is not null)
+        {
+            PQuotationScribeHandle(editing);
+            return;
+        }
+
         if (editing == (PTranscript.Visibility == Visibility.Visible))
         {
             return;
@@ -399,7 +563,8 @@ public partial class PCorpus
 
         _pExcerptExample = null;
         PAnthologySelect(null);
-        _pQuotationList.Clear();
+        PQuotationEntryHide();
+        PQuotationFind();
 
         PExcerptBody.Visibility = Visibility.Collapsed;
         PExcerptUnselected.Visibility = Visibility.Visible;

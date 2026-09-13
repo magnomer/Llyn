@@ -91,6 +91,60 @@ public sealed partial class LEngine
         return LEngineEntryMatch(LEngineEntryFind(register, filter), query);
     }
 
+    public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(situation);
+            return new LEntryArchive(_lEngineDatabase).LEntrySituationFind(situation.LSituationId);
+        }
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LSituation situation, string query, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(filter);
+        return LEngineEntryMatch(
+            filter.LCatalogFilterApply(LEngineEntryFind(situation), entry => entry.LEntryLanguage),
+            query);
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LExample example)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(example);
+            return new LEntryArchive(_lEngineDatabase).LEntryExampleFind(example.LExampleId);
+        }
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LExample example, string query, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(filter);
+        return LEngineEntryMatch(
+            filter.LCatalogFilterApply(LEngineEntryFind(example), entry => entry.LEntryLanguage),
+            query);
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(reference);
+            return new LEntryArchive(_lEngineDatabase).LEntryReferenceFind(reference.LReferenceId);
+        }
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LReference reference, string query, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(filter);
+        return LEngineEntryMatch(
+            filter.LCatalogFilterApply(LEngineEntryFind(reference), entry => entry.LEntryLanguage),
+            query);
+    }
+
     private static IReadOnlyList<LEntry> LEngineEntryMatch(IReadOnlyList<LEntry> entries, string query)
     {
         string trimmed = query.Trim();

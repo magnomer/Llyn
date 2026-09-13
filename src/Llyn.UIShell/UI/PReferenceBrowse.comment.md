@@ -4,7 +4,7 @@
 
 Browsing behavior of the Source panel.
 `PShelf` lists every Source the workspace holds, including one nothing cites.
-A chosen row is read back and shown with everything citing it.
+A chosen row is read back and shown, and the middle column narrows to the entries citing it.
 `PReferenceScribe` swaps that reading for the edit area.
 An uncited Source is reachable only through this panel, so it is never hidden.
 
@@ -47,7 +47,7 @@ The count is answered here, because the credit map is held here and the edit are
 
 ## `internal void PReferenceShow(long id)`
 
-Reads one Source back and shows it with the sides citing it.
+Reads one Source back, shows it, and narrows the middle column to the entries citing it.
 An id the store no longer knows clears the selection and refills the shelf rather than failing.
 A selection made while the edit area is open starts held work on the Source shown.
 
@@ -56,16 +56,55 @@ A selection made while the edit area is open starts held work on the Source show
 Writes one three-state field into the read area.
 An unwritten value reads the unrecorded mark in the muted colour, so a blank line never stands for two facts.
 
-## `private void PFootnoteFind(long id)`
+## `private void PFootnoteFind()`
 
-Reads everything citing the Source, and names each row by the kind of side it is.
-A Meaning, a Collocation and an Example cite on their own terms, so the row says which.
-A card cites by holding the Example, so its row leads to the Entry the card belongs to.
+Refills the middle column with the entries citing the chosen Source, or every Entry while none is chosen.
+A card cites by quoting an Example that names the Source.
+So the row is the Entry the card belongs to.
+The engine matches the typed text and drops the hidden languages, so the panel decides nothing about what matches.
+An empty result is shown rather than hidden, and its text says whether nothing cites the Source or nothing matches.
+Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
+The shown Entry is re-marked after every fill, so its row keeps the mark across a re-filter.
 
-## `private void PFootnoteHandle(object sender, RoutedEventArgs e)`
+### `private long? _pDisplayEntry;`
 
-Leaves for the panel the chosen row belongs to.
-The panel asks the window for the switch, because navigation is never driven by the pointer alone.
+The Entry the right-hand side stands on, held as an id, while it shows an Entry and not a Source.
+The right-hand side shows one or the other and never both.
+An Entry row swaps the Source reading for the entry display in place, and a Source row swaps it back.
+The chosen Source keeps its mark meanwhile, because it still narrows the middle column.
+
+## `private void PFootnoteEntryShow(long id)`
+
+Reads one Entry back and shows it in the panel's own display, without leaving the tab.
+An open Source editor is cancelled first, after the caller has asked about its draft.
+An editing side already open stays open, so the Entry lands in `PEditor` rather than in the display.
+An Entry that is gone leaves the right-hand side on the Source and refills the middle column.
+
+## `private void PFootnoteEntryUpdate(long id)`
+
+A store announced by the engine redraws the shown Entry when the store touched it.
+A store that deleted it falls back to the chosen Source, or clears the panel when none is chosen.
+
+## `private void PFootnoteScribeHandle(bool editing)`
+
+The mode toggle while an Entry is shown, mirroring the tenor panel.
+Entering the editor starts a draft on the shown Entry, and leaving it asks first, then re-reads it.
+`PReferenceScribeHandle` routes here whenever an Entry rather than a Source is shown.
+
+## `private void PFootnoteScribeShow(bool editing)`
+
+Swaps the entry display for the entry editor and back, and shows the rail save button with the editor.
+The toggle marks follow, so the rail and the cell never disagree.
+
+## `private void PReferenceStoreHandle(object sender, RoutedEventArgs e)`
+
+Saves the Entry open in the editor, which the editor does for itself.
+
+## `private void PFootnoteEntryHide()`
+
+Puts the right-hand side back on the Source side, on the same reading or editing side it stood on.
+An open entry editor is reset first, so no entry draft outlives the Entry it was opened on.
+The mode toggle comes back only while a Source is chosen.
 
 ## `private void PReferenceScribeHandle(object sender, RoutedEventArgs e)`
 
@@ -85,9 +124,14 @@ The held work is started before the controls are filled, so the first keystroke 
 
 ## `internal void PReferenceClear()`
 
-Drops the selection and empties the reading, the citing list and the edit area together.
+Drops the selection, empties the reading and the edit area, and widens the entry list back to every Entry.
 Held work is discarded first, because the panel is leaving behind everything the draft was opened on.
 `PReferenceScribe` is disabled with it, because there is nothing to edit while nothing is selected.
+
+### `internal void PTrellisRestore(LCatalogFilter filter)`
+
+Puts the language filter back on the languages the settings stored, and builds the menu over the loaded languages.
+The window calls it once on attach, so the panel never reads the stored state for itself.
 
 ### `internal void PGradeRestore(LCatalogOrder order)`
 

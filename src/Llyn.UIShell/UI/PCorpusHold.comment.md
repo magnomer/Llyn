@@ -9,9 +9,10 @@ Typing is written once the user stops, because a write per keystroke is a write 
 A citation or a language chosen writes at once, because there is no keystroke coming to end it.
 This mirrors `PEditorChange.cs` and `PEditorDraft.cs` field for field, so the two editors cannot drift apart.
 
-## `internal bool PCorpusDraftFinish(bool store)`
+## `private bool PTranscriptDraftFinish(bool store)`
 
-Ends the held sentence when the window closes, committing it or discarding it.
+Ends the held sentence when the panel is left, committing it or discarding it.
+The panel routes here only while the Example editor is the side in front.
 Typing still waiting to be written is written first, whatever the answer was.
 A refused commit puts the id back and answers false, so the window stays open over work still on disk.
 

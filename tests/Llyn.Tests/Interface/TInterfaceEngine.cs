@@ -242,11 +242,21 @@ internal static partial class TInterface
         bool frequency = true,
         bool morphology = true,
         IReadOnlyList<LLayout>? layout = null,
-        bool linked = true) =>
-        new(localization, window, volume, respelled, frequency, morphology, layout, linked);
+        bool linked = true,
+        string? mode = null,
+        bool split = false) =>
+        new(localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split);
 
-    internal static LLayout TLayoutCreate(string tab, double? left = null, double? middle = null) =>
-        new(tab, left, middle);
+    internal static LLayout TLayoutCreate(
+        string tab,
+        double? left = null,
+        double? middle = null,
+        LCatalogOrder? order = null,
+        LCatalogFilter? filter = null) =>
+        new(tab, left, middle, order, filter);
+
+    internal static LCatalogFilter TCatalogFilterCreate(params string[] hidden) =>
+        new(hidden);
 
     internal static LSettings TSettingsLoad(string root) =>
         LSettingsLoader.LSettingsLoaderLoad(root);
@@ -317,5 +327,50 @@ internal static partial class TInterface
     internal static void TEngineRankSave(this LEngine engine, LCatalogOrder order)
     {
         engine.LEngineRankSave(order);
+    }
+
+    internal static void TEngineDegreeSave(this LEngine engine, LCatalogOrder order)
+    {
+        engine.LEngineDegreeSave(order);
+    }
+
+    internal static void TEngineSieveSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineSieveSave(filter);
+    }
+
+    internal static void TEngineLensSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineLensSave(filter);
+    }
+
+    internal static void TEngineStrainerSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineStrainerSave(filter);
+    }
+
+    internal static void TEngineLatticeSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineLatticeSave(filter);
+    }
+
+    internal static void TEngineGrilleSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineGrilleSave(filter);
+    }
+
+    internal static void TEngineMeshSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineMeshSave(filter);
+    }
+
+    internal static void TEngineGauzeSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineGauzeSave(filter);
+    }
+
+    internal static void TEngineTrellisSave(this LEngine engine, LCatalogFilter filter)
+    {
+        engine.LEngineTrellisSave(filter);
     }
 }

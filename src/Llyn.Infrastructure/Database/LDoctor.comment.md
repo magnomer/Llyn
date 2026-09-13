@@ -3,8 +3,8 @@
 ## `public static class LDoctor`
 
 Gets the program to a database it can run against, whatever state the workspace was left in.
-The schema is still moving, so a database written by an older build may no longer be migratable at all.
-A failed migration would otherwise stop the program at startup with nothing the user can do about it.
+The schema is still moving, and a rebuild from another version can still fail on a file it cannot read.
+A failed rebuild would otherwise stop the program at startup with nothing the user can do about it.
 The doctor sets the unusable file aside under a dated name and starts a clean one in its place.
 
 Nothing is deleted.
@@ -18,7 +18,7 @@ Initializes `database`, resetting it when it cannot be initialized.
 Returns what had to be done.
 The caller can then tell the user their old data is no longer in front of them.
 
-Only a SQLite fault or a refused schema version is treated as an unusable database.
+Only a SQLite fault or a failed rebuild is treated as an unusable database.
 Those are the two ways a broken or unknown file announces itself.
 Anything else is a workspace problem that resetting would not fix and would hide.
 A missing folder, a locked file and a denied path are left to propagate.

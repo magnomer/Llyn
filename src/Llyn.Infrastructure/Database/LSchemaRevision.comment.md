@@ -42,13 +42,10 @@ The revision it was deleted under is a real reference that must exist.
 ### `command.CommandText =`
 
 The workspace row is operational state.
-It holds which Entry each duplex side shows and the tab standing open.
-It also holds whether that tab shows its editor, how each browse panel orders, and the languages each hides.
-The session revision is held with them.
+It holds which Entry each duplex side shows and the session revision.
 So is the identity floor, the lowest temporary id ever issued, which the schema keeps at or below zero.
-Its ordering columns hold the stored name of an ordering.
-A build that adds one still reads back what an earlier one wrote.
-Its filter columns hold the hidden languages of a panel joined into one text.
+The open tab, its split, each panel's ordering and its hidden languages name no row here.
+They live in the settings file instead.
 It owns nothing lexical.
 Its entry columns are ON DELETE SET NULL, so deleting an Entry empties the duplex side that showed it.
 It neither blocks the delete nor drags the workspace row down with it.

@@ -8,9 +8,8 @@ The healthy case is here because it is the one that must not fire.
 A doctor that reset a working database would lose the user's work on every launch.
 That it did nothing is the assertion that matters most.
 
-The two broken cases are the two shapes a real failure takes.
-A database written by a newer build is refused by the migration runner.
-A file that is not a database at all is refused by SQLite itself.
+A database written at another version is the migration runner's to rebuild, so the doctor stays out of it.
+A file that is not a database at all is refused by SQLite itself, and that is the doctor's case.
 Both must end with the program holding a database it can use.
 
 The repeat case guards the backup name.

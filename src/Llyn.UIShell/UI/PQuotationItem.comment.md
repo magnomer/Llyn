@@ -1,10 +1,10 @@
-﻿# PFootnoteItem.cs
+﻿# PQuotationItem.cs
 
-## `internal sealed class PFootnoteItem`
+## `internal sealed class PQuotationItem`
 
-One Entry as a row of the sources panel's entry list.
+One Entry as a row of the corpus panel's entry list.
 It mirrors the taxonomy panel's row, because every middle column answers the same shape of question.
-That question is which Entries cite the Source chosen in the shelf beside them.
+That question is which Entries quote the Example chosen in the catalog beside them.
 An Entry referencing from several of its cards is still one row, because the row stands for the Entry.
 The headword and the shown name are separate, so two Entries sharing a headword can be numbered apart.
 The mark saying which row the reader stands on is the one thing that changes after the row is built.

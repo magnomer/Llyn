@@ -2,7 +2,7 @@
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
-The seams that part the example catalog from the example it opens.
+The seams that part the example catalog, the entries quoting the chosen example, and the example itself.
 The row seam runs under the ordering bar and the command row.
 It is bled past the panel margin so it meets the navigation's own edge.
 The column seam sits in the middle of the gutter and reaches the foot of the window.
@@ -13,6 +13,14 @@ Neither seam encloses anything, which is the whole rule: a line marks a division
 The ordering button and the search field are one control over the catalog column.
 The action row over the broader column stands in the same top row, as the repertoire panel arranges it.
 The catalog column is wider than the entry panels take, because it holds sentences rather than headwords.
+The catalog carries no language filter of its own, as the tag catalog carries none.
+The entries in the middle column are what is filtered.
+
+## `<Border x:Name="PGauze" ... Style="{StaticResource Theme.Search.Bar}">`
+
+The search field and the language filter over the middle column, copied from the tenor panel's `PGrille`.
+`PDredge` narrows the entries quoting the chosen Example by typed text.
+`PGauzeDropper` opens the menu of loaded languages, and `PGauzeMark` shows while any is hidden.
 
 ## `<Popup x:Name="PRankDropdown" ...>`
 
@@ -26,6 +34,8 @@ The action row of the panel.
 `PCorpusFresh` opens the editor on an Example nothing quotes yet.
 This panel is the only place such an Example can arise.
 Elsewhere one is written from the card that quotes it.
+`PCorpusStore` saves the Entry open in `PEditor`, and is shown only while that editor is in front.
+A Example saves from its own editor, so the rail button never stands for both.
 Export and print are mock-up controls and are not wired.
 
 ## `<Grid x:Name="PTranscript">`
@@ -42,9 +52,20 @@ That count is shown here and not only in the display, because it decides which d
 The translation is not shown here.
 It is text of the sentence itself and says nothing about where the sentence is used.
 
+## `<local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
+
+The entry display the library and tenor panels share, drawn in the same cell as the Example reading.
+It shows an Entry or an Example, never both, so it stays collapsed until an Entry row is chosen.
+The mode toggle swaps it for `PEditor`, so an Entry is read and written here as in the tenor panel.
+
+## `<local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />`
+
+The entry editor the library and tenor panels share, drawn in the same cell as the display.
+It stands in front only while an Entry is shown and the toggle is on the editing side.
+
 ## `<Grid x:Name="PExcerpt">`
 
-The reading of one Example, and the sides quoting it beneath.
+The reading of one Example.
 `PExcerpt` here stands on an Example rather than on an Entry.
 What it shares with the entry panels is the read-and-edit mechanism and the `PCorpusScribe` toggle, not the object.
 Each field is drawn whether or not it holds anything.
@@ -60,11 +81,13 @@ The click is answered by the panel, which knows which Example is open.
 
 ## `<ItemsControl x:Name="PQuotation">`
 
-Everything quoting the selected Example, one row per quoting side.
-A row names the Entry, Meaning or Collocation and the Entry it belongs to, so the relationship is never flattened.
-Choosing a row leaves for that Entry in the library panel.
+The middle column: every Entry whose cards quote the selected Example, one row per Entry.
+An Entry quoting it from several cards is still one row.
+While no Example is chosen, every Entry is listed, as the tenor panel lists every Entry under no register.
+A row reads the flag, the headword and the language, as a cohort row does.
+Choosing a row shows that Entry in `PDisplay`, in place of the Example reading, without leaving the tab.
 The list is read-only: a reference is added or dropped on the card holding it, never here.
-An Example nothing quotes shows the empty state rather than hiding the region.
+An Example nothing quotes shows the empty state rather than hiding the column.
 
 ## `<Grid x:Name="PTranscript" Visibility="Collapsed">`
 

@@ -43,6 +43,17 @@ The block's own shape is `LWindowLoader`'s business, so only its presence is dec
 The linked switch defaults on, so only an explicit JSON `false` lets tabs keep separate widths.
 A missing key means on, so an older workspace starts with its panels linked.
 
+### `[LSettingsLoaderSplit] = settings.LSettingsSplit ? LSettingsLoaderEditor : LSettingsLoaderDisplay`
+
+A split is written as one of two words rather than as a boolean.
+So a settings file read by hand says which side the tab stood on.
+Anything but the editor word reads as the read area, so an older file opens on the read area.
+
+### `if (!string.IsNullOrWhiteSpace(settings.LSettingsMode))`
+
+A mode is written only once a tab has been chosen.
+Its absence leaves the window on the tab it opens with.
+
 ### `if (settings.LSettingsLayout is { Count: > 0 } layout)`
 
 A layout block is written only once some panel has been dragged.

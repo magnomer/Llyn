@@ -27,8 +27,12 @@
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
-        <Style x:Key="Theme.Quotation.Row" TargetType="Button" BasedOn="{StaticResource Theme.Choice.Row}">
-            <Setter Property="Margin" Value="0,0,0,6" />
+        <Style x:Key="Theme.Quotation.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding PQuotationItemChosen}" Value="True">
+                    <Setter Property="Tag" Value="Chosen" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <DataTemplate x:Key="Theme.Citation.Row">
@@ -62,11 +66,13 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="380" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
         <local:PSeam Grid.Row="1" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
+        <local:PSeam Grid.Row="1" Grid.Column="2" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
 
         <Border
             x:Name="PRank"
@@ -79,8 +85,6 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <ToggleButton
                     x:Name="PRankDropper"
@@ -96,25 +100,6 @@
                     Style="{StaticResource Theme.Search.Field}"
                     Tag="{DynamicResource Example.Search}"
                     TextChanged="PQueryHandle" />
-                <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
-                <ToggleButton
-                    x:Name="PPrismDropper"
-                    Grid.Column="4"
-                    Style="{StaticResource Theme.Search.Dropper}"
-                    ToolTip="{DynamicResource Prism.Title}">
-                    <Grid Width="24" Height="24">
-                        <Path Width="24" Height="24" Data="{local:PIcon filter, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
-                        <Ellipse
-                            x:Name="PPrismMark"
-                            Width="6"
-                            Height="6"
-                            Margin="0,2,1,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Fill="{StaticResource Theme.Accent}"
-                            Visibility="Collapsed" />
-                    </Grid>
-                </ToggleButton>
                 <Popup
                     x:Name="PRankDropdown"
                     Width="238"
@@ -134,24 +119,64 @@
                         </StackPanel>
                     </Border>
                 </Popup>
+            </Grid>
+        </Border>
+
+        <Border
+            x:Name="PGauze"
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="-4,0,16,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    x:Name="PDredge"
+                    Grid.Column="0"
+                    Style="{StaticResource Theme.Search.Field}"
+                    Tag="{DynamicResource Dredge.Search}"
+                    TextChanged="PDredgeHandle" />
+                <Rectangle Grid.Column="1" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
+                <ToggleButton
+                    x:Name="PGauzeDropper"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Gauze.Title}">
+                    <Grid Width="24" Height="24">
+                        <Path Width="24" Height="24" Data="{local:PIcon filter, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
+                        <Ellipse
+                            x:Name="PGauzeMark"
+                            Width="6"
+                            Height="6"
+                            Margin="0,2,1,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Fill="{StaticResource Theme.Accent}"
+                            Visibility="Collapsed" />
+                    </Grid>
+                </ToggleButton>
                 <Popup
-                    x:Name="PPrismDropdown"
+                    x:Name="PGauzeDropdown"
                     Width="190"
                     AllowsTransparency="True"
                     HorizontalOffset="-151"
-                    IsOpen="{Binding IsChecked, ElementName=PPrismDropper}"
+                    IsOpen="{Binding IsChecked, ElementName=PGauzeDropper}"
                     Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PPrismDropper}"
+                    PlacementTarget="{Binding ElementName=PGauzeDropper}"
                     StaysOpen="False"
                     VerticalOffset="6">
                     <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                        <StackPanel x:Name="PPrismList" />
+                        <StackPanel x:Name="PGauzeList" />
                     </Border>
                 </Popup>
             </Grid>
         </Border>
 
-        <local:PRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
+        <local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
@@ -160,6 +185,14 @@
                         Content="{DynamicResource Scribe.New}"
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="{local:PIcon new, 24}" />
+                    <Button
+                        x:Name="PCorpusStore"
+                        Click="PCorpusStoreHandle"
+                        Content="{DynamicResource Scribe.Save}"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Primary}"
+                        Tag="{local:PIcon save, 24}"
+                        Visibility="Collapsed" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Content="{DynamicResource Scribe.Export}"
@@ -232,8 +265,39 @@
                 Text="{DynamicResource Example.Empty}" />
         </Grid>
 
-        <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
+        <Grid Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Catalog.Middle}">
+            <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
+                <ItemsControl x:Name="PQuotation">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="PQuotationHandle" Style="{StaticResource Theme.Quotation.Row}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PQuotationItemFlag}" Stretch="Uniform" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PQuotationItemName}" />
+                                    <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding PQuotationItemLanguage}" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <TextBlock
+                x:Name="PQuotationEmpty"
+                Style="{StaticResource Theme.Catalog.Empty}"
+                Text="{DynamicResource Example.Vacant}" />
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="2" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>
+                <local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />
+
+                <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
+
                 <Grid x:Name="PExcerpt">
                     <ScrollViewer Padding="24,22,0,20" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="PExcerptBody" Visibility="Collapsed">
@@ -253,38 +317,6 @@
                             <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Reference.Title}" />
                             <TextBlock x:Name="PExcerptCitation" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
 
-                            <TextBlock Margin="0,26,0,10" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Example.Usage}" />
-                            <ItemsControl x:Name="PQuotation">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Button Click="PQuotationHandle" Style="{StaticResource Theme.Quotation.Row}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemName}" TextTrimming="CharacterEllipsis" />
-                                                        <TextBlock Margin="9,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PUsageItemOwner}" />
-                                                    </StackPanel>
-                                                    <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PUsageItemTitle}" TextTrimming="CharacterEllipsis" />
-                                                </StackPanel>
-                                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                                                    <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PUsageItemFlag}" Stretch="Uniform" />
-                                                    <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PUsageItemLanguage}" />
-                                                </StackPanel>
-                                            </Grid>
-                                        </Button>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            <TextBlock
-                                x:Name="PQuotationEmpty"
-                                Margin="0,2,0,0"
-                                Foreground="{StaticResource Theme.Muted}"
-                                Text="{DynamicResource Example.UsageEmpty}"
-                                TextWrapping="Wrap" />
                         </StackPanel>
                     </ScrollViewer>
                     <TextBlock
