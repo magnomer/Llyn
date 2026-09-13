@@ -204,6 +204,7 @@
     "Paradigm.Absent": "웹 찾기가 꺼져 있습니다",
     "Paradigm.Unknown": "어떤 출처도 이 형태를 싣지 않았습니다",
     "Paradigm.Lost": "어떤 웹 출처도 응답하지 않았습니다",
+    "Paradigm.Held": "항목을 저장하면 찾습니다",
     "Speech.Empty": "이 언어에 등록된 품사가 없습니다",
     "Speech.Absent": "입력한 내용과 일치하는 품사가 없습니다",
     "Reference.LoadFailed": "출처를 읽지 못했습니다.",

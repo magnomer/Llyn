@@ -35,40 +35,7 @@ public partial class PDisplay
             return;
         }
 
-        HashSet<long> parts = [];
-        foreach (LParadigmSlot slot in slots)
-        {
-            parts.Add(slot.LParadigmSlotSpeech.LSpeechValueId);
-        }
-
-        List<PParadigmItem> items = new(slots.Count);
-        List<LParadigmSlot> row = [];
-        long? previous = null;
-        foreach (LParadigmSlot slot in slots)
-        {
-            if (row.Count > 0 && !PDisplayParadigmMatch(row[0], slot))
-            {
-                items.Add(PParadigmItem.PParadigmItemCreate(row, parts.Count > 1 && previous != row[0].LParadigmSlotSpeech.LSpeechValueId, pending, enabled));
-                previous = row[0].LParadigmSlotSpeech.LSpeechValueId;
-                row = [];
-            }
-
-            row.Add(slot);
-        }
-
-        items.Add(PParadigmItem.PParadigmItemCreate(row, parts.Count > 1 && previous != row[0].LParadigmSlotSpeech.LSpeechValueId, pending, enabled));
-
         PFont.PFontApply(_lEngine, slots[0].LParadigmSlotSpeech.LSpeechValueLanguage, PDisplayParadigm);
-        PDisplayParadigm.PParadigmItems = items;
-    }
-
-    private static bool PDisplayParadigmMatch(LParadigmSlot one, LParadigmSlot other)
-    {
-        return one.LParadigmSlotSpeech.LSpeechValueId == other.LParadigmSlotSpeech.LSpeechValueId
-            && one.LParadigmSlotState == LState.LStateSpecified
-            && other.LParadigmSlotState == LState.LStateSpecified
-            && one.LParadigmSlotInflection is LInflection first
-            && other.LParadigmSlotInflection is LInflection second
-            && string.Equals(first.LInflectionText, second.LInflectionText, StringComparison.Ordinal);
+        PDisplayParadigm.PParadigmItems = PParadigmItem.PParadigmItemScan(slots, pending, enabled, false);
     }
 }

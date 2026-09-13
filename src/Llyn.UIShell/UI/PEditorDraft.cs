@@ -117,6 +117,7 @@ public partial class PEditor
         PEditorFavoriteShow();
         PEditorGraspShow();
         PEditorFrequencyShow();
+        PEditorParadigmShow();
     }
 
     private string PEditorNoteRead()

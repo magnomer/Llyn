@@ -123,6 +123,16 @@ public partial class PEditor
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectInflection)
+        {
+            if (bulletin.LBulletinId == PEditorEntryRead())
+            {
+                PEditorParadigmShow();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject != LSubject.LSubjectDraft
             || _pEditorDraft == 0
             || bulletin.LBulletinId != _pEditorDraft)

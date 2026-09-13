@@ -207,6 +207,8 @@
                     <TextBlock x:Name="PEditorFrequency" Style="{StaticResource Theme.Frequency.Name}" />
                 </Border>
             </StackPanel>
+
+            <local:PParadigm x:Name="PEditorParadigm" Margin="0,14,0,0" />
         </StackPanel>
 
         <Border Grid.Row="3" Padding="0,0,0,8" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">

@@ -204,6 +204,7 @@
     "Paradigm.Absent": "Web lookup is off",
     "Paradigm.Unknown": "No source listed this form",
     "Paradigm.Lost": "No web source answered",
+    "Paradigm.Held": "Looked up once the entry is saved",
     "Speech.Empty": "This language declares no parts of speech",
     "Speech.Absent": "No part of speech matches what you typed",
     "Reference.LoadFailed": "The sources could not be read.",

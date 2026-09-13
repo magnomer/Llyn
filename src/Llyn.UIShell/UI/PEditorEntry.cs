@@ -23,6 +23,7 @@ public partial class PEditor
         PEditorFavoriteShow();
         PEditorGraspShow();
         PEditorFrequencyShow();
+        PEditorParadigmShow();
     }
 
     internal void PEditorFrequencyShow()
@@ -216,6 +217,14 @@ public partial class PEditor
         }
 
         _pEditorDraft = 0;
+
+        try
+        {
+            _lEngine.LEngineInflectionStart(stored.LOutcomeEntry.LEntryId);
+        }
+        catch (Exception)
+        {
+        }
 
         if (entry is not null)
         {

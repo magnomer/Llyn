@@ -59,6 +59,11 @@
                 <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
                 <Setter Property="ToolTip" Value="{DynamicResource Paradigm.Lost}" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding PParadigmItemHeld}" Value="True">
+                <Setter Property="Text" Value="…" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+                <Setter Property="ToolTip" Value="{DynamicResource Paradigm.Held}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding PParadigmItemUnknown}" Value="True">
                 <Setter Property="Text" Value="—" />
                 <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
