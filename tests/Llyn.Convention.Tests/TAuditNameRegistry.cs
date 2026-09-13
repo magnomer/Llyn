@@ -183,6 +183,7 @@ internal static class TAuditNameRegistry
         "Surface",
         "Survey",
         "Syllable",
+        "Tab",
         "Tag",
         "Target",
         "Taxonomy",

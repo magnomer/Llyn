@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -10,7 +9,7 @@ public partial class PWindow
 {
     private void PNavigationHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button selectedButton)
+        if (sender is not PTab selectedButton)
         {
             return;
         }
@@ -63,11 +62,10 @@ public partial class PWindow
             return;
         }
 
-        foreach ((string mode, Button button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
+        foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
         {
             bool isSelected = button == selectedButton;
-            button.Style = (Style)FindResource(
-                isSelected ? "Theme.Navigation.Selected" : "Theme.Navigation.Button");
+            button.PTabChosen = isSelected;
             panel.Visibility = isSelected ? Visibility.Visible : Visibility.Collapsed;
 
             if (isSelected)
@@ -79,7 +77,7 @@ public partial class PWindow
 
     internal void PNavigationRestore(LWorkspaceState state)
     {
-        foreach ((string mode, Button button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
+        foreach ((string mode, PTab button, FrameworkElement panel, Action<bool>? scribe) in PNavigationTabRead())
         {
             if (!string.Equals(mode, state.LWorkspaceStateMode, StringComparison.Ordinal))
             {
@@ -92,7 +90,7 @@ public partial class PWindow
         }
     }
 
-    private (string PNavigationMode, Button PNavigationButton, FrameworkElement PNavigationPanel,
+    private (string PNavigationMode, PTab PNavigationButton, FrameworkElement PNavigationPanel,
         Action<bool>? PNavigationScribe)[] PNavigationTabRead()
     {
         return

@@ -4,7 +4,7 @@
 
 Which panel the window shows.
 The navigation buttons pick exactly one.
-The chosen button wears the selected style.
+The chosen tab is told so and swaps its outline mark for the filled one.
 Every other panel is collapsed out of the layout.
 The tab chosen is pushed downstream as it changes, so the window opens on it next time.
 
