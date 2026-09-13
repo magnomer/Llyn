@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Llyn.Core;
 
@@ -28,6 +30,70 @@ public partial class PEditor
         {
             PEditorRequestSend(new LRequestPronunciationRemoval(_pEditorDraft, row.PAccentItemId));
         }
+    }
+
+    internal async void PAccentNotationHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is PAccentItem row)
+        {
+            await PNotationOpen(PAccentAnchorRead(e), row.PAccentItemId);
+        }
+    }
+
+    internal async void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is PAccentItem row)
+        {
+            await PClipOpen(PAccentAnchorRead(e), row.PAccentItemId);
+        }
+    }
+
+    internal void PAccentPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is not PAccentItem row)
+        {
+            return;
+        }
+
+        if (!File.Exists(row.PAccentItemAudio))
+        {
+            PEditorRequestSend(new LRequestPronunciationAudio(_pEditorDraft, row.PAccentItemId, string.Empty, null));
+            return;
+        }
+
+        _pDownloaderPlayer.Open(new Uri(row.PAccentItemAudio));
+        _pDownloaderPlayer.Play();
+    }
+
+    private UIElement PAccentAnchorRead(ExecutedRoutedEventArgs e)
+    {
+        return e.OriginalSource as UIElement ?? PAccent;
+    }
+
+    private PAccentItem? PAccentFind(long id)
+    {
+        foreach (PAccentItem row in _pAccentItem)
+        {
+            if (row.PAccentItemId == id)
+            {
+                return row;
+            }
+        }
+
+        return null;
+    }
+
+    private void PAccentFreshClear()
+    {
+        foreach (long id in _pRecordingFresh)
+        {
+            if (PAccentFind(id) is not null)
+            {
+                PEditorRequestSend(new LRequestPronunciationAudio(_pEditorDraft, id, string.Empty, null));
+            }
+        }
+
+        _pRecordingFresh.Clear();
     }
 
     private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)
@@ -83,6 +149,7 @@ public partial class PEditor
             row.PAccentItemIpa = spoken.LPronunciationDraftIpa;
         }
 
+        row.PAccentItemAudio = spoken.LPronunciationDraftAudio;
         return row;
     }
 
@@ -135,6 +202,7 @@ public partial class PEditor
         }
 
         _pAccentItem.Clear();
+        _pRecordingFresh.Clear();
         _pAccentLanguage = string.Empty;
         _pAccentFlagged = false;
         _pAccentPrimary = string.Empty;

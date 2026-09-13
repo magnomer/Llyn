@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -16,6 +18,8 @@ public partial class PEditor
     private string? _pRecordingSource;
 
     private bool _pRecordingStored;
+
+    private readonly HashSet<long> _pRecordingFresh = [];
 
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
@@ -60,13 +64,23 @@ public partial class PEditor
 
     private void PHeadwordHandle(object sender, TextChangedEventArgs e)
     {
-        if (_pRecordingStored || _pEditorFill || _pRecording is null)
+        if (_pEditorFill)
         {
             return;
         }
 
-        PRecordingClear();
-        PEditorAudioSend();
+        PRecordingFreshClear();
+    }
+
+    private void PRecordingFreshClear()
+    {
+        if (!_pRecordingStored && _pRecording is not null)
+        {
+            PRecordingClear();
+            PEditorAudioSend();
+        }
+
+        PAccentFreshClear();
     }
 
     private void PRecordingClear()
@@ -75,6 +89,14 @@ public partial class PEditor
         _pRecordingSource = null;
         _pRecordingStored = false;
         _pDownloaderPlayer.Stop();
-        PPlayback.Visibility = Visibility.Collapsed;
+        PPlaybackAction.Visibility = Visibility.Collapsed;
+        PPlaybackTrayShow();
+    }
+
+    private void PPlaybackTrayShow()
+    {
+        bool audible = _pRecording is not null
+            || _pAccentItem.Any(static row => row.PAccentItemAudio.Length > 0);
+        PPlayback.Visibility = audible ? Visibility.Visible : Visibility.Collapsed;
     }
 }

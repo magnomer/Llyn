@@ -3,7 +3,7 @@
 ## `public partial class PDisplay`
 
 The further pronunciations of a shown entry, listed under the primary one.
-Each stands with its variety as a flag or a label and its IPA in brackets.
+Each stands with its variety as a flag or a label, its IPA in brackets, and play when audible.
 A row without an IPA is left out, because the reading view shows only what reads.
 The primary pronunciation wears its own variety chip in the same way.
 
@@ -11,6 +11,11 @@ The primary pronunciation wears its own variety chip in the same way.
 
 Rebuilds the rows from the draft, and asks the pack once whether varieties draw as flags.
 Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
+
+## `internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Plays the row's recording on this view's player.
+A file that has gone from disk plays nothing.
 
 ## `private void PDisplayPrimaryShow()`
 

@@ -1,13 +1,61 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIShell">
+    xmlns:local="clr-namespace:Llyn.UIShell"
+    xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeInput.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemePlayback.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="Theme.Accent.Tool" TargetType="Button" BasedOn="{StaticResource Theme.Playback.Action}">
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CommandParameter" Value="{Binding}" />
+        <Setter Property="Content" Value="" />
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Rectangle Width="13" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform">
+                                <VisualBrush.Visual>
+                                    <svgc:SvgViewbox Width="13" Height="13" Source="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Accent.Playback" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
+        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/play.svg" />
+        <Setter Property="ToolTip" Value="{DynamicResource Downloader.Play}" />
+        <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandPlayback}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PAccentItemAudio}" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Accent.Transcriber" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
+        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
+        <Setter Property="ToolTip" Value="{DynamicResource Transcriber.Title}" />
+        <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandNotation}" />
+    </Style>
+
+    <Style x:Key="Theme.Accent.Downloader" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
+        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" />
+        <Setter Property="ToolTip" Value="{DynamicResource Downloader.Title}" />
+        <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandClip}" />
+    </Style>
 
     <Style x:Key="Theme.Accent.Flag" TargetType="Image" BasedOn="{StaticResource Theme.Pronunciation.Flag}">
         <Setter Property="Source" Value="{Binding PAccentItemFlag}" />
@@ -56,6 +104,9 @@
                     <TextBox Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" Text="{Binding PAccentItemIpa, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
                 <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                <Button Style="{StaticResource Theme.Accent.Playback}" />
+                <Button Style="{StaticResource Theme.Accent.Transcriber}" />
+                <Button Style="{StaticResource Theme.Accent.Downloader}" />
                 <Button Style="{StaticResource Theme.Accent.Remove}" />
             </StackPanel>
         </Border>
@@ -69,6 +120,7 @@
                 <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
                 <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PAccentItemIpa}" />
                 <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                <Button Style="{StaticResource Theme.Accent.Playback}" />
             </StackPanel>
         </Border>
     </DataTemplate>

@@ -15,13 +15,14 @@ public partial class PEditor : LReceiver
     private bool _pNotationSearching;
     private bool _pNotationFlagged;
     private string _pNotationLanguage = string.Empty;
+    private long _pNotationTarget;
 
-    private async void PTranscriberCheckedHandle(object sender, RoutedEventArgs e)
+    private async void PTranscriberHandle(object sender, RoutedEventArgs e)
     {
-        await PNotationStart();
+        await PNotationOpen(PTranscriber, 0);
     }
 
-    private void PTranscriberUncheckedHandle(object sender, RoutedEventArgs e)
+    private void PNotationClosedHandle(object? sender, EventArgs e)
     {
         PNotationCancel();
     }
@@ -33,49 +34,41 @@ public partial class PEditor : LReceiver
             return;
         }
 
-        PNotationPrimaryApply(reading);
-        PTranscriber.IsChecked = false;
+        PNotationApply(reading);
+        PNotation.IsOpen = false;
     }
 
-    internal void PNotationAllHandle(object sender, RoutedEventArgs e)
+    private async Task PNotationOpen(UIElement anchor, long target)
     {
-        if (sender is not FrameworkElement { DataContext: PNotationItem row } || !row.PNotationItemReady)
+        PNotation.IsOpen = false;
+        _pNotationTarget = target;
+        PNotation.PlacementTarget = anchor;
+        PNotation.IsOpen = true;
+        await PNotationStart();
+    }
+
+    private void PNotationApply(PNotationReading reading)
+    {
+        long id = _pNotationTarget;
+        if (id == 0)
         {
-            return;
+            PPronunciationField.Text = reading.PNotationReadingPhonetic;
+            PEditorChangeSave();
+            id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
         }
-
-        PNotationReading[] readings = [.. row.PNotationItemReading];
-        PNotationPrimaryApply(readings[0]);
-
-        foreach (PNotationReading reading in readings.Skip(1))
+        else
         {
-            if (!PNotationHeldCheck(reading))
+            PAccentItem? row = PAccentFind(id);
+            if (row is null)
             {
-                PNotationReadingAdd(reading);
+                return;
             }
+
+            row.PAccentItemIpa = reading.PNotationReadingPhonetic;
+            PEditorChangeSave();
         }
 
-        PTranscriber.IsChecked = false;
-    }
-
-    private void PNotationPrimaryApply(PNotationReading reading)
-    {
-        PPronunciationField.Text = reading.PNotationReadingPhonetic;
-        PEditorChangeSave();
-
-        PNotationVarietySend(
-            PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0,
-            reading.PNotationReadingVariety);
-    }
-
-    private void PNotationReadingAdd(PNotationReading reading)
-    {
-        PEditorRequestSend(
-            new LRequestPronunciationAddition(_pEditorDraft, reading.PNotationReadingPhonetic, int.MaxValue));
-
-        PNotationVarietySend(
-            PNotationDraftRead()?.LEntryDraftPronunciations[^1].LPronunciationDraftId ?? 0,
-            reading.PNotationReadingVariety);
+        PNotationVarietySend(id, reading.PNotationReadingVariety);
     }
 
     private void PNotationVarietySend(long pronunciationId, string variety)
@@ -86,26 +79,6 @@ public partial class PEditor : LReceiver
         }
 
         PEditorRequestSend(new LRequestPronunciationVariety(_pEditorDraft, pronunciationId, variety));
-    }
-
-    private bool PNotationHeldCheck(PNotationReading reading)
-    {
-        LEntryDraft? draft = PNotationDraftRead();
-        if (draft is null)
-        {
-            return false;
-        }
-
-        foreach (LPronunciationDraft spoken in draft.LEntryDraftPronunciations)
-        {
-            if (string.Equals(spoken.LPronunciationDraftVariety, reading.PNotationReadingVariety, StringComparison.Ordinal)
-                && string.Equals(spoken.LPronunciationDraftIpa, reading.PNotationReadingPhonetic, StringComparison.Ordinal))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private LEntryDraft? PNotationDraftRead()

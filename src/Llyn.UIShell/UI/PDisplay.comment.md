@@ -36,18 +36,20 @@ So the same view serves the library panel, the phonology panel and the taxonomy 
 ## `<Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" ...>`
 
 The pronunciation chip the editor also wears, defined once in the theme.
-It carries the primary pronunciation's variety as a flag or a label before the brackets.
-The chip collapses when the entry carries no pronunciation, and the playback tray then takes its place at the margin.
+It carries the primary pronunciation's variety as a flag or a label before the brackets, and play after them.
+The play button shows only while the primary pronunciation owns a recording still on disk.
+The chip collapses when the entry carries no pronunciation.
 
 ## `<ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />`
 
 The further pronunciations of the entry, one row each beneath the primary, drawn by the shared accent template.
+The playback command is bound here, so a row's play button reaches this view's player.
 
 ## `<Border x:Name="PPlayback" Height="37" Background="Transparent" BorderThickness="0" ...>`
 
-The playback row: the play button and the volume it is played at, drawn bare.
-It wears no surface or border, so the controls read as part of the pronunciation row.
-The whole tray hides when the entry owns no recording.
+The volume tray: the level every row's recording is played at, drawn bare.
+It wears no surface or border, so the control reads as part of the pronunciation row.
+The tray hides when no pronunciation row owns a recording.
 A volume with nothing to play is a control that does nothing.
 The editor draws the same tray.
 A recording is played the same way where it is read and where it is chosen.

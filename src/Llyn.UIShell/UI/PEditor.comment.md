@@ -21,19 +21,6 @@ Each carries the icon its panel twin carries, a plus for a fresh form and a disk
 A bin of one size and a diskette of another, beside labels of two lengths, left the pair looking lopsided.
 Both take the width of their label, so a longer language does not clip.
 
-## `<Rectangle Width="13" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">`
-
-Phosphor play.svg.
-SvgViewbox has no foreground of its own, so the glyph is used as an opacity mask over the button's foreground.
-
-## `<Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">`
-
-Phosphor magnifying-glass.svg, tinted through an opacity mask (see PPlayback).
-
-## `<Rectangle Width="15" Height="15" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">`
-
-Phosphor box-arrow-down.svg, tinted through an opacity mask (see PPlayback).
-
 ## `<TextBlock`
 
 The part of speech as it stands, beside the field that sets it.
@@ -49,20 +36,24 @@ So a part of speech no pack declares can still be written down.
 ## `<StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left">`
 
 The pronunciation rows, laid out as the reading view lays them out.
-The primary pronunciation stands on the first row with the playback tray and the toolbar.
+The primary pronunciation stands on the first row with the volume tray beside it.
 Every further pronunciation stands on a row of its own beneath, in the accent list.
-Pronunciation and playback tray carry the theme's shared styles, so switching mode moves neither of them.
+Every row, the primary one included, wears the same play, lookup and download buttons after its brackets.
+Pronunciation and volume tray carry the theme's shared styles, so switching mode moves neither of them.
 The rows start at the headword's own margin, because an indent here read as a different position.
 
 ## `<Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">`
 
-The primary pronunciation: its variety as a flag or a label, then the bracketed field.
+The primary pronunciation: its variety as a flag or a label, then the bracketed field, then its buttons.
 The chip is empty for a pronunciation without a variety, so the brackets then open at the margin.
+The buttons are the accent tool style, so the primary row reads as the further rows do.
+Play shows only while the row has a recording.
+Lookup and download open the editor's menus under the button pressed, for this row.
 
 ## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}">`
 
 The further pronunciations, one editable row each, drawn by the shared accent template.
-The removal command is bound here, so a row's cross reaches the editor that owns the draft.
+The row commands are bound here, so a row's buttons reach the editor that owns the draft and the menus.
 
 ## `<Grid Margin="3,0,1,0">`
 
@@ -71,15 +62,19 @@ The twin decides the cell's width, so the brackets close on the text instead of 
 
 ## `<Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Background="Transparent" BorderThickness="0" ...>`
 
-The playback row holds the play button and the volume it is played at.
-It is the same bare row the reading view draws.
-It appears with a recording and goes with it.
+The volume tray holds the level every row's recording is played at.
+It is the same bare tray the reading view draws.
+It appears while any row has a recording and goes when none does.
 The volume is offered only while there is something to hear.
 The volume it shows is the workspace's own.
 A level set here is the level the reading view opens at.
 
-## `<Border Height="41" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">`
+## `<Popup x:Name="PNotation" ...>`
 
-Lookup and audio download both fetch what the chip beside them holds, so one tray holds the pair.
-It is the tray discard and store sit in, at the height of the chip and the playback tray.
-Only the editor draws it, because nothing is fetched into a view that cannot be typed into.
+The pronunciation menu, declared once beside the other popups the editor owns.
+It has no placement target of its own, because the row button that opens it becomes the target.
+Closing it, by a pick or a click elsewhere, calls the search off.
+
+## `<Popup x:Name="PClip" ...>`
+
+The audio menu, declared once for the same reason and opened the same way.

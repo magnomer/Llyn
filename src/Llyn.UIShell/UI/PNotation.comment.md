@@ -3,11 +3,11 @@
 ## `public partial class PEditor : LReceiver`
 
 Pronunciation lookup as the editor shows it.
-Opening the menu starts a search for the headword.
+Every pronunciation row carries its own lookup button, and the menu opens under the one pressed.
+The menu is one popup the editor owns, retargeted at the row that asked for it.
+Opening it starts a search for the headword, the same search from whichever row.
 Candidates stream in from the engine and fill the list, one reading per variety a source returned.
-Picking one writes it into the pronunciation field and stores its variety on the primary pronunciation row.
-Taking a whole row writes the first reading there and adds every further one as its own pronunciation row.
-A further reading the draft already holds, same variety and same text, is not added again.
+Picking one writes it into the row that opened the menu and stores its variety on that row.
 This is the shell side of `LReceiver`.
 The engine calls back on a worker thread.
 So every arrival is marshalled onto the dispatcher here.
@@ -48,6 +48,21 @@ The search is not one the menu runs.
 Superseded by a newer lookup, or the window closed.
 Ignore it.
 
+### `private async Task PNotationOpen(UIElement anchor, long target)`
+
+Opens the menu under the button of one row and remembers which row it serves.
+A target of zero is the primary row, which the engine may not have minted yet.
+The popup is shut first, so a press on another row's button moves it instead of leaving it put.
+
+### `private void PNotationApply(PNotationReading reading)`
+
+Writes the reading into the row the menu was opened for, then tags that row with its variety.
+The primary row goes through its own field, whose change defers the IPA request.
+A further row goes through its row model, whose change defers the same request on its id.
+The pending save is run before the variety is sent, because the primary row exists only once it has run.
+A further row that vanished while the menu stood open takes nothing.
+A reading without a variety writes the text alone.
+
 ### `_pNotationSearching = false;`
 
 A lookup that could not be started reports no end of its own.
@@ -75,25 +90,7 @@ The row is resolved in place rather than replaced, so it never jumps under the p
 A source that was reached and had nothing reads differently from one that was never reached.
 Silence would have said a word is missing from a dictionary that was in fact down.
 
-### `private void PNotationPrimaryApply(PNotationReading reading)`
-
-Writes the reading into the pronunciation field, then tags the primary pronunciation row with its variety.
-The field change defers the IPA request, so the pending save is run here before the row is read back.
-The primary row exists only once that request has run, and its id is what the variety request needs.
-A reading without a variety writes the field alone.
-
-### `private void PNotationReadingAdd(PNotationReading reading)`
-
-Adds one more pronunciation row for a further reading, then tags it.
-The row is appended at the end, so the last row of the draft read back is the new one.
-The id is read from the draft rather than made up here, because the engine alone mints ids.
-
 ### `private PNotationReading? PNotationReadingCreate(LCandidate candidate)`
 
 Builds the button for one candidate, or nothing when the candidate carries no transcription.
 Its label and flag are resolved as a pronunciation row resolves its own, under the language the search began for.
-
-### `private bool PNotationHeldCheck(PNotationReading reading)`
-
-Whether the draft already holds a pronunciation with this reading's variety and text.
-Taking all twice would otherwise double every row after the first.

@@ -10,14 +10,16 @@ internal sealed class PAccentItem : INotifyPropertyChanged
     private readonly string _pAccentItemName;
     private ImageSource? _pAccentItemFlag;
     private string _pAccentItemIpa;
+    private string _pAccentItemAudio;
 
-    internal PAccentItem(long id, string variety, string name, ImageSource? flag, string ipa)
+    internal PAccentItem(long id, string variety, string name, ImageSource? flag, string ipa, string audio)
     {
         PAccentItemId = id;
         PAccentItemVariety = variety;
         _pAccentItemName = name;
         _pAccentItemFlag = flag;
         _pAccentItemIpa = ipa;
+        _pAccentItemAudio = audio;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -60,6 +62,22 @@ internal sealed class PAccentItem : INotifyPropertyChanged
         }
     }
 
+    public string PAccentItemAudio
+    {
+        get => _pAccentItemAudio;
+        set
+        {
+            string path = value ?? string.Empty;
+            if (string.Equals(_pAccentItemAudio, path, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _pAccentItemAudio = path;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PAccentItemAudio)));
+        }
+    }
+
     internal static PAccentItem PAccentItemCreate(
         PWindow host, string language, bool flagged, LPronunciationDraft spoken)
     {
@@ -71,7 +89,8 @@ internal sealed class PAccentItem : INotifyPropertyChanged
             variety,
             PAccentLabelFormat(host, variety),
             PAccentFlagFind(language, flagged, variety),
-            spoken.LPronunciationDraftIpa);
+            spoken.LPronunciationDraftIpa,
+            spoken.LPronunciationDraftAudio);
     }
 
     internal static string PAccentLabelFormat(PWindow host, string variety)

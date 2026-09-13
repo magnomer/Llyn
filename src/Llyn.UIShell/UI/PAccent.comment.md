@@ -3,9 +3,11 @@
 ## `public partial class PEditor`
 
 The further pronunciation rows of the input panel, rendered from the draft the engine holds.
-The primary pronunciation keeps its own field beside the toolbar.
-Every pronunciation after it stands on its own row beneath, with its variety, its IPA and a remove control.
+The primary pronunciation keeps its own field above them.
+Every pronunciation after it stands on its own row beneath, with its variety, its IPA and its controls.
+The controls are play when the row has audio, lookup, download and remove, the same set the primary row wears.
 A row edit becomes a request on that row's id, and a remove becomes a removal request.
+Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
@@ -17,6 +19,33 @@ The pending-request key of one row's IPA, so a draft render skips a row whose ed
 
 Drops the row carried as the command parameter.
 The engine answers with a draft bulletin, and the render takes the row off the screen.
+
+## `internal async void PAccentNotationHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Opens the pronunciation menu under the row's own button, for that row.
+
+## `internal async void PAccentClipHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Opens the audio menu under the row's own button, for that row.
+
+## `internal void PAccentPlaybackHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Plays the row's recording on the editor's player.
+A file gone from disk is cleared off the row instead, so the button stops offering it.
+
+## `private UIElement PAccentAnchorRead(ExecutedRoutedEventArgs e)`
+
+The button that raised the command, so the menu opens under it rather than under the list.
+
+## `private PAccentItem? PAccentFind(long id)`
+
+The shown row with one pronunciation id, or nothing when the draft no longer has it.
+
+## `private void PAccentFreshClear()`
+
+Clears the audio off every further row downloaded this session and not yet stored.
+A fetched recording is audio of one spelling in one language, so a change of either drops it.
+A row that has gone is skipped, since its audio went with it.
 
 ## `private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)`
 
@@ -36,6 +65,7 @@ Flags not yet in the ensign store are loaded afterwards and painted in when they
 Brings a shown row up to the draft row with the same id.
 A changed variety rebuilds the row, because its label and flag are fixed at creation.
 A row with an IPA request waiting keeps its text, since the draft is about to become what it holds.
+The audio is always taken from the draft, because the row never edits it.
 
 ## `private void PAccentPrimaryShow()`
 
@@ -50,4 +80,4 @@ A load that fails leaves the labels standing.
 
 ## `private void PAccentClear()`
 
-Empties the rows and the primary chip when the form resets.
+Empties the rows, the primary chip and the fresh-audio set when the form resets.

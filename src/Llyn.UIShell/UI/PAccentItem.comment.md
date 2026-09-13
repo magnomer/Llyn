@@ -3,7 +3,7 @@
 ## `internal sealed class PAccentItem : INotifyPropertyChanged`
 
 One pronunciation row after the primary, as the editor and the reading view show it.
-It carries the draft row's id, its variety, and the IPA the field is bound to.
+It carries the draft row's id, its variety, the IPA the field is bound to, and its audio file.
 The variety is shown as a flag when the pack draws varieties as flags, and as a label otherwise.
 The flag may arrive after the row, so it notifies when it lands.
 
@@ -21,6 +21,11 @@ Setting it also announces the label, since the label yields to it.
 
 The IPA as typed or as the draft holds it.
 It announces only a real change, so a render writing the same text stays silent.
+
+## `public string PAccentItemAudio`
+
+The workspace file the row plays, blank while it has none.
+Blank is what collapses the play button.
 
 ## `internal static PAccentItem PAccentItemCreate(PWindow host, string language, bool flagged, LPronunciationDraft spoken)`
 

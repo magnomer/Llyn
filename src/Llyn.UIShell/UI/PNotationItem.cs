@@ -9,7 +9,6 @@ internal sealed class PNotationItem : INotifyPropertyChanged
 {
     private string _pNotationItemNotice;
     private bool _pNotationItemReady;
-    private bool _pNotationItemPlural;
 
     internal PNotationItem(string sourceLabel, int order, string notice)
     {
@@ -38,12 +37,6 @@ internal sealed class PNotationItem : INotifyPropertyChanged
         private set => PNotationItemChange(ref _pNotationItemReady, value, nameof(PNotationItemReady));
     }
 
-    public bool PNotationItemPlural
-    {
-        get => _pNotationItemPlural;
-        private set => PNotationItemChange(ref _pNotationItemPlural, value, nameof(PNotationItemPlural));
-    }
-
     internal void PNotationItemShow(LCandidate candidate, PNotationReading? reading, string missing, string broken)
     {
         if (reading is not null)
@@ -51,7 +44,6 @@ internal sealed class PNotationItem : INotifyPropertyChanged
             PNotationItemReading.Add(reading);
             PNotationItemNotice = string.Empty;
             PNotationItemReady = true;
-            PNotationItemPlural = PNotationItemReading.Count > 1;
             return;
         }
 

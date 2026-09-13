@@ -3,9 +3,11 @@
 ## `public partial class PEditor : LListener`
 
 Audio download as the editor shows it.
-Opening the menu starts a search for recordings of the headword.
+Every pronunciation row carries its own download button, and the menu opens under the one pressed.
+The menu is one popup the editor owns, retargeted at the row that asked for it.
+Opening it starts a search for recordings of the headword, the same search from whichever row.
 Each found recording can be previewed.
-Taking one downloads it into the workspace and attaches it to the form.
+Taking one downloads it into the workspace and attaches it to the row that opened the menu.
 This is the shell side of `LListener`.
 The engine calls back on a worker thread.
 So every arrival is marshalled onto the dispatcher here.
@@ -25,6 +27,12 @@ The search is not one the menu runs.
 
 Superseded by a newer discovery, or the window closed.
 Ignore it.
+
+### `private async Task PClipOpen(UIElement anchor, long target)`
+
+Opens the menu under the button of one row and remembers which row it serves.
+A target of zero is the primary row, which the engine may not have minted yet.
+The popup is shut first, so a press on another row's button moves it instead of leaving it put.
 
 ### `_pClipSearching = false;`
 
@@ -75,12 +83,14 @@ The form moved on while the bytes came down.
 The file stays in the workspace.
 But it is audio of a word the form no longer holds.
 
-### `_pRecordingStored = false;`
+### `if (target == 0)`
 
-Fetched for the headword as it stands now, so a further edit of it drops this.
+The primary row keeps its recording on the form, the way it always has.
+A further row is sent an audio request on its own id, and the draft render shows the file.
+Either way the recording is fetched for the headword as it stands now, so editing it drops this.
 The recording is sent as a request at once, because a pick is a whole action.
 
-### `PDownloader.IsChecked = false;`
+### `PClip.IsOpen = false;`
 
 Taking a recording closes the menu, the way taking a pronunciation candidate does.
 

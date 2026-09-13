@@ -15,5 +15,3 @@ One source: its name, small, then what it had to say.
 Its readings stand in a row of buttons beside the name, wrapping when they run out of width.
 A source with no reading shows one italic line in place of them.
 The line says whether it is still searching, has no entry, or could not be retrieved.
-A source with two or more readings offers one more button that takes them all.
-Hiding it otherwise keeps a row with one reading free of a choice that means nothing there.

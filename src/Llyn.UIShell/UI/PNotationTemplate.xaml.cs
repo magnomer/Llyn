@@ -16,9 +16,4 @@ public partial class PNotationTemplate : ResourceDictionary
     {
         _pNotationHost.PNotationSelectorHandle(sender, e);
     }
-
-    private void PNotationAllHandle(object sender, RoutedEventArgs e)
-    {
-        _pNotationHost.PNotationAllHandle(sender, e);
-    }
 }

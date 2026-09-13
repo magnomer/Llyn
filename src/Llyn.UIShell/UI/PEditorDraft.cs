@@ -26,6 +26,7 @@ public partial class PEditor
 
             PEditorNoteShow(draft.LEntryDraftNote);
             PEditorRecordingShow(draft);
+            PPlaybackTrayShow();
         }
         finally
         {
@@ -83,7 +84,7 @@ public partial class PEditor
         _pRecording = audio;
         _pRecordingSource = draft.LEntryDraftPronunciation?.LPronunciationDraftSource;
         _pRecordingStored = true;
-        PPlayback.Visibility = Visibility.Visible;
+        PPlaybackAction.Visibility = Visibility.Visible;
         PVolumeLoad();
     }
 

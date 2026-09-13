@@ -15,6 +15,7 @@ public partial class PEditor
         PEditorDraftCancel();
         _pMeaningList.Clear();
         _pCollocationList.Clear();
+        _pRecordingFresh.Clear();
 
         try
         {

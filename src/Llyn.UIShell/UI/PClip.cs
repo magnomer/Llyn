@@ -12,15 +12,25 @@ public partial class PEditor : LListener
     private readonly ObservableCollection<PClipItem> _pClipItem = [];
     private CancellationTokenSource? _pClipCancellation;
     private bool _pClipSearching;
+    private long _pClipTarget;
 
-    private async void PDownloaderCheckedHandle(object sender, RoutedEventArgs e)
+    private async void PDownloaderHandle(object sender, RoutedEventArgs e)
     {
-        await PClipStart();
+        await PClipOpen(PDownloader, 0);
     }
 
-    private void PDownloaderUncheckedHandle(object sender, RoutedEventArgs e)
+    private void PClipClosedHandle(object? sender, EventArgs e)
     {
         PClipCancel();
+    }
+
+    private async Task PClipOpen(UIElement anchor, long target)
+    {
+        PClip.IsOpen = false;
+        _pClipTarget = target;
+        PClip.PlacementTarget = anchor;
+        PClip.IsOpen = true;
+        await PClipStart();
     }
 
     private async Task PClipStart()
@@ -134,6 +144,7 @@ public partial class PEditor : LListener
         }
 
         string language = _pSpeakerChoice;
+        long target = _pClipTarget;
 
         recording.PClipItemAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");
         recording.PClipItemReady = false;
@@ -149,14 +160,24 @@ public partial class PEditor : LListener
                 return;
             }
 
-            _pRecording = path;
-            _pRecordingSource = recording.PClipItemSource;
-            _pRecordingStored = false;
-            PPlayback.Visibility = Visibility.Visible;
-            PVolumeLoad();
-            PEditorAudioSend();
+            if (target == 0)
+            {
+                _pRecording = path;
+                _pRecordingSource = recording.PClipItemSource;
+                _pRecordingStored = false;
+                PPlaybackAction.Visibility = Visibility.Visible;
+                PEditorAudioSend();
+            }
+            else
+            {
+                _pRecordingFresh.Add(target);
+                PEditorRequestSend(
+                    new LRequestPronunciationAudio(_pEditorDraft, target, path, recording.PClipItemSource));
+            }
 
-            PDownloader.IsChecked = false;
+            PPlaybackTrayShow();
+            PVolumeLoad();
+            PClip.IsOpen = false;
         }
         catch (Exception)
         {

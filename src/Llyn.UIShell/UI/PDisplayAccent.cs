@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -33,6 +35,17 @@ public partial class PDisplay
 
         PDisplayPrimaryShow();
         _ = PDisplayFlagLoad(language, flagged);
+    }
+
+    internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is not PAccentItem row || !File.Exists(row.PAccentItemAudio))
+        {
+            return;
+        }
+
+        _pDisplayPlayer.Open(new Uri(row.PAccentItemAudio));
+        _pDisplayPlayer.Play();
     }
 
     private void PDisplayPrimaryShow()

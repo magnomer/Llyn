@@ -23,11 +23,16 @@ The draft keeps the stored value beside the name, and the panel shows only the n
 Draws `draft` as the entry being read.
 A field the draft left empty collapses instead of standing as a blank line.
 The note is Markdown, drawn as blocks by `PMarkdown` inside the note card.
-The playback tray appears only when the entry owns a recording that is still on disk.
+The primary play button appears only when the entry owns a recording that is still on disk.
+The volume tray appears while any pronunciation row has a recording.
 The volume is read from the workspace on every show.
 A level the editor set is the level this view plays at.
 The id is taken as well as the draft, because a draft does not say which entry it is.
 That id is what the incoming cards are looked up by.
+
+## `private void PDisplayPlaybackShow()`
+
+Shows the volume tray while the primary or any further row has a recording.
 
 ## `internal void PDisplayClear()`
 

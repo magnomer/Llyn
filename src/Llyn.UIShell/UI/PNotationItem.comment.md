@@ -21,10 +21,6 @@ The one line a row without a reading says: searching, no entry, or failed to ret
 Whether the row carries a reading the user can take now, which is what `PClipItemReady` means on an audio row.
 It is what the template switches the readings and the notice on.
 
-## `public bool PNotationItemPlural`
-
-Whether the row holds more than one reading, which is when taking them all is worth a button.
-
 ## `internal void PNotationItemShow(LCandidate candidate, PNotationReading? reading, string missing, string broken)`
 
 Resolves the row from one thing its source said.

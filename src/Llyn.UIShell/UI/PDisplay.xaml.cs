@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -126,7 +127,7 @@ public partial class PDisplay : UserControl
         _pDisplayRecording = draft.LEntryDraftAudio.Length > 0 && File.Exists(draft.LEntryDraftAudio)
             ? draft.LEntryDraftAudio
             : null;
-        PPlayback.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;
+        PPlaybackAction.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;
         PVolumeLoad();
 
         PDisplayHeadword.Text = draft.LEntryDraftHeadword;
@@ -136,9 +137,7 @@ public partial class PDisplay : UserControl
             ? Visibility.Collapsed
             : Visibility.Visible;
         PDisplayAccentShow(draft);
-        PPlayback.Margin = draft.LEntryDraftIpa.Length == 0
-            ? new Thickness(0)
-            : new Thickness(10, 0, 0, 0);
+        PDisplayPlaybackShow();
 
         PDisplayFrameShow(draft.LEntryDraftLanguage);
         PDisplayExampleShow(draft.LEntryDraftLanguage);
@@ -178,6 +177,7 @@ public partial class PDisplay : UserControl
         PDisplayLanguage.Text = string.Empty;
         PDisplayLanguageFlag.Source = null;
         PPlayback.Visibility = Visibility.Collapsed;
+        PPlaybackAction.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
         PDisplayAccentClear();
         PDisplaySpeech.ItemsSource = null;
@@ -413,6 +413,13 @@ public partial class PDisplay : UserControl
 
         _pDisplayPlayer.Open(new Uri(_pDisplayRecording));
         _pDisplayPlayer.Play();
+    }
+
+    private void PDisplayPlaybackShow()
+    {
+        bool audible = _pDisplayRecording is not null
+            || _pDisplayAccent.Any(static row => row.PAccentItemAudio.Length > 0);
+        PPlayback.Visibility = audible ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)

@@ -2,8 +2,21 @@
 
 ## `public static class PAccentCommand`
 
-The routed command a pronunciation row raises, bound by the editor that hosts the rows.
+The routed commands a pronunciation row raises, bound by the editor or the reading view that hosts the rows.
+Each carries the row as its parameter, because the row template has no code of its own.
 
 ## `public static RoutedCommand PAccentCommandRemoval { get; }`
 
-Drops the pronunciation row carried as the command parameter.
+Drops the pronunciation row.
+
+## `public static RoutedCommand PAccentCommandNotation { get; }`
+
+Opens the pronunciation menu for the row.
+
+## `public static RoutedCommand PAccentCommandClip { get; }`
+
+Opens the audio menu for the row.
+
+## `public static RoutedCommand PAccentCommandPlayback { get; }`
+
+Plays the row's recording.
