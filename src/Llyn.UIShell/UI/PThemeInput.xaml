@@ -4,6 +4,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeIcon.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Theme.Input.Field" TargetType="TextBox">
@@ -69,10 +70,12 @@
                                 Grid.Column="1"
                                 Margin="0,0,12,0"
                                 VerticalAlignment="Center"
-                                Data="M 0 0 L 5 5 L 10 0"
+                                Width="10"
+                                Height="5"
+                                Data="{StaticResource Theme.Icon.Expand}"
+                                Fill="{StaticResource Theme.Muted}"
                                 IsHitTestVisible="False"
-                                Stroke="{StaticResource Theme.Muted}"
-                                StrokeThickness="1.4" />
+                                Stretch="Uniform" />
                             <Popup
                                 x:Name="PART_Popup"
                                 AllowsTransparency="True"

@@ -26,7 +26,7 @@
                     </TextBlock.Style>
                 </TextBlock>
                 <Button x:Name="PClipPreview" Margin="0,0,2,0" VerticalAlignment="Center" Click="PClipPreviewHandle" Style="{DynamicResource Theme.Popup.IconAction}" ToolTip="{DynamicResource Downloader.Play}">
-                    <Path Width="8" Height="10" Data="M 1,1 L 8,5.5 L 1,10 Z" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Fill" />
+                    <Path Width="10" Height="12" Data="{DynamicResource Theme.Icon.Play}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" />
                 </Button>
                 <Button x:Name="PClipSelector" VerticalAlignment="Center" Click="PClipSelectorHandle" Content="{Binding PClipReadingAction}" IsEnabled="{Binding PClipReadingReady}" Style="{DynamicResource Theme.Popup.RowChoice}" />
             </StackPanel>

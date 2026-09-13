@@ -4,6 +4,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeIcon.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePopup.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeCard.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -67,14 +68,11 @@
                                 x:Name="PIndicator"
                                 Grid.Column="1"
                                 Width="11"
-                                Height="8"
+                                Height="9"
                                 Margin="12,0,2,0"
-                                Data="M 0,4 L 3.5,7.5 L 11,0"
-                                Stroke="{StaticResource Theme.Accent}"
-                                StrokeEndLineCap="Round"
-                                StrokeLineJoin="Round"
-                                StrokeStartLineCap="Round"
-                                StrokeThickness="1.8"
+                                Data="{StaticResource Theme.Icon.Check}"
+                                Fill="{StaticResource Theme.Accent}"
+                                Stretch="Uniform"
                                 Visibility="Collapsed" />
                         </Grid>
                     </Border>
@@ -128,15 +126,12 @@
                                 <Path
                                     x:Name="PIndicatorMark"
                                     Width="9"
-                                    Height="6"
+                                    Height="7"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Data="M 0,3 L 3,6 L 9,0"
-                                    Stroke="{StaticResource Theme.Accent}"
-                                    StrokeEndLineCap="Round"
-                                    StrokeLineJoin="Round"
-                                    StrokeStartLineCap="Round"
-                                    StrokeThickness="1.6"
+                                    Data="{StaticResource Theme.Icon.Check}"
+                                    Fill="{StaticResource Theme.Accent}"
+                                    Stretch="Uniform"
                                     Visibility="Collapsed" />
                             </Border>
                         </Grid>

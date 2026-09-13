@@ -16,10 +16,7 @@
                         <Rectangle RadiusX="10" RadiusY="10" Stroke="{StaticResource Theme.Accent}" StrokeDashArray="5,3" StrokeThickness="1" Opacity="0.52" />
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
                             <Border Width="20" Height="20" Margin="0,0,9,0" Background="{StaticResource Theme.Accent}" CornerRadius="10">
-                                <Grid>
-                                    <Rectangle Width="10" Height="1.5" Fill="White" />
-                                    <Rectangle Width="1.5" Height="10" Fill="White" />
-                                </Grid>
+                                <Path Width="11" Height="11" HorizontalAlignment="Center" VerticalAlignment="Center" Data="{StaticResource Theme.Icon.Add}" Fill="White" Stretch="Uniform" />
                             </Border>
                             <ContentPresenter VerticalAlignment="Center" />
                         </StackPanel>

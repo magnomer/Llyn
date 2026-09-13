@@ -6,6 +6,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeIcon.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeInput.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePronunciation.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePlayback.xaml" />
@@ -46,13 +47,13 @@
     </Style>
 
     <Style x:Key="Theme.Accent.Phonetician" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
-        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
+        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/lookup.svg" />
         <Setter Property="ToolTip" Value="{DynamicResource Phonetician.Title}" />
         <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandNotation}" />
     </Style>
 
     <Style x:Key="Theme.Accent.Downloader" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
-        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" />
+        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/download.svg" />
         <Setter Property="ToolTip" Value="{DynamicResource Downloader.Title}" />
         <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandClip}" />
     </Style>
@@ -106,7 +107,7 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Path Width="9" Height="9" Data="M 4.5,0 L 4.5,9 M 0,4.5 L 9,4.5" Stroke="{StaticResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                    <Path Width="9" Height="9" Data="{StaticResource Theme.Icon.Add}" Fill="{StaticResource Theme.Accent}" Stretch="Uniform" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -118,7 +119,7 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Path Width="9" Height="9" Data="M 0,4.5 L 9,4.5" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                    <Path Width="9" Height="9" Data="{StaticResource Theme.Icon.Remove}" Fill="{StaticResource Theme.Muted}" Stretch="Uniform" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>

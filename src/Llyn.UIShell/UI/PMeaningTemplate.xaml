@@ -43,7 +43,7 @@
                             VerticalAlignment="Center"
                             Click="PCardHandle"
                             Style="{DynamicResource Theme.Card.Handle}">
-                            <Path Width="12" Height="12" Data="M 1,1 L 11,11 M 11,1 L 1,11" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                            <Path Width="11" Height="11" Data="{DynamicResource Theme.Icon.Close}" Fill="{DynamicResource Theme.Muted}" Stretch="Uniform" />
                         </Button>
                     </Grid>
                 </Border>
@@ -102,7 +102,7 @@
                                         <Rectangle.OpacityMask>
                                             <VisualBrush Stretch="Uniform">
                                                 <VisualBrush.Visual>
-                                                    <svgc:SvgViewbox Width="14" Height="14" Source="pack://application:,,,/Llyn;component/icons/video-camera.svg" />
+                                                    <svgc:SvgViewbox Width="14" Height="14" Source="pack://application:,,,/Llyn;component/icons/video.svg" />
                                                 </VisualBrush.Visual>
                                             </VisualBrush>
                                         </Rectangle.OpacityMask>

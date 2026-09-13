@@ -185,13 +185,13 @@
                         </StackPanel>
                     </Border>
                     <ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" VerticalAlignment="Center" Click="PDisplayFavoriteHandle" Style="{StaticResource Theme.Favorite.Mark}" ToolTip="{DynamicResource Favorite.Mark}">
-                        <Path Width="17" Height="16" Stretch="Uniform" Stroke="{StaticResource Theme.Favorite}" StrokeLineJoin="Round" StrokeThickness="1.4" Data="M 8,14.2 C 8,14.2 1,9.6 1,5.2 C 1,3 2.7,1.4 4.7,1.4 C 6.1,1.4 7.3,2.2 8,3.4 C 8.7,2.2 9.9,1.4 11.3,1.4 C 13.3,1.4 15,3 15,5.2 C 15,9.6 8,14.2 8,14.2 Z">
+                        <Path Width="17" Height="16" Stretch="Uniform" Fill="{StaticResource Theme.Favorite}">
                             <Path.Style>
                                 <Style TargetType="Path">
-                                    <Setter Property="Fill" Value="Transparent" />
+                                    <Setter Property="Data" Value="{StaticResource Theme.Icon.Favorite}" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsChecked, ElementName=PDisplayFavorite}" Value="True">
-                                            <Setter Property="Fill" Value="{StaticResource Theme.Favorite}" />
+                                            <Setter Property="Data" Value="{StaticResource Theme.Icon.FavoriteMarked}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -290,14 +290,9 @@
                                                 Height="15"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Data="M 2,7.5 L 12.5,7.5 M 8.5,3.5 L 12.5,7.5 8.5,11.5"
-                                                SnapsToDevicePixels="True"
-                                                Stretch="Uniform"
-                                                Stroke="{StaticResource Theme.Accent}"
-                                                StrokeEndLineCap="Round"
-                                                StrokeLineJoin="Round"
-                                                StrokeStartLineCap="Round"
-                                                StrokeThickness="1.5" />
+                                                Data="{StaticResource Theme.Icon.Incoming}"
+                                                Fill="{StaticResource Theme.Accent}"
+                                                Stretch="Uniform" />
                                         </Border>
 
                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -350,14 +345,11 @@
         <StackPanel x:Name="PCompass" Width="216" Margin="0,20,26,0" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed">
             <ToggleButton x:Name="PCompassSwitch" HorizontalAlignment="Left" Click="PCompassSwitchHandle" IsChecked="True" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Contents.Title}">
                 <Path
-                    Width="14"
-                    Height="12"
-                    Data="M 0.75,1 H 13.25 M 0.75,6 H 13.25 M 0.75,11 H 9.25"
-                    SnapsToDevicePixels="True"
-                    Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
-                    StrokeEndLineCap="Round"
-                    StrokeStartLineCap="Round"
-                    StrokeThickness="1.5" />
+                    Width="15"
+                    Height="9"
+                    Data="{StaticResource Theme.Icon.Compass}"
+                    Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                    Stretch="Uniform" />
             </ToggleButton>
 
             <Border x:Name="PCompassSurface" Margin="0,6,0,0" Style="{StaticResource Theme.Popup.Surface}">

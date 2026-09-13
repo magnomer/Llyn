@@ -5,6 +5,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeIcon.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePronunciation.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeAccent.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePopup.xaml" />
@@ -12,7 +13,7 @@
 
     <Style x:Key="Theme.Transcription.Phonetician" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
         <Setter Property="Margin" Value="8,0,0,0" />
-        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
+        <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/lookup.svg" />
         <Setter Property="ToolTip" Value="{DynamicResource Transcription.Title}" />
         <Setter Property="Command" Value="{x:Static local:PTranscriptionCommand.PTranscriptionCommandNotation}" />
     </Style>
@@ -80,7 +81,7 @@
                             </ToggleButton.Template>
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock x:Name="PSchemeName" VerticalAlignment="Center" FontSize="{TemplateBinding FontSize}" Foreground="{TemplateBinding Foreground}" Text="{Binding PTranscriptionItemLabel}" />
-                                <Path x:Name="PSchemeChevron" Width="6" Height="3" Margin="4,1,0,0" VerticalAlignment="Center" Data="M 0,0 L 3,2.5 L 6,0" Stroke="{StaticResource Theme.Muted}" StrokeThickness="1.2" />
+                                <Path x:Name="PSchemeChevron" Width="6" Height="3" Margin="4,1,0,0" VerticalAlignment="Center" Data="{StaticResource Theme.Icon.Expand}" Fill="{StaticResource Theme.Muted}" Stretch="Uniform" />
                             </StackPanel>
                         </ToggleButton>
                         <Popup x:Name="PART_Popup" MinWidth="124" AllowsTransparency="True" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" PlacementTarget="{Binding ElementName=PSchemeField}" PopupAnimation="Fade" StaysOpen="False">
@@ -94,11 +95,11 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PSchemeName" Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PSchemeChevron" Property="Stroke" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSchemeChevron" Property="Fill" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
                             <Setter TargetName="PSchemeName" Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                            <Setter TargetName="PSchemeChevron" Property="Stroke" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSchemeChevron" Property="Fill" Value="{StaticResource Theme.Accent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

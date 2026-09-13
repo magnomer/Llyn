@@ -253,7 +253,7 @@
                         <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Sentence.Control}" />
                     </StackPanel.Style>
                     <Button Margin="0,0,6,0" Click="PGlossAddHandle" Style="{DynamicResource Theme.Card.Handle}" ToolTip="{DynamicResource Gloss.Add}">
-                        <Path Width="11" Height="11" Data="M 5.5,2.5 L 5.5,8.5 M 2.5,5.5 L 8.5,5.5 M 5.5,0.5 A 5,5 0 1 0 5.5,10.5 A 5,5 0 1 0 5.5,0.5" Stroke="{DynamicResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.2" />
+                        <Path Width="11" Height="11" Data="{DynamicResource Theme.Icon.Gloss}" Fill="{DynamicResource Theme.Accent}" Stretch="Uniform" />
                     </Button>
                     <ToggleButton
                         x:Name="PSentenceCitationId"
@@ -303,10 +303,10 @@
                     <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Sentence.Control}" />
                 </StackPanel.Style>
                 <Button Click="PSentenceAddHandle" Style="{DynamicResource Theme.Card.Handle}">
-                    <Path Width="9" Height="9" Data="M 4.5,0 L 4.5,9 M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                    <Path Width="9" Height="9" Data="{DynamicResource Theme.Icon.Add}" Fill="{DynamicResource Theme.Accent}" Stretch="Uniform" />
                 </Button>
                 <Button Margin="4,0,0,0" Click="PSentenceRemoveHandle" Style="{DynamicResource Theme.Card.Handle}">
-                    <Path Width="9" Height="9" Data="M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                    <Path Width="9" Height="9" Data="{DynamicResource Theme.Icon.Remove}" Fill="{DynamicResource Theme.Muted}" Stretch="Uniform" />
                 </Button>
             </StackPanel>
         </Grid>

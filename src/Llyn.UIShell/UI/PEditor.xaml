@@ -52,7 +52,7 @@
                             <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
                         </Grid>
                         <TextBlock x:Name="PSpeakerName" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" Text="English" />
-                        <Path Grid.Column="2" Width="8" Height="4" Margin="8,0,0,0" VerticalAlignment="Center" Data="M 0,0 L 4,3 L 8,0" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.5" />
+                        <Path Grid.Column="2" Width="8" Height="4" Margin="8,0,0,0" VerticalAlignment="Center" Data="{StaticResource Theme.Icon.Expand}" Fill="{StaticResource Theme.Accent}" Stretch="Uniform" />
                     </Grid>
                 </ToggleButton>
                 <Popup
@@ -92,14 +92,14 @@
                         Content="{DynamicResource Input.Discard}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/plus.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/new.svg" />
                     <Button
                         x:Name="PEditorStore"
                         Click="PEditorStoreHandle"
                         Content="{DynamicResource Input.Store}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
-                        Tag="pack://application:,,,/Llyn;component/icons/floppy-disk.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/save.svg" />
                 </StackPanel>
             </Border>
         </Grid>
@@ -135,8 +135,8 @@
                             </Grid>
                             <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                             <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="pack://application:,,,/Llyn;component/icons/play.svg" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
-                            <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" ToolTip="{DynamicResource Phonetician.Title}" />
-                            <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" ToolTip="{DynamicResource Downloader.Title}" />
+                            <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/lookup.svg" ToolTip="{DynamicResource Phonetician.Title}" />
+                            <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/download.svg" ToolTip="{DynamicResource Downloader.Title}" />
                             <StackPanel Style="{StaticResource Theme.Accent.Control}">
                                 <Button Style="{StaticResource Theme.Accent.Addition}" />
                                 <Button Style="{StaticResource Theme.Accent.Remove}" />
@@ -176,7 +176,7 @@
 
                             <TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />
                             <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Style="{StaticResource Theme.Marker.Switch}">
-                                <Path Width="7" Height="3.5" Data="M 0,0 L 3.5,3.5 L 7,0" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" StrokeEndLineCap="Round" StrokeStartLineCap="Round" StrokeThickness="1.4" />
+                                <Path Width="7" Height="3.5" Data="{StaticResource Theme.Icon.Expand}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="Uniform" />
                             </ToggleButton>
                         </Grid>
                     </Border>

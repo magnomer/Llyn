@@ -9,13 +9,11 @@
                 <TextBlock Style="{DynamicResource Theme.Marker.Name}" Text="{Binding PMarkerChipName}" />
                 <Button Click="PMarkerChipHandle" Style="{DynamicResource Theme.Marker.Remove}">
                     <Path
-                        Width="7"
-                        Height="7"
-                        Data="M 0,0 L 7,7 M 7,0 L 0,7"
-                        Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
-                        StrokeEndLineCap="Round"
-                        StrokeStartLineCap="Round"
-                        StrokeThickness="1.5" />
+                        Width="8"
+                        Height="8"
+                        Data="{DynamicResource Theme.Icon.Close}"
+                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                        Stretch="Uniform" />
                 </Button>
             </StackPanel>
         </Border>

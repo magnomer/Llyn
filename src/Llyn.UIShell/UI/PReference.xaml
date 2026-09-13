@@ -59,11 +59,7 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Grade.Title}">
-                    <Canvas Width="16" Height="14">
-                        <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                        <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                        <Rectangle Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                    </Canvas>
+                    <Path Width="16" Height="11" Data="{StaticResource Theme.Icon.Sort}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="Uniform" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
@@ -102,18 +98,18 @@
                         Click="PReferenceFreshHandle"
                         Content="{DynamicResource Scribe.New}"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/plus.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/new.svg" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Content="{DynamicResource Scribe.Export}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/upload-simple.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/export.svg" />
                     <Button
                         Content="{DynamicResource Scribe.Print}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/printer.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/print.svg" />
                 </StackPanel>
             </Border>
             <Border
@@ -128,14 +124,14 @@
                         GroupName="PReferenceMode"
                         IsChecked="True"
                         Style="{StaticResource Theme.Command.Mode}"
-                        Tag="pack://application:,,,/Llyn;component/icons/eye.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/view.svg" />
                     <RadioButton
                         x:Name="PReferenceScribe"
                         Click="PReferenceScribeHandle"
                         Content="{DynamicResource Scribe.Edit}"
                         GroupName="PReferenceMode"
                         Style="{StaticResource Theme.Command.Mode}"
-                        Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/edit.svg" />
                 </StackPanel>
             </Border>
         </local:PRail>

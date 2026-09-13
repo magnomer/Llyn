@@ -86,6 +86,12 @@ Maps a point on the row to a half step from one to ten.
 The left half of a star is its odd step and the right half its even step.
 Every point maps to a step: gaps and slack fold into the nearest star, so nothing near the row is dead.
 
+## `private static Geometry PGraspStarBuild()`
+
+The Material star symbol scaled once into the sixteen-unit box every star is drawn in.
+Half the stroke width is kept as inset, so the outline never leaves the box.
+The parsed symbol arrives frozen, so a clone carries the transform.
+
 ## `private void PGraspDraw(DrawingContext context)`
 
 A transparent rectangle over the whole row is drawn first, so the pointer hits the row and not only the ink.

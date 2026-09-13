@@ -49,11 +49,7 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Order.Title}">
-                    <Canvas Width="16" Height="14">
-                        <Rectangle Canvas.Top="1" Width="16" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                        <Rectangle Canvas.Top="6.2" Width="11" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                        <Rectangle Canvas.Top="11.4" Width="6" Height="1.6" RadiusX="0.8" RadiusY="0.8" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
-                    </Canvas>
+                    <Path Width="16" Height="11" Data="{StaticResource Theme.Icon.Sort}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="Uniform" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
@@ -69,11 +65,7 @@
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Sieve.Title}">
                     <Grid Width="16" Height="14">
-                        <Path
-                            Data="M 1,1 H 15 L 9.6,7.6 V 12.6 L 6.4,14 V 7.6 Z"
-                            Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
-                            StrokeLineJoin="Round"
-                            StrokeThickness="1.6" />
+                        <Path Width="14" Height="14" Data="{StaticResource Theme.Icon.Filter}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="Uniform" />
                         <Ellipse
                             x:Name="PSieveMark"
                             Width="6"
@@ -157,32 +149,32 @@
                         Click="PLibraryFreshHandle"
                         Content="{DynamicResource Scribe.New}"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/plus.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/new.svg" />
                     <Button
                         x:Name="PLibraryStore"
                         Click="PLibraryStoreHandle"
                         Content="{DynamicResource Scribe.Save}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
-                        Tag="pack://application:,,,/Llyn;component/icons/floppy-disk.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/save.svg" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Click="PLibraryMarkupHandle"
                         Content="{DynamicResource List.Import}"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/download-simple.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/import.svg" />
                     <Button
                         x:Name="PLibraryPortrait"
                         Click="PLibraryPortraitHandle"
                         Content="{DynamicResource Scribe.Export}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/upload-simple.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/export.svg" />
                     <Button
                         Content="{DynamicResource Scribe.Print}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/printer.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/print.svg" />
                 </StackPanel>
             </Border>
             <Border
@@ -197,14 +189,14 @@
                         GroupName="PLibraryMode"
                         IsChecked="True"
                         Style="{StaticResource Theme.Command.Mode}"
-                        Tag="pack://application:,,,/Llyn;component/icons/eye.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/view.svg" />
                     <RadioButton
                         x:Name="PLibraryScribe"
                         Click="PLibraryScribeHandle"
                         Content="{DynamicResource Scribe.Edit}"
                         GroupName="PLibraryMode"
                         Style="{StaticResource Theme.Command.Mode}"
-                        Tag="pack://application:,,,/Llyn;component/icons/pencil-simple.svg" />
+                        Tag="pack://application:,,,/Llyn;component/icons/edit.svg" />
                 </StackPanel>
             </Border>
         </local:PRail>
@@ -228,7 +220,7 @@
                         <Rectangle.OpacityMask>
                             <VisualBrush Stretch="Uniform">
                                 <VisualBrush.Visual>
-                                    <svgc:SvgViewbox Width="15" Height="16" Source="pack://application:,,,/Llyn;component/icons/trash.svg" />
+                                    <svgc:SvgViewbox Width="15" Height="16" Source="pack://application:,,,/Llyn;component/icons/delete.svg" />
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Rectangle.OpacityMask>

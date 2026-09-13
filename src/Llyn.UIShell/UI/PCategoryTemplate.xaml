@@ -26,11 +26,9 @@
                     Height="8"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Data="M 0,4 L 3.6,7.5 L 10,0.6"
-                    Stroke="{DynamicResource Theme.Accent}"
-                    StrokeEndLineCap="Round"
-                    StrokeStartLineCap="Round"
-                    StrokeThickness="1.7"
+                    Data="{DynamicResource Theme.Icon.Check}"
+                    Fill="{DynamicResource Theme.Accent}"
+                    Stretch="Uniform"
                     Visibility="{Binding PCategoryItemTaken, Converter={StaticResource Theme.Category.Fold}}" />
             </Grid>
         </Button>

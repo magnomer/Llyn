@@ -63,7 +63,7 @@
 
             <StackPanel Grid.Column="1" Margin="30,1,0,0" VerticalAlignment="Top" Orientation="Horizontal" Style="{DynamicResource Theme.Card.Control}">
                 <Button Click="PImageRemoveHandle" Style="{DynamicResource Theme.Card.Handle}">
-                    <Path Width="9" Height="9" Data="M 0,4.5 L 9,4.5" Stroke="{DynamicResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                    <Path Width="9" Height="9" Data="{DynamicResource Theme.Icon.Remove}" Fill="{DynamicResource Theme.Muted}" Stretch="Uniform" />
                 </Button>
             </StackPanel>
         </Grid>
