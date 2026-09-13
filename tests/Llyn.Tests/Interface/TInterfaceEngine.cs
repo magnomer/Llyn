@@ -198,6 +198,16 @@ internal static partial class TInterface
         engine.LEngineMorphologySave(morphology);
     }
 
+    internal static void TEngineLayoutSave(this LEngine engine, params LLayout[] layout)
+    {
+        engine.LEngineLayoutSave(layout);
+    }
+
+    internal static void TEngineLinkedSave(this LEngine engine, bool linked)
+    {
+        engine.LEngineLinkedSave(linked);
+    }
+
     internal static Task<LFrequency?> TEngineFrequencyFind(
         this LEngine engine,
         string word,
@@ -230,8 +240,13 @@ internal static partial class TInterface
         double volume = 1,
         bool respelled = false,
         bool frequency = true,
-        bool morphology = true) =>
-        new(localization, window, volume, respelled, frequency, morphology);
+        bool morphology = true,
+        IReadOnlyList<LLayout>? layout = null,
+        bool linked = true) =>
+        new(localization, window, volume, respelled, frequency, morphology, layout, linked);
+
+    internal static LLayout TLayoutCreate(string tab, double? left = null, double? middle = null) =>
+        new(tab, left, middle);
 
     internal static LSettings TSettingsLoad(string root) =>
         LSettingsLoader.LSettingsLoaderLoad(root);

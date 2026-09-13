@@ -19,7 +19,10 @@ public sealed class PSeam : Thumb
         Cursor = Cursors.SizeWE;
         DragStarted += PSeamStartHandle;
         DragDelta += PSeamDragHandle;
+        DragCompleted += PSeamFinishHandle;
     }
+
+    internal PLayout? PSeamLayout { get; set; }
 
     private void PSeamStartHandle(object sender, DragStartedEventArgs e)
     {
@@ -76,6 +79,7 @@ public sealed class PSeam : Thumb
         shift = Math.Min(Math.Abs(shift), _pSeamWidth[pay] - _pSeamRoom[pay]);
         if (shift <= 0)
         {
+            PSeamLayout?.PLayoutPropagate(host);
             return;
         }
 
@@ -87,6 +91,16 @@ public sealed class PSeam : Thumb
         if (pay != last)
         {
             host.ColumnDefinitions[pay].Width = new GridLength(_pSeamWidth[pay] - shift);
+        }
+
+        PSeamLayout?.PLayoutPropagate(host);
+    }
+
+    private void PSeamFinishHandle(object sender, DragCompletedEventArgs e)
+    {
+        if (Parent is Grid host && _pSeamWidth.Length == host.ColumnDefinitions.Count)
+        {
+            PSeamLayout?.PLayoutSave(host);
         }
     }
 

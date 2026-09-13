@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -10,11 +11,14 @@ public partial class PWindow : Window
 {
     private readonly LEngine _lEngine;
 
+    private readonly PLayout _pLayout;
+
     public PWindow(LEngine engine)
     {
         ArgumentNullException.ThrowIfNull(engine);
 
         _lEngine = engine;
+        _pLayout = new PLayout(engine);
 
         InitializeComponent();
 
@@ -33,6 +37,8 @@ public partial class PWindow : Window
     }
 
     internal int PWindowLeftover { get; private set; }
+
+    internal PLayout PWindowLayout => _pLayout;
 
     private void PWindowAttach(LEngine engine)
     {
@@ -55,7 +61,23 @@ public partial class PWindow : Window
         PDuplex.PDuplexAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
 
+        PWindowLayoutAttach();
+
         PWindowViewRestore(state);
+    }
+
+    private void PWindowLayoutAttach()
+    {
+        _pLayout.PLayoutAttach((Grid)PLibrary.Content, "library");
+        _pLayout.PLayoutAttach((Grid)PPhonology.Content, "phonology");
+        _pLayout.PLayoutAttach((Grid)PTaxonomy.Content, "taxonomy");
+        _pLayout.PLayoutAttach((Grid)PTenor.Content, "tenor");
+        _pLayout.PLayoutAttach((Grid)PRepertoire.Content, "repertoire");
+        _pLayout.PLayoutAttach((Grid)PCorpus.Content, "corpus");
+        _pLayout.PLayoutAttach((Grid)PReference.Content, "reference");
+        _pLayout.PLayoutAttach((Grid)PFavorite.Content, "favorite");
+
+        _pLayout.PLayoutRestore();
     }
 
     private void PWindowClosingHandle(object? sender, CancelEventArgs e)

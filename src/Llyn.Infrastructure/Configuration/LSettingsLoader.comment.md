@@ -37,3 +37,17 @@ Its absence is what a first run looks like, and the window then falls back to it
 ### `LWindowLoader.LWindowLoaderRead(block)`
 
 The block's own shape is `LWindowLoader`'s business, so only its presence is decided here.
+
+### `share.ValueKind != JsonValueKind.False;`
+
+The linked switch defaults on, so only an explicit JSON `false` lets tabs keep separate widths.
+A missing key means on, so an older workspace starts with its panels linked.
+
+### `if (settings.LSettingsLayout is { Count: > 0 } layout)`
+
+A layout block is written only once some panel has been dragged.
+Its absence means every tab still stands at its designed width.
+
+### `LLayoutLoader.LLayoutLoaderRead(panels)`
+
+The block's own shape is `LLayoutLoader`'s business, so only its presence is decided here.

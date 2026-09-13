@@ -45,6 +45,18 @@ Persists whether an entry's inflected forms are looked up on the web and keeps i
 Turning the switch off cancels every fetch still in flight, so no form lands after the user said no.
 Forms already stored stay, because the switch governs asking, not keeping.
 
+## `public void LEngineLayoutSave(IEnumerable<LLayout> layout)`
+
+Persists the panel widths of the tabs given and keeps them current.
+Each tab given replaces its own record, and every tab not given keeps the record it had.
+The merge runs under the gate, so one drag never drops what another tab wrote.
+A linked drag hands over every tab at once, so the file is written once, not once per tab.
+
+## `public void LEngineLinkedSave(bool linked)`
+
+Persists whether dragging a panel in one tab sets the same width in every tab and keeps it current.
+The widths themselves are stored per tab either way, so a flip neither moves nor loses any panel.
+
 ## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
 
 Applies `change` to the settings held here and writes the result out, under the engine gate.

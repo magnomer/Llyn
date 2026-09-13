@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -139,5 +140,94 @@ public sealed class TSettings
         Assert.Contains(
             "\"respelling\": true",
             File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+    }
+
+    [Fact]
+    public void SettingsSave_Layout_RoundTripsPerTab()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        LLayout[] layout =
+        [
+            TInterface.TLayoutCreate("library", 420),
+            TInterface.TLayoutCreate("taxonomy", 310, 280)
+        ];
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", layout: layout));
+
+        LSettings loaded = TInterface.TSettingsLoad(workspace.TWorkspaceFolder);
+
+        Assert.NotNull(loaded.LSettingsLayout);
+        Assert.Equal(2, loaded.LSettingsLayout.Count);
+        Assert.Contains(loaded.LSettingsLayout, tab => tab.LLayoutTab == "library" && tab.LLayoutLeft == 420 && tab.LLayoutMiddle is null);
+        Assert.Contains(loaded.LSettingsLayout, tab => tab.LLayoutTab == "taxonomy" && tab.LLayoutLeft == 310 && tab.LLayoutMiddle == 280);
+    }
+
+    [Fact]
+    public void SettingsSave_LinkedOff_RoundTripsFalse()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", linked: false));
+
+        Assert.False(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsLinked);
+        Assert.Contains(
+            "\"linked\": false",
+            File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+    }
+
+    [Theory]
+    [InlineData("{ \"localization\": \"en\" }")]
+    [InlineData("{ \"localization\": \"en\", \"linked\": true }")]
+    [InlineData("{ \"localization\": \"en\", \"linked\": \"no\" }")]
+    public void SettingsLoad_LinkedAbsentOrNotFalse_LoadsTrue(string json)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), json);
+
+        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsLinked);
+    }
+
+    [Theory]
+    [InlineData("{ \"localization\": \"en\" }")]
+    [InlineData("{ \"localization\": \"en\", \"layout\": 5 }")]
+    [InlineData("{ \"localization\": \"en\", \"layout\": { \"library\": { \"left\": -1 }, \"tenor\": \"wide\" } }")]
+    public void SettingsLoad_LayoutAbsentOrUnusable_LoadsNoTab(string json)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), json);
+
+        Assert.Empty(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsLayout ?? []);
+    }
+
+    [Fact]
+    public void LayoutSave_SecondTab_KeepsFirstTab()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineLayoutSave(TInterface.TLayoutCreate("library", 400));
+        engine.TEngineLayoutSave(TInterface.TLayoutCreate("corpus", 390), TInterface.TLayoutCreate("library", 410));
+
+        IReadOnlyList<LLayout> layout = engine.TEngineSettingsRead().LSettingsLayout ?? [];
+
+        Assert.Equal(2, layout.Count);
+        Assert.Contains(layout, tab => tab.LLayoutTab == "library" && tab.LLayoutLeft == 410);
+        Assert.Contains(layout, tab => tab.LLayoutTab == "corpus" && tab.LLayoutLeft == 390);
+    }
+
+    [Fact]
+    public void LinkedSave_False_KeepsLayout()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
+        engine.TEngineLinkedSave(false);
+
+        LSettings settings = engine.TEngineSettingsRead();
+
+        Assert.False(settings.LSettingsLinked);
+        Assert.Single(settings.LSettingsLayout ?? []);
     }
 }

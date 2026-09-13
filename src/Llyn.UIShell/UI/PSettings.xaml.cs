@@ -26,6 +26,7 @@ public partial class PSettings : UserControl
         PRespelling.IsChecked = engine.LEngineSettingsRead().LSettingsRespelled;
         PFrequency.IsChecked = engine.LEngineSettingsRead().LSettingsFrequency;
         PMorphology.IsChecked = engine.LEngineSettingsRead().LSettingsMorphology;
+        PLayoutLinked.IsChecked = engine.LEngineSettingsRead().LSettingsLinked;
         _pSettingsReady = true;
     }
 }

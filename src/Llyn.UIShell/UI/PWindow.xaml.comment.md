@@ -31,6 +31,17 @@ The leftovers are counted next, so the number describes the workspace as it was 
 The stored view state is read once here and applied after every panel is attached.
 Reading it once is what keeps the panels from each asking the workspace the same question.
 
+## `internal PLayout PWindowLayout => _pLayout;`
+
+The keeper of panel widths, reached by the settings panel when the user links or unlinks the tabs.
+
+## `private void PWindowLayoutAttach()`
+
+Registers the root grid of every tab that has a seam, under the name its widths are stored by.
+The duplex panel is left out.
+Its two halves are editors sharing the window, not a catalog beside a display.
+The stored widths are applied right after, before any tab is shown, so nothing jumps on the first view.
+
 ## `private void PWindowExitHandle(object? sender, EventArgs e)`
 
 Closes every panel, sweeps the workspace once more, and lets the engine go.

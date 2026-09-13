@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -52,6 +53,34 @@ public sealed partial class LEngine
                 LEngineInflectionClear();
             }
         }
+    }
+
+    public void LEngineLayoutSave(IEnumerable<LLayout> layout)
+    {
+        ArgumentNullException.ThrowIfNull(layout);
+
+        lock (_lEngineGate)
+        {
+            Dictionary<string, LLayout> merged = new(StringComparer.Ordinal);
+
+            foreach (LLayout tab in _lEngineSettings.LSettingsLayout ?? [])
+            {
+                merged[tab.LLayoutTab] = tab;
+            }
+
+            foreach (LLayout tab in layout)
+            {
+                merged[tab.LLayoutTab] = tab;
+            }
+
+            List<LLayout> list = [.. merged.Values];
+            LEngineSettingsChange(settings => settings with { LSettingsLayout = list });
+        }
+    }
+
+    public void LEngineLinkedSave(bool linked)
+    {
+        LEngineSettingsChange(settings => settings with { LSettingsLinked = linked });
     }
 
     private void LEngineSettingsChange(Func<LSettings, LSettings> change)

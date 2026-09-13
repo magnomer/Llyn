@@ -15,6 +15,8 @@ public static class LSettingsLoader
     private const string LSettingsLoaderRespelling = "respelling";
     private const string LSettingsLoaderFrequency = "frequency";
     private const string LSettingsLoaderMorphology = "morphology";
+    private const string LSettingsLoaderLayout = "layout";
+    private const string LSettingsLoaderLinked = "linked";
     private const string LSettingsLoaderDefault = "en";
     private const double LSettingsLoaderLoudest = 1;
 
@@ -64,7 +66,15 @@ public static class LSettingsLoader
                 !document.RootElement.TryGetProperty(LSettingsLoaderMorphology, out JsonElement inflect) ||
                 inflect.ValueKind != JsonValueKind.False;
 
-            return new LSettings(localization, window, volume, respelled, frequency, morphology);
+            IReadOnlyList<LLayout>? layout = document.RootElement.TryGetProperty(LSettingsLoaderLayout, out JsonElement panels)
+                ? LLayoutLoader.LLayoutLoaderRead(panels)
+                : null;
+
+            bool linked =
+                !document.RootElement.TryGetProperty(LSettingsLoaderLinked, out JsonElement share) ||
+                share.ValueKind != JsonValueKind.False;
+
+            return new LSettings(localization, window, volume, respelled, frequency, morphology, layout, linked);
         }
         catch (JsonException)
         {
@@ -89,8 +99,14 @@ public static class LSettingsLoader
             [LSettingsLoaderVolume] = Math.Clamp(settings.LSettingsVolume, 0, LSettingsLoaderLoudest),
             [LSettingsLoaderRespelling] = settings.LSettingsRespelled,
             [LSettingsLoaderFrequency] = settings.LSettingsFrequency,
-            [LSettingsLoaderMorphology] = settings.LSettingsMorphology
+            [LSettingsLoaderMorphology] = settings.LSettingsMorphology,
+            [LSettingsLoaderLinked] = settings.LSettingsLinked
         };
+
+        if (settings.LSettingsLayout is { Count: > 0 } layout)
+        {
+            payload[LSettingsLoaderLayout] = LLayoutLoader.LLayoutLoaderCreate(layout);
+        }
 
         if (settings.LSettingsWindow is LWindowState window)
         {

@@ -16,3 +16,5 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsRespelled` — Whether looked-up transcriptions are recast through the pack's respelling groups, off by default.
 - `LSettingsFrequency` — Whether an entry's frequency is fetched and shown, on by default.
 - `LSettingsMorphology` — Whether an entry's inflected forms are fetched from the pack's morphology sources, on by default.
+- `LSettingsLayout` — The panel widths of each tab, one record per tab, or nothing before any panel was dragged.
+- `LSettingsLinked` — Whether dragging a panel in one tab sets the same width in every tab, on by default.

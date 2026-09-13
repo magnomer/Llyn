@@ -99,6 +99,7 @@ internal static class TAuditNameRegistry
         "Label",
         "Language",
         "Lattice",
+        "Layout",
         "Leave",
         "Left",
         "Leftover",

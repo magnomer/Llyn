@@ -6,6 +6,21 @@ The divider between two side-by-side panels, dragged to give one panel more room
 It draws the same one-pixel line the gutter always showed, inside a wider strip the pointer can catch.
 The strip is twelve pixels wide and centred on the line, so the line itself stays where it was.
 
+### `internal PLayout? PSeamLayout { get; set; }`
+
+The keeper the seam reports its drags to, set by the window when the tab is registered.
+A seam with no keeper still resizes its own tab, so a tab standing alone keeps working.
+
+### `PSeamLayout?.PLayoutPropagate(host);`
+
+Every step of the drag is reported, so linked tabs follow live rather than at the end.
+A step that crossed back over its start is reported too, because the snapshot was just put back.
+
+### `private void PSeamFinishHandle(object sender, DragCompletedEventArgs e)`
+
+The widths are stored once when the pointer is released, not on every step.
+A drag that never took a snapshot has nothing to store.
+
 ### `private static double PSeamRoomRead(Grid host, int column)`
 
 A panel stops shrinking where its own contents would start being cut off.
