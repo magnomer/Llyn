@@ -75,6 +75,36 @@ public sealed partial class LEngine
         LEngineStateChange(state => state with { LWorkspaceStateRank = order });
     }
 
+    public void LEngineSieveSave(LCatalogFilter filter)
+    {
+        LEngineStateChange(state => state with { LWorkspaceStateSieve = filter });
+    }
+
+    public void LEngineLensSave(LCatalogFilter filter)
+    {
+        LEngineStateChange(state => state with { LWorkspaceStateLens = filter });
+    }
+
+    public void LEngineStrainerSave(LCatalogFilter filter)
+    {
+        LEngineStateChange(state => state with { LWorkspaceStateStrainer = filter });
+    }
+
+    public void LEngineLatticeSave(LCatalogFilter filter)
+    {
+        LEngineStateChange(state => state with { LWorkspaceStateLattice = filter });
+    }
+
+    public void LEngineGrilleSave(LCatalogFilter filter)
+    {
+        LEngineStateChange(state => state with { LWorkspaceStateGrille = filter });
+    }
+
+    public void LEnginePrismSave(LCatalogFilter filter)
+    {
+        LEngineStateChange(state => state with { LWorkspaceStatePrism = filter });
+    }
+
     private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)
     {
         lock (_lEngineGate)

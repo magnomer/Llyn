@@ -4,7 +4,7 @@
 
 The shell's own view state for one workspace.
 It holds which Entry each duplex side shows and which tab stands open.
-It also holds whether that tab shows its editor and the ordering each browse panel lists by.
+It also holds whether that tab shows its editor, how each browse panel orders, and the languages each hides.
 The session revision is held with them.
 So is the identity floor: the lowest temporary id this workspace has ever issued.
 This is session data, not lexical data.
@@ -36,3 +36,10 @@ That is the interface language and the window geometry, which mean the same thin
 - `LWorkspaceStateTier` — Ordering the repertoire panel lists situations in.
 - `LWorkspaceStateGrade` — Ordering the sources panel lists sources in.
 - `LWorkspaceStateRank` — Ordering the corpus panel lists examples in.
+- `LWorkspaceStateDegree` — Ordering the tenor panel lists registers in.
+- `LWorkspaceStateSieve` — Languages the library panel hides, and `null` before any was hidden.
+- `LWorkspaceStateLens` — Languages the phonology panel hides, and `null` before any was hidden.
+- `LWorkspaceStateStrainer` — Languages the favorites panel hides, and `null` before any was hidden.
+- `LWorkspaceStateLattice` — Languages the taxonomy panel hides from its entries, and `null` before any was hidden.
+- `LWorkspaceStateGrille` — Languages the tenor panel hides from its entries, and `null` before any was hidden.
+- `LWorkspaceStatePrism` — Languages the corpus panel hides, and `null` before any was hidden.

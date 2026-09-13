@@ -59,6 +59,30 @@ Stores the ordering the sources panel lists sources in.
 
 Stores the ordering the corpus panel lists examples in.
 
+## `public void LEngineSieveSave(LCatalogFilter filter)`
+
+Stores the languages the library panel hides.
+
+## `public void LEngineLensSave(LCatalogFilter filter)`
+
+Stores the languages the phonology panel hides.
+
+## `public void LEngineStrainerSave(LCatalogFilter filter)`
+
+Stores the languages the favorites panel hides.
+
+## `public void LEngineLatticeSave(LCatalogFilter filter)`
+
+Stores the languages the taxonomy panel hides from the entries of the chosen tag.
+
+## `public void LEngineGrilleSave(LCatalogFilter filter)`
+
+Stores the languages the tenor panel hides from the entries of the chosen register.
+
+## `public void LEnginePrismSave(LCatalogFilter filter)`
+
+Stores the languages the corpus panel hides.
+
 ## `private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)`
 
 Reads the stored state, applies `change` to it, and writes it back, all under the engine gate.

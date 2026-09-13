@@ -42,6 +42,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        return filter.LCatalogFilterApply(LEngineEntryFind(query, order), entry => entry.LEntryLanguage);
+    }
+
     public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag)
     {
         lock (_lEngineGate)
@@ -51,6 +57,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        return filter.LCatalogFilterApply(LEngineEntryFind(tag), entry => entry.LEntryLanguage);
+    }
+
     public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register)
     {
         lock (_lEngineGate)
@@ -58,6 +70,12 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(register);
             return new LEntryArchive(_lEngineDatabase).LEntryRegisterFind(register.LRegisterId);
         }
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        return filter.LCatalogFilterApply(LEngineEntryFind(register), entry => entry.LEntryLanguage);
     }
 
     public LEntryDraft? LEngineEntryLoad(long id)

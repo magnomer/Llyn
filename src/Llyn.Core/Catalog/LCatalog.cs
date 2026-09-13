@@ -4,6 +4,8 @@ namespace Llyn.Core;
 
 public static class LCatalog
 {
+    private const char LCatalogFilterSeparator = ',';
+
     public static string LCatalogOrderFormat(LCatalogOrder order)
     {
         return order switch
@@ -47,6 +49,24 @@ public static class LCatalog
             "Pending" => LCatalogOrder.LCatalogOrderPending,
             _ => fallback,
         };
+    }
+
+    public static string LCatalogFilterFormat(LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+
+        return string.Join(LCatalogFilterSeparator, filter.LCatalogFilterHidden);
+    }
+
+    public static LCatalogFilter LCatalogFilterParse(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return LCatalogFilter.LCatalogFilterEmpty;
+        }
+
+        return new LCatalogFilter(
+            text.Split(LCatalogFilterSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
     }
 
     public static string LCatalogTextNormalize(string? text)

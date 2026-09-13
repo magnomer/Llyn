@@ -13,7 +13,8 @@ public sealed class LWorkspaceArchive
     private const string LWorkspaceArchiveColumn =
         "workspace_id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split, " +
         "library_order, phonology_order, favorite_order, taxonomy_order, " +
-        "repertoire_order, reference_order, corpus_order, tenor_order";
+        "repertoire_order, reference_order, corpus_order, tenor_order, " +
+        "library_filter, phonology_filter, favorite_filter, taxonomy_filter, tenor_filter, corpus_filter";
 
     private readonly LDatabase _lWorkspaceArchiveDatabase;
 
@@ -35,7 +36,7 @@ public sealed class LWorkspaceArchive
                 INSERT INTO workspace ({LWorkspaceArchiveColumn})
                 VALUES (
                     $id, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-                    NULL, NULL)
+                    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
                 ON CONFLICT (workspace_id) DO NOTHING;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
@@ -86,6 +87,12 @@ public sealed class LWorkspaceArchive
                     LWorkspaceArchiveRead(reader, 13), fallback.LWorkspaceStateRank),
                 LWorkspaceStateDegree = LCatalog.LCatalogOrderParse(
                     LWorkspaceArchiveRead(reader, 14), fallback.LWorkspaceStateDegree),
+                LWorkspaceStateSieve = LCatalog.LCatalogFilterParse(LWorkspaceArchiveRead(reader, 15)),
+                LWorkspaceStateLens = LCatalog.LCatalogFilterParse(LWorkspaceArchiveRead(reader, 16)),
+                LWorkspaceStateStrainer = LCatalog.LCatalogFilterParse(LWorkspaceArchiveRead(reader, 17)),
+                LWorkspaceStateLattice = LCatalog.LCatalogFilterParse(LWorkspaceArchiveRead(reader, 18)),
+                LWorkspaceStateGrille = LCatalog.LCatalogFilterParse(LWorkspaceArchiveRead(reader, 19)),
+                LWorkspaceStatePrism = LCatalog.LCatalogFilterParse(LWorkspaceArchiveRead(reader, 20)),
             };
         }
 
@@ -105,11 +112,13 @@ public sealed class LWorkspaceArchive
                 INSERT INTO workspace (
                     workspace_id, left_entry_ref, right_entry_ref, revision_ref, identity_floor, mode, split,
                     library_order, phonology_order, favorite_order, taxonomy_order,
-                    repertoire_order, reference_order, corpus_order, tenor_order)
+                    repertoire_order, reference_order, corpus_order, tenor_order,
+                    library_filter, phonology_filter, favorite_filter, taxonomy_filter, tenor_filter, corpus_filter)
                 VALUES (
                     $id, $left, $right, $revision, $floor, $mode, $split,
                     $library, $phonology, $favorite, $taxonomy,
-                    $repertoire, $reference, $corpus, $tenor)
+                    $repertoire, $reference, $corpus, $tenor,
+                    $sieve, $lens, $strainer, $lattice, $grille, $prism)
                 ON CONFLICT (workspace_id) DO UPDATE SET
                     left_entry_ref = excluded.left_entry_ref,
                     right_entry_ref = excluded.right_entry_ref,
@@ -124,7 +133,13 @@ public sealed class LWorkspaceArchive
                     repertoire_order = excluded.repertoire_order,
                     reference_order = excluded.reference_order,
                     corpus_order = excluded.corpus_order,
-                    tenor_order = excluded.tenor_order;
+                    tenor_order = excluded.tenor_order,
+                    library_filter = excluded.library_filter,
+                    phonology_filter = excluded.phonology_filter,
+                    favorite_filter = excluded.favorite_filter,
+                    taxonomy_filter = excluded.taxonomy_filter,
+                    tenor_filter = excluded.tenor_filter,
+                    corpus_filter = excluded.corpus_filter;
                 """;
             command.Parameters.AddWithValue("$id", LWorkspaceArchiveRow);
             command.Parameters.AddWithValue("$left", (object?)state.LWorkspaceStateLeft ?? DBNull.Value);
@@ -142,6 +157,12 @@ public sealed class LWorkspaceArchive
             command.Parameters.AddWithValue("$reference", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateGrade));
             command.Parameters.AddWithValue("$corpus", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateRank));
             command.Parameters.AddWithValue("$tenor", LCatalog.LCatalogOrderFormat(state.LWorkspaceStateDegree));
+            command.Parameters.AddWithValue("$sieve", LWorkspaceArchiveFormat(state.LWorkspaceStateSieve));
+            command.Parameters.AddWithValue("$lens", LWorkspaceArchiveFormat(state.LWorkspaceStateLens));
+            command.Parameters.AddWithValue("$strainer", LWorkspaceArchiveFormat(state.LWorkspaceStateStrainer));
+            command.Parameters.AddWithValue("$lattice", LWorkspaceArchiveFormat(state.LWorkspaceStateLattice));
+            command.Parameters.AddWithValue("$grille", LWorkspaceArchiveFormat(state.LWorkspaceStateGrille));
+            command.Parameters.AddWithValue("$prism", LWorkspaceArchiveFormat(state.LWorkspaceStatePrism));
             command.ExecuteNonQuery();
         }
 
@@ -167,6 +188,11 @@ public sealed class LWorkspaceArchive
 
         session.LDatabaseSessionCommit();
         return floor;
+    }
+
+    private static string LWorkspaceArchiveFormat(LCatalogFilter? filter)
+    {
+        return LCatalog.LCatalogFilterFormat(filter ?? LCatalogFilter.LCatalogFilterEmpty);
     }
 
     private static string? LWorkspaceArchiveRead(SqliteDataReader reader, int column)

@@ -15,4 +15,10 @@ public sealed record LWorkspaceState(
     LCatalogOrder LWorkspaceStateTier = LCatalogOrder.LCatalogOrderName,
     LCatalogOrder LWorkspaceStateGrade = LCatalogOrder.LCatalogOrderName,
     LCatalogOrder LWorkspaceStateRank = LCatalogOrder.LCatalogOrderText,
-    LCatalogOrder LWorkspaceStateDegree = LCatalogOrder.LCatalogOrderName);
+    LCatalogOrder LWorkspaceStateDegree = LCatalogOrder.LCatalogOrderName,
+    LCatalogFilter? LWorkspaceStateSieve = null,
+    LCatalogFilter? LWorkspaceStateLens = null,
+    LCatalogFilter? LWorkspaceStateStrainer = null,
+    LCatalogFilter? LWorkspaceStateLattice = null,
+    LCatalogFilter? LWorkspaceStateGrille = null,
+    LCatalogFilter? LWorkspaceStatePrism = null);

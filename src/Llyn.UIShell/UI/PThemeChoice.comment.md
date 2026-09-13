@@ -14,6 +14,12 @@ They are Theme.Popup.RowSurface.
 The rows sit on the panel's own ground, so they carry a card of their own.
 The hover trigger below still repaints it.
 
+## `<Style x:Key="Theme.Choice.Filter" TargetType="CheckBox">`
+
+One language row of a filter dropdown, drawn like an ordering row with a box in place of the tick.
+A shown language is boxed in accent and inked, a hidden one is bare and muted.
+So a dropdown with every box ticked reads at a glance as hiding nothing.
+
 ## `<Style x:Key="Theme.Choice.Bare" TargetType="ComboBox">`
 
 The frame fields of an Example are typed into like text.

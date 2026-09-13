@@ -24,3 +24,7 @@ The entry stands, still reachable through the entry catalog.
 
 The marked entries answering `query`, in `order`.
 The mark carries its own stamp, so ordering by the mark is not ordering by the entry.
+
+## `public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
+
+The same list with the marked entries in a hidden language left out.

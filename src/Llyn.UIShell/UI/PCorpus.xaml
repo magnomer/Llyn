@@ -80,6 +80,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <ToggleButton
                     x:Name="PRankDropper"
@@ -99,6 +101,29 @@
                     Style="{StaticResource Theme.Search.Field}"
                     Tag="{DynamicResource Example.Search}"
                     TextChanged="PQueryHandle" />
+                <Rectangle Grid.Column="3" Margin="2,0,5,0" Style="{StaticResource Theme.Search.Divider}" />
+                <ToggleButton
+                    x:Name="PPrismDropper"
+                    Grid.Column="4"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Prism.Title}">
+                    <Grid Width="16" Height="14">
+                        <Path
+                            Data="M 1,1 H 15 L 9.6,7.6 V 12.6 L 6.4,14 V 7.6 Z"
+                            Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                            StrokeLineJoin="Round"
+                            StrokeThickness="1.6" />
+                        <Ellipse
+                            x:Name="PPrismMark"
+                            Width="6"
+                            Height="6"
+                            Margin="0,-2,-3,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Fill="{StaticResource Theme.Accent}"
+                            Visibility="Collapsed" />
+                    </Grid>
+                </ToggleButton>
                 <Popup
                     x:Name="PRankDropdown"
                     Width="238"
@@ -116,6 +141,20 @@
                             <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Source" Content="{DynamicResource Rank.Source}" />
                             <RadioButton GroupName="PRankChoice" Click="PRankHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Rank.Usage}" />
                         </StackPanel>
+                    </Border>
+                </Popup>
+                <Popup
+                    x:Name="PPrismDropdown"
+                    Width="190"
+                    AllowsTransparency="True"
+                    HorizontalOffset="-151"
+                    IsOpen="{Binding IsChecked, ElementName=PPrismDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PPrismDropper}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel x:Name="PPrismList" />
                     </Border>
                 </Popup>
             </Grid>

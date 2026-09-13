@@ -64,6 +64,11 @@ Lowers the identity floor by one and returns the new floor.
 One statement lowers and reads, so two engines on one workspace never receive the same number.
 The row is created at minus one when the database has none yet.
 
+## `private static string LWorkspaceArchiveFormat(LCatalogFilter? filter)`
+
+The text a language filter column is written as.
+A state that never named a filter writes the empty filter, so the column reads back as hiding nothing.
+
 ## `private static string? LWorkspaceArchiveRead(SqliteDataReader reader, int column)`
 
 Reads one text column, returning nothing for a column that was never written.

@@ -158,7 +158,66 @@
                 Text="{DynamicResource Register.Vacant}" />
         </Grid>
 
-        <local:PRail Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,18">
+        <Border
+            x:Name="PGrille"
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="-10,0,16,18"
+            Style="{StaticResource Theme.Search.Bar}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="{StaticResource Theme.Muted}"
+                    Text="{DynamicResource Grille.Label}" />
+                <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
+                <ToggleButton
+                    x:Name="PGrilleDropper"
+                    Grid.Column="2"
+                    Style="{StaticResource Theme.Search.Dropper}"
+                    ToolTip="{DynamicResource Grille.Title}">
+                    <Grid Width="16" Height="14">
+                        <Path
+                            Data="M 1,1 H 15 L 9.6,7.6 V 12.6 L 6.4,14 V 7.6 Z"
+                            Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"
+                            StrokeLineJoin="Round"
+                            StrokeThickness="1.6" />
+                        <Ellipse
+                            x:Name="PGrilleMark"
+                            Width="6"
+                            Height="6"
+                            Margin="0,-2,-3,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Fill="{StaticResource Theme.Accent}"
+                            Visibility="Collapsed" />
+                    </Grid>
+                </ToggleButton>
+                <Popup
+                    x:Name="PGrilleDropdown"
+                    Width="190"
+                    AllowsTransparency="True"
+                    HorizontalOffset="-151"
+                    IsOpen="{Binding IsChecked, ElementName=PGrilleDropper}"
+                    Placement="Bottom"
+                    PlacementTarget="{Binding ElementName=PGrilleDropper}"
+                    StaysOpen="False"
+                    VerticalOffset="6">
+                    <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel x:Name="PGrilleList" />
+                    </Border>
+                </Popup>
+            </Grid>
+        </Border>
+
+        <local:PRail Grid.Row="0" Grid.Column="2" Margin="0,0,0,18">
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button

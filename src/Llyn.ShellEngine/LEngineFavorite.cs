@@ -25,6 +25,13 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        return filter.LCatalogFilterApply(
+            LEngineFavoriteFind(query, order), favorite => favorite.LFavoriteEntry.LEntryLanguage);
+    }
+
     public bool LEngineFavoriteCheck(long entryId)
     {
         lock (_lEngineGate)

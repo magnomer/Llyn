@@ -19,6 +19,8 @@ public partial class PTaxonomy
 
     private LCatalogOrder _pFunnelChoice;
 
+    private LCatalogFilter _pLatticeChoice = LCatalogFilter.LCatalogFilterEmpty;
+
     private async void PTaxonomyBulletinHandle(LBulletin bulletin)
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
@@ -57,6 +59,24 @@ public partial class PTaxonomy
         await PEnsign.PEnsignLoad(_lEngine);
 
         PDirectoryFind(PExploration.Text ?? string.Empty);
+    }
+
+    private void PLatticeHandle(object sender, RoutedEventArgs e)
+    {
+        _pLatticeChoice = PChoice.PChoiceFilterRead(PLatticeList);
+        _lEngine.LEngineLatticeSave(_pLatticeChoice);
+        PLatticeMark.Visibility = _pLatticeChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        PMembershipFind();
+    }
+
+    internal async void PLatticeRestore(LCatalogFilter filter)
+    {
+        _pLatticeChoice = filter;
+        PLatticeMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PLatticeList, _lEngine.LEngineLanguageRead(), filter, PLatticeHandle);
     }
 
     private void PDirectoryReset()
@@ -127,7 +147,7 @@ public partial class PTaxonomy
         IReadOnlyList<LEntry> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(new LTag(_pDirectoryChoice, string.Empty));
+            read = _lEngine.LEngineEntryFind(new LTag(_pDirectoryChoice, string.Empty), _pLatticeChoice);
         }
         catch (Exception exception)
         {

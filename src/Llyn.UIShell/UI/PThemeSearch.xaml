@@ -10,7 +10,7 @@
 
     <Style x:Key="Theme.Search.Bar" TargetType="Border">
         <Setter Property="Height" Value="46" />
-        <Setter Property="Padding" Value="5,0,8,0" />
+        <Setter Property="Padding" Value="5,0,5,0" />
         <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="1" />
@@ -69,7 +69,7 @@
 
     <Style x:Key="Theme.Search.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
         <Setter Property="Template" Value="{DynamicResource Theme.Input.Field.Plain}" />
-        <Setter Property="Margin" Value="7,0,0,0" />
+        <Setter Property="Margin" Value="7,0,7,0" />
         <Setter Property="FontSize" Value="13.5" />
         <Setter Property="AcceptsReturn" Value="False" />
         <Setter Property="TextWrapping" Value="NoWrap" />

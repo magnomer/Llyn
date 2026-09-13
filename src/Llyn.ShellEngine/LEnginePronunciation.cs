@@ -45,6 +45,16 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(
+        string query,
+        LCatalogOrder order,
+        LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        return filter.LCatalogFilterApply(
+            LEnginePronunciationFind(query, order), row => row.LCatalogPronunciationEntry.LEntryLanguage);
+    }
+
     public void LEnginePronunciationUpdate(LPronunciation pronunciation)
     {
         lock (_lEngineGate)

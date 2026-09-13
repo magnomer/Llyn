@@ -90,6 +90,10 @@ The Examples answering `query`, in `order`, as rows already carrying their cited
 An Example is matched over its sentence, its translation and the name of the Source it cites.
 The name is resolved here, because matching on an id the reader never sees would answer the wrong question.
 
+## `public IReadOnlyList<LCatalogExample> LEngineExampleFind(string query, LCatalogOrder order, LCatalogFilter filter)`
+
+The same rows with the Examples in a hidden language left out.
+
 ## `public IReadOnlyDictionary<string, string> LEngineCitationRead()`
 
 The name every stored Source is shown under, by id.

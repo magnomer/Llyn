@@ -18,6 +18,22 @@ Reads an ordering back from its text, falling back where the text names none.
 A panel opens on its own fallback, because catalogs do not share a default ordering.
 Text the set does not know is never an error, because a stored choice can outlive the ordering it named.
 
+## `private const char LCatalogFilterSeparator`
+
+The character a stored filter joins its hidden languages with.
+A language folder name never carries one, so the join reads back whole.
+
+## `public static string LCatalogFilterFormat(LCatalogFilter filter)`
+
+The text form of one language filter, which is what a stored choice is written as.
+An empty filter writes an empty text.
+
+## `public static LCatalogFilter LCatalogFilterParse(string? text)`
+
+Reads a language filter back from its text.
+Empty or missing text is the filter that hides nothing.
+Stray spaces and empty names are dropped, so a hand-edited row still reads.
+
 ## `public static string LCatalogTextNormalize(string? text)`
 
 One text in the form two wordings are compared in: edge spaces gone and case lowered the invariant way.

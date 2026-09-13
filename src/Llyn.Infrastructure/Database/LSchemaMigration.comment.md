@@ -12,7 +12,7 @@ So a file at another version is refused rather than stamped.
 Until 1.0.0 no upgrade path is kept.
 A schema change raises the version, and a workspace built before it is created anew and imported.
 
-## `public const long LSchemaMigrationVersion = 45;`
+## `public const long LSchemaMigrationVersion = 46;`
 
 The schema version this build produces.
 A change to any table raises it.

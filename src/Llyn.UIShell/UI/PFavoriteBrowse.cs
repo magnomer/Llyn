@@ -15,6 +15,8 @@ public partial class PFavorite
 
     private LCatalogOrder _pSeriesChoice;
 
+    private LCatalogFilter _pStrainerChoice = LCatalogFilter.LCatalogFilterEmpty;
+
     private async void PFavoriteBulletinHandle(LBulletin bulletin)
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
@@ -55,6 +57,24 @@ public partial class PFavorite
         PRosterFind(PRecall.Text ?? string.Empty);
     }
 
+    private void PStrainerHandle(object sender, RoutedEventArgs e)
+    {
+        _pStrainerChoice = PChoice.PChoiceFilterRead(PStrainerList);
+        _lEngine.LEngineStrainerSave(_pStrainerChoice);
+        PStrainerMark.Visibility = _pStrainerChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        PRosterFind(PRecall.Text ?? string.Empty);
+    }
+
+    internal async void PStrainerRestore(LCatalogFilter filter)
+    {
+        _pStrainerChoice = filter;
+        PStrainerMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PStrainerList, _lEngine.LEngineLanguageRead(), filter, PStrainerHandle);
+    }
+
     private void PRosterSelect(long? id)
     {
         foreach (PRosterItem item in _pRosterList)
@@ -69,7 +89,7 @@ public partial class PFavorite
         IReadOnlyList<LFavorite> favorites;
         try
         {
-            favorites = _lEngine.LEngineFavoriteFind(query, _pSeriesChoice);
+            favorites = _lEngine.LEngineFavoriteFind(query, _pSeriesChoice, _pStrainerChoice);
         }
         catch (Exception exception)
         {

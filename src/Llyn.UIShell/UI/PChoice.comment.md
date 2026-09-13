@@ -4,6 +4,7 @@
 
 The marking of a dropdown's options against a stored value.
 A sorting dropdown opens with one of its rows marked.
+A filter dropdown opens with one row per loaded language, ticked unless the stored filter hides it.
 The row marked in the file is the one the user last clicked.
 A panel restoring a stored ordering therefore has to move the mark as well as reorder its list.
 
@@ -12,6 +13,22 @@ A panel restoring a stored ordering therefore has to move the mark as well as re
 Marks the row of `dropdown` whose tag names `order`, and unmarks every other row.
 The tag is the stored word for the ordering, so the dropdown and the workspace file agree on one spelling.
 Nothing is marked when no row offers that ordering.
+
+## `internal static void PChoiceFilterBuild(Panel list, IReadOnlyList<string> languages, LCatalogFilter filter, RoutedEventHandler handler)`
+
+Fills `list` with one ticked row per language in `languages`, unticking those `filter` hides.
+Every row reports its click to `handler`, which is the panel's own filter handler.
+The rows are built here so six panels share one row shape and one reading of a stored filter.
+
+## `internal static LCatalogFilter PChoiceFilterRead(Panel list)`
+
+The filter the rows of `list` now stand for: every unticked language is hidden.
+A list with nothing unticked reads as the shared empty filter.
+
+## `private static Grid PChoiceRowBuild(string language)`
+
+The content of one language row, shaped like a row of the language menu.
+That is its flag, or a bare ring where the pack has none, then its name.
 
 ## `private static IEnumerable<RadioButton> PChoiceButtonScan(DependencyObject? root)`
 

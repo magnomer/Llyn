@@ -34,6 +34,19 @@ A zero id stands for no tag chosen and returns every entry.
 That is the list the taxonomy panel shows beside its tag catalog.
 The overload takes a tag rather than text so the two searches cannot be confused.
 
+## `public IReadOnlyList<LEntry> LEngineEntryFind(string query, LCatalogOrder order, LCatalogFilter filter)`
+
+The ordered search with the entries in a hidden language left out.
+The library panel lists through this, so the filter is applied here and never in the shell.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, LCatalogFilter filter)`
+
+The entries carrying `tag` with those in a hidden language left out.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, LCatalogFilter filter)`
+
+The entries marked with `register` with those in a hidden language left out.
+
 ## `public LEntryDraft? LEngineEntryLoad(long id)`
 
 The stored entry as the input form would have handed it over.

@@ -14,6 +14,8 @@ public partial class PPhonology
 
     private LCatalogOrder _pSequenceChoice;
 
+    private LCatalogFilter _pLensChoice = LCatalogFilter.LCatalogFilterEmpty;
+
     private async void PPhonologyBulletinHandle(LBulletin bulletin)
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
@@ -54,6 +56,24 @@ public partial class PPhonology
         PInventoryFind(PProbe.Text ?? string.Empty);
     }
 
+    private void PLensHandle(object sender, RoutedEventArgs e)
+    {
+        _pLensChoice = PChoice.PChoiceFilterRead(PLensList);
+        _lEngine.LEngineLensSave(_pLensChoice);
+        PLensMark.Visibility = _pLensChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        PInventoryFind(PProbe.Text ?? string.Empty);
+    }
+
+    internal async void PLensRestore(LCatalogFilter filter)
+    {
+        _pLensChoice = filter;
+        PLensMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PLensList, _lEngine.LEngineLanguageRead(), filter, PLensHandle);
+    }
+
     private void PInventorySelect(long? id)
     {
         foreach (PInventoryItem item in _pInventoryList)
@@ -66,7 +86,7 @@ public partial class PPhonology
     private void PInventoryFind(string query)
     {
         _pInventoryList.Clear();
-        foreach (LCatalogPronunciation row in _lEngine.LEnginePronunciationFind(query, _pSequenceChoice))
+        foreach (LCatalogPronunciation row in _lEngine.LEnginePronunciationFind(query, _pSequenceChoice, _pLensChoice))
         {
             _pInventoryList.Add(new PInventoryItem(
                 row.LCatalogPronunciationEntry.LEntryId,

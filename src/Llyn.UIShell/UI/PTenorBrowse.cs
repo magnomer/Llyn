@@ -21,6 +21,8 @@ public partial class PTenor
 
     private LCatalogOrder _pDegreeChoice;
 
+    private LCatalogFilter _pGrilleChoice = LCatalogFilter.LCatalogFilterEmpty;
+
     private async void PTenorBulletinHandle(LBulletin bulletin)
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
@@ -59,6 +61,24 @@ public partial class PTenor
         await PEnsign.PEnsignLoad(_lEngine);
 
         PGamutFind(PSounding.Text ?? string.Empty);
+    }
+
+    private void PGrilleHandle(object sender, RoutedEventArgs e)
+    {
+        _pGrilleChoice = PChoice.PChoiceFilterRead(PGrilleList);
+        _lEngine.LEngineGrilleSave(_pGrilleChoice);
+        PGrilleMark.Visibility = _pGrilleChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        PCohortFind();
+    }
+
+    internal async void PGrilleRestore(LCatalogFilter filter)
+    {
+        _pGrilleChoice = filter;
+        PGrilleMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PGrilleList, _lEngine.LEngineLanguageRead(), filter, PGrilleHandle);
     }
 
     private void PGamutReset()
@@ -136,8 +156,9 @@ public partial class PTenor
         IReadOnlyList<LEntry> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(new LRegister(
-                _pGamutChoice ?? 0, LStateValue.LStateValueUnspecified, string.Empty));
+            read = _lEngine.LEngineEntryFind(
+                new LRegister(_pGamutChoice ?? 0, LStateValue.LStateValueUnspecified, string.Empty),
+                _pGrilleChoice);
         }
         catch (Exception exception)
         {

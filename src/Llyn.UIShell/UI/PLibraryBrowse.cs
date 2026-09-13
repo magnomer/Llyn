@@ -14,6 +14,8 @@ public partial class PLibrary
 
     private LCatalogOrder _pOrderChoice;
 
+    private LCatalogFilter _pSieveChoice = LCatalogFilter.LCatalogFilterEmpty;
+
     private async void PLibraryBulletinHandle(LBulletin bulletin)
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
@@ -54,6 +56,24 @@ public partial class PLibrary
         PIndexFind(PInquiry.Text ?? string.Empty);
     }
 
+    private void PSieveHandle(object sender, RoutedEventArgs e)
+    {
+        _pSieveChoice = PChoice.PChoiceFilterRead(PSieveList);
+        _lEngine.LEngineSieveSave(_pSieveChoice);
+        PSieveMark.Visibility = _pSieveChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        PIndexFind(PInquiry.Text ?? string.Empty);
+    }
+
+    internal async void PSieveRestore(LCatalogFilter filter)
+    {
+        _pSieveChoice = filter;
+        PSieveMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PSieveList, _lEngine.LEngineLanguageRead(), filter, PSieveHandle);
+    }
+
     private void PIndexSelect(long? id)
     {
         foreach (PIndexItem item in _pIndexList)
@@ -66,7 +86,7 @@ public partial class PLibrary
     private void PIndexFind(string query)
     {
         _pIndexList.Clear();
-        foreach (LEntry entry in _lEngine.LEngineEntryFind(query, _pOrderChoice))
+        foreach (LEntry entry in _lEngine.LEngineEntryFind(query, _pOrderChoice, _pSieveChoice))
         {
             _pIndexList.Add(new PIndexItem(entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
         }

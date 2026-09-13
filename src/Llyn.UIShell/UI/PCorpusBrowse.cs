@@ -23,6 +23,8 @@ public partial class PCorpus
 
     private LCatalogOrder _pRankChoice;
 
+    private LCatalogFilter _pPrismChoice = LCatalogFilter.LCatalogFilterEmpty;
+
     private async void PCorpusBulletinHandle(LBulletin bulletin)
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
@@ -77,6 +79,24 @@ public partial class PCorpus
         PAnthologyFind(PQuery.Text ?? string.Empty);
     }
 
+    private void PPrismHandle(object sender, RoutedEventArgs e)
+    {
+        _pPrismChoice = PChoice.PChoiceFilterRead(PPrismList);
+        _lEngine.LEnginePrismSave(_pPrismChoice);
+        PPrismMark.Visibility = _pPrismChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        PAnthologyFind(PQuery.Text ?? string.Empty);
+    }
+
+    internal async void PPrismRestore(LCatalogFilter filter)
+    {
+        _pPrismChoice = filter;
+        PPrismMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PPrismList, _lEngine.LEngineLanguageRead(), filter, PPrismHandle);
+    }
+
     private void PAnthologySelect(long? id)
     {
         foreach (PAnthologyItem item in _pAnthologyList)
@@ -91,7 +111,7 @@ public partial class PCorpus
         IReadOnlyList<LCatalogExample> read;
         try
         {
-            read = _lEngine.LEngineExampleFind(query, _pRankChoice);
+            read = _lEngine.LEngineExampleFind(query, _pRankChoice, _pPrismChoice);
             _pAnthologyCount = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
         }
         catch (Exception exception)

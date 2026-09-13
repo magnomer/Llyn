@@ -73,3 +73,7 @@ Deletes the note of the Entry identified by `entryId`, if it has one.
 
 The entries answering `query`, in `order`, each already carrying the primary pronunciation stored for it.
 The sound is read here because the phonology catalog orders by it and shows it.
+
+## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order, LCatalogFilter filter)`
+
+The same rows with the entries in a hidden language left out.
