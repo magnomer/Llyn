@@ -37,6 +37,38 @@ public sealed class TDraft
     }
 
     [Fact]
+    public void DraftArchiveSave_SituationWithMedia_ReadsBackBothLists()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineSituationStart("Repertoire", null);
+        LDraft draft = started with
+        {
+            LDraftSituation = started.LDraftSituation! with
+            {
+                LSituationImage =
+                [
+                    TInterface.TImageDraftCreate("court-a.png", TInterface.TIdentityCreate()),
+                    TInterface.TImageDraftCreate("court-b.png", TInterface.TIdentityCreate()),
+                ],
+                LSituationVideo =
+                [
+                    TInterface.TVideoDraftCreate("court.mp4", "00:10-00:40", TInterface.TIdentityCreate()),
+                ],
+            },
+        };
+
+        TInterface.TDraftArchiveSave(workspace.TWorkspaceFolder, draft);
+        LDraft? loaded = TInterface.TDraftArchiveRead(workspace.TWorkspaceFolder, draft.LDraftId);
+
+        Assert.NotNull(loaded);
+        Assert.NotNull(loaded.LDraftSituation);
+        Assert.Equal(draft.LDraftSituation.LSituationImage, loaded.LDraftSituation.LSituationImage);
+        Assert.Equal(draft.LDraftSituation.LSituationVideo, loaded.LDraftSituation.LSituationVideo);
+        Assert.Equal("00:10-00:40", loaded.LDraftSituation.LSituationVideo[0].LVideoDraftSpan.TStateValueShow());
+    }
+
+    [Fact]
     public void DraftArchiveScan_HeldDrafts_ListsAll()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

@@ -56,7 +56,10 @@ Playback stops, because what it was playing belonged to the entry that was shown
 ## `private void PDisplayBulletinHandle(LBulletin bulletin)`
 
 What the view does when the engine announces that stored data changed.
-It answers only for the entry it stands on, and ignores every announcement about another.
+It answers for the entry it stands on, and ignores an announcement about another Entry.
+An announcement about any other record is answered whatever its id, because a card embeds Situations, Registers, Tags, Examples and Sources by reference.
+A Situation renamed in its own tab, or a picture it shares relocated there, must redraw the chip and the picture here.
+Typing in any editor announces its draft, and that is the one subject left alone, since nothing stored changed.
 A mark set from another tab moves the heart.
 A frequency the engine finished fetching fills the chip alone, because nothing else on the page changed.
 A headword written elsewhere is read back and redrawn, so two views of one entry never disagree.

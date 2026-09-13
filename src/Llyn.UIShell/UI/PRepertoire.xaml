@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="Llyn.UIShell.PRepertoire"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,40 +6,136 @@
     >
 
     <UserControl.Resources>
-        <Style x:Key="Theme.Atlas.Kind" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding PAtlasItemKind}" Value="">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PDisplayImage.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PDisplayVideo.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="Theme.Atlas.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding PAtlasItemChosen}" Value="True">
-                    <Setter Property="Tag" Value="Chosen" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+            <local:PImageConverter x:Key="Display.Card.Preview" />
+            <local:PVideoConverter x:Key="Display.Card.Reel" />
 
-        <Style x:Key="Theme.Display.Label" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-        </Style>
+            <Style x:Key="Theme.Atlas.Kind" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding PAtlasItemKind}" Value="">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="Theme.Display.Value" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-        </Style>
+            <Style x:Key="Theme.Atlas.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding PAtlasItemChosen}" Value="True">
+                        <Setter Property="Tag" Value="Chosen" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="Theme.Occurrence.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding POccurrenceItemChosen}" Value="True">
-                    <Setter Property="Tag" Value="Chosen" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="Theme.Vignette.Heading" TargetType="TextBlock">
+                <Setter Property="Height" Value="34" />
+                <Setter Property="Margin" Value="2,0,2,12" />
+                <Setter Property="Padding" Value="0,5,0,0" />
+                <Setter Property="FontSize" Value="19" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+
+            <Style x:Key="Theme.Vignette.Chip" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
+                <Setter Property="Background" Value="{StaticResource Theme.SituationSoft}" />
+                <Setter Property="BorderBrush" Value="{StaticResource Theme.SituationEdge}" />
+                <Setter Property="BorderThickness" Value="1" />
+            </Style>
+
+            <Style x:Key="Theme.Vignette.Kind" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
+                <Setter Property="Foreground" Value="{StaticResource Theme.Situation}" />
+            </Style>
+
+            <Style x:Key="Theme.Vignette.Tally" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
+                <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+            </Style>
+
+            <Style x:Key="Theme.Vignette.Figure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
+                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+            </Style>
+
+            <Style x:Key="Theme.Vignette.Picture" TargetType="ItemsControl">
+                <Setter Property="Margin" Value="2,0,0,24" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding LSituationImage.Count}" Value="0">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="Theme.Vignette.Video" TargetType="ItemsControl">
+                <Setter Property="Margin" Value="2,0,0,24" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding LSituationVideo.Count}" Value="0">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="Theme.Scenario.Media" TargetType="ItemsControl">
+                <Setter Property="Margin" Value="2,16,0,0" />
+            </Style>
+
+            <Style x:Key="Theme.Scenario.Hint" TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">
+                <Setter Property="Margin" Value="0,0,4,0" />
+                <Setter Property="Opacity" Value="0" />
+                <Setter Property="IsHitTestVisible" Value="False" />
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Setter Property="Text" Value="{Binding Tag, ElementName=PScenarioTitle}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Text, ElementName=PScenarioTitle}" Value="">
+                        <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="Theme.Scenario.Ghost" TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">
+                <Setter Property="Margin" Value="0,0,4,0" />
+                <Setter Property="Opacity" Value="0" />
+                <Setter Property="IsHitTestVisible" Value="False" />
+                <Setter Property="Text" Value="{Binding Text, ElementName=PScenarioTitle}" />
+            </Style>
+
+            <Style x:Key="Theme.Scenario.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Vignette.Kind}">
+                <Setter Property="Margin" Value="0,0,4,0" />
+                <Setter Property="Visibility" Value="Hidden" />
+                <Setter Property="Text" Value="{Binding Text, ElementName=PScenarioKind}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Text, ElementName=PScenarioKind}" Value="">
+                        <Setter Property="Text" Value="{Binding Tag, ElementName=PScenarioKind}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="Theme.Scenario.Kind" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="AcceptsReturn" Value="False" />
+                <Setter Property="TextWrapping" Value="NoWrap" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Situation}" />
+            </Style>
+
+            <Style x:Key="Theme.Scenario.Description" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+                <Setter Property="Margin" Value="2,0" />
+                <Setter Property="MinHeight" Value="120" />
+                <Setter Property="VerticalContentAlignment" Value="Top" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+
+            <Style x:Key="Theme.Occurrence.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding POccurrenceItemChosen}" Value="True">
+                        <Setter Property="Tag" Value="Chosen" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid Margin="34,20,34,38">
@@ -173,8 +269,7 @@
                         Content="{DynamicResource Scribe.Save}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
-                        Tag="{local:PIcon save, 24}"
-                        Visibility="Collapsed" />
+                        Tag="{local:PIcon save, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Content="{DynamicResource Scribe.Export}"
@@ -277,16 +372,34 @@
                 <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
 
                 <Grid x:Name="PVignette">
-                    <ScrollViewer Padding="24,22,0,20" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Margin="30,18,0,0" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
                         <StackPanel x:Name="PVignetteBody" Visibility="Collapsed">
-                            <TextBlock Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Title}" />
-                            <TextBlock x:Name="PVignetteTitle" Margin="0,5,0,0" FontSize="20" FontWeight="SemiBold" TextWrapping="Wrap" />
+                            <TextBlock x:Name="PVignetteTitle" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Kind}" />
-                            <TextBlock x:Name="PVignetteKind" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
+                            <WrapPanel Margin="12,14,0,-4" Orientation="Horizontal">
+                                <Border x:Name="PVignetteChip" Style="{StaticResource Theme.Vignette.Chip}">
+                                    <TextBlock x:Name="PVignetteKind" Style="{StaticResource Theme.Vignette.Kind}" />
+                                </Border>
+                                <Border Style="{StaticResource Theme.Vignette.Tally}">
+                                    <TextBlock x:Name="PVignetteTally" Style="{StaticResource Theme.Vignette.Figure}" />
+                                </Border>
+                            </WrapPanel>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Display.Label}" Text="{DynamicResource Situation.Description}" />
-                            <TextBlock x:Name="PVignetteDescription" Margin="0,5,0,0" Style="{StaticResource Theme.Display.Value}" />
+                            <StackPanel x:Name="PVignetteDescriptionSection" Margin="0,39,0,24">
+                                <TextBlock Style="{StaticResource Theme.Vignette.Heading}" Text="{DynamicResource Situation.Description}" />
+                                <StackPanel x:Name="PVignetteDescription" Margin="2,0" />
+                            </StackPanel>
+
+                            <ItemsControl
+                                x:Name="PVignettePicture"
+                                ItemTemplate="{StaticResource Display.Card.PictureLine}"
+                                ItemsSource="{Binding LSituationImage, Converter={StaticResource Display.Card.Preview}}"
+                                Style="{StaticResource Theme.Vignette.Picture}" />
+                            <ItemsControl
+                                x:Name="PVignetteVideo"
+                                ItemTemplate="{StaticResource Display.Card.VideoLine}"
+                                ItemsSource="{Binding LSituationVideo, Converter={StaticResource Display.Card.Reel}}"
+                                Style="{StaticResource Theme.Vignette.Video}" />
                         </StackPanel>
                     </ScrollViewer>
                     <TextBlock
@@ -300,70 +413,91 @@
                         TextWrapping="Wrap" />
                 </Grid>
 
-                <Grid x:Name="PScenario" Visibility="Collapsed">
+                <Grid x:Name="PScenario" Margin="30,18,30,30" Visibility="Collapsed">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <ScrollViewer Padding="24,22,0,10" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Situation.Title}" />
+                    <StackPanel>
+                        <Grid HorizontalAlignment="Left">
+                            <TextBlock x:Name="PScenarioHint" Style="{StaticResource Theme.Scenario.Hint}" />
+                            <TextBlock x:Name="PScenarioGhost" Style="{StaticResource Theme.Scenario.Ghost}" />
                             <TextBox
                                 x:Name="PScenarioTitle"
-                                Height="44"
-                                Margin="0,7,0,0"
-                                Padding="12,7"
-                                Style="{StaticResource Theme.Input.Field}"
+                                Margin="-2,0,0,0"
+                                HorizontalAlignment="Stretch"
+                                Style="{StaticResource Theme.Input.Headword}"
                                 TextChanged="PScenarioTitleHandle" />
+                        </Grid>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Situation.Kind}" />
-                            <TextBox
-                                x:Name="PScenarioKind"
-                                Height="44"
-                                Margin="0,7,0,0"
-                                Padding="12,7"
-                                Style="{StaticResource Theme.Input.Field}"
-                                TextChanged="PScenarioKindHandle" />
+                        <WrapPanel Margin="12,14,0,-4" Orientation="Horizontal">
+                            <Border x:Name="PScenarioChip" Style="{StaticResource Theme.Vignette.Chip}">
+                                <Grid>
+                                    <TextBlock Style="{StaticResource Theme.Scenario.Measure}" />
+                                    <TextBox
+                                        x:Name="PScenarioKind"
+                                        Style="{StaticResource Theme.Scenario.Kind}"
+                                        TextChanged="PScenarioKindHandle" />
+                                </Grid>
+                            </Border>
+                            <Border Style="{StaticResource Theme.Vignette.Tally}">
+                                <TextBlock x:Name="PScenarioTally" Style="{StaticResource Theme.Vignette.Figure}" />
+                            </Border>
+                        </WrapPanel>
+                    </StackPanel>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Situation.Description}" />
+                    <ScrollViewer Grid.Row="1" Margin="-9,0,-30,0" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="9,39,9,24">
+                            <TextBlock Style="{StaticResource Theme.Vignette.Heading}" Text="{DynamicResource Situation.Description}" />
                             <TextBox
                                 x:Name="PScenarioDescription"
-                                MinHeight="120"
-                                Margin="0,7,0,0"
-                                Padding="12,9"
                                 AcceptsReturn="True"
-                                Style="{StaticResource Theme.Input.Field}"
+                                Style="{StaticResource Theme.Scenario.Description}"
                                 TextChanged="PScenarioDescriptionHandle"
-                                TextWrapping="Wrap"
-                                VerticalContentAlignment="Top" />
+                                TextWrapping="Wrap" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Style="{StaticResource Theme.Card.Gutter}" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <ItemsControl x:Name="PScenarioImage" ItemTemplate="{DynamicResource Theme.Image.Row}" Style="{StaticResource Theme.Scenario.Media}" />
+
+                                    <ItemsControl x:Name="PScenarioVideo" ItemTemplate="{DynamicResource Theme.Video.Row}" Style="{StaticResource Theme.Scenario.Media}" />
+
+                                    <Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Click="PImageAddHandle" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.ImageAdd}">
+                                                <Path Width="24" Height="24" Data="{local:PIcon image, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                            </Button>
+
+                                            <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+
+                                            <Button Click="PVideoAddHandle" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.VideoAdd}">
+                                                <Path Width="24" Height="24" Data="{local:PIcon video, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
                         </StackPanel>
                     </ScrollViewer>
-
-                    <StackPanel Grid.Row="1" Margin="24,10,24,20" HorizontalAlignment="Right" Orientation="Horizontal">
-                        <Button
-                            x:Name="PScenarioRemoval"
-                            Height="44"
-                            Margin="0,0,8,0"
-                            Click="PScenarioRemovalHandle"
-                            Content="{DynamicResource Situation.Delete}"
-                            IsEnabled="False"
-                            Style="{StaticResource Theme.Input.Pill}" />
-                        <Button
-                            x:Name="PScenarioDiscard"
-                            Height="44"
-                            Margin="0,0,8,0"
-                            Click="PScenarioDiscardHandle"
-                            Content="{DynamicResource Situation.Discard}"
-                            Style="{StaticResource Theme.Input.Pill}" />
-                        <Button
-                            x:Name="PScenarioStore"
-                            Height="44"
-                            Click="PScenarioStoreHandle"
-                            Content="{DynamicResource Situation.Store}"
-                            Style="{StaticResource Theme.Input.Primary}" />
-                    </StackPanel>
                 </Grid>
+
+                <Button
+                    x:Name="PRepertoireBin"
+                    Margin="0,17,26,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Click="PRepertoireBinHandle"
+                    IsEnabled="False"
+                    Style="{StaticResource Theme.Input.Bin}"
+                    ToolTip="{DynamicResource Scribe.Delete}">
+                    <Path Width="24" Height="24" Data="{local:PIcon delete, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
             </Grid>
         </Border>
     </Grid>

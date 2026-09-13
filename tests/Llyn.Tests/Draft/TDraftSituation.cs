@@ -104,6 +104,43 @@ public sealed class TDraftSituation
         Assert.Contains(launched.TEngineLeftoverRead(), draft => draft.LDraftId == kept);
     }
 
+    [Fact]
+    public void SituationCommit_MediaAdded_StoresAndReadsBack()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LSituation stored = engine.TEngineSituationCreate(
+            TInterface.TSituationCreate(0, "in court", null, null));
+        LDraft started = engine.TEngineSituationStart("Repertoire", stored.LSituationId);
+
+        Assert.False(engine.TEngineDraftCheck(started.LDraftId));
+
+        engine.TEngineRequestApply(
+            TInterface.TImageAdditionCreate(started.LDraftId, 0, "court.png", 0));
+        engine.TEngineRequestApply(
+            TInterface.TVideoAdditionCreate(started.LDraftId, 0, "court.mp4", 0));
+
+        Assert.True(engine.TEngineDraftCheck(started.LDraftId));
+
+        LSituation committed = engine.TEngineSituationCommit(started.LDraftId);
+
+        Assert.Equal(stored.LSituationId, committed.LSituationId);
+        Assert.True(Assert.Single(committed.LSituationImage).LImageDraftId > 0);
+        Assert.True(Assert.Single(committed.LSituationVideo).LVideoDraftId > 0);
+
+        LDraft reopened = engine.TEngineSituationStart("Repertoire", stored.LSituationId);
+
+        Assert.NotNull(reopened.LDraftSituation);
+        Assert.Equal(
+            "court.png",
+            Assert.Single(reopened.LDraftSituation.LSituationImage).LImageDraftLocation.TStateValueShow());
+        Assert.Equal(
+            "court.mp4",
+            Assert.Single(reopened.LDraftSituation.LSituationVideo).LVideoDraftLocation.TStateValueShow());
+        Assert.False(engine.TEngineDraftCheck(reopened.LDraftId));
+    }
+
     private static LDraft TDraftSituationApply(LEngine engine, LDraft draft, string title)
     {
         Assert.NotNull(draft.LDraftSituation);

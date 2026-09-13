@@ -104,6 +104,12 @@ internal static partial class TInterface
     internal static LRequest TImageAdditionCreate(long draftId, long cardId, string location, int position) =>
         new LRequestImageAddition(draftId, cardId, TStateValueCreate(location).TStateWrittenRead(), position);
 
+    internal static LRequest TImageRemovalCreate(long draftId, long cardId, long imageId) =>
+        new LRequestImageRemoval(draftId, cardId, imageId);
+
+    internal static LRequest TVideoRemovalCreate(long draftId, long cardId, long videoId) =>
+        new LRequestVideoRemoval(draftId, cardId, videoId);
+
     internal static LRequest TImageLocationCreate(long draftId, long imageId, LStateValue value) =>
         new LRequestImageLocation(draftId, imageId, value.TStateWrittenRead());
 

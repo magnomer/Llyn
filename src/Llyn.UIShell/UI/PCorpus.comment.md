@@ -34,8 +34,8 @@ The action row of the panel.
 `PCorpusFresh` opens the editor on an Example nothing quotes yet.
 This panel is the only place such an Example can arise.
 Elsewhere one is written from the card that quotes it.
-`PCorpusStore` saves the Entry open in `PEditor`, and is shown only while that editor is in front.
-A Example saves from its own editor, so the rail button never stands for both.
+`PCorpusStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Example.
+It stands in the rail at all times, as the repertoire panel's save does.
 Export and print are mock-up controls and are not wired.
 
 ## `<Grid x:Name="PTranscript">`
@@ -47,9 +47,12 @@ The transcript field carries the shared linking menu, and the chip line stands r
 ## `<ItemsControl x:Name="PAnthology">`
 
 The catalog of every Example the workspace holds, including one nothing quotes.
-A row reads its sentence over its language and cited Source, with its usage count at the far end.
+A row reads its flag, its sentence and its language, with its usage count at the far end.
 That count is shown here and not only in the display, because it decides which delete the panel offers.
-The translation is not shown here.
+The cited Source is not shown here.
+A row says what the sentence is, not where it came from.
+The reading beside the catalog carries the Source, so nothing is lost by leaving it off the row.
+The translation is not shown here either.
 It is text of the sentence itself and says nothing about where the sentence is used.
 
 ## `<local:PDisplay x:Name="PDisplay" Visibility="Collapsed" />`
@@ -65,19 +68,49 @@ It stands in front only while an Entry is shown and the toggle is on the editing
 
 ## `<Grid x:Name="PExcerpt">`
 
-The reading of one Example.
+The reading of one Example, laid out as the repertoire panel lays out a Situation.
 `PExcerpt` here stands on an Example rather than on an Entry.
-What it shares with the entry panels is the read-and-edit mechanism and the `PCorpusScribe` toggle, not the object.
-Each field is drawn whether or not it holds anything.
-A field is stored data, so a hidden row would hide the difference between never written and written-but-unknown.
-A row therefore reads its value, the unknown mark, or the unrecorded mark in the muted colour.
+What it shares with the entry panels is the read-and-edit mechanism, the `PCorpusScribe` toggle, and the shape of the page.
+The sentence stands at the head of the page.
+The language and the usage count stand as chips on the row beneath it.
+The translations and the cited Source are headings over their values, as a situation's description is.
+No field is labeled, because the entry display labels nothing: position and dress say what a value is.
+A never-written translation or citation is not drawn at all, as a situation with no description draws none.
+An unknown citation reads the unknown mark where the Source would stand.
+A never-written sentence reads the unwritten text in the muted colour, because the head of the page cannot be empty.
+The editing side still draws every slot, so the two kinds of empty are one toggle apart rather than lost.
 
 ### `<local:PMention x:Name="PExcerptText" ...>`
 
 The sentence is drawn by the same control the display cards use, so a word of it can be clicked.
-It keeps the interface face rather than the card example face.
-This row is a record field and not a card line.
+It is dressed as the head of the page.
+It is smaller than a headword, because a sentence is longer than a word.
 The click is answered by the panel, which knows which Example is open.
+
+## `<Style x:Key="Theme.Excerpt.Chip" TargetType="Border">`
+
+The language chip, shaped as a speech chip and coloured in the accent, with the flag before the name.
+The same shape dresses the language toggle on the editing side.
+So the language reads the same whether it is read or chosen.
+
+## `<DataTemplate x:Key="Theme.Transcript.Line">`
+
+The editable Gloss row, shaped as `Theme.Gloss.Display` shapes the read row.
+It is written here rather than taken from the card's row template.
+The card dresses its Gloss in the card's own face.
+The reading side dresses a Gloss in the display value face, so the editing side must too.
+
+## `<Style x:Key="Theme.Transcript.Citation" TargetType="ToggleButton">`
+
+The citation as a bare toggle, so the cited Source reads where and as the reading side reads it.
+The chip edge shows only under the pointer, which is what says the text can be changed.
+
+## `<Style x:Key="Theme.Excerpt.Tally" TargetType="Border">`
+
+The usage count, a chip of the same shape in the raised surface colour.
+So it reads as a figure and not a language.
+It reads as a sentence, not a bare number.
+A bare number beside a sentence says nothing about what it counts.
 
 ## `<ItemsControl x:Name="PQuotation">`
 
@@ -91,24 +124,41 @@ An Example nothing quotes shows the empty state rather than hiding the column.
 
 ## `<Grid x:Name="PTranscript" Visibility="Collapsed">`
 
-The editable view of the selected Example.
-The language stands first, because it is what the sentence beneath it is written in.
-It is required by the row, so it is chosen rather than typed.
-The sentence and the translation are both three-state, so an empty field says which kind of empty it is.
+The editable view of the selected Example, laid out as the reading side lays it out.
+Every slot the reading side draws is drawn here in the same place.
+A bare field stands where the text stood.
+The sentence is written in the head of the page, with its Mention chips right under it.
+The language is chosen inside the same chip the reading side draws.
+It is required, so it is chosen rather than typed.
+The sentence and the translation are both three-state.
+An empty field says which kind of empty it is through its placeholder.
 The translation is the sentence rendered in plain text and links nothing, unlike the Translation a Meaning carries.
+Each Gloss row is drawn as the reading side draws it, the flag and then the text.
+A bare field stands where the text stood.
+The flag is a switch that opens the language list.
+The plus and minus handles stand at the end of the row and show under the pointer.
+That is how the entry editor's rows carry them.
+Plus adds a row after this one and minus drops this one.
+`PTranscriptSeed` stands in while there is no row, a bare field showing the placeholder whose focus or plus adds the first.
 `PCitation` is the single Source the Example cites, a pointer that is cleared without touching the Source itself.
+It is drawn as the text the reading side draws, with a small arrow that opens the shelf.
+The editor carries no buttons of its own.
+Save is the rail's `PCorpusStore`, delete is `PCorpusBin`, and there is no discard.
+That is how the repertoire panel arranges a Situation.
+Leaving the editor asks about the draft as it does there.
 
-## `<TextBlock x:Name="PTranscriptCount" ...>`
+## `<TextBlock x:Name="PTranscriptTally" ...>`
 
 How many places quote the Example, kept visible while it is being edited.
 Rewriting an Example here rewrites what every one of them quotes.
 A user correcting a sentence must see how far the correction reaches without leaving the editor.
 
-## `<Button x:Name="PTranscriptRemoval" ...>`
+## `<Button x:Name="PCorpusBin" ...>`
 
-Deletes the shown Example.
-It stands with discard and save because it acts on the record rather than on the browsing beside it.
-It is disabled while the editor stands on an Example nothing has stored yet.
+Deletes the shown Example, from the reading side or the editing side alike.
+It stands in the corner of the surface as the repertoire panel's bin does, apart from the browsing beside it.
+It is disabled while nothing is selected and while an Entry is shown.
+It is disabled too while the editor stands on an Example nothing has stored yet.
 
 ## Catalog spacing
 

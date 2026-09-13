@@ -6,11 +6,13 @@ The Repertoire panel: the view of the shared stock of usage contexts itself.
 A Situation is independent data owned by nothing, so this panel is not a view of one Entry's contexts.
 It holds the host and the engine the browsing side calls, and nothing else.
 The browsing behavior lives in `PRepertoireBrowse.cs`, one file per responsibility.
+It merges the card's picture and video row templates, answering their clicks as `PImageHost` and `PVideoHost`.
+Those answers live in `PRepertoireDialog.cs`.
 
 ## `internal void PRepertoireAttach(PWindow host, LEngine engine)`
 
 Binds the panel to the window it asks for confirmations and panel switches through.
-It binds its lists and subscribes to the engine, and reads nothing yet.
+It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The editor's change notice drives `PRepertoireStore`, as it drives the save button of the tenor panel.
 The window fills the situation catalog when it restores the stored ordering.

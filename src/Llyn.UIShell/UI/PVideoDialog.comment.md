@@ -13,13 +13,14 @@ Points the card's location and span changes at this editor, so each becomes a de
 
 Opens a video row on the card the Extra row belongs to.
 
-## `internal void PVideoRemoveHandle(object sender, RoutedEventArgs e)`
+## `public void PVideoRemoveHandle(object sender, RoutedEventArgs e)`
 
 Drops the row from the card that holds it.
+Public because it answers `PVideoHost`, the seam the row template reaches the editor through.
 
-## `internal void PVideoOpenHandle(object sender, RoutedEventArgs e)`
+## `public void PVideoOpenHandle(object sender, RoutedEventArgs e)`
 
-Chooses a video file and writes its path into the row.
+Chooses a video file through the row's own chooser and writes its path into the row.
 As with a picture, the field takes a web address just as well.
 Nothing is copied into the workspace, because a Video is never kept.
 

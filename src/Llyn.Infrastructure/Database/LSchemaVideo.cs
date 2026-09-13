@@ -49,6 +49,18 @@ public static class LSchemaVideo
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_video_position
                 ON collocation_video (collocation_parent, position);
+
+            CREATE TABLE IF NOT EXISTS situation_video (
+                situation_parent INTEGER NOT NULL,
+                video_ref INTEGER NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (situation_parent, video_ref),
+                FOREIGN KEY (situation_parent) REFERENCES situation (situation_id) ON DELETE CASCADE,
+                FOREIGN KEY (video_ref) REFERENCES video (video_id)
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS situation_video_position
+                ON situation_video (situation_parent, position);
             """;
         command.ExecuteNonQuery();
     }

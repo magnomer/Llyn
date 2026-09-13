@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
@@ -139,7 +140,6 @@ public partial class PCorpus
             _pAnthologyList.Add(new PAnthologyItem(
                 row.LCatalogExampleStored,
                 row.LCatalogExampleUsage,
-                row.LCatalogExampleSource,
                 unknown,
                 unwritten));
         }
@@ -150,6 +150,8 @@ public partial class PCorpus
         PAnthologyEmpty.Visibility = _pAnthologyList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PAnthologySelect(_pExcerptExample);
+        PExcerptTally.Text = PCorpusTallyRead(_pExcerptExample);
+        PTranscriptTally.Text = PCorpusTallyRead(PTranscriptExampleRead());
 
         if (!kept && _pExcerptExample is not null && PTranscript.Visibility != Visibility.Visible)
         {
@@ -198,24 +200,19 @@ public partial class PCorpus
         PAnthologySelect(id);
         PQuotationEntryHide();
 
-        PExcerptValueShow(PExcerptText, example.LExampleText);
-        PExcerptText.PMentionLanguage = example.LExampleLanguage;
-        PExcerptText.PMentionMention = example.LExampleText.LStateValueState == LState.LStateSpecified
-            ? example.LExampleMention
-            : [];
+        PExcerptSentenceShow(example);
         PExcerptLanguage.Text = example.LExampleLanguage;
         PExcerptFlag.Source = PEnsign.PEnsignFind(example.LExampleLanguage);
         PExcerptGlossShow(example.LExampleGloss);
-        PExcerptAnchorShow(
-            PExcerptCitation,
-            example.LExampleSource,
-            PCitationNameRead(example.LExampleSource.LStateAnchorShow()));
+        PExcerptCitationShow(example.LExampleSource);
+        PExcerptTally.Text = PCorpusTallyRead(id);
 
         PQuotationFind();
 
         PExcerptBody.Visibility = Visibility.Visible;
         PExcerptUnselected.Visibility = Visibility.Collapsed;
         PCorpusMode.IsEnabled = true;
+        PCorpusBin.IsEnabled = true;
 
         if (PTranscript.Visibility == Visibility.Visible)
         {
@@ -223,46 +220,84 @@ public partial class PCorpus
         }
     }
 
-    private void PExcerptAnchorShow(TextBlock field, LStateAnchor value, string? shown)
+    private void PCorpusBinHandle(object sender, RoutedEventArgs e)
     {
-        PExcerptTextShow(
-            field,
-            value.LStateAnchorState switch
-            {
-                LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
-                LState.LStateSpecified when !string.IsNullOrEmpty(shown) => shown,
-                _ => null,
-            });
-    }
-
-    private void PExcerptValueShow(TextBlock field, LStateValue value)
-    {
-        PExcerptTextShow(
-            field,
-            value.LStateValueState switch
-            {
-                _ when value.LStateValueUnreadable => value.LStateValueShow(),
-                LState.LStateSpecified => value.LStateValueShow(),
-                LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
-                _ => null,
-            });
-    }
-
-    private void PExcerptTextShow(TextBlock field, string? text)
-    {
-        string shown = text ?? _pCorpusHost.PLocalizationTextRead("Example.Unset");
-        if (field is PMention sentence)
+        if (_pDisplayEntry is not null || _pExcerptExample is not long id)
         {
-            sentence.PMentionText = shown;
-        }
-        else
-        {
-            field.Text = shown;
+            return;
         }
 
-        field.SetResourceReference(
+        int usage = _pAnthologyCount.TryGetValue(id, out int count) ? count : 0;
+
+        if (!_pCorpusHost.PWindowRemovalConfirm(usage, "Example"))
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineExampleDelete(id, usage > 0);
+        }
+        catch (Exception exception)
+        {
+            _pCorpusHost.PWindowFailureShow("Example.DeleteFailed", exception);
+            return;
+        }
+
+        PCorpusScribeShow(false);
+        PCorpusClear();
+        PAnthologyFind(PQuery.Text ?? string.Empty);
+    }
+
+    private string? PExcerptTextRead(LStateValue value)
+    {
+        return value.LStateValueState switch
+        {
+            _ when value.LStateValueUnreadable => value.LStateValueShow(),
+            LState.LStateSpecified => value.LStateValueShow(),
+            LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
+            _ => null,
+        };
+    }
+
+    private void PExcerptSentenceShow(LExample example)
+    {
+        string? text = PExcerptTextRead(example.LExampleText);
+
+        PExcerptText.PMentionText = text ?? _pCorpusHost.PLocalizationTextRead("Example.Unwritten");
+        PExcerptText.PMentionLanguage = example.LExampleLanguage;
+        PExcerptText.PMentionMention = example.LExampleText.LStateValueState == LState.LStateSpecified
+            ? example.LExampleMention
+            : [];
+        PExcerptText.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");
+    }
+
+    private void PExcerptCitationShow(LStateAnchor value)
+    {
+        string shown = PCitationNameRead(value.LStateAnchorShow());
+        string? text = value.LStateAnchorState switch
+        {
+            LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
+            LState.LStateSpecified when !string.IsNullOrEmpty(shown) => shown,
+            _ => null,
+        };
+
+        PExcerptCitation.Text = text ?? string.Empty;
+        PExcerptCitationSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private string PCorpusTallyRead(long? id)
+    {
+        int count = id is long stored && _pAnthologyCount.TryGetValue(stored, out int usage) ? usage : 0;
+
+        return count switch
+        {
+            0 => _pCorpusHost.PLocalizationTextRead("Example.UsageNone"),
+            1 => _pCorpusHost.PLocalizationTextRead("Example.UsageOne"),
+            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {_pCorpusHost.PLocalizationTextRead("Example.UsageMany")}",
+        };
     }
 
     private void PExcerptMentionHandle(object? sender, PMentionArgument e)
@@ -381,6 +416,7 @@ public partial class PCorpus
         PQuotationSelect(id);
         PDisplay.PDisplayShow(id, draft);
         PCorpusMode.IsEnabled = true;
+        PCorpusBin.IsEnabled = false;
 
         if (editing)
         {
@@ -420,14 +456,19 @@ public partial class PCorpus
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PCorpusStore.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PCorpusViewer.IsChecked = !editing;
         PCorpusScribe.IsChecked = editing;
     }
 
     private void PCorpusStoreHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PEditorEntrySave();
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PEditorEntrySave();
+            return;
+        }
+
+        PTranscriptStoreRun();
     }
 
     private void PQuotationEntryUpdate(long id)
@@ -477,9 +518,9 @@ public partial class PCorpus
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
-        PCorpusStore.Visibility = Visibility.Collapsed;
         PCorpusScribeShow(editing);
         PCorpusMode.IsEnabled = _pExcerptExample is not null;
+        PCorpusBin.IsEnabled = _pExcerptExample is not null;
     }
 
     private void PCorpusScribeHandle(object sender, RoutedEventArgs e)
@@ -535,6 +576,7 @@ public partial class PCorpus
         PExcerpt.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PCorpusViewer.IsChecked = !editing;
         PCorpusScribe.IsChecked = editing;
+        PTranscriptChangeUpdate();
     }
 
     internal void PCorpusScribeRestore(bool editing)
@@ -571,5 +613,6 @@ public partial class PCorpus
         PTranscriptApply(null);
         PCorpusScribeShow(false);
         PCorpusMode.IsEnabled = false;
+        PCorpusBin.IsEnabled = false;
     }
 }

@@ -4,7 +4,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PRepertoire : UserControl
+public partial class PRepertoire : UserControl, PImageHost, PVideoHost
 {
     private PWindow _pRepertoireHost = null!;
 
@@ -15,6 +15,9 @@ public partial class PRepertoire : UserControl
     public PRepertoire()
     {
         InitializeComponent();
+
+        Resources.MergedDictionaries.Add(new PImageTemplate(this));
+        Resources.MergedDictionaries.Add(new PVideoTemplate(this));
     }
 
     internal void PRepertoireAttach(PWindow host, LEngine engine)
@@ -24,6 +27,8 @@ public partial class PRepertoire : UserControl
 
         PAtlas.ItemsSource = _pAtlasList;
         POccurrence.ItemsSource = _pOccurrenceList;
+        PScenarioImage.ItemsSource = _pScenarioImage;
+        PScenarioVideo.ItemsSource = _pScenarioVideo;
 
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, PScenarioOrigin, null);

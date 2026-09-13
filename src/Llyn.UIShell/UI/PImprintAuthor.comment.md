@@ -3,10 +3,14 @@
 ## `public partial class PImprint`
 
 The credited-author region of the Source edit area.
-An Author is shared data credited on any number of Sources, so renaming one here reaches every one of them.
+An Author is shared data credited on any number of Sources.
 The credits themselves are a list the held draft carries, and every credit change is a request.
 So a source nothing has stored yet can already be credited, and nothing is written until it is saved.
 The order belongs to the Source alone, because another Source may order the same authors differently.
+
+Each credit is a row holding one field that names the author it credits.
+Typing in the field never renames the Author, which is shared, but changes which Author the row credits.
+Renaming and deleting an Author belong to an author tab of their own.
 
 ## Inline notes
 
@@ -16,20 +20,35 @@ Whether the authorship is unknown as against never having been filled in.
 It is a column on the `source` row.
 It is saved with the five fields rather than when a credit is made.
 
+### `private IReadOnlyList<LAuthor> _pAuthorCredited = [];`
+
+The credits last shown, kept so the blank row can move without a draft to re-read.
+
+### `private int _pAuthorBlankAt = -1;`
+
+Where a row not yet crediting anyone stands, as the place its credit would take, or none.
+The draft carries no such row, because an empty credit is nothing to hold.
+So the area remembers it across the redraws the bulletins bring, until it is filled or dropped.
+
 ## `internal void PAuthorFind()`
 
-Reads every Author the workspace holds for the crediting menu.
-A workspace holding none shows that state rather than an empty list.
+Reads every Author the workspace holds, so a credit can show a name renamed since the draft took it.
+
+## `private void PAuthorOpen(LDraft? draft)`
+
+Shows a newly held draft, or none, and forgets any blank row the last one left behind.
 
 ## `private void PAuthorShow(LDraft? draft)`
 
-Shows the credits and the author state of the held draft, or nothing when there is no draft.
-Crediting is offered whenever a draft is held, since the credits live on the draft now.
+Shows the credits and the author state of the held draft, or the notice when there is no draft.
 
 ## `private void PAuthorCreditShow(IReadOnlyList<LAuthor> credits)`
 
 Refills the credit rows only when what they show differs from the list given.
-A bulletin that changed nothing here then costs no redraw.
+A bulletin that changed nothing here then costs no redraw, and keeps the field being typed into.
+The blank row, when one is kept, is put back at its place among the credits.
+A draft crediting nobody always shows one blank row, as an entry's card always shows one sentence line.
+Otherwise there would be no row to add from.
 
 ## `private IReadOnlyList<LAuthor> PAuthorCreditRead(LDraft draft)`
 
@@ -37,14 +56,19 @@ The draft's credits with each stored Author's name read from the catalog.
 The draft carries the name it was given, and a rename made since is the catalog's to know.
 A minted credit is in no catalog and keeps its typed name.
 
-## `private void PAuthorAttach(long id)`
+## `private bool PAuthorCreditMatch(IReadOnlyList<LAuthor> credits)`
 
-Credits an existing Author at the end of the order, unless already credited.
+Whether the rows shown are the credits given, with the blank row at its kept place or absent.
 
-## `private void PAuthorFreshHandle(object sender, RoutedEventArgs e)`
+## `private void PAuthorAdd(PAuthorItem item)`
 
-Credits a new Author from the typed name at the end of the order.
-The Author row is created only when the Source is saved.
+Puts a blank row under the row whose add was pressed, as an entry's sentence add does.
+The caret goes into it.
+Only one blank row stands at a time, so a second press moves the caret to the one standing.
+
+## `private void PAuthorSelect(PAuthorItem item)`
+
+Focuses the field of one row once the list has drawn its container.
 
 ## `private void PAuthorCreditHandle(object sender, RoutedEventArgs e)`
 
@@ -57,28 +81,46 @@ Dropping a credit never drops the Author, which stays available to every other S
 
 Moves one credit through the Source's order.
 
-## `private void PAuthorNameUpdate(PAuthorItem item)`
+## `private void PAuthorRemove(PAuthorItem item)`
 
-Renames an Author to the name typed in the menu's box.
-The rename is an explicit action rather than a side effect of typing in the credit list.
-A stored Author is renamed in the store, and never its id, so every Source keeps pointing at it.
-A credit not stored yet is only a name on the draft.
-So it is dropped and credited again under the new name.
-The engine announces the rename as an author bulletin, and that bulletin re-reads the catalog and the credits.
+Drops one row.
+A blank row is only the area's, so it is dropped without a request.
+The last row of a draft crediting nobody comes straight back, since one always stands.
 
-## `private void PAuthorRequestSend(LRequest request)`
+## `private void PAuthorTextHandle(object sender, TextChangedEventArgs e)`
+
+Offers the authors the typed text names as it is typed.
+A field refilled by a redraw is not being typed into, and opens nothing.
+
+## `private void PAuthorKeyHandle(object sender, KeyEventArgs e)`
+
+Enter takes the offered row the arrows reached, else credits what was typed.
+Escape puts the credited name back.
+The dropdown never takes focus, so the field's key handler drives it.
+
+## `private void PAuthorLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)`
+
+A field left with typing not entered shows its credited name again.
+Only enter or a chosen row changes a credit, so a glance elsewhere credits nobody by accident.
+
+## `private void PAuthorCommit(PAuthorItem row, TextBox box)`
+
+Credits the typed name in the row's place.
+The engine credits the stored Author of that name when one exists, and mints one otherwise.
+A name the row already credits is left as it is.
+
+## `private void PAuthorAttach(PAuthorItem row, TextBox box, long id)`
+
+Credits the chosen stored Author in the row's place.
+
+## `private void PAuthorChange(PAuthorItem row, LRequest request)`
+
+Puts the new credit before the old one, then drops the old one.
+In that order a request that fails leaves the row crediting what it did.
+A blank row has nothing to drop, and is forgotten once its credit is made.
+
+## `private bool PAuthorRequestSend(LRequest request)`
 
 Sends one credit request and leaves the redraw to the draft bulletin the engine raises.
 Typing still waiting in the five fields is written first, so the requests reach the engine in order.
-
-## `private bool PAuthorRenameConfirm(PAuthorItem item)`
-
-Says how many Sources the rename reaches before it is applied.
-The figure is counted by the panel, which is where the credit map is held.
-
-## `private void PAuthorUnknownHandle(object sender, RoutedEventArgs e)`
-
-Records that the authorship is unknown, or takes that record back.
-`Anonymous` is a credited Author and not a substitute for either state.
-The state is a field of the Source.
-Changing it pushes to the held draft as any typed field does.
+Says whether the request was taken, so a second one can depend on the first.

@@ -9,14 +9,13 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
 {
     private bool _pAnthologyItemChosen;
 
-    internal PAnthologyItem(LExample example, int usage, string source, string unknown, string unwritten)
+    internal PAnthologyItem(LExample example, int usage, string unknown, string unwritten)
     {
         PAnthologyItemId = example.LExampleId;
         PAnthologyItemText = PAnthologyTextRead(example.LExampleText, unknown) ?? unwritten;
         PAnthologyItemName = PAnthologyItemText;
         PAnthologyItemLanguage = example.LExampleLanguage;
         PAnthologyItemFlag = PEnsign.PEnsignFind(example.LExampleLanguage);
-        PAnthologyItemSource = source;
         PAnthologyItemCount = usage.ToString(CultureInfo.CurrentCulture);
     }
 
@@ -29,8 +28,6 @@ internal sealed class PAnthologyItem : INotifyPropertyChanged
     public string PAnthologyItemLanguage { get; }
 
     public ImageSource? PAnthologyItemFlag { get; }
-
-    public string PAnthologyItemSource { get; }
 
     public string PAnthologyItemCount { get; }
 

@@ -93,6 +93,30 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO situation (title_state, title) VALUES ('specified', 'in court'); " +
+            "INSERT INTO image (location_state, location) VALUES ('specified', 'court.png'); " +
+            "DROP TABLE situation_image; " +
+            "DROP TABLE situation_video; " +
+            "UPDATE schema_version SET version = 47;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(
+            LSchemaMigration.LSchemaMigrationVersion,
+            workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation WHERE title = 'in court';"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM image;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation_image;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation_video;"));
+        Assert.Single(Directory.GetFiles(workspace.TWorkspaceFolder, "*.v47.db"));
+    }
+
+    [Fact]
     public void DatabaseCreate_NewWorkspace_MintsOneRealm()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

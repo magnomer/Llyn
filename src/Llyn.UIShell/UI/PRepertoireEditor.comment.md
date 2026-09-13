@@ -14,14 +14,22 @@ So a keystroke never loses the caret to its own echo.
 Set while fields are being filled from a held Situation.
 Filling a field raises the same change the user typing raises, and only the second may clear an unknown mark.
 
+## `private string PScenarioHintRead(TextBox field, bool unknown)`
+
+The placeholder one field shows while it is empty.
+An unknown field shows the unknown mark, and a never-written one asks for what it wants.
+The title asks with the untitled text the catalog uses, so an empty title reads the same in both places.
+
 ## `private void PScenarioApply(LSituation? situation)`
 
 Fills the three fields outright from a Situation, or empties them, when a draft is opened or closed.
+The picture and video rows are filled with them, so an opened draft shows every row it holds.
 
 ## `private void PScenarioShow(LSituation situation)`
 
 Redraws each field from the held Situation only where the field says something else.
 A field that already reads what the engine holds is left alone, caret included.
+The picture and video rows follow the same rule, row by row, through `PRepertoireDialog.cs`.
 
 ## `private LRequestSituationBody PScenarioRead(long draft, long situation)`
 
@@ -29,16 +37,10 @@ The editor as written, for the engine to read into the Situation it holds.
 Each field travels with its mark, so the panel resolves no state.
 The engine keeps the id of the Situation it holds, because the panel mints nothing.
 
-## `private void PScenarioStoreHandle(object sender, RoutedEventArgs e)`
+## `private void PScenarioStoreRun()`
 
-Commits the held Situation, which stores it over the selected one or creates one nothing references yet.
+Commits the held Situation, for the rail's save button, which stores it over the selected one or creates one nothing references yet.
 Typing still waiting to be written is written first, so the commit carries the last keystroke.
 Whether this is a create or a rewrite is the engine's reading of the draft, not the panel's.
 Saving does not change the id, what references it, or the order it takes for any referrer.
 
-## `private void PScenarioRemovalHandle(object sender, RoutedEventArgs e)`
-
-Deletes the shown Situation.
-A Situation nothing references is deleted outright.
-One something references is deleted only after the user is told how many places that reaches and says yes.
-The detaching and the delete are one operation in the store, because between two steps the count can change.

@@ -15,13 +15,14 @@ Points the card's location changes at this editor, so each becomes a deferred re
 
 Opens a picture row on the card the Extra row belongs to.
 
-## `internal void PImageRemoveHandle(object sender, RoutedEventArgs e)`
+## `public void PImageRemoveHandle(object sender, RoutedEventArgs e)`
 
 Drops the row from the card that holds it.
+Public because it answers `PImageHost`, the seam the row template reaches the editor through.
 
-## `internal void PImageOpenHandle(object sender, RoutedEventArgs e)`
+## `public void PImageOpenHandle(object sender, RoutedEventArgs e)`
 
-Chooses a picture file and writes its path into the row.
+Chooses a picture file through the row's own chooser and writes its path into the row.
 Browsing is a convenience for the local case only.
 The field takes a web address just as well.
 The path chosen here is written as it stands rather than copied anywhere.

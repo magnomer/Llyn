@@ -38,6 +38,12 @@ public sealed partial class LEngine
 
     private LDraft LEngineRequestApply(LDraft draft, LRequest request)
     {
+        if (draft.LDraftSituation is LSituation held
+            && LEngineSituationDispatch(held, request) is LSituation dispatched)
+        {
+            return draft with { LDraftSituation = dispatched };
+        }
+
         return request switch
         {
             LRequestExampleText sent => LEngineExampleChange(

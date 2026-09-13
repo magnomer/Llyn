@@ -4,9 +4,9 @@ namespace Llyn.UIShell;
 
 public partial class PVideoTemplate : ResourceDictionary
 {
-    private readonly PEditor _pVideoHost;
+    private readonly PVideoHost _pVideoHost;
 
-    internal PVideoTemplate(PEditor host)
+    internal PVideoTemplate(PVideoHost host)
     {
         _pVideoHost = host;
         InitializeComponent();

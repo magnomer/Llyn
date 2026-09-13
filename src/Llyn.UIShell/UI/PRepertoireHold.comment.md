@@ -40,8 +40,9 @@ It also settles the buttons, so a write and what the buttons say never drift apa
 
 ## `private void PScenarioChangeUpdate()`
 
-Settles the discard and store controls against the engine's answer.
-Both read the same answer the closing warning reads, so the three cannot disagree.
+Settles the rail's save button against the engine's answer, while the Situation editor is the side in front.
+It reads the same answer the closing warning reads, so the two cannot disagree.
+While the entry editor is in front, that editor's own notice drives the same button, so this one leaves it alone.
 
 ## `private LDraft? PScenarioDraftStart(long? situation)`
 
@@ -58,6 +59,8 @@ Fills the controls from a draft just started, or empties them when none was.
 Sends the whole body of the form as one request and lets the engine decide what changed.
 An unchanged body is dropped by the engine without a bulletin, so nothing is redrawn under the caret.
 A changed body answers with one bulletin, and the bulletin redraws only what differs.
+Row requests waiting from the media lists are written first, so a location typed with the description travels with it.
+A failed write drops what was waiting, because the editor is suspended and nothing would send it.
 
 ## `private void PScenarioDraftRestore()`
 
@@ -67,7 +70,7 @@ Nothing is read while the controls are being filled, because filling raises the 
 
 ## `private void PScenarioDraftCancel()`
 
-Discards the held Situation and forgets its id.
+Discards the held Situation and forgets its id, with any row request still waiting on it and the wait itself.
 The id is dropped before the call, so a failing discard cannot leave the panel writing into it.
 A failure here is swallowed, because the caller is already leaving the work behind.
 

@@ -19,9 +19,6 @@ It also decides which delete the panel offers, so it is held rather than asked f
 
 Re-reads the workspace whenever the engine announces a change, wherever it was made.
 A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
-A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
-A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
-A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
 The citations are read with the catalog, because a Source stored elsewhere is what a row cites.
 A workspace that moved reloads the flags and the language menu first, since neither belongs to the old folder's rows.
 
@@ -32,6 +29,7 @@ The panel names the ordering and the query and decides nothing else about either
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open editor keeps its selection either way, because the row may be the one being written.
 Rows sharing a sentence are numbered afterwards, so the reader can tell them apart.
+Both tally chips are rewritten from the fresh counts, so a quotation added elsewhere shows at once.
 
 ## `internal void PAnthologyExampleShow(long id)`
 
@@ -40,17 +38,35 @@ An open editor is restarted on the Example chosen, so what it writes into is the
 An id the store no longer knows clears the selection and refills the catalog rather than failing.
 The window calls it so a Source citing row can land on the Example it names.
 
-## `private void PExcerptValueShow(TextBlock field, LStateValue value)`
+## `private void PCorpusBinHandle(object sender, RoutedEventArgs e)`
 
-Writes one three-state field into the display.
+Deletes the Example the panel stands on, from the reading side or the editing side alike.
+It answers only while an Example and not an Entry is shown, because an Entry is deleted from the library.
+An Example nothing quotes is simply deleted.
+One something quotes is named to the user first, and only then detached and deleted in one operation.
 
-## `private void PExcerptTextShow(TextBlock field, string? text)`
+## `private string? PExcerptTextRead(LStateValue value)`
 
-Writes the text a field shows, or the unrecorded mark in the muted colour when there is none.
-So a blank row never stands for two facts.
+The text a three-state value reads as, or null when it was never written.
+An unknown value reads the unknown mark, as the situation reading reads it.
+
+## `private void PExcerptSentenceShow(LExample example)`
+
+Writes the sentence at the head of the page, as a situation's title stands at the head of its page.
+A never-written sentence reads the unwritten text in the muted colour, because the head of the page cannot be empty.
 The sentence field is the clickable control, and it takes its text through its own property.
 Its Mentions are handed over only when the text shown is the stored sentence.
-The unknown mark and the unrecorded mark have no words for a Mention to lie on.
+The unknown mark and the unwritten text have no words for a Mention to lie on.
+
+## `private void PExcerptCitationShow(LStateAnchor value)`
+
+Writes the cited Source under its heading, or hides the heading when no citation was ever written.
+An unknown citation reads the unknown mark, so the two kinds of empty stay distinct.
+
+## `private string PCorpusTallyRead(long? id)`
+
+The usage count as the tally chip reads it, a sentence rather than a bare number.
+It reads the same count the delete confirmation reads, so the chip and the warning cannot disagree.
 
 ## `private void PExcerptMentionHandle(object? sender, PMentionArgument e)`
 
@@ -94,18 +110,19 @@ Entering the editor starts a draft on the shown Entry, and leaving it asks first
 
 ## `private void PQuotationScribeShow(bool editing)`
 
-Swaps the entry display for the entry editor and back, and shows the rail save button with the editor.
+Swaps the entry display for the entry editor and back.
 The toggle marks follow, so the rail and the cell never disagree.
 
 ## `private void PCorpusStoreHandle(object sender, RoutedEventArgs e)`
 
-Saves the Entry open in the editor, which the editor does for itself.
+The rail's save, standing for whichever editor is in front.
+An Entry open in `PEditor` saves itself, and otherwise the held Example is committed.
 
 ## `private void PQuotationEntryHide()`
 
 Puts the right-hand side back on the Example side, on the same reading or editing side it stood on.
 An open entry editor is reset first, so no entry draft outlives the Entry it was opened on.
-The mode toggle comes back only while an Example is chosen.
+The mode toggle and the bin come back only while an Example is chosen.
 
 ## `private void PCorpusScribeHandle(object sender, RoutedEventArgs e)`
 
@@ -122,7 +139,8 @@ The segment already standing for what is on screen changes nothing.
 
 Drops the selection and empties the reading, the usage and the editor together.
 The held draft goes first, because nothing may write into a draft the panel no longer stands on.
-`PCorpusScribe` is disabled with it, because there is nothing to edit while nothing is selected.
+The mode toggle and the bin are disabled with it.
+There is nothing to edit or delete while nothing is selected.
 
 ### `internal void PRankRestore(LCatalogOrder order)`
 

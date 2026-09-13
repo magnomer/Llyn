@@ -168,6 +168,26 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LAuthor> LEngineAuthorFind(string query)
+    {
+        lock (_lEngineGate)
+        {
+            ArgumentNullException.ThrowIfNull(query);
+
+            string written = query.Trim();
+            List<LAuthor> found = [];
+            foreach (LAuthor author in new LAuthorArchive(_lEngineDatabase).LAuthorAllRead())
+            {
+                if (LCatalog.LCatalogTextMatch(author.LAuthorName, written))
+                {
+                    found.Add(author);
+                }
+            }
+
+            return found;
+        }
+    }
+
     public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)

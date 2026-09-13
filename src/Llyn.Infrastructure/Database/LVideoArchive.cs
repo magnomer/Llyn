@@ -57,6 +57,11 @@ public sealed class LVideoArchive
         return LVideoReferrerRead("collocation_video", "collocation_parent", collocationId);
     }
 
+    public IReadOnlyList<LVideo> LVideoSituationRead(long situationId)
+    {
+        return LVideoReferrerRead("situation_video", "situation_parent", situationId);
+    }
+
     public void LVideoUpdate(LVideo video)
     {
         ArgumentNullException.ThrowIfNull(video);
@@ -99,7 +104,8 @@ public sealed class LVideoArchive
             """
             SELECT
                 (SELECT COUNT(*) FROM sense_video WHERE video_ref = $id)
-                + (SELECT COUNT(*) FROM collocation_video WHERE video_ref = $id);
+                + (SELECT COUNT(*) FROM collocation_video WHERE video_ref = $id)
+                + (SELECT COUNT(*) FROM situation_video WHERE video_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -139,6 +145,11 @@ public sealed class LVideoArchive
         LVideoReferenceAttach("collocation_video", "collocation_parent", collocationId, videoId, position);
     }
 
+    public void LVideoSituationAttach(long situationId, long videoId, int position)
+    {
+        LVideoReferenceAttach("situation_video", "situation_parent", situationId, videoId, position);
+    }
+
     public void LVideoMeaningDetach(long meaningId, long videoId)
     {
         LVideoReferenceDetach("sense_video", "sense_parent", meaningId, videoId);
@@ -147,6 +158,11 @@ public sealed class LVideoArchive
     public void LVideoCollocationDetach(long collocationId, long videoId)
     {
         LVideoReferenceDetach("collocation_video", "collocation_parent", collocationId, videoId);
+    }
+
+    public void LVideoSituationDetach(long situationId, long videoId)
+    {
+        LVideoReferenceDetach("situation_video", "situation_parent", situationId, videoId);
     }
 
     private void LVideoReferenceAttach(string table, string column, long referrerId, long videoId, int position)

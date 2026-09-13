@@ -2,7 +2,8 @@
 
 ## `ResourceDictionary`
 
-The label and value styles of the read area, and the row of the entry list beside it.
+The title, heading, value and chip styles of the read area, and the row of the entry list beside it.
+The chips are built on the speech chip, so the dictionary merges the speech theme to reach it.
 The row reads the flag, the headword and the language, as a cohort row does, and leads to that Entry.
 It is a dictionary rather than markup in the panel, because the panel outgrew one file.
 

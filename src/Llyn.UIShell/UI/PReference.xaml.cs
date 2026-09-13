@@ -30,6 +30,13 @@ public partial class PReference : UserControl
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, "Reference", null);
         PEditor.PEditorChangeNotice = changed => PReferenceStore.IsEnabled = changed;
+        PImprint.PImprintChangeNotice = changed =>
+        {
+            if (PEditor.Visibility != Visibility.Visible)
+            {
+                PReferenceStore.IsEnabled = changed;
+            }
+        };
 
         _pReferenceObserver = new PObserver(this, PReferenceBulletinHandle);
         engine.LEngineObserverAttach(_pReferenceObserver);

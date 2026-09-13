@@ -3,7 +3,8 @@
 ## `internal sealed class PAnthologyItem`
 
 Presentation item for one Example row in `PAnthology`.
-Carries the sentence, its language and flag, the cited Source, and the usage count.
+Carries the sentence, its language and flag, and the usage count.
+The cited Source is not carried, because a row says what the sentence is and not where it came from.
 The id is identity and never displayed.
 Two Examples may carry the same sentence, so a row is never found by what it reads.
 A sentence standing empty is not one thing.
@@ -11,10 +12,9 @@ It may never have been written, or it may have been written and be unknown now.
 The row is given the mark for the second so the two stay distinct in the catalog.
 It is given the unwritten text for the first so no row stands blank beside the next.
 
-## `internal PAnthologyItem(LExample example, int usage, string source, string unknown, string unwritten)`
+## `internal PAnthologyItem(LExample example, int usage, string unknown, string unwritten)`
 
 Builds the row from the stored Example and the number of places quoting it.
-The Source arrives already resolved, because resolving it needs the shelf the panel holds.
 The two texts are handed in rather than read here.
 A row is built while the list is being filled.
 

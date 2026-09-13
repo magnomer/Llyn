@@ -1,8 +1,6 @@
 using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -31,39 +29,48 @@ public partial class PImprint
 
     private bool _pImprintUrlUnknown;
 
+    private LReferenceKind _pImprintKind;
+
     private bool _pImprintLoading;
 
     private void PImprintTitleHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintTitleUnknown, PImprintTitle, PImprintTitleUnknown);
+        PImprintMarkClear(ref _pImprintTitleUnknown, PImprintTitle);
     }
 
     private void PImprintNoteHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintNoteUnknown, PImprintNote, PImprintNoteUnknown);
+        PImprintMarkClear(ref _pImprintNoteUnknown, PImprintNote);
     }
 
-    private void PImprintKindHandle(object sender, SelectionChangedEventArgs e)
+    private void PImprintKindHandle(object sender, RoutedEventArgs e)
     {
-        if (_pImprintLoading)
+        if (sender is not FrameworkElement { Tag: LReferenceKind kind })
         {
             return;
         }
 
+        PImprintKind.IsChecked = false;
+        if (_pImprintLoading || kind == _pImprintKind)
+        {
+            return;
+        }
+
+        PImprintKindShow(kind);
         PImprintChangeDefer();
     }
 
     private void PImprintYearHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintYearUnknown, PImprintYear, PImprintYearUnknown);
+        PImprintMarkClear(ref _pImprintYearUnknown, PImprintYear);
     }
 
     private void PImprintUrlHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintUrlUnknown, PImprintUrl, PImprintUrlUnknown);
+        PImprintMarkClear(ref _pImprintUrlUnknown, PImprintUrl);
     }
 
-    private void PImprintMarkClear(ref bool unknown, TextBox field, ToggleButton mark)
+    private void PImprintMarkClear(ref bool unknown, TextBox field)
     {
         if (_pImprintLoading)
         {
@@ -71,47 +78,23 @@ public partial class PImprint
         }
 
         unknown = false;
-        field.Tag = string.Empty;
-        mark.IsChecked = false;
+        field.Tag = PImprintHintRead(field, false);
         PImprintChangeDefer();
     }
 
-    private void PImprintUnknownHandle(object sender, RoutedEventArgs e)
+    private string PImprintHintRead(TextBox field, bool unknown)
     {
-        if (sender is not ToggleButton { Tag: string field } mark)
-        {
-            return;
-        }
+        string key = unknown
+            ? "Display.Unknown"
+            : ReferenceEquals(field, PImprintTitle)
+                ? "Source.Untitled"
+                : ReferenceEquals(field, PImprintYear)
+                    ? "Source.Year"
+                    : ReferenceEquals(field, PImprintUrl)
+                        ? "Source.Url"
+                        : "Source.Note";
 
-        bool unknown = mark.IsChecked == true;
-        switch (field)
-        {
-            case "Title":
-                PImprintMarkShow(unknown, PImprintTitle, ref _pImprintTitleUnknown);
-                return;
-            case "Note":
-                PImprintMarkShow(unknown, PImprintNote, ref _pImprintNoteUnknown);
-                return;
-            case "Year":
-                PImprintMarkShow(unknown, PImprintYear, ref _pImprintYearUnknown);
-                return;
-            default:
-                PImprintMarkShow(unknown, PImprintUrl, ref _pImprintUrlUnknown);
-                return;
-        }
-    }
-
-    private void PImprintMarkShow(bool unknown, TextBox field, ref bool held)
-    {
-        _pImprintLoading = true;
-
-        held = unknown;
-        field.Text = string.Empty;
-        field.Tag = unknown ? _pImprintHost.PLocalizationTextRead("Display.Unknown") : string.Empty;
-
-        _pImprintLoading = false;
-
-        PImprintChangeDefer();
+        return _pImprintHost.PLocalizationTextRead(key);
     }
 
     private void PImprintApply(LDraft? draft)
@@ -119,27 +102,14 @@ public partial class PImprint
         LReference? reference = draft?.LDraftReference;
         _pImprintLoading = true;
 
-        string unknown = _pImprintHost.PLocalizationTextRead("Display.Unknown");
-
-        PImprintFieldShow(
-            PImprintTitle, PImprintTitleUnknown, reference?.LReferenceTitle, unknown,
-            ref _pImprintTitleUnknown);
-        PImprintFieldShow(
-            PImprintYear, PImprintYearUnknown, reference?.LReferenceYear, unknown,
-            ref _pImprintYearUnknown);
-        PImprintFieldShow(
-            PImprintNote, PImprintNoteUnknown, reference?.LReferenceNote, unknown,
-            ref _pImprintNoteUnknown);
-        PImprintFieldShow(
-            PImprintUrl, PImprintUrlUnknown, reference?.LReferenceUrl, unknown,
-            ref _pImprintUrlUnknown);
+        PImprintFieldShow(PImprintTitle, reference?.LReferenceTitle, ref _pImprintTitleUnknown);
+        PImprintFieldShow(PImprintYear, reference?.LReferenceYear, ref _pImprintYearUnknown);
+        PImprintFieldShow(PImprintNote, reference?.LReferenceNote, ref _pImprintNoteUnknown);
+        PImprintFieldShow(PImprintUrl, reference?.LReferenceUrl, ref _pImprintUrlUnknown);
         PImprintKindShow(reference?.LReferenceKind ?? LReferenceKind.LReferenceKindUnspecified);
 
-        PAuthorShow(draft);
-
-        long? stored = PImprintReferenceRead();
-        PImprintRemoval.IsEnabled = stored is not null;
-        PImprintCountShow(stored);
+        PAuthorOpen(draft);
+        PImprintTallyShow();
 
         _pImprintLoading = false;
 
@@ -155,16 +125,10 @@ public partial class PImprint
 
         _pImprintLoading = true;
 
-        string unknown = _pImprintHost.PLocalizationTextRead("Display.Unknown");
-
-        PImprintFieldShow(
-            PImprintTitle, PImprintTitleUnknown, reference.LReferenceTitle, unknown, ref _pImprintTitleUnknown, true);
-        PImprintFieldShow(
-            PImprintYear, PImprintYearUnknown, reference.LReferenceYear, unknown, ref _pImprintYearUnknown, true);
-        PImprintFieldShow(
-            PImprintNote, PImprintNoteUnknown, reference.LReferenceNote, unknown, ref _pImprintNoteUnknown, true);
-        PImprintFieldShow(
-            PImprintUrl, PImprintUrlUnknown, reference.LReferenceUrl, unknown, ref _pImprintUrlUnknown, true);
+        PImprintFieldShow(PImprintTitle, reference.LReferenceTitle, ref _pImprintTitleUnknown, true);
+        PImprintFieldShow(PImprintYear, reference.LReferenceYear, ref _pImprintYearUnknown, true);
+        PImprintFieldShow(PImprintNote, reference.LReferenceNote, ref _pImprintNoteUnknown, true);
+        PImprintFieldShow(PImprintUrl, reference.LReferenceUrl, ref _pImprintUrlUnknown, true);
 
         if (PImprintKindRead() != reference.LReferenceKind)
         {
@@ -180,31 +144,37 @@ public partial class PImprint
 
     private void PImprintKindShow(LReferenceKind kind)
     {
-        if (PImprintKind.Items.Count == 0)
+        if (PImprintKindList.Children.Count == 0)
         {
-            PImprintKind.SelectedValuePath = "Tag";
             foreach (LReferenceKind offered in _pImprintKindOrder)
             {
-                PImprintKind.Items.Add(new ComboBoxItem
+                RadioButton choice = new()
                 {
-                    Content = _pImprintHost.PLocalizationTextRead(PReference.PReferenceKindRead(offered)),
+                    GroupName = nameof(PImprintKind),
                     Tag = offered,
-                });
+                };
+                choice.SetResourceReference(FrameworkElement.StyleProperty, "Theme.Choice.Order");
+                choice.SetResourceReference(ContentControl.ContentProperty, PReference.PReferenceKindRead(offered));
+                choice.Click += PImprintKindHandle;
+                PImprintKindList.Children.Add(choice);
             }
         }
 
-        PImprintKind.SelectedValue = kind;
+        _pImprintKind = kind;
+        PImprintKindName.SetResourceReference(TextBlock.TextProperty, PReference.PReferenceKindRead(kind));
+
+        foreach (RadioButton choice in PImprintKindList.Children)
+        {
+            choice.IsChecked = choice.Tag is LReferenceKind offered && offered == kind;
+        }
     }
 
     private LReferenceKind PImprintKindRead()
     {
-        return PImprintKind.SelectedValue is LReferenceKind kind
-            ? kind
-            : LReferenceKind.LReferenceKindUnspecified;
+        return _pImprintKind;
     }
 
-    private static void PImprintFieldShow(
-        TextBox field, ToggleButton mark, LStateValue? value, string unknown, ref bool held, bool differing = false)
+    private void PImprintFieldShow(TextBox field, LStateValue? value, ref bool held, bool differing = false)
     {
         if (differing && new LStateWritten(field.Text, held).LStateWrittenMatch(value))
         {
@@ -213,21 +183,12 @@ public partial class PImprint
 
         field.Text = value?.LStateValueShow() ?? string.Empty;
         held = value?.LStateValueState == LState.LStateUnknown;
-        field.Tag = held ? unknown : string.Empty;
-        mark.IsChecked = held;
+        field.Tag = PImprintHintRead(field, held);
     }
 
-    private void PImprintCountShow(long? stored)
+    internal void PImprintTallyShow()
     {
-        if (stored is null)
-        {
-            PImprintCount.Text = string.Empty;
-            return;
-        }
-
-        int usage = _pImprintOwner.PShelfCountRead(stored.Value);
-        PImprintCount.Text = $"{_pImprintHost.PLocalizationTextRead("Source.DetachCount")} "
-            + usage.ToString(CultureInfo.CurrentCulture);
+        PImprintTally.Text = _pImprintOwner.PReferenceTallyRead(PImprintReferenceRead());
     }
 
     private LRequestReferenceBody PImprintRead(long draft)
@@ -242,17 +203,7 @@ public partial class PImprint
             _pAuthorState);
     }
 
-    private void PImprintDiscardHandle(object sender, RoutedEventArgs e)
-    {
-        if (!_pImprintOwner.PReferenceLeaveConfirm())
-        {
-            return;
-        }
-
-        PImprintDraftOpen(PImprintReferenceRead());
-    }
-
-    private void PImprintStoreHandle(object sender, RoutedEventArgs e)
+    internal void PImprintStoreRun()
     {
         PImprintChangeSave();
 
@@ -277,33 +228,5 @@ public partial class PImprint
 
         _pImprintOwner.PReferenceScribeShow(false);
         _pImprintOwner.PReferenceShow(stored.LReferenceId);
-    }
-
-    private void PImprintRemovalHandle(object sender, RoutedEventArgs e)
-    {
-        if (PImprintReferenceRead() is not long id)
-        {
-            return;
-        }
-
-        int usage = _pImprintOwner.PShelfCountRead(id);
-
-        if (!_pImprintHost.PWindowRemovalConfirm(usage, "Source"))
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineReferenceDelete(id, usage > 0);
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.DeleteFailed", exception);
-            return;
-        }
-
-        _pImprintOwner.PReferenceScribeShow(false);
-        _pImprintOwner.PReferenceClear();
     }
 }

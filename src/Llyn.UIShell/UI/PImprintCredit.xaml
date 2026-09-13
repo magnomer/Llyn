@@ -3,39 +3,62 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Llyn.UIShell">
 
-    <DataTemplate x:Key="Imprint.Credit.Card">
-        <Border Margin="0,0,0,6" Padding="12,6" Background="{DynamicResource Theme.Surface}" BorderBrush="{DynamicResource Theme.Line}" BorderThickness="1" CornerRadius="9">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PAuthorItemName}" TextTrimming="CharacterEllipsis" />
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button IsEnabled="{Binding PAuthorItemEarlier}" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Earlier" ToolTip="{DynamicResource Source.AuthorEarlier}">
-                        <Path Width="24" Height="24" Data="{local:PIcon earlier, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
-                    </Button>
-                    <Button IsEnabled="{Binding PAuthorItemLater}" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Later" ToolTip="{DynamicResource Source.AuthorLater}">
-                        <Path Width="24" Height="24" Data="{local:PIcon later, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
-                    </Button>
-                    <Button Style="{DynamicResource Theme.Popup.IconAction}" Tag="Rename" ToolTip="{DynamicResource Source.AuthorRename}">
-                        <Path Width="24" Height="24" Data="{local:PIcon edit, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
-                    </Button>
-                    <Button Style="{DynamicResource Theme.Popup.IconAction}" Tag="Remove" ToolTip="{DynamicResource Source.AuthorRemove}">
-                        <Path Width="24" Height="24" Data="{local:PIcon close, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Border>
-    </DataTemplate>
-
-    <DataTemplate x:Key="Imprint.Author.Row">
-        <TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding PAuthorItemName}" TextTrimming="CharacterEllipsis" />
-    </DataTemplate>
-
-    <Style x:Key="Imprint.Author.Item" TargetType="ListBoxItem">
-        <Setter Property="Padding" Value="8,6" />
-        <Setter Property="Background" Value="Transparent" />
+    <Style x:Key="Imprint.Credit.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="AcceptsReturn" Value="False" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
+
+    <Style x:Key="Imprint.Credit.Control" TargetType="FrameworkElement">
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Imprint.Credit.Handle" TargetType="Button" BasedOn="{StaticResource Theme.Card.Handle}">
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.35" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <DataTemplate x:Key="Imprint.Credit.Card">
+        <Grid Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Style="{StaticResource Imprint.Credit.Field}" Tag="{DynamicResource Source.AuthorName}" Text="{Binding PAuthorItemName, Mode=OneWay}" />
+            <StackPanel Grid.Column="1" Margin="8,0,0,0" Orientation="Horizontal">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel" BasedOn="{StaticResource Imprint.Credit.Control}" />
+                </StackPanel.Style>
+                <Button Style="{StaticResource Imprint.Credit.Handle}" Tag="Add" ToolTip="{DynamicResource Source.AuthorAdd}">
+                    <Path Width="12" Height="12" Data="{local:PIcon add, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
+                </Button>
+                <Button Style="{StaticResource Imprint.Credit.Handle}" Tag="Remove" ToolTip="{DynamicResource Source.AuthorRemove}">
+                    <Path Width="12" Height="12" Data="{local:PIcon remove, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
+                <Button IsEnabled="{Binding PAuthorItemEarlier}" Style="{StaticResource Imprint.Credit.Handle}" Tag="Earlier" ToolTip="{DynamicResource Source.AuthorEarlier}">
+                    <Path Width="12" Height="12" Data="{local:PIcon earlier, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
+                <Button IsEnabled="{Binding PAuthorItemLater}" Style="{StaticResource Imprint.Credit.Handle}" Tag="Later" ToolTip="{DynamicResource Source.AuthorLater}">
+                    <Path Width="12" Height="12" Data="{local:PIcon later, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
 
 </ResourceDictionary>

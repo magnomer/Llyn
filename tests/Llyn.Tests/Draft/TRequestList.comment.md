@@ -71,6 +71,15 @@ Commit attaches both in order.
 
 The credits move and drop by id like any other list.
 
+## `public void RequestApply_AuthorAdditionOfKnownName_CreditsTheStoredAuthor()`
+
+A typed name the store already holds credits that Author, folded and trimmed.
+A typed name the draft already credits adds no second row.
+
+## `public void AuthorFind_TypedText_ReadsTheAuthorsItMatches()`
+
+The author search reads every stored Author the typed text matches anywhere in the name, by name.
+
 ## Inline notes
 
 ### `private static long TRequestCardAdd(LEngine engine, long draftId)`

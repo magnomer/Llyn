@@ -29,6 +29,7 @@
 
     <Resource Include="..\..\assets\icons\**\*.svg" Link="icons\%(RecursiveDir)%(Filename)%(Extension)" />
     <Resource Include="..\..\assets\brand\icon.png" Link="brand\icon.png" />
+    <Resource Include="..\..\assets\brand\icon.ico" Link="brand\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>

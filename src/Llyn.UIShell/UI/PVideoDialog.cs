@@ -23,7 +23,7 @@ public partial class PEditor
         }
     }
 
-    internal void PVideoRemoveHandle(object sender, RoutedEventArgs e)
+    public void PVideoRemoveHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PVideo row } && PCardVideoFind(row) is PCard card)
         {
@@ -36,23 +36,11 @@ public partial class PEditor
         return PEditorRequestCheck(PEditorRequestFormat(card, row.PVideoId, field));
     }
 
-    internal void PVideoOpenHandle(object sender, RoutedEventArgs e)
+    public void PVideoOpenHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PVideo row })
+        if (sender is FrameworkElement { DataContext: PVideo row } && PVideo.PVideoOpen(_pEditorHost) is string chosen)
         {
-            return;
-        }
-
-        Microsoft.Win32.OpenFileDialog dialog = new()
-        {
-            Title = "Choose a video",
-            Filter = "Video files|*.mp4;*.m4v;*.mov;*.avi;*.wmv;*.mkv;*.webm|All files|*.*",
-            CheckFileExists = true,
-        };
-
-        if (dialog.ShowDialog(_pEditorHost) == true)
-        {
-            row.PVideoLocation = dialog.FileName;
+            row.PVideoLocation = chosen;
         }
     }
 

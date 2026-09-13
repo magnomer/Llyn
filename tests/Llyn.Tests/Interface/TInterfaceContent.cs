@@ -45,6 +45,9 @@ internal static partial class TInterface
     internal static IReadOnlyList<LAuthor> TEngineAuthorRead(this LEngine engine) =>
         engine.LEngineAuthorRead();
 
+    internal static IReadOnlyList<LAuthor> TEngineAuthorFind(this LEngine engine, string query) =>
+        engine.LEngineAuthorFind(query);
+
     internal static IReadOnlyList<LAuthor> TEngineAuthorRead(
         this LEngine engine,
         long ownerId,

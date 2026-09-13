@@ -40,21 +40,50 @@ The read area and the editor also stand on them.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open edit area keeps its selection either way, because the row may be the one being written.
 
-## `internal int PShelfReachRead(long author)`
-
-How many Sources one Author is credited on.
-The count is answered here, because the credit map is held here and the edit area only asks.
-
 ## `internal void PReferenceShow(long id)`
 
 Reads one Source back, shows it, and narrows the middle column to the entries citing it.
 An id the store no longer knows clears the selection and refills the shelf rather than failing.
 A selection made while the edit area is open starts held work on the Source shown.
 
-## `private void PColophonValueShow(TextBlock field, LStateValue value)`
+## `private void PReferenceBinHandle(object sender, RoutedEventArgs e)`
 
-Writes one three-state field into the read area.
-An unwritten value reads the unrecorded mark in the muted colour, so a blank line never stands for two facts.
+Deletes the Source the panel stands on, from the reading side or the editing side alike.
+It answers only while a Source and not an Entry is shown, because an Entry is deleted from the library.
+An uncited Source is simply deleted.
+A cited one is named to the user first, then detached and deleted in one store call.
+
+## `private string? PColophonTextRead(LStateValue value)`
+
+The text a three-state value reads as, or null when it was never written.
+An unknown value reads the unknown mark, as the situation reading reads it.
+
+## `private void PColophonTitleShow(LStateValue value)`
+
+Writes the title at the head of the page.
+A never-written or unknown title reads as the placeholder the edit side shows in its place.
+
+## `private void PColophonKindShow(LReferenceKind kind)`
+
+Writes the kind into its chip, or hides the chip when no kind was recorded.
+An unknown kind is a kind the row records, so it reads inside the chip rather than hiding it.
+
+## `private void PColophonValueShow(TextBlock field, StackPanel section, LStateValue value)`
+
+Writes one three-state field under its heading, or hides the heading when the value was never written.
+So a blank line never stands for two facts, and a heading never stands over nothing.
+An unknown value is dressed as the placeholder the edit side shows, so the two sides read alike.
+
+## `private void PColophonAuthorShow(LReference reference)`
+
+Writes the credited authors under their heading, or the unknown mark when the authorship is recorded unknown.
+No credit and no mark hides the heading, as any other never-written field hides its own.
+The mark alone is dressed as the placeholder the edit side shows, so the two sides read alike.
+
+## `internal string PReferenceTallyRead(long? id)`
+
+The citation count as the tally chip reads it, a sentence rather than a bare number.
+The edit area reads it through the panel, because the shelf's counts are what the panel holds.
 
 ## `private void PFootnoteFind()`
 
@@ -93,18 +122,19 @@ Entering the editor starts a draft on the shown Entry, and leaving it asks first
 
 ## `private void PFootnoteScribeShow(bool editing)`
 
-Swaps the entry display for the entry editor and back, and shows the rail save button with the editor.
+Swaps the entry display for the entry editor and back.
 The toggle marks follow, so the rail and the cell never disagree.
 
 ## `private void PReferenceStoreHandle(object sender, RoutedEventArgs e)`
 
-Saves the Entry open in the editor, which the editor does for itself.
+The rail's save, standing for whichever editor is in front.
+An Entry open in `PEditor` saves itself, and otherwise the edit area commits the held Source.
 
 ## `private void PFootnoteEntryHide()`
 
 Puts the right-hand side back on the Source side, on the same reading or editing side it stood on.
 An open entry editor is reset first, so no entry draft outlives the Entry it was opened on.
-The mode toggle comes back only while a Source is chosen.
+The mode toggle and the bin come back only while a Source is chosen.
 
 ## `private void PReferenceScribeHandle(object sender, RoutedEventArgs e)`
 
@@ -126,7 +156,8 @@ The held work is started before the controls are filled, so the first keystroke 
 
 Drops the selection, empties the reading and the edit area, and widens the entry list back to every Entry.
 Held work is discarded first, because the panel is leaving behind everything the draft was opened on.
-`PReferenceScribe` is disabled with it, because there is nothing to edit while nothing is selected.
+The mode toggle and the bin are disabled with it.
+There is nothing to edit or delete while nothing is selected.
 
 ### `internal void PTrellisRestore(LCatalogFilter filter)`
 

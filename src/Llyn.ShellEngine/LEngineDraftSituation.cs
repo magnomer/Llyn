@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -83,9 +84,28 @@ public sealed partial class LEngine
 
     private LSituation LEngineSituationNormalize(LSituation content)
     {
-        return content.LSituationId == 0
-            ? content with { LSituationId = LEngineIdentityCreate() }
-            : content;
+        IReadOnlyList<LImageDraft> images = LEngineListNormalize(
+            content.LSituationImage,
+            static row => row.LImageDraftEmpty,
+            row => row.LImageDraftId == 0 ? row with { LImageDraftId = LEngineIdentityCreate() } : row);
+        IReadOnlyList<LVideoDraft> videos = LEngineListNormalize(
+            content.LSituationVideo,
+            static row => row.LVideoDraftEmpty,
+            row => row.LVideoDraftId == 0 ? row with { LVideoDraftId = LEngineIdentityCreate() } : row);
+
+        if (content.LSituationId != 0
+            && ReferenceEquals(images, content.LSituationImage)
+            && ReferenceEquals(videos, content.LSituationVideo))
+        {
+            return content;
+        }
+
+        return content with
+        {
+            LSituationId = content.LSituationId == 0 ? LEngineIdentityCreate() : content.LSituationId,
+            LSituationImage = images,
+            LSituationVideo = videos,
+        };
     }
 
     private static LSituation LEngineSituationBlank =>
@@ -99,6 +119,8 @@ public sealed partial class LEngine
     {
         return one.LSituationTitle == other.LSituationTitle
             && one.LSituationDescription == other.LSituationDescription
-            && one.LSituationKind == other.LSituationKind;
+            && one.LSituationKind == other.LSituationKind
+            && LEngineImageMatch(one.LSituationImage, other.LSituationImage)
+            && LEngineVideoMatch(one.LSituationVideo, other.LSituationVideo);
     }
 }

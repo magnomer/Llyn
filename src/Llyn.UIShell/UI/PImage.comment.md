@@ -42,6 +42,11 @@ Redraws the row from the engine's row where the location differs.
 A location with a request still waiting is left as typed.
 The id is always taken.
 
+## `internal static string? PImageOpen(Window owner)`
+
+Asks the user for a picture file on this machine and answers its path, or null when they chose none.
+It lives on the row because every editor drawing the row offers the same chooser.
+
 ## `internal static Uri? PImageAddressRead(string location)`
 
 Turns what was typed into an address to load from, or `null` when it names no reachable place.

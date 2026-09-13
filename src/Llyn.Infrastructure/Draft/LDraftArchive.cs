@@ -192,6 +192,7 @@ public static class LDraftArchive
         if (draft.LDraftSituation is LSituation situation)
         {
             LDraftArchiveCheck(situation.LSituationId, "situation");
+            LDraftArchiveCheck(situation.LSituationImage, situation.LSituationVideo);
         }
 
         if (draft.LDraftReference is LReference reference)
@@ -253,17 +254,21 @@ public static class LDraftArchive
                 LDraftArchiveCheck(tag.LTagDraftId, "tag");
             }
 
-            foreach (LImageDraft image in card.LCardDraftImage)
-            {
-                LDraftArchiveCheck(image.LImageDraftId, "image");
-            }
-
-            foreach (LVideoDraft video in card.LCardDraftVideo)
-            {
-                LDraftArchiveCheck(video.LVideoDraftId, "video");
-            }
-
+            LDraftArchiveCheck(card.LCardDraftImage, card.LCardDraftVideo);
             LDraftArchiveCheck(card.LCardDraftChild);
+        }
+    }
+
+    private static void LDraftArchiveCheck(IReadOnlyList<LImageDraft> images, IReadOnlyList<LVideoDraft> videos)
+    {
+        foreach (LImageDraft image in images)
+        {
+            LDraftArchiveCheck(image.LImageDraftId, "image");
+        }
+
+        foreach (LVideoDraft video in videos)
+        {
+            LDraftArchiveCheck(video.LVideoDraftId, "video");
         }
     }
 

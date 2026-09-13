@@ -237,6 +237,15 @@ internal static partial class TInterface
     internal static long TIdentityCreate() =>
         Interlocked.Decrement(ref TInterfaceIdentity);
 
+    internal static LImageArchive TImageArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static LImage? TImageRead(this LImageArchive imageArchive, long id) =>
+        imageArchive.LImageRead(id);
+
+    internal static int TImageReferenceRead(this LImageArchive imageArchive, long id) =>
+        imageArchive.LImageReferenceRead(id);
+
     internal static void TInflectionAppend(
         this LInflectionArchive inflectionArchive,
         long entryId,
@@ -439,6 +448,15 @@ internal static partial class TInterface
 
     internal static LTranslationArchive TTranslationArchiveCreate(LDatabase database) =>
         new(database);
+
+    internal static LVideoArchive TVideoArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static LVideo? TVideoRead(this LVideoArchive videoArchive, long id) =>
+        videoArchive.LVideoRead(id);
+
+    internal static int TVideoReferenceRead(this LVideoArchive videoArchive, long id) =>
+        videoArchive.LVideoReferenceRead(id);
 
     internal static IReadOnlyList<LTranslation> TTranslationCollocationRead(
         this LTranslationArchive translationArchive,

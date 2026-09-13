@@ -2,7 +2,7 @@
 
 ## `public sealed class LVideoArchive`
 
-Stores the independent Video and the references that reach it from a Meaning or a Collocation.
+Stores the independent Video and the references that reach it from a Meaning, a Collocation, or a Situation.
 It mirrors `LImageArchive` row for row, because a Video is kept exactly as an Image is.
 It keeps one thing an Image has no use for, the span of the film worth watching.
 The span is held as written and read as written.

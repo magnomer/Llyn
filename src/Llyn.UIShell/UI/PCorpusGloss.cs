@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -26,8 +28,7 @@ public partial class PCorpus
             _pExcerptGloss.Add(new PGloss(_pLanguageItem, LGlossDraft.LGlossDraftCreate(gloss)));
         }
 
-        PExcerptValueShow(PExcerptTranslation, LStateValue.LStateValueUnspecified);
-        PExcerptTranslation.Visibility = glosses.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        PExcerptGlossSection.Visibility = glosses.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void PTranscriptGlossShow(LExample? example)
@@ -49,6 +50,8 @@ public partial class PCorpus
                 row.PGlossShow(draft, _ => _pTranscriptGlossDirty.Contains(row.PGlossId));
                 return row;
             });
+
+        PTranscriptSeedShow();
     }
 
     private PGloss PTranscriptGlossCreate(LGlossDraft draft)
@@ -95,16 +98,44 @@ public partial class PCorpus
 
     private void PGlossAddHandle(object sender, RoutedEventArgs e)
     {
+        int position = sender is FrameworkElement { DataContext: PGloss row }
+            ? _pTranscriptGloss.IndexOf(row) + 1
+            : _pTranscriptGloss.Count;
+
         PTranscriptRequestSend(new LRequestGlossAddition(
-            _pTranscriptDraft, 0, 0, PGlossLanguageRead(), _pTranscriptGloss.Count));
+            _pTranscriptDraft, 0, 0, PGlossLanguageRead(), position));
     }
 
-    private void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)
+    private void PGlossRemoveHandle(object sender, RoutedEventArgs e)
     {
-        if (e.Parameter is PGloss gloss)
+        if (sender is FrameworkElement { DataContext: PGloss gloss })
         {
             PTranscriptRequestSend(new LRequestGlossRemoval(_pTranscriptDraft, 0, 0, gloss.PGlossId));
         }
+    }
+
+    private void PTranscriptSeedShow()
+    {
+        PTranscriptSeed.Visibility = _pTranscriptGloss.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void PTranscriptSeedHandle(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (_pTranscriptGloss.Count > 0)
+        {
+            return;
+        }
+
+        PTranscriptRequestSend(new LRequestGlossAddition(_pTranscriptDraft, 0, 0, PGlossLanguageRead(), 0));
+
+        Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
+        {
+            if (PTranscriptGlossLine.ItemContainerGenerator.ContainerFromIndex(0) is DependencyObject container
+                && PEditor.PEditorCaretFind(container) is TextBox box)
+            {
+                box.Focus();
+            }
+        });
     }
 
     private string PGlossLanguageRead()

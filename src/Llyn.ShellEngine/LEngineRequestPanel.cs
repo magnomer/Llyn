@@ -55,9 +55,27 @@ public sealed partial class LEngine
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(request.LRequestText);
 
-        LAuthor author = new(LEngineIdentityCreate(), request.LRequestText.Trim());
+        string name = request.LRequestText.Trim();
+        LAuthor author = LEngineAuthorMatch(draft.LDraftAuthor, name)
+            ?? LEngineAuthorMatch(new LAuthorArchive(_lEngineDatabase).LAuthorAllRead(), name)
+            ?? new LAuthor(LEngineIdentityCreate(), name);
         return LEngineAuthorApply(
-            draft, authors => LEngineListAdd(authors, author, request.LRequestPosition));
+            draft,
+            authors => LEngineListInsert(authors, author, author.LAuthorId, request.LRequestPosition, static row => row.LAuthorId));
+    }
+
+    private static LAuthor? LEngineAuthorMatch(IReadOnlyList<LAuthor> authors, string name)
+    {
+        string written = LCatalog.LCatalogTextNormalize(name);
+        foreach (LAuthor author in authors)
+        {
+            if (string.Equals(LCatalog.LCatalogTextNormalize(author.LAuthorName), written, StringComparison.Ordinal))
+            {
+                return author;
+            }
+        }
+
+        return null;
     }
 
     private LDraft LEngineAuthorInsert(LDraft draft, LRequestAuthorPick request)

@@ -7,48 +7,66 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    private LEntryDraft LEngineImageAdd(LEntryDraft content, LRequestImageAddition request)
+    private LSituation? LEngineSituationDispatch(LSituation situation, LRequest request)
     {
-        LImageDraft image = new(LEngineValueRead(request.LRequestValue), LEngineIdentityCreate());
+        if (LEngineImageApply(situation.LSituationImage, request) is IReadOnlyList<LImageDraft> images)
+        {
+            return situation with { LSituationImage = images };
+        }
 
-        return LEngineImageApply(
-            content,
-            request.LRequestCardId,
-            images => LEngineListAdd(images, image, request.LRequestPosition));
+        if (LEngineVideoApply(situation.LSituationVideo, request) is IReadOnlyList<LVideoDraft> videos)
+        {
+            return situation with { LSituationVideo = videos };
+        }
+
+        return null;
     }
 
-    private LEntryDraft LEngineImageInsert(LEntryDraft content, LRequestImagePick request)
+    private IReadOnlyList<LImageDraft>? LEngineImageApply(IReadOnlyList<LImageDraft> images, LRequest request)
     {
-        if (request.LRequestImageId <= 0)
+        return request switch
+        {
+            LRequestImageAddition sent => LEngineListAdd(
+                images,
+                new LImageDraft(LEngineValueRead(sent.LRequestValue), LEngineIdentityCreate()),
+                sent.LRequestPosition),
+            LRequestImagePick sent => LEngineListInsert(
+                images,
+                LEngineImageRead(sent.LRequestImageId),
+                sent.LRequestImageId,
+                sent.LRequestPosition,
+                static row => row.LImageDraftId),
+            LRequestImageRemoval sent => LEngineListRemove(
+                images, sent.LRequestImageId, static row => row.LImageDraftId),
+            LRequestImageShift sent => LEngineListMove(
+                images, sent.LRequestImageId, sent.LRequestPosition, static row => row.LImageDraftId),
+            LRequestImageLocation sent => LEngineListChange(
+                images,
+                sent.LRequestImageId,
+                static row => row.LImageDraftId,
+                image => image with { LImageDraftLocation = LEngineValueRead(sent.LRequestValue) })
+                ?? throw new LRefusal(LRefusal.LRefusalItem),
+            _ => null,
+        };
+    }
+
+    private LEntryDraft LEngineImageApply(LEntryDraft content, long cardId, LRequest request)
+    {
+        return LEngineCardChange(
+            content, cardId, card => card with { LCardDraftImage = LEngineImageApply(card.LCardDraftImage, request)! });
+    }
+
+    private LImageDraft LEngineImageRead(long id)
+    {
+        if (id <= 0)
         {
             throw new LRefusal(LRefusal.LRefusalItem);
         }
 
-        LImage stored = new LImageArchive(_lEngineDatabase).LImageRead(request.LRequestImageId)
+        LImage stored = new LImageArchive(_lEngineDatabase).LImageRead(id)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
-        LImageDraft image = new(stored.LImageLocation, stored.LImageId);
-
-        return LEngineImageApply(
-            content,
-            request.LRequestCardId,
-            images => LEngineListInsert(images, image, stored.LImageId, request.LRequestPosition, static row => row.LImageDraftId));
-    }
-
-    private static LEntryDraft LEngineImageRemove(LEntryDraft content, LRequestImageRemoval request)
-    {
-        return LEngineImageApply(
-            content,
-            request.LRequestCardId,
-            images => LEngineListRemove(images, request.LRequestImageId, static row => row.LImageDraftId));
-    }
-
-    private static LEntryDraft LEngineImageMove(LEntryDraft content, LRequestImageShift request)
-    {
-        return LEngineImageApply(
-            content,
-            request.LRequestCardId,
-            images => LEngineListMove(images, request.LRequestImageId, request.LRequestPosition, static row => row.LImageDraftId));
+        return new LImageDraft(stored.LImageLocation, stored.LImageId);
     }
 
     private static LEntryDraft LEngineImageChange(LEntryDraft content, LRequestImageLocation request)
@@ -67,56 +85,58 @@ public sealed partial class LEngine
         });
     }
 
-    private static LEntryDraft LEngineImageApply(
-        LEntryDraft content, long cardId, Func<IReadOnlyList<LImageDraft>, IReadOnlyList<LImageDraft>> change)
+    private IReadOnlyList<LVideoDraft>? LEngineVideoApply(IReadOnlyList<LVideoDraft> videos, LRequest request)
+    {
+        return request switch
+        {
+            LRequestVideoAddition sent => LEngineListAdd(
+                videos,
+                new LVideoDraft(
+                    LEngineValueRead(sent.LRequestValue), LStateValue.LStateValueUnspecified, LEngineIdentityCreate()),
+                sent.LRequestPosition),
+            LRequestVideoPick sent => LEngineListInsert(
+                videos,
+                LEngineVideoRead(sent.LRequestVideoId),
+                sent.LRequestVideoId,
+                sent.LRequestPosition,
+                static row => row.LVideoDraftId),
+            LRequestVideoRemoval sent => LEngineListRemove(
+                videos, sent.LRequestVideoId, static row => row.LVideoDraftId),
+            LRequestVideoShift sent => LEngineListMove(
+                videos, sent.LRequestVideoId, sent.LRequestPosition, static row => row.LVideoDraftId),
+            LRequestVideoLocation sent => LEngineListChange(
+                videos,
+                sent.LRequestVideoId,
+                static row => row.LVideoDraftId,
+                video => video with { LVideoDraftLocation = LEngineValueRead(sent.LRequestValue) })
+                ?? throw new LRefusal(LRefusal.LRefusalItem),
+            LRequestVideoSpan sent => LEngineListChange(
+                videos,
+                sent.LRequestVideoId,
+                static row => row.LVideoDraftId,
+                video => video with { LVideoDraftSpan = LEngineValueRead(sent.LRequestValue) })
+                ?? throw new LRefusal(LRefusal.LRefusalItem),
+            _ => null,
+        };
+    }
+
+    private LEntryDraft LEngineVideoApply(LEntryDraft content, long cardId, LRequest request)
     {
         return LEngineCardChange(
-            content, cardId, card => card with { LCardDraftImage = change(card.LCardDraftImage) });
+            content, cardId, card => card with { LCardDraftVideo = LEngineVideoApply(card.LCardDraftVideo, request)! });
     }
 
-    private LEntryDraft LEngineVideoAdd(LEntryDraft content, LRequestVideoAddition request)
+    private LVideoDraft LEngineVideoRead(long id)
     {
-        LVideoDraft video = new(
-            LEngineValueRead(request.LRequestValue), LStateValue.LStateValueUnspecified, LEngineIdentityCreate());
-
-        return LEngineVideoApply(
-            content,
-            request.LRequestCardId,
-            videos => LEngineListAdd(videos, video, request.LRequestPosition));
-    }
-
-    private LEntryDraft LEngineVideoInsert(LEntryDraft content, LRequestVideoPick request)
-    {
-        if (request.LRequestVideoId <= 0)
+        if (id <= 0)
         {
             throw new LRefusal(LRefusal.LRefusalItem);
         }
 
-        LVideo stored = new LVideoArchive(_lEngineDatabase).LVideoRead(request.LRequestVideoId)
+        LVideo stored = new LVideoArchive(_lEngineDatabase).LVideoRead(id)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
-        LVideoDraft video = new(stored.LVideoLocation, stored.LVideoSpan, stored.LVideoId);
-
-        return LEngineVideoApply(
-            content,
-            request.LRequestCardId,
-            videos => LEngineListInsert(videos, video, stored.LVideoId, request.LRequestPosition, static row => row.LVideoDraftId));
-    }
-
-    private static LEntryDraft LEngineVideoRemove(LEntryDraft content, LRequestVideoRemoval request)
-    {
-        return LEngineVideoApply(
-            content,
-            request.LRequestCardId,
-            videos => LEngineListRemove(videos, request.LRequestVideoId, static row => row.LVideoDraftId));
-    }
-
-    private static LEntryDraft LEngineVideoMove(LEntryDraft content, LRequestVideoShift request)
-    {
-        return LEngineVideoApply(
-            content,
-            request.LRequestCardId,
-            videos => LEngineListMove(videos, request.LRequestVideoId, request.LRequestPosition, static row => row.LVideoDraftId));
+        return new LVideoDraft(stored.LVideoLocation, stored.LVideoSpan, stored.LVideoId);
     }
 
     private static LEntryDraft LEngineVideoChange(
@@ -129,12 +149,5 @@ public sealed partial class LEngine
 
             return videos is null ? null : card with { LCardDraftVideo = videos };
         });
-    }
-
-    private static LEntryDraft LEngineVideoApply(
-        LEntryDraft content, long cardId, Func<IReadOnlyList<LVideoDraft>, IReadOnlyList<LVideoDraft>> change)
-    {
-        return LEngineCardChange(
-            content, cardId, card => card with { LCardDraftVideo = change(card.LCardDraftVideo) });
     }
 }

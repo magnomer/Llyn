@@ -35,6 +35,11 @@ The location as written, with its mark, for the engine to read.
 
 The span as written, with its mark, for the engine to read.
 
+## `internal static string? PVideoOpen(Window owner)`
+
+Asks the user for a video file on this machine and answers its path, or null when they chose none.
+It lives on the row for the reason the picture chooser lives on its row.
+
 ## `internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)`
 
 Redraws the row from the engine's row, location and span apart, only where the field says something else.

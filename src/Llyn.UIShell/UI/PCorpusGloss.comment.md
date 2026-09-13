@@ -29,11 +29,19 @@ The text requests of every dirty row, sent after the body, and the dirty set cle
 
 ## `private void PGlossAddHandle(object sender, RoutedEventArgs e)`
 
-Adds a Gloss at the end of the list, in English.
+Adds a Gloss in English, after the row whose plus was pressed, or at the end from the seed line.
 
-## `private void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
+## `private void PGlossRemoveHandle(object sender, RoutedEventArgs e)`
 
-Drops the Gloss the command carries.
+Drops the Gloss whose minus was pressed.
+
+## `private void PTranscriptSeedShow()`
+
+Shows the seed line only while the list is empty, so a first row can be added from somewhere.
+
+## `private void PTranscriptSeedHandle(object sender, KeyboardFocusChangedEventArgs e)`
+
+Focusing the seed field adds the first row and moves the caret into it once the row is drawn.
 
 ## `private string PGlossLanguageRead()`
 

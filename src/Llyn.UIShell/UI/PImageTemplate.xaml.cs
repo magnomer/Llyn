@@ -4,9 +4,9 @@ namespace Llyn.UIShell;
 
 public partial class PImageTemplate : ResourceDictionary
 {
-    private readonly PEditor _pImageHost;
+    private readonly PImageHost _pImageHost;
 
-    internal PImageTemplate(PEditor host)
+    internal PImageTemplate(PImageHost host)
     {
         _pImageHost = host;
         InitializeComponent();

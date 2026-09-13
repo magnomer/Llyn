@@ -21,7 +21,7 @@ public partial class PEditor
         }
     }
 
-    internal void PImageRemoveHandle(object sender, RoutedEventArgs e)
+    public void PImageRemoveHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row } && PCardImageFind(row) is PCard card)
         {
@@ -29,23 +29,11 @@ public partial class PEditor
         }
     }
 
-    internal void PImageOpenHandle(object sender, RoutedEventArgs e)
+    public void PImageOpenHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { DataContext: PImage row })
+        if (sender is FrameworkElement { DataContext: PImage row } && PImage.PImageOpen(_pEditorHost) is string chosen)
         {
-            return;
-        }
-
-        Microsoft.Win32.OpenFileDialog dialog = new()
-        {
-            Title = "Choose an image",
-            Filter = "Image files|*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp;*.tif;*.tiff|All files|*.*",
-            CheckFileExists = true,
-        };
-
-        if (dialog.ShowDialog(_pEditorHost) == true)
-        {
-            row.PImageLocation = dialog.FileName;
+            row.PImageLocation = chosen;
         }
     }
 

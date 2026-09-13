@@ -1,5 +1,4 @@
 using System;
-using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
 
@@ -23,7 +22,7 @@ public partial class PRepertoire
         }
 
         _pScenarioTitleUnknown = false;
-        PScenarioTitle.Tag = string.Empty;
+        PScenarioTitle.Tag = PScenarioHintRead(PScenarioTitle, false);
         PScenarioChangeDefer();
     }
 
@@ -35,7 +34,7 @@ public partial class PRepertoire
         }
 
         _pScenarioKindUnknown = false;
-        PScenarioKind.Tag = string.Empty;
+        PScenarioKind.Tag = PScenarioHintRead(PScenarioKind, false);
         PScenarioChangeDefer();
     }
 
@@ -47,15 +46,26 @@ public partial class PRepertoire
         }
 
         _pScenarioDescriptionUnknown = false;
-        PScenarioDescription.Tag = string.Empty;
+        PScenarioDescription.Tag = PScenarioHintRead(PScenarioDescription, false);
         PScenarioChangeDefer();
+    }
+
+    private string PScenarioHintRead(TextBox field, bool unknown)
+    {
+        string key = unknown
+            ? "Display.Unknown"
+            : ReferenceEquals(field, PScenarioTitle)
+                ? "Situation.Untitled"
+                : ReferenceEquals(field, PScenarioKind)
+                    ? "Situation.Kind"
+                    : "Situation.DescriptionHint";
+
+        return _pRepertoireHost.PLocalizationTextRead(key);
     }
 
     private void PScenarioApply(LSituation? situation)
     {
         _pScenarioLoading = true;
-
-        string unknown = _pRepertoireHost.PLocalizationTextRead("Display.Unknown");
 
         PScenarioTitle.Text = situation?.LSituationTitle.LStateValueShow() ?? string.Empty;
         PScenarioKind.Text = situation?.LSituationKind.LStateValueShow() ?? string.Empty;
@@ -65,12 +75,14 @@ public partial class PRepertoire
         _pScenarioKindUnknown = situation?.LSituationKind.LStateValueState == LState.LStateUnknown;
         _pScenarioDescriptionUnknown = situation?.LSituationDescription.LStateValueState == LState.LStateUnknown;
 
-        PScenarioTitle.Tag = _pScenarioTitleUnknown ? unknown : string.Empty;
-        PScenarioKind.Tag = _pScenarioKindUnknown ? unknown : string.Empty;
-        PScenarioDescription.Tag = _pScenarioDescriptionUnknown ? unknown : string.Empty;
+        PScenarioTitle.Tag = PScenarioHintRead(PScenarioTitle, _pScenarioTitleUnknown);
+        PScenarioKind.Tag = PScenarioHintRead(PScenarioKind, _pScenarioKindUnknown);
+        PScenarioDescription.Tag = PScenarioHintRead(PScenarioDescription, _pScenarioDescriptionUnknown);
 
-        long? stored = PScenarioSituationRead();
-        PScenarioRemoval.IsEnabled = stored is not null;
+        PScenarioImageShow(situation?.LSituationImage ?? []);
+        PScenarioVideoShow(situation?.LSituationVideo ?? []);
+
+        PScenarioTally.Text = PRepertoireTallyRead(PScenarioSituationRead());
 
         _pScenarioLoading = false;
 
@@ -81,19 +93,19 @@ public partial class PRepertoire
     {
         _pScenarioLoading = true;
 
-        string unknown = _pRepertoireHost.PLocalizationTextRead("Display.Unknown");
+        PScenarioFieldShow(PScenarioTitle, situation.LSituationTitle, ref _pScenarioTitleUnknown);
+        PScenarioFieldShow(PScenarioKind, situation.LSituationKind, ref _pScenarioKindUnknown);
+        PScenarioFieldShow(PScenarioDescription, situation.LSituationDescription, ref _pScenarioDescriptionUnknown);
 
-        PScenarioFieldShow(PScenarioTitle, situation.LSituationTitle, unknown, ref _pScenarioTitleUnknown);
-        PScenarioFieldShow(PScenarioKind, situation.LSituationKind, unknown, ref _pScenarioKindUnknown);
-        PScenarioFieldShow(
-            PScenarioDescription, situation.LSituationDescription, unknown, ref _pScenarioDescriptionUnknown);
+        PScenarioImageShow(situation.LSituationImage);
+        PScenarioVideoShow(situation.LSituationVideo);
 
         _pScenarioLoading = false;
 
         PScenarioChangeUpdate();
     }
 
-    private static void PScenarioFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)
+    private void PScenarioFieldShow(TextBox field, LStateValue value, ref bool held)
     {
         if (new LStateWritten(field.Text, held).LStateWrittenMatch(value))
         {
@@ -102,7 +114,7 @@ public partial class PRepertoire
 
         field.Text = value.LStateValueShow();
         held = value.LStateValueState == LState.LStateUnknown;
-        field.Tag = held ? unknown : string.Empty;
+        field.Tag = PScenarioHintRead(field, held);
     }
 
     private LRequestSituationBody PScenarioRead(long draft, long situation)
@@ -115,17 +127,7 @@ public partial class PRepertoire
             new LStateWritten(PScenarioKind.Text, _pScenarioKindUnknown));
     }
 
-    private void PScenarioDiscardHandle(object sender, RoutedEventArgs e)
-    {
-        if (!PRepertoireLeaveConfirm())
-        {
-            return;
-        }
-
-        PScenarioDraftShow(PScenarioDraftStart(PScenarioSituationRead()));
-    }
-
-    private void PScenarioStoreHandle(object sender, RoutedEventArgs e)
+    private void PScenarioStoreRun()
     {
         PScenarioChangeSave();
 
@@ -153,34 +155,5 @@ public partial class PRepertoire
         PAtlasFind(PInquest.Text ?? string.Empty);
         PRepertoireScribeShow(false);
         PRepertoireShow(stored.LSituationId);
-    }
-
-    private void PScenarioRemovalHandle(object sender, RoutedEventArgs e)
-    {
-        if (PScenarioSituationRead() is not long id)
-        {
-            return;
-        }
-
-        int usage = _pAtlasCount.TryGetValue(id, out int count) ? count : 0;
-
-        if (!_pRepertoireHost.PWindowRemovalConfirm(usage))
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineSituationDelete(id, usage > 0);
-        }
-        catch (Exception exception)
-        {
-            _pRepertoireHost.PWindowFailureShow("Situation.DeleteFailed", exception);
-            return;
-        }
-
-        PRepertoireScribeShow(false);
-        PRepertoireClear();
-        PAtlasFind(PInquest.Text ?? string.Empty);
     }
 }

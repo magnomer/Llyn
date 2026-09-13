@@ -37,10 +37,12 @@ Nobody is left to observe the task, so the write it ends with is guarded inside 
 The one place control values reach the held Source outside a commit.
 It also settles the buttons, so a write and what the buttons say never drift apart.
 
-## `private void PImprintChangeUpdate()`
+## `internal void PImprintChangeUpdate()`
 
-Settles the discard and store controls against the engine's answer.
-Both read the same answer the closing warning reads, so the three cannot disagree.
+Hands the engine's answer to the panel, which settles the rail's save on it.
+It reads the same answer the closing warning reads, so the two cannot disagree.
+The panel calls it when it brings the area back in front.
+So the save is settled for the area shown.
 
 ## `private LDraft? PImprintDraftStart(long? reference)`
 

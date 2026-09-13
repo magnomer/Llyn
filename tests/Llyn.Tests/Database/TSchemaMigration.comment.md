@@ -14,6 +14,11 @@ The launch goes on without it.
 The id counters carry across, so a rebuilt workspace never hands out an id a tombstone remembers.
 The realm row is single, minted once, and stamps every row made here.
 
+## `public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()`
+
+A version-47 workspace has no Situation media tables.
+The rebuild adds them empty and carries every Situation and Image across untouched.
+
 ## Inline notes
 
 ### `Assert.Equal(1, TSchemaIndexRead(workspace, "collocation", "entry_ref"));`

@@ -20,3 +20,9 @@ A commit that kept its file would offer saved work back at every launch.
 A draft matching the Situation it names is collected, and one differing from its own is kept.
 A kill just after a commit leaves such a file.
 Only the sweep can tell it from work the user would lose.
+
+## `public void SituationCommit_MediaAdded_StoresAndReadsBack()`
+
+A picture and a clip added to a held Situation count as a change.
+The commit stores both, and the next start reads them back.
+The reopened draft is unchanged, so the stored lists and the held lists say the same thing.

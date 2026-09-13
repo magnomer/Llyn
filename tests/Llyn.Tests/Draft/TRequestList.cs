@@ -344,6 +344,40 @@ public sealed class TRequestList
         Assert.Equal(["Cam", "Brook"], answered.LDraftAuthor.Select(author => author.LAuthorName));
     }
 
+    [Fact]
+    public void RequestApply_AuthorAdditionOfKnownName_CreditsTheStoredAuthor()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LAuthor known = engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada"));
+        LDraft started = engine.TEngineReferenceStart("Reference", null);
+
+        engine.TEngineRequestApply(TInterface.TAuthorAdditionCreate(started.LDraftId, "brook", 0));
+        engine.TEngineRequestApply(TInterface.TAuthorAdditionCreate(started.LDraftId, " ADA ", 1));
+        LDraft answered = engine.TEngineRequestApply(
+            TInterface.TAuthorAdditionCreate(started.LDraftId, "Brook", 2));
+
+        Assert.Equal(2, answered.LDraftAuthor.Count);
+        Assert.True(answered.LDraftAuthor[0].LAuthorId < 0);
+        Assert.Equal("brook", answered.LDraftAuthor[0].LAuthorName);
+        Assert.Equal(known.LAuthorId, answered.LDraftAuthor[1].LAuthorId);
+        Assert.Equal("Ada", answered.LDraftAuthor[1].LAuthorName);
+    }
+
+    [Fact]
+    public void AuthorFind_TypedText_ReadsTheAuthorsItMatches()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Ada Lovelace"));
+        engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Brook Taylor"));
+        engine.TEngineAuthorCreate(TInterface.TAuthorCreate(0, "Cam Adams"));
+
+        IReadOnlyList<LAuthor> found = engine.TEngineAuthorFind("ada");
+
+        Assert.Equal(["Ada Lovelace", "Cam Adams"], found.Select(author => author.LAuthorName));
+    }
+
     private static long TRequestCardAdd(LEngine engine, long draftId)
     {
         LDraft answered = engine.TEngineRequestApply(

@@ -37,8 +37,8 @@ A field standing Unspecified or Unknown still has a place in every ordering, ord
 The action row of the panel.
 `PReferenceFresh` opens the edit area on a Source nothing cites yet.
 That is the normal case, because a Source is written down first and cited afterwards.
-`PReferenceStore` saves the Entry open in `PEditor`, and is shown only while that editor is in front.
-A Source saves from its own editor, so the rail button never stands for both.
+`PReferenceStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Source.
+It stands in the rail at all times, as the repertoire panel's save does.
 Export and print are mock-up controls and are not wired.
 
 ## `<ItemsControl x:Name="PShelf" Button.Click="PShelfHandle" ...>`
@@ -61,8 +61,17 @@ It stands in front only while an Entry is shown and the toggle is on the editing
 
 ## `<Grid x:Name="PColophon">`
 
-The read area of one Source, this panel's own beside the Entry-shaped `PDisplay`.
-Every field is shown, including one standing Unspecified, so a reader learns what the Source does not state.
+The reading of one Source, laid out as the repertoire panel lays out a Situation.
+`PColophon` here stands on a Source rather than on an Entry, beside the Entry-shaped `PDisplay`.
+The title stands at the head of the page.
+The kind and the citation count stand as chips on the row beneath it.
+The authors, the year, the address and the note are headings over their values, as a situation's description is.
+No field is labeled, because the entry display labels nothing: position and dress say what a value is.
+A never-written field is not drawn at all, as a situation with no description draws none.
+An unknown value reads the unknown mark where the value would stand.
+An unknown authorship reads it under its heading.
+A never-written title reads the untitled text in the muted colour, because the head of the page cannot be empty.
+The editing side still draws every slot, so the two kinds of empty are one toggle apart rather than lost.
 The mode toggle is not in here.
 It sits in the action row as it does in every built panel.
 
@@ -76,11 +85,19 @@ A Situation is not listed, because a Situation is written rather than quoted and
 Choosing a row shows that Entry in `PDisplay`, in place of the Source reading, without leaving the tab.
 The list is read-only, because a citation is set or cleared where it is held.
 
-## `<local:PImprint x:Name="PImprint" Visibility="Collapsed" />`
+## `<local:PImprint x:Name="PImprint" Margin="30,18,0,0" Visibility="Collapsed" />`
 
 The edit area, a control of its own and described in `PImprint.comment.md`.
-It sits over the read area in the same cell, because one Source is either being read or being written.
+It sits over the read area in the same cell and at the same inset.
+One Source is either being read or being written.
 The panel decides which is shown, so the mode toggle stays in the action row.
+
+## `<Button x:Name="PReferenceBin" ...>`
+
+Deletes the shown Source, from the reading side or the editing side alike.
+It stands in the corner of the surface as the repertoire panel's bin does, apart from the browsing beside it.
+It is disabled while nothing is selected and while an Entry is shown.
+It is disabled too while the edit area stands on a Source nothing has stored yet.
 
 ## Catalog spacing
 

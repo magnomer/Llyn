@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
@@ -101,24 +102,6 @@ public partial class PReference
         return _pShelfCredit.TryGetValue(id, out IReadOnlyList<LAuthor>? credits) ? credits : PShelfNobody;
     }
 
-    internal int PShelfReachRead(long author)
-    {
-        int reach = 0;
-        foreach (IReadOnlyList<LAuthor> credits in _pShelfCredit.Values)
-        {
-            foreach (LAuthor written in credits)
-            {
-                if (written.LAuthorId == author)
-                {
-                    reach++;
-                    break;
-                }
-            }
-        }
-
-        return reach;
-    }
-
     internal int PShelfCountRead(long id)
     {
         return _pShelfCount.TryGetValue(id, out int usage) ? usage : 0;
@@ -162,6 +145,8 @@ public partial class PReference
         PShelfEmpty.Visibility = _pShelfList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PShelfSelect(_pColophonReference);
+        PColophonTally.Text = PReferenceTallyRead(_pColophonReference);
+        PImprint.PImprintTallyShow();
 
         if (!kept && _pColophonReference is not null && PImprint.Visibility != Visibility.Visible)
         {
@@ -210,18 +195,20 @@ public partial class PReference
         PShelfSelect(id);
         PFootnoteEntryHide();
 
-        PColophonValueShow(PColophonTitle, reference.LReferenceTitle);
-        PColophonValueShow(PColophonYear, reference.LReferenceYear);
-        PColophonKind.Text = PReferenceKindShow(reference.LReferenceKind);
-        PColophonValueShow(PColophonNote, reference.LReferenceNote);
-        PColophonValueShow(PColophonUrl, reference.LReferenceUrl);
+        PColophonTitleShow(reference.LReferenceTitle);
+        PColophonKindShow(reference.LReferenceKind);
+        PColophonValueShow(PColophonYear, PColophonYearSection, reference.LReferenceYear);
+        PColophonValueShow(PColophonUrl, PColophonUrlSection, reference.LReferenceUrl);
+        PColophonValueShow(PColophonNote, PColophonNoteSection, reference.LReferenceNote);
         PColophonAuthorShow(reference);
+        PColophonTally.Text = PReferenceTallyRead(id);
 
         PFootnoteFind();
 
         PColophonBody.Visibility = Visibility.Visible;
         PColophonUnselected.Visibility = Visibility.Collapsed;
         PReferenceMode.IsEnabled = true;
+        PReferenceBin.IsEnabled = true;
 
         if (PImprint.Visibility == Visibility.Visible)
         {
@@ -229,35 +216,97 @@ public partial class PReference
         }
     }
 
-    private void PColophonValueShow(TextBlock field, LStateValue value)
+    private void PReferenceBinHandle(object sender, RoutedEventArgs e)
     {
-        string? text = value.LStateValueState switch
+        if (_pDisplayEntry is not null || _pColophonReference is not long id)
+        {
+            return;
+        }
+
+        int usage = PShelfCountRead(id);
+
+        if (!_pReferenceHost.PWindowRemovalConfirm(usage, "Source"))
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineReferenceDelete(id, usage > 0);
+        }
+        catch (Exception exception)
+        {
+            _pReferenceHost.PWindowFailureShow("Source.DeleteFailed", exception);
+            return;
+        }
+
+        PReferenceScribeShow(false);
+        PReferenceClear();
+    }
+
+    private string? PColophonTextRead(LStateValue value)
+    {
+        return value.LStateValueState switch
         {
             _ when value.LStateValueUnreadable => value.LStateValueShow(),
             LState.LStateSpecified => value.LStateValueShow(),
             LState.LStateUnknown => _pReferenceHost.PLocalizationTextRead("Display.Unknown"),
             _ => null,
         };
+    }
 
-        field.Text = text ?? _pReferenceHost.PLocalizationTextRead("Source.Unset");
-        field.SetResourceReference(
-            TextBlock.ForegroundProperty,
-            text is null ? "Theme.Muted" : "Theme.Ink");
+    private void PColophonTitleShow(LStateValue value)
+    {
+        string? text = PColophonTextRead(value);
+
+        PColophonTitle.Text = text ?? _pReferenceHost.PLocalizationTextRead("Source.Untitled");
+        PField.PFieldPlaceholderShow(PColophonTitle, text is null || value.LStateValueState == LState.LStateUnknown);
+    }
+
+    private void PColophonKindShow(LReferenceKind kind)
+    {
+        bool shown = kind != LReferenceKind.LReferenceKindUnspecified;
+
+        PColophonKind.Text = shown ? PReferenceKindShow(kind) : string.Empty;
+        PColophonChip.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void PColophonValueShow(TextBlock field, StackPanel section, LStateValue value)
+    {
+        string? text = PColophonTextRead(value);
+
+        field.Text = text ?? string.Empty;
+        PField.PFieldPlaceholderShow(field, value.LStateValueState == LState.LStateUnknown && !value.LStateValueUnreadable);
+        section.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void PColophonAuthorShow(LReference reference)
     {
         IReadOnlyList<LAuthor> credits = PShelfCreditRead(reference.LReferenceId);
-        string text = PShelfItem.PShelfCreditRead(
-            reference,
-            credits,
-            _pReferenceHost.PLocalizationTextRead("Display.Unknown"),
-            _pReferenceHost.PLocalizationTextRead("Source.Unset"));
+        bool shown = credits.Count > 0
+            || reference.LReferenceAuthorState.LStateMarkState == LState.LStateUnknown;
 
-        PColophonAuthor.Text = text;
-        PColophonAuthor.SetResourceReference(
-            TextBlock.ForegroundProperty,
-            credits.Count == 0 ? "Theme.Muted" : "Theme.Ink");
+        PColophonAuthor.Text = shown
+            ? PShelfItem.PShelfCreditRead(
+                reference,
+                credits,
+                _pReferenceHost.PLocalizationTextRead("Display.Unknown"),
+                string.Empty)
+            : string.Empty;
+        PField.PFieldPlaceholderShow(PColophonAuthor, shown && credits.Count == 0);
+        PColophonAuthorSection.Visibility = shown ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    internal string PReferenceTallyRead(long? id)
+    {
+        int count = id is long stored ? PShelfCountRead(stored) : 0;
+
+        return count switch
+        {
+            0 => _pReferenceHost.PLocalizationTextRead("Source.UsageNone"),
+            1 => _pReferenceHost.PLocalizationTextRead("Source.UsageOne"),
+            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {_pReferenceHost.PLocalizationTextRead("Source.UsageMany")}",
+        };
     }
 
     private void PFootnoteFind()
@@ -358,6 +407,7 @@ public partial class PReference
         PFootnoteSelect(id);
         PDisplay.PDisplayShow(id, draft);
         PReferenceMode.IsEnabled = true;
+        PReferenceBin.IsEnabled = false;
 
         if (editing)
         {
@@ -397,14 +447,19 @@ public partial class PReference
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PReferenceStore.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PReferenceViewer.IsChecked = !editing;
         PReferenceScribe.IsChecked = editing;
     }
 
     private void PReferenceStoreHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PEditorEntrySave();
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PEditorEntrySave();
+            return;
+        }
+
+        PImprint.PImprintStoreRun();
     }
 
     private void PFootnoteEntryUpdate(long id)
@@ -454,9 +509,9 @@ public partial class PReference
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
-        PReferenceStore.Visibility = Visibility.Collapsed;
         PReferenceScribeShow(editing);
         PReferenceMode.IsEnabled = _pColophonReference is not null;
+        PReferenceBin.IsEnabled = _pColophonReference is not null;
     }
 
     private void PReferenceScribeHandle(object sender, RoutedEventArgs e)
@@ -512,6 +567,7 @@ public partial class PReference
         PColophon.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PReferenceViewer.IsChecked = !editing;
         PReferenceScribe.IsChecked = editing;
+        PImprint.PImprintChangeUpdate();
     }
 
     internal void PReferenceScribeRestore(bool editing)
@@ -544,7 +600,7 @@ public partial class PReference
         PReferenceClear();
         PReferenceScribeShow(true);
         PImprint.PImprintDraftOpen(null);
-        PReferenceScribe.IsEnabled = true;
+        PReferenceMode.IsEnabled = true;
     }
 
     internal void PReferenceClear()
@@ -561,5 +617,6 @@ public partial class PReference
         PImprint.PImprintClear();
         PReferenceScribeShow(false);
         PReferenceMode.IsEnabled = false;
+        PReferenceBin.IsEnabled = false;
     }
 }

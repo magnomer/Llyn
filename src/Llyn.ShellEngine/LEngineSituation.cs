@@ -12,7 +12,14 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             ArgumentNullException.ThrowIfNull(situation);
-            return new LSituationArchive(_lEngineDatabase).LSituationCreate(situation);
+
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
+            LSituationArchive situations = new(_lEngineDatabase);
+            LSituation stored = situations.LSituationCreate(situation);
+            LEngineSituationMediaSync(stored.LSituationId, situation);
+            stored = situations.LSituationRead(stored.LSituationId) ?? stored;
+            session.LDatabaseSessionCommit();
+            return stored;
         }
     }
 
@@ -104,8 +111,36 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
+            ArgumentNullException.ThrowIfNull(situation);
+
+            using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
             new LSituationArchive(_lEngineDatabase).LSituationUpdate(situation);
+            LEngineSituationMediaSync(situation.LSituationId, situation);
+            session.LDatabaseSessionCommit();
         }
+    }
+
+    private void LEngineSituationMediaSync(long situationId, LSituation situation)
+    {
+        Dictionary<long, long> identity = [];
+
+        LImageArchive images = new(_lEngineDatabase);
+        LEngineFieldSync(
+            LEngineImageRead(situation.LSituationImage),
+            images.LImageSituationRead(situationId),
+            row => row.LImageId,
+            written => LEngineImageResolve(images, written, identity),
+            rowId => images.LImageSituationDetach(situationId, rowId),
+            (rowId, position) => images.LImageSituationAttach(situationId, rowId, position));
+
+        LVideoArchive videos = new(_lEngineDatabase);
+        LEngineFieldSync(
+            LEngineVideoRead(situation.LSituationVideo),
+            videos.LVideoSituationRead(situationId),
+            row => row.LVideoId,
+            written => LEngineVideoResolve(videos, written, identity),
+            rowId => videos.LVideoSituationDetach(situationId, rowId),
+            (rowId, position) => videos.LVideoSituationAttach(situationId, rowId, position));
     }
 
     public void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)

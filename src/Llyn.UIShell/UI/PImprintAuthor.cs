@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -12,62 +13,74 @@ public partial class PImprint
 {
     private readonly ObservableCollection<PAuthorItem> _pAuthorCredit = [];
 
-    private readonly ObservableCollection<PAuthorItem> _pAuthorCatalog = [];
+    private IReadOnlyList<LAuthor> _pAuthorCatalog = [];
 
     private LState _pAuthorState = LState.LStateUnspecified;
 
-    private bool _pAuthorLoading;
+    private IReadOnlyList<LAuthor> _pAuthorCredited = [];
+
+    private int _pAuthorBlankAt = -1;
 
     internal void PAuthorFind()
     {
-        IReadOnlyList<LAuthor> read;
         try
         {
-            read = _lEngine.LEngineAuthorRead();
+            _pAuthorCatalog = _lEngine.LEngineAuthorRead();
         }
         catch (Exception exception)
         {
             _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            read = [];
+            _pAuthorCatalog = [];
         }
+    }
 
-        _pAuthorLoading = true;
-        _pAuthorCatalog.Clear();
-        for (int index = 0; index < read.Count; index++)
-        {
-            _pAuthorCatalog.Add(new PAuthorItem(read[index], index, read.Count));
-        }
-
-        PAuthorList.SelectedValue = null;
-        _pAuthorLoading = false;
-
-        PAuthorEmpty.Visibility = _pAuthorCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    private void PAuthorOpen(LDraft? draft)
+    {
+        _pAuthorBlankAt = -1;
+        PAuthorShow(draft);
     }
 
     private void PAuthorShow(LDraft? draft)
     {
         _pAuthorState = draft?.LDraftReference?.LReferenceAuthorState.LStateMarkState ?? LState.LStateUnspecified;
-        PAuthorUnknown.IsChecked = _pAuthorState == LState.LStateUnknown;
-        PAuthorSwitch.IsEnabled = draft is not null;
+        PAuthorNotice.Visibility = draft is null ? Visibility.Visible : Visibility.Collapsed;
         PAuthorCreditShow(draft is null ? [] : PAuthorCreditRead(draft));
-
-        PAuthorNotice.Visibility = _pAuthorCredit.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-        PAuthorNotice.SetResourceReference(
-            TextBlock.TextProperty,
-            draft is null ? "Source.AuthorUnsaved" : "Source.AuthorNone");
     }
 
     private void PAuthorCreditShow(IReadOnlyList<LAuthor> credits)
     {
+        _pAuthorCredited = credits;
+
+        if (credits.Count == 0 && _pAuthorBlankAt < 0 && _pImprintDraft != 0)
+        {
+            _pAuthorBlankAt = 0;
+        }
+
+        if (_pAuthorBlankAt > credits.Count)
+        {
+            _pAuthorBlankAt = credits.Count;
+        }
+
         if (PAuthorCreditMatch(credits))
         {
             return;
         }
 
+        PBylineHide();
         _pAuthorCredit.Clear();
         for (int index = 0; index < credits.Count; index++)
         {
+            if (index == _pAuthorBlankAt)
+            {
+                _pAuthorCredit.Add(new PAuthorItem(index));
+            }
+
             _pAuthorCredit.Add(new PAuthorItem(credits[index], index, credits.Count));
+        }
+
+        if (_pAuthorBlankAt == credits.Count)
+        {
+            _pAuthorCredit.Add(new PAuthorItem(credits.Count));
         }
     }
 
@@ -76,21 +89,34 @@ public partial class PImprint
         List<LAuthor> credits = new(draft.LDraftAuthor.Count);
         foreach (LAuthor author in draft.LDraftAuthor)
         {
-            credits.Add(PAuthorCatalogFind(author.LAuthorId) is PAuthorItem named
-                ? author with { LAuthorName = named.PAuthorItemName }
+            credits.Add(PAuthorCatalogFind(author.LAuthorId) is LAuthor named
+                ? author with { LAuthorName = named.LAuthorName }
                 : author);
         }
 
         return credits;
     }
 
-    private PAuthorItem? PAuthorCatalogFind(long id)
+    private LAuthor? PAuthorCatalogFind(long id)
     {
-        foreach (PAuthorItem item in _pAuthorCatalog)
+        foreach (LAuthor author in _pAuthorCatalog)
         {
-            if (item.PAuthorItemId == id)
+            if (author.LAuthorId == id)
             {
-                return item;
+                return author;
+            }
+        }
+
+        return null;
+    }
+
+    private PAuthorItem? PAuthorCreditFind(long id)
+    {
+        foreach (PAuthorItem credit in _pAuthorCredit)
+        {
+            if (credit.PAuthorItemId == id)
+            {
+                return credit;
             }
         }
 
@@ -99,60 +125,72 @@ public partial class PImprint
 
     private bool PAuthorCreditMatch(IReadOnlyList<LAuthor> credits)
     {
-        if (_pAuthorCredit.Count != credits.Count)
+        if (_pAuthorCredit.Count != credits.Count + (_pAuthorBlankAt < 0 ? 0 : 1))
         {
             return false;
         }
 
-        for (int index = 0; index < credits.Count; index++)
+        int shown = 0;
+        foreach (PAuthorItem row in _pAuthorCredit)
         {
-            if (_pAuthorCredit[index].PAuthorItemId != credits[index].LAuthorId
-                || !string.Equals(
-                    _pAuthorCredit[index].PAuthorItemName, credits[index].LAuthorName, StringComparison.Ordinal))
+            if (row.PAuthorItemBlank)
+            {
+                if (row.PAuthorItemPosition != _pAuthorBlankAt)
+                {
+                    return false;
+                }
+
+                continue;
+            }
+
+            if (row.PAuthorItemId != credits[shown].LAuthorId
+                || !string.Equals(row.PAuthorItemName, credits[shown].LAuthorName, StringComparison.Ordinal))
             {
                 return false;
             }
+
+            shown++;
         }
 
         return true;
     }
 
-    private void PAuthorHandle(object sender, SelectionChangedEventArgs e)
+    private void PAuthorAdd(PAuthorItem item)
     {
-        if (_pAuthorLoading || _pImprintDraft == 0 || PAuthorList.SelectedValue is not long id)
+        if (_pImprintDraft == 0)
         {
             return;
         }
 
-        PAuthorSwitch.IsChecked = false;
-        PAuthorList.SelectedValue = null;
-        PAuthorAttach(id);
-    }
-
-    private void PAuthorAttach(long id)
-    {
-        foreach (PAuthorItem credit in _pAuthorCredit)
+        if (!item.PAuthorItemBlank)
         {
-            if (credit.PAuthorItemId == id)
+            _pAuthorBlankAt = item.PAuthorItemPosition + 1;
+            PAuthorCreditShow(_pAuthorCredited);
+        }
+
+        foreach (PAuthorItem row in _pAuthorCredit)
+        {
+            if (row.PAuthorItemBlank)
             {
+                PAuthorSelect(row);
                 return;
             }
         }
-
-        PAuthorRequestSend(new LRequestAuthorPick(_pImprintDraft, id, _pAuthorCredit.Count));
     }
 
-    private void PAuthorFreshHandle(object sender, RoutedEventArgs e)
+    private void PAuthorSelect(PAuthorItem item)
     {
-        string name = PAuthorName.Text.Trim();
-        if (name.Length == 0 || _pImprintDraft == 0)
-        {
-            return;
-        }
-
-        PAuthorName.Text = string.Empty;
-        PAuthorSwitch.IsChecked = false;
-        PAuthorRequestSend(new LRequestAuthorAddition(_pImprintDraft, name, _pAuthorCredit.Count));
+        Dispatcher.BeginInvoke(
+            DispatcherPriority.Loaded,
+            () =>
+            {
+                if (PAuthorCredit.ItemContainerGenerator.ContainerFromItem(item) is DependencyObject container
+                    && PEditor.PEditorCaretFind(container) is TextBox box)
+                {
+                    box.Focus();
+                    box.CaretIndex = box.Text.Length;
+                }
+            });
     }
 
     private void PAuthorCreditHandle(object sender, RoutedEventArgs e)
@@ -164,68 +202,159 @@ public partial class PImprint
 
         switch (action)
         {
+            case "Add":
+                PAuthorAdd(item);
+                return;
             case "Earlier":
                 PAuthorMove(item, -1);
                 return;
             case "Later":
                 PAuthorMove(item, 1);
                 return;
-            case "Rename":
-                PAuthorNameUpdate(item);
-                return;
             default:
-                PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, item.PAuthorItemId));
+                PAuthorRemove(item);
                 return;
         }
     }
 
     private void PAuthorMove(PAuthorItem item, int step)
     {
+        if (item.PAuthorItemBlank)
+        {
+            return;
+        }
+
         PAuthorRequestSend(
             new LRequestAuthorShift(_pImprintDraft, item.PAuthorItemId, item.PAuthorItemPosition + step));
     }
 
-    private void PAuthorNameUpdate(PAuthorItem item)
+    private void PAuthorRemove(PAuthorItem item)
     {
-        string name = PAuthorName.Text.Trim();
-        if (name.Length == 0)
+        PBylineHide();
+
+        if (item.PAuthorItemBlank)
         {
-            PAuthorSwitch.IsChecked = true;
-            PAuthorName.Focus();
+            _pAuthorBlankAt = -1;
+            PAuthorCreditShow(_pAuthorCredited);
             return;
         }
 
-        if (item.PAuthorItemId < 0)
-        {
-            PAuthorName.Text = string.Empty;
-            PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, item.PAuthorItemId));
-            PAuthorRequestSend(new LRequestAuthorAddition(_pImprintDraft, name, item.PAuthorItemPosition));
-            return;
-        }
-
-        if (!PAuthorRenameConfirm(item))
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineAuthorUpdate(new LAuthor(item.PAuthorItemId, name));
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            return;
-        }
-
-        PAuthorName.Text = string.Empty;
+        PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, item.PAuthorItemId));
     }
 
-    private void PAuthorRequestSend(LRequest request)
+    private void PAuthorTextHandle(object sender, TextChangedEventArgs e)
+    {
+        if (e.OriginalSource is not TextBox { IsKeyboardFocusWithin: true } box || _pImprintDraft == 0)
+        {
+            return;
+        }
+
+        PBylineShow(box, box.Text);
+    }
+
+    private void PAuthorKeyHandle(object sender, KeyEventArgs e)
+    {
+        if (e.OriginalSource is not TextBox { DataContext: PAuthorItem row } box)
+        {
+            return;
+        }
+
+        if (PByline.IsOpen && PBylineHandle(e.Key))
+        {
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Enter)
+        {
+            PAuthorCommit(row, box);
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Escape)
+        {
+            box.Text = row.PAuthorItemName;
+            PBylineHide();
+            e.Handled = true;
+        }
+    }
+
+    private void PAuthorLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (e.OriginalSource is not TextBox { DataContext: PAuthorItem row } box)
+        {
+            return;
+        }
+
+        if (_pBylineBox == box)
+        {
+            PBylineHide();
+        }
+
+        if (!string.Equals(box.Text, row.PAuthorItemName, StringComparison.Ordinal))
+        {
+            box.Text = row.PAuthorItemName;
+        }
+    }
+
+    private void PAuthorCommit(PAuthorItem row, TextBox box)
+    {
+        PBylineHide();
+
+        string name = box.Text.Trim();
+        if (name.Length == 0)
+        {
+            box.Text = row.PAuthorItemName;
+            return;
+        }
+
+        if (!row.PAuthorItemBlank && string.Equals(name, row.PAuthorItemName, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        PAuthorChange(row, new LRequestAuthorAddition(_pImprintDraft, name, row.PAuthorItemPosition));
+    }
+
+    private void PAuthorAttach(PAuthorItem row, TextBox box, long id)
+    {
+        if (id == row.PAuthorItemId)
+        {
+            box.Text = row.PAuthorItemName;
+            return;
+        }
+
+        PAuthorChange(row, new LRequestAuthorPick(_pImprintDraft, id, row.PAuthorItemPosition));
+    }
+
+    private void PAuthorChange(PAuthorItem row, LRequest request)
+    {
+        if (_pImprintDraft == 0)
+        {
+            return;
+        }
+
+        int blank = _pAuthorBlankAt;
+        _pAuthorBlankAt = -1;
+
+        if (!PAuthorRequestSend(request))
+        {
+            _pAuthorBlankAt = blank;
+            return;
+        }
+
+        if (!row.PAuthorItemBlank)
+        {
+            PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, row.PAuthorItemId));
+        }
+    }
+
+    private bool PAuthorRequestSend(LRequest request)
     {
         if (_pImprintDraft == 0 || _pImprintHalted)
         {
-            return;
+            return false;
         }
 
         PImprintChangeSave();
@@ -237,43 +366,10 @@ public partial class PImprint
         catch (Exception exception)
         {
             _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            return;
+            return false;
         }
 
         PImprintChangeUpdate();
-    }
-
-    private bool PAuthorRenameConfirm(PAuthorItem item)
-    {
-        int reach = _pImprintOwner.PShelfReachRead(item.PAuthorItemId);
-
-        string count = $"{_pImprintHost.PLocalizationTextRead("Source.AuthorRenameCount")} "
-            + reach.ToString(CultureInfo.CurrentCulture);
-
-        return MessageBox.Show(
-            _pImprintHost,
-            $"{_pImprintHost.PLocalizationTextRead("Source.AuthorRenameConfirm")}\n\n{count}",
-            _pImprintHost.PLocalizationTextRead("Terms.Product"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question) == MessageBoxResult.Yes;
-    }
-
-    private void PAuthorUnknownHandle(object sender, RoutedEventArgs e)
-    {
-        PAuthorStateShow(PAuthorUnknown.IsChecked == true
-            ? LState.LStateUnknown
-            : LState.LStateUnspecified);
-    }
-
-    private void PAuthorStateShow(LState state)
-    {
-        if (_pAuthorState == state)
-        {
-            return;
-        }
-
-        _pAuthorState = state;
-        PAuthorUnknown.IsChecked = state == LState.LStateUnknown;
-        PImprintChangeDefer();
+        return true;
     }
 }

@@ -4,7 +4,7 @@
 
 Persists Images — independent data no Entry, Meaning, or Collocation owns.
 An Image is created once with an opaque id.
-It is then *referenced* by any number of Meanings and Collocations through the association tables.
+It is then *referenced* by any number of Meanings, Collocations, and Situations through the association tables.
 Each association carries the position the Image takes for that referrer alone.
 Attaching and detaching therefore only ever write association rows.
 Detaching leaves the Image and its other references untouched.
@@ -37,6 +37,10 @@ Reads the Images a Meaning references, in the order that Meaning gives them.
 
 Reads the Images a Collocation references, in the order that Collocation gives them.
 
+## `public IReadOnlyList<LImage> LImageSituationRead(long situationId)`
+
+Reads the Images a Situation references, in the order that Situation gives them.
+
 ## `public void LImageUpdate(LImage image)`
 
 Rewrites the location of the Image `image` names.
@@ -44,12 +48,12 @@ Every referrer sees the change at once, because a reference points at the row an
 
 ## `public int LImageReferenceRead(long id)`
 
-Counts the references standing on the Image, across both sides.
+Counts the references standing on the Image, across every side, the Situation one included.
 It is what a delete asks before it refuses.
 
 ## `public void LImageDelete(long id)`
 
-Deletes the Image, refusing while any Meaning or Collocation still references it.
+Deletes the Image, refusing while any Meaning, Collocation, or Situation still references it.
 So a live reference is never left pointing at a row that is gone.
 
 ## `public void LImageMeaningAttach(long meaningId, long imageId, int position)`
@@ -60,6 +64,10 @@ References the Image from a Meaning at the index named, renumbering that Meaning
 
 References the Image from a Collocation at the index named, renumbering that Collocation's other references around it.
 
+## `public void LImageSituationAttach(long situationId, long imageId, int position)`
+
+References the Image from a Situation at the index named, renumbering that Situation's other references around it.
+
 ## `public void LImageMeaningDetach(long meaningId, long imageId)`
 
 Drops a Meaning's reference and closes the gap it leaves.
@@ -68,4 +76,9 @@ The Image and every other reference stay.
 ## `public void LImageCollocationDetach(long collocationId, long imageId)`
 
 Drops a Collocation's reference and closes the gap it leaves.
+The Image and every other reference stay.
+
+## `public void LImageSituationDetach(long situationId, long imageId)`
+
+Drops a Situation's reference and closes the gap it leaves.
 The Image and every other reference stay.

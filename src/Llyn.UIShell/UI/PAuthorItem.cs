@@ -1,4 +1,4 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -13,6 +13,15 @@ internal sealed class PAuthorItem
         PAuthorItemLater = position < total - 1;
     }
 
+    internal PAuthorItem(int position)
+    {
+        PAuthorItemId = 0;
+        PAuthorItemName = string.Empty;
+        PAuthorItemPosition = position;
+        PAuthorItemEarlier = false;
+        PAuthorItemLater = false;
+    }
+
     public long PAuthorItemId { get; }
 
     public string PAuthorItemName { get; }
@@ -22,4 +31,6 @@ internal sealed class PAuthorItem
     public bool PAuthorItemEarlier { get; }
 
     public bool PAuthorItemLater { get; }
+
+    public bool PAuthorItemBlank => PAuthorItemId == 0;
 }

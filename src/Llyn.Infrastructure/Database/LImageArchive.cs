@@ -56,6 +56,11 @@ public sealed class LImageArchive
         return LImageReferrerRead("collocation_image", "collocation_parent", collocationId);
     }
 
+    public IReadOnlyList<LImage> LImageSituationRead(long situationId)
+    {
+        return LImageReferrerRead("situation_image", "situation_parent", situationId);
+    }
+
     public void LImageUpdate(LImage image)
     {
         ArgumentNullException.ThrowIfNull(image);
@@ -92,7 +97,8 @@ public sealed class LImageArchive
             """
             SELECT
                 (SELECT COUNT(*) FROM sense_image WHERE image_ref = $id)
-                + (SELECT COUNT(*) FROM collocation_image WHERE image_ref = $id);
+                + (SELECT COUNT(*) FROM collocation_image WHERE image_ref = $id)
+                + (SELECT COUNT(*) FROM situation_image WHERE image_ref = $id);
             """;
         command.Parameters.AddWithValue("$id", id);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -132,6 +138,11 @@ public sealed class LImageArchive
         LImageReferenceAttach("collocation_image", "collocation_parent", collocationId, imageId, position);
     }
 
+    public void LImageSituationAttach(long situationId, long imageId, int position)
+    {
+        LImageReferenceAttach("situation_image", "situation_parent", situationId, imageId, position);
+    }
+
     public void LImageMeaningDetach(long meaningId, long imageId)
     {
         LImageReferenceDetach("sense_image", "sense_parent", meaningId, imageId);
@@ -140,6 +151,11 @@ public sealed class LImageArchive
     public void LImageCollocationDetach(long collocationId, long imageId)
     {
         LImageReferenceDetach("collocation_image", "collocation_parent", collocationId, imageId);
+    }
+
+    public void LImageSituationDetach(long situationId, long imageId)
+    {
+        LImageReferenceDetach("situation_image", "situation_parent", situationId, imageId);
     }
 
     private void LImageReferenceAttach(string table, string column, long referrerId, long imageId, int position)

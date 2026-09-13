@@ -25,8 +25,8 @@ The action row of the panel.
 `PRepertoireFresh` opens the editor on a Situation nothing references yet.
 This panel is the only place such a Situation can arise.
 Elsewhere one is written from the card that carries it.
-`PRepertoireStore` saves the Entry open in `PEditor`, and is shown only while that editor is in front.
-A Situation saves from its own editor, so the rail button never stands for both.
+`PRepertoireStore` saves whichever editor is in front, the Entry in `PEditor` or the Situation in `PScenario`.
+It is shown only while one of them is, as the library panel shows its save beside its new.
 Export and print are mock-up controls and are not wired.
 
 ## `<ItemsControl x:Name="PAtlas">`
@@ -48,13 +48,62 @@ It stands in front only while an Entry is shown and the toggle is on the editing
 
 ## `<Grid x:Name="PVignette">`
 
-The reading of one Situation.
+The reading of one Situation, laid out as `PDisplay` lays out an Entry.
 `PVignette` here stands on a Situation rather than on an Entry.
-What it shares with the entry panels is the read-and-edit mechanism and the `PRepertoireScribe` toggle, not the object.
-The three fields stand as labeled rows for title, kind and description.
-Each is drawn whether or not it holds anything.
-A field is stored data, so a hidden row would hide the difference between never written and written-but-unknown.
-A row therefore reads its value, the unknown mark, or the unrecorded mark in the muted colour.
+What it shares with the entry panels is the read-and-edit mechanism, the `PRepertoireScribe` toggle, and the shape of the page.
+The title is drawn as a headword, and the kind and the reference count stand as chips on the row beneath it.
+That row is where an Entry shows its parts of speech, so a classification stands where a classification stands.
+The description is a heading over a paragraph, rendered from Markdown as the entry note is but without the note's box.
+A box claims an object the reader can act on, and a description is only read.
+No field is labeled, because the entry display labels nothing: position and dress say what a value is.
+A field that holds nothing follows the entry display's rule rather than a rule of its own.
+An unknown value reads the unknown mark where the value would stand.
+A never-written kind or description is not drawn at all, as an entry with no note draws no note.
+A never-written title reads the untitled text in the muted colour, because the head of the page cannot be empty.
+The editing side still draws every slot, so the two kinds of empty are one toggle apart rather than lost.
+Under the description stand the pictures and then the videos, in the shapes a card draws them.
+`PVignettePicture` and `PVignetteVideo` share the card's line templates and converters, so the same picture reads the same everywhere.
+Either list hides itself while the Situation has none of that kind, as a card's does.
+
+## `<ResourceDictionary.MergedDictionaries>`
+
+The card display's picture and video dictionaries, merged so the reading side draws media with the card's own templates.
+The editing side's row templates are merged from code instead, because they carry handlers this panel answers.
+
+## `<Style x:Key="Theme.Vignette.Chip" TargetType="Border">`
+
+The kind chip, shaped as a speech chip and coloured as the cards colour a Situation.
+The same style dresses the chip on both sides, so the kind reads the same whether it is read or written.
+
+## `<Style x:Key="Theme.Vignette.Tally" TargetType="Border">`
+
+The reference count, a chip of the same shape in the raised surface colour, so it reads as a figure and not a kind.
+It reads as a sentence, not a bare number, because a bare number beside a title says nothing about what it counts.
+
+## `<Style x:Key="Theme.Scenario.Measure" TargetType="TextBlock">`
+
+The unseen twin that measures the kind, so its chip closes on the written kind, or on the placeholder while it is empty.
+Without it the chip in the editor stood at a fixed width the reading side never showed.
+
+## `<Style x:Key="Theme.Scenario.Hint" TargetType="TextBlock">`
+
+The unseen twin that measures the empty title, copied from the entry editor's `Editor.Field.Hint`.
+It reads the field's own placeholder rather than one fixed word, because the placeholder changes with the state.
+It is written here rather than shared, because the entry editor's styles are bound to `PHeadword` by name.
+
+## `<Style x:Key="Theme.Scenario.Ghost" TargetType="TextBlock">`
+
+The unseen twin that measures the written title, so the head row closes on the text rather than on a fixed box.
+
+## `<Style x:Key="Theme.Scenario.Kind" TargetType="TextBox">`
+
+The bare field the kind is written into, inside the same chip the reading side draws.
+Bare, so the written kind sits exactly where the read kind sits.
+
+## `<Style x:Key="Theme.Scenario.Description" TargetType="TextBox">`
+
+The bare field the description is written into, where the reading side renders it.
+Its size matches the rendered paragraph, so a line of description sits at one height in both modes.
 
 ## `<ItemsControl x:Name="POccurrence">`
 
@@ -65,17 +114,28 @@ A row reads the flag, the headword and the language, as a cohort row does.
 Choosing a row shows that Entry in `PDisplay`, in place of the Situation reading, without leaving the tab.
 The list is read-only: a reference is added or dropped on the card holding it, never here.
 
-## `<Grid x:Name="PScenario" Visibility="Collapsed">`
+## `<Grid x:Name="PScenario" ... Visibility="Collapsed">`
 
-The editable view of the selected Situation.
-The three fields are three-state, so an empty field says which kind of empty it is.
-`PCitation` is the single Source the Situation cites, a pointer that is cleared without touching the Source itself.
+The editable view of the selected Situation, laid out as `PEditor` lays out an Entry.
+Every slot the reading side draws is drawn here in the same place, and a bare field stands where the text stood.
+The title is written in the headword box, the kind inside its chip, and the description inside its card.
+The three fields are three-state, and an empty field says which kind of empty it is through its placeholder.
+A never-written field asks for its value, and an unknown one reads the unknown mark until typing clears it.
+The head row is fixed and the description scrolls beneath it, as the editor's head row stands over its cards.
+The editor carries no buttons of its own: save is the rail's `PRepertoireStore`, delete is `PRepertoireBin`, and there is no discard.
+That is how the library panel arranges an Entry, and leaving the editor asks about the draft as it does there.
+Under the description stand `PScenarioImage` and `PScenarioVideo`, the card's own row templates over the draft's rows.
+They sit where the reading side draws the same media, and a gutter column keeps room for each row's remove.
+The two add buttons after them are the card's, in the same icon group, the only buttons the editor carries.
 
-## `<Button x:Name="PScenarioRemoval" ...>`
+## `<Style x:Key="Theme.Scenario.Media" TargetType="ItemsControl">`
 
-Deletes the shown Situation.
-It stands with discard and save because it acts on the record rather than on the browsing beside it.
-It is disabled while the editor stands on a Situation nothing has stored yet.
+The two row lists, indented to the description's edge and spaced as a card spaces its media.
+
+## `<Button x:Name="PRepertoireBin" ...>`
+
+Deletes the shown Situation, from the top right corner of the surface where the library panel's bin stands.
+It is enabled while a stored Situation is shown, read or written, and disabled while an Entry or an unsaved Situation is.
 
 ## Catalog spacing
 

@@ -40,49 +40,26 @@ The catalog, the search and the display all read a Source through this, so all t
 Drops the citation.
 The Source is left standing, because clearing a pointer is not deleting what it pointed at.
 
+## `private string PTranscriptHintRead(bool unknown)`
+
+The placeholder the sentence field shows while empty.
+A never-written sentence asks for a sentence, and an unknown one reads the unknown mark until typing clears it.
+
 ## `private void PTranscriptApply(LExample? example)`
 
 Fills every field from the held sentence, or empties them when no draft stands.
 The chip line is redrawn from the sentence's Mentions along with the fields.
 The language is taken as the sentence carries it, an empty one included.
 Keeping the last shown language would write it onto a sentence imported without one.
-The delete control and the usage count follow the stored id the draft names, not the sentence being written.
-A sentence the engine has not stored yet can be deleted from nothing.
-The control stays off until it names one.
+The tally chip follows the stored id the draft names, not the sentence being written.
+A sentence the engine has not stored yet is quoted nowhere.
 
 ## `private void PTranscriptShow(LExample example)`
 
 Redraws each field from the held sentence only where the field says something else.
 The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
 
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
-
-Writes one field and its mark from a value, unless the field already reads that value.
-
-## `private void PTranscriptShow(LExample example)`
-
-Redraws each field from the held sentence only where the field says something else.
-The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
-
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
-
-Writes one field and its mark from a value, unless the field already reads that value.
-
-## `private void PTranscriptShow(LExample example)`
-
-Redraws each field from the held sentence only where the field says something else.
-The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
-
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
-
-Writes one field and its mark from a value, unless the field already reads that value.
-
-## `private void PTranscriptShow(LExample example)`
-
-Redraws each field from the held sentence only where the field says something else.
-The language and the citation are compared the same way, so a bulletin that changed nothing redraws nothing.
-
-## `private static void PTranscriptFieldShow(TextBox field, LStateValue value, string unknown, ref bool held)`
+## `private void PTranscriptFieldShow(TextBox field, LStateValue value, ref bool held)`
 
 Writes one field and its mark from a value, unless the field already reads that value.
 
@@ -98,20 +75,10 @@ The panel therefore never mints or carries an id of its own.
 
 Opens the editor on a sentence nothing has stored, by starting a draft naming no Example.
 
-## `private void PTranscriptDiscardHandle(object sender, RoutedEventArgs e)`
-
-Throws the held sentence away and starts again from the Example it opened on.
-Discarding is a new draft rather than a refill, so what was typed leaves the workspace with it.
-
-## `private void PTranscriptStoreHandle(object sender, RoutedEventArgs e)`
+## `private void PTranscriptStoreRun()`
 
 Commits the held sentence, creating an Example the draft names none of and rewriting the one it names.
+The rail's save calls it, because the editor carries no save of its own.
 Anything still waiting to be pushed is pushed first, so the commit carries the last keystroke.
 Saving changes neither the identifier, nor what quotes the Example, nor the order it takes for any quoter.
-
-## `private void PTranscriptRemovalHandle(object sender, RoutedEventArgs e)`
-
-Deletes the Example the held draft was opened on.
-A draft naming none stands over nothing stored, so there is nothing to delete.
-An Example nothing quotes is simply deleted.
-One something quotes is named to the user first, and only then detached and deleted in one operation.
+There is no discard: leaving the editor through the mode toggle asks about the draft instead.

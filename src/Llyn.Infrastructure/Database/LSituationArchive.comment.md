@@ -11,6 +11,11 @@ Detaching leaves the Situation and its other references untouched.
 Updating rewrites the visible title, description, and kind, and never the id.
 `LSituationDelete` refuses to run while any reference remains.
 
+A Situation shows Images and Videos the way a Meaning does, through `situation_image` and `situation_video`.
+Every read fills the two lists, and create and update write them back.
+The Image and Video rows themselves go through `LImageArchive` and `LVideoArchive`.
+This store only settles which rows the Situation references and in what order.
+
 A referrer's order is a unique index.
 So attaching and detaching renumber that referrer's whole set through `LDatabaseOrder`.
 A caller names the index it wants.
@@ -24,6 +29,8 @@ Binds the store to the workspace `database` it opens sessions through.
 
 Inserts `situation` with a fresh opaque id and returns the stored Situation with that id filled in.
 The new Situation is referenced by nothing until it is attached to a referrer.
+Its Images and Videos are not written here: the engine settles them after the row exists, as it does for a card.
+The stored rows come back with their ids.
 
 ## `public LSituation? LSituationRead(long id)`
 
@@ -40,6 +47,7 @@ Reads the Situations a Collocation references, in the order that Collocation giv
 ## `public void LSituationUpdate(LSituation situation)`
 
 Rewrites the visible title, description, and kind of the Situation identified by `situation`'s id.
+The Images and Videos are the engine's to settle, through the attach and detach the media stores offer.
 The id and every reference pointing at it are untouched.
 So an update never changes where the Situation appears or in what order.
 Throws when no Situation carries that id.
@@ -58,6 +66,7 @@ Guarded: while any Meaning or Collocation still references the Situation, nothin
 An `InvalidOperationException` is thrown instead.
 Detach every reference first.
 Deleting a Situation never deletes the rows that referenced it.
+Its Image and Video links go with it, and the Image and Video rows stay.
 The guard and the delete share one transaction, so nothing can attach the Situation between them.
 
 ## `public void LSituationMeaningAttach(long meaningId, long situationId, int position)`
@@ -131,3 +140,27 @@ Without `detach` the count still refuses the delete, which is the guard a card e
 Drops one association table's references to a Situation and renumbers what each referrer has left.
 The referrers are read before the delete because afterwards there is nothing left to name them.
 A gap in a referrer's positions is a unique-index failure waiting for its next attach.
+
+### `private static void LSituationMediaDelete(SqliteConnection connection, string table, long situationId)`
+
+Drops the Situation's own media links before the row goes.
+The cascade would do it too, but the store never leans on one it can state.
+
+### `private LSituation LSituationMediaRead(LSituation situation)`
+
+Fills the two media lists of one Situation from the Image and Video stores, each in the order the Situation holds.
+The nested sessions share the open connection, so a read stays one transaction.
+
+### `private IReadOnlyList<LSituation> LSituationMediaRead(List<LSituation> situations)`
+
+Fills the media lists of a whole list in two queries, one per link table, grouped by parent in memory.
+A list read serves the catalog, the chip resolver and every card's chips, and those run on each keystroke.
+Two queries per situation there would cost hundreds of round trips per key, so the list never asks per row.
+
+### `private static Dictionary<long, List<LImageDraft>> LSituationImageGroupRead(SqliteConnection connection)`
+
+Every situation-to-image link joined to its Image, ordered by parent and position, bucketed by parent.
+
+### `private static Dictionary<long, List<LVideoDraft>> LSituationVideoGroupRead(SqliteConnection connection)`
+
+The same for Videos, carrying the span beside the location.

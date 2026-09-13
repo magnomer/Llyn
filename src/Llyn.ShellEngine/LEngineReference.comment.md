@@ -73,6 +73,12 @@ Reads the Author for `id`, or `null` when none has that id.
 Reads every Author the workspace holds, by name.
 The Sources panel offers the whole shelf for crediting, so it asks for it once.
 
+## `public IReadOnlyList<LAuthor> LEngineAuthorFind(string query)`
+
+Reads the Authors whose name the typed text matches, by name.
+The Sources panel offers them under a credit field as the name is typed.
+The match is the catalog's own, so wildcards work here as they do in every search box.
+
 ## `public IReadOnlyList<LAuthor> LEngineAuthorRead(long ownerId, LOwner owner)`
 
 Reads the Authors credited on the Reference identified by `ownerId`, in that Reference's own author order.

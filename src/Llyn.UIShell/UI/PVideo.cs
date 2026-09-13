@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Windows;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -150,6 +151,18 @@ internal sealed class PVideo : INotifyPropertyChanged
     internal LStateWritten PVideoSpanRead()
     {
         return new LStateWritten(_pVideoTimestamp, _pVideoUnwritten);
+    }
+
+    internal static string? PVideoOpen(Window owner)
+    {
+        Microsoft.Win32.OpenFileDialog dialog = new()
+        {
+            Title = "Choose a video",
+            Filter = "Video files|*.mp4;*.m4v;*.mov;*.avi;*.wmv;*.mkv;*.webm|All files|*.*",
+            CheckFileExists = true,
+        };
+
+        return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
     internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)

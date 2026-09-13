@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
@@ -138,6 +139,8 @@ public partial class PRepertoire
         PAtlasEmpty.Visibility = _pAtlasList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PAtlasSelect(_pVignetteSituation);
+        PVignetteTally.Text = PRepertoireTallyRead(_pVignetteSituation);
+        PScenarioTally.Text = PRepertoireTallyRead(PScenarioSituationRead());
 
         if (!kept && _pVignetteSituation is not null && PScenario.Visibility != Visibility.Visible)
         {
@@ -191,14 +194,17 @@ public partial class PRepertoire
         PAtlasSelect(id);
         POccurrenceEntryHide();
 
-        PVignetteValueShow(PVignetteTitle, situation.LSituationTitle);
-        PVignetteValueShow(PVignetteKind, situation.LSituationKind);
-        PVignetteValueShow(PVignetteDescription, situation.LSituationDescription);
+        PVignetteTitleShow(situation.LSituationTitle);
+        PVignetteKindShow(situation.LSituationKind);
+        PVignetteDescriptionShow(situation.LSituationDescription);
+        PVignetteMediaShow(situation);
+        PVignetteTally.Text = PRepertoireTallyRead(id);
         POccurrenceFind();
 
         PVignetteBody.Visibility = Visibility.Visible;
         PVignetteUnselected.Visibility = Visibility.Collapsed;
         PRepertoireMode.IsEnabled = true;
+        PRepertoireBin.IsEnabled = true;
 
         if (PScenario.Visibility == Visibility.Visible)
         {
@@ -206,20 +212,88 @@ public partial class PRepertoire
         }
     }
 
-    private void PVignetteValueShow(TextBlock field, LStateValue value, string? shown = null)
+    private void PRepertoireBinHandle(object sender, RoutedEventArgs e)
     {
-        string? text = value.LStateValueState switch
+        if (_pDisplayEntry is not null || _pVignetteSituation is not long id)
+        {
+            return;
+        }
+
+        int usage = _pAtlasCount.TryGetValue(id, out int count) ? count : 0;
+
+        if (!_pRepertoireHost.PWindowRemovalConfirm(usage))
+        {
+            return;
+        }
+
+        try
+        {
+            _lEngine.LEngineSituationDelete(id, usage > 0);
+        }
+        catch (Exception exception)
+        {
+            _pRepertoireHost.PWindowFailureShow("Situation.DeleteFailed", exception);
+            return;
+        }
+
+        PRepertoireScribeShow(false);
+        PRepertoireClear();
+        PAtlasFind(PInquest.Text ?? string.Empty);
+    }
+
+    private string? PVignetteTextRead(LStateValue value)
+    {
+        return value.LStateValueState switch
         {
             _ when value.LStateValueUnreadable => value.LStateValueShow(),
-            LState.LStateSpecified => shown ?? value.LStateValueShow(),
+            LState.LStateSpecified => value.LStateValueShow(),
             LState.LStateUnknown => _pRepertoireHost.PLocalizationTextRead("Display.Unknown"),
             _ => null,
         };
+    }
 
-        field.Text = text ?? _pRepertoireHost.PLocalizationTextRead("Situation.Unset");
-        field.SetResourceReference(
+    private void PVignetteTitleShow(LStateValue value)
+    {
+        string? text = PVignetteTextRead(value);
+
+        PVignetteTitle.Text = text ?? _pRepertoireHost.PLocalizationTextRead("Situation.Untitled");
+        PVignetteTitle.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");
+    }
+
+    private void PVignetteKindShow(LStateValue value)
+    {
+        string? text = PVignetteTextRead(value);
+
+        PVignetteKind.Text = text ?? string.Empty;
+        PVignetteChip.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void PVignetteDescriptionShow(LStateValue value)
+    {
+        string? text = PVignetteTextRead(value);
+
+        PMarkdown.PMarkdownShow(PVignetteDescription, text);
+        PVignetteDescriptionSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void PVignetteMediaShow(LSituation? situation)
+    {
+        PVignettePicture.DataContext = situation;
+        PVignetteVideo.DataContext = situation;
+    }
+
+    private string PRepertoireTallyRead(long? id)
+    {
+        int count = id is long stored && _pAtlasCount.TryGetValue(stored, out int usage) ? usage : 0;
+
+        return count switch
+        {
+            0 => _pRepertoireHost.PLocalizationTextRead("Situation.UsageNone"),
+            1 => _pRepertoireHost.PLocalizationTextRead("Situation.UsageOne"),
+            _ => $"{count.ToString(CultureInfo.CurrentCulture)} {_pRepertoireHost.PLocalizationTextRead("Situation.UsageMany")}",
+        };
     }
 
     private void POccurrenceFind()
@@ -313,6 +387,7 @@ public partial class PRepertoire
         POccurrenceSelect(id);
         PDisplay.PDisplayShow(id, draft);
         PRepertoireMode.IsEnabled = true;
+        PRepertoireBin.IsEnabled = false;
 
         if (editing)
         {
@@ -352,14 +427,19 @@ public partial class PRepertoire
 
         PEditor.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
-        PRepertoireStore.Visibility = editing ? Visibility.Visible : Visibility.Collapsed;
         PRepertoireViewer.IsChecked = !editing;
         PRepertoireScribe.IsChecked = editing;
     }
 
     private void PRepertoireStoreHandle(object sender, RoutedEventArgs e)
     {
-        PEditor.PEditorEntrySave();
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PEditorEntrySave();
+            return;
+        }
+
+        PScenarioStoreRun();
     }
 
     private void POccurrenceEntryUpdate(long id)
@@ -409,9 +489,9 @@ public partial class PRepertoire
         PDisplay.PDisplayClear();
         PDisplay.Visibility = Visibility.Collapsed;
         PEditor.Visibility = Visibility.Collapsed;
-        PRepertoireStore.Visibility = Visibility.Collapsed;
         PRepertoireScribeShow(editing);
         PRepertoireMode.IsEnabled = _pVignetteSituation is not null;
+        PRepertoireBin.IsEnabled = _pVignetteSituation is not null;
     }
 
     private void PRepertoireFreshHandle(object sender, RoutedEventArgs e)
@@ -480,6 +560,7 @@ public partial class PRepertoire
         PVignette.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PRepertoireViewer.IsChecked = !editing;
         PRepertoireScribe.IsChecked = editing;
+        PScenarioChangeUpdate();
     }
 
     internal void PRepertoireScribeRestore(bool editing)
@@ -513,8 +594,10 @@ public partial class PRepertoire
 
         PVignetteBody.Visibility = Visibility.Collapsed;
         PVignetteUnselected.Visibility = Visibility.Visible;
+        PVignetteMediaShow(null);
         PScenarioApply(null);
         PRepertoireScribeShow(false);
         PRepertoireMode.IsEnabled = false;
+        PRepertoireBin.IsEnabled = false;
     }
 }

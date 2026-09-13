@@ -25,6 +25,13 @@ A placeholder starting where the text starts is written under the caret.
 A writer reads the caret as part of the word.
 Both templates hold their placeholder off by this much, so a field in a card sits as the headword does.
 
+## `internal static void PFieldPlaceholderShow(TextBlock block, bool placeholder)`
+
+Dresses a reading-side text block as the placeholder its edit-side field would show, or as a value again.
+A field that reads its unknown mark as a placeholder must read the same on the reading side.
+So the inset, the muted colour and the fade are taken from here rather than guessed there.
+Then the edit side and the reading side put the same word in the same place.
+
 ## `private static ControlTemplate PFieldBareBuild()`
 
 Builds the field a card uses while it is being edited.
@@ -34,6 +41,12 @@ The frame therefore grows outward on hover and focus and never shifts the text b
 How far outward is measured by "PFieldConverter" rather than fixed, since a card writes its fields at several faces.
 A fixed measure framed each face at its own height, and the card showed a different box on every line.
 It is registered under "Theme.Input.Field.Bare", which the "Theme.Input.Bare" style binds to.
+
+### `pSurface.SetValue(UIElement.SnapsToDevicePixelsProperty, true);`
+
+The measured margin is seldom a whole pixel, since a face's line spacing is not.
+A hairline drawn at a half pixel is smeared over two rows and reads as a faint grey.
+Snapping the frame lands each edge on one row so all four sides carry the same colour.
 
 ### `pContent.SetValue(FrameworkElement.MarginProperty, new Thickness(-2, 0, 0, 0));`
 

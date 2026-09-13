@@ -18,8 +18,9 @@ A reference points at the row and never at a copy of its text.
 
 ## `public LSituation LEngineSituationCreate(LSituation situation)`
 
-Creates `situation` and returns it with its assigned id.
+Creates `situation` and returns it with its assigned id and its media read back.
 Its title is not identity: the same words saved twice are two Situations.
+The row and its media are written in one session, so a failed picture leaves no half Situation.
 
 ## `private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)`
 
@@ -40,7 +41,14 @@ Reads the Situations the Meaning or Collocation identified by `ownerId` referenc
 
 ## `public void LEngineSituationUpdate(LSituation situation)`
 
-Rewrites the title, description and kind of the Situation `situation` identifies.
+Rewrites the title, description and kind of the Situation `situation` identifies, and settles its media.
+
+## `private void LEngineSituationMediaSync(long situationId, LSituation situation)`
+
+Settles the Situation's Images and Videos against what is attached, through the same `LEngineFieldSync` a card uses.
+A row with an id is that record, its location or span rewritten when it changed; one without becomes a fresh record.
+What the list no longer names is detached and keeps its record, because an Image is independent data another referrer may show.
+Living beside the card sync keeps one rule for how a draft row becomes a stored one.
 
 ## `public void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)`
 

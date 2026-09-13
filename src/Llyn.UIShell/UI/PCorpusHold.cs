@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -127,9 +128,12 @@ public partial class PCorpus
 
     private void PTranscriptChangeUpdate()
     {
-        bool changed = PTranscriptDraftCheck();
-        PTranscriptDiscard.IsEnabled = changed;
-        PTranscriptStore.IsEnabled = changed;
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            return;
+        }
+
+        PCorpusStore.IsEnabled = PTranscriptDraftCheck();
     }
 
     private LDraft? PTranscriptDraftStart(long? example)

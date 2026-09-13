@@ -164,8 +164,7 @@
                         Content="{DynamicResource Scribe.Save}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
-                        Tag="{local:PIcon save, 24}"
-                        Visibility="Collapsed" />
+                        Tag="{local:PIcon save, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Content="{DynamicResource Scribe.Export}"
@@ -236,25 +235,38 @@
                 <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
 
                 <Grid x:Name="PColophon">
-                    <ScrollViewer Padding="24,22,0,20" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
-                        <StackPanel x:Name="PColophonBody" Visibility="Collapsed">
-                            <TextBlock Style="{StaticResource Reference.Colophon.Label}" Text="{DynamicResource Source.TitleField}" />
-                            <TextBlock x:Name="PColophonTitle" Margin="0,5,0,0" FontSize="20" TextWrapping="Wrap" />
+                    <ScrollViewer Margin="30,18,0,0" Focusable="False" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="PColophonBody" Margin="0,0,60,30" Visibility="Collapsed">
+                            <TextBlock x:Name="PColophonTitle" Style="{StaticResource Reference.Colophon.Title}" />
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Reference.Colophon.Label}" Text="{DynamicResource Source.Author}" />
-                            <TextBlock x:Name="PColophonAuthor" Margin="0,5,0,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            <WrapPanel Margin="12,14,0,7" Orientation="Horizontal">
+                                <Border x:Name="PColophonChip" Style="{StaticResource Reference.Colophon.Chip}">
+                                    <TextBlock x:Name="PColophonKind" Style="{StaticResource Theme.Speech.Name}" />
+                                </Border>
+                                <Border Style="{StaticResource Reference.Colophon.Tally}">
+                                    <TextBlock x:Name="PColophonTally" Style="{StaticResource Reference.Colophon.Figure}" />
+                                </Border>
+                            </WrapPanel>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Reference.Colophon.Label}" Text="{DynamicResource Source.Year}" />
-                            <TextBlock x:Name="PColophonYear" Margin="0,5,0,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            <StackPanel x:Name="PColophonAuthorSection" Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Reference.Colophon.Heading}" Text="{DynamicResource Source.Author}" />
+                                <TextBlock x:Name="PColophonAuthor" Margin="2,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            </StackPanel>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Reference.Colophon.Label}" Text="{DynamicResource Source.Kind}" />
-                            <TextBlock x:Name="PColophonKind" Margin="0,5,0,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            <StackPanel x:Name="PColophonYearSection" Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Reference.Colophon.Heading}" Text="{DynamicResource Source.Year}" />
+                                <TextBlock x:Name="PColophonYear" Margin="2,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            </StackPanel>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Reference.Colophon.Label}" Text="{DynamicResource Source.Note}" />
-                            <TextBlock x:Name="PColophonNote" Margin="0,5,0,0" Style="{StaticResource Reference.Colophon.Value}" TextWrapping="Wrap" />
+                            <StackPanel x:Name="PColophonUrlSection" Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Reference.Colophon.Heading}" Text="{DynamicResource Source.Url}" />
+                                <TextBlock x:Name="PColophonUrl" Margin="2,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            </StackPanel>
 
-                            <TextBlock Margin="0,18,0,0" Style="{StaticResource Reference.Colophon.Label}" Text="{DynamicResource Source.Url}" />
-                            <TextBlock x:Name="PColophonUrl" Margin="0,5,0,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            <StackPanel x:Name="PColophonNoteSection" Margin="0,28,0,0">
+                                <TextBlock Style="{StaticResource Reference.Colophon.Heading}" Text="{DynamicResource Source.Note}" />
+                                <TextBlock x:Name="PColophonNote" Margin="2,0" Style="{StaticResource Reference.Colophon.Value}" />
+                            </StackPanel>
                         </StackPanel>
                     </ScrollViewer>
                     <TextBlock
@@ -268,7 +280,19 @@
                         TextWrapping="Wrap" />
                 </Grid>
 
-                <local:PImprint x:Name="PImprint" Visibility="Collapsed" />
+                <local:PImprint x:Name="PImprint" Margin="21,18,0,0" Visibility="Collapsed" />
+
+                <Button
+                    x:Name="PReferenceBin"
+                    Margin="0,17,26,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Click="PReferenceBinHandle"
+                    IsEnabled="False"
+                    Style="{StaticResource Theme.Input.Bin}"
+                    ToolTip="{DynamicResource Scribe.Delete}">
+                    <Path Width="24" Height="24" Data="{local:PIcon delete, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                </Button>
             </Grid>
         </Border>
     </Grid>

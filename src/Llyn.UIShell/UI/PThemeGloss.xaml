@@ -236,8 +236,8 @@
 
     <DataTemplate x:Key="Theme.Gloss.Display">
         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-            <Image Style="{StaticResource Theme.Gloss.Flag}" />
-            <Ellipse Style="{StaticResource Theme.Gloss.Globe}" />
+            <Image Margin="0,2,0,0" Style="{StaticResource Theme.Gloss.Flag}" />
+            <Ellipse Margin="0,2,0,0" Style="{StaticResource Theme.Gloss.Globe}" />
             <TextBlock Margin="8,0,0,0" Style="{DynamicResource Theme.Display.Value}" TextWrapping="Wrap">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Theme.Gloss.State}">

@@ -46,6 +46,18 @@ public static class LSchemaImage
 
             CREATE UNIQUE INDEX IF NOT EXISTS collocation_image_position
                 ON collocation_image (collocation_parent, position);
+
+            CREATE TABLE IF NOT EXISTS situation_image (
+                situation_parent INTEGER NOT NULL,
+                image_ref INTEGER NOT NULL,
+                position INTEGER NOT NULL,
+                PRIMARY KEY (situation_parent, image_ref),
+                FOREIGN KEY (situation_parent) REFERENCES situation (situation_id) ON DELETE CASCADE,
+                FOREIGN KEY (image_ref) REFERENCES image (image_id)
+            );
+
+            CREATE UNIQUE INDEX IF NOT EXISTS situation_image_position
+                ON situation_image (situation_parent, position);
             """;
         command.ExecuteNonQuery();
     }

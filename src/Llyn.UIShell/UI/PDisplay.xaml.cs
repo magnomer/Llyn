@@ -101,7 +101,13 @@ public partial class PDisplay : UserControl
             return;
         }
 
-        if (bulletin.LBulletinId > 0
+        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
+        {
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectEntry
+            && bulletin.LBulletinId > 0
             && shown != bulletin.LBulletinId)
         {
             return;

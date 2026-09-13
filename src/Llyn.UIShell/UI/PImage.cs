@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Llyn.Core;
@@ -93,6 +94,18 @@ internal sealed class PImage : INotifyPropertyChanged
         PImageRaise(nameof(PImageLocation));
         PImageUnknown = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
         PImagePreviewUpdate();
+    }
+
+    internal static string? PImageOpen(Window owner)
+    {
+        Microsoft.Win32.OpenFileDialog dialog = new()
+        {
+            Title = "Choose an image",
+            Filter = "Image files|*.png;*.jpg;*.jpeg;*.gif;*.bmp;*.webp;*.tif;*.tiff|All files|*.*",
+            CheckFileExists = true,
+        };
+
+        return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
     internal static Uri? PImageAddressRead(string location)

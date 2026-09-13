@@ -34,8 +34,16 @@ The situation panel and the chips both route here through `LEngineSituationChang
 
 ## `private LDraft LEngineAuthorAdd(LDraft draft, LRequestAuthorAddition request)`
 
-Credits a new Author with the trimmed name and a minted id, at the place asked for.
+Credits the Author of the typed name at the place asked for.
+A name the draft already credits, or the store already holds, is that Author rather than a second one.
+Only a name nobody has is minted new, so two Sources by one person credit one Author.
+The name is compared folded, as the catalog compares it, because case is not a different person.
+An Author already credited is left where it is, as picking one is.
 A blank name is an argument error, since the form never offers one.
+
+## `private static LAuthor? LEngineAuthorMatch(IReadOnlyList<LAuthor> authors, string name)`
+
+The Author in the list whose folded name is the folded name given, or none.
 
 ## `private LDraft LEngineAuthorInsert(LDraft draft, LRequestAuthorPick request)`
 

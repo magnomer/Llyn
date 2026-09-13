@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
@@ -12,9 +13,17 @@ public partial class PImprint : UserControl
 
     private PReference _pImprintOwner = null!;
 
+    internal Action<bool>? PImprintChangeNotice { get; set; }
+
     public PImprint()
     {
         InitializeComponent();
+
+        Resources.MergedDictionaries.Add(new PBylineTemplate(this));
+
+        PAuthorCredit.ItemsSource = _pAuthorCredit;
+        PBylineList.ItemsSource = _pBylineItem;
+        PByline.CustomPopupPlacementCallback = PBylinePlace;
     }
 
     internal void PImprintAttach(PWindow host, LEngine engine, PReference owner)
@@ -22,9 +31,6 @@ public partial class PImprint : UserControl
         _pImprintHost = host;
         _lEngine = engine;
         _pImprintOwner = owner;
-
-        PAuthorCredit.ItemsSource = _pAuthorCredit;
-        PAuthorList.ItemsSource = _pAuthorCatalog;
     }
 
     internal void PImprintDraftOpen(long? reference)
@@ -55,6 +61,7 @@ public partial class PImprint : UserControl
 
     internal void PImprintClose()
     {
-        PAuthorMenu.IsOpen = false;
+        PBylineHide();
+        PImprintKindMenu.IsOpen = false;
     }
 }

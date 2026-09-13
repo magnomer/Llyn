@@ -41,8 +41,9 @@ It also settles the buttons, so a write and what the buttons say never drift apa
 
 ## `private void PTranscriptChangeUpdate()`
 
-Settles the discard and store controls against the engine's answer.
-Both read the same answer the closing warning reads, so the three cannot disagree.
+Settles the rail's save against the engine's answer, as the repertoire panel settles its own.
+It reads the same answer the closing warning reads, so the two cannot disagree.
+It stands aside while `PEditor` is in front, because then the save belongs to the entry editor.
 
 ## `private LDraft? PTranscriptDraftStart(long? example)`
 

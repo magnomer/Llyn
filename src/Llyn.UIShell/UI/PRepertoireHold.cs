@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -127,9 +128,12 @@ public partial class PRepertoire
 
     private void PScenarioChangeUpdate()
     {
-        bool changed = PScenarioDraftCheck();
-        PScenarioDiscard.IsEnabled = changed;
-        PScenarioStore.IsEnabled = changed;
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            return;
+        }
+
+        PRepertoireStore.IsEnabled = PScenarioDraftCheck();
     }
 
     private LDraft? PScenarioDraftStart(long? situation)
@@ -172,11 +176,13 @@ public partial class PRepertoire
                 return;
             }
 
+            PScenarioRequestPersist();
             _lEngine.LEngineRequestApply(
                 PScenarioRead(_pScenarioDraft, content.LSituationId));
         }
         catch (Exception exception)
         {
+            _pScenarioRequestPending.Clear();
             PScenarioHoldSuspend(exception);
         }
     }
@@ -208,8 +214,11 @@ public partial class PRepertoire
             return;
         }
 
+        PScenarioChangeStop();
+
         long held = _pScenarioDraft;
         _pScenarioDraft = 0;
+        _pScenarioRequestPending.Clear();
 
         try
         {

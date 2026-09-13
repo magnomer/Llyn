@@ -65,17 +65,19 @@ public sealed class LSituationArchive
             """;
 
         List<LSituation> situations = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
+        using (SqliteDataReader reader = command.ExecuteReader())
         {
-            situations.Add(new LSituation(
-                reader.GetInt64(0),
-                LStateColumn.LStateColumnRead(reader, 1),
-                LStateColumn.LStateColumnRead(reader, 3),
-                LStateColumn.LStateColumnRead(reader, 5)));
+            while (reader.Read())
+            {
+                situations.Add(new LSituation(
+                    reader.GetInt64(0),
+                    LStateColumn.LStateColumnRead(reader, 1),
+                    LStateColumn.LStateColumnRead(reader, 3),
+                    LStateColumn.LStateColumnRead(reader, 5)));
+            }
         }
 
-        return situations;
+        return LSituationMediaRead(situations);
     }
 
     public IReadOnlyList<LSituation> LSituationMeaningRead(long meaningId)
@@ -280,6 +282,9 @@ public sealed class LSituationArchive
                 $"Situation {id} is still referenced {references} time(s); detach every reference before deleting it.");
         }
 
+        LSituationMediaDelete(connection, "situation_image", id);
+        LSituationMediaDelete(connection, "situation_video", id);
+
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText = "DELETE FROM situation WHERE situation_id = $id;";
@@ -288,6 +293,14 @@ public sealed class LSituationArchive
         }
 
         session.LDatabaseSessionCommit();
+    }
+
+    private static void LSituationMediaDelete(SqliteConnection connection, string table, long situationId)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = $"DELETE FROM {table} WHERE situation_parent = $situation;";
+        command.Parameters.AddWithValue("$situation", situationId);
+        command.ExecuteNonQuery();
     }
 
     private static void LSituationLinkDelete(SqliteConnection connection, string table, long situationId)
@@ -429,39 +442,156 @@ public sealed class LSituationArchive
         command.Parameters.AddWithValue("$referrer", referrerId);
 
         List<LSituation> situations = [];
-        using SqliteDataReader reader = command.ExecuteReader();
-        while (reader.Read())
+        using (SqliteDataReader reader = command.ExecuteReader())
         {
-            situations.Add(new LSituation(
-                reader.GetInt64(0),
-                LStateColumn.LStateColumnRead(reader, 1),
-                LStateColumn.LStateColumnRead(reader, 3),
-                LStateColumn.LStateColumnRead(reader, 5)));
+            while (reader.Read())
+            {
+                situations.Add(new LSituation(
+                    reader.GetInt64(0),
+                    LStateColumn.LStateColumnRead(reader, 1),
+                    LStateColumn.LStateColumnRead(reader, 3),
+                    LStateColumn.LStateColumnRead(reader, 5)));
+            }
+        }
+
+        return LSituationMediaRead(situations);
+    }
+
+    private LSituation? LSituationSingleRead(SqliteConnection connection, long id)
+    {
+        LSituation read;
+        using (SqliteCommand command = connection.CreateCommand())
+        {
+            command.CommandText =
+                """
+                SELECT title_state, title, description_state, description,
+                       kind_state, kind
+                FROM situation WHERE situation_id = $id;
+                """;
+            command.Parameters.AddWithValue("$id", id);
+            using SqliteDataReader reader = command.ExecuteReader();
+            if (!reader.Read())
+            {
+                return null;
+            }
+
+            read = new LSituation(
+                id,
+                LStateColumn.LStateColumnRead(reader, 0),
+                LStateColumn.LStateColumnRead(reader, 2),
+                LStateColumn.LStateColumnRead(reader, 4));
+        }
+
+        return LSituationMediaRead(read);
+    }
+
+    private IReadOnlyList<LSituation> LSituationMediaRead(List<LSituation> situations)
+    {
+        if (situations.Count == 0)
+        {
+            return situations;
+        }
+
+        using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
+        SqliteConnection connection = session.LDatabaseSessionConnection;
+
+        Dictionary<long, List<LImageDraft>> images = LSituationImageGroupRead(connection);
+        Dictionary<long, List<LVideoDraft>> videos = LSituationVideoGroupRead(connection);
+
+        for (int index = 0; index < situations.Count; index++)
+        {
+            LSituation situation = situations[index];
+            situations[index] = situation with
+            {
+                LSituationImage = images.TryGetValue(situation.LSituationId, out List<LImageDraft>? imageRows)
+                    ? imageRows
+                    : [],
+                LSituationVideo = videos.TryGetValue(situation.LSituationId, out List<LVideoDraft>? videoRows)
+                    ? videoRows
+                    : [],
+            };
         }
 
         return situations;
     }
 
-    private static LSituation? LSituationSingleRead(SqliteConnection connection, long id)
+    private LSituation LSituationMediaRead(LSituation situation)
+    {
+        LImageArchive images = new(_lSituationArchiveDatabase);
+        LVideoArchive videos = new(_lSituationArchiveDatabase);
+
+        List<LImageDraft> imageRows = [];
+        foreach (LImage image in images.LImageSituationRead(situation.LSituationId))
+        {
+            imageRows.Add(new LImageDraft(image.LImageLocation, image.LImageId));
+        }
+
+        List<LVideoDraft> videoRows = [];
+        foreach (LVideo video in videos.LVideoSituationRead(situation.LSituationId))
+        {
+            videoRows.Add(new LVideoDraft(video.LVideoLocation, video.LVideoSpan, video.LVideoId));
+        }
+
+        return situation with { LSituationImage = imageRows, LSituationVideo = videoRows };
+    }
+
+    private static Dictionary<long, List<LImageDraft>> LSituationImageGroupRead(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            SELECT title_state, title, description_state, description,
-                   kind_state, kind
-            FROM situation WHERE situation_id = $id;
+            SELECT link.situation_parent, image.image_id, image.location_state, image.location
+            FROM situation_image link
+            JOIN image ON image.image_id = link.image_ref
+            ORDER BY link.situation_parent, link.position;
             """;
-        command.Parameters.AddWithValue("$id", id);
+
+        Dictionary<long, List<LImageDraft>> grouped = [];
         using SqliteDataReader reader = command.ExecuteReader();
-        if (!reader.Read())
+        while (reader.Read())
         {
-            return null;
+            long parent = reader.GetInt64(0);
+            if (!grouped.TryGetValue(parent, out List<LImageDraft>? rows))
+            {
+                rows = [];
+                grouped.Add(parent, rows);
+            }
+
+            rows.Add(new LImageDraft(LStateColumn.LStateColumnRead(reader, 2), reader.GetInt64(1)));
         }
 
-        return new LSituation(
-            id,
-            LStateColumn.LStateColumnRead(reader, 0),
-            LStateColumn.LStateColumnRead(reader, 2),
-            LStateColumn.LStateColumnRead(reader, 4));
+        return grouped;
+    }
+
+    private static Dictionary<long, List<LVideoDraft>> LSituationVideoGroupRead(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT link.situation_parent, video.video_id,
+                   video.location_state, video.location, video.span_state, video.span
+            FROM situation_video link
+            JOIN video ON video.video_id = link.video_ref
+            ORDER BY link.situation_parent, link.position;
+            """;
+
+        Dictionary<long, List<LVideoDraft>> grouped = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            long parent = reader.GetInt64(0);
+            if (!grouped.TryGetValue(parent, out List<LVideoDraft>? rows))
+            {
+                rows = [];
+                grouped.Add(parent, rows);
+            }
+
+            rows.Add(new LVideoDraft(
+                LStateColumn.LStateColumnRead(reader, 2),
+                LStateColumn.LStateColumnRead(reader, 4),
+                reader.GetInt64(1)));
+        }
+
+        return grouped;
     }
 }

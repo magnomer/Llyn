@@ -41,7 +41,8 @@ This is the domain rule the repertoire panel used to keep in its own comparison.
 ## `private LSituation LEngineSituationNormalize(LSituation content)`
 
 The same Situation with an id minted when it carries none.
-The Situation that came in is returned itself when it was already named.
+Its image and video rows are named the same way, and a row with no location is dropped.
+The Situation that came in is returned itself when it was already named and its rows were too.
 That sameness is the answer the form reads to know nothing was corrected.
 A Situation written by an older launch is what arrives here unnamed.
 
@@ -55,3 +56,5 @@ A context that was never opened on a stored one started from nothing.
 Field by field, whether two Situations say the same thing.
 Identity is left out, because a held Situation is named before the record it becomes exists.
 The title, the description and the kind each count, so any of them typed is an edit.
+The image and video lists count as well, so an added picture is an edit.
+A blank row is not, because the commit drops it.

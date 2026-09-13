@@ -125,11 +125,9 @@ public partial class PImprint
         pending.Dispose();
     }
 
-    private void PImprintChangeUpdate()
+    internal void PImprintChangeUpdate()
     {
-        bool changed = PImprintDraftCheck();
-        PImprintDiscard.IsEnabled = changed;
-        PImprintStore.IsEnabled = changed;
+        PImprintChangeNotice?.Invoke(PImprintDraftCheck());
     }
 
     private LDraft? PImprintDraftStart(long? reference)

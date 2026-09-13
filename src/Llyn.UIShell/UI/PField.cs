@@ -13,6 +13,8 @@ internal static class PField
 
     private static readonly Thickness PFieldPlaceholderInset = new(4, 0, 0, 0);
 
+    private const double PFieldPlaceholderOpacity = 0.56;
+
     private const string PFieldTemplateKey = "Theme.Input.Field.Template";
     private const string PFieldBareKey = "Theme.Input.Field.Bare";
     private const string PFieldPlainKey = "Theme.Input.Field.Plain";
@@ -22,6 +24,13 @@ internal static class PField
         resources[PFieldTemplateKey] = PFieldTemplateBuild();
         resources[PFieldBareKey] = PFieldBareBuild();
         resources[PFieldPlainKey] = PFieldPlainBuild();
+    }
+
+    internal static void PFieldPlaceholderShow(TextBlock block, bool placeholder)
+    {
+        block.Padding = placeholder ? PFieldPlaceholderInset : new Thickness(0);
+        block.Opacity = placeholder ? PFieldPlaceholderOpacity : 1;
+        block.SetResourceReference(TextBlock.ForegroundProperty, placeholder ? "Theme.Muted" : "Theme.Ink");
     }
 
     private static MultiBinding PFieldInsetBuild()
@@ -46,6 +55,7 @@ internal static class PField
         pSurface.SetValue(Border.BorderThicknessProperty, new Thickness(1));
         pSurface.SetValue(Border.CornerRadiusProperty, new CornerRadius(7));
         pSurface.SetValue(UIElement.IsHitTestVisibleProperty, false);
+        pSurface.SetValue(UIElement.SnapsToDevicePixelsProperty, true);
 
         var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), PFieldPlaceholderName);
         pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
@@ -53,7 +63,7 @@ internal static class PField
         pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
-        pPlaceholder.SetValue(UIElement.OpacityProperty, 0.56);
+        pPlaceholder.SetValue(UIElement.OpacityProperty, PFieldPlaceholderOpacity);
         pPlaceholder.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(FrameworkElement.TagProperty));
         pPlaceholder.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
         pPlaceholder.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
@@ -95,7 +105,7 @@ internal static class PField
         pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
-        pPlaceholder.SetValue(UIElement.OpacityProperty, 0.56);
+        pPlaceholder.SetValue(UIElement.OpacityProperty, PFieldPlaceholderOpacity);
         pPlaceholder.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(FrameworkElement.TagProperty));
         pPlaceholder.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
         pPlaceholder.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
@@ -137,7 +147,7 @@ internal static class PField
         pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
-        pPlaceholder.SetValue(UIElement.OpacityProperty, 0.56);
+        pPlaceholder.SetValue(UIElement.OpacityProperty, PFieldPlaceholderOpacity);
         pPlaceholder.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(FrameworkElement.TagProperty));
         pPlaceholder.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
         pPlaceholder.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
