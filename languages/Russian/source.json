@@ -1,0 +1,15 @@
+{
+  "language": "Russian",
+  "flag": "ru",
+  "font": {
+    "family": "Segoe UI",
+    "size": 40
+  },
+  "example": {
+    "family": "Georgia, Segoe UI",
+    "size": 15
+  },
+  "note": "Language selector pack for Russian. Pronunciation and audio sources are listed separately and can be added without changing the application.",
+  "pronunciation": [],
+  "audio": []
+}

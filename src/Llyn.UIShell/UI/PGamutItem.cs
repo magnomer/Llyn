@@ -26,7 +26,5 @@ internal sealed class PGamutItem
 
     public bool PGamutItemChosen { get; }
 
-    public string PGamutItemCount => PGamutItemUsage > 0
-        ? PGamutItemUsage.ToString(CultureInfo.CurrentCulture)
-        : string.Empty;
+    public string PGamutItemCount => PGamutItemUsage.ToString(CultureInfo.CurrentCulture);
 }

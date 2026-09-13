@@ -91,7 +91,14 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Click="PDirectoryHandle" Style="{StaticResource Theme.Directory.Row}">
-                                <TextBlock Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PDirectoryItemText}" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Path Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" Data="{local:PIcon tag, 16}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PDirectoryItemText}" />
+                                </Grid>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
