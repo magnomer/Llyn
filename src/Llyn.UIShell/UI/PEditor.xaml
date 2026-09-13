@@ -2,6 +2,7 @@
     x:Class="Llyn.UIShell.PEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIShell"
     xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
 
     <UserControl.Resources>
@@ -99,118 +100,128 @@
             </Border>
         </Grid>
 
-        <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal">
 
-            <Border Style="{StaticResource Theme.Pronunciation.Surface}">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                    <Grid Margin="3,0">
-                        <TextBlock Style="{StaticResource Editor.Field.Measure}" />
-                        <TextBox x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
-                    </Grid>
-                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                </StackPanel>
-            </Border>
+                <Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <Image x:Name="PPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
+                        <TextBlock x:Name="PPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
+                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                        <Grid Margin="3,0">
+                            <TextBlock Style="{StaticResource Editor.Field.Measure}" />
+                            <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
+                        </Grid>
+                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                    </StackPanel>
+                </Border>
 
-            <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
-                        <Rectangle Width="13" Height="14" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Uniform">
-                                    <VisualBrush.Visual>
-                                        <svgc:SvgViewbox Width="13" Height="14" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Rectangle.OpacityMask>
-                        </Rectangle>
-                    </Button>
-
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-
-                    <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
-                </StackPanel>
-            </Border>
-
-            <Border Height="37" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-
-                    <Grid>
-                        <ToggleButton x:Name="PTranscriber" Checked="PTranscriberCheckedHandle" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Transcriber.Title}" Unchecked="PTranscriberUncheckedHandle">
-                            <Rectangle Width="13" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+                <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
+                            <Rectangle Width="13" Height="14" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
                                 <Rectangle.OpacityMask>
                                     <VisualBrush Stretch="Uniform">
                                         <VisualBrush.Visual>
-                                            <svgc:SvgViewbox Width="13" Height="13" Source="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
+                                            <svgc:SvgViewbox Width="13" Height="14" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
                                         </VisualBrush.Visual>
                                     </VisualBrush>
                                 </Rectangle.OpacityMask>
                             </Rectangle>
-                        </ToggleButton>
-                        <Popup
-                            x:Name="PNotation"
-                            Margin="0,6,0,0"
-                            AllowsTransparency="True"
-                            IsOpen="{Binding IsChecked, ElementName=PTranscriber}"
-                            Placement="Bottom"
-                            PlacementTarget="{Binding ElementName=PTranscriber}"
-                            StaysOpen="False">
-                            <Border Margin="10" MinWidth="300" MaxWidth="640" Style="{StaticResource Theme.Popup.Surface}">
-                                <StackPanel>
-                                    <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Transcriber.Title}" />
-                                    <Border x:Name="PNotationProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
-                                        <Border Style="{StaticResource Theme.Popup.ProgressBar}" />
-                                    </Border>
-                                    <TextBlock x:Name="PNotationNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Transcriber.Searching}" Visibility="Collapsed" />
-                                    <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                        <ItemsControl x:Name="PNotationList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Notation.Row}" Visibility="Collapsed" />
-                                    </ScrollViewer>
-                                </StackPanel>
-                            </Border>
-                        </Popup>
-                    </Grid>
+                        </Button>
 
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                        <Rectangle Style="{StaticResource Theme.Command.Divider}" />
 
-                    <Grid>
-                        <ToggleButton x:Name="PDownloader" Checked="PDownloaderCheckedHandle" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Downloader.Title}" Unchecked="PDownloaderUncheckedHandle">
-                            <Rectangle Width="13" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform">
-                                        <VisualBrush.Visual>
-                                            <svgc:SvgViewbox Width="13" Height="13" Source="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" />
-                                        </VisualBrush.Visual>
-                                    </VisualBrush>
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </ToggleButton>
-                        <Popup
-                            x:Name="PClip"
-                            Width="320"
-                            Margin="0,6,0,0"
-                            AllowsTransparency="True"
-                            IsOpen="{Binding IsChecked, ElementName=PDownloader}"
-                            Placement="Bottom"
-                            PlacementTarget="{Binding ElementName=PDownloader}"
-                            StaysOpen="False">
-                            <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                                <StackPanel>
-                                    <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Downloader.Title}" />
-                                    <Border x:Name="PClipProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
-                                        <Border Style="{StaticResource Theme.Popup.ProgressBar}" />
-                                    </Border>
-                                    <TextBlock x:Name="PClipNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Downloader.Searching}" Visibility="Collapsed" />
-                                    <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                        <ItemsControl x:Name="PClipList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Clip.Row}" Visibility="Collapsed" />
-                                    </ScrollViewer>
-                                </StackPanel>
-                            </Border>
-                        </Popup>
-                    </Grid>
+                        <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
+                    </StackPanel>
+                </Border>
 
-                </StackPanel>
-            </Border>
+                <Border Height="37" Margin="10,0,0,0" Style="{StaticResource Theme.Command.Group}">
+                    <StackPanel Orientation="Horizontal">
 
+                        <Grid>
+                            <ToggleButton x:Name="PTranscriber" Checked="PTranscriberCheckedHandle" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Transcriber.Title}" Unchecked="PTranscriberUncheckedHandle">
+                                <Rectangle Width="13" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Uniform">
+                                            <VisualBrush.Visual>
+                                                <svgc:SvgViewbox Width="13" Height="13" Source="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </ToggleButton>
+                            <Popup
+                                x:Name="PNotation"
+                                Margin="0,6,0,0"
+                                AllowsTransparency="True"
+                                IsOpen="{Binding IsChecked, ElementName=PTranscriber}"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=PTranscriber}"
+                                StaysOpen="False">
+                                <Border Margin="10" MinWidth="300" MaxWidth="640" Style="{StaticResource Theme.Popup.Surface}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Transcriber.Title}" />
+                                        <Border x:Name="PNotationProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
+                                            <Border Style="{StaticResource Theme.Popup.ProgressBar}" />
+                                        </Border>
+                                        <TextBlock x:Name="PNotationNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Transcriber.Searching}" Visibility="Collapsed" />
+                                        <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl x:Name="PNotationList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Notation.Row}" Visibility="Collapsed" />
+                                        </ScrollViewer>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                        <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+
+                        <Grid>
+                            <ToggleButton x:Name="PDownloader" Checked="PDownloaderCheckedHandle" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Downloader.Title}" Unchecked="PDownloaderUncheckedHandle">
+                                <Rectangle Width="13" Height="13" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}">
+                                    <Rectangle.OpacityMask>
+                                        <VisualBrush Stretch="Uniform">
+                                            <VisualBrush.Visual>
+                                                <svgc:SvgViewbox Width="13" Height="13" Source="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" />
+                                            </VisualBrush.Visual>
+                                        </VisualBrush>
+                                    </Rectangle.OpacityMask>
+                                </Rectangle>
+                            </ToggleButton>
+                            <Popup
+                                x:Name="PClip"
+                                Width="320"
+                                Margin="0,6,0,0"
+                                AllowsTransparency="True"
+                                IsOpen="{Binding IsChecked, ElementName=PDownloader}"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=PDownloader}"
+                                StaysOpen="False">
+                                <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Downloader.Title}" />
+                                        <Border x:Name="PClipProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
+                                            <Border Style="{StaticResource Theme.Popup.ProgressBar}" />
+                                        </Border>
+                                        <TextBlock x:Name="PClipNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Downloader.Searching}" Visibility="Collapsed" />
+                                        <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl x:Name="PClipList" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Clip.Row}" Visibility="Collapsed" />
+                                        </ScrollViewer>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+
+            <ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}">
+                <ItemsControl.CommandBindings>
+                    <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandRemoval}" Executed="PAccentRemoveHandle" />
+                </ItemsControl.CommandBindings>
+            </ItemsControl>
         </StackPanel>
 
         <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,0" Orientation="Horizontal">

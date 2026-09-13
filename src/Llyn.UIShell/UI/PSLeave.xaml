@@ -1,0 +1,40 @@
+<Window
+    x:Class="Llyn.UIShell.PSLeave"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="{DynamicResource Terms.Product}"
+    Icon="pack://application:,,,/brand/icon.png"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    SizeToContent="WidthAndHeight"
+    WindowStartupLocation="CenterOwner">
+
+    <StackPanel MinWidth="360" Margin="28,24,28,20">
+        <TextBlock x:Name="PSLeaveMessage" FontSize="14" Text="{DynamicResource Leave.Message}" TextWrapping="Wrap" />
+
+        <StackPanel Margin="0,26,0,0" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button
+                x:Name="PSLeaveStore"
+                MinWidth="88"
+                Click="PSLeaveStoreHandle"
+                Content="{DynamicResource Leave.Save}"
+                IsDefault="True"
+                Style="{StaticResource Theme.Command.Primary}" />
+            <Button
+                x:Name="PSLeaveDiscard"
+                MinWidth="88"
+                Margin="6,0,0,0"
+                Click="PSLeaveDiscardHandle"
+                Content="{DynamicResource Leave.Discard}"
+                Style="{StaticResource Theme.Command.Segment}" />
+            <Button
+                x:Name="PSLeaveStay"
+                MinWidth="88"
+                Margin="6,0,0,0"
+                Click="PSLeaveStayHandle"
+                Content="{DynamicResource Leave.Cancel}"
+                IsCancel="True"
+                Style="{StaticResource Theme.Command.Segment}" />
+        </StackPanel>
+    </StackPanel>
+</Window>

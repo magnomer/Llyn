@@ -142,6 +142,7 @@ internal static class TAuditNameSetting
     // AUDIT:SIDECAR:BASES:START
     public static readonly string[] TAuditBases =
     [
+        "Accent",
         "Answer",
         "Anthology",
         "Articulation",
@@ -217,6 +218,7 @@ internal static class TAuditNameSetting
         "Inventory",
         "Label",
         "Language",
+        "Leave",
         "Left",
         "Leftover",
         "Library",

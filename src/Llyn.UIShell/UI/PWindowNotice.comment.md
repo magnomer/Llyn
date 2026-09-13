@@ -67,7 +67,7 @@ Asks before typed text is thrown away, and answers whether it may be.
 Every editor on the list is asked whether it holds unsaved work.
 Each is asked even after one has answered yes, because the asking is what writes a pause-held keystroke down.
 The window closing and the workspace changing take all of them with it.
-Unsaved work now offers three answers rather than two.
+Unsaved work is put to the leave dialog, which offers three answers rather than two.
 Discarding was the only exit, and a leaving user often means to keep the word.
 Saving commits every draft the window holds and discarding cancels every one.
 The third answer leaves the window standing.
@@ -86,13 +86,16 @@ Every editor is told before the answers are read.
 One refusal does not leave the others still holding their drafts.
 The window may go only when all of them are finished.
 
-### `internal bool PWindowDiscardConfirm(bool unsaved)`
+### `internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)`
 
-The same question over one panel's own answer.
+The same question over one panel's own answer, with the panel's own way of saving.
 It is for a panel leaving its editing state while the rest of the window stays as it is.
 Nothing unsaved means nothing to ask about.
 So the question is only ever put when there is something to lose.
 That is why it can sit in front of every path that discards typed work.
+Saving runs the panel's finish and answers whether it went through, so a refused save keeps the panel put.
+Discarding answers yes and leaves the dropping to the path that asked, as it always did.
+A plain yes-or-no offered no way to keep the work, which a user leaving a word often means to keep.
 
 ### `internal bool PWindowRemovalConfirm(int usage, string scope)`
 

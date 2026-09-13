@@ -1,0 +1,76 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Llyn.UIShell">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeInput.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemePronunciation.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="Theme.Accent.Flag" TargetType="Image" BasedOn="{StaticResource Theme.Pronunciation.Flag}">
+        <Setter Property="Source" Value="{Binding PAccentItemFlag}" />
+    </Style>
+
+    <Style x:Key="Theme.Accent.Label" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Label}">
+        <Setter Property="Text" Value="{Binding PAccentItemLabel}" />
+    </Style>
+
+    <Style x:Key="Theme.Accent.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
+        <Setter Property="Text" Value="{Binding PAccentItemIpa}" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PAccentItemIpa}" Value="">
+                <Setter Property="Text" Value="{DynamicResource Input.Pronunciation}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Accent.Remove" TargetType="Button" BasedOn="{StaticResource Theme.Input.Action}">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandRemoval}" />
+        <Setter Property="CommandParameter" Value="{Binding}" />
+        <Setter Property="Content" Value="" />
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Path Width="7" Height="7" Data="M 0,0 L 7,7 M 7,0 L 0,7" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.4" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <DataTemplate x:Key="Theme.Accent.Row">
+        <Border Style="{StaticResource Theme.Pronunciation.Surface}">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <Image Style="{StaticResource Theme.Accent.Flag}" />
+                <TextBlock Style="{StaticResource Theme.Accent.Label}" />
+                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                <Grid Margin="3,0">
+                    <TextBlock Style="{StaticResource Theme.Accent.Measure}" />
+                    <TextBox Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" Text="{Binding PAccentItemIpa, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                <Button Style="{StaticResource Theme.Accent.Remove}" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Theme.Accent.Display">
+        <Border Style="{StaticResource Theme.Pronunciation.Surface}">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <Image Style="{StaticResource Theme.Accent.Flag}" />
+                <TextBlock Style="{StaticResource Theme.Accent.Label}" />
+                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PAccentItemIpa}" />
+                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+            </StackPanel>
+        </Border>
+    </DataTemplate>
+
+</ResourceDictionary>

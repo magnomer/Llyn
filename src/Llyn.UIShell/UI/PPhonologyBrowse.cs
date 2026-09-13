@@ -245,7 +245,7 @@ public partial class PPhonology
 
     private bool PPhonologyLeaveConfirm()
     {
-        return _pPhonologyHost.PWindowDiscardConfirm(PPhonologyChangeCheck());
+        return _pPhonologyHost.PWindowDiscardConfirm(PPhonologyChangeCheck(), PPhonologyDraftFinish);
     }
 
     private void PPhonologyEntryShow(long id, LEntryDraft draft)

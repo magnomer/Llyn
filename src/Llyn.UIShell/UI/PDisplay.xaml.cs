@@ -33,6 +33,7 @@ public partial class PDisplay : UserControl
     {
         InitializeComponent();
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
+        PDisplayAccent.ItemsSource = _pDisplayAccent;
 
         PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
         PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
@@ -134,6 +135,7 @@ public partial class PDisplay : UserControl
         PDisplayPronunciationSurface.Visibility = draft.LEntryDraftIpa.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
+        PDisplayAccentShow(draft);
         PPlayback.Margin = draft.LEntryDraftIpa.Length == 0
             ? new Thickness(0)
             : new Thickness(10, 0, 0, 0);
@@ -177,6 +179,7 @@ public partial class PDisplay : UserControl
         PDisplayLanguageFlag.Source = null;
         PPlayback.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
+        PDisplayAccentClear();
         PDisplaySpeech.ItemsSource = null;
         PDisplaySpeechSection.Visibility = Visibility.Collapsed;
         _pDisplayIncoming.Clear();

@@ -370,7 +370,7 @@ public partial class PCorpus
 
     internal bool PCorpusLeaveConfirm()
     {
-        return _pCorpusHost.PWindowDiscardConfirm(PCorpusChangeCheck());
+        return _pCorpusHost.PWindowDiscardConfirm(PCorpusChangeCheck(), PCorpusDraftFinish);
     }
 
     private void PCorpusClear()

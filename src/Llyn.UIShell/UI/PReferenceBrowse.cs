@@ -353,7 +353,7 @@ public partial class PReference
 
     internal bool PReferenceLeaveConfirm()
     {
-        return _pReferenceHost.PWindowDiscardConfirm(PReferenceChangeCheck());
+        return _pReferenceHost.PWindowDiscardConfirm(PReferenceChangeCheck(), PReferenceDraftFinish);
     }
 
     private void PReferenceFreshHandle(object sender, RoutedEventArgs e)

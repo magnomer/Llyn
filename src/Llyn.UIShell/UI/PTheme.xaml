@@ -13,6 +13,7 @@
         <ResourceDictionary Source="/Llyn;component/UI/PThemeCard.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeChoice.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePronunciation.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeAccent.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemePlayback.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeVolume.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeSpeech.xaml" />

@@ -121,19 +121,13 @@ public partial class PWindow
         bool store;
         if (unsaved)
         {
-            MessageBoxResult answer = MessageBox.Show(
-                this,
-                PLocalizationTextRead("Input.ExitConfirm"),
-                PLocalizationTextRead("Terms.Product"),
-                MessageBoxButton.YesNoCancel,
-                MessageBoxImage.Question);
-
-            if (answer == MessageBoxResult.Cancel)
+            PSLeaveAnswer answer = PSLeave.PSLeaveShow(this);
+            if (answer == PSLeaveAnswer.PSLeaveAnswerStay)
             {
                 return false;
             }
 
-            store = answer == MessageBoxResult.Yes;
+            store = answer == PSLeaveAnswer.PSLeaveAnswerStore;
         }
         else
         {
@@ -187,18 +181,20 @@ public partial class PWindow
             MessageBoxImage.Warning) == MessageBoxResult.Yes;
     }
 
-    internal bool PWindowDiscardConfirm(bool unsaved)
+    internal bool PWindowDiscardConfirm(bool unsaved, Func<bool, bool> finish)
     {
+        ArgumentNullException.ThrowIfNull(finish);
+
         if (!unsaved)
         {
             return true;
         }
 
-        return MessageBox.Show(
-            this,
-            PLocalizationTextRead("Input.DiscardConfirm"),
-            PLocalizationTextRead("Terms.Product"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question) == MessageBoxResult.Yes;
+        return PSLeave.PSLeaveShow(this) switch
+        {
+            PSLeaveAnswer.PSLeaveAnswerStore => finish(true),
+            PSLeaveAnswer.PSLeaveAnswerDiscard => true,
+            _ => false,
+        };
     }
 }

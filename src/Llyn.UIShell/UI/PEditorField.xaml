@@ -22,10 +22,10 @@
     </Style>
 
     <Style x:Key="Editor.Field.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
-        <Setter Property="Text" Value="{Binding Text, ElementName=PPronunciation}" />
+        <Setter Property="Text" Value="{Binding Text, ElementName=PPronunciationField}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Text, ElementName=PPronunciation}" Value="">
-                <Setter Property="Text" Value="{Binding Tag, ElementName=PPronunciation}" />
+            <DataTrigger Binding="{Binding Text, ElementName=PPronunciationField}" Value="">
+                <Setter Property="Text" Value="{Binding Tag, ElementName=PPronunciationField}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>

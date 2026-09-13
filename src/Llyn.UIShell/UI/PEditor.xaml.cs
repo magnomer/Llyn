@@ -39,6 +39,7 @@ public partial class PEditor : UserControl
         PMeaningList.ItemsSource = _pMeaningList;
         PCollocationList.ItemsSource = _pCollocationList;
         PNotationList.ItemsSource = _pNotationItem;
+        PAccent.ItemsSource = _pAccentItem;
         PClipList.ItemsSource = _pClipItem;
         PLanguageList.ItemsSource = _pLanguageItem;
         PProspectList.ItemsSource = _pProspectItem;

@@ -320,7 +320,7 @@ public partial class PRepertoire
 
     internal bool PRepertoireLeaveConfirm()
     {
-        return _pRepertoireHost.PWindowDiscardConfirm(PRepertoireChangeCheck());
+        return _pRepertoireHost.PWindowDiscardConfirm(PRepertoireChangeCheck(), PRepertoireDraftFinish);
     }
 
     private void PRepertoireClear()

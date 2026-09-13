@@ -35,7 +35,7 @@ Stops the panel: the editor is shut down and the shared display releases its pla
 
 ## Inline notes
 
-### `PArticulation.PArticulationAttach(PProbe, PEditor.PPronunciation);`
+### `PArticulation.PArticulationAttach(PProbe, PEditor.PPronunciationField);`
 
 The aid is given both fields a phonetic character is typed into.
 The search comes first, because a reader who opens the charts with nothing focused is looking a pronunciation up.

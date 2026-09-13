@@ -186,34 +186,40 @@
                         </Path>
                     </ToggleButton>
                 </Grid>
-                <StackPanel Margin="12,12,0,0" Orientation="Horizontal">
-                    <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
-                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                            <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
-                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                        </StackPanel>
-                    </Border>
+                <StackPanel Margin="12,12,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <Image x:Name="PDisplayPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
+                                <TextBlock x:Name="PDisplayPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
+                                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                                <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
+                                <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                            </StackPanel>
+                        </Border>
 
-                    <Border x:Name="PPlayback" Height="37" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal">
-                            <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
-                                <Rectangle Width="13" Height="14" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                                    <Rectangle.OpacityMask>
-                                        <VisualBrush Stretch="Uniform">
-                                            <VisualBrush.Visual>
-                                                <svgc:SvgViewbox Width="13" Height="14" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
-                                            </VisualBrush.Visual>
-                                        </VisualBrush>
-                                    </Rectangle.OpacityMask>
-                                </Rectangle>
-                            </Button>
+                        <Border x:Name="PPlayback" Height="37" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Playback.Action}" ToolTip="{DynamicResource Downloader.Play}">
+                                    <Rectangle Width="13" Height="14" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                                        <Rectangle.OpacityMask>
+                                            <VisualBrush Stretch="Uniform">
+                                                <VisualBrush.Visual>
+                                                    <svgc:SvgViewbox Width="13" Height="14" Source="pack://application:,,,/Llyn;component/icons/play.svg" />
+                                                </VisualBrush.Visual>
+                                            </VisualBrush>
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                </Button>
 
-                            <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                                <Rectangle Style="{StaticResource Theme.Command.Divider}" />
 
-                            <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
-                        </StackPanel>
-                    </Border>
+                                <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplaySpeechSection" Margin="12,14,0,0" Visibility="Collapsed">

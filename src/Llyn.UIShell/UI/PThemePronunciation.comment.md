@@ -4,7 +4,8 @@
 
 The row a pronunciation is read and written in.
 It carries no border and no fill, so the brackets stand alone against the page.
-Its height matches the playback group beside it, so the two sit on one line.
+Its height is fixed to the playback group beside it, so the two sit on one line.
+The reading view wears the same height, so a reading stands where it stands in the editor, row for row.
 Without a box the reading has to hold the eye on its own.
 It is set larger than the buttons around it.
 
@@ -12,6 +13,16 @@ It is set larger than the buttons around it.
 
 The two brackets that hold the reading.
 They are set in the muted ink, so they frame the reading without competing with it.
+
+## `<Style x:Key="Theme.Pronunciation.Flag" TargetType="Image">`
+
+The variety flag before the brackets, hidden while no flag is set.
+It is the size the lookup menu draws a flag at, so a taken reading keeps its flag's size.
+
+## `<Style x:Key="Theme.Pronunciation.Label" TargetType="TextBlock">`
+
+The variety name before the brackets, in the small muted face, hidden while blank.
+It stands in where the pack draws no flags or none resolves.
 
 ## `<Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">`
 

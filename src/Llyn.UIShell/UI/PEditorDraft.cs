@@ -15,7 +15,8 @@ public partial class PEditor
         try
         {
             PEditorTextShow(PHeadword, PEditorRequestHeadword, draft.LEntryDraftHeadword);
-            PEditorTextShow(PPronunciation, PEditorRequestIpa, draft.LEntryDraftIpa);
+            PEditorTextShow(PPronunciationField, PEditorRequestIpa, draft.LEntryDraftIpa);
+            PAccentShow(draft);
             PEditorSpeechShow(draft.LEntryDraftSpeeches);
             PEditorLanguageShow(draft.LEntryDraftLanguage);
 
@@ -93,7 +94,8 @@ public partial class PEditor
         _pEditorFill = true;
 
         PHeadword.Text = string.Empty;
-        PPronunciation.Text = string.Empty;
+        PPronunciationField.Text = string.Empty;
+        PAccentClear();
         PMarkerShow(null);
         PRecordingClear();
         _pSpeakerEntry = false;

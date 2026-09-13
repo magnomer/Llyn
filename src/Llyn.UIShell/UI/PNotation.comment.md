@@ -7,6 +7,7 @@ Opening the menu starts a search for the headword.
 Candidates stream in from the engine and fill the list, one reading per variety a source returned.
 Picking one writes it into the pronunciation field and stores its variety on the primary pronunciation row.
 Taking a whole row writes the first reading there and adds every further one as its own pronunciation row.
+A further reading the draft already holds, same variety and same text, is not added again.
 This is the shell side of `LReceiver`.
 The engine calls back on a worker thread.
 So every arrival is marshalled onto the dispatcher here.
@@ -90,5 +91,9 @@ The id is read from the draft rather than made up here, because the engine alone
 ### `private PNotationReading? PNotationReadingCreate(LCandidate candidate)`
 
 Builds the button for one candidate, or nothing when the candidate carries no transcription.
-A variety's label is its localized `Variety.*` text when one exists and its raw name otherwise.
-Its flag is looked up only in flag mode, under the language the search was started for.
+Its label and flag are resolved as a pronunciation row resolves its own, under the language the search began for.
+
+### `private bool PNotationHeldCheck(PNotationReading reading)`
+
+Whether the draft already holds a pronunciation with this reading's variety and text.
+Taking all twice would otherwise double every row after the first.

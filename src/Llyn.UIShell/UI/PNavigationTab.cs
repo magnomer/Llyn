@@ -15,46 +15,50 @@ public partial class PWindow
             return;
         }
 
-        if (PLibrary.IsVisible && selectedButton != PNavigationLibrary && !PWindowDiscardConfirm(PLibrary.PLibraryChangeCheck()))
+        if (PLibrary.IsVisible && selectedButton != PNavigationLibrary
+            && !PWindowDiscardConfirm(PLibrary.PLibraryChangeCheck(), PLibrary.PLibraryDraftFinish))
         {
             return;
         }
 
-        if (PPhonology.IsVisible && selectedButton != PNavigationPhonology && !PWindowDiscardConfirm(PPhonology.PPhonologyChangeCheck()))
+        if (PPhonology.IsVisible && selectedButton != PNavigationPhonology
+            && !PWindowDiscardConfirm(PPhonology.PPhonologyChangeCheck(), PPhonology.PPhonologyDraftFinish))
         {
             return;
         }
 
-        if (PTaxonomy.IsVisible && selectedButton != PNavigationTaxonomy && !PWindowDiscardConfirm(PTaxonomy.PTaxonomyChangeCheck()))
+        if (PTaxonomy.IsVisible && selectedButton != PNavigationTaxonomy
+            && !PWindowDiscardConfirm(PTaxonomy.PTaxonomyChangeCheck(), PTaxonomy.PTaxonomyDraftFinish))
         {
             return;
         }
 
-        if (PTenor.IsVisible && selectedButton != PNavigationTenor && !PWindowDiscardConfirm(PTenor.PTenorChangeCheck()))
+        if (PTenor.IsVisible && selectedButton != PNavigationTenor
+            && !PWindowDiscardConfirm(PTenor.PTenorChangeCheck(), PTenor.PTenorDraftFinish))
         {
             return;
         }
 
         if (PRepertoire.IsVisible && selectedButton != PNavigationRepertoire
-            && !PWindowDiscardConfirm(PRepertoire.PRepertoireChangeCheck()))
+            && !PWindowDiscardConfirm(PRepertoire.PRepertoireChangeCheck(), PRepertoire.PRepertoireDraftFinish))
         {
             return;
         }
 
         if (PCorpus.IsVisible && selectedButton != PNavigationCorpus
-            && !PWindowDiscardConfirm(PCorpus.PCorpusChangeCheck()))
+            && !PWindowDiscardConfirm(PCorpus.PCorpusChangeCheck(), PCorpus.PCorpusDraftFinish))
         {
             return;
         }
 
         if (PReference.IsVisible && selectedButton != PNavigationSource
-            && !PWindowDiscardConfirm(PReference.PReferenceChangeCheck()))
+            && !PWindowDiscardConfirm(PReference.PReferenceChangeCheck(), PReference.PReferenceDraftFinish))
         {
             return;
         }
 
         if (PFavorite.IsVisible && selectedButton != PNavigationFavorite
-            && !PWindowDiscardConfirm(PFavorite.PFavoriteChangeCheck()))
+            && !PWindowDiscardConfirm(PFavorite.PFavoriteChangeCheck(), PFavorite.PFavoriteDraftFinish))
         {
             return;
         }

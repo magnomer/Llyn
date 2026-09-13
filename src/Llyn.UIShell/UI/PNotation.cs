@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -50,7 +49,10 @@ public partial class PEditor : LReceiver
 
         foreach (PNotationReading reading in readings.Skip(1))
         {
-            PNotationReadingAdd(reading);
+            if (!PNotationHeldCheck(reading))
+            {
+                PNotationReadingAdd(reading);
+            }
         }
 
         PTranscriber.IsChecked = false;
@@ -58,7 +60,7 @@ public partial class PEditor : LReceiver
 
     private void PNotationPrimaryApply(PNotationReading reading)
     {
-        PPronunciation.Text = reading.PNotationReadingPhonetic;
+        PPronunciationField.Text = reading.PNotationReadingPhonetic;
         PEditorChangeSave();
 
         PNotationVarietySend(
@@ -86,6 +88,26 @@ public partial class PEditor : LReceiver
         PEditorRequestSend(new LRequestPronunciationVariety(_pEditorDraft, pronunciationId, variety));
     }
 
+    private bool PNotationHeldCheck(PNotationReading reading)
+    {
+        LEntryDraft? draft = PNotationDraftRead();
+        if (draft is null)
+        {
+            return false;
+        }
+
+        foreach (LPronunciationDraft spoken in draft.LEntryDraftPronunciations)
+        {
+            if (string.Equals(spoken.LPronunciationDraftVariety, reading.PNotationReadingVariety, StringComparison.Ordinal)
+                && string.Equals(spoken.LPronunciationDraftIpa, reading.PNotationReadingPhonetic, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private LEntryDraft? PNotationDraftRead()
     {
         if (_pEditorHalted || _pEditorDraft == 0)
@@ -104,12 +126,11 @@ public partial class PEditor : LReceiver
             return new PNotationReading(variety, string.Empty, null, candidate.LCandidatePhonetic ?? string.Empty);
         }
 
-        string label = _pEditorHost.PLocalizationTextFind(string.Concat("Variety.", variety)) ?? variety;
-        ImageSource? flag = _pNotationFlagged
-            ? PEnsign.PEnsignFind(PEnsign.PEnsignVarietyFormat(_pNotationLanguage, variety))
-            : null;
-
-        return new PNotationReading(variety, label, flag, candidate.LCandidatePhonetic ?? string.Empty);
+        return new PNotationReading(
+            variety,
+            PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
+            PAccentItem.PAccentFlagFind(_pNotationLanguage, _pNotationFlagged, variety),
+            candidate.LCandidatePhonetic ?? string.Empty);
     }
 
     private async Task PNotationStart()

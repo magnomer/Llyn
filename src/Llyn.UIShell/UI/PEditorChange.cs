@@ -62,7 +62,7 @@ public partial class PEditor
 
     private void PEditorTextHandle(object sender, TextChangedEventArgs e)
     {
-        if (e.OriginalSource is TextBox { DataContext: PCard })
+        if (e.OriginalSource is TextBox { DataContext: PCard or PAccentItem })
         {
             return;
         }
@@ -75,11 +75,11 @@ public partial class PEditor
             return;
         }
 
-        if (ReferenceEquals(e.OriginalSource, PPronunciation))
+        if (ReferenceEquals(e.OriginalSource, PPronunciationField))
         {
             PEditorRequestDefer(
                 PEditorRequestIpa,
-                new LRequestIpa(_pEditorDraft, PPronunciation.Text ?? string.Empty));
+                new LRequestIpa(_pEditorDraft, PPronunciationField.Text ?? string.Empty));
             return;
         }
 

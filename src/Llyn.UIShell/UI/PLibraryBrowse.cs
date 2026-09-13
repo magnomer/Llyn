@@ -241,7 +241,7 @@ public partial class PLibrary
 
     internal bool PLibraryLeaveConfirm()
     {
-        return _pLibraryHost.PWindowDiscardConfirm(PLibraryChangeCheck());
+        return _pLibraryHost.PWindowDiscardConfirm(PLibraryChangeCheck(), PLibraryDraftFinish);
     }
 
     private void PLibraryEntryShow(long id, LEntryDraft draft)

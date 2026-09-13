@@ -46,11 +46,23 @@ Editable, not a chooser.
 The dropdown offers the language's presets and this box takes anything.
 So a part of speech no pack declares can still be written down.
 
-## `<StackPanel Grid.Row="1" Margin="0,12,0,0" HorizontalAlignment="Left" Orientation="Horizontal">`
+## `<StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left">`
 
-The pronunciation row, laid out as the reading view lays it out.
+The pronunciation rows, laid out as the reading view lays them out.
+The primary pronunciation stands on the first row with the playback tray and the toolbar.
+Every further pronunciation stands on a row of its own beneath, in the accent list.
 Pronunciation and playback tray carry the theme's shared styles, so switching mode moves neither of them.
-The row starts at the headword's own margin, because an indent here read as a different position.
+The rows start at the headword's own margin, because an indent here read as a different position.
+
+## `<Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">`
+
+The primary pronunciation: its variety as a flag or a label, then the bracketed field.
+The chip is empty for a pronunciation without a variety, so the brackets then open at the margin.
+
+## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}">`
+
+The further pronunciations, one editable row each, drawn by the shared accent template.
+The removal command is bound here, so a row's cross reaches the editor that owns the draft.
 
 ## `<Grid Margin="3,0,1,0">`
 

@@ -10,7 +10,7 @@ The tab chosen is pushed downstream as it changes, so the window opens on it nex
 
 ## Inline notes
 
-### `if (PLibrary.IsVisible && selectedButton != PNavigationLibrary && !PWindowDiscardConfirm(PLibrary.PLibraryChangeCheck()))`
+### `if (PLibrary.IsVisible && selectedButton != PNavigationLibrary && !PWindowDiscardConfirm(PLibrary.PLibraryChangeCheck(), PLibrary.PLibraryDraftFinish))`
 
 Leaving the library panel while it is being written in is leaving the editing state.
 So it is asked about here.

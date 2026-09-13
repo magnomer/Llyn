@@ -244,7 +244,7 @@ public partial class PFavorite
 
     internal bool PFavoriteLeaveConfirm()
     {
-        return _pFavoriteHost.PWindowDiscardConfirm(PFavoriteChangeCheck());
+        return _pFavoriteHost.PWindowDiscardConfirm(PFavoriteChangeCheck(), PFavoriteDraftFinish);
     }
 
     private void PFavoriteEntryShow(long id, LEntryDraft draft)

@@ -322,7 +322,7 @@ public partial class PTenor
 
     internal bool PTenorLeaveConfirm()
     {
-        return _pTenorHost.PWindowDiscardConfirm(PTenorChangeCheck());
+        return _pTenorHost.PWindowDiscardConfirm(PTenorChangeCheck(), PTenorDraftFinish);
     }
 
     private void PTenorEntryShow(long id, LEntryDraft draft)

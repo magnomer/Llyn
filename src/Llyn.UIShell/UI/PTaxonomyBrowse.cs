@@ -312,7 +312,7 @@ public partial class PTaxonomy
 
     internal bool PTaxonomyLeaveConfirm()
     {
-        return _pTaxonomyHost.PWindowDiscardConfirm(PTaxonomyChangeCheck());
+        return _pTaxonomyHost.PWindowDiscardConfirm(PTaxonomyChangeCheck(), PTaxonomyDraftFinish);
     }
 
     private void PTaxonomyEntryShow(long id, LEntryDraft draft)

@@ -36,7 +36,12 @@ So the same view serves the library panel, the phonology panel and the taxonomy 
 ## `<Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" ...>`
 
 The pronunciation chip the editor also wears, defined once in the theme.
+It carries the primary pronunciation's variety as a flag or a label before the brackets.
 The chip collapses when the entry carries no pronunciation, and the playback tray then takes its place at the margin.
+
+## `<ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />`
+
+The further pronunciations of the entry, one row each beneath the primary, drawn by the shared accent template.
 
 ## `<Border x:Name="PPlayback" Height="37" Background="Transparent" BorderThickness="0" ...>`
 

@@ -9,6 +9,7 @@
 
     <Style x:Key="Theme.Pronunciation.Surface" TargetType="Border">
         <Setter Property="Padding" Value="0" />
+        <Setter Property="Height" Value="37" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -22,6 +23,30 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style x:Key="Theme.Pronunciation.Flag" TargetType="Image">
+        <Setter Property="Width" Value="19" />
+        <Setter Property="Height" Value="14" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Style.Triggers>
+            <Trigger Property="Source" Value="{x:Null}">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Pronunciation.Label" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Style.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     <Style x:Key="Theme.Pronunciation.Text" TargetType="TextBlock">
         <Setter Property="Margin" Value="3,0" />
         <Setter Property="MaxWidth" Value="292" />
