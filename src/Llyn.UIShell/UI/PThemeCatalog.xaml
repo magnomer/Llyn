@@ -41,25 +41,12 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="11">
-                        <Grid>
-                            <Border
-                                x:Name="PCatalogRail"
-                                Width="3"
-                                Margin="0,7"
-                                HorizontalAlignment="Left"
-                                Background="{StaticResource Theme.Accent}"
-                                CornerRadius="2"
-                                Visibility="Collapsed" />
-                            <ContentPresenter
-                                Margin="{TemplateBinding Padding}"
-                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="Center" />
-                        </Grid>
+                        <ContentPresenter
+                            Margin="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="Tag" Value="Chosen">
-                            <Setter TargetName="PCatalogRail" Property="Visibility" Value="Visible" />
-                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
                         </Trigger>
@@ -70,6 +57,12 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="Tag" Value="Chosen">
+                <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="Theme.Catalog.Title" TargetType="TextBlock">

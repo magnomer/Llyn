@@ -9,7 +9,6 @@
         <Style x:Key="Theme.Index.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding PIndexItemChosen}" Value="True">
-                    <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
                     <Setter Property="Tag" Value="Chosen" />
                 </DataTrigger>
             </Style.Triggers>

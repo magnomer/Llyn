@@ -5,9 +5,9 @@
 One row of a panel's catalog, drawn on nothing until it is pointed at.
 The catalogs carry no card of their own, so a bordered row would stack a frame inside a frame.
 A row shows its subject over a quieter line of what tells it apart.
-The row the panel stands on is painted by the panel, which tags it as chosen.
-The tag raises a straight accent rail inset along the leading side.
-A left border would bend around the rounded corners and read as a curved tip.
+The row the panel stands on is tagged as chosen by the panel.
+The tag paints the soft accent ground and turns the subject accent, as the reading compass marks its current row.
+One ground and one ink say chosen together, so no rail or edge repeats them.
 
 ## `<Style x:Key="Theme.Catalog.Pellet" TargetType="Border">`
 
