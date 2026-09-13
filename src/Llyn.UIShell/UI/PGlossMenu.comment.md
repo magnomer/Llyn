@@ -6,8 +6,7 @@ The Gloss gestures of a card's sentence row, turned into requests against the he
 
 ## `internal void PGlossAddHandle(object sender, RoutedEventArgs e)`
 
-Adds a Gloss at the end of the row's list.
-It takes the first loaded language that is not the entry's own.
+Adds a Gloss at the end of the row's list, in English.
 
 ## `internal void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
 
@@ -21,5 +20,5 @@ A chosen language is sent at once.
 
 ## `private string PGlossLanguageRead()`
 
-The first loaded language that is not the entry's own, or empty when there is none.
-A rendering is usually in another language, so that is the better first guess.
+English when it is loaded, else the first loaded language, else empty.
+English is the language the user renders into, so it is the right first guess.

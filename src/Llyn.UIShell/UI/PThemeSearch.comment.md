@@ -28,5 +28,6 @@ It serves a panel the search bar does not own.
 It borrows the bar's height and corner, so the two shapes read as one row of controls over the catalog.
 It carries a marked label like the command row does.
 The mark is left out when no icon is named.
+The label is left out when no content is named, so the control stands as a square mark alone.
 An open panel is shown by the soft accent ground the mode buttons use.
 The fold is a state and not an action.

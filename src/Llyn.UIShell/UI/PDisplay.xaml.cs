@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -17,15 +14,11 @@ namespace Llyn.UIShell;
 
 public partial class PDisplay : UserControl
 {
-    private readonly MediaPlayer _pDisplayPlayer = new();
-
     private readonly ObservableCollection<PUsageItem> _pDisplayIncoming = [];
 
     private PWindow _pDisplayHost = null!;
 
     private LEngine _lEngine = null!;
-
-    private string? _pDisplayRecording;
 
     private long? _pDisplayEntry;
 
@@ -38,9 +31,7 @@ public partial class PDisplay : UserControl
         PDisplayAccent.ItemsSource = _pDisplayAccent;
         PDisplayTranscription.ItemsSource = _pDisplayTranscription;
 
-        PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));
-        PVolume.AddHandler(MouseUpEvent, new MouseButtonEventHandler(PVolumeSave), true);
-        PVolume.AddHandler(KeyUpEvent, new KeyEventHandler(PVolumeSave), true);
+        PDisplayPlaybackAttach();
         AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
 
         PCompassAttach();
@@ -234,8 +225,8 @@ public partial class PDisplay : UserControl
             return;
         }
 
-        PDisplayFrequency.Text = PFrequencyLabel.PFrequencyLabelName(frequency);
-        PDisplayFrequencyChip.ToolTip = PFrequencyLabel.PFrequencyLabelTip(
+        PDisplayFrequency.Text = PFrequencyLabel.PFrequencyLabelFormat(frequency);
+        PDisplayFrequencyChip.ToolTip = PFrequencyLabel.PFrequencySourceFormat(
             frequency, _pDisplayHost.PLocalizationTextRead("Frequency.Unit"));
         PDisplayFrequencySection.Visibility = Visibility.Visible;
     }
@@ -451,131 +442,5 @@ public partial class PDisplay : UserControl
         }
 
         PDisplayLanguageFlag.Source = PEnsign.PEnsignFind(language);
-    }
-
-    private void PDisplayGraspShow(long id)
-    {
-        try
-        {
-            PDisplayGrasp.PGraspStep = _lEngine.LEngineGraspRead(id);
-        }
-        catch (Exception)
-        {
-            PDisplayGrasp.PGraspStep = 0;
-        }
-
-        PDisplayGraspLabel.Text = PDisplayGraspFormat(PDisplayGrasp.PGraspStep);
-    }
-
-    private string PDisplayGraspFormat(int step)
-    {
-        return _pDisplayEntry is null
-            ? string.Empty
-            : _pDisplayHost.PLocalizationTextRead(PGrasp.PGraspLabelResolve(step));
-    }
-
-    private void PDisplayHoverHandle(object sender, RoutedEventArgs e)
-    {
-        PDisplayGraspLabel.Text = PDisplayGraspFormat(PDisplayGrasp.PGraspHover ?? PDisplayGrasp.PGraspStep);
-    }
-
-    private void PDisplayGraspHandle(object sender, RoutedEventArgs e)
-    {
-        if (_pDisplayEntry is not long shown)
-        {
-            PDisplayGrasp.PGraspStep = 0;
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineGraspSave(shown, PDisplayGrasp.PGraspStep);
-        }
-        catch (Exception exception)
-        {
-            PDisplayGraspShow(shown);
-            _pDisplayHost.PWindowFailureShow("Grasp.MarkFailed", exception);
-        }
-    }
-
-    private void PDisplayFavoriteShow(long id)
-    {
-        try
-        {
-            PDisplayFavorite.IsChecked = _lEngine.LEngineFavoriteCheck(id);
-        }
-        catch (Exception)
-        {
-            PDisplayFavorite.IsChecked = false;
-        }
-    }
-
-    private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)
-    {
-        if (_pDisplayEntry is null)
-        {
-            PDisplayFavorite.IsChecked = false;
-            return;
-        }
-
-        bool marked = PDisplayFavorite.IsChecked == true;
-        try
-        {
-            if (marked)
-            {
-                _lEngine.LEngineFavoriteSave(_pDisplayEntry!.Value);
-            }
-            else
-            {
-                _lEngine.LEngineFavoriteDelete(_pDisplayEntry!.Value);
-            }
-        }
-        catch (Exception exception)
-        {
-            PDisplayFavorite.IsChecked = !marked;
-            _pDisplayHost.PWindowFailureShow("Favorite.MarkFailed", exception);
-            return;
-        }
-
-    }
-
-    private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
-    {
-        if (_pDisplayRecording is null)
-        {
-            return;
-        }
-
-        _pDisplayPlayer.Open(new Uri(_pDisplayRecording));
-        _pDisplayPlayer.Play();
-    }
-
-    private void PDisplayPlaybackShow()
-    {
-        bool audible = _pDisplayRecording is not null
-            || _pDisplayAccent.Any(static row => row.PAccentItemAudio.Length > 0);
-        PPlayback.Visibility = audible ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void PVolumeHandle(object sender, RoutedPropertyChangedEventArgs<double> e)
-    {
-        _pDisplayPlayer.Volume = e.NewValue;
-        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = e.NewValue;
-    }
-
-    private void PVolumeSave(object sender, RoutedEventArgs e)
-    {
-        if (PVolume.Value == _lEngine.LEngineSettingsRead().LSettingsVolume)
-        {
-            return;
-        }
-
-        _lEngine.LEngineVolumeSave(PVolume.Value);
-    }
-
-    private void PVolumeLoad()
-    {
-        PVolume.Value = _lEngine.LEngineSettingsRead().LSettingsVolume;
-        PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
     }
 }

@@ -13,16 +13,16 @@
                 <TextBlock VerticalAlignment="Center" FontSize="13" Text="{Binding PAuthorItemName}" TextTrimming="CharacterEllipsis" />
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button IsEnabled="{Binding PAuthorItemEarlier}" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Earlier" ToolTip="{DynamicResource Source.AuthorEarlier}">
-                        <Path Width="14" Height="14" Data="{DynamicResource Theme.Icon.Earlier}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" />
+                        <Path Width="24" Height="24" Data="{local:PIcon earlier, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
                     </Button>
                     <Button IsEnabled="{Binding PAuthorItemLater}" Style="{DynamicResource Theme.Popup.IconAction}" Tag="Later" ToolTip="{DynamicResource Source.AuthorLater}">
-                        <Path Width="14" Height="14" Data="{DynamicResource Theme.Icon.Later}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" />
+                        <Path Width="24" Height="24" Data="{local:PIcon later, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
                     </Button>
                     <Button Style="{DynamicResource Theme.Popup.IconAction}" Tag="Rename" ToolTip="{DynamicResource Source.AuthorRename}">
-                        <Path Width="14" Height="14" Data="{DynamicResource Theme.Icon.Rename}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" />
+                        <Path Width="24" Height="24" Data="{local:PIcon edit, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
                     </Button>
                     <Button Style="{DynamicResource Theme.Popup.IconAction}" Tag="Remove" ToolTip="{DynamicResource Source.AuthorRemove}">
-                        <Path Width="14" Height="14" Data="{DynamicResource Theme.Icon.Close}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="Uniform" />
+                        <Path Width="24" Height="24" Data="{local:PIcon close, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
                     </Button>
                 </StackPanel>
             </Grid>

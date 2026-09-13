@@ -43,7 +43,7 @@
                             VerticalAlignment="Center"
                             Click="PCardHandle"
                             Style="{DynamicResource Theme.Card.Handle}">
-                            <Path Width="11" Height="11" Data="{DynamicResource Theme.Icon.Close}" Fill="{DynamicResource Theme.Muted}" Stretch="Uniform" />
+                            <Path Width="12" Height="12" Data="{local:PIcon close, 12}" Fill="{DynamicResource Theme.Muted}" Stretch="None" />
                         </Button>
                     </Grid>
                 </Border>
@@ -84,29 +84,13 @@
                         <Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{DynamicResource Theme.Command.Group}">
                             <StackPanel Orientation="Horizontal">
                                 <Button Click="PImageAddHandle" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.ImageAdd}">
-                                    <Rectangle Width="14" Height="14" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                                        <Rectangle.OpacityMask>
-                                            <VisualBrush Stretch="Uniform">
-                                                <VisualBrush.Visual>
-                                                    <svgc:SvgViewbox Width="14" Height="14" Source="pack://application:,,,/Llyn;component/icons/image.svg" />
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Rectangle.OpacityMask>
-                                    </Rectangle>
+                                    <Path Width="24" Height="24" Data="{local:PIcon image, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
                                 </Button>
 
                                 <Rectangle Style="{DynamicResource Theme.Command.Divider}" />
 
                                 <Button Click="PVideoAddHandle" Style="{DynamicResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.VideoAdd}">
-                                    <Rectangle Width="14" Height="14" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                                        <Rectangle.OpacityMask>
-                                            <VisualBrush Stretch="Uniform">
-                                                <VisualBrush.Visual>
-                                                    <svgc:SvgViewbox Width="14" Height="14" Source="pack://application:,,,/Llyn;component/icons/video.svg" />
-                                                </VisualBrush.Visual>
-                                            </VisualBrush>
-                                        </Rectangle.OpacityMask>
-                                    </Rectangle>
+                                    <Path Width="24" Height="24" Data="{local:PIcon video, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
                                 </Button>
                             </StackPanel>
                         </Border>

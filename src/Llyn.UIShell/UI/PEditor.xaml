@@ -2,8 +2,7 @@
     x:Class="Llyn.UIShell.PEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Llyn.UIShell"
-    xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
+    xmlns:local="clr-namespace:Llyn.UIShell">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -52,7 +51,7 @@
                             <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
                         </Grid>
                         <TextBlock x:Name="PSpeakerName" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" Text="English" />
-                        <Path Grid.Column="2" Width="8" Height="4" Margin="8,0,0,0" VerticalAlignment="Center" Data="{StaticResource Theme.Icon.Expand}" Fill="{StaticResource Theme.Accent}" Stretch="Uniform" />
+                        <Path Grid.Column="2" Width="12" Height="12" Margin="8,0,0,0" VerticalAlignment="Center" Data="{local:PIcon expand, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
                     </Grid>
                 </ToggleButton>
                 <Popup
@@ -92,14 +91,14 @@
                         Content="{DynamicResource Input.Discard}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/new.svg" />
+                        Tag="{local:PIcon new, 24}" />
                     <Button
                         x:Name="PEditorStore"
                         Click="PEditorStoreHandle"
                         Content="{DynamicResource Input.Store}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
-                        Tag="pack://application:,,,/Llyn;component/icons/save.svg" />
+                        Tag="{local:PIcon save, 24}" />
                 </StackPanel>
             </Border>
         </Grid>
@@ -134,9 +133,9 @@
                                 <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
                             </Grid>
                             <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                            <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="pack://application:,,,/Llyn;component/icons/play.svg" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
-                            <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/lookup.svg" ToolTip="{DynamicResource Phonetician.Title}" />
-                            <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/download.svg" ToolTip="{DynamicResource Downloader.Title}" />
+                            <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="{local:PIcon play, 24}" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
+                            <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="{local:PIcon lookup, 24}" ToolTip="{DynamicResource Phonetician.Title}" />
+                            <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="{local:PIcon download, 24}" ToolTip="{DynamicResource Downloader.Title}" />
                             <StackPanel Style="{StaticResource Theme.Accent.Control}">
                                 <Button Style="{StaticResource Theme.Accent.Addition}" />
                                 <Button Style="{StaticResource Theme.Accent.Remove}" />
@@ -176,7 +175,7 @@
 
                             <TextBox x:Name="PMarkerField" Style="{StaticResource Theme.Marker.Text}" Tag="{DynamicResource Speech.Title}" />
                             <ToggleButton x:Name="PMarkerSwitch" Grid.Column="1" Style="{StaticResource Theme.Marker.Switch}">
-                                <Path Width="7" Height="3.5" Data="{StaticResource Theme.Icon.Expand}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="Uniform" />
+                                <Path Width="12" Height="12" Data="{local:PIcon expand, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
                             </ToggleButton>
                         </Grid>
                     </Border>

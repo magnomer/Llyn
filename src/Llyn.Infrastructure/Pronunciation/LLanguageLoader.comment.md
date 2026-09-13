@@ -1,6 +1,6 @@
 # LLanguageLoader.cs
 
-## `public static class LLanguageLoader`
+## `public static partial class LLanguageLoader`
 
 Loads a language pack from `languages//source.json`.
 It is resolved against the application's base directory, so packs are drop-in.
@@ -9,6 +9,7 @@ A missing or malformed pack yields a language with both source lists empty rathe
 So one bad pack never breaks the app.
 This is the only place source.json is read.
 The loaded `LLanguage` carries every language-specific fact onward.
+The reading of one declared source, its attempts and its readings, sits in `LLanguageLoaderSource.cs`.
 
 ## `public static IReadOnlyList<string> LLanguageLoaderScan()`
 
@@ -24,14 +25,6 @@ English always heads the language list.
 Every other pack follows in ordinal order.
 The order is a rule about the language set, not a detail of one menu.
 So it is settled here, not in the UI.
-
-### `private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(JsonElement root, string key)`
-
-The pack declares its sources under `pronunciation`, `audio` and `frequency`, and this reads one of those lists.
-No list is required, and a missing one simply reads as empty.
-A source declares no kind, because the list it sits in already says what it is for.
-The `frequency` list has the same shape, so a figure is fetched the way a transcription is.
-`normalize` defaults off there as everywhere, so the raw figure survives untouched.
 
 ### `private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)`
 
@@ -70,28 +63,6 @@ Blank and repeated names are dropped, so the form never shows a nameless or doub
 A scheme is either a bare name or an object carrying a `name` and a `sources` list.
 The `sources` list has the shape of the `pronunciation` list, so a scheme is looked up the way IPA is.
 A bare name carries no sources, and the row for it is typed by hand.
-
-### `private static IReadOnlyList<LSourceReading> LLanguageReadingScan(JsonElement row)`
-
-An attempt declares its extractions either as a `readings` list or as flat keys on the attempt itself.
-The flat form is the legacy shape and reads as one reading with an empty variety tag.
-Audio attempts always use the flat form, so the harvest path sees one untagged reading.
-A reading row without a strategy is dropped, and an attempt with no readings left is dropped too.
-
-### `private static LSourceReading? LLanguageReadingRead(JsonElement element)`
-
-One reader serves both the flat attempt and a row of its `readings` list, because the keys are the same.
-`variety` names a variety the pack declares, or is absent for an untagged reading.
-`skip` counts earlier matches to pass over, so a page can yield its second variety from its second span.
-Both default to empty and zero.
-
-### `private static LSourceReading? LLanguageFollowRead(JsonElement row)`
-
-An attempt may carry a `follow` object shaped like one reading.
-It names how the page's pointer to another headword is captured.
-The captured value is a headword and never a transcription.
-So IPA normalization is switched off on it whatever the pack wrote.
-An attempt without it, or with a follow row lacking a strategy, never follows.
 
 ### `private static IReadOnlyList<LVariety> LLanguageVarietyScan(JsonElement root)`
 

@@ -88,7 +88,7 @@
                     Grid.Column="0"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Rank.Title}">
-                    <Path Width="16" Height="11" Data="{StaticResource Theme.Icon.Sort}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="Uniform" />
+                    <Path Width="24" Height="24" Data="{local:PIcon sort, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
                 </ToggleButton>
                 <Rectangle Grid.Column="1" Style="{StaticResource Theme.Search.Divider}" />
                 <TextBox
@@ -103,13 +103,13 @@
                     Grid.Column="4"
                     Style="{StaticResource Theme.Search.Dropper}"
                     ToolTip="{DynamicResource Prism.Title}">
-                    <Grid Width="16" Height="14">
-                        <Path Width="14" Height="14" Data="{StaticResource Theme.Icon.Filter}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="Uniform" />
+                    <Grid Width="24" Height="24">
+                        <Path Width="24" Height="24" Data="{local:PIcon filter, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Stretch="None" />
                         <Ellipse
                             x:Name="PPrismMark"
                             Width="6"
                             Height="6"
-                            Margin="0,-2,-3,0"
+                            Margin="0,2,1,0"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Fill="{StaticResource Theme.Accent}"
@@ -160,18 +160,18 @@
                         Click="PCorpusFreshHandle"
                         Content="{DynamicResource Scribe.New}"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/new.svg" />
+                        Tag="{local:PIcon new, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
                         Content="{DynamicResource Scribe.Export}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/export.svg" />
+                        Tag="{local:PIcon export, 24}" />
                     <Button
                         Content="{DynamicResource Scribe.Print}"
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
-                        Tag="pack://application:,,,/Llyn;component/icons/print.svg" />
+                        Tag="{local:PIcon print, 24}" />
                 </StackPanel>
             </Border>
             <Border
@@ -186,14 +186,14 @@
                         GroupName="PCorpusMode"
                         IsChecked="True"
                         Style="{StaticResource Theme.Command.Mode}"
-                        Tag="pack://application:,,,/Llyn;component/icons/view.svg" />
+                        Tag="{local:PIcon view, 24}" />
                     <RadioButton
                         x:Name="PCorpusScribe"
                         Click="PCorpusScribeHandle"
                         Content="{DynamicResource Scribe.Edit}"
                         GroupName="PCorpusMode"
                         Style="{StaticResource Theme.Command.Mode}"
-                        Tag="pack://application:,,,/Llyn;component/icons/edit.svg" />
+                        Tag="{local:PIcon edit, 24}" />
                 </StackPanel>
             </Border>
         </local:PRail>

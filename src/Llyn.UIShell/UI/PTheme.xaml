@@ -4,7 +4,6 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/UI/PThemeIcon.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeDefault.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeScroll.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeCaption.xaml" />

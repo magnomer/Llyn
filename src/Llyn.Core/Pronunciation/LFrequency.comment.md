@@ -17,13 +17,13 @@ The pack, not the engine, knows where the value lives and what label it earns.
 ## `public bool LFrequencyNumeric`
 
 Whether the raw figure reads as a decimal in the invariant culture.
-A figure that does is a count or a rank a unit can follow, and a code such as a list mark is not.
+A count or a rank a unit can follow does, and a code such as a list mark does not.
 The record decides this once, so no surface reading it has to parse the figure itself.
 
 ## `public bool LFrequencyNumeric`
 
 Whether the raw figure reads as a decimal in the invariant culture.
-A figure that does is a count or a rank a unit can follow, and a code such as a list mark is not.
+A count or a rank a unit can follow does, and a code such as a list mark does not.
 The record decides this once, so no surface reading it has to parse the figure itself.
 
 ## `public static LFrequency LFrequencyParse(string stored)`

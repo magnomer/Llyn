@@ -29,7 +29,7 @@ The text requests of every dirty row, sent after the body, and the dirty set cle
 
 ## `private void PGlossAddHandle(object sender, RoutedEventArgs e)`
 
-Adds a Gloss at the end of the list, in the first loaded language that is not the sentence's own.
+Adds a Gloss at the end of the list, in English.
 
 ## `private void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
 
@@ -37,4 +37,4 @@ Drops the Gloss the command carries.
 
 ## `private string PGlossLanguageRead()`
 
-The first loaded language that is not the sentence's own, or empty when there is none.
+English when it is loaded, else the first loaded language, else empty.

@@ -77,80 +77,6 @@ public sealed partial class LEngine : IDisposable
         }
     }
 
-    public IReadOnlyList<string> LEngineLanguageRead()
-    {
-        lock (_lEngineGate)
-        {
-            return LLanguageLoader.LLanguageLoaderScan();
-        }
-    }
-
-    public LFont LEngineFontRead(string language)
-    {
-        return LEngineFontRead(language, LFontRole.LFontRoleHeadword);
-    }
-
-    public LFont LEngineFontRead(string language, LFontRole role)
-    {
-        LLanguage pack = LEngineLanguageLoad(language);
-
-        return role switch
-        {
-            LFontRole.LFontRoleExample => pack.LLanguageExample,
-            LFontRole.LFontRoleGloss => pack.LLanguageGloss,
-            _ => pack.LLanguageFont,
-        };
-    }
-
-    public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)
-    {
-        string? code = LEngineLanguageLoad(language).LLanguageFlag;
-        return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
-    }
-
-    public IReadOnlyList<LVariety> LEngineVarietyRead(string language)
-    {
-        return LEngineLanguageLoad(language).LLanguageVarieties;
-    }
-
-    public bool LEngineFlaggedCheck(string language)
-    {
-        return LEngineLanguageLoad(language).LLanguageVarietyFlagged;
-    }
-
-    public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)
-    {
-        string? code = null;
-        foreach (LVariety declared in LEngineLanguageLoad(language).LLanguageVarieties)
-        {
-            if (string.Equals(declared.LVarietyName, variety, StringComparison.Ordinal))
-            {
-                code = declared.LVarietyFlag;
-                break;
-            }
-        }
-
-        return await LEngineFlagResolve(code, cancellation).ConfigureAwait(false);
-    }
-
-    private async Task<string?> LEngineFlagResolve(string? code, CancellationToken cancellation)
-    {
-        if (string.IsNullOrWhiteSpace(code))
-        {
-            return null;
-        }
-
-        string workspace;
-        lock (_lEngineGate)
-        {
-            workspace = _lEngineWorkspace;
-        }
-
-        return await LWorkspace
-            .LWorkspaceFlagRead(code, workspace, _lEngineClient, cancellation)
-            .ConfigureAwait(false);
-    }
-
     public LDoctorRescue LEngineRescueRead()
     {
         lock (_lEngineGate)
@@ -209,51 +135,6 @@ public sealed partial class LEngine : IDisposable
         }
 
         LEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);
-    }
-
-    public LSettings LEngineSettingsRead()
-    {
-        lock (_lEngineGate)
-        {
-            return _lEngineSettings;
-        }
-    }
-
-    public void LEngineLocalizationSave(string language)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-        LEngineSettingsChange(settings => settings with { LSettingsLocalization = language });
-    }
-
-    public void LEngineWindowSave(LWindowState window)
-    {
-        ArgumentNullException.ThrowIfNull(window);
-        LEngineSettingsChange(settings => settings with { LSettingsWindow = window });
-    }
-
-    public void LEngineVolumeSave(double volume)
-    {
-        double level = Math.Clamp(volume, 0, 1);
-        LEngineSettingsChange(settings => settings with { LSettingsVolume = level });
-    }
-
-    public void LEngineRespellingSave(bool respelled)
-    {
-        LEngineSettingsChange(settings => settings with { LSettingsRespelled = respelled });
-    }
-
-    public void LEngineFrequencySave(bool frequency)
-    {
-        LEngineSettingsChange(settings => settings with { LSettingsFrequency = frequency });
-    }
-
-    private void LEngineSettingsChange(Func<LSettings, LSettings> change)
-    {
-        lock (_lEngineGate)
-        {
-            _lEngineSettings = change(_lEngineSettings);
-            LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
-        }
     }
 
     private string LEngineRecordingFormat(string path)
@@ -457,22 +338,6 @@ public sealed partial class LEngine : IDisposable
     {
         return new ArgumentOutOfRangeException(
             nameof(owner), owner, "This entity has no reference from that kind of row.");
-    }
-
-    private LLanguage LEngineLanguageLoad(string language)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(language);
-
-        lock (_lEngineGate)
-        {
-            if (!_lEngineLanguages.TryGetValue(language, out LLanguage? pack))
-            {
-                pack = LLanguageLoader.LLanguageLoaderLoad(language);
-                _lEngineLanguages[language] = pack;
-            }
-
-            return pack;
-        }
     }
 
     private IReadOnlyList<LSource> LEngineLookupRead(string language)

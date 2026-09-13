@@ -7,7 +7,7 @@
         <ResourceDictionary Source="/Llyn;component/UI/PThemeScroll.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Thickness x:Key="Theme.Catalog.HeaderMargin">-28,0,22,18</Thickness>
+    <Thickness x:Key="Theme.Catalog.HeaderMargin">-28,0,16,18</Thickness>
 
     <Style x:Key="Theme.Catalog.Frame" TargetType="Grid">
         <Setter Property="Margin" Value="-28,14,16,0" />

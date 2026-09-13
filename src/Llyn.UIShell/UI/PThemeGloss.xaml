@@ -5,7 +5,6 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
-        <ResourceDictionary Source="/Llyn;component/UI/PThemeIcon.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeInput.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -99,7 +98,7 @@
         <Setter Property="CommandParameter" Value="{Binding}" />
         <Setter Property="Content">
             <Setter.Value>
-                <Path Width="8" Height="8" Data="{StaticResource Theme.Icon.Close}" Fill="{StaticResource Theme.Muted}" Stretch="Uniform" />
+                <Path Width="12" Height="12" Data="{local:PIcon close, 12}" Fill="{StaticResource Theme.Muted}" Stretch="None" />
             </Setter.Value>
         </Setter>
     </Style>

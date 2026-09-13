@@ -84,17 +84,17 @@ Sets the step and raises the change, doing nothing when the step already stands.
 
 Maps a point on the row to a half step from one to ten.
 The left half of a star is its odd step and the right half its even step.
-Every point maps to a step: gaps and slack fold into the nearest star, so nothing near the row is dead.
+Gaps and slack fold into the nearest star, so no point near the row is dead.
 
 ## `private static Geometry PGraspStarBuild()`
 
-The Material star symbol scaled once into the sixteen-unit box every star is drawn in.
+The star symbol from `star.svg` scaled once into the sixteen-unit box every star is drawn in.
 Half the stroke width is kept as inset, so the outline never leaves the box.
-The parsed symbol arrives frozen, so a clone carries the transform.
+The loaded symbol arrives frozen, so a clone carries the transform.
 
 ## `private void PGraspDraw(DrawingContext context)`
 
-A transparent rectangle over the whole row is drawn first, so the pointer hits the row and not only the ink.
+A transparent rectangle over the whole row is drawn first, so the pointer hits the row, not only the ink.
 Draws every star's outline, then a fill clipped to the whole or left half for each earned step.
 An unrated row outlines in the muted brush, so the accent waits for a step or a hover.
 While the pointer hovers, the preview step and brush are drawn instead of the committed ones.

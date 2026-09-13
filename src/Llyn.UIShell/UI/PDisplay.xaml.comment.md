@@ -6,6 +6,7 @@ The shared read-only entry view as a control.
 It is handed a loaded draft and draws it.
 It never loads one itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
+Playback, the heart and the star row each sit in a part of their own.
 
 ## `internal void PDisplayAttach(PWindow host, LEngine engine)`
 
@@ -47,10 +48,6 @@ An entry with no value asks the engine to fill it, and the fill announces itself
 Turns a stored ISO 8601 UTC stamp into local time in the short general format of the current culture.
 A missing or unreadable stamp shows as nothing.
 
-## `private void PDisplayPlaybackShow()`
-
-Shows the volume tray while the primary or any further row has a recording.
-
 ## `internal void PDisplayClear()`
 
 Empties the view and leaves the unselected notice in its place.
@@ -79,39 +76,11 @@ A converter holding a dictionary says nothing when that dictionary changes.
 So the card lists are handed their items again once the words behind the ids are known.
 That way the order of the two steps cannot quietly cost the reader every chip.
 
-### `private readonly MediaPlayer _pDisplayPlayer = new();`
-
-This view's own playback.
-Each panel that hosts a display gets its own player with the view.
-A player shared across panels made one panel's clearing stop another panel's sound.
-
-### `private string? _pDisplayRecording;`
-
-Full path of the audio the shown entry owns, or null when it has none.
-That is what the play button plays.
-
-### `PVolume.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(PVolumeSave));`
-
-The level is played as the grip moves but written down only when the hand comes off it.
-Writing on every step of a drag would put a file write behind every pixel.
-It would also write back the level the view had just loaded.
-A track click and an arrow key are gestures of their own, so each ends with a write too.
-
 ### `private void PDisplayExampleShow(string language)`
 
 Example lines are drawn inside card templates, where no code can reach one line at a time.
 So the pack's example and Gloss typography is put into view resources the templates read.
 A pack that declares none has its keys removed, and the card's own fallback typography stands.
-
-### `private void PDisplayGraspShow(long id)`
-
-Reads the shown entry's grasp and sets the star row to match.
-A failed read leaves the row empty rather than claiming a rating.
-
-### `private void PDisplayFavoriteShow(long id)`
-
-Reads whether the shown entry is marked and sets the heart to match.
-An unknown mark leaves the heart empty rather than claiming the entry is marked.
 
 ### `private void PDisplayCardHandle(object sender, RoutedEventArgs e)`
 
@@ -126,28 +95,6 @@ It reaches the cards only through the two lists this sits on.
 The chip is read off what was clicked rather than off the click's source.
 A click leaving a template is re-sourced to the presenter that drew it.
 A chip naming a record the card never saved leads nowhere.
-
-### `private string PDisplayGraspFormat(int step)`
-
-The words a step is shown as beside the stars, empty while no entry is shown.
-The key is resolved by the row itself, so both surfaces word a step the same way.
-
-### `private void PDisplayHoverHandle(object sender, RoutedEventArgs e)`
-
-Re-words the label as the pointer moves across the stars, and back to the stored step when it leaves.
-
-### `private void PDisplayGraspHandle(object sender, RoutedEventArgs e)`
-
-Writes the step the click left on the star row onto the shown entry.
-A refused write re-reads the stored step, so the row never shows a rating the workspace does not hold.
-Rating creates no entry and changes no lexical data.
-
-### `private void PDisplayFavoriteHandle(object sender, RoutedEventArgs e)`
-
-Marks or unmarks the shown entry, following the state the click left on the heart.
-A refused write puts the heart back where it stood.
-It never shows a mark the workspace does not hold.
-Marking creates no entry and changes no lexical data.
 
 ### `private async void PDisplayLanguageShow(string language)`
 

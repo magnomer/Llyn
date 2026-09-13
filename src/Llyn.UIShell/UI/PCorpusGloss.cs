@@ -10,6 +10,8 @@ namespace Llyn.UIShell;
 
 public partial class PCorpus
 {
+    private const string PGlossLanguage = "English";
+
     private readonly ObservableCollection<PGloss> _pTranscriptGloss = [];
 
     private readonly ObservableCollection<PGloss> _pExcerptGloss = [];
@@ -109,12 +111,12 @@ public partial class PCorpus
     {
         foreach (PLanguageItem item in _pLanguageItem)
         {
-            if (!string.Equals(item.PLanguageItemName, _pTranscriptLanguage, StringComparison.Ordinal))
+            if (string.Equals(item.PLanguageItemName, PGlossLanguage, StringComparison.Ordinal))
             {
                 return item.PLanguageItemName;
             }
         }
 
-        return string.Empty;
+        return _pLanguageItem.Count > 0 ? _pLanguageItem[0].PLanguageItemName : string.Empty;
     }
 }

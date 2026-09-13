@@ -51,12 +51,12 @@ public partial class PEditor
     {
         foreach (PLanguageItem item in _pLanguageItem)
         {
-            if (!string.Equals(item.PLanguageItemName, _pSpeakerChoice, StringComparison.Ordinal))
+            if (string.Equals(item.PLanguageItemName, PWindowLanguage, StringComparison.Ordinal))
             {
                 return item.PLanguageItemName;
             }
         }
 
-        return string.Empty;
+        return _pLanguageItem.Count > 0 ? _pLanguageItem[0].PLanguageItemName : string.Empty;
     }
 }

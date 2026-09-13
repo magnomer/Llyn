@@ -84,6 +84,7 @@ internal static class TAuditNameRegistry
         "Headquarter",
         "Headword",
         "House",
+        "Icon",
         "Identity",
         "Image",
         "Imprint",

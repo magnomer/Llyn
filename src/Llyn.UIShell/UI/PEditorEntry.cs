@@ -50,8 +50,8 @@ public partial class PEditor
             return;
         }
 
-        PEditorFrequency.Text = PFrequencyLabel.PFrequencyLabelName(frequency);
-        PEditorFrequencyChip.ToolTip = PFrequencyLabel.PFrequencyLabelTip(
+        PEditorFrequency.Text = PFrequencyLabel.PFrequencyLabelFormat(frequency);
+        PEditorFrequencyChip.ToolTip = PFrequencyLabel.PFrequencySourceFormat(
             frequency, _pEditorHost.PLocalizationTextRead("Frequency.Unit"));
         PEditorFrequencySection.Visibility = Visibility.Visible;
     }

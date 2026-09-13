@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:svgc="clr-namespace:SharpVectors.Converters;assembly=SharpVectors.Converters.Wpf">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
@@ -116,21 +115,15 @@
             CornerRadius="8"
             SnapsToDevicePixels="True">
             <StackPanel Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <Rectangle
+                <Path
                     x:Name="PSurfaceMark"
-                    Width="16"
-                    Height="16"
-                    Margin="0,0,8,0"
+                    Width="24"
+                    Height="24"
+                    Margin="0,0,6,0"
                     VerticalAlignment="Center"
-                    Fill="{TemplateBinding Foreground}">
-                    <Rectangle.OpacityMask>
-                        <VisualBrush Stretch="Uniform">
-                            <VisualBrush.Visual>
-                                <svgc:SvgViewbox Width="16" Height="16" Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" />
-                            </VisualBrush.Visual>
-                        </VisualBrush>
-                    </Rectangle.OpacityMask>
-                </Rectangle>
+                    Data="{TemplateBinding Tag}"
+                    Fill="{TemplateBinding Foreground}"
+                    Stretch="None" />
                 <TextBlock
                     VerticalAlignment="Center"
                     FontSize="{TemplateBinding FontSize}"

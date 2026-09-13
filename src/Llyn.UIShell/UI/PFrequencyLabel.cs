@@ -4,12 +4,12 @@ namespace Llyn.UIShell;
 
 internal static class PFrequencyLabel
 {
-    internal static string PFrequencyLabelName(LFrequency frequency)
+    internal static string PFrequencyLabelFormat(LFrequency frequency)
     {
         return frequency.LFrequencyBand ?? frequency.LFrequencyRaw;
     }
 
-    internal static string PFrequencyLabelTip(LFrequency frequency, string unit)
+    internal static string PFrequencySourceFormat(LFrequency frequency, string unit)
     {
         string figure = frequency.LFrequencyNumeric
             ? frequency.LFrequencyRaw + " " + unit

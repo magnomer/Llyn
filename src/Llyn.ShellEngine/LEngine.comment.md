@@ -15,6 +15,7 @@ So none of it sits in the UI shell.
 The engine is serialised behind one gate.
 Every public entry point holds a single lock for the whole of its work.
 One call at a time touches the workspace, the settings, the database and the rescue report.
+The settings are read and changed in `LEngineSettings.cs`, under the same gate.
 The cached sources and the two draft sets are held the same way.
 The lock is reentrant, which is what lets an entry point call another one.
 A single-writer queue would have kept reads parallel.
@@ -27,7 +28,7 @@ A lock held across an await would stall the shell for a whole network call.
 
 This class is also the composition root.
 It owns the shared `HttpClient`.
-It loads each language pack on first use through `LLanguageLoader`.
+It loads each language pack on first use through `LLanguageLoader`, which `LEngineLanguage.cs` owns.
 It keeps each loaded pack by language name, so the file is parsed once and not per lookup.
 It builds that language's transcription and recording sources separately through `LSourceFactory`.
 The two sets are cached apart.
@@ -68,40 +69,6 @@ A chip the UI builds carries id zero until the next draft save names it.
 
 The realm of the open workspace, read once when the workspace opened.
 
-## `public IReadOnlyList<string> LEngineLanguageRead()`
-
-Returns the names of the languages that have a pack on disk, for the UI to offer as choices.
-
-## `public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
-
-Returns the local path to the given language's flag image, for the UI to display beside it.
-It returns `null` when the pack declares no flag or the download fails.
-The pack declares only an ISO country code.
-The engine downloads the matching flag from the flag-icons set and caches it in the workspace.
-So the UI never reaches into the `languages/` folder itself.
-
-## `public IReadOnlyList<LVariety> LEngineVarietyRead(string language)`
-
-Returns the regional varieties the language pack declares, in the pack's order.
-Empty when the pack declares none, so a language without varieties shows plain rows.
-It reads the pack from the engine's cache, so a menu reopened does not reparse the file.
-
-## `public bool LEngineFlaggedCheck(string language)`
-
-Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
-It reads the cached pack as `LEngineVarietyRead` does.
-
-## `public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
-
-Returns the local path to the flag image of one named variety of the language.
-It returns `null` when the pack does not declare that variety, declares no flag for it, or the download fails.
-The name is matched exactly, because it is the tag the pack's own readings carry.
-
-## `private async Task<string?> LEngineFlagResolve(string? code, CancellationToken cancellation)`
-
-The shared tail of both flag entry points.
-A null or blank code answers null, any other is fetched through the workspace cache.
-
 ## `public LDoctorRescue LEngineRescueRead()`
 
 Reports what the workspace doctor had to do to the database this engine opened.
@@ -141,44 +108,6 @@ The cached packs go with them, since the source lists were built from those pack
 The move is then announced, so every surface holding a stored record learns that all of it is stale.
 One announcement replaces the list of panels the settings panel used to reset by name.
 A panel added later is current without that list being edited.
-
-## `public LSettings LEngineSettingsRead()`
-
-Returns the user's persisted settings.
-
-## `public void LEngineLocalizationSave(string language)`
-
-Persists the chosen interface language and keeps it current.
-Only that field is written, so a window geometry saved by another part of the shell survives the change.
-
-## `public void LEngineWindowSave(LWindowState window)`
-
-Persists the window geometry of the run that is ending and keeps it current.
-Only that field is written, so an interface language chosen during the same session survives the change.
-
-## `public void LEngineVolumeSave(double volume)`
-
-Persists how loud a pronunciation is played and keeps it current.
-The level is clamped here as well as on the way in from the file.
-No caller can write a volume the player cannot take.
-Every view plays through the same level.
-A change made in one is the level the next one opens at.
-
-## `public void LEngineRespellingSave(bool respelled)`
-
-Persists whether looked-up transcriptions are recast through the pack's respelling groups and keeps it current.
-The next lookup reads the switch, cached or fresh, so no search is run again to honour a flip.
-
-## `public void LEngineFrequencySave(bool frequency)`
-
-Persists whether an entry's frequency is fetched from the pack's web source and keeps it current.
-The next fill reads the switch, so a flip neither refetches what is stored nor drops it.
-
-## `private void LEngineSettingsChange(Func<LSettings, LSettings> change)`
-
-Applies `change` to the settings held here and writes the result out, under the engine gate.
-The read and the write are one step, so one writer never overwrites what another wrote between them.
-The shell therefore never reads settings, changes a field and hands the whole record back.
 
 ## `public Task LEnginePronunciationFind(string session, string word, string language, LReceiver receiver, CancellationToken cancellation)`
 
@@ -235,12 +164,6 @@ The task is already complete, because nothing was awaited.
 
 The recording counterpart of `LEngineCandidatePublish`.
 The caller narrows the kept set to the opening row's variety first, as the harvest narrows a live stream.
-
-## `private LLanguage LEngineLanguageLoad(string language)`
-
-The one place a language pack is read, kept by name after the first read.
-Every reader of a pack's declarations goes through here, so no path parses the file twice.
-It takes the gate itself, and a caller already holding it re-enters without harm.
 
 ## `public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
 
