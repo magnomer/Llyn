@@ -38,6 +38,11 @@ public partial class PTaxonomy
         PDirectoryFind(PExploration.Text ?? string.Empty);
     }
 
+    private void PScoutHandle(object sender, TextChangedEventArgs e)
+    {
+        PMembershipFind();
+    }
+
     private void PFunnelHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { Tag: string choice })
@@ -130,6 +135,7 @@ public partial class PTaxonomy
     {
         _pDirectoryChoice = id;
         PExploration.Text = string.Empty;
+        PScout.Text = string.Empty;
         PDirectoryFind(string.Empty);
     }
 
@@ -147,7 +153,10 @@ public partial class PTaxonomy
         IReadOnlyList<LEntry> read;
         try
         {
-            read = _lEngine.LEngineEntryFind(new LTag(_pDirectoryChoice, string.Empty), _pLatticeChoice);
+            read = _lEngine.LEngineEntryFind(
+                new LTag(_pDirectoryChoice, string.Empty),
+                PScout.Text ?? string.Empty,
+                _pLatticeChoice);
         }
         catch (Exception exception)
         {
@@ -168,6 +177,9 @@ public partial class PTaxonomy
             (row, name) => row.PMembershipItemName = name,
             row => row.PMembershipItemId);
 
+        PMembershipEmpty.SetResourceReference(
+            TextBlock.TextProperty,
+            string.IsNullOrWhiteSpace(PScout.Text) ? "Tag.Vacant" : "Tag.Unmatched");
         PMembershipEmpty.Visibility = _pMembershipList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PMembershipSelect(_pDisplayEntry);

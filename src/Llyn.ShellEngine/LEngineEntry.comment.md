@@ -43,9 +43,21 @@ The library panel lists through this, so the filter is applied here and never in
 
 The entries carrying `tag` with those in a hidden language left out.
 
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, string query, LCatalogFilter filter)`
+
+The filtered entries carrying `tag` narrowed to those whose headword matches `query`.
+The match is the catalog match, so `*` and `?` work as in every search field.
+An empty or blank `query` narrows nothing.
+
 ## `public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, LCatalogFilter filter)`
 
 The entries marked with `register` with those in a hidden language left out.
+
+## `public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, string query, LCatalogFilter filter)`
+
+The filtered entries marked with `register` narrowed to those whose headword matches `query`.
+The match is the catalog match, so `*` and `?` work as in every search field.
+An empty or blank `query` narrows nothing.
 
 ## `public LEntryDraft? LEngineEntryLoad(long id)`
 

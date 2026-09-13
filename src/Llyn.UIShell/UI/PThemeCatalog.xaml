@@ -14,7 +14,7 @@
     </Style>
 
     <Style x:Key="Theme.Catalog.Middle" TargetType="Grid" BasedOn="{StaticResource Theme.Catalog.Frame}">
-        <Setter Property="Margin" Value="-10,14,16,0" />
+        <Setter Property="Margin" Value="-4,14,16,0" />
     </Style>
 
     <Style x:Key="Theme.Catalog.Scroll" TargetType="ScrollViewer" BasedOn="{StaticResource {x:Type ScrollViewer}}">

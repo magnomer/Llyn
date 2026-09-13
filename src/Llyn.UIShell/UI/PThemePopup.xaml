@@ -14,7 +14,7 @@
         <Setter Property="CornerRadius" Value="14" />
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect BlurRadius="28" Direction="270" Opacity="0.13" ShadowDepth="9" />
+                <DropShadowEffect BlurRadius="10" Direction="270" Opacity="0.18" ShadowDepth="4" />
             </Setter.Value>
         </Setter>
     </Style>

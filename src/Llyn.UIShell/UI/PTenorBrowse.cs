@@ -63,6 +63,11 @@ public partial class PTenor
         PGamutFind(PSounding.Text ?? string.Empty);
     }
 
+    private void PQuestHandle(object sender, TextChangedEventArgs e)
+    {
+        PCohortFind();
+    }
+
     private void PGrilleHandle(object sender, RoutedEventArgs e)
     {
         _pGrilleChoice = PChoice.PChoiceFilterRead(PGrilleList);
@@ -139,6 +144,7 @@ public partial class PTenor
     {
         _pGamutChoice = id;
         PSounding.Text = string.Empty;
+        PQuest.Text = string.Empty;
         PGamutFind(string.Empty);
     }
 
@@ -158,6 +164,7 @@ public partial class PTenor
         {
             read = _lEngine.LEngineEntryFind(
                 new LRegister(_pGamutChoice ?? 0, LStateValue.LStateValueUnspecified, string.Empty),
+                PQuest.Text ?? string.Empty,
                 _pGrilleChoice);
         }
         catch (Exception exception)
@@ -179,6 +186,9 @@ public partial class PTenor
             (row, name) => row.PCohortItemName = name,
             row => row.PCohortItemId);
 
+        PCohortEmpty.SetResourceReference(
+            TextBlock.TextProperty,
+            string.IsNullOrWhiteSpace(PQuest.Text) ? "Register.Vacant" : "Register.Unmatched");
         PCohortEmpty.Visibility = _pCohortList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         PCohortSelect(_pDisplayEntry);

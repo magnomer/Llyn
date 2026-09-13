@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -63,6 +64,12 @@ public sealed partial class LEngine
         return filter.LCatalogFilterApply(LEngineEntryFind(tag), entry => entry.LEntryLanguage);
     }
 
+    public IReadOnlyList<LEntry> LEngineEntryFind(LTag tag, string query, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return LEngineEntryMatch(LEngineEntryFind(tag, filter), query);
+    }
+
     public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register)
     {
         lock (_lEngineGate)
@@ -76,6 +83,20 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(filter);
         return filter.LCatalogFilterApply(LEngineEntryFind(register), entry => entry.LEntryLanguage);
+    }
+
+    public IReadOnlyList<LEntry> LEngineEntryFind(LRegister register, string query, LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        return LEngineEntryMatch(LEngineEntryFind(register, filter), query);
+    }
+
+    private static IReadOnlyList<LEntry> LEngineEntryMatch(IReadOnlyList<LEntry> entries, string query)
+    {
+        string trimmed = query.Trim();
+        return trimmed.Length == 0
+            ? entries
+            : [.. entries.Where(entry => LCatalog.LCatalogTextMatch(entry.LEntryHeadword, trimmed))];
     }
 
     public LEntryDraft? LEngineEntryLoad(long id)
