@@ -83,7 +83,7 @@ public sealed class LEntryArchive
             """
             SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry
-            WHERE $query = '' OR instr(lfold(headword), lfold($query)) > 0
+            WHERE lmatch(headword, $query)
             ORDER BY headword;
             """;
         command.Parameters.AddWithValue("$query", query);

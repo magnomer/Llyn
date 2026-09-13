@@ -1,4 +1,4 @@
-﻿# LDatabase.cs
+# LDatabase.cs
 
 ## `public sealed class LDatabase`
 
@@ -78,3 +78,9 @@ So a query typed as "Ä" would never find a headword stored as "ä".
 That is unusable in an application whose subject is other languages.
 lfold() hands the fold to .NET, which knows the whole of Unicode.
 It is registered on every connection because a user-defined function lives on the connection that declared it.
+
+### `connection.CreateFunction<string?, string?, bool>(`
+
+lmatch() hands the query test to `LCatalogTextMatch`, so the wildcards a panel honors are the wildcards a query honors.
+SQLite's own LIKE and GLOB fold differently and spell their wildcards differently.
+One matcher on both sides keeps the headword catalog and the in-memory catalogs answering alike.

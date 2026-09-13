@@ -86,6 +86,44 @@ public sealed class TCatalogEntry
                 .Select(entry => entry.LEntryHeadword));
     }
 
+    [Fact]
+    public void EntryFind_StarWildcard_ReturnsHeadwordsAnchoredAroundIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        TCatalogEntryCreate(engine, "water");
+        TCatalogEntryCreate(engine, "watermark");
+        TCatalogEntryCreate(engine, "backwater");
+        TCatalogEntryCreate(engine, "stone");
+
+        Assert.Equal(
+            ["water", "watermark"],
+            engine.TEngineEntryFind("wat*", LCatalogOrder.LCatalogOrderHeadword)
+                .Select(entry => entry.LEntryHeadword));
+        Assert.Equal(
+            ["backwater", "water"],
+            engine.TEngineEntryFind("*ter", LCatalogOrder.LCatalogOrderHeadword)
+                .Select(entry => entry.LEntryHeadword));
+    }
+
+    [Fact]
+    public void EntryFind_QuestionWildcard_ReturnsHeadwordsOfThatLength()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        TCatalogEntryCreate(engine, "cat");
+        TCatalogEntryCreate(engine, "Cot");
+        TCatalogEntryCreate(engine, "cart");
+        TCatalogEntryCreate(engine, "concat");
+
+        Assert.Equal(
+            ["cat", "Cot"],
+            engine.TEngineEntryFind("c?t", LCatalogOrder.LCatalogOrderHeadword)
+                .Select(entry => entry.LEntryHeadword));
+    }
+
     private static LEntry TCatalogEntryCreate(LEngine engine, string headword)
     {
         return engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

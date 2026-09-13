@@ -43,6 +43,18 @@ Every place that asks whether two typed wordings name one row folds both sides w
 
 ## `public static bool LCatalogTextMatch(string? text, string query)`
 
-Whether one text answers the query, read as a contains under the reader culture.
+Whether one text answers the query, both folded the same way `LCatalogTextNormalize` folds.
+A query without a wildcard is read as a contains, so a partial wording still finds its rows.
+A query with a wildcard is read against the whole text.
+So `cat*` finds what starts with cat and `*cat` finds what ends with it.
+The star stands for any run of characters, including none.
+The question mark stands for exactly one character.
+A user who wants a contains with wildcards writes a star at both ends.
 An empty query answers everything, because a browsing panel with an empty box lists the whole catalog.
 Text that is empty answers nothing, so a field that was never written matches no query at all.
+The database's `lmatch` helper calls this, so a store query and a panel query agree.
+
+## `private static readonly char[] LCatalogTextWildcard`
+
+The two characters a query may stand a wildcard on.
+A query that holds neither is a plain contains.

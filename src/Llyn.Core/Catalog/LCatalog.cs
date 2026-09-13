@@ -6,6 +6,8 @@ public static class LCatalog
 {
     private const char LCatalogFilterSeparator = ',';
 
+    private static readonly char[] LCatalogTextWildcard = ['*', '?'];
+
     public static string LCatalogOrderFormat(LCatalogOrder order)
     {
         return order switch
@@ -78,9 +80,55 @@ public static class LCatalog
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        return query.Length == 0
-            || (text is not null
-                && text.Length > 0
-                && text.IndexOf(query, StringComparison.CurrentCultureIgnoreCase) >= 0);
+        if (query.Length == 0)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
+        string folded = text.ToLowerInvariant();
+        string pattern = query.ToLowerInvariant();
+        if (pattern.IndexOfAny(LCatalogTextWildcard) < 0)
+        {
+            return folded.Contains(pattern, StringComparison.Ordinal);
+        }
+
+        int at = 0;
+        int step = 0;
+        int star = -1;
+        int mark = 0;
+        while (at < folded.Length)
+        {
+            if (step < pattern.Length && (pattern[step] == '?' || pattern[step] == folded[at]))
+            {
+                at++;
+                step++;
+            }
+            else if (step < pattern.Length && pattern[step] == '*')
+            {
+                star = step++;
+                mark = at;
+            }
+            else if (star >= 0)
+            {
+                step = star + 1;
+                at = ++mark;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        while (step < pattern.Length && pattern[step] == '*')
+        {
+            step++;
+        }
+
+        return step == pattern.Length;
     }
 }

@@ -76,7 +76,7 @@ public sealed class LFavoriteArchive
                    entry.added_utc, entry.updated_utc, favorite.marked_utc
             FROM favorite
             JOIN entry ON entry.entry_id = favorite.entry_parent
-            WHERE $query = '' OR instr(lfold(entry.headword), lfold($query)) > 0
+            WHERE lmatch(entry.headword, $query)
             ORDER BY entry.headword;
             """;
         command.Parameters.AddWithValue("$query", query);

@@ -1,4 +1,5 @@
 using System;
+using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
 namespace Llyn.Infrastructure;
@@ -46,6 +47,10 @@ public sealed class LDatabase
 
             connection.CreateFunction<string?, string?>(
                 "lfold", text => text?.ToLowerInvariant(), isDeterministic: true);
+            connection.CreateFunction<string?, string?, bool>(
+                "lmatch",
+                (text, query) => LCatalog.LCatalogTextMatch(text, query ?? string.Empty),
+                isDeterministic: true);
         }
         catch
         {
