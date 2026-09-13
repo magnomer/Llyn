@@ -4,6 +4,9 @@ namespace Llyn.UIShell;
 
 public static class PAccentCommand
 {
+    public static RoutedCommand PAccentCommandAddition { get; } =
+        new(nameof(PAccentCommandAddition), typeof(PAccentCommand));
+
     public static RoutedCommand PAccentCommandRemoval { get; } =
         new(nameof(PAccentCommandRemoval), typeof(PAccentCommand));
 

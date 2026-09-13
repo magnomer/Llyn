@@ -6,6 +6,11 @@ Holds the generation this checkout of the convention tests applies.
 A generation names the set of checks the audits apply, not a count of edits.
 The name, line, and comment audits share one number, so a report from any of them compares across projects.
 
+## `public static string TAuditReportFormat(string audit, string report)`
+
+Puts the audit name and the generation on the first line of every audit report.
+The stamp matches the header each generated sidecar carries, so console output and sidecars compare by one grep.
+
 ## `public const int TAuditGeneration`
 
 The generation of this tooling.

@@ -39,6 +39,8 @@ The pronunciation rows, laid out as the reading view lays them out.
 The primary pronunciation stands on the first row with the volume tray beside it.
 Every further pronunciation stands on a row of its own beneath, in the accent list.
 Every row, the primary one included, wears the same play, lookup and download buttons after its brackets.
+Every row ends with the plus and minus pair the example rows carry, shown on hover, adding a row beneath or dropping the row.
+The row commands are bound here, above the primary row and the accent list, so both reach the editor that owns the draft and the menus.
 Pronunciation and volume tray carry the theme's shared styles, so switching mode moves neither of them.
 The rows start at the headword's own margin, because an indent here read as a different position.
 
@@ -49,11 +51,11 @@ The chip is empty for a pronunciation without a variety, so the brackets then op
 The buttons are the accent tool style, so the primary row reads as the further rows do.
 Play shows only while the row has a recording.
 Lookup and download open the editor's menus under the button pressed, for this row.
+The plus and minus carry no row, which the handlers read as the primary.
 
-## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}">`
+## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />`
 
 The further pronunciations, one editable row each, drawn by the shared accent template.
-The row commands are bound here, so a row's buttons reach the editor that owns the draft and the menus.
 
 ## `<Grid Margin="3,0,1,0">`
 

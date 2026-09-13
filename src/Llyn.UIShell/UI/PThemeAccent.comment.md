@@ -33,14 +33,28 @@ The variety name of a row, shown only while no flag stands for it.
 
 The unseen twin of a row's field, sized by the row's text or by the placeholder when it is blank.
 
+## `<Style x:Key="Theme.Accent.Control" TargetType="StackPanel">`
+
+The plus and minus pair of a row, unseen until the row is hovered or holds the keyboard focus.
+The pair reads as the example rows' pair does, so adding and dropping look the same everywhere.
+
+## `<Style x:Key="Theme.Accent.Handle" TargetType="Button">`
+
+The bare small button the plus and the minus share, carrying the row as the command parameter.
+
+## `<Style x:Key="Theme.Accent.Addition" TargetType="Button">`
+
+The plus that adds a blank row after this one, raising the addition command.
+The plus is drawn by a template, since one shared element could stand in only one row at a time.
+
 ## `<Style x:Key="Theme.Accent.Remove" TargetType="Button">`
 
-The cross that drops a row, raising the removal command with the row as its parameter.
-The cross is drawn by a template, since one shared element could stand in only one row at a time.
+The minus that drops a row, raising the removal command with the row as its parameter.
+The minus is drawn by a template, since one shared element could stand in only one row at a time.
 
 ## `<DataTemplate x:Key="Theme.Accent.Row">`
 
-A row as the editor draws it: chip, bracketed field, play, lookup, download, and the cross.
+A row as the editor draws it: chip, bracketed field, play, lookup, download, and the plus and minus pair.
 The field is bound to the row so typing reaches the row model, which the editor listens to.
 
 ## `<DataTemplate x:Key="Theme.Accent.Display">`

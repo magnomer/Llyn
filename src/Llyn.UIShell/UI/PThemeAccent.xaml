@@ -74,20 +74,51 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Theme.Accent.Remove" TargetType="Button" BasedOn="{StaticResource Theme.Input.Action}">
-        <Setter Property="Width" Value="18" />
-        <Setter Property="Height" Value="18" />
+    <Style x:Key="Theme.Accent.Control" TargetType="StackPanel">
         <Setter Property="Margin" Value="8,0,0,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Opacity" Value="0" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="IsHitTestVisible" Value="True" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Accent.Handle" TargetType="Button" BasedOn="{StaticResource Theme.Input.Action}">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandRemoval}" />
         <Setter Property="CommandParameter" Value="{Binding}" />
         <Setter Property="Content" Value="" />
+    </Style>
+
+    <Style x:Key="Theme.Accent.Addition" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Handle}">
+        <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandAddition}" />
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Path Width="7" Height="7" Data="M 0,0 L 7,7 M 7,0 L 0,7" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.4" />
+                    <Path Width="9" Height="9" Data="M 4.5,0 L 4.5,9 M 0,4.5 L 9,4.5" Stroke="{StaticResource Theme.Accent}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="Theme.Accent.Remove" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Handle}">
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandRemoval}" />
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Path Width="9" Height="9" Data="M 0,4.5 L 9,4.5" Stroke="{StaticResource Theme.Muted}" StrokeEndLineCap="Round" StrokeThickness="1.5" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -107,7 +138,10 @@
                 <Button Style="{StaticResource Theme.Accent.Playback}" />
                 <Button Style="{StaticResource Theme.Accent.Phonetician}" />
                 <Button Style="{StaticResource Theme.Accent.Downloader}" />
-                <Button Style="{StaticResource Theme.Accent.Remove}" />
+                <StackPanel Style="{StaticResource Theme.Accent.Control}">
+                    <Button Style="{StaticResource Theme.Accent.Addition}" />
+                    <Button Style="{StaticResource Theme.Accent.Remove}" />
+                </StackPanel>
             </StackPanel>
         </Border>
     </DataTemplate>

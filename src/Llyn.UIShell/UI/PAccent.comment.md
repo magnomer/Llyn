@@ -5,8 +5,8 @@
 The further pronunciation rows of the input panel, rendered from the draft the engine holds.
 The primary pronunciation keeps its own field above them.
 Every pronunciation after it stands on its own row beneath, with its variety, its IPA and its controls.
-The controls are play when the row has audio, lookup, download and remove, the same set the primary row wears.
-A row edit becomes a request on that row's id, and a remove becomes a removal request.
+The controls are play when the row has audio, lookup, download and the plus and minus pair, the same set the primary row wears.
+A row edit becomes a request on that row's id, a plus an addition request after it, and a minus a removal request.
 Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
@@ -15,9 +15,15 @@ The primary field also wears a variety chip here, because the chip is drawn from
 
 The pending-request key of one row's IPA, so a draft render skips a row whose edit is still waiting.
 
+## `internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Adds a blank pronunciation after the row carried as the command parameter, or after the primary when none is.
+A primary the draft does not yet hold is added first, so the new row lands beneath it rather than in its place.
+
 ## `internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)`
 
-Drops the row carried as the command parameter.
+Drops the row carried as the command parameter, or the primary when none is.
+Nothing is sent for a primary the draft does not hold.
 The engine answers with a draft bulletin, and the render takes the row off the screen.
 
 ## `internal async void PAccentNotationHandle(object sender, ExecutedRoutedEventArgs e)`
@@ -57,6 +63,7 @@ The fill guard holds during a render, so a render writing a different text raise
 
 Renders every pronunciation after the primary as a row, keyed by the pronunciation id.
 Whether varieties show as flags is asked of the language pack once per render.
+The primary id is kept, so the primary row's own plus and minus reach the right pronunciation.
 The primary variety chip is refreshed in the same pass.
 Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
 

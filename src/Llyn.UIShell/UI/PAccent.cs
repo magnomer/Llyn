@@ -18,17 +18,30 @@ public partial class PEditor
     private string _pAccentLanguage = string.Empty;
     private bool _pAccentFlagged;
     private string _pAccentPrimary = string.Empty;
+    private long _pAccentPrimaryId;
 
     private static string PAccentRequestFormat(long id)
     {
         return string.Concat("Accent:", id.ToString(CultureInfo.InvariantCulture));
     }
 
+    internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        int position = e.Parameter is PAccentItem row ? _pAccentItem.IndexOf(row) + 2 : 1;
+        if (_pAccentPrimaryId == 0)
+        {
+            PEditorRequestSend(new LRequestPronunciationAddition(_pEditorDraft, string.Empty, 0));
+        }
+
+        PEditorRequestSend(new LRequestPronunciationAddition(_pEditorDraft, string.Empty, position));
+    }
+
     internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is PAccentItem row)
+        long id = e.Parameter is PAccentItem row ? row.PAccentItemId : _pAccentPrimaryId;
+        if (id != 0)
         {
-            PEditorRequestSend(new LRequestPronunciationRemoval(_pEditorDraft, row.PAccentItemId));
+            PEditorRequestSend(new LRequestPronunciationRemoval(_pEditorDraft, id));
         }
     }
 
@@ -116,6 +129,7 @@ public partial class PEditor
         _pAccentLanguage = language;
         _pAccentFlagged = flagged;
         _pAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
+        _pAccentPrimaryId = draft.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
 
         PCard.PCardRowShow(
             _pAccentItem,
@@ -206,6 +220,7 @@ public partial class PEditor
         _pAccentLanguage = string.Empty;
         _pAccentFlagged = false;
         _pAccentPrimary = string.Empty;
+        _pAccentPrimaryId = 0;
         PAccentPrimaryShow();
     }
 }

@@ -101,6 +101,13 @@
         </Grid>
 
         <StackPanel Grid.Row="1" Margin="12,12,0,0" HorizontalAlignment="Left">
+            <StackPanel.CommandBindings>
+                <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandAddition}" Executed="PAccentAddHandle" />
+                <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandRemoval}" Executed="PAccentRemoveHandle" />
+                <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandNotation}" Executed="PAccentNotationHandle" />
+                <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandClip}" Executed="PAccentClipHandle" />
+                <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandPlayback}" Executed="PAccentPlaybackHandle" />
+            </StackPanel.CommandBindings>
             <StackPanel Orientation="Horizontal">
 
                 <Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">
@@ -116,6 +123,10 @@
                         <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="pack://application:,,,/Llyn;component/icons/play.svg" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
                         <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" ToolTip="{DynamicResource Phonetician.Title}" />
                         <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" ToolTip="{DynamicResource Downloader.Title}" />
+                        <StackPanel Style="{StaticResource Theme.Accent.Control}">
+                            <Button Style="{StaticResource Theme.Accent.Addition}" />
+                            <Button Style="{StaticResource Theme.Accent.Remove}" />
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
@@ -125,14 +136,7 @@
 
             </StackPanel>
 
-            <ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}">
-                <ItemsControl.CommandBindings>
-                    <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandRemoval}" Executed="PAccentRemoveHandle" />
-                    <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandNotation}" Executed="PAccentNotationHandle" />
-                    <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandClip}" Executed="PAccentClipHandle" />
-                    <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandPlayback}" Executed="PAccentPlaybackHandle" />
-                </ItemsControl.CommandBindings>
-            </ItemsControl>
+            <ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />
         </StackPanel>
 
         <WrapPanel x:Name="PMarker" Grid.Row="2" Margin="12,14,0,0" Orientation="Horizontal">

@@ -42,9 +42,10 @@ public sealed class TAuditComment
             }
         }
 
-        Assert.True(hits.Count == 0,
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITCOMMENTS",
             $"{hits.Count} comment line(s) break the line rules: one sentence, at most {TAuditCommentSetting.TAuditCommentWords} words, none of {string.Join(' ', TAuditCommentSetting.TAuditCommentForbidden)}.\n"
-            + string.Join('\n', hits));
+            + string.Join('\n', hits)));
     }
 
     [Fact]
@@ -83,9 +84,10 @@ public sealed class TAuditComment
             }
         }
 
-        Assert.True(hits.Count == 0,
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITCOMMENTS",
             $"{hits.Count} in-code comment(s) found. Prose belongs in the {TAuditCommentSetting.TAuditCommentPattern} file beside the source.\n"
-            + string.Join('\n', hits));
+            + string.Join('\n', hits)));
     }
 
     private static string TAuditLineCheck(string line)

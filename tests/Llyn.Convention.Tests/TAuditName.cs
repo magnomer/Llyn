@@ -18,14 +18,16 @@ public sealed class TAuditName
             TAuditNameSetting.TAuditSelfExcluded);
         IReadOnlyList<string> sources = TAuditSource.TAuditFileRead(repoRoot, scope);
 
-        Assert.True(sources.Count > 0, "No source files were enumerated; the audit would pass vacuously.");
+        Assert.True(sources.Count > 0, TAuditConvention.TAuditReportFormat(
+            "AUDITNAMES", "No source files were enumerated; the audit would pass vacuously."));
 
         IReadOnlyList<TViolation> violations = TAuditNameWalker.TAuditRun(sources, registry);
 
-        Assert.True(violations.Count == 0, TAuditReportFormat(repoRoot, violations));
+        Assert.True(violations.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITNAMES", TViolationFormat(repoRoot, violations)));
     }
 
-    private static string TAuditReportFormat(string repoRoot, IReadOnlyList<TViolation> violations)
+    private static string TViolationFormat(string repoRoot, IReadOnlyList<TViolation> violations)
     {
         IEnumerable<string> lines = violations
             .OrderBy(violation => violation.TViolationPath, StringComparer.OrdinalIgnoreCase)

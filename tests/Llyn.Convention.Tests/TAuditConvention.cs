@@ -6,6 +6,11 @@ public sealed class TAuditConvention
 {
     public const int TAuditGeneration = 8;
 
+    public static string TAuditReportFormat(string audit, string report)
+    {
+        return $"{audit} GENERATION {TAuditGeneration}\n{report}";
+    }
+
     [Fact]
     public void AuditConvention_SidecarGenerations_MatchTheTooling()
     {
@@ -21,8 +26,9 @@ public sealed class TAuditConvention
             .Select(sidecar => $"  {sidecar.TSidecarName} is generation {sidecar.TSidecarGeneration}")
             .ToArray();
 
-        Assert.True(stale.Length == 0,
-            $"This tooling is generation {TAuditGeneration}, but {stale.Length} sidecar(s) differ. Rerun the audit that generates each.\n"
-            + string.Join('\n', stale));
+        Assert.True(stale.Length == 0, TAuditReportFormat(
+            "AUDITCONVENTION",
+            $"{stale.Length} sidecar(s) differ from this tooling. Rerun the audit that generates each.\n"
+            + string.Join('\n', stale)));
     }
 }

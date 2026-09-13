@@ -50,8 +50,8 @@ public sealed class TAuditBoundary
             }
         }
 
-        Assert.True(
-            hits.Count == 0,
-            $"{hits.Count} shell line(s) resolve a state the engine owns:\n{string.Join('\n', hits)}");
+        Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
+            "AUDITBOUNDARY",
+            $"{hits.Count} shell line(s) resolve a state the engine owns:\n{string.Join('\n', hits)}"));
     }
 }
