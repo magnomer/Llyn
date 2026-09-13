@@ -21,7 +21,7 @@ The search running, as a hairline under the title rather than a box of its own.
 ## `<Style x:Key="Theme.Popup.ProgressBar" TargetType="Border">`
 
 The sliding bar inside that hairline.
-The transcriber and the downloader run the same search, so they share one bar rather than declaring two.
+The phonetician and the downloader run the same search, so they share one bar rather than declaring two.
 
 ## `<Style x:Key="Theme.Popup.RowSurface" TargetType="Border">`
 
@@ -29,11 +29,11 @@ One row of a picker popup.
 It carries no border and no fill of its own.
 A row can offer more than one action, so every action is its own button.
 The row itself takes no click.
-Transcriber and downloader rows are the same row.
+Phonetician and downloader rows are the same row.
 
 ## `<Style x:Key="Theme.Popup.RowReading" TargetType="Button">`
 
-One reading on a transcriber row, taken by clicking it.
+One reading on a phonetician row, taken by clicking it.
 It presents whatever content the reading gives it, a flag or a name beside the transcription.
 The taking button carries one word and cannot hold an image, which is why this is a second style.
 It lights up the same way as every other row action when pointed at.

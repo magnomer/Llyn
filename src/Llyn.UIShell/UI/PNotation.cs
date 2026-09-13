@@ -17,9 +17,9 @@ public partial class PEditor : LReceiver
     private string _pNotationLanguage = string.Empty;
     private long _pNotationTarget;
 
-    private async void PTranscriberHandle(object sender, RoutedEventArgs e)
+    private async void PPhoneticianHandle(object sender, RoutedEventArgs e)
     {
-        await PNotationOpen(PTranscriber, 0);
+        await PNotationOpen(PPhonetician, 0);
     }
 
     private void PNotationClosedHandle(object? sender, EventArgs e)
@@ -170,7 +170,7 @@ public partial class PEditor : LReceiver
             return _pNotationItem[position];
         }
 
-        PNotationItem row = new(source, order, _pEditorHost.PLocalizationTextRead("Transcriber.Searching"));
+        PNotationItem row = new(source, order, _pEditorHost.PLocalizationTextRead("Phonetician.Searching"));
         _pNotationItem.Insert(position, row);
         return row;
     }
@@ -189,7 +189,7 @@ public partial class PEditor : LReceiver
         }
 
         PNotationNotice.Text = _pEditorHost.PLocalizationTextRead(
-            _pNotationSearching ? "Transcriber.Searching" : "Transcriber.Empty");
+            _pNotationSearching ? "Phonetician.Searching" : "Phonetician.Empty");
         PNotationNotice.Visibility = Visibility.Visible;
     }
 
@@ -209,8 +209,8 @@ public partial class PEditor : LReceiver
             PNotationPlace(candidate.LCandidateSource, candidate.LCandidateOrder).PNotationItemShow(
                 candidate,
                 PNotationReadingCreate(candidate),
-                _pEditorHost.PLocalizationTextRead("Transcriber.Missing"),
-                _pEditorHost.PLocalizationTextRead("Transcriber.Broken"));
+                _pEditorHost.PLocalizationTextRead("Phonetician.Missing"),
+                _pEditorHost.PLocalizationTextRead("Phonetician.Broken"));
             PNotationUpdate();
         });
     }

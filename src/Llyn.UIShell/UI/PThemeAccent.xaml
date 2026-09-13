@@ -45,9 +45,9 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Theme.Accent.Transcriber" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
+    <Style x:Key="Theme.Accent.Phonetician" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Tool}">
         <Setter Property="Tag" Value="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" />
-        <Setter Property="ToolTip" Value="{DynamicResource Transcriber.Title}" />
+        <Setter Property="ToolTip" Value="{DynamicResource Phonetician.Title}" />
         <Setter Property="Command" Value="{x:Static local:PAccentCommand.PAccentCommandNotation}" />
     </Style>
 
@@ -105,7 +105,7 @@
                 </Grid>
                 <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                 <Button Style="{StaticResource Theme.Accent.Playback}" />
-                <Button Style="{StaticResource Theme.Accent.Transcriber}" />
+                <Button Style="{StaticResource Theme.Accent.Phonetician}" />
                 <Button Style="{StaticResource Theme.Accent.Downloader}" />
                 <Button Style="{StaticResource Theme.Accent.Remove}" />
             </StackPanel>

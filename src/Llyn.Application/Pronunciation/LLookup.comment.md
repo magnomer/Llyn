@@ -28,7 +28,7 @@ This orchestrator knows nothing about any particular source or language.
 
 ## `public static IReadOnlyList<LReading> LLookupReadingScan(IReadOnlyList<LReading> readings, IReadOnlyList<LVariety> varieties)`
 
-Expands a source's readings so nothing untagged reaches the transcriber in a language that declares varieties.
+Expands a source's readings so nothing untagged reaches the phonetician in a language that declares varieties.
 A pack without varieties returns the readings untouched, so Spanish keeps its untagged rows.
 Otherwise every untagged reading becomes one reading per declared variety, in pack order, all carrying the same text.
 A variety the same answer already tags is skipped, so Cambridge's British, American, and untagged rows never double up.

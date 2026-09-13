@@ -114,7 +114,7 @@
                         </Grid>
                         <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                         <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="pack://application:,,,/Llyn;component/icons/play.svg" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
-                        <Button x:Name="PTranscriber" Click="PTranscriberHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" ToolTip="{DynamicResource Transcriber.Title}" />
+                        <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/magnifying-glass.svg" ToolTip="{DynamicResource Phonetician.Title}" />
                         <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="pack://application:,,,/Llyn;component/icons/box-arrow-down.svg" ToolTip="{DynamicResource Downloader.Title}" />
                     </StackPanel>
                 </Border>
@@ -240,11 +240,11 @@
             StaysOpen="False">
             <Border Margin="10" MinWidth="300" MaxWidth="640" Style="{StaticResource Theme.Popup.Surface}">
                 <StackPanel>
-                    <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Transcriber.Title}" />
+                    <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Phonetician.Title}" />
                     <Border x:Name="PNotationProgress" Style="{StaticResource Theme.Popup.Progress}" Visibility="Collapsed">
                         <Border Style="{StaticResource Theme.Popup.ProgressBar}" />
                     </Border>
-                    <TextBlock x:Name="PNotationNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Transcriber.Searching}" Visibility="Collapsed" />
+                    <TextBlock x:Name="PNotationNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Phonetician.Searching}" Visibility="Collapsed" />
                     <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <ItemsControl x:Name="PNotationList" Grid.IsSharedSizeScope="True" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Notation.Row}" Visibility="Collapsed" />
                     </ScrollViewer>

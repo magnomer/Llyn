@@ -173,7 +173,7 @@ The task completes when every source finishes.
 A lookup already answered under that draft is replayed instead of searched again.
 So reopening the menu on an unchanged headword costs no network at all.
 When the respelling switch is on and the pack declares groups, the receiver is wrapped in `LReceiverRespelling`.
-Both the fresh search and the replay stream through that wrapper, so the switch shapes what the transcriber sees.
+Both the fresh search and the replay stream through that wrapper, so the switch shapes what the phonetician sees.
 The trove is never wrapped and keeps cleaned but un-respelled text.
 So flipping the switch changes the next replay without any refetch, and nothing stored is touched.
 The pack is read under the gate whatever the switch says, because the fresh path needs its cleanup groups.

@@ -13,7 +13,7 @@ The icon is drawn by a template, since one shared element could stand in only on
 
 The play button of a row, raising the playback command and hidden while the row has no audio.
 
-## `<Style x:Key="Theme.Accent.Transcriber" TargetType="Button">`
+## `<Style x:Key="Theme.Accent.Phonetician" TargetType="Button">`
 
 The lookup button of a row, raising the notation command so the menu opens for that row.
 
