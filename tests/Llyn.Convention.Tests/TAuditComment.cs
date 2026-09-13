@@ -6,7 +6,9 @@ namespace Convention.Tests;
 public sealed class TAuditComment
 {
     private static readonly Regex TAuditLiteralPattern = new(
-        """@"(?:[^"]|"")*"|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])'""", RegexOptions.Compiled);
+        """"(?:"{3,})[\s\S]*?"{3,}|"""" +
+        """"(?:@\$?|\$@)"(?:[^"]|"")*"|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])'"""",
+        RegexOptions.Compiled);
 
     private static readonly Regex TAuditSpanPattern = new("`[^`]*`", RegexOptions.Compiled);
 
@@ -44,7 +46,9 @@ public sealed class TAuditComment
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITCOMMENTS",
-            $"{hits.Count} comment line(s) break the line rules: one sentence, at most {TAuditCommentSetting.TAuditCommentWords} words, none of {string.Join(' ', TAuditCommentSetting.TAuditCommentForbidden)}.\n"
+            $"{hits.Count} comment line(s) break the line rules: one sentence, "
+            + $"at most {TAuditCommentSetting.TAuditCommentWords} words, "
+            + $"none of {string.Join(' ', TAuditCommentSetting.TAuditCommentForbidden)}.\n"
             + string.Join('\n', hits)));
     }
 
@@ -71,10 +75,10 @@ public sealed class TAuditComment
             }
 
             bool code = extension.Equals(".cs", StringComparison.OrdinalIgnoreCase);
-            string[] lines = File.ReadAllLines(path);
+            string[] lines = TAuditSourceRead(path, code);
             for (int index = 0; index < lines.Length; index++)
             {
-                string text = code ? TAuditLiteralPattern.Replace(lines[index], "\"\"") : lines[index];
+                string text = lines[index];
                 string? marker = markers.FirstOrDefault(entry => text.Contains(entry, StringComparison.Ordinal));
                 if (marker is not null)
                 {
@@ -86,8 +90,22 @@ public sealed class TAuditComment
 
         Assert.True(hits.Count == 0, TAuditConvention.TAuditReportFormat(
             "AUDITCOMMENTS",
-            $"{hits.Count} in-code comment(s) found. Prose belongs in the {TAuditCommentSetting.TAuditCommentPattern} file beside the source.\n"
+            $"{hits.Count} in-code comment(s) found. "
+            + $"Prose belongs in the {TAuditCommentSetting.TAuditCommentPattern} file beside the source.\n"
             + string.Join('\n', hits)));
+    }
+
+    private static string[] TAuditSourceRead(string path, bool code)
+    {
+        string text = File.ReadAllText(path);
+        if (code)
+        {
+            text = TAuditLiteralPattern.Replace(
+                text,
+                match => "\"\"" + new string('\n', match.Value.Count(character => character == '\n')));
+        }
+
+        return text.Split('\n');
     }
 
     private static string TAuditLineCheck(string line)

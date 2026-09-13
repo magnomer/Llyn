@@ -9,15 +9,15 @@ The name, line, and comment audits share one number, so a report from any of the
 ## `public static string TAuditReportFormat(string audit, string report)`
 
 Puts the audit name and the generation on the first line of every audit report.
-The stamp matches the header each generated sidecar carries, so console output and sidecars compare by one grep.
+The stamp matches the generation the registry and each setting file carry, so reports compare by one grep.
 
 ## `public const int TAuditGeneration`
 
 The generation of this tooling.
 Raise it only when a check is added, removed, or changed in what it reports.
 
-## `public void AuditConvention_SidecarGenerations_MatchTheTooling()`
+## `public void AuditConvention_SettingGenerations_MatchTheTooling()`
 
-Reads the generation each generated sidecar carries and compares it with this one.
-A sidecar written at another generation names the audit that must be rerun.
-The check runs first because every other test compiles against those sidecars.
+Reads the generation the generated registry and the three hand-written settings carry and compares each with this one.
+A mismatch means the tooling moved on while a file did not.
+The registry is fixed by running syncnames, and a setting file is fixed by editing it.
