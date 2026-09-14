@@ -263,6 +263,25 @@ public sealed class TSourceGeneric
     }
 
     [Fact]
+    public async Task SourceFind_SpellingRules_RecastHeadwordBeforeToken()
+    {
+        LSource source = TInterface.TSourceGenericCreate(
+            TInterface.TSourceSpecCreate(
+                "Stub",
+                [
+                    TPronunciationHelper.TSourceAttemptCreate(
+                        TInterface.TSourceReadingCreate(
+                            string.Empty, "regex", "file=({word}\\.mp3);", 1, null, false, 0)),
+                ],
+                [TInterface.TRespellingRuleCreate("[āă]", "a"), TInterface.TRespellingRuleCreate("ō", "o")]),
+            TPronunciationHelper.TSourceClientCreate("file=rosa.mp3;file=rōsā.mp3;", HttpStatusCode.OK));
+
+        LAnswer answer = await source.TSourceFind("rōsā", CancellationToken.None);
+
+        Assert.Equal("rosa.mp3", Assert.Single(answer.LAnswerReadings).LReadingPhonetic);
+    }
+
+    [Fact]
     public async Task SourceFind_ServerFailure_ReturnsLost()
     {
         LSource source = TSourceGenericCreate(

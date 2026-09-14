@@ -88,6 +88,19 @@
       }
     ]
   },
+  "respelling": [
+    {
+      "name": "Standard",
+      "note": "Standard Cantonese vowels written without length marks and with plain letters: the open-mid front vowel as e, the close-mid central rounded vowel as œ, the open-mid back vowel as o and the near-close front vowel as i. ɐ stays as written. The sources anchor on the Standard Cantonese row alone, so no other variety reaches these rules.",
+      "rules": [
+        ["ː", ""],
+        ["ɛ", "e"],
+        ["ɵ", "œ"],
+        ["ɔ", "o"],
+        ["ɪ", "i"]
+      ]
+    }
+  ],
   "font": {
     "family": "Microsoft JhengHei",
     "size": 40

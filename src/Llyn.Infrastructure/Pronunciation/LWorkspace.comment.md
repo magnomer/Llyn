@@ -15,6 +15,14 @@ Downloads a chosen recording into the workspace and returns the saved path.
 The file sits under `audio/<language>/` and is named by the headword, the recording's variety and its address.
 A recording carrying no variety leaves the variety part out, so a pack without varieties reads the same.
 
+## `private static async Task<byte[]> LWorkspaceRecordingRead(`
+
+Fetches the bytes of one recording, the one read both saving and previewing go through.
+A host answering 429 is asked again after a pause, up to three tries in all.
+The pause is the host's Retry-After when it is longer than five seconds and five seconds otherwise.
+Wikimedia's audio host answers 429 to a handful of quick fetches and names one second, which retries proved too short.
+Any other failing status raises, so the caller sees a refused fetch rather than an empty file.
+
 ## `private static async Task LWorkspaceFileSave(string path, byte[] content, CancellationToken cancellation)`
 
 Writes the bytes beside the target and moves them over it in one step.

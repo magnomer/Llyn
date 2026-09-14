@@ -1,4 +1,4 @@
-# LCatalogRegister.cs
+﻿# LCatalogRegister.cs
 
 ## `public sealed record LCatalogRegister(`
 
@@ -21,6 +21,5 @@ A Register nothing is marked with counts as zero, which puts it last under the u
 
 ## `public bool LCatalogRegisterMatch(string query)`
 
-Whether the row answers a typed query, by its name or by the language its pack ships for.
+Whether the row answers a typed query by its name.
 An empty query is answered by every row.
-Matching the language is what lets a reader narrow a shelf holding several packs at once.

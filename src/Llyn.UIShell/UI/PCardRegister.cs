@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -114,7 +114,7 @@ internal sealed partial class PCard
 
     private static object PCardRegisterCreate(LRegisterDraft draft)
     {
-        return new PRegister(draft.LRegisterDraftName, draft.LRegisterDraftId, draft.LRegisterDraftLanguage);
+        return new PRegister(draft.LRegisterDraftName, draft.LRegisterDraftId);
     }
 
     private void PCardRegisterStart()

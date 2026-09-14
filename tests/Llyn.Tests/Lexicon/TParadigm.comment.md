@@ -24,6 +24,12 @@ A blank pattern is no pattern.
 
 The shipped English pack states parents and paradigms, so the loader is read against disk and not a fixture alone.
 
+## `public void SpeechPackLoad_ClassicalPack_DeclaresPrincipalParts(`
+
+The shipped Latin and Greek packs each declare a noun, verb and adjective paradigm.
+The noun asks for the genitive alone and excepts the proper noun, the verb for its principal parts.
+Every value a paradigm names is a morphology value the same pack declares.
+
 ## Inline notes
 
 ### `private static LSpeechPack TParadigmPackLoad(string json)`

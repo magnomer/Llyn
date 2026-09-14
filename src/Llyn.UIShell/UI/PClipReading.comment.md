@@ -40,6 +40,13 @@ The play button fills orange while it is, so a slow source is seen to be working
 Whether the preview of this recording is the one now sounding.
 The play button fills blue while it is, and clears when the sound ends or another preview starts.
 
+## `public bool PClipReadingRefused`
+
+Whether the last preview fetch of this recording failed.
+The play button fills with the warning colour while it is.
+So a host that refused is told apart from one that answered nothing.
+The next press on the same button clears it before fetching again.
+
 ## `internal LRecording PClipReadingModel`
 
 The recording this entry stands for, which is what preview fetches and taking saves.

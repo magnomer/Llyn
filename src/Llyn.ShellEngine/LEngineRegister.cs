@@ -24,19 +24,12 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(query);
 
-            LEngineRegisterCreate(language);
+            LEngineRegisterPrepare(language);
 
             string written = query.Trim();
             List<LRegister> found = [];
             foreach (LRegister register in new LRegisterArchive(_lEngineDatabase).LRegisterRead())
             {
-                if (register.LRegisterBuiltin
-                    && !string.IsNullOrWhiteSpace(language)
-                    && !string.Equals(register.LRegisterLanguage, language, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
                 if (written.Length != 0
                     && !LCatalog.LCatalogTextMatch(register.LRegisterName.LStateValueShow(), written))
                 {
@@ -75,19 +68,17 @@ public sealed partial class LEngine
         }
     }
 
-    public LRegister LEngineRegisterCreate(string name, string language)
+    public LRegister LEngineRegisterCreate(string name)
     {
         LRegister created;
         lock (_lEngineGate)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(name);
-            ArgumentNullException.ThrowIfNull(language);
 
-            created = LEngineRegisterResolve(name, language)
+            created = LEngineRegisterResolve(name)
                 ?? new LRegisterArchive(_lEngineDatabase).LRegisterCreate(new LRegister(
                     0,
-                    LStateValue.LStateValueRead(name.Trim()),
-                    language));
+                    LStateValue.LStateValueRead(name.Trim())));
         }
 
         LEngineBulletinRaise(LSubject.LSubjectRegister, created.LRegisterId);
@@ -119,7 +110,7 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectRegister, registerId);
     }
 
-    private void LEngineRegisterCreate(string language)
+    private void LEngineRegisterPrepare(string language)
     {
         if (string.IsNullOrWhiteSpace(language))
         {
@@ -137,7 +128,7 @@ public sealed partial class LEngine
         bool collocation,
         Dictionary<long, long> identity)
     {
-        LEngineRegisterCreate(language);
+        LEngineRegisterPrepare(language);
 
         LRegisterArchive registers = new(_lEngineDatabase);
 
@@ -214,23 +205,19 @@ public sealed partial class LEngine
             return stored.LRegisterId;
         }
 
-        LRegister? found = LEngineRegisterResolve(
-            draft.LRegisterDraftName.LStateValueShow(), draft.LRegisterDraftLanguage);
+        LRegister? found = LEngineRegisterResolve(draft.LRegisterDraftName.LStateValueShow());
         if (found is not null)
         {
             LEngineIdentityRecord(identity, draft.LRegisterDraftId, found.LRegisterId);
             return found.LRegisterId;
         }
 
-        long created = registers.LRegisterCreate(new LRegister(
-            0,
-            draft.LRegisterDraftName,
-            draft.LRegisterDraftLanguage)).LRegisterId;
+        long created = registers.LRegisterCreate(new LRegister(0, draft.LRegisterDraftName)).LRegisterId;
         LEngineIdentityRecord(identity, draft.LRegisterDraftId, created);
         return created;
     }
 
-    private LRegister? LEngineRegisterResolve(string name, string language)
+    private LRegister? LEngineRegisterResolve(string name)
     {
         string written = LCatalog.LCatalogTextNormalize(name);
         if (written.Length == 0)
@@ -238,7 +225,7 @@ public sealed partial class LEngine
             return null;
         }
 
-        foreach (LRegister register in LEngineRegisterFind(string.Empty, language))
+        foreach (LRegister register in new LRegisterArchive(_lEngineDatabase).LRegisterRead())
         {
             if (string.Equals(
                     LCatalog.LCatalogTextNormalize(register.LRegisterName.LStateValueShow()),

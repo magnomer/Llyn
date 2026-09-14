@@ -241,7 +241,7 @@ public sealed class TEntryDraft
                     1,
                     video: [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
                     register: [TInterface.TRegisterDraftCreate(
-                        TInterface.TStateValueCreate("courtroom"), 0, "English")]),
+                        TInterface.TStateValueCreate("courtroom"), 0)]),
             ],
             []));
 
@@ -259,7 +259,6 @@ public sealed class TEntryDraft
 
         LRegisterDraft register = Assert.Single(card.LCardDraftRegister);
         Assert.Equal("courtroom", register.LRegisterDraftName.TStateValueShow());
-        Assert.Equal("English", register.LRegisterDraftLanguage);
 
         Assert.Equal("00:12-00:19", Assert.Single(card.LCardDraftVideo).LVideoDraftSpan.TStateValueShow());
 

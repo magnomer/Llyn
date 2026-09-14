@@ -208,7 +208,7 @@
                         <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
                             <Grid VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                    <ColumnDefinition x:Name="PDisplayPronunciationLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
@@ -239,7 +239,7 @@
                     <Border x:Name="PDisplayGlyphSection" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
                         <Grid VerticalAlignment="Center">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                <ColumnDefinition x:Name="PDisplayGlyphLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">

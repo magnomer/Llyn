@@ -63,8 +63,11 @@ internal static partial class TInterface
         LSourceReading? follow = null) =>
         new LSourceAttempt(urls, readings, guard, headers, prefix, follow);
 
-    internal static LSourceSpec TSourceSpecCreate(string name, IReadOnlyList<LSourceAttempt> attempts) =>
-        new LSourceSpec(name, attempts);
+    internal static LSourceSpec TSourceSpecCreate(
+        string name,
+        IReadOnlyList<LSourceAttempt> attempts,
+        IReadOnlyList<LRespellingRule>? spelling = null) =>
+        new LSourceSpec(name, attempts, spelling);
 
     internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client) =>
         new LSourceGeneric(spec, client);

@@ -13,6 +13,7 @@ internal sealed class PClipReading : INotifyPropertyChanged
     private bool _pClipReadingReady = true;
     private bool _pClipReadingFetching;
     private bool _pClipReadingPlaying;
+    private bool _pClipReadingRefused;
 
     internal PClipReading(LRecording recording, string label, ImageSource? flag, string action)
     {
@@ -88,6 +89,21 @@ internal sealed class PClipReading : INotifyPropertyChanged
 
             _pClipReadingPlaying = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipReadingPlaying)));
+        }
+    }
+
+    public bool PClipReadingRefused
+    {
+        get => _pClipReadingRefused;
+        set
+        {
+            if (_pClipReadingRefused == value)
+            {
+                return;
+            }
+
+            _pClipReadingRefused = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PClipReadingRefused)));
         }
     }
 

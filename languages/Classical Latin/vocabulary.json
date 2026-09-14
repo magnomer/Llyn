@@ -1,0 +1,453 @@
+{
+  "language": "Classical Latin",
+  "exampleOrder": [
+    "particle",
+    "dependence"
+  ],
+  "note": "Display vocabulary for Classical Latin: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Every id is an integer that never changes once published; renaming a preset keeps its id, so every entry linking it follows the rename. 'parts' lists the parts of speech, 'features' the grammatical features each part takes ('part' names the part id), and 'values' the values each feature takes ('feature' names the feature id). 'registers' lists the registers the shell offers on a card. A part may carry 'parent', the id of the part it specialises; a paradigm declared on the parent applies to it. 'paradigms' lists the forms a part is expected to inflect into, as 'values' morphology value ids in display order, and 'except' lists part ids on the parent chain the paradigm must not reach. The noun paradigm asks for the genitive singular, which fixes the declension and stem, and a proper noun is excepted. The verb paradigm asks for the three further principal parts, infinitive, perfect and supine, in dictionary order; a deponent verb writes its perfect participle in the supine slot. The adjective paradigm asks for the feminine and neuter nominative, which a third-declension adjective of one termination repeats. No 'regular' predictions are declared, because a Latin form is a fact of its stem rather than of its spelling.",
+  "registers": [
+    "Formal",
+    "Informal",
+    "Poetic",
+    "Archaic",
+    "Vulgar"
+  ],
+  "parts": [
+    {
+      "id": 1,
+      "name": "Noun"
+    },
+    {
+      "id": 2,
+      "name": "Noun, proper",
+      "parent": 1
+    },
+    {
+      "id": 3,
+      "name": "Verb"
+    },
+    {
+      "id": 4,
+      "name": "Verb, transitive",
+      "parent": 3
+    },
+    {
+      "id": 5,
+      "name": "Verb, intransitive",
+      "parent": 3
+    },
+    {
+      "id": 6,
+      "name": "Verb, deponent",
+      "parent": 3
+    },
+    {
+      "id": 7,
+      "name": "Verb, semi-deponent",
+      "parent": 3
+    },
+    {
+      "id": 8,
+      "name": "Verb, impersonal",
+      "parent": 3
+    },
+    {
+      "id": 9,
+      "name": "Adjective"
+    },
+    {
+      "id": 10,
+      "name": "Adverb"
+    },
+    {
+      "id": 11,
+      "name": "Pronoun"
+    },
+    {
+      "id": 12,
+      "name": "Pronoun, personal",
+      "parent": 11
+    },
+    {
+      "id": 13,
+      "name": "Pronoun, possessive",
+      "parent": 11
+    },
+    {
+      "id": 14,
+      "name": "Pronoun, demonstrative",
+      "parent": 11
+    },
+    {
+      "id": 15,
+      "name": "Pronoun, relative",
+      "parent": 11
+    },
+    {
+      "id": 16,
+      "name": "Pronoun, interrogative",
+      "parent": 11
+    },
+    {
+      "id": 17,
+      "name": "Pronoun, reflexive",
+      "parent": 11
+    },
+    {
+      "id": 18,
+      "name": "Pronoun, indefinite",
+      "parent": 11
+    },
+    {
+      "id": 19,
+      "name": "Preposition"
+    },
+    {
+      "id": 20,
+      "name": "Conjunction"
+    },
+    {
+      "id": 21,
+      "name": "Conjunction, coordinating",
+      "parent": 20
+    },
+    {
+      "id": 22,
+      "name": "Conjunction, subordinating",
+      "parent": 20
+    },
+    {
+      "id": 23,
+      "name": "Numeral"
+    },
+    {
+      "id": 24,
+      "name": "Numeral, cardinal",
+      "parent": 23
+    },
+    {
+      "id": 25,
+      "name": "Numeral, ordinal",
+      "parent": 23
+    },
+    {
+      "id": 26,
+      "name": "Numeral, distributive",
+      "parent": 23
+    },
+    {
+      "id": 27,
+      "name": "Interjection"
+    },
+    {
+      "id": 28,
+      "name": "Particle"
+    },
+    {
+      "id": 29,
+      "name": "Participle"
+    },
+    {
+      "id": 30,
+      "name": "Gerund"
+    },
+    {
+      "id": 31,
+      "name": "Supine"
+    },
+    {
+      "id": 32,
+      "name": "Phrase"
+    },
+    {
+      "id": 33,
+      "name": "Idiom"
+    },
+    {
+      "id": 34,
+      "name": "Proverb"
+    },
+    {
+      "id": 35,
+      "name": "Abbreviation"
+    },
+    {
+      "id": 36,
+      "name": "Prefix"
+    },
+    {
+      "id": 37,
+      "name": "Suffix"
+    }
+  ],
+  "features": [
+    {
+      "id": 1,
+      "name": "gender",
+      "part": 1
+    },
+    {
+      "id": 2,
+      "name": "declension",
+      "part": 1
+    },
+    {
+      "id": 3,
+      "name": "case",
+      "part": 1
+    },
+    {
+      "id": 4,
+      "name": "number",
+      "part": 1
+    },
+    {
+      "id": 5,
+      "name": "conjugation",
+      "part": 3
+    },
+    {
+      "id": 6,
+      "name": "principal part",
+      "part": 3
+    },
+    {
+      "id": 7,
+      "name": "gender",
+      "part": 9
+    },
+    {
+      "id": 8,
+      "name": "degree",
+      "part": 9
+    },
+    {
+      "id": 9,
+      "name": "degree",
+      "part": 10
+    },
+    {
+      "id": 10,
+      "name": "declension",
+      "part": 9
+    }
+  ],
+  "values": [
+    {
+      "id": 1,
+      "name": "masculine",
+      "feature": 1
+    },
+    {
+      "id": 2,
+      "name": "feminine",
+      "feature": 1
+    },
+    {
+      "id": 3,
+      "name": "neuter",
+      "feature": 1
+    },
+    {
+      "id": 4,
+      "name": "first",
+      "feature": 2
+    },
+    {
+      "id": 5,
+      "name": "second",
+      "feature": 2
+    },
+    {
+      "id": 6,
+      "name": "third",
+      "feature": 2
+    },
+    {
+      "id": 7,
+      "name": "fourth",
+      "feature": 2
+    },
+    {
+      "id": 8,
+      "name": "fifth",
+      "feature": 2
+    },
+    {
+      "id": 9,
+      "name": "indeclinable",
+      "feature": 2
+    },
+    {
+      "id": 10,
+      "name": "nominative",
+      "feature": 3
+    },
+    {
+      "id": 11,
+      "name": "genitive",
+      "feature": 3
+    },
+    {
+      "id": 12,
+      "name": "dative",
+      "feature": 3
+    },
+    {
+      "id": 13,
+      "name": "accusative",
+      "feature": 3
+    },
+    {
+      "id": 14,
+      "name": "ablative",
+      "feature": 3
+    },
+    {
+      "id": 15,
+      "name": "vocative",
+      "feature": 3
+    },
+    {
+      "id": 16,
+      "name": "locative",
+      "feature": 3
+    },
+    {
+      "id": 17,
+      "name": "singular",
+      "feature": 4
+    },
+    {
+      "id": 18,
+      "name": "plural",
+      "feature": 4
+    },
+    {
+      "id": 19,
+      "name": "first",
+      "feature": 5
+    },
+    {
+      "id": 20,
+      "name": "second",
+      "feature": 5
+    },
+    {
+      "id": 21,
+      "name": "third",
+      "feature": 5
+    },
+    {
+      "id": 22,
+      "name": "third -iō",
+      "feature": 5
+    },
+    {
+      "id": 23,
+      "name": "fourth",
+      "feature": 5
+    },
+    {
+      "id": 24,
+      "name": "irregular",
+      "feature": 5
+    },
+    {
+      "id": 25,
+      "name": "infinitive",
+      "feature": 6
+    },
+    {
+      "id": 26,
+      "name": "perfect",
+      "feature": 6
+    },
+    {
+      "id": 27,
+      "name": "supine",
+      "feature": 6
+    },
+    {
+      "id": 28,
+      "name": "masculine",
+      "feature": 7
+    },
+    {
+      "id": 29,
+      "name": "feminine",
+      "feature": 7
+    },
+    {
+      "id": 30,
+      "name": "neuter",
+      "feature": 7
+    },
+    {
+      "id": 31,
+      "name": "positive",
+      "feature": 8
+    },
+    {
+      "id": 32,
+      "name": "comparative",
+      "feature": 8
+    },
+    {
+      "id": 33,
+      "name": "superlative",
+      "feature": 8
+    },
+    {
+      "id": 34,
+      "name": "positive",
+      "feature": 9
+    },
+    {
+      "id": 35,
+      "name": "comparative",
+      "feature": 9
+    },
+    {
+      "id": 36,
+      "name": "superlative",
+      "feature": 9
+    },
+    {
+      "id": 37,
+      "name": "first and second",
+      "feature": 10
+    },
+    {
+      "id": 38,
+      "name": "third",
+      "feature": 10
+    }
+  ],
+  "paradigms": [
+    {
+      "part": 1,
+      "values": [
+        11
+      ],
+      "except": [
+        2
+      ]
+    },
+    {
+      "part": 3,
+      "values": [
+        25,
+        26,
+        27
+      ]
+    },
+    {
+      "part": 9,
+      "values": [
+        29,
+        30
+      ]
+    }
+  ]
+}

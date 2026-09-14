@@ -1,4 +1,4 @@
-# PTenor.xaml
+﻿# PTenor.xaml
 
 ## `<Grid Margin="34,20,34,38">`
 
@@ -26,13 +26,6 @@ A register catalog offers most-marked-first, which the tag catalog does not.
 A Register carries a real count of the cards marked with it.
 It is therefore a question worth asking of the shelf.
 A tag catalog has no such count to sort on.
-
-## The shipped label
-
-The language of the pack that ships a row is shown on that row alone.
-A row the user wrote belongs to no language and shows nothing there.
-It is what tells the two kinds of row apart.
-A shipped row is the kind that refuses a rename.
 
 ## The chosen mark
 

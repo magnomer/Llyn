@@ -26,12 +26,12 @@ public sealed class LRegisterArchive
         {
             command.CommandText =
                 """
-                INSERT INTO register (name_state, name, language, pack_code)
-                VALUES ($nameState, $name, $language, $packId)
+                INSERT INTO register (name_state, name, builtin)
+                VALUES ($nameState, $name, $builtin)
                 RETURNING register_id;
                 """;
             LStateColumn.LStateColumnApply(command, "name", stored.LRegisterName);
-            LRegisterLanguageApply(command, stored);
+            command.Parameters.AddWithValue("$builtin", stored.LRegisterBuiltin ? 1 : 0);
             stored = stored with { LRegisterId = (long)command.ExecuteScalar()! };
         }
 
@@ -54,13 +54,12 @@ public sealed class LRegisterArchive
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
             command.CommandText =
                 """
-                INSERT INTO register (name_state, name, language, pack_code)
-                VALUES ($nameState, $name, $language, $packId)
-                ON CONFLICT (language, pack_code) WHERE pack_code IS NOT NULL
-                DO UPDATE SET name_state = excluded.name_state, name = excluded.name;
+                INSERT INTO register (name_state, name, builtin)
+                VALUES ($nameState, $name, 1)
+                ON CONFLICT (name) WHERE name IS NOT NULL
+                DO UPDATE SET builtin = 1;
                 """;
             LStateColumn.LStateColumnApply(command, "name", register.LRegisterName);
-            LRegisterLanguageApply(command, register);
             command.ExecuteNonQuery();
         }
 
@@ -74,7 +73,7 @@ public sealed class LRegisterArchive
         using LDatabaseSession session = _lRegisterArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
-            "SELECT register_id, name_state, name, language, pack_code FROM register WHERE register_id = $id;";
+            "SELECT register_id, name_state, name, builtin FROM register WHERE register_id = $id;";
         command.Parameters.AddWithValue("$id", id);
 
         using SqliteDataReader reader = command.ExecuteReader();
@@ -87,9 +86,9 @@ public sealed class LRegisterArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT register_id, name_state, name, language, pack_code
+            SELECT register_id, name_state, name, builtin
             FROM register
-            ORDER BY pack_code IS NULL, rowid;
+            ORDER BY builtin DESC, rowid;
             """;
 
         List<LRegister> registers = [];
@@ -121,7 +120,7 @@ public sealed class LRegisterArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE register SET name_state = $nameState, name = $name WHERE register_id = $id AND pack_code IS NULL;";
+                "UPDATE register SET name_state = $nameState, name = $name WHERE register_id = $id AND builtin = 0;";
             LStateColumn.LStateColumnApply(command, "name", name);
             command.Parameters.AddWithValue("$id", registerId);
             command.ExecuteNonQuery();
@@ -194,7 +193,7 @@ public sealed class LRegisterArchive
 
         using (SqliteCommand command = connection.CreateCommand())
         {
-            command.CommandText = "DELETE FROM register WHERE register_id = $id AND pack_code IS NULL;";
+            command.CommandText = "DELETE FROM register WHERE register_id = $id AND builtin = 0;";
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
         }
@@ -222,21 +221,12 @@ public sealed class LRegisterArchive
         LRegisterReferenceDetach("collocation_register", "collocation_parent", collocationId, registerId);
     }
 
-    private static void LRegisterLanguageApply(SqliteCommand command, LRegister register)
-    {
-        command.Parameters.AddWithValue(
-            "$language",
-            register.LRegisterLanguage.Length == 0 ? DBNull.Value : register.LRegisterLanguage);
-        command.Parameters.AddWithValue("$packId", (object?)register.LRegisterPackId ?? DBNull.Value);
-    }
-
     private static LRegister LRegisterRowRead(SqliteDataReader reader)
     {
         return new LRegister(
             reader.GetInt64(0),
             LStateColumn.LStateColumnRead(reader, 1),
-            reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-            reader.IsDBNull(4) ? null : reader.GetInt64(4));
+            reader.GetInt64(3) != 0);
     }
 
     private static int LRegisterReferenceRead(SqliteConnection connection, long id)
@@ -362,8 +352,7 @@ public sealed class LRegisterArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             $"""
-            SELECT register.register_id, register.name_state, register.name,
-                   register.language, register.pack_code
+            SELECT register.register_id, register.name_state, register.name, register.builtin
             FROM {table} link
             JOIN register ON register.register_id = link.register_ref
             WHERE link.{column} = $referrer

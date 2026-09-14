@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -122,10 +122,10 @@ public sealed partial class LEngine
     private LEntryDraft LEngineRegisterAdd(LEntryDraft content, LRequestRegisterAddition request)
     {
         LStateValue name = LEngineValueRead(request.LRequestValue);
-        LRegister? stored = LEngineRegisterResolve(name.LStateValueShow(), content.LEntryDraftLanguage);
+        LRegister? stored = LEngineRegisterResolve(name.LStateValueShow());
         if (stored is not null)
         {
-            LRegisterDraft found = new(stored.LRegisterName, stored.LRegisterId, stored.LRegisterLanguage);
+            LRegisterDraft found = new(stored.LRegisterName, stored.LRegisterId);
             return LEngineRegisterApply(
                 content,
                 request.LRequestCardId,
@@ -151,7 +151,7 @@ public sealed partial class LEngine
         LRegister stored = new LRegisterArchive(_lEngineDatabase).LRegisterRead(request.LRequestRegisterId)
             ?? throw new LRefusal(LRefusal.LRefusalItem);
 
-        LRegisterDraft register = new(stored.LRegisterName, stored.LRegisterId, stored.LRegisterLanguage);
+        LRegisterDraft register = new(stored.LRegisterName, stored.LRegisterId);
 
         return LEngineRegisterApply(
             content,

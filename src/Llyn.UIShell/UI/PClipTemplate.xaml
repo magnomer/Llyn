@@ -29,6 +29,10 @@
                 <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
                 <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
             </Trigger>
+            <DataTrigger Binding="{Binding PClipReadingRefused}" Value="True">
+                <Setter Property="Background" Value="{StaticResource Theme.Warning}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Surface}" />
+            </DataTrigger>
             <DataTrigger Binding="{Binding PClipReadingFetching}" Value="True">
                 <Setter Property="Background" Value="{StaticResource Theme.Pending}" />
                 <Setter Property="Foreground" Value="{StaticResource Theme.Surface}" />

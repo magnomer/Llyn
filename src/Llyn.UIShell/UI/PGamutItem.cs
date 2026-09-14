@@ -4,13 +4,11 @@ namespace Llyn.UIShell;
 
 internal sealed class PGamutItem
 {
-    internal PGamutItem(long id, string name, string language, int usage, bool shipped, bool chosen)
+    internal PGamutItem(long id, string name, int usage, bool chosen)
     {
         PGamutItemId = id;
         PGamutItemName = name;
-        PGamutItemLanguage = language;
         PGamutItemUsage = usage;
-        PGamutItemShipped = shipped;
         PGamutItemChosen = chosen;
     }
 
@@ -18,11 +16,7 @@ internal sealed class PGamutItem
 
     public string PGamutItemName { get; }
 
-    public string PGamutItemLanguage { get; }
-
     public int PGamutItemUsage { get; }
-
-    public bool PGamutItemShipped { get; }
 
     public bool PGamutItemChosen { get; }
 

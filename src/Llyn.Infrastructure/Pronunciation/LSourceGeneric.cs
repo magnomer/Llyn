@@ -42,7 +42,7 @@ public sealed class LSourceGeneric : LSource
             return LAnswer.LAnswerBlank;
         }
 
-        string current = word.Trim();
+        string current = LSourceSpellingResolve(word.Trim());
         bool reached = false;
         HashSet<string> filled = new(StringComparer.Ordinal);
         List<LReading> readings = [];
@@ -73,6 +73,17 @@ public sealed class LSourceGeneric : LSource
         }
 
         return reached ? LAnswer.LAnswerBlank : LAnswer.LAnswerLost;
+    }
+
+    private string LSourceSpellingResolve(string word)
+    {
+        string spelled = word;
+        foreach (LRespellingRule rule in _lSourceGenericSpec.LSourceSpecSpelling)
+        {
+            spelled = rule.LRespellingRuleResolve(spelled);
+        }
+
+        return spelled.Length == 0 ? word : spelled;
     }
 
     private static HashSet<string> LSourceVarietyScan(LSourceSpec spec)

@@ -93,8 +93,8 @@ internal static partial class TInterface
     internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, LRegister register) =>
         engine.LEngineEntryFind(register);
 
-    internal static LRegister TEngineRegisterCreate(this LEngine engine, string name, string language) =>
-        engine.LEngineRegisterCreate(name, language);
+    internal static LRegister TEngineRegisterCreate(this LEngine engine, string name) =>
+        engine.LEngineRegisterCreate(name);
 
     internal static void TEngineRegisterChange(this LEngine engine, long id, string renamed) =>
         engine.LEngineRegisterChange(id, renamed);

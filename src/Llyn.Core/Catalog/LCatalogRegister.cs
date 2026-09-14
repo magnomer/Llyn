@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,7 +41,6 @@ public sealed record LCatalogRegister(
         ArgumentNullException.ThrowIfNull(query);
 
         return query.Length == 0
-            || LCatalog.LCatalogTextMatch(LCatalogRegisterStored.LRegisterName.LStateValueShow(), query)
-            || LCatalog.LCatalogTextMatch(LCatalogRegisterStored.LRegisterLanguage, query);
+            || LCatalog.LCatalogTextMatch(LCatalogRegisterStored.LRegisterName.LStateValueShow(), query);
     }
 }

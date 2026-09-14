@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,6 +20,9 @@ public static class LWorkspace
     private const string LWorkspaceFlagExtension = ".svg";
     private const string LWorkspacePending = ".tmp";
     private const int LWorkspaceDigestLength = 8;
+    private const int LWorkspaceAttempts = 3;
+
+    private static readonly TimeSpan LWorkspacePatience = TimeSpan.FromSeconds(5);
 
     private static readonly string[] LWorkspaceExtensions =
         [".mp3", ".ogg", ".oga", ".wav", ".m4a", ".aac", ".flac", ".opus", ".webm"];
@@ -47,7 +51,7 @@ public static class LWorkspace
         ArgumentException.ThrowIfNullOrWhiteSpace(recording.LRecordingAddress);
 
         string address = recording.LRecordingAddress;
-        byte[] audio = await client.GetByteArrayAsync(address, cancellation).ConfigureAwait(false);
+        byte[] audio = await LWorkspaceRecordingRead(client, address, cancellation).ConfigureAwait(false);
 
         string directory = Path.Combine(root, LWorkspaceBucket, LWorkspaceNormalize(language));
         Directory.CreateDirectory(directory);
@@ -78,7 +82,7 @@ public static class LWorkspace
             return path;
         }
 
-        byte[] audio = await client.GetByteArrayAsync(address, cancellation).ConfigureAwait(false);
+        byte[] audio = await LWorkspaceRecordingRead(client, address, cancellation).ConfigureAwait(false);
         Directory.CreateDirectory(directory);
         await LWorkspaceFileSave(path, audio, cancellation).ConfigureAwait(false);
         return path;
@@ -115,6 +119,24 @@ public static class LWorkspace
         catch (HttpRequestException)
         {
             return null;
+        }
+    }
+
+    private static async Task<byte[]> LWorkspaceRecordingRead(
+        HttpClient client, string address, CancellationToken cancellation)
+    {
+        for (int attempt = 1; ; attempt++)
+        {
+            using HttpResponseMessage response = await client.GetAsync(address, cancellation).ConfigureAwait(false);
+            if (response.StatusCode != HttpStatusCode.TooManyRequests || attempt >= LWorkspaceAttempts)
+            {
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsByteArrayAsync(cancellation).ConfigureAwait(false);
+            }
+
+            TimeSpan asked = response.Headers.RetryAfter?.Delta ?? TimeSpan.Zero;
+            TimeSpan pause = asked > LWorkspacePatience ? asked : LWorkspacePatience;
+            await Task.Delay(pause, cancellation).ConfigureAwait(false);
         }
     }
 

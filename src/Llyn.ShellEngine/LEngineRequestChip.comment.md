@@ -1,4 +1,4 @@
-# LEngineRequestChip.cs
+﻿# LEngineRequestChip.cs
 
 ## `public sealed partial class LEngine`
 
@@ -38,10 +38,9 @@ The stored shape of a chip, for a change written against the stored shape.
 ## `private LEntryDraft LEngineRegisterAdd(LEntryDraft content, LRequestRegisterAddition request)`
 
 A register with the typed name, at the place asked for.
-The name is looked up on the shelf the entry's language sees.
+The name is looked up on the whole shelf.
 A stored Register reading the same way is picked under its own id.
 Only a name nothing matches becomes a new register with a minted id.
-Its language is left empty, because a written Register belongs to no language.
 
 ## `private LEntryDraft LEngineRegisterInsert(LEntryDraft content, LRequestRegisterPick request)`
 

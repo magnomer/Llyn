@@ -29,6 +29,15 @@ The loop stops once every variety the spec declares is filled, so a later attemp
 Readings come back in the order they were first seen, which keeps the pack's declared order on the menu.
 The headword an attempt followed to carries over, so later attempts ask for the page it landed on.
 
+## `private string LSourceSpellingResolve(string word)`
+
+Recasts the headword into the spelling the pack's sources key on.
+Each `spelling` rule of the pack runs in written order on the previous rule's output.
+A Latin pack drops the macrons here, so a headword typed with them still reaches the bare-spelled page.
+The recast word fills `{word}` in every URL and match pattern of every attempt.
+A headword a page followed to is taken as the page wrote it, so the rules run once at entry.
+A rule set that empties the word is ignored, so a bad rule never sends a blank request.
+
 ## `private async Task<(LAnswer, string)> LSourceAttemptResolve(LSourceAttempt attempt, string word, CancellationToken cancellation)`
 
 Runs one attempt and follows the pointer it captures.

@@ -84,8 +84,10 @@ Fetch it to a local temp file first, then play that.
 ### `internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)`
 
 Preview is best-effort.
-A failed fetch leaves the menu untouched, only the button's fill clearing.
+A failed fetch leaves the menu untouched, only the button's fill changing.
 The button fills orange while the recording is fetched and blue once it sounds.
+It fills with the warning colour when the fetch failed.
+The warning stays until the same button is pressed again, so a refusal is not mistaken for silence.
 Only one preview is marked at a time, so starting another clears the last.
 A fetch that finishes after another preview took over does not play.
 

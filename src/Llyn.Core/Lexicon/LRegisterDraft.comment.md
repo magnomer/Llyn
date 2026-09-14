@@ -3,7 +3,7 @@
 ## `public sealed record LRegisterDraft(`
 
 One Register as a card draft carries it.
-It holds the id of the Register the row edits, its name, and the language it belongs to.
+It holds the id of the Register the row edits and its name.
 The draft never owns the name, because the id is the reference.
 An empty id means the row has not been stored as a Register yet.
 The name carries what is known about it.
@@ -19,12 +19,10 @@ The draft carries no flag for it.
 
 - `LRegisterDraftName` — The name the row shows, and what is known about it.
 - `LRegisterDraftId` — The id of the Register the row edits, empty until one is given.
-- `LRegisterDraftLanguage` — The language the Register belongs to, empty when none is stated.
 
 ## `public static LRegisterDraft LRegisterDraftCreate(string text)`
 
 A name written with nothing else said about it, and no id yet.
-It belongs to no language.
 
 ## `public LRegisterDraft LRegisterDraftNormalize()`
 

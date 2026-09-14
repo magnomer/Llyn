@@ -12,4 +12,6 @@ An address naming no audio extension is saved as `.mp3` rather than under whatev
 No pending file is left once a save lands.
 A preview asked twice for one address returns the same cache file, even while a reader holds it open.
 Two addresses sharing a file name land in two cache files.
+A host answering 429 once is asked again and the second answer is saved.
+A host that never stops refusing raises after the third try and leaves no cache folder behind.
 The bytes come from a stub handler, so the test runs offline.

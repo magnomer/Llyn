@@ -150,6 +150,7 @@ public partial class PEditor : LListener
 
         PClipPreviewClear();
         _pClipPreview = reading;
+        reading.PClipReadingRefused = false;
         reading.PClipReadingFetching = true;
 
         try
@@ -168,6 +169,7 @@ public partial class PEditor : LListener
         catch (Exception)
         {
             reading.PClipReadingFetching = false;
+            reading.PClipReadingRefused = true;
         }
     }
 

@@ -25,6 +25,7 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderReadings = "readings";
     private const string LLanguageLoaderCleanup = "cleanup";
     private const string LLanguageLoaderRespelling = "respelling";
+    private const string LLanguageLoaderSpelling = "spelling";
     private const string LLanguageLoaderFollow = "follow";
     private const string LLanguageLoaderFrequency = "frequency";
     private const string LLanguageLoaderMorphology = "morphology";
@@ -122,26 +123,27 @@ public static partial class LLanguageLoader
         string? flag = LLanguageFlagRead(language, root);
         IReadOnlyList<LVariety> varieties = LLanguageVarietyScan(root);
         bool scoped = varieties.Count > 0;
+        IReadOnlyList<LRespellingRule> spelling = LLanguageSpellingScan(root);
 
         return new LLanguage(
             language,
             flag,
             LLanguageFontRead(root, LLanguageLoaderFont),
             LLanguageFontRead(root, LLanguageLoaderExample),
-            LLanguageSourceScan(root, LLanguageLoaderLookup),
-            LLanguageSourceScan(root, LLanguageLoaderHarvest),
-            LLanguageSchemeScan(root),
+            LLanguageSourceScan(root, LLanguageLoaderLookup, spelling),
+            LLanguageSourceScan(root, LLanguageLoaderHarvest, spelling),
+            LLanguageSchemeScan(root, spelling),
             LLanguageSeparatorRead(root),
             varieties,
             LLanguageFlaggedCheck(root),
             LLanguageFontRead(root, LLanguageLoaderGloss),
             LLanguageRespellingScan(root, LLanguageLoaderCleanup, scoped),
             LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped),
-            LLanguageSourceScan(root, LLanguageLoaderFrequency),
+            LLanguageSourceScan(root, LLanguageLoaderFrequency, spelling),
             LLanguageBandScan(root),
-            LLanguageSourceScan(root, LLanguageLoaderMorphology),
+            LLanguageSourceScan(root, LLanguageLoaderMorphology, spelling),
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderTonal),
-            LLanguageGlyphRead(root),
+            LLanguageGlyphRead(root, spelling),
             LLanguageScriptScan(root));
     }
 
@@ -263,6 +265,24 @@ public static partial class LLanguageLoader
             }
         }
 
+        IReadOnlyList<LRespellingRule> rules = LLanguageRuleScan(rows);
+        return rules.Count == 0 ? null : new LRespelling(name, varieties, rules);
+    }
+
+    private static IReadOnlyList<LRespellingRule> LLanguageSpellingScan(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(LLanguageLoaderSpelling, out JsonElement rows) ||
+            rows.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<LRespellingRule>();
+        }
+
+        return LLanguageRuleScan(rows);
+    }
+
+    private static IReadOnlyList<LRespellingRule> LLanguageRuleScan(JsonElement rows)
+    {
         try
         {
             List<LRespellingRule> rules = new();
@@ -275,11 +295,11 @@ public static partial class LLanguageLoader
                 }
             }
 
-            return rules.Count == 0 ? null : new LRespelling(name, varieties, rules);
+            return rules;
         }
         catch (ArgumentException)
         {
-            return null;
+            return Array.Empty<LRespellingRule>();
         }
     }
 
@@ -291,7 +311,8 @@ public static partial class LLanguageLoader
         return !string.Equals(separator?.Trim(), "none", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static IReadOnlyList<LScheme> LLanguageSchemeScan(JsonElement root)
+    private static IReadOnlyList<LScheme> LLanguageSchemeScan(
+        JsonElement root, IReadOnlyList<LRespellingRule> spelling)
     {
         if (root.ValueKind != JsonValueKind.Object ||
             !root.TryGetProperty(LLanguageLoaderScheme, out JsonElement schemes) ||
@@ -303,7 +324,7 @@ public static partial class LLanguageLoader
         List<LScheme> declared = new();
         foreach (JsonElement scheme in schemes.EnumerateArray())
         {
-            LScheme? read = LLanguageSchemeRead(scheme);
+            LScheme? read = LLanguageSchemeRead(scheme, spelling);
             if (read is not null && declared.All(known => !string.Equals(known.LSchemeName, read.LSchemeName, StringComparison.Ordinal)))
             {
                 declared.Add(read);
@@ -313,7 +334,7 @@ public static partial class LLanguageLoader
         return declared;
     }
 
-    private static LScheme? LLanguageSchemeRead(JsonElement scheme)
+    private static LScheme? LLanguageSchemeRead(JsonElement scheme, IReadOnlyList<LRespellingRule> spelling)
     {
         if (scheme.ValueKind == JsonValueKind.String)
         {
@@ -327,7 +348,9 @@ public static partial class LLanguageLoader
         }
 
         string name = LLanguageTextRead(scheme, "name")?.Trim() ?? string.Empty;
-        return name.Length == 0 ? null : new LScheme(name, LLanguageSourceScan(scheme, LLanguageLoaderSources));
+        return name.Length == 0
+            ? null
+            : new LScheme(name, LLanguageSourceScan(scheme, LLanguageLoaderSources, spelling));
     }
 
     private static LFont LLanguageFontBlank => new(null, 0);

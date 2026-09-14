@@ -84,6 +84,25 @@ public sealed class TParadigm
         Assert.NotEmpty(noun.LParadigmRegular);
     }
 
+    [Theory]
+    [InlineData("Classical Latin", 3, 11, 3)]
+    [InlineData("Classical Greek", 3, 9, 5)]
+    public void SpeechPackLoad_ClassicalPack_DeclaresPrincipalParts(
+        string language, int paradigms, long genitive, int principalParts)
+    {
+        LSpeechPack pack = TInterface.TSpeechPackLoad(language);
+
+        Assert.Equal(paradigms, pack.LSpeechPackParadigms.Count);
+        LParadigm noun = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 1);
+        Assert.Equal([genitive], noun.LParadigmMorphology);
+        Assert.Equal([2L], noun.LParadigmExcept);
+        LParadigm verb = Assert.Single(pack.LSpeechPackParadigms, row => row.LParadigmSpeechCode == 3);
+        Assert.Equal(principalParts, verb.LParadigmMorphology.Count);
+        Assert.All(
+            pack.LSpeechPackParadigms.SelectMany(row => row.LParadigmMorphology),
+            code => Assert.Contains(pack.LSpeechPackMorphology, row => row.LMorphologyCode == code));
+    }
+
     private static LSpeechPack TParadigmPackLoad(string json)
     {
         string name = "Fixture" + Guid.NewGuid().ToString("N");

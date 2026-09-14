@@ -20,7 +20,7 @@ So a crash at any point leaves it whole, at one version or the other.
 A copy of the old file is kept beside it under its version, so nothing is lost to a rebuild.
 The same rebuild serves a file written by a newer build, since what this build cannot read it cannot keep.
 
-## `public const long LSchemaMigrationVersion = 50;`
+## `public const long LSchemaMigrationVersion = 51;`
 
 The schema version this build produces.
 A change to any table raises it.
@@ -64,7 +64,8 @@ A rebuild that fails leaves the old file untouched and no half-built file beside
 ## `private static string LSchemaFileApply(string file, string fresh)`
 
 Builds the fresh file, copies the old file aside, and attaches the fresh file to the old one.
-One transaction then carries each shared table across, settles old unknown citations, sweeps the orphans, and brings the rows back.
+One transaction then carries each shared table across and settles old unknown citations and register marks.
+It then sweeps the orphans and brings the rows back.
 Bringing them back drops every old table, runs the schema on the file, and copies the fresh tables in.
 The transaction commits or the old file stays exactly as it was.
 Foreign keys are off during the copy, so the order tables are read in decides nothing.

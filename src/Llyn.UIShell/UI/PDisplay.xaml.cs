@@ -175,6 +175,7 @@ public partial class PDisplay : UserControl
         PDisplayPronunciationSurface.Visibility = draft.LEntryDraftIpa.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
+        PDisplayPronunciationLead.SharedSizeGroup = draft.LEntryDraftIpa.Length == 0 ? null : "PReadingLabel";
         PDisplayAccentShow(draft);
         PDisplayGlyphShow(draft);
         PDisplayTranscriptionShow(draft);
@@ -284,6 +285,7 @@ public partial class PDisplay : UserControl
         PPlayback.Visibility = Visibility.Collapsed;
         PPlaybackAction.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
+        PDisplayPronunciationLead.SharedSizeGroup = null;
         PDisplayContour.PContourIpa = string.Empty;
         PDisplayAccentClear();
         _pDisplayTranscription.Clear();

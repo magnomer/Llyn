@@ -54,6 +54,38 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_OlderBuildHoldingOneNamePerLanguage_KeepsOneRowAndEveryMark()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "DROP INDEX register_name; " +
+            "INSERT INTO entry (entry_id, headword, language, added_utc, updated_utc) " +
+            "VALUES (1, 'word', 'English', '2026-01-01', '2026-01-01'), " +
+            "       (2, 'palabra', 'Spanish', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO sense (sense_id, entry_parent, position) VALUES (1, 1, 0), (2, 2, 0); " +
+            "INSERT INTO register (register_id, name_state, name) " +
+            "VALUES (1, 'specified', 'Formal'), (2, 'specified', 'Polite'), (3, 'specified', 'Formal'); " +
+            "INSERT INTO sense_register (sense_parent, register_ref, position) " +
+            "VALUES (1, 1, 0), (2, 3, 0), (2, 2, 1), (2, 1, 2); " +
+            "UPDATE schema_version SET version = 32;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM register WHERE name = 'Formal';"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            "SELECT register_ref FROM sense_register WHERE sense_parent = 1;"));
+        Assert.Equal(2, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM sense_register WHERE sense_parent = 2;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM sense_register WHERE sense_parent = 2 AND register_ref = 1;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            "SELECT MAX(position) FROM sense_register WHERE sense_parent = 2;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead(
+            "SELECT MIN(position) FROM sense_register WHERE sense_parent = 2;"));
+    }
+
+    [Fact]
     public void DatabaseCreate_OlderBuild_KeepsTheFileAndLeavesNoResidue()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

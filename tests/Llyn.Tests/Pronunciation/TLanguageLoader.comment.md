@@ -15,6 +15,9 @@ A fixture pack without varieties keeps such groups, so the key stays optional th
 A pack without either block loads none.
 A `cleanup` block loads its rules in order and skips malformed rows.
 A group with a broken regex is dropped while its neighbours survive.
+A good `spelling` list is stamped on every source kind, and one with a broken regex loads as no rules.
+The Classical Latin pack carries its twelve macron rules on its lookup, harvest and frequency sources alike.
+A pack without the list stamps none.
 A `transcription` entry loads as a scheme whether it is a bare name or an object with sources.
 Blank and doubled scheme names are dropped.
 The Mandarin pack declares its two schemes with sources, so its rows can be looked up.

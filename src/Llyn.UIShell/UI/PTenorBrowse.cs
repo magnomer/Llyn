@@ -115,9 +115,7 @@ public partial class PTenor
             _pGamutList.Add(new PGamutItem(
                 stored.LRegisterId,
                 stored.LRegisterName.LStateValueShow(),
-                stored.LRegisterLanguage,
                 row.LCatalogRegisterUsage,
-                stored.LRegisterBuiltin,
                 chosen));
         }
 
@@ -164,7 +162,7 @@ public partial class PTenor
         try
         {
             read = _lEngine.LEngineEntryFind(
-                new LRegister(_pGamutChoice ?? 0, LStateValue.LStateValueUnspecified, string.Empty),
+                new LRegister(_pGamutChoice ?? 0, LStateValue.LStateValueUnspecified),
                 PQuest.Text ?? string.Empty,
                 _pGrilleChoice);
         }
@@ -303,7 +301,7 @@ public partial class PTenor
         LRegister created;
         try
         {
-            created = _lEngine.LEngineRegisterCreate(name, PEditor.PEditorLanguageRead());
+            created = _lEngine.LEngineRegisterCreate(name);
         }
         catch (Exception exception)
         {

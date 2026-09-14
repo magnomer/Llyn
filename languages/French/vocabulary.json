@@ -1,0 +1,412 @@
+{
+  "language": "French",
+  "exampleOrder": [
+    "particle",
+    "dependence"
+  ],
+  "note": "Display vocabulary for French: the parts of speech an entry may carry as presets, and the morphology each of them takes. A preset is what the part-of-speech field offers in its dropdown; a user may still type a part of speech no preset names, which is stored as typed. Every id is an integer that never changes once published; renaming a preset keeps its id, so every entry linking it follows the rename. 'parts' lists the parts of speech, 'features' the grammatical features each part takes ('part' names the part id), and 'values' the values each feature takes ('feature' names the feature id). The names are what the shell shows. Order is the order of these lists. 'exampleOrder' states which of the two frame fields an example row writes first, 'particle' or 'dependence', and states nothing either may hold. 'registers' lists the registers the shell offers on a card; a user may still write a register no preset names. A part may carry 'parent', the id of the part it specialises; a paradigm declared on the parent applies to it. 'paradigms' lists the forms a part is expected to inflect into: 'part' names the part id, 'values' the morphology value ids in display order, 'except' lists part ids on the parent chain the paradigm must not reach, and the optional 'regular' is a list of [pattern, replacement] pairs; each pair whose pattern matches the headword predicts one regular spelling by replacing the first match, and a stored form equal to any prediction is regular and needs no note. The noun paradigm predicts the plural: a headword ending in s, x or z stays, one ending in eau, au or eu takes x, one ending in al takes aux, and any other takes s. The adjective paradigm predicts the feminine singular, the masculine plural and the feminine plural: the feminine keeps a final e, turns f into ve, x into se, er into ère, et into ète or ette, eau into elle, teur into trice, eur into euse, c into che or que and g into gue, doubles the consonant of a final el, en, il or on, and otherwise adds e; the masculine plural follows the noun rules; the feminine plural is the feminine with s. The verb paradigm predicts the present and past participles from the infinitive ending: er gives ant and é, with ger giving geant and cer giving çant; ir gives issant and i; re gives ant and u. A form no pair predicts, such as yeux from œil, vieille from vieux or fait from faire, is irregular and carries a note.",
+  "registers": [
+    "Formal",
+    "Informal",
+    "Polite",
+    "Impolite",
+    "Literary",
+    "Slang"
+  ],
+  "parts": [
+    {
+      "id": 1,
+      "name": "Noun"
+    },
+    {
+      "id": 2,
+      "name": "Noun, countable",
+      "parent": 1
+    },
+    {
+      "id": 3,
+      "name": "Noun, uncountable",
+      "parent": 1
+    },
+    {
+      "id": 4,
+      "name": "Noun, proper",
+      "parent": 1
+    },
+    {
+      "id": 5,
+      "name": "Noun, collective",
+      "parent": 1
+    },
+    {
+      "id": 6,
+      "name": "Verb"
+    },
+    {
+      "id": 7,
+      "name": "Verb, transitive",
+      "parent": 6
+    },
+    {
+      "id": 8,
+      "name": "Verb, intransitive",
+      "parent": 6
+    },
+    {
+      "id": 9,
+      "name": "Verb, pronominal",
+      "parent": 6
+    },
+    {
+      "id": 10,
+      "name": "Verb, impersonal",
+      "parent": 6
+    },
+    {
+      "id": 11,
+      "name": "Verb, auxiliary",
+      "parent": 6
+    },
+    {
+      "id": 12,
+      "name": "Adjective"
+    },
+    {
+      "id": 13,
+      "name": "Adjective, attributive",
+      "parent": 12
+    },
+    {
+      "id": 14,
+      "name": "Adjective, predicative",
+      "parent": 12
+    },
+    {
+      "id": 15,
+      "name": "Adverb"
+    },
+    {
+      "id": 16,
+      "name": "Adverb, manner",
+      "parent": 15
+    },
+    {
+      "id": 17,
+      "name": "Adverb, degree",
+      "parent": 15
+    },
+    {
+      "id": 18,
+      "name": "Adverb, frequency",
+      "parent": 15
+    },
+    {
+      "id": 19,
+      "name": "Pronoun"
+    },
+    {
+      "id": 20,
+      "name": "Pronoun, personal",
+      "parent": 19
+    },
+    {
+      "id": 21,
+      "name": "Pronoun, possessive",
+      "parent": 19
+    },
+    {
+      "id": 22,
+      "name": "Pronoun, demonstrative",
+      "parent": 19
+    },
+    {
+      "id": 23,
+      "name": "Pronoun, relative",
+      "parent": 19
+    },
+    {
+      "id": 24,
+      "name": "Pronoun, interrogative",
+      "parent": 19
+    },
+    {
+      "id": 25,
+      "name": "Pronoun, reflexive",
+      "parent": 19
+    },
+    {
+      "id": 26,
+      "name": "Article"
+    },
+    {
+      "id": 27,
+      "name": "Article, definite",
+      "parent": 26
+    },
+    {
+      "id": 28,
+      "name": "Article, indefinite",
+      "parent": 26
+    },
+    {
+      "id": 29,
+      "name": "Article, partitive",
+      "parent": 26
+    },
+    {
+      "id": 30,
+      "name": "Determiner"
+    },
+    {
+      "id": 31,
+      "name": "Determiner, possessive",
+      "parent": 30
+    },
+    {
+      "id": 32,
+      "name": "Determiner, demonstrative",
+      "parent": 30
+    },
+    {
+      "id": 33,
+      "name": "Preposition"
+    },
+    {
+      "id": 34,
+      "name": "Conjunction"
+    },
+    {
+      "id": 35,
+      "name": "Conjunction, coordinating",
+      "parent": 34
+    },
+    {
+      "id": 36,
+      "name": "Conjunction, subordinating",
+      "parent": 34
+    },
+    {
+      "id": 37,
+      "name": "Numeral"
+    },
+    {
+      "id": 38,
+      "name": "Numeral, cardinal",
+      "parent": 37
+    },
+    {
+      "id": 39,
+      "name": "Numeral, ordinal",
+      "parent": 37
+    },
+    {
+      "id": 40,
+      "name": "Interjection"
+    },
+    {
+      "id": 41,
+      "name": "Phrase"
+    },
+    {
+      "id": 42,
+      "name": "Idiom"
+    },
+    {
+      "id": 43,
+      "name": "Proverb"
+    },
+    {
+      "id": 44,
+      "name": "Abbreviation"
+    },
+    {
+      "id": 45,
+      "name": "Prefix"
+    },
+    {
+      "id": 46,
+      "name": "Suffix"
+    }
+  ],
+  "features": [
+    {
+      "id": 1,
+      "part": 1,
+      "name": "gender"
+    },
+    {
+      "id": 2,
+      "part": 1,
+      "name": "number"
+    },
+    {
+      "id": 3,
+      "part": 12,
+      "name": "form"
+    },
+    {
+      "id": 4,
+      "part": 6,
+      "name": "form"
+    },
+    {
+      "id": 5,
+      "part": 6,
+      "name": "group"
+    },
+    {
+      "id": 6,
+      "part": 6,
+      "name": "auxiliary"
+    }
+  ],
+  "values": [
+    {
+      "id": 1,
+      "feature": 1,
+      "name": "masculine"
+    },
+    {
+      "id": 2,
+      "feature": 1,
+      "name": "feminine"
+    },
+    {
+      "id": 3,
+      "feature": 2,
+      "name": "singular"
+    },
+    {
+      "id": 4,
+      "feature": 2,
+      "name": "plural"
+    },
+    {
+      "id": 5,
+      "feature": 3,
+      "name": "masculine singular"
+    },
+    {
+      "id": 6,
+      "feature": 3,
+      "name": "feminine singular"
+    },
+    {
+      "id": 7,
+      "feature": 3,
+      "name": "masculine plural"
+    },
+    {
+      "id": 8,
+      "feature": 3,
+      "name": "feminine plural"
+    },
+    {
+      "id": 9,
+      "feature": 4,
+      "name": "infinitive"
+    },
+    {
+      "id": 10,
+      "feature": 4,
+      "name": "present participle"
+    },
+    {
+      "id": 11,
+      "feature": 4,
+      "name": "past participle"
+    },
+    {
+      "id": 12,
+      "feature": 5,
+      "name": "first"
+    },
+    {
+      "id": 13,
+      "feature": 5,
+      "name": "second"
+    },
+    {
+      "id": 14,
+      "feature": 5,
+      "name": "third"
+    },
+    {
+      "id": 15,
+      "feature": 6,
+      "name": "avoir"
+    },
+    {
+      "id": 16,
+      "feature": 6,
+      "name": "être"
+    }
+  ],
+  "paradigms": [
+    {
+      "part": 1,
+      "values": [4],
+      "except": [3, 4],
+      "regular": [
+        ["(s|x|z)$", "$1"],
+        ["(eau|au|eu)$", "$1x"],
+        ["al$", "aux"],
+        ["$", "s"]
+      ]
+    },
+    {
+      "part": 12,
+      "values": [6, 7, 8],
+      "regular": [
+        ["e$", "e"],
+        ["f$", "ve"],
+        ["x$", "se"],
+        ["er$", "ère"],
+        ["et$", "ète"],
+        ["(e)(l|n|t)$", "$1$2$2e"],
+        ["(i)(l)$", "$1$2$2e"],
+        ["on$", "onne"],
+        ["eau$", "elle"],
+        ["teur$", "trice"],
+        ["eur$", "euse"],
+        ["c$", "che"],
+        ["c$", "que"],
+        ["g$", "gue"],
+        ["$", "e"],
+        ["(s|x|z)$", "$1"],
+        ["(eau|au|eu)$", "$1x"],
+        ["al$", "aux"],
+        ["$", "s"],
+        ["e$", "es"],
+        ["f$", "ves"],
+        ["x$", "ses"],
+        ["er$", "ères"],
+        ["et$", "ètes"],
+        ["(e)(l|n|t)$", "$1$2$2es"],
+        ["(i)(l)$", "$1$2$2es"],
+        ["on$", "onnes"],
+        ["eau$", "elles"],
+        ["teur$", "trices"],
+        ["eur$", "euses"],
+        ["c$", "ches"],
+        ["c$", "ques"],
+        ["g$", "gues"],
+        ["$", "es"]
+      ]
+    },
+    {
+      "part": 6,
+      "values": [10, 11],
+      "regular": [
+        ["ger$", "geant"],
+        ["cer$", "çant"],
+        ["er$", "ant"],
+        ["er$", "é"],
+        ["ir$", "issant"],
+        ["ir$", "i"],
+        ["re$", "ant"],
+        ["re$", "u"]
+      ]
+    }
+  ]
+}

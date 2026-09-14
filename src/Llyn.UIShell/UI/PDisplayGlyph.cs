@@ -19,7 +19,7 @@ public partial class PDisplay
         _pDisplayGlyphSection = language.Length == 0 ? null : _lEngine.LEngineGlyphRead(language);
         if (_pDisplayGlyphSection is null)
         {
-            PDisplayGlyphSection.Visibility = Visibility.Collapsed;
+            PDisplayGlyphClear();
             return;
         }
 
@@ -42,6 +42,7 @@ public partial class PDisplay
             _pDisplayHost, _pDisplayGlyphSection.LGlyphName);
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayGlyph);
         PDisplayGlyphSection.Visibility = _pDisplayGlyph.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        PDisplayGlyphLead.SharedSizeGroup = _pDisplayGlyph.Count == 0 ? null : "PReadingLabel";
     }
 
     private bool PDisplayGlyphCheck(string scheme)
@@ -62,6 +63,8 @@ public partial class PDisplay
     {
         _pDisplayGlyph.Clear();
         _pDisplayGlyphSection = null;
+        PDisplayGlyphLabel.Text = string.Empty;
         PDisplayGlyphSection.Visibility = Visibility.Collapsed;
+        PDisplayGlyphLead.SharedSizeGroup = null;
     }
 }

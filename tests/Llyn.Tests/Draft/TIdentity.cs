@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using Xunit;
@@ -181,7 +181,7 @@ public sealed class TIdentity
 
         Assert.NotEqual(0, first.LEntryId);
         Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM situation;"));
-        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM register WHERE pack_code IS NULL;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM register WHERE builtin = 0;"));
     }
 
     [Fact]

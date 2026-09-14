@@ -27,7 +27,7 @@ public static class LRegisterLoader
         {
             using FileStream stream = File.OpenRead(path);
             using JsonDocument document = JsonDocument.Parse(stream);
-            return LRegisterPackRead(language, document.RootElement);
+            return LRegisterPackRead(document.RootElement);
         }
         catch (Exception exception) when (exception is IOException or JsonException or UnauthorizedAccessException)
         {
@@ -35,7 +35,7 @@ public static class LRegisterLoader
         }
     }
 
-    private static IReadOnlyList<LRegister> LRegisterPackRead(string language, JsonElement root)
+    private static IReadOnlyList<LRegister> LRegisterPackRead(JsonElement root)
     {
         if (root.ValueKind != JsonValueKind.Object
             || !root.TryGetProperty(LRegisterLoaderSection, out JsonElement registers)
@@ -45,45 +45,29 @@ public static class LRegisterLoader
         }
 
         List<LRegister> values = [];
+        HashSet<string> named = new(StringComparer.Ordinal);
         foreach (JsonElement register in registers.EnumerateArray())
         {
-            long? id = LRegisterNumberRead(register, "id");
-            string? name = LRegisterTextRead(register, "name");
-            if (id is null || name is null)
+            string? name = LRegisterTextRead(register);
+            if (name is null || !named.Add(name))
             {
                 continue;
             }
 
-            values.Add(new LRegister(0, LStateValue.LStateValueRead(name), language, id));
+            values.Add(new LRegister(0, LStateValue.LStateValueRead(name), true));
         }
 
         return values;
     }
 
-    private static long? LRegisterNumberRead(JsonElement element, string property)
+    private static string? LRegisterTextRead(JsonElement element)
     {
-        if (element.ValueKind != JsonValueKind.Object
-            || !element.TryGetProperty(property, out JsonElement value)
-            || value.ValueKind != JsonValueKind.Number
-            || !value.TryGetInt64(out long number)
-            || number <= 0)
+        if (element.ValueKind != JsonValueKind.String)
         {
             return null;
         }
 
-        return number;
-    }
-
-    private static string? LRegisterTextRead(JsonElement element, string property)
-    {
-        if (element.ValueKind != JsonValueKind.Object
-            || !element.TryGetProperty(property, out JsonElement value)
-            || value.ValueKind != JsonValueKind.String)
-        {
-            return null;
-        }
-
-        string text = value.GetString() ?? string.Empty;
-        return string.IsNullOrWhiteSpace(text) ? null : text;
+        string text = element.GetString()?.Trim() ?? string.Empty;
+        return text.Length == 0 ? null : text;
     }
 }

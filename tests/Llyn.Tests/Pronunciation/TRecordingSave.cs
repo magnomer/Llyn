@@ -119,4 +119,36 @@ public sealed class TRecordingSave
 
         Assert.NotEqual(first, second);
     }
+
+    [Fact]
+    public async Task RecordingPrepare_HostRefusesOnce_RetriesAndSaves()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        TRefusalHandler handler = new(1);
+        using HttpClient client = new(handler);
+        LRecording recording = TInterface.TRecordingCreate(
+            "Wiktionary", "https://example.test/Fr-manger.ogg.mp3", 0, true, string.Empty);
+
+        string path = await TInterface.TWorkspaceRecordingPrepare(
+            recording, workspace.TWorkspaceFolder, client, CancellationToken.None);
+
+        Assert.Equal(2, handler.TRefusalHandlerCount);
+        Assert.Equal("audio", await File.ReadAllTextAsync(path));
+    }
+
+    [Fact]
+    public async Task RecordingPrepare_HostKeepsRefusing_RaisesAfterThreeTries()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        TRefusalHandler handler = new(9);
+        using HttpClient client = new(handler);
+        LRecording recording = TInterface.TRecordingCreate(
+            "Wiktionary", "https://example.test/Fr-manger.ogg.mp3", 0, true, string.Empty);
+
+        await Assert.ThrowsAsync<HttpRequestException>(() => TInterface.TWorkspaceRecordingPrepare(
+            recording, workspace.TWorkspaceFolder, client, CancellationToken.None));
+
+        Assert.Equal(3, handler.TRefusalHandlerCount);
+        Assert.False(Directory.Exists(Path.Combine(workspace.TWorkspaceFolder, "temp")));
+    }
 }

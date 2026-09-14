@@ -19,6 +19,7 @@
 
     <Style x:Key="Theme.Pronunciation.Lead" TargetType="StackPanel">
         <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 

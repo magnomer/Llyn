@@ -1,4 +1,4 @@
-# PRegister.cs
+﻿# PRegister.cs
 
 ## `internal sealed class PRegister`
 
@@ -10,15 +10,9 @@ The state it was read from is rebuilt on the way out rather than carried through
 
 ## `internal PRegister(LStateValue text, long id)`
 
-A chip for a Register whose language and origin are not known here.
-It is what a chip the user types needs, because typed text belongs to no language pack.
-
-## `internal PRegister(LStateValue text, long id, string language)`
-
-A chip for a Register the card already marks, keeping the id the reference is written by.
-The language rides along unread.
-No control on the card shows it, and a save that dropped it would erase what the pack declared.
-Whether a pack ships the Register is read from the stored row, so the chip carries no mark for it.
+A chip for a Register, keeping the id the reference is written by.
+A chip the user types carries no id yet.
+Whether a pack names the Register is read from the stored row, so the chip carries no mark for it.
 
 ## `internal LStateWritten PRegisterTextRead()`
 

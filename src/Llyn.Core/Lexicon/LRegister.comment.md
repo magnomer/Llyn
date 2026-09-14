@@ -9,19 +9,15 @@ The order a Register appears in lives on each reference rather than here.
 `LRegisterId` is the identity, an opaque and stable id.
 The name is visible data and never identity.
 Renaming it leaves the id and every reference to it untouched.
-A built-in Register is one a language pack ships, and it carries the integer id the pack declared it under.
-A written Register is one the user typed, and it carries no language.
+A built-in Register is one a language pack names.
+A written Register is one the user typed.
+A Register belongs to no language.
+Every pack naming the same name names the same Register, and a card in any language marks it.
 The name carries `LStateValue`, so a name standing empty says whether nothing was ever recorded.
 It says instead when the user marked the value as not known.
 
 **Parameters**
 
-- `LRegisterId` — Opaque stable id, generated for a written Register and fixed for a built-in one.
+- `LRegisterId` — Opaque stable id, generated when the row is first stored.
 - `LRegisterName` — The register name and what is known about it, display text and never identity.
-- `LRegisterLanguage` — The language pack a built-in Register came from, empty for a written one.
-- `LRegisterPackId` — The id the language pack declared this Register under, `null` for a written one.
-
-## `public bool LRegisterBuiltin`
-
-Whether a language pack ships this Register rather than the user writing it.
-A Register is built in exactly when it carries a pack id.
+- `LRegisterBuiltin` — Whether a language pack names this Register rather than the user writing it.

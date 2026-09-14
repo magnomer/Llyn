@@ -7,7 +7,8 @@ namespace Llyn.Infrastructure;
 
 public static partial class LLanguageLoader
 {
-    private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(JsonElement root, string key)
+    private static IReadOnlyList<LSourceSpec> LLanguageSourceScan(
+        JsonElement root, string key, IReadOnlyList<LRespellingRule> spelling)
     {
         if (root.ValueKind != JsonValueKind.Object ||
             !root.TryGetProperty(key, out JsonElement sources) ||
@@ -19,7 +20,7 @@ public static partial class LLanguageLoader
         List<LSourceSpec> specs = new();
         foreach (JsonElement source in sources.EnumerateArray())
         {
-            LSourceSpec? spec = LLanguageSourceRead(source);
+            LSourceSpec? spec = LLanguageSourceRead(source, spelling);
             if (spec is not null)
             {
                 specs.Add(spec);
@@ -29,7 +30,7 @@ public static partial class LLanguageLoader
         return specs;
     }
 
-    private static LSourceSpec? LLanguageSourceRead(JsonElement source)
+    private static LSourceSpec? LLanguageSourceRead(JsonElement source, IReadOnlyList<LRespellingRule> spelling)
     {
         if (source.ValueKind != JsonValueKind.Object)
         {
@@ -55,7 +56,7 @@ public static partial class LLanguageLoader
             }
         }
 
-        return attempts.Count == 0 ? null : new LSourceSpec(name, attempts);
+        return attempts.Count == 0 ? null : new LSourceSpec(name, attempts, spelling);
     }
 
     private static LSourceAttempt? LLanguageAttemptRead(JsonElement row)
@@ -167,7 +168,7 @@ public static partial class LLanguageLoader
         return map.Count == 0 ? null : map;
     }
 
-    private static LGlyph? LLanguageGlyphRead(JsonElement root)
+    private static LGlyph? LLanguageGlyphRead(JsonElement root, IReadOnlyList<LRespellingRule> spelling)
     {
         if (root.ValueKind != JsonValueKind.Object ||
             !root.TryGetProperty(LLanguageLoaderGlyph, out JsonElement glyph) ||
@@ -187,7 +188,7 @@ public static partial class LLanguageLoader
         return new LGlyph(
             name,
             language,
-            LLanguageSourceScan(glyph, LLanguageLoaderSources),
+            LLanguageSourceScan(glyph, LLanguageLoaderSources, spelling),
             font.LFontFamily is null && font.LFontSize <= 0 ? null : font);
     }
 }

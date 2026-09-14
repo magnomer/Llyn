@@ -1,4 +1,4 @@
-# PTenorBrowse.cs
+﻿# PTenorBrowse.cs
 
 ## `public partial class PTenor`
 
@@ -41,7 +41,6 @@ With a register chosen, or an entry shown, it starts a new entry.
 ### `private void PGamutRegisterCreate()`
 
 Asks for the wording, makes the register, and browses by it.
-The register is given the language the editor stands on, as a register typed on a card would be.
 A dismissed dialog changes nothing.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 
@@ -54,7 +53,7 @@ An entry started with no register chosen comes up blank, since every entry is li
 ### `private void PGamutFind(string query)`
 
 The engine returns the Registers answering the query, already counted and in the chosen ordering.
-The rows a language pack ships and the rows the user wrote arrive as one shelf.
+The rows the language packs name and the rows the user wrote arrive as one shelf.
 The chosen Register is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
 A chosen Register the workspace no longer holds is dropped, and the panel falls back to every Entry.
 

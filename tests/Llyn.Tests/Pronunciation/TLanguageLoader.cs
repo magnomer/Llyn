@@ -259,6 +259,55 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
+    public void LanguageLoad_SpellingList_StampsEverySourceKind()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "spelling": [["ā", "a"], ["bad"], ["ō", "o"]],
+              "pronunciation": [
+                { "name": "P", "attempts": [ { "urls": ["u"], "strategy": "span", "match": "<s>" } ] } ],
+              "frequency": [ { "name": "F", "attempts": [ { "urls": ["u"], "strategy": "regex", "match": "(1)" } ] } ] }
+            """);
+
+        Assert.Equal(
+            [("ā", "a"), ("ō", "o")],
+            Assert.Single(language.LLanguageLookupSources).LSourceSpecSpelling
+                .Select(rule => (rule.LRespellingRulePattern, rule.LRespellingRuleReplacement)));
+        Assert.Equal(2, Assert.Single(language.LLanguageFrequencies).LSourceSpecSpelling.Count);
+    }
+
+    [Fact]
+    public void LanguageLoad_SpellingBrokenRegex_StampsNone()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "spelling": [["ā", "a"], ["(", "x"]],
+              "pronunciation": [
+                { "name": "P", "attempts": [ { "urls": ["u"], "strategy": "span", "match": "<s>" } ] } ] }
+            """);
+
+        Assert.Empty(Assert.Single(language.LLanguageLookupSources).LSourceSpecSpelling);
+    }
+
+    [Fact]
+    public void LanguageLoad_LatinPack_ReadsSpellingOnEveryList()
+    {
+        LLanguage language = TInterface.TLanguageLoad("Classical Latin");
+
+        Assert.Equal(12, Assert.Single(language.LLanguageLookupSources).LSourceSpecSpelling.Count);
+        Assert.Equal(12, Assert.Single(language.LLanguageHarvestSources).LSourceSpecSpelling.Count);
+        Assert.Equal(12, Assert.Single(language.LLanguageFrequencies).LSourceSpecSpelling.Count);
+    }
+
+    [Fact]
+    public void LanguageLoad_PackWithoutSpelling_ReadsNone()
+    {
+        LLanguage language = TInterface.TLanguageLoad("Spanish");
+
+        Assert.All(language.LLanguageLookupSources, source => Assert.Empty(source.LSourceSpecSpelling));
+    }
+
+    [Fact]
     public void LanguageLoad_PackWithoutFrequency_ReadsEmptyLists()
     {
         LLanguage language = TInterface.TLanguageLoad("Spanish");

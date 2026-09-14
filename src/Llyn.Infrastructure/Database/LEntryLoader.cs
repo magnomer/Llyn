@@ -241,10 +241,7 @@ public sealed class LEntryLoader
         List<LRegisterDraft> drafts = new(registers.Count);
         foreach (LRegister register in registers)
         {
-            drafts.Add(new LRegisterDraft(
-                register.LRegisterName,
-                register.LRegisterId,
-                register.LRegisterLanguage));
+            drafts.Add(new LRegisterDraft(register.LRegisterName, register.LRegisterId));
         }
 
         return drafts;

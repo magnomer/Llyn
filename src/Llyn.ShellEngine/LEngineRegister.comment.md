@@ -1,4 +1,4 @@
-# LEngineRegister.cs
+﻿# LEngineRegister.cs
 
 ## `public sealed partial class LEngine`
 
@@ -16,23 +16,19 @@ Reads the Registers a Meaning or Collocation is marked with, in that card's orde
 ## `public IReadOnlyList<LRegister> LEngineRegisterFind(string query, string language)`
 
 The shelf a card offers while a Register is being typed.
-It holds the rows the named language ships and every row the user has written, whatever language they came from.
-A written Register crosses languages because the user wrote it for their own use.
-A shipped one does not, because its wording belongs to its pack.
+It holds every Register, because a Register belongs to no language.
+`language` only names the pack whose rows are seeded before the shelf is read, so a first card sees them.
 An empty query offers the whole shelf.
 
 ## `public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(string query, LCatalogOrder order)`
 
 The shelf the tenor panel browses: every Register, counted and ordered.
-Unlike the card's shelf, this one holds every pack's rows at once, because a workspace holds Entries of any language.
-A row is answered by its name or by the language of the pack that ships it.
-So a shelf of several packs can be narrowed.
+A row is answered by its name.
 
-## `public LRegister LEngineRegisterCreate(string name, string language)`
+## `public LRegister LEngineRegisterCreate(string name)`
 
 Makes a written Register reading `name` with no card marked by it yet, for the tenor panel's New.
-`language` is the language the user was working in, kept on the row the way a card would keep it.
-A row already reading the same on that language's shelf is returned rather than doubled.
+A row already reading the same is returned rather than doubled.
 The announcement is raised either way, so the panel lists and selects the row.
 
 ## `public void LEngineRegisterChange(long registerId, string renamed)`
@@ -46,9 +42,9 @@ The announcement is raised whether or not the row moved, so a shown panel always
 Deletes a written Register and every mark on it, which is what the panel confirms before calling.
 A row a language pack ships is left whole, marks included.
 
-## `private void LEngineRegisterCreate(string language)`
+## `private void LEngineRegisterPrepare(string language)`
 
-Writes the rows the named language pack ships, skipping every id already stored.
+Writes the rows the named language pack names, marking every name already stored as built in.
 
 ## `private void LEngineRegisterSync(long ownerId, IReadOnlyList<LRegisterDraft> drafts, string language, bool collocation)`
 
@@ -79,10 +75,10 @@ A row carrying a negative id is looked up by its wording first.
 A name the shelf already holds is shared rather than doubled.
 Only then is a new written Register created, recorded in the map under that id.
 
-## `private LRegister? LEngineRegisterResolve(string name, string language)`
+## `private LRegister? LEngineRegisterResolve(string name)`
 
 The stored Register whose name reads as `name`, or `null` when none does.
 Both sides are folded the way `LCatalog.LCatalogTextNormalize` folds, so case and edge spaces do not make a second row.
-The shelf offered is the one `language` sees: its own pack rows and every written row.
+The whole shelf is searched, because a name is one Register whichever pack or card named it.
 The engine holds this rule.
 The form, a commit and any other client therefore all get one row for one wording.

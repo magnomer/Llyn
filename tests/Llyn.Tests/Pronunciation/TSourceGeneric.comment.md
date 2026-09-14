@@ -10,6 +10,7 @@ A pattern matching several times yields the first match alone, so a page's infle
 A skip count still moves which match is the first.
 A reading marked every yields every match once, so a page with two etymologies shows both readings.
 A comma or slash inside one matched text separates alternatives, and each is a reading of its own.
+Spelling rules on a spec recast the headword before the token fills, so a macron headword matches the bare file.
 A flat attempt marked every is one untagged reading yielding every match, and the first phonetic is the answer's value.
 A `{word}` token in a pattern is the headword, escaped so a regex character in it matches literally.
 A missed guard is a blank answer and a server failure is a lost one.

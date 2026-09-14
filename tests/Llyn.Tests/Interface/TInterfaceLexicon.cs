@@ -300,14 +300,13 @@ internal static partial class TInterface
         new(id, entryId, parentId, position, title, definition);
 
     internal static LRegister TRegisterCreate(long id, string name) =>
-        new(id, LStateValue.LStateValueRead(name), string.Empty);
+        new(id, LStateValue.LStateValueRead(name));
 
     internal static LRegisterDraft TRegisterDraftCreate(string text) =>
         LRegisterDraft.LRegisterDraftCreate(text);
 
-    internal static LRegisterDraft TRegisterDraftCreate(
-        LStateValue name, long id, string language = "") =>
-        new(name, id, language);
+    internal static LRegisterDraft TRegisterDraftCreate(LStateValue name, long id) =>
+        new(name, id);
 
     internal static LSituation TSituationCreate(
         long id,
