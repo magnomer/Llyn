@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -214,6 +214,11 @@ public sealed class LSourceGeneric : LSource
             LSourceGenericRegex => LSourceGroupScan(reading, body),
             _ => []
         };
+
+        if (!reading.LSourceReadingEvery && captured.Count > 1)
+        {
+            captured = [captured[0]];
+        }
 
         List<string> values = [];
         foreach (string text in captured)

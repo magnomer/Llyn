@@ -59,3 +59,9 @@ Everything language-specific arrives through this record.
 - `LLanguageMorphologies` — The sources the pack declares for fetching inflected forms, held as [LSourceSpec](LSourceSpec.comment.md) records.
   Each reading is keyed on a morphology value code written as a decimal string.
   A pack that declares none carries an empty list, and no form is fetched for that language.
+- `LLanguageTonal` — Whether the language carries lexical tone, declared with the top-level key `tonal` set to `true`.
+  The UI then draws a tone contour under each IPA reading, from the tone marks the reading itself carries.
+  A pack that omits the key is read as not tonal, and no contour is drawn.
+- `LLanguageGlyph` — The glyph section the pack declares under `glyph`, held as an [LGlyph](LGlyph.comment.md) record.
+  It turns the glyph row on for a language written in Han characters.
+  A pack that declares none carries `null`, and no glyph row is shown.

@@ -56,6 +56,12 @@ Play shows only while the row has a recording.
 Lookup and download open the editor's menus under the button pressed, for this row.
 The plus and minus carry no row, which the handlers read as the primary.
 
+## `<local:PContour x:Name="PContour" Style="{StaticResource Theme.Contour.Box}" ...>`
+
+The tone contour of the primary pronunciation, drawn beneath the chip when the chosen language is tonal.
+Its IPA is bound to the pronunciation field, so the picture follows every keystroke.
+The tonal flag is pushed by `PEditorContourApply` whenever the language changes.
+
 ## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />`
 
 The further pronunciations, one editable row each, drawn by the shared accent template.
@@ -64,6 +70,12 @@ The further pronunciations, one editable row each, drawn by the shared accent te
 
 The transcriptions, one editable row each, drawn by the shared transcription template.
 It stays collapsed until a draft in a language with schemes is rendered, so English shows no such line.
+
+## `<ItemsControl x:Name="PGlyph" ItemTemplate="{StaticResource Theme.Glyph.Row}" Visibility="Collapsed" />`
+
+The glyph row, the traditional form of a Han-script headword, drawn by the glyph template.
+It stays collapsed until a draft in a language with a glyph section is rendered.
+Its tag says whether the section declares sources, and the template hides the lookup button when not.
 
 ## `<Grid Margin="3,0,1,0">`
 

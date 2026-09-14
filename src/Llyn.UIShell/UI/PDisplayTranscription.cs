@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -12,7 +12,7 @@ public partial class PDisplay
         _pDisplayTranscription.Clear();
         foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
         {
-            if (!spelled.LTranscriptionDraftEmpty)
+            if (!spelled.LTranscriptionDraftEmpty && !PDisplayGlyphCheck(spelled.LTranscriptionDraftScheme))
             {
                 _pDisplayTranscription.Add(PTranscriptionItem.PTranscriptionItemCreate(_pDisplayHost, spelled));
             }

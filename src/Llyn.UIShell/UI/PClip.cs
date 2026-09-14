@@ -16,6 +16,7 @@ public partial class PEditor : LListener
     private bool _pClipFlagged;
     private string _pClipLanguage = string.Empty;
     private long _pClipTarget;
+    private PClipReading? _pClipPreview;
 
     private async void PDownloaderHandle(object sender, RoutedEventArgs e)
     {
@@ -25,6 +26,7 @@ public partial class PEditor : LListener
     private void PClipClosedHandle(object? sender, EventArgs e)
     {
         PClipCancel();
+        PClipPreviewClear();
     }
 
     private async Task PClipOpen(UIElement anchor, long target)
@@ -146,15 +148,44 @@ public partial class PEditor : LListener
             return;
         }
 
+        PClipPreviewClear();
+        _pClipPreview = reading;
+        reading.PClipReadingFetching = true;
+
         try
         {
             string path = await _lEngine.LEngineRecordingPrepare(reading.PClipReadingModel, CancellationToken.None);
+            if (_pClipPreview != reading)
+            {
+                return;
+            }
+
+            reading.PClipReadingFetching = false;
+            reading.PClipReadingPlaying = true;
             _pDownloaderPlayer.Open(new Uri(path));
             _pDownloaderPlayer.Play();
         }
         catch (Exception)
         {
+            reading.PClipReadingFetching = false;
         }
+    }
+
+    private void PClipPreviewClear()
+    {
+        if (_pClipPreview is null)
+        {
+            return;
+        }
+
+        _pClipPreview.PClipReadingFetching = false;
+        _pClipPreview.PClipReadingPlaying = false;
+        _pClipPreview = null;
+    }
+
+    private void PClipEndHandle(object? sender, EventArgs e)
+    {
+        PClipPreviewClear();
     }
 
     internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)

@@ -1,4 +1,4 @@
-# PEditorDraft.cs
+﻿# PEditorDraft.cs
 
 ## `public partial class PEditor`
 
@@ -18,7 +18,9 @@ It runs on every draft bulletin, so it must be cheap and must not move the caret
 The fill guard is held for the whole pass, because filling raises the same events typing does.
 The pronunciation rows after the primary are rendered in the same pass, keyed by their draft ids.
 The transcription rows are rendered the same way, and shown only while the draft's language declares a scheme.
+The glyph row is read off the pack before them, so the transcription pass knows which scheme to skip.
 Once the guard drops, a language with schemes and no transcription row is asked for one in its first scheme.
+A language with a glyph section and no glyph row is asked for one the same way.
 The engine answers with a bulletin and this render runs again, now with a row to type into.
 An empty row never dirties the draft, so the ask costs nothing when it is left blank.
 A card left with no sentence row is asked for a blank one in the same breath.

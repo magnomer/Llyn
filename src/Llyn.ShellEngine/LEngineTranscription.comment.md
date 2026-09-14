@@ -1,4 +1,4 @@
-# LEngineTranscription.cs
+﻿# LEngineTranscription.cs
 
 ## `public sealed partial class LEngine`
 
@@ -24,6 +24,7 @@ No variety fan-out happens either, since a scheme is already the axis a transcri
 
 The built sources of one scheme, made once per language and scheme and kept for the engine's life.
 A scheme the pack does not declare yields no sources, so its lookup ends at once with nothing found.
+The glyph section is asked by its name too, so the glyph row looks its form up through this path.
 
 ## `public IReadOnlyList<LTranscription> LEngineTranscriptionRead(long entryId)`
 

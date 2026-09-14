@@ -30,6 +30,16 @@ The label the taking button shows: what it offers, or how its download went.
 Whether the user can take this recording now.
 False while a download runs, and false once one has been saved.
 
+## `public bool PClipReadingFetching`
+
+Whether the preview of this recording is still being fetched.
+The play button fills orange while it is, so a slow source is seen to be working.
+
+## `public bool PClipReadingPlaying`
+
+Whether the preview of this recording is the one now sounding.
+The play button fills blue while it is, and clears when the sound ends or another preview starts.
+
 ## `internal LRecording PClipReadingModel`
 
 The recording this entry stands for, which is what preview fetches and taking saves.

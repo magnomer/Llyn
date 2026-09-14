@@ -275,6 +275,12 @@ internal static partial class TInterface
     internal static IReadOnlyList<string> TEngineSchemeRead(this LEngine engine, string language) =>
         engine.LEngineSchemeRead(language);
 
+    internal static LGlyph? TEngineGlyphRead(this LEngine engine, string language) =>
+        engine.LEngineGlyphRead(language);
+
+    internal static LEntry TEngineGlyphResolve(this LEngine engine, string character, string language) =>
+        engine.LEngineGlyphResolve(character, language);
+
     internal static void TEnginePronunciationUpdate(this LEngine engine, LPronunciation pronunciation)
     {
         engine.LEnginePronunciationUpdate(pronunciation);

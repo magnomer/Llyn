@@ -41,6 +41,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost
         PNotationList.ItemsSource = _pNotationItem;
         PAccent.ItemsSource = _pAccentItem;
         PTranscription.ItemsSource = _pTranscriptionItem;
+        PGlyph.ItemsSource = _pGlyphItem;
         PClipList.ItemsSource = _pClipItem;
         PLanguageList.ItemsSource = _pLanguageItem;
         PProspectList.ItemsSource = _pProspectItem;
@@ -56,6 +57,8 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost
         AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
         AddHandler(LostFocusEvent, new RoutedEventHandler(PEditorFocusHandle));
         PVolumeAttach();
+        _pDownloaderPlayer.MediaEnded += PClipEndHandle;
+        _pDownloaderPlayer.MediaFailed += PClipEndHandle;
     }
 
     internal void PEditorAttach(PWindow host, LEngine engine, string origin, long? entry)

@@ -1,4 +1,4 @@
-# LSourceGeneric.cs
+﻿# LSourceGeneric.cs
 
 ## `public sealed class LSourceGeneric : LSource`
 
@@ -9,7 +9,9 @@ It fetches the attempt's URLs resiliently (see `LSourceReader`).
 It runs every reading the attempt declares over that one fetched body.
 Each reading extracts with its own declared strategy and tags its value with a variety.
 That is a regex capture, a JSON path, or the tolerant nested-span IPA reader.
-A reading takes every match of its pattern, so a page listing several readings yields them all.
+A reading takes the first match of its pattern.
+The later matches on a dictionary page belong to other headwords.
+A reading marked `every` takes every match, so a page listing one reading per etymology yields them all.
 A reading's skip count passes over that many earlier matches.
 It holds no knowledge of any particular source, dictionary, or language.
 So a new ordinary source needs only a `source.json` entry and no code.
@@ -65,7 +67,11 @@ The first value a reading yields, which is what the follow reading wants: one he
 
 ## `private static IReadOnlyList<string> LSourceValueScan(LSourceReading reading, string body)`
 
-Dispatches one reading to its declared strategy and normalizes every text it captured.
+Dispatches one reading to its declared strategy and normalizes the texts it captured.
+A reading marked `every` keeps every captured text, and any other keeps the first alone.
+A dictionary page prints the headword first and its inflections and neighbours after it.
+So the first match is the headword's reading, and the later ones are not.
+A page carrying one reading per etymology is the case `every` exists for.
 The follow reading and the ordinary readings share it, so a pointer is captured with the same three strategies.
 
 ## `private static IReadOnlyList<string> LSourcePieceScan(LSourceReading reading, string text)`
@@ -82,6 +88,7 @@ A body that is not JSON, a missing property or a non-string leaf all read as not
 ## `private static IReadOnlyList<string> LSourceGroupScan(LSourceReading reading, string text)`
 
 The capture group of every match of the pattern from the skipped one onward.
+Whether the first alone or all of them are kept is decided afterwards by `LSourceValueScan`.
 A json value may still need a regex to pick the phonetic out of surrounding wikitext.
 
 ## `private static string? LSourceNormalize(LSourceReading reading, string captured)`

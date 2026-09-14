@@ -1,4 +1,4 @@
-# PTranscription.cs
+﻿# PTranscription.cs
 
 ## `public partial class PEditor`
 
@@ -46,6 +46,7 @@ The first declared scheme no shown row carries, or nothing when all are taken.
 ## `private PTranscriptionItem? PTranscriptionFind(long id)`
 
 The shown row with one transcription id, or nothing when the draft no longer has it.
+The glyph row is searched too, because the lookup menu fills it through the same path.
 
 ## `private void PTranscriptionChangeHandle(object? sender, PropertyChangedEventArgs e)`
 
@@ -61,10 +62,16 @@ The declared schemes are asked of the language pack once per render.
 Every row's dropdown is then told which schemes the other rows hold, so it greys those out.
 The list is shown only while there is one.
 A stored row in a scheme the pack no longer declares is still shown, because it is the entry's data.
+A row in the glyph scheme is left out, because the glyph row shows it beneath.
+
+## `private IReadOnlyList<LTranscriptionDraft> PTranscriptionScan(LEntryDraft draft)`
+
+The draft's transcription rows without the glyph row.
+The glyph form is stored as a transcription row, so this is where the two are told apart.
 
 ## `private void PTranscriptionPrepare(LEntryDraft draft)`
 
-Asks for a row in the first declared scheme when the language has schemes and the draft has no row.
+Asks for a row in the first declared scheme when the language has schemes and no transcription row exists.
 It runs after the fill guard drops, because a request during a render is refused.
 The engine answers with a bulletin and the render runs again, now finding a row and asking nothing.
 The row is asked for as seeded, so the engine ignores it while empty and the draft stays clean.

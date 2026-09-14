@@ -17,8 +17,13 @@ internal static class TPronunciationHelper
     internal static HttpClient TSourceClientCreate(string body, Task gate) =>
         new(new TSourceHandler(body, HttpStatusCode.OK, gate));
 
-    internal static LSourceReading TSourceReadingCreate(string variety, string strategy, string match, int skip = 0) =>
-        TInterface.TSourceReadingCreate(variety, strategy, match, 0, null, true, skip);
+    internal static LSourceReading TSourceReadingCreate(
+        string variety,
+        string strategy,
+        string match,
+        int skip = 0,
+        bool every = false) =>
+        TInterface.TSourceReadingCreate(variety, strategy, match, 0, null, true, skip, every);
 
     internal static LSourceAttempt TSourceAttemptCreate(params LSourceReading[] readings) =>
         TInterface.TSourceAttemptCreate([TPronunciationHelperUrl], readings, null, null, null);

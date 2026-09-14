@@ -229,12 +229,34 @@
                         </Border>
                     </StackPanel>
 
+                    <local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />
                     <ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}">
                         <ItemsControl.CommandBindings>
                             <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandPlayback}" Executed="PDisplayPlaybackHandle" />
                         </ItemsControl.CommandBindings>
                     </ItemsControl>
                     <ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />
+                    <Border x:Name="PDisplayGlyphSection" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
+                                <TextBlock x:Name="PDisplayGlyphLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
+                            </StackPanel>
+                            <ItemsControl x:Name="PDisplayGlyph" Grid.Column="1" Margin="3,0" VerticalAlignment="Center" ItemTemplate="{StaticResource Theme.Glyph.Display}">
+                                <ItemsControl.CommandBindings>
+                                    <CommandBinding Command="{x:Static local:PGlyphCommand.PGlyphCommandEntry}" Executed="PDisplayGlyphHandle" />
+                                </ItemsControl.CommandBindings>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </Grid>
+                    </Border>
                 </StackPanel>
 
                 <StackPanel x:Name="PDisplaySpeechSection" Margin="12,14,0,-4" Visibility="Collapsed">

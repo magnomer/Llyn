@@ -54,6 +54,8 @@
 
     <SolidColorBrush x:Key="Theme.DisabledInk" Color="{DynamicResource Theme.DisabledInk.Color}" />
 
+    <SolidColorBrush x:Key="Theme.Pending" Color="{DynamicResource Theme.Pending.Color}" />
+
     <FontFamily x:Key="Theme.Font">Segoe UI Variable, Segoe UI</FontFamily>
 
     <FontFamily x:Key="Theme.Phonetic">Segoe UI, Arial</FontFamily>

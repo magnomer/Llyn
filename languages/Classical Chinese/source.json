@@ -1,0 +1,17 @@
+{
+  "language": "Classical Chinese",
+  "flag": "cn",
+  "separator": "none",
+  "tonal": true,
+  "font": {
+    "family": "SimSun, Microsoft YaHei",
+    "size": 40
+  },
+  "example": {
+    "family": "SimSun, Microsoft YaHei",
+    "size": 16
+  },
+  "note": "Language selector pack for Classical Chinese. Pronunciation and audio sources are listed separately and can be added without changing the application.",
+  "pronunciation": [],
+  "audio": []
+}

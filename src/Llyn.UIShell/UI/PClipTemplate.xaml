@@ -4,6 +4,42 @@
     xmlns:local="clr-namespace:Llyn.UIShell"
     x:Class="Llyn.UIShell.PClipTemplate">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemePopup.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="Theme.Clip.Preview" TargetType="Button" BasedOn="{StaticResource Theme.Popup.IconAction}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="PSurface" Background="{TemplateBinding Background}" CornerRadius="7">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="PSurface" Property="Opacity" Value="0.7" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+            </Trigger>
+            <DataTrigger Binding="{Binding PClipReadingFetching}" Value="True">
+                <Setter Property="Background" Value="{StaticResource Theme.Pending}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Surface}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PClipReadingPlaying}" Value="True">
+                <Setter Property="Background" Value="{StaticResource Theme.Accent}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Surface}" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <DataTemplate x:Key="Theme.Clip.Reading">
         <Grid Margin="0,3,6,3">
             <Grid.ColumnDefinitions>
@@ -26,8 +62,8 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                <Button x:Name="PClipPreview" Margin="0,0,2,0" VerticalAlignment="Center" Click="PClipPreviewHandle" Style="{DynamicResource Theme.Popup.IconAction}" ToolTip="{DynamicResource Downloader.Play}">
-                    <Path Width="12" Height="12" Data="{local:PIcon play, 12}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                <Button x:Name="PClipPreview" Margin="0,0,2,0" VerticalAlignment="Center" Click="PClipPreviewHandle" Style="{StaticResource Theme.Clip.Preview}" ToolTip="{DynamicResource Downloader.Play}">
+                    <Path Width="24" Height="24" Data="{local:PIcon play, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
                 </Button>
                 <Button x:Name="PClipSelector" VerticalAlignment="Center" Click="PClipSelectorHandle" Content="{Binding PClipReadingAction}" IsEnabled="{Binding PClipReadingReady}" Style="{DynamicResource Theme.Popup.RowChoice}" />
             </StackPanel>

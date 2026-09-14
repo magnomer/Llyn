@@ -16,6 +16,7 @@ public partial class PEditor
         PSpeakerName.Text = language;
         PSpeakerFlagUpdate();
         PHeadwordFontApply(language);
+        PEditorContourApply(language);
         PEditorExampleShow(language);
         PSentenceFrameLoad(language);
         PCategoryLoad();
@@ -24,5 +25,10 @@ public partial class PEditor
     private void PEditorExampleShow(string language)
     {
         PFont.PFontExampleApply(Resources, _lEngine, language);
+    }
+
+    private void PEditorContourApply(string language)
+    {
+        PContour.PContourTonal = _lEngine.LEngineTonalCheck(language);
     }
 }

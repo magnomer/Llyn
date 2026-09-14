@@ -11,10 +11,15 @@ internal static class PFont
 {
     internal static void PFontApply(LEngine engine, string language, params DependencyObject[] surfaces)
     {
+        PFontApply(engine, language, LFontRole.LFontRoleHeadword, surfaces);
+    }
+
+    internal static void PFontApply(LEngine engine, string language, LFontRole role, params DependencyObject[] surfaces)
+    {
         ArgumentNullException.ThrowIfNull(engine);
         ArgumentNullException.ThrowIfNull(surfaces);
 
-        LFont font = PFontRead(engine, language);
+        LFont font = PFontRoleRead(engine, language, role);
         FontFamily? family = font.LFontFamily is string named ? new FontFamily(named) : null;
 
         foreach (DependencyObject surface in surfaces)
@@ -80,23 +85,6 @@ internal static class PFont
         }
 
         resources[key] = value;
-    }
-
-    private static LFont PFontRead(LEngine engine, string language)
-    {
-        if (string.IsNullOrWhiteSpace(language))
-        {
-            return new LFont(null, 0);
-        }
-
-        try
-        {
-            return engine.LEngineFontRead(language);
-        }
-        catch (Exception)
-        {
-            return new LFont(null, 0);
-        }
     }
 
     private static void PFontSet(DependencyObject surface, DependencyProperty property, object? value)

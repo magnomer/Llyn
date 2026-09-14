@@ -1,4 +1,4 @@
-# LSourceReading.cs
+﻿# LSourceReading.cs
 
 ## `public sealed record LSourceReading(`
 
@@ -26,3 +26,8 @@ A page listing two varieties is read twice, once per reading, without a second f
 - `LSourceReadingSkip` — How many earlier matches of the pattern to pass over before reading.
   `0` reads the first match.
   It lets one page yield a second variety from its second span.
+- `LSourceReadingEvery` — When `true`, every match of the pattern from the skipped one onward is read.
+  A page that carries one reading per etymology lists them all this way.
+  When `false`, only the first match is read.
+  The later matches on a dictionary page belong to inflections and neighbouring headwords.
+  A comma or slash inside that one match still yields each alternative.

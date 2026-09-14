@@ -27,3 +27,9 @@ The example and Gloss typography a language declares, put where every card's exa
 It is set on the panel's resources rather than on each card.
 A card added later is therefore already in it.
 A language declaring neither family nor size leaves the theme's own value standing.
+
+### `private void PEditorContourApply(string language)`
+
+Tells the tone contour box whether the chosen language is tonal.
+The box reads the pronunciation field live, so this is the only fact it needs from the form.
+It runs wherever the headword typography is applied, because both follow the same language change.

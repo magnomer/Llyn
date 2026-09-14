@@ -18,7 +18,9 @@ public sealed record LLanguage(
     IReadOnlyList<LRespelling>? LLanguageRespellings = null,
     IReadOnlyList<LSourceSpec>? LLanguageFrequencies = null,
     IReadOnlyList<LBand>? LLanguageBands = null,
-    IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null)
+    IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null,
+    bool LLanguageTonal = false,
+    LGlyph? LLanguageGlyph = null)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 

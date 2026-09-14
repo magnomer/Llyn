@@ -23,6 +23,15 @@
       ]
     }
   ],
+  "glyph": {
+    "name": "Kanji",
+    "language": "Classical Chinese",
+    "font": {
+      "family": "Yu Mincho, Yu Gothic UI",
+      "size": 26
+    },
+    "note": "The kanji of the headword, one transcription row under the scheme named here, and the language each character opens an entry in. No source is listed, because a Japanese headword already carries its kanji and the reading view drops the kana itself; the row exists so a kyūjitai form can be typed in by hand."
+  },
   "font": {
     "family": "Yu Gothic UI",
     "size": 40

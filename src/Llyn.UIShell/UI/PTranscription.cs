@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -79,6 +79,14 @@ public partial class PEditor
             }
         }
 
+        foreach (PTranscriptionItem row in _pGlyphItem)
+        {
+            if (row.PTranscriptionItemId == id)
+            {
+                return row;
+            }
+        }
+
         return null;
     }
 
@@ -114,7 +122,7 @@ public partial class PEditor
 
         PCard.PCardRowShow(
             _pTranscriptionItem,
-            draft.LEntryDraftTranscriptions,
+            PTranscriptionScan(draft),
             static row => row.PTranscriptionItemId,
             static spelled => spelled.LTranscriptionDraftId,
             PTranscriptionCreate,
@@ -126,9 +134,23 @@ public partial class PEditor
         }
     }
 
+    private IReadOnlyList<LTranscriptionDraft> PTranscriptionScan(LEntryDraft draft)
+    {
+        List<LTranscriptionDraft> rows = [];
+        foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
+        {
+            if (!PGlyphSchemeCheck(spelled.LTranscriptionDraftScheme))
+            {
+                rows.Add(spelled);
+            }
+        }
+
+        return rows;
+    }
+
     private void PTranscriptionPrepare(LEntryDraft draft)
     {
-        if (_pTranscriptionSchemes.Count == 0 || draft.LEntryDraftTranscriptions.Count > 0)
+        if (_pTranscriptionSchemes.Count == 0 || PTranscriptionScan(draft).Count > 0)
         {
             return;
         }

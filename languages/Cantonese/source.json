@@ -2,10 +2,11 @@
   "language": "Cantonese",
   "flag": "hk",
   "separator": "none",
+  "tonal": true,
   "transcription": [
     {
       "name": "Jyutping",
-      "note": "The wikitext attempt reads the |c= parameter of every {{zh-pron}} template on the page, which Wiktionary keeps as the canonical Cantonese reading; a comma separates alternative readings and each is shown. 'normalize' is on so the alternatives are split, and Jyutping carries no delimiter it could strip. A simplified-form or variant-form page only points at its main form through {{zh-see}}, so the wikitext attempt follows that pointer and the later attempts ask for the form it named.",
+      "note": "The wikitext attempt reads the |c= parameter of every {{zh-pron}} template on the page, which Wiktionary keeps as the canonical Cantonese reading; a comma separates alternative readings and each is shown. 'normalize' is on so the alternatives are split, and Jyutping carries no delimiter it could strip. The same parameter also carries markers after a comma, such as 1nb= for a note on the first reading, so the pattern stops at the first piece holding an equals sign. A simplified-form or variant-form page only points at its main form through {{zh-see}}, so the wikitext attempt follows that pointer and the later attempts ask for the form it named.",
       "sources": [
         {
           "name": "Wiktionary",
@@ -23,9 +24,10 @@
               },
               "strategy": "json",
               "path": "parse.wikitext.*",
-              "match": "\\{\\{zh-pron[^}]*?\\|c=([^|}\\n]+)",
+              "match": "\\{\\{zh-pron[^}]*?\\|c=([^|},\\n=]+(?:,[^|},\\n=]+)*)(?=[|},\\n])",
               "group": 1,
-              "normalize": true
+              "normalize": true,
+              "every": true
             }
           ]
         }
@@ -51,13 +53,41 @@
               },
               "strategy": "span",
               "match": "title=\"w:Yale romanization of Cantonese\"[^>]*>Yale</a></i></small>: <span class=\"zhpron-monospace\">",
-              "normalize": true
+              "normalize": true,
+              "every": true
             }
           ]
         }
       ]
     }
   ],
+  "glyph": {
+    "name": "Traditional",
+    "language": "Classical Chinese",
+    "font": {
+      "family": "SimSun, Microsoft YaHei",
+      "size": 26
+    },
+    "note": "The traditional form the entry is written in, one transcription row under the scheme named here, and the language each character opens an entry in. The wikitext attempt reads the {{zh-see}} pointer a simplified-form or variant-form page carries, which names the traditional main form; a page that is already traditional carries none, the lookup finds nothing, and the reading view shows the headword's own characters. The pointer's later parameters are cut at the first bar, so a page with a second pointer yields a second candidate.",
+    "sources": [
+      {
+        "name": "Wiktionary",
+        "attempts": [
+          {
+            "urls": [
+              "https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+            ],
+            "strategy": "json",
+            "path": "parse.wikitext.*",
+            "match": "\\{\\{zh-see\\|([^|}]+)",
+            "group": 1,
+            "normalize": false,
+            "every": true
+          }
+        ]
+      }
+    ]
+  },
   "font": {
     "family": "Microsoft JhengHei",
     "size": 40
@@ -85,7 +115,8 @@
           },
           "strategy": "span",
           "match": "title=\"w:Cantonese phonology\"[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">",
-          "normalize": true
+          "normalize": true,
+          "every": true
         }
       ]
     },
@@ -106,7 +137,8 @@
           },
           "strategy": "span",
           "match": "title=\"w:粵語音系\"[^>]*>幫助</a>\\)</sup></small>：<span class=\"IPA\">",
-          "normalize": true
+          "normalize": true,
+          "every": true
         }
       ]
     }
@@ -130,7 +162,8 @@
           "strategy": "regex",
           "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/(?:LL-Q9186_%28yue%29-|Zh-yue-)[^\"/]*\\.mp3)",
           "group": 1,
-          "prefix": "https:"
+          "prefix": "https:",
+          "every": true
         }
       ]
     },
@@ -144,9 +177,40 @@
           ],
           "strategy": "regex",
           "match": "\"title\":\"File:(?:LL-Q9186 \\(yue\\)-[^\"]*-|Zh-yue-){word}\\.[A-Za-z0-9]+\"(?:(?!\"title\")[\\s\\S])*?\"src\":\"(https://upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)\"",
+          "group": 1,
+          "every": true
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "CantoDict",
+      "note": "CantoDict serves a word page at /dictionary/words/ and a character page at /dictionary/characters/ straight from the hanzi, each carrying an editor-assigned difficulty Level from 1 upward. A single character has no word page, so the first attempt yields nothing there and the second attempt reads the character page instead. An unknown spelling returns a bare detail view without a Level, so the attempt yields nothing.",
+      "attempts": [
+        {
+          "urls": [
+            "https://www.cantonese.sheik.co.uk/dictionary/words/{word}/"
+          ],
+          "strategy": "regex",
+          "match": "(Level: *[0-9]+)",
+          "group": 1
+        },
+        {
+          "urls": [
+            "https://www.cantonese.sheik.co.uk/dictionary/characters/{word}/"
+          ],
+          "strategy": "regex",
+          "match": "(Level: *[0-9]+)",
           "group": 1
         }
       ]
     }
+  ],
+  "bands": [
+    { "match": "^Level: *1$", "name": "Very common" },
+    { "match": "^Level: *2$", "name": "Common" },
+    { "match": "^Level: *3$", "name": "Uncommon" },
+    { "match": "^Level: *[0-9]+$", "name": "Rare" }
   ]
 }

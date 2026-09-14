@@ -1,4 +1,4 @@
-namespace Llyn.Core;
+﻿namespace Llyn.Core;
 
 public sealed record LSourceReading(
     string LSourceReadingVariety,
@@ -7,4 +7,5 @@ public sealed record LSourceReading(
     int LSourceReadingGroup,
     string? LSourceReadingPath,
     bool LSourceReadingPhonetic,
-    int LSourceReadingSkip);
+    int LSourceReadingSkip,
+    bool LSourceReadingEvery);

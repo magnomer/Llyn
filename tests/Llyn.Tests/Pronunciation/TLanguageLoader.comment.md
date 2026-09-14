@@ -4,7 +4,9 @@
 
 Covers the language pack loader reading the variety block, the readings list, and the rewrite blocks.
 The English pack declares two flagged varieties and a pack without the block declares none.
-A readings list loads in written order, each reading anchored on its own variety with no skip count.
+The Mandarin and Cantonese packs declare tone and the English pack does not.
+A readings list loads in written order, each reading on its own variety, with no skip count and every off.
+A reading row with `every` on loads that flag, as the Chinese packs' per-etymology readings do.
 A flat attempt still loads as one untagged reading.
 An audio attempt with a readings list loads one non-phonetic reading per variety.
 The English pack loads exactly two respelling groups, both scoped, and an empty cleanup list.
@@ -16,6 +18,9 @@ A group with a broken regex is dropped while its neighbours survive.
 A `transcription` entry loads as a scheme whether it is a bare name or an object with sources.
 Blank and doubled scheme names are dropped.
 The Mandarin pack declares its two schemes with sources, so its rows can be looked up.
+A `glyph` block loads its name, its language and its sources, and an empty sources list when it lists none.
+Its `font` block loads as the chip typography, and a block that names none reads as null.
+A `glyph` block missing its language reads as null, as does a pack without the block.
 A `frequency` list and a `bands` list load in written order, limit rows and pattern rows alike.
 A band row without a name, without a limit or pattern, or with a broken regex is skipped alone.
 A pack without the two keys loads two empty lists.

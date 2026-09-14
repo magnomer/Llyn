@@ -50,8 +50,9 @@ internal static partial class TInterface
         int group,
         string? path,
         bool phonetic,
-        int skip) =>
-        new LSourceReading(variety, strategy, pattern, group, path, phonetic, skip);
+        int skip,
+        bool every = false) =>
+        new LSourceReading(variety, strategy, pattern, group, path, phonetic, skip, every);
 
     internal static LSourceAttempt TSourceAttemptCreate(
         IReadOnlyList<string> urls,
@@ -134,6 +135,9 @@ internal static partial class TInterface
 
     internal static LLanguage TLanguageLoad(string language) =>
         LLanguageLoader.LLanguageLoaderLoad(language);
+
+    internal static IReadOnlyList<string> TGlyphScan(string text) =>
+        LGlyph.LGlyphScan(text);
 
     internal static LTrove TTroveCreate() =>
         new LTrove();
@@ -242,6 +246,15 @@ internal static partial class TInterface
 
     internal static bool TEngineFlaggedCheck(this LEngine engine, string language) =>
         engine.LEngineFlaggedCheck(language);
+
+    internal static bool TEngineTonalCheck(this LEngine engine, string language) =>
+        engine.LEngineTonalCheck(language);
+
+    internal static IReadOnlyList<LContour> TContourParse(string ipa) =>
+        LContour.LContourParse(ipa);
+
+    internal static bool TContourToneCheck(IReadOnlyList<LContour> syllables) =>
+        LContour.LContourToneCheck(syllables);
 
     internal static LFrequency TFrequencyCreate(string source, string raw, string? band) =>
         new LFrequency(source, raw, band);

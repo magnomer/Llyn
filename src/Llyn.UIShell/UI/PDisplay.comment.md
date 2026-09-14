@@ -47,6 +47,12 @@ It carries the primary pronunciation's variety as a flag or a label before the b
 The play button shows only while the primary pronunciation owns a recording still on disk.
 The chip collapses when the entry carries no pronunciation.
 
+## `<local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />`
+
+The tone contour of the primary pronunciation, drawn beneath its chip when the entry's language is tonal.
+The code behind hands it the IPA and the tonal flag.
+It hides itself when there is no tone to draw.
+
 ## `<ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />`
 
 The further pronunciations of the entry, one row each beneath the primary, drawn by the shared accent template.
@@ -55,6 +61,12 @@ The playback command is bound here, so a row's play button reaches this view's p
 ## `<ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />`
 
 The transcriptions of the entry, one row each beneath the pronunciations, drawn by the shared transcription template.
+
+## `<Border x:Name="PDisplayGlyphSection" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">`
+
+The glyph row beneath the transcriptions: the scheme label in the shared label column and one chip per Han character.
+The chips wrap in a panel, and the entry command bound on it carries a chip to this view's host.
+It stays collapsed until an entry in a language with a glyph section is shown.
 
 ## `<Border x:Name="PPlayback" Height="37" Background="Transparent" BorderThickness="0" ...>`
 

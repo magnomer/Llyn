@@ -1,4 +1,4 @@
-# PDisplayTranscription.cs
+﻿# PDisplayTranscription.cs
 
 ## `public partial class PDisplay`
 
@@ -10,3 +10,4 @@ A blank row is left out, because the reading view shows only what reads.
 ## `private void PDisplayTranscriptionShow(LEntryDraft draft)`
 
 Rebuilds the rows from the draft, in the order the entry keeps them.
+The row in the glyph scheme is left out, because the glyph section beneath shows it as characters.

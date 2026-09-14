@@ -1,4 +1,4 @@
-# LLanguageLoaderSource.cs
+﻿# LLanguageLoaderSource.cs
 
 ## `public static partial class LLanguageLoader`
 
@@ -45,7 +45,8 @@ A reading row without a strategy is dropped, and an attempt with no readings lef
 One reader serves both the flat attempt and a row of its `readings` list, because the keys are the same.
 `variety` names a variety the pack declares, or is absent for an untagged reading.
 `skip` counts earlier matches to pass over, so a page can yield its second variety from its second span.
-Both default to empty and zero.
+`every` takes every match from there on instead of the first alone, for a page listing one reading per etymology.
+All three default to empty, zero and off.
 
 ## `private static LSourceReading? LLanguageFollowRead(JsonElement row)`
 
@@ -54,3 +55,10 @@ It names how the page's pointer to another headword is captured.
 The captured value is a headword and never a transcription.
 So IPA normalization is switched off on it whatever the pack wrote.
 An attempt without it, or with a follow row lacking a strategy, never follows.
+
+## `private static LGlyph? LLanguageGlyphRead(JsonElement root)`
+
+The `glyph` section: its `name`, its `language`, and its optional `sources` list and `font` block.
+A section missing either the name or the language reads as null, and the glyph row stays off.
+The sources list has the shape of a scheme's, so the traditional form is looked up as a transcription is.
+A blank font block reads as none, so the chips fall back to the example typography.

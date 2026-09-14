@@ -7,6 +7,7 @@ That is the reading and answer records, the respelling rules, the generic source
 The recording records, the harvest fan-out, the workspace download, and the engine discovery are relayed here too.
 The language pack loader and the per-session trove are relayed here too.
 The frequency record, its parse and its stored form are relayed here too.
+The tone contour parse and the engine's tonal check are relayed here too.
 Each relay is transparent and carries no test logic of its own.
 
 ## `internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client)`

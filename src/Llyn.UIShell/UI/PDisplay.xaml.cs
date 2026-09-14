@@ -29,6 +29,7 @@ public partial class PDisplay : UserControl
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
         PDisplayAccent.ItemsSource = _pDisplayAccent;
         PDisplayTranscription.ItemsSource = _pDisplayTranscription;
+        PDisplayGlyph.ItemsSource = _pDisplayGlyph;
 
         PDisplayPlaybackAttach();
         AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
@@ -162,10 +163,14 @@ public partial class PDisplay : UserControl
         PDisplayHeadword.Text = draft.LEntryDraftHeadword;
         PDisplayLanguageShow(draft.LEntryDraftLanguage);
         PDisplayPronunciation.Text = draft.LEntryDraftIpa;
+        PDisplayContour.PContourTonal = draft.LEntryDraftLanguage.Length > 0
+            && _lEngine.LEngineTonalCheck(draft.LEntryDraftLanguage);
+        PDisplayContour.PContourIpa = draft.LEntryDraftIpa;
         PDisplayPronunciationSurface.Visibility = draft.LEntryDraftIpa.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
         PDisplayAccentShow(draft);
+        PDisplayGlyphShow(draft);
         PDisplayTranscriptionShow(draft);
         PDisplayPlaybackShow();
 
@@ -272,8 +277,10 @@ public partial class PDisplay : UserControl
         PPlayback.Visibility = Visibility.Collapsed;
         PPlaybackAction.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
+        PDisplayContour.PContourIpa = string.Empty;
         PDisplayAccentClear();
         _pDisplayTranscription.Clear();
+        PDisplayGlyphClear();
         PDisplaySpeech.ItemsSource = null;
         PDisplaySpeechSection.Visibility = Visibility.Collapsed;
         PDisplayFrequency.Text = string.Empty;

@@ -10,6 +10,7 @@ A pack that declares nothing clears the local value, so the theme's own family a
 
 Takes any element that carries text, because a text box and a text block share the same font properties.
 Both read them from `TextElement`, so one attached property serves either.
+The bare form asks for the headword role, and the role form serves the glyph chips with their serif face.
 
 ### `internal static void PFontExampleApply(ResourceDictionary resources, LEngine engine, string language)`
 
@@ -24,7 +25,7 @@ A part the pack leaves out has its key removed, so the theme's own value stands.
 A pack writes its slant as a word, `italic` or `oblique`.
 Any other word, or none, is answered with nothing, so the theme's upright stands.
 
-### `private static LFont PFontRead(LEngine engine, string language)`
+### `private static LFont PFontRoleRead(LEngine engine, string language, LFontRole role)`
 
 A pack that is missing or unknown must not stop a headword from being drawn.
 So a failed read is answered with a blank record and the theme's own typography.

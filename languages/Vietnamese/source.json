@@ -1,6 +1,7 @@
 {
   "language": "Vietnamese",
   "flag": "vn",
+  "tonal": true,
   "font": {
     "family": "Segoe UI",
     "size": 40

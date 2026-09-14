@@ -67,6 +67,7 @@
     <Style x:Key="Theme.Pronunciation.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Field}">
         <Setter Property="Margin" Value="-2,-3,-2,3" />
         <Setter Property="MaxWidth" Value="296" />
+        <Setter Property="Height" Value="31" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="FontFamily" Value="{StaticResource Theme.Phonetic}" />

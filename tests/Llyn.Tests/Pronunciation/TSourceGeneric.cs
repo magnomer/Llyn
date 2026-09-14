@@ -73,7 +73,7 @@ public sealed class TSourceGeneric
         LSource source = TSourceGenericCreate(
             TSourceGenericBody,
             TPronunciationHelper.TSourceAttemptCreate(
-                TPronunciationHelper.TSourceReadingCreate(string.Empty, "span", TSourceGenericPhon)));
+                TPronunciationHelper.TSourceReadingCreate(string.Empty, "span", TSourceGenericPhon, every: true)));
 
         LAnswer answer = await source.TSourceFind("tomato", CancellationToken.None);
 
@@ -178,11 +178,38 @@ public sealed class TSourceGeneric
             TSourceGenericPhon + "/zɪŋ²²/</span>" + TSourceGenericPhon + "/lɛːŋ³³/</span>" +
             TSourceGenericPhon + "/zɪŋ²²/</span>",
             TPronunciationHelper.TSourceAttemptCreate(
-                TPronunciationHelper.TSourceReadingCreate(string.Empty, "span", TSourceGenericPhon)));
+                TPronunciationHelper.TSourceReadingCreate(string.Empty, "span", TSourceGenericPhon, every: true)));
 
         LAnswer answer = await source.TSourceFind("靚", CancellationToken.None);
 
         Assert.Equal(["zɪŋ²²", "lɛːŋ³³"], answer.LAnswerReadings.Select(reading => reading.LReadingPhonetic));
+    }
+
+    [Fact]
+    public async Task SourceFind_RepeatedPattern_ReturnsFirstMatchOnly()
+    {
+        LSource source = TSourceGenericCreate(
+            TSourceGenericPhon + "/breɪk/</span>" + TSourceGenericPhon + "/brəʊk/</span>" +
+            TSourceGenericPhon + "/ˈbrəʊkən/</span>",
+            TPronunciationHelper.TSourceAttemptCreate(
+                TPronunciationHelper.TSourceReadingCreate(string.Empty, "span", TSourceGenericPhon)));
+
+        LAnswer answer = await source.TSourceFind("break", CancellationToken.None);
+
+        Assert.Equal("breɪk", Assert.Single(answer.LAnswerReadings).LReadingPhonetic);
+    }
+
+    [Fact]
+    public async Task SourceFind_RepeatedPattern_SkipsThenReadsFirst()
+    {
+        LSource source = TSourceGenericCreate(
+            "x=a;x=b;x=c;",
+            TPronunciationHelper.TSourceAttemptCreate(
+                TInterface.TSourceReadingCreate(string.Empty, "regex", "x=([^;]+);", 1, null, false, 1)));
+
+        LAnswer answer = await source.TSourceFind("x", CancellationToken.None);
+
+        Assert.Equal("b", Assert.Single(answer.LAnswerReadings).LReadingPhonetic);
     }
 
     [Fact]

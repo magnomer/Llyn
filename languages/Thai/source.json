@@ -1,6 +1,7 @@
 {
   "language": "Thai",
   "flag": "th",
+  "tonal": true,
   "font": {
     "family": "Segoe UI",
     "size": 40

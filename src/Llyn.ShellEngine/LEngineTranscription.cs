@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -67,11 +67,13 @@ public sealed partial class LEngine
             return sources;
         }
 
-        LScheme? declared = LEngineLanguageLoad(language).LLanguageSchemes
+        LLanguage pack = LEngineLanguageLoad(language);
+        LScheme? declared = pack.LLanguageSchemes
             .FirstOrDefault(known => string.Equals(known.LSchemeName, scheme, StringComparison.Ordinal));
-        sources = declared is null
-            ? []
-            : LSourceFactory.LSourceFactoryCreate(declared.LSchemeSources, _lEngineClient);
+        IReadOnlyList<LSourceSpec> specs = declared?.LSchemeSources
+            ?? pack.LLanguageGlyph?.LGlyphSourceRead(scheme)
+            ?? [];
+        sources = LSourceFactory.LSourceFactoryCreate(specs, _lEngineClient);
         _lEngineSchemeSources[(language, scheme)] = sources;
         return sources;
     }

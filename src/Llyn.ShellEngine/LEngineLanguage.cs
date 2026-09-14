@@ -30,6 +30,7 @@ public sealed partial class LEngine
         {
             LFontRole.LFontRoleExample => pack.LLanguageExample,
             LFontRole.LFontRoleGloss => pack.LLanguageGloss,
+            LFontRole.LFontRoleGlyph => pack.LLanguageGlyph?.LGlyphFont ?? pack.LLanguageExample,
             _ => pack.LLanguageFont,
         };
     }
@@ -48,6 +49,11 @@ public sealed partial class LEngine
     public bool LEngineFlaggedCheck(string language)
     {
         return LEngineLanguageLoad(language).LLanguageVarietyFlagged;
+    }
+
+    public bool LEngineTonalCheck(string language)
+    {
+        return LEngineLanguageLoad(language).LLanguageTonal;
     }
 
     public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)

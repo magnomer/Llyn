@@ -40,7 +40,13 @@ internal static class PThemeLoader
             ["warningStrong"] = "Theme.WarningStrong.Color",
             ["favorite"] = "Theme.Favorite.Color",
             ["disabledLine"] = "Theme.DisabledLine.Color",
-            ["disabledInk"] = "Theme.DisabledInk.Color"
+            ["disabledInk"] = "Theme.DisabledInk.Color",
+            ["contourTop"] = "Theme.ContourTop.Color",
+            ["contourHigh"] = "Theme.ContourHigh.Color",
+            ["contourMid"] = "Theme.ContourMid.Color",
+            ["contourLow"] = "Theme.ContourLow.Color",
+            ["contourBottom"] = "Theme.ContourBottom.Color",
+            ["pending"] = "Theme.Pending.Color"
         };
 
     internal static void PThemeLoaderApply(ResourceDictionary resources)

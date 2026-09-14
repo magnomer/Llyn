@@ -17,6 +17,14 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
+    public void LanguageLoad_TonalPack_ReadsTonal()
+    {
+        Assert.True(TInterface.TLanguageLoad("Mandarin").LLanguageTonal);
+        Assert.True(TInterface.TLanguageLoad("Cantonese").LLanguageTonal);
+        Assert.False(TInterface.TLanguageLoad("English").LLanguageTonal);
+    }
+
+    [Fact]
     public void LanguageLoad_PackWithoutVarieties_ReadsNoneUnflagged()
     {
         LLanguage language = TInterface.TLanguageLoad("Spanish");
@@ -35,6 +43,16 @@ public sealed class TLanguageLoader
             ["British", "American"],
             attempt.LSourceAttemptReadings.Select(reading => reading.LSourceReadingVariety));
         Assert.All(attempt.LSourceAttemptReadings, reading => Assert.Equal(0, reading.LSourceReadingSkip));
+        Assert.All(attempt.LSourceAttemptReadings, reading => Assert.False(reading.LSourceReadingEvery));
+    }
+
+    [Fact]
+    public void LanguageLoad_EveryKey_ReadsEveryFlag()
+    {
+        LSourceSpec wiktionary = TLanguageSourceFind("Mandarin", "Wiktionary");
+
+        LSourceAttempt attempt = Assert.Single(wiktionary.LSourceSpecAttempts);
+        Assert.All(attempt.LSourceAttemptReadings, reading => Assert.True(reading.LSourceReadingEvery));
     }
 
     [Fact]
@@ -247,6 +265,45 @@ public sealed class TLanguageLoader
 
         Assert.Empty(language.LLanguageFrequencies);
         Assert.Empty(language.LLanguageBands);
+    }
+
+    [Fact]
+    public void LanguageLoad_GlyphWithSources_ReadsNameLanguageAndSource()
+    {
+        LLanguage language = TInterface.TLanguageLoad("Mandarin");
+
+        Assert.NotNull(language.LLanguageGlyph);
+        Assert.Equal("Traditional", language.LLanguageGlyph.LGlyphName);
+        Assert.Equal("Classical Chinese", language.LLanguageGlyph.LGlyphLanguage);
+        Assert.Equal("Wiktionary", Assert.Single(language.LLanguageGlyph.LGlyphSources).LSourceSpecName);
+        Assert.Equal("SimSun, Microsoft YaHei", language.LLanguageGlyph.LGlyphFont?.LFontFamily);
+        Assert.Equal(26, language.LLanguageGlyph.LGlyphFont?.LFontSize);
+    }
+
+    [Fact]
+    public void LanguageLoad_GlyphWithoutSources_ReadsEmptySourceList()
+    {
+        LLanguage language = TInterface.TLanguageLoad("Japanese");
+
+        Assert.NotNull(language.LLanguageGlyph);
+        Assert.Equal("Kanji", language.LLanguageGlyph.LGlyphName);
+        Assert.Empty(language.LLanguageGlyph.LGlyphSources);
+    }
+
+    [Fact]
+    public void LanguageLoad_GlyphMissingLanguage_ReadsNull()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "language": "Fixture", "glyph": { "name": "Traditional", "font": { "family": "Serif" } } }
+            """);
+
+        Assert.Null(language.LLanguageGlyph);
+        Assert.Null(TInterface.TLanguageLoad("English").LLanguageGlyph);
+        Assert.Null(TLanguageFixtureLoad(
+            """
+            { "language": "Fixture", "glyph": { "name": "Kanji", "language": "Classical Chinese" } }
+            """).LLanguageGlyph?.LGlyphFont);
     }
 
     private static LLanguage TLanguageFixtureLoad(string json)

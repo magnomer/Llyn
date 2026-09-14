@@ -7,4 +7,6 @@ public enum LFontRole
     LFontRoleExample,
 
     LFontRoleGloss,
+
+    LFontRoleGlyph,
 }

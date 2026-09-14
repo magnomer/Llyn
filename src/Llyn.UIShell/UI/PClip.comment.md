@@ -84,7 +84,19 @@ Fetch it to a local temp file first, then play that.
 ### `internal async void PClipSelectorHandle(object sender, RoutedEventArgs e)`
 
 Preview is best-effort.
-A failed fetch leaves the menu untouched.
+A failed fetch leaves the menu untouched, only the button's fill clearing.
+The button fills orange while the recording is fetched and blue once it sounds.
+Only one preview is marked at a time, so starting another clears the last.
+A fetch that finishes after another preview took over does not play.
+
+### `private void PClipPreviewClear()`
+
+Returns the marked preview's button to plain and forgets it.
+It is called when a sound ends or fails, when another preview starts, and when the menu closes.
+
+### `private void PClipEndHandle(object? sender, EventArgs e)`
+
+The player's end and failure both clear the mark, since either way nothing sounds any more.
 
 ### `reading.PClipReadingAction = _pEditorHost.PLocalizationTextRead("Downloader.Saving");`
 

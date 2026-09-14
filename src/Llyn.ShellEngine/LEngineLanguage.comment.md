@@ -1,4 +1,4 @@
-# LEngineLanguage.cs
+﻿# LEngineLanguage.cs
 
 ## `public sealed partial class LEngine`
 
@@ -15,7 +15,8 @@ The typography the pack declares for a headword, the role most callers want.
 
 ## `public LFont LEngineFontRead(string language, LFontRole role)`
 
-The typography the pack declares for one role: the headword, an example line, or a gloss.
+The typography the pack declares for one role: the headword, an example line, a gloss, or a glyph chip.
+The glyph role falls back to the example typography, so a chip stays serif when the section names no font.
 A pack that declares none for the role answers a blank font, and the theme's own typography stands.
 
 ## `public IReadOnlyList<string> LEngineLanguageRead()`
@@ -39,6 +40,11 @@ It reads the pack from the engine's cache, so a menu reopened does not reparse t
 ## `public bool LEngineFlaggedCheck(string language)`
 
 Reports whether the pack asks the UI to label a reading's variety by flag rather than by name.
+It reads the cached pack as `LEngineVarietyRead` does.
+
+## `public bool LEngineTonalCheck(string language)`
+
+Reports whether the pack declares the language tonal, so the UI knows to draw a tone contour under a reading.
 It reads the cached pack as `LEngineVarietyRead` does.
 
 ## `public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`

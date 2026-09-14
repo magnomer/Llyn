@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Llyn.Core;
@@ -144,7 +144,8 @@ public static partial class LLanguageLoader
             LLanguageNumberRead(element, "group"),
             LLanguageTextRead(element, "path"),
             LLanguageBooleanRead(element, "normalize"),
-            LLanguageNumberRead(element, "skip"));
+            LLanguageNumberRead(element, "skip"),
+            LLanguageBooleanRead(element, "every"));
     }
 
     private static IReadOnlyDictionary<string, string>? LLanguageHeaderRead(JsonElement row)
@@ -164,5 +165,29 @@ public static partial class LLanguageLoader
         }
 
         return map.Count == 0 ? null : map;
+    }
+
+    private static LGlyph? LLanguageGlyphRead(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty(LLanguageLoaderGlyph, out JsonElement glyph) ||
+            glyph.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        string name = LLanguageTextRead(glyph, "name")?.Trim() ?? string.Empty;
+        string language = LLanguageTextRead(glyph, "language")?.Trim() ?? string.Empty;
+        if (name.Length == 0 || language.Length == 0)
+        {
+            return null;
+        }
+
+        LFont font = LLanguageFontRead(glyph, LLanguageLoaderFont);
+        return new LGlyph(
+            name,
+            language,
+            LLanguageSourceScan(glyph, LLanguageLoaderSources),
+            font.LFontFamily is null && font.LFontSize <= 0 ? null : font);
     }
 }

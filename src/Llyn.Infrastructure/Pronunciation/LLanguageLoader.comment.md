@@ -1,4 +1,4 @@
-# LLanguageLoader.cs
+﻿# LLanguageLoader.cs
 
 ## `public static partial class LLanguageLoader`
 
@@ -94,6 +94,10 @@ That unscoped form survives only in a pack without varieties, as the scan above 
 A group with no valid rule is dropped.
 A group whose regex fails to compile is dropped too, so one typo never blanks the pack.
 The record constructor throws on the bad pattern, and this reader catches it per group.
+
+### `private static LLanguage LLanguageRead(string language, JsonElement root)`
+
+The top-level `tonal` key is read as a plain boolean, and only a literal `true` switches the tone contour on.
 
 ### `private static bool LLanguageFlaggedCheck(JsonElement root)`
 

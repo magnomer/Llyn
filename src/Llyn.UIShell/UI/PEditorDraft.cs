@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +17,7 @@ public partial class PEditor
             PEditorTextShow(PHeadword, PEditorRequestHeadword, draft.LEntryDraftHeadword);
             PEditorTextShow(PPronunciationField, PEditorRequestIpa, draft.LEntryDraftIpa);
             PAccentShow(draft);
+            PGlyphShow(draft);
             PTranscriptionShow(draft);
             PEditorSpeechShow(draft.LEntryDraftSpeeches);
             PEditorLanguageShow(draft.LEntryDraftLanguage);
@@ -35,6 +36,7 @@ public partial class PEditor
         }
 
         PTranscriptionPrepare(draft);
+        PGlyphPrepare(draft);
         PSentencePrepare();
     }
 
@@ -100,10 +102,12 @@ public partial class PEditor
         PPronunciationField.Text = string.Empty;
         PAccentClear();
         PTranscriptionClear();
+        PGlyphClear();
         PMarkerShow(null);
         PRecordingClear();
         _pSpeakerEntry = false;
         PHeadwordFontApply(_pSpeakerChoice);
+        PEditorContourApply(_pSpeakerChoice);
         PEditorExampleShow(_pSpeakerChoice);
         PSentenceFrameLoad(_pSpeakerChoice);
 

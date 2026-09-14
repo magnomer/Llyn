@@ -113,6 +113,7 @@
                 <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandAddition}" CanExecute="PTranscriptionAddCheck" Executed="PTranscriptionAddHandle" />
                 <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandRemoval}" Executed="PTranscriptionRemoveHandle" />
                 <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandNotation}" Executed="PTranscriptionNotationHandle" />
+                <CommandBinding Command="{x:Static local:PGlyphCommand.PGlyphCommandNotation}" Executed="PGlyphNotationHandle" />
             </StackPanel.CommandBindings>
             <StackPanel Orientation="Horizontal">
 
@@ -150,8 +151,10 @@
 
             </StackPanel>
 
+            <local:PContour x:Name="PContour" Style="{StaticResource Theme.Contour.Box}" PContourIpa="{Binding Text, ElementName=PPronunciationField}" />
             <ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />
             <ItemsControl x:Name="PTranscription" ItemTemplate="{StaticResource Theme.Transcription.Row}" Visibility="Collapsed" />
+            <ItemsControl x:Name="PGlyph" ItemTemplate="{StaticResource Theme.Glyph.Row}" Visibility="Collapsed" />
         </StackPanel>
 
         <StackPanel Grid.Row="2">

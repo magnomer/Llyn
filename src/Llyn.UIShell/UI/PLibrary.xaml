@@ -202,7 +202,7 @@
             </Border>
         </local:PRail>
 
-        <Border Grid.Row="1" Grid.Column="1" Margin="0,14,-18,-38" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
+        <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" ClipToBounds="True" Style="{StaticResource Theme.Panel.Surface}">
             <Grid>
                 <local:PDisplay x:Name="PDisplay" />
 

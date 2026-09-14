@@ -29,6 +29,8 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderFrequency = "frequency";
     private const string LLanguageLoaderMorphology = "morphology";
     private const string LLanguageLoaderBands = "bands";
+    private const string LLanguageLoaderTonal = "tonal";
+    private const string LLanguageLoaderGlyph = "glyph";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -136,7 +138,9 @@ public static partial class LLanguageLoader
             LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped),
             LLanguageSourceScan(root, LLanguageLoaderFrequency),
             LLanguageBandScan(root),
-            LLanguageSourceScan(root, LLanguageLoaderMorphology));
+            LLanguageSourceScan(root, LLanguageLoaderMorphology),
+            root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderTonal),
+            LLanguageGlyphRead(root));
     }
 
     private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)
