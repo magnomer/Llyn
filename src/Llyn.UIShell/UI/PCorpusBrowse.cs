@@ -286,12 +286,9 @@ public partial class PCorpus
     private void PExcerptCitationShow(LStateAnchor value)
     {
         string shown = PCitationNameRead(value.LStateAnchorShow());
-        string? text = value.LStateAnchorState switch
-        {
-            LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
-            LState.LStateSpecified when !string.IsNullOrEmpty(shown) => shown,
-            _ => null,
-        };
+        string? text = value.LStateAnchorState == LState.LStateSpecified && !string.IsNullOrEmpty(shown)
+            ? shown
+            : null;
 
         PExcerptCitation.Text = text ?? string.Empty;
         PExcerptCitationSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;

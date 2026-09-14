@@ -1,8 +1,8 @@
-# PReference.xaml
+﻿# PReference.xaml
 
 ## `<UserControl.Resources>`
 
-The row and card templates the panel draws with live in `PReferenceShelf.xaml` and `PReferenceColophon.xaml`.
+The row and card templates the panel draws with live in `PReferenceShelf.xaml` and `PReferenceFootnote.xaml`.
 Only the styles built on another style stay here, because a dictionary standing on its own cannot resolve one.
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
@@ -59,19 +59,11 @@ The mode toggle swaps it for `PEditor`, so an Entry is read and written here as 
 The entry editor the library and tenor panels share, drawn in the same cell as the display.
 It stands in front only while an Entry is shown and the toggle is on the editing side.
 
-## `<Grid x:Name="PColophon">`
+## `<local:PColophon x:Name="PColophon" />`
 
-The reading of one Source, laid out as the repertoire panel lays out a Situation.
-`PColophon` here stands on a Source rather than on an Entry, beside the Entry-shaped `PDisplay`.
-The title stands at the head of the page.
-The kind and the citation count stand as chips on the row beneath it.
-The authors, the year, the address and the note are headings over their values, as a situation's description is.
-No field is labeled, because the entry display labels nothing: position and dress say what a value is.
-A never-written field is not drawn at all, as a situation with no description draws none.
-An unknown value reads the unknown mark where the value would stand.
-An unknown authorship reads it under its heading.
-A never-written title reads the untitled text in the muted colour, because the head of the page cannot be empty.
-The editing side still draws every slot, so the two kinds of empty are one toggle apart rather than lost.
+The reading of one Source, a control of its own and described in `PColophon.comment.md`.
+It stands in the same cell as the Entry-shaped `PDisplay` and is shown while a Source is read.
+The authors panel reads a Source through the same control, so the two panels cannot drift apart.
 The mode toggle is not in here.
 It sits in the action row as it does in every built panel.
 

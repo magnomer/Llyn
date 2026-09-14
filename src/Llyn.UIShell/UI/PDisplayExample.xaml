@@ -8,6 +8,19 @@
     <local:PMentionConverter x:Key="Display.Card.Mention" />
     <local:PGlossConverter x:Key="Display.Card.Gloss" />
     <local:PStateConverter x:Key="Display.Card.State" />
+    <local:PCitationConverter x:Key="Display.Card.Citation" />
+
+    <Style x:Key="Display.Card.ExampleCitation" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Muted}" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="MaxWidth" Value="220" />
+        <Style.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <Style x:Key="Display.Card.Example" TargetType="Border">
         <Setter Property="Margin" Value="{DynamicResource Theme.Card.ExampleMargin}" />
@@ -50,6 +63,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Style="{DynamicResource Theme.Card.Dot}" />
@@ -67,6 +81,7 @@
 
             <StackPanel Grid.Column="2">
                 <local:PMention
+                    x:Name="PExampleText"
                     PMentionLanguage="{Binding LSentenceDraftExample.LExampleDraftLanguage}"
                     PMentionMention="{Binding LSentenceDraftExample.LExampleDraftMention, Converter={StaticResource Display.Card.Mention}}">
                     <local:PMention.Margin>
@@ -88,6 +103,15 @@
                 </local:PMention>
                 <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleGloss}" ItemsSource="{Binding LSentenceDraftExample.LExampleDraftGloss, Converter={StaticResource Display.Card.Gloss}}" Style="{DynamicResource Theme.Gloss.Line}" />
             </StackPanel>
+
+            <Border Grid.Column="3" Margin="16,0,0,0">
+                <TextBlock
+                    Margin="{Binding Margin, ElementName=PExampleText}"
+                    FontFamily="{Binding FontFamily, ElementName=PExampleText}"
+                    FontSize="{Binding FontSize, ElementName=PExampleText}"
+                    Style="{StaticResource Display.Card.ExampleCitation}"
+                    Text="{Binding LSentenceDraftExample.LExampleDraftReference, Converter={StaticResource Display.Card.Citation}}" />
+            </Border>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

@@ -2,9 +2,10 @@
 
 ## `public partial class PEditor`
 
-The dropdown of stored Situations a typed wording may already name, and the rows it offers.
+The dropdown of stored rows a typed wording may already name, and the rows it offers.
+It serves the Situation caret, the Register caret and the citation field of a sentence row alike.
 It is one popup the editor owns rather than one per card, for the reason the translation dropdown is.
-Only one card is being typed into at a time.
+Only one field is being typed into at a time.
 The popup is retargeted at the caret that opened it.
 
 A Situation is a workspace entity, not a word on a card.
@@ -50,7 +51,21 @@ Rows are ordered by how many cards already use them, so the settled wordings sta
 A Situation the card already carries is left out, since it cannot be attached twice.
 The list stays shut when nothing matches, rather than standing empty.
 
+### `private void PCandidateCitationShow(PCard card, PSentence row)`
+
+Offers the Sources whose author, year, title or address answer what stands in the citation field.
+The field is found through the keyboard focus, so a line the engine put there opens nothing.
+A line equal to the cited name opens nothing either, since the row already cites it.
+Rows carry the `Author (Year)` byline and are ordered by how many rows already cite them.
+
 ### `private void PCandidateSelect(PCandidateItem item)`
 
 Asks the engine to link the row the user chose, at the caret, and empties the entry.
 A row the card already carries is not asked for again.
+A pick from the citation field cites the chosen Source on that sentence row instead.
+
+### `private static TextBox? PCandidateCitationFind(PSentence row)`
+
+The example line and the citation field share one sentence row as their context.
+The two are told apart by the path their text binds to, never by comparing text.
+The box's text still lags one keystroke behind the row while the row is raising its change.

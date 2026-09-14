@@ -101,9 +101,11 @@ public sealed class LDatabase
     public void LDatabaseCreate()
     {
         bool stale;
+        bool blank;
         using (SqliteConnection connection = LDatabaseConnectionRead())
         {
             stale = LSchemaMigration.LSchemaMigrationCheck(connection);
+            blank = !LSchemaVersion.LSchemaVersionExist(connection);
         }
 
         if (stale)
@@ -113,6 +115,10 @@ public sealed class LDatabase
 
         using SqliteConnection fresh = LDatabaseConnectionRead();
         LSchema.LSchemaCreate(fresh);
+        if (blank)
+        {
+            LSchemaCitation.LSchemaCitationCreate(fresh, "main");
+        }
     }
 
     internal void LDatabaseSessionClear(LDatabaseSession session)

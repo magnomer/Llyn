@@ -17,10 +17,15 @@ Both come back that way.
 A row nothing was written in refers to nothing and is not stored.
 A row holding an unknown sentence still refers to its Example and is kept.
 
-## `EntrySave_UnknownCitation_DiffersFromNoSource`
+## `EntrySave_UnknownSourceCited_LinksTheSeededRow`
 
-A citation that cannot be read back is stored as unknown, not as citing nothing.
-The two read back apart.
+A source that is not known is the seeded Unknown Reference, cited like any other row.
+The example table never writes an unknown wording for its source, and a sentence citing nothing stays unspecified.
+
+## `ExampleRead_UnknownSourceWording_ReadsUnreadable`
+
+The unknown wording an older workspace wrote for a source reads as unreadable, since no anchor answers to it.
+Migration rewrites the wording before a read like this happens.
 
 ## `EntryUpdate_ClearedUnknownField_RecordsNothing`
 

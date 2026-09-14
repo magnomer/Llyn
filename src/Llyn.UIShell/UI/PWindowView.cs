@@ -24,6 +24,7 @@ public partial class PWindow
         PRepertoire.PMeshRestore(PWindowFilterRead(layout, "repertoire"));
         PCorpus.PGauzeRestore(PWindowFilterRead(layout, "corpus"));
         PReference.PTrellisRestore(PWindowFilterRead(layout, "reference"));
+        PGuild.PLouverRestore(PWindowFilterRead(layout, "guild"));
 
         PLibrary.POrderRestore(PWindowOrderRead(layout, "library", LCatalogOrder.LCatalogOrderHeadword));
         PPhonology.PSequenceRestore(PWindowOrderRead(layout, "phonology", LCatalogOrder.LCatalogOrderHeadword));
@@ -33,6 +34,7 @@ public partial class PWindow
         PRepertoire.PTierRestore(PWindowOrderRead(layout, "repertoire", LCatalogOrder.LCatalogOrderName));
         PReference.PGradeRestore(PWindowOrderRead(layout, "reference", LCatalogOrder.LCatalogOrderName));
         PCorpus.PRankRestore(PWindowOrderRead(layout, "corpus", LCatalogOrder.LCatalogOrderText));
+        PGuild.PEchelonRestore(PWindowOrderRead(layout, "guild", LCatalogOrder.LCatalogOrderName));
 
         PDuplex.PDuplexRestore(state);
 

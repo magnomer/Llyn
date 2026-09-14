@@ -48,6 +48,12 @@ Prints the entry being read, as the engine portrays it.
 The panel names only the id it is showing, and the engine builds the page from stored rows.
 Nothing is read back from the screen.
 
+## `private async void PLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Exports the entry being read, as the engine portrays it.
+The window asks for the file and the format, and the engine writes the document from stored rows.
+Nothing is read back from the screen.
+
 ## Inline notes
 
 ### `private PWindow _pLibraryHost = null!;`

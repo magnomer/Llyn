@@ -25,3 +25,21 @@ Whether the editor is the shown side and is holding a change, so leaving would l
 ## `internal void PTenorClose()`
 
 Stops listening and closes the reader and the editor.
+
+## `private void PTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Whether the print and export buttons are live: exactly when an entry is read in the display.
+An editor on screen prints nothing, because what is printed is what is read.
+The buttons follow this answer on their own, so no panel state has to switch them.
+
+## `private async void PTenorPressHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Prints the entry being read, as the engine portrays it.
+The panel names only the id it is showing, and the engine builds the page from stored rows.
+Nothing is read back from the screen.
+
+## `private async void PTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Exports the entry being read, as the engine portrays it.
+The window asks for the file and the format, and the engine writes the document from stored rows.
+Nothing is read back from the screen.

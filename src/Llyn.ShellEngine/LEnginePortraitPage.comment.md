@@ -19,7 +19,7 @@ The one wording for a page whose row is gone.
 
 The sentence heads the page, its language is the chip, and its usage tally follows.
 Each gloss is a line labelled with its language, under the translation heading.
-The cited source is named as the catalog names it, and an unknown source shows the mark.
+The cited source is named as the catalog names it, and an example citing nothing shows no source.
 
 ## `private static LPortraitPage LEnginePageRead(LReference reference, IReadOnlyList<LAuthor> credits, int count, LPortraitLegend legend)`
 

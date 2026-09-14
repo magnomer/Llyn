@@ -25,21 +25,6 @@ Reads the workspace languages the picker offers.
 No default is chosen, because an Example's language is optional and the store accepts none.
 Choosing one here would put a language on every sentence the user never named.
 
-## `private void PCitationFind()`
-
-Reads the whole shelf of Sources the citation may point at.
-Nothing here creates, changes or deletes a Source.
-
-## `private string PCitationNameRead(long id)`
-
-The name a cited Source is shown under, falling back to its id when it names itself nowhere.
-The catalog, the search and the display all read a Source through this, so all three agree.
-
-## `private void PCitationClearHandle(object sender, RoutedEventArgs e)`
-
-Drops the citation.
-The Source is left standing, because clearing a pointer is not deleting what it pointed at.
-
 ## `private string PTranscriptHintRead(bool unknown)`
 
 The placeholder the sentence field shows while empty.

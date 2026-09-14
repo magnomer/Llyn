@@ -10,7 +10,7 @@ What is printed is never read from the screen, so the panels ask the engine and 
 Asks the reader for a printer, then runs `print` with what was chosen.
 A cancelled dialog prints nothing, and any failure is reported by the window.
 The dialog stands inside the guard because it raises itself when the spooler is down or no printer exists.
-Every panel prints through here, so the seven print buttons share one failure path.
+Every panel prints through here, so the eight print buttons share one failure path.
 
 ## `internal LPressTicket? PWindowTicketRead()`
 

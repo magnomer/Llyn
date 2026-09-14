@@ -140,6 +140,7 @@
 
     <UserControl.CommandBindings>
         <CommandBinding CanExecute="PRepertoirePressCheck" Command="ApplicationCommands.Print" Executed="PRepertoirePressHandle" />
+        <CommandBinding CanExecute="PRepertoirePortraitCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PRepertoirePortraitHandle" />
     </UserControl.CommandBindings>
 
     <Grid Margin="34,20,34,38">
@@ -276,8 +277,8 @@
                         Tag="{local:PIcon save, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
+                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
                         Content="{DynamicResource Scribe.Export}"
-                        IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="{local:PIcon export, 24}" />
                     <Button

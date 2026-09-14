@@ -14,8 +14,8 @@ internal sealed class PCitationItem
 
     public string PCitationItemName { get; }
 
-    internal static PCitationItem PCitationItemCreate(LReference reference)
+    internal static PCitationItem PCitationItemCreate(LCatalogReference row)
     {
-        return new PCitationItem(reference.LReferenceId, reference.LReferenceNameRead());
+        return new PCitationItem(row.LCatalogReferenceStored.LReferenceId, row.LCatalogReferenceByline);
     }
 }

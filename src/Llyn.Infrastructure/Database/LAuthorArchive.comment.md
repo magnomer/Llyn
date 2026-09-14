@@ -1,4 +1,4 @@
-# LAuthorArchive.cs
+﻿# LAuthorArchive.cs
 
 ## `public sealed class LAuthorArchive`
 
@@ -49,6 +49,16 @@ A catalog showing credits on every row would otherwise run one query per row.
 Rewrites the name of the Author identified by `author`'s id.
 The id and every Reference crediting it are untouched, so a rename never changes where the Author appears.
 Throws when no Author carries that id.
+
+## `public void LAuthorAbsorb(long kept, long dropped)`
+
+Folds the Author `dropped` into the Author `kept` and deletes the dropped row.
+Every Reference crediting the dropped Author credits the kept one afterwards, at the same position.
+A Reference already crediting both keeps the kept credit where it stood and loses the duplicate.
+The remaining credits of each touched Reference are renumbered, because the order is a unique index.
+The kept Author is inserted past every live position first, so the renumbering never collides.
+Throws when either id names no Author or both name the same one.
+The whole fold is one transaction, so no Reference is left crediting a deleted Author.
 
 ## `public void LAuthorDelete(long id, bool detach)`
 

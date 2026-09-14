@@ -98,7 +98,7 @@ public static class LStateColumn
         ArgumentNullException.ThrowIfNull(reader);
 
         string stored = reader.GetString(state);
-        if (!LStateColumnCheck(stored))
+        if (!LStateColumnCheck(stored) || LStateColumnParse(stored) == LState.LStateUnknown)
         {
             return new LStateAnchor(LState.LStateUnspecified, null, LStateAnchorUnreadable: true);
         }

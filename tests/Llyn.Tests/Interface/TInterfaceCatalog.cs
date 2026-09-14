@@ -65,6 +65,9 @@ internal static partial class TInterface
     internal static string TReferenceNameRead(this LReference reference) =>
         reference.LReferenceNameRead();
 
+    internal static LReference TEngineCitationCreate(this LEngine engine, string title) =>
+        engine.LEngineCitationCreate(title);
+
     internal static string TCatalogOrderFormat(LCatalogOrder order) =>
         LCatalog.LCatalogOrderFormat(order);
 

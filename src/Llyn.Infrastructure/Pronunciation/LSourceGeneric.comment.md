@@ -9,8 +9,8 @@ It fetches the attempt's URLs resiliently (see `LSourceReader`).
 It runs every reading the attempt declares over that one fetched body.
 Each reading extracts with its own declared strategy and tags its value with a variety.
 That is a regex capture, a JSON path, or the tolerant nested-span IPA reader.
+A reading takes every match of its pattern, so a page listing several readings yields them all.
 A reading's skip count passes over that many earlier matches.
-So one page yields a second variety from a later span.
 It holds no knowledge of any particular source, dictionary, or language.
 So a new ordinary source needs only a `source.json` entry and no code.
 It answers with an `LAnswer`.
@@ -20,26 +20,30 @@ Only a source whose every attempt failed to fetch is reported as never reached.
 
 ## `public async Task<LAnswer> LSourceFind(string word, CancellationToken cancellation)`
 
-Merges readings across attempts, keeping the first value seen for each variety.
+Merges readings across attempts, keeping every value the first attempt to answer for a variety gave.
+A later attempt adds nothing to a variety an earlier one filled, so a fallback never doubles a reading.
 An untagged reading counts as a variety of its own, so a flat attempt still answers once.
 The loop stops once every variety the spec declares is filled, so a later attempt is not fetched for nothing.
 Readings come back in the order they were first seen, which keeps the pack's declared order on the menu.
-The headword an attempt followed to carries over, so later attempts ask for the page that has readings.
+The headword an attempt followed to carries over, so later attempts ask for the page it landed on.
 
 ## `private async Task<(LAnswer, string)> LSourceAttemptResolve(LSourceAttempt attempt, string word, CancellationToken cancellation)`
 
-Runs one attempt and follows the pointer it captures when the page held no reading.
+Runs one attempt and follows the pointer it captures.
 Each hop fetches the attempt again for the headword the pointer named.
+The readings of every page on the way are gathered.
+So a character that is both a word and the simplified form of another shows both sets.
+A reading already gathered under the same variety is not added twice.
 At most two hops are taken.
 A headword already visited ends the chase, so two pages pointing at each other cannot loop.
-The answer comes back with the headword it was found under.
+The answer counts as reached when any page on the way loaded.
+It comes back with the headword the chase ended on.
 
 ## `private async Task<(LAnswer, string?)> LSourceAttemptRun(LSourceAttempt attempt, string word, CancellationToken cancellation)`
 
 Fetches and extracts once.
 The second value is the headword the attempt's `follow` reading captured, or `null` when there is none to follow.
-A pointer is only read when every reading came up empty, so a page with readings is never left.
-A page the guard rejects is not followed either.
+A page the guard rejects is not followed.
 
 A pattern that runs past its patience is read as a page with nothing on it.
 Every pattern comes from a language pack and runs over a page a stranger wrote.
@@ -47,19 +51,44 @@ Either can make a backtracking pattern spin for minutes, and one lookup must nev
 
 ## `private static (LAnswer, string?) LSourceBodyRead(LSourceAttempt attempt, string body, string word)`
 
-Runs the guard and every reading over one fetched page, under the patience the runner sets.
+Runs the guard, every reading and the follow reading over one fetched page, under the patience the runner sets.
+
+## `private static LSourceReading LSourcePatternResolve(LSourceReading reading, string word)`
+
+Puts the headword into a pattern that names `{word}`, escaped so it matches literally.
+It lets a search result be narrowed to the file that carries exactly this headword.
+A pattern without the token is returned as it is.
 
 ## `private static string? LSourceValueRead(LSourceReading reading, string body)`
 
-Dispatches one reading to its declared strategy.
+The first value a reading yields, which is what the follow reading wants: one headword to go to.
+
+## `private static IReadOnlyList<string> LSourceValueScan(LSourceReading reading, string body)`
+
+Dispatches one reading to its declared strategy and normalizes every text it captured.
 The follow reading and the ordinary readings share it, so a pointer is captured with the same three strategies.
+
+## `private static IReadOnlyList<string> LSourcePieceScan(LSourceReading reading, string text)`
+
+Splits one captured phonetic text at each comma or slash.
+A source writes its alternatives that way inside one element.
+An address or a bare spelling is not split, since a comma or slash is part of it.
+
+## `private static string? LSourcePathRead(LSourceReading reading, string body)`
+
+Walks the reading's dot path down a JSON body and returns the string it lands on.
+A body that is not JSON, a missing property or a non-string leaf all read as nothing.
+
+## `private static IReadOnlyList<string> LSourceGroupScan(LSourceReading reading, string text)`
+
+The capture group of every match of the pattern from the skipped one onward.
+A json value may still need a regex to pick the phonetic out of surrounding wikitext.
+
+## `private static string? LSourceNormalize(LSourceReading reading, string captured)`
+
+Strips a phonetic value of its delimiters or a plain value of its surrounding space.
+An empty result reads as nothing.
 
 ## `private static HashSet<string> LSourceVarietyScan(LSourceSpec spec)`
 
 Collects the distinct variety tags across all of the spec's readings, computed once at construction.
-
-## Inline notes
-
-### `string? captured = string.IsNullOrEmpty(reading.LSourceReadingPattern)`
-
-A json value may still need a regex to pick the phonetic out of surrounding wikitext.

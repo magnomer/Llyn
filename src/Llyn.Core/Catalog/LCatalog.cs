@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Llyn.Core;
 
@@ -26,6 +26,7 @@ public static class LCatalog
             LCatalogOrder.LCatalogOrderKind => "Kind",
             LCatalogOrder.LCatalogOrderSound => "Sound",
             LCatalogOrder.LCatalogOrderPending => "Pending",
+            LCatalogOrder.LCatalogOrderWork => "Work",
             _ => "Name",
         };
     }
@@ -49,6 +50,7 @@ public static class LCatalog
             "Kind" => LCatalogOrder.LCatalogOrderKind,
             "Sound" => LCatalogOrder.LCatalogOrderSound,
             "Pending" => LCatalogOrder.LCatalogOrderPending,
+            "Work" => LCatalogOrder.LCatalogOrderWork,
             _ => fallback,
         };
     }

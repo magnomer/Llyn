@@ -51,3 +51,15 @@ The button follows this answer on its own, so no panel state has to switch it.
 Prints the entry being read, or else the situation being read, as the engine portrays it.
 The panel names only the id it is showing, and the engine builds the page from stored rows.
 Nothing is read back from the screen.
+
+## `private void PRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Whether the export button is live: exactly when an entry is read in the display.
+Print may also act on the other page this panel reads, but export acts on entries alone.
+The button follows this answer on its own, so no panel state has to switch it.
+
+## `private async void PRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Exports the entry being read, as the engine portrays it.
+The window asks for the file and the format, and the engine writes the document from stored rows.
+Nothing is read back from the screen.

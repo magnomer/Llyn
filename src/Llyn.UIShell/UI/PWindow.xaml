@@ -148,6 +148,13 @@
                                 PTabOutline="{local:PIcon reference, 24}"
                                 Style="{StaticResource Theme.Navigation.Tab}" />
                             <local:PTab
+                                x:Name="PNavigationGuild"
+                                Click="PNavigationHandle"
+                                Content="{DynamicResource Navigation.Guild}"
+                                PTabFilled="{local:PIcon guild-chosen, 24}"
+                                PTabOutline="{local:PIcon guild, 24}"
+                                Style="{StaticResource Theme.Navigation.Tab}" />
+                            <local:PTab
                                 x:Name="PNavigationFavorite"
                                 Click="PNavigationHandle"
                                 Content="{DynamicResource Navigation.Favorite}"
@@ -185,6 +192,7 @@
                     <local:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />
                     <local:PCorpus x:Name="PCorpus" Visibility="Collapsed" />
                     <local:PReference x:Name="PReference" Visibility="Collapsed" />
+                    <local:PGuild x:Name="PGuild" Visibility="Collapsed" />
                     <local:PFavorite x:Name="PFavorite" Visibility="Collapsed" />
                     <local:PDuplex x:Name="PDuplex" Visibility="Collapsed" />
                     <local:PSettings x:Name="PSettings" Visibility="Collapsed" />

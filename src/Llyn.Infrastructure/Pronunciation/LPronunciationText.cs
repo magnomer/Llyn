@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -8,33 +9,38 @@ internal static class LPronunciationText
 {
     private static readonly Regex LPronunciationTextPattern = new("<[^>]+>", RegexOptions.Compiled);
 
-    public static string? LPronunciationTextRead(string html, Regex openPattern)
+    private static readonly char[] LPronunciationTextDelimiters = ['/', '[', ']', '(', ')', ','];
+
+    public static IReadOnlyList<string> LPronunciationTextScan(string html, Regex openPattern, int skip)
     {
-        foreach (Match open in openPattern.Matches(html))
+        List<string> found = [];
+        MatchCollection matches = openPattern.Matches(html);
+        for (int index = Math.Max(0, skip); index < matches.Count; index++)
         {
-            string? inner = LPronunciationTextScan(html, open.Index + open.Length);
+            Match open = matches[index];
+            string? inner = LPronunciationInnerRead(html, open.Index + open.Length);
             if (inner is null)
             {
                 continue;
             }
 
-            string phonetic = LPronunciationTextNormalize(LPronunciationTextPattern.Replace(inner, string.Empty));
-            if (phonetic.Length > 0)
+            string phonetic = LPronunciationTextPattern.Replace(inner, string.Empty);
+            if (phonetic.Trim().Length > 0)
             {
-                return phonetic;
+                found.Add(phonetic);
             }
         }
 
-        return null;
+        return found;
     }
 
     public static string LPronunciationTextNormalize(string raw)
     {
         string decoded = WebUtility.HtmlDecode(raw).Trim();
-        return decoded.Trim('/', '[', ']', '(', ')').Trim();
+        return decoded.Trim(LPronunciationTextDelimiters).Trim();
     }
 
-    private static string? LPronunciationTextScan(string html, int start)
+    private static string? LPronunciationInnerRead(string html, int start)
     {
         int depth = 1;
         int index = start;

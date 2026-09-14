@@ -14,6 +14,7 @@ public sealed partial class LEngine
     private const string LEngineStateRepertoire = "repertoire";
     private const string LEngineStateReference = "reference";
     private const string LEngineStateCorpus = "corpus";
+    private const string LEngineStateGuild = "guild";
 
     public LWorkspaceState LEngineStateRead()
     {
@@ -84,6 +85,11 @@ public sealed partial class LEngine
         LEngineLayoutSave([new LLayout(LEngineStateCorpus, LLayoutOrder: order)]);
     }
 
+    public void LEngineEchelonSave(LCatalogOrder order)
+    {
+        LEngineLayoutSave([new LLayout(LEngineStateGuild, LLayoutOrder: order)]);
+    }
+
     public void LEngineSieveSave(LCatalogFilter filter)
     {
         ArgumentNullException.ThrowIfNull(filter);
@@ -130,6 +136,12 @@ public sealed partial class LEngine
     {
         ArgumentNullException.ThrowIfNull(filter);
         LEngineLayoutSave([new LLayout(LEngineStateReference, LLayoutFilter: filter)]);
+    }
+
+    public void LEngineLouverSave(LCatalogFilter filter)
+    {
+        ArgumentNullException.ThrowIfNull(filter);
+        LEngineLayoutSave([new LLayout(LEngineStateGuild, LLayoutFilter: filter)]);
     }
 
     private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)

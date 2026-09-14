@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace Llyn.Core;
 
@@ -38,6 +40,25 @@ public sealed record LReference(
         return LReferenceTextRead(LReferenceTitle)
             ?? LReferenceTextRead(LReferenceUrl)
             ?? LReferenceId.ToString(CultureInfo.InvariantCulture);
+    }
+
+    public string LReferenceBylineRead(IReadOnlyList<LAuthor> credits)
+    {
+        ArgumentNullException.ThrowIfNull(credits);
+
+        List<string> names = [];
+        foreach (LAuthor author in credits)
+        {
+            string name = author.LAuthorName.Trim();
+            if (name.Length > 0)
+            {
+                names.Add(name);
+            }
+        }
+
+        string head = names.Count > 0 ? string.Join(", ", names) : LReferenceNameRead();
+        string? year = LReferenceTextRead(LReferenceYear);
+        return year is null ? head : $"{head} ({year})";
     }
 
     public static string LReferenceKindFormat(LReferenceKind kind)

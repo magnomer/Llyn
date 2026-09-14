@@ -63,12 +63,7 @@ public sealed partial class LEngine
             sections.Add(LPortraitSection.LPortraitSectionCreate(legend.LPortraitLegendTranslation, glosses));
         }
 
-        string source = example.LExampleSource.LStateAnchorState switch
-        {
-            LState.LStateUnknown => mark,
-            LState.LStateSpecified when cited is not null => cited.LReferenceNameRead(),
-            _ => string.Empty,
-        };
+        string source = cited?.LReferenceNameRead() ?? string.Empty;
 
         if (source.Length > 0)
         {

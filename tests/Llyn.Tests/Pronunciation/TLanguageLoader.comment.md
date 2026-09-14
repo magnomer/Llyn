@@ -1,10 +1,10 @@
-# TLanguageLoader.cs
+﻿# TLanguageLoader.cs
 
 ## `public sealed class TLanguageLoader`
 
 Covers the language pack loader reading the variety block, the readings list, and the rewrite blocks.
 The English pack declares two flagged varieties and a pack without the block declares none.
-A readings list loads in written order with its skip counts.
+A readings list loads in written order, each reading anchored on its own variety with no skip count.
 A flat attempt still loads as one untagged reading.
 An audio attempt with a readings list loads one non-phonetic reading per variety.
 The English pack loads exactly two respelling groups, both scoped, and an empty cleanup list.

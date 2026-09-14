@@ -1,4 +1,4 @@
-# PReferenceBrowse.cs
+﻿# PReferenceBrowse.cs
 
 ## `public partial class PReference`
 
@@ -54,33 +54,6 @@ Deletes the Source the panel stands on, from the reading side or the editing sid
 It answers only while a Source and not an Entry is shown, because an Entry is deleted from the library.
 An uncited Source is simply deleted.
 A cited one is named to the user first, then detached and deleted in one store call.
-
-## `private string? PColophonTextRead(LStateValue value)`
-
-The text a three-state value reads as, or null when it was never written.
-An unknown value reads the unknown mark, as the situation reading reads it.
-
-## `private void PColophonTitleShow(LStateValue value)`
-
-Writes the title at the head of the page.
-A never-written or unknown title reads as the placeholder the edit side shows in its place.
-
-## `private void PColophonKindShow(LReferenceKind kind)`
-
-Writes the kind into its chip, or hides the chip when no kind was recorded.
-An unknown kind is a kind the row records, so it reads inside the chip rather than hiding it.
-
-## `private void PColophonValueShow(TextBlock field, StackPanel section, LStateValue value)`
-
-Writes one three-state field under its heading, or hides the heading when the value was never written.
-So a blank line never stands for two facts, and a heading never stands over nothing.
-An unknown value is dressed as the placeholder the edit side shows, so the two sides read alike.
-
-## `private void PColophonAuthorShow(LReference reference)`
-
-Writes the credited authors under their heading, or the unknown mark when the authorship is recorded unknown.
-No credit and no mark hides the heading, as any other never-written field hides its own.
-The mark alone is dressed as the placeholder the edit side shows, so the two sides read alike.
 
 ## `internal string PReferenceTallyRead(long? id)`
 

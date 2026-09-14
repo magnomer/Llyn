@@ -13,6 +13,7 @@ internal sealed class PUsageItem
         PUsageItemName = usage.LUsageHeadword;
         PUsageItemLanguage = usage.LUsageLanguage;
         PUsageItemOwner = owner;
+        PUsageItemKind = usage.LUsageOwner;
         PUsageItemTitle = usage.LUsageTitle.LStateValueState switch
         {
             _ when usage.LUsageTitle.LStateValueUnreadable => usage.LUsageTitle.LStateValueShow(),
@@ -34,6 +35,8 @@ internal sealed class PUsageItem
     public string PUsageItemLanguage { get; }
 
     public string PUsageItemOwner { get; }
+
+    public LOwner PUsageItemKind { get; }
 
     public string PUsageItemTitle { get; }
 

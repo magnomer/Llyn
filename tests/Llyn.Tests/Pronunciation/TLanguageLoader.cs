@@ -32,8 +32,9 @@ public sealed class TLanguageLoader
 
         LSourceAttempt attempt = Assert.Single(oxford.LSourceSpecAttempts);
         Assert.Equal(
-            [("British", 0), ("American", 1)],
-            attempt.LSourceAttemptReadings.Select(reading => (reading.LSourceReadingVariety, reading.LSourceReadingSkip)));
+            ["British", "American"],
+            attempt.LSourceAttemptReadings.Select(reading => reading.LSourceReadingVariety));
+        Assert.All(attempt.LSourceAttemptReadings, reading => Assert.Equal(0, reading.LSourceReadingSkip));
     }
 
     [Fact]

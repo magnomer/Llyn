@@ -90,10 +90,12 @@ public sealed class TState
     }
 
     [Fact]
-    public void EntrySave_UnknownCitation_DiffersFromNoSource()
+    public void EntrySave_UnknownSourceCited_LinksTheSeededRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
+        long unknown = workspace.TWorkspaceCountRead(
+            "SELECT reference_id FROM reference WHERE title = 'Unknown';");
 
         LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "word",
@@ -108,7 +110,7 @@ public sealed class TState
                     TInterface.TSentenceDraftCreate(
                         TInterface.TStateValueCreate("he said a word"),
                         0,
-                        LStateAnchor.LStateAnchorUnknown),
+                        TInterface.TStateAnchorRead(unknown)),
                     TInterface.TSentenceDraftCreate("not a word was spoken"),
                 ],
                 [],
@@ -119,21 +121,41 @@ public sealed class TState
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
-                "SELECT COUNT(*) FROM example WHERE reference_state = 'unknown' AND reference_ref IS NULL;"));
+                $"SELECT COUNT(*) FROM example WHERE reference_state = 'specified' AND reference_ref = {unknown};"));
         Assert.Equal(
             1,
             workspace.TWorkspaceCountRead(
                 "SELECT COUNT(*) FROM example WHERE reference_state = 'unspecified' AND reference_ref IS NULL;"));
+        Assert.Equal(
+            0,
+            workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example WHERE reference_state = 'unknown';"));
 
         LEntryDraft loaded = Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(stored.LEntryId));
         LCardDraft card = Assert.Single(loaded.LEntryDraftMeanings);
 
         Assert.Equal(
-LStateAnchor.LStateAnchorUnknown,
+            TInterface.TStateAnchorRead(unknown),
             TExampleDraftRead(card.LCardDraftSentence[0]).LExampleDraftReference);
         Assert.Equal(
-LStateAnchor.LStateAnchorUnspecified,
+            LStateAnchor.LStateAnchorUnspecified,
             TExampleDraftRead(card.LCardDraftSentence[1]).LExampleDraftReference);
+    }
+
+    [Fact]
+    public void ExampleRead_UnknownSourceWording_ReadsUnreadable()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO example (language, text_state, text, reference_state) " +
+            "VALUES ('English', 'specified', 'he said a word', 'unknown');");
+        long id = workspace.TWorkspaceCountRead("SELECT MAX(example_id) FROM example;");
+
+        LExample read = Assert.IsType<LExample>(engine.TEngineExampleRead(id));
+
+        Assert.True(read.LExampleSource.LStateAnchorUnreadable);
+        Assert.Equal(LState.LStateUnspecified, read.LExampleSource.LStateAnchorState);
     }
 
     [Fact]

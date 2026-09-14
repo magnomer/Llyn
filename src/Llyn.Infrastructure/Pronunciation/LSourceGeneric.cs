@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -16,6 +17,8 @@ public sealed class LSourceGeneric : LSource
     private const string LSourceGenericSpan = "span";
     private const string LSourceGenericToken = "{word}";
     private const int LSourceGenericHops = 2;
+
+    private static readonly char[] LSourceGenericSeparators = [',', '/'];
 
     private static readonly TimeSpan LSourceGenericPatience = TimeSpan.FromSeconds(2);
 
@@ -41,20 +44,23 @@ public sealed class LSourceGeneric : LSource
 
         string current = word.Trim();
         bool reached = false;
-        Dictionary<string, LReading> filled = new(StringComparer.Ordinal);
+        HashSet<string> filled = new(StringComparer.Ordinal);
         List<LReading> readings = [];
         foreach (LSourceAttempt attempt in _lSourceGenericSpec.LSourceSpecAttempts)
         {
             (LAnswer answer, current) = await LSourceAttemptResolve(attempt, current, cancellation).ConfigureAwait(false);
             reached |= answer.LAnswerReached;
+            HashSet<string> fresh = new(StringComparer.Ordinal);
             foreach (LReading reading in answer.LAnswerReadings)
             {
-                if (filled.TryAdd(reading.LReadingVariety, reading))
+                if (!filled.Contains(reading.LReadingVariety))
                 {
                     readings.Add(reading);
+                    fresh.Add(reading.LReadingVariety);
                 }
             }
 
+            filled.UnionWith(fresh);
             if (filled.Count >= _lSourceGenericVarieties.Count)
             {
                 break;
@@ -89,17 +95,36 @@ public sealed class LSourceGeneric : LSource
         CancellationToken cancellation)
     {
         HashSet<string> visited = new(StringComparer.Ordinal) { word };
+        HashSet<string> seen = new(StringComparer.Ordinal);
+        List<LReading> gathered = [];
         string current = word;
+        bool reached = false;
         for (int hop = 0; ; hop++)
         {
             (LAnswer answer, string? next) = await LSourceAttemptRun(attempt, current, cancellation).ConfigureAwait(false);
-            if (!answer.LAnswerEmpty || next is null || hop >= LSourceGenericHops || !visited.Add(next))
+            reached |= answer.LAnswerReached;
+            foreach (LReading reading in answer.LAnswerReadings)
             {
-                return (answer, current);
+                if (seen.Add(reading.LReadingVariety + '\n' + reading.LReadingPhonetic))
+                {
+                    gathered.Add(reading);
+                }
+            }
+
+            if (next is null || hop >= LSourceGenericHops || !visited.Add(next))
+            {
+                break;
             }
 
             current = next;
         }
+
+        if (gathered.Count > 0)
+        {
+            return (LAnswer.LAnswerCreate(gathered), current);
+        }
+
+        return (reached ? LAnswer.LAnswerBlank : LAnswer.LAnswerLost, current);
     }
 
     private async Task<(LAnswer, string?)> LSourceAttemptRun(
@@ -142,33 +167,75 @@ public sealed class LSourceGeneric : LSource
         List<LReading> readings = [];
         foreach (LSourceReading reading in attempt.LSourceAttemptReadings)
         {
-            string? address = LSourceAddressResolve(attempt, LSourceValueRead(reading, body));
-            if (!string.IsNullOrEmpty(address))
+            foreach (string value in LSourceValueScan(LSourcePatternResolve(reading, word), body))
             {
-                readings.Add(new LReading(reading.LSourceReadingVariety, address));
+                string? address = LSourceAddressResolve(attempt, value);
+                if (!string.IsNullOrEmpty(address))
+                {
+                    readings.Add(new LReading(reading.LSourceReadingVariety, address));
+                }
             }
         }
 
-        if (readings.Count > 0)
-        {
-            return (LAnswer.LAnswerCreate(readings), null);
-        }
-
+        LAnswer answer = readings.Count > 0 ? LAnswer.LAnswerCreate(readings) : LAnswer.LAnswerBlank;
         string? next = attempt.LSourceAttemptFollow is null
             ? null
-            : LSourceValueRead(attempt.LSourceAttemptFollow, body)?.Trim();
-        return (LAnswer.LAnswerBlank, string.IsNullOrEmpty(next) ? null : next);
+            : LSourceValueRead(LSourcePatternResolve(attempt.LSourceAttemptFollow, word), body)?.Trim();
+        return (answer, string.IsNullOrEmpty(next) ? null : next);
+    }
+
+    private static LSourceReading LSourcePatternResolve(LSourceReading reading, string word)
+    {
+        if (string.IsNullOrEmpty(reading.LSourceReadingPattern) ||
+            !reading.LSourceReadingPattern.Contains(LSourceGenericToken, StringComparison.Ordinal))
+        {
+            return reading;
+        }
+
+        return reading with
+        {
+            LSourceReadingPattern = reading.LSourceReadingPattern.Replace(
+                LSourceGenericToken, Regex.Escape(word), StringComparison.Ordinal),
+        };
     }
 
     private static string? LSourceValueRead(LSourceReading reading, string body)
     {
-        return reading.LSourceReadingStrategy switch
+        IReadOnlyList<string> values = LSourceValueScan(reading, body);
+        return values.Count > 0 ? values[0] : null;
+    }
+
+    private static IReadOnlyList<string> LSourceValueScan(LSourceReading reading, string body)
+    {
+        IReadOnlyList<string> captured = reading.LSourceReadingStrategy switch
         {
-            LSourceGenericSpan => LSourceSpanRead(reading, body),
-            LSourceGenericJson => LSourceJsonRead(reading, body),
-            LSourceGenericRegex => LSourceRegexRead(reading, body),
-            _ => null
+            LSourceGenericSpan => LSourceSpanScan(reading, body),
+            LSourceGenericJson => LSourceJsonScan(reading, body),
+            LSourceGenericRegex => LSourceGroupScan(reading, body),
+            _ => []
         };
+
+        List<string> values = [];
+        foreach (string text in captured)
+        {
+            foreach (string piece in LSourcePieceScan(reading, text))
+            {
+                string? value = LSourceNormalize(reading, piece);
+                if (value is not null)
+                {
+                    values.Add(value);
+                }
+            }
+        }
+
+        return values;
+    }
+
+    private static IReadOnlyList<string> LSourcePieceScan(LSourceReading reading, string text)
+    {
+        return reading.LSourceReadingPhonetic
+            ? WebUtility.HtmlDecode(text).Split(LSourceGenericSeparators, StringSplitOptions.RemoveEmptyEntries)
+            : [text];
     }
 
     private static string? LSourceAddressResolve(LSourceAttempt attempt, string? value)
@@ -195,43 +262,35 @@ public sealed class LSourceGeneric : LSource
             body, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, LSourceGenericPatience);
     }
 
-    private static string? LSourceSpanRead(LSourceReading reading, string body)
+    private static IReadOnlyList<string> LSourceSpanScan(LSourceReading reading, string body)
     {
         if (string.IsNullOrEmpty(reading.LSourceReadingPattern))
         {
-            return null;
+            return [];
         }
 
         Regex open = new(reading.LSourceReadingPattern, RegexOptions.CultureInvariant, LSourceGenericPatience);
-        int skip = reading.LSourceReadingSkip;
-        if (skip <= 0)
-        {
-            return LPronunciationText.LPronunciationTextRead(body, open);
-        }
-
-        MatchCollection matches = open.Matches(body);
-        if (skip >= matches.Count)
-        {
-            return null;
-        }
-
-        return LPronunciationText.LPronunciationTextRead(body[matches[skip].Index..], open);
+        return LPronunciationText.LPronunciationTextScan(body, open, reading.LSourceReadingSkip);
     }
 
-    private static string? LSourceRegexRead(LSourceReading reading, string body)
+    private static IReadOnlyList<string> LSourceJsonScan(LSourceReading reading, string body)
     {
-        string? captured = LSourceGroupRead(reading, body);
-        return LSourceNormalize(reading, captured);
+        string? text = LSourcePathRead(reading, body);
+        if (string.IsNullOrEmpty(text))
+        {
+            return [];
+        }
+
+        return string.IsNullOrEmpty(reading.LSourceReadingPattern) ? [text] : LSourceGroupScan(reading, text);
     }
 
-    private static string? LSourceJsonRead(LSourceReading reading, string body)
+    private static string? LSourcePathRead(LSourceReading reading, string body)
     {
         if (string.IsNullOrEmpty(reading.LSourceReadingPath))
         {
             return null;
         }
 
-        string? text;
         try
         {
             using JsonDocument document = JsonDocument.Parse(body);
@@ -247,53 +306,39 @@ public sealed class LSourceGeneric : LSource
                 current = next;
             }
 
-            text = current.ValueKind == JsonValueKind.String ? current.GetString() : null;
+            return current.ValueKind == JsonValueKind.String ? current.GetString() : null;
         }
         catch (JsonException)
         {
             return null;
         }
-
-        if (string.IsNullOrEmpty(text))
-        {
-            return null;
-        }
-
-        string? captured = string.IsNullOrEmpty(reading.LSourceReadingPattern)
-            ? text
-            : LSourceGroupRead(reading, text);
-        return LSourceNormalize(reading, captured);
     }
 
-    private static string? LSourceGroupRead(LSourceReading reading, string text)
+    private static IReadOnlyList<string> LSourceGroupScan(LSourceReading reading, string text)
     {
         if (string.IsNullOrEmpty(reading.LSourceReadingPattern))
         {
-            return null;
+            return [];
         }
 
         MatchCollection matches = Regex.Matches(
             text, reading.LSourceReadingPattern, RegexOptions.CultureInvariant, LSourceGenericPatience);
-        int skip = Math.Max(0, reading.LSourceReadingSkip);
-        if (skip >= matches.Count)
+        List<string> captured = [];
+        int group = reading.LSourceReadingGroup;
+        for (int index = Math.Max(0, reading.LSourceReadingSkip); index < matches.Count; index++)
         {
-            return null;
+            Match match = matches[index];
+            captured.Add(group >= 0 && group < match.Groups.Count ? match.Groups[group].Value : match.Value);
         }
 
-        Match match = matches[skip];
-        int group = reading.LSourceReadingGroup;
-        return group >= 0 && group < match.Groups.Count ? match.Groups[group].Value : match.Value;
+        return captured;
     }
 
-    private static string? LSourceNormalize(LSourceReading reading, string? captured)
+    private static string? LSourceNormalize(LSourceReading reading, string captured)
     {
-        if (string.IsNullOrEmpty(captured))
-        {
-            return null;
-        }
-
-        return reading.LSourceReadingPhonetic
+        string value = reading.LSourceReadingPhonetic
             ? LPronunciationText.LPronunciationTextNormalize(captured)
             : captured.Trim();
+        return value.Length == 0 ? null : value;
     }
 }

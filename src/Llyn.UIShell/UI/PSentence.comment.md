@@ -79,9 +79,24 @@ The ids are always taken, because the engine is the only minter.
 A field that already stands for what the engine holds is left alone, so the caret survives its own echo.
 The engine answers that through the written field, since the row never resolves a state itself.
 
+## `public string PSentenceCitationName`
+
+The `Author (Year)` line of the cited Source, or nothing when the row cites none.
+Setting it also resets the typed line, so the field shows what the engine holds once a pick lands.
+
+## `public string PSentenceCitationText`
+
+The line standing in the citation field, which the user types into.
+While the user types it drifts from the cited name, and the editor offers Sources for it.
+It comes back to the name when the field is left or a Source is taken.
+
 ## `internal void PSentenceCitationShow()`
 
 Reads the name of the cited Source again, for when the list of Sources changed underneath the row.
+
+## `internal void PSentenceCitationReset()`
+
+Puts the cited name back in the field, discarding whatever was typed and not taken.
 
 ## `public bool PSentenceFrameVisible`
 

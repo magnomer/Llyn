@@ -238,7 +238,7 @@ public sealed class TMarkupImport
         Assert.Equal(glow.LEntryId, mention.LMentionDraftEntry);
         Assert.Equal(senseId, mention.LMentionDraftSense);
         Assert.Equal(reference.LReferenceId, example.LExampleDraftReference.LStateAnchorId);
-        Assert.Single(engine.TEngineReferenceRead());
+        Assert.Equal(2, engine.TEngineReferenceRead().Count);
     }
 
     [Fact]

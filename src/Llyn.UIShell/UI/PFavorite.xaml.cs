@@ -75,4 +75,12 @@ public partial class PFavorite : UserControl
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pFavoriteHost.PWindowLabelRead(), ticket));
         }
     }
+
+    private async void PFavoritePortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pRosterEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pFavoriteHost.PWindowPortraitExport(entry);
+        }
+    }
 }

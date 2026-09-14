@@ -90,7 +90,7 @@ The Examples answering `query`, in `order`, as rows already carrying their cited
 An Example is matched over its sentence, its translation and the name of the Source it cites.
 The name is resolved here, because matching on an id the reader never sees would answer the wrong question.
 
-## `public IReadOnlyDictionary<string, string> LEngineCitationRead()`
+## `public IReadOnlyDictionary<long, string> LEngineCitationRead()`
 
-The name every stored Source is shown under, by id.
+The `Author (Year)` line every stored Source is cited under, by id.
 One read serves a whole catalog fill, because resolving a name per row would be one query per row.

@@ -95,4 +95,17 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost
                 shown, LOwner.LOwnerSituation, _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
         }
     }
+
+    private void PRepertoirePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+    }
+
+    private async void PRepertoirePortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pRepertoireHost.PWindowPortraitExport(entry);
+        }
+    }
 }

@@ -171,6 +171,7 @@ public partial class PDisplay : UserControl
 
         PDisplayFrameShow(draft.LEntryDraftLanguage);
         PDisplayExampleShow(draft.LEntryDraftLanguage);
+        PDisplayCitationShow();
         PDisplayTranslationShow(draft);
         PDisplayIncomingShow(id);
 
@@ -282,6 +283,7 @@ public partial class PDisplay : UserControl
         _pDisplayIncoming.Clear();
         PDisplayIncomingSection.Visibility = Visibility.Collapsed;
         PDisplayTranslationRead().PLinkConverterClear();
+        PDisplayCitationRead().PCitationConverterClear();
         PDisplayMeaning.ItemsSource = null;
         PDisplayCollocation.ItemsSource = null;
         PDisplayMeaningSection.Visibility = Visibility.Collapsed;

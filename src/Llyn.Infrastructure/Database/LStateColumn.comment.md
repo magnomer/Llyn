@@ -49,3 +49,10 @@ A state wording the store does not know yields an unreadable mark.
 Reads the value whose state stands at column `state` and whose text stands directly after it.
 That is the order every `SELECT` over such a pair lists them in.
 A state wording the store does not know yields an unreadable value carrying whatever text or wording stood there.
+
+## `public static LStateAnchor LStateColumnResolve(SqliteDataReader reader, int state)`
+
+Reads the anchor whose state stands at column `state` and whose id stands directly after it.
+An anchor has no unknown answer, because "source not known" is a Reference row to point at.
+So the `unknown` wording, which older workspaces wrote here, reads as unreadable like any wording the store does not know.
+Migration rewrites that wording to a link before the row is ever read this way.

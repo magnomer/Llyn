@@ -17,7 +17,7 @@ public sealed class TCatalogReference
         TCatalogReferenceCreate(engine, null, null, "Anchor Show", "https://bird.example");
 
         Assert.Equal(
-            ["https://bird.example", "Zebra Book"],
+            ["https://bird.example", "Unknown", "Zebra Book"],
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName)
                 .Select(row => row.LCatalogReferenceName));
     }
@@ -31,7 +31,8 @@ public sealed class TCatalogReference
         LReference stored = TCatalogReferenceCreate(engine, null, null, null, null);
 
         LCatalogReference row = Assert.Single(
-            engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName));
+            engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName),
+            row => row.LCatalogReferenceStored.LReferenceId == stored.LReferenceId);
         Assert.Equal(stored.LReferenceId.ToString(CultureInfo.InvariantCulture), row.LCatalogReferenceName);
         Assert.Equal(stored.LReferenceId.ToString(CultureInfo.InvariantCulture), stored.TReferenceNameRead());
     }
@@ -47,7 +48,7 @@ public sealed class TCatalogReference
         TCatalogReferenceCreate(engine, "Earlier", "1999", null, null);
 
         Assert.Equal(
-            ["Undated", "Earlier", "Later"],
+            ["Undated", "Unknown", "Earlier", "Later"],
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderYear)
                 .Select(row => row.LCatalogReferenceName));
     }
@@ -66,7 +67,7 @@ public sealed class TCatalogReference
         TCatalogCreditAttach(engine, later.LReferenceId, "Zeller");
 
         Assert.Equal(
-            ["Anonymous", "Credited", "Also Credited"],
+            ["Anonymous", "Unknown", "Credited", "Also Credited"],
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderAuthor)
                 .Select(row => row.LCatalogReferenceName));
     }
@@ -87,8 +88,8 @@ public sealed class TCatalogReference
         IReadOnlyList<LCatalogReference> read =
             engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderUsage);
 
-        Assert.Equal(["Busy", "Quiet"], read.Select(row => row.LCatalogReferenceName));
-        Assert.Equal([2, 1], read.Select(row => row.LCatalogReferenceUsage));
+        Assert.Equal(["Busy", "Quiet", "Unknown"], read.Select(row => row.LCatalogReferenceName));
+        Assert.Equal([2, 1, 0], read.Select(row => row.LCatalogReferenceUsage));
     }
 
     [Fact]
@@ -123,6 +124,67 @@ public sealed class TCatalogReference
             engine.TEngineReferenceFind("ashb", LCatalogOrder.LCatalogOrderName));
         Assert.Equal("Credited", row.LCatalogReferenceName);
         Assert.Equal("Ashby", Assert.Single(row.LCatalogReferenceCredit).LAuthorName);
+    }
+
+    [Fact]
+    public void ReferenceFind_CreditedAndDated_ReturnsAuthorYearByline()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference dated = TCatalogReferenceCreate(engine, "Origin of Species", "1859", null, null);
+        LReference bare = TCatalogReferenceCreate(engine, "Riverbank", null, null, null);
+        TCatalogCreditAttach(engine, dated.LReferenceId, "Wallace");
+        TCatalogCreditAttach(engine, dated.LReferenceId, "Darwin");
+
+        IReadOnlyList<LCatalogReference> read =
+            engine.TEngineReferenceFind(string.Empty, LCatalogOrder.LCatalogOrderName);
+
+        Assert.Equal(
+            "Darwin, Wallace (1859)",
+            Assert.Single(read, row => row.LCatalogReferenceStored.LReferenceId == dated.LReferenceId)
+                .LCatalogReferenceByline);
+        Assert.Equal(
+            "Riverbank",
+            Assert.Single(read, row => row.LCatalogReferenceStored.LReferenceId == bare.LReferenceId)
+                .LCatalogReferenceByline);
+        Assert.Equal("Darwin, Wallace (1859)", engine.TEngineCitationRead()[dated.LReferenceId]);
+    }
+
+    [Fact]
+    public void ReferenceFind_BylineQuery_ReturnsWorkOfAuthorInYear()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference early = TCatalogReferenceCreate(engine, "Origin of Species", "1859", null, null);
+        LReference late = TCatalogReferenceCreate(engine, "Descent of Man", "1871", null, null);
+        TCatalogCreditAttach(engine, early.LReferenceId, "Darwin");
+        TCatalogCreditAttach(engine, late.LReferenceId, "Darwin");
+
+        Assert.Equal(
+            ["Origin of Species"],
+            engine.TEngineReferenceFind("Darwin (1859)", LCatalogOrder.LCatalogOrderName)
+                .Select(row => row.LCatalogReferenceName));
+        Assert.Equal(
+            ["Descent of Man", "Origin of Species"],
+            engine.TEngineReferenceFind("darwin", LCatalogOrder.LCatalogOrderName)
+                .Select(row => row.LCatalogReferenceName));
+        Assert.Empty(engine.TEngineReferenceFind("Darwin 1900", LCatalogOrder.LCatalogOrderName));
+    }
+
+    [Fact]
+    public void CitationCreate_TypedLine_ReturnsSourceTitledWithIt()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LReference minted = engine.TEngineCitationCreate("  Field notes  ");
+
+        Assert.Equal("Field notes", minted.LReferenceTitle.TStateValueShow());
+        Assert.Equal(LState.LStateUnspecified, minted.LReferenceYear.LStateValueState);
+        Assert.Equal("Field notes", engine.TEngineCitationRead()[minted.LReferenceId]);
+        Assert.Throws<ArgumentException>(() => engine.TEngineCitationCreate("   "));
     }
 
     private static LReference TCatalogReferenceCreate(

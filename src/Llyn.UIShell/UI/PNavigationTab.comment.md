@@ -77,6 +77,12 @@ Switches to the repertoire panel and opens one Situation there.
 It is the way a situation chip read on a card reaches the record it names.
 The repertoire is asked first, for the reason the library is asked above.
 
+## `internal void PWindowExampleShow(long id)`
+
+Switches to the corpus panel and opens one Example there.
+It is the way a citation row read on an author reaches the Example that cites the author's source.
+The corpus is asked first, for the reason the library is asked above.
+
 ## `internal void PWindowTagShow(long id)`
 
 Switches to the taxonomy panel and browses by one tag, named by its id.

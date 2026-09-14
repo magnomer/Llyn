@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using Llyn.Core;
 
@@ -18,6 +19,8 @@ public partial class PEditor
     private readonly ObservableCollection<PCandidateItem> _pCandidateItem = [];
 
     private PCard? _pCandidateCard;
+
+    private PSentence? _pCandidateSentence;
 
     private bool _pCandidateRegister;
 
@@ -70,8 +73,15 @@ public partial class PEditor
     private void PCandidateSelect(PCandidateItem item)
     {
         PCard? card = _pCandidateCard;
+        PSentence? sentence = _pCandidateSentence;
         bool register = _pCandidateRegister;
         PCandidateHide();
+
+        if (sentence is not null)
+        {
+            sentence.PSentenceCitationId = item.PCandidateItemId;
+            return;
+        }
 
         if (card is null)
         {
@@ -203,13 +213,74 @@ public partial class PEditor
         PCandidateList.SelectedIndex = -1;
     }
 
+    private void PCandidateCitationShow(PCard card, PSentence row)
+    {
+        TextBox? box = PCandidateCitationFind(row);
+        string word = row.PSentenceCitationText.Trim();
+        if (box is null || word.Length == 0 || string.Equals(word, row.PSentenceCitationName, StringComparison.Ordinal))
+        {
+            PCandidateHide();
+            return;
+        }
+
+        IReadOnlyList<LCatalogReference> found;
+        try
+        {
+            found = _lEngine.LEngineReferenceFind(word, LCatalogOrder.LCatalogOrderUsage);
+        }
+        catch (Exception)
+        {
+            PCandidateHide();
+            return;
+        }
+
+        _pCandidateItem.Clear();
+        foreach (LCatalogReference reference in found)
+        {
+            _pCandidateItem.Add(new PCandidateItem(
+                reference.LCatalogReferenceStored.LReferenceId,
+                reference.LCatalogReferenceByline,
+                reference.LCatalogReferenceUsage,
+                word));
+
+            if (_pCandidateItem.Count == PCandidateLimit)
+            {
+                break;
+            }
+        }
+
+        if (_pCandidateItem.Count == 0)
+        {
+            PCandidateHide();
+            return;
+        }
+
+        _pCandidateCard = card;
+        _pCandidateSentence = row;
+        _pCandidateRegister = false;
+        PCandidate.PlacementTarget = PCandidateFrameFind(box) ?? (UIElement)box;
+        PCandidate.IsOpen = true;
+        PCandidateList.SelectedIndex = -1;
+    }
+
     private void PCandidateHide()
     {
         PCandidate.IsOpen = false;
         PCandidateList.SelectedIndex = -1;
         _pCandidateItem.Clear();
         _pCandidateCard = null;
+        _pCandidateSentence = null;
         _pCandidateRegister = false;
+    }
+
+    private static TextBox? PCandidateCitationFind(PSentence row)
+    {
+        return Keyboard.FocusedElement is TextBox { DataContext: PSentence focused } box
+            && ReferenceEquals(focused, row)
+            && BindingOperations.GetBinding(box, TextBox.TextProperty)?.Path.Path
+                == nameof(PSentence.PSentenceCitationText)
+            ? box
+            : null;
     }
 
     private TextBox? PCandidateRegisterFind(PCard card)

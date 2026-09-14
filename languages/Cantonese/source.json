@@ -5,7 +5,7 @@
   "transcription": [
     {
       "name": "Jyutping",
-      "note": "The wikitext attempt reads the |c= parameter of the {{zh-pron}} template, which Wiktionary keeps as the canonical Cantonese reading; a comma starts an alternative reading and is not taken. A simplified-form or variant-form page only points at its main form through {{zh-see}}, so the wikitext attempt follows that pointer and the later attempts ask for the form it named.",
+      "note": "The wikitext attempt reads the |c= parameter of every {{zh-pron}} template on the page, which Wiktionary keeps as the canonical Cantonese reading; a comma separates alternative readings and each is shown. 'normalize' is on so the alternatives are split, and Jyutping carries no delimiter it could strip. A simplified-form or variant-form page only points at its main form through {{zh-see}}, so the wikitext attempt follows that pointer and the later attempts ask for the form it named.",
       "sources": [
         {
           "name": "Wiktionary",
@@ -23,8 +23,9 @@
               },
               "strategy": "json",
               "path": "parse.wikitext.*",
-              "match": "\\{\\{zh-pron[^}]*?\\|c=([^|},\\n]+)",
-              "group": 1
+              "match": "\\{\\{zh-pron[^}]*?\\|c=([^|}\\n]+)",
+              "group": 1,
+              "normalize": true
             }
           ]
         }
@@ -32,7 +33,7 @@
     },
     {
       "name": "Yale",
-      "note": "Cantonese Yale. Wiktionary derives it from the Jyutping at render time, so only the rendered page carries it. The Mandarin box prints a Yale line too, so the match anchors on the link to the Cantonese Yale article. The span strategy is required because a tone mark with an alternative is wrapped in a help span, which a flat pattern would truncate. The article page is asked before the REST rendering, because the REST host rejects bursts with 429.",
+      "note": "Cantonese Yale. Wiktionary derives it from the Jyutping at render time, so only the rendered page carries it. Every Yale line on the page is read, and 'normalize' is on so the alternatives one line separates with a slash are split. The Mandarin box prints a Yale line too, so the match anchors on the link to the Cantonese Yale article. The span strategy is required because a tone mark with an alternative is wrapped in a help span, which a flat pattern would truncate. The article page is asked before the REST rendering, because the REST host rejects bursts with 429.",
       "sources": [
         {
           "name": "Wiktionary",
@@ -49,7 +50,8 @@
                 "normalize": false
               },
               "strategy": "span",
-              "match": "title=\"w:Yale romanization of Cantonese\"[^>]*>Yale</a></i></small>: <span class=\"zhpron-monospace\">"
+              "match": "title=\"w:Yale romanization of Cantonese\"[^>]*>Yale</a></i></small>: <span class=\"zhpron-monospace\">",
+              "normalize": true
             }
           ]
         }
@@ -64,11 +66,11 @@
     "family": "PMingLiU, Microsoft JhengHei",
     "size": 16
   },
-  "note": "Language pack for Cantonese. Every URL and extraction rule is data — edit here, no recompile. The 'pronunciation' and 'audio' lists are independent and each is shown in the order written here. Cantonese transcriptions are read as IPA, not as Jyutping, so the sources listed are the ones that publish IPA. Every source is read from an ordinary article page rather than a machine API, because the article hosts impose no request ceiling while the REST endpoints reject bursts with 429, which the reader would report as an unreachable source.",
+  "note": "Language pack for Cantonese. Every URL and extraction rule is data — edit here, no recompile. The 'pronunciation' and 'audio' lists are independent and each is shown in the order written here. The pronunciation sources publish IPA, while Jyutping and Yale are the transcription schemes above. No morphology sources are listed, because Cantonese words do not inflect. Every source is read from an ordinary article page rather than a machine API, because the article hosts impose no request ceiling while the REST endpoints reject bursts with 429, which the reader would report as an unreachable source.",
   "pronunciation": [
     {
       "name": "Wiktionary",
-      "note": "The Chinese pronunciation table of an entry carries one row per variety. Only the Cantonese row links its IPA key to the Cantonese phonology article, so that link anchors the reader to the right row and keeps Mandarin, Hakka and Min readings out. The span strategy is required because the transcription nests tone-note spans inside the IPA span, which a flat pattern would truncate. An entry with no Cantonese section carries no anchor, so the attempt simply yields nothing.",
+      "note": "The Chinese pronunciation table of an entry carries one row per variety. Only the Cantonese row links its IPA key to the Cantonese phonology article, so that link anchors the reader to the right row and keeps Mandarin, Hakka and Min readings out. Every such row on the page is read, one per etymology, and a row listing two readings with a comma yields both. The see link is followed even when the page has readings of its own, because a character can be both a word and the simplified form of another. The span strategy is required because the transcription nests tone-note spans inside the IPA span, which a flat pattern would truncate. An entry with no Cantonese section carries no anchor, so the attempt simply yields nothing.",
       "attempts": [
         {
           "urls": [
@@ -82,21 +84,29 @@
             "normalize": false
           },
           "strategy": "span",
-          "match": "title=\"w:Cantonese phonology\"[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">"
+          "match": "title=\"w:Cantonese phonology\"[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">",
+          "normalize": true
         }
       ]
     },
     {
       "name": "Chinese Wiktionary",
-      "note": "The Chinese Wiktionary prints the same transcription behind a Chinese anchor, where the key of the Cantonese row links to the 粵語音系 article and the label reads 幫助. Its coverage of colloquial Cantonese headwords is thinner than the English one, so it stands second.",
+      "note": "The Chinese Wiktionary prints the same transcription behind a Chinese anchor, where the key of the Cantonese row links to the 粵語音系 article and the label reads 幫助. Its coverage of colloquial Cantonese headwords is thinner than the English one, so it stands second. A simplified-form page carries no reading of its own and only points at its traditional form through a 請見 box, so the attempt follows that pointer.",
       "attempts": [
         {
           "urls": [
             "https://zh.wiktionary.org/wiki/{word}",
             "https://zh.m.wiktionary.org/wiki/{word}"
           ],
+          "follow": {
+            "strategy": "regex",
+            "match": "請見「</b><span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
           "strategy": "span",
-          "match": "title=\"w:粵語音系\"[^>]*>幫助</a>\\)</sup></small>：<span class=\"IPA\">"
+          "match": "title=\"w:粵語音系\"[^>]*>幫助</a>\\)</sup></small>：<span class=\"IPA\">",
+          "normalize": true
         }
       ]
     }
@@ -104,7 +114,7 @@
   "audio": [
     {
       "name": "Wiktionary",
-      "note": "Wiktionary embeds Commons recordings as protocol-relative addresses, so 'prefix' supplies the scheme. Only the transcoded mp3 rendition is taken, because the original is WAV or Opus. The first attempt takes a Lingua Libre LL-Q9186_%28yue%29- filename and the second a Zh-yue- one, and both prefixes mark the recording as Cantonese rather than Mandarin.",
+      "note": "Wiktionary embeds Commons recordings as protocol-relative addresses, so 'prefix' supplies the scheme. Only the transcoded mp3 rendition is taken, because the original is WAV or Opus. A Cantonese recording is either a Lingua Libre LL-Q9186_%28yue%29- file or a Zh-yue- file, and both prefixes keep the Mandarin Zh- and Min Nan Zh-nan- recordings of the same page out. One attempt reads both, so the page is fetched once. A simplified-form page only points at its traditional form, so the attempt follows the see link.",
       "attempts": [
         {
           "urls": [
@@ -118,25 +128,23 @@
             "normalize": false
           },
           "strategy": "regex",
-          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q9186_%28yue%29-[^\"/]*\\.mp3)",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/(?:LL-Q9186_%28yue%29-|Zh-yue-)[^\"/]*\\.mp3)",
           "group": 1,
           "prefix": "https:"
-        },
+        }
+      ]
+    },
+    {
+      "name": "Wikimedia Commons",
+      "note": "Most Cantonese recordings on Commons are never embedded on a Wiktionary page, so the file store is searched directly. The search asks for files whose title carries the headword and the yue tag, and the API answers with the transcoded renditions of each file found. Search matches by character, so a title holding the headword inside a longer word is returned too; the pattern therefore takes only a file whose title ends in exactly {word}, as a Lingua Libre LL-Q9186 (yue)- file or a Zh-yue- file does. Only the mp3 rendition is taken, because the original is WAV or Opus. utf8=1 keeps the title readable so the headword can be matched, and formatversion=2 keeps the addresses unescaped.",
+      "attempts": [
         {
           "urls": [
-            "https://en.wiktionary.org/wiki/{word}",
-            "https://en.m.wiktionary.org/wiki/{word}"
+            "https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrlimit=20&gsrsearch=intitle%3A%22{word}%22%20intitle%3Ayue&prop=videoinfo&viprop=derivatives&format=json&formatversion=2&utf8=1"
           ],
-          "follow": {
-            "strategy": "regex",
-            "match": "see <span[^>]*lang=\"zh\"[^>]*><a [^>]*title=\"([^\"]+)\"",
-            "group": 1,
-            "normalize": false
-          },
           "strategy": "regex",
-          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Zh-yue-[^\"/]*\\.mp3)",
-          "group": 1,
-          "prefix": "https:"
+          "match": "\"title\":\"File:(?:LL-Q9186 \\(yue\\)-[^\"]*-|Zh-yue-){word}\\.[A-Za-z0-9]+\"(?:(?!\"title\")[\\s\\S])*?\"src\":\"(https://upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)\"",
+          "group": 1
         }
       ]
     }

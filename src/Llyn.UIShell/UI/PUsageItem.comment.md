@@ -1,4 +1,4 @@
-# PUsageItem.cs
+﻿# PUsageItem.cs
 
 ## `internal sealed class PUsageItem`
 
@@ -20,3 +20,8 @@ A side that names itself nowhere shows the unnamed text, and one marked as not k
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
 `PTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PUsageItemHeadword` keeps the plain headword for everything that is not display.
+
+## `public LOwner PUsageItemKind`
+
+The kind of side the row stands for, kept as the stored value beside the worded owner text.
+A click reads it to decide whether the row leads to an Entry or to an Example.

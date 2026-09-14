@@ -45,56 +45,24 @@
         <Setter Property="Visibility" Value="Collapsed" />
     </Style>
 
-    <DataTemplate x:Key="Theme.Reference.Row">
-        <TextBlock Margin="12,0" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" Text="{Binding PCitationItemName}" TextTrimming="CharacterEllipsis" />
-    </DataTemplate>
-
-    <Style x:Key="Theme.Reference.Item" TargetType="ListBoxItem">
-        <Setter Property="Height" Value="31" />
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                    <Border x:Name="PCitationSurface" Background="Transparent" CornerRadius="7">
-                        <ContentPresenter VerticalAlignment="Center" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="PCitationSurface" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
-                        </Trigger>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="PCitationSurface" Property="Background" Value="{DynamicResource Theme.AccentSoft}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="Theme.Sentence.Citation" TargetType="TextBlock">
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="Text" Value="{Binding PSentenceCitationName}" />
-        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding PSentenceCitationName}" Value="">
-                <Setter Property="Text" Value="{DynamicResource Reference.Assign}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding PSentenceCitationUnknown}" Value="True">
-                <Setter Property="Text" Value="{DynamicResource Display.Unknown}" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="Theme.Sentence.Notice" TargetType="TextBlock">
-        <Setter Property="Margin" Value="10,5,10,9" />
-        <Setter Property="FontSize" Value="12" />
+    <Style x:Key="Theme.Sentence.Citation" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+        <Setter Property="MinWidth" Value="72" />
+        <Setter Property="MaxWidth" Value="220" />
+        <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Foreground" Value="{DynamicResource Theme.Muted}" />
-        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="AcceptsReturn" Value="False" />
+        <Setter Property="TextAlignment" Value="Left" />
+        <Setter Property="Tag" Value="{DynamicResource Reference.Assign}" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PSentenceCitationCatalog.Count}" Value="0">
-                <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding PSentenceCitationText}" Value="" />
+                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="False" />
+                    <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Opacity" Value="0" />
+            </MultiDataTrigger>
         </Style.Triggers>
     </Style>
 
@@ -249,52 +217,32 @@
                 </Grid>
 
                 <StackPanel Grid.Column="3" Margin="16,0,0,0" VerticalAlignment="Top" Orientation="Horizontal">
-                    <StackPanel.Style>
-                        <Style TargetType="StackPanel" BasedOn="{StaticResource Theme.Sentence.Control}" />
-                    </StackPanel.Style>
-                    <Button Margin="0,0,6,0" Click="PGlossAddHandle" Style="{DynamicResource Theme.Card.Handle}" ToolTip="{DynamicResource Gloss.Add}">
-                        <Path Width="12" Height="12" Data="{local:PIcon gloss, 12}" Fill="{DynamicResource Theme.Accent}" Stretch="None" />
-                    </Button>
-                    <ToggleButton
-                        x:Name="PSentenceCitationId"
-                        MaxWidth="124"
-                        Height="20"
-                        Padding="8,0"
-                        Foreground="{DynamicResource Theme.Accent}"
-                        IsChecked="{Binding PSentenceCitationVisible, Mode=TwoWay}"
-                        Style="{DynamicResource Theme.Input.ToggleAction}">
-                        <TextBlock Style="{StaticResource Theme.Sentence.Citation}" />
-                    </ToggleButton>
-                    <Popup
-                        x:Name="PCitationDrawer"
-                        Width="264"
-                        Margin="0,6,0,0"
-                        AllowsTransparency="True"
-                        IsOpen="{Binding PSentenceCitationVisible, Mode=TwoWay}"
-                        Placement="Bottom"
-                        PlacementTarget="{Binding ElementName=PSentenceCitationId}"
-                        StaysOpen="False">
-                        <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
-                            <StackPanel>
-                                <TextBlock Style="{DynamicResource Theme.Popup.Title}" Text="{DynamicResource Reference.Title}" />
-                                <TextBlock Style="{StaticResource Theme.Sentence.Notice}" Text="{DynamicResource Reference.Empty}" />
-                                <ListBox
-                                    MaxHeight="220"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    IsSynchronizedWithCurrentItem="False"
-                                    ItemContainerStyle="{StaticResource Theme.Reference.Item}"
-                                    ItemTemplate="{StaticResource Theme.Reference.Row}"
-                                    ItemsSource="{Binding PSentenceCitationCatalog}"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    SelectedValue="{Binding PSentenceCitationId, Mode=TwoWay}"
-                                    SelectedValuePath="PCitationItemId" />
-                                <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSentenceCitationClear" Foreground="{DynamicResource Theme.Muted}">
-                                    <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
-                                </Button>
-                            </StackPanel>
-                        </Border>
-                    </Popup>
+                    <Border>
+                        <Border.Style>
+                            <Style TargetType="Border" BasedOn="{StaticResource Theme.Sentence.Control}" />
+                        </Border.Style>
+                        <Button Click="PGlossAddHandle" Style="{DynamicResource Theme.Card.Handle}" ToolTip="{DynamicResource Gloss.Add}">
+                            <Path Width="12" Height="12" Data="{local:PIcon gloss, 12}" Fill="{DynamicResource Theme.Accent}" Stretch="None" />
+                        </Button>
+                    </Border>
+                    <Border Margin="12,0,0,0">
+                        <TextBox
+                            FontFamily="{Binding FontFamily, ElementName=PSentenceLine}"
+                            FontSize="{Binding FontSize, ElementName=PSentenceLine}"
+                            PreviewKeyDown="PCitationKeyHandle"
+                            LostKeyboardFocus="PCitationLeaveHandle"
+                            Style="{StaticResource Theme.Sentence.Citation}"
+                            Text="{Binding PSentenceCitationText, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBox.Margin>
+                                <MultiBinding Converter="{StaticResource Theme.Sentence.Inset}">
+                                    <Binding Path="FontFamily" ElementName="PSentenceLead" />
+                                    <Binding Path="FontSize" ElementName="PSentenceLead" />
+                                    <Binding Path="FontFamily" ElementName="PSentenceLine" />
+                                    <Binding Path="FontSize" ElementName="PSentenceLine" />
+                                </MultiBinding>
+                            </TextBox.Margin>
+                        </TextBox>
+                    </Border>
                 </StackPanel>
             </Grid>
 

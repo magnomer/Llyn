@@ -22,7 +22,7 @@ The readings are held as [LSourceReading](LSourceReading.comment.md) records, on
 - `LSourceAttemptPrefix` — Base URL prepended to a relative extracted value to make it absolute.
   Cambridge audio `src` is site-relative, for example.
   It is `null` when the value is already absolute.
-- `LSourceAttemptFollow` — Optional reading-shaped extraction run on the body when every reading came up empty.
+- `LSourceAttemptFollow` — Optional reading-shaped extraction run on the body, naming another headword whose page is read as well.
   The value it captures is another headword the same attempt is fetched again for.
   A simplified Chinese page only points at its traditional form, and the pointer is read from the page itself.
   It is `null` when the source never redirects by page text.

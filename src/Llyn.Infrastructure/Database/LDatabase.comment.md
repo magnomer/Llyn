@@ -68,6 +68,8 @@ Initializes the database on first use.
 A file written at another schema version is rebuilt in the current shape first.
 It then opens a connection and runs the schema.
 So the file, its tables, and its indexes exist and its version is current.
+A file that had no version table before this ran is a new workspace.
+Such a file is given the Unknown Source once.
 Idempotent — running it against an already-initialized database creates nothing and migrates only what is behind.
 
 ## `internal void LDatabaseSessionClear(LDatabaseSession session)`

@@ -68,7 +68,7 @@ public sealed class TSourceGeneric
     }
 
     [Fact]
-    public async Task SourceFind_FlatAttempt_ReturnsOneUntagged()
+    public async Task SourceFind_FlatAttempt_ReturnsEveryUntagged()
     {
         LSource source = TSourceGenericCreate(
             TSourceGenericBody,
@@ -77,9 +77,8 @@ public sealed class TSourceGeneric
 
         LAnswer answer = await source.TSourceFind("tomato", CancellationToken.None);
 
-        LReading reading = Assert.Single(answer.LAnswerReadings);
-        Assert.Equal(string.Empty, reading.LReadingVariety);
-        Assert.Equal("təˈmɑːtəʊ", reading.LReadingPhonetic);
+        Assert.All(answer.LAnswerReadings, reading => Assert.Equal(string.Empty, reading.LReadingVariety));
+        Assert.Equal(["təˈmɑːtəʊ", "təˈmeɪtoʊ"], answer.LAnswerReadings.Select(reading => reading.LReadingPhonetic));
         Assert.Equal("təˈmɑːtəʊ", answer.LAnswerValue);
     }
 
@@ -170,6 +169,70 @@ public sealed class TSourceGeneric
         LAnswer answer = await source.TSourceFind("a", CancellationToken.None);
 
         Assert.Equal("ㄅ", answer.LAnswerValue);
+    }
+
+    [Fact]
+    public async Task SourceFind_RepeatedPattern_ReturnsEveryMatch()
+    {
+        LSource source = TSourceGenericCreate(
+            TSourceGenericPhon + "/zɪŋ²²/</span>" + TSourceGenericPhon + "/lɛːŋ³³/</span>" +
+            TSourceGenericPhon + "/zɪŋ²²/</span>",
+            TPronunciationHelper.TSourceAttemptCreate(
+                TPronunciationHelper.TSourceReadingCreate(string.Empty, "span", TSourceGenericPhon)));
+
+        LAnswer answer = await source.TSourceFind("靚", CancellationToken.None);
+
+        Assert.Equal(["zɪŋ²²", "lɛːŋ³³"], answer.LAnswerReadings.Select(reading => reading.LReadingPhonetic));
+    }
+
+    [Fact]
+    public async Task SourceFind_CommaInsideSpan_SplitsAlternatives()
+    {
+        LSource source = TSourceGenericCreate(
+            TSourceGenericPhon + "/hɔːk̚² saːŋ⁵⁵/, /hɔːk̚² sɐŋ⁵⁵/</span>",
+            TPronunciationHelper.TSourceAttemptCreate(
+                TPronunciationHelper.TSourceReadingCreate(string.Empty, "span", TSourceGenericPhon)));
+
+        LAnswer answer = await source.TSourceFind("學生", CancellationToken.None);
+
+        Assert.Equal(
+            ["hɔːk̚² saːŋ⁵⁵", "hɔːk̚² sɐŋ⁵⁵"],
+            answer.LAnswerReadings.Select(reading => reading.LReadingPhonetic));
+    }
+
+    [Fact]
+    public async Task SourceFind_FollowPointer_KeepsOwnReadingToo()
+    {
+        LSource source = TInterface.TSourceGenericCreate(
+            TInterface.TSourceSpecCreate(
+                "Stub",
+                [
+                    TPronunciationHelper.TSourceFollowCreate(
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "see=([^;]+);", 1, null, false, 0),
+                        TInterface.TSourceReadingCreate(string.Empty, "regex", "c=([^;]+);", 1, null, true, 0)),
+                ]),
+            TPronunciationHelper.TSourceClientCreate(new Dictionary<string, string>
+            {
+                ["https://example.test/%E5%90%AC"] = "c=jan2;see=聽;",
+                ["https://example.test/%E8%81%BD"] = "c=teng1,ting3;",
+            }));
+
+        LAnswer answer = await source.TSourceFind("听", CancellationToken.None);
+
+        Assert.Equal(["jan2", "teng1", "ting3"], answer.LAnswerReadings.Select(reading => reading.LReadingPhonetic));
+    }
+
+    [Fact]
+    public async Task SourceFind_WordToken_MatchesHeadwordLiterally()
+    {
+        LSource source = TSourceGenericCreate(
+            "file=a.b.mp3;file=a+b.mp3;",
+            TPronunciationHelper.TSourceAttemptCreate(
+                TInterface.TSourceReadingCreate(string.Empty, "regex", "file=({word}\\.mp3);", 1, null, false, 0)));
+
+        LAnswer answer = await source.TSourceFind("a+b", CancellationToken.None);
+
+        Assert.Equal("a+b.mp3", Assert.Single(answer.LAnswerReadings).LReadingPhonetic);
     }
 
     [Fact]

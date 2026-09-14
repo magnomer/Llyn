@@ -171,6 +171,18 @@ public partial class PWindow
             MessageBoxImage.Question) == MessageBoxResult.Yes;
     }
 
+    internal bool PWindowUnionConfirm(string dropped, string kept)
+    {
+        string question = $"{PLocalizationTextRead("Guild.MergeConfirm")}\n\n{dropped.Trim()} \u2192 {kept.Trim()}";
+
+        return MessageBox.Show(
+            this,
+            question,
+            PLocalizationTextRead("Terms.Product"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question) == MessageBoxResult.Yes;
+    }
+
     internal bool PWindowDeleteConfirm()
     {
         return MessageBox.Show(

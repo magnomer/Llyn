@@ -15,6 +15,10 @@ public partial class PDisplay
 
     private const double PCompassLead = 14;
 
+    private const double PCompassTop = 20;
+
+    private const double PCompassGap = 8;
+
     private readonly ObservableCollection<PCompassItem> _pCompassRows = [];
 
     private bool _pCompassFold;
@@ -114,6 +118,20 @@ public partial class PDisplay
 
         PCompass.Visibility = room ? Visibility.Visible : Visibility.Collapsed;
         PCompassSurface.Visibility = room && !_pCompassFold ? Visibility.Visible : Visibility.Collapsed;
+
+        Thickness margin = PCompass.Margin;
+        margin.Top = PCompassTopResolve(margin.Right);
+        PCompass.Margin = margin;
+    }
+
+    private double PCompassTopResolve(double side)
+    {
+        double headerRight = PDisplayContents.Margin.Left + PDisplayHeader.ActualWidth;
+        double compassLeft = ActualWidth - side - PCompass.Width;
+
+        return headerRight > compassLeft
+            ? PDisplayContents.Margin.Top + PDisplayHeader.ActualHeight + PCompassGap
+            : PCompassTop;
     }
 
     private void PCompassSync()
@@ -183,6 +201,11 @@ public partial class PDisplay
     private void PCompassSwitchHandle(object sender, RoutedEventArgs e)
     {
         _pCompassFold = PCompassSwitch.IsChecked != true;
+        PCompassPlace();
+    }
+
+    private void PCompassSizeHandle(object sender, SizeChangedEventArgs e)
+    {
         PCompassPlace();
     }
 

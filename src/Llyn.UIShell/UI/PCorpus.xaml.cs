@@ -26,7 +26,8 @@ public partial class PCorpus : UserControl
 
         PAnthology.ItemsSource = _pAnthologyList;
         PQuotation.ItemsSource = _pQuotationList;
-        PCitationList.ItemsSource = _pCitationCatalog;
+        PCitationList.ItemsSource = _pCitationItem;
+        PCitationDrawer.CustomPopupPlacementCallback = PCitationPlace;
         PLanguageList.ItemsSource = _pLanguageItem;
         PTranscriptMentionLine.ItemsSource = _pTranscriptChip.PMentionLineChip;
         PTranscriptGlossLine.ItemsSource = _pTranscriptGloss;
@@ -95,6 +96,19 @@ public partial class PCorpus : UserControl
         {
             await _pCorpusHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
                 shown, LOwner.LOwnerExample, _pCorpusHost.PWindowLegendRead("Example"), ticket));
+        }
+    }
+
+    private void PCorpusPortraitCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+    }
+
+    private async void PCorpusPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pCorpusHost.PWindowPortraitExport(entry);
         }
     }
 }

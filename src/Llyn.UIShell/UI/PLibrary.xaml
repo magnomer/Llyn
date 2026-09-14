@@ -17,6 +17,7 @@
 
     <UserControl.CommandBindings>
         <CommandBinding CanExecute="PLibraryPressCheck" Command="ApplicationCommands.Print" Executed="PLibraryPressHandle" />
+        <CommandBinding CanExecute="PLibraryPressCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PLibraryPortraitHandle" />
     </UserControl.CommandBindings>
 
     <Grid Margin="34,20,34,38">
@@ -166,10 +167,8 @@
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="{local:PIcon import, 24}" />
                     <Button
-                        x:Name="PLibraryPortrait"
-                        Click="PLibraryPortraitHandle"
+                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
                         Content="{DynamicResource Scribe.Export}"
-                        IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="{local:PIcon export, 24}" />
                     <Button

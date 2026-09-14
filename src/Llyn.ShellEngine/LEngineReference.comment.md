@@ -24,6 +24,13 @@ So they go only when something says to delete them.
 Creates `reference` and returns it with its assigned id.
 Its fields carry the three-state distinction the model gives them: unspecified, deliberately unknown, or a value.
 
+## `public LReference LEngineCitationCreate(string title)`
+
+Creates a Reference carrying nothing but `title`, for a citation typed where no stored Source answered.
+The typed line is resolved like any written value, and a blank line is refused as an argument.
+The caller then cites the returned id the way it cites any picked row.
+Observers hear of the new Reference at once, because every open citation catalogue must list it.
+
 ## `public LReference? LEngineReferenceRead(long id)`
 
 Reads the Reference for `id`, or `null` when none has that id.

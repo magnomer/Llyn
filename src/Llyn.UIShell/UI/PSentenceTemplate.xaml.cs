@@ -23,9 +23,14 @@ public partial class PSentenceTemplate : ResourceDictionary
         _pSentenceHost.PSentenceRemoveHandle(sender, e);
     }
 
-    private void PSentenceCitationClear(object sender, RoutedEventArgs e)
+    private void PCitationKeyHandle(object sender, KeyEventArgs e)
     {
-        _pSentenceHost.PSentenceCitationClear(sender, e);
+        _pSentenceHost.PCitationKeyHandle(sender, e);
+    }
+
+    private void PCitationLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        _pSentenceHost.PCitationLeaveHandle(sender, e);
     }
 
     private void PGlossAddHandle(object sender, RoutedEventArgs e)

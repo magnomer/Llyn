@@ -6,219 +6,233 @@
     >
 
     <UserControl.Resources>
-        <Style x:Key="Theme.Anthology.Meta" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PEditorPopup.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style x:Key="Theme.Anthology.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding PAnthologyItemChosen}" Value="True">
-                    <Setter Property="Tag" Value="Chosen" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="Theme.Anthology.Meta" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}" />
 
-        <Style x:Key="Theme.Display.Value" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-        </Style>
+            <Style x:Key="Theme.Anthology.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding PAnthologyItemChosen}" Value="True">
+                        <Setter Property="Tag" Value="Chosen" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="Theme.Excerpt.Sentence" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="28" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="TextWrapping" Value="Wrap" />
-        </Style>
+            <Style x:Key="Theme.Display.Value" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
 
-        <Style x:Key="Theme.Excerpt.Heading" TargetType="TextBlock">
-            <Setter Property="Height" Value="34" />
-            <Setter Property="Margin" Value="2,0,2,12" />
-            <Setter Property="Padding" Value="0,5,0,0" />
-            <Setter Property="FontSize" Value="19" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
+            <Style x:Key="Theme.Excerpt.Sentence" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+            </Style>
 
-        <Style x:Key="Theme.Excerpt.Chip" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
-            <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentEdge}" />
-            <Setter Property="BorderThickness" Value="1" />
-        </Style>
+            <Style x:Key="Theme.Excerpt.Heading" TargetType="TextBlock">
+                <Setter Property="Height" Value="34" />
+                <Setter Property="Margin" Value="2,0,2,12" />
+                <Setter Property="Padding" Value="0,5,0,0" />
+                <Setter Property="FontSize" Value="19" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
 
-        <Style x:Key="Theme.Excerpt.Flag" TargetType="Image">
-            <Setter Property="Width" Value="19" />
-            <Setter Property="Height" Value="14" />
-            <Setter Property="Margin" Value="0,0,8,0" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Stretch" Value="Uniform" />
-            <Style.Triggers>
-                <Trigger Property="Source" Value="{x:Null}">
-                    <Setter Property="Visibility" Value="Collapsed" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="Theme.Excerpt.Chip" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
+                <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentEdge}" />
+                <Setter Property="BorderThickness" Value="1" />
+            </Style>
 
-        <Style x:Key="Theme.Excerpt.Tally" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
-            <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-        </Style>
+            <Style x:Key="Theme.Excerpt.Flag" TargetType="Image">
+                <Setter Property="Width" Value="19" />
+                <Setter Property="Height" Value="14" />
+                <Setter Property="Margin" Value="0,0,8,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Stretch" Value="Uniform" />
+                <Style.Triggers>
+                    <Trigger Property="Source" Value="{x:Null}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="Theme.Excerpt.Figure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
-            <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-        </Style>
+            <Style x:Key="Theme.Excerpt.Tally" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
+                <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
+            </Style>
 
-        <Style x:Key="Theme.Transcript.Sentence" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
-            <Setter Property="MinHeight" Value="37" />
-            <Setter Property="FontSize" Value="28" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-        </Style>
+            <Style x:Key="Theme.Excerpt.Figure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
+                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+            </Style>
 
-        <Style x:Key="Theme.Transcript.Speaker" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Language.Toggle}">
-            <Setter Property="Height" Value="28" />
-            <Setter Property="Margin" Value="0,0,7,7" />
-            <Setter Property="Padding" Value="12,0" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentEdge}" />
-        </Style>
+            <Style x:Key="Theme.Transcript.Sentence" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+                <Setter Property="MinHeight" Value="37" />
+                <Setter Property="FontSize" Value="28" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
 
-        <Style x:Key="Theme.Transcript.Citation" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Language.Toggle}">
-            <Setter Property="Margin" Value="-5,-3,0,-3" />
-            <Setter Property="Padding" Value="4,2" />
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-        </Style>
+            <Style x:Key="Theme.Transcript.Speaker" TargetType="ToggleButton" BasedOn="{StaticResource Theme.Language.Toggle}">
+                <Setter Property="Height" Value="28" />
+                <Setter Property="Margin" Value="0,0,7,7" />
+                <Setter Property="Padding" Value="12,0" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="BorderBrush" Value="{StaticResource Theme.AccentEdge}" />
+            </Style>
 
-        <Style x:Key="Theme.Transcript.Gloss" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
-            <Setter Property="Margin" Value="4,0,0,0" />
-            <Setter Property="FontSize" Value="14" />
-        </Style>
+            <Style x:Key="Theme.Transcript.Citation" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+                <Setter Property="MinWidth" Value="120" />
+                <Setter Property="MaxWidth" Value="360" />
+                <Setter Property="Margin" Value="2,0" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="TextWrapping" Value="NoWrap" />
+                <Setter Property="AcceptsReturn" Value="False" />
+                <Setter Property="Tag" Value="{DynamicResource Reference.Assign}" />
+            </Style>
 
-        <Style x:Key="Theme.Transcript.Control" TargetType="StackPanel">
-            <Setter Property="Margin" Value="8,0,0,0" />
-            <Setter Property="VerticalAlignment" Value="Top" />
-            <Setter Property="Orientation" Value="Horizontal" />
-            <Setter Property="Opacity" Value="0" />
-            <Setter Property="IsHitTestVisible" Value="False" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
-                    <Setter Property="Opacity" Value="1" />
-                    <Setter Property="IsHitTestVisible" Value="True" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
-                    <Setter Property="Opacity" Value="1" />
-                    <Setter Property="IsHitTestVisible" Value="True" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
+            <Style x:Key="Theme.Transcript.Gloss" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
+                <Setter Property="Margin" Value="4,0,0,0" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
 
-        <Style x:Key="Theme.Transcript.Addition" TargetType="Button" BasedOn="{StaticResource Theme.Card.Handle}">
-            <Setter Property="ToolTip" Value="{DynamicResource Gloss.Add}" />
-            <Setter Property="Content">
-                <Setter.Value>
-                    <Path Width="12" Height="12" Data="{local:PIcon add, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style x:Key="Theme.Transcript.Control" TargetType="StackPanel">
+                <Setter Property="Margin" Value="8,0,0,0" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="Orientation" Value="Horizontal" />
+                <Setter Property="Opacity" Value="0" />
+                <Setter Property="IsHitTestVisible" Value="False" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+                        <Setter Property="Opacity" Value="1" />
+                        <Setter Property="IsHitTestVisible" Value="True" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+                        <Setter Property="Opacity" Value="1" />
+                        <Setter Property="IsHitTestVisible" Value="True" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
 
-        <Style x:Key="Theme.Transcript.Remove" TargetType="Button" BasedOn="{StaticResource Theme.Card.Handle}">
-            <Setter Property="Margin" Value="4,0,0,0" />
-            <Setter Property="Content">
-                <Setter.Value>
-                    <Path Width="12" Height="12" Data="{local:PIcon remove, 12}" Fill="{StaticResource Theme.Muted}" Stretch="None" />
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <Style x:Key="Theme.Transcript.Addition" TargetType="Button" BasedOn="{StaticResource Theme.Card.Handle}">
+                <Setter Property="ToolTip" Value="{DynamicResource Gloss.Add}" />
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Path Width="12" Height="12" Data="{local:PIcon add, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <DataTemplate x:Key="Theme.Transcript.Line">
-            <Border Margin="0,5,0,0" Background="Transparent">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+            <Style x:Key="Theme.Transcript.Remove" TargetType="Button" BasedOn="{StaticResource Theme.Card.Handle}">
+                <Setter Property="Margin" Value="4,0,0,0" />
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Path Width="12" Height="12" Data="{local:PIcon remove, 12}" Fill="{StaticResource Theme.Muted}" Stretch="None" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-                <ToggleButton
-                    x:Name="PGlossSpeaker"
-                    Margin="-4,2,0,-1"
-                    Padding="4,2"
-                    VerticalAlignment="Top"
-                    IsChecked="{Binding PGlossLanguageVisible, Mode=TwoWay}"
-                    Style="{DynamicResource Theme.Card.Switch}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Style="{DynamicResource Theme.Gloss.Flag}" />
-                        <Ellipse Style="{DynamicResource Theme.Gloss.Globe}" />
-                    </StackPanel>
-                </ToggleButton>
-                <Popup
-                    Width="238"
-                    AllowsTransparency="True"
-                    IsOpen="{Binding PGlossLanguageVisible, Mode=TwoWay}"
-                    Placement="Bottom"
-                    PlacementTarget="{Binding ElementName=PGlossSpeaker}"
-                    StaysOpen="False">
-                    <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
-                        <ListBox
-                            MaxHeight="220"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            IsSynchronizedWithCurrentItem="False"
-                            ItemContainerStyle="{DynamicResource Theme.Gloss.Choice}"
-                            ItemTemplate="{DynamicResource Theme.Gloss.Option}"
-                            ItemsSource="{Binding PGlossLanguageCatalog}"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            SelectedValue="{Binding PGlossLanguage, Mode=TwoWay}"
-                            SelectedValuePath="PLanguageItemName" />
-                    </Border>
-                </Popup>
-
-                <TextBox Grid.Column="1" Style="{StaticResource Theme.Transcript.Gloss}" Text="{Binding PGlossText, UpdateSourceTrigger=PropertyChanged}">
-                    <TextBox.Tag>
-                        <MultiBinding Converter="{StaticResource Theme.Gloss.State}">
-                            <Binding Path="PGlossUnknown" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Example.Translation" />
-                        </MultiBinding>
-                    </TextBox.Tag>
-                </TextBox>
-
-                <StackPanel Grid.Column="2" Style="{StaticResource Theme.Transcript.Control}">
-                    <Button Click="PGlossAddHandle" Style="{StaticResource Theme.Transcript.Addition}" />
-                    <Button Click="PGlossRemoveHandle" Style="{StaticResource Theme.Transcript.Remove}" />
-                </StackPanel>
-            </Grid>
-            </Border>
-        </DataTemplate>
-
-        <Style x:Key="Theme.Quotation.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding PQuotationItemChosen}" Value="True">
-                    <Setter Property="Tag" Value="Chosen" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <DataTemplate x:Key="Theme.Citation.Row">
-            <TextBlock Margin="4,0" VerticalAlignment="Center" Text="{Binding PCitationItemName}" TextTrimming="CharacterEllipsis" />
-        </DataTemplate>
-
-        <Style x:Key="Theme.Citation.Item" TargetType="ListBoxItem">
-            <Setter Property="Padding" Value="8,6" />
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-
-        <DataTemplate x:Key="Theme.Language.Choice">
-            <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSpeakerHandle" Foreground="{DynamicResource Theme.Ink}">
+            <DataTemplate x:Key="Theme.Transcript.Line">
+                <Border Margin="0,5,0,0" Background="Transparent">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <Image Width="19" Height="14" VerticalAlignment="Center" Source="{Binding PLanguageItemFlag}" Stretch="Uniform" />
-                    <TextBlock Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="{Binding PLanguageItemName}" />
+                    <ToggleButton
+                        x:Name="PGlossSpeaker"
+                        Margin="-4,2,0,-1"
+                        Padding="4,2"
+                        VerticalAlignment="Top"
+                        IsChecked="{Binding PGlossLanguageVisible, Mode=TwoWay}"
+                        Style="{DynamicResource Theme.Card.Switch}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{DynamicResource Theme.Gloss.Flag}" />
+                            <Ellipse Style="{DynamicResource Theme.Gloss.Globe}" />
+                        </StackPanel>
+                    </ToggleButton>
+                    <Popup
+                        Width="238"
+                        AllowsTransparency="True"
+                        IsOpen="{Binding PGlossLanguageVisible, Mode=TwoWay}"
+                        Placement="Bottom"
+                        PlacementTarget="{Binding ElementName=PGlossSpeaker}"
+                        StaysOpen="False">
+                        <Border Margin="10" Style="{DynamicResource Theme.Popup.Surface}">
+                            <ListBox
+                                MaxHeight="220"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                IsSynchronizedWithCurrentItem="False"
+                                ItemContainerStyle="{DynamicResource Theme.Gloss.Choice}"
+                                ItemTemplate="{DynamicResource Theme.Gloss.Option}"
+                                ItemsSource="{Binding PGlossLanguageCatalog}"
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                SelectedValue="{Binding PGlossLanguage, Mode=TwoWay}"
+                                SelectedValuePath="PLanguageItemName" />
+                        </Border>
+                    </Popup>
+
+                    <TextBox Grid.Column="1" Style="{StaticResource Theme.Transcript.Gloss}" Text="{Binding PGlossText, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox.Tag>
+                            <MultiBinding Converter="{StaticResource Theme.Gloss.State}">
+                                <Binding Path="PGlossUnknown" />
+                                <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
+                                <local:PLocalizationBinder PLocalizationBinderKey="Example.Translation" />
+                            </MultiBinding>
+                        </TextBox.Tag>
+                    </TextBox>
+
+                    <StackPanel Grid.Column="2" Style="{StaticResource Theme.Transcript.Control}">
+                        <Button Click="PGlossAddHandle" Style="{StaticResource Theme.Transcript.Addition}" />
+                        <Button Click="PGlossRemoveHandle" Style="{StaticResource Theme.Transcript.Remove}" />
+                    </StackPanel>
                 </Grid>
-            </Button>
-        </DataTemplate>
+                </Border>
+            </DataTemplate>
+
+            <Style x:Key="Theme.Quotation.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding PQuotationItemChosen}" Value="True">
+                        <Setter Property="Tag" Value="Chosen" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <DataTemplate x:Key="Theme.Citation.Row">
+                <Grid Background="Transparent" PreviewMouseLeftButtonDown="PCitationPickHandle">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource Theme.Ink}" TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding PCandidateItemLead, Mode=OneWay}" /><Run FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PCandidateItemMark, Mode=OneWay}" /><Run Text="{Binding PCandidateItemTail, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="10.5" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PCandidateItemCount}" />
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="Theme.Language.Choice">
+                <Button Height="31" Padding="12,0" HorizontalContentAlignment="Left" Background="Transparent" BorderThickness="0" Click="PSpeakerHandle" Foreground="{DynamicResource Theme.Ink}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Width="19" Height="14" VerticalAlignment="Center" Source="{Binding PLanguageItemFlag}" Stretch="Uniform" />
+                        <TextBlock Grid.Column="1" Margin="8,0" VerticalAlignment="Center" FontSize="13" Text="{Binding PLanguageItemName}" />
+                    </Grid>
+                </Button>
+            </DataTemplate>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <UserControl.CommandBindings>
         <CommandBinding CanExecute="PCorpusPressCheck" Command="ApplicationCommands.Print" Executed="PCorpusPressHandle" />
+        <CommandBinding CanExecute="PCorpusPortraitCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PCorpusPortraitHandle" />
     </UserControl.CommandBindings>
 
     <Grid Margin="34,20,34,38">
@@ -356,8 +370,8 @@
                         Tag="{local:PIcon save, 24}" />
                     <Rectangle Style="{StaticResource Theme.Command.Divider}" />
                     <Button
+                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
                         Content="{DynamicResource Scribe.Export}"
-                        IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="{local:PIcon export, 24}" />
                     <Button
@@ -565,54 +579,26 @@
 
                             <StackPanel Margin="0,28,0,0">
                                 <TextBlock Style="{StaticResource Theme.Excerpt.Heading}" Text="{DynamicResource Reference.Title}" />
-                                <Grid Margin="2,0" HorizontalAlignment="Left">
-                                    <ToggleButton x:Name="PCitation" Style="{StaticResource Theme.Transcript.Citation}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock x:Name="PCitationName" Style="{StaticResource Theme.Display.Value}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
-                                            <Path Width="12" Height="12" Margin="8,0,0,0" VerticalAlignment="Center" Data="{local:PIcon expand, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
-                                        </StackPanel>
-                                    </ToggleButton>
+                                <Grid HorizontalAlignment="Left">
+                                    <TextBox
+                                        x:Name="PCitationField"
+                                        PreviewKeyDown="PCitationKeyHandle"
+                                        LostKeyboardFocus="PCitationLeaveHandle"
+                                        Style="{StaticResource Theme.Transcript.Citation}"
+                                        TextChanged="PCitationTextHandle" />
                                     <Popup
                                         x:Name="PCitationDrawer"
-                                        Width="264"
+                                        MaxWidth="320"
                                         AllowsTransparency="True"
-                                        IsOpen="{Binding IsChecked, ElementName=PCitation, Mode=TwoWay}"
-                                        Placement="Bottom"
-                                        PlacementTarget="{Binding ElementName=PCitation}"
+                                        Placement="Custom"
                                         StaysOpen="False">
-                                        <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
-                                            <StackPanel>
-                                                <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Reference.Title}" />
-                                                <TextBlock
-                                                    x:Name="PCitationEmpty"
-                                                    Margin="10,5,10,9"
-                                                    FontSize="12"
-                                                    Foreground="{StaticResource Theme.Muted}"
-                                                    Text="{DynamicResource Reference.Empty}"
-                                                    Visibility="Collapsed" />
-                                                <ListBox
-                                                    x:Name="PCitationList"
-                                                    MaxHeight="220"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    IsSynchronizedWithCurrentItem="False"
-                                                    ItemContainerStyle="{StaticResource Theme.Citation.Item}"
-                                                    ItemTemplate="{StaticResource Theme.Citation.Row}"
-                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                    SelectedValuePath="PCitationItemId"
-                                                    SelectionChanged="PCitationHandle" />
-                                                <Button
-                                                    x:Name="PCitationNone"
-                                                    Height="31"
-                                                    Padding="12,0"
-                                                    HorizontalContentAlignment="Left"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    Click="PCitationClearHandle"
-                                                    Foreground="{StaticResource Theme.Muted}">
-                                                    <TextBlock VerticalAlignment="Center" FontSize="13" Text="{DynamicResource Reference.None}" />
-                                                </Button>
-                                            </StackPanel>
+                                        <Border MinWidth="{Binding ElementName=PCitationDrawer, Path=PlacementTarget.ActualWidth}" Style="{StaticResource Editor.Popup.Frame}">
+                                            <ListBox
+                                                x:Name="PCitationList"
+                                                MaxHeight="232"
+                                                ItemContainerStyle="{StaticResource Editor.Popup.Caret}"
+                                                ItemTemplate="{StaticResource Theme.Citation.Row}"
+                                                Style="{StaticResource Editor.Popup.List}" />
                                         </Border>
                                     </Popup>
                                 </Grid>

@@ -15,8 +15,9 @@ Switching language redraws every row rather than leaving one language's order ov
 
 ## `internal void PSentenceLoad()`
 
-Reads every Source the workspace holds into the list the form offers.
-It then has every row read the name of the Source it cites again.
+Reads every Source the workspace holds, with its byline, into the list the form offers.
+It then has every row read the byline of the Source it cites again.
+It runs again whenever the engine reports a Source changed, so a byline edited elsewhere is never stale here.
 A workspace that cannot be read leaves the list empty rather than failing the form.
 
 ## `internal void PSentenceFrameLoad(string language)`
@@ -82,17 +83,33 @@ Unlink applies from a chip always, and from the field when the selection lies in
 Redraws every row's chip line after the card was redrawn, since the rows hold no engine.
 A headword read that fails is reported once and the rest of the card is left as drawn.
 
-## `internal void PSentenceCitationClear(object sender, RoutedEventArgs e)`
+## `internal void PCitationKeyHandle(object sender, KeyEventArgs e)`
 
-Stops the row citing any Source, which the row reports and the change handler sends.
+Drives the citation field from the keyboard.
+While the dropdown stands open the arrows walk it and enter takes the selected row.
+Enter with nothing selected commits the typed line, and escape puts the cited byline back.
+
+## `internal void PCitationLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)`
+
+Leaving the field discards whatever was typed and not taken, and shuts the dropdown it opened.
+A citation is either a stored Source or nothing, so a half-typed line is never kept.
 
 ## Inline notes
+
+### `private void PSentenceCitationCommit(PSentence row)`
+
+An empty line stops the row citing anything.
+A line equal to the cited byline changes nothing.
+A line equal to some offered byline cites that Source, so typing a byline out in full never doubles it.
+Any other line becomes a new Source titled with that line, which the row then cites.
+The new Source joins the offered list at once rather than waiting for the engine to report it.
 
 ### `private void PSentenceChangeHandle(PCard card, PSentence row, string field)`
 
 Turns one row change into its request.
 The sentence, the marker and the role are deferred with the debounce, one pending request per row and field.
 The Source is sent at once, because it is picked rather than typed.
+The typed citation line is no request at all, and only opens the dropdown of Sources answering it.
 
 ### `private bool PSentencePendingCheck(PCard card, PSentence row, string field)`
 

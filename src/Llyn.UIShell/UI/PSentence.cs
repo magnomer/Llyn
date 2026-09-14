@@ -11,9 +11,8 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     private string _pSentenceText;
     private bool _pSentenceUnknown;
     private long _pSentenceCitation;
-    private bool _pSentenceCitationUnknown;
     private string _pSentenceCitationName;
-    private bool _pSentenceCitationVisible;
+    private string _pSentenceCitationText;
     private string _pSentenceParticle;
     private bool _pSentenceParticleUnknown;
     private string _pSentenceDependence;
@@ -44,8 +43,8 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         _pSentenceText = example.LExampleDraftText.LStateValueShow();
         _pSentenceUnknown = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
         _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
-        _pSentenceCitationUnknown = example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown;
         _pSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
+        _pSentenceCitationText = _pSentenceCitationName;
         _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
         _pSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
         _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
@@ -122,26 +121,9 @@ internal sealed partial class PSentence : INotifyPropertyChanged
             }
 
             _pSentenceCitation = chosen;
-            PSentenceCitationUnknown = false;
             PSentenceRaise(nameof(PSentenceCitationId));
 
             PSentenceCitationName = PSentenceCitationFind(chosen);
-            PSentenceCitationVisible = false;
-        }
-    }
-
-    public bool PSentenceCitationUnknown
-    {
-        get => _pSentenceCitationUnknown;
-        private set
-        {
-            if (_pSentenceCitationUnknown == value)
-            {
-                return;
-            }
-
-            _pSentenceCitationUnknown = value;
-            PSentenceRaise(nameof(PSentenceCitationUnknown));
         }
     }
 
@@ -150,28 +132,29 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         get => _pSentenceCitationName;
         private set
         {
-            if (string.Equals(_pSentenceCitationName, value, StringComparison.Ordinal))
+            if (!string.Equals(_pSentenceCitationName, value, StringComparison.Ordinal))
             {
-                return;
+                _pSentenceCitationName = value;
+                PSentenceRaise(nameof(PSentenceCitationName));
             }
 
-            _pSentenceCitationName = value;
-            PSentenceRaise(nameof(PSentenceCitationName));
+            PSentenceCitationText = value;
         }
     }
 
-    public bool PSentenceCitationVisible
+    public string PSentenceCitationText
     {
-        get => _pSentenceCitationVisible;
+        get => _pSentenceCitationText;
         set
         {
-            if (_pSentenceCitationVisible == value)
+            string typed = value ?? string.Empty;
+            if (string.Equals(_pSentenceCitationText, typed, StringComparison.Ordinal))
             {
                 return;
             }
 
-            _pSentenceCitationVisible = value;
-            PSentenceRaise(nameof(PSentenceCitationVisible));
+            _pSentenceCitationText = typed;
+            PSentenceRaise(nameof(PSentenceCitationText));
         }
     }
 
@@ -350,12 +333,10 @@ internal sealed partial class PSentence : INotifyPropertyChanged
             PSentenceUnknown = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
         }
 
-        if (_pSentenceCitation != example.LExampleDraftReference.LStateAnchorShow()
-            || _pSentenceCitationUnknown != (example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown))
+        if (_pSentenceCitation != example.LExampleDraftReference.LStateAnchorShow())
         {
             _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
             PSentenceRaise(nameof(PSentenceCitationId));
-            PSentenceCitationUnknown = example.LExampleDraftReference.LStateAnchorState == LState.LStateUnknown;
             PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
         }
 
@@ -377,6 +358,11 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     internal void PSentenceCitationShow()
     {
         PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
+    }
+
+    internal void PSentenceCitationReset()
+    {
+        PSentenceCitationText = _pSentenceCitationName;
     }
 
     private string PSentenceCitationFind(long reference)

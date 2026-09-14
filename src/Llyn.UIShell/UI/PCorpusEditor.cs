@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
@@ -58,79 +57,6 @@ public partial class PCorpus
         PSpeakerFlag.Source = PEnsign.PEnsignFind(_pTranscriptLanguage);
     }
 
-    private void PCitationFind()
-    {
-        _pCitationCatalog.Clear();
-
-        IReadOnlyList<LReference> read;
-        try
-        {
-            read = _lEngine.LEngineReferenceRead();
-        }
-        catch (Exception exception)
-        {
-            _pCorpusHost.PWindowFailureShow("Reference.LoadFailed", exception);
-            read = [];
-        }
-
-        foreach (LReference reference in read)
-        {
-            _pCitationCatalog.Add(PCitationItem.PCitationItemCreate(reference));
-        }
-
-        PCitationEmpty.Visibility = _pCitationCatalog.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private string PCitationNameRead(long id)
-    {
-        if (id == 0)
-        {
-            return string.Empty;
-        }
-
-        foreach (PCitationItem row in _pCitationCatalog)
-        {
-            if (row.PCitationItemId == id)
-            {
-                return row.PCitationItemName;
-            }
-        }
-
-        return id.ToString(CultureInfo.InvariantCulture);
-    }
-
-    private void PCitationHandle(object sender, SelectionChangedEventArgs e)
-    {
-        if (_pTranscriptLoading || PCitationList.SelectedValue is not long id)
-        {
-            return;
-        }
-
-        _pTranscriptCitation = id;
-        PCitation.IsChecked = false;
-        PCitationUpdate();
-        PTranscriptChangeDefer();
-    }
-
-    private void PCitationClearHandle(object sender, RoutedEventArgs e)
-    {
-        _pTranscriptCitation = 0;
-        PCitationList.SelectedValue = null;
-        PCitation.IsChecked = false;
-        PCitationUpdate();
-        PTranscriptChangeDefer();
-    }
-
-    private void PCitationUpdate()
-    {
-        PCitationName.Text = _pTranscriptCitation == 0
-            ? _pCorpusHost.PLocalizationTextRead("Reference.Assign")
-            : PCitationNameRead(_pTranscriptCitation);
-        PCitationName.SetResourceReference(
-            TextBlock.ForegroundProperty,
-            _pTranscriptCitation == 0 ? "Theme.Muted" : "Theme.Ink");
-    }
-
     private void PTranscriptTextHandle(object sender, TextChangedEventArgs e)
     {
         if (_pTranscriptLoading)
@@ -164,7 +90,6 @@ public partial class PCorpus
         PSpeakerShow();
 
         _pTranscriptCitation = example?.LExampleSource.LStateAnchorShow() ?? 0;
-        PCitationList.SelectedValue = _pTranscriptCitation == 0 ? null : _pTranscriptCitation;
         PCitationUpdate();
 
         PTranscriptMentionShow(example);
@@ -193,7 +118,6 @@ public partial class PCorpus
         if (_pTranscriptCitation != citation)
         {
             _pTranscriptCitation = citation;
-            PCitationList.SelectedValue = citation == 0 ? null : citation;
             PCitationUpdate();
         }
 

@@ -16,6 +16,28 @@ public sealed partial class LEngine
         }
     }
 
+    public LReference LEngineCitationCreate(string title)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(title);
+
+        LReference stored;
+        lock (_lEngineGate)
+        {
+            LStateValue named = LEngineValueRead(new LStateWritten(title.Trim(), false));
+            stored = new LReferenceArchive(_lEngineDatabase).LReferenceCreate(new LReference(
+                0,
+                named,
+                LStateValue.LStateValueUnspecified,
+                LReferenceKind.LReferenceKindUnspecified,
+                LStateValue.LStateValueUnspecified,
+                LStateValue.LStateValueUnspecified,
+                LStateMark.LStateMarkUnspecified));
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectReference, stored.LReferenceId);
+        return stored;
+    }
+
     public LReference? LEngineReferenceRead(long id)
     {
         lock (_lEngineGate)

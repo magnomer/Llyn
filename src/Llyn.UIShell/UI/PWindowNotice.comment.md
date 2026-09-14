@@ -104,3 +104,8 @@ A record nothing references is a plain question.
 One something references names the number of places first, because the delete drops those references too.
 `scope` names the kind of record, so a Situation and an Example each speak of themselves.
 The wording is the panel's, but the shape of the question belongs to the window that asks it.
+
+### `internal bool PWindowUnionConfirm(string dropped, string kept)`
+
+Asks before one Author is folded into another, naming both so the direction of the fold is plain.
+The dropped name comes first and the kept name second, joined by an arrow, because the fold reads that way.

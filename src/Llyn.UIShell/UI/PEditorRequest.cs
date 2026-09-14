@@ -133,6 +133,12 @@ public partial class PEditor
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectReference)
+        {
+            PSentenceLoad();
+            return;
+        }
+
         if (bulletin.LBulletinSubject != LSubject.LSubjectDraft
             || _pEditorDraft == 0
             || bulletin.LBulletinId != _pEditorDraft)

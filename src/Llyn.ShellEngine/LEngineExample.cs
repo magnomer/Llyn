@@ -69,10 +69,14 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
+            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
+                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+
             Dictionary<long, string> named = [];
             foreach (LReference reference in new LReferenceArchive(_lEngineDatabase).LReferenceAllRead())
             {
-                named[reference.LReferenceId] = reference.LReferenceNameRead();
+                credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited);
+                named[reference.LReferenceId] = reference.LReferenceBylineRead(credited ?? []);
             }
 
             return named;

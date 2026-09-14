@@ -41,6 +41,14 @@ A Reference that names itself nowhere is shown under its id.
 It is never shown as a blank the reader could not tell from the next one.
 The rule lives on the record because the catalog, the row and the citation list all need the same answer.
 
+## `public string LReferenceBylineRead(IReadOnlyList<LAuthor> credits)`
+
+The line a citation is written as beside a quoted sentence: `Author (Year)`.
+Every credited name is listed in order, joined by a comma.
+A Reference crediting nobody is written under its name instead, so the line is never blank.
+The year follows in parentheses only when it is stated.
+The rule lives here because the example line, the citation field and its dropdown all write the same line.
+
 ## `public static string LReferenceKindFormat(LReferenceKind kind)`
 
 The word a kind is written as outside the program.

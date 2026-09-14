@@ -5,7 +5,7 @@
 The Example row as the card shows it, on one line.
 That is the two frame fields, then the sentence field.
 The id the row will be stored under stands at its right.
-It is also the Source button and the buttons that open and drop rows.
+It is also the citation field at the sentence's right end, and the buttons that open and drop rows.
 Each field's hint reads the unknown mark when the row holds something it cannot read back.
 So an empty-looking field says which kind of empty it is.
 
@@ -32,22 +32,15 @@ Its selection is what the menu's items read when they decide whether they apply.
 The chip line under the sentence, one chip per Mention, collapsed while there is none.
 It stands in the sentence column so it reads as part of the sentence and not of the row's controls.
 
-## `Theme.Reference.Row`, `Theme.Reference.Item`
-
-One Source in the list a row cites from, and the row it sits in.
-Both are offered to the Situation rows as well.
-That is why they live in this dictionary rather than beside a single template.
-
 ## `Theme.Sentence.Citation`
 
-What the Source button reads.
-It reads the cited Source's name.
-It reads the invitation to assign one when the row cites none.
-It reads the unknown mark when the citation was marked as not known.
-
-## `Theme.Sentence.Notice`
-
-The line shown in the Source list while the workspace holds no Sources at all.
+The field the cited Source is typed into, showing its `Author (Year)` byline.
+It is bare like the sentence field, right-aligned and muted, so it reads as the sentence's tail.
+Its font, size and baseline drop are bound to the sentence field and its frame, not to the resources.
+So its box stands level with the sentence box whatever font the language pack gave the sentence.
+It fades out while empty and the row is neither hovered nor focused.
+So an uncited row shows no blank box.
+The hint reads the invitation to assign a Source.
 
 ## `Theme.Sentence.Opening`
 

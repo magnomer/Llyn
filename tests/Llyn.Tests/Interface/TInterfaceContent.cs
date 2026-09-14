@@ -48,6 +48,25 @@ internal static partial class TInterface
     internal static IReadOnlyList<LAuthor> TEngineAuthorFind(this LEngine engine, string query) =>
         engine.LEngineAuthorFind(query);
 
+    internal static IReadOnlyList<LCatalogAuthor> TEngineAuthorFind(
+        this LEngine engine,
+        string query,
+        LCatalogOrder order) =>
+        engine.LEngineAuthorFind(query, order);
+
+    internal static void TEngineAuthorAbsorb(this LEngine engine, long kept, long dropped)
+    {
+        engine.LEngineAuthorAbsorb(kept, dropped);
+    }
+
+    internal static IReadOnlyList<LCatalogReference> TEngineOeuvreFind(
+        this LEngine engine,
+        long? author,
+        string query,
+        LCatalogFilter kind,
+        LCatalogOrder order) =>
+        engine.LEngineOeuvreFind(author, query, kind, order);
+
     internal static IReadOnlyList<LAuthor> TEngineAuthorRead(
         this LEngine engine,
         long ownerId,

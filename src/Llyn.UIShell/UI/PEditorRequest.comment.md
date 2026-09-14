@@ -49,6 +49,7 @@ One failure drops the rest, because a form writing into a draft that refused it 
 
 Re-reads and renders on a bulletin naming this form's own draft.
 A finished frequency fetch for the entry the draft stands on fills the chip alone.
+A Source bulletin reloads the offered Sources, since a byline may have changed under a row.
 Every other bulletin is another surface's business.
 
 ### `private void PEditorLanguageSend()`

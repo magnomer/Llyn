@@ -7,9 +7,12 @@ namespace Llyn.Core;
 public sealed record LCatalogReference(
     LReference LCatalogReferenceStored,
     string LCatalogReferenceName,
+    string LCatalogReferenceByline,
     IReadOnlyList<LAuthor> LCatalogReferenceCredit,
     int LCatalogReferenceUsage)
 {
+    private static readonly char[] LCatalogReferenceBreak = [' ', '	', '(', ')', ','];
+
     public static LCatalogReference LCatalogReferenceCreate(
         LReference reference,
         IReadOnlyList<LAuthor>? credits,
@@ -17,7 +20,13 @@ public sealed record LCatalogReference(
     {
         ArgumentNullException.ThrowIfNull(reference);
 
-        return new LCatalogReference(reference, reference.LReferenceNameRead(), credits ?? [], usage);
+        IReadOnlyList<LAuthor> credited = credits ?? [];
+        return new LCatalogReference(
+            reference,
+            reference.LReferenceNameRead(),
+            reference.LReferenceBylineRead(credited),
+            credited,
+            usage);
     }
 
     public static IReadOnlyList<LCatalogReference> LCatalogReferenceSort(
@@ -53,22 +62,31 @@ public sealed record LCatalogReference(
     {
         ArgumentNullException.ThrowIfNull(query);
 
-        if (query.Length == 0)
+        foreach (string term in query.Split(LCatalogReferenceBreak, StringSplitOptions.RemoveEmptyEntries))
         {
-            return true;
+            if (!LCatalogReferenceCheck(term))
+            {
+                return false;
+            }
         }
 
+        return true;
+    }
+
+    private bool LCatalogReferenceCheck(string term)
+    {
         LReference reference = LCatalogReferenceStored;
-        if (LCatalog.LCatalogTextMatch(reference.LReferenceTitle.LStateValueShow(), query)
-            || LCatalog.LCatalogTextMatch(reference.LReferenceNote.LStateValueShow(), query)
-            || LCatalog.LCatalogTextMatch(reference.LReferenceUrl.LStateValueShow(), query))
+        if (LCatalog.LCatalogTextMatch(reference.LReferenceTitle.LStateValueShow(), term)
+            || LCatalog.LCatalogTextMatch(reference.LReferenceYear.LStateValueShow(), term)
+            || LCatalog.LCatalogTextMatch(reference.LReferenceNote.LStateValueShow(), term)
+            || LCatalog.LCatalogTextMatch(reference.LReferenceUrl.LStateValueShow(), term))
         {
             return true;
         }
 
         foreach (LAuthor author in LCatalogReferenceCredit)
         {
-            if (LCatalog.LCatalogTextMatch(author.LAuthorName, query))
+            if (LCatalog.LCatalogTextMatch(author.LAuthorName, term))
             {
                 return true;
             }

@@ -78,4 +78,12 @@ public partial class PLibrary : UserControl
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pLibraryHost.PWindowLabelRead(), ticket));
         }
     }
+
+    private async void PLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pLibraryHost.PWindowPortraitExport(entry);
+        }
+    }
 }

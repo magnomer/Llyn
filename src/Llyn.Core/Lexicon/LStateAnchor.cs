@@ -7,8 +7,6 @@ public sealed record LStateAnchor(
 {
     public static LStateAnchor LStateAnchorUnspecified { get; } = new(LState.LStateUnspecified, null);
 
-    public static LStateAnchor LStateAnchorUnknown { get; } = new(LState.LStateUnknown, null);
-
     public static LStateAnchor LStateAnchorCreate(long id)
     {
         return new LStateAnchor(LState.LStateSpecified, id);

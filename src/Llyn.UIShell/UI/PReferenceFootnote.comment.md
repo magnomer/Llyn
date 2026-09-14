@@ -1,11 +1,11 @@
-# PReferenceColophon.xaml
+﻿# PReferenceFootnote.xaml
 
 ## `ResourceDictionary`
 
-The title, heading, value and chip styles of the read area, and the row of the entry list beside it.
-The chips are built on the speech chip, so the dictionary merges the speech theme to reach it.
+The row of the entry list beside the read area of the sources panel.
 The row reads the flag, the headword and the language, as a cohort row does, and leads to that Entry.
 It is a dictionary rather than markup in the panel, because the panel outgrew one file.
+The read area's own styles moved out with it into `PColophon.xaml`, where the reading now lives.
 
 ## Inline notes
 

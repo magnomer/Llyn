@@ -1,4 +1,6 @@
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -60,5 +62,27 @@ public partial class PTenor : UserControl
 
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
+    }
+
+    private void PTenorPressCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+    }
+
+    private async void PTenorPressHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pTenorHost.PWindowPressRun(
+                ticket => _lEngine.LEnginePortraitPrint(entry, _pTenorHost.PWindowLabelRead(), ticket));
+        }
+    }
+
+    private async void PTenorPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pTenorHost.PWindowPortraitExport(entry);
+        }
     }
 }

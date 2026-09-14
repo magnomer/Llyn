@@ -48,5 +48,4 @@ Each row carries the flag, the headword and the language, in the library catalog
 ## `<local:PRail Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" ...>`
 
 The entry actions over the reader, and the reader/editor toggle.
-Export and Print are absent here, unlike the taxonomy panel.
-This panel is not a place work is exported from.
+Export and Print stand here as on every panel that reads an entry.

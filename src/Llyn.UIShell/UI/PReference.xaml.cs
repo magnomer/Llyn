@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Llyn.Core;
@@ -27,6 +27,7 @@ public partial class PReference : UserControl
         PShelf.ItemsSource = _pShelfList;
         PFootnote.ItemsSource = _pFootnoteList;
 
+        PColophon.PColophonAttach(host);
         PImprint.PImprintAttach(host, engine, this);
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, "Reference", null);
@@ -41,11 +42,6 @@ public partial class PReference : UserControl
 
         _pReferenceObserver = new PObserver(this, PReferenceBulletinHandle);
         engine.LEngineObserverAttach(_pReferenceObserver);
-    }
-
-    private string PReferenceKindShow(LReferenceKind kind)
-    {
-        return _pReferenceHost.PLocalizationTextRead(PReferenceKindRead(kind));
     }
 
     internal static string PReferenceKindRead(LReferenceKind kind)
@@ -119,6 +115,19 @@ public partial class PReference : UserControl
         {
             await _pReferenceHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
                 shown, LOwner.LOwnerReference, _pReferenceHost.PWindowLegendRead("Source"), ticket));
+        }
+    }
+
+    private void PReferencePortraitCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+    }
+
+    private async void PReferencePortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pReferenceHost.PWindowPortraitExport(entry);
         }
     }
 }

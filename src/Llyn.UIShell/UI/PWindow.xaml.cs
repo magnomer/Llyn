@@ -58,6 +58,7 @@ public partial class PWindow : Window
         PRepertoire.PRepertoireAttach(this, engine);
         PCorpus.PCorpusAttach(this, engine);
         PReference.PReferenceAttach(this, engine);
+        PGuild.PGuildAttach(this, engine);
         PFavorite.PFavoriteAttach(this, engine);
         PDuplex.PDuplexAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
@@ -76,6 +77,7 @@ public partial class PWindow : Window
         _pLayout.PLayoutAttach((Grid)PRepertoire.Content, "repertoire");
         _pLayout.PLayoutAttach((Grid)PCorpus.Content, "corpus");
         _pLayout.PLayoutAttach((Grid)PReference.Content, "reference");
+        _pLayout.PLayoutAttach((Grid)PGuild.Content, "guild");
         _pLayout.PLayoutAttach((Grid)PFavorite.Content, "favorite");
 
         _pLayout.PLayoutRestore();
@@ -101,6 +103,7 @@ public partial class PWindow : Window
         PRepertoire.PRepertoireClose();
         PCorpus.PCorpusClose();
         PReference.PReferenceClose();
+        PGuild.PGuildClose();
         PFavorite.PFavoriteClose();
         PDuplex.PDuplexClose();
         _lEngine.LEngineLeftoverSweep();

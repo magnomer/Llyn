@@ -74,6 +74,10 @@ Stores the ordering the sources panel lists sources in.
 
 Stores the ordering the corpus panel lists examples in.
 
+## `public void LEngineEchelonSave(LCatalogOrder order)`
+
+Stores the ordering the authors panel lists authors in.
+
 ## `public void LEngineSieveSave(LCatalogFilter filter)`
 
 Stores the languages the library panel hides.
@@ -105,6 +109,10 @@ Stores the languages the corpus panel hides from the entries quoting the chosen 
 ## `public void LEngineTrellisSave(LCatalogFilter filter)`
 
 Stores the languages the sources panel hides from the entries citing the chosen source.
+
+## `public void LEngineLouverSave(LCatalogFilter filter)`
+
+Stores the kinds the authors panel hides from the sources crediting the chosen author.
 
 ## `private void LEngineStateChange(Func<LWorkspaceState, LWorkspaceState> change)`
 

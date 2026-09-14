@@ -77,4 +77,12 @@ public partial class PPhonology : UserControl
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pPhonologyHost.PWindowLabelRead(), ticket));
         }
     }
+
+    private async void PPhonologyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pPhonologyHost.PWindowPortraitExport(entry);
+        }
+    }
 }

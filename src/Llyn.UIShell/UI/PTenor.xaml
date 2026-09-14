@@ -32,6 +32,11 @@
         </Style>
     </UserControl.Resources>
 
+    <UserControl.CommandBindings>
+        <CommandBinding CanExecute="PTenorPressCheck" Command="ApplicationCommands.Print" Executed="PTenorPressHandle" />
+        <CommandBinding CanExecute="PTenorPressCheck" Command="local:PDisplayCommand.PDisplayCommandPortrait" Executed="PTenorPortraitHandle" />
+    </UserControl.CommandBindings>
+
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -223,6 +228,17 @@
                         IsEnabled="False"
                         Style="{StaticResource Theme.Command.Primary}"
                         Tag="{local:PIcon save, 24}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
+                        Command="local:PDisplayCommand.PDisplayCommandPortrait"
+                        Content="{DynamicResource Scribe.Export}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon export, 24}" />
+                    <Button
+                        Command="ApplicationCommands.Print"
+                        Content="{DynamicResource Scribe.Print}"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon print, 24}" />
                 </StackPanel>
             </Border>
             <Border

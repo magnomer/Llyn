@@ -63,7 +63,7 @@ The unknown mark and the unwritten text have no words for a Mention to lie on.
 ## `private void PExcerptCitationShow(LStateAnchor value)`
 
 Writes the cited Source under its heading, or hides the heading when no citation was ever written.
-An unknown citation reads the unknown mark, so the two kinds of empty stay distinct.
+A source that is not known is itself a Source on the shelf, and reads under its own line.
 
 ## `private string PCorpusTallyRead(long? id)`
 

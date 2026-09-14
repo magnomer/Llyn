@@ -56,6 +56,12 @@ public partial class PWindow
             return;
         }
 
+        if (PGuild.IsVisible && selectedButton != PNavigationGuild
+            && !PWindowDiscardConfirm(PGuild.PGuildChangeCheck(), PGuild.PGuildDraftFinish))
+        {
+            return;
+        }
+
         if (PFavorite.IsVisible && selectedButton != PNavigationFavorite
             && !PWindowDiscardConfirm(PFavorite.PFavoriteChangeCheck(), PFavorite.PFavoriteDraftFinish))
         {
@@ -103,6 +109,7 @@ public partial class PWindow
             ("Repertoire", PNavigationRepertoire, PRepertoire, PRepertoire.PRepertoireScribeRestore),
             ("Corpus", PNavigationCorpus, PCorpus, PCorpus.PCorpusScribeRestore),
             ("Reference", PNavigationSource, PReference, PReference.PReferenceScribeRestore),
+            ("Guild", PNavigationGuild, PGuild, PGuild.PGuildScribeRestore),
             ("Favorite", PNavigationFavorite, PFavorite, PFavorite.PFavoriteScribeRestore),
             ("Duplex", PNavigationDuplex, PDuplex, null),
             ("Settings", PNavigationSettings, PSettings, null)
@@ -206,6 +213,17 @@ public partial class PWindow
 
         PNavigationHandle(PNavigationTaxonomy, new RoutedEventArgs());
         PTaxonomy.PDirectoryTagShow(id);
+    }
+
+    internal void PWindowExampleShow(long id)
+    {
+        if (!PCorpus.PCorpusLeaveConfirm())
+        {
+            return;
+        }
+
+        PNavigationHandle(PNavigationCorpus, new RoutedEventArgs());
+        PCorpus.PAnthologyExampleShow(id);
     }
 
     internal void PWindowRegisterShow(long id)

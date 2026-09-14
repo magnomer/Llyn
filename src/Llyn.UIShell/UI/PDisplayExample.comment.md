@@ -47,6 +47,14 @@ The Glosses stand under the sentence, aligned with its first character rather th
 They come from the draft through `PGlossConverter`, which wraps each in the row the editor already resolves a flag for.
 The list folds away when the Example carries none.
 
+### `<Border Grid.Column="3" Margin="16,0,0,0">`
+
+The byline of the cited Source stands at the right end of the example line, as dictionaries print quotations.
+It reads through `PCitationConverter`, which the view fills once per shown entry.
+An example citing nothing collapses the column, so an uncited sentence runs to the edge.
+Its font, size and baseline drop are bound to the sentence element itself rather than to the resources.
+So the byline sits on the sentence's baseline whatever font the language pack gave the sentence.
+
 ### `<local:PSentenceConverter x:Key="Display.Card.Frame" />`
 
 The sentence order and the inset are read nowhere but here.

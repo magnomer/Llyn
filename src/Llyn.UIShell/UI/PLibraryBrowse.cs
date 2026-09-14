@@ -273,10 +273,7 @@ public partial class PLibrary
 
     internal void PLibraryCommandApply()
     {
-        bool standing = _pDisplayEntry is not null;
-
-        PLibraryBin.IsEnabled = standing;
-        PLibraryPortrait.IsEnabled = standing;
+        PLibraryBin.IsEnabled = _pDisplayEntry is not null;
     }
 
     private void PLibraryClear()

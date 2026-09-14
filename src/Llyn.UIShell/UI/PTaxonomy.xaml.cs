@@ -77,4 +77,12 @@ public partial class PTaxonomy : UserControl
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pTaxonomyHost.PWindowLabelRead(), ticket));
         }
     }
+
+    private async void PTaxonomyPortraitHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pTaxonomyHost.PWindowPortraitExport(entry);
+        }
+    }
 }
