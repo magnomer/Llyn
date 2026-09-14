@@ -1,24 +1,45 @@
-# PSettings.xaml.cs
+# PSettings.xaml
 
-## `public partial class PSettings : UserControl`
+## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
-The settings panel as a control: what it is made of, and the stored choices it opens on.
-What each choice costs — a catalog swap, a whole different workspace — lives in the files beside this one.
+The seams that part the setting catalog from the card of the chosen group.
+The row seam runs under the search field and is bled past the panel margin, as every tab does it.
+The column seam sits in the gutter and reaches the foot of the window.
 
-## `internal void PSettingsAttach(PWindow host, LEngine engine)`
+## `<Style x:Key="Theme.Ledger.Row" ...>`
 
-Puts the panel to work on `engine` and shows the choices already stored in it.
-That is the last thing done before user changes start being saved.
+The catalog row of the panel, marked chosen through the item it is bound to.
+It is the same accent edge the other catalogs paint, so the settings tab reads as one of them.
 
-## Inline notes
+## `<TextBox x:Name="PWinnow" ...>`
 
-### `private PWindow _pSettingsHost = null!;`
+The search field over the catalog, a bare field with no ordering or filter button.
+Five groups need no ordering, and the text alone decides which rows stay.
 
-The window this panel sits in.
-It is who asks before a workspace change throws typed work away.
-It also owns the other panels that change moves onto the new workspace.
+## `<ItemsControl x:Name="PLedger">`
 
-### `private bool _pSettingsReady;`
+The catalog of setting groups, one row each, the title over a summary of the values the group holds.
+Choosing a row swaps the card on the right and nothing else.
 
-Whether the stored choices have finished being applied.
-Applying them raises the same change events a user action does, and those must not be written back as choices.
+## `<Border Grid.Row="1" Grid.Column="1" ... Style="{StaticResource Theme.Panel.Surface}">`
+
+The edit area, one card per group drawn in the same cell, only the chosen one visible.
+A card opens with its title and purpose, then its rows parted by one-pixel lines.
+Each row reads its label over its helper, with the control at the far end.
+
+## `<Button x:Name="PWorkspaceDialog" ...>`
+
+The folder picker beside the path field, an icon action rather than a labelled button.
+The label survives as its tooltip.
+
+## `<ToggleButton x:Name="PRespelling" ...>`
+
+Whether looked-up transcriptions are recast into the pack's symbol convention.
+The next lookup reads it, so nothing on screen changes when it flips.
+The switch keeps the check box's handler and its checked reading, only the drawing changed.
+
+## `<ToggleButton x:Name="PFrequency" ...>`
+
+Whether an entry's frequency is fetched from the pack's web source.
+It stands above the inflection switch in the same card, since both govern what a lookup fetches.
+A pack that declares no frequency source fetches nothing either way, so the switch costs nothing there.

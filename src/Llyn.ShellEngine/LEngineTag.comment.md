@@ -33,6 +33,12 @@ Writes that card's whole Tag line.
 Each Tag is resolved to its row by id, or by text when it carries none.
 Blank texts and repeats are dropped, and the surviving order is the order given.
 
+## `public LTag LEngineTagCreate(string text)`
+
+Makes a Tag reading `text` with no card carrying it yet, for the taxonomy panel's New.
+A Tag already reading the same is returned rather than doubled.
+The catalog is announced so every panel listing Tags shows the new row.
+
 ## `public void LEngineTagChange(long tagId, string renamed)`
 
 Renames the Tag `tagId` names, and every card linking it follows.

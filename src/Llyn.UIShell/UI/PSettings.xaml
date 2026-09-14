@@ -66,10 +66,14 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Click="PLedgerHandle" Style="{StaticResource Theme.Ledger.Row}">
-                                <StackPanel>
-                                    <TextBlock Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PLedgerItemTitle}" />
-                                    <TextBlock Margin="0,2,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding PLedgerItemMeta}" />
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PLedgerItemTitle}" />
+                                    <TextBlock Grid.Column="1" Margin="12,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding PLedgerItemMeta}" />
+                                </Grid>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -108,7 +112,8 @@
                                         Grid.Column="0"
                                         Height="44"
                                         VerticalAlignment="Center"
-                                        LostKeyboardFocus="PWorkspacePathHandle"
+                                        KeyDown="PWorkspacePathHandle"
+                                        LostKeyboardFocus="PWorkspaceFocusHandle"
                                         Style="{StaticResource Theme.Input.Field}" />
                                     <Button
                                         x:Name="PWorkspaceDialog"

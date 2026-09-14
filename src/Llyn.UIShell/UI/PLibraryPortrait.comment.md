@@ -17,11 +17,7 @@ Export acts on the entry being read, which is the one the panel already shows.
 A cancelled dialog is not a failure and leaves nothing behind.
 The filter index chooses the format, so the reader picks it where they pick the name.
 The whole attempt stands together, because a half-written document is of no use.
-
-## `private LPortraitLabel PLibraryLabelRead()`
-
-The engine holds no localization, so the words the export needs are read here and passed in.
-They are the panel's own words, which is what keeps a document reading like the screen.
+The words the export needs come from the window, which reads them for every panel alike.
 
 ## `private string PLibraryNameRead(long id)`
 

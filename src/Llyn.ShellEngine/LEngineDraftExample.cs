@@ -47,15 +47,23 @@ public sealed partial class LEngine
                 draft.LDraftExample ?? throw new LRefusal(LRefusal.LRefusalExample));
 
             LExample stored;
-            if (draft.LDraftEntryId == 0 || LEngineExampleRead(draft.LDraftEntryId) is null)
+            using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
             {
-                stored = LEngineExampleCreate(sending);
-            }
-            else
-            {
-                LExample written = sending with { LExampleId = draft.LDraftEntryId };
-                LEngineExampleUpdate(written);
-                stored = LEngineExampleRead(draft.LDraftEntryId) ?? written;
+                bool fresh = draft.LDraftEntryId == 0 || LEngineExampleRead(draft.LDraftEntryId) is null;
+                if (fresh)
+                {
+                    stored = LEngineExampleCreate(sending);
+                }
+                else
+                {
+                    LExample written = sending with { LExampleId = draft.LDraftEntryId };
+                    LEngineExampleUpdate(written);
+                    stored = LEngineExampleRead(draft.LDraftEntryId) ?? written;
+                }
+
+                LEngineRevisionRecord(
+                    stored.LExampleId, "example", fresh ? "create" : "update", stored.LExampleText.LStateValueShow());
+                session.LDatabaseSessionCommit();
             }
 
             LDraftArchive.LDraftArchiveSave(

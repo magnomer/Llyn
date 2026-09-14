@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -97,5 +98,27 @@ public partial class PReference : UserControl
         PDisplay.PDisplayClose();
         PGradeDropdown.IsOpen = false;
         PTrellisDropdown.IsOpen = false;
+    }
+
+    private void PReferencePressCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = (_pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible)
+            || (_pColophonReference is not null && PColophon.Visibility == Visibility.Visible);
+    }
+
+    private async void PReferencePressHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pReferenceHost.PWindowPressRun(
+                ticket => _lEngine.LEnginePortraitPrint(entry, _pReferenceHost.PWindowLabelRead(), ticket));
+            return;
+        }
+
+        if (_pColophonReference is long shown && PColophon.Visibility == Visibility.Visible)
+        {
+            await _pReferenceHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
+                shown, LOwner.LOwnerReference, _pReferenceHost.PWindowLegendRead("Source"), ticket));
+        }
     }
 }

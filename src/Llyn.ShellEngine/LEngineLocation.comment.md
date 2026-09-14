@@ -1,0 +1,30 @@
+# LEngineLocation.cs
+
+## `public sealed partial class LEngine`
+
+The one rule for where a stored location may point.
+Image, video and audio locations come from the user or from an imported file, and both are read here.
+A location that fails the rule is never touched, since touching a path can already send credentials.
+
+## `public Uri? LEngineLocationResolve(string? location)`
+
+The address a location names, or null when it names nothing the program may reach.
+A web address passes as written.
+A drive path passes as written, and a relative path is resolved against the workspace and must stay inside it.
+The shell resolves the same way, so a relative path means the same thing on view and on import.
+A UNC path, a `file` address with a host, a device path and every other scheme are refused.
+Windows sends the user's credentials to any host named that way, so an imported file must not name one.
+
+## `private static Uri? LEngineLocationResolve(string path, string workspace)`
+
+The file half of the rule, once web and scheme forms are settled.
+A path the runtime cannot form is refused rather than thrown.
+
+## `private string LEngineRecordingResolve(string file)`
+
+The full path of a stored recording within the workspace in use now.
+A path the rule refuses is returned as it stands, so a draft keeps what was written.
+
+## `public bool LEngineRecordingExist(string? file)`
+
+Whether a stored recording passes the rule and is on disk.

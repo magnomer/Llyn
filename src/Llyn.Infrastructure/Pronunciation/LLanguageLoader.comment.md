@@ -17,6 +17,13 @@ Scans the `languages/` folder for available packs, returning the name of every l
 Language-agnostic: the set of languages is whatever is on disk, discovered at runtime.
 So adding a pack folder makes it selectable with no code change.
 
+## `public static bool LLanguageNameValidate(string? language)`
+
+Whether `language` is a plain folder name a pack could sit under.
+A separator, a rooted path, a dot name or a character no file name may hold fails.
+A language name comes from an entry, and an entry can come from an imported file.
+Every loader that joins the name onto the `languages/` folder asks here first, so no name walks out of it.
+
 ## Inline notes
 
 ### `private static void LLanguageSort(List<string> names)`

@@ -14,6 +14,8 @@ public sealed partial class LEngine
 {
     private static readonly TimeSpan LEngineBandPatience = TimeSpan.FromSeconds(1);
 
+    private readonly SemaphoreSlim _lEngineFrequencyGate = new(4, 4);
+
     private IReadOnlyList<LSource> LEngineFrequencyLoad(string language)
     {
         if (string.IsNullOrWhiteSpace(language))
@@ -189,8 +191,11 @@ public sealed partial class LEngine
     private async Task LEngineFrequencyRun(LEntry entry, CancellationTokenSource fetch)
     {
         bool raised = false;
+        bool admitted = false;
         try
         {
+            await _lEngineFrequencyGate.WaitAsync(fetch.Token).ConfigureAwait(false);
+            admitted = true;
             (LFrequency? found, bool reached) = await LEngineFrequencyScan(
                 entry.LEntryHeadword, entry.LEntryLanguage, fetch.Token).ConfigureAwait(false);
 
@@ -229,6 +234,11 @@ public sealed partial class LEngine
         }
         finally
         {
+            if (admitted)
+            {
+                _lEngineFrequencyGate.Release();
+            }
+
             lock (_lEngineGate)
             {
                 if (_lEngineFrequencyPending.TryGetValue(entry.LEntryId, out CancellationTokenSource? held) && held == fetch)

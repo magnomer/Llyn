@@ -54,7 +54,8 @@ public sealed partial class LEngine
             LReference stored;
             using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
             {
-                if (draft.LDraftEntryId == 0 || LEngineReferenceRead(draft.LDraftEntryId) is null)
+                bool fresh = draft.LDraftEntryId == 0 || LEngineReferenceRead(draft.LDraftEntryId) is null;
+                if (fresh)
                 {
                     stored = LEngineReferenceCreate(sending);
                 }
@@ -66,6 +67,11 @@ public sealed partial class LEngine
                 }
 
                 LEngineCreditSave(stored.LReferenceId, draft.LDraftAuthor);
+                LEngineRevisionRecord(
+                    stored.LReferenceId,
+                    "reference",
+                    fresh ? "create" : "update",
+                    stored.LReferenceTitle.LStateValueShow());
                 session.LDatabaseSessionCommit();
             }
 

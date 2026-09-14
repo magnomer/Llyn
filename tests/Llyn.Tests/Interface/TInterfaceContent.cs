@@ -412,6 +412,9 @@ internal static partial class TInterface
     internal static LSpeechValue? TEngineSpeechRead(this LEngine engine, long id) =>
         engine.LEngineSpeechRead(id);
 
+    internal static LTag TEngineTagCreate(this LEngine engine, string text) =>
+        engine.LEngineTagCreate(text);
+
     internal static void TEngineTagChange(this LEngine engine, long tagId, string renamed)
     {
         engine.LEngineTagChange(tagId, renamed);

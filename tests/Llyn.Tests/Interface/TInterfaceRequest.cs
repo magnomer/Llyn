@@ -8,6 +8,9 @@ internal static partial class TInterface
     internal static LRequest TRequestHeadwordCreate(long draftId, string text) =>
         new LRequestHeadword(draftId, text);
 
+    internal static LRequest TRequestNoteCreate(long draftId, string text) =>
+        new LRequestNote(draftId, text);
+
     internal static LRequest TRequestTitleCreate(long draftId, long cardId, LStateValue value) =>
         new LRequestCardTitle(draftId, cardId, value.TStateWrittenRead());
 

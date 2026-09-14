@@ -93,13 +93,21 @@ public sealed partial class LEngine
                     meanings.LMeaningParentUpdate(row.LMeaningId, parentId);
                 }
 
-                meanings.LMeaningUpdate(row with
+                if (row.LMeaningTitle != card.LCardDraftTitle
+                    || row.LMeaningDefinition != card.LCardDraftMeaning
+                    || row.LMeaningPosition != order.Count
+                    || card.LCardDraftTitle.LStateValueUnreadable
+                    || card.LCardDraftMeaning.LStateValueUnreadable)
                 {
-                    LMeaningTitle = card.LCardDraftTitle,
-                    LMeaningDefinition = card.LCardDraftMeaning,
-                });
-                changes.Add(new LRevisionChange(
-                    0, row.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
+                    meanings.LMeaningUpdate(row with
+                    {
+                        LMeaningTitle = card.LCardDraftTitle,
+                        LMeaningDefinition = card.LCardDraftMeaning,
+                    });
+                    changes.Add(new LRevisionChange(
+                        0, row.LMeaningId, "sense", "update", card.LCardDraftMeaning.LStateValueShow()));
+                }
+
                 rowId = row.LMeaningId;
             }
             else

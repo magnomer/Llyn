@@ -21,6 +21,8 @@ Re-reads the workspace whenever the engine announces a change, wherever it was m
 A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
 The citations are read with the catalog, because a Source stored elsewhere is what a row cites.
 A workspace that moved reloads the flags and the language menu first, since neither belongs to the old folder's rows.
+An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
+Only an Entry announcement is read that way, since a frequency or tag announcement carries another id.
 
 ## `private void PAnthologyFind(string query)`
 
@@ -97,6 +99,13 @@ An open Example editor is cancelled first, after the caller has asked about its 
 An editing side already open stays open, so the Entry lands in `PEditor` rather than in the display.
 An Entry that is gone leaves the right-hand side on the Example and refills the middle column.
 
+## `private void PQuotationEntryCreate()`
+
+Starts a fresh Entry in the entry editor, its first sense quoting the chosen Example.
+The sentence editor is put away first, since one draft at a time is held.
+No Entry is shown yet, so the editor stands open with the row list unmarked until a store names one.
+An Entry started with no Example chosen comes up blank, since every Entry is listed then.
+
 ## `private void PQuotationEntryUpdate(long id)`
 
 A store announced by the engine redraws the shown Entry when the store touched it.
@@ -106,7 +115,13 @@ A store that deleted it falls back to the chosen Example, or clears the panel wh
 
 The mode toggle while an Entry is shown, mirroring the tenor panel.
 Entering the editor starts a draft on the shown Entry, and leaving it asks first, then re-reads it.
-`PCorpusScribeHandle` routes here whenever an Entry rather than an Example is shown.
+`PCorpusScribeHandle` routes here whenever an Entry rather than an Example is shown, or a fresh one is being written.
+
+## `private void PQuotationScribeReset()`
+
+Leaving the editor while a fresh Entry is being written, with no Entry shown yet.
+The leave check may store the draft, and then the stored Entry is shown for reading.
+Otherwise the draft is dropped and the panel goes back to the chosen Example, or to nothing.
 
 ## `private void PQuotationScribeShow(bool editing)`
 

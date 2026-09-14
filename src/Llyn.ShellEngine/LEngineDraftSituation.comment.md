@@ -25,6 +25,7 @@ Turns a held Situation into a stored one and returns it.
 A draft naming no Situation is a create, one naming a Situation is a rewrite.
 A Situation id naming a record since deleted is a create as well, because there is nothing left to rewrite.
 The database write runs first and whole, so a refusal from it leaves the file exactly as it was.
+The write and the revision recording it share one session, so the history never misses a stored context.
 The draft file is rewritten with the stored id and the stored content the moment that write returns.
 A kill between the two writes would otherwise leave the Situation stored and the file still nameless.
 Recommitting such a file would store the context twice, and the sweep would never collect it.

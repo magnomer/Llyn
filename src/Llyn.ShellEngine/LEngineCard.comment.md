@@ -14,7 +14,9 @@ It also asks what to do with the rows no card names any more.
 ### `private void LEngineCardUpdate(`
 
 Reconciles one card set — the entry's Meanings or its Collocations — to the cards the draft lists.
-A card naming a stored row of this entry updates that row.
+A card naming a stored row of this entry updates that row when its text or its place moved.
+A row the card left as it was is neither rewritten nor recorded, so a no-op save leaves no history.
+An unreadable value is still sent, because the store is what refuses it.
 A card naming nothing creates one.
 A stored row the draft stopped naming is deleted.
 A card that has gone blank never reaches here.

@@ -8,6 +8,8 @@ A Meaning list is a tree, because `sense.sense_parent` names a Meaning in the sa
 So the same three questions are asked once per sibling group rather than once per entry.
 Those are which stored row each card is and what to do with the rows no card names.
 The third is what order they sit in.
+A row whose title, definition and place all stand is neither rewritten nor recorded.
+An unreadable value is still sent, because the store is what refuses it.
 
 ## Inline notes
 

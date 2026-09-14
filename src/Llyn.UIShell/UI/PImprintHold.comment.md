@@ -13,6 +13,8 @@ This mirrors `PRepertoireHold.cs` field for field, so the four editors cannot dr
 Ends the held Source when the window closes, committing it or discarding it.
 Typing still waiting to be written is written first, whatever the answer was.
 A refused commit puts the id back and answers false, so the window stays open over work still on disk.
+A form halted by a failed flush answers that it did not finish.
+Committing then would store a draft missing the edits the flush dropped.
 
 ## `internal bool PImprintChangeCheck()`
 

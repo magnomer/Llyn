@@ -32,7 +32,8 @@ public partial class PTenor
             return;
         }
 
-        PCohortEntryUpdate(bulletin.LBulletinId);
+        PCohortEntryUpdate(
+            bulletin.LBulletinSubject == LSubject.LSubjectRegister ? 0 : bulletin.LBulletinId);
     }
 
     private void PSoundingHandle(object sender, TextChangedEventArgs e)
@@ -283,9 +284,49 @@ public partial class PTenor
             return;
         }
 
+        if (_pGamutChoice is null && _pDisplayEntry is null)
+        {
+            PGamutRegisterCreate();
+            return;
+        }
+
+        PCohortEntryCreate();
+    }
+
+    private void PGamutRegisterCreate()
+    {
+        if (PSCoinage.PSCoinageShow(_pTenorHost, "Coinage.Register") is not string name)
+        {
+            return;
+        }
+
+        LRegister created;
+        try
+        {
+            created = _lEngine.LEngineRegisterCreate(name, PEditor.PEditorLanguageRead());
+        }
+        catch (Exception exception)
+        {
+            _pTenorHost.PWindowFailureShow("Register.CreateFailed", exception);
+            return;
+        }
+
+        PTenorClear();
+        PGamutRegisterShow(created.LRegisterId);
+    }
+
+    private void PCohortEntryCreate()
+    {
+        long? register = _pGamutChoice;
+
         PTenorClear();
         PTenorMode.IsEnabled = true;
         PTenorScribeShow(true);
+
+        if (register is long id)
+        {
+            PEditor.PEditorRegisterAdd(id);
+        }
     }
 
     private void PTenorScribeHandle(object sender, RoutedEventArgs e)

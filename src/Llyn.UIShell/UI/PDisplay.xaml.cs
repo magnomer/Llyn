@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -154,7 +153,7 @@ public partial class PDisplay : UserControl
         PDisplayFavoriteShow(id);
         PDisplayGraspShow(id);
 
-        _pDisplayRecording = draft.LEntryDraftAudio.Length > 0 && File.Exists(draft.LEntryDraftAudio)
+        _pDisplayRecording = _lEngine.LEngineRecordingExist(draft.LEntryDraftAudio)
             ? draft.LEntryDraftAudio
             : null;
         PPlaybackAction.Visibility = _pDisplayRecording is null ? Visibility.Collapsed : Visibility.Visible;

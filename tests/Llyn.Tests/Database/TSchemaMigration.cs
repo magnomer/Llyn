@@ -54,6 +54,42 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_OlderBuild_KeepsTheFileAndLeavesNoResidue()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        string file = Path.Combine(workspace.TWorkspaceFolder, "llyn.db");
+        workspace.TWorkspaceScriptRun("UPDATE schema_version SET version = 32;");
+        SqliteConnection.ClearAllPools();
+        DateTime born = File.GetCreationTimeUtc(file);
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(born, File.GetCreationTimeUtc(file));
+        Assert.False(File.Exists(file + ".fresh"));
+        Assert.False(File.Exists(file + ".fresh-wal"));
+        Assert.Single(Directory.GetFiles(workspace.TWorkspaceFolder, "*.v32.db"));
+    }
+
+    [Fact]
+    public void DatabaseCreate_RebuildFails_LeavesTheOldFileUntouched()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (headword, language, added_utc, updated_utc) " +
+            "VALUES ('word', 'English', '2026-01-01', '2026-01-01'); " +
+            "UPDATE schema_version SET version = 32;");
+        SqliteConnection.ClearAllPools();
+        string fresh = Path.Combine(workspace.TWorkspaceFolder, "llyn.db.fresh");
+        Directory.CreateDirectory(fresh);
+
+        Assert.Throws<SqliteException>(() => workspace.TWorkspaceDatabase.TDatabaseCreate());
+
+        Assert.Equal(32, workspace.TWorkspaceCountRead("SELECT version FROM schema_version;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry WHERE headword = 'word';"));
+        Assert.Empty(Directory.GetFiles(workspace.TWorkspaceFolder, "*.v32.db"));
+    }
+
+    [Fact]
     public void DatabaseCreate_OlderBuild_DropsRowsTheSchemaRefuses()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

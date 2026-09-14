@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -110,8 +111,30 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            _lEngineSettings = change(_lEngineSettings);
+            LSettings changed = change(_lEngineSettings);
+            if (changed == _lEngineSettings)
+            {
+                return;
+            }
+
+            _lEngineSettings = changed;
+            LEngineSettingsSave();
+        }
+    }
+
+    private void LEngineSettingsSave()
+    {
+        try
+        {
             LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
+        }
+        catch (IOException exception)
+        {
+            LAuditWriter.LAuditWriterRecord(_lEngineWorkspace, exception);
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            LAuditWriter.LAuditWriterRecord(_lEngineWorkspace, exception);
         }
     }
 }

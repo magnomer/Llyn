@@ -11,26 +11,42 @@ public partial class PSettings
         Microsoft.Win32.OpenFolderDialog dialog = new()
         {
             Title = _pSettingsHost.PLocalizationTextRead("Settings.Workspace"),
-            InitialDirectory = PWorkspacePath.Text
+            InitialDirectory = _lEngine.LEngineWorkspaceRead()
         };
 
         if (dialog.ShowDialog(_pSettingsHost) == true)
         {
-            PWorkspacePath.Text = dialog.FolderName;
-            PWorkspaceApply();
+            PWorkspaceApply(dialog.FolderName);
         }
     }
 
-    private void PWorkspacePathHandle(object sender, KeyboardFocusChangedEventArgs e)
+    private void PWorkspacePathHandle(object sender, KeyEventArgs e)
     {
-        PWorkspaceApply();
+        if (e.Key == Key.Enter)
+        {
+            e.Handled = true;
+            PWorkspaceApply(PWorkspacePath.Text);
+            return;
+        }
+
+        if (e.Key == Key.Escape)
+        {
+            e.Handled = true;
+            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+        }
     }
 
-    private void PWorkspaceApply()
+    private void PWorkspaceFocusHandle(object sender, KeyboardFocusChangedEventArgs e)
     {
-        string path = PWorkspacePath.Text?.Trim() ?? string.Empty;
+        PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+    }
+
+    private void PWorkspaceApply(string chosen)
+    {
+        string path = chosen.Trim();
         if (path.Length == 0 || string.Equals(path, _lEngine.LEngineWorkspaceRead(), StringComparison.Ordinal))
         {
+            PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
             return;
         }
 
@@ -51,7 +67,11 @@ public partial class PSettings
             return;
         }
 
+        PSettingsSync();
+        PLocalizationApply(PLocalizationLoader.PLocalizationLoaderNormalize(
+            _lEngine.LEngineSettingsRead().LSettingsLocalization));
+        _pSettingsHost.PWindowLayout.PLayoutReset();
+        _pSettingsHost.PWindowLayout.PLayoutRestore();
         _pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());
-        PLedgerMetaApply();
     }
 }

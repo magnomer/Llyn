@@ -7,6 +7,18 @@ namespace Llyn.UIShell;
 
 public partial class PSettings
 {
+    private (string PDialChild, Border PDialCard, string[] PDialKeys)[] PDialTableRead()
+    {
+        return
+        [
+            ("Workspace", PDialWorkspace, ["Workspace.Helper"]),
+            ("Language", PDialLanguage, []),
+            ("Transcription", PDialTranscription, ["Respelling.Switch", "Respelling.Helper"]),
+            ("Web", PDialWeb, ["Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"]),
+            ("Layout", PDialLayout, ["Layout.Linked", "Layout.LinkedHelper"])
+        ];
+    }
+
     private void PDialShow(string child)
     {
         foreach (PLedgerItem item in _pLedgerList)
@@ -14,17 +26,30 @@ public partial class PSettings
             item.PLedgerItemChosen = string.Equals(item.PLedgerItemChild, child, StringComparison.Ordinal);
         }
 
-        foreach (Border card in new[] { PDialWorkspace, PDialLanguage, PDialTranscription, PDialWeb, PDialLayout })
+        foreach ((string name, Border card, _) in PDialTableRead())
         {
-            card.Visibility = string.Equals(card.Name, "PDial" + child, StringComparison.Ordinal)
+            card.Visibility = string.Equals(name, child, StringComparison.Ordinal)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
     }
 
+    private void PDialFooterApply()
+    {
+        PDialFooter.Text =
+            _pSettingsHost.PLocalizationTextRead("Terms.Product") + " " + PWindow.PHeadquarterVersionRead();
+    }
+
     private void PDialFolderHandle(object sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo(_lEngine.LEngineWorkspaceRead()) { UseShellExecute = true });
+        try
+        {
+            Process.Start(new ProcessStartInfo(_lEngine.LEngineWorkspaceRead()) { UseShellExecute = true });
+        }
+        catch (Exception exception)
+        {
+            _pSettingsHost.PWindowFailureShow("Settings.FolderFailed", exception);
+        }
     }
 
     private void PDialWidthHandle(object sender, RoutedEventArgs e)

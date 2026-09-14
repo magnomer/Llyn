@@ -17,6 +17,22 @@ The formats are written from the portrait, so they show exactly what the panel s
 PDF is the rendered page printed, which is why it needs no layout of its own.
 An unconfigured press is an error rather than a silent empty file.
 
-Markup is refused rather than written.
-The workspace holds no markup writer, and a refusal says so where an empty file would not.
-The shell still offers the format, so the seam a writer attaches to stays visible.
+Markup does not pass through the portrait.
+It hands the one entry id to `LEngineMarkupExport`, which reads stored rows and writes the file.
+The label is not needed there, because markup carries states and never a display word for them.
+
+## `public async Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)`
+
+Prints one entry on the printer the ticket names.
+The page is the same rendered sheet the PDF export prints, so paper and file agree.
+The shell only chose the printer: what is on the page was never read from the screen.
+
+## `public async Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)`
+
+Prints one example, source or situation, whichever `owner` names.
+The page likeness is assembled from stored rows exactly as the entry portrait is.
+
+## `private LPress LEnginePressRead()`
+
+The press the shell handed in, or an error saying none did.
+Both printing and the PDF export refuse the same way rather than writing nothing.

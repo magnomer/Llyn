@@ -29,6 +29,7 @@ This is the same shape as `LMentionExampleSave`.
 ### `internal static IReadOnlyDictionary<long, IReadOnlyList<LGloss>> LGlossExampleRead(`
 
 Every Gloss of a set of Examples in one statement, keyed by Example.
+The ids travel as one JSON parameter, so the whole corpus fits in one statement.
 An Example with no Gloss has no key, and the caller reads that as an empty list.
 
 ### `internal static IReadOnlyList<long> LGlossExampleSave(`

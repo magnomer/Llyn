@@ -71,8 +71,14 @@ public sealed partial class LEngine
 
     public bool LEngineDraftCheck(long id)
     {
+        return LEngineDraftCheck(id, out _);
+    }
+
+    public bool LEngineDraftCheck(long id, out string? refusal)
+    {
         lock (_lEngineGate)
         {
+            refusal = null;
             if (id == 0)
             {
                 return false;
@@ -85,6 +91,8 @@ public sealed partial class LEngine
             {
                 return false;
             }
+
+            refusal = LEngineRefusalRead(draft);
 
             if (draft.LDraftExample is LExample sentence)
             {
@@ -137,12 +145,18 @@ public sealed partial class LEngine
             Dictionary<long, LOutcome> settled = [];
             List<LCourt> deferred = [];
             List<long> finished = [];
+            List<Action> written = [];
 
             using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
             {
-                outcome = LEngineDraftCommit(id, true, loaded, settled, deferred, finished);
+                outcome = LEngineDraftCommit(id, true, loaded, settled, deferred, finished, written);
                 LEngineCourtApply(loaded, settled, deferred);
                 session.LDatabaseSessionCommit();
+            }
+
+            foreach (Action step in written)
+            {
+                step();
             }
 
             foreach (long done in finished)
@@ -163,6 +177,7 @@ public sealed partial class LEngine
         foreach (long entryId in raised)
         {
             LEngineBulletinRaise(LSubject.LSubjectEntry, entryId);
+            LEngineInflectionStart(entryId);
         }
 
         return outcome;
@@ -174,7 +189,8 @@ public sealed partial class LEngine
         Dictionary<long, LDraft> loaded,
         Dictionary<long, LOutcome> settled,
         List<LCourt> deferred,
-        List<long> finished)
+        List<long> finished,
+        List<Action> written)
     {
         LDraft draft = LEngineDraftLoad(id);
         loaded[id] = draft;
@@ -207,7 +223,8 @@ public sealed partial class LEngine
                 loaded,
                 settled,
                 deferred,
-                finished);
+                finished,
+                written);
             LEngineIdentityRecord(identity, link.LCourtTargetId, target.LOutcomeEntry.LEntryId);
         }
 
@@ -221,19 +238,21 @@ public sealed partial class LEngine
         LOutcome outcome = new(entry, identity);
         settled[id] = outcome;
 
-        LDraft written = draft with { LDraftEntryId = entry.LEntryId };
+        LDraft saved = draft with { LDraftEntryId = entry.LEntryId };
         if (LEngineEntryLoad(entry.LEntryId) is LEntryDraft stored)
         {
-            written = written with { LDraftContent = stored };
+            saved = saved with { LDraftContent = stored };
         }
 
-        LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, written);
-
-        foreach (LCourt link in
-            LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+        long entryId = entry.LEntryId;
+        written.Add(() => LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved));
+        written.Add(() =>
         {
-            LEngineCourtUpdate(link, entry.LEntryId);
-        }
+            foreach (LCourt link in LCourtArchive.LCourtArchiveSettle(_lEngineWorkspace, id))
+            {
+                LEngineCourtUpdate(link, entryId);
+            }
+        });
 
         if (held)
         {
@@ -366,6 +385,20 @@ public sealed partial class LEngine
 
     private static LEntryDraft LEngineDraftBlank =>
         new(string.Empty, string.Empty, null, string.Empty, [], []);
+
+    private static string? LEngineRefusalRead(LDraft draft)
+    {
+        if (draft.LDraftExample is not null
+            || draft.LDraftSituation is not null
+            || draft.LDraftReference is not null)
+        {
+            return null;
+        }
+
+        return string.IsNullOrWhiteSpace(draft.LDraftContent.LEntryDraftHeadword)
+            ? LRefusal.LRefusalHeadword
+            : null;
+    }
 
     private void LEngineDraftValidate(long id)
     {

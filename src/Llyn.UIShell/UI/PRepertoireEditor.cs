@@ -132,7 +132,7 @@ public partial class PRepertoire
         PScenarioChangeSave();
 
         long held = _pScenarioDraft;
-        if (held == 0)
+        if (held == 0 || _pScenarioHalted)
         {
             return;
         }

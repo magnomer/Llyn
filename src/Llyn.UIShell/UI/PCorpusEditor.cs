@@ -232,6 +232,12 @@ public partial class PCorpus
             return;
         }
 
+        if (_pExcerptExample is not null || _pDisplayEntry is not null)
+        {
+            PQuotationEntryCreate();
+            return;
+        }
+
         PCorpusClear();
         PCorpusScribeShow(true);
         PTranscriptDraftShow(PTranscriptDraftStart(null));
@@ -243,7 +249,7 @@ public partial class PCorpus
         PTranscriptChangeSave();
 
         long held = _pTranscriptDraft;
-        if (held == 0)
+        if (held == 0 || _pTranscriptHalted)
         {
             return;
         }

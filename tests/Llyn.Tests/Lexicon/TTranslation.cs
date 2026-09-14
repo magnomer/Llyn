@@ -128,6 +128,22 @@ public sealed class TTranslation
     }
 
     [Fact]
+    public void TranslationTargetRead_FortyThousandIds_ReadsPastTheParameterCap()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
+        LTranslationArchive translations = TInterface.TTranslationArchiveCreate(workspace.TWorkspaceDatabase);
+
+        LEntry first = TTranslationEntryCreate(entries, "부수다", "Korean");
+        LEntry second = TTranslationEntryCreate(entries, "깨다", "Korean");
+        long[] ids = Enumerable.Range(1, 40_000).Select(index => (long)index).ToArray();
+
+        IReadOnlyList<LTranslationTarget> targets = translations.TTranslationTargetRead(ids);
+
+        Assert.Equal([first.LEntryId, second.LEntryId], targets.Select(target => target.LTranslationTargetId));
+    }
+
+    [Fact]
     public void TranslationTargetRead_UnknownId_PassesOverIt()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

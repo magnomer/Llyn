@@ -23,6 +23,12 @@ It is empty before they ask.
 ## `internal static DrawingImage? PEnsignResolve(string path)`
 
 Reads the flag at `path` as a drawing that is frozen and so may be shared across rows.
+A file that does not read, whatever the reader threw, is deleted and answered with nothing.
+The file is a cache the workspace can fetch again, and a truncated one would otherwise fail every launch.
+
+## `private static void PEnsignDelete(string path)`
+
+Removes a cached flag that could not be read, tolerating a file already gone or held.
 
 ## `internal static async Task PEnsignLoad(LEngine engine)`
 

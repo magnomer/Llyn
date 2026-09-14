@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -66,6 +68,12 @@ public sealed class LDatabase
         }
 
         return connection;
+    }
+
+    public static string LDatabaseIdFormat(IEnumerable<long> ids)
+    {
+        ArgumentNullException.ThrowIfNull(ids);
+        return JsonSerializer.Serialize(ids);
     }
 
     public LDatabaseSession LDatabaseSessionStart()

@@ -1,6 +1,7 @@
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Microsoft.Data.Sqlite;
+using SQLitePCL;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -62,6 +63,39 @@ public sealed class TDoctor
         }
 
         Assert.Equal(2, TDoctorBackupRead(workspace).Length);
+    }
+
+    [Fact]
+    public void DoctorDatabaseCreate_FileCannotOpen_RethrowsWithoutRescue()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        Directory.CreateDirectory(TDoctorFileRead(workspace));
+
+        SqliteException fault = Assert.Throws<SqliteException>(
+            () => TInterface.TDoctorDatabaseCreate(workspace.TWorkspaceDatabase));
+
+        Assert.Equal(raw.SQLITE_CANTOPEN, fault.SqliteErrorCode);
+        Assert.Empty(TDoctorBackupRead(workspace));
+    }
+
+    [Fact]
+    public void DoctorRescueCheck_BusyOrFull_RefusesToRescue()
+    {
+        Assert.False(TInterface.TDoctorRescueCheck(new SqliteException("busy", raw.SQLITE_BUSY)));
+        Assert.False(TInterface.TDoctorRescueCheck(new SqliteException("full", raw.SQLITE_FULL)));
+        Assert.False(TInterface.TDoctorRescueCheck(new SqliteException("io", raw.SQLITE_IOERR)));
+        Assert.False(TInterface.TDoctorRescueCheck(new InvalidOperationException("version")));
+        Assert.True(TInterface.TDoctorRescueCheck(new SqliteException("corrupt", raw.SQLITE_CORRUPT)));
+        Assert.True(TInterface.TDoctorRescueCheck(new SqliteException("not a db", raw.SQLITE_NOTADB)));
+    }
+
+    [Fact]
+    public void DoctorBusyCheck_BusyOrLocked_ReportsBusy()
+    {
+        Assert.True(TInterface.TDoctorBusyCheck(new SqliteException("busy", raw.SQLITE_BUSY)));
+        Assert.True(TInterface.TDoctorBusyCheck(new SqliteException("locked", raw.SQLITE_LOCKED)));
+        Assert.False(TInterface.TDoctorBusyCheck(new SqliteException("corrupt", raw.SQLITE_CORRUPT)));
+        Assert.False(TInterface.TDoctorBusyCheck(new InvalidOperationException("version")));
     }
 
     private static string TDoctorFileRead(TWorkspace workspace)

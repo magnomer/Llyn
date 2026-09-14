@@ -10,11 +10,15 @@ public sealed partial class LEngine
 {
     private static bool LEngineDraftMatch(LEntryDraft one, LEntryDraft other)
     {
-        return string.Equals(one.LEntryDraftHeadword, other.LEntryDraftHeadword, StringComparison.Ordinal)
+        return string.Equals(
+                one.LEntryDraftHeadword.Trim(), other.LEntryDraftHeadword.Trim(), StringComparison.Ordinal)
             && string.Equals(one.LEntryDraftLanguage, other.LEntryDraftLanguage, StringComparison.Ordinal)
             && LEngineSoundMatch(one.LEntryDraftPronunciations, other.LEntryDraftPronunciations)
             && LEngineSpellingMatch(one.LEntryDraftTranscriptions, other.LEntryDraftTranscriptions)
-            && string.Equals(one.LEntryDraftNote, other.LEntryDraftNote, StringComparison.Ordinal)
+            && string.Equals(
+                LMarkdown.LMarkdownNormalize(one.LEntryDraftNote),
+                LMarkdown.LMarkdownNormalize(other.LEntryDraftNote),
+                StringComparison.Ordinal)
             && LEngineSpeechMatch(one.LEntryDraftSpeeches, other.LEntryDraftSpeeches)
             && LEngineFormMatch(one.LEntryDraftForms, other.LEntryDraftForms)
             && LEngineInflectionMatch(one.LEntryDraftInflections, other.LEntryDraftInflections)

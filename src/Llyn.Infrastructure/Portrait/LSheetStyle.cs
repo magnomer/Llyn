@@ -54,7 +54,8 @@ public static class LSheetStyle
 
         sheet.Append(".band{margin:39px 0 0 0;}");
         sheet.Append(".band+.band{margin-top:28px;}");
-        sheet.Append(".band>h2{font-size:19px;font-weight:600;margin:0 2px 12px 2px;padding:5px 0 0 0;}");
+        sheet.Append(".band>h2{font-size:19px;font-weight:600;margin:0 2px 12px 2px;padding:5px 0 0 0;")
+            .Append("break-after:avoid;page-break-after:avoid;}");
 
         sheet.Append(".card{background:var(--surface);border:1px solid var(--line);")
             .Append("border-radius:12px;margin:0 0 15px 0;break-inside:avoid;page-break-inside:avoid;}");
@@ -110,8 +111,14 @@ public static class LSheetStyle
             .Append("color:#fff;font-size:19px;line-height:52px;text-align:center;}");
         sheet.Append(".reel .said{display:block;font-size:12px;color:var(--muted);")
             .Append("margin-top:6px;word-break:break-all;}");
-        sheet.Append(".reel .blank{width:320px;height:180px;border-radius:3px;")
-            .Append("background:var(--accent-soft);}");
+        sheet.Append(".blank{display:block;width:320px;height:180px;border-radius:3px;")
+            .Append("background:var(--accent-soft);overflow:hidden;}");
+        sheet.Append(".blank img{display:block;width:100%;height:100%;max-height:none;object-fit:cover;}");
+
+        sheet.Append(".lines{margin:0 2px;}");
+        sheet.Append(".line{display:flex;align-items:flex-start;gap:8px;margin:0 0 5px 0;font-size:16px;}");
+        sheet.Append(".line>.tag{flex:0 0 auto;padding:1px 8px;border-radius:9px;")
+            .Append("background:var(--accent-soft);font-size:12px;font-weight:600;color:var(--accent);}");
 
         sheet.Append(".rows{margin:0;}");
         sheet.Append(".row{display:flex;align-items:center;gap:12px;background:var(--surface);")
@@ -140,7 +147,7 @@ public static class LSheetStyle
         sheet.Append(".note hr{border:0;border-top:1px solid var(--line);margin:12px 0;}");
         sheet.Append(".note a{color:var(--accent);}");
 
-        sheet.Append("@page{size:A4;margin:12mm;}");
+        sheet.Append("@page{margin:12mm;}");
         sheet.Append("@media print{body{background:#fff;}.portrait{padding:0;max-width:none;}}");
 
         return sheet.ToString();

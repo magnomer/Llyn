@@ -27,7 +27,8 @@ public sealed partial class LEngine
 
         if (format == LPortraitFormat.LPortraitFormatMarkup)
         {
-            throw new NotSupportedException("No markup writer stands in this workspace.");
+            LEngineMarkupExport([entryId], path);
+            return;
         }
 
         LPortrait portrait = LEnginePortraitRead(entryId, label);
@@ -47,16 +48,40 @@ public sealed partial class LEngine
                 LFolio.LFolioSave(portrait, theme, path);
                 return;
             case LPortraitFormat.LPortraitFormatPdf:
-                if (_lEnginePress is not LPress press)
-                {
-                    throw new InvalidOperationException(
-                        "No printing surface stands ready for this workspace.");
-                }
-
-                await press.LPressSave(LSheet.LSheetFormat(portrait, theme), path);
+                await LEnginePressRead().LPressSave(LSheet.LSheetFormat(portrait, theme), path);
                 return;
             default:
                 throw new ArgumentOutOfRangeException(nameof(format));
         }
+    }
+
+    public async Task LEnginePortraitPrint(long entryId, LPortraitLabel label, LPressTicket ticket)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentNullException.ThrowIfNull(label);
+        ArgumentNullException.ThrowIfNull(ticket);
+
+        LPress press = LEnginePressRead();
+        LPortrait portrait = LEnginePortraitRead(entryId, label);
+
+        await press.LPressPrint(LSheet.LSheetFormat(portrait, LTheme.LThemeLoad()), ticket);
+    }
+
+    public async Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);
+        ArgumentNullException.ThrowIfNull(legend);
+        ArgumentNullException.ThrowIfNull(ticket);
+
+        LPress press = LEnginePressRead();
+        LPortraitPage page = LEnginePortraitRead(id, owner, legend);
+
+        await press.LPressPrint(LSheetPage.LSheetPageFormat(page, LTheme.LThemeLoad()), ticket);
+    }
+
+    private LPress LEnginePressRead()
+    {
+        return _lEnginePress
+            ?? throw new InvalidOperationException("No printing surface stands ready for this workspace.");
     }
 }

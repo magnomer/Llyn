@@ -71,30 +71,6 @@ public sealed record LPortraitCard(
                 tags.Add(tag.LTagDraftText);
             }
 
-            List<LPortraitMedia> images = new List<LPortraitMedia>();
-            foreach (LImageDraft image in card.LCardDraftImage)
-            {
-                if (!image.LImageDraftEmpty)
-                {
-                    images.Add(new LPortraitMedia(
-                        LPortraitText.LPortraitTextRead(image.LImageDraftLocation, mark),
-                        string.Empty,
-                        false));
-                }
-            }
-
-            List<LPortraitMedia> videos = new List<LPortraitMedia>();
-            foreach (LVideoDraft video in card.LCardDraftVideo)
-            {
-                if (!video.LVideoDraftEmpty)
-                {
-                    videos.Add(new LPortraitMedia(
-                        LPortraitText.LPortraitTextRead(video.LVideoDraftLocation, mark),
-                        LPortraitText.LPortraitTextRead(video.LVideoDraftSpan, mark),
-                        true));
-                }
-            }
-
             shown.Add(new LPortraitCard(
                 card.LCardDraftPosition,
                 LPortraitText.LPortraitTextRead(card.LCardDraftTitle, mark),
@@ -106,8 +82,8 @@ public sealed record LPortraitCard(
                 links,
                 examples,
                 tags,
-                images,
-                videos));
+                LPortraitMedia.LPortraitMediaCreate(card.LCardDraftImage, mark),
+                LPortraitMedia.LPortraitMediaCreate(card.LCardDraftVideo, mark)));
         }
 
         return shown;

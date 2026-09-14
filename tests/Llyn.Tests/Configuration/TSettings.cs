@@ -217,6 +217,54 @@ public sealed class TSettings
     }
 
     [Fact]
+    public void SettingsLoad_BrokenJson_LoadsDefaultsAndKeepsCopy()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), "{ not json");
+
+        LSettings settings = TInterface.TSettingsLoad(workspace.TWorkspaceFolder);
+
+        Assert.Equal("en", settings.LSettingsLocalization);
+        Assert.Equal("{ not json", File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.broken.json")));
+    }
+
+    [Fact]
+    public void SettingsSave_Written_LeavesNoPendingFile()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("ko"));
+
+        Assert.True(TInterface.TSettingsExist(workspace.TWorkspaceFolder));
+        Assert.False(File.Exists(Path.Combine(workspace.TWorkspaceFolder, "settings.json.tmp")));
+        Assert.Equal("ko", TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsLocalization);
+    }
+
+    [Fact]
+    public void SettingsExist_NoFile_ReportsFalse()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        Assert.False(TInterface.TSettingsExist(workspace.TWorkspaceFolder));
+    }
+
+    [Fact]
+    public void WindowSave_SameGeometryTwice_WritesFileOnce()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string path = Path.Combine(workspace.TWorkspaceFolder, "settings.json");
+
+        engine.TEngineWindowSave(TInterface.TWindowStateCreate(10, 20, 800, 600, false));
+        DateTime written = File.GetLastWriteTimeUtc(path);
+        File.SetLastWriteTimeUtc(path, written.AddMinutes(-5));
+
+        engine.TEngineWindowSave(TInterface.TWindowStateCreate(10, 20, 800, 600, false));
+
+        Assert.Equal(written.AddMinutes(-5), File.GetLastWriteTimeUtc(path));
+    }
+
+    [Fact]
     public void LinkedSave_False_KeepsLayout()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

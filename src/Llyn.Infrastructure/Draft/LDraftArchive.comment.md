@@ -55,14 +55,29 @@ A file already gone, or held open by the other copy of the program, is not an er
 ## `public static IReadOnlyList<long> LDraftArchiveSweep(string root)`
 
 Deletes every half-written `.json.tmp` in the drafts folder that is older than an hour.
-It also deletes every draft file of another version and returns the ids they carried.
+It also sets aside every draft file of another version and returns the ids they carried.
 The engine drops the claim and the court rows of each returned id, which only it can reach.
 A file that does not read as a draft at all is of no version and goes the same way.
-Such a file is deleted and not returned, since nothing else can name it.
+Such a file is set aside and not returned, since nothing else can name it.
+Nothing is deleted: a set-aside file moves under `drafts/broken`, where the listing never looks.
+A draft written by another build is still the user's work, and an upgrade must not wipe it.
+A file that cannot be read this round is left where it is.
+A passing lock is not a broken draft.
 A save writes its pending file and then moves it over the target.
 A kill between the two leaves a file the listing rightly ignores and nothing collects.
 The hour keeps a file another copy of the program is writing out of reach.
 A missing folder is not an error, and neither is a file that vanishes mid-sweep.
+
+## `private static bool LDraftBrokenSave(string root, string file)`
+
+Moves one unreadable or foreign-version draft file under `drafts/broken` and reports whether it moved.
+A name already taken there gets the moment appended, so an earlier copy is never overwritten.
+A file that cannot be moved stays and is reported as kept, so its id is not dropped.
+
+## `private static LDraft? LDraftArchiveParse(string text, bool checking)`
+
+Reads one draft out of its JSON text, or nothing when the text is not a draft.
+`checking` refuses a draft of another version, as every reader but the sweep does.
 
 ## Inline notes
 

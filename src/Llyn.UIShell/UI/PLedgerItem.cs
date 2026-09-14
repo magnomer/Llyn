@@ -4,6 +4,8 @@ namespace Llyn.UIShell;
 
 internal sealed class PLedgerItem : INotifyPropertyChanged
 {
+    private string _pLedgerItemTitle;
+
     private string _pLedgerItemMeta = string.Empty;
 
     private bool _pLedgerItemChosen;
@@ -11,14 +13,28 @@ internal sealed class PLedgerItem : INotifyPropertyChanged
     internal PLedgerItem(string child, string title)
     {
         PLedgerItemChild = child;
-        PLedgerItemTitle = title;
+        _pLedgerItemTitle = title;
     }
 
     public string PLedgerItemChild { get; }
 
-    public string PLedgerItemTitle { get; }
-
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public string PLedgerItemTitle
+    {
+        get => _pLedgerItemTitle;
+
+        set
+        {
+            if (string.Equals(_pLedgerItemTitle, value, System.StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _pLedgerItemTitle = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PLedgerItemTitle)));
+        }
+    }
 
     public string PLedgerItemMeta
     {

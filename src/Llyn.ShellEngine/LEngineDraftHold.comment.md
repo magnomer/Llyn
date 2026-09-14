@@ -63,7 +63,14 @@ Abandoning work is `LEngineDraftCancel`, which settles those rows too.
 
 ## `public bool LEngineDraftCheck(long id)`
 
+Whether held work differs from the record it was started from, with the refusal left unread.
+
+## `public bool LEngineDraftCheck(long id, out string? refusal)`
+
 Whether held work differs from the record it was started from.
+`refusal` names the reason a commit of it would be refused right now, or null when it would go through.
+The form enables Save from that answer rather than judging the headword itself.
+Padding around the headword and line endings in the note are not differences, because the commit strips both.
 This is the question the shell used to answer by holding a second copy of the form.
 A sentence draft is answered by `LEngineExampleCheck`, which measures it against the Example it names.
 A situation draft is answered by `LEngineSituationCheck` the same way.
@@ -109,8 +116,11 @@ The file side is settled only after that session commits.
 A held draft file and its claim go then, never before.
 A rolled-back round therefore leaves every file for a retry.
 A refusal from the store therefore leaves the file on disk exactly as it was, so nothing typed is lost.
-The draft file is rewritten with the stored entry id the moment the database write returns.
-A kill between the two writes would otherwise leave the entry stored and the file blank.
+Every file write of the round is queued while the session runs and played once it has committed.
+A refused owner therefore leaves its targets' files naming no entry.
+The entries they would have named were rolled back with it.
+The draft file is rewritten with the stored entry id as the first step after the commit.
+A kill between the two would otherwise leave the entry stored and the file blank.
 Recommitting that file would store the word twice.
 Naming what it already became turns the leftover into an update, and it also stops the draft reporting itself unsaved.
 The stored entry is written back into the file as well, not the content that was sent.
@@ -128,12 +138,18 @@ Neither direction of the pair is lost, and nothing is silently dropped.
 The id leaves the claimed set with the file, and the claim file goes too.
 No launch counts the draft again.
 Every entry the round stored is announced, not only the one the caller asked for.
+The inflection fill is started for each of them once their draft files are gone.
+A held draft blocks that fill, so it cannot start any earlier.
+The shell used to start it after its own commit call, which skipped every commit made while leaving a panel.
 The caller asking for this commit owns its own draft, so the walk opens holding it.
 
-## `private LOutcome LEngineDraftCommit(long id, bool held, Dictionary<long, LDraft> loaded, Dictionary<long, LOutcome> settled, List<LCourt> deferred, List<long> finished)`
+## `private LOutcome LEngineDraftCommit(long id, bool held, Dictionary<long, LDraft> loaded, Dictionary<long, LOutcome> settled, List<LCourt> deferred, List<long> finished, List<Action> written)`
 
 The same commit, carrying what the walk has already loaded and settled.
 It also carries whether this frame holds its own draft, the links held back and the drafts to finish.
+The file writes to play after the commit ride along in `written`.
+The draft file save and the court settlement are queued rather than run.
+A rollback therefore leaves the folder untouched.
 Each frame builds its own map, so a frame reports only the ids its own draft held.
 Two drafts naming each other would otherwise recurse until the stack died, which no catch can reach.
 A target already loaded is not entered again, since the walk is settling it further up.
@@ -187,6 +203,12 @@ A stale claim is swept by the check itself and answers false.
 
 What a draft carrying no entry is measured against.
 A form that was never opened on an entry started from nothing.
+
+## `private static string? LEngineRefusalRead(LDraft draft)`
+
+The reason a commit of `draft` would be refused now, or null when none is known ahead.
+Only an entry draft has such a reason, and it is the missing headword.
+A sentence, situation or source draft always commits, so it answers null.
 
 ## `private void LEngineDraftValidate(long id)`
 

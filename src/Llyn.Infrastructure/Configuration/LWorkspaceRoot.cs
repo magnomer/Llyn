@@ -12,6 +12,7 @@ public static class LWorkspaceRoot
     private const string LWorkspaceRootDrafts = "drafts";
     private const string LWorkspaceRootCourt = "court";
     private const string LWorkspaceRootClaim = "claim";
+    private const string LWorkspaceRootBroken = "broken";
     private const int LWorkspacePendingAttempt = 5;
 
     private static readonly TimeSpan LWorkspacePendingDelay = TimeSpan.FromMilliseconds(20);
@@ -62,6 +63,15 @@ public static class LWorkspaceRoot
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
 
         string folder = Path.Combine(LWorkspaceDraftRead(root), LWorkspaceRootClaim);
+        Directory.CreateDirectory(folder);
+        return folder;
+    }
+
+    public static string LWorkspaceBrokenRead(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+
+        string folder = Path.Combine(LWorkspaceDraftRead(root), LWorkspaceRootBroken);
         Directory.CreateDirectory(folder);
         return folder;
     }

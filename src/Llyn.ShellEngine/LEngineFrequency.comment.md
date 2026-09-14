@@ -76,6 +76,9 @@ A fill begun against one workspace must never write into the next.
 ## `private async Task LEngineFrequencyRun(LEntry entry, CancellationTokenSource fetch)`
 
 The fill itself, run outside the gate for the whole fetch.
+At most four fills fetch at once.
+An import of many entries queues them rather than opening one connection each.
+A fill cancelled while it queues never fetches.
 The value is written only when the fill was not cancelled and the setting is still on.
 The Entry must also still exist with the same headword and language as fetched.
 A fill writes no revision row, because a machine fill is not a user edit.

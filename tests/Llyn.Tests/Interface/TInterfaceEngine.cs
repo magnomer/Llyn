@@ -1,3 +1,4 @@
+using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -47,6 +48,9 @@ internal static partial class TInterface
     internal static bool TEngineDraftCheck(this LEngine engine, long id) =>
         engine.LEngineDraftCheck(id);
 
+    internal static bool TEngineDraftCheck(this LEngine engine, long id, out string? refusal) =>
+        engine.LEngineDraftCheck(id, out refusal);
+
     internal static LEntry TEngineDraftCommit(this LEngine engine, long id) =>
         engine.LEngineDraftCommit(id).LOutcomeEntry;
 
@@ -88,6 +92,9 @@ internal static partial class TInterface
 
     internal static IReadOnlyList<LEntry> TEngineEntryFind(this LEngine engine, LRegister register) =>
         engine.LEngineEntryFind(register);
+
+    internal static LRegister TEngineRegisterCreate(this LEngine engine, string name, string language) =>
+        engine.LEngineRegisterCreate(name, language);
 
     internal static void TEngineRegisterChange(this LEngine engine, long id, string renamed) =>
         engine.LEngineRegisterChange(id, renamed);
@@ -145,12 +152,50 @@ internal static partial class TInterface
         IReadOnlyList<LMention> mentions) =>
         engine.LEngineMentionFind(text, language, offset, mentions);
 
+    internal static void TEngineMarkupExport(this LEngine engine, IReadOnlyList<long> ids, string path)
+    {
+        engine.LEngineMarkupExport(ids, path);
+    }
+
+    internal static Task TEnginePortraitExport(
+        this LEngine engine,
+        long entryId,
+        string path,
+        LPortraitFormat format,
+        LPortraitLabel label) =>
+        engine.LEnginePortraitExport(entryId, path, format, label);
+
+    internal static LPortraitPage TEnginePortraitRead(
+        this LEngine engine, long id, LOwner owner, LPortraitLegend legend) =>
+        engine.LEnginePortraitRead(id, owner, legend);
+
+    internal static Task TEnginePortraitPrint(
+        this LEngine engine, long entryId, LPortraitLabel label, LPressTicket ticket) =>
+        engine.LEnginePortraitPrint(entryId, label, ticket);
+
+    internal static Task TEnginePortraitPrint(
+        this LEngine engine, long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket) =>
+        engine.LEnginePortraitPrint(id, owner, legend, ticket);
+
+    internal static void TEnginePressApply(this LEngine engine, LPress press)
+    {
+        engine.LEnginePressApply(press);
+    }
+
     internal static IReadOnlyList<LDraft> TEngineLeftoverRead(this LEngine engine) =>
         engine.LEngineLeftoverRead();
 
     internal static void TEngineLeftoverSweep(this LEngine engine)
     {
         engine.LEngineLeftoverSweep();
+    }
+
+    internal static string TEngineWorkspaceRead(this LEngine engine) =>
+        engine.LEngineWorkspaceRead();
+
+    internal static void TEngineWorkspaceOpen(this LEngine engine, string path)
+    {
+        engine.LEngineWorkspaceOpen(path);
     }
 
     internal static void TEngineObserverAttach(this LEngine engine, LObserver observer)
@@ -161,8 +206,18 @@ internal static partial class TInterface
     internal static LDraft TEngineRequestApply(this LEngine engine, LRequest request) =>
         engine.LEngineRequestApply(request);
 
-    internal static IReadOnlyList<LEntry> TEngineMarkupImport(this LEngine engine, string path) =>
-        engine.LEngineMarkupImport(path);
+    internal static LMarkupCargo TEngineMarkupRead(this LEngine engine, string path) =>
+        engine.LEngineMarkupRead(path);
+
+    internal static IReadOnlyList<LEntry> TEngineMarkupFind(this LEngine engine, LMarkupEntry entry) =>
+        engine.LEngineMarkupFind(entry);
+
+    internal static LMarkupOutcome TEngineMarkupImport(
+        this LEngine engine, LMarkupCargo cargo, IReadOnlyList<LMarkupIntake> intakes) =>
+        engine.LEngineMarkupImport(cargo, intakes);
+
+    internal static Uri? TEngineLocationResolve(this LEngine engine, string location) =>
+        engine.LEngineLocationResolve(location);
 
     internal static LRevision? TEngineRevisionRead(this LEngine engine) =>
         engine.LEngineRevisionRead();
@@ -262,6 +317,9 @@ internal static partial class TInterface
 
     internal static LCatalogFilter TCatalogFilterCreate(params string[] hidden) =>
         new(hidden);
+
+    internal static bool TSettingsExist(string root) =>
+        LSettingsLoader.LSettingsLoaderExist(root);
 
     internal static LSettings TSettingsLoad(string root) =>
         LSettingsLoader.LSettingsLoaderLoad(root);

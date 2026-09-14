@@ -93,9 +93,15 @@ A draft holding work the entry does not have survives the sweep and is still off
 ## `public void LeftoverSweep_DraftFileOfAnotherVersion_DropsItWithClaimAndLinks()`
 
 A draft file stamped with another version is not read.
-The sweep drops it with its claim and the links naming it.
+The sweep sets it aside under `drafts/broken` and drops its claim and the links naming it.
 A file written before a field rename would otherwise read back naming no entry and commit as a duplicate.
 The draft owning the swept link is left alone, because it is of the current shape.
+
+## `public void LeftoverSweep_UnreadableDraftFile_SetsItAsideUnchanged()`
+
+A file that does not read as a draft at all is moved aside byte for byte, never deleted.
+It is the user's work in some shape, and the next build may read it again.
+It is not offered as a leftover, because the listing does not look under `broken`.
 
 ## `public void LeftoverSweep_StalePendingFile_RemovesIt()`
 

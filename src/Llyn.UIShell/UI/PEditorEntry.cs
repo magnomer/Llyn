@@ -198,12 +198,13 @@ public partial class PEditor
         PEditorChangeSave();
 
         long held = _pEditorDraft;
-        if (held == 0)
+        if (held == 0 || _pEditorHalted)
         {
             return;
         }
 
         long? entry = PEditorEntryRead();
+        _pEditorDraft = 0;
 
         LOutcome stored;
         try
@@ -212,18 +213,9 @@ public partial class PEditor
         }
         catch (Exception exception)
         {
+            _pEditorDraft = held;
             _pEditorHost.PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
             return;
-        }
-
-        _pEditorDraft = 0;
-
-        try
-        {
-            _lEngine.LEngineInflectionStart(stored.LOutcomeEntry.LEntryId);
-        }
-        catch (Exception)
-        {
         }
 
         if (entry is not null)

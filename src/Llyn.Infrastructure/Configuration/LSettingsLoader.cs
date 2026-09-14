@@ -9,6 +9,8 @@ namespace Llyn.Infrastructure;
 public static class LSettingsLoader
 {
     private const string LSettingsLoaderFile = "settings.json";
+    private const string LSettingsLoaderPending = "settings.json.tmp";
+    private const string LSettingsLoaderBroken = "settings.broken.json";
     private const string LSettingsLoaderLocalization = "localization";
     private const string LSettingsLoaderWindow = "window";
     private const string LSettingsLoaderVolume = "volume";
@@ -23,6 +25,12 @@ public static class LSettingsLoader
     private const string LSettingsLoaderDisplay = "Display";
     private const string LSettingsLoaderDefault = "en";
     private const double LSettingsLoaderLoudest = 1;
+
+    public static bool LSettingsLoaderExist(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        return File.Exists(Path.Combine(root, LSettingsLoaderFile));
+    }
 
     public static LSettings LSettingsLoaderLoad(string root)
     {
@@ -95,9 +103,24 @@ public static class LSettingsLoader
         }
         catch (JsonException)
         {
+            try
+            {
+                File.Copy(path, Path.Combine(root, LSettingsLoaderBroken), true);
+            }
+            catch (IOException)
+            {
+            }
+            catch (UnauthorizedAccessException)
+            {
+            }
+
             return new LSettings(LSettingsLoaderDefault);
         }
         catch (IOException)
+        {
+            return new LSettings(LSettingsLoaderDefault);
+        }
+        catch (UnauthorizedAccessException)
         {
             return new LSettings(LSettingsLoaderDefault);
         }
@@ -136,7 +159,10 @@ public static class LSettingsLoader
             payload[LSettingsLoaderWindow] = LWindowLoader.LWindowLoaderCreate(window);
         }
 
+        string pending = Path.Combine(root, LSettingsLoaderPending);
         string path = Path.Combine(root, LSettingsLoaderFile);
-        File.WriteAllText(path, JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(
+            pending, JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }));
+        LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
     }
 }

@@ -1,5 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -70,5 +72,27 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost
         PDisplay.PDisplayClose();
         PTierDropdown.IsOpen = false;
         PMeshDropdown.IsOpen = false;
+    }
+
+    private void PRepertoirePressCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = (_pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible)
+            || (_pVignetteSituation is not null && PVignette.Visibility == Visibility.Visible);
+    }
+
+    private async void PRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pRepertoireHost.PWindowPressRun(
+                ticket => _lEngine.LEnginePortraitPrint(entry, _pRepertoireHost.PWindowLabelRead(), ticket));
+            return;
+        }
+
+        if (_pVignetteSituation is long shown && PVignette.Visibility == Visibility.Visible)
+        {
+            await _pRepertoireHost.PWindowPressRun(ticket => _lEngine.LEnginePortraitPrint(
+                shown, LOwner.LOwnerSituation, _pRepertoireHost.PWindowLegendRead("Situation"), ticket));
+        }
     }
 }

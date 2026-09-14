@@ -36,6 +36,26 @@ So a tag written in the input panel is in the catalog at once.
 No tab switch is needed to trigger it.
 A workspace that moved is the one announcement that empties the panel first.
 Its flags are reloaded before any row is built.
+A tag announcement carries a tag id, not an entry id, so it only refreshes the catalog.
+Passing it on as an entry would make a fresh entry being written adopt the tag's id.
+
+### `private void PTaxonomyFreshHandle(object sender, RoutedEventArgs e)`
+
+New makes whatever the emptier panel would list.
+With no tag chosen and no entry shown, it names a new tag.
+With a tag chosen, or an entry shown, it starts a new entry.
+
+### `private void PDirectoryTagCreate()`
+
+Asks for the wording, makes the tag, and browses by it.
+A dismissed dialog changes nothing.
+The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
+
+### `private void PMembershipEntryCreate()`
+
+Starts a fresh entry in the editor, carrying the chosen tag on its first sense.
+The clear leaves the tag choice standing, so the list still shows that tag's entries beside the fresh one.
+An entry started with no tag chosen comes up blank, since every entry is listed then.
 
 ### `private void PDirectoryFind(string query)`
 

@@ -1,4 +1,5 @@
 using System.Windows.Controls;
+using Llyn.Core;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -21,16 +22,24 @@ public partial class PSettings : UserControl
         _pSettingsHost = host;
         _lEngine = engine;
 
-        PWorkspacePath.Text = engine.LEngineWorkspaceRead();
-        PLocalization.SelectedValue = engine.LEngineSettingsRead().LSettingsLocalization;
-        PRespelling.IsChecked = engine.LEngineSettingsRead().LSettingsRespelled;
-        PFrequency.IsChecked = engine.LEngineSettingsRead().LSettingsFrequency;
-        PMorphology.IsChecked = engine.LEngineSettingsRead().LSettingsMorphology;
-        PLayoutLinked.IsChecked = engine.LEngineSettingsRead().LSettingsLinked;
-        PDialFooter.Text = host.PLocalizationTextRead("Terms.Product") + " " + PWindow.PHeadquarterVersionRead();
-        _pSettingsReady = true;
-
+        PSettingsSync();
         PLedgerBuild();
         PDialShow("Workspace");
+    }
+
+    internal void PSettingsSync()
+    {
+        _pSettingsReady = false;
+
+        LSettings settings = _lEngine.LEngineSettingsRead();
+        PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
+        PLocalization.SelectedValue = PLocalizationLoader.PLocalizationLoaderNormalize(settings.LSettingsLocalization);
+        PRespelling.IsChecked = settings.LSettingsRespelled;
+        PFrequency.IsChecked = settings.LSettingsFrequency;
+        PMorphology.IsChecked = settings.LSettingsMorphology;
+        PLayoutLinked.IsChecked = settings.LSettingsLinked;
+        PDialFooterApply();
+
+        _pSettingsReady = true;
     }
 }

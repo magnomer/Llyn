@@ -11,6 +11,8 @@ This is what tells held work apart from the record it was started from.
 
 Field by field, whether two forms of an entry say the same thing.
 Language sits beside the headword, because changing only the tongue is still an edit.
+The headword is compared trimmed and the note canonical, since the commit stores both that way.
+A form that differs only there would otherwise report itself changed forever.
 The lists inside are compared by their contents, since records compare them by reference.
 
 ## `private static bool LEngineSoundMatch(IReadOnlyList<LPronunciationDraft> one, IReadOnlyList<LPronunciationDraft> other)`

@@ -30,6 +30,8 @@ The usage count beside a row and the credits under it are read with the shelf.
 A stored Source updates its own row.
 That is what the panel used to do by re-reading straight after its own commit.
 A workspace that moved empties the panel before the same re-read runs.
+An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
+Only an Entry announcement is read that way, since a frequency or tag announcement carries another id.
 
 ## `private void PShelfFind(string query)`
 
@@ -114,11 +116,24 @@ An Entry that is gone leaves the right-hand side on the Source and refills the m
 A store announced by the engine redraws the shown Entry when the store touched it.
 A store that deleted it falls back to the chosen Source, or clears the panel when none is chosen.
 
+## `private void PFootnoteEntryCreate()`
+
+Starts a fresh Entry in the entry editor, its first sense citing the chosen Source.
+The Source edit area is put away first, since one draft at a time is held.
+No Entry is shown yet, so the editor stands open with the row list unmarked until a store names one.
+An Entry started with no Source chosen comes up blank, since every Entry is listed then.
+
 ## `private void PFootnoteScribeHandle(bool editing)`
 
 The mode toggle while an Entry is shown, mirroring the tenor panel.
 Entering the editor starts a draft on the shown Entry, and leaving it asks first, then re-reads it.
-`PReferenceScribeHandle` routes here whenever an Entry rather than a Source is shown.
+`PReferenceScribeHandle` routes here whenever an Entry rather than a Source is shown, or a fresh one is being written.
+
+## `private void PFootnoteScribeReset()`
+
+Leaving the editor while a fresh Entry is being written, with no Entry shown yet.
+The leave check may store the draft, and then the stored Entry is shown for reading.
+Otherwise the draft is dropped and the panel goes back to the chosen Source, or to nothing.
 
 ## `private void PFootnoteScribeShow(bool editing)`
 
@@ -149,7 +164,9 @@ Both segments answer here, so the click is read off which one was pressed.
 The segment already standing for what is on screen changes nothing.
 ## `private void PReferenceFreshHandle(object sender, RoutedEventArgs e)`
 
-Opens the edit area on a Source nothing has stored yet.
+New makes whatever the emptier panel would list.
+With no Source chosen and no Entry shown, it opens the edit area on a Source nothing has stored yet.
+With a Source chosen, or an Entry shown, it starts a new Entry instead.
 The held work is started before the controls are filled, so the first keystroke already has somewhere to go.
 
 ## `internal void PReferenceClear()`

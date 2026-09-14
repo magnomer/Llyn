@@ -43,6 +43,7 @@ public partial class PWindow : Window
     private void PWindowAttach(LEngine engine)
     {
         PEnsign.PEnsignAttach(engine);
+        PImage.PImageAttach(engine);
 
         engine.LEngineLeftoverSweep();
         PWindowLeftover = engine.LEngineLeftoverRead().Count;

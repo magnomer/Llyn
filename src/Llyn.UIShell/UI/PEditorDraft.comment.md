@@ -46,7 +46,7 @@ The control will offer it again when the store can hold it.
 
 ### `private void PEditorRecordingShow(LEntryDraft draft)`
 
-Restores the recording the draft carries, and only when the file is still there.
+Restores the recording the draft carries, and only when the engine says the file is still there.
 A recording already shown is left playing, so an unrelated answer does not stop it.
 A workspace whose audio folder was removed shows no play control rather than one that fails.
 

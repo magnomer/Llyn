@@ -22,7 +22,7 @@ public static class LSentenceLoader
 
         string path = Path.Combine(
             AppContext.BaseDirectory, LSentenceLoaderFolder, language, LSentenceLoaderFile);
-        if (!File.Exists(path))
+        if (!LLanguageLoader.LLanguageNameValidate(language) || !File.Exists(path))
         {
             return LSentenceOrder.LSentenceOrderDefault;
         }

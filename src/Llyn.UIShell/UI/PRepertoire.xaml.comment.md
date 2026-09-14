@@ -39,3 +39,15 @@ The entry editor finishes its own draft, and the Situation editor finishes its o
 
 Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so neither outlives the window.
+
+## `private void PRepertoirePressCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Whether the print button is live: an entry is read, or a situation is read.
+An editor on screen prints nothing, because what is printed is what is read.
+The button follows this answer on its own, so no panel state has to switch it.
+
+## `private async void PRepertoirePressHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Prints the entry being read, or else the situation being read, as the engine portrays it.
+The panel names only the id it is showing, and the engine builds the page from stored rows.
+Nothing is read back from the screen.

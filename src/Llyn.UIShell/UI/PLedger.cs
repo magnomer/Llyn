@@ -17,14 +17,19 @@ public partial class PSettings
     private void PLedgerBuild()
     {
         _pLedgerList.Clear();
-        foreach (string child in new[] { "Workspace", "Language", "Transcription", "Web", "Layout" })
+        foreach ((string child, _, _) in PDialTableRead())
         {
-            _pLedgerList.Add(new PLedgerItem(child, _pSettingsHost.PLocalizationTextRead("Settings." + child)));
+            _pLedgerList.Add(new PLedgerItem(child, PLedgerTitleRead(child)));
         }
 
         PLedger.ItemsSource = _pLedgerList;
         PLedgerEmpty.Visibility = _pLedgerList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         PLedgerMetaApply();
+    }
+
+    private string PLedgerTitleRead(string child)
+    {
+        return _pSettingsHost.PLocalizationTextRead("Settings." + child);
     }
 
     private string PLedgerMetaRead(string child)
@@ -34,7 +39,9 @@ public partial class PSettings
         switch (child)
         {
             case "Workspace":
-                return Path.GetFileName(Path.TrimEndingDirectorySeparator(_lEngine.LEngineWorkspaceRead()));
+                string root = _lEngine.LEngineWorkspaceRead();
+                string name = Path.GetFileName(Path.TrimEndingDirectorySeparator(root));
+                return name.Length > 0 ? name : root;
 
             case "Language":
                 return PLocalization.Items
@@ -64,6 +71,14 @@ public partial class PSettings
         }
     }
 
+    private void PLedgerTitleApply()
+    {
+        foreach (PLedgerItem item in _pLedgerList)
+        {
+            item.PLedgerItemTitle = PLedgerTitleRead(item.PLedgerItemChild);
+        }
+    }
+
     private void PLedgerMetaApply()
     {
         foreach (PLedgerItem item in _pLedgerList)
@@ -75,14 +90,8 @@ public partial class PSettings
     private void PLedgerFind(string text)
     {
         string wanted = LCase.LCaseLowerChange(text.Trim(), CultureInfo.CurrentCulture);
-        Dictionary<string, string[]> keys = new(StringComparer.Ordinal)
-        {
-            ["Workspace"] = ["Workspace.Helper"],
-            ["Language"] = [],
-            ["Transcription"] = ["Respelling.Switch", "Respelling.Helper"],
-            ["Web"] = ["Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"],
-            ["Layout"] = ["Layout.Linked", "Layout.LinkedHelper"]
-        };
+        Dictionary<string, string[]> keys = PDialTableRead()
+            .ToDictionary(row => row.PDialChild, row => row.PDialKeys, StringComparer.Ordinal);
 
         List<PLedgerItem> shown = _pLedgerList
             .Where(item => wanted.Length == 0 || keys[item.PLedgerItemChild]

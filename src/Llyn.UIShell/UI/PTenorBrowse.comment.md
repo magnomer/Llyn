@@ -29,6 +29,28 @@ So a Register written on a card in the input panel is in the catalog at once.
 No tab switch is needed.
 A workspace that moved is the one announcement that empties the panel first.
 
+A register announcement carries a register id, not an entry id, so it only refreshes the catalog.
+Passing it on as an entry would make a fresh entry being written adopt the register's id.
+
+### `private void PTenorFreshHandle(object sender, RoutedEventArgs e)`
+
+New makes whatever the emptier panel would list.
+With no register chosen and no entry shown, it names a new register.
+With a register chosen, or an entry shown, it starts a new entry.
+
+### `private void PGamutRegisterCreate()`
+
+Asks for the wording, makes the register, and browses by it.
+The register is given the language the editor stands on, as a register typed on a card would be.
+A dismissed dialog changes nothing.
+The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
+
+### `private void PCohortEntryCreate()`
+
+Starts a fresh entry in the editor, marked with the chosen register on its first sense.
+The clear leaves the register choice standing, so the list still shows that register's entries beside the fresh one.
+An entry started with no register chosen comes up blank, since every entry is listed then.
+
 ### `private void PGamutFind(string query)`
 
 The engine returns the Registers answering the query, already counted and in the chosen ordering.

@@ -50,6 +50,56 @@ public sealed class LMentionArchive
         session.LDatabaseSessionCommit();
     }
 
+    public IReadOnlyList<long> LMentionSenseClear(long meaningId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(meaningId);
+
+        using LDatabaseSession session = _lMentionArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            UPDATE example_mention SET sense_ref = NULL
+            WHERE sense_ref = $sense
+            RETURNING example_parent;
+            """;
+        command.Parameters.AddWithValue("$sense", meaningId);
+
+        List<long> affected = [];
+        using (SqliteDataReader reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                long exampleId = reader.GetInt64(0);
+                if (!affected.Contains(exampleId))
+                {
+                    affected.Add(exampleId);
+                }
+            }
+        }
+
+        session.LDatabaseSessionCommit();
+        return affected;
+    }
+
+    public bool LMentionSenseSet(long mentionId, long senseId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(mentionId);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(senseId);
+
+        using LDatabaseSession session = _lMentionArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            UPDATE example_mention SET sense_ref = $sense
+            WHERE example_mention_id = $id AND entry_ref IS NOT NULL;
+            """;
+        command.Parameters.AddWithValue("$id", mentionId);
+        command.Parameters.AddWithValue("$sense", senseId);
+        bool changed = command.ExecuteNonQuery() == 1;
+        session.LDatabaseSessionCommit();
+        return changed;
+    }
+
     internal static IReadOnlyDictionary<long, IReadOnlyList<LMention>> LMentionExampleRead(
         SqliteConnection connection, IReadOnlyList<long> exampleIds)
     {
@@ -60,19 +110,13 @@ public sealed class LMentionArchive
         }
 
         using SqliteCommand command = connection.CreateCommand();
-        List<string> names = new(exampleIds.Count);
-        foreach (long exampleId in exampleIds.Distinct())
-        {
-            string name = $"$example{names.Count}";
-            names.Add(name);
-            command.Parameters.AddWithValue(name, exampleId);
-        }
+        command.Parameters.AddWithValue("$examples", LDatabase.LDatabaseIdFormat(exampleIds));
 
         command.CommandText =
             $"""
             SELECT example_mention_id, example_parent, start, length, entry_ref, sense_ref
             FROM example_mention
-            WHERE example_parent IN ({string.Join(", ", names)})
+            WHERE example_parent IN (SELECT value FROM json_each($examples))
             ORDER BY example_parent, start;
             """;
 

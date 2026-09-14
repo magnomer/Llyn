@@ -154,21 +154,27 @@ public static class LDraftArchive
                 continue;
             }
 
-            LDraft? draft = LDraftArchiveLoad(file, false);
-            if (draft is not null && draft.LDraftVersion == LDraftArchiveVersion)
-            {
-                continue;
-            }
-
+            string text;
             try
             {
-                File.Delete(file);
+                text = File.ReadAllText(file);
             }
             catch (IOException)
             {
                 continue;
             }
             catch (UnauthorizedAccessException)
+            {
+                continue;
+            }
+
+            LDraft? draft = LDraftArchiveParse(text, false);
+            if (draft is not null && draft.LDraftVersion == LDraftArchiveVersion)
+            {
+                continue;
+            }
+
+            if (!LDraftBrokenSave(root, file))
             {
                 continue;
             }
@@ -180,6 +186,33 @@ public static class LDraftArchive
         }
 
         return dropped;
+    }
+
+    private static bool LDraftBrokenSave(string root, string file)
+    {
+        string folder = LWorkspaceRoot.LWorkspaceBrokenRead(root);
+        string name = Path.GetFileName(file);
+        string target = Path.Combine(folder, name);
+        if (File.Exists(target))
+        {
+            string stamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            string stem = Path.GetFileNameWithoutExtension(name);
+            target = Path.Combine(folder, stem + "." + stamp + LDraftArchiveExtension);
+        }
+
+        try
+        {
+            File.Move(file, target, true);
+            return true;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
 
     private static void LDraftArchiveValidate(LDraft draft)
@@ -284,7 +317,23 @@ public static class LDraftArchive
     {
         try
         {
-            LDraft? draft = JsonSerializer.Deserialize<LDraft>(File.ReadAllText(path), LDraftArchiveIndent);
+            return LDraftArchiveParse(File.ReadAllText(path), checking);
+        }
+        catch (IOException)
+        {
+            return null;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
+        }
+    }
+
+    private static LDraft? LDraftArchiveParse(string text, bool checking)
+    {
+        try
+        {
+            LDraft? draft = JsonSerializer.Deserialize<LDraft>(text, LDraftArchiveIndent);
             return checking && draft is not null && draft.LDraftVersion != LDraftArchiveVersion
                 ? null
                 : draft;
@@ -294,14 +343,6 @@ public static class LDraftArchive
             return null;
         }
         catch (NotSupportedException)
-        {
-            return null;
-        }
-        catch (IOException)
-        {
-            return null;
-        }
-        catch (UnauthorizedAccessException)
         {
             return null;
         }

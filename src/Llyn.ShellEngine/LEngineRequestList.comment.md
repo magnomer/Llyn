@@ -12,6 +12,25 @@ The per-kind files hand these routines the list and the key and add nothing but 
 The switch over every list kind inside a card.
 A kind it does not know is a programming error, not a refusal, since no form can send one.
 
+## `private LEntryDraft LEngineCardResolve(LEntryDraft content, Func<long, LRequest> retarget)`
+
+Applies a request that named card zero to the first Meaning card, made when the draft has none.
+A browsing panel planting a Tag, Register, Situation, Example or Source into a fresh entry asks this way.
+The panel need not read the draft back to learn which card the reset made.
+
+## `private LEntryDraft LEngineSentenceResolve(LEntryDraft content, long cardId, Func<long, LRequest> retarget)`
+
+Applies a request that named sentence zero to the card's first sentence row, made when the card has none.
+A card the draft does not hold is refused, as any card request is.
+
+## `private static LCardDraft? LEngineCardFind(LEntryDraft content, long id)`
+
+The card `id` names among the meanings, their children or the collocations, or null.
+
+## `private static LCardDraft? LEngineCardFind(IReadOnlyList<LCardDraft> cards, long id)`
+
+The card `id` names in `cards` or nested under one of them, or null.
+
 ## `private static IReadOnlyList<LEngineItem> LEngineListAdd<LEngineItem>(`
 
 Places a new item at the position asked for, clamped to the list.

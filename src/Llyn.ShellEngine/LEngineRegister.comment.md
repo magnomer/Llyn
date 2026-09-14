@@ -28,6 +28,13 @@ Unlike the card's shelf, this one holds every pack's rows at once, because a wor
 A row is answered by its name or by the language of the pack that ships it.
 So a shelf of several packs can be narrowed.
 
+## `public LRegister LEngineRegisterCreate(string name, string language)`
+
+Makes a written Register reading `name` with no card marked by it yet, for the tenor panel's New.
+`language` is the language the user was working in, kept on the row the way a card would keep it.
+A row already reading the same on that language's shelf is returned rather than doubled.
+The announcement is raised either way, so the panel lists and selects the row.
+
 ## `public void LEngineRegisterChange(long registerId, string renamed)`
 
 Renames a written Register, which every card marked with it then shows.

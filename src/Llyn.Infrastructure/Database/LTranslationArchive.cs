@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -62,24 +61,12 @@ public sealed class LTranslationArchive
         using LDatabaseSession session = _lTranslationArchiveDatabase.LDatabaseSessionStart();
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
 
-        StringBuilder placeholders = new();
-        for (int index = 0; index < wanted.Count; index++)
-        {
-            string placeholder = $"$id{index}";
-            if (index > 0)
-            {
-                placeholders.Append(", ");
-            }
-
-            placeholders.Append(placeholder);
-            command.Parameters.AddWithValue(placeholder, wanted[index]);
-        }
-
+        command.Parameters.AddWithValue("$ids", LDatabase.LDatabaseIdFormat(wanted));
         command.CommandText =
-            $"""
+            """
             SELECT entry.entry_id, entry.headword, entry.language
             FROM entry
-            WHERE entry.entry_id IN ({placeholders});
+            WHERE entry.entry_id IN (SELECT value FROM json_each($ids));
             """;
 
         Dictionary<long, LTranslationTarget> found = [];

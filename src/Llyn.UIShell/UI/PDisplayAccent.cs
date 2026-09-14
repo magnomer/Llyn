@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Llyn.Core;
@@ -39,7 +38,7 @@ public partial class PDisplay
 
     internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (e.Parameter is not PAccentItem row || !File.Exists(row.PAccentItemAudio))
+        if (e.Parameter is not PAccentItem row || !_lEngine.LEngineRecordingExist(row.PAccentItemAudio))
         {
             return;
         }

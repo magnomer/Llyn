@@ -75,6 +75,25 @@ public sealed partial class LEngine
         }
     }
 
+    public LRegister LEngineRegisterCreate(string name, string language)
+    {
+        LRegister created;
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(name);
+            ArgumentNullException.ThrowIfNull(language);
+
+            created = LEngineRegisterResolve(name, language)
+                ?? new LRegisterArchive(_lEngineDatabase).LRegisterCreate(new LRegister(
+                    0,
+                    LStateValue.LStateValueRead(name.Trim()),
+                    language));
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectRegister, created.LRegisterId);
+        return created;
+    }
+
     public void LEngineRegisterChange(long registerId, string renamed)
     {
         lock (_lEngineGate)

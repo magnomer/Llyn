@@ -44,4 +44,6 @@ It stores over the selected one or creates one nothing references yet.
 Typing still waiting to be written is written first, so the commit carries the last keystroke.
 Whether this is a create or a rewrite is the engine's reading of the draft, not the panel's.
 Saving does not change the id, what references it, or the order it takes for any referrer.
+A form halted by a failed flush commits nothing.
+The draft would otherwise be stored missing the edits the flush dropped.
 

@@ -75,6 +75,33 @@ public sealed class TTag
     }
 
     [Fact]
+    public void TagCreate_WordingNoCardCarries_ListsItInTheCatalog()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LTag created = engine.TEngineTagCreate("  chiefly British  ");
+
+        Assert.Equal("chiefly British", created.LTagText);
+        Assert.True(created.LTagId > 0);
+        Assert.Equal("chiefly British", Assert.Single(engine.TEngineTagRead()).LTagText);
+        Assert.Empty(engine.TEngineEntryFind(created));
+    }
+
+    [Fact]
+    public void TagCreate_WordingAlreadyStored_ReturnsTheStoredRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LTag first = engine.TEngineTagCreate("formal");
+        LTag again = engine.TEngineTagCreate("formal");
+
+        Assert.Equal(first.LTagId, again.LTagId);
+        Assert.Single(engine.TEngineTagRead());
+    }
+
+    [Fact]
     public void TagChange_RenamedTag_CarriesCardsAndFoldsClash()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

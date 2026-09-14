@@ -1,5 +1,6 @@
 ﻿using Llyn.Core;
 using Llyn.Infrastructure;
+using Microsoft.Data.Sqlite;
 using Xunit;
 
 namespace Llyn.Tests;
@@ -55,6 +56,23 @@ public sealed class TDatabaseSession
         });
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+    }
+
+    [Fact]
+    public void SessionDispose_ConnectionAlreadyClosed_ReleasesTheSlot()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        using (LDatabaseSession session = workspace.TWorkspaceDatabase.TDatabaseSessionStart())
+        {
+            session.LDatabaseSessionConnection.Close();
+        }
+
+        using LDatabaseSession next = workspace.TWorkspaceDatabase.TDatabaseSessionStart();
+        using SqliteCommand command = next.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText = "SELECT 1;";
+
+        Assert.Equal(1L, command.ExecuteScalar());
     }
 
     [Fact]

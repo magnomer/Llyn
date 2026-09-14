@@ -36,6 +36,18 @@ That is what the window asks before the workspace changes or the program closes.
 
 Stops the panel: the editor is shut down and the reader releases its playback.
 
+## `private void PTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Whether the print button is live: exactly when an entry is read in the display.
+An editor on screen prints nothing, because what is printed is what is read.
+The button follows this answer on its own, so no panel state has to switch it.
+
+## `private async void PTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Prints the entry being read, as the engine portrays it.
+The panel names only the id it is showing, and the engine builds the page from stored rows.
+Nothing is read back from the screen.
+
 ## Inline notes
 
 ### `private PWindow _pTaxonomyHost = null!;`

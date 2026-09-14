@@ -70,6 +70,11 @@ public partial class PWindow
     {
         _pWindowStateTimer?.Stop();
 
+        if (WindowState == WindowState.Minimized)
+        {
+            return;
+        }
+
         Rect bounds = WindowState == WindowState.Normal
             ? new Rect(Left, Top, Width, Height)
             : RestoreBounds;

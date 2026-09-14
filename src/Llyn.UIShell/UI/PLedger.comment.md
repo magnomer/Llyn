@@ -2,8 +2,8 @@
 
 ## `private void PLedgerBuild()`
 
-Fills the catalog with the five setting groups, titled from their localized names.
-The order is the order of the cards, so the catalog and the edit area agree.
+Fills the catalog with the setting groups the Dial table lists, titled from their localized names.
+The order is the order of the cards, since both come from the one table.
 The empty text is hidden here and only shown once a search leaves nothing.
 The summaries are written last, once every row exists to carry one.
 
@@ -11,8 +11,18 @@ The summaries are written last, once every row exists to carry one.
 
 Reads the one-line summary of one group from the engine's settings and workspace.
 The workspace shows only its last folder segment, since the full path is the card's to show.
+A drive root has no last segment, so the root itself is shown rather than nothing.
 The language shows the display name the choice box carries for the stored tag, never the tag itself.
 The web group counts its switches rather than naming them, because two switches make one number.
+
+## `private string PLedgerTitleRead(string child)`
+
+Reads the localized name of one group, the text its row shows as a heading.
+
+## `private void PLedgerTitleApply()`
+
+Writes every row's title anew from the localization now applied.
+The language choice calls it, so the catalog changes language with the rest of the panel.
 
 ## `private void PLedgerMetaApply()`
 
@@ -24,6 +34,7 @@ The rows are written in place rather than rebuilt, so a narrowed catalog keeps i
 
 Narrows the catalog to the rows whose words contain the search text.
 A row is matched on its title, its purpose, and the card labels and helpers read from the localization.
+The card keys come from the Dial table, so a card added there is searched without editing this file.
 The match is lowercased in the current culture, so the case of the typed text does not matter.
 Hidden rows leave the items source rather than collapsing, so the frame keeps its sibling spacing.
 The chosen row may leave the catalog while its card stays, since the card is the Dial's to swap.

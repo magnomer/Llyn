@@ -10,6 +10,20 @@ public sealed partial class LEngine
     {
         return request switch
         {
+            LRequestTagPick { LRequestCardId: 0 } sent => LEngineCardResolve(
+                content, id => sent with { LRequestCardId = id }),
+            LRequestRegisterPick { LRequestCardId: 0 } sent => LEngineCardResolve(
+                content, id => sent with { LRequestCardId = id }),
+            LRequestSituationPick { LRequestCardId: 0 } sent => LEngineCardResolve(
+                content, id => sent with { LRequestCardId = id }),
+            LRequestSentenceExample { LRequestCardId: 0 } sent => LEngineCardResolve(
+                content, id => sent with { LRequestCardId = id }),
+            LRequestSentenceReference { LRequestCardId: 0 } sent => LEngineCardResolve(
+                content, id => sent with { LRequestCardId = id }),
+            LRequestSentenceExample { LRequestSentenceId: 0 } sent => LEngineSentenceResolve(
+                content, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
+            LRequestSentenceReference { LRequestSentenceId: 0 } sent => LEngineSentenceResolve(
+                content, sent.LRequestCardId, id => sent with { LRequestSentenceId = id }),
             LRequestSentenceAddition sent => LEngineSentenceAdd(content, sent),
             LRequestSentenceRemoval sent => LEngineSentenceRemove(content, sent),
             LRequestSentenceShift sent => LEngineSentenceMove(content, sent),
@@ -73,6 +87,53 @@ public sealed partial class LEngine
                 video => video with { LVideoDraftSpan = LEngineValueRead(sent.LRequestValue) }),
             _ => throw new ArgumentException("The request kind is not one the engine applies.", nameof(request)),
         };
+    }
+
+    private LEntryDraft LEngineCardResolve(LEntryDraft content, Func<long, LRequest> retarget)
+    {
+        if (content.LEntryDraftMeanings.Count == 0)
+        {
+            content = LEngineCardInsert(
+                content, new LRequestCardAddition(0, LCardKind.LCardKindMeaning, 0, 0));
+        }
+
+        return LEngineListApply(content, retarget(content.LEntryDraftMeanings[0].LCardDraftId));
+    }
+
+    private LEntryDraft LEngineSentenceResolve(LEntryDraft content, long cardId, Func<long, LRequest> retarget)
+    {
+        LCardDraft card = LEngineCardFind(content, cardId) ?? throw new LRefusal(LRefusal.LRefusalCard);
+        if (card.LCardDraftSentence.Count == 0)
+        {
+            content = LEngineSentenceAdd(content, new LRequestSentenceAddition(0, cardId, 0));
+            card = LEngineCardFind(content, cardId) ?? throw new LRefusal(LRefusal.LRefusalCard);
+        }
+
+        return LEngineListApply(content, retarget(card.LCardDraftSentence[0].LSentenceDraftId));
+    }
+
+    private static LCardDraft? LEngineCardFind(LEntryDraft content, long id)
+    {
+        return LEngineCardFind(content.LEntryDraftMeanings, id)
+            ?? LEngineCardFind(content.LEntryDraftCollocations, id);
+    }
+
+    private static LCardDraft? LEngineCardFind(IReadOnlyList<LCardDraft> cards, long id)
+    {
+        foreach (LCardDraft card in cards)
+        {
+            if (card.LCardDraftId == id)
+            {
+                return card;
+            }
+
+            if (LEngineCardFind(card.LCardDraftChild, id) is LCardDraft nested)
+            {
+                return nested;
+            }
+        }
+
+        return null;
     }
 
     private static IReadOnlyList<LEngineItem> LEngineListAdd<LEngineItem>(

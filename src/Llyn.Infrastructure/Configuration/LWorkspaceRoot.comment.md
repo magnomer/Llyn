@@ -37,6 +37,11 @@ The folder inside the drafts folder that holds one file per tentative link, crea
 The court sits under `drafts` because a link is only meaningful while the draft it points at is still tentative.
 Its files are named after link ids, so a listing of the drafts folder itself never picks them up.
 
+## `public static string LWorkspaceBrokenRead(string root)`
+
+The folder inside the drafts folder where the sweep sets aside a draft file it cannot read, created if needed.
+It sits under `drafts` so the file stays beside the drafts it came from, out of the listing's way.
+
 ## `public static string LWorkspaceClaimRead(string root)`
 
 The folder inside the drafts folder that holds one file per claim on a tentative record, created if needed.

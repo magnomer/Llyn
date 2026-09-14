@@ -26,6 +26,7 @@ Short enough that a crash costs a word, not a card.
 
 Filling the controls raises the same events typing does.
 So the form says nothing while it is being rendered from the draft the engine answered with.
+A render reached from inside a render restores the guard it found rather than dropping it.
 
 ### `private void PEditorChangeAttach(PCard card)`
 
@@ -66,3 +67,4 @@ Nothing is written then, and the wait is left running so the waiting requests st
 Waiting requests go, and nothing else, because the chips and rows reached the engine as requests of their own.
 It also settles the buttons, so a write and what the buttons say never drift apart.
 A suspended form writes nothing, because its draft is the thing that failed.
+The save button follows the engine's refusal answer too, so a draft with no headword shows Discard alone.

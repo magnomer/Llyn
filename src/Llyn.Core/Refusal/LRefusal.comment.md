@@ -82,6 +82,11 @@ One scheme spells one reading one way, so a second row under that name would say
 A draft still carries a value the store could not read, and saving would write a diagnosis as data.
 The user clears the field first, and the unreadable data is lost on purpose.
 
+## `public const string LRefusalMarkup = "Refusal.MarkupMalformed";`
+
+Reason key for markup text that is not well-formed XML or whose root is not `llyn`.
+Nothing is read from such a file, so the reader refuses rather than guessing at entries.
+
 ## `public LRefusal(string reason)`
 
 Refuses a request for `reason`, a localization key.

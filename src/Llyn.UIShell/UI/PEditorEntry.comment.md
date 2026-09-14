@@ -79,6 +79,8 @@ It is asked of the engine rather than kept, so the two can never disagree.
 
 Everything typed reaches the draft before the draft is committed.
 A store within a keystroke of the last change would otherwise write the form as it stood before it.
+A hold that failed while flushing halts the form, and a halted form commits nothing.
+The draft would otherwise be stored missing the edits the failed flush dropped.
 
 ### `stored = _lEngine.LEngineDraftCommit(held);`
 
@@ -96,10 +98,13 @@ So the missing field can be filled in and the write repeated.
 An update whose entry vanished between load and save is reported as that.
 It is never quietly turned back into a create.
 
-### `_pEditorDraft = string.Empty;`
+### `_pEditorDraft = 0;`
 
-A committed draft has no file left, so the form stops naming it.
-The next line starts the draft the form goes on with.
+The form stops naming the draft before the commit rather than after it.
+The commit announces the entry while it runs, and a listener may start the form on a fresh draft.
+Clearing afterwards would drop that fresh draft's id and leave it held forever.
+A refused commit puts the id back, so the form goes on with the same draft.
+The inflection fill is the engine's own step after a commit, so nothing starts it here.
 
 ### `PEditorEntryShow(stored.LEntryId);`
 

@@ -51,24 +51,12 @@ public partial class PLibrary
         try
         {
             await _lEngine.LEnginePortraitExport(
-                id, dialog.FileName, format, PLibraryLabelRead());
+                id, dialog.FileName, format, _pLibraryHost.PWindowLabelRead());
         }
         catch (Exception exception)
         {
             _pLibraryHost.PWindowFailureShow("Export.Failed", exception);
         }
-    }
-
-    private LPortraitLabel PLibraryLabelRead()
-    {
-        return new LPortraitLabel(
-            _pLibraryHost.PLocalizationTextRead("Display.Unknown"),
-            _pLibraryHost.PLocalizationTextRead("Display.MeaningSingle"),
-            _pLibraryHost.PLocalizationTextRead("Display.MeaningPlural"),
-            _pLibraryHost.PLocalizationTextRead("Display.CollocationSingle"),
-            _pLibraryHost.PLocalizationTextRead("Display.Collocation"),
-            _pLibraryHost.PLocalizationTextRead("Display.Translated"),
-            _pLibraryHost.PLocalizationTextRead("Display.Note"));
     }
 
     private string PLibraryNameRead(long id)

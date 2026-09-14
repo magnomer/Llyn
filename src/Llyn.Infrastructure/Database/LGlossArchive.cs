@@ -49,19 +49,13 @@ public sealed class LGlossArchive
         }
 
         using SqliteCommand command = connection.CreateCommand();
-        List<string> names = new(exampleIds.Count);
-        foreach (long exampleId in exampleIds.Distinct())
-        {
-            string name = $"$example{names.Count}";
-            names.Add(name);
-            command.Parameters.AddWithValue(name, exampleId);
-        }
+        command.Parameters.AddWithValue("$examples", LDatabase.LDatabaseIdFormat(exampleIds));
 
         command.CommandText =
             $"""
             SELECT example_translation_id, example_parent, language, text_state, text
             FROM example_translation
-            WHERE example_parent IN ({string.Join(", ", names)})
+            WHERE example_parent IN (SELECT value FROM json_each($examples))
             ORDER BY example_parent, position;
             """;
 

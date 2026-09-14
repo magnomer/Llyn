@@ -28,6 +28,11 @@ internal static class PLocalizationLoader
         @"\{\d+\}",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+    internal static string PLocalizationLoaderNormalize(string? language)
+    {
+        return language is "en" or "ko" ? language : PLocalizationLoaderLanguage;
+    }
+
     internal static void PLocalizationLoaderApply(ResourceDictionary resources, string language)
     {
         CultureInfo culture = language switch

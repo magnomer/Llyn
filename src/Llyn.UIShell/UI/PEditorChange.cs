@@ -182,9 +182,10 @@ public partial class PEditor
 
     private void PEditorChangeUpdate()
     {
-        bool changed = PEditorDraftCheck();
+        bool changed = PEditorDraftCheck(out string? refusal);
+        bool storable = changed && refusal is null;
         PEditorDiscard.IsEnabled = changed;
-        PEditorStore.IsEnabled = changed;
-        PEditorChangeNotice?.Invoke(changed);
+        PEditorStore.IsEnabled = storable;
+        PEditorChangeNotice?.Invoke(storable);
     }
 }

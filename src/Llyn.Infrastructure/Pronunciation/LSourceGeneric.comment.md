@@ -41,6 +41,14 @@ The second value is the headword the attempt's `follow` reading captured, or `nu
 A pointer is only read when every reading came up empty, so a page with readings is never left.
 A page the guard rejects is not followed either.
 
+A pattern that runs past its patience is read as a page with nothing on it.
+Every pattern comes from a language pack and runs over a page a stranger wrote.
+Either can make a backtracking pattern spin for minutes, and one lookup must never hold the program that long.
+
+## `private static (LAnswer, string?) LSourceBodyRead(LSourceAttempt attempt, string body, string word)`
+
+Runs the guard and every reading over one fetched page, under the patience the runner sets.
+
 ## `private static string? LSourceValueRead(LSourceReading reading, string body)`
 
 Dispatches one reading to its declared strategy.

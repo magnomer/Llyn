@@ -15,6 +15,8 @@ Ends the held sentence when the panel is left, committing it or discarding it.
 The panel routes here only while the Example editor is the side in front.
 Typing still waiting to be written is written first, whatever the answer was.
 A refused commit puts the id back and answers false, so the window stays open over work still on disk.
+A form halted by a failed flush answers that it did not finish.
+Committing then would store a draft missing the edits the flush dropped.
 
 ## `private bool PTranscriptChangeCheck()`
 

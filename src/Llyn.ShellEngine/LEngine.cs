@@ -13,6 +13,8 @@ namespace Llyn.ShellEngine;
 public sealed partial class LEngine : IDisposable
 {
     private readonly object _lEngineGate = new();
+    private const long LEngineClientCeiling = 8L * 1024 * 1024;
+
     private readonly HttpClient _lEngineClient;
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineLookupSources = new(StringComparer.Ordinal);
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineHarvestSources = new(StringComparer.Ordinal);
@@ -60,7 +62,8 @@ public sealed partial class LEngine : IDisposable
 
         _lEngineClient = client ?? new HttpClient
         {
-            Timeout = TimeSpan.FromSeconds(10)
+            Timeout = TimeSpan.FromSeconds(10),
+            MaxResponseContentBufferSize = LEngineClientCeiling,
         };
         _lEngineClient.DefaultRequestHeaders.UserAgent.ParseAdd(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Llyn/0.0 (pronunciation lookup)");
@@ -80,6 +83,11 @@ public sealed partial class LEngine : IDisposable
         {
             return _lEngineRealm;
         }
+    }
+
+    public static bool LEngineBusyCheck(Exception fault)
+    {
+        return LDoctor.LDoctorBusyCheck(fault);
     }
 
     public LDoctorRescue LEngineRescueRead()
@@ -113,10 +121,32 @@ public sealed partial class LEngine : IDisposable
 
     public void LEngineWorkspaceChange(string path)
     {
+        LEngineWorkspaceOpen(path);
+        LWorkspaceRoot.LWorkspaceRootChange(LEngineWorkspaceRead());
+    }
+
+    public void LEngineWorkspaceOpen(string path)
+    {
+        if (!Path.IsPathFullyQualified(path))
+        {
+            throw new ArgumentException("The workspace path must be fully qualified.", nameof(path));
+        }
+
+        string root = Path.GetFullPath(path);
+
         lock (_lEngineGate)
         {
-            LWorkspaceRoot.LWorkspaceRootChange(path);
-            _lEngineWorkspace = path;
+            Directory.CreateDirectory(root);
+
+            LDatabase database = new(root);
+            LDoctorRescue rescue = LDoctor.LDoctorDatabaseCreate(database);
+            LRealm realm = new LRealmArchive(database).LRealmRead();
+            LIdentity identity = new(database);
+            LSettings settings = LSettingsLoader.LSettingsLoaderExist(root)
+                ? LSettingsLoader.LSettingsLoaderLoad(root)
+                : _lEngineSettings;
+
+            _lEngineWorkspace = root;
 
             foreach (long held in _lEngineDraftHeld)
             {
@@ -133,12 +163,13 @@ public sealed partial class LEngine : IDisposable
             _lEngineLanguages.Clear();
             _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
-            LSettingsLoader.LSettingsLoaderSave(_lEngineWorkspace, _lEngineSettings);
 
-            _lEngineDatabase = new LDatabase(_lEngineWorkspace);
-            _lEngineRescue = LDoctor.LDoctorDatabaseCreate(_lEngineDatabase);
-            _lEngineRealm = new LRealmArchive(_lEngineDatabase).LRealmRead();
-            _lEngineIdentity = new LIdentity(_lEngineDatabase);
+            _lEngineSettings = settings;
+            _lEngineDatabase = database;
+            _lEngineRescue = rescue;
+            _lEngineRealm = realm;
+            _lEngineIdentity = identity;
+            LEngineSettingsSave();
             LEngineLanguageImport();
         }
 
@@ -151,11 +182,6 @@ public sealed partial class LEngine : IDisposable
         return Path.IsPathRooted(relative) || relative.StartsWith("..", StringComparison.Ordinal)
             ? path
             : relative;
-    }
-
-    private string LEngineRecordingResolve(string file)
-    {
-        return Path.IsPathRooted(file) ? file : Path.Combine(_lEngineWorkspace, file);
     }
 
     public Task LEnginePronunciationFind(

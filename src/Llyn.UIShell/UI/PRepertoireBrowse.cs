@@ -43,6 +43,15 @@ public partial class PRepertoire
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectEntry
+            && bulletin.LBulletinId > 0
+            && _pDisplayEntry is null
+            && IsVisible
+            && PEditor.Visibility == Visibility.Visible)
+        {
+            _pDisplayEntry = bulletin.LBulletinId;
+        }
+
         PAtlasFind(PInquest.Text ?? string.Empty);
         POccurrenceEntryUpdate(bulletin.LBulletinId);
     }
@@ -397,9 +406,41 @@ public partial class PRepertoire
         POccurrenceScribeShow(editing);
     }
 
+    private void POccurrenceEntryCreate()
+    {
+        long? situation = _pVignetteSituation;
+
+        PScenarioDraftCancel();
+        PScenario.Visibility = Visibility.Collapsed;
+        PVignette.Visibility = Visibility.Collapsed;
+
+        _pDisplayEntry = null;
+        POccurrenceSelect(null);
+        PDisplay.PDisplayClear();
+        PEditor.PEditorReset();
+        PRepertoireMode.IsEnabled = true;
+        PRepertoireBin.IsEnabled = false;
+        POccurrenceScribeShow(true);
+
+        if (situation is long id)
+        {
+            PEditor.PEditorSituationAdd(id);
+        }
+    }
+
     private void POccurrenceScribeHandle(bool editing)
     {
-        if (_pDisplayEntry is not long id || editing == (PEditor.Visibility == Visibility.Visible))
+        if (_pDisplayEntry is not long id)
+        {
+            if (!editing)
+            {
+                POccurrenceScribeReset();
+            }
+
+            return;
+        }
+
+        if (editing == (PEditor.Visibility == Visibility.Visible))
         {
             return;
         }
@@ -419,6 +460,33 @@ public partial class PRepertoire
 
         PEditor.PEditorEntryShow(id);
         POccurrenceScribeShow(true);
+    }
+
+    private void POccurrenceScribeReset()
+    {
+        if (!PRepertoireLeaveConfirm())
+        {
+            POccurrenceScribeShow(true);
+            return;
+        }
+
+        POccurrenceScribeShow(false);
+
+        if (_pDisplayEntry is long stored)
+        {
+            POccurrenceEntryShow(stored);
+            return;
+        }
+
+        PEditor.PEditorReset();
+
+        if (_pVignetteSituation is long kept)
+        {
+            PRepertoireShow(kept);
+            return;
+        }
+
+        PRepertoireClear();
     }
 
     private void POccurrenceScribeShow(bool editing)
@@ -501,6 +569,12 @@ public partial class PRepertoire
             return;
         }
 
+        if (_pVignetteSituation is not null || _pDisplayEntry is not null)
+        {
+            POccurrenceEntryCreate();
+            return;
+        }
+
         PRepertoireClear();
         PRepertoireScribeShow(true);
         PScenarioDraftShow(PScenarioDraftStart(null));
@@ -510,7 +584,7 @@ public partial class PRepertoire
     private void PRepertoireScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PRepertoireScribe);
-        if (_pDisplayEntry is not null)
+        if (_pDisplayEntry is not null || PEditor.Visibility == Visibility.Visible)
         {
             POccurrenceScribeHandle(editing);
             return;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -16,6 +17,17 @@ public static class LWorkspace
     private const string LWorkspaceExtension = ".mp3";
     private const string LWorkspaceFlagFolder = "flags";
     private const string LWorkspaceFlagExtension = ".svg";
+    private const string LWorkspacePending = ".tmp";
+    private const int LWorkspaceDigestLength = 8;
+
+    private static readonly string[] LWorkspaceExtensions =
+        [".mp3", ".ogg", ".oga", ".wav", ".m4a", ".aac", ".flac", ".opus", ".webm"];
+
+    private static readonly HashSet<string> LWorkspaceDevices = new(
+        ["con", "prn", "aux", "nul",
+         "com1", "com2", "com3", "com4", "com5", "com6", "com7", "com8", "com9",
+         "lpt1", "lpt2", "lpt3", "lpt4", "lpt5", "lpt6", "lpt7", "lpt8", "lpt9"],
+        StringComparer.OrdinalIgnoreCase);
 
     private const string LWorkspaceFlagHost = "https://cdn.jsdelivr.net/gh/lipis/flag-icons/flags/4x3/";
 
@@ -41,8 +53,9 @@ public static class LWorkspace
         Directory.CreateDirectory(directory);
 
         string path = Path.Combine(
-            directory, LWorkspaceStemRead(word, recording.LRecordingVariety) + LWorkspaceExtensionRead(address));
-        await File.WriteAllBytesAsync(path, audio, cancellation).ConfigureAwait(false);
+            directory,
+            LWorkspaceStemRead(word, recording.LRecordingVariety, address) + LWorkspaceExtensionRead(address));
+        await LWorkspaceFileSave(path, audio, cancellation).ConfigureAwait(false);
         return path;
     }
 
@@ -67,7 +80,7 @@ public static class LWorkspace
 
         byte[] audio = await client.GetByteArrayAsync(address, cancellation).ConfigureAwait(false);
         Directory.CreateDirectory(directory);
-        await File.WriteAllBytesAsync(path, audio, cancellation).ConfigureAwait(false);
+        await LWorkspaceFileSave(path, audio, cancellation).ConfigureAwait(false);
         return path;
     }
 
@@ -96,7 +109,7 @@ public static class LWorkspace
             byte[] svg = await client
                 .GetByteArrayAsync(LWorkspaceFlagHost + key + LWorkspaceFlagExtension, cancellation)
                 .ConfigureAwait(false);
-            await File.WriteAllBytesAsync(path, svg, cancellation).ConfigureAwait(false);
+            await LWorkspaceFileSave(path, svg, cancellation).ConfigureAwait(false);
             return path;
         }
         catch (HttpRequestException)
@@ -105,24 +118,40 @@ public static class LWorkspace
         }
     }
 
-    private static string LWorkspaceStemRead(string word, string variety)
+    private static async Task LWorkspaceFileSave(string path, byte[] content, CancellationToken cancellation)
+    {
+        string pending = path + LWorkspacePending;
+        await File.WriteAllBytesAsync(pending, content, cancellation).ConfigureAwait(false);
+        LWorkspaceRoot.LWorkspacePendingCommit(pending, path);
+    }
+
+    private static string LWorkspaceStemRead(string word, string variety, string address)
     {
         string stem = LWorkspaceNormalize(word);
-        return variety.Length == 0 ? stem : stem + "." + LWorkspaceNormalize(variety);
+        if (variety.Length > 0)
+        {
+            stem += "." + LWorkspaceNormalize(variety);
+        }
+
+        return stem + "." + LWorkspaceDigestRead(address)[..LWorkspaceDigestLength];
     }
 
     private static string LWorkspaceNameRead(string address)
     {
-        string digest = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(address)))[..16];
-        return digest + LWorkspaceExtensionRead(address);
+        return LWorkspaceDigestRead(address)[..16] + LWorkspaceExtensionRead(address);
+    }
+
+    private static string LWorkspaceDigestRead(string address)
+    {
+        return Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(address)));
     }
 
     private static string LWorkspaceExtensionRead(string address)
     {
         try
         {
-            string extension = Path.GetExtension(new Uri(address).AbsolutePath);
-            return extension.Length is > 1 and <= 5 ? extension : LWorkspaceExtension;
+            string extension = Path.GetExtension(new Uri(address).AbsolutePath).ToLowerInvariant();
+            return Array.IndexOf(LWorkspaceExtensions, extension) >= 0 ? extension : LWorkspaceExtension;
         }
         catch (UriFormatException)
         {
@@ -137,6 +166,9 @@ public static class LWorkspace
             value = value.Replace(invalid, '_');
         }
 
-        return value.Trim();
+        value = value.Trim();
+        int stop = value.IndexOf('.');
+        string head = stop < 0 ? value : value[..stop];
+        return LWorkspaceDevices.Contains(head) ? "_" + value : value;
     }
 }

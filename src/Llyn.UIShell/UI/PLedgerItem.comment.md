@@ -5,7 +5,12 @@
 Presentation item for one setting group row in `PLedger`.
 Carries the group title the row shows and the child name the card is found by.
 The child name is identity and never displayed.
-The title is read from the localization once, when the ledger is built.
+The title is read from the localization when the ledger is built and again when the language changes.
+
+## `public string PLedgerItemTitle`
+
+The localized name of the group, shown as the row's heading.
+It notifies, so a language change rewrites the row in place rather than rebuilding the catalog.
 
 ## `public string PLedgerItemMeta`
 

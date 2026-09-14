@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
@@ -11,6 +10,7 @@ public partial class PEditor
 {
     private void PEditorDraftShow(LEntryDraft draft)
     {
+        bool filling = _pEditorFill;
         _pEditorFill = true;
         try
         {
@@ -31,7 +31,7 @@ public partial class PEditor
         }
         finally
         {
-            _pEditorFill = false;
+            _pEditorFill = filling;
         }
 
         PTranscriptionPrepare(draft);
@@ -78,7 +78,7 @@ public partial class PEditor
         }
 
         PRecordingClear();
-        if (audio.Length == 0 || !File.Exists(audio))
+        if (!_lEngine.LEngineRecordingExist(audio))
         {
             return;
         }

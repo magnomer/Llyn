@@ -18,6 +18,7 @@ One unknown pack never stops the others from loading.
 ## `public static LSpeechPack LSpeechLoaderLoad(string language)`
 
 Reads the vocabulary `language` declares, or an empty one when the pack declares none.
+A name `LLanguageNameValidate` refuses reads nothing.
 
 ## Inline notes
 

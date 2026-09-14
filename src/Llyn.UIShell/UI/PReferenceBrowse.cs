@@ -42,6 +42,15 @@ public partial class PReference
             PReferenceReset();
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectEntry
+            && bulletin.LBulletinId > 0
+            && _pDisplayEntry is null
+            && IsVisible
+            && PEditor.Visibility == Visibility.Visible)
+        {
+            _pDisplayEntry = bulletin.LBulletinId;
+        }
+
         PImprint.PImprintBulletinHandle(bulletin);
         PShelfFind(PSurvey.Text ?? string.Empty);
         PFootnoteEntryUpdate(bulletin.LBulletinId);
@@ -417,9 +426,41 @@ public partial class PReference
         PFootnoteScribeShow(editing);
     }
 
+    private void PFootnoteEntryCreate()
+    {
+        long? reference = _pColophonReference;
+
+        PImprint.PImprintDraftCancel();
+        PImprint.Visibility = Visibility.Collapsed;
+        PColophon.Visibility = Visibility.Collapsed;
+
+        _pDisplayEntry = null;
+        PFootnoteSelect(null);
+        PDisplay.PDisplayClear();
+        PEditor.PEditorReset();
+        PReferenceMode.IsEnabled = true;
+        PReferenceBin.IsEnabled = false;
+        PFootnoteScribeShow(true);
+
+        if (reference is long id)
+        {
+            PEditor.PEditorReferenceAdd(id);
+        }
+    }
+
     private void PFootnoteScribeHandle(bool editing)
     {
-        if (_pDisplayEntry is not long id || editing == (PEditor.Visibility == Visibility.Visible))
+        if (_pDisplayEntry is not long id)
+        {
+            if (!editing)
+            {
+                PFootnoteScribeReset();
+            }
+
+            return;
+        }
+
+        if (editing == (PEditor.Visibility == Visibility.Visible))
         {
             return;
         }
@@ -439,6 +480,33 @@ public partial class PReference
 
         PEditor.PEditorEntryShow(id);
         PFootnoteScribeShow(true);
+    }
+
+    private void PFootnoteScribeReset()
+    {
+        if (!PReferenceLeaveConfirm())
+        {
+            PFootnoteScribeShow(true);
+            return;
+        }
+
+        PFootnoteScribeShow(false);
+
+        if (_pDisplayEntry is long stored)
+        {
+            PFootnoteEntryShow(stored);
+            return;
+        }
+
+        PEditor.PEditorReset();
+
+        if (_pColophonReference is long kept)
+        {
+            PReferenceShow(kept);
+            return;
+        }
+
+        PReferenceClear();
     }
 
     private void PFootnoteScribeShow(bool editing)
@@ -517,7 +585,7 @@ public partial class PReference
     private void PReferenceScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PReferenceScribe);
-        if (_pDisplayEntry is not null)
+        if (_pDisplayEntry is not null || PEditor.Visibility == Visibility.Visible)
         {
             PFootnoteScribeHandle(editing);
             return;
@@ -594,6 +662,12 @@ public partial class PReference
     {
         if (!PReferenceLeaveConfirm())
         {
+            return;
+        }
+
+        if (_pColophonReference is not null || _pDisplayEntry is not null)
+        {
+            PFootnoteEntryCreate();
             return;
         }
 

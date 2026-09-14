@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +22,7 @@ public partial class PEditor
 
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
-        if (_pRecording is null || !File.Exists(_pRecording))
+        if (_pRecording is null || !_lEngine.LEngineRecordingExist(_pRecording))
         {
             PRecordingClear();
             return;

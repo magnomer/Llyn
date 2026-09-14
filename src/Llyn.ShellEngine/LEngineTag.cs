@@ -67,6 +67,22 @@ public sealed partial class LEngine
         }
     }
 
+    public LTag LEngineTagCreate(string text)
+    {
+        LTag created;
+        lock (_lEngineGate)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(text);
+
+            LTagArchive tags = new(_lEngineDatabase);
+            long id = tags.LTagResolve(text);
+            created = tags.LTagRead(id) ?? throw new LRefusal(LRefusal.LRefusalItem);
+        }
+
+        LEngineBulletinRaise(LSubject.LSubjectTag, created.LTagId);
+        return created;
+    }
+
     public void LEngineTagChange(long tagId, string renamed)
     {
         lock (_lEngineGate)

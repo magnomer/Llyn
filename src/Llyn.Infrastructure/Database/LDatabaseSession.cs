@@ -45,14 +45,25 @@ public sealed class LDatabaseSession : IDisposable
             return;
         }
 
-        if (!_lDatabaseSessionDone)
+        try
         {
-            _lDatabaseSessionScope.Rollback();
-            _lDatabaseSessionDone = true;
+            if (!_lDatabaseSessionDone)
+            {
+                _lDatabaseSessionDone = true;
+                _lDatabaseSessionScope.Rollback();
+            }
         }
-
-        _lDatabaseSessionScope.Dispose();
-        _lDatabaseSessionLink.Dispose();
-        _lDatabaseSessionOwner?.LDatabaseSessionClear(this);
+        catch (InvalidOperationException)
+        {
+        }
+        catch (SqliteException)
+        {
+        }
+        finally
+        {
+            _lDatabaseSessionScope.Dispose();
+            _lDatabaseSessionLink.Dispose();
+            _lDatabaseSessionOwner?.LDatabaseSessionClear(this);
+        }
     }
 }

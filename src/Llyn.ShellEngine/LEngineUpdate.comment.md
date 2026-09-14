@@ -17,6 +17,8 @@ The entry keeps its opaque id and its `added_utc`.
 Only `updated_utc` moves, so an edit is the same record, not a new one.
 It moves only when the draft differs from the entry as loaded, judged by `LEngineDraftMatch`.
 Saving the same draft again leaves the stamp where it was.
+Such a save records no revision either, so the history holds only rounds that changed something.
+The headword is stored trimmed, since padding is never part of a word.
 A change anywhere in the draft, a card included, moves it, because the stamp belongs to the whole entry.
 A changed headword or language clears the stored frequency and starts a fresh fill after the commit.
 So a stale figure never shows under the new headword.
@@ -58,6 +60,19 @@ The workspace row is moved onto that revision, as the save and the delete both d
 
 Forms, parts of speech, inflections and the pronunciation are each compared before they are written.
 A field that did not change writes no row and records no revision change.
+
+## `private LEntry LEngineEntryUpdate(long id, LEntryDraft draft, Dictionary<long, long> identity, List<LRevisionChange> changes)`
+
+The same reconciliation with the revision left to the caller.
+Every change is appended to `changes` and no revision is recorded.
+The markup import fills many entries under one revision through this seam.
+The public overload wraps it, records the revision and starts the frequency fill after its commit.
+
+## `private void LEngineRevisionRecord(long target, string subject, string kind, string? summary)`
+
+Records one revision holding a single change and points the workspace at it.
+The sentence, situation and source commits each record their round through this.
+An entry round records its own, because it carries many changes.
 
 ## `private void LEngineUpdatedSet(long entryId)`
 

@@ -29,11 +29,24 @@ This is the same shape as `LSentenceOwnerSave`.
 Gives the Example `toId` a copy of every Mention of `fromId`, under new ids.
 The copy-on-write fork of a shared sentence uses it.
 
+## `public IReadOnlyList<long> LMentionSenseClear(long meaningId)`
+
+Drops the sense from every Mention citing `meaningId`, so each lands on its entry alone.
+The answer names each affected Example once, so a caller can report what lost its sense.
+The markup Replace path uses it before the target's senses are rewritten.
+
+## `public bool LMentionSenseSet(long mentionId, long senseId)`
+
+Points the Mention `mentionId` at the sense `senseId`, answering whether a row changed.
+A Mention with no entry is left alone, since a sense without an entry breaks the row's check.
+The markup import uses it once every entry of a file is stored and the cited senses exist.
+
 ## Inline notes
 
 ### `internal static IReadOnlyDictionary<long, IReadOnlyList<LMention>> LMentionExampleRead(`
 
 Every Mention of a set of Examples in one statement, keyed by Example.
+The ids travel as one JSON parameter, so the whole corpus fits in one statement.
 The sentence reader and the whole-table reader fill every row they return in one round trip.
 An Example with no Mention has no key, and the caller reads that as an empty list.
 

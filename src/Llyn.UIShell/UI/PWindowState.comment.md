@@ -38,5 +38,6 @@ Runs again whenever the window has come to rest after a move.
 The geometry alone is handed downstream, never the whole settings record.
 A language chosen during the same session therefore survives the close.
 The restored rectangle is stored, never the maximized one, so restoring returns to a usable size.
-`RestoreBounds` supplies it whenever the window is maximized or minimized.
+`RestoreBounds` supplies it whenever the window is maximized.
+A minimized window saves nothing, so the maximized flag it had before survives a close from the taskbar.
 An empty or degenerate rectangle is dropped, leaving the previous geometry in place.

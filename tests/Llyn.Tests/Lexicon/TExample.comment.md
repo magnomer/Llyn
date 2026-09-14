@@ -8,6 +8,13 @@ It is referenced from all three sides that may quote one.
 It is rewritten, pointed at a Reference and let go of.
 That includes the removal that deletes an Example nothing quotes any more.
 
+## `public void ExampleRead_FortyThousandExamples_ReadsEveryGlossAndMention()`
+
+The whole-table read fills every Example's Glosses and Mentions in one statement each.
+Past 32 766 Examples that statement can no longer bind one parameter per id.
+So the ids travel as one JSON value.
+A corpus that deep must still open.
+
 ## Inline notes
 
 ### `Assert.Throws<InvalidOperationException>(() => engine.LEngineExampleDelete(example.LExampleId));`

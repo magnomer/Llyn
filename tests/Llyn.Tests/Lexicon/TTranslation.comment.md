@@ -27,6 +27,12 @@ The link that was third and is now first says so in its position.
 A link is the target Entry, so a deleted target leaves no link behind.
 The card that pointed at it is not a part of that Entry and stays, now carrying one link fewer.
 
+## `public void TranslationTargetRead_FortyThousandIds_ReadsPastTheParameterCap()`
+
+SQLite binds at most 32 766 parameters to one statement.
+A card asking for more ids than that must still read in one statement.
+So the ids travel as one JSON value.
+
 ## `public void TranslationTargetRead_UnknownId_PassesOverIt()`
 
 A card shows headwords, and the rows hold only ids, so the two are joined once for the whole card.

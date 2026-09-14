@@ -44,6 +44,15 @@ A row the user wrote belongs to no language, so it answers no such query.
 The middle column of the panel: the Entries whose cards carry the chosen Register.
 A Register carrying no id stands for the whole workspace, which is what the panel shows before one is chosen.
 
+## `public void RegisterCreate_WordingNoCardCarries_ListsItAsWritten()`
+
+The tenor panel's New makes a written Register no card marks yet, trimmed, on the language it was given.
+It is listed with no marks counted, so the panel can select it at once.
+
+## `public void RegisterCreate_WordingAlreadyOnShelf_ReturnsTheStoredRow()`
+
+A wording the shelf already holds, whatever its case, answers the stored row rather than a second one.
+
 ## `public void RegisterChange_WrittenRow_RenamesItOnEveryCard()`
 
 A written Register is renamed once and every card marked with it follows, because a mark is a reference.

@@ -72,18 +72,28 @@ public sealed partial class LEngine
             if (reuse)
             {
                 LCollocation row = stored[card.LCardDraftId];
-                collocations.LCollocationUpdate(row with
+                if (row.LCollocationTitle != card.LCardDraftTitle
+                    || row.LCollocationExpression != card.LCardDraftExpression
+                    || row.LCollocationMeaning != card.LCardDraftMeaning
+                    || row.LCollocationPosition != order.Count
+                    || card.LCardDraftTitle.LStateValueUnreadable
+                    || card.LCardDraftExpression.LStateValueUnreadable
+                    || card.LCardDraftMeaning.LStateValueUnreadable)
                 {
-                    LCollocationTitle = card.LCardDraftTitle,
-                    LCollocationExpression = card.LCardDraftExpression,
-                    LCollocationMeaning = card.LCardDraftMeaning,
-                });
-                changes.Add(new LRevisionChange(
-                    0,
-                    row.LCollocationId,
-                    "collocation",
-                    "update",
-                    card.LCardDraftExpression.LStateValueShow()));
+                    collocations.LCollocationUpdate(row with
+                    {
+                        LCollocationTitle = card.LCardDraftTitle,
+                        LCollocationExpression = card.LCardDraftExpression,
+                        LCollocationMeaning = card.LCardDraftMeaning,
+                    });
+                    changes.Add(new LRevisionChange(
+                        0,
+                        row.LCollocationId,
+                        "collocation",
+                        "update",
+                        card.LCardDraftExpression.LStateValueShow()));
+                }
+
                 rowId = row.LCollocationId;
             }
             else

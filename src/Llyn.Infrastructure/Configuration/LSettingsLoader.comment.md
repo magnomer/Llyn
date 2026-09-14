@@ -7,6 +7,13 @@ The workspace folder is supplied by the caller, resolved through `LWorkspaceRoot
 This loader never decides where the workspace is.
 It decides only how the settings file within it is read and written.
 A missing or unknown file yields defaults so the program always starts.
+An unreadable file is copied aside as `settings.broken.json` first, so the next save does not destroy it.
+It is written under a pending name and moved into place, so a crash mid-write leaves the old file whole.
+
+## `public static bool LSettingsLoaderExist(string root)`
+
+Reports whether the workspace already holds a settings file.
+The engine asks before moving onto a workspace, so one that has its own preferences keeps them.
 
 ## Inline notes
 

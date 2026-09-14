@@ -66,13 +66,27 @@ public static partial class LLanguageLoader
         });
     }
 
+    public static bool LLanguageNameValidate(string? language)
+    {
+        if (string.IsNullOrWhiteSpace(language)
+            || language == "."
+            || language == ".."
+            || Path.IsPathRooted(language)
+            || language.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+        {
+            return false;
+        }
+
+        return !language.Contains('/') && !language.Contains('\\');
+    }
+
     public static LLanguage LLanguageLoaderLoad(string language)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(language);
 
         string folder = Path.Combine(AppContext.BaseDirectory, LLanguageLoaderFolder, language);
         string path = Path.Combine(folder, LLanguageLoaderFile);
-        if (!File.Exists(path))
+        if (!LLanguageNameValidate(language) || !File.Exists(path))
         {
             return LLanguageBlankCreate(language);
         }

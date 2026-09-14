@@ -24,7 +24,10 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalHeadword);
             }
 
-            draft = LEngineDraftNormalize(draft);
+            draft = LEngineDraftNormalize(draft) with
+            {
+                LEntryDraftHeadword = draft.LEntryDraftHeadword.Trim(),
+            };
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 

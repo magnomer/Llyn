@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
@@ -60,5 +62,19 @@ public partial class PTaxonomy : UserControl
 
         PEditor.PEditorClose();
         PDisplay.PDisplayClose();
+    }
+
+    private void PTaxonomyPressCheck(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+    }
+
+    private async void PTaxonomyPressHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        {
+            await _pTaxonomyHost.PWindowPressRun(
+                ticket => _lEngine.LEnginePortraitPrint(entry, _pTaxonomyHost.PWindowLabelRead(), ticket));
+        }
     }
 }

@@ -5,11 +5,14 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 internal sealed class PImage : INotifyPropertyChanged
 {
+    private static LEngine? _pImageEngine;
+
     private string _pImageLocation;
     private bool _pImageUnknown;
     private ImageSource? _pImagePreview;
@@ -108,31 +111,17 @@ internal sealed class PImage : INotifyPropertyChanged
         return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
+    internal static void PImageAttach(LEngine engine)
+    {
+        ArgumentNullException.ThrowIfNull(engine);
+
+        _pImageEngine = engine;
+    }
+
     internal static Uri? PImageAddressRead(string location)
     {
-        string trimmed = (location ?? string.Empty).Trim();
-        if (trimmed.Length == 0)
-        {
-            return null;
-        }
-
-        if (Uri.TryCreate(trimmed, UriKind.Absolute, out Uri? absolute))
-        {
-            return absolute;
-        }
-
-        try
-        {
-            return File.Exists(trimmed) ? new Uri(Path.GetFullPath(trimmed)) : null;
-        }
-        catch (ArgumentException)
-        {
-            return null;
-        }
-        catch (IOException)
-        {
-            return null;
-        }
+        Uri? address = _pImageEngine?.LEngineLocationResolve(location);
+        return address is null || (address.IsFile && !File.Exists(address.LocalPath)) ? null : address;
     }
 
     private void PImagePreviewUpdate()

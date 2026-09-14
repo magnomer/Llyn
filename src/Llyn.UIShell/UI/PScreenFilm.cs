@@ -4,6 +4,8 @@ namespace Llyn.UIShell;
 
 public partial class PScreen
 {
+    private const int PScreenFilmLength = 11;
+
     internal static string? PScreenFilmRead(Uri address)
     {
         ArgumentNullException.ThrowIfNull(address);
@@ -48,14 +50,14 @@ public partial class PScreen
 
     private static string? PScreenFilmCheck(string film)
     {
-        if (film.Length == 0)
+        if (film.Length != PScreenFilmLength)
         {
             return null;
         }
 
         foreach (char letter in film)
         {
-            if (!char.IsLetterOrDigit(letter) && letter != '-' && letter != '_')
+            if (!char.IsAsciiLetterOrDigit(letter) && letter != '-' && letter != '_')
             {
                 return null;
             }

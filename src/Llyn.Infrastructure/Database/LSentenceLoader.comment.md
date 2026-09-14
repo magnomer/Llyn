@@ -10,5 +10,6 @@ No marker and no role is ever shipped, so nothing here reads a value either coul
 
 The order stated by `languages/<language>/vocabulary.json`, under `exampleOrder`.
 A pack that is missing, unknown, or silent on the key leaves the marker written first.
+So does a name `LLanguageNameValidate` refuses.
 That fallback is a layout choice the form needs to draw at all, and never a claim about the language.
 A key naming only one of the two fields is not an order, so it is left as none stated.

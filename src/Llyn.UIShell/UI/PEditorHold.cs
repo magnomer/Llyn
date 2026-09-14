@@ -70,8 +70,9 @@ public partial class PEditor
         {
             _lEngine.LEngineDraftCancel(held);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
         }
     }
 
@@ -114,6 +115,11 @@ public partial class PEditor
             return true;
         }
 
+        if (_pEditorHalted)
+        {
+            return false;
+        }
+
         _pEditorDraft = 0;
 
         try
@@ -133,6 +139,12 @@ public partial class PEditor
 
     private bool PEditorDraftCheck()
     {
+        return PEditorDraftCheck(out _);
+    }
+
+    private bool PEditorDraftCheck(out string? refusal)
+    {
+        refusal = null;
         if (_pEditorDraft == 0)
         {
             return false;
@@ -140,7 +152,7 @@ public partial class PEditor
 
         try
         {
-            return _lEngine.LEngineDraftCheck(_pEditorDraft);
+            return _lEngine.LEngineDraftCheck(_pEditorDraft, out refusal);
         }
         catch (Exception exception)
         {

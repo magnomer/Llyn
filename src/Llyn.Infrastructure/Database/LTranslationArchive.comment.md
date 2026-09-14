@@ -61,5 +61,5 @@ Every value still travels as a parameter.
 
 ### `public IReadOnlyList<LTranslationTarget> LTranslationTargetRead(IReadOnlyList<string> ids)`
 
-The list of placeholders is built to the length of the ids, one named parameter each.
-Only the placeholder names are composed into the statement, never an id.
+The ids travel as one JSON parameter and the statement unpacks them with `json_each`.
+So no id is ever composed into the statement, and the list has no ceiling.

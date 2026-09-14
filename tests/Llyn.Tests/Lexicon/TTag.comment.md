@@ -8,6 +8,14 @@ It covers the difference between detaching a reference and removing one.
 It covers the refusals that meet a delete the references forbid.
 It also covers a side a Tag never hangs from.
 
+## `public void TagCreate_WordingNoCardCarries_ListsItInTheCatalog()`
+
+The taxonomy panel's New makes a Tag no card carries yet, trimmed, listed at once and browsing to no entry.
+
+## `public void TagCreate_WordingAlreadyStored_ReturnsTheStoredRow()`
+
+A wording already stored answers the stored row rather than a second one.
+
 ## Inline notes
 
 ### `engine.LEngineTagAttach(meaningId, rare.LTagId, 0, LOwner.LOwnerMeaning);`

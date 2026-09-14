@@ -40,3 +40,9 @@ Ends the session.
 An outermost session that was never committed rolls back.
 So a store method that throws part-way leaves nothing behind.
 A nested session releases nothing, since it owns nothing.
+
+A rollback that itself fails is swallowed.
+The connection may already be gone, or the commit may have failed and taken the transaction with it.
+Either way the connection is released and the ambient slot cleared regardless.
+A slot left held would refuse every later session on another thread.
+And a rollback fault thrown here would hide the commit fault the caller is about to see.

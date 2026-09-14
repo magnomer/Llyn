@@ -93,6 +93,38 @@ internal static partial class TInterface
 
     internal static string TOutlineFormat(LPortrait portrait) => LOutline.LOutlineFormat(portrait);
 
+    internal static LPortraitLegend TPortraitLegendRead() => LPortraitLegend.LPortraitLegendDefault;
+
+    internal static LPortraitLine TPortraitLineCreate(string label, string text) => new(label, text);
+
+    internal static LPortraitSection TPortraitSectionCreate(
+        string heading,
+        IReadOnlyList<LPortraitLine> line,
+        string note,
+        IReadOnlyList<LPortraitMedia> image,
+        IReadOnlyList<LPortraitMedia> video) =>
+        new(heading, line, note, image, video);
+
+    internal static LPortraitPage TPortraitPageCreate(
+        string title,
+        string language,
+        IReadOnlyList<string> chip,
+        IReadOnlyList<LPortraitSection> section) =>
+        new(title, language, chip, section);
+
+    internal static string TSheetPageFormat(LPortraitPage page, LTheme theme) =>
+        LSheetPage.LSheetPageFormat(page, theme);
+
+    internal static LPressTicket TPressTicketCreate(string printer, bool landscape, int copies) =>
+        new(
+            printer,
+            LPressPaper.LPressPaperMetric,
+            landscape,
+            copies,
+            true,
+            LPressSide.LPressSideLong,
+            LPressInk.LPressInkGray);
+
     internal static string TMarkdownNormalize(string? text) => LMarkdown.LMarkdownNormalize(text);
 
     internal static IReadOnlyList<LMarkdownBlock> TMarkdownParse(string? text) =>

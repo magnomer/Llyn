@@ -81,6 +81,12 @@ internal static partial class TInterface
     internal static LDoctorRescue TDoctorDatabaseCreate(LDatabase database) =>
         LDoctor.LDoctorDatabaseCreate(database);
 
+    internal static bool TDoctorRescueCheck(Exception fault) =>
+        LDoctor.LDoctorRescueCheck(fault);
+
+    internal static bool TDoctorBusyCheck(Exception fault) =>
+        LDoctor.LDoctorBusyCheck(fault);
+
     internal static void TDraftArchiveDelete(string root, long id)
     {
         LDraftArchive.LDraftArchiveDelete(root, id);

@@ -42,3 +42,15 @@ The window asks the panel, because the panel is what the window knows.
 
 Detaches the panel from the engine, so a closed panel is never announced to.
 Closes the popups the panel owns, so none outlives the window.
+
+## `private void PReferencePressCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Whether the print button is live: an entry is read, or a source is read.
+An editor on screen prints nothing, because what is printed is what is read.
+The button follows this answer on its own, so no panel state has to switch it.
+
+## `private async void PReferencePressHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Prints the entry being read, or else the source being read, as the engine portrays it.
+The panel names only the id it is showing, and the engine builds the page from stored rows.
+Nothing is read back from the screen.

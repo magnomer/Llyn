@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -11,6 +11,8 @@ public static class LSchemaMigration
     public const long LSchemaMigrationVersion = 48;
 
     private const string LSchemaMigrationFresh = "fresh";
+
+    private const string LSchemaMigrationMain = "main";
 
     private const string LSchemaMigrationTable = "schema_version";
 
@@ -59,11 +61,10 @@ public static class LSchemaMigration
         {
             return LSchemaFileApply(file, fresh);
         }
-        catch
+        finally
         {
             SqliteConnection.ClearAllPools();
             LSchemaMigrationDelete(fresh);
-            throw;
         }
     }
 
@@ -74,52 +75,44 @@ public static class LSchemaMigration
             LSchema.LSchemaCreate(target);
         }
 
-        long stored;
-        using (SqliteConnection source = LDatabase.LDatabaseConnectionRead(file))
+        using SqliteConnection source = LDatabase.LDatabaseConnectionRead(file);
+        long stored = LSchemaVersion.LSchemaVersionRead(source);
+        string backup = LSchemaBackupSave(source, file, stored);
+
+        using (SqliteCommand attach = source.CreateCommand())
         {
-            stored = LSchemaVersion.LSchemaVersionRead(source);
-
-            using (SqliteCommand attach = source.CreateCommand())
-            {
-                attach.CommandText = $"PRAGMA foreign_keys = OFF; ATTACH DATABASE $fresh AS {LSchemaMigrationFresh};";
-                attach.Parameters.AddWithValue("$fresh", fresh);
-                attach.ExecuteNonQuery();
-            }
-
-            using (SqliteTransaction transaction = source.BeginTransaction())
-            {
-                foreach (string table in LSchemaTableRead(source, LSchemaMigrationFresh))
-                {
-                    LSchemaTableApply(source, table);
-                }
-
-                LSchemaOrphanSweep(source);
-                transaction.Commit();
-            }
-
-            using SqliteCommand detach = source.CreateCommand();
-            detach.CommandText = $"DETACH DATABASE {LSchemaMigrationFresh};";
-            detach.ExecuteNonQuery();
+            attach.CommandText = $"PRAGMA foreign_keys = OFF; ATTACH DATABASE $fresh AS {LSchemaMigrationFresh};";
+            attach.Parameters.AddWithValue("$fresh", fresh);
+            attach.ExecuteNonQuery();
         }
 
-        SqliteConnection.ClearAllPools();
-
-        string backup = LSchemaBackupResolve(file, stored);
-        foreach (string companion in LSchemaMigrationCompanion)
+        using (SqliteTransaction transaction = source.BeginTransaction())
         {
-            if (File.Exists(file + companion))
+            foreach (string table in LSchemaTableRead(source, LSchemaMigrationFresh, LSchemaMigrationMain))
             {
-                File.Move(file + companion, backup + companion);
+                LSchemaTableApply(source, LSchemaMigrationMain, LSchemaMigrationFresh, table);
             }
+
+            LSchemaOrphanSweep(source);
+            LSchemaTableClear(source);
+            LSchema.LSchemaCreate(source);
+
+            foreach (string table in LSchemaTableRead(source, LSchemaMigrationFresh, LSchemaMigrationMain))
+            {
+                LSchemaTableApply(source, LSchemaMigrationFresh, LSchemaMigrationMain, table);
+            }
+
+            transaction.Commit();
         }
 
-        File.Move(fresh, file);
-        LSchemaMigrationDelete(fresh);
+        using SqliteCommand detach = source.CreateCommand();
+        detach.CommandText = $"DETACH DATABASE {LSchemaMigrationFresh};";
+        detach.ExecuteNonQuery();
 
         return backup;
     }
 
-    private static void LSchemaTableApply(SqliteConnection connection, string table)
+    private static void LSchemaTableApply(SqliteConnection connection, string from, string into, string table)
     {
         if (string.Equals(table, LSchemaMigrationTable, StringComparison.Ordinal))
         {
@@ -127,8 +120,8 @@ public static class LSchemaMigration
         }
 
         List<string> shared = [];
-        HashSet<string> held = new(LSchemaColumnRead(connection, "main", table), StringComparer.Ordinal);
-        foreach (string column in LSchemaColumnRead(connection, LSchemaMigrationFresh, table))
+        HashSet<string> held = new(LSchemaColumnRead(connection, into, table), StringComparer.Ordinal);
+        foreach (string column in LSchemaColumnRead(connection, from, table))
         {
             if (held.Contains(column))
             {
@@ -152,14 +145,40 @@ public static class LSchemaMigration
         if (string.Equals(table, LSchemaMigrationSequence, StringComparison.Ordinal))
         {
             using SqliteCommand clear = connection.CreateCommand();
-            clear.CommandText = $"DELETE FROM {LSchemaMigrationFresh}.\"{table}\";";
+            clear.CommandText = $"DELETE FROM {into}.\"{table}\";";
             clear.ExecuteNonQuery();
         }
 
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
-            $"{clause} INTO {LSchemaMigrationFresh}.\"{table}\" ({columns}) SELECT {columns} FROM main.\"{table}\";";
+            $"{clause} INTO {into}.\"{table}\" ({columns}) SELECT {columns} FROM {from}.\"{table}\";";
         command.ExecuteNonQuery();
+    }
+
+    private static void LSchemaTableClear(SqliteConnection connection)
+    {
+        List<(string LSchemaKind, string LSchemaName)> objects = [];
+        using (SqliteCommand list = connection.CreateCommand())
+        {
+            list.CommandText =
+                $"""
+                SELECT type, name FROM {LSchemaMigrationMain}.sqlite_master
+                WHERE type IN ('table', 'view') AND name NOT LIKE 'sqlite_%'
+                ORDER BY type DESC, rowid;
+                """;
+            using SqliteDataReader reader = list.ExecuteReader();
+            while (reader.Read())
+            {
+                objects.Add((reader.GetString(0), reader.GetString(1)));
+            }
+        }
+
+        foreach ((string kind, string name) in objects)
+        {
+            using SqliteCommand drop = connection.CreateCommand();
+            drop.CommandText = $"DROP {kind.ToUpperInvariant()} {LSchemaMigrationMain}.\"{name}\";";
+            drop.ExecuteNonQuery();
+        }
     }
 
     private static void LSchemaOrphanSweep(SqliteConnection connection)
@@ -195,7 +214,7 @@ public static class LSchemaMigration
         }
     }
 
-    private static List<string> LSchemaTableRead(SqliteConnection connection, string schema)
+    private static List<string> LSchemaTableRead(SqliteConnection connection, string schema, string other)
     {
         List<string> tables = [];
         using SqliteCommand command = connection.CreateCommand();
@@ -203,7 +222,7 @@ public static class LSchemaMigration
             $"""
             SELECT name FROM {schema}.sqlite_master
             WHERE type = 'table' AND (name NOT LIKE 'sqlite_%' OR name = '{LSchemaMigrationSequence}')
-              AND name IN (SELECT name FROM main.sqlite_master WHERE type = 'table')
+              AND name IN (SELECT name FROM {other}.sqlite_master WHERE type = 'table')
             ORDER BY rowid;
             """;
         using SqliteDataReader reader = command.ExecuteReader();
@@ -227,6 +246,16 @@ public static class LSchemaMigration
         }
 
         return columns;
+    }
+
+    private static string LSchemaBackupSave(SqliteConnection connection, string file, long stored)
+    {
+        string backup = LSchemaBackupResolve(file, stored);
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "VACUUM INTO $backup;";
+        command.Parameters.AddWithValue("$backup", backup);
+        command.ExecuteNonQuery();
+        return backup;
     }
 
     private static string LSchemaBackupResolve(string file, long stored)

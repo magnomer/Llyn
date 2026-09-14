@@ -44,6 +44,12 @@ The busy timeout gives a blocked statement time to wait rather than failing at o
 `synchronous = NORMAL` is the mode write-ahead logging is designed for.
 Foreign keys are per connection and must be enabled on every one of them.
 
+## `public static string LDatabaseIdFormat(IEnumerable<long> ids)`
+
+The JSON text a list of ids travels in as one parameter.
+A statement reads it back through `json_each`, so a list of any length costs one placeholder.
+Binding one parameter per id would hit SQLite's cap on a corpus a few tens of thousands of rows deep.
+
 ## `public LDatabaseSession LDatabaseSessionStart()`
 
 Starts the unit of work a store operation runs in.

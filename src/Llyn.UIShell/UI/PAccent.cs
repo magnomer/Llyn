@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -68,7 +67,7 @@ public partial class PEditor
             return;
         }
 
-        if (!File.Exists(row.PAccentItemAudio))
+        if (!_lEngine.LEngineRecordingExist(row.PAccentItemAudio))
         {
             PEditorRequestSend(new LRequestPronunciationAudio(_pEditorDraft, row.PAccentItemId, string.Empty, null));
             return;

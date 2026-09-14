@@ -48,7 +48,7 @@ A query of spaces alone lists everything, exactly as an empty box does.
 
 ## `public IReadOnlyList<LEntry> LEntryHeadwordFind(string language, string headword)`
 
-Every Entry of one language whose headword is `headword`, letter case folded, in headword order.
+Every Entry whose language and headword equal the given ones, letter case folded, in headword order.
 This is the candidate list for a clicked word, and zero rows is a legitimate answer.
 
 ## `public IReadOnlyList<LEntry> LEntryHeadwordScan(string language, string text)`

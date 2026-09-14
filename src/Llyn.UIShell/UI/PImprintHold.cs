@@ -36,6 +36,11 @@ public partial class PImprint
             return true;
         }
 
+        if (_pImprintHalted)
+        {
+            return false;
+        }
+
         _pImprintDraft = 0;
 
         try

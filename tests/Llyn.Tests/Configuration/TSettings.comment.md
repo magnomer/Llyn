@@ -11,3 +11,6 @@ The engine's save reaches both the held settings and the file under the `respell
 The frequency switch round-trips under the `frequency` key and is written even when off.
 A missing key or a non-false value loads as on, so only an explicit false turns the fill off.
 The morphology switch round-trips under the `morphology` key with the same rule.
+A file that is not JSON loads as defaults and is copied aside as `settings.broken.json` first.
+A save leaves no pending file behind and the saved file reports as existing.
+A window geometry saved twice unchanged writes the file once, because an equal record is not written again.

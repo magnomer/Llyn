@@ -208,7 +208,7 @@ public partial class PImprint
         PImprintChangeSave();
 
         long held = _pImprintDraft;
-        if (held == 0)
+        if (held == 0 || _pImprintHalted)
         {
             return;
         }

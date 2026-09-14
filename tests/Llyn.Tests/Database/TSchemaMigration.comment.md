@@ -7,7 +7,10 @@ Creating twice changes nothing.
 The version is recorded and read back.
 A database at any other version, older or newer, is rebuilt in the current shape rather than refused.
 Every column both shapes know carries across, and a column only the old shape knew is dropped.
-The old file stays beside the new one under its version.
+A copy of the old file stays beside it under its version.
+The file itself is never replaced, and no scratch file is left once the rebuild is done.
+A rebuild that fails, here because its scratch file cannot be created, leaves the old file untouched.
+It keeps its version and every row.
 The realm the workspace was minted under survives the rebuild, so rows made here keep their stamp.
 A row the current schema cannot hold, such as a child whose parent is gone, is dropped.
 The launch goes on without it.

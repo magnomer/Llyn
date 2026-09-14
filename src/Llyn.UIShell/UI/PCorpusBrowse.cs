@@ -48,6 +48,15 @@ public partial class PCorpus
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectEntry
+            && bulletin.LBulletinId > 0
+            && _pDisplayEntry is null
+            && IsVisible
+            && PEditor.Visibility == Visibility.Visible)
+        {
+            _pDisplayEntry = bulletin.LBulletinId;
+        }
+
         PCitationFind();
         PAnthologyFind(PQuery.Text ?? string.Empty);
         PQuotationEntryUpdate(bulletin.LBulletinId);
@@ -426,9 +435,41 @@ public partial class PCorpus
         PQuotationScribeShow(editing);
     }
 
+    private void PQuotationEntryCreate()
+    {
+        long? example = _pExcerptExample;
+
+        PTranscriptDraftCancel();
+        PTranscript.Visibility = Visibility.Collapsed;
+        PExcerpt.Visibility = Visibility.Collapsed;
+
+        _pDisplayEntry = null;
+        PQuotationSelect(null);
+        PDisplay.PDisplayClear();
+        PEditor.PEditorReset();
+        PCorpusMode.IsEnabled = true;
+        PCorpusBin.IsEnabled = false;
+        PQuotationScribeShow(true);
+
+        if (example is long id)
+        {
+            PEditor.PEditorExampleAdd(id);
+        }
+    }
+
     private void PQuotationScribeHandle(bool editing)
     {
-        if (_pDisplayEntry is not long id || editing == (PEditor.Visibility == Visibility.Visible))
+        if (_pDisplayEntry is not long id)
+        {
+            if (!editing)
+            {
+                PQuotationScribeReset();
+            }
+
+            return;
+        }
+
+        if (editing == (PEditor.Visibility == Visibility.Visible))
         {
             return;
         }
@@ -448,6 +489,33 @@ public partial class PCorpus
 
         PEditor.PEditorEntryShow(id);
         PQuotationScribeShow(true);
+    }
+
+    private void PQuotationScribeReset()
+    {
+        if (!PCorpusLeaveConfirm())
+        {
+            PQuotationScribeShow(true);
+            return;
+        }
+
+        PQuotationScribeShow(false);
+
+        if (_pDisplayEntry is long stored)
+        {
+            PQuotationEntryShow(stored);
+            return;
+        }
+
+        PEditor.PEditorReset();
+
+        if (_pExcerptExample is long kept)
+        {
+            PAnthologyExampleShow(kept);
+            return;
+        }
+
+        PCorpusClear();
     }
 
     private void PQuotationScribeShow(bool editing)
@@ -526,7 +594,7 @@ public partial class PCorpus
     private void PCorpusScribeHandle(object sender, RoutedEventArgs e)
     {
         bool editing = ReferenceEquals(sender, PCorpusScribe);
-        if (_pDisplayEntry is not null)
+        if (_pDisplayEntry is not null || PEditor.Visibility == Visibility.Visible)
         {
             PQuotationScribeHandle(editing);
             return;

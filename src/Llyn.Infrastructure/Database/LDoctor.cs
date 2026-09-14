@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
+using SQLitePCL;
 
 namespace Llyn.Infrastructure;
 
@@ -21,12 +22,26 @@ public static class LDoctor
             database.LDatabaseCreate();
             return LDoctorRescue.LDoctorRescueHealthy;
         }
-        catch (Exception fault) when (fault is SqliteException or InvalidOperationException)
+        catch (SqliteException fault) when (LDoctorRescueCheck(fault))
         {
             string backup = LDoctorDatabaseSave(database.LDatabaseFile);
             database.LDatabaseCreate();
             return new LDoctorRescue(true, backup, fault.Message);
         }
+    }
+
+    public static bool LDoctorRescueCheck(Exception fault)
+    {
+        ArgumentNullException.ThrowIfNull(fault);
+
+        return fault is SqliteException { SqliteErrorCode: raw.SQLITE_CORRUPT or raw.SQLITE_NOTADB };
+    }
+
+    public static bool LDoctorBusyCheck(Exception fault)
+    {
+        ArgumentNullException.ThrowIfNull(fault);
+
+        return fault is SqliteException { SqliteErrorCode: raw.SQLITE_BUSY or raw.SQLITE_LOCKED };
     }
 
     private static string LDoctorDatabaseSave(string file)

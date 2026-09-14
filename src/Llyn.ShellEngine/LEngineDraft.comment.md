@@ -25,6 +25,7 @@ Positive means a stored row and negative means an id the engine minted, so zero 
 Only the engine mints, and normalizing here means no caller can slip a zero past it.
 
 A blank headword is refused before any connection opens, so a save that cannot be made costs nothing.
+The headword is stored trimmed, since padding typed around a word is never part of it.
 Everything after that runs inside one session, which makes a half-written entry impossible.
 A failure at any write rolls back every write before it, leaving no entry row behind.
 That is also why this is a single engine call.

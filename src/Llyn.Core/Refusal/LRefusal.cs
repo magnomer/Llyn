@@ -32,6 +32,8 @@ public sealed class LRefusal : Exception
 
     public const string LRefusalUnreadable = "Refusal.ValueUnreadable";
 
+    public const string LRefusalMarkup = "Refusal.MarkupMalformed";
+
     public LRefusal(string reason)
         : base(reason)
     {

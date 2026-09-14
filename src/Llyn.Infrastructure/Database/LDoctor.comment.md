@@ -18,13 +18,25 @@ Initializes `database`, resetting it when it cannot be initialized.
 Returns what had to be done.
 The caller can then tell the user their old data is no longer in front of them.
 
-Only a SQLite fault or a failed rebuild is treated as an unusable database.
+Only a file SQLite itself calls corrupt, or not a database, is treated as unusable.
 Those are the two ways a broken or unknown file announces itself.
-Anything else is a workspace problem that resetting would not fix and would hide.
-A missing folder, a locked file and a denied path are left to propagate.
+Anything else is a passing condition that resetting would not fix and would hide.
+A busy file, a full disk, a read error and a failed rebuild are left to propagate.
+Resetting on one of those would set aside a healthy database on a bad morning.
 
 The clean database is created by the same call that failed.
 So a fault in the schema itself surfaces rather than being mistaken for a second corruption.
+
+## `public static bool LDoctorRescueCheck(Exception fault)`
+
+Whether `fault` names a database the doctor may set aside.
+Only the corrupt and not-a-database result codes qualify.
+Every other fault, SQLite or not, is left for the caller to report as it stands.
+
+## `public static bool LDoctorBusyCheck(Exception fault)`
+
+Whether `fault` says another connection holds the database.
+The launch names that case to the user, since closing the other program is the cure.
 
 ## `private static string LDoctorDatabaseSave(string file)`
 

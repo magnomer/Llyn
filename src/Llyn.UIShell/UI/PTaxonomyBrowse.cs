@@ -30,7 +30,8 @@ public partial class PTaxonomy
             return;
         }
 
-        PMembershipEntryUpdate(bulletin.LBulletinId);
+        PMembershipEntryUpdate(
+            bulletin.LBulletinSubject == LSubject.LSubjectTag ? 0 : bulletin.LBulletinId);
     }
 
     private void PExplorationHandle(object sender, TextChangedEventArgs e)
@@ -274,9 +275,49 @@ public partial class PTaxonomy
             return;
         }
 
+        if (_pDirectoryChoice == 0 && _pDisplayEntry is null)
+        {
+            PDirectoryTagCreate();
+            return;
+        }
+
+        PMembershipEntryCreate();
+    }
+
+    private void PDirectoryTagCreate()
+    {
+        if (PSCoinage.PSCoinageShow(_pTaxonomyHost, "Coinage.Tag") is not string text)
+        {
+            return;
+        }
+
+        LTag created;
+        try
+        {
+            created = _lEngine.LEngineTagCreate(text);
+        }
+        catch (Exception exception)
+        {
+            _pTaxonomyHost.PWindowFailureShow("Tag.CreateFailed", exception);
+            return;
+        }
+
+        PTaxonomyClear();
+        PDirectoryTagShow(created.LTagId);
+    }
+
+    private void PMembershipEntryCreate()
+    {
+        long tag = _pDirectoryChoice;
+
         PTaxonomyClear();
         PTaxonomyMode.IsEnabled = true;
         PTaxonomyScribeShow(true);
+
+        if (tag != 0)
+        {
+            PEditor.PEditorTagAdd(tag);
+        }
     }
 
     private void PTaxonomyScribeHandle(object sender, RoutedEventArgs e)

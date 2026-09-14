@@ -145,6 +145,41 @@ public sealed class TRegister
     }
 
     [Fact]
+    public void RegisterCreate_WordingNoCardCarries_ListsItAsWritten()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LRegister created = engine.TEngineRegisterCreate("  gruff  ", "English");
+
+        Assert.True(created.LRegisterId > 0);
+        Assert.False(created.LRegisterBuiltin);
+        Assert.Equal("gruff", created.LRegisterName.TStateValueShow());
+        Assert.Equal("English", created.LRegisterLanguage);
+
+        LCatalogRegister listed = Assert.Single(
+            engine.TEngineRegisterFind("gruff", LCatalogOrder.LCatalogOrderName));
+        Assert.Equal(created.LRegisterId, listed.LCatalogRegisterStored.LRegisterId);
+        Assert.Equal(0, listed.LCatalogRegisterUsage);
+    }
+
+    [Fact]
+    public void RegisterCreate_WordingAlreadyOnShelf_ReturnsTheStoredRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineEntrySave(TRegisterDraftBuild(engine, ["gruff"]));
+        LRegister written = Assert.Single(
+            engine.TEngineRegisterFind("gruff", "English"), row => !row.LRegisterBuiltin);
+
+        LRegister again = engine.TEngineRegisterCreate("Gruff", "English");
+
+        Assert.Equal(written.LRegisterId, again.LRegisterId);
+        Assert.Single(engine.TEngineRegisterFind("gruff", "English"), row => !row.LRegisterBuiltin);
+    }
+
+    [Fact]
     public void RegisterChange_WrittenRow_RenamesItOnEveryCard()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

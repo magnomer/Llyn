@@ -12,4 +12,5 @@ Every shape that site hands out is read, since a user pastes whichever one they 
 
 ## `private static string? PScreenFilmCheck(string film)`
 
-An id holding anything but letters, digits, dashes and underscores is refused, because it is written straight into the page.
+An id is eleven characters of ASCII letters, digits, dashes and underscores, and anything else is refused.
+It is written straight into the page's script, so the check is what keeps that literal closed.

@@ -5,7 +5,8 @@
 The settings side of the engine boundary.
 The user's persisted settings are read here and changed one field at a time.
 Every change is written to the open workspace at once, so the file never lags what the engine holds.
-The record itself is loaded when the workspace opens and follows it when the workspace moves.
+The record itself is loaded when the workspace opens.
+A workspace moved onto keeps its own settings, and only one without any inherits the current record.
 
 ## `public LSettings LEngineSettingsRead()`
 
@@ -71,3 +72,10 @@ The widths themselves are stored per tab either way, so a flip neither moves nor
 Applies `change` to the settings held here and writes the result out, under the engine gate.
 The read and the write are one step, so one writer never overwrites what another wrote between them.
 The shell therefore never reads settings, changes a field and hands the whole record back.
+A change that leaves the record equal writes nothing, so a window resting where it was costs no file write.
+
+## `private void LEngineSettingsSave()`
+
+Writes the settings held here into the open workspace.
+A refused write is recorded in the audit log rather than thrown, so a locked file never ends the program.
+The record in memory stays current either way, and the next change tries the file again.

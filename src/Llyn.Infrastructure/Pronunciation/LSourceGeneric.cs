@@ -17,6 +17,8 @@ public sealed class LSourceGeneric : LSource
     private const string LSourceGenericToken = "{word}";
     private const int LSourceGenericHops = 2;
 
+    private static readonly TimeSpan LSourceGenericPatience = TimeSpan.FromSeconds(2);
+
     private readonly LSourceSpec _lSourceGenericSpec;
     private readonly HttpClient _lSourceGenericClient;
     private readonly HashSet<string> _lSourceGenericVarieties;
@@ -120,6 +122,18 @@ public sealed class LSourceGeneric : LSource
             return (fetched, null);
         }
 
+        try
+        {
+            return LSourceBodyRead(attempt, body, word);
+        }
+        catch (RegexMatchTimeoutException)
+        {
+            return (LAnswer.LAnswerBlank, null);
+        }
+    }
+
+    private static (LAnswer, string?) LSourceBodyRead(LSourceAttempt attempt, string body, string word)
+    {
         if (!LSourceConfirm(attempt, body, word))
         {
             return (LAnswer.LAnswerBlank, null);
@@ -177,7 +191,8 @@ public sealed class LSourceGeneric : LSource
         }
 
         string pattern = attempt.LSourceAttemptGuard.Replace(LSourceGenericToken, Regex.Escape(word), StringComparison.Ordinal);
-        return Regex.IsMatch(body, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        return Regex.IsMatch(
+            body, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, LSourceGenericPatience);
     }
 
     private static string? LSourceSpanRead(LSourceReading reading, string body)
@@ -187,7 +202,7 @@ public sealed class LSourceGeneric : LSource
             return null;
         }
 
-        Regex open = new(reading.LSourceReadingPattern, RegexOptions.CultureInvariant);
+        Regex open = new(reading.LSourceReadingPattern, RegexOptions.CultureInvariant, LSourceGenericPatience);
         int skip = reading.LSourceReadingSkip;
         if (skip <= 0)
         {
@@ -257,7 +272,8 @@ public sealed class LSourceGeneric : LSource
             return null;
         }
 
-        MatchCollection matches = Regex.Matches(text, reading.LSourceReadingPattern, RegexOptions.CultureInvariant);
+        MatchCollection matches = Regex.Matches(
+            text, reading.LSourceReadingPattern, RegexOptions.CultureInvariant, LSourceGenericPatience);
         int skip = Math.Max(0, reading.LSourceReadingSkip);
         if (skip >= matches.Count)
         {

@@ -7,6 +7,8 @@ A session spanning several stores lands as one transaction or not at all.
 A nested session leaves the decision to the outermost one.
 Every ordered set stays numbered `0 … n-1` across a move, an insert, and a removal.
 Those are the reorders the unique position indexes used to make impossible.
+A session whose connection is already closed still releases the ambient slot when disposed.
+The next session must open cleanly, or every later store call would be refused.
 
 ## Inline notes
 

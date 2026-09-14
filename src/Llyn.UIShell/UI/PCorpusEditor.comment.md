@@ -73,7 +73,9 @@ The panel therefore never mints or carries an id of its own.
 
 ## `private void PCorpusFreshHandle(object sender, RoutedEventArgs e)`
 
-Opens the editor on a sentence nothing has stored, by starting a draft naming no Example.
+New makes whatever the emptier panel would list.
+With no Example chosen and no Entry shown, it opens the editor on a sentence nothing has stored.
+With an Example chosen, or an Entry shown, it starts a new Entry instead.
 
 ## `private void PTranscriptStoreRun()`
 
@@ -82,3 +84,5 @@ The rail's save calls it, because the editor carries no save of its own.
 Anything still waiting to be pushed is pushed first, so the commit carries the last keystroke.
 Saving changes neither the identifier, nor what quotes the Example, nor the order it takes for any quoter.
 There is no discard: leaving the editor through the mode toggle asks about the draft instead.
+A form halted by a failed flush commits nothing.
+The draft would otherwise be stored missing the edits the flush dropped.

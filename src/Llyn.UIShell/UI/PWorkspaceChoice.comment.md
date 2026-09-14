@@ -12,11 +12,28 @@ Otherwise the change is called off.
 
 ## Inline notes
 
+## `private void PWorkspacePathHandle(object sender, KeyEventArgs e)`
+
+Enter applies the typed path and Escape puts the folder in use back into the field.
+Nothing else applies it, so a half-typed path never becomes a folder on disk.
+
+## `private void PWorkspaceFocusHandle(object sender, KeyboardFocusChangedEventArgs e)`
+
+Leaving the field without Enter puts the folder in use back into it.
+The field therefore never shows a path that is not the workspace.
+
+## `private void PWorkspaceApply(string chosen)`
+
+Moves onto `chosen` once the user has agreed to lose the form.
+The panel controls, the language, the panel widths and the view are then aligned to the workspace moved onto.
+The widths are reset before restoring, so a workspace without stored widths opens at the markup widths.
+
+## Inline notes
+
 ### `if (!_pSettingsHost.PWindowDiscardConfirm())`
 
 Changing the workspace throws the form away with it.
-This runs from a mere LostKeyboardFocus on the path box.
-Tabbing past it must not cost the user what they typed.
+The user must say so before it happens.
 
 ### `PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();`
 

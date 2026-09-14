@@ -18,5 +18,7 @@ The frame every page shares: black, unscrolled, and filled edge to edge by the f
 
 ## `private static string PScreenTextFormat(string text)`
 
-What a user typed is escaped before it is written into the page.
-An address is text the program did not choose, and it lands inside both markup and script.
+What a user typed is HTML-encoded before it is written into the page.
+An address is text the program did not choose, and it lands inside an attribute.
+The one value that reaches a script literal is a film id.
+The film check has already limited it to safe characters.

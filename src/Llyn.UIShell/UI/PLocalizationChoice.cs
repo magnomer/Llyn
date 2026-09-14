@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -7,17 +6,20 @@ public partial class PSettings
 {
     private void PLocalizationHandle(object sender, SelectionChangedEventArgs e)
     {
-        if (PLocalization.SelectedValue is not string language)
+        if (!_pSettingsReady || PLocalization.SelectedValue is not string language)
         {
             return;
         }
 
-        PLocalizationLoader.PLocalizationLoaderApply(System.Windows.Application.Current.Resources, language);
+        PLocalizationApply(language);
+        _lEngine.LEngineLocalizationSave(language);
+    }
 
-        if (_pSettingsReady)
-        {
-            _lEngine.LEngineLocalizationSave(language);
-            PLedgerMetaApply();
-        }
+    private void PLocalizationApply(string language)
+    {
+        PLocalizationLoader.PLocalizationLoaderApply(System.Windows.Application.Current.Resources, language);
+        PLedgerTitleApply();
+        PLedgerMetaApply();
+        PDialFooterApply();
     }
 }

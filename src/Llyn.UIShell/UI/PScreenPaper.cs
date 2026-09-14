@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Net;
 
 namespace Llyn.UIShell;
 
@@ -105,10 +106,6 @@ public partial class PScreen
 
     private static string PScreenTextFormat(string text)
     {
-        return text
-            .Replace("\\", "\\\\", StringComparison.Ordinal)
-            .Replace("'", "\'", StringComparison.Ordinal)
-            .Replace("\"", "&quot;", StringComparison.Ordinal)
-            .Replace("<", "&lt;", StringComparison.Ordinal);
+        return WebUtility.HtmlEncode(text);
     }
 }

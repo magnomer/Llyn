@@ -36,3 +36,15 @@ A closed editor answers no, whatever it still carries.
 ## `internal void PFavoriteClose()`
 
 Stops the editor and the display when the window closes.
+
+## `private void PFavoritePressCheck(object sender, CanExecuteRoutedEventArgs e)`
+
+Whether the print button is live: exactly when an entry is read in the display.
+An editor on screen prints nothing, because what is printed is what is read.
+The button follows this answer on its own, so no panel state has to switch it.
+
+## `private async void PFavoritePressHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Prints the entry being read, as the engine portrays it.
+The panel names only the id it is showing, and the engine builds the page from stored rows.
+Nothing is read back from the screen.

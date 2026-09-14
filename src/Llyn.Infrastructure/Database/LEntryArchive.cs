@@ -109,7 +109,7 @@ public sealed class LEntryArchive
             """
             SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
             FROM entry
-            WHERE language = $language AND lfold(headword) = lfold($headword)
+            WHERE lfold(language) = lfold($language) AND lfold(headword) = lfold($headword)
             ORDER BY headword, entry_id;
             """;
         command.Parameters.AddWithValue("$language", language);

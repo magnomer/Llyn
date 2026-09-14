@@ -25,6 +25,7 @@ Turns a held sentence into a stored Example and returns it.
 A draft naming no Example is a create, one naming an Example is a rewrite.
 An Example id naming a record since deleted is a create as well, because there is nothing left to rewrite.
 The database write runs first and whole, so a refusal from it leaves the file exactly as it was.
+The write and the revision recording it share one session, so the history never misses a stored sentence.
 The draft file is rewritten with the stored id and the stored sentence the moment that write returns.
 A kill between the two writes would otherwise leave the Example stored and the file still nameless.
 Recommitting such a file would store the sentence twice, and the sweep would never collect it.

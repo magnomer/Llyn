@@ -530,10 +530,28 @@ public sealed class TDraft
         engine.TEngineLeftoverSweep();
 
         Assert.False(File.Exists(path));
+        Assert.True(File.Exists(Path.Combine(folder, "broken", draft.LDraftId + ".json")));
         Assert.DoesNotContain(engine.TEngineDraftScan(), held => held.LDraftId == draft.LDraftId);
         Assert.Null(TInterface.TClaimArchiveRead(workspace.TWorkspaceFolder, draft.LDraftId));
         Assert.Null(TInterface.TCourtArchiveRead(workspace.TWorkspaceFolder, link.LCourtId));
         Assert.NotNull(engine.TEngineDraftRead(owner.LDraftId));
+    }
+
+    [Fact]
+    public void LeftoverSweep_UnreadableDraftFile_SetsItAsideUnchanged()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        string folder = TInterface.TWorkspaceDraftRead(workspace.TWorkspaceFolder);
+        string path = Path.Combine(folder, "-7.json");
+        File.WriteAllText(path, "{ half a draft");
+
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineLeftoverSweep();
+
+        Assert.False(File.Exists(path));
+        Assert.Equal("{ half a draft", File.ReadAllText(Path.Combine(folder, "broken", "-7.json")));
+        Assert.Empty(engine.TEngineLeftoverRead());
     }
 
     [Fact]

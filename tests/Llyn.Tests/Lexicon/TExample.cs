@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Llyn.Core;
+using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -9,6 +10,26 @@ namespace Llyn.Tests;
 
 public sealed class TExample
 {
+    [Fact]
+    public void ExampleRead_FortyThousandExamples_ReadsEveryGlossAndMention()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
+        workspace.TWorkspaceScriptRun(
+            "WITH RECURSIVE tally(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM tally WHERE n < 40000) " +
+            "INSERT INTO example (language, text_state, text) " +
+            "SELECT 'English', 'specified', 'word ' || n FROM tally; " +
+            "INSERT INTO example_translation (example_parent, position, language, text_state, text) " +
+            "SELECT example_id, 0, 'Korean', 'specified', '말' FROM example; " +
+            "INSERT INTO example_mention (example_parent, start, length) SELECT example_id, 0, 4 FROM example;");
+
+        IReadOnlyList<LExample> read = examples.TExampleRead();
+
+        Assert.Equal(40_000, read.Count);
+        Assert.All(read, example => Assert.Single(example.LExampleGloss));
+        Assert.All(read, example => Assert.Single(example.LExampleMention));
+    }
+
     [Fact]
     public void ExampleAttach_BothCardSides_ReadsBackFromEach()
     {

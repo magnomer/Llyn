@@ -79,4 +79,6 @@ The engine announces the commit and the shelf is read again on that.
 The stored Source refreshes its own citation figure.
 The panel no longer re-reads straight after its own commit, because it hears about the commit like everything else.
 Saving changes neither the identifier nor where the Source is cited.
+A form halted by a failed flush commits nothing.
+The draft would otherwise be stored missing the edits the flush dropped.
 

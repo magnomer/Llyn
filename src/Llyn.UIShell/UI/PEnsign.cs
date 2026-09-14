@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Xml;
 using Llyn.Core;
 using Llyn.ShellEngine;
 using SharpVectors.Converters;
@@ -57,9 +56,24 @@ internal static class PEnsign
             image.Freeze();
             return image;
         }
-        catch (Exception exception) when (exception is IOException or XmlException or NotSupportedException)
+        catch (Exception)
         {
+            PEnsignDelete(path);
             return null;
+        }
+    }
+
+    private static void PEnsignDelete(string path)
+    {
+        try
+        {
+            File.Delete(path);
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
         }
     }
 

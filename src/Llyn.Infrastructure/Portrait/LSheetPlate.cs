@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Llyn.Core;
 
@@ -8,36 +9,49 @@ public static class LSheetPlate
 {
     public static void LSheetPlateAppend(StringBuilder page, LPortraitCard card)
     {
-        ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(card);
 
-        if (card.LPortraitCardImage.Count > 0)
+        LSheetPlateAppend(page, card.LPortraitCardImage, card.LPortraitCardVideo);
+    }
+
+    public static void LSheetPlateAppend(
+        StringBuilder page, IReadOnlyList<LPortraitMedia> images, IReadOnlyList<LPortraitMedia> videos)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(images);
+        ArgumentNullException.ThrowIfNull(videos);
+
+        if (images.Count > 0)
         {
             page.Append("<div class=\"plates\">\n");
 
-            foreach (LPortraitMedia image in card.LPortraitCardImage)
+            foreach (LPortraitMedia image in images)
             {
-                string address = LPortraitAsset.LPortraitAssetLoad(image.LPortraitMediaLocation)
-                    is LPortraitAsset held
-                    ? held.LPortraitAssetAddress
-                    : image.LPortraitMediaLocation;
+                page.Append("<div class=\"plate\">");
 
-                page.Append("<div class=\"plate\"><img src=\"")
-                    .Append(LSheet.LSheetNormalize(address))
-                    .Append("\" alt=\"\"></div>\n");
+                if (LSheetAddressRead(image.LPortraitMediaLocation) is string address)
+                {
+                    page.Append("<img src=\"").Append(LSheet.LSheetNormalize(address)).Append("\" alt=\"\">");
+                }
+                else
+                {
+                    page.Append("<span class=\"blank\"></span>");
+                }
+
+                page.Append("</div>\n");
             }
 
             page.Append("</div>\n");
         }
 
-        if (card.LPortraitCardVideo.Count == 0)
+        if (videos.Count == 0)
         {
             return;
         }
 
         page.Append("<div class=\"plates\">\n");
 
-        foreach (LPortraitMedia video in card.LPortraitCardVideo)
+        foreach (LPortraitMedia video in videos)
         {
             string location = video.LPortraitMediaLocation;
             string? film = LPortraitFilm.LPortraitFilmRead(location);
@@ -46,16 +60,16 @@ public static class LSheetPlate
                 .Append(LSheet.LSheetNormalize(location))
                 .Append("\">");
 
+            page.Append("<span class=\"blank\">");
+
             if (film is not null)
             {
                 page.Append("<img src=\"https://img.youtube.com/vi/")
                     .Append(LSheet.LSheetNormalize(film))
                     .Append("/hqdefault.jpg\" alt=\"\">");
             }
-            else
-            {
-                page.Append("<span class=\"blank\"></span>");
-            }
+
+            page.Append("</span>");
 
             page.Append("<span class=\"glyph\">▶</span><span class=\"said\">")
                 .Append(LSheet.LSheetNormalize(location));
@@ -69,5 +83,10 @@ public static class LSheetPlate
         }
 
         page.Append("</div>\n");
+    }
+
+    private static string? LSheetAddressRead(string location)
+    {
+        return LPortraitAsset.LPortraitAssetLoad(location)?.LPortraitAssetAddress;
     }
 }

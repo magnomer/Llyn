@@ -138,6 +138,10 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <UserControl.CommandBindings>
+        <CommandBinding CanExecute="PRepertoirePressCheck" Command="ApplicationCommands.Print" Executed="PRepertoirePressHandle" />
+    </UserControl.CommandBindings>
+
     <Grid Margin="34,20,34,38">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -277,8 +281,8 @@
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="{local:PIcon export, 24}" />
                     <Button
+                        Command="ApplicationCommands.Print"
                         Content="{DynamicResource Scribe.Print}"
-                        IsEnabled="False"
                         Style="{StaticResource Theme.Command.Segment}"
                         Tag="{local:PIcon print, 24}" />
                 </StackPanel>

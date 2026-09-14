@@ -42,6 +42,7 @@ It does nothing to a form that was never suspended, so an ordinary start touches
 
 Throws the held draft away, links and all.
 The id is dropped first, so a failure to delete cannot leave the form writing into a dead draft.
+A failure to delete is reported, since a draft left behind is offered back as leftover on the next launch.
 
 ### `private void PEditorDraftRestore()`
 
@@ -60,6 +61,8 @@ A word typed and never saved survives the exit that was meant to keep it.
 Discarding cancels it.
 A draft matching its entry is cancelled either way, since there is nothing in it to store.
 A refused commit keeps the draft and reports the refusal, the same way the save button does.
+A form halted by a failed flush answers that it did not finish.
+Committing then would store a draft missing the edits the flush dropped.
 The answer the user gave was to keep the word.
 Deleting it is the one thing that answer never asked for.
 What is returned is whether the form is finished.
@@ -68,7 +71,12 @@ A settled form leaves the folder no file, so a clean exit is never reported as w
 
 ### `private bool PEditorDraftCheck()`
 
+Asks the engine whether the held draft differs from the entry it started from, with the refusal left unread.
+
+### `private bool PEditorDraftCheck(out string? refusal)`
+
 Asks the engine whether the held draft differs from the entry it started from.
+`refusal` is the reason a commit would be refused now, or null, which is what enables the save button.
 A form with no draft has nothing to lose, so it answers no.
 A question the engine cannot answer at all suspends the form.
 The draft behind it can no longer be trusted.

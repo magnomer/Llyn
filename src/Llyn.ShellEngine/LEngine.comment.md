@@ -72,6 +72,12 @@ A chip the UI builds carries id zero until the next draft save names it.
 
 The realm of the open workspace, read once when the workspace opened.
 
+## `public static bool LEngineBusyCheck(Exception fault)`
+
+Whether a launch failed because another program holds the database.
+The shell asks so it can say so rather than report a generic failure.
+The shell knows no SQLite, so the doctor's answer passes through here.
+
 ## `public LDoctorRescue LEngineRescueRead()`
 
 Reports what the workspace doctor had to do to the database this engine opened.
@@ -99,9 +105,18 @@ So a workspace that fails to open can still be named in the message the user see
 
 ## `public void LEngineWorkspaceChange(string path)`
 
-Moves the workspace to `path`.
-It records the new folder and writes the current settings into it.
-So settings and database follow the workspace to its new location.
+Moves the user onto the workspace at `path` and records it as the one to open next time.
+The open comes first and the pointer second, so a folder that fails to open is never pointed at.
+The pointer lives outside the workspace, which is why the tests exercise the open alone.
+
+## `public void LEngineWorkspaceOpen(string path)`
+
+Opens the workspace at `path` without recording it as the next one to open.
+The path must be fully qualified, so a bare name never lands beside whatever folder the process runs from.
+The new database, its rescue, realm and identity are opened before anything here changes.
+A folder that cannot be opened therefore leaves the caches and the old database untouched.
+A workspace that already holds a settings file is opened on its own settings.
+One without any receives the current settings, so a fresh folder starts as the user left the last.
 The drafts this engine claimed are forgotten with the old folder.
 A claim only means something against the folder the file sits in.
 Each forgotten id is marked stale rather than simply dropped.
@@ -194,6 +209,12 @@ So binding to a workspace is also when they are written into it.
 An entry can carry a part of speech from the first save.
 The shell never seeds anything.
 
+### `private const long LEngineClientCeiling = 8L * 1024 * 1024;`
+
+The most bytes one response may hold before the client refuses it.
+No source hands back a page or a recording bigger than that.
+An unbounded one would fill memory.
+
 ### `_lEngineClient.DefaultRequestHeaders.UserAgent.ParseAdd(`
 
 Cambridge (and some Wiktionary edge caches) reject requests without a browser-like agent.
@@ -206,11 +227,6 @@ The database follows the workspace: initialize one in the new folder.
 
 The workspace-relative form of a downloaded recording's path, which is how it is stored.
 A path outside the workspace has no relative form and is stored as it stands.
-
-### `private string LEngineRecordingResolve(string file)`
-
-The full path of a stored recording within the workspace in use now.
-A path that was stored absolute — one saved outside the workspace — is returned unchanged.
 
 ### `private static bool LEngineOwnerCheck(LOwner owner)`
 

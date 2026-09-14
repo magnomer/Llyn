@@ -37,6 +37,11 @@ public partial class PCorpus
             return true;
         }
 
+        if (_pTranscriptHalted)
+        {
+            return false;
+        }
+
         _pTranscriptDraft = 0;
 
         try

@@ -37,6 +37,11 @@ public partial class PRepertoire
             return true;
         }
 
+        if (_pScenarioHalted)
+        {
+            return false;
+        }
+
         _pScenarioDraft = 0;
 
         try

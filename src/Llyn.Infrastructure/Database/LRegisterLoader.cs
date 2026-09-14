@@ -18,7 +18,7 @@ public static class LRegisterLoader
 
         string path = Path.Combine(
             AppContext.BaseDirectory, LRegisterLoaderFolder, language, LRegisterLoaderFile);
-        if (!File.Exists(path))
+        if (!LLanguageLoader.LLanguageNameValidate(language) || !File.Exists(path))
         {
             return [];
         }

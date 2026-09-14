@@ -17,7 +17,7 @@ public static class LSpeechLoader
 
         string path = Path.Combine(
             AppContext.BaseDirectory, LSpeechLoaderFolder, language, LSpeechLoaderFile);
-        if (!File.Exists(path))
+        if (!LLanguageLoader.LLanguageNameValidate(language) || !File.Exists(path))
         {
             return new LSpeechPack([], [], [], []);
         }

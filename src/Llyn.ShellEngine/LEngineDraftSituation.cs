@@ -48,15 +48,26 @@ public sealed partial class LEngine
                 draft.LDraftSituation ?? throw new LRefusal(LRefusal.LRefusalSituation));
 
             LSituation stored;
-            if (draft.LDraftEntryId == 0 || LEngineSituationRead(draft.LDraftEntryId) is null)
+            using (LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart())
             {
-                stored = LEngineSituationCreate(sending);
-            }
-            else
-            {
-                LSituation written = sending with { LSituationId = draft.LDraftEntryId };
-                LEngineSituationUpdate(written);
-                stored = LEngineSituationRead(draft.LDraftEntryId) ?? written;
+                bool fresh = draft.LDraftEntryId == 0 || LEngineSituationRead(draft.LDraftEntryId) is null;
+                if (fresh)
+                {
+                    stored = LEngineSituationCreate(sending);
+                }
+                else
+                {
+                    LSituation written = sending with { LSituationId = draft.LDraftEntryId };
+                    LEngineSituationUpdate(written);
+                    stored = LEngineSituationRead(draft.LDraftEntryId) ?? written;
+                }
+
+                LEngineRevisionRecord(
+                    stored.LSituationId,
+                    "situation",
+                    fresh ? "create" : "update",
+                    stored.LSituationTitle.LStateValueShow());
+                session.LDatabaseSessionCommit();
             }
 
             LDraftArchive.LDraftArchiveSave(
