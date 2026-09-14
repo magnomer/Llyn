@@ -1,6 +1,6 @@
 {
   "language": "Classical Chinese",
-  "flag": "cn",
+  "flag": "flag.svg",
   "separator": "none",
   "tonal": true,
   "font": {
@@ -11,7 +11,94 @@
     "family": "SimSun, Microsoft YaHei",
     "size": 16
   },
-  "note": "Language selector pack for Classical Chinese. Pronunciation and audio sources are listed separately and can be added without changing the application.",
+  "script": [
+    {
+      "name": "金文",
+      "url": "https://xiaoxue.iis.sinica.edu.tw/jinwen/PageResult/PageResult",
+      "form": {
+        "ZiOrder": "",
+        "EudcFontChar": "{word}",
+        "PageNo": "",
+        "QiOrder": "",
+        "QiMing": "",
+        "PaginalZiNum": "20",
+        "ImageSize": "36"
+      },
+      "match": "class=\"VariantList[AB]\"[^>]*>\\s*<img src=\"([^\"]+)\"[^>]*class=\"charValue\"[^>]*/>([\\s\\S]*?)<td>",
+      "image": 1,
+      "caption": 2,
+      "prefix": "https://xiaoxue.iis.sinica.edu.tw",
+      "rewrite": [
+        [
+          "size=\\d+",
+          "size=200"
+        ]
+      ]
+    },
+    {
+      "name": "小篆",
+      "url": "https://xiaoxue.iis.sinica.edu.tw/xiaozhuan/PageResult/PageResult",
+      "form": {
+        "ZiOrder": "",
+        "EudcFontChar": "{word}",
+        "PageNo": "",
+        "ImageSize": "36"
+      },
+      "match": "class=\"VariantList[AB]\"[^>]*>\\s*<img src=\"([^\"]+)\"[^>]*class=\"charValue\"[^>]*/>([\\s\\S]*?)<td>",
+      "image": 1,
+      "caption": 2,
+      "prefix": "https://xiaoxue.iis.sinica.edu.tw",
+      "rewrite": [
+        [
+          "size=\\d+",
+          "size=200"
+        ]
+      ],
+      "gloss": "<dd class=\"size\">(《說文》[\\s\\S]*?)</dd>"
+    },
+    {
+      "name": "隸書",
+      "url": "https://xiaoxue.iis.sinica.edu.tw/lishu/PageResult/PageResult",
+      "form": {
+        "ZiOrder": "",
+        "EudcFontChar": "{word}",
+        "PaginalZiNum": "20",
+        "ImageSize": "36"
+      },
+      "match": "class=\"VariantList[AB]\"[^>]*>\\s*<img src=\"([^\"]+)\"[^>]*class=\"charValue\"[^>]*/>([\\s\\S]*?)<td>",
+      "image": 1,
+      "caption": 2,
+      "prefix": "https://xiaoxue.iis.sinica.edu.tw",
+      "rewrite": [
+        [
+          "size=\\d+",
+          "size=200"
+        ]
+      ]
+    },
+    {
+      "name": "異體",
+      "url": "https://xiaoxue.iis.sinica.edu.tw/variants/PageResult/PageResult",
+      "form": {
+        "ZiOrder": "",
+        "EudcFontChar": "{word}",
+        "PageNo": "false",
+        "PaginalZiNum": "20",
+        "ImageSize": "36"
+      },
+      "match": "class=\"VariantList[AB]\"[^>]*>\\s*<img src=\"([^\"]+)\"[^>]*class=\"charValue\"[^>]*/>([\\s\\S]*?)<td>",
+      "image": 1,
+      "caption": 2,
+      "prefix": "https://xiaoxue.iis.sinica.edu.tw",
+      "rewrite": [
+        [
+          "size=\\d+",
+          "size=200"
+        ]
+      ]
+    }
+  ],
+  "note": "Language selector pack for Classical Chinese. Pronunciation and audio sources are listed separately and can be added without changing the application. The script list names the character styles the reading view shows above the first meaning, one row per style, fetched once per character from the Academia Sinica 小學堂 databases and kept in the workspace database. Each style posts the database's own search form with the character in EudcFontChar, because the site has no query API and every database needs its own hidden fields or answers 500. The match pattern reads every result cell: group 1 is the glyph image the site renders from its private fonts, group 2 the caption under it, such as the inscription and its era. The rewrite lifts the image size so the stored picture is the large original, and the view scales it down. The small seal style also reads the 說文 gloss the page prints under the results.",
   "pronunciation": [],
   "audio": []
 }

@@ -9,6 +9,22 @@ namespace Llyn.UIShell;
 
 internal static class PFont
 {
+    internal const double PFontBaseline = 44;
+
+    internal static void PFontPlace(params FrameworkElement[] surfaces)
+    {
+        ArgumentNullException.ThrowIfNull(surfaces);
+
+        foreach (FrameworkElement surface in surfaces)
+        {
+            FontFamily family = TextElement.GetFontFamily(surface);
+            double size = TextElement.GetFontSize(surface);
+            double top = Math.Max(0, Math.Round(PFontBaseline - family.Baseline * size));
+            Thickness margin = surface.Margin;
+            surface.Margin = new Thickness(margin.Left, top, margin.Right, margin.Bottom);
+        }
+    }
+
     internal static void PFontApply(LEngine engine, string language, params DependencyObject[] surfaces)
     {
         PFontApply(engine, language, LFontRole.LFontRoleHeadword, surfaces);

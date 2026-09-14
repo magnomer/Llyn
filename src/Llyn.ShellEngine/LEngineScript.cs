@@ -1,0 +1,204 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Llyn.Core;
+using Llyn.Infrastructure;
+
+namespace Llyn.ShellEngine;
+
+public sealed partial class LEngine
+{
+    private readonly SemaphoreSlim _lEngineScriptGate = new(2, 2);
+    private readonly Dictionary<string, CancellationTokenSource> _lEngineScriptPending = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _lEngineScriptMissed = new(StringComparer.Ordinal);
+
+    public IReadOnlyList<LScriptStyle> LEngineStyleRead(string language)
+    {
+        return string.IsNullOrWhiteSpace(language) ? [] : LEngineLanguageLoad(language).LLanguageScripts;
+    }
+
+    public IReadOnlyList<LScriptImage> LEngineScriptRead(long entryId)
+    {
+        LEntry? entry;
+        lock (_lEngineGate)
+        {
+            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+        }
+
+        if (entry is null || LEngineStyleRead(entry.LEntryLanguage).Count == 0)
+        {
+            return [];
+        }
+
+        List<LScriptImage> images = [];
+        foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
+        {
+            IReadOnlyList<LScriptImage> stored;
+            lock (_lEngineGate)
+            {
+                stored = new LScriptArchive(_lEngineDatabase).LScriptRead(entry.LEntryLanguage, character);
+            }
+
+            if (stored.Count == 0)
+            {
+                LEngineScriptStart(entryId, entry.LEntryLanguage, character);
+                continue;
+            }
+
+            images.AddRange(stored);
+        }
+
+        return images;
+    }
+
+    public bool LEngineScriptCheck(long entryId)
+    {
+        LEntry? entry;
+        lock (_lEngineGate)
+        {
+            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            if (entry is null)
+            {
+                return false;
+            }
+
+            foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
+            {
+                if (_lEngineScriptPending.ContainsKey(LScriptKeyFormat(entry.LEntryLanguage, character)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public async Task<IReadOnlyList<LScriptImage>> LEngineScriptFind(
+        string character, string language, CancellationToken cancellation)
+    {
+        (IReadOnlyList<LScriptImage> found, _) =
+            await LEngineScriptScan(character, language, cancellation).ConfigureAwait(false);
+        return found;
+    }
+
+    private async Task<(IReadOnlyList<LScriptImage> LScriptFound, bool LScriptReached)> LEngineScriptScan(
+        string character, string language, CancellationToken cancellation)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(character);
+
+        IReadOnlyList<LScriptStyle> styles;
+        lock (_lEngineGate)
+        {
+            styles = LEngineStyleRead(language);
+        }
+
+        bool reached = false;
+        List<LScriptImage> images = [];
+        foreach (LScriptStyle style in styles)
+        {
+            (IReadOnlyList<LScriptImage> found, bool answered) = await LScriptSource
+                .LScriptSourceFind(_lEngineClient, style, character, cancellation)
+                .ConfigureAwait(false);
+            reached |= answered;
+            images.AddRange(found);
+        }
+
+        return (images, reached);
+    }
+
+    private static string LScriptKeyFormat(string language, string character)
+    {
+        return language + '\n' + character;
+    }
+
+    private void LEngineScriptStart(long entryId, string language, string character)
+    {
+        string key = LScriptKeyFormat(language, character);
+        CancellationTokenSource fetch;
+        lock (_lEngineGate)
+        {
+            if (_lEngineScriptMissed.Contains(key) || _lEngineScriptPending.ContainsKey(key))
+            {
+                return;
+            }
+
+            fetch = new CancellationTokenSource();
+            _lEngineScriptPending[key] = fetch;
+        }
+
+        _ = LEngineScriptRun(entryId, language, character, key, fetch);
+    }
+
+    private void LEngineScriptClear()
+    {
+        foreach (CancellationTokenSource held in _lEngineScriptPending.Values)
+        {
+            held.Cancel();
+            held.Dispose();
+        }
+
+        _lEngineScriptPending.Clear();
+        _lEngineScriptMissed.Clear();
+    }
+
+    private async Task LEngineScriptRun(
+        long entryId, string language, string character, string key, CancellationTokenSource fetch)
+    {
+        bool raised = false;
+        bool admitted = false;
+        try
+        {
+            await _lEngineScriptGate.WaitAsync(fetch.Token).ConfigureAwait(false);
+            admitted = true;
+            (IReadOnlyList<LScriptImage> found, bool reached) =
+                await LEngineScriptScan(character, language, fetch.Token).ConfigureAwait(false);
+
+            lock (_lEngineGate)
+            {
+                if (fetch.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                if (found.Count == 0)
+                {
+                    if (reached)
+                    {
+                        _lEngineScriptMissed.Add(key);
+                    }
+
+                    return;
+                }
+
+                new LScriptArchive(_lEngineDatabase).LScriptSave(language, character, found);
+                raised = true;
+            }
+        }
+        catch (Exception)
+        {
+        }
+        finally
+        {
+            if (admitted)
+            {
+                _lEngineScriptGate.Release();
+            }
+
+            lock (_lEngineGate)
+            {
+                if (_lEngineScriptPending.TryGetValue(key, out CancellationTokenSource? held) && held == fetch)
+                {
+                    _lEngineScriptPending.Remove(key);
+                    fetch.Dispose();
+                }
+            }
+        }
+
+        if (raised)
+        {
+            LEngineBulletinRaise(LSubject.LSubjectScript, entryId);
+        }
+    }
+}

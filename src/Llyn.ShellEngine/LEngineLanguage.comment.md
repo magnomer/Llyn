@@ -57,6 +57,7 @@ The name is matched exactly, because it is the tag the pack's own readings carry
 
 The shared tail of both flag entry points.
 A null or blank code answers null, any other is fetched through the workspace cache.
+A rooted path is a pack's own SVG and answers itself when the file exists, with no fetch.
 
 ## `private LLanguage LEngineLanguageLoad(string language)`
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -293,6 +293,19 @@ internal static partial class TInterface
 
     internal static bool TEngineInflectionCheck(this LEngine engine, long entryId) =>
         engine.LEngineInflectionCheck(entryId);
+
+    internal static IReadOnlyList<LScriptImage> TEngineScriptRead(this LEngine engine, long entryId) =>
+        engine.LEngineScriptRead(entryId);
+
+    internal static bool TEngineScriptCheck(this LEngine engine, long entryId) =>
+        engine.LEngineScriptCheck(entryId);
+
+    internal static Task<IReadOnlyList<LScriptImage>> TEngineScriptFind(
+        this LEngine engine,
+        string character,
+        string language,
+        CancellationToken cancellation) =>
+        engine.LEngineScriptFind(character, language, cancellation);
 
     internal static LSettings TSettingsCreate(
         string localization,

@@ -60,3 +60,9 @@ The id is the entry's, and the surface showing that entry re-reads its grasp alo
 
 An Entry's inflected form was stored by a morphology fetch.
 The id is the entry's, and the surface showing that entry re-reads its forms alone.
+
+## `LSubjectScript,`
+
+The glyph pictures of one character were stored by a script fetch.
+The id is the entry's whose display asked for the character.
+A surface showing any entry of that language re-reads its script box, since another entry may share the character.

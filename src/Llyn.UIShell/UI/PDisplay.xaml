@@ -146,14 +146,14 @@
             Text="{DynamicResource Display.Unselected}" />
         <ScrollViewer x:Name="PDisplayContents" Margin="30,18,0,0" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
             <StackPanel>
-                <Grid x:Name="PDisplayHeader" HorizontalAlignment="Left" SizeChanged="PCompassSizeHandle">
+                <Grid x:Name="PDisplayHeader" MinHeight="56" HorizontalAlignment="Left" SizeChanged="PCompassSizeHandle">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Center" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
+                    <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Top" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
                     <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
                         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                             <Grid Width="19" Height="14" VerticalAlignment="Center">
@@ -283,6 +283,10 @@
                 </StackPanel>
 
                 <local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
+
+                <Border x:Name="PDisplayScriptSection" Margin="0,14,0,0" Style="{StaticResource Theme.Script.Box}" Visibility="Collapsed">
+                    <ItemsControl x:Name="PDisplayScript" Grid.IsSharedSizeScope="True" ItemTemplate="{StaticResource Theme.Script.Row}" />
+                </Border>
 
                 <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
                     <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />

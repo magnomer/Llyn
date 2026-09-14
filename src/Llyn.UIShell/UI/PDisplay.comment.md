@@ -95,6 +95,13 @@ The inflected forms of the headword, one row each, boxed above the first meaning
 It is read-only here, because the engine fetches the forms and the editor edits them as inflection rows.
 The box collapses by itself while the headword has no form to show.
 
+## `<Border x:Name="PDisplayScriptSection" Margin="0,14,0,0" Style="{StaticResource Theme.Script.Box}" Visibility="Collapsed">`
+
+The character styles of the headword, one row per character and style, boxed above the first meaning.
+It is read-only and absent from the editor, because the engine fetches the pictures and the user never places them.
+The list is its own shared-size scope, so the character and chip columns line up across rows.
+The section collapses until the engine has stored pictures for a character of the entry.
+
 ## `<StackPanel x:Name="PCompass" HorizontalAlignment="Right" VerticalAlignment="Top" ...>`
 
 The floating contents stand over the reading surface rather than beside it.

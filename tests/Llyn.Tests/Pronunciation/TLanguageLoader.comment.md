@@ -24,5 +24,9 @@ A `glyph` block missing its language reads as null, as does a pack without the b
 A `frequency` list and a `bands` list load in written order, limit rows and pattern rows alike.
 A band row without a name, without a limit or pattern, or with a broken regex is skipped alone.
 A pack without the two keys loads two empty lists.
+A `flag` ending in `.svg` loads as the rooted path of that file in the pack folder.
+A country code loads as itself.
+A `script` list loads its styles in written order with their form fields, groups, prefix, rewrite rules and gloss pattern.
+A style row missing its match pattern is skipped alone, and the optional keys read as empty or zero.
 The packs are copied beside the test binary, so these tests read the shipped data.
 A throwaway pack is written beside them for the fixture cases and removed again.

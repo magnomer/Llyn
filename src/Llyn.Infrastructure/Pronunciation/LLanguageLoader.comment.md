@@ -10,6 +10,13 @@ So one bad pack never breaks the app.
 This is the only place source.json is read.
 The loaded `LLanguage` carries every language-specific fact onward.
 The reading of one declared source, its attempts and its readings, sits in `LLanguageLoaderSource.cs`.
+The reading of the `script` list, one character style per row, sits in `LLanguageLoaderScript.cs`.
+
+## `private static string? LLanguageFlagRead(string language, JsonElement root)`
+
+The `flag` value as a country code.
+A value ending in `.svg` reads instead as the full path of that file in the pack folder.
+A classical language has no country, so its pack ships its own emblem.
 
 ## `public static IReadOnlyList<string> LLanguageLoaderScan()`
 

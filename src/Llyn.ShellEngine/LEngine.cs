@@ -160,6 +160,7 @@ public sealed partial class LEngine : IDisposable
             LEngineFrequencyClear();
             _lEngineInflectionSources.Clear();
             LEngineInflectionClear();
+            LEngineScriptClear();
             _lEngineLanguages.Clear();
             _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
@@ -404,6 +405,7 @@ public sealed partial class LEngine : IDisposable
         {
             LEngineFrequencyClear();
             LEngineInflectionClear();
+            LEngineScriptClear();
             _lEngineClient.Dispose();
         }
     }

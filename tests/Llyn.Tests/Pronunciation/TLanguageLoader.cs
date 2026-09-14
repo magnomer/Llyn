@@ -291,6 +291,55 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
+    public void LanguageLoad_ScriptStyles_ReadsFormPatternGroupsAndRewrite()
+    {
+        LLanguage language = TInterface.TLanguageLoad("Classical Chinese");
+
+        Assert.Equal(
+            ["金文", "小篆", "隸書", "異體"],
+            language.LLanguageScripts.Select(style => style.LScriptStyleName).ToList());
+        LScriptStyle seal = language.LLanguageScripts[1];
+        Assert.Equal("https://xiaoxue.iis.sinica.edu.tw/xiaozhuan/PageResult/PageResult", seal.LScriptStyleUrl);
+        Assert.Equal("{word}", seal.LScriptStyleForm["EudcFontChar"]);
+        Assert.Equal((1, 2), (seal.LScriptStyleImage, seal.LScriptStyleCaption));
+        Assert.Equal("https://xiaoxue.iis.sinica.edu.tw", seal.LScriptStylePrefix);
+        Assert.Equal("size=200", Assert.Single(seal.LScriptStyleRewrite).LRespellingRuleReplacement);
+        Assert.NotNull(seal.LScriptStyleGloss);
+        Assert.Null(language.LLanguageScripts[0].LScriptStyleGloss);
+        Assert.Empty(TInterface.TLanguageLoad("English").LLanguageScripts);
+    }
+
+    [Fact]
+    public void LanguageLoad_FlagNamesSvg_ReadsPackFilePath()
+    {
+        LLanguage own = TInterface.TLanguageLoad("Classical Chinese");
+        LLanguage coded = TInterface.TLanguageLoad("Mandarin");
+
+        Assert.True(Path.IsPathRooted(own.LLanguageFlag));
+        Assert.EndsWith(Path.Combine("languages", "Classical Chinese", "flag.svg"), own.LLanguageFlag);
+        Assert.True(File.Exists(own.LLanguageFlag));
+        Assert.Equal("cn", coded.LLanguageFlag);
+    }
+
+    [Fact]
+    public void LanguageLoad_ScriptMissingMatch_SkipsThatStyle()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "language": "Fixture", "script": [
+                { "name": "Seal", "url": "https://example.test/seal" },
+                { "name": "Clerical", "url": "https://example.test/clerical",
+                  "match": "<img src=\"([^\"]+)\"", "image": 1 } ] }
+            """);
+
+        LScriptStyle style = Assert.Single(language.LLanguageScripts);
+        Assert.Equal("Clerical", style.LScriptStyleName);
+        Assert.Empty(style.LScriptStyleForm);
+        Assert.Equal(0, style.LScriptStyleCaption);
+        Assert.Empty(style.LScriptStyleRewrite);
+    }
+
+    [Fact]
     public void LanguageLoad_GlyphMissingLanguage_ReadsNull()
     {
         LLanguage language = TLanguageFixtureLoad(

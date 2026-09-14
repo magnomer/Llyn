@@ -31,6 +31,7 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderBands = "bands";
     private const string LLanguageLoaderTonal = "tonal";
     private const string LLanguageLoaderGlyph = "glyph";
+    private const string LLanguageLoaderEmblem = ".svg";
 
     public static IReadOnlyList<string> LLanguageLoaderScan()
     {
@@ -118,7 +119,7 @@ public static partial class LLanguageLoader
 
     private static LLanguage LLanguageRead(string language, JsonElement root)
     {
-        string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag") : null;
+        string? flag = LLanguageFlagRead(language, root);
         IReadOnlyList<LVariety> varieties = LLanguageVarietyScan(root);
         bool scoped = varieties.Count > 0;
 
@@ -140,7 +141,21 @@ public static partial class LLanguageLoader
             LLanguageBandScan(root),
             LLanguageSourceScan(root, LLanguageLoaderMorphology),
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderTonal),
-            LLanguageGlyphRead(root));
+            LLanguageGlyphRead(root),
+            LLanguageScriptScan(root));
+    }
+
+    private static string? LLanguageFlagRead(string language, JsonElement root)
+    {
+        string? flag = root.ValueKind == JsonValueKind.Object ? LLanguageTextRead(root, "flag")?.Trim() : null;
+        if (string.IsNullOrEmpty(flag))
+        {
+            return null;
+        }
+
+        return flag.EndsWith(LLanguageLoaderEmblem, StringComparison.OrdinalIgnoreCase)
+            ? Path.Combine(AppContext.BaseDirectory, LLanguageLoaderFolder, language, flag)
+            : flag;
     }
 
     private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)

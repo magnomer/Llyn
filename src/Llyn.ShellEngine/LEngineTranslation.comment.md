@@ -54,6 +54,8 @@ The row carries a headword and a language and nothing else.
 The language is the one the caller chose, because a typed word does not name its own.
 A stub is a real Entry and is opened and filled in like any other later.
 So its making is recorded as a revision, exactly as any other new Entry is.
+The making is announced as an entry bulletin once the lock is released.
+The library list then shows the stub at once.
 The workspace row is moved onto that revision, so the pointer names the current revision whichever path opened it.
 A frequency fill starts for it after the commit, exactly as it does for a saved draft.
 

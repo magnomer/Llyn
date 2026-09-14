@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -76,6 +77,11 @@ public sealed partial class LEngine
         if (string.IsNullOrWhiteSpace(code))
         {
             return null;
+        }
+
+        if (Path.IsPathRooted(code))
+        {
+            return File.Exists(code) ? code : null;
         }
 
         string workspace;

@@ -182,6 +182,7 @@ internal static class TAuditNameRegistry
         "Scheme",
         "Scout",
         "Screen",
+        "Script",
         "Seam",
         "Seeker",
         "Sentence",

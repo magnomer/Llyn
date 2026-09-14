@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <rect width="640" height="480" fill="#a8322d"/>
+  <rect width="96" height="480" fill="#1f1a17"/>
+  <rect x="96" y="0" width="12" height="480" fill="#e2b75a"/>
+  <text x="372" y="372" font-family="SimSun, Microsoft YaHei, serif" font-size="300" font-weight="bold" fill="#e2b75a" text-anchor="middle">漢</text>
+</svg>

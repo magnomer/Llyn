@@ -20,7 +20,8 @@ public sealed record LLanguage(
     IReadOnlyList<LBand>? LLanguageBands = null,
     IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null,
     bool LLanguageTonal = false,
-    LGlyph? LLanguageGlyph = null)
+    LGlyph? LLanguageGlyph = null,
+    IReadOnlyList<LScriptStyle>? LLanguageScripts = null)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
@@ -37,4 +38,6 @@ public sealed record LLanguage(
     public IReadOnlyList<LSourceSpec> LLanguageMorphologies { get; init; } = LLanguageMorphologies ?? [];
 
     public LFont LLanguageGloss { get; init; } = LLanguageGloss ?? new LFont(null, 0);
+
+    public IReadOnlyList<LScriptStyle> LLanguageScripts { get; init; } = LLanguageScripts ?? [];
 }

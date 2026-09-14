@@ -40,6 +40,7 @@ A pending set of entry ids beside it stops the same Entry from filling twice at 
 The morphology sources of each language are cached in a fourth set, which `LEngineInflectionFetch.cs` owns.
 Its pending fetches, its missed slots per Entry, and the Entries it lost sit beside them.
 They are cleared with the frequency ones.
+The script fetches, pending and missed per character, sit in `LEngineScript.cs` and are cleared with them too.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
 
 ## `public LEngine()`

@@ -64,6 +64,8 @@ A picture it shares relocated there must redraw the picture here.
 Typing in any editor announces its draft, and that is the one subject left alone, since nothing stored changed.
 A mark set from another tab moves the heart.
 A frequency the engine finished fetching fills the chip alone, because nothing else on the page changed.
+A script fetch that stored a character's pictures redraws the script box alone, whichever entry asked.
+The shown entry may share the character.
 A headword written elsewhere is read back and redrawn, so two views of one entry never disagree.
 An entry that is gone leaves the unselected notice, because there is nothing left to show.
 A workspace that moved empties the view, since the id it stood on means nothing in the new database.

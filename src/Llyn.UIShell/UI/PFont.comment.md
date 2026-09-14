@@ -1,4 +1,4 @@
-# PFont.cs
+﻿# PFont.cs
 
 ## `internal static class PFont`
 
@@ -11,6 +11,15 @@ A pack that declares nothing clears the local value, so the theme's own family a
 Takes any element that carries text, because a text box and a text block share the same font properties.
 Both read them from `TextElement`, so one attached property serves either.
 The bare form asks for the headword role, and the role form serves the glyph chips with their serif face.
+
+### `internal static void PFontPlace(params FrameworkElement[] surfaces)`
+
+Pins a headword by its baseline rather than by the middle of its line box.
+Each family carries its own ascent and descent, so centering the box shifted the letters as the language changed.
+Word aligns text by baseline, and a reader expects the stroke bottoms to sit at one height across languages.
+The family reports its baseline as a fraction of the size, and the top margin fills up to `PFontBaseline`.
+The surface must be top-aligned inside a row of fixed minimum height for the margin to mean anything.
+Called after `PFontApply`, because the family it reads is the one just put on.
 
 ### `internal static void PFontExampleApply(ResourceDictionary resources, LEngine engine, string language)`
 

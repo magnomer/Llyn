@@ -95,6 +95,12 @@ public partial class PDisplay : UserControl
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectScript)
+        {
+            PDisplayScriptShow(shown, PDisplayLanguage.Text);
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             PDisplayClear();
@@ -186,6 +192,7 @@ public partial class PDisplay : UserControl
             : Visibility.Visible;
         PDisplayFrequencyShow(id);
         PDisplayParadigmShow(id);
+        PDisplayScriptShow(id, draft.LEntryDraftLanguage);
         PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;
         PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
         PDisplayMeaningSection.Visibility = draft.LEntryDraftMeanings.Count == 0
@@ -287,6 +294,7 @@ public partial class PDisplay : UserControl
         PDisplayFrequencyChip.ToolTip = null;
         PDisplayFrequencySection.Visibility = Visibility.Collapsed;
         PDisplayParadigm.PParadigmItems = null;
+        PDisplayScriptClear();
         _pDisplayIncoming.Clear();
         PDisplayIncomingSection.Visibility = Visibility.Collapsed;
         PDisplayTranslationRead().PLinkConverterClear();
@@ -459,6 +467,7 @@ public partial class PDisplay : UserControl
         PDisplayLanguage.Text = language;
         PDisplayLanguageFlag.Source = null;
         PFont.PFontApply(_lEngine, language, PDisplayHeadword);
+        PFont.PFontPlace(PDisplayHeadword);
 
         await PEnsign.PEnsignLoad(_lEngine);
 

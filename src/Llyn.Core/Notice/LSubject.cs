@@ -27,4 +27,6 @@ public enum LSubject
     LSubjectGrasp,
 
     LSubjectInflection,
+
+    LSubjectScript,
 }
