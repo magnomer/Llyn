@@ -55,6 +55,12 @@ A drag therefore never drops the ordering a panel chose, and an ordering never d
 The merge runs under the gate, so one drag never drops what another tab wrote.
 A linked drag hands over every tab at once, so the file is written once, not once per tab.
 
+## `public void LEngineLayoutReset()`
+
+Drops the stored width of every tab and keeps the result current.
+Each tab's ordering and hidden languages stay, because the button promises widths and nothing more.
+A tab stripped of its width takes its markup width on the next start.
+
 ## `public void LEngineLinkedSave(bool linked)`
 
 Persists whether dragging a panel in one tab sets the same width in every tab and keeps it current.

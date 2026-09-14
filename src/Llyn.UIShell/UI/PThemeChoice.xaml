@@ -259,4 +259,44 @@
         </Setter>
     </Style>
 
+    <Style x:Key="Theme.Choice.Switch" TargetType="ToggleButton">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="PChoiceTrack" Background="{StaticResource Theme.Line}" CornerRadius="11">
+                        <Ellipse x:Name="PChoiceKnob" Width="16" Height="16" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3,0,0,0" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="PChoiceTrack" Property="Background" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PChoiceKnob" Property="HorizontalAlignment" Value="Right" />
+                            <Setter TargetName="PChoiceKnob" Property="Margin" Value="0,0,3,0" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PChoiceTrack" Property="Background" Value="{StaticResource Theme.LineStrong}" />
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PChoiceTrack" Property="Background" Value="{StaticResource Theme.AccentHover}" />
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PChoiceTrack" Property="Background" Value="{StaticResource Theme.DisabledLine}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

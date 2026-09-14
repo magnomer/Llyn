@@ -78,5 +78,6 @@ Whatever is waiting is written first, so the engine sees the rows in the order t
 ## `private void PScenarioRequestPersist()`
 
 Writes every waiting request, forgetting each only once the engine took it.
-A request that fails stays in the map for the caller to clear, so nothing is lost before it is written.
+A request that fails stays in the map for the caller to clear.
+Nothing is lost before it is written.
 The draft save calls this before the body, so the two never cross.

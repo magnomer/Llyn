@@ -57,7 +57,8 @@ The detaching and the delete are one operation in the store, because between two
 ## `private string? PVignetteTextRead(LStateValue value)`
 
 What one stored field reads as, or null for one never written.
-A written value reads itself, and an unknown one reads the mark, as a card field does in the entry display.
+A written value reads itself, and an unknown one reads the mark.
+A card field does the same in the entry display.
 
 ## `private void PVignetteTitleShow(LStateValue value)`
 

@@ -16,7 +16,7 @@ public sealed partial class LEngine
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
             LSituationArchive situations = new(_lEngineDatabase);
             LSituation stored = situations.LSituationCreate(situation);
-            LEngineSituationMediaSync(stored.LSituationId, situation);
+            LEngineMediaSync(stored.LSituationId, situation);
             stored = situations.LSituationRead(stored.LSituationId) ?? stored;
             session.LDatabaseSessionCommit();
             return stored;
@@ -115,12 +115,12 @@ public sealed partial class LEngine
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
             new LSituationArchive(_lEngineDatabase).LSituationUpdate(situation);
-            LEngineSituationMediaSync(situation.LSituationId, situation);
+            LEngineMediaSync(situation.LSituationId, situation);
             session.LDatabaseSessionCommit();
         }
     }
 
-    private void LEngineSituationMediaSync(long situationId, LSituation situation)
+    private void LEngineMediaSync(long situationId, LSituation situation)
     {
         Dictionary<long, long> identity = [];
 

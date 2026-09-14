@@ -104,6 +104,25 @@ public sealed class TLayout
     }
 
     [Fact]
+    public void LayoutReset_ClearsStoredWidths()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
+        engine.TEngineDegreeSave(LCatalogOrder.LCatalogOrderUsage);
+        engine.TEngineGrilleSave(TInterface.TCatalogFilterCreate("Korean"));
+        engine.TEngineLayoutReset();
+
+        LLayout tenor = Assert.Single(engine.TEngineSettingsRead().LSettingsLayout ?? []);
+
+        Assert.Null(tenor.LLayoutLeft);
+        Assert.Null(tenor.LLayoutMiddle);
+        Assert.Equal(LCatalogOrder.LCatalogOrderUsage, tenor.LLayoutOrder);
+        Assert.Equal(["Korean"], tenor.LLayoutFilter?.LCatalogFilterHidden);
+    }
+
+    [Fact]
     public void ModeSave_AfterOrderSave_KeepsBothChanges()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

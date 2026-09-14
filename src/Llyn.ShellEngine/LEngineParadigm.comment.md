@@ -34,9 +34,11 @@ The judgement lives here so the shell never reads a rule.
 ## `private static IReadOnlyList<LParadigm> LEngineParadigmScan(LSpeechPack pack, long speechCode)`
 
 Collects the paradigms that apply to the part of speech named by `speechCode`.
-It first walks the part's parent chain, nearest first, stopping at a repeated code or after as many hops as the pack has parts.
+It first walks the part's parent chain, nearest first.
+The walk stops at a repeated code or after as many hops as the pack has parts.
 So a pack naming its parents in a cycle still ends.
-A paradigm declared on any code of the chain applies, unless one of its excepted codes is also on the chain.
+A paradigm declared on any code of the chain applies.
+It is skipped when one of its excepted codes is also on the chain.
 So a plural declared on nouns reaches countable nouns and stops at uncountable ones.
 A code of `0` answers nothing.
 
@@ -54,7 +56,8 @@ Each slot keeps the paradigm it came from, so the display seam can judge regular
 ## `private static LMorphology? LEngineMorphologyResolve(LSpeechPack pack, LMorphologyArchive morphologies, string language, long code)`
 
 Resolves one morphology value code to the workspace row the pack seeded.
-The pack says which feature and which part the code belongs to, and the archive is asked for exactly that row.
+The pack says which feature and which part the code belongs to.
+The archive is asked for exactly that row.
 So a pack reusing a value code under two features still binds the right one.
 A code the pack does not declare answers `null`.
 

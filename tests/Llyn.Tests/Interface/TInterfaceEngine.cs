@@ -203,6 +203,11 @@ internal static partial class TInterface
         engine.LEngineLayoutSave(layout);
     }
 
+    internal static void TEngineLayoutReset(this LEngine engine)
+    {
+        engine.LEngineLayoutReset();
+    }
+
     internal static void TEngineLinkedSave(this LEngine engine, bool linked)
     {
         engine.LEngineLinkedSave(linked);

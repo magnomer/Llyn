@@ -57,8 +57,10 @@ Playback stops, because what it was playing belonged to the entry that was shown
 
 What the view does when the engine announces that stored data changed.
 It answers for the entry it stands on, and ignores an announcement about another Entry.
-An announcement about any other record is answered whatever its id, because a card embeds Situations, Registers, Tags, Examples and Sources by reference.
-A Situation renamed in its own tab, or a picture it shares relocated there, must redraw the chip and the picture here.
+An announcement about any other record is answered whatever its id.
+A card embeds Situations, Registers, Tags, Examples and Sources by reference.
+A Situation renamed in its own tab must redraw the chip here.
+A picture it shares relocated there must redraw the picture here.
 Typing in any editor announces its draft, and that is the one subject left alone, since nothing stored changed.
 A mark set from another tab moves the heart.
 A frequency the engine finished fetching fills the chip alone, because nothing else on the page changed.

@@ -52,5 +52,6 @@ public partial class PSettings
         }
 
         _pSettingsHost.PWindowViewRestore(_lEngine.LEngineStateRead());
+        PLedgerMetaApply();
     }
 }

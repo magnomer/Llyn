@@ -29,7 +29,8 @@ Binds the store to the workspace `database` it opens sessions through.
 
 Inserts `situation` with a fresh opaque id and returns the stored Situation with that id filled in.
 The new Situation is referenced by nothing until it is attached to a referrer.
-Its Images and Videos are not written here: the engine settles them after the row exists, as it does for a card.
+Its Images and Videos are not written here.
+The engine settles them after the row exists, as it does for a card.
 The stored rows come back with their ids.
 
 ## `public LSituation? LSituationRead(long id)`
@@ -148,7 +149,8 @@ The cascade would do it too, but the store never leans on one it can state.
 
 ### `private LSituation LSituationMediaRead(LSituation situation)`
 
-Fills the two media lists of one Situation from the Image and Video stores, each in the order the Situation holds.
+Fills the two media lists of one Situation from the Image and Video stores.
+Each list keeps the order the Situation holds.
 The nested sessions share the open connection, so a read stays one transaction.
 
 ### `private IReadOnlyList<LSituation> LSituationMediaRead(List<LSituation> situations)`
@@ -157,10 +159,10 @@ Fills the media lists of a whole list in two queries, one per link table, groupe
 A list read serves the catalog, the chip resolver and every card's chips, and those run on each keystroke.
 Two queries per situation there would cost hundreds of round trips per key, so the list never asks per row.
 
-### `private static Dictionary<long, List<LImageDraft>> LSituationImageGroupRead(SqliteConnection connection)`
+### `private static Dictionary<long, List<LImageDraft>> LSituationImageRead(SqliteConnection connection)`
 
 Every situation-to-image link joined to its Image, ordered by parent and position, bucketed by parent.
 
-### `private static Dictionary<long, List<LVideoDraft>> LSituationVideoGroupRead(SqliteConnection connection)`
+### `private static Dictionary<long, List<LVideoDraft>> LSituationVideoRead(SqliteConnection connection)`
 
 The same for Videos, carrying the span beside the location.

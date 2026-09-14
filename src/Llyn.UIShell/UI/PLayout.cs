@@ -11,7 +11,7 @@ public sealed class PLayout
 {
     private readonly LEngine _lEngine;
 
-    private readonly List<(string PLayoutTab, Grid PLayoutHost)> _pLayoutList = [];
+    private readonly List<(string PLayoutTab, Grid PLayoutHost, GridLength PLayoutLeft, GridLength PLayoutMiddle)> _pLayoutList = [];
 
     private Grid? _pLayoutRecent;
 
@@ -26,7 +26,12 @@ public sealed class PLayout
         ArgumentNullException.ThrowIfNull(host);
         ArgumentException.ThrowIfNullOrWhiteSpace(tab);
 
-        _pLayoutList.Add((tab, host));
+        int last = host.ColumnDefinitions.Count - 1;
+
+        GridLength left = last > 0 ? host.ColumnDefinitions[0].Width : GridLength.Auto;
+        GridLength middle = last > 1 ? host.ColumnDefinitions[1].Width : GridLength.Auto;
+
+        _pLayoutList.Add((tab, host, left, middle));
 
         foreach (UIElement child in host.Children)
         {
@@ -42,7 +47,7 @@ public sealed class PLayout
         LSettings settings = _lEngine.LEngineSettingsRead();
         IReadOnlyList<LLayout> layout = settings.LSettingsLayout ?? [];
 
-        foreach ((string tab, Grid host) in _pLayoutList)
+        foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
             foreach (LLayout record in layout)
             {
@@ -65,7 +70,7 @@ public sealed class PLayout
         double? left = null;
         double? middle = null;
 
-        foreach ((_, Grid host) in _pLayoutList)
+        foreach ((_, Grid host, _, _) in _pLayoutList)
         {
             int last = host.ColumnDefinitions.Count - 1;
 
@@ -73,7 +78,7 @@ public sealed class PLayout
             middle ??= last > 1 ? PLayoutColumnRead(host.ColumnDefinitions[1]) : null;
         }
 
-        foreach ((_, Grid host) in _pLayoutList)
+        foreach ((_, Grid host, _, _) in _pLayoutList)
         {
             PLayoutColumnApply(host, 0, left);
             PLayoutColumnApply(host, 1, middle);
@@ -93,7 +98,7 @@ public sealed class PLayout
 
         int last = source.ColumnDefinitions.Count - 1;
 
-        foreach ((_, Grid host) in _pLayoutList)
+        foreach ((_, Grid host, _, _) in _pLayoutList)
         {
             if (ReferenceEquals(host, source))
             {
@@ -115,7 +120,7 @@ public sealed class PLayout
 
         List<LLayout> list = [];
 
-        foreach ((string tab, Grid host) in _pLayoutList)
+        foreach ((string tab, Grid host, _, _) in _pLayoutList)
         {
             if (ReferenceEquals(host, source) || _lEngine.LEngineSettingsRead().LSettingsLinked)
             {
@@ -136,6 +141,26 @@ public sealed class PLayout
 
         PLayoutPropagate(source);
         PLayoutSave(source);
+    }
+
+    internal void PLayoutReset()
+    {
+        foreach ((_, Grid host, GridLength left, GridLength middle) in _pLayoutList)
+        {
+            int last = host.ColumnDefinitions.Count - 1;
+
+            if (last > 0)
+            {
+                host.ColumnDefinitions[0].Width = left;
+            }
+
+            if (last > 1)
+            {
+                host.ColumnDefinitions[1].Width = middle;
+            }
+        }
+
+        _pLayoutRecent = null;
     }
 
     private static LLayout PLayoutRecordRead(string tab, Grid host)

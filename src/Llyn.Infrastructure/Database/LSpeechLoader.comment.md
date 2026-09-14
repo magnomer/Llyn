@@ -49,7 +49,8 @@ A paradigm naming one value nothing can resolve is no paradigm at all.
 ### `private static IReadOnlyList<LParadigmRule> LSpeechRuleScan(JsonElement element, string name)`
 
 The declared rules of a paradigm, each a two-string array, or none when the property is absent.
-A row that is not such a pair, has an empty pattern, or does not parse as a regular expression is skipped.
+A row that is not such a pair or has an empty pattern is skipped.
+So is one that does not parse as a regular expression.
 
 ### `private static string? LSpeechTextRead(JsonElement element, string name)`
 

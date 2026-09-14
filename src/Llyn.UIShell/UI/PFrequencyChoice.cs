@@ -9,6 +9,7 @@ public partial class PSettings
         if (_pSettingsReady)
         {
             _lEngine.LEngineFrequencySave(PFrequency.IsChecked == true);
+            PLedgerMetaApply();
         }
     }
 }

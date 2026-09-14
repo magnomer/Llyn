@@ -139,7 +139,8 @@ The flag is a switch that opens the language list.
 The plus and minus handles stand at the end of the row and show under the pointer.
 That is how the entry editor's rows carry them.
 Plus adds a row after this one and minus drops this one.
-`PTranscriptSeed` stands in while there is no row, a bare field showing the placeholder whose focus or plus adds the first.
+`PTranscriptSeed` stands in while there is no row.
+It is a bare field showing the placeholder whose focus or plus adds the first.
 `PCitation` is the single Source the Example cites, a pointer that is cleared without touching the Source itself.
 It is drawn as the text the reading side draws, with a small arrow that opens the shelf.
 The editor carries no buttons of its own.

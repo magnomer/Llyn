@@ -43,11 +43,13 @@ Reads the Situations the Meaning or Collocation identified by `ownerId` referenc
 
 Rewrites the title, description and kind of the Situation `situation` identifies, and settles its media.
 
-## `private void LEngineSituationMediaSync(long situationId, LSituation situation)`
+## `private void LEngineMediaSync(long situationId, LSituation situation)`
 
 Settles the Situation's Images and Videos against what is attached, through the same `LEngineFieldSync` a card uses.
-A row with an id is that record, its location or span rewritten when it changed; one without becomes a fresh record.
-What the list no longer names is detached and keeps its record, because an Image is independent data another referrer may show.
+A row with an id is that record, its location or span rewritten when it changed.
+One without becomes a fresh record.
+What the list no longer names is detached and keeps its record.
+An Image is independent data another referrer may show.
 Living beside the card sync keeps one rule for how a draft row becomes a stored one.
 
 ## `public void LEngineSituationAttach(long ownerId, long situationId, int position, LOwner owner)`

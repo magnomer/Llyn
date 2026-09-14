@@ -9,6 +9,7 @@ public partial class PSettings
         if (_pSettingsReady)
         {
             _lEngine.LEngineRespellingSave(PRespelling.IsChecked == true);
+            PLedgerMetaApply();
         }
     }
 }

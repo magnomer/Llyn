@@ -82,7 +82,8 @@ The comparison is over the text, the role and the label, because those are what 
 
 The inflections of the entry as the draft holds them, features and all.
 A feature list that differs at one place is a different inflection, so the whole set is rewritten.
-The save then resets the inflection fetch memory, so a form the web could not name before may be asked again.
+The save then resets the inflection fetch memory.
+A form the web could not name before may be asked again.
 
 ### `entries.LEntryUpdate(stored with`
 

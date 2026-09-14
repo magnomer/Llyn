@@ -25,7 +25,8 @@ Every edit that passes the guard starts the wait that ends in a push.
 
 The placeholder a field shows while empty.
 A never-written field asks for its value, and an unknown one reads the unknown mark until typing clears it.
-No control records a field unknown, as no other edit area offers one, so the mark only arrives with the stored value.
+No control records a field unknown, as no other edit area offers one.
+The mark only arrives with the stored value.
 
 ## `private void PImprintKindHandle(object sender, RoutedEventArgs e)`
 

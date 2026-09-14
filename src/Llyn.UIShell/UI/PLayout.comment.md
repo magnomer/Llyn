@@ -10,6 +10,7 @@ The widths are stored per tab either way, so unlinking never loses what a tab ha
 ## `internal void PLayoutAttach(Grid host, string tab)`
 
 Registers a tab's root grid under the name its widths are stored by.
+The widths its markup declares for the fixed columns are recorded alongside, so a reset can find them later.
 Every seam standing in that grid is pointed back here, so a drag can report itself.
 
 ## `internal void PLayoutRestore()`
@@ -39,6 +40,12 @@ Runs when the user links the panels mid-session.
 Every other tab is set to the most recently dragged tab.
 Before any drag, the first registered tab is the one copied from.
 Unlinking calls nothing, because tabs simply stop following from then on.
+
+## `internal void PLayoutReset()`
+
+Puts every registered grid back at the widths its markup declared.
+Only the fixed columns are written, because the last column was never pinned.
+The most recent drag is forgotten, so a later link copies from the first registered tab again.
 
 ## `private static double? PLayoutColumnRead(ColumnDefinition column)`
 

@@ -17,6 +17,7 @@ public partial class PSettings
         if (_pSettingsReady)
         {
             _lEngine.LEngineLocalizationSave(language);
+            PLedgerMetaApply();
         }
     }
 }

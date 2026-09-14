@@ -28,7 +28,8 @@ The second value says whether any source was reached at all.
 ## `public bool LEngineInflectionCheck(long entryId)`
 
 Reports whether a fetch is running for the Entry identified by `entryId`.
-The reading view asks this after starting, so a slot still empty can say it is being looked up rather than lost.
+The reading view asks this after starting.
+A slot still empty can then say it is being looked up rather than lost.
 
 ## `public void LEngineInflectionStart(long entryId)`
 

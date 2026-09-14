@@ -495,8 +495,8 @@ public sealed class LSituationArchive
         using LDatabaseSession session = _lSituationArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
 
-        Dictionary<long, List<LImageDraft>> images = LSituationImageGroupRead(connection);
-        Dictionary<long, List<LVideoDraft>> videos = LSituationVideoGroupRead(connection);
+        Dictionary<long, List<LImageDraft>> images = LSituationImageRead(connection);
+        Dictionary<long, List<LVideoDraft>> videos = LSituationVideoRead(connection);
 
         for (int index = 0; index < situations.Count; index++)
         {
@@ -535,7 +535,7 @@ public sealed class LSituationArchive
         return situation with { LSituationImage = imageRows, LSituationVideo = videoRows };
     }
 
-    private static Dictionary<long, List<LImageDraft>> LSituationImageGroupRead(SqliteConnection connection)
+    private static Dictionary<long, List<LImageDraft>> LSituationImageRead(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
@@ -563,7 +563,7 @@ public sealed class LSituationArchive
         return grouped;
     }
 
-    private static Dictionary<long, List<LVideoDraft>> LSituationVideoGroupRead(SqliteConnection connection)
+    private static Dictionary<long, List<LVideoDraft>> LSituationVideoRead(SqliteConnection connection)
     {
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =

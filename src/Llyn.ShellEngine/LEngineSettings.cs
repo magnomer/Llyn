@@ -86,6 +86,21 @@ public sealed partial class LEngine
         }
     }
 
+    public void LEngineLayoutReset()
+    {
+        lock (_lEngineGate)
+        {
+            List<LLayout> list = [];
+
+            foreach (LLayout tab in _lEngineSettings.LSettingsLayout ?? [])
+            {
+                list.Add(tab with { LLayoutLeft = null, LLayoutMiddle = null });
+            }
+
+            LEngineSettingsChange(settings => settings with { LSettingsLayout = list });
+        }
+    }
+
     public void LEngineLinkedSave(bool linked)
     {
         LEngineSettingsChange(settings => settings with { LSettingsLinked = linked });

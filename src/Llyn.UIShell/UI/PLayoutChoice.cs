@@ -13,6 +13,7 @@ public partial class PSettings
 
         bool linked = PLayoutLinked.IsChecked == true;
         _lEngine.LEngineLinkedSave(linked);
+        PLedgerMetaApply();
 
         if (linked)
         {

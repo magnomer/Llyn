@@ -52,6 +52,7 @@ internal static class TAuditNameRegistry
         "Court",
         "Database",
         "Degree",
+        "Dial",
         "Directory",
         "Display",
         "Doctor",
@@ -105,6 +106,7 @@ internal static class TAuditNameRegistry
         "Lattice",
         "Layout",
         "Leave",
+        "Ledger",
         "Left",
         "Leftover",
         "Lens",
@@ -216,6 +218,7 @@ internal static class TAuditNameRegistry
         "Volume",
         "Vowel",
         "Window",
+        "Winnow",
         "Workspace",
     ];
     // AUDIT:SIDECAR:BASES:END

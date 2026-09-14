@@ -42,7 +42,8 @@ It also settles the buttons, so a write and what the buttons say never drift apa
 
 Settles the rail's save button against the engine's answer, while the Situation editor is the side in front.
 It reads the same answer the closing warning reads, so the two cannot disagree.
-While the entry editor is in front, that editor's own notice drives the same button, so this one leaves it alone.
+While the entry editor is in front, that editor's own notice drives the same button.
+This one then leaves it alone.
 
 ## `private LDraft? PScenarioDraftStart(long? situation)`
 

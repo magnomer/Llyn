@@ -24,6 +24,10 @@ internal static class PLocalizationLoader
         @"\{(?<term>[Tt]erms\.[A-Za-z][A-Za-z0-9]*)\}",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+    private static readonly Regex PLocalizationLoaderSlot = new(
+        @"\{\d+\}",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
     internal static void PLocalizationLoaderApply(ResourceDictionary resources, string language)
     {
         CultureInfo culture = language switch
@@ -175,8 +179,10 @@ internal static class PLocalizationLoader
                 : LCase.LCaseLowerChange(termValue, culture);
         });
 
-        if (resolved.Contains('{', StringComparison.Ordinal) ||
-            resolved.Contains('}', StringComparison.Ordinal))
+        string bare = PLocalizationLoaderSlot.Replace(resolved, string.Empty);
+
+        if (bare.Contains('{', StringComparison.Ordinal) ||
+            bare.Contains('}', StringComparison.Ordinal))
         {
             throw new InvalidDataException(
                 $"The localization text '{textKey}' contains a malformed term reference.");

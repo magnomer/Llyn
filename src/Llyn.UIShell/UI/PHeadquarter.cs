@@ -36,7 +36,7 @@ public partial class PWindow
         SystemCommands.CloseWindow(this);
     }
 
-    private static string PHeadquarterVersionRead()
+    internal static string PHeadquarterVersionRead()
     {
         Version? version = Assembly.GetExecutingAssembly().GetName().Version;
 

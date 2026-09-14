@@ -39,7 +39,8 @@ The engine keeps the id of the Situation it holds, because the panel mints nothi
 
 ## `private void PScenarioStoreRun()`
 
-Commits the held Situation, for the rail's save button, which stores it over the selected one or creates one nothing references yet.
+Commits the held Situation, for the rail's save button.
+It stores over the selected one or creates one nothing references yet.
 Typing still waiting to be written is written first, so the commit carries the last keystroke.
 Whether this is a create or a rewrite is the engine's reading of the draft, not the panel's.
 Saving does not change the id, what references it, or the order it takes for any referrer.

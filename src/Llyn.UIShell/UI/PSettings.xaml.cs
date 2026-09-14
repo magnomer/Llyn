@@ -27,6 +27,10 @@ public partial class PSettings : UserControl
         PFrequency.IsChecked = engine.LEngineSettingsRead().LSettingsFrequency;
         PMorphology.IsChecked = engine.LEngineSettingsRead().LSettingsMorphology;
         PLayoutLinked.IsChecked = engine.LEngineSettingsRead().LSettingsLinked;
+        PDialFooter.Text = host.PLocalizationTextRead("Terms.Product") + " " + PWindow.PHeadquarterVersionRead();
         _pSettingsReady = true;
+
+        PLedgerBuild();
+        PDialShow("Workspace");
     }
 }
