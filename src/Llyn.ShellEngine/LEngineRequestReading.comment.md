@@ -10,8 +10,9 @@ So a blank row is held and named, and the commit leaves it out.
 
 ## `private LEntryDraft LEngineReadingApply(LEntryDraft content, LRequest request)`
 
-Routes every reading request to its handler, and hands any other request on to the card lists.
+Routes every reading request to its handler, and hands any other request on to the reflex rows.
 `LRequestIpa` and `LRequestAudio` edit the primary row alone, for a form that shows one reading.
+`LRequestRespelling` and `LRequestPronunciationRespelling` write the respelling alone and derive nothing.
 
 ## `private LEntryDraft LEnginePrimaryChange(`
 
@@ -23,6 +24,20 @@ So it counts as a pronunciation only once it carries something.
 ## `private LEntryDraft LEnginePronunciationAdd(LEntryDraft content, LRequestPronunciationAddition request)`
 
 A new pronunciation row with the reading sent and a minted id, at the place asked for.
+Its respelling is derived from that reading at once.
+
+## `private LPronunciationDraft LEngineRespellingResolve(string language, LPronunciationDraft spoken)`
+
+Fills the row's respelling from its reading through the pack's respelling groups, scoped by its variety.
+It runs whether or not the respelling switch is on, so both forms are always stored.
+The switch then only picks which form is shown.
+A blank reading, a blank language or a pack without groups leaves the respelling blank.
+The form then shows the reading in its place.
+Whatever the user wrote into the respelling by hand is replaced, because a stale respelling would silently mislead.
+
+## `private LEntryDraft LEngineRespellingRebuild(LEntryDraft content)`
+
+Derives every pronunciation row's respelling again, for a draft whose language changed.
 
 ## `private static LEntryDraft LEnginePronunciationChange(`
 

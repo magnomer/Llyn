@@ -16,6 +16,7 @@ The form assembles nothing, down to the last chip and row.
 Renders the draft over what is shown, changing only what differs.
 It runs on every draft bulletin, so it must be cheap and must not move the caret.
 The fill guard is held for the whole pass, because filling raises the same events typing does.
+The pronunciation field prints whichever stored form the respelling switch picks, between the brackets that form takes.
 The pronunciation rows after the primary are rendered in the same pass, keyed by their draft ids.
 The transcription rows are rendered the same way, and shown only while the draft's language declares a scheme.
 The glyph row is read off the pack before them, so the transcription pass knows which scheme to skip.

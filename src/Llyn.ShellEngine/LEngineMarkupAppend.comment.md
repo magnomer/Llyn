@@ -10,7 +10,8 @@ The import itself stands in `LEngineMarkup.cs`.
 
 Headword and language come from `loaded`, since Append never renames.
 Meanings and collocations are the stored cards joined with the parsed ones, renumbered through the tree.
-Pronunciations, transcriptions, speeches, forms and inflections take each parsed row the stored ones lack.
+Pronunciations, transcriptions, reflexes, speeches, forms and inflections take each parsed row the stored ones lack.
+A reflex row is known by its language, kind, text and note together.
 The note is the stored note followed by the parsed one, or the stored note alone.
 
 ## Inline notes

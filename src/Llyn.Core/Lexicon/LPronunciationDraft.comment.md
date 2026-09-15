@@ -17,6 +17,9 @@ The variety label is kept even when the reading is blank, so a row being filled 
 - `LPronunciationDraftSource` — Label of the source the recording came from, when there is one.
 - `LPronunciationDraftId` — Id of the stored pronunciation row, empty when none stands yet.
 - `LPronunciationDraftVariety` — Label telling this pronunciation from the entry's others, empty when unneeded.
+- `LPronunciationDraftRespelling` — The reading recast through the pack's respelling groups, empty when the pack has none.
+  It is stored beside the original so the respelling switch only picks which of the two is shown.
+  The engine derives it whenever the reading or its variety changes, and the user may overwrite it by hand.
 
 ## `public static LPronunciationDraft? LPronunciationDraftCreate(string ipa, string audio, string? source)`
 
@@ -26,4 +29,5 @@ It gives back null when neither was given, because an empty pronunciation is no 
 ## `public bool LPronunciationDraftEmpty`
 
 True when the draft carries nothing worth storing.
+A respelling alone counts, so a hand-written respelling is not dropped.
 A variety label alone does not make a row worth storing.

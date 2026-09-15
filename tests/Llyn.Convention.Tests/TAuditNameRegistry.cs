@@ -173,6 +173,7 @@ internal static class TAuditNameRegistry
         "Receiver",
         "Recording",
         "Reference",
+        "Reflex",
         "Refusal",
         "Register",
         "Repertoire",

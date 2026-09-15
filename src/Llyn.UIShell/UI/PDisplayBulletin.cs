@@ -64,6 +64,16 @@ public partial class PDisplay
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectReflex)
+        {
+            if (shown == bulletin.LBulletinId)
+            {
+                PDisplayReflexLoad(shown);
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             PDisplayClear();

@@ -172,6 +172,30 @@
                         </Grid>
                     </StackPanel>
 
+                    <StackPanel x:Name="PDialListing" Visibility="Collapsed">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Listing}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.ListingHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Epithet.Switch}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Epithet.Helper}" />
+                            </StackPanel>
+                            <ToggleButton
+                                x:Name="PSettingsEpithet"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="PSettingsEpithetHandle"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+                    </StackPanel>
+
                     <StackPanel x:Name="PDialWeb" Visibility="Collapsed">
                         <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Web}" />
                         <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.WebHelper}" />

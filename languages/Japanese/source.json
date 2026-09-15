@@ -5,7 +5,6 @@
   "transcription": [
     {
       "name": "Romaji",
-      "note": "Hepburn romaji as Wiktionary prints it after the Japanese headword, inside the headword-tr span. The lang attribute keeps other languages' transliterations out, and the span strategy strips the link a romaji with its own entry is wrapped in. The article page is asked before the REST rendering, because the REST host rejects bursts with 429.",
       "sources": [
         {
           "name": "Wiktionary",
@@ -29,9 +28,9 @@
     "font": {
       "family": "Yu Mincho, Yu Gothic UI",
       "size": 26
-    },
-    "note": "The kanji of the headword, one transcription row under the scheme named here, and the language each character opens an entry in. No source is listed, because a Japanese headword already carries its kanji and the reading view drops the kana itself; the row exists so a kyūjitai form can be typed in by hand."
-  },
+    }
+  },
+
   "font": {
     "family": "Yu Gothic UI",
     "size": 40
@@ -40,7 +39,6 @@
     "family": "Yu Mincho, Yu Gothic UI",
     "size": 16
   },
-  "note": "Language selector pack for Japanese. Pronunciation and audio sources are listed separately and can be added without changing the application.",
   "pronunciation": [],
   "audio": []
 }

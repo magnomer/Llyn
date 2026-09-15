@@ -40,7 +40,10 @@ public partial class PReference
         foreach (LEntry entry in read)
         {
             _pFootnoteList.Add(new PFootnoteItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

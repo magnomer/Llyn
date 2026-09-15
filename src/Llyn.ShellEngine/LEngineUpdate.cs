@@ -110,6 +110,7 @@ public sealed partial class LEngine
         LEngineNoteUpdate(id, draft, changes);
         LEnginePronunciationSync(id, draft.LEntryDraftPronunciations, changes, identity);
         LEngineTranscriptionSync(id, draft.LEntryDraftTranscriptions, changes, identity);
+        LEngineReflexSync(id, draft.LEntryDraftReflexes, changes, identity);
 
         LEntry updated = entries.LEntryRead(id) ?? stored;
         session.LDatabaseSessionCommit();

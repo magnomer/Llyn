@@ -37,7 +37,10 @@ public partial class PRepertoire
         foreach (LEntry entry in read)
         {
             _pOccurrenceList.Add(new POccurrenceItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

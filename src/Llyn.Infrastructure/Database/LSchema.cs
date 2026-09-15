@@ -15,6 +15,7 @@ public static class LSchema
         LSchemaMeaning.LSchemaMeaningCreate(connection);
         LSchemaPronunciation.LSchemaPronunciationCreate(connection);
         LSchemaTranscription.LSchemaTranscriptionCreate(connection);
+        LSchemaReflex.LSchemaReflexCreate(connection);
         LSchemaCollocation.LSchemaCollocationCreate(connection);
         LSchemaReference.LSchemaReferenceCreate(connection);
         LSchemaQuotation.LSchemaQuotationCreate(connection);

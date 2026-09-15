@@ -21,8 +21,14 @@ public sealed class TMarkupParse
         Assert.Equal("kin·dles", Assert.Single(entry.LMarkupEntryForm).LFormLocal);
         Assert.Equal(["past", "participle"], Assert.Single(entry.LMarkupEntryInflection).LMarkupInflectionMorphology);
         LPronunciationDraft pronunciation = Assert.Single(entry.LMarkupEntryPronunciation);
+        Assert.Equal("ˈkɪndl̩", pronunciation.LPronunciationDraftIpa);
+        Assert.Equal("ˈkɪndəl", pronunciation.LPronunciationDraftRespelling);
         Assert.Equal("ɪ", Assert.Single(pronunciation.LPronunciationDraftSyllables).LSyllableNucleus);
         Assert.Equal("KIN-dl", Assert.Single(entry.LMarkupEntryTranscription).LTranscriptionDraftText);
+        LReflexDraft reflex = Assert.Single(entry.LMarkupEntryReflex);
+        Assert.Equal("[ʈ͡ʂɤŋ²¹⁴]", reflex.LReflexDraftText);
+        Assert.Equal("/tʂəŋ²¹⁴/", reflex.LReflexDraftRespelling);
+        Assert.True(reflex.LReflexDraftMain);
         Assert.Equal("Chiefly *literary*.", entry.LMarkupEntryNote);
 
         LMarkupCard meaning = Assert.Single(entry.LMarkupEntryMeaning);

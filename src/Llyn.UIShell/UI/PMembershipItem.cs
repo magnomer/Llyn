@@ -7,11 +7,12 @@ internal sealed class PMembershipItem : INotifyPropertyChanged
 {
     private bool _pMembershipItemChosen;
 
-    internal PMembershipItem(long id, string headword, string language)
+    internal PMembershipItem(long id, string headword, string language, string epithet = "")
     {
         PMembershipItemId = id;
         PMembershipItemHeadword = headword;
         PMembershipItemName = headword;
+        PMembershipItemEpithet = epithet ?? string.Empty;
         PMembershipItemLanguage = language;
         PMembershipItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -19,6 +20,8 @@ internal sealed class PMembershipItem : INotifyPropertyChanged
     public long PMembershipItemId { get; }
 
     public string PMembershipItemHeadword { get; }
+
+    public string PMembershipItemEpithet { get; }
 
     public string PMembershipItemName { get; internal set; }
 

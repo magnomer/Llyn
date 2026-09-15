@@ -24,7 +24,7 @@ Binds the store to the workspace `database` it opens sessions through.
 
 Inserts `pronunciation` with a fresh opaque id, placed after the entry's other pronunciations.
 The position it carries is ignored, because the entry's order is settled by `LPronunciationOrderSet`.
-A blank variety or a blank IPA is stored as NULL.
+A blank variety, a blank IPA or a blank respelling is stored as NULL.
 It writes its syllables as ordered child rows.
 Their pronunciation id and position are assigned from the new id and list order.
 Returns the stored pronunciation with its id, position and children filled in.
@@ -36,7 +36,7 @@ Reads the entry's pronunciations in position order, each with its ordered syllab
 
 ## `public void LPronunciationUpdate(LPronunciation pronunciation)`
 
-Replaces the variety, the IPA and the syllables of the pronunciation identified by `pronunciation`'s id.
+Replaces the variety, the IPA, the respelling and the syllables of the pronunciation identified by `pronunciation`'s id.
 Existing syllable rows are cleared and the supplied list written in order.
 So the pronunciation id, entry link, position and identity stay fixed.
 The whole write is one transaction, and it throws when no pronunciation carries that id.

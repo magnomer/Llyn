@@ -37,7 +37,10 @@ public partial class PTenor
         foreach (LEntry entry in read)
         {
             _pCohortList.Add(new PCohortItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

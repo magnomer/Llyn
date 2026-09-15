@@ -171,6 +171,19 @@ public sealed class TLanguageLoader
 
         Assert.Empty(language.LLanguageRespellings);
         Assert.Empty(language.LLanguageCleanups);
+        Assert.False(language.LLanguagePhonemic);
+    }
+
+    [Theory]
+    [InlineData("Mandarin", true)]
+    [InlineData("Cantonese", true)]
+    [InlineData("English", false)]
+    public void LanguageLoad_PhonemicKey_ReadsFlag(string language, bool phonemic)
+    {
+        LLanguage pack = TInterface.TLanguageLoad(language);
+
+        Assert.Equal(phonemic, pack.LLanguagePhonemic);
+        Assert.NotEmpty(pack.LLanguageRespellings);
     }
 
     [Fact]

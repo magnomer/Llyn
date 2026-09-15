@@ -151,6 +151,12 @@ public partial class PEditor
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectSettings)
+        {
+            PEditorDraftRestore();
+            return;
+        }
+
         if (bulletin.LBulletinSubject != LSubject.LSubjectDraft
             || _pEditorDraft == 0
             || bulletin.LBulletinId != _pEditorDraft)

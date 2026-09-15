@@ -24,7 +24,9 @@ public sealed record LLanguage(
     IReadOnlyList<LScriptStyle>? LLanguageScripts = null,
     IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null,
     LHypothesis? LLanguageHypothesis = null,
-    bool LLanguageSilent = false)
+    bool LLanguageSilent = false,
+    IReadOnlyList<LReflexRule>? LLanguageReflexRules = null,
+    bool LLanguagePhonemic = false)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
@@ -45,4 +47,6 @@ public sealed record LLanguage(
     public IReadOnlyList<LScriptStyle> LLanguageScripts { get; init; } = LLanguageScripts ?? [];
 
     public IReadOnlyList<LFanqieBook> LLanguageFanqieBooks { get; init; } = LLanguageFanqieBooks ?? [];
+
+    public IReadOnlyList<LReflexRule> LLanguageReflexRules { get; init; } = LLanguageReflexRules ?? [];
 }

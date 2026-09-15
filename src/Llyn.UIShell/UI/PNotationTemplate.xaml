@@ -39,7 +39,9 @@
                         FontSize="14"
                         FontWeight="SemiBold"
                         Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                        <Run x:Name="PNotationReadingOpener" Text="[" /><Run Text="{Binding PNotationReadingPhonetic, Mode=OneWay}" /><Run x:Name="PNotationReadingCloser" Text="]" />
+                        <Run Text="{Binding PNotationReadingOpener, Mode=OneWay}" /><Run
+                            Text="{Binding PNotationReadingText, Mode=OneWay}" /><Run
+                            Text="{Binding PNotationReadingCloser, Mode=OneWay}" />
                     </TextBlock>
                 </StackPanel>
             </Button>
@@ -48,10 +50,6 @@
             <DataTrigger Binding="{Binding PNotationReadingFlag}" Value="{x:Null}">
                 <Setter TargetName="PNotationReadingFlag" Property="Visibility" Value="Collapsed" />
                 <Setter TargetName="PNotationSelector" Property="ToolTip" Value="{x:Null}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding PNotationReadingBracketed}" Value="False">
-                <Setter TargetName="PNotationReadingOpener" Property="Text" Value="" />
-                <Setter TargetName="PNotationReadingCloser" Property="Text" Value="" />
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>

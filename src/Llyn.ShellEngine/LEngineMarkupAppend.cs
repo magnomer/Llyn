@@ -20,6 +20,11 @@ public sealed partial class LEngine
                 loaded.LEntryDraftTranscriptions,
                 parsed.LEntryDraftTranscriptions,
                 static row => row.LTranscriptionDraftText),
+            LEntryDraftReflexes = LEngineMarkupAppend(
+                loaded.LEntryDraftReflexes,
+                parsed.LEntryDraftReflexes,
+                static row => string.Join(
+                    ' ', row.LReflexDraftLanguage, row.LReflexDraftKind, row.LReflexDraftText, row.LReflexDraftNote)),
             LEntryDraftSpeeches = LEngineMarkupAppend(
                 loaded.LEntryDraftSpeeches,
                 parsed.LEntryDraftSpeeches,

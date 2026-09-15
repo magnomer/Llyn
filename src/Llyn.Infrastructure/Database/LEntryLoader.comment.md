@@ -50,6 +50,10 @@ The audio's added time stays behind, because it is workspace bookkeeping.
 
 Every stored transcription of the entry, in stored order, each with its scheme and its id.
 
+### `private IReadOnlyList<LReflexDraft> LEntryReflexRead(long id)`
+
+Every stored reflex of the entry, in stored order, each with its language, kind, mark and id.
+
 ### `private IReadOnlyList<LSpeechDraft> LEntrySpeechFormat(IReadOnlyList<LSpeech> speeches)`
 
 Every part of speech the entry carries, in stored order.

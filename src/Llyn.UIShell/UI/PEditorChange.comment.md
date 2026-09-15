@@ -39,6 +39,11 @@ The handlers hold the editor rather than the other way round, so a dropped card 
 The three text fields of a card each become their own request, keyed by card and field.
 The number and the header a card raises are the engine's answers, so they raise no request.
 
+### `private PRespelling _pEditorRespelling = PRespelling.PRespellingPlain;`
+
+Which form the pronunciation field prints, read on every render from the switch and the draft's pack.
+A typed change is sent as a request for that form, so the edit side mirrors the read side.
+
 ### `private void PEditorTextHandle(object sender, TextChangedEventArgs e)`
 
 One handler for every text box in the editor, caught as the event bubbles.
@@ -46,6 +51,7 @@ Fields are added to the form often, and each new one would otherwise need rememb
 A card's own boxes are passed over here, because the card already reported them by property.
 A pronunciation row's box and a transcription row's box are passed over for the same reason.
 The entry-level boxes become their own requests, and anything else is a chip and takes the older path.
+The pronunciation field becomes a respelling request while respellings are shown and a reading request otherwise.
 
 ### `private void PEditorFocusHandle(object sender, RoutedEventArgs e)`
 

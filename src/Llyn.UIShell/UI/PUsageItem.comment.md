@@ -25,3 +25,7 @@ The headword as the row shows it, numbered `(1)`, `(2)` while another row carrie
 
 The kind of side the row stands for, kept as the stored value beside the worded owner text.
 A click reads it to decide whether the row leads to an Entry or to an Example.
+
+## `public string PUsageItemEpithet { get; }`
+
+The epithet the row prints after the headword, small and muted, in the reading the language pack names.

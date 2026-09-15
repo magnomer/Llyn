@@ -43,6 +43,7 @@ Its pending fetches, its missed slots per Entry, and the Entries it lost sit bes
 They are cleared with the frequency ones.
 The script fetches, pending and missed per character, sit in `LEngineScript.cs` and are cleared with them too.
 The fanqie fetches sit likewise in `LEngineFanqie.cs`, one at a time with an interval between posts.
+The reflex fills sit in `LEngineReflexFetch.cs`, and the rows they store are edited through `LEngineReflex.cs`.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
 
 ## `public LEngine()`

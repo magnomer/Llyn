@@ -1,4 +1,4 @@
-namespace Convention.Tests;
+﻿namespace Convention.Tests;
 
 internal static class TAuditCommentSetting
 {
@@ -8,6 +8,7 @@ internal static class TAuditCommentSetting
 
     public static readonly string[] TAuditCommentRoots =
     [
+        "languages",
         "src",
         "tests",
     ];

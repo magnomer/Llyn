@@ -32,8 +32,24 @@ A change made in one is the level the next one opens at.
 
 ## `public void LEngineRespellingSave(bool respelled)`
 
-Persists whether looked-up transcriptions are recast through the pack's respelling groups and keeps it current.
-The next lookup reads the switch, cached or fresh, so no search is run again to honour a flip.
+Persists whether readings are shown and edited in their respelled form and keeps it current.
+Every reading is stored in both forms, so a flip only changes which one each surface shows.
+A settings bulletin is raised so every open reading re-reads itself at once.
+
+## `public bool LEngineRespellingCheck(string language)`
+
+Whether readings of `language` are shown and edited as respellings right now.
+True only while the switch is on and the pack declares respelling groups, since otherwise no respelling is ever stored.
+A blank language has no pack and answers false.
+
+## `public bool LEnginePhonemicCheck(string language)`
+
+Whether the pack of `language` declares its respelling phonemic, so a respelled reading stands between slashes.
+A blank language has no pack and answers false.
+
+## `public void LEngineEpithetSave(bool epithet)`
+
+Turns the epithet after every listed headword on or off.
 
 ## `public void LEngineFrequencySave(bool frequency)`
 

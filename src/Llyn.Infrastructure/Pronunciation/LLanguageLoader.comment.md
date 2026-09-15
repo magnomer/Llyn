@@ -12,6 +12,7 @@ The loaded `LLanguage` carries every language-specific fact onward.
 The reading of one declared source, its attempts and its readings, sits in `LLanguageLoaderSource.cs`.
 The reading of the `script` list, one character style per row, sits in `LLanguageLoaderScript.cs`.
 The reading of the `fanqie` list, one rime book per row, sits in `LLanguageLoaderFanqie.cs`.
+The reading of the `reflex` list, one fetch rule per borrowing language, sits in `LLanguageLoaderReflex.cs`.
 The reading of the `hypothesis` file, the reconstruction tables, sits in `LLanguageLoaderHypothesis.cs`.
 The reading of the rewrite rules and the transcription schemes sits in `LLanguageLoaderRespelling.cs`.
 
@@ -79,6 +80,7 @@ A missing block reads as no varieties, and a repeated name keeps its first row.
 
 The top-level `tonal` key is read as a plain boolean, and only a literal `true` switches the tone contour on.
 The top-level `silent` key is read the same way, and only a literal `true` hides the pronunciation rows.
+The top-level `phonemic` key is read the same way, and only a literal `true` puts a respelled reading between slashes.
 
 ### `private static bool LLanguageFlaggedCheck(JsonElement root)`
 

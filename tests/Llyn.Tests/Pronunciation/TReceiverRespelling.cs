@@ -12,7 +12,7 @@ public sealed class TReceiverRespelling
     ];
 
     [Fact]
-    public void ReceiverCandidateAdd_Phonetic_RewritesTextOnly()
+    public void ReceiverCandidateAdd_Phonetic_FillsRespellingOnly()
     {
         TReceiverStub inner = TPronunciationHelper.TReceiverCreate();
         LReceiver receiver = TInterface.TReceiverRespellingCreate(inner, TReceiverRespellingGroups);
@@ -20,7 +20,8 @@ public sealed class TReceiverRespelling
         receiver.TReceiverCandidateAdd(TInterface.TCandidateCreate("Cambridge", "ˈhæpɪ", 2, true, "British"));
 
         LCandidate forwarded = Assert.Single(inner.TReceiverStubCandidates);
-        Assert.Equal("ˈhapi", forwarded.LCandidatePhonetic);
+        Assert.Equal("ˈhæpɪ", forwarded.LCandidatePhonetic);
+        Assert.Equal("ˈhapi", forwarded.LCandidateRespelling);
         Assert.Equal("Cambridge", forwarded.LCandidateSource);
         Assert.Equal(2, forwarded.LCandidateOrder);
         Assert.True(forwarded.LCandidateReached);
@@ -47,7 +48,9 @@ public sealed class TReceiverRespelling
 
         receiver.TReceiverCandidateAdd(TInterface.TCandidateCreate("Cambridge", "ˈhæpɪ", 0, true, "American"));
 
-        Assert.Equal("ˈhæpi", Assert.Single(inner.TReceiverStubCandidates).LCandidatePhonetic);
+        LCandidate forwarded = Assert.Single(inner.TReceiverStubCandidates);
+        Assert.Equal("ˈhæpɪ", forwarded.LCandidatePhonetic);
+        Assert.Equal("ˈhæpi", forwarded.LCandidateRespelling);
     }
 
     [Fact]

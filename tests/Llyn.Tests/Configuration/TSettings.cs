@@ -129,6 +129,19 @@ public sealed class TSettings
     }
 
     [Fact]
+    public void SettingsSave_EpithetOff_RoundTripsFalse()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", epithet: false));
+
+        Assert.False(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsEpithet);
+        Assert.Contains(
+            "\"epithet\": false",
+            File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+    }
+
+    [Fact]
     public void RespellingSave_True_ReadsBackAndWritesKey()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

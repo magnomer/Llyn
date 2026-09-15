@@ -145,8 +145,45 @@
       "spelling": "<a[^>]*>([^<]*)</a>"
     }
   ],
+  "reflex": [
+      {
+          "language": "Korean",
+          "url": "https://hanja.dict.naver.com/api3/ccko/search?query={word}&m=pc&range=letter&page=1",
+          "headers": {
+              "Referer": "https://hanja.dict.naver.com/"
+          },
+          "match": "(?<=\"items\":\\[\\{[^\\[\\]]*\"expKoreanPron\":\"[^\"]*)(?<note>[^\" ,/][^\",/]*?) (?<text>[^\" ,/]+)(?=[\",/])",
+          "every": true,
+          "epithet": "{note} {text}",
+          "clip": "\\(.*\\)",
+          "first": true
+      },
+      {
+          "language": "Mandarin",
+          "url": "https://en.wiktionary.org/wiki/{word}",
+          "match": "Standard Chinese</a></i>\\)</small>.{0,600}?Hanyu Pinyin</a></i></small>: <span[^>]*><span[^>]*><a[^>]*>(?<note>[^<]+)</a>.{0,1500}?Sinological <a[^>]*>IPA</a> <sup>\\(<a[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">/(?<text>[^/<]+)/",
+          "format": "[{text}]",
+          "every": true,
+          "first": true
+      },
+      {
+          "language": "Cantonese",
+          "url": "https://en.wiktionary.org/wiki/{word}",
+          "match": "Standard Cantonese</a>.{0,400}?Jyutping</a></i></small>: <span[^>]*>(?<note>(?:[^<]|</?sup>)+)</span>.{0,2500}?Sinological <a[^>]*>IPA</a> <sup>\\(<a[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">(?<text>[^<]+)</span>",
+          "rewrite": [
+              ["/([^/]+)/", "[$1]"]
+          ],
+          "every": true,
+          "first": true
+      },
+      {
+          "language": "Japanese",
+          "url": "https://en.wiktionary.org/wiki/{word}",
+          "match": "<i class=\"Hira mention\" lang=\"ja\">(?<=<b><a[^>]*>(?<kind>Go-on|Kan-on|Tō-on|Sō-on|Kan\\'yō-on)</a></b>:\\s*<span class=\"on-yomi\">(?:(?!</li>).){0,2000}?(?<main><span class=\"jouyou-reading\">)?<i class=\"Hira mention\" lang=\"ja\">)<a[^>]*>(?<text>[^<]+)</a>",
+          "every": true
+      }
+  ],
   "hypothesis": "hypothesis.json",
-  "note": "Language selector pack for Classical Chinese. Pronunciation and audio sources are listed separately and can be added without changing the application. The script list names the character styles the reading view shows above the first meaning, one row per style, fetched once per character from the Academia Sinica 小學堂 databases and kept in the workspace database. Each style posts the database's own search form with the character in EudcFontChar, because the site has no query API and every database needs its own hidden fields or answers 500. The match pattern reads every result cell: group 1 is the glyph image the site renders from its private fonts, group 2 the caption under it, such as the inscription and its era. The rewrite lifts the image size so the stored picture is the large original, and the view scales it down. The small seal style also reads the 說文 gloss the page prints under the results. The fanqie list names the rime books the reading view shows under the script box, one block per book and source, fetched once per character from the 古音小鏡 廣韻·集韻 tables and kept in the workspace database. Each book posts the site's search form with the character in word and the book in t. The site answers with the whole rime table the character sits in, marking the character with the match pattern, and only the marked cells are read: the row's initial, the cell's rime with its rime heading, and the column's division and tone, such as 疑 模[模] 一等平. The site refuses a post within a few seconds of the last and prints the busy text instead, so the interval holds the next post back and a busy answer is asked again later. The Wiktionary row reads the same 廣韻 placements from the English Wiktionary's Middle Chinese data module, fetched with a GET as plain text, one reading per quoted line such as 疑模一開 平五乎, which the line pattern reads apart into initial, rime, division, 開合, tone and the 反切 spelling; a character without a module answers not found and is left alone. Each row names its source, shown as the chip at the right of its lines. A cell of the table holds one group per 小韻 parted by a line break, so the split pattern parts them, the head pattern reads each group's rime, rime heading and 韻鏡 division, the column pattern reads the column's division and tone, the rounded pattern reads the underline the site draws under a 合口 character, and the spelling pattern reads the 反切 printed as the link of each group. The hypothesis key names the file beside this one holding the user's own reconstruction tables, hypothesis.json, kept apart because Classical Chinese will carry a system of its own.",
   "pronunciation": [],
   "audio": []
 }

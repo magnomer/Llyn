@@ -1,4 +1,4 @@
-﻿# PEditor.xaml
+# PEditor.xaml
 
 ## `<ResourceDictionary.MergedDictionaries>`
 
@@ -59,6 +59,7 @@ The rime-book placements of the entry, the same box the reading view shows, fold
 ## `<Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">`
 
 The primary pronunciation: its variety as a flag or a label, then the bracketed field, then its buttons.
+The brackets are named so the code behind can turn them into slashes for a phonemic respelling.
 The chip is empty for a pronunciation without a variety, so the brackets then open at the margin.
 The buttons are the accent tool style, so the primary row reads as the further rows do.
 Play shows only while the row has a recording.
@@ -70,6 +71,16 @@ The plus and minus carry no row, which the handlers read as the primary.
 The tone contour of the primary pronunciation, drawn beneath the chip when the chosen language is tonal.
 Its IPA is bound to the pronunciation field, so the picture follows every keystroke.
 The tonal flag is pushed by `PEditorContourApply` whenever the language changes.
+
+## `<Grid x:Name="PReflexBlock" Visibility="Collapsed">`
+
+The reflex block at the head of the reading stack.
+It holds the rows and the fetch-again button at their top right corner.
+It stays collapsed until a draft in a language with reflex rules or reflex rows is rendered.
+
+## `<ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />`
+
+The reflexes, one editable row each, drawn by the shared reflex template.
 
 ## `<ItemsControl x:Name="PAccent" ItemTemplate="{StaticResource Theme.Accent.Row}" />`
 
@@ -91,10 +102,10 @@ Its tag says whether the section declares sources, and the template hides the lo
 The field and the unseen twin that measures it, stacked on the same cell.
 The twin decides the cell's width, so the brackets close on the text instead of on a fixed box.
 
-## `<Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Background="Transparent" BorderThickness="0" ...>`
+## `<Border x:Name="PPlayback" Style="{StaticResource Theme.Volume.Tray}">`
 
 The volume tray holds the level every row's recording is played at.
-It is the same bare tray the reading view draws.
+It is the same bare tray the reading view draws, from the same theme style.
 It appears while any row has a recording and goes when none does.
 The volume is offered only while there is something to hear.
 The volume it shows is the workspace's own.

@@ -150,4 +150,26 @@ public sealed class TRespelling
 
         Assert.Equal(expected, TInterface.TRespellingScan(groups, phonetic, variety));
     }
+
+    [Theory]
+    [InlineData("ʈ͡ʂʊŋ⁵⁵", "tʂuŋ⁵⁵")]
+    [InlineData("t͡ɕi⁵⁵", "tsi⁵⁵")]
+    [InlineData("xän⁵¹", "han⁵¹")]
+    [InlineData("xän⁵¹", "han⁵¹")]
+    [InlineData("t͡sz̩⁵¹", "tsə⁵¹")]
+    [InlineData("kɤ⁵¹", "kə⁵¹")]
+    [InlineData("kuɤ³⁵", "kə³⁵")]
+    [InlineData("pɪn⁵⁵", "pin⁵⁵")]
+    [InlineData("pʊ⁵¹", "pu⁵¹")]
+    [InlineData("jɛ⁵¹", "je⁵¹")]
+    [InlineData("pʰɔ⁵¹", "pʰo⁵¹")]
+    [InlineData("pɑŋ⁵⁵", "paŋ⁵⁵")]
+    [InlineData("mä⁵⁵", "ma⁵⁵")]
+    public void RespellingScan_MandarinPack_RecastsKnownForms(string phonetic, string expected)
+    {
+        IReadOnlyList<LRespelling> groups = TInterface.TLanguageLoad("Mandarin").LLanguageRespellings;
+
+        Assert.Equal(expected, TInterface.TRespellingScan(groups, phonetic, string.Empty));
+        Assert.Equal(expected, TInterface.TRespellingScan(groups, expected, string.Empty));
+    }
 }

@@ -35,6 +35,7 @@ public partial class PSettings : UserControl
         PWorkspacePath.Text = _lEngine.LEngineWorkspaceRead();
         PLocalization.SelectedValue = PLocalizationLoader.PLocalizationLoaderNormalize(settings.LSettingsLocalization);
         PRespelling.IsChecked = settings.LSettingsRespelled;
+        PSettingsEpithet.IsChecked = settings.LSettingsEpithet;
         PFrequency.IsChecked = settings.LSettingsFrequency;
         PMorphology.IsChecked = settings.LSettingsMorphology;
         PLayoutLinked.IsChecked = settings.LSettingsLinked;

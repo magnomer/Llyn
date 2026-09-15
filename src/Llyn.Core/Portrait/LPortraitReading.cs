@@ -42,4 +42,28 @@ public sealed record LPortraitReading(
 
         return shown;
     }
+
+    public static IReadOnlyList<LPortraitReading> LPortraitReadingCreate(IReadOnlyList<LReflexDraft> reflexes)
+    {
+        ArgumentNullException.ThrowIfNull(reflexes);
+
+        List<LPortraitReading> shown = new List<LPortraitReading>();
+        foreach (LReflexDraft reflex in reflexes)
+        {
+            if (reflex.LReflexDraftText.Trim().Length == 0)
+            {
+                continue;
+            }
+
+            string label = reflex.LReflexDraftKind.Length == 0
+                ? reflex.LReflexDraftLanguage
+                : reflex.LReflexDraftLanguage + " " + reflex.LReflexDraftKind;
+            string text = reflex.LReflexDraftNote.Length == 0
+                ? reflex.LReflexDraftText
+                : reflex.LReflexDraftText + " " + reflex.LReflexDraftNote;
+            shown.Add(new LPortraitReading(label, text));
+        }
+
+        return shown;
+    }
 }

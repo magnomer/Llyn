@@ -14,10 +14,10 @@ The task completes when every source finishes.
 `session` is the draft the asking editor holds, and it names the trove the answer is kept in.
 A lookup already answered under that draft is replayed instead of searched again.
 So reopening the menu on an unchanged headword costs no network at all.
-When the respelling switch is on and the pack declares groups, the receiver is wrapped in `LReceiverRespelling`.
-Both the fresh search and the replay stream through that wrapper, so the switch shapes what the phonetician sees.
+When the pack declares respelling groups, the receiver is wrapped in `LReceiverRespelling`, whatever the switch says.
+Both the fresh search and the replay stream through that wrapper, so every candidate carries both forms.
 The trove is never wrapped and keeps cleaned but un-respelled text.
-So flipping the switch changes the next replay without any refetch, and nothing stored is touched.
+The switch is the phonetician's alone, picking which of the two forms each row shows.
 The pack is read under the gate whatever the switch says, because the fresh path needs its cleanup groups.
 
 ## `public Task LEngineRecordingFind(long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`

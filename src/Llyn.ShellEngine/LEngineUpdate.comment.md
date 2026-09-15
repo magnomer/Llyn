@@ -138,5 +138,5 @@ A note the user cleared is deleted rather than left standing as their last words
 
 ### `LEnginePronunciationSync(id, draft.LEntryDraftPronunciations, changes, identity);`
 
-The pronunciations and the transcriptions are reconciled by their own files.
+The pronunciations, the transcriptions and the reflexes are reconciled by their own files.
 Each is an ordered list the draft holds by id, and each is settled after the single fields.

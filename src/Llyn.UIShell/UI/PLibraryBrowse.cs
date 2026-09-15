@@ -88,7 +88,11 @@ public partial class PLibrary
         _pIndexList.Clear();
         foreach (LEntry entry in _lEngine.LEngineEntryFind(query, _pOrderChoice, _pSieveChoice))
         {
-            _pIndexList.Add(new PIndexItem(entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
+            _pIndexList.Add(new PIndexItem(
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

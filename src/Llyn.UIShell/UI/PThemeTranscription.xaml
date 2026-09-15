@@ -153,7 +153,7 @@
 
     <DataTemplate x:Key="Theme.Transcription.Row">
         <Border Style="{StaticResource Theme.Pronunciation.Surface}">
-            <Grid VerticalAlignment="Center">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                     <ColumnDefinition Width="Auto" />
@@ -161,8 +161,8 @@
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
                     <ComboBox Style="{StaticResource Theme.Transcription.Scheme}" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                    <Grid Margin="3,0">
+                <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
+                    <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
                         <TextBlock Style="{StaticResource Theme.Transcription.Measure}" />
                         <TextBox
                             Style="{StaticResource Theme.Pronunciation.Field}"
@@ -181,7 +181,7 @@
 
     <DataTemplate x:Key="Theme.Transcription.Display">
         <Border Style="{StaticResource Theme.Pronunciation.Surface}">
-            <Grid VerticalAlignment="Center">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                     <ColumnDefinition Width="Auto" />
@@ -189,7 +189,9 @@
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
                     <TextBlock Style="{StaticResource Theme.Transcription.Label}" />
                 </StackPanel>
-                <TextBlock Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PTranscriptionItemText}" />
+                <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
+                    <TextBlock Style="{StaticResource Theme.Pronunciation.Text}" Text="{Binding PTranscriptionItemText}" />
+                </StackPanel>
             </Grid>
         </Border>
     </DataTemplate>

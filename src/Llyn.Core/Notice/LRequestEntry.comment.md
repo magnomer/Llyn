@@ -25,6 +25,13 @@ Its recording and its stored detail are left alone.
 When the list is empty the request creates that first row.
 A pronunciation with neither reading nor recording is dropped by the engine, not by the request.
 A form that edits every row sends [LRequestPronunciationIpa](LRequestPronunciation.comment.md) instead.
+The engine derives the row's respelling from the new reading again, so a hand-written respelling is replaced.
+
+## `public sealed record LRequestRespelling(long LRequestDraftId, string LRequestText)`
+
+Replaces the respelling of the primary pronunciation alone, leaving its original reading as it stands.
+The form sends it in place of `LRequestIpa` while the respelling switch is on.
+When the list is empty the request creates that first row.
 
 ## `public sealed record LRequestAudio(long LRequestDraftId, string LRequestFile, string? LRequestSource)`
 

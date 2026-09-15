@@ -31,6 +31,7 @@ A record comparison would call every reloaded draft a change and never settle.
 
 Whether two drafts record the same transcriptions in the same order.
 A seeded row still blank is left out, as it is for pronunciations.
+The reflex rows are compared the same way by `LEngineReflexMatch` in `LEngineReflex.cs`.
 
 ## `private static bool LEngineSpeechMatch(IReadOnlyList<LSpeechDraft> one, IReadOnlyList<LSpeechDraft> other)`
 

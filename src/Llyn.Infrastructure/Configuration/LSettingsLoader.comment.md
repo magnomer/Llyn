@@ -50,6 +50,10 @@ The block's own shape is `LWindowLoader`'s business, so only its presence is dec
 The linked switch defaults on, so only an explicit JSON `false` lets tabs keep separate widths.
 A missing key means on, so an older workspace starts with its panels linked.
 
+### `byname.ValueKind != JsonValueKind.False;`
+
+The epithet switch defaults on the same way, so an older workspace lists its Han characters with their readings.
+
 ### `[LSettingsLoaderSplit] = settings.LSettingsSplit ? LSettingsLoaderEditor : LSettingsLoaderDisplay`
 
 A split is written as one of two words rather than as a boolean.

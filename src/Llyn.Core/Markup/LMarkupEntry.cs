@@ -12,6 +12,7 @@ public sealed record LMarkupEntry(
     IReadOnlyList<LMarkupInflection>? LMarkupEntryInflection = null,
     IReadOnlyList<LPronunciationDraft>? LMarkupEntryPronunciation = null,
     IReadOnlyList<LTranscriptionDraft>? LMarkupEntryTranscription = null,
+    IReadOnlyList<LReflexDraft>? LMarkupEntryReflex = null,
     IReadOnlyList<LMarkupCard>? LMarkupEntryMeaning = null,
     IReadOnlyList<LMarkupCard>? LMarkupEntryCollocation = null,
     string LMarkupEntryNote = "",
@@ -33,6 +34,8 @@ public sealed record LMarkupEntry(
     public IReadOnlyList<LTranscriptionDraft> LMarkupEntryTranscription { get; init; } =
         LMarkupEntryTranscription ?? [];
 
+    public IReadOnlyList<LReflexDraft> LMarkupEntryReflex { get; init; } = LMarkupEntryReflex ?? [];
+
     public IReadOnlyList<LMarkupCard> LMarkupEntryMeaning { get; init; } = LMarkupEntryMeaning ?? [];
 
     public IReadOnlyList<LMarkupCard> LMarkupEntryCollocation { get; init; } = LMarkupEntryCollocation ?? [];
@@ -52,6 +55,7 @@ public sealed record LMarkupEntry(
                 .Zip(other.LMarkupEntryPronunciation, LMarkupPronunciationMatch)
                 .All(static same => same)
             && LMarkupEntryTranscription.SequenceEqual(other.LMarkupEntryTranscription)
+            && LMarkupEntryReflex.SequenceEqual(other.LMarkupEntryReflex)
             && LMarkupEntryMeaning.SequenceEqual(other.LMarkupEntryMeaning)
             && LMarkupEntryCollocation.SequenceEqual(other.LMarkupEntryCollocation)
             && LMarkupEntryNote == other.LMarkupEntryNote;
@@ -60,6 +64,7 @@ public sealed record LMarkupEntry(
     private static bool LMarkupPronunciationMatch(LPronunciationDraft first, LPronunciationDraft second)
     {
         return first.LPronunciationDraftIpa == second.LPronunciationDraftIpa
+            && first.LPronunciationDraftRespelling == second.LPronunciationDraftRespelling
             && first.LPronunciationDraftVariety == second.LPronunciationDraftVariety
             && first.LPronunciationDraftAudio == second.LPronunciationDraftAudio
             && first.LPronunciationDraftSource == second.LPronunciationDraftSource

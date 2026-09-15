@@ -14,6 +14,7 @@ public partial class PSettings
             ("Workspace", PDialWorkspace, ["Workspace.Helper"]),
             ("Language", PDialLanguage, []),
             ("Transcription", PDialTranscription, ["Respelling.Switch", "Respelling.Helper"]),
+            ("Listing", PDialListing, ["Epithet.Switch", "Epithet.Helper"]),
             ("Web", PDialWeb, ["Frequency.Switch", "Frequency.Helper", "Morphology.Switch", "Morphology.Helper"]),
             ("Layout", PDialLayout, ["Layout.Linked", "Layout.LinkedHelper"])
         ];

@@ -22,6 +22,7 @@ internal static class TMarkupSample
             </inflection>
             <pronunciation>
               <ipa>ˈkɪndl̩</ipa>
+              <respelling>ˈkɪndəl</respelling>
               <variety>British</variety>
               <syllable>
                 <onset>k</onset>
@@ -36,6 +37,13 @@ internal static class TMarkupSample
               <scheme>Respelling</scheme>
               <text>KIN-dl</text>
             </transcription>
+            <reflex>
+              <language>Mandarin</language>
+              <text>[ʈ͡ʂɤŋ²¹⁴]</text>
+              <respelling>/tʂəŋ²¹⁴/</respelling>
+              <note>zhěng</note>
+              <main />
+            </reflex>
             <meaning>
               <title>light a fire</title>
               <definition>set something alight</definition>

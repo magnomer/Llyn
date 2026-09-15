@@ -19,3 +19,9 @@ The pronunciations of a draft as reading lines, in draft order, skipping a row w
 ## `public static IReadOnlyList<LPortraitReading> LPortraitReadingCreate(IReadOnlyList<LTranscriptionDraft> transcriptions)`
 
 The transcriptions of a draft as reading lines, in draft order, skipping a row whose text is blank.
+
+## `public static IReadOnlyList<LPortraitReading> LPortraitReadingCreate(IReadOnlyList<LReflexDraft> reflexes)`
+
+The reflexes of a draft as reading lines, in draft order, skipping a row whose text is blank.
+The label is the language followed by the kind, so the printed page reads `Japanese Kan-on`.
+The note follows the text, so a Mandarin line reads its IPA and then its pinyin.

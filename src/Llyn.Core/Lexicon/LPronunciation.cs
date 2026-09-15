@@ -8,4 +8,5 @@ public sealed record LPronunciation(
     int LPronunciationPosition,
     string? LPronunciationVariety,
     string? LPronunciationIpa,
-    IReadOnlyList<LSyllable> LPronunciationSyllables);
+    IReadOnlyList<LSyllable> LPronunciationSyllables,
+    string? LPronunciationRespelling = null);

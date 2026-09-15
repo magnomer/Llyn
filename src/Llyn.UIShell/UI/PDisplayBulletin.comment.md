@@ -19,6 +19,8 @@ A frequency the engine finished fetching fills the chip alone, because nothing e
 A script fetch that stored a character's pictures redraws the script box alone, whichever entry asked.
 A fanqie fetch that stored a character's rows redraws the fanqie box alone, in the same way.
 The shown entry may share the character.
+A reflex fill that stored the entry's rows re-reads the entry and redraws the reflex lines alone.
+A flipped setting re-reads the entry too, so every reading swaps to the form now picked.
 A headword written elsewhere is read back and redrawn, so two views of one entry never disagree.
 An entry that is gone leaves the unselected notice, because there is nothing left to show.
 A workspace that moved empties the view, since the id it stood on means nothing in the new database.

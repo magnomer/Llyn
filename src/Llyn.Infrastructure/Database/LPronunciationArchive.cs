@@ -29,20 +29,22 @@ public sealed class LPronunciationArchive
             LPronunciationPosition = LPronunciationSiblingRead(connection, pronunciation.LPronunciationEntryId).Count,
             LPronunciationVariety = LPronunciationVarietyRead(pronunciation.LPronunciationVariety),
             LPronunciationIpa = LPronunciationVarietyRead(pronunciation.LPronunciationIpa),
+            LPronunciationRespelling = LPronunciationVarietyRead(pronunciation.LPronunciationRespelling),
         };
 
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 """
-                INSERT INTO pronunciation (entry_parent, position, variety, ipa)
-                VALUES ($entry, $position, $variety, $ipa)
+                INSERT INTO pronunciation (entry_parent, position, variety, ipa, respelling)
+                VALUES ($entry, $position, $variety, $ipa, $respelling)
                 RETURNING pronunciation_id;
                 """;
             command.Parameters.AddWithValue("$entry", stored.LPronunciationEntryId);
             command.Parameters.AddWithValue("$position", stored.LPronunciationPosition);
             command.Parameters.AddWithValue("$variety", (object?)stored.LPronunciationVariety ?? DBNull.Value);
             command.Parameters.AddWithValue("$ipa", (object?)stored.LPronunciationIpa ?? DBNull.Value);
+            command.Parameters.AddWithValue("$respelling", (object?)stored.LPronunciationRespelling ?? DBNull.Value);
             stored = stored with { LPronunciationId = (long)command.ExecuteScalar()! };
         }
 
@@ -70,7 +72,7 @@ public sealed class LPronunciationArchive
         {
             command.CommandText =
                 """
-                SELECT pronunciation_id, position, variety, ipa
+                SELECT pronunciation_id, position, variety, ipa, respelling
                 FROM pronunciation WHERE entry_parent = $entry ORDER BY position;
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
@@ -84,7 +86,8 @@ public sealed class LPronunciationArchive
                     reader.GetInt32(1),
                     reader.IsDBNull(2) ? null : reader.GetString(2),
                     reader.IsDBNull(3) ? null : reader.GetString(3),
-                    []));
+                    [],
+                    reader.IsDBNull(4) ? null : reader.GetString(4)));
             }
         }
 
@@ -112,12 +115,18 @@ public sealed class LPronunciationArchive
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE pronunciation SET variety = $variety, ipa = $ipa WHERE pronunciation_id = $id;";
+                """
+                UPDATE pronunciation SET variety = $variety, ipa = $ipa, respelling = $respelling
+                WHERE pronunciation_id = $id;
+                """;
             command.Parameters.AddWithValue(
                 "$variety",
                 (object?)LPronunciationVarietyRead(pronunciation.LPronunciationVariety) ?? DBNull.Value);
             command.Parameters.AddWithValue(
                 "$ipa", (object?)LPronunciationVarietyRead(pronunciation.LPronunciationIpa) ?? DBNull.Value);
+            command.Parameters.AddWithValue(
+                "$respelling",
+                (object?)LPronunciationVarietyRead(pronunciation.LPronunciationRespelling) ?? DBNull.Value);
             command.Parameters.AddWithValue("$id", id);
             if (command.ExecuteNonQuery() == 0)
             {

@@ -54,6 +54,10 @@ public partial class PSettings
                 return _pSettingsHost.PLocalizationTextRead(
                     settings.LSettingsRespelled ? "Settings.On" : "Settings.Off");
 
+            case "Listing":
+                return _pSettingsHost.PLocalizationTextRead(
+                    settings.LSettingsEpithet ? "Settings.On" : "Settings.Off");
+
             case "Web":
                 int enabled = (settings.LSettingsFrequency ? 1 : 0) + (settings.LSettingsMorphology ? 1 : 0);
                 return string.Format(

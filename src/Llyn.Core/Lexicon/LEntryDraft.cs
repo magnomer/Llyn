@@ -14,13 +14,16 @@ public sealed record LEntryDraft(
     IReadOnlyList<LSpeechDraft>? LEntryDraftSpeeches = null,
     IReadOnlyList<LForm>? LEntryDraftForms = null,
     IReadOnlyList<LInflection>? LEntryDraftInflections = null,
-    IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null)
+    IReadOnlyList<LTranscriptionDraft>? LEntryDraftTranscriptions = null,
+    IReadOnlyList<LReflexDraft>? LEntryDraftReflexes = null)
 {
     public IReadOnlyList<LPronunciationDraft> LEntryDraftPronunciations { get; init; } =
         LEntryDraftPronunciations ?? [];
 
     public IReadOnlyList<LTranscriptionDraft> LEntryDraftTranscriptions { get; init; } =
         LEntryDraftTranscriptions ?? [];
+
+    public IReadOnlyList<LReflexDraft> LEntryDraftReflexes { get; init; } = LEntryDraftReflexes ?? [];
 
     public IReadOnlyList<LSpeechDraft> LEntryDraftSpeeches { get; init; } = LEntryDraftSpeeches ?? [];
 

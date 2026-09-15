@@ -245,7 +245,9 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding POccurrenceItemFlag}" Stretch="Uniform" />
-                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding POccurrenceItemName}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding POccurrenceItemName, Mode=OneWay}" /><Run
+                                        Style="{StaticResource Theme.Catalog.Epithet}"
+                                        Text="{Binding POccurrenceItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
                                     <TextBlock Grid.Column="2" Margin="10,0,0,0" Style="{StaticResource Theme.Catalog.Meta}" Text="{Binding POccurrenceItemLanguage}" />
                                 </Grid>
                             </Button>

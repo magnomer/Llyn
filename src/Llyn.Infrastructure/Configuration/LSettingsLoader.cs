@@ -19,6 +19,8 @@ public static class LSettingsLoader
     private const string LSettingsLoaderMorphology = "morphology";
     private const string LSettingsLoaderLayout = "layout";
     private const string LSettingsLoaderLinked = "linked";
+
+    private const string LSettingsLoaderEpithet = "epithet";
     private const string LSettingsLoaderMode = "mode";
     private const string LSettingsLoaderSplit = "split";
     private const string LSettingsLoaderEditor = "Editor";
@@ -99,8 +101,12 @@ public static class LSettingsLoader
                 side.ValueKind == JsonValueKind.String &&
                 string.Equals(side.GetString(), LSettingsLoaderEditor, StringComparison.Ordinal);
 
+            bool epithet =
+                !document.RootElement.TryGetProperty(LSettingsLoaderEpithet, out JsonElement byname) ||
+                byname.ValueKind != JsonValueKind.False;
+
             return new LSettings(
-                localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split);
+                localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split, epithet);
         }
         catch (JsonException)
         {
@@ -142,6 +148,7 @@ public static class LSettingsLoader
             [LSettingsLoaderFrequency] = settings.LSettingsFrequency,
             [LSettingsLoaderMorphology] = settings.LSettingsMorphology,
             [LSettingsLoaderLinked] = settings.LSettingsLinked,
+            [LSettingsLoaderEpithet] = settings.LSettingsEpithet,
             [LSettingsLoaderSplit] = settings.LSettingsSplit ? LSettingsLoaderEditor : LSettingsLoaderDisplay
         };
 

@@ -5,12 +5,13 @@ namespace Llyn.UIShell;
 
 internal sealed class PUsageItem
 {
-    internal PUsageItem(LUsage usage, string owner, string unknown, string unnamed)
+    internal PUsageItem(LUsage usage, string owner, string unknown, string unnamed, string epithet = "")
     {
         PUsageItemId = usage.LUsageId;
         PUsageItemEntry = usage.LUsageEntry;
         PUsageItemHeadword = usage.LUsageHeadword;
         PUsageItemName = usage.LUsageHeadword;
+        PUsageItemEpithet = epithet ?? string.Empty;
         PUsageItemLanguage = usage.LUsageLanguage;
         PUsageItemOwner = owner;
         PUsageItemKind = usage.LUsageOwner;
@@ -29,6 +30,8 @@ internal sealed class PUsageItem
     public long PUsageItemEntry { get; }
 
     public string PUsageItemHeadword { get; }
+
+    public string PUsageItemEpithet { get; }
 
     public string PUsageItemName { get; internal set; }
 

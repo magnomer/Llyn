@@ -20,10 +20,20 @@ In flag mode it is the tooltip of the flag rather than visible text.
 The variety's flag, resolved when the language pack shows varieties as flags and the pack declares one.
 Null means the label stands in for it.
 
-## `public bool PNotationReadingBracketed`
-
-Whether the reading is drawn between brackets, which IPA is and a transcription is not.
-
 ## `public string PNotationReadingPhonetic`
 
-The transcription itself, which is what taking the reading writes into the pronunciation field.
+The transcription as the source gave it, which is what taking the reading stores as the row's reading.
+The engine derives the respelling from it again, so the pick fills both forms.
+
+## `public string PNotationReadingText`
+
+The form the button prints, the candidate's respelling while the switch shows respellings and the phonetic otherwise.
+A transcription lookup carries no respelling and prints its text as it came.
+
+## `public string PNotationReadingOpener`
+
+The bracket drawn before the text, blank for a transcription, a slash for a phonemic respelling and square otherwise.
+
+## `public string PNotationReadingCloser`
+
+The bracket drawn after the text, chosen the same way.

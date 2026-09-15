@@ -48,7 +48,8 @@ public sealed partial class LEngine
             speeches,
             entry.LMarkupEntryForm,
             inflections,
-            entry.LMarkupEntryTranscription);
+            entry.LMarkupEntryTranscription,
+            entry.LMarkupEntryReflex);
     }
 
     private static LSpeechValue? LEngineMarkupResolve(

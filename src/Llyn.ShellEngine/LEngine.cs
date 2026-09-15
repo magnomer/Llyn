@@ -162,6 +162,7 @@ public sealed partial class LEngine : IDisposable
             LEngineInflectionClear();
             LEngineScriptClear();
             LEngineFanqieClear();
+            LEngineReflexClear();
             _lEngineLanguages.Clear();
             _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
@@ -203,6 +204,7 @@ public sealed partial class LEngine : IDisposable
             LEngineInflectionClear();
             LEngineScriptClear();
             LEngineFanqieClear();
+            LEngineReflexClear();
             _lEngineClient.Dispose();
         }
     }

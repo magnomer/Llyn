@@ -22,13 +22,15 @@ public partial class PDisplay
         _pDisplayAccentLanguage = language;
         _pDisplayAccentFlagged = flagged;
         _pDisplayAccentPrimary = draft.LEntryDraftPronunciation?.LPronunciationDraftVariety ?? string.Empty;
+        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, language);
 
         _pDisplayAccent.Clear();
         foreach (LPronunciationDraft spoken in draft.LEntryDraftPronunciations.Skip(1))
         {
             if (spoken.LPronunciationDraftIpa.Length > 0)
             {
-                _pDisplayAccent.Add(PAccentItem.PAccentItemCreate(_pDisplayHost, language, flagged, spoken));
+                _pDisplayAccent.Add(
+                    PAccentItem.PAccentItemCreate(_pDisplayHost, language, flagged, spoken, respelling));
             }
         }
 

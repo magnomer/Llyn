@@ -143,6 +143,12 @@ internal static partial class TInterface
     internal static LRequest TRequestIpaCreate(long draftId, string text) =>
         new LRequestIpa(draftId, text);
 
+    internal static LRequest TRequestRespellingCreate(long draftId, string text) =>
+        new LRequestRespelling(draftId, text);
+
+    internal static LRequest TRequestLanguageCreate(long draftId, string text) =>
+        new LRequestLanguage(draftId, text);
+
     internal static LRequest TRequestAudioCreate(long draftId, string file, string? source) =>
         new LRequestAudio(draftId, file, source);
 
@@ -160,6 +166,9 @@ internal static partial class TInterface
 
     internal static LRequest TPronunciationVarietyCreate(long draftId, long pronunciationId, string text) =>
         new LRequestPronunciationVariety(draftId, pronunciationId, text);
+
+    internal static LRequest TPronunciationRespellingCreate(long draftId, long pronunciationId, string text) =>
+        new LRequestPronunciationRespelling(draftId, pronunciationId, text);
 
     internal static LRequest TPronunciationAudioCreate(
         long draftId, long pronunciationId, string file, string? source) =>
@@ -180,6 +189,27 @@ internal static partial class TInterface
 
     internal static LRequest TTranscriptionTextCreate(long draftId, long transcriptionId, string text) =>
         new LRequestTranscriptionText(draftId, transcriptionId, text);
+
+    internal static LRequest TReflexAdditionCreate(long draftId, string language, string kind, int position) =>
+        new LRequestReflexAddition(draftId, language, kind, position);
+
+    internal static LRequest TReflexRemovalCreate(long draftId, long reflexId) =>
+        new LRequestReflexRemoval(draftId, reflexId);
+
+    internal static LRequest TReflexTextCreate(long draftId, long reflexId, string text) =>
+        new LRequestReflexText(draftId, reflexId, text);
+
+    internal static LRequest TReflexRespellingCreate(long draftId, long reflexId, string text) =>
+        new LRequestReflexRespelling(draftId, reflexId, text);
+
+    internal static LRequest TReflexLanguageCreate(long draftId, long reflexId, string text) =>
+        new LRequestReflexLanguage(draftId, reflexId, text);
+
+    internal static LRequest TReflexKindCreate(long draftId, long reflexId, string text) =>
+        new LRequestReflexKind(draftId, reflexId, text);
+
+    internal static LRequest TReflexMainCreate(long draftId, long reflexId, bool main) =>
+        new LRequestReflexMain(draftId, reflexId, main);
 
     internal static LRequest TReferenceBodyCreate(long draftId, LReference reference) =>
         new LRequestReferenceBody(

@@ -12,4 +12,5 @@ public sealed record LSettings(
     IReadOnlyList<LLayout>? LSettingsLayout = null,
     bool LSettingsLinked = true,
     string? LSettingsMode = null,
-    bool LSettingsSplit = false);
+    bool LSettingsSplit = false,
+    bool LSettingsEpithet = true);

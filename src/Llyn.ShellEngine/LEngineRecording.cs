@@ -36,7 +36,7 @@ public sealed partial class LEngine
             held = _lEngineTrove.LTroveCandidateRead(session, word, language);
             sources = held is null ? LEngineLookupRead(language) : [];
             pack = LEngineLanguageLoad(language);
-            if (_lEngineSettings.LSettingsRespelled && pack.LLanguageRespellings.Count > 0)
+            if (pack.LLanguageRespellings.Count > 0)
             {
                 receiver = new LReceiverRespelling(receiver, pack.LLanguageRespellings);
             }

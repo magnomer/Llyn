@@ -25,6 +25,7 @@ A named empty row is kept, because the form adds a row blank and fills it afterw
 Every transcription row named when it carries no id.
 A nameless row with neither scheme nor text is dropped.
 A row that names its scheme is kept even before its text is typed.
+The reflex rows are named the same way by `LEngineReflexNormalize` in `LEngineReflex.cs`.
 
 ## `private IReadOnlyList<LCardDraft> LEngineCardNormalize(IReadOnlyList<LCardDraft> cards)`
 

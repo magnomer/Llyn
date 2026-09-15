@@ -13,6 +13,10 @@ public sealed record LRequestPronunciationShift(
 public sealed record LRequestPronunciationIpa(long LRequestDraftId, long LRequestPronunciationId, string LRequestText)
     : LRequest(LRequestDraftId);
 
+public sealed record LRequestPronunciationRespelling(
+    long LRequestDraftId, long LRequestPronunciationId, string LRequestText)
+    : LRequest(LRequestDraftId);
+
 public sealed record LRequestPronunciationVariety(
     long LRequestDraftId, long LRequestPronunciationId, string LRequestText)
     : LRequest(LRequestDraftId);

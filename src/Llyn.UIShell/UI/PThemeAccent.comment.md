@@ -33,6 +33,13 @@ The variety name of a row, shown only while no flag stands for it.
 
 The unseen twin of a row's field, sized by the row's text or by the placeholder when it is blank.
 
+## `<Style x:Key="Theme.Accent.Blank" TargetType="StackPanel">`
+
+The room the editor's lookup, download and plus-minus buttons take after a row's play button.
+The reading view fills it with the same buttons drawn hidden.
+So the volume tray after the primary row stands at one x in both views.
+Buttons rather than a width, because a width is a figure that drifts.
+
 ## `<Style x:Key="Theme.Accent.Control" TargetType="StackPanel">`
 
 The plus and minus pair of a row, unseen until the row is hovered or holds the keyboard focus.

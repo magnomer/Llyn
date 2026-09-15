@@ -31,7 +31,8 @@ public partial class PDisplay
                 usage,
                 usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
                 unknown,
-                string.Empty));
+                string.Empty,
+                _lEngine.LEngineEpithetRead(usage.LUsageEntry)));
         }
 
         PTwin.PTwinNameApply(

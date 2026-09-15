@@ -1,5 +1,12 @@
 ﻿# PThemeVolume.xaml
 
+## `<Style x:Key="Theme.Volume.Tray" TargetType="Border">`
+
+The bare tray the volume slider stands in, beside the primary pronunciation row.
+It takes the reading row's height, so the two sit on one line in both views.
+It wears no surface, so the slider reads as part of the row.
+It starts collapsed and the view shows it while a row has a recording.
+
 ## `<Style x:Key="Theme.Volume.Rail" TargetType="RepeatButton">`
 
 The two halves of the volume track, the taken one filled in the accent and the remaining one left clear.

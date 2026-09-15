@@ -7,11 +7,12 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
 {
     private bool _pInventoryItemChosen;
 
-    internal PInventoryItem(long id, string headword, string language, string sound)
+    internal PInventoryItem(long id, string headword, string language, string sound, string epithet = "")
     {
         PInventoryItemId = id;
         PInventoryItemHeadword = headword;
         PInventoryItemName = headword;
+        PInventoryItemEpithet = epithet ?? string.Empty;
         PInventoryItemLanguage = language;
         PInventoryItemSound = sound;
         PInventoryItemPronunciation = sound.Length == 0 ? "[ ]" : $"[{sound}]";
@@ -21,6 +22,8 @@ internal sealed class PInventoryItem : INotifyPropertyChanged
     public long PInventoryItemId { get; }
 
     public string PInventoryItemHeadword { get; }
+
+    public string PInventoryItemEpithet { get; }
 
     public string PInventoryItemName { get; internal set; }
 

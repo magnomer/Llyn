@@ -7,17 +7,20 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
 {
     private bool _pXiaoyunItemChosen;
 
-    internal PXiaoyunItem(long id, string headword, string language)
+    internal PXiaoyunItem(long id, string headword, string language, string epithet = "")
     {
         PXiaoyunItemId = id;
         PXiaoyunItemHeadword = headword;
         PXiaoyunItemName = headword;
+        PXiaoyunItemEpithet = epithet ?? string.Empty;
         PXiaoyunItemFlag = PEnsign.PEnsignFind(language);
     }
 
     public long PXiaoyunItemId { get; }
 
     public string PXiaoyunItemHeadword { get; }
+
+    public string PXiaoyunItemEpithet { get; }
 
     public string PXiaoyunItemName { get; internal set; }
 

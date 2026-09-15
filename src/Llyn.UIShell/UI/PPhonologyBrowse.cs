@@ -92,7 +92,8 @@ public partial class PPhonology
                 row.LCatalogPronunciationEntry.LEntryId,
                 row.LCatalogPronunciationEntry.LEntryHeadword,
                 row.LCatalogPronunciationEntry.LEntryLanguage,
-                row.LCatalogPronunciationSound));
+                row.LCatalogPronunciationSound,
+                _lEngine.LEngineEpithetRead(row.LCatalogPronunciationEntry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

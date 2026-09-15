@@ -23,6 +23,8 @@ The entry-level detail travels as the shapes the archives store, never as flatte
 - `LEntryDraftInflections` — Inflections in order, each owning its ordered features.
 - `LEntryDraftTranscriptions` — Transcriptions in list order, one per scheme.
   Empty when the language shows none.
+- `LEntryDraftReflexes` — Reflexes in list order, grouped by borrowing language.
+  Empty when the language declares no reflex rule or nothing was fetched or typed.
 
 ## `public LPronunciationDraft? LEntryDraftPronunciation`
 

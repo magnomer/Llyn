@@ -48,9 +48,14 @@ The label survives as its tooltip.
 
 ## `<ToggleButton x:Name="PRespelling" ...>`
 
-Whether looked-up transcriptions are recast into the pack's symbol convention.
-The next lookup reads it, so nothing on screen changes when it flips.
+Whether readings are shown and edited in the pack's respelling convention instead of as they came.
+Both forms are stored, so a flip redraws every open reading through a settings bulletin and refetches nothing.
 The switch keeps the check box's handler and its checked reading, only the drawing changed.
+
+## `<ToggleButton x:Name="PSettingsEpithet" ...>`
+
+The switch of the listing page: whether every list prints an entry's epithet after its headword.
+The epithet is the reading the language pack names, so a Han character lists as `弄 [희롱할 롱]`.
 
 ## `<ToggleButton x:Name="PFrequency" ...>`
 

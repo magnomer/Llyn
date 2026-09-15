@@ -78,3 +78,9 @@ Everything language-specific arrives through this record.
 - `LLanguageSilent` — Whether the language takes no pronunciation, declared with the top-level key `silent` set to `true`.
   The input panel then hides its pronunciation rows, so no reading is typed, looked up or downloaded for the entry.
   A pack that omits the key is read as spoken, and the rows stay shown.
+- `LLanguageReflexRules` — The fetch rules the pack lists under `reflex`, each an [LReflexRule](LReflexRule.comment.md) record, in written order.
+  An entry of the language with no reflex rows is filled once from these, one rule per borrowing language.
+  A pack that lists none carries an empty list, and nothing is fetched or shown.
+- `LLanguagePhonemic` — Whether a respelled reading is shown between slashes, declared with the top-level key `phonemic` set to `true`.
+  The respelling groups of such a pack collapse allophones, so their output is phonemic rather than phonetic.
+  The brackets stay square while the original reading is shown, and in a pack that omits the key.

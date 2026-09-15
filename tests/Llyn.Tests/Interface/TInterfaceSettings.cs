@@ -16,8 +16,9 @@ internal static partial class TInterface
         IReadOnlyList<LLayout>? layout = null,
         bool linked = true,
         string? mode = null,
-        bool split = false) =>
-        new(localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split);
+        bool split = false,
+        bool epithet = true) =>
+        new(localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split, epithet);
 
     internal static LLayout TLayoutCreate(
         string tab,

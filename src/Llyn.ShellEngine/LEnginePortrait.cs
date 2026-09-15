@@ -62,7 +62,10 @@ public sealed partial class LEngine
             draft.LEntryDraftHeadword,
             draft.LEntryDraftLanguage,
             LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftPronunciations),
-            LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftTranscriptions),
+            [
+                .. LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftTranscriptions),
+                .. LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftReflexes),
+            ],
             LEngineSpeechShow(draft.LEntryDraftSpeeches),
             LPortraitCard.LPortraitCardCreate(
                 draft.LEntryDraftMeanings, label.LPortraitLabelMeaning, order, mark, targets),

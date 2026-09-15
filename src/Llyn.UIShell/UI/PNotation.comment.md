@@ -64,9 +64,9 @@ A blank scheme is a pronunciation search and a named one a transcription search 
 
 Writes the reading into the row the menu was opened for, then tags that row with its variety.
 A transcription row takes the text alone, because its scheme is already fixed and it carries no variety.
-The primary row goes through its own field, whose change defers the IPA request.
-A further row goes through its row model, whose change defers the same request on its id.
-The pending save is run before the variety is sent, because the primary row exists only once it has run.
+The primary row and a further row each take a reading request sent at once, carrying the source's phonetic.
+The engine derives the respelling from it, so the pick fills both forms whatever the field prints.
+The request is sent before the variety, because the primary row exists only once it has run.
 A further row that vanished while the menu stood open takes nothing.
 A reading without a variety writes the text alone.
 
@@ -106,4 +106,5 @@ Silence would have said a word is missing from a dictionary that was in fact dow
 
 Builds the button for one candidate, or nothing when the candidate carries no transcription.
 Its label and flag are resolved as a pronunciation row resolves its own, under the language the search began for.
-It is bracketed for a pronunciation search and bare for a transcription search.
+It prints the candidate's respelling while the switch shows respellings and its phonetic otherwise.
+It is bracketed for a pronunciation search, between slashes for a phonemic respelling, and bare for a transcription search.

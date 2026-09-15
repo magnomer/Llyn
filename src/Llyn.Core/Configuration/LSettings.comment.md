@@ -20,3 +20,5 @@ It is kept in a small fixed pointer outside the workspace.
 - `LSettingsLinked` — Whether dragging a panel in one tab sets the same width in every tab, on by default.
 - `LSettingsMode` — Name of the tab standing open, and nothing before any tab is chosen.
 - `LSettingsSplit` — Whether the open tab shows its editor rather than its read area.
+- `LSettingsEpithet` — Whether every list prints an entry's epithet after its headword, on by default.
+  The epithet is the reading a pack's reflex rule names, such as the Korean 훈 and 음.

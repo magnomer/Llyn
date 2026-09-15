@@ -48,6 +48,12 @@ internal sealed class LMarkupLoader
             transcriptions.Add(transcription with { LTranscriptionDraftId = 0, LTranscriptionDraftSeeded = false });
         }
 
+        List<LReflexDraft> reflexes = new(draft.LEntryDraftReflexes.Count);
+        foreach (LReflexDraft reflex in draft.LEntryDraftReflexes)
+        {
+            reflexes.Add(reflex with { LReflexDraftId = 0 });
+        }
+
         return new LMarkupEntry(
             draft.LEntryDraftHeadword,
             draft.LEntryDraftLanguage,
@@ -56,6 +62,7 @@ internal sealed class LMarkupLoader
             inflections,
             pronunciations,
             transcriptions,
+            reflexes,
             LMarkupCardCreate(draft.LEntryDraftMeanings),
             LMarkupCardCreate(draft.LEntryDraftCollocations),
             draft.LEntryDraftNote);

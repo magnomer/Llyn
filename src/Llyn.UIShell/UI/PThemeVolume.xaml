@@ -4,7 +4,19 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Llyn;component/UI/PThemePalette.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemePronunciation.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="Theme.Volume.Tray" TargetType="Border">
+        <Setter Property="Height" Value="{StaticResource Theme.Pronunciation.Height}" />
+        <Setter Property="Margin" Value="10,0,0,0" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Visibility" Value="Collapsed" />
+    </Style>
 
     <Style x:Key="Theme.Volume.Rail" TargetType="RepeatButton">
         <Setter Property="Focusable" Value="False" />

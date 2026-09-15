@@ -38,7 +38,8 @@ public partial class PYunjing
                         && (query.Length == 0
                             || entry.LEntryHeadword.Contains(query, StringComparison.OrdinalIgnoreCase)))
                     {
-                        _pXiaoyunList.Add(new PXiaoyunItem(id, entry.LEntryHeadword, entry.LEntryLanguage));
+                        _pXiaoyunList.Add(new PXiaoyunItem(
+                            id, entry.LEntryHeadword, entry.LEntryLanguage, _lEngine.LEngineEpithetRead(id)));
                     }
                 }
             }

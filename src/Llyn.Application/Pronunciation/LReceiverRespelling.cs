@@ -29,8 +29,8 @@ public sealed class LReceiverRespelling : LReceiver
             candidate.LCandidatePhonetic is string phonetic
                 ? candidate with
                 {
-                    LCandidatePhonetic = LRespelling.LRespellingScan(
-                        _lReceiverRespellingGroups, phonetic, candidate.LCandidateVariety)
+                    LCandidateRespelling = LRespelling.LRespellingScan(
+                        _lReceiverRespellingGroups, phonetic, candidate.LCandidateVariety),
                 }
                 : candidate);
     }

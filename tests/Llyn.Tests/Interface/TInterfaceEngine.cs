@@ -238,10 +238,22 @@ internal static partial class TInterface
         engine.LEngineWindowSave(window);
     }
 
+    internal static void TEngineEpithetSave(this LEngine engine, bool epithet) =>
+        engine.LEngineEpithetSave(epithet);
+
+    internal static string TEngineEpithetRead(this LEngine engine, long entryId) =>
+        engine.LEngineEpithetRead(entryId);
+
     internal static void TEngineRespellingSave(this LEngine engine, bool respelled)
     {
         engine.LEngineRespellingSave(respelled);
     }
+
+    internal static bool TEngineRespellingCheck(this LEngine engine, string language) =>
+        engine.LEngineRespellingCheck(language);
+
+    internal static bool TEnginePhonemicCheck(this LEngine engine, string language) =>
+        engine.LEnginePhonemicCheck(language);
 
     internal static void TEngineFrequencySave(this LEngine engine, bool frequency)
     {
@@ -309,6 +321,28 @@ internal static partial class TInterface
         string language,
         CancellationToken cancellation) =>
         engine.LEngineScriptFind(character, language, cancellation);
+
+    internal static IReadOnlyList<LReflex> TEngineReflexRead(this LEngine engine, long entryId) =>
+        engine.LEngineReflexRead(entryId);
+
+    internal static IReadOnlyList<LReflexRule> TEngineReflexRead(this LEngine engine, string language) =>
+        engine.LEngineReflexRead(language);
+
+    internal static bool TEngineReflexCheck(this LEngine engine, long entryId) =>
+        engine.LEngineReflexCheck(entryId);
+
+    internal static void TEngineReflexStart(this LEngine engine, long entryId) =>
+        engine.LEngineReflexStart(entryId);
+
+    internal static void TEngineReflexRebuild(this LEngine engine, long entryId) =>
+        engine.LEngineReflexRebuild(entryId);
+
+    internal static Task<IReadOnlyList<LReflexDraft>> TEngineReflexFind(
+        this LEngine engine,
+        string headword,
+        string language,
+        CancellationToken cancellation) =>
+        engine.LEngineReflexFind(headword, language, cancellation);
 
     internal static IReadOnlyList<LFanqieRow> TEngineFanqieRead(this LEngine engine, long entryId) =>
         engine.LEngineFanqieRead(entryId);

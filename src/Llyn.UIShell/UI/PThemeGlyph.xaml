@@ -61,7 +61,7 @@
 
     <DataTemplate x:Key="Theme.Glyph.Row">
         <Border Style="{StaticResource Theme.Pronunciation.Surface}">
-            <Grid VerticalAlignment="Center">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                     <ColumnDefinition Width="Auto" />
@@ -69,8 +69,8 @@
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
                     <TextBlock Style="{StaticResource Theme.Transcription.Label}" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                    <Grid Margin="3,0">
+                <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
+                    <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
                         <TextBlock Style="{StaticResource Theme.Glyph.Measure}" />
                         <TextBox Style="{StaticResource Theme.Glyph.Field}" Tag="{DynamicResource Input.Glyph}" Text="{Binding PTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>

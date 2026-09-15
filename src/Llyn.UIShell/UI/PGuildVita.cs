@@ -149,7 +149,8 @@ public partial class PGuild
                 LOwner.LOwnerExample => example,
                 _ => meaning,
             };
-            _pVitaCitation.Add(new PUsageItem(usage, owner, unknown, string.Empty));
+            _pVitaCitation.Add(new PUsageItem(
+                usage, owner, unknown, string.Empty, _lEngine.LEngineEpithetRead(usage.LUsageEntry)));
         }
 
         PTwin.PTwinNameApply(

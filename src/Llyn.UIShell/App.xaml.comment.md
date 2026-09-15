@@ -14,6 +14,13 @@ That is where an `async void` handler's fault lands.
 The fault is written to the audit log, shown to the user, and marked handled so the program stays up.
 Without this any such fault ends the process with the user's unsaved drafts still open.
 The dialog names the log, so the user can hand over what happened.
+When no window is left showing, the program ends after the dialog instead of lingering unseen.
+A fault while the main window is first shown leaves it unopened, and an unopened window never closes.
+Such a process held the installed executable and blocked the next build.
+
+## `private bool LBootstrapWindowCheck()`
+
+Whether any window of the program is showing, so a fault with none is the end of the run.
 
 ## `private void LBootstrapStrayHandle(object? sender, UnobservedTaskExceptionEventArgs e)`
 

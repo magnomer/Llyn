@@ -1,0 +1,26 @@
+# LReflex.cs
+
+## `public sealed record LReflex(`
+
+One reading of a Han-character entry in a neighbouring language that borrowed the character.
+Korean 음훈, Mandarin IPA and Japanese on'yomi are reflexes of one Middle Chinese reading.
+An entry owns an ordered list of these, grouped by language, each row one kind of reading.
+It is not a Transcription, which spells the entry's own reading in one scheme.
+`LReflexId` is the identity, an opaque and program-generated stable id.
+The language and kind are stored as text, so a row stays readable after its pack changes.
+
+**Parameters**
+
+- `LReflexId` — Opaque, program-generated stable id.
+- `LReflexEntryId` — Owning entry id.
+- `LReflexPosition` — Order within the entry, zero first.
+- `LReflexLanguage` — The borrowing language the reading belongs to, such as Korean or Japanese.
+- `LReflexKind` — The kind of reading, printed before it, such as a Japanese Go-on or Kan-on.
+  Empty when the language sorts its readings by no kind.
+- `LReflexText` — The reading as the view prints it, such as `롱(농)` or `[nʊŋ⁵¹]`.
+- `LReflexNote` — The note printed after the reading: a Mandarin pinyin or a Korean 훈.
+  Empty when the reading carries none.
+- `LReflexMain` — True when this reading is the one in common use.
+  The view then prints it in the accent colour.
+- `LReflexRespelling` — The reading recast in its own language's respelling convention, such as `/nuŋ⁵¹/`.
+  Empty when that language declares no respelling groups.

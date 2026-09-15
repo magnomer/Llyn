@@ -16,3 +16,8 @@ The row announces its chosen flag, so the mark moves without the list being rebu
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
 `PTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PMembershipItemHeadword` keeps the plain headword for everything that is not display.
+
+## `public string PMembershipItemEpithet { get; }`
+
+The epithet the row prints after the headword, small and muted, in the reading the language pack names.
+The epithet is the reading the pack names, empty when the setting is off or the entry keeps none.

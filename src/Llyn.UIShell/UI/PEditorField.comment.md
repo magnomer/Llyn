@@ -21,10 +21,3 @@ It decides the cell's width, so the row closes on the text rather than on a fixe
 
 The same twin for the pronunciation field.
 An empty field is measured by its hint, so the brackets never close on nothing.
-
-### `<Style x:Key="Editor.Field.Mark" TargetType="Path">`
-
-The heart the favourite toggle carries, hollow until the entry is kept.
-A heart, not a star, because the stars beside it belong to the grasp row.
-It is drawn in the theme's favorite rose rather than the accent, for the same reason.
-It reads the toggle it sits in rather than a name, so the style needs no editor around it.

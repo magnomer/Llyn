@@ -15,6 +15,7 @@ public sealed partial class LEngine
             && string.Equals(one.LEntryDraftLanguage, other.LEntryDraftLanguage, StringComparison.Ordinal)
             && LEngineSoundMatch(one.LEntryDraftPronunciations, other.LEntryDraftPronunciations)
             && LEngineSpellingMatch(one.LEntryDraftTranscriptions, other.LEntryDraftTranscriptions)
+            && LEngineReflexMatch(one.LEntryDraftReflexes, other.LEntryDraftReflexes)
             && string.Equals(
                 LMarkdown.LMarkdownNormalize(one.LEntryDraftNote),
                 LMarkdown.LMarkdownNormalize(other.LEntryDraftNote),
@@ -51,6 +52,8 @@ public sealed partial class LEngine
     {
         if (one.LPronunciationDraftId != other.LPronunciationDraftId
             || !string.Equals(one.LPronunciationDraftIpa, other.LPronunciationDraftIpa, StringComparison.Ordinal)
+            || !string.Equals(
+                one.LPronunciationDraftRespelling, other.LPronunciationDraftRespelling, StringComparison.Ordinal)
             || !string.Equals(
                 one.LPronunciationDraftVariety, other.LPronunciationDraftVariety, StringComparison.Ordinal)
             || !string.Equals(

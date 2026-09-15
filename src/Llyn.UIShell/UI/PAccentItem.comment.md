@@ -3,7 +3,8 @@
 ## `internal sealed class PAccentItem : INotifyPropertyChanged`
 
 One pronunciation row after the primary, as the editor and the reading view show it.
-It carries the draft row's id, its variety, the IPA the field is bound to, and its audio file.
+It carries the draft row's id, its variety, the reading text the field is bound to, and its audio file.
+The text is whichever stored form the respelling switch picks, and the brackets follow that choice.
 The variety is shown as a flag when the pack draws varieties as flags, and as a label otherwise.
 The flag may arrive after the row, so it notifies when it lands.
 
@@ -17,9 +18,18 @@ Blank is what collapses the label, so a row never shows both.
 The variety's flag, or null while none is known.
 Setting it also announces the label, since the label yields to it.
 
-## `public string PAccentItemIpa`
+## `public string PAccentItemOpener`
 
-The IPA as typed or as the draft holds it.
+The bracket drawn before the text, fixed when the row is built.
+A flip of the switch rebuilds every row, so a fixed bracket never goes stale.
+
+## `public string PAccentItemCloser`
+
+The bracket drawn after the text, fixed for the same reason.
+
+## `public string PAccentItemText`
+
+The reading as typed or as the draft holds it, in the form the switch picks.
 It announces only a real change, so a render writing the same text stays silent.
 
 ## `public string PAccentItemAudio`
@@ -27,9 +37,9 @@ It announces only a real change, so a render writing the same text stays silent.
 The workspace file the row plays, blank while it has none.
 Blank is what collapses the play button.
 
-## `internal static PAccentItem PAccentItemCreate(PWindow host, string language, bool flagged, LPronunciationDraft spoken)`
+## `internal static PAccentItem PAccentItemCreate(`
 
-Builds the row for one draft pronunciation under the language it belongs to.
+Builds the row for one draft pronunciation under the language it belongs to, printing the form `respelling` picks.
 
 ## `internal static string PAccentLabelFormat(PWindow host, string variety)`
 

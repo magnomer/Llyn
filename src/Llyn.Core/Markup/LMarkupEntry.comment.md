@@ -16,6 +16,7 @@ Two entries are equal when every row is equal in order, so a round trip can be c
 - `LMarkupEntryInflection` — Inflections with their speech and morphologies by name.
 - `LMarkupEntryPronunciation` — Pronunciation drafts with id zero.
 - `LMarkupEntryTranscription` — Transcription drafts with id zero.
+- `LMarkupEntryReflex` — Reflex drafts with id zero.
 - `LMarkupEntryMeaning` — Meaning cards, each of which may nest.
 - `LMarkupEntryCollocation` — Collocation cards, which never nest.
 - `LMarkupEntryNote` — The note markdown, empty when there is none.

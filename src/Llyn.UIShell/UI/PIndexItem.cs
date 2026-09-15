@@ -7,11 +7,12 @@ internal sealed class PIndexItem : INotifyPropertyChanged
 {
     private bool _pIndexItemChosen;
 
-    internal PIndexItem(long id, string headword, string language)
+    internal PIndexItem(long id, string headword, string language, string epithet = "")
     {
         PIndexItemId = id;
         PIndexItemHeadword = headword;
         PIndexItemName = headword;
+        PIndexItemEpithet = epithet ?? string.Empty;
         PIndexItemLanguage = language;
         PIndexItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -19,6 +20,8 @@ internal sealed class PIndexItem : INotifyPropertyChanged
     public long PIndexItemId { get; }
 
     public string PIndexItemHeadword { get; }
+
+    public string PIndexItemEpithet { get; }
 
     public string PIndexItemName { get; internal set; }
 

@@ -7,11 +7,12 @@ internal sealed class PQuotationItem : INotifyPropertyChanged
 {
     private bool _pQuotationItemChosen;
 
-    internal PQuotationItem(long id, string headword, string language)
+    internal PQuotationItem(long id, string headword, string language, string epithet = "")
     {
         PQuotationItemId = id;
         PQuotationItemHeadword = headword;
         PQuotationItemName = headword;
+        PQuotationItemEpithet = epithet ?? string.Empty;
         PQuotationItemLanguage = language;
         PQuotationItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -19,6 +20,8 @@ internal sealed class PQuotationItem : INotifyPropertyChanged
     public long PQuotationItemId { get; }
 
     public string PQuotationItemHeadword { get; }
+
+    public string PQuotationItemEpithet { get; }
 
     public string PQuotationItemName { get; internal set; }
 

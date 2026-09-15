@@ -59,6 +59,7 @@ Reads one `inflection` element, its speech and morphologies by name.
 ## `private static LPronunciationDraft LMarkupPronunciationParse(XElement element, List<LMarkupOmission> omissions)`
 
 Reads one `pronunciation` element, audio and source kept verbatim.
+A `respelling` child fills the draft's respelling, and a file without one leaves it blank.
 
 ## `private static LSyllable LMarkupSyllableParse(XElement element, int position, List<LMarkupOmission> omissions)`
 
@@ -67,3 +68,7 @@ Reads one `syllable` element at the given position under a pronunciation with no
 ## `private static LTranscriptionDraft LMarkupTranscriptionParse(XElement element, List<LMarkupOmission> omissions)`
 
 Reads one `transcription` element as a scheme and its text.
+
+## `private static LReflexDraft LMarkupReflexParse(XElement element, List<LMarkupOmission> omissions)`
+
+Reads one `reflex` element as a language, a kind, its text, its note and whether a `main` element marks it.

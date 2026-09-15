@@ -30,6 +30,7 @@ public partial class PDisplay : UserControl
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
         PDisplayAccent.ItemsSource = _pDisplayAccent;
         PDisplayTranscription.ItemsSource = _pDisplayTranscription;
+        PDisplayReflex.ItemsSource = _pDisplayReflex;
         PDisplayGlyph.ItemsSource = _pDisplayGlyph;
 
         PDisplaySwath.PSwathAttach(PDisplayContents);
@@ -81,14 +82,21 @@ public partial class PDisplay : UserControl
 
         PDisplayHeadword.Text = draft.LEntryDraftHeadword;
         PDisplayLanguageShow(draft.LEntryDraftLanguage);
-        PDisplayPronunciation.Text = draft.LEntryDraftIpa;
+        PDisplayReflexStart(id);
+        PDisplayReflexShow(draft);
+        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, draft.LEntryDraftLanguage);
+        PDisplayPronunciation.Text = draft.LEntryDraftPronunciation is LPronunciationDraft primary
+            ? respelling.PRespellingTextRead(primary)
+            : string.Empty;
+        PDisplayPronunciationOpener.Text = respelling.PRespellingOpener;
+        PDisplayPronunciationCloser.Text = respelling.PRespellingCloser;
         PDisplayContour.PContourTonal = draft.LEntryDraftLanguage.Length > 0
             && _lEngine.LEngineTonalCheck(draft.LEntryDraftLanguage);
         PDisplayContour.PContourIpa = draft.LEntryDraftIpa;
-        PDisplayPronunciationSurface.Visibility = draft.LEntryDraftIpa.Length == 0
+        PDisplayPronunciationSurface.Visibility = PDisplayPronunciation.Text.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
-        PDisplayPronunciationLead.SharedSizeGroup = draft.LEntryDraftIpa.Length == 0 ? null : "PReadingLabel";
+        PDisplayPronunciationLead.SharedSizeGroup = PDisplayPronunciation.Text.Length == 0 ? null : "PReadingLabel";
         PDisplayAccentShow(draft);
         PDisplayGlyphShow(draft);
         PDisplayTranscriptionShow(draft);
@@ -207,6 +215,7 @@ public partial class PDisplay : UserControl
         PDisplayContour.PContourIpa = string.Empty;
         PDisplayAccentClear();
         _pDisplayTranscription.Clear();
+        _pDisplayReflex.Clear();
         PDisplayGlyphClear();
         PDisplaySpeech.ItemsSource = null;
         PDisplaySpeechSection.Visibility = Visibility.Collapsed;

@@ -1,6 +1,6 @@
 # LCandidate.cs
 
-## `public sealed record LCandidate(string LCandidateSource, string? LCandidatePhonetic, int LCandidateOrder, bool LCandidateReached, string LCandidateVariety)`
+## `public sealed record LCandidate(`
 
 What one lookup source had to say about a headword.
 Every source produces at least one, so the menu shows a row for each and none is silently absent.
@@ -21,3 +21,5 @@ A source that failed is as much a result as one that answered, and the user is t
   A word the dictionary does not carry is told from a dictionary that is down.
 - `LCandidateVariety` — The regional variety the form belongs to, matching one the pack declares.
   It is empty when the source gave no variety, and the menu shows the row untagged.
+- `LCandidateRespelling` — The phonetic form recast through the pack's respelling groups, or null when none ran.
+  The original form stays in `LCandidatePhonetic`, so the menu can show either and the pick stores both.

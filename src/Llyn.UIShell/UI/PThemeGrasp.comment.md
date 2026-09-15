@@ -19,6 +19,10 @@ Muted like the label beside it, so an unjudged row does not call for attention.
 The fill drawn while the pointer hovers, before a click commits: the accent at half strength.
 Strong enough to read at a glance, yet plainly not the committed fill beside it.
 
+## `<Style x:Key="Theme.Grasp.Mark" TargetType="local:PGrasp">`
+
+The star row's gap after the heart and its centering, set once for both views.
+
 ## `<Style x:Key="Theme.Grasp.Label" TargetType="TextBlock">`
 
 The words beside the stars saying what the shown step means.

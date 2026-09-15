@@ -35,6 +35,7 @@ public sealed class LEntryLoader
         LNote? note = new LNoteArchive(_lEntryLoaderDatabase).LNoteRead(id);
         IReadOnlyList<LPronunciationDraft> pronunciations = LEntrySoundRead(id);
         IReadOnlyList<LTranscriptionDraft> transcriptions = LEntrySpellingRead(id);
+        IReadOnlyList<LReflexDraft> reflexes = LEntryReflexRead(id);
 
         Dictionary<long, List<LMeaning>> senses = [];
         foreach (LMeaning meaning in new LMeaningArchive(_lEntryLoaderDatabase).LMeaningRead(id))
@@ -73,7 +74,8 @@ public sealed class LEntryLoader
             speeches,
             forms,
             inflections,
-            transcriptions);
+            transcriptions,
+            reflexes);
     }
 
     private IReadOnlyList<LCardDraft> LEntryChildRead(
@@ -115,7 +117,8 @@ public sealed class LEntryLoader
                 audio?.LPronunciationAudioFile ?? string.Empty,
                 audio?.LPronunciationAudioSource,
                 pronunciation.LPronunciationId,
-                pronunciation.LPronunciationVariety ?? string.Empty));
+                pronunciation.LPronunciationVariety ?? string.Empty,
+                LPronunciationDraftRespelling: pronunciation.LPronunciationRespelling ?? string.Empty));
         }
 
         return drafts;
@@ -131,6 +134,24 @@ public sealed class LEntryLoader
                 transcription.LTranscriptionScheme,
                 transcription.LTranscriptionText,
                 transcription.LTranscriptionId));
+        }
+
+        return drafts;
+    }
+
+    private IReadOnlyList<LReflexDraft> LEntryReflexRead(long id)
+    {
+        List<LReflexDraft> drafts = [];
+        foreach (LReflex reflex in new LReflexArchive(_lEntryLoaderDatabase).LReflexRead(id))
+        {
+            drafts.Add(new LReflexDraft(
+                reflex.LReflexLanguage,
+                reflex.LReflexKind,
+                reflex.LReflexText,
+                reflex.LReflexMain,
+                reflex.LReflexId,
+                reflex.LReflexNote,
+                reflex.LReflexRespelling));
         }
 
         return drafts;

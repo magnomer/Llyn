@@ -10,6 +10,7 @@ The primary pronunciation wears its own variety chip in the same way.
 ## `private void PDisplayAccentShow(LEntryDraft draft)`
 
 Rebuilds the rows from the draft, and asks the pack once whether varieties draw as flags.
+Which form the rows print and which brackets they wear is read once in the same pass.
 Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
 
 ## `internal void PDisplayPlaybackHandle(object sender, ExecutedRoutedEventArgs e)`

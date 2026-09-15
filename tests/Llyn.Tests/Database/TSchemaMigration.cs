@@ -86,6 +86,24 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_OlderBuildBeforeTheNote_DropsEveryReflexRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "INSERT INTO entry (entry_id, headword, language, added_utc, updated_utc) " +
+            "VALUES (1, '弄', 'Classical Chinese', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO reflex (entry_parent, position, language, kind, text, main) " +
+            "VALUES (1, 0, 'Mandarin', 'nòng', '[nʊŋ⁵¹]', 0); " +
+            $"UPDATE schema_version SET version = {LSchemaReflex.LSchemaReflexNoted - 1};");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM entry;"));
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM reflex;"));
+    }
+
+    [Fact]
     public void DatabaseCreate_OlderBuild_KeepsTheFileAndLeavesNoResidue()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

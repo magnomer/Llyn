@@ -10,11 +10,13 @@ public sealed partial class LEngine
     {
         IReadOnlyList<LPronunciationDraft> spoken = LEngineSoundNormalize(content.LEntryDraftPronunciations);
         IReadOnlyList<LTranscriptionDraft> spelled = LEngineSpellingNormalize(content.LEntryDraftTranscriptions);
+        IReadOnlyList<LReflexDraft> reflexes = LEngineReflexNormalize(content.LEntryDraftReflexes);
         IReadOnlyList<LCardDraft> meanings = LEngineCardNormalize(content.LEntryDraftMeanings);
         IReadOnlyList<LCardDraft> collocations = LEngineCardNormalize(content.LEntryDraftCollocations);
 
         return ReferenceEquals(spoken, content.LEntryDraftPronunciations)
             && ReferenceEquals(spelled, content.LEntryDraftTranscriptions)
+            && ReferenceEquals(reflexes, content.LEntryDraftReflexes)
             && ReferenceEquals(meanings, content.LEntryDraftMeanings)
             && ReferenceEquals(collocations, content.LEntryDraftCollocations)
             ? content
@@ -22,6 +24,7 @@ public sealed partial class LEngine
             {
                 LEntryDraftPronunciations = spoken,
                 LEntryDraftTranscriptions = spelled,
+                LEntryDraftReflexes = reflexes,
                 LEntryDraftMeanings = meanings,
                 LEntryDraftCollocations = collocations,
             };

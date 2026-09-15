@@ -174,8 +174,27 @@ public sealed partial class LEngine
                     });
             }
 
-            return draft with { LEntryDraftPronunciations = resolved };
+            return LEngineRespellingRestore(draft with { LEntryDraftPronunciations = resolved });
         }
+    }
+
+    private LEntryDraft LEngineRespellingRestore(LEntryDraft draft)
+    {
+        List<LPronunciationDraft> spoken = new(draft.LEntryDraftPronunciations.Count);
+        foreach (LPronunciationDraft row in draft.LEntryDraftPronunciations)
+        {
+            spoken.Add(row.LPronunciationDraftRespelling.Length == 0
+                ? LEngineRespellingResolve(draft.LEntryDraftLanguage, row)
+                : row);
+        }
+
+        List<LReflexDraft> reflexes = new(draft.LEntryDraftReflexes.Count);
+        foreach (LReflexDraft row in draft.LEntryDraftReflexes)
+        {
+            reflexes.Add(row.LReflexDraftRespelling.Length == 0 ? LEngineRespellingResolve(row) : row);
+        }
+
+        return draft with { LEntryDraftPronunciations = spoken, LEntryDraftReflexes = reflexes };
     }
 
     public LRevision LEngineEntryDelete(long id)

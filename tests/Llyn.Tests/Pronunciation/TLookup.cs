@@ -172,8 +172,12 @@ public sealed class TLookup
             respelling.TReceiverCandidateAdd(candidate);
         }
 
-        Assert.Equal("ˈhapi", Assert.Single(receiver.TReceiverStubCandidates).LCandidatePhonetic);
-        Assert.Equal("ˈhæpi", Assert.Single(trove.TTroveCandidateRead(7, "happy", "English")!).LCandidatePhonetic);
+        LCandidate respelled = Assert.Single(receiver.TReceiverStubCandidates);
+        Assert.Equal("ˈhæpi", respelled.LCandidatePhonetic);
+        Assert.Equal("ˈhapi", respelled.LCandidateRespelling);
+        LCandidate kept = Assert.Single(trove.TTroveCandidateRead(7, "happy", "English")!);
+        Assert.Equal("ˈhæpi", kept.LCandidatePhonetic);
+        Assert.Null(kept.LCandidateRespelling);
     }
 
     [Fact]

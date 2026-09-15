@@ -36,12 +36,11 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Top" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
                         <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                <Grid Width="19" Height="14" VerticalAlignment="Center">
+                            <StackPanel Style="{StaticResource Theme.Language.Face}">
+                                <Grid Style="{StaticResource Theme.Language.Flag}">
                                     <Image x:Name="PDisplayLanguageFlag" Stretch="Uniform">
                                         <Image.Style>
                                             <Style TargetType="Image">
@@ -65,48 +64,31 @@
                                         </Ellipse.Style>
                                     </Ellipse>
                                 </Grid>
-                                <TextBlock x:Name="PDisplayLanguage" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" />
-                                <Border Width="16" />
+                                <TextBlock x:Name="PDisplayLanguage" Style="{StaticResource Theme.Language.Name}" />
+                                <Path Style="{StaticResource Theme.Language.Expand}" Visibility="Hidden" />
                             </StackPanel>
                         </Border>
-                        <ToggleButton
-                            x:Name="PDisplayFavorite"
-                            Grid.Column="2"
-                            Width="42"
-                            Height="42"
-                            Margin="12,0,0,0"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            Click="PDisplayFavoriteHandle"
-                            Style="{StaticResource Theme.Favorite.Mark}"
-                            ToolTip="{DynamicResource Favorite.Mark}">
-                            <Path Width="24" Height="24" Stretch="None" Fill="{StaticResource Theme.Favorite}">
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Setter Property="Data" Value="{local:PIcon favorite, 24}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsChecked, ElementName=PDisplayFavorite}" Value="True">
-                                                <Setter Property="Data" Value="{local:PIcon favorite-marked, 24}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                        </ToggleButton>
-                        <StackPanel Grid.Column="3" Margin="2,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <StackPanel Grid.Column="2" Style="{StaticResource Theme.Favorite.Row}">
+                            <ToggleButton
+                                x:Name="PDisplayFavorite"
+                                Click="PDisplayFavoriteHandle"
+                                Style="{StaticResource Theme.Favorite.Mark}"
+                                ToolTip="{DynamicResource Favorite.Mark}">
+                                <Path Style="{StaticResource Theme.Favorite.Icon}" />
+                            </ToggleButton>
                             <local:PGrasp
                                 x:Name="PDisplayGrasp"
-                                VerticalAlignment="Center"
                                 PGraspChanged="PDisplayGraspHandle"
                                 PGraspHovered="PDisplayHoverHandle"
-                                ToolTip="{DynamicResource Grasp.Mark}" />
-                            <TextBlock x:Name="PDisplayGraspLabel" Margin="6,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Grasp.Label}" />
+                                Style="{StaticResource Theme.Grasp.Mark}" />
+                            <TextBlock x:Name="PDisplayGraspLabel" Style="{StaticResource Theme.Grasp.Label}" />
                         </StackPanel>
                     </Grid>
                     <StackPanel Margin="12,12,0,0" Grid.IsSharedSizeScope="True">
+                        <ItemsControl x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />
                         <StackPanel Orientation="Horizontal">
                             <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
-                                <Grid VerticalAlignment="Center">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition x:Name="PDisplayPronunciationLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
                                         <ColumnDefinition Width="Auto" />
@@ -115,10 +97,10 @@
                                         <Image x:Name="PDisplayPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
                                         <TextBlock x:Name="PDisplayPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
                                     </StackPanel>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                                    <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
+                                        <TextBlock x:Name="PDisplayPronunciationOpener" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
                                         <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
-                                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                                        <TextBlock x:Name="PDisplayPronunciationCloser" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                                         <Button
                                             x:Name="PPlaybackAction"
                                             Click="PPlaybackActionHandle"
@@ -127,20 +109,19 @@
                                             Tag="{local:PIcon play, 24}"
                                             ToolTip="{DynamicResource Downloader.Play}"
                                             Visibility="Collapsed" />
+                                        <StackPanel Style="{StaticResource Theme.Accent.Blank}">
+                                            <Button Style="{StaticResource Theme.Accent.Phonetician}" />
+                                            <Button Style="{StaticResource Theme.Accent.Downloader}" />
+                                            <StackPanel Style="{StaticResource Theme.Accent.Control}">
+                                                <Button Style="{StaticResource Theme.Accent.Addition}" />
+                                                <Button Style="{StaticResource Theme.Accent.Remove}" />
+                                            </StackPanel>
+                                        </StackPanel>
                                     </StackPanel>
                                 </Grid>
                             </Border>
 
-                            <Border
-                                x:Name="PPlayback"
-                                Height="37"
-                                Margin="10,0,0,0"
-                                Padding="3"
-                                VerticalAlignment="Top"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                SnapsToDevicePixels="True"
-                                Visibility="Collapsed">
+                            <Border x:Name="PPlayback" Style="{StaticResource Theme.Volume.Tray}">
                                 <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
                             </Border>
                         </StackPanel>
@@ -153,7 +134,7 @@
                         </ItemsControl>
                         <ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />
                         <Border x:Name="PDisplayGlyphSection" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
-                            <Grid VerticalAlignment="Center">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition x:Name="PDisplayGlyphLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
                                     <ColumnDefinition Width="Auto" />
@@ -238,7 +219,9 @@
                                             </Border>
 
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemName}" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"><Run Text="{Binding PUsageItemName, Mode=OneWay}" /><Run
+                                                    Style="{StaticResource Theme.Catalog.Epithet}"
+                                                    Text="{Binding PUsageItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
                                                 <TextBlock Style="{StaticResource Theme.Usage.Detail}" Text="{Binding PUsageItemTitle}" />
                                             </StackPanel>
 

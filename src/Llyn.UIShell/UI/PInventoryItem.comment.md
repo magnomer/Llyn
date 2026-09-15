@@ -21,3 +21,8 @@ The panel sets it instead of refilling the list, so the catalog keeps its scroll
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
 `PTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PInventoryItemHeadword` keeps the plain headword for everything that is not display.
+
+## `public string PInventoryItemEpithet { get; }`
+
+The epithet the row prints after the headword, small and muted, in the reading the language pack names.
+The epithet is the reading the pack names, empty when the setting is off or the entry keeps none.

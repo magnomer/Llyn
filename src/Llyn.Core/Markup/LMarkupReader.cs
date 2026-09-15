@@ -90,6 +90,7 @@ internal static class LMarkupReader
         List<LMarkupInflection> inflections = [];
         List<LPronunciationDraft> pronunciations = [];
         List<LTranscriptionDraft> transcriptions = [];
+        List<LReflexDraft> reflexes = [];
         List<LMarkupCard> meanings = [];
         List<LMarkupCard> collocations = [];
 
@@ -118,6 +119,9 @@ internal static class LMarkupReader
                 case "transcription":
                     transcriptions.Add(LMarkupTranscriptionParse(child, omissions));
                     break;
+                case "reflex":
+                    reflexes.Add(LMarkupReflexParse(child, omissions));
+                    break;
                 case "meaning":
                     meanings.Add(LMarkupCardReader.LMarkupCardParse(child, true, omissions));
                     break;
@@ -141,6 +145,7 @@ internal static class LMarkupReader
             inflections,
             pronunciations,
             transcriptions,
+            reflexes,
             meanings,
             collocations,
             note,
@@ -210,6 +215,7 @@ internal static class LMarkupReader
     private static LPronunciationDraft LMarkupPronunciationParse(XElement element, List<LMarkupOmission> omissions)
     {
         string ipa = string.Empty;
+        string respelling = string.Empty;
         string variety = string.Empty;
         string audio = string.Empty;
         string? source = null;
@@ -221,6 +227,9 @@ internal static class LMarkupReader
             {
                 case "ipa":
                     ipa = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "respelling":
+                    respelling = LMarkup.LMarkupTextParse(child);
                     break;
                 case "variety":
                     variety = LMarkup.LMarkupTextParse(child);
@@ -246,7 +255,8 @@ internal static class LMarkupReader
             audio,
             source,
             0,
-            variety);
+            variety,
+            LPronunciationDraftRespelling: respelling);
     }
 
     private static LSyllable LMarkupSyllableParse(XElement element, int position, List<LMarkupOmission> omissions)
@@ -311,5 +321,45 @@ internal static class LMarkupReader
         }
 
         return new LTranscriptionDraft(scheme, text);
+    }
+
+    private static LReflexDraft LMarkupReflexParse(XElement element, List<LMarkupOmission> omissions)
+    {
+        string language = string.Empty;
+        string kind = string.Empty;
+        string text = string.Empty;
+        string respelling = string.Empty;
+        string note = string.Empty;
+        bool main = false;
+
+        foreach (XElement child in element.Elements())
+        {
+            switch (child.Name.LocalName)
+            {
+                case "language":
+                    language = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "kind":
+                    kind = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "text":
+                    text = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "respelling":
+                    respelling = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "note":
+                    note = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "main":
+                    main = true;
+                    break;
+                default:
+                    LMarkupOmissionAdd(omissions, child);
+                    break;
+            }
+        }
+
+        return new LReflexDraft(language, kind, text, main, LReflexDraftNote: note, LReflexDraftRespelling: respelling);
     }
 }

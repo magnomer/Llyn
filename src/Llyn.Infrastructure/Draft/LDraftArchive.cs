@@ -253,6 +253,11 @@ public static class LDraftArchive
             LDraftArchiveCheck(spelled.LTranscriptionDraftId, "transcription");
         }
 
+        foreach (LReflexDraft reflex in draft.LDraftContent.LEntryDraftReflexes)
+        {
+            LDraftArchiveCheck(reflex.LReflexDraftId, "reflex");
+        }
+
         LDraftArchiveCheck(draft.LDraftContent.LEntryDraftMeanings);
         LDraftArchiveCheck(draft.LDraftContent.LEntryDraftCollocations);
     }

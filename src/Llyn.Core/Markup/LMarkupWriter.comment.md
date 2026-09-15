@@ -27,6 +27,7 @@ Writes one `inflection` element with its speech and morphologies by name.
 ## `private static XElement LMarkupPronunciationFormat(LPronunciationDraft pronunciation)`
 
 Writes one `pronunciation` element, audio and source verbatim and never copied.
+The `respelling` element follows `ipa` and is skipped when blank, like every other text child.
 
 ## `private static XElement LMarkupSyllableFormat(LSyllable syllable)`
 
@@ -35,3 +36,7 @@ Writes one `syllable` element, the tone number in invariant digits.
 ## `private static XElement LMarkupTranscriptionFormat(LTranscriptionDraft transcription)`
 
 Writes one `transcription` element with its scheme and text.
+
+## `private static XElement LMarkupReflexFormat(LReflexDraft reflex)`
+
+Writes one `reflex` element with its language, kind, text and note, and an empty `main` element when marked.

@@ -46,19 +46,14 @@
 
             <Grid Grid.Column="1">
                 <ToggleButton x:Name="PSpeaker" Style="{StaticResource Theme.Language.Toggle}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid Width="19" Height="14" VerticalAlignment="Center">
+                    <StackPanel Style="{StaticResource Theme.Language.Face}">
+                        <Grid Style="{StaticResource Theme.Language.Flag}">
                             <Image x:Name="PSpeakerFlag" Stretch="Uniform" />
                             <Ellipse x:Name="PSpeakerGlobe" Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" />
                         </Grid>
-                        <TextBlock x:Name="PSpeakerName" Grid.Column="1" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" Text="English" />
-                        <Path Grid.Column="2" Width="12" Height="12" Margin="8,0,0,0" VerticalAlignment="Center" Data="{local:PIcon expand, 12}" Fill="{StaticResource Theme.Accent}" Stretch="None" />
-                    </Grid>
+                        <TextBlock x:Name="PSpeakerName" Style="{StaticResource Theme.Language.Name}" Text="English" />
+                        <Path Style="{StaticResource Theme.Language.Expand}" />
+                    </StackPanel>
                 </ToggleButton>
                 <Popup
                     x:Name="PLanguage"
@@ -76,26 +71,20 @@
                 </Popup>
             </Grid>
 
-            <StackPanel Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
+            <StackPanel Grid.Column="2" HorizontalAlignment="Left" Style="{StaticResource Theme.Favorite.Row}">
                 <ToggleButton
                     x:Name="PEditorFavorite"
-                    Width="42"
-                    Height="42"
-                    Margin="12,0,0,0"
-                    Padding="0"
                     Click="PEditorFavoriteHandle"
                     Style="{StaticResource Theme.Favorite.Mark}"
                     ToolTip="{DynamicResource Favorite.Mark}">
-                    <Path Style="{StaticResource Editor.Field.Mark}" />
+                    <Path Style="{StaticResource Theme.Favorite.Icon}" />
                 </ToggleButton>
                 <local:PGrasp
                     x:Name="PEditorGrasp"
-                    Margin="2,0,0,0"
-                    VerticalAlignment="Center"
                     PGraspChanged="PEditorGraspHandle"
                     PGraspHovered="PEditorHoverHandle"
-                    ToolTip="{DynamicResource Grasp.Mark}" />
-                <TextBlock x:Name="PEditorGraspLabel" Margin="6,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Grasp.Label}" />
+                    Style="{StaticResource Theme.Grasp.Mark}" />
+                <TextBlock x:Name="PEditorGraspLabel" Style="{StaticResource Theme.Grasp.Label}" />
             </StackPanel>
 
             <Border
@@ -134,11 +123,23 @@
                 <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandRemoval}" Executed="PTranscriptionRemoveHandle" />
                 <CommandBinding Command="{x:Static local:PTranscriptionCommand.PTranscriptionCommandNotation}" Executed="PTranscriptionNotationHandle" />
                 <CommandBinding Command="{x:Static local:PGlyphCommand.PGlyphCommandNotation}" Executed="PGlyphNotationHandle" />
+                <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandAddition}" Executed="PReflexAddHandle" />
+                <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandRemoval}" Executed="PReflexRemoveHandle" />
+                <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandMain}" Executed="PReflexMainHandle" />
+                <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandRenewal}" Executed="PReflexRebuildHandle" />
             </StackPanel.CommandBindings>
+            <Grid x:Name="PReflexBlock" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
+                <Button Grid.Column="1" Style="{StaticResource Theme.Reflex.Rebuild}" />
+            </Grid>
             <StackPanel Orientation="Horizontal">
 
                 <Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">
-                    <Grid VerticalAlignment="Center">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                             <ColumnDefinition Width="Auto" />
@@ -147,13 +148,13 @@
                             <Image x:Name="PPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
                             <TextBlock x:Name="PPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
                         </StackPanel>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                            <Grid Margin="3,0">
+                        <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
+                            <TextBlock x:Name="PPronunciationOpener" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                            <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
                                 <TextBlock Style="{StaticResource Editor.Field.Measure}" />
                                 <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
                             </Grid>
-                            <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                            <TextBlock x:Name="PPronunciationCloser" Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
                             <Button
                                 x:Name="PPlaybackAction"
                                 Click="PPlaybackActionHandle"
@@ -182,16 +183,7 @@
                     </Grid>
                 </Border>
 
-                <Border
-                    x:Name="PPlayback"
-                    Height="37"
-                    Margin="10,0,0,0"
-                    Padding="3"
-                    VerticalAlignment="Top"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    SnapsToDevicePixels="True"
-                    Visibility="Collapsed">
+                <Border x:Name="PPlayback" Style="{StaticResource Theme.Volume.Tray}">
                     <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
                 </Border>
 

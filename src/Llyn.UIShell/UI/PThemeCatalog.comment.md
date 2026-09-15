@@ -9,6 +9,13 @@ The row the panel stands on is tagged as chosen by the panel.
 The tag paints the soft accent ground and turns the subject accent, as the reading compass marks its current row.
 One ground and one ink say chosen together, so no rail or edge repeats them.
 
+## `<Style x:Key="Theme.Catalog.Epithet" TargetType="Run">`
+
+The epithet run after a listed headword: the reading the language pack names, such as `희롱할 롱` after `弄`.
+It sits on the headword's baseline, two steps smaller and muted, so the headword stays the row's one bold word.
+An en space leads it, carried by the binding's format, so an empty epithet leaves no visible gap.
+The row's title keeps its ellipsis, since both runs share one text block.
+
 ## `<Style x:Key="Theme.Catalog.Pellet" TargetType="Border">`
 
 The count at the far end of a catalog row, held in a quiet capsule.

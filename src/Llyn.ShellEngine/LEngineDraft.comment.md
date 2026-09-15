@@ -106,7 +106,7 @@ An empty child is skipped on the same terms an empty card is.
 
 ### `LEnginePronunciationSync(`
 
-The pronunciations and transcriptions of a new entry are written by the same reconciliation an update runs.
+The pronunciations, transcriptions and reflexes of a new entry are written by the same reconciliation an update runs.
 On a fresh entry nothing is stored yet, so every row the draft carries is created.
 A positive id the draft still holds names a row of an entry since deleted.
 It is reset to zero first.

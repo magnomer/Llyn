@@ -72,7 +72,11 @@ public sealed partial class LEngine
         {
             if (!draft.LPronunciationDraftSeeded || !draft.LPronunciationDraftEmpty)
             {
-                filled.Add(draft with { LPronunciationDraftIpa = draft.LPronunciationDraftIpa.Trim() });
+                filled.Add(draft with
+                {
+                    LPronunciationDraftIpa = draft.LPronunciationDraftIpa.Trim(),
+                    LPronunciationDraftRespelling = draft.LPronunciationDraftRespelling.Trim(),
+                });
             }
         }
 
@@ -92,6 +96,9 @@ public sealed partial class LEngine
                 : draft.LPronunciationDraftVariety.Trim(),
             LPronunciationIpa = draft.LPronunciationDraftIpa.Length == 0 ? null : draft.LPronunciationDraftIpa,
             LPronunciationSyllables = draft.LPronunciationDraftSyllables,
+            LPronunciationRespelling = draft.LPronunciationDraftRespelling.Length == 0
+                ? null
+                : draft.LPronunciationDraftRespelling,
         };
 
         if (!LEngineSoundMatch(stored, current))
@@ -117,7 +124,8 @@ public sealed partial class LEngine
             0,
             draft.LPronunciationDraftVariety,
             draft.LPronunciationDraftIpa.Length == 0 ? null : draft.LPronunciationDraftIpa,
-            draft.LPronunciationDraftSyllables));
+            draft.LPronunciationDraftSyllables,
+            draft.LPronunciationDraftRespelling.Length == 0 ? null : draft.LPronunciationDraftRespelling));
 
         LEngineIdentityRecord(identity, draft.LPronunciationDraftId, created.LPronunciationId);
         changes?.Add(new LRevisionChange(
@@ -152,6 +160,8 @@ public sealed partial class LEngine
     private static bool LEngineSoundMatch(LPronunciation stored, LPronunciation current)
     {
         if (!string.Equals(stored.LPronunciationIpa, current.LPronunciationIpa, StringComparison.Ordinal)
+            || !string.Equals(
+                stored.LPronunciationRespelling, current.LPronunciationRespelling, StringComparison.Ordinal)
             || !string.Equals(stored.LPronunciationVariety, current.LPronunciationVariety, StringComparison.Ordinal)
             || stored.LPronunciationSyllables.Count != current.LPronunciationSyllables.Count)
         {

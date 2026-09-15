@@ -19,6 +19,7 @@ public static class LSchemaPronunciation
                 position INTEGER NOT NULL,
                 variety TEXT,
                 ipa TEXT,
+                respelling TEXT,
                 FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
 

@@ -7,11 +7,12 @@ internal sealed class PCohortItem : INotifyPropertyChanged
 {
     private bool _pCohortItemChosen;
 
-    internal PCohortItem(long id, string headword, string language)
+    internal PCohortItem(long id, string headword, string language, string epithet = "")
     {
         PCohortItemId = id;
         PCohortItemHeadword = headword;
         PCohortItemName = headword;
+        PCohortItemEpithet = epithet ?? string.Empty;
         PCohortItemLanguage = language;
         PCohortItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -19,6 +20,8 @@ internal sealed class PCohortItem : INotifyPropertyChanged
     public long PCohortItemId { get; }
 
     public string PCohortItemHeadword { get; }
+
+    public string PCohortItemEpithet { get; }
 
     public string PCohortItemName { get; internal set; }
 

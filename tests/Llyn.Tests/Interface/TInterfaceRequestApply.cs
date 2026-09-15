@@ -80,6 +80,8 @@ internal static partial class TInterface
             long spokenId = held.LDraftContent.LEntryDraftPronunciations[index].LPronunciationDraftId;
             held = engine.LEngineRequestApply(
                 new LRequestPronunciationVariety(draftId, spokenId, spoken.LPronunciationDraftVariety));
+            held = engine.LEngineRequestApply(
+                new LRequestPronunciationRespelling(draftId, spokenId, spoken.LPronunciationDraftRespelling));
             held = engine.LEngineRequestApply(new LRequestPronunciationAudio(
                 draftId, spokenId, spoken.LPronunciationDraftAudio, spoken.LPronunciationDraftSource));
         }

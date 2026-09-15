@@ -7,11 +7,12 @@ internal sealed class POccurrenceItem : INotifyPropertyChanged
 {
     private bool _pOccurrenceItemChosen;
 
-    internal POccurrenceItem(long id, string headword, string language)
+    internal POccurrenceItem(long id, string headword, string language, string epithet = "")
     {
         POccurrenceItemId = id;
         POccurrenceItemHeadword = headword;
         POccurrenceItemName = headword;
+        POccurrenceItemEpithet = epithet ?? string.Empty;
         POccurrenceItemLanguage = language;
         POccurrenceItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -19,6 +20,8 @@ internal sealed class POccurrenceItem : INotifyPropertyChanged
     public long POccurrenceItemId { get; }
 
     public string POccurrenceItemHeadword { get; }
+
+    public string POccurrenceItemEpithet { get; }
 
     public string POccurrenceItemName { get; internal set; }
 

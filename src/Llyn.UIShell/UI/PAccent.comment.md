@@ -13,6 +13,11 @@ Lookup and download open the editor's one menu under the row's own button.
 The rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
+## `private LRequest PAccentRequestCreate(PAccentItem row)`
+
+The request a row's typed text becomes, a respelling request while respellings are shown and a reading request otherwise.
+The row prints the form the switch picks, so the text it holds belongs to that form.
+
 ## `private static string PAccentRequestFormat(long id)`
 
 The pending-request key of one row's IPA, so a draft render skips a row whose edit is still waiting.
@@ -58,7 +63,7 @@ A row that has gone is skipped, since its audio went with it.
 
 ## `private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)`
 
-Defers an IPA request when a row's text changes.
+Defers a reading or respelling request when a row's text changes.
 The row model raises the change, not the text box, so a draft render writing the same text raises nothing.
 The fill guard holds during a render, so a render writing a different text raises no request either.
 
@@ -66,6 +71,8 @@ The fill guard holds during a render, so a render writing a different text raise
 
 Renders every pronunciation after the primary as a row, keyed by the pronunciation id.
 Whether varieties show as flags is asked of the language pack once per render.
+Which form the rows print and which brackets they wear is read once per render too.
+A change of that state drops every row first, because a row fixes its brackets when it is built.
 The primary id is kept, so the primary row's own plus and minus reach the right pronunciation.
 The primary variety chip is refreshed in the same pass.
 Flags not yet in the ensign store are loaded afterwards and painted in when they arrive.
@@ -74,7 +81,7 @@ Flags not yet in the ensign store are loaded afterwards and painted in when they
 
 Brings a shown row up to the draft row with the same id.
 A changed variety rebuilds the row, because its label and flag are fixed at creation.
-A row with an IPA request waiting keeps its text, since the draft is about to become what it holds.
+A row with a text request waiting keeps its text, since the draft is about to become what it holds.
 The audio is always taken from the draft, because the row never edits it.
 
 ## `private void PAccentPrimaryShow()`
@@ -87,6 +94,10 @@ Nothing is drawn for a primary without a variety.
 Loads the variety flags the rows need and paints them once they are in the store.
 A render for another language that started meanwhile wins, so a late load paints nothing.
 A load that fails leaves the labels standing.
+
+## `private void PAccentRowClear()`
+
+Drops every row and stops listening to it, for a rebuild or a reset.
 
 ## `private void PAccentClear()`
 

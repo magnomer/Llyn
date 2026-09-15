@@ -103,7 +103,8 @@ public partial class PFavorite
             _pRosterList.Add(new PRosterItem(
                 favorite.LFavoriteEntry.LEntryId,
                 favorite.LFavoriteEntry.LEntryHeadword,
-                favorite.LFavoriteEntry.LEntryLanguage));
+                favorite.LFavoriteEntry.LEntryLanguage,
+                _lEngine.LEngineEpithetRead(favorite.LFavoriteEntry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

@@ -36,6 +36,11 @@ internal static class LMarkupWriter
             element.Add(LMarkupTranscriptionFormat(transcription));
         }
 
+        foreach (LReflexDraft reflex in entry.LMarkupEntryReflex)
+        {
+            element.Add(LMarkupReflexFormat(reflex));
+        }
+
         foreach (LMarkupCard card in entry.LMarkupEntryMeaning)
         {
             element.Add(LMarkupCardWriter.LMarkupCardFormat(card, "meaning"));
@@ -86,6 +91,7 @@ internal static class LMarkupWriter
     {
         XElement element = new("pronunciation");
         LMarkup.LMarkupTextFormat(element, "ipa", pronunciation.LPronunciationDraftIpa);
+        LMarkup.LMarkupTextFormat(element, "respelling", pronunciation.LPronunciationDraftRespelling);
         LMarkup.LMarkupTextFormat(element, "variety", pronunciation.LPronunciationDraftVariety);
 
         foreach (LSyllable syllable in pronunciation.LPronunciationDraftSyllables)
@@ -120,6 +126,22 @@ internal static class LMarkupWriter
         XElement element = new("transcription");
         LMarkup.LMarkupTextFormat(element, "scheme", transcription.LTranscriptionDraftScheme);
         LMarkup.LMarkupTextFormat(element, "text", transcription.LTranscriptionDraftText);
+        return element;
+    }
+
+    private static XElement LMarkupReflexFormat(LReflexDraft reflex)
+    {
+        XElement element = new("reflex");
+        LMarkup.LMarkupTextFormat(element, "language", reflex.LReflexDraftLanguage);
+        LMarkup.LMarkupTextFormat(element, "kind", reflex.LReflexDraftKind);
+        LMarkup.LMarkupTextFormat(element, "text", reflex.LReflexDraftText);
+        LMarkup.LMarkupTextFormat(element, "respelling", reflex.LReflexDraftRespelling);
+        LMarkup.LMarkupTextFormat(element, "note", reflex.LReflexDraftNote);
+        if (reflex.LReflexDraftMain)
+        {
+            element.Add(new XElement("main"));
+        }
+
         return element;
     }
 }

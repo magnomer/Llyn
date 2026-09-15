@@ -11,7 +11,12 @@ public sealed partial class LEngine
         return request switch
         {
             LRequestIpa sent => LEnginePrimaryChange(
-                content, spoken => spoken with { LPronunciationDraftIpa = sent.LRequestText ?? string.Empty }),
+                content,
+                spoken => LEngineRespellingResolve(
+                    content.LEntryDraftLanguage,
+                    spoken with { LPronunciationDraftIpa = sent.LRequestText ?? string.Empty })),
+            LRequestRespelling sent => LEnginePrimaryChange(
+                content, spoken => spoken with { LPronunciationDraftRespelling = sent.LRequestText ?? string.Empty }),
             LRequestAudio sent => LEnginePrimaryChange(
                 content,
                 spoken => spoken with
@@ -34,11 +39,19 @@ public sealed partial class LEngine
             LRequestPronunciationIpa sent => LEnginePronunciationChange(
                 content,
                 sent.LRequestPronunciationId,
-                spoken => spoken with { LPronunciationDraftIpa = sent.LRequestText ?? string.Empty }),
+                spoken => LEngineRespellingResolve(
+                    content.LEntryDraftLanguage,
+                    spoken with { LPronunciationDraftIpa = sent.LRequestText ?? string.Empty })),
+            LRequestPronunciationRespelling sent => LEnginePronunciationChange(
+                content,
+                sent.LRequestPronunciationId,
+                spoken => spoken with { LPronunciationDraftRespelling = sent.LRequestText ?? string.Empty }),
             LRequestPronunciationVariety sent => LEnginePronunciationChange(
                 content,
                 sent.LRequestPronunciationId,
-                spoken => spoken with { LPronunciationDraftVariety = sent.LRequestText ?? string.Empty }),
+                spoken => LEngineRespellingResolve(
+                    content.LEntryDraftLanguage,
+                    spoken with { LPronunciationDraftVariety = sent.LRequestText ?? string.Empty })),
             LRequestPronunciationAudio sent => LEnginePronunciationChange(
                 content,
                 sent.LRequestPronunciationId,
@@ -64,7 +77,7 @@ public sealed partial class LEngine
                 content,
                 sent.LRequestTranscriptionId,
                 spelled => spelled with { LTranscriptionDraftText = sent.LRequestText ?? string.Empty }),
-            _ => LEngineListApply(content, request),
+            _ => LEngineReflexApply(content, request),
         };
     }
 
@@ -83,9 +96,34 @@ public sealed partial class LEngine
 
     private LEntryDraft LEnginePronunciationAdd(LEntryDraft content, LRequestPronunciationAddition request)
     {
-        LPronunciationDraft spoken = new(
-            request.LRequestText ?? string.Empty, LPronunciationDraftId: LEngineIdentityCreate());
+        LPronunciationDraft spoken = LEngineRespellingResolve(
+            content.LEntryDraftLanguage,
+            new LPronunciationDraft(
+                request.LRequestText ?? string.Empty, LPronunciationDraftId: LEngineIdentityCreate()));
         return LEnginePronunciationApply(content, list => LEngineListAdd(list, spoken, request.LRequestPosition));
+    }
+
+    private LPronunciationDraft LEngineRespellingResolve(string language, LPronunciationDraft spoken)
+    {
+        IReadOnlyList<LRespelling> groups = language.Trim().Length == 0
+            ? []
+            : LEngineLanguageLoad(language).LLanguageRespellings;
+        string respelling = groups.Count == 0 || spoken.LPronunciationDraftIpa.Length == 0
+            ? string.Empty
+            : LRespelling.LRespellingScan(
+                groups, spoken.LPronunciationDraftIpa, spoken.LPronunciationDraftVariety.Trim());
+        return spoken with { LPronunciationDraftRespelling = respelling };
+    }
+
+    private LEntryDraft LEngineRespellingRebuild(LEntryDraft content)
+    {
+        List<LPronunciationDraft> spoken = new(content.LEntryDraftPronunciations.Count);
+        foreach (LPronunciationDraft row in content.LEntryDraftPronunciations)
+        {
+            spoken.Add(LEngineRespellingResolve(content.LEntryDraftLanguage, row));
+        }
+
+        return content with { LEntryDraftPronunciations = spoken };
     }
 
     private static LEntryDraft LEnginePronunciationChange(

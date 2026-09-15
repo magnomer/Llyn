@@ -3,10 +3,10 @@
   "flag": "hk",
   "separator": "none",
   "tonal": true,
+  "phonemic": true,
   "transcription": [
     {
       "name": "Jyutping",
-      "note": "The wikitext attempt reads the |c= parameter of every {{zh-pron}} template on the page, which Wiktionary keeps as the canonical Cantonese reading; a comma separates alternative readings and each is shown. 'normalize' is on so the alternatives are split, and Jyutping carries no delimiter it could strip. The same parameter also carries markers after a comma, such as 1nb= for a note on the first reading, so the pattern stops at the first piece holding an equals sign. A simplified-form or variant-form page only points at its main form through {{zh-see}}, so the wikitext attempt follows that pointer and the later attempts ask for the form it named.",
       "sources": [
         {
           "name": "Wiktionary",
@@ -35,7 +35,6 @@
     },
     {
       "name": "Yale",
-      "note": "Cantonese Yale. Wiktionary derives it from the Jyutping at render time, so only the rendered page carries it. Every Yale line on the page is read, and 'normalize' is on so the alternatives one line separates with a slash are split. The Mandarin box prints a Yale line too, so the match anchors on the link to the Cantonese Yale article. The span strategy is required because a tone mark with an alternative is wrapped in a help span, which a flat pattern would truncate. The article page is asked before the REST rendering, because the REST host rejects bursts with 429.",
       "sources": [
         {
           "name": "Wiktionary",
@@ -68,7 +67,6 @@
       "family": "SimSun, Microsoft YaHei",
       "size": 26
     },
-    "note": "The traditional form the entry is written in, one transcription row under the scheme named here, and the language each character opens an entry in. The wikitext attempt reads the {{zh-see}} pointer a simplified-form or variant-form page carries, which names the traditional main form; a page that is already traditional carries none, the lookup finds nothing, and the reading view shows the headword's own characters. The pointer's later parameters are cut at the first bar, so a page with a second pointer yields a second candidate.",
     "sources": [
       {
         "name": "Wiktionary",
@@ -91,9 +89,9 @@
   "respelling": [
     {
       "name": "Standard",
-      "note": "Standard Cantonese vowels written without length marks and with plain letters: the open-mid front vowel as e, the close-mid central rounded vowel as œ, the open-mid back vowel as o and the near-close front vowel as i. ɐ stays as written. The sources anchor on the Standard Cantonese row alone, so no other variety reaches these rules.",
       "rules": [
         ["ː", ""],
+        ["t͡s", "ts"],
         ["ɛ", "e"],
         ["ɵ", "œ"],
         ["ɔ", "o"],
@@ -109,11 +107,9 @@
     "family": "PMingLiU, Microsoft JhengHei",
     "size": 16
   },
-  "note": "Language pack for Cantonese. Every URL and extraction rule is data — edit here, no recompile. The 'pronunciation' and 'audio' lists are independent and each is shown in the order written here. The pronunciation sources publish IPA, while Jyutping and Yale are the transcription schemes above. No morphology sources are listed, because Cantonese words do not inflect. Every source is read from an ordinary article page rather than a machine API, because the article hosts impose no request ceiling while the REST endpoints reject bursts with 429, which the reader would report as an unreachable source.",
   "pronunciation": [
     {
       "name": "Wiktionary",
-      "note": "The Chinese pronunciation table of an entry carries one row per variety. Only the Cantonese row links its IPA key to the Cantonese phonology article, so that link anchors the reader to the right row and keeps Mandarin, Hakka and Min readings out. Every such row on the page is read, one per etymology, and a row listing two readings with a comma yields both. The see link is followed even when the page has readings of its own, because a character can be both a word and the simplified form of another. The span strategy is required because the transcription nests tone-note spans inside the IPA span, which a flat pattern would truncate. An entry with no Cantonese section carries no anchor, so the attempt simply yields nothing.",
       "attempts": [
         {
           "urls": [
@@ -135,7 +131,6 @@
     },
     {
       "name": "Chinese Wiktionary",
-      "note": "The Chinese Wiktionary prints the same transcription behind a Chinese anchor, where the key of the Cantonese row links to the 粵語音系 article and the label reads 幫助. Its coverage of colloquial Cantonese headwords is thinner than the English one, so it stands second. A simplified-form page carries no reading of its own and only points at its traditional form through a 請見 box, so the attempt follows that pointer.",
       "attempts": [
         {
           "urls": [
@@ -159,7 +154,6 @@
   "audio": [
     {
       "name": "Wiktionary",
-      "note": "Wiktionary embeds Commons recordings as protocol-relative addresses, so 'prefix' supplies the scheme. Only the transcoded mp3 rendition is taken, because the original is WAV or Opus. A Cantonese recording is either a Lingua Libre LL-Q9186_%28yue%29- file or a Zh-yue- file, and both prefixes keep the Mandarin Zh- and Min Nan Zh-nan- recordings of the same page out. One attempt reads both, so the page is fetched once. A simplified-form page only points at its traditional form, so the attempt follows the see link.",
       "attempts": [
         {
           "urls": [
@@ -182,7 +176,6 @@
     },
     {
       "name": "Wikimedia Commons",
-      "note": "Most Cantonese recordings on Commons are never embedded on a Wiktionary page, so the file store is searched directly. The search asks for files whose title carries the headword and the yue tag, and the API answers with the transcoded renditions of each file found. Search matches by character, so a title holding the headword inside a longer word is returned too; the pattern therefore takes only a file whose title ends in exactly {word}, as a Lingua Libre LL-Q9186 (yue)- file or a Zh-yue- file does. Only the mp3 rendition is taken, because the original is WAV or Opus. utf8=1 keeps the title readable so the headword can be matched, and formatversion=2 keeps the addresses unescaped.",
       "attempts": [
         {
           "urls": [
@@ -199,7 +192,6 @@
   "frequency": [
     {
       "name": "CantoDict",
-      "note": "CantoDict serves a word page at /dictionary/words/ and a character page at /dictionary/characters/ straight from the hanzi, each carrying an editor-assigned difficulty Level from 1 upward. A single character has no word page, so the first attempt yields nothing there and the second attempt reads the character page instead. An unknown spelling returns a bare detail view without a Level, so the attempt yields nothing.",
       "attempts": [
         {
           "urls": [

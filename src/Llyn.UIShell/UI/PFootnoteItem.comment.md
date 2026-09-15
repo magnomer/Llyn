@@ -8,3 +8,8 @@ That question is which Entries cite the Source chosen in the shelf beside them.
 An Entry referencing from several of its cards is still one row, because the row stands for the Entry.
 The headword and the shown name are separate, so two Entries sharing a headword can be numbered apart.
 The mark saying which row the reader stands on is the one thing that changes after the row is built.
+
+## `public string PFootnoteItemEpithet { get; }`
+
+The epithet the row prints after the headword, small and muted, in the reading the language pack names.
+The epithet is the reading the pack names, empty when the setting is off or the entry keeps none.

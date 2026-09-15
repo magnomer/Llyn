@@ -12,6 +12,10 @@ Its id counts strictly upward and is never given to a later pronunciation once t
 A revision names a deleted pronunciation by that id.
 A reused number would point the history at a living row.
 A row may carry no ipa yet, because a recording is often fetched before the reading is typed.
+The respelling is the ipa recast in the pack's convention.
+It is kept beside the ipa so the switch only picks which is shown.
+It is NULL when the pack has no respelling groups.
+A file from before the column has it NULL throughout.
 The variety says why the row stands beside the others, such as a region.
 It is NULL when there is one row.
 A pronunciation owns ordered syllables keyed by (pronunciation_parent, position).

@@ -37,6 +37,27 @@ public sealed partial class LEngine
     public void LEngineRespellingSave(bool respelled)
     {
         LEngineSettingsChange(settings => settings with { LSettingsRespelled = respelled });
+        LEngineBulletinRaise(LSubject.LSubjectSettings, 0);
+    }
+
+    public bool LEngineRespellingCheck(string language)
+    {
+        lock (_lEngineGate)
+        {
+            return _lEngineSettings.LSettingsRespelled
+                && language.Trim().Length > 0
+                && LEngineLanguageLoad(language).LLanguageRespellings.Count > 0;
+        }
+    }
+
+    public bool LEnginePhonemicCheck(string language)
+    {
+        return language.Trim().Length > 0 && LEngineLanguageLoad(language).LLanguagePhonemic;
+    }
+
+    public void LEngineEpithetSave(bool epithet)
+    {
+        LEngineSettingsChange(settings => settings with { LSettingsEpithet = epithet });
     }
 
     public void LEngineFrequencySave(bool frequency)

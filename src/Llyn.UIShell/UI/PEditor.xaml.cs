@@ -42,6 +42,7 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost
         PAccent.ItemsSource = _pAccentItem;
         PTranscription.ItemsSource = _pTranscriptionItem;
         PGlyph.ItemsSource = _pGlyphItem;
+        PReflex.ItemsSource = _pReflexItem;
         PClipList.ItemsSource = _pClipItem;
         PLanguageList.ItemsSource = _pLanguageItem;
         PProspectList.ItemsSource = _pProspectItem;

@@ -18,3 +18,4 @@ It owns its ordered `LPronunciationSyllables`.
 - `LPronunciationVariety` — Optional label telling this pronunciation from the entry's others.
 - `LPronunciationIpa` — Optional IPA transcription of the whole pronunciation, always phonetic.
 - `LPronunciationSyllables` — Ordered syllables owned by this pronunciation.
+- `LPronunciationRespelling` — Optional recast of the IPA in the pack's respelling convention, stored beside the original.

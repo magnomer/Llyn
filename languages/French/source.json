@@ -18,7 +18,6 @@
   "respelling": [
     {
       "name": "Parisian",
-      "note": "The transcription as a Parisian speaker says it: the nasal œ̃ merged into ɛ̃, the back ɑ merged into the front a while the nasal ɑ̃ stays as written, and the length mark dropped. The ɑ row skips an ɑ carried by a combining tilde so the nasal vowel keeps its letter.",
       "rules": [
         ["œ̃", "ɛ̃"],
         ["ɑ(?!\u0303)", "a"],
@@ -26,11 +25,9 @@
       ]
     }
   ],
-  "note": "Language pack for French. Every URL and extraction rule is data — edit here, no recompile. The 'pronunciation' and 'audio' lists are independent and each is shown in the order written here. No varieties are declared, so every reading stays untagged and stands for the French of France: the pronunciation sources take the headword's own transcription, never a regional or historical variant, and the audio sources take only recordings tagged France or Paris, or carrying no region at all, Naver's own recordings being untagged. No transcription schemes are listed, because French keeps no romanization beside its IPA.",
   "pronunciation": [
     {
       "name": "Wiktionnaire",
-      "note": "The French Wiktionary wikitext. The headword line of every entry carries a {{pron|…|fr}} template, so the first such template after the {{langue|fr}} heading is the headword's own transcription, and the |fr}} tail keeps the templates of other languages out. A template with an empty transcription is skipped by the pattern, and a page without a French section yields nothing. 'normalize' is on so the syllable dots the site writes are stripped.",
       "attempts": [
         {
           "urls": [
@@ -46,7 +43,6 @@
     },
     {
       "name": "Wiktionary",
-      "note": "The English Wiktionary rendered page. Most French entries derive their transcription with {{fr-IPA}}, which the wikitext does not carry, so the rendered HTML is read: the first IPA span after the French heading is the headword's own, and the regional and historical variants that follow it are left alone. The REST rendering is asked first and the article page second, so a 429 from the REST host still answers.",
       "attempts": [
         {
           "urls": [
@@ -63,7 +59,6 @@
   "audio": [
     {
       "name": "Naver",
-      "note": "Naver French-Korean dictionary search API. Each entry carries an opaque, token-bearing 'symbolFile' audio URL, empty on an entry without a recording, and the pattern takes the first non-empty one whose entry's 'handleEntry' is the headword itself, so a neighbouring headword listed first is passed over. The API returns an empty body without a Referer header, so one is declared here.",
       "attempts": [
         {
           "urls": [
@@ -80,7 +75,6 @@
     },
     {
       "name": "Wiktionary",
-      "note": "Wiktionary embeds Commons recordings as protocol-relative addresses, so 'prefix' supplies the scheme, and only the transcoded mp3 rendition is taken because the original is Ogg Vorbis or WAV. Each audio template is described in a data-mw attribute before its player, and the pattern anchors there: the file must be a Fr- recording or a Lingua Libre LL-Q150 (fra)- one whose name ends in exactly the headword, so a recording of an inflected form is left out, and its accent parameter must be absent or read France or Paris, so a Canadian, Swiss or Belgian recording is left out. Every recording that passes is taken.",
       "attempts": [
         {
           "urls": [
@@ -96,7 +90,6 @@
     },
     {
       "name": "Le Robert",
-      "note": "Dico en ligne Le Robert. The definition heading reads 'Définition de' followed by the headword and a d_sound_cont span holding the player, whose source is a site-relative mp3 under /medias/SOUNDS/; 'prefix' makes it absolute. The pattern anchors on the headword in that heading, so a page that answered a search with a neighbouring word yields nothing. An accented address is redirected to its unaccented spelling, which the reader follows.",
       "attempts": [
         {
           "urls": [
@@ -113,7 +106,6 @@
   "frequency": [
     {
       "name": "Leipzig",
-      "note": "Leipzig Corpora Collection, French news corpus of 2011 with one million sentences. The answer carries the word's frequency class, 0 for the most frequent word and one higher each time the frequency halves, so the class bands numerically and a small class is a common word. An unknown spelling answers 404, so the attempt yields nothing.",
       "attempts": [
         {
           "urls": [
@@ -130,7 +122,6 @@
   "morphology": [
     {
       "name": "Wiktionary",
-      "note": "Wiktionary REST HTML. Each inflected form sits in a <b> or <span> whose class reads 'Latn form-of lang-fr <kind>-form-of' wrapping an <a> with the form as its text, and the headword line comes before the conjugation tables, so the first match of a kind is the headline form. Kinds: 'p' is a noun plural, 'f|s' an adjective's feminine singular, 'm|p' its masculine plural, 'f|p' its feminine plural, 'ppr' a present participle, 'pp' a past participle. The page carries every part of speech the spelling has, so a reading answers the first of its kind on the page and the paradigm decides which readings apply. Pinned live: cheval gave chevaux, beau gave belle / beaux / belles, heureux gave heureuse / heureux / heureuses, manger gave mangeant / mangé, finir gave finissant / fini, vendre gave vendant / vendu.",
       "attempts": [
         {
           "urls": [

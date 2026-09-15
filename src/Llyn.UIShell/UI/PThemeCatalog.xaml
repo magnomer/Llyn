@@ -79,6 +79,13 @@
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
 
+    <Style x:Key="Theme.Catalog.Epithet" TargetType="Run">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="BaselineAlignment" Value="Baseline" />
+    </Style>
+
     <Style x:Key="Theme.Catalog.Dot" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}">
         <Setter Property="Margin" Value="6,0" />
         <Setter Property="Opacity" Value="0.6" />

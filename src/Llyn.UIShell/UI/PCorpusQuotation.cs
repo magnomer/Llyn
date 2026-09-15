@@ -37,7 +37,10 @@ public partial class PCorpus
         foreach (LEntry entry in read)
         {
             _pQuotationList.Add(new PQuotationItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

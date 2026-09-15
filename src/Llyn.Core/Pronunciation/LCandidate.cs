@@ -5,4 +5,5 @@ public sealed record LCandidate(
     string? LCandidatePhonetic,
     int LCandidateOrder,
     bool LCandidateReached,
-    string LCandidateVariety);
+    string LCandidateVariety,
+    string? LCandidateRespelling = null);

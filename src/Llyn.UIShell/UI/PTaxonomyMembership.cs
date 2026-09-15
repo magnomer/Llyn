@@ -37,7 +37,10 @@ public partial class PTaxonomy
         foreach (LEntry entry in read)
         {
             _pMembershipList.Add(new PMembershipItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

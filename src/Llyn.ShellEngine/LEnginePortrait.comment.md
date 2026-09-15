@@ -9,6 +9,7 @@ The panel reads the same records through the same engine, so both see one entry 
 
 Everything the display gathers is gathered here, in the display's own order.
 The portrait carries the transcription and the names of the parts of speech, because a reader reads names.
+The reflex lines follow the transcription lines in the same list, each labelled by its language and kind.
 The value ids the entry is filed under stay in the draft.
 A writer that needs them can find them there.
 A missing entry is an error, because a caller asked to portray one that no longer stands.

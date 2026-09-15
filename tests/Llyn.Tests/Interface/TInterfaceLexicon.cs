@@ -81,7 +81,8 @@ internal static partial class TInterface
         string audio = "",
         string? source = null,
         IReadOnlyList<string>? speeches = null,
-        IReadOnlyList<LTranscriptionDraft>? transcriptions = null) =>
+        IReadOnlyList<LTranscriptionDraft>? transcriptions = null,
+        IReadOnlyList<LReflexDraft>? reflexes = null) =>
         new(
             headword,
             language,
@@ -90,7 +91,8 @@ internal static partial class TInterface
             meanings,
             collocations,
             TSpeechDraftCreate(speeches),
-            LEntryDraftTranscriptions: transcriptions);
+            LEntryDraftTranscriptions: transcriptions,
+            LEntryDraftReflexes: reflexes);
 
     internal static IReadOnlyList<LPronunciationDraft> TPronunciationListCreate(LPronunciationDraft? pronunciation) =>
         pronunciation is null ? [] : [pronunciation];
@@ -100,12 +102,23 @@ internal static partial class TInterface
         string variety = "",
         string audio = "",
         string? source = null,
-        long id = 0) =>
-        new(ipa, null, audio, source, id, variety);
+        long id = 0,
+        string respelling = "") =>
+        new(ipa, null, audio, source, id, variety, LPronunciationDraftRespelling: respelling);
 
     internal static LTranscriptionDraft TTranscriptionDraftCreate(
         string scheme, string text, long id = 0, bool seeded = false) =>
         new(scheme, text, id, seeded);
+
+    internal static LReflexDraft TReflexDraftCreate(
+        string language,
+        string kind,
+        string text,
+        bool main = false,
+        long id = 0,
+        string note = "",
+        string respelling = "") =>
+        new(language, kind, text, main, id, note, respelling);
 
     internal static IReadOnlyList<LSpeechDraft> TSpeechDraftCreate(IReadOnlyList<string>? speeches)
     {

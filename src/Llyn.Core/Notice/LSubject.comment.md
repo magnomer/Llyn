@@ -72,3 +72,13 @@ A surface showing any entry of that language re-reads its script box, since anot
 The rime-book rows of one character were stored by a fanqie fetch.
 The id is the entry's whose display asked for the character.
 A surface showing any entry of that language re-reads its fanqie box, since another entry may share the character.
+
+## `LSubjectReflex,`
+
+The reflex rows of one entry were filled by a web fetch.
+The id is the entry's, and a surface showing it re-reads its reflex lines alone.
+
+## `LSubjectSettings,`
+
+A setting that shapes how stored records are shown was flipped, such as the respelling switch.
+The id is zero, because no record changed and every surface showing a reading re-reads it.

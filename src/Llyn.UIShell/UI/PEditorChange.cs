@@ -16,6 +16,8 @@ public partial class PEditor
 
     private bool _pEditorFill;
 
+    private PRespelling _pEditorRespelling = PRespelling.PRespellingPlain;
+
     internal Action<bool>? PEditorChangeNotice;
 
     internal bool PEditorChangeCheck()
@@ -77,9 +79,12 @@ public partial class PEditor
 
         if (ReferenceEquals(e.OriginalSource, PPronunciationField))
         {
+            string text = PPronunciationField.Text ?? string.Empty;
             PEditorRequestDefer(
                 PEditorRequestIpa,
-                new LRequestIpa(_pEditorDraft, PPronunciationField.Text ?? string.Empty));
+                _pEditorRespelling.PRespellingShown
+                    ? new LRequestRespelling(_pEditorDraft, text)
+                    : new LRequestIpa(_pEditorDraft, text));
             return;
         }
 

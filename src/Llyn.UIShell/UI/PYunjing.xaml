@@ -210,7 +210,9 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Image Grid.Column="0" Width="18" Height="13" Margin="0,0,8,0" VerticalAlignment="Center" Source="{Binding PXiaoyunItemFlag}" Stretch="Uniform" />
-                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PXiaoyunItemName}" />
+                                    <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}"><Run Text="{Binding PXiaoyunItemName, Mode=OneWay}" /><Run
+                                        Style="{StaticResource Theme.Catalog.Epithet}"
+                                        Text="{Binding PXiaoyunItemEpithet, Mode=OneWay, StringFormat='&#x2002;{0}'}" /></TextBlock>
                                 </Grid>
                             </Button>
                         </DataTemplate>

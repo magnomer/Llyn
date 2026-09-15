@@ -15,6 +15,7 @@ public partial class PEditor : LReceiver
     private bool _pNotationSearching;
     private bool _pNotationFlagged;
     private string _pNotationLanguage = string.Empty;
+    private PRespelling _pNotationRespelling = PRespelling.PRespellingPlain;
     private long _pNotationTarget;
     private string _pNotationScheme = string.Empty;
 
@@ -71,20 +72,17 @@ public partial class PEditor : LReceiver
 
         if (id == 0)
         {
-            PPronunciationField.Text = reading.PNotationReadingPhonetic;
-            PEditorChangeSave();
+            PEditorRequestSend(new LRequestIpa(_pEditorDraft, reading.PNotationReadingPhonetic));
             id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
         }
         else
         {
-            PAccentItem? row = PAccentFind(id);
-            if (row is null)
+            if (PAccentFind(id) is null)
             {
                 return;
             }
 
-            row.PAccentItemIpa = reading.PNotationReadingPhonetic;
-            PEditorChangeSave();
+            PEditorRequestSend(new LRequestPronunciationIpa(_pEditorDraft, id, reading.PNotationReadingPhonetic));
         }
 
         PNotationVarietySend(id, reading.PNotationReadingVariety);
@@ -113,19 +111,25 @@ public partial class PEditor : LReceiver
     private PNotationReading PNotationReadingCreate(LCandidate candidate)
     {
         string variety = candidate.LCandidateVariety;
-        bool bracketed = _pNotationScheme.Length == 0;
+        string phonetic = candidate.LCandidatePhonetic ?? string.Empty;
+        string text = _pNotationScheme.Length == 0
+            ? _pNotationRespelling.PRespellingTextRead(phonetic, candidate.LCandidateRespelling)
+            : phonetic;
+        string opener = _pNotationScheme.Length == 0 ? _pNotationRespelling.PRespellingOpener : string.Empty;
+        string closer = _pNotationScheme.Length == 0 ? _pNotationRespelling.PRespellingCloser : string.Empty;
         if (variety.Length == 0)
         {
-            return new PNotationReading(
-                variety, string.Empty, null, candidate.LCandidatePhonetic ?? string.Empty, bracketed);
+            return new PNotationReading(variety, string.Empty, null, phonetic, text, opener, closer);
         }
 
         return new PNotationReading(
             variety,
             PAccentItem.PAccentLabelFormat(_pEditorHost, variety),
             PAccentItem.PAccentFlagFind(_pNotationLanguage, _pNotationFlagged, variety),
-            candidate.LCandidatePhonetic ?? string.Empty,
-            bracketed);
+            phonetic,
+            text,
+            opener,
+            closer);
     }
 
     private async Task PNotationStart()
@@ -149,6 +153,7 @@ public partial class PEditor : LReceiver
         {
             _pNotationLanguage = _pSpeakerChoice;
             _pNotationFlagged = _lEngine.LEngineFlaggedCheck(_pNotationLanguage);
+            _pNotationRespelling = PRespelling.PRespellingRead(_lEngine, _pNotationLanguage);
             if (_pNotationFlagged && _pNotationScheme.Length == 0)
             {
                 await PEnsign.PEnsignVarietyLoad(

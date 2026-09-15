@@ -31,4 +31,8 @@ public enum LSubject
     LSubjectScript,
 
     LSubjectFanqie,
+
+    LSubjectReflex,
+
+    LSubjectSettings,
 }

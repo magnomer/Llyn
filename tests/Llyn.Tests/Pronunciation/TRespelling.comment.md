@@ -10,3 +10,6 @@ Precomposed and decomposed input reach the same output through NFC.
 Scanning a pack chains its groups, and an empty pack returns the input.
 The shipped English pack is idempotent over Cambridge, Longman, and Wiktionary style forms, run per variety.
 Both the British and the American group recast the glide and open-mid rows, and an untagged reading is left alone.
+The shipped Mandarin pack drops tie bars and plains the retroflex stop, the fricatives and the vowels.
+It is idempotent over its own output.
+The decomposed ä row reaches the composed rule through NFC.

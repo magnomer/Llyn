@@ -52,7 +52,11 @@ public partial class PDuplex
         {
             foreach (LEntry entry in _lEngine.LEngineEntryFind(query))
             {
-                catalog.Add(new PIndexItem(entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage));
+                catalog.Add(new PIndexItem(
+                    entry.LEntryId,
+                    entry.LEntryHeadword,
+                    entry.LEntryLanguage,
+                    _lEngine.LEngineEpithetRead(entry.LEntryId)));
             }
         }
 

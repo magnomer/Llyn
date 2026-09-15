@@ -99,6 +99,24 @@ public partial class LBootstrap : System.Windows.Application
             LBootstrapTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Error);
+
+        if (!LBootstrapWindowCheck())
+        {
+            Shutdown(1);
+        }
+    }
+
+    private bool LBootstrapWindowCheck()
+    {
+        foreach (Window window in Windows)
+        {
+            if (window.IsVisible)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void LBootstrapStrayHandle(object? sender, UnobservedTaskExceptionEventArgs e)

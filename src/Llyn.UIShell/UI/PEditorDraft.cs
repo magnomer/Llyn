@@ -15,10 +15,19 @@ public partial class PEditor
         try
         {
             PEditorTextShow(PHeadword, PEditorRequestHeadword, draft.LEntryDraftHeadword);
-            PEditorTextShow(PPronunciationField, PEditorRequestIpa, draft.LEntryDraftIpa);
+            _pEditorRespelling = PRespelling.PRespellingRead(_lEngine, draft.LEntryDraftLanguage);
+            PPronunciationOpener.Text = _pEditorRespelling.PRespellingOpener;
+            PPronunciationCloser.Text = _pEditorRespelling.PRespellingCloser;
+            PEditorTextShow(
+                PPronunciationField,
+                PEditorRequestIpa,
+                draft.LEntryDraftPronunciation is LPronunciationDraft primary
+                    ? _pEditorRespelling.PRespellingTextRead(primary)
+                    : string.Empty);
             PAccentShow(draft);
             PGlyphShow(draft);
             PTranscriptionShow(draft);
+            PReflexShow(draft);
             PEditorSpeechShow(draft.LEntryDraftSpeeches);
             PEditorLanguageShow(draft.LEntryDraftLanguage);
 
@@ -37,6 +46,7 @@ public partial class PEditor
 
         PTranscriptionPrepare(draft);
         PGlyphPrepare(draft);
+        PReflexPrepare(draft);
         PSentencePrepare();
     }
 
@@ -103,6 +113,7 @@ public partial class PEditor
         PAccentClear();
         PTranscriptionClear();
         PGlyphClear();
+        PReflexClear();
         PMarkerShow(null);
         PRecordingClear();
         _pSpeakerEntry = false;

@@ -7,11 +7,12 @@ internal sealed class PFootnoteItem : INotifyPropertyChanged
 {
     private bool _pFootnoteItemChosen;
 
-    internal PFootnoteItem(long id, string headword, string language)
+    internal PFootnoteItem(long id, string headword, string language, string epithet = "")
     {
         PFootnoteItemId = id;
         PFootnoteItemHeadword = headword;
         PFootnoteItemName = headword;
+        PFootnoteItemEpithet = epithet ?? string.Empty;
         PFootnoteItemLanguage = language;
         PFootnoteItemFlag = PEnsign.PEnsignFind(language);
     }
@@ -19,6 +20,8 @@ internal sealed class PFootnoteItem : INotifyPropertyChanged
     public long PFootnoteItemId { get; }
 
     public string PFootnoteItemHeadword { get; }
+
+    public string PFootnoteItemEpithet { get; }
 
     public string PFootnoteItemName { get; internal set; }
 

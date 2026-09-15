@@ -83,7 +83,11 @@ public partial class PEditor
         foreach (LEntry entry in found)
         {
             stored.Add(new PProspectItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                false,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(
@@ -175,7 +179,11 @@ public partial class PEditor
         foreach (LEntry entry in found)
         {
             stored.Add(new PProspectItem(
-                entry.LEntryId, entry.LEntryHeadword, entry.LEntryLanguage, false));
+                entry.LEntryId,
+                entry.LEntryHeadword,
+                entry.LEntryLanguage,
+                false,
+                _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
         PTwin.PTwinNameApply(

@@ -23,7 +23,13 @@ The side's title and source language remain secondary context.
 When no entry links here, the whole section collapses.
 An empty relationship does not occupy the page.
 
-## `<ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" ...>`
+## `<StackPanel Grid.Column="2" Style="{StaticResource Theme.Favorite.Row}">`
+
+The heart, the stars and their words, in the row the editor draws them in.
+The row, the heart, the stars and the words each take their shape from the theme.
+So the two views cannot place them apart.
+
+## `<ToggleButton x:Name="PDisplayFavorite" ...>`
 
 The heart stands beside the headword, so the mark is made where the entry is read.
 Every entry-browsing tab carries it, because the mark belongs to the entry and not to one panel.
@@ -46,19 +52,28 @@ So the same view serves the library panel, the phonology panel and the taxonomy 
 
 The pronunciation chip the editor also wears, defined once in the theme.
 It carries the primary pronunciation's variety as a flag or a label before the brackets, and play after them.
+The brackets are named so the code behind can turn them into slashes for a phonemic respelling.
 The play button shows only while the primary pronunciation owns a recording still on disk.
+After it stand the editor's lookup, download and plus-minus buttons, drawn hidden.
+They keep the room the editor's row takes, so the volume tray stands at one x in both views.
 The chip collapses when the entry carries no pronunciation.
 
 ## `<local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />`
 
 The tone contour of the primary pronunciation, drawn beneath its chip when the entry's language is tonal.
-The code behind hands it the IPA and the tonal flag.
+The code behind hands it the original IPA and the tonal flag, whichever form the chip prints.
 It hides itself when there is no tone to draw.
 
 ## `<ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}" />`
 
 The further pronunciations of the entry, one row each beneath the primary, drawn by the shared accent template.
 The playback command is bound here, so a row's play button reaches this view's player.
+
+## `<ItemsControl x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />`
+
+The reflexes of the entry, one row each at the head of the reading stack under the headword.
+The rows are drawn by the shared reflex template.
+It is empty for every entry whose language declares no reflex rule and carries none.
 
 ## `<ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />`
 
@@ -70,10 +85,10 @@ The glyph row beneath the transcriptions: the scheme label in the shared label c
 The chips wrap in a panel, and the entry command bound on it carries a chip to this view's host.
 It stays collapsed until an entry in a language with a glyph section is shown.
 
-## `<Border x:Name="PPlayback" Height="37" Background="Transparent" BorderThickness="0" ...>`
+## `<Border x:Name="PPlayback" Style="{StaticResource Theme.Volume.Tray}">`
 
 The volume tray: the level every row's recording is played at, drawn bare.
-It wears no surface or border, so the control reads as part of the pronunciation row.
+It takes its shape from the theme, as the editor's tray does.
 The tray hides when no pronunciation row owns a recording.
 A volume with nothing to play is a control that does nothing.
 The editor draws the same tray.

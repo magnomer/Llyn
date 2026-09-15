@@ -14,6 +14,9 @@ public sealed record LRequestNote(long LRequestDraftId, string LRequestText)
 public sealed record LRequestIpa(long LRequestDraftId, string LRequestText)
     : LRequest(LRequestDraftId);
 
+public sealed record LRequestRespelling(long LRequestDraftId, string LRequestText)
+    : LRequest(LRequestDraftId);
+
 public sealed record LRequestAudio(long LRequestDraftId, string LRequestFile, string? LRequestSource)
     : LRequest(LRequestDraftId);
 
