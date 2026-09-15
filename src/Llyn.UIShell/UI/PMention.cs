@@ -43,10 +43,6 @@ public sealed class PMention : TextBlock
         SetResourceReference(FontFamilyProperty, "Theme.Card.ExampleFamily");
         SetResourceReference(FontSizeProperty, "Theme.Card.ExampleSize");
         TextWrapping = TextWrapping.Wrap;
-
-        AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(PMentionPressHandle), true);
-        AddHandler(MouseLeftButtonUpEvent, new MouseButtonEventHandler(PMentionReleaseHandle), true);
-        AddHandler(QueryCursorEvent, new QueryCursorEventHandler(PMentionCursorHandle), true);
     }
 
     public event EventHandler<PMentionArgument> PMentionClick
@@ -73,13 +69,16 @@ public sealed class PMention : TextBlock
         set => SetValue(PMentionLanguageProperty, value);
     }
 
-    private void PMentionPressHandle(object sender, MouseButtonEventArgs e)
+    protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
+        base.OnMouseLeftButtonDown(e);
         _pMentionPress = e.GetPosition(this);
     }
 
-    private void PMentionReleaseHandle(object sender, MouseButtonEventArgs e)
+    protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
     {
+        base.OnMouseLeftButtonUp(e);
+
         Point? press = _pMentionPress;
         _pMentionPress = null;
 
@@ -96,12 +95,9 @@ public sealed class PMention : TextBlock
         RaiseEvent(new PMentionArgument(PMentionClickEvent, this, offset, PMentionPieceFind(offset)));
     }
 
-    private void PMentionCursorHandle(object sender, QueryCursorEventArgs e)
+    protected override void OnQueryCursor(QueryCursorEventArgs e)
     {
-        if (IsMouseCaptured)
-        {
-            return;
-        }
+        base.OnQueryCursor(e);
 
         LMentionPiece? piece = PMentionOffsetRead(e.GetPosition(this)) is int offset
             ? PMentionPieceFind(offset)

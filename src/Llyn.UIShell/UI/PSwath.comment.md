@@ -1,32 +1,66 @@
 # PSwath.cs
 
-## `internal static class PSwath`
+## `public sealed class PSwath : FrameworkElement`
 
 The band of text a reader drags across in the reading view, highlighted so it can be copied.
-A text block cannot be selected on its own, and the framework offers no switch for it.
-The editor a text box uses is internal, so it is reached by reflection and set on each block read-only.
-Runs, links and styles stay as drawn, because the block itself is not replaced.
-Every block under the display is covered, so headword, readings, cards and note all select.
+It runs from wherever the press landed to wherever the pointer is, across everything between.
+A text block selects nothing on its own, and one block's selection could never reach the next.
+So the band is kept here as two positions in a list of page items, and drawn over the page.
+A picture, video, glyph shape or tone contour is an item too, taken whole or not at all.
+Copying today takes only the text, and a richer export will read the same band later.
+It lies over the page inside the scroll viewer, so its highlight scrolls and clips with the text.
+It never takes a hit, so every click still lands on the text and buttons under it.
 
-### `private static readonly bool PSwathReady`
+### `internal void PSwathAttach(ScrollViewer viewer)`
 
-A framework build that renamed any of the internal members leaves every block as it was.
-Nothing is copied then, but nothing breaks either.
+The viewer's tunnelling mouse events are listened to, so a press anywhere on the page is seen first.
+A press on a button, link, star row, slider or scroll bar is left to that control.
 
-### `internal static void PSwathHook()`
+### `internal void PSwathClear()`
 
-The copy command and the mouse handlers are registered once for every text block in the program.
-A block without an editor answers none of them, so a block outside the display costs nothing.
-Blocks are attached as they load, since the cards draw theirs from templates long after the entry is shown.
+A press, a new entry and an emptied view each drop the band.
+The block list is dropped with it, since the page it described is about to change.
 
-### `private static bool PSwathDisplayCheck(DependencyObject block)`
+### `private void PSwathMoveHandle(object sender, MouseEventArgs e)`
 
-Only a block inside the reading view is made selectable.
-A block inside a button stays a button's face, because a drag would swallow the click it exists for.
-Tooltips and popups hang from their own root and never reach the display, so they are left alone.
+Nothing starts until the pointer has moved a drag's distance.
+A plain click therefore still opens a word on a sentence and reaches every control.
+The blocks are gathered at that moment, in visual order, which is reading order.
+The mouse is then captured by the viewer, so the band follows the pointer past the window's edge.
+Focus is taken so the copy key reaches this element.
 
-### `private static void PSwathAttach(TextBlock block)`
+### `private static bool PSwathControlCheck(DependencyObject? node)`
 
-The editor is created against the block's own text container and told to read only.
-The block must be focusable, or the editor never sees a key, and a focus rectangle would frame it.
-The editor is kept on the block so a block that loads twice is not attached twice.
+Walks up from what was hit, through content elements and visuals alike, looking for a control.
+A link is a content element, so the logical parent is followed until a visual is reached.
+
+### `private void PSwathScan(DependencyObject node)`
+
+Every visible text block, picture, video, glyph shape and tone contour under the viewer is an item.
+Buttons are entered, since chip text is part of the page even though a press on it stays a click.
+A video is one item, so the controls inside it are not walked.
+A collapsed section is skipped whole.
+
+### `private PSwathSeam? PSwathFind(Point point)`
+
+The item nearest the point wins, vertical distance counting far more than horizontal.
+An item that is not text carries no position and is simply in the band or out of it.
+A point above or left of a block maps to its start, below or right of it to its end.
+A point inside it asks the block for the position under the pointer.
+A block asked while its layout is stale refuses, and its start stands in.
+
+### `private static string PSwathSeparatorRead(Rect previous, Rect bound)`
+
+Blocks on one row read as one line, touching blocks with nothing between, spaced ones with a space.
+A block on a lower row starts a new line.
+
+### `protected override void OnRender(DrawingContext context)`
+
+The band is the system highlight colour, thinned so the text stays readable through it.
+Each block in range contributes the rectangles of its lines between the two positions.
+Any other item in range is covered whole.
+
+### `private static IEnumerable<Rect> PSwathBandScan(TextPointer from, TextPointer to)`
+
+A position's rectangle is a zero-width edge, so each is joined with the next position's back edge.
+Edges on one line merge into one rectangle, and a new line starts a new one.

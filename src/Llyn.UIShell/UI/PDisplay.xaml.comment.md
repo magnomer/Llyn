@@ -103,6 +103,12 @@ Every sentence on every card raises the same bubbling event.
 One handler on the control above them all answers it, so a card template stays free of handlers.
 The answer itself lives in [PDisplayMention.cs](PDisplayMention.comment.md).
 
+### `PDisplaySwath.PSwathAttach(PDisplayContents);`
+
+The band a reader drags across the page lies over the contents, inside the scroll viewer.
+It listens on the viewer, so a drag begun anywhere on the page selects.
+Showing or clearing an entry drops the band, since the text it spanned is gone.
+
 ### `PCompassUpdate();`
 
 The contents are rebuilt at the end of showing an entry, after every section has been given its visibility.

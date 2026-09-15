@@ -21,7 +21,6 @@ public partial class LBootstrap : System.Windows.Application
             PField.PFieldApply(Resources);
             PIndicator.PIndicatorApply(Resources);
             PCaret.PCaretHook();
-            PSwath.PSwathHook();
         }
         catch (Exception exception)
         {

@@ -32,6 +32,7 @@ public partial class PDisplay : UserControl
         PDisplayTranscription.ItemsSource = _pDisplayTranscription;
         PDisplayGlyph.ItemsSource = _pDisplayGlyph;
 
+        PDisplaySwath.PSwathAttach(PDisplayContents);
         PDisplayPlaybackAttach();
         AddHandler(PMention.PMentionClickEvent, new EventHandler<PMentionArgument>(PDisplayMentionHandle));
 
@@ -68,6 +69,7 @@ public partial class PDisplay : UserControl
         ArgumentNullException.ThrowIfNull(draft);
 
         _pDisplayEntry = id;
+        PDisplaySwath.PSwathClear();
         PDisplayFavoriteShow(id);
         PDisplayGraspShow(id);
 
@@ -190,6 +192,7 @@ public partial class PDisplay : UserControl
     internal void PDisplayClear()
     {
         _pDisplayEntry = null;
+        PDisplaySwath.PSwathClear();
         PDisplayFavorite.IsChecked = false;
         PDisplayGrasp.PGraspStep = 0;
         PDisplayGraspLabel.Text = string.Empty;

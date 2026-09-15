@@ -29,260 +29,263 @@
             Style="{StaticResource Theme.Scroll.Gutter}"
             VerticalScrollBarVisibility="Auto"
             Visibility="Collapsed">
-            <StackPanel>
-                <Grid x:Name="PDisplayHeader" MinHeight="56" HorizontalAlignment="Left" SizeChanged="PCompassSizeHandle">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Top" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
-                    <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
-                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                            <Grid Width="19" Height="14" VerticalAlignment="Center">
-                                <Image x:Name="PDisplayLanguageFlag" Stretch="Uniform">
-                                    <Image.Style>
-                                        <Style TargetType="Image">
-                                            <Style.Triggers>
-                                                <Trigger Property="Source" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                                <Ellipse Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" Visibility="Collapsed">
-                                    <Ellipse.Style>
-                                        <Style TargetType="Ellipse">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Source, ElementName=PDisplayLanguageFlag}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Ellipse.Style>
-                                </Ellipse>
-                            </Grid>
-                            <TextBlock x:Name="PDisplayLanguage" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" />
-                            <Border Width="16" />
-                        </StackPanel>
-                    </Border>
-                    <ToggleButton
-                        x:Name="PDisplayFavorite"
-                        Grid.Column="2"
-                        Width="42"
-                        Height="42"
-                        Margin="12,0,0,0"
-                        Padding="0"
-                        VerticalAlignment="Center"
-                        Click="PDisplayFavoriteHandle"
-                        Style="{StaticResource Theme.Favorite.Mark}"
-                        ToolTip="{DynamicResource Favorite.Mark}">
-                        <Path Width="24" Height="24" Stretch="None" Fill="{StaticResource Theme.Favorite}">
-                            <Path.Style>
-                                <Style TargetType="Path">
-                                    <Setter Property="Data" Value="{local:PIcon favorite, 24}" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsChecked, ElementName=PDisplayFavorite}" Value="True">
-                                            <Setter Property="Data" Value="{local:PIcon favorite-marked, 24}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Path.Style>
-                        </Path>
-                    </ToggleButton>
-                    <StackPanel Grid.Column="3" Margin="2,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                        <local:PGrasp
-                            x:Name="PDisplayGrasp"
+            <Grid>
+                <StackPanel>
+                    <Grid x:Name="PDisplayHeader" MinHeight="56" HorizontalAlignment="Left" SizeChanged="PCompassSizeHandle">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="PDisplayHeadword" VerticalAlignment="Top" Style="{StaticResource Theme.Text.Headword}" TextWrapping="Wrap" />
+                        <Border Grid.Column="1" Margin="14,0,0,0" Style="{StaticResource Theme.Language.Chip}">
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <Grid Width="19" Height="14" VerticalAlignment="Center">
+                                    <Image x:Name="PDisplayLanguageFlag" Stretch="Uniform">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Source" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                    <Ellipse Width="12" Height="12" Stroke="{StaticResource Theme.Accent}" StrokeThickness="1.2" Visibility="Collapsed">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Source, ElementName=PDisplayLanguageFlag}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                </Grid>
+                                <TextBlock x:Name="PDisplayLanguage" Margin="8,0,0,0" Style="{StaticResource Theme.Language.Name}" />
+                                <Border Width="16" />
+                            </StackPanel>
+                        </Border>
+                        <ToggleButton
+                            x:Name="PDisplayFavorite"
+                            Grid.Column="2"
+                            Width="42"
+                            Height="42"
+                            Margin="12,0,0,0"
+                            Padding="0"
                             VerticalAlignment="Center"
-                            PGraspChanged="PDisplayGraspHandle"
-                            PGraspHovered="PDisplayHoverHandle"
-                            ToolTip="{DynamicResource Grasp.Mark}" />
-                        <TextBlock x:Name="PDisplayGraspLabel" Margin="6,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Grasp.Label}" />
-                    </StackPanel>
-                </Grid>
-                <StackPanel Margin="12,12,0,0" Grid.IsSharedSizeScope="True">
-                    <StackPanel Orientation="Horizontal">
-                        <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
+                            Click="PDisplayFavoriteHandle"
+                            Style="{StaticResource Theme.Favorite.Mark}"
+                            ToolTip="{DynamicResource Favorite.Mark}">
+                            <Path Width="24" Height="24" Stretch="None" Fill="{StaticResource Theme.Favorite}">
+                                <Path.Style>
+                                    <Style TargetType="Path">
+                                        <Setter Property="Data" Value="{local:PIcon favorite, 24}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsChecked, ElementName=PDisplayFavorite}" Value="True">
+                                                <Setter Property="Data" Value="{local:PIcon favorite-marked, 24}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </ToggleButton>
+                        <StackPanel Grid.Column="3" Margin="2,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                            <local:PGrasp
+                                x:Name="PDisplayGrasp"
+                                VerticalAlignment="Center"
+                                PGraspChanged="PDisplayGraspHandle"
+                                PGraspHovered="PDisplayHoverHandle"
+                                ToolTip="{DynamicResource Grasp.Mark}" />
+                            <TextBlock x:Name="PDisplayGraspLabel" Margin="6,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Grasp.Label}" />
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Margin="12,12,0,0" Grid.IsSharedSizeScope="True">
+                        <StackPanel Orientation="Horizontal">
+                            <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition x:Name="PDisplayPronunciationLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
+                                        <Image x:Name="PDisplayPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
+                                        <TextBlock x:Name="PDisplayPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
+                                        <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
+                                        <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
+                                        <Button
+                                            x:Name="PPlaybackAction"
+                                            Click="PPlaybackActionHandle"
+                                            Style="{StaticResource Theme.Accent.Tool}"
+                                            Margin="8,0,0,0"
+                                            Tag="{local:PIcon play, 24}"
+                                            ToolTip="{DynamicResource Downloader.Play}"
+                                            Visibility="Collapsed" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Border
+                                x:Name="PPlayback"
+                                Height="37"
+                                Margin="10,0,0,0"
+                                Padding="3"
+                                VerticalAlignment="Top"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                SnapsToDevicePixels="True"
+                                Visibility="Collapsed">
+                                <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
+                            </Border>
+                        </StackPanel>
+
+                        <local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />
+                        <ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}">
+                            <ItemsControl.CommandBindings>
+                                <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandPlayback}" Executed="PDisplayPlaybackHandle" />
+                            </ItemsControl.CommandBindings>
+                        </ItemsControl>
+                        <ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />
+                        <Border x:Name="PDisplayGlyphSection" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
                             <Grid VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition x:Name="PDisplayPronunciationLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
+                                    <ColumnDefinition x:Name="PDisplayGlyphLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
-                                    <Image x:Name="PDisplayPronunciationFlag" Style="{StaticResource Theme.Pronunciation.Flag}" />
-                                    <TextBlock x:Name="PDisplayPronunciationLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
+                                    <TextBlock x:Name="PDisplayGlyphLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
                                 </StackPanel>
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
-                                    <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
-                                    <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                                    <Button
-                                        x:Name="PPlaybackAction"
-                                        Click="PPlaybackActionHandle"
-                                        Style="{StaticResource Theme.Accent.Tool}"
-                                        Margin="8,0,0,0"
-                                        Tag="{local:PIcon play, 24}"
-                                        ToolTip="{DynamicResource Downloader.Play}"
-                                        Visibility="Collapsed" />
-                                </StackPanel>
+                                <ItemsControl x:Name="PDisplayGlyph" Grid.Column="1" Margin="3,0" VerticalAlignment="Center" ItemTemplate="{StaticResource Theme.Glyph.Display}">
+                                    <ItemsControl.CommandBindings>
+                                        <CommandBinding Command="{x:Static local:PGlyphCommand.PGlyphCommandEntry}" Executed="PDisplayGlyphHandle" />
+                                    </ItemsControl.CommandBindings>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
                             </Grid>
-                        </Border>
-
-                        <Border
-                            x:Name="PPlayback"
-                            Height="37"
-                            Margin="10,0,0,0"
-                            Padding="3"
-                            VerticalAlignment="Top"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            SnapsToDevicePixels="True"
-                            Visibility="Collapsed">
-                            <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
                         </Border>
                     </StackPanel>
 
-                    <local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />
-                    <ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}">
-                        <ItemsControl.CommandBindings>
-                            <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandPlayback}" Executed="PDisplayPlaybackHandle" />
-                        </ItemsControl.CommandBindings>
-                    </ItemsControl>
-                    <ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />
-                    <Border x:Name="PDisplayGlyphSection" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
-                        <Grid VerticalAlignment="Center">
+                    <StackPanel x:Name="PDisplaySpeechSection" Margin="12,14,0,-4" Visibility="Collapsed">
+                        <ItemsControl x:Name="PDisplaySpeech">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource Theme.Speech.Chip}">
+                                        <TextBlock Style="{StaticResource Theme.Speech.Name}" Text="{Binding}" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <StackPanel x:Name="PDisplayFrequencySection" Margin="12,14,0,0" Visibility="Collapsed">
+                        <Border x:Name="PDisplayFrequencyChip" Style="{StaticResource Theme.Frequency.Chip}">
+                            <TextBlock x:Name="PDisplayFrequency" Style="{StaticResource Theme.Frequency.Name}" />
+                        </Border>
+                    </StackPanel>
+
+                    <local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
+
+                    <local:PScript x:Name="PDisplayScript" Margin="0,14,0,0" />
+
+                    <local:PFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />
+
+                    <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
+                        <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />
+                        <ItemsControl x:Name="PDisplayMeaning" Button.Click="PDisplayCardHandle" ItemTemplate="{StaticResource Display.Meaning.Card}" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="PDisplayCollocationSection" Margin="0,28,0,0">
+                        <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Collocation}" />
+                        <ItemsControl x:Name="PDisplayCollocation" Button.Click="PDisplayCardHandle" ItemTemplate="{StaticResource Display.Collocation.Card}" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="PDisplayIncomingSection" Margin="0,28,0,0">
+                        <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Translated}" />
+                        <ItemsControl x:Name="PDisplayIncoming">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Click="PDisplayIncomingHandle" Style="{StaticResource Theme.Usage.Row}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Width="32" Height="32" Margin="0,0,12,0" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="10">
+                                                <Path
+                                                    Width="24"
+                                                    Height="24"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Data="{local:PIcon incoming, 24}"
+                                                    Fill="{StaticResource Theme.Accent}"
+                                                    Stretch="None" />
+                                            </Border>
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemName}" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Style="{StaticResource Theme.Usage.Detail}" Text="{Binding PUsageItemTitle}" />
+                                            </StackPanel>
+
+                                            <Border Grid.Column="2" Margin="14,0,0,0" Padding="9,3" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="9">
+                                                <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PUsageItemOwner}" />
+                                            </Border>
+
+                                            <StackPanel Grid.Column="3" Margin="14,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
+                                                <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PUsageItemFlag}" Stretch="Uniform" />
+                                                <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PUsageItemLanguage}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <StackPanel x:Name="PDisplayNoteSection" Margin="0,28,0,0">
+                        <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Note}" />
+                        <Border Padding="26,22" Style="{StaticResource Theme.Input.Card}">
+                            <StackPanel x:Name="PDisplayNote" />
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">
+                        <Border Height="1" Margin="0,0,0,14" Background="{StaticResource Theme.Line}" SnapsToDevicePixels="True" />
+                        <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition x:Name="PDisplayGlyphLead" Width="Auto" SharedSizeGroup="PReadingLabel" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
-                                <TextBlock x:Name="PDisplayGlyphLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
-                            </StackPanel>
-                            <ItemsControl x:Name="PDisplayGlyph" Grid.Column="1" Margin="3,0" VerticalAlignment="Center" ItemTemplate="{StaticResource Theme.Glyph.Display}">
-                                <ItemsControl.CommandBindings>
-                                    <CommandBinding Command="{x:Static local:PGlyphCommand.PGlyphCommandEntry}" Executed="PDisplayGlyphHandle" />
-                                </ItemsControl.CommandBindings>
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock Style="{StaticResource Theme.Stamp.Label}" Text="{DynamicResource Display.Created}" />
+                            <TextBlock x:Name="PDisplayStampAdded" Grid.Column="1" Style="{StaticResource Theme.Stamp.Time}" />
+                            <TextBlock Grid.Row="1" Style="{StaticResource Theme.Stamp.Label}" Text="{DynamicResource Display.Updated}" />
+                            <TextBlock x:Name="PDisplayStampUpdated" Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Stamp.Time}" />
                         </Grid>
-                    </Border>
+                    </StackPanel>
                 </StackPanel>
-
-                <StackPanel x:Name="PDisplaySpeechSection" Margin="12,14,0,-4" Visibility="Collapsed">
-                    <ItemsControl x:Name="PDisplaySpeech">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Style="{StaticResource Theme.Speech.Chip}">
-                                    <TextBlock Style="{StaticResource Theme.Speech.Name}" Text="{Binding}" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
-                <StackPanel x:Name="PDisplayFrequencySection" Margin="12,14,0,0" Visibility="Collapsed">
-                    <Border x:Name="PDisplayFrequencyChip" Style="{StaticResource Theme.Frequency.Chip}">
-                        <TextBlock x:Name="PDisplayFrequency" Style="{StaticResource Theme.Frequency.Name}" />
-                    </Border>
-                </StackPanel>
-
-                <local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
-
-                <local:PScript x:Name="PDisplayScript" Margin="0,14,0,0" />
-
-                <local:PFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />
-
-                <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
-                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />
-                    <ItemsControl x:Name="PDisplayMeaning" Button.Click="PDisplayCardHandle" ItemTemplate="{StaticResource Display.Meaning.Card}" />
-                </StackPanel>
-
-                <StackPanel x:Name="PDisplayCollocationSection" Margin="0,28,0,0">
-                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Collocation}" />
-                    <ItemsControl x:Name="PDisplayCollocation" Button.Click="PDisplayCardHandle" ItemTemplate="{StaticResource Display.Collocation.Card}" />
-                </StackPanel>
-
-                <StackPanel x:Name="PDisplayIncomingSection" Margin="0,28,0,0">
-                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Translated}" />
-                    <ItemsControl x:Name="PDisplayIncoming">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Click="PDisplayIncomingHandle" Style="{StaticResource Theme.Usage.Row}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <Border Width="32" Height="32" Margin="0,0,12,0" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="10">
-                                            <Path
-                                                Width="24"
-                                                Height="24"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Data="{local:PIcon incoming, 24}"
-                                                Fill="{StaticResource Theme.Accent}"
-                                                Stretch="None" />
-                                        </Border>
-
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock FontSize="15" FontWeight="SemiBold" Text="{Binding PUsageItemName}" TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Style="{StaticResource Theme.Usage.Detail}" Text="{Binding PUsageItemTitle}" />
-                                        </StackPanel>
-
-                                        <Border Grid.Column="2" Margin="14,0,0,0" Padding="9,3" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="9">
-                                            <TextBlock FontSize="11" Foreground="{StaticResource Theme.Accent}" Text="{Binding PUsageItemOwner}" />
-                                        </Border>
-
-                                        <StackPanel Grid.Column="3" Margin="14,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                                            <Image Width="19" Height="14" Margin="0,0,7,0" VerticalAlignment="Center" Source="{Binding PUsageItemFlag}" Stretch="Uniform" />
-                                            <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{Binding PUsageItemLanguage}" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
-                <StackPanel x:Name="PDisplayNoteSection" Margin="0,28,0,0">
-                    <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.Note}" />
-                    <Border Padding="26,22" Style="{StaticResource Theme.Input.Card}">
-                        <StackPanel x:Name="PDisplayNote" />
-                    </Border>
-                </StackPanel>
-
-                <StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">
-                    <Border Height="1" Margin="0,0,0,14" Background="{StaticResource Theme.Line}" SnapsToDevicePixels="True" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource Theme.Stamp.Label}" Text="{DynamicResource Display.Created}" />
-                        <TextBlock x:Name="PDisplayStampAdded" Grid.Column="1" Style="{StaticResource Theme.Stamp.Time}" />
-                        <TextBlock Grid.Row="1" Style="{StaticResource Theme.Stamp.Label}" Text="{DynamicResource Display.Updated}" />
-                        <TextBlock x:Name="PDisplayStampUpdated" Grid.Row="1" Grid.Column="1" Style="{StaticResource Theme.Stamp.Time}" />
-                    </Grid>
-                </StackPanel>
-            </StackPanel>
+                <local:PSwath x:Name="PDisplaySwath" />
+            </Grid>
         </ScrollViewer>
 
         <StackPanel x:Name="PCompass" Width="216" Margin="0,20,26,0" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed">

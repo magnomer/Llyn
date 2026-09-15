@@ -20,24 +20,22 @@ The language is carried for the host, which needs it when it asks the engine abo
 The face and size come from the card example keys, as the text block it replaced read them.
 The display sets those keys on itself for the entry it shows, so nothing there changes.
 
-### `private void PMentionPressHandle(object sender, MouseButtonEventArgs e)`
+### `protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)`
 
 Where the button went down is kept, so the release can tell a click from a drag.
 
-### `private void PMentionReleaseHandle(object sender, MouseButtonEventArgs e)`
+### `protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)`
 
 A click is answered on release, and only when the pointer has not moved a drag's distance since the press.
 A drag is the reader selecting text to copy, and it opens nothing.
+In the reading view the band captures the mouse on a drag, so no release reaches here at all.
 The event bubbles, so a host holding many sentences listens once above them all.
-Both handlers are added as listeners that still run once the event is marked handled.
-The reading view's selection editor marks every press and release handled before the control sees it.
 
-### `private void PMentionCursorHandle(object sender, QueryCursorEventArgs e)`
+### `protected override void OnQueryCursor(QueryCursorEventArgs e)`
 
 The cursor is a hand over a word linked to an Entry.
-Anywhere else it is left to whoever answers next: an arrow alone, a beam under the selection editor.
+Anywhere else it is left to whoever answers next, which in the reading view is the band's beam.
 An unlinked word may open an Entry too, but only the engine knows that, and the cursor does not ask.
-Nothing is answered while the mouse is held, so a drag across a link keeps the selection beam.
 
 ### `private void PMentionShow()`
 
