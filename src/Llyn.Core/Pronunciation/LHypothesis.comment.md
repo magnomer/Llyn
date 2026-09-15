@@ -28,8 +28,9 @@ A tone outside the table, or with no row taking the onset, keeps the joined syll
 `null` when the initial or the final is not in the tables.
 The box then falls back to the placement text.
 
-## `private string? LHypothesisFinalFind(LFanqieRow row)`
+## `public string? LHypothesisFinalFind(LFanqieRow row)`
 
+The final alone, without initial or tone, for a category page's reading column.
 Looks the final up, rounded key first when the placement is rounded, then the plain key.
 The rime is tried as written and then without its 重紐 letter.
 

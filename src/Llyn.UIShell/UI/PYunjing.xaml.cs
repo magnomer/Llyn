@@ -31,6 +31,7 @@ public partial class PYunjing : UserControl
         engine.LEngineObserverAttach(_pYunjingObserver);
 
         PDisplay.PDisplayAttach(host, engine);
+        PDiweiAttach();
 
         PEditor.PEditorAttach(host, engine, "Yunjing", null);
         PEditor.PEditorChangeNotice = changed => PYunjingStore.IsEnabled = changed;

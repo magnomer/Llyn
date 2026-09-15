@@ -78,6 +78,7 @@ A missing block reads as no varieties, and a repeated name keeps its first row.
 ### `private static LLanguage LLanguageRead(string language, JsonElement root)`
 
 The top-level `tonal` key is read as a plain boolean, and only a literal `true` switches the tone contour on.
+The top-level `silent` key is read the same way, and only a literal `true` hides the pronunciation rows.
 
 ### `private static bool LLanguageFlaggedCheck(JsonElement root)`
 

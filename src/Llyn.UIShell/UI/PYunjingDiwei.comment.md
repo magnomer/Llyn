@@ -1,0 +1,35 @@
+# PYunjingDiwei.cs
+
+## `public partial class PYunjing`
+
+The category page of the rime table panel: shown when an onset is chosen, hidden when an entry is opened.
+
+## `private LDiwei? _pDiweiShown;`
+
+The category the page shows, or `null` while the reading view stands.
+
+## `private void PDiweiAttach()`
+
+Hands the page the engine and routes its character chips to the window.
+
+## `private LDiwei? PDiweiFind(string kind, string key)`
+
+The category of the panel's language by kind and key.
+`null` when the store has none or the read fails.
+
+## `private void PDiweiShow(LDiwei diwei)`
+
+Clears the entry shown, then puts the page in the reading view's place and fills it.
+
+## `private void PDiweiHide()`
+
+Drops the page and gives the reading view its place back, unless the editor holds it.
+
+## `private void PDiweiLoad()`
+
+Reads the category's placements and the hypothesis, and hands the page the grouped rows.
+Called again on every panel load, so a fetch that lands refreshes the page.
+
+## `private void PDiweiEntryShow(string character)`
+
+Opens the entry of a clicked character in the library, after confirming an unsaved draft may be left.

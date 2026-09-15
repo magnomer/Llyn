@@ -23,7 +23,8 @@ public sealed record LLanguage(
     LGlyph? LLanguageGlyph = null,
     IReadOnlyList<LScriptStyle>? LLanguageScripts = null,
     IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null,
-    LHypothesis? LLanguageHypothesis = null)
+    LHypothesis? LLanguageHypothesis = null,
+    bool LLanguageSilent = false)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 

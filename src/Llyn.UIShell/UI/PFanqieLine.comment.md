@@ -38,6 +38,11 @@ The initial, such as 疑.
 
 The rime with its rime heading in brackets when the source gives one, such as `模[模]` or `模`.
 
+## `public string PFanqieLineYunmu`
+
+The rime category the line points to, as the diwei store keys it.
+It drops the heading and the 重紐 letter, such as 寒.
+
 ## `public string PFanqieLineMedial`
 
 開 or 合, or empty when the row carries no parts at all.

@@ -32,6 +32,14 @@ The site name inside the origin chip, small and muted, in the interface font.
 
 One column of a line, in the glyph font family at reading size rather than the headword size.
 
+## `<Style x:Key="Theme.Fanqie.Link" TargetType="Button">`
+
+The initial and rime columns as chip buttons, accent ink on the soft accent ground the book chip uses.
+Each opens the rime table on its category.
+The word takes the button's ink itself, since the default text style would paint it black.
+The border is always drawn and only coloured under the mouse, so hovering moves nothing beside it.
+It fades while pressed and collapses when the part is empty.
+
 ## `<Style x:Key="Theme.Fanqie.Reading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
 
 The reading column, bold in the interface font, collapsed when the line has no reading.
@@ -57,6 +65,7 @@ The placement as fetched, shown only on a line that carries no parts.
 ## `<DataTemplate x:Key="Theme.Fanqie.Line">`
 
 One placement across the shared columns: reading, initial, rime, 開合, division, tone, 反切.
+The initial and the rime are links into the rime table.
 The columns share their widths across every block of the box, so the parts line up under each other.
 
 ## `<Style x:Key="Theme.Fanqie.Head" TargetType="TextBlock">`

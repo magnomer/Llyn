@@ -11,6 +11,7 @@ It asks the engine to fetch what is missing first.
 A fetch started here reaches the editor by bulletin like any other.
 An unsaved entry has no id and shows nothing.
 A failed read hands the box nothing.
+A click on an initial or a rime asks the window to open the rime table on that category.
 
 ## `private void PEditorFanqieRebuild(long entry)`
 

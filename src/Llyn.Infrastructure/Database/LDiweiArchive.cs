@@ -157,6 +157,43 @@ public sealed class LDiweiArchive
         return entries;
     }
 
+    public IReadOnlyList<LFanqieRow> LDiweiFanqieRead(long diweiId)
+    {
+        using LDatabaseSession session = _lDiweiArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT f.character, f.book, f.position, f.text, f.initial, f.rime, f.heading, f.division, f.tone,
+                   f.rounded, f.source, f.spelling
+            FROM fanqie_diwei l
+            JOIN fanqie f ON f.fanqie_id = l.fanqie_parent
+            WHERE l.diwei_ref = $diwei
+            ORDER BY f.fanqie_id;
+            """;
+        command.Parameters.AddWithValue("$diwei", diweiId);
+
+        List<LFanqieRow> rows = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            rows.Add(new LFanqieRow(
+                reader.GetString(0),
+                reader.GetString(1),
+                reader.GetInt32(2),
+                reader.GetString(3),
+                reader.GetString(4),
+                reader.GetString(5),
+                reader.GetString(6),
+                reader.GetString(7),
+                reader.GetString(8),
+                reader.GetInt32(9) != 0,
+                reader.GetString(10),
+                reader.GetString(11)));
+        }
+
+        return rows;
+    }
+
     private static LDiwei LDiweiRowRead(SqliteDataReader reader)
     {
         return new LDiwei(
@@ -224,12 +261,7 @@ public sealed class LDiweiArchive
             yield return (LDiwei.LDiweiInitial, row.LFanqieRowInitial);
         }
 
-        string rime = row.LFanqieRowRime;
-        if (rime.Length > 1 && char.IsAsciiLetterUpper(rime[^1]))
-        {
-            rime = rime[..^1];
-        }
-
+        string rime = LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime);
         if (rime.Length > 0)
         {
             yield return (LDiwei.LDiweiRime, rime);

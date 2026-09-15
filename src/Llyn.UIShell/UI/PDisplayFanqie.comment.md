@@ -18,6 +18,7 @@ When it lists any book, it reads the entry's stored rows and whether a fetch run
 The fetch itself is started by the entry show, not here, so a bulletin never starts another.
 The blocks and the pending flag are handed to the box control, which shows the loading line or hides itself.
 A failed read hands it nothing.
+A click on an initial or a rime asks the window to open the rime table on that category.
 The box takes the pack's glyph font family, so the Han text is drawn as the glyph chips are.
 The fetch announces itself as a fanqie bulletin, and this view re-reads the box alone.
 

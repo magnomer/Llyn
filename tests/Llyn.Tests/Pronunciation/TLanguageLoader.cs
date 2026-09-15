@@ -25,6 +25,14 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
+    public void LanguageLoad_SilentPack_ReadsSilent()
+    {
+        Assert.True(TInterface.TLanguageLoad("Classical Chinese").LLanguageSilent);
+        Assert.False(TInterface.TLanguageLoad("Mandarin").LLanguageSilent);
+        Assert.False(TInterface.TLanguageLoad("English").LLanguageSilent);
+    }
+
+    [Fact]
     public void LanguageLoad_PackWithoutVarieties_ReadsNoneUnflagged()
     {
         LLanguage language = TInterface.TLanguageLoad("Spanish");

@@ -47,6 +47,11 @@ It reads the cached pack as `LEngineVarietyRead` does.
 Reports whether the pack declares the language tonal, so the UI knows to draw a tone contour under a reading.
 It reads the cached pack as `LEngineVarietyRead` does.
 
+## `public bool LEngineSilentCheck(string language)`
+
+Reports whether the pack declares the language silent, so the input panel knows to hide its pronunciation rows.
+It reads the cached pack as `LEngineVarietyRead` does.
+
 ## `public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)`
 
 Returns the local path to the flag image of one named variety of the language.

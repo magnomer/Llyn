@@ -75,3 +75,6 @@ Everything language-specific arrives through this record.
 - `LLanguageHypothesis` — The reconstruction the pack names under `hypothesis`, held as an [LHypothesis](LHypothesis.comment.md) record.
   The fanqie box then prints each placement's reading before the placement.
   A pack that declares none carries `null`, and the box prints the placement alone.
+- `LLanguageSilent` — Whether the language takes no pronunciation, declared with the top-level key `silent` set to `true`.
+  The input panel then hides its pronunciation rows, so no reading is typed, looked up or downloaded for the entry.
+  A pack that omits the key is read as spoken, and the rows stay shown.

@@ -33,3 +33,9 @@ A language declaring neither family nor size leaves the theme's own value standi
 Tells the tone contour box whether the chosen language is tonal.
 The box reads the pronunciation field live, so this is the only fact it needs from the form.
 It runs wherever the headword typography is applied, because both follow the same language change.
+
+### `private void PEditorSilentApply(string language)`
+
+Hides the pronunciation surface and the further pronunciation rows when the chosen language is declared silent.
+A silent language has no reading to type, so the rows leave the form rather than sit greyed.
+It runs beside the contour check, because both follow the same language change.

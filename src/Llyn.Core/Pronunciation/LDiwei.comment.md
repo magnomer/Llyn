@@ -25,3 +25,7 @@ The kind of a category made from a placement's rime, such as 寒, its 重紐 let
 ## `public const string LDiweiTone = "tone";`
 
 The kind of a category made from the tone class the hypothesis gives a placement, such as `6`.
+
+## `public static string LDiweiRimeNormalize(string rime)`
+
+The rime as a category keys it: the trailing 重紐 letter dropped, so 寒A and 寒 name one row.

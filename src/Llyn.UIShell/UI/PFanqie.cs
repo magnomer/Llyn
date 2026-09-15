@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Shapes;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -59,6 +61,10 @@ public sealed class PFanqie : ContentControl
         _pFanqieHead.Children.Add(_pFanqieSwitch);
 
         Grid.SetIsSharedSizeScope(_pFanqieList, true);
+        _pFanqieList.CommandBindings.Add(
+            new CommandBinding(PFanqieCommand.PFanqieCommandInitial, PFanqieDiweiHandle));
+        _pFanqieList.CommandBindings.Add(
+            new CommandBinding(PFanqieCommand.PFanqieCommandRime, PFanqieDiweiHandle));
         _pFanqieList.SetResourceReference(ItemsControl.ItemTemplateProperty, "Theme.Fanqie.Row");
         _pFanqieLoading.SetResourceReference(StyleProperty, "Theme.Fanqie.Loading");
         _pFanqieLoading.SetResourceReference(TextBlock.TextProperty, "Display.FanqieLoading");
@@ -97,6 +103,23 @@ public sealed class PFanqie : ContentControl
     }
 
     internal Action? PFanqieRebuildNotice { get; set; }
+
+    internal Action<string, string>? PFanqieDiweiNotice { get; set; }
+
+    private void PFanqieDiweiHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is not PFanqieLine line)
+        {
+            return;
+        }
+
+        bool initial = e.Command == PFanqieCommand.PFanqieCommandInitial;
+        string key = initial ? line.PFanqieLineInitial : line.PFanqieLineYunmu;
+        if (key.Length > 0)
+        {
+            PFanqieDiweiNotice?.Invoke(initial ? LDiwei.LDiweiInitial : LDiwei.LDiweiRime, key);
+        }
+    }
 
     private static void PFanqieStateHandle(DependencyObject sender, DependencyPropertyChangedEventArgs e)
     {

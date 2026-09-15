@@ -9,6 +9,7 @@ It reads one language, the first pack with rime books, and owns a reader and an 
 ## `internal void PYunjingAttach(PWindow host, LEngine engine)`
 
 Binds the panel to the window and the engine, starts listening for what the engine announces, and loads.
+The category page is attached with the reader.
 
 ## `internal bool PYunjingCheck()`
 

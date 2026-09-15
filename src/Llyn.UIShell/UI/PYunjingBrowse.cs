@@ -73,6 +73,7 @@ public partial class PYunjing
         PYunjingEmptyShow(
             PYunmuEmpty, _pYunmuList.Count, PFathom.Text, "Yunjing.YunmuEmpty", "Yunjing.YunmuUnmatched");
         PXiaoyunFind();
+        PDiweiLoad();
     }
 
     private static long? PYunjingListBuild(
@@ -123,6 +124,14 @@ public partial class PYunjing
         {
             _pShengmuChoice = _pShengmuChoice == item.PYunjingItemId ? null : item.PYunjingItemId;
             PYunjingSelect(_pShengmuList, _pShengmuChoice);
+            if (_pShengmuChoice is null)
+            {
+                PDiweiHide();
+            }
+            else if (PDiweiFind(LDiwei.LDiweiInitial, item.PYunjingItemKey) is LDiwei diwei)
+            {
+                PDiweiShow(diwei);
+            }
         }
         else
         {
@@ -131,6 +140,36 @@ public partial class PYunjing
         }
 
         PXiaoyunFind();
+    }
+
+    internal void PYunjingDiweiShow(string language, string kind, string key)
+    {
+        LDiwei? found;
+        try
+        {
+            found = _lEngine.LEngineDiweiFind(language, kind, key);
+        }
+        catch (Exception exception)
+        {
+            _pYunjingHost.PWindowFailureShow(PYunjingFailure, exception);
+            return;
+        }
+
+        if (found is null)
+        {
+            return;
+        }
+
+        _pYunjingLanguage = language;
+        _pShengmuChoice = kind == LDiwei.LDiweiInitial ? found.LDiweiId : null;
+        _pYunmuChoice = kind == LDiwei.LDiweiRime ? found.LDiweiId : null;
+        PPlumb.Text = string.Empty;
+        PFathom.Text = string.Empty;
+        PYunjingLoad();
+        if (kind == LDiwei.LDiweiInitial)
+        {
+            PDiweiShow(found);
+        }
     }
 
     private static void PYunjingSelect(ObservableCollection<PYunjingItem> list, long? chosen)

@@ -155,12 +155,14 @@ public partial class PYunjing
 
     private void PYunjingEntryShow(long id, LEntryDraft draft)
     {
+        PDiweiHide();
         PDisplay.PDisplayShow(id, draft);
         PYunjingMode.IsEnabled = true;
     }
 
     private void PYunjingClear()
     {
+        PDiweiHide();
         _pDisplayEntry = null;
         PXiaoyunSelect(null);
         PDisplay.PDisplayClear();

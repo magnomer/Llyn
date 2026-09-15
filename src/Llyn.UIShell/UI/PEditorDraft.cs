@@ -108,6 +108,7 @@ public partial class PEditor
         _pSpeakerEntry = false;
         PHeadwordFontApply(_pSpeakerChoice);
         PEditorContourApply(_pSpeakerChoice);
+        PEditorSilentApply(_pSpeakerChoice);
         PEditorExampleShow(_pSpeakerChoice);
         PSentenceFrameLoad(_pSpeakerChoice);
 

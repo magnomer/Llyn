@@ -31,6 +31,7 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderMorphology = "morphology";
     private const string LLanguageLoaderBands = "bands";
     private const string LLanguageLoaderTonal = "tonal";
+    private const string LLanguageLoaderSilent = "silent";
     private const string LLanguageLoaderGlyph = "glyph";
     private const string LLanguageLoaderEmblem = ".svg";
 
@@ -146,7 +147,8 @@ public static partial class LLanguageLoader
             LLanguageGlyphRead(root, spelling),
             LLanguageScriptScan(root),
             LLanguageFanqieScan(root),
-            LLanguageHypothesisRead(language, root));
+            LLanguageHypothesisRead(language, root),
+            root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderSilent));
     }
 
     private static string? LLanguageFlagRead(string language, JsonElement root)

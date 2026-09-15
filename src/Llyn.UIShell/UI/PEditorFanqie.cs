@@ -10,6 +10,7 @@ public partial class PEditor
     {
         long? entry = PEditorEntryRead();
         PEditorFanqie.PFanqieRebuildNotice = null;
+        PEditorFanqie.PFanqieDiweiNotice = null;
         if (entry is null)
         {
             PEditorFanqie.PFanqieItems = null;
@@ -46,6 +47,7 @@ public partial class PEditor
         PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books, hypothesis);
         PEditorFanqie.PFanqiePending = pending;
         PEditorFanqie.PFanqieRebuildNotice = books.Count == 0 ? null : () => PEditorFanqieRebuild(entry.Value);
+        PEditorFanqie.PFanqieDiweiNotice = (kind, key) => _pEditorHost.PWindowDiweiShow(language, kind, key);
     }
 
     private void PEditorFanqieRebuild(long entry)

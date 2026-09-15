@@ -57,6 +57,11 @@ public sealed partial class LEngine
         return LEngineLanguageLoad(language).LLanguageTonal;
     }
 
+    public bool LEngineSilentCheck(string language)
+    {
+        return LEngineLanguageLoad(language).LLanguageSilent;
+    }
+
     public async Task<string?> LEngineVarietyResolve(string language, string variety, CancellationToken cancellation)
     {
         string? code = null;

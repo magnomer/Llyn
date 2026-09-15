@@ -200,8 +200,6 @@
 
                     <local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
 
-                    <local:PScript x:Name="PDisplayScript" Margin="0,14,0,0" />
-
                     <local:PFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />
 
                     <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
@@ -265,6 +263,8 @@
                             <StackPanel x:Name="PDisplayNote" />
                         </Border>
                     </StackPanel>
+
+                    <local:PScript x:Name="PDisplayScript" Margin="0,28,0,0" />
 
                     <StackPanel x:Name="PDisplayStampSection" Margin="2,36,2,24">
                         <Border Height="1" Margin="0,0,0,14" Background="{StaticResource Theme.Line}" SnapsToDevicePixels="True" />

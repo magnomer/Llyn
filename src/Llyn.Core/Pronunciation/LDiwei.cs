@@ -1,3 +1,5 @@
+using System;
+
 namespace Llyn.Core;
 
 public sealed record LDiwei(
@@ -12,4 +14,11 @@ public sealed record LDiwei(
     public const string LDiweiRime = "rime";
 
     public const string LDiweiTone = "tone";
+
+    public static string LDiweiRimeNormalize(string rime)
+    {
+        ArgumentNullException.ThrowIfNull(rime);
+
+        return rime.Length > 1 && char.IsAsciiLetterUpper(rime[^1]) ? rime[..^1] : rime;
+    }
 }

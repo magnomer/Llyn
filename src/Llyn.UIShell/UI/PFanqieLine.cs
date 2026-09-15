@@ -19,6 +19,7 @@ internal sealed class PFanqieLine
         string label,
         string initial,
         string rime,
+        string yunmu,
         string medial,
         string division,
         string tone,
@@ -29,6 +30,7 @@ internal sealed class PFanqieLine
         PFanqieLineLabel = label;
         PFanqieLineInitial = initial;
         PFanqieLineRime = rime;
+        PFanqieLineYunmu = yunmu;
         PFanqieLineMedial = medial;
         PFanqieLineDivision = division;
         PFanqieLineTone = tone;
@@ -43,6 +45,8 @@ internal sealed class PFanqieLine
     public string PFanqieLineInitial { get; }
 
     public string PFanqieLineRime { get; }
+
+    public string PFanqieLineYunmu { get; }
 
     public string PFanqieLineMedial { get; }
 
@@ -77,6 +81,7 @@ internal sealed class PFanqieLine
             label,
             row.LFanqieRowInitial,
             rime,
+            LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime),
             medial,
             division,
             row.LFanqieRowTone,

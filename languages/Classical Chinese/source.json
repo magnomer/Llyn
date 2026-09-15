@@ -3,6 +3,7 @@
   "flag": "flag.svg",
   "separator": "none",
   "tonal": true,
+  "silent": true,
   "font": {
     "family": "SimSun, Microsoft YaHei",
     "size": 40

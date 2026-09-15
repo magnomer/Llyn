@@ -16,6 +16,7 @@ A moved workspace resets the panel, stored placements reload the columns, anythi
 
 Reads both kinds of category for the panel's language and rebuilds the columns, then lists the cell.
 A chosen row that the search has hidden is forgotten, so the cell never names a row nobody can see.
+An open category page is read again, so stored placements reach it.
 
 ## `private static long? PYunjingListBuild(`
 
@@ -31,6 +32,14 @@ The empty text under a column says nothing is there, or nothing matches when a s
 
 A click chooses the row in its column, or clears the choice when the row was already chosen.
 The column is told by which list holds the row.
+A chosen onset opens its category page, and a cleared one hides it.
+
+## `internal void PYunjingDiweiShow(string language, string kind, string key)`
+
+Chooses one category by kind and key, as a fanqie link asks, and clears the other column's choice.
+The column filters are emptied so the chosen row is listed.
+An onset then opens its category page.
+A key the store does not hold changes nothing.
 
 ## `private static void PYunjingSelect(ObservableCollection<PYunjingItem> list, long? chosen)`
 

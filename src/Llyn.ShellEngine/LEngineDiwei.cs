@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -19,6 +20,16 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return new LDiweiArchive(_lEngineDatabase).LDiweiFind(language, kind, key);
+        }
+    }
+
+    public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)
+    {
+        ArgumentNullException.ThrowIfNull(diwei);
+
+        lock (_lEngineGate)
+        {
+            return new LDiweiArchive(_lEngineDatabase).LDiweiFanqieRead(diwei.LDiweiId);
         }
     }
 

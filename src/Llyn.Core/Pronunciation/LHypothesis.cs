@@ -41,8 +41,10 @@ public sealed record LHypothesis(
         return new LHypothesisSound(syllable, string.Empty);
     }
 
-    private string? LHypothesisFinalFind(LFanqieRow row)
+    public string? LHypothesisFinalFind(LFanqieRow row)
     {
+        ArgumentNullException.ThrowIfNull(row);
+
         if (row.LFanqieRowRime.Length == 0)
         {
             return null;

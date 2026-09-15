@@ -280,6 +280,8 @@
             <Grid>
                 <local:PDisplay x:Name="PDisplay" />
 
+                <local:PDiwei x:Name="PYunjingDiwei" Visibility="Collapsed" />
+
                 <local:PEditor x:Name="PEditor" Padding="30,18,30,30" Visibility="Collapsed" />
 
                 <Button

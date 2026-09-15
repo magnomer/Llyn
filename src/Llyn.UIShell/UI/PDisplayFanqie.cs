@@ -41,11 +41,13 @@ public partial class PDisplay
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
         PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books, hypothesis);
         PDisplayFanqie.PFanqiePending = pending;
+        PDisplayFanqie.PFanqieDiweiNotice = (kind, key) => _pDisplayHost.PWindowDiweiShow(language, kind, key);
     }
 
     private void PDisplayFanqieClear()
     {
         PDisplayFanqie.PFanqieItems = null;
         PDisplayFanqie.PFanqiePending = false;
+        PDisplayFanqie.PFanqieDiweiNotice = null;
     }
 }

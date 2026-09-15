@@ -63,6 +63,17 @@ Whether a fetch runs for the entry shown.
 
 What the regenerate button runs, or `null` in a reading view, where the button is not shown.
 
+## `internal Action<string, string>? PFanqieDiweiNotice { get; set; }`
+
+What a click on an initial or a rime runs, handed the category kind and key.
+It is `null` when no view listens.
+
+## `private void PFanqieDiweiHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Answers the initial and rime commands of a line with the category the clicked part names.
+The rime key is the rime without its 重紐 letter, as the diwei store keys it.
+An empty part is ignored.
+
 ## `public bool PFanqieFolded`
 
 Whether the box starts closed under its head.

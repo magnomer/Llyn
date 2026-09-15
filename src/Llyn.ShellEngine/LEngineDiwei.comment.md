@@ -13,6 +13,10 @@ The categories of one kind with their entry counts.
 
 The category a link in the reading view names, or `null` when nothing is placed there.
 
+## `public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)`
+
+Every stored placement linked to one category, for the category page to group.
+
 ## `public IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)`
 
 The entries sitting at the cell the given categories name together.

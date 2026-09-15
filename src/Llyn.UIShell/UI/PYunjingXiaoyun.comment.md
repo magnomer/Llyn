@@ -31,10 +31,12 @@ An entry the editor just saved becomes the shown one, then the columns reload an
 ## `private void PYunjingEntryShow(long id, LEntryDraft draft)`
 
 Shows a draft in the reader and lets the mode switch be used.
+A category page standing there is hidden first.
 
 ## `private void PYunjingClear()`
 
 Empties the reader and the editor, returns to the reading side, and disables what needs an entry.
+The category page is hidden with them.
 
 ## `private void PYunjingFreshHandle(object sender, RoutedEventArgs e)`
 

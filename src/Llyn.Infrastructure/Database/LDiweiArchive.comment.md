@@ -34,6 +34,10 @@ The entries whose headword holds a character with one fanqie row linked to every
 So an initial and a rime together name one cell of the rime table, not two separate sets.
 Empty ids give nothing.
 
+## `public IReadOnlyList<LFanqieRow> LDiweiFanqieRead(long diweiId)`
+
+Every stored fanqie row linked to one category, in storage order, each carrying its character.
+
 ## `private static LDiwei LDiweiRowRead(SqliteDataReader reader)`
 
 One category row with its count, as the read queries select them.
