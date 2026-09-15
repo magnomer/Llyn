@@ -167,8 +167,9 @@ public sealed class TEntryUpdate
             string.Empty,
             [
                 TInterface.TCardDraftCreate(
-                    string.Empty, string.Empty, "meaning", [TInterface.TSentenceDraftCreate("one"), TInterface.TSentenceDraftCreate("two")], [],
-                    [], ["kept", "dropped"], [], 1),
+                    string.Empty, string.Empty, "meaning",
+                    [TInterface.TSentenceDraftCreate("one"), TInterface.TSentenceDraftCreate("two")],
+                    [], [], ["kept", "dropped"], [], 1),
             ],
             []));
 
@@ -187,7 +188,8 @@ public sealed class TEntryUpdate
             ],
         });
 
-        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
+        LMeaning meaning = Assert.Single(
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
         LSentenceArchive examples = TInterface.TSentenceArchiveCreate(workspace.TWorkspaceDatabase);
         Assert.Equal(
             ["two", "one"],

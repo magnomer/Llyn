@@ -6,28 +6,6 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static bool TClaimArchiveCheck(string root, long draftId) =>
-        LClaimArchive.LClaimArchiveCheck(root, draftId);
-
-    internal static void TClaimArchiveDelete(string root, long draftId)
-    {
-        LClaimArchive.LClaimArchiveDelete(root, draftId);
-    }
-
-    internal static LClaim? TClaimArchiveRead(string root, long draftId) =>
-        LClaimArchive.LClaimArchiveRead(root, draftId);
-
-    internal static void TClaimArchiveSave(string root, LClaim claim)
-    {
-        LClaimArchive.LClaimArchiveSave(root, claim);
-    }
-
-    internal static IReadOnlyList<LClaim> TClaimArchiveScan(string root) =>
-        LClaimArchive.LClaimArchiveScan(root);
-
-    internal static LClaim TClaimCreate(long draftId, int process, DateTimeOffset moment) =>
-        new(draftId, process, moment);
-
     internal static LCollocationArchive TCollocationArchiveCreate(LDatabase database) =>
         new(database);
 
@@ -44,25 +22,6 @@ internal static partial class TInterface
     internal static void TCollocationDelete(this LCollocationArchive collocationArchive, long id)
     {
         collocationArchive.LCollocationDelete(id);
-    }
-
-    internal static LCourt? TCourtArchiveRead(string root, long id) =>
-        LCourtArchive.LCourtArchiveRead(root, id);
-
-    internal static void TCourtArchiveSave(string root, LCourt link)
-    {
-        LCourtArchive.LCourtArchiveSave(root, link);
-    }
-
-    internal static IReadOnlyList<LCourt> TCourtArchiveScan(string root) =>
-        LCourtArchive.LCourtArchiveScan(root);
-
-    internal static IReadOnlyList<LCourt> TCourtArchiveSettle(string root, long draftId) =>
-        LCourtArchive.LCourtArchiveSettle(root, draftId);
-
-    internal static void TCourtArchiveSweep(string root)
-    {
-        LCourtArchive.LCourtArchiveSweep(root);
     }
 
     internal static void TDatabaseCreate(this LDatabase database)
@@ -86,27 +45,6 @@ internal static partial class TInterface
 
     internal static bool TDoctorBusyCheck(Exception fault) =>
         LDoctor.LDoctorBusyCheck(fault);
-
-    internal static void TDraftArchiveDelete(string root, long id)
-    {
-        LDraftArchive.LDraftArchiveDelete(root, id);
-    }
-
-    internal static LDraft? TDraftArchiveRead(string root, long id) =>
-        LDraftArchive.LDraftArchiveRead(root, id);
-
-    internal static void TDraftArchiveSave(string root, LDraft draft)
-    {
-        LDraftArchive.LDraftArchiveSave(root, draft);
-    }
-
-    internal static IReadOnlyList<LDraft> TDraftArchiveScan(string root) =>
-        LDraftArchive.LDraftArchiveScan(root);
-
-    internal static void TDraftArchiveSweep(string root)
-    {
-        LDraftArchive.LDraftArchiveSweep(root);
-    }
 
     internal static LEntryArchive TEntryArchiveCreate(LDatabase database) =>
         new(database);
@@ -157,82 +95,6 @@ internal static partial class TInterface
         exampleArchive.LExampleDelete(id, detach);
     }
 
-    internal static LSentenceArchive TSentenceArchiveCreate(LDatabase database) =>
-        new(database);
-
-    internal static LSentenceOrder TSentenceOrderLoad(string language) =>
-        LSentenceLoader.LSentenceLoaderLoad(language);
-
-    internal static void TSentenceMeaningAttach(
-        this LSentenceArchive sentenceArchive,
-        long meaningId,
-        long exampleId,
-        int position)
-    {
-        sentenceArchive.LSentenceMeaningAttach(meaningId, exampleId, position);
-    }
-
-    internal static void TSentenceMeaningDetach(
-        this LSentenceArchive sentenceArchive,
-        long meaningId,
-        long exampleId)
-    {
-        sentenceArchive.LSentenceMeaningDetach(meaningId, exampleId);
-    }
-
-    internal static IReadOnlyList<long> TSentenceMeaningSave(
-        this LSentenceArchive sentenceArchive,
-        long meaningId,
-        IReadOnlyList<LSentence> sentences)
-    {
-        return sentenceArchive.LSentenceMeaningSave(meaningId, sentences);
-    }
-
-    internal static IReadOnlyList<LSentence> TSentenceMeaningRead(
-        this LSentenceArchive sentenceArchive,
-        long meaningId) =>
-        sentenceArchive.LSentenceMeaningRead(meaningId);
-
-    internal static IReadOnlyList<string> TSentenceParticleRead(
-        this LSentenceArchive sentenceArchive,
-        string language) =>
-        sentenceArchive.LSentenceParticleRead(language);
-
-    internal static IReadOnlyList<string> TSentenceDependenceRead(
-        this LSentenceArchive sentenceArchive,
-        string language) =>
-        sentenceArchive.LSentenceDependenceRead(language);
-
-    internal static void TSentenceCollocationAttach(
-        this LSentenceArchive sentenceArchive,
-        long collocationId,
-        long exampleId,
-        int position)
-    {
-        sentenceArchive.LSentenceCollocationAttach(collocationId, exampleId, position);
-    }
-
-    internal static void TSentenceCollocationDetach(
-        this LSentenceArchive sentenceArchive,
-        long collocationId,
-        long exampleId)
-    {
-        sentenceArchive.LSentenceCollocationDetach(collocationId, exampleId);
-    }
-
-    internal static void TSentenceCollocationSave(
-        this LSentenceArchive sentenceArchive,
-        long collocationId,
-        IReadOnlyList<LSentence> sentences)
-    {
-        sentenceArchive.LSentenceCollocationSave(collocationId, sentences);
-    }
-
-    internal static IReadOnlyList<LSentence> TSentenceCollocationRead(
-        this LSentenceArchive sentenceArchive,
-        long collocationId) =>
-        sentenceArchive.LSentenceCollocationRead(collocationId);
-
     internal static void TExampleUpdate(this LExampleArchive exampleArchive, LExample example)
     {
         exampleArchive.LExampleUpdate(example);
@@ -275,25 +137,6 @@ internal static partial class TInterface
         this LInflectionArchive inflectionArchive,
         long entryId) =>
         inflectionArchive.LInflectionRead(entryId);
-
-    internal static LMentionArchive TMentionArchiveCreate(LDatabase database) =>
-        new(database);
-
-    internal static IReadOnlyList<LMention> TMentionRead(
-        this LMentionArchive mentionArchive,
-        long exampleId) =>
-        mentionArchive.LMentionExampleRead(exampleId);
-
-    internal static IReadOnlyList<long> TMentionSave(
-        this LMentionArchive mentionArchive,
-        long exampleId,
-        IReadOnlyList<LMention> mentions) =>
-        mentionArchive.LMentionExampleSave(exampleId, mentions);
-
-    internal static void TMentionCopy(this LMentionArchive mentionArchive, long fromId, long toId)
-    {
-        mentionArchive.LMentionExampleCopy(fromId, toId);
-    }
 
     internal static void TExampleTextUpdate(this LExampleArchive exampleArchive, long exampleId, LStateValue text)
     {
@@ -386,6 +229,9 @@ internal static partial class TInterface
     internal static LRealm TRealmRead(LDatabase database) =>
         new LRealmArchive(database).LRealmRead();
 
+    internal static Guid TRealmValueRead(TWorkspace workspace) =>
+        TRealmRead(workspace.TWorkspaceDatabase).LRealmValue;
+
     internal static LRegisterArchive TRegisterArchiveCreate(LDatabase database) =>
         new(database);
 
@@ -435,6 +281,40 @@ internal static partial class TInterface
         this LSpeechArchive speechArchive,
         LSpeechValue value) =>
         speechArchive.LSpeechValueCreate(value);
+
+    internal static LDiweiArchive TDiweiArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static void TDiweiApply(
+        this LDiweiArchive diweiArchive, string language, string character, LHypothesis? hypothesis)
+    {
+        diweiArchive.LDiweiApply(language, character, hypothesis);
+    }
+
+    internal static void TDiweiRebuild(this LDiweiArchive diweiArchive, string language, LHypothesis? hypothesis)
+    {
+        diweiArchive.LDiweiRebuild(language, hypothesis);
+    }
+
+    internal static IReadOnlyList<LDiwei> TDiweiRead(this LDiweiArchive diweiArchive, string language, string kind) =>
+        diweiArchive.LDiweiRead(language, kind);
+
+    internal static LDiwei? TDiweiFind(
+        this LDiweiArchive diweiArchive, string language, string kind, string key) =>
+        diweiArchive.LDiweiFind(language, kind, key);
+
+    internal static IReadOnlyList<long> TDiweiEntryScan(
+        this LDiweiArchive diweiArchive, string language, IReadOnlyList<long> diweiIds) =>
+        diweiArchive.LDiweiEntryScan(language, diweiIds);
+
+    internal static LFanqieArchive TFanqieArchiveCreate(LDatabase database) =>
+        new(database);
+
+    internal static void TFanqieSave(
+        this LFanqieArchive fanqieArchive, string language, string character, IReadOnlyList<LFanqieRow> rows)
+    {
+        fanqieArchive.LFanqieSave(language, character, rows);
+    }
 
     internal static LTagArchive TTagArchiveCreate(LDatabase database) =>
         new(database);

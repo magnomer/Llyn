@@ -14,7 +14,8 @@ public sealed class TEngineFrequency
             { "name": "First", "attempts": [
                 { "urls": ["https://example.test/a/{word}"], "strategy": "regex", "match": "a=(\\S+)", "group": 1 } ] },
             { "name": "Second", "attempts": [
-                { "urls": ["https://example.test/b/{word}"], "strategy": "regex", "match": "b=(\\S+)", "group": 1 } ] } ],
+                { "urls": ["https://example.test/b/{word}"], "strategy": "regex",
+                  "match": "b=(\\S+)", "group": 1 } ] } ],
           "bands": [
             { "upTo": 10, "name": "Common" },
             { "match": "^[SW]1$", "name": "Very common" },
@@ -35,7 +36,8 @@ public sealed class TEngineFrequency
                 ["https://example.test/b/tomato"] = "b=7",
             }));
 
-        LFrequency? found = await engine.TEngineFrequencyFind("tomato", pack.TLanguageFixtureName, CancellationToken.None);
+        LFrequency? found = await engine.TEngineFrequencyFind(
+            "tomato", pack.TLanguageFixtureName, CancellationToken.None);
 
         Assert.NotNull(found);
         Assert.Equal(("Second", "7", "Common"), (found.LFrequencySource, found.LFrequencyRaw, found.LFrequencyBand));
@@ -53,10 +55,13 @@ public sealed class TEngineFrequency
                 ["https://example.test/b/tomato"] = "b=7",
             }));
 
-        LFrequency? found = await engine.TEngineFrequencyFind("tomato", pack.TLanguageFixtureName, CancellationToken.None);
+        LFrequency? found = await engine.TEngineFrequencyFind(
+            "tomato", pack.TLanguageFixtureName, CancellationToken.None);
 
         Assert.NotNull(found);
-        Assert.Equal(("First", "S1", "Very common"), (found.LFrequencySource, found.LFrequencyRaw, found.LFrequencyBand));
+        Assert.Equal(
+            ("First", "S1", "Very common"),
+            (found.LFrequencySource, found.LFrequencyRaw, found.LFrequencyBand));
     }
 
     [Fact]
@@ -115,7 +120,8 @@ public sealed class TEngineFrequency
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
         TFrequencyObserver observer = new();
         engine.TEngineObserverAttach(observer);
         engine.TEngineFrequencySave(false);
@@ -141,7 +147,8 @@ public sealed class TEngineFrequency
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineFrequencyPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
         TFrequencyObserver observer = new();
         engine.TEngineObserverAttach(observer);
 
@@ -200,7 +207,8 @@ public sealed class TEngineFrequency
         using TLanguageFixture silent = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
+        using LEngine engine = workspace.TWorkspaceEngineStart(
+            TPronunciationHelper.TSourceClientCreate("a=7", gate.Task));
         TFrequencyObserver observer = new();
         engine.TEngineObserverAttach(observer);
 
@@ -258,7 +266,8 @@ public sealed class TEngineFrequency
         TSourceHandler handler = new("a=2.5", HttpStatusCode.OK);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
 
-        LFrequency? found = await engine.TEngineFrequencyFind("tomato", pack.TLanguageFixtureName, CancellationToken.None);
+        LFrequency? found = await engine.TEngineFrequencyFind(
+            "tomato", pack.TLanguageFixtureName, CancellationToken.None);
 
         Assert.NotNull(found);
         Assert.Equal(("First", "2.5", "Common"), (found.LFrequencySource, found.LFrequencyRaw, found.LFrequencyBand));

@@ -35,6 +35,8 @@ public partial class PWindow
         PReference.PGradeRestore(PWindowOrderRead(layout, "reference", LCatalogOrder.LCatalogOrderName));
         PCorpus.PRankRestore(PWindowOrderRead(layout, "corpus", LCatalogOrder.LCatalogOrderText));
         PGuild.PEchelonRestore(PWindowOrderRead(layout, "guild", LCatalogOrder.LCatalogOrderName));
+        PYunjing.PLadderRestore(PWindowOrderRead(layout, "yunjing", LCatalogOrder.LCatalogOrderName));
+        PYunjing.PStairRestore(PWindowOrderRead(layout, "yunmu", LCatalogOrder.LCatalogOrderName));
 
         PDuplex.PDuplexRestore(state);
 
@@ -48,7 +50,8 @@ public partial class PWindow
             : LCatalogFilter.LCatalogFilterEmpty;
     }
 
-    private static LCatalogOrder PWindowOrderRead(Dictionary<string, LLayout> layout, string tab, LCatalogOrder fallback)
+    private static LCatalogOrder PWindowOrderRead(
+        Dictionary<string, LLayout> layout, string tab, LCatalogOrder fallback)
     {
         return layout.TryGetValue(tab, out LLayout? record)
             ? record.LLayoutOrder ?? fallback

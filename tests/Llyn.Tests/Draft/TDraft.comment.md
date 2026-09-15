@@ -1,51 +1,9 @@
-# TDraft.cs
+﻿# TDraft.cs
 
 ## `public sealed class TDraft`
 
-Covers the drafts folder, the store that keeps unsaved work outside the database.
-It also covers the court beneath it, the register of links pointing at records that are still tentative.
-
-## `public void DraftArchiveSave_WholeDraft_ReadsBackAsWritten()`
-
-A saved draft comes back field for field, nested content included.
-The record holds lists and state values.
-A shallow round trip would pass while losing the part the user typed.
-
-## `public void DraftArchiveSave_SituationWithMedia_ReadsBackBothLists()`
-
-A Situation draft keeps its pictures and clips through the file, so a crash loses no picture.
-The lists round-trip as records, ids and spans included.
-
-## `public void DraftArchiveScan_HeldDrafts_ListsAll()`
-
-Every draft written is returned by the listing.
-Recovery after a crash is only useful if it finds all of them.
-
-## `public void DraftArchiveDelete_OneOfSeveral_LeavesOthers()`
-
-Deleting one draft leaves the others in place.
-
-## `public void DraftArchiveScan_BrokenFile_SkipsIt()`
-
-A file holding invalid JSON is skipped instead of throwing.
-A crash mid-write is exactly when a truncated file appears, which is the same moment the listing matters most.
-
-## `public void CourtArchiveSettle_WaitingLinks_DropsAll()`
-
-Two links naming one tentative target are both settled, and both files disappear.
-A settlement that stopped at the first link would leave a second pointing at a draft that is gone.
-The returned links carry their owners, which is what the engine needs to rewrite the drafts holding them.
-
-## `public void CourtArchiveSettle_OtherTargetLink_LeavesIt()`
-
-A link to an unrelated target survives a settlement aimed elsewhere.
-The court is shared by every pending link, so settling one target must not empty the register.
-Settling the same target twice returns nothing the second time.
-
-## `public void CourtArchiveSave_TentativeLink_ReadsBackAsWritten()`
-
-A saved link comes back field for field.
-The headword and language are stored because they are shown before the target is real.
+Covers what the engine does with a held draft: committing, moving cards, and checking for change.
+The court beneath the drafts folder is exercised through those calls, never on its own.
 
 ## `public void DraftCommit_HeldDraft_StoresEntryAndDeletesFile()`
 
@@ -75,40 +33,6 @@ A field it skips is a field the user cannot save.
 A fresh draft holding nothing but the tongue the shell chose is not changed work.
 The editor writes that tongue on its own, so counting it would warn about edits the user never made.
 
-## `public void LeftoverRead_DraftStillHeldOpen_PassesOverIt()`
-
-An engine never offers back the drafts it started itself.
-A fresh engine over the same folder offers every one that was left changed.
-That is the shape of a crash.
-The process that held the files is gone, and only the next launch sees them as leftovers.
-The untouched draft the third panel started is not counted, because a blank form costs nothing to lose.
-
-## `public void LeftoverSweep_DraftMatchingStoredEntry_SweepsIt()`
-
-A draft whose content already matches the entry it names is deleted by the sweep.
-Such a draft is what a kill just after a commit leaves, and nothing else ever collects it.
-It is not reported as a leftover either, because the file it was is gone.
-A draft holding work the entry does not have survives the sweep and is still offered back.
-
-## `public void LeftoverSweep_DraftFileOfAnotherVersion_DropsItWithClaimAndLinks()`
-
-A draft file stamped with another version is not read.
-The sweep sets it aside under `drafts/broken` and drops its claim and the links naming it.
-A file written before a field rename would otherwise read back naming no entry and commit as a duplicate.
-The draft owning the swept link is left alone, because it is of the current shape.
-
-## `public void LeftoverSweep_UnreadableDraftFile_SetsItAsideUnchanged()`
-
-A file that does not read as a draft at all is moved aside byte for byte, never deleted.
-It is the user's work in some shape, and the next build may read it again.
-It is not offered as a leftover, because the listing does not look under `broken`.
-
-## `public void LeftoverSweep_StalePendingFile_RemovesIt()`
-
-A half-written `.json.tmp` older than an hour is deleted from the drafts folder and from the court.
-One written a moment ago is left.
-A save in the other copy of the program may still be in flight.
-
 ## `public void DraftCommit_NamesStoredEntry_UpdatesIt()`
 
 A draft naming an entry that already exists commits as an update, and the word is stored once.
@@ -137,21 +61,3 @@ The file it leaves names the entry it became.
 The holder's own commit updates that entry instead of storing the word twice.
 The chip still lands on a real id.
 The court row is settled exactly as a held target's would be.
-
-## `public void DraftDelete_DraftOwningLinks_DropsThem()`
-
-Dropping a held draft takes the court rows it owns with it, and the tentative target nothing else wants.
-A row left behind names an owner no call can reach, so nothing would ever collect it.
-
-## `public void DraftDelete_OwnerDraftGone_CollectsRow()`
-
-A row whose owner draft is already gone is collected by the next draft that ends.
-That is what an earlier launch stranded, and neither resolving nor cancelling can find it by target alone.
-
-## `private static LCardDraft TDraftCardCreate(string title)`
-
-A card carrying nothing but a title, for order that is read by title alone.
-
-## `private static LDraft TDraftCreate(string origin, string headword)`
-
-A draft with enough nesting to prove the whole shape survives the file.

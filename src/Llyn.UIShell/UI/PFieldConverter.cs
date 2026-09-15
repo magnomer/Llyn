@@ -26,5 +26,8 @@ internal sealed class PFieldConverter : IMultiValueConverter
         return new Thickness(-pLeft, -pVertical, -pRight, -pVertical);
     }
 
-    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) => throw new NotSupportedException();
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
 }

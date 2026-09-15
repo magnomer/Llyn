@@ -26,6 +26,7 @@ public partial class PDisplay : UserControl
     public PDisplay()
     {
         InitializeComponent();
+        Resources.MergedDictionaries.Add(new PDisplayCompass(this));
         PDisplayIncoming.ItemsSource = _pDisplayIncoming;
         PDisplayAccent.ItemsSource = _pDisplayAccent;
         PDisplayTranscription.ItemsSource = _pDisplayTranscription;
@@ -46,96 +47,6 @@ public partial class PDisplay : UserControl
         engine.LEngineObserverAttach(_pDisplayObserver);
 
         PVolumeLoad();
-    }
-
-    private void PDisplayBulletinHandle(LBulletin bulletin)
-    {
-        if (_pDisplayEntry is not long shown)
-        {
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectFavorite)
-        {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayFavoriteShow(shown);
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectGrasp)
-        {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayGraspShow(shown);
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectFrequency)
-        {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayFrequencyShow(shown);
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectInflection)
-        {
-            if (shown == bulletin.LBulletinId)
-            {
-                PDisplayParadigmShow(shown);
-            }
-
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectScript)
-        {
-            PDisplayScriptShow(shown, PDisplayLanguage.Text);
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
-        {
-            PDisplayClear();
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
-        {
-            return;
-        }
-
-        if (bulletin.LBulletinSubject == LSubject.LSubjectEntry
-            && bulletin.LBulletinId > 0
-            && shown != bulletin.LBulletinId)
-        {
-            return;
-        }
-
-        LEntryDraft? draft;
-        try
-        {
-            draft = _lEngine.LEngineEntryLoad(shown);
-        }
-        catch (Exception)
-        {
-            return;
-        }
-
-        if (draft is null)
-        {
-            PDisplayClear();
-            return;
-        }
-
-        PDisplayShow(shown, draft);
     }
 
     private static IReadOnlyList<string> PDisplaySpeechShow(IReadOnlyList<LSpeechDraft> speeches)
@@ -193,7 +104,10 @@ public partial class PDisplay : UserControl
             : Visibility.Visible;
         PDisplayFrequencyShow(id);
         PDisplayParadigmShow(id);
+        PDisplayScriptStart(id);
         PDisplayScriptShow(id, draft.LEntryDraftLanguage);
+        PDisplayFanqieStart(id);
+        PDisplayFanqieShow(id, draft.LEntryDraftLanguage);
         PDisplayMeaning.ItemsSource = draft.LEntryDraftMeanings;
         PDisplayCollocation.ItemsSource = draft.LEntryDraftCollocations;
         PDisplayMeaningSection.Visibility = draft.LEntryDraftMeanings.Count == 0
@@ -264,7 +178,8 @@ public partial class PDisplay : UserControl
     private static string PDisplayStampFormat(string? utc)
     {
         if (utc is null
-            || !DateTimeOffset.TryParse(utc, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset parsed))
+            || !DateTimeOffset.TryParse(
+                utc, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTimeOffset parsed))
         {
             return string.Empty;
         }
@@ -297,6 +212,7 @@ public partial class PDisplay : UserControl
         PDisplayFrequencySection.Visibility = Visibility.Collapsed;
         PDisplayParadigm.PParadigmItems = null;
         PDisplayScriptClear();
+        PDisplayFanqieClear();
         _pDisplayIncoming.Clear();
         PDisplayIncomingSection.Visibility = Visibility.Collapsed;
         PDisplayTranslationRead().PLinkConverterClear();
@@ -393,41 +309,6 @@ public partial class PDisplay : UserControl
         PFont.PFontExampleApply(Resources, _lEngine, language);
     }
 
-    private void PDisplayIncomingShow(long id)
-    {
-        _pDisplayIncoming.Clear();
-
-        IReadOnlyList<LUsage> incoming;
-        try
-        {
-            incoming = _lEngine.LEngineIncomingRead(id);
-        }
-        catch (Exception)
-        {
-            incoming = [];
-        }
-
-        string unknown = _pDisplayHost.PLocalizationTextRead("Display.Unknown");
-        string meaning = _pDisplayHost.PLocalizationTextRead("Display.MeaningSingle");
-        string collocation = _pDisplayHost.PLocalizationTextRead("Display.CollocationSingle");
-
-        foreach (LUsage usage in incoming)
-        {
-            _pDisplayIncoming.Add(new PUsageItem(
-                usage,
-                usage.LUsageOwner == LOwner.LOwnerCollocation ? collocation : meaning,
-                unknown,
-                string.Empty));
-        }
-
-        PTwin.PTwinNameApply(
-            _pDisplayIncoming, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
-
-        PDisplayIncomingSection.Visibility = _pDisplayIncoming.Count == 0
-            ? Visibility.Collapsed
-            : Visibility.Visible;
-    }
-
     private void PDisplayCardHandle(object sender, RoutedEventArgs e)
     {
         if (e.OriginalSource is not FrameworkElement chip)
@@ -453,14 +334,6 @@ public partial class PDisplay : UserControl
                 e.Handled = true;
                 _pDisplayHost.PWindowTagShow(tag.LTagDraftId);
                 break;
-        }
-    }
-
-    private void PDisplayIncomingHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is FrameworkElement row && row.DataContext is PUsageItem item)
-        {
-            _pDisplayHost.PWindowEntryShow(item.PUsageItemEntry);
         }
     }
 

@@ -38,7 +38,7 @@ public partial class PCorpus
         PSpeakerShow();
     }
 
-    private void PSpeakerHandle(object sender, RoutedEventArgs e)
+    internal void PSpeakerHandle(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PLanguageItem item })
         {

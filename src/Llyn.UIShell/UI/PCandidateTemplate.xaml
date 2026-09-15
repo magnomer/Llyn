@@ -9,7 +9,16 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Ink}" TextTrimming="CharacterEllipsis"><Run Text="{Binding PCandidateItemLead, Mode=OneWay}" /><Run FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PCandidateItemMark, Mode=OneWay}" /><Run Text="{Binding PCandidateItemTail, Mode=OneWay}" /></TextBlock>
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="{DynamicResource Theme.Card.SituationSize}"
+                Foreground="{DynamicResource Theme.Ink}"
+                TextTrimming="CharacterEllipsis">
+                <Run Text="{Binding PCandidateItemLead, Mode=OneWay}" /><Run
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource Theme.Accent}"
+                    Text="{Binding PCandidateItemMark, Mode=OneWay}" /><Run Text="{Binding PCandidateItemTail, Mode=OneWay}" />
+            </TextBlock>
             <TextBlock Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="10.5" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PCandidateItemCount}" />
         </Grid>
     </DataTemplate>

@@ -69,3 +69,9 @@ Everything language-specific arrives through this record.
 - `LLanguageScripts` — The character styles the pack lists under `script`, each an [LScriptStyle](LScriptStyle.comment.md) record, in written order.
   The reading view shows one row per style above the first meaning, and the order here is the row order.
   A pack that lists none carries an empty list, and no script box is shown.
+- `LLanguageFanqieBooks` — The rime books the pack lists under `fanqie`, each an [LFanqieBook](LFanqieBook.comment.md) record, in written order.
+  The reading view shows one block per book under the script box, and the order here is the block order.
+  A pack that lists none carries an empty list, and no fanqie box is shown.
+- `LLanguageHypothesis` — The reconstruction the pack names under `hypothesis`, held as an [LHypothesis](LHypothesis.comment.md) record.
+  The fanqie box then prints each placement's reading before the placement.
+  A pack that declares none carries `null`, and the box prints the placement alone.

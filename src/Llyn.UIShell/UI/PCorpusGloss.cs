@@ -96,7 +96,7 @@ public partial class PCorpus
         return requests;
     }
 
-    private void PGlossAddHandle(object sender, RoutedEventArgs e)
+    internal void PGlossAddHandle(object sender, RoutedEventArgs e)
     {
         int position = sender is FrameworkElement { DataContext: PGloss row }
             ? _pTranscriptGloss.IndexOf(row) + 1
@@ -106,7 +106,7 @@ public partial class PCorpus
             _pTranscriptDraft, 0, 0, PGlossLanguageRead(), position));
     }
 
-    private void PGlossRemoveHandle(object sender, RoutedEventArgs e)
+    internal void PGlossRemoveHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PGloss gloss })
         {

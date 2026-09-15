@@ -8,6 +8,7 @@ A chosen tag refills the entries beside it, and a chosen entry is loaded back fr
 It is rendered read-only in the reader, which the mode toggle swaps for the editor.
 This is the same read half of the entry round trip the library panel offers.
 It is reached through a tag instead of a headword.
+The entry list itself lives in [PTaxonomyMembership.cs](PTaxonomyMembership.comment.md).
 
 ## Inline notes
 
@@ -51,12 +52,6 @@ Asks for the wording, makes the tag, and browses by it.
 A dismissed dialog changes nothing.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 
-### `private void PMembershipEntryCreate()`
-
-Starts a fresh entry in the editor, carrying the chosen tag on its first sense.
-The clear leaves the tag choice standing, so the list still shows that tag's entries beside the fresh one.
-An entry started with no tag chosen comes up blank, since every entry is listed then.
-
 ### `private void PDirectoryFind(string query)`
 
 The engine returns the tags answering the query, already in the chosen ordering.
@@ -71,27 +66,10 @@ That is how a tag chip read on a card reaches this panel.
 The query is emptied first.
 A tag left out by the standing query would be chosen and dropped in the same breath.
 
-### `private void PMembershipSelect(string? id)`
-
-Marks the entry row the reader stands on and clears the mark from every other row.
-A null id leaves no row marked, which is what a cleared panel shows.
-It is called wherever the shown entry changes, so the mark and the reader never disagree.
-
-### `PMembershipFind();`
-
-The entry list is never refilled on its own.
-It is refilled whenever the catalog is, because the chosen tag may have just changed or vanished.
-Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
-
 ### `_pDirectoryChoice = item.PDirectoryItemChosen ? 0 : item.PDirectoryItemId;`
 
 Clicking the chosen tag lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
-
-### `private void PMembershipEntryUpdate(long id)`
-
-A store is answered by re-reading the catalog rather than the entry list alone.
-Storing may have written a tag no other card carries, or taken away the last card that carried one.
 
 ### `internal void PFunnelRestore(LCatalogOrder order)`
 

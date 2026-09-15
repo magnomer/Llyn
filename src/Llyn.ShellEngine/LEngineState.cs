@@ -15,6 +15,8 @@ public sealed partial class LEngine
     private const string LEngineStateReference = "reference";
     private const string LEngineStateCorpus = "corpus";
     private const string LEngineStateGuild = "guild";
+    private const string LEngineStateYunjing = "yunjing";
+    private const string LEngineStateYunmu = "yunmu";
 
     public LWorkspaceState LEngineStateRead()
     {
@@ -88,6 +90,16 @@ public sealed partial class LEngine
     public void LEngineEchelonSave(LCatalogOrder order)
     {
         LEngineLayoutSave([new LLayout(LEngineStateGuild, LLayoutOrder: order)]);
+    }
+
+    public void LEngineLadderSave(LCatalogOrder order)
+    {
+        LEngineLayoutSave([new LLayout(LEngineStateYunjing, LLayoutOrder: order)]);
+    }
+
+    public void LEngineStairSave(LCatalogOrder order)
+    {
+        LEngineLayoutSave([new LLayout(LEngineStateYunmu, LLayoutOrder: order)]);
     }
 
     public void LEngineSieveSave(LCatalogFilter filter)

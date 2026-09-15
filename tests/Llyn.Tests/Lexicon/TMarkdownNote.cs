@@ -57,7 +57,8 @@ public sealed class TMarkdownNote
     [Fact]
     public void MarkdownParse_StrayMarkerAndSnakeCase_KeepsThemLiteral()
     {
-        IReadOnlyList<LMarkdownSpan> spans = TInterface.TMarkdownParse("2 * 3 in snake_case_name")[0].LMarkdownBlockSpan;
+        IReadOnlyList<LMarkdownSpan> spans =
+            TInterface.TMarkdownParse("2 * 3 in snake_case_name")[0].LMarkdownBlockSpan;
 
         Assert.Single(spans);
         Assert.Equal("2 * 3 in snake_case_name", spans[0].LMarkdownSpanText);

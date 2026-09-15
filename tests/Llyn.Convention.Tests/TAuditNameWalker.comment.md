@@ -29,6 +29,7 @@ It exempts descriptive test methods under an all-or-nothing test-prefix consiste
 It audits a generated name at the declaration it is built from.
 It clears a name only through a scoped row of the exempt block.
 It does not audit the tooling's own files, and sources reach it through a `TAuditScope`.
+What says a specimen lies outside the audit lives in `TAuditNameFilter.cs`.
 
 ## Inline notes
 
@@ -60,12 +61,3 @@ Once any test method adopts T, every test method must carry it.
 ### `return "missing required prefix";`
 
 A codebase-owned name that survived the external/generated/framework-contract filters but carries no prefix is a violation, not something to skip.
-
-### `private static bool TAuditContractCheck(SyntaxNode node, string name)`
-
-A member may be a contract member of a framework interface the enclosing type declares.
-Such a name is externally fixed by that interface.
-That is the same reason an explicit interface implementation is exempt.
-The rule is applied here to the implicit form.
-For a partial type the interface may be declared in another fragment this file cannot see.
-So a contract-member name is accepted on the name alone.

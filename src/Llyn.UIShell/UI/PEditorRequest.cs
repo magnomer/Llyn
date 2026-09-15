@@ -133,6 +133,18 @@ public partial class PEditor
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectScript)
+        {
+            PEditorScriptShow();
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectFanqie)
+        {
+            PEditorFanqieShow();
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectReference)
         {
             PSentenceLoad();

@@ -99,7 +99,8 @@ public sealed class TRequestMention
         (long entryId, long senseId) = TMentionEntryCreate(engine, "kindle");
         LDraft started = engine.TEngineDraftStart("Input", null);
         (long card, long sentence) = TMentionSentenceAdd(engine, started.LDraftId, "she knelt to kindle the damp logs");
-        engine.TEngineRequestApply(TInterface.TMentionAdditionCreate(started.LDraftId, card, sentence, 13, 6, entryId, senseId));
+        engine.TEngineRequestApply(
+            TInterface.TMentionAdditionCreate(started.LDraftId, card, sentence, 13, 6, entryId, senseId));
         LDraft held = engine.TEngineRequestApply(
             TInterface.TMentionAdditionCreate(started.LDraftId, card, sentence, 29, 4, 0));
         long linked = TMentionRead(held, card)[0].LMentionDraftId;
@@ -129,13 +130,16 @@ public sealed class TRequestMention
         engine.TEngineRequestApply(TInterface.TMentionAdditionCreate(started.LDraftId, card, sentence, 13, 6, entryId));
         engine.TEngineRequestApply(TInterface.TMentionAdditionCreate(started.LDraftId, card, sentence, 29, 4, 0));
 
-        LDraft inserted = TMentionTextApply(engine, started.LDraftId, card, sentence, "then she knelt to kindle the damp logs");
+        LDraft inserted = TMentionTextApply(
+            engine, started.LDraftId, card, sentence, "then she knelt to kindle the damp logs");
         Assert.Equal([18, 34], TMentionRead(inserted, card).Select(mention => mention.LMentionDraftOffset));
 
-        LDraft appended = TMentionTextApply(engine, started.LDraftId, card, sentence, "then she knelt to kindle the damp logs again");
+        LDraft appended = TMentionTextApply(
+            engine, started.LDraftId, card, sentence, "then she knelt to kindle the damp logs again");
         Assert.Equal([18, 34], TMentionRead(appended, card).Select(mention => mention.LMentionDraftOffset));
 
-        LDraft edited = TMentionTextApply(engine, started.LDraftId, card, sentence, "then she knelt to candle the damp logs again");
+        LDraft edited = TMentionTextApply(
+            engine, started.LDraftId, card, sentence, "then she knelt to candle the damp logs again");
         Assert.Equal(34, Assert.Single(TMentionRead(edited, card)).LMentionDraftOffset);
 
         LDraft shortened = TMentionTextApply(engine, started.LDraftId, card, sentence, "then she knelt to candle the");
@@ -161,8 +165,10 @@ public sealed class TRequestMention
 
         Assert.Equal(2, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example_mention;"));
         LExampleDraft example = TMentionExampleRead(engine, outcome.LOutcomeEntry.LEntryId);
-        Assert.Equal(outcome.LOutcomeIdentity[minted[0].LMentionDraftId], example.LExampleDraftMention[0].LMentionDraftId);
-        Assert.Equal(outcome.LOutcomeIdentity[minted[1].LMentionDraftId], example.LExampleDraftMention[1].LMentionDraftId);
+        Assert.Equal(
+            outcome.LOutcomeIdentity[minted[0].LMentionDraftId], example.LExampleDraftMention[0].LMentionDraftId);
+        Assert.Equal(
+            outcome.LOutcomeIdentity[minted[1].LMentionDraftId], example.LExampleDraftMention[1].LMentionDraftId);
         Assert.Equal(0, example.LExampleDraftMention[1].LMentionDraftEntry);
 
         LDraft again = engine.TEngineDraftStart("Input", outcome.LOutcomeEntry.LEntryId);
@@ -198,7 +204,8 @@ public sealed class TRequestMention
 
         LDraft started = engine.TEngineDraftStart("Input", null);
         (long card, long sentence) = TMentionSentenceAdd(engine, started.LDraftId, "flame");
-        engine.TEngineRequestApply(TInterface.TSentenceExampleCreate(started.LDraftId, card, sentence, stored.LExampleId));
+        engine.TEngineRequestApply(
+            TInterface.TSentenceExampleCreate(started.LDraftId, card, sentence, stored.LExampleId));
         engine.TEngineRequestApply(TInterface.TMentionAdditionCreate(started.LDraftId, card, sentence, 13, 6, entryId));
         TMentionTextApply(engine, started.LDraftId, card, sentence, "she knelt to kindle the damp logs again");
         LEntry second = engine.TEngineDraftCommit(started.LDraftId);
@@ -336,7 +343,9 @@ public sealed class TRequestMention
             ],
             []));
 
-        return (entry.LEntryId, Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)).LMeaningId);
+        return (
+            entry.LEntryId,
+            Assert.Single(engine.TEngineMeaningRead(entry.LEntryId, LOwner.LOwnerEntry)).LMeaningId);
     }
 
     private static (long TRequestMentionCard, long TRequestMentionSentence) TMentionSentenceAdd(

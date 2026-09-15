@@ -43,7 +43,9 @@ public sealed record LEntryDraft(
         return this with
         {
             LEntryDraftMeanings = LEntryDraftMeanings.Select(static card => card.LCardDraftNormalize()).ToList(),
-            LEntryDraftCollocations = LEntryDraftCollocations.Select(static card => card.LCardDraftNormalize()).ToList(),
+            LEntryDraftCollocations = LEntryDraftCollocations
+                .Select(static card => card.LCardDraftNormalize())
+                .ToList(),
         };
     }
 }

@@ -33,8 +33,9 @@ public static class LClaimArchive
         ArgumentOutOfRangeException.ThrowIfZero(claim.LClaimDraft);
 
         string folder = LWorkspaceRoot.LWorkspaceClaimRead(root);
-        string pending = Path.Combine(folder, claim.LClaimDraft.ToString(CultureInfo.InvariantCulture) + LClaimArchivePending);
-        string path = Path.Combine(folder, claim.LClaimDraft.ToString(CultureInfo.InvariantCulture) + LClaimArchiveExtension);
+        string stem = claim.LClaimDraft.ToString(CultureInfo.InvariantCulture);
+        string pending = Path.Combine(folder, stem + LClaimArchivePending);
+        string path = Path.Combine(folder, stem + LClaimArchiveExtension);
 
         File.WriteAllText(pending, JsonSerializer.Serialize(claim, LClaimArchiveIndent));
         LWorkspaceRoot.LWorkspacePendingCommit(pending, path);

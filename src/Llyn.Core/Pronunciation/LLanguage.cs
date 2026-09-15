@@ -21,7 +21,9 @@ public sealed record LLanguage(
     IReadOnlyList<LSourceSpec>? LLanguageMorphologies = null,
     bool LLanguageTonal = false,
     LGlyph? LLanguageGlyph = null,
-    IReadOnlyList<LScriptStyle>? LLanguageScripts = null)
+    IReadOnlyList<LScriptStyle>? LLanguageScripts = null,
+    IReadOnlyList<LFanqieBook>? LLanguageFanqieBooks = null,
+    LHypothesis? LLanguageHypothesis = null)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
@@ -40,4 +42,6 @@ public sealed record LLanguage(
     public LFont LLanguageGloss { get; init; } = LLanguageGloss ?? new LFont(null, 0);
 
     public IReadOnlyList<LScriptStyle> LLanguageScripts { get; init; } = LLanguageScripts ?? [];
+
+    public IReadOnlyList<LFanqieBook> LLanguageFanqieBooks { get; init; } = LLanguageFanqieBooks ?? [];
 }

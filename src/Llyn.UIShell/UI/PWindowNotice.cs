@@ -101,6 +101,7 @@ public partial class PWindow
             (PPhonology.PPhonologyChangeCheck, PPhonology.PPhonologyDraftFinish),
             (PTaxonomy.PTaxonomyChangeCheck, PTaxonomy.PTaxonomyDraftFinish),
             (PTenor.PTenorChangeCheck, PTenor.PTenorDraftFinish),
+            (PYunjing.PYunjingChangeCheck, PYunjing.PYunjingDraftFinish),
             (PFavorite.PFavoriteChangeCheck, PFavorite.PFavoriteDraftFinish),
             (PCorpus.PCorpusChangeCheck, PCorpus.PCorpusDraftFinish),
             (PRepertoire.PRepertoireChangeCheck, PRepertoire.PRepertoireDraftFinish),

@@ -159,8 +159,12 @@ public sealed class TSettings
 
         Assert.NotNull(loaded.LSettingsLayout);
         Assert.Equal(2, loaded.LSettingsLayout.Count);
-        Assert.Contains(loaded.LSettingsLayout, tab => tab.LLayoutTab == "library" && tab.LLayoutLeft == 420 && tab.LLayoutMiddle is null);
-        Assert.Contains(loaded.LSettingsLayout, tab => tab.LLayoutTab == "taxonomy" && tab.LLayoutLeft == 310 && tab.LLayoutMiddle == 280);
+        Assert.Contains(
+            loaded.LSettingsLayout,
+            tab => tab.LLayoutTab == "library" && tab.LLayoutLeft == 420 && tab.LLayoutMiddle is null);
+        Assert.Contains(
+            loaded.LSettingsLayout,
+            tab => tab.LLayoutTab == "taxonomy" && tab.LLayoutLeft == 310 && tab.LLayoutMiddle == 280);
     }
 
     [Fact]

@@ -22,11 +22,15 @@ public sealed partial class LEngine
             LRequestPronunciationAddition sent => LEnginePronunciationAdd(content, sent),
             LRequestPronunciationRemoval sent => LEnginePronunciationApply(
                 content,
-                spoken => LEngineListRemove(spoken, sent.LRequestPronunciationId, static row => row.LPronunciationDraftId)),
+                spoken => LEngineListRemove(
+                    spoken, sent.LRequestPronunciationId, static row => row.LPronunciationDraftId)),
             LRequestPronunciationShift sent => LEnginePronunciationApply(
                 content,
                 spoken => LEngineListMove(
-                    spoken, sent.LRequestPronunciationId, sent.LRequestPosition, static row => row.LPronunciationDraftId)),
+                    spoken,
+                    sent.LRequestPronunciationId,
+                    sent.LRequestPosition,
+                    static row => row.LPronunciationDraftId)),
             LRequestPronunciationIpa sent => LEnginePronunciationChange(
                 content,
                 sent.LRequestPronunciationId,
@@ -51,7 +55,10 @@ public sealed partial class LEngine
             LRequestTranscriptionShift sent => LEngineTranscriptionApply(
                 content,
                 spelled => LEngineListMove(
-                    spelled, sent.LRequestTranscriptionId, sent.LRequestPosition, static row => row.LTranscriptionDraftId)),
+                    spelled,
+                    sent.LRequestTranscriptionId,
+                    sent.LRequestPosition,
+                    static row => row.LTranscriptionDraftId)),
             LRequestTranscriptionScheme sent => LEngineSchemeChange(content, sent),
             LRequestTranscriptionText sent => LEngineTranscriptionChange(
                 content,
@@ -76,7 +83,8 @@ public sealed partial class LEngine
 
     private LEntryDraft LEnginePronunciationAdd(LEntryDraft content, LRequestPronunciationAddition request)
     {
-        LPronunciationDraft spoken = new(request.LRequestText ?? string.Empty, LPronunciationDraftId: LEngineIdentityCreate());
+        LPronunciationDraft spoken = new(
+            request.LRequestText ?? string.Empty, LPronunciationDraftId: LEngineIdentityCreate());
         return LEnginePronunciationApply(content, list => LEngineListAdd(list, spoken, request.LRequestPosition));
     }
 

@@ -71,7 +71,11 @@ public sealed partial class LEngine
             LRequestReferenceUrl sent => LEngineReferenceChange(
                 draft, reference => reference with { LReferenceUrl = LEngineValueRead(sent.LRequestValue) }),
             LRequestAuthorState sent => LEngineReferenceChange(
-                draft, reference => reference with { LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestState) }),
+                draft,
+                reference => reference with
+                {
+                    LReferenceAuthorState = LStateMark.LStateMarkRead(sent.LRequestState),
+                }),
             LRequestReferenceBody sent => LEngineReferenceChange(
                 draft, reference => LEngineBodyApply(reference, sent)),
             LRequestExampleBody sent => LEngineExampleChange(
@@ -146,7 +150,8 @@ public sealed partial class LEngine
             0,
             LEngineIdentityCreate());
 
-        return LEngineCardInsert(content, request.LRequestKind, request.LRequestParentId, request.LRequestPosition, card);
+        return LEngineCardInsert(
+            content, request.LRequestKind, request.LRequestParentId, request.LRequestPosition, card);
     }
 
     private static LEntryDraft LEngineCardInsert(
@@ -218,7 +223,8 @@ public sealed partial class LEngine
 
         LCardDraft? moved;
         LCardKind kind = LCardKind.LCardKindMeaning;
-        IReadOnlyList<LCardDraft>? cards = LEngineCardRemove(content.LEntryDraftMeanings, request.LRequestCardId, out moved);
+        IReadOnlyList<LCardDraft>? cards = LEngineCardRemove(
+            content.LEntryDraftMeanings, request.LRequestCardId, out moved);
         if (cards is not null)
         {
             content = content with { LEntryDraftMeanings = cards };

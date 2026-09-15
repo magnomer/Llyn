@@ -18,6 +18,26 @@ That is enough to read as another kind of region.
 It stays inside the program's own blue-grey.
 A helper is a quieter thing than a choice or a verdict and must not out-colour either.
 
+## `<Style x:Key="Theme.Page.Title" TargetType="TextBlock">`
+
+The heading of a page, the read or edit area a panel gives one thing on its own.
+It is set large, since a page carries one subject and the heading names it once.
+The colophon and the settings pages share it, so a page reads the same wherever it opens.
+
+## `<Style x:Key="Theme.Page.Helper" TargetType="TextBlock">`
+
+The one-line purpose written under a page heading in the muted ink.
+
+## `<Style x:Key="Theme.Page.Note" TargetType="TextBlock">`
+
+The small muted line under a control's label that says what the control does.
+
+## `<Style x:Key="Theme.Page.Rule" TargetType="Rectangle">`
+
+The hairline that parts one row of a page from the next.
+A page draws no box around its rows, because the page is already a region of its own.
+The rule is all that separates them, and it is laid only between rows, never around them.
+
 ## `<Style x:Key="Theme.Panel.SeamRow" TargetType="Rectangle">`
 
 The hairline laid across a panel where its controls end and its contents begin.

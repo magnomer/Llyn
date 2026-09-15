@@ -10,7 +10,8 @@ public sealed record LCollocation(
 {
     public LStateValue LCollocationTitle { get; init; } = LCollocationTitle ?? LStateValue.LStateValueUnspecified;
 
-    public LStateValue LCollocationExpression { get; init; } = LCollocationExpression ?? LStateValue.LStateValueUnspecified;
+    public LStateValue LCollocationExpression { get; init; } =
+        LCollocationExpression ?? LStateValue.LStateValueUnspecified;
 
     public LStateValue LCollocationMeaning { get; init; } = LCollocationMeaning ?? LStateValue.LStateValueUnspecified;
 }

@@ -28,7 +28,8 @@ public sealed class TParadigm
             {
               "paradigms": [
                 { "part": 6, "values": [7, 5, 6] },
-                { "part": 1, "values": [2], "except": [3, 4], "regular": [["$", "s"], ["y$", "ies"], ["(", "x"], ["bad"], 7] }
+                { "part": 1, "values": [2], "except": [3, 4],
+                  "regular": [["$", "s"], ["y$", "ies"], ["(", "x"], ["bad"], 7] }
               ]
             }
             """);

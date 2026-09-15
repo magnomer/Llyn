@@ -1,6 +1,6 @@
 # LSituationArchive.cs
 
-## `public sealed class LSituationArchive`
+## `public sealed partial class LSituationArchive`
 
 Persists Situations — independent data no Entry, Meaning, or Collocation owns.
 A Situation is created once with an opaque id.
@@ -70,24 +70,6 @@ Deleting a Situation never deletes the rows that referenced it.
 Its Image and Video links go with it, and the Image and Video rows stay.
 The guard and the delete share one transaction, so nothing can attach the Situation between them.
 
-## `public void LSituationMeaningAttach(long meaningId, long situationId, int position)`
-
-References an existing Situation from a Meaning at `position` in that Meaning's order.
-
-## `public void LSituationCollocationAttach(long collocationId, long situationId, int position)`
-
-References an existing Situation from a Collocation at `position` in that Collocation's order.
-
-## `public void LSituationMeaningDetach(long meaningId, long situationId)`
-
-Removes a Meaning's reference to a Situation.
-The Situation and its other references survive.
-
-## `public void LSituationCollocationDetach(long collocationId, long situationId)`
-
-Removes a Collocation's reference to a Situation.
-The Situation and its other references survive.
-
 ## Inline notes
 
 ### `private static int LSituationReferenceRead(SqliteConnection connection, long id)`
@@ -95,18 +77,6 @@ The Situation and its other references survive.
 The same count on a connection the caller already holds.
 So a guard and the delete it guards run in one transaction.
 Nothing can attach the row between them.
-
-### `private void LSituationReferenceAttach(`
-
-The two association tables differ only in their name and their referrer column.
-So the reference operations share one implementation each.
-Both identifiers are store-owned literals chosen by the methods above, never caller input.
-So composing them into the statement text opens no injection seam.
-Every value still travels as a parameter.
-
-The row goes in beyond the end of the set and the whole set is then renumbered around it.
-So the requested index is honoured.
-An occupied position is no longer a unique-index failure.
 
 ## `public IReadOnlyList<LSituation> LSituationRead()`
 
@@ -133,36 +103,3 @@ Deletes the Situation, first dropping every reference to it when `detach` is ask
 Detaching, counting and deleting share one session.
 Between any two of them the answer to whether something still references the row can change.
 Without `detach` the count still refuses the delete, which is the guard a card edit relies on.
-
-## Inline notes
-
-### `private static void LSituationLinkDelete(SqliteConnection connection, string table, long situationId)`
-
-Drops one association table's references to a Situation and renumbers what each referrer has left.
-The referrers are read before the delete because afterwards there is nothing left to name them.
-A gap in a referrer's positions is a unique-index failure waiting for its next attach.
-
-### `private static void LSituationMediaDelete(SqliteConnection connection, string table, long situationId)`
-
-Drops the Situation's own media links before the row goes.
-The cascade would do it too, but the store never leans on one it can state.
-
-### `private LSituation LSituationMediaRead(LSituation situation)`
-
-Fills the two media lists of one Situation from the Image and Video stores.
-Each list keeps the order the Situation holds.
-The nested sessions share the open connection, so a read stays one transaction.
-
-### `private IReadOnlyList<LSituation> LSituationMediaRead(List<LSituation> situations)`
-
-Fills the media lists of a whole list in two queries, one per link table, grouped by parent in memory.
-A list read serves the catalog, the chip resolver and every card's chips, and those run on each keystroke.
-Two queries per situation there would cost hundreds of round trips per key, so the list never asks per row.
-
-### `private static Dictionary<long, List<LImageDraft>> LSituationImageRead(SqliteConnection connection)`
-
-Every situation-to-image link joined to its Image, ordered by parent and position, bucketed by parent.
-
-### `private static Dictionary<long, List<LVideoDraft>> LSituationVideoRead(SqliteConnection connection)`
-
-The same for Videos, carrying the span beside the location.

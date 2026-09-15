@@ -27,7 +27,8 @@ internal sealed class TSourceHandler : HttpMessageHandler
 
     internal int TSourceHandlerCount => Volatile.Read(ref _tSourceHandlerCount);
 
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request, CancellationToken cancellationToken)
     {
         Interlocked.Increment(ref _tSourceHandlerCount);
         if (_tSourceHandlerGate is not null)

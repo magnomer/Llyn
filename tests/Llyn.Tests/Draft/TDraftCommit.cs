@@ -119,7 +119,8 @@ public sealed class TDraftCommit
         LDraft sentence = engine.TEngineExampleStart("Corpus", null);
         engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(sentence.LDraftId, "English"));
         engine.TEngineRequestApply(
-            TInterface.TExampleTextCreate(sentence.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the logs")));
+            TInterface.TExampleTextCreate(
+                sentence.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the logs")));
         LExample example = engine.TEngineExampleCommit(sentence.LDraftId);
 
         LDraft started = engine.TEngineDraftStart("Input", null);
@@ -140,7 +141,8 @@ public sealed class TDraftCommit
         LDraft sentence = engine.TEngineExampleStart("Corpus", null);
         engine.TEngineRequestApply(TInterface.TExampleLanguageCreate(sentence.LDraftId, "English"));
         engine.TEngineRequestApply(
-            TInterface.TExampleTextCreate(sentence.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the logs")));
+            TInterface.TExampleTextCreate(
+                sentence.LDraftId, TInterface.TStateValueCreate("she knelt to kindle the logs")));
         LExample example = engine.TEngineExampleCommit(sentence.LDraftId);
 
         LRevision? revision = engine.TEngineRevisionRead();

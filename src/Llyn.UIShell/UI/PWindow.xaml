@@ -51,10 +51,30 @@
                             Source="pack://application:,,,/brand/icon.png"
                             Stretch="Uniform" />
                         <Popup x:Name="PHeadquarter" Placement="Bottom" StaysOpen="False">
-                            <Border Width="180" Margin="0,8,0,0" Padding="8" Background="{StaticResource Theme.SurfaceRaised}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="1" CornerRadius="10">
+                            <Border
+                                Width="180"
+                                Margin="0,8,0,0"
+                                Padding="8"
+                                Background="{StaticResource Theme.SurfaceRaised}"
+                                BorderBrush="{StaticResource Theme.Line}"
+                                BorderThickness="1"
+                                CornerRadius="10">
                                 <StackPanel>
-                                    <TextBlock x:Name="PHeadquarterAbout" Padding="10,8" Background="Transparent" Cursor="Hand" MouseLeftButtonDown="PHeadquarterAboutHandle" Text="{DynamicResource Headquarter.About}" />
-                                    <TextBlock x:Name="PHeadquarterExit" Padding="10,8" Background="Transparent" Cursor="Hand" Foreground="{StaticResource Theme.Warning}" MouseLeftButtonDown="PHeadquarterExitHandle" Text="{DynamicResource Headquarter.Exit}" />
+                                    <TextBlock
+                                        x:Name="PHeadquarterAbout"
+                                        Padding="10,8"
+                                        Background="Transparent"
+                                        Cursor="Hand"
+                                        MouseLeftButtonDown="PHeadquarterAboutHandle"
+                                        Text="{DynamicResource Headquarter.About}" />
+                                    <TextBlock
+                                        x:Name="PHeadquarterExit"
+                                        Padding="10,8"
+                                        Background="Transparent"
+                                        Cursor="Hand"
+                                        Foreground="{StaticResource Theme.Warning}"
+                                        MouseLeftButtonDown="PHeadquarterExitHandle"
+                                        Text="{DynamicResource Headquarter.Exit}" />
                                 </StackPanel>
                             </Border>
                         </Popup>
@@ -71,7 +91,13 @@
                         <Rectangle Width="10" Height="9" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
                     </Button>
                     <Button x:Name="PCaptionExit" Click="PCaptionExitHandle" Style="{StaticResource Theme.Caption.Close}" ToolTip="{DynamicResource Caption.Close}">
-                        <Path Width="10" Height="10" Data="M 0,0 L 10,10 M 10,0 L 0,10" Stretch="Fill" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1" />
+                        <Path
+                            Width="10"
+                            Height="10"
+                            Data="M 0,0 L 10,10 M 10,0 L 0,10"
+                            Stretch="Fill"
+                            Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                            StrokeThickness="1" />
                     </Button>
                 </StackPanel>
             </Grid>
@@ -171,6 +197,14 @@
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Margin="0,0,0,14">
+                            <local:PTab
+                                x:Name="PNavigationYunjing"
+                                Click="PNavigationHandle"
+                                Content="{DynamicResource Navigation.Yunjing}"
+                                PTabFilled="{local:PIcon yunjing-chosen, 24}"
+                                PTabOutline="{local:PIcon yunjing, 24}"
+                                Style="{StaticResource Theme.Navigation.Tab}"
+                                Visibility="Collapsed" />
                             <Rectangle Style="{StaticResource Theme.Navigation.Divider}" />
                             <local:PTab
                                 x:Name="PNavigationSettings"
@@ -187,6 +221,7 @@
                     <local:PInput x:Name="PInput" />
                     <local:PLibrary x:Name="PLibrary" Visibility="Collapsed" />
                     <local:PPhonology x:Name="PPhonology" Visibility="Collapsed" />
+                    <local:PYunjing x:Name="PYunjing" Visibility="Collapsed" />
                     <local:PTaxonomy x:Name="PTaxonomy" Visibility="Collapsed" />
                     <local:PTenor x:Name="PTenor" Visibility="Collapsed" />
                     <local:PRepertoire x:Name="PRepertoire" Visibility="Collapsed" />

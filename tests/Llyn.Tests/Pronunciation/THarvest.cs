@@ -129,7 +129,8 @@ public sealed class THarvest
 
         Assert.Equal(
             [(0, "American", THarvestAmerican), (1, string.Empty, null), (2, string.Empty, null)],
-            kept.Select(recording => (recording.LRecordingOrder, recording.LRecordingVariety, recording.LRecordingAddress)));
+            kept.Select(recording =>
+                (recording.LRecordingOrder, recording.LRecordingVariety, recording.LRecordingAddress)));
         Assert.True(kept[1].LRecordingReached);
         Assert.False(kept[2].LRecordingReached);
         Assert.Same(found, TInterface.THarvestRecordingScan(found, string.Empty));

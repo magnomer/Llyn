@@ -25,8 +25,9 @@ public static class LCourtArchive
         ArgumentOutOfRangeException.ThrowIfZero(link.LCourtId);
 
         string folder = LWorkspaceRoot.LWorkspaceCourtRead(root);
-        string pending = Path.Combine(folder, link.LCourtId.ToString(CultureInfo.InvariantCulture) + LCourtArchivePending);
-        string path = Path.Combine(folder, link.LCourtId.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
+        string stem = link.LCourtId.ToString(CultureInfo.InvariantCulture);
+        string pending = Path.Combine(folder, stem + LCourtArchivePending);
+        string path = Path.Combine(folder, stem + LCourtArchiveExtension);
 
         File.WriteAllText(
             pending,
@@ -39,7 +40,9 @@ public static class LCourtArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceCourtRead(root), id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
+        string path = Path.Combine(
+            LWorkspaceRoot.LWorkspaceCourtRead(root),
+            id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
         return LCourtArchiveLoad(path);
     }
 
@@ -85,7 +88,9 @@ public static class LCourtArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceCourtRead(root), id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
+        string path = Path.Combine(
+            LWorkspaceRoot.LWorkspaceCourtRead(root),
+            id.ToString(CultureInfo.InvariantCulture) + LCourtArchiveExtension);
         try
         {
             File.Delete(path);

@@ -19,6 +19,33 @@
         <Setter Property="Background" Value="{StaticResource Theme.HelperSoft}" />
     </Style>
 
+    <Style x:Key="Theme.Page.Title" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Theme.Page.Helper" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,6,0,0" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Theme.Page.Note" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,3,0,0" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Theme.Page.Rule" TargetType="Rectangle">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Margin" Value="0,22,0,0" />
+        <Setter Property="Fill" Value="{StaticResource Theme.Line}" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
     <Style x:Key="Theme.Panel.SeamRow" TargetType="Rectangle">
         <Setter Property="Height" Value="1" />
         <Setter Property="VerticalAlignment" Value="Bottom" />

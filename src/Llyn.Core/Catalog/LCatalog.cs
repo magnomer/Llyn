@@ -70,7 +70,9 @@ public static class LCatalog
         }
 
         return new LCatalogFilter(
-            text.Split(LCatalogFilterSeparator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+            text.Split(
+                LCatalogFilterSeparator,
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
     }
 
     public static string LCatalogTextNormalize(string? text)

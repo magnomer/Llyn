@@ -30,6 +30,7 @@ The card order calls live in `LEngineDraftCard.cs`.
 The one-edit requests the form sends live in `LEngineRequest.cs`.
 The court rows live in `LEngineCourt.cs`.
 The field by field comparisons live in `LEngineDraftMatch.cs`.
+The translation settlement a commit runs, and the deferred court pass after it, live in `LEngineDraftTranslation.cs`.
 
 ## `public LDraft LEngineDraftStart(string origin, long? entryId)`
 
@@ -221,36 +222,3 @@ A caller holding one is told so rather than being handed either silence.
 
 Reads a held draft that the caller is about to act on, refusing when it is gone.
 Another window may have stored or discarded it already.
-
-## `private void LEngineCourtApply(IReadOnlyDictionary<long, LDraft> loaded, IReadOnlyDictionary<long, LOutcome> settled, IReadOnlyList<LCourt> deferred)`
-
-Writes every link the walk held back, now that every draft of the round has an entry id.
-The owner's content as it was loaded says which cards carried the target's draft id.
-The owner's map says which stored card each of those became.
-A link whose owner or target did not settle is passed over, because there is nothing to write it against.
-
-## `private void LEngineCourtApply(IReadOnlyList<LCardDraft> cards, LOutcome made, long draftId, long entryId, bool collocation)`
-
-One card list of the owner walked for the target's draft id, children included.
-A card that carried it has the target's entry id appended to its stored translations.
-
-## `private static bool LEngineTranslationCheck(IReadOnlyList<long> translations, long id)`
-
-Whether one card's translation list carries `id`.
-
-## `private void LEngineTranslationAppend(long ownerId, long entryId, bool collocation)`
-
-Adds `entryId` to the end of one stored card's translations, unless the card already links it.
-
-## `private LEntryDraft LEngineTranslationSettle(LEntryDraft content)`
-
-The same content with every translation that names no stored entry removed.
-Both card lists are settled, because a chip can sit on a meaning or on a collocation.
-
-## `private IReadOnlyList<LCardDraft> LEngineTranslationSettle(IReadOnlyList<LCardDraft> cards)`
-
-Keeps only the translations that still read as a stored entry.
-An id that reads nothing points at a record that was discarded or never arrived.
-It may also be one still being committed in this round.
-There is nothing to store it against yet, and the round's last pass writes the ones that become real.
-The check is a single row read, not a load of the whole entry tree.

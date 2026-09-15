@@ -34,7 +34,13 @@
         </Grid.ColumnDefinitions>
 
         <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" />
-        <Rectangle Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="-34,0,-34,0" Style="{StaticResource Theme.Panel.SeamRow}" Visibility="{Binding IsChecked, ElementName=PArticulationHelper, Converter={StaticResource Sound.Fold}}" />
+        <Rectangle
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="-34,0,-34,0"
+            Style="{StaticResource Theme.Panel.SeamRow}"
+            Visibility="{Binding IsChecked, ElementName=PArticulationHelper, Converter={StaticResource Sound.Fold}}" />
         <local:PSeam Grid.Row="2" Grid.Column="1" Margin="-16,0,0,-38" Style="{StaticResource Theme.Panel.SeamColumn}" />
 
         <Grid Grid.Row="0" Grid.Column="0" Margin="{StaticResource Theme.Catalog.HeaderMargin}">
@@ -101,10 +107,26 @@
                             <StackPanel>
                                 <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Sequence.Title}" />
 
-                                <RadioButton GroupName="PSequenceChoice" IsChecked="True" Click="PSequenceHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Headword" Content="{DynamicResource Sequence.Headword}" />
-                                <RadioButton GroupName="PSequenceChoice" Click="PSequenceHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Sequence.Reverse}" />
+                                <RadioButton
+                                    GroupName="PSequenceChoice"
+                                    IsChecked="True"
+                                    Click="PSequenceHandle"
+                                    Style="{StaticResource Theme.Choice.Order}"
+                                    Tag="Headword"
+                                    Content="{DynamicResource Sequence.Headword}" />
+                                <RadioButton
+                                    GroupName="PSequenceChoice"
+                                    Click="PSequenceHandle"
+                                    Style="{StaticResource Theme.Choice.Order}"
+                                    Tag="Reverse"
+                                    Content="{DynamicResource Sequence.Reverse}" />
                                 <RadioButton GroupName="PSequenceChoice" Click="PSequenceHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Sound" Content="{DynamicResource Sequence.Sound}" />
-                                <RadioButton GroupName="PSequenceChoice" Click="PSequenceHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Pending" Content="{DynamicResource Sequence.Pending}" />
+                                <RadioButton
+                                    GroupName="PSequenceChoice"
+                                    Click="PSequenceHandle"
+                                    Style="{StaticResource Theme.Choice.Order}"
+                                    Tag="Pending"
+                                    Content="{DynamicResource Sequence.Pending}" />
                             </StackPanel>
                         </Border>
                     </Popup>

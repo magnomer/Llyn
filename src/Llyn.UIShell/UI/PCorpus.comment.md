@@ -87,31 +87,6 @@ It is dressed as the head of the page.
 It is smaller than a headword, because a sentence is longer than a word.
 The click is answered by the panel, which knows which Example is open.
 
-## `<Style x:Key="Theme.Excerpt.Chip" TargetType="Border">`
-
-The language chip, shaped as a speech chip and coloured in the accent, with the flag before the name.
-The same shape dresses the language toggle on the editing side.
-So the language reads the same whether it is read or chosen.
-
-## `<DataTemplate x:Key="Theme.Transcript.Line">`
-
-The editable Gloss row, shaped as `Theme.Gloss.Display` shapes the read row.
-It is written here rather than taken from the card's row template.
-The card dresses its Gloss in the card's own face.
-The reading side dresses a Gloss in the display value face, so the editing side must too.
-
-## `<Style x:Key="Theme.Transcript.Citation" TargetType="ToggleButton">`
-
-The citation as a bare toggle, so the cited Source reads where and as the reading side reads it.
-The chip edge shows only under the pointer, which is what says the text can be changed.
-
-## `<Style x:Key="Theme.Excerpt.Tally" TargetType="Border">`
-
-The usage count, a chip of the same shape in the raised surface colour.
-So it reads as a figure and not a language.
-It reads as a sentence, not a bare number.
-A bare number beside a sentence says nothing about what it counts.
-
 ## `<ItemsControl x:Name="PQuotation">`
 
 The middle column: every Entry whose cards quote the selected Example, one row per Entry.

@@ -78,6 +78,15 @@ Stores the ordering the corpus panel lists examples in.
 
 Stores the ordering the authors panel lists authors in.
 
+## `public void LEngineLadderSave(LCatalogOrder order)`
+
+Stores the ordering the yunjing panel lists onsets in, under the panel's own record.
+
+## `public void LEngineStairSave(LCatalogOrder order)`
+
+Stores the ordering the yunjing panel lists rimes in.
+The rime column has a record of its own, `yunmu`, since one record holds one ordering.
+
 ## `public void LEngineSieveSave(LCatalogFilter filter)`
 
 Stores the languages the library panel hides.

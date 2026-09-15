@@ -93,7 +93,13 @@
                         <StackPanel>
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Series.Title}" />
 
-                            <RadioButton GroupName="PSeriesChoice" IsChecked="True" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Headword" Content="{DynamicResource Series.Headword}" />
+                            <RadioButton
+                                GroupName="PSeriesChoice"
+                                IsChecked="True"
+                                Click="PSeriesHandle"
+                                Style="{StaticResource Theme.Choice.Order}"
+                                Tag="Headword"
+                                Content="{DynamicResource Series.Headword}" />
                             <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Series.Reverse}" />
                             <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Language" Content="{DynamicResource Series.Language}" />
                             <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Marked" Content="{DynamicResource Series.Marked}" />

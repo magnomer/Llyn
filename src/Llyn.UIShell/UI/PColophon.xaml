@@ -11,11 +11,7 @@
                 <ResourceDictionary Source="/Llyn;component/UI/PThemeSpeech.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style x:Key="Colophon.Title" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="28" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="TextWrapping" Value="Wrap" />
-            </Style>
+            <Style x:Key="Colophon.Title" TargetType="TextBlock" BasedOn="{StaticResource Theme.Page.Title}" />
 
             <Style x:Key="Colophon.Heading" TargetType="TextBlock">
                 <Setter Property="Height" Value="34" />

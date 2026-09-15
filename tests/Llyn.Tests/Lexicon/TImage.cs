@@ -66,7 +66,8 @@ public sealed class TImage
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                string.Empty, string.Empty, "a meaning", [], [], [], [], [TInterface.TImageDraftCreate("first.png"), TInterface.TImageDraftCreate("second.png")],
+                string.Empty, string.Empty, "a meaning", [], [], [], [],
+                [TInterface.TImageDraftCreate("first.png"), TInterface.TImageDraftCreate("second.png")],
                 1)],
             []));
 

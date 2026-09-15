@@ -323,7 +323,13 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="PSurface" Padding="{TemplateBinding Padding}" Background="Transparent" CornerRadius="9">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Text="{TemplateBinding Content}" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{TemplateBinding Foreground}"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            Text="{TemplateBinding Content}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <MultiTrigger>

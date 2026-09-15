@@ -20,6 +20,5 @@ public partial class PSettings
         PLocalizationLoader.PLocalizationLoaderApply(System.Windows.Application.Current.Resources, language);
         PLedgerTitleApply();
         PLedgerMetaApply();
-        PDialFooterApply();
     }
 }

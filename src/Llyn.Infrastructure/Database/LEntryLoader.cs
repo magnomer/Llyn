@@ -124,7 +124,8 @@ public sealed class LEntryLoader
     private IReadOnlyList<LTranscriptionDraft> LEntrySpellingRead(long id)
     {
         List<LTranscriptionDraft> drafts = [];
-        foreach (LTranscription transcription in new LTranscriptionArchive(_lEntryLoaderDatabase).LTranscriptionRead(id))
+        LTranscriptionArchive transcriptions = new(_lEntryLoaderDatabase);
+        foreach (LTranscription transcription in transcriptions.LTranscriptionRead(id))
         {
             drafts.Add(new LTranscriptionDraft(
                 transcription.LTranscriptionScheme,
@@ -184,7 +185,9 @@ public sealed class LEntryLoader
                     ? sentences.LSentenceCollocationRead(ownerId)
                     : sentences.LSentenceMeaningRead(ownerId)),
             LEntrySituationRead(
-                collocation ? situations.LSituationCollocationRead(ownerId) : situations.LSituationMeaningRead(ownerId)),
+                collocation
+                    ? situations.LSituationCollocationRead(ownerId)
+                    : situations.LSituationMeaningRead(ownerId)),
             LEntryRegisterRead(
                 collocation ? registers.LRegisterCollocationRead(ownerId) : registers.LRegisterMeaningRead(ownerId)),
             LEntryTranslationRead(

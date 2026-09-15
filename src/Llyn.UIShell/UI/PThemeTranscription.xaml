@@ -70,7 +70,14 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid x:Name="PSchemeField">
-                        <ToggleButton x:Name="PSchemeHead" Padding="0" Background="Transparent" BorderThickness="0" ClickMode="Press" Focusable="False" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                        <ToggleButton
+                            x:Name="PSchemeHead"
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ClickMode="Press"
+                            Focusable="False"
+                            IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Border Background="Transparent">
@@ -79,11 +86,32 @@
                                 </ControlTemplate>
                             </ToggleButton.Template>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="PSchemeName" VerticalAlignment="Center" FontSize="{TemplateBinding FontSize}" Foreground="{TemplateBinding Foreground}" Text="{Binding PTranscriptionItemLabel}" />
-                                <Path x:Name="PSchemeChevron" Width="12" Height="12" Margin="-1,1,-11,0" VerticalAlignment="Center" Data="{local:PIcon expand, 12}" Fill="{StaticResource Theme.Muted}" Stretch="None" />
+                                <TextBlock
+                                    x:Name="PSchemeName"
+                                    VerticalAlignment="Center"
+                                    FontSize="{TemplateBinding FontSize}"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Text="{Binding PTranscriptionItemLabel}" />
+                                <Path
+                                    x:Name="PSchemeChevron"
+                                    Width="12"
+                                    Height="12"
+                                    Margin="-1,1,-11,0"
+                                    VerticalAlignment="Center"
+                                    Data="{local:PIcon expand, 12}"
+                                    Fill="{StaticResource Theme.Muted}"
+                                    Stretch="None" />
                             </StackPanel>
                         </ToggleButton>
-                        <Popup x:Name="PART_Popup" MinWidth="124" AllowsTransparency="True" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" PlacementTarget="{Binding ElementName=PSchemeField}" PopupAnimation="Fade" StaysOpen="False">
+                        <Popup
+                            x:Name="PART_Popup"
+                            MinWidth="124"
+                            AllowsTransparency="True"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PlacementTarget="{Binding ElementName=PSchemeField}"
+                            PopupAnimation="Fade"
+                            StaysOpen="False">
                             <Border Margin="10" Style="{StaticResource Theme.Popup.Surface}">
                                 <ScrollViewer MaxHeight="220" HorizontalScrollBarVisibility="Disabled">
                                     <ItemsPresenter />
@@ -136,7 +164,10 @@
                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
                     <Grid Margin="3,0">
                         <TextBlock Style="{StaticResource Theme.Transcription.Measure}" />
-                        <TextBox Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Transcription}" Text="{Binding PTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox
+                            Style="{StaticResource Theme.Pronunciation.Field}"
+                            Tag="{DynamicResource Input.Transcription}"
+                            Text="{Binding PTranscriptionItemText, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                     <Button Style="{StaticResource Theme.Transcription.Phonetician}" />
                     <StackPanel Style="{StaticResource Theme.Accent.Control}">

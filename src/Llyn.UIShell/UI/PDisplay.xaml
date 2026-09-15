@@ -9,131 +9,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PDisplayCard.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PDisplayUsage.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <Style x:Key="Theme.Usage.Row" TargetType="Button">
-                <Setter Property="Margin" Value="0,0,0,8" />
-                <Setter Property="Padding" Value="16,14" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-                <Setter Property="Background" Value="{StaticResource Theme.Surface}" />
-                <Setter Property="BorderBrush" Value="{StaticResource Theme.Line}" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border
-                                x:Name="PSurface"
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="12">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                                    <Setter TargetName="PSurface" Property="BorderBrush" Value="{StaticResource Theme.AccentEdge}" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="PSurface" Property="Opacity" Value="0.72" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="Theme.Usage.Detail" TargetType="TextBlock">
-                <Setter Property="Margin" Value="0,3,0,0" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                <Style.Triggers>
-                    <Trigger Property="Text" Value="">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Stamp.Label" TargetType="TextBlock">
-                <Setter Property="Margin" Value="0,0,18,4" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-            </Style>
-
-            <Style x:Key="Theme.Stamp.Time" TargetType="TextBlock">
-                <Setter Property="Margin" Value="0,0,0,4" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-            </Style>
-
-            <Style x:Key="Theme.Compass.Choice" TargetType="Button">
-                <Setter Property="Margin" Value="0,0,0,1" />
-                <Setter Property="Padding" Value="9,5" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border
-                                x:Name="PSurface"
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="8"
-                                SnapsToDevicePixels="True">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="PSurface" Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding PCompassItemCurrent}" Value="True">
-                        <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-                        <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Compass.Number" TargetType="TextBlock">
-                <Setter Property="Width" Value="17" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="FontSize" Value="11" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-                <Style.Triggers>
-                    <Trigger Property="Text" Value="">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <DataTemplate x:Key="Theme.Compass.Row">
-                <Button Click="PCompassRowHandle" Style="{StaticResource Theme.Compass.Choice}">
-                    <Grid Margin="{Binding PCompassItemIndent}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Style="{StaticResource Theme.Compass.Number}" Text="{Binding PCompassItemNumber}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            FontSize="12"
-                            Text="{Binding PCompassItemName}"
-                            TextTrimming="CharacterEllipsis" />
-                    </Grid>
-                </Button>
-            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -144,7 +21,14 @@
             VerticalAlignment="Center"
             Foreground="{StaticResource Theme.Muted}"
             Text="{DynamicResource Display.Unselected}" />
-        <ScrollViewer x:Name="PDisplayContents" Margin="30,18,0,0" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+        <ScrollViewer
+            x:Name="PDisplayContents"
+            Margin="30,18,0,0"
+            Padding="0,0,10,0"
+            HorizontalScrollBarVisibility="Disabled"
+            Style="{StaticResource Theme.Scroll.Gutter}"
+            VerticalScrollBarVisibility="Auto"
+            Visibility="Collapsed">
             <StackPanel>
                 <Grid x:Name="PDisplayHeader" MinHeight="56" HorizontalAlignment="Left" SizeChanged="PCompassSizeHandle">
                     <Grid.ColumnDefinitions>
@@ -184,7 +68,17 @@
                             <Border Width="16" />
                         </StackPanel>
                     </Border>
-                    <ToggleButton x:Name="PDisplayFavorite" Grid.Column="2" Width="42" Height="42" Margin="12,0,0,0" Padding="0" VerticalAlignment="Center" Click="PDisplayFavoriteHandle" Style="{StaticResource Theme.Favorite.Mark}" ToolTip="{DynamicResource Favorite.Mark}">
+                    <ToggleButton
+                        x:Name="PDisplayFavorite"
+                        Grid.Column="2"
+                        Width="42"
+                        Height="42"
+                        Margin="12,0,0,0"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Click="PDisplayFavoriteHandle"
+                        Style="{StaticResource Theme.Favorite.Mark}"
+                        ToolTip="{DynamicResource Favorite.Mark}">
                         <Path Width="24" Height="24" Stretch="None" Fill="{StaticResource Theme.Favorite}">
                             <Path.Style>
                                 <Style TargetType="Path">
@@ -199,7 +93,12 @@
                         </Path>
                     </ToggleButton>
                     <StackPanel Grid.Column="3" Margin="2,0,0,0" VerticalAlignment="Center" Orientation="Horizontal">
-                        <local:PGrasp x:Name="PDisplayGrasp" VerticalAlignment="Center" PGraspChanged="PDisplayGraspHandle" PGraspHovered="PDisplayHoverHandle" ToolTip="{DynamicResource Grasp.Mark}" />
+                        <local:PGrasp
+                            x:Name="PDisplayGrasp"
+                            VerticalAlignment="Center"
+                            PGraspChanged="PDisplayGraspHandle"
+                            PGraspHovered="PDisplayHoverHandle"
+                            ToolTip="{DynamicResource Grasp.Mark}" />
                         <TextBlock x:Name="PDisplayGraspLabel" Margin="6,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Grasp.Label}" />
                     </StackPanel>
                 </Grid>
@@ -219,12 +118,28 @@
                                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="[" />
                                     <TextBlock x:Name="PDisplayPronunciation" Style="{StaticResource Theme.Pronunciation.Text}" />
                                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                                    <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="{local:PIcon play, 24}" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
+                                    <Button
+                                        x:Name="PPlaybackAction"
+                                        Click="PPlaybackActionHandle"
+                                        Style="{StaticResource Theme.Accent.Tool}"
+                                        Margin="8,0,0,0"
+                                        Tag="{local:PIcon play, 24}"
+                                        ToolTip="{DynamicResource Downloader.Play}"
+                                        Visibility="Collapsed" />
                                 </StackPanel>
                             </Grid>
                         </Border>
 
-                        <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
+                        <Border
+                            x:Name="PPlayback"
+                            Height="37"
+                            Margin="10,0,0,0"
+                            Padding="3"
+                            VerticalAlignment="Top"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            SnapsToDevicePixels="True"
+                            Visibility="Collapsed">
                             <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
                         </Border>
                     </StackPanel>
@@ -284,9 +199,9 @@
 
                 <local:PParadigm x:Name="PDisplayParadigm" Margin="0,14,0,0" />
 
-                <Border x:Name="PDisplayScriptSection" Margin="0,14,0,0" Style="{StaticResource Theme.Script.Box}" Visibility="Collapsed">
-                    <ItemsControl x:Name="PDisplayScript" Grid.IsSharedSizeScope="True" ItemTemplate="{StaticResource Theme.Script.Row}" />
-                </Border>
+                <local:PScript x:Name="PDisplayScript" Margin="0,14,0,0" />
+
+                <local:PFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />
 
                 <StackPanel x:Name="PDisplayMeaningSection" Margin="0,39,0,0">
                     <TextBlock Height="34" Margin="2,0,2,12" Padding="0,5,0,0" FontSize="19" FontWeight="SemiBold" Text="{DynamicResource Display.MeaningPlural}" />
@@ -371,7 +286,13 @@
         </ScrollViewer>
 
         <StackPanel x:Name="PCompass" Width="216" Margin="0,20,26,0" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed">
-            <ToggleButton x:Name="PCompassSwitch" HorizontalAlignment="Left" Click="PCompassSwitchHandle" IsChecked="True" Style="{StaticResource Theme.Command.IconToggle}" ToolTip="{DynamicResource Contents.Title}">
+            <ToggleButton
+                x:Name="PCompassSwitch"
+                HorizontalAlignment="Left"
+                Click="PCompassSwitchHandle"
+                IsChecked="True"
+                Style="{StaticResource Theme.Command.IconToggle}"
+                ToolTip="{DynamicResource Contents.Title}">
                 <Path
                     Width="24"
                     Height="24"
@@ -384,7 +305,7 @@
                 <StackPanel>
                     <TextBlock Style="{StaticResource Theme.Popup.Title}" Text="{DynamicResource Contents.Title}" />
                     <ScrollViewer MaxHeight="326" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="PCompassList" ItemTemplate="{StaticResource Theme.Compass.Row}" />
+                        <ItemsControl x:Name="PCompassList" ItemTemplate="{DynamicResource Theme.Compass.Row}" />
                     </ScrollViewer>
                 </StackPanel>
             </Border>

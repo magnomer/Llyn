@@ -134,7 +134,8 @@ public sealed class TDatabaseSession
             TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, null));
 
         tags.TTagMeaningSave(
-            meaning.LMeaningId, [TInterface.TTagCreate("formal"), TInterface.TTagCreate("archaic"), TInterface.TTagCreate("rare")]);
+            meaning.LMeaningId,
+            [TInterface.TTagCreate("formal"), TInterface.TTagCreate("archaic"), TInterface.TTagCreate("rare")]);
 
         Assert.Equal(
             ["formal", "archaic", "rare"],

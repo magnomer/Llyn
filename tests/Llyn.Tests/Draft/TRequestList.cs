@@ -389,6 +389,8 @@ public sealed class TRequestList
     {
         LDraft answered = engine.TEngineRequestApply(
             TInterface.TSentenceAdditionCreate(draftId, cardId, position));
-        return TInterface.TRequestCardFind(answered.LDraftContent, cardId).LCardDraftSentence[position].LSentenceDraftId;
+        return TInterface.TRequestCardFind(answered.LDraftContent, cardId)
+            .LCardDraftSentence[position]
+            .LSentenceDraftId;
     }
 }

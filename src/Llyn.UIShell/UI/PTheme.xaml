@@ -34,6 +34,7 @@
         <ResourceDictionary Source="/Llyn;component/UI/PThemeGloss.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeParadigm.xaml" />
         <ResourceDictionary Source="/Llyn;component/UI/PThemeScript.xaml" />
+        <ResourceDictionary Source="/Llyn;component/UI/PThemeFanqie.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

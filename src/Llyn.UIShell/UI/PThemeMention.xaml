@@ -15,10 +15,22 @@
     <Style x:Key="Theme.Mention.Silent" TargetType="Run" />
 
     <ContextMenu x:Key="Theme.Mention.Menu">
-        <MenuItem Command="{x:Static local:PMentionCommand.PMentionCommandLink}" CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="{DynamicResource Mention.Link}" />
-        <MenuItem Command="{x:Static local:PMentionCommand.PMentionCommandChoose}" CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="{DynamicResource Mention.Choose}" />
-        <MenuItem Command="{x:Static local:PMentionCommand.PMentionCommandSilence}" CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="{DynamicResource Mention.Silence}" />
-        <MenuItem Command="{x:Static local:PMentionCommand.PMentionCommandUnlink}" CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Header="{DynamicResource Mention.Unlink}" />
+        <MenuItem
+            Command="{x:Static local:PMentionCommand.PMentionCommandLink}"
+            CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+            Header="{DynamicResource Mention.Link}" />
+        <MenuItem
+            Command="{x:Static local:PMentionCommand.PMentionCommandChoose}"
+            CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+            Header="{DynamicResource Mention.Choose}" />
+        <MenuItem
+            Command="{x:Static local:PMentionCommand.PMentionCommandSilence}"
+            CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+            Header="{DynamicResource Mention.Silence}" />
+        <MenuItem
+            Command="{x:Static local:PMentionCommand.PMentionCommandUnlink}"
+            CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+            Header="{DynamicResource Mention.Unlink}" />
         <Separator />
         <MenuItem Command="ApplicationCommands.Cut" CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
         <MenuItem Command="ApplicationCommands.Copy" CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
@@ -65,7 +77,14 @@
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid Background="Transparent">
-                                <Path Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center" Data="{local:PIcon close, 12}" Fill="{DynamicResource Theme.Muted}" Stretch="None" />
+                                <Path
+                                    Width="12"
+                                    Height="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Data="{local:PIcon close, 12}"
+                                    Fill="{DynamicResource Theme.Muted}"
+                                    Stretch="None" />
                             </Grid>
                         </ControlTemplate>
                     </Button.Template>

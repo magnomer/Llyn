@@ -142,7 +142,8 @@ public static class LSheetStyle
         sheet.Append(".note blockquote{border-left:3px solid var(--line);padding-left:12px;color:var(--muted);}");
         sheet.Append(".note code{font-family:Consolas,monospace;font-size:13px;background:var(--accent-soft);")
             .Append("padding:1px 4px;border-radius:4px;}");
-        sheet.Append(".note pre{white-space:pre-wrap;background:var(--accent-soft);padding:10px 12px;border-radius:8px;}");
+        sheet.Append(".note pre{white-space:pre-wrap;background:var(--accent-soft);")
+            .Append("padding:10px 12px;border-radius:8px;}");
         sheet.Append(".note pre code{background:none;padding:0;}");
         sheet.Append(".note hr{border:0;border-top:1px solid var(--line);margin:12px 0;}");
         sheet.Append(".note a{color:var(--accent);}");

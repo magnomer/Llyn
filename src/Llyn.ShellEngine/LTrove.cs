@@ -7,11 +7,15 @@ namespace Llyn.ShellEngine;
 
 internal sealed class LTrove
 {
-    private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)> _lTroveCandidate = [];
+    private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)>
+        _lTroveCandidate = [];
 
-    private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound)> _lTroveRecording = [];
+    private readonly Dictionary<long, (string LTroveWord, string LTroveLanguage, IReadOnlyList<LRecording> LTroveFound)>
+        _lTroveRecording = [];
 
-    private readonly Dictionary<(long LTroveSession, string LTroveScheme), (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)> _lTroveTranscription = [];
+    private readonly Dictionary<
+        (long LTroveSession, string LTroveScheme),
+        (string LTroveWord, string LTroveLanguage, IReadOnlyList<LCandidate> LTroveFound)> _lTroveTranscription = [];
 
     internal IReadOnlyList<LCandidate>? LTroveCandidateRead(long session, string word, string language)
     {
@@ -59,7 +63,8 @@ internal sealed class LTrove
         _lTroveRecording[session] = (word, language, found);
     }
 
-    internal IReadOnlyList<LCandidate>? LTroveTranscriptionRead(long session, string word, string language, string scheme)
+    internal IReadOnlyList<LCandidate>? LTroveTranscriptionRead(
+        long session, string word, string language, string scheme)
     {
         if (session == 0 ||
             !_lTroveTranscription.TryGetValue((session, scheme),
@@ -86,7 +91,8 @@ internal sealed class LTrove
     {
         _lTroveCandidate.Remove(session);
         _lTroveRecording.Remove(session);
-        foreach ((long LTroveSession, string LTroveScheme) key in _lTroveTranscription.Keys.Where(key => key.LTroveSession == session).ToList())
+        foreach ((long LTroveSession, string LTroveScheme) key in
+            _lTroveTranscription.Keys.Where(key => key.LTroveSession == session).ToList())
         {
             _lTroveTranscription.Remove(key);
         }

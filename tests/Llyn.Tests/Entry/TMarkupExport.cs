@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -18,9 +18,9 @@ public sealed class TMarkupExport
         LEntry glow = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "glow", "English", string.Empty, string.Empty,
             [
-                TCardCreate("shine", 1) with
+                TInterface.TCardCreate("shine", 1) with
                 {
-                    LCardDraftChild = [TCardCreate("shine softly", 1)],
+                    LCardDraftChild = [TInterface.TCardCreate("shine softly", 1)],
                 },
             ],
             []));
@@ -29,7 +29,7 @@ public sealed class TMarkupExport
                 .LCardDraftChild).LCardDraftId;
 
         LEntry braise = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "braise", "French", string.Empty, string.Empty, [TCardCreate("ember", 1)], []));
+            "braise", "French", string.Empty, string.Empty, [TInterface.TCardCreate("ember", 1)], []));
 
         LReference reference = engine.TEngineReferenceCreate(TInterface.TReferenceCreate(
             0,
@@ -65,9 +65,9 @@ public sealed class TMarkupExport
                     TInterface.TStateValueCreate("a small piece of burning coal"),
                     [sentence], [], [braise.LEntryId], [], [], 1) with
                 {
-                    LCardDraftChild = [TCardCreate("a fading one", 1)],
+                    LCardDraftChild = [TInterface.TCardCreate("a fading one", 1)],
                 },
-                TCardCreate("a remnant", 2),
+                TInterface.TCardCreate("a remnant", 2),
             ],
             [
                 TInterface.TCardDraftCreate(
@@ -155,7 +155,7 @@ public sealed class TMarkupExport
 
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
             "soot", "English", string.Empty, "a note",
-            [TCardCreate("black powder", 1)],
+            [TInterface.TCardCreate("black powder", 1)],
             []));
 
         string direct = Path.Combine(workspace.TWorkspaceFolder, "direct.llx");
@@ -169,14 +169,5 @@ public sealed class TMarkupExport
                 "?", "Meaning", "Meanings", "Collocation", "Collocations", "Incoming", "Note"));
 
         Assert.Equal(File.ReadAllText(direct), File.ReadAllText(portrait));
-    }
-
-    private static LCardDraft TCardCreate(string definition, int position)
-    {
-        return TInterface.TCardDraftCreate(
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate(definition),
-            [], [], [], [], [], position);
     }
 }

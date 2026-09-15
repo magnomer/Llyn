@@ -94,6 +94,7 @@ public sealed class TEngineScript
         LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整齊", pack.TLanguageFixtureName));
 
         Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
+        engine.TEngineScriptStart(entry.LEntryId);
 
         LBulletin raised = await observer.TScriptObserverRaised.WaitAsync(TEngineScriptPatience);
         Assert.Equal(entry.LEntryId, raised.LBulletinId);
@@ -107,19 +108,24 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public async Task ScriptRead_SourcesSilent_AsksOncePerSession()
+    public async Task ScriptStart_SourcesSilent_RaisesAndAsksOncePerSession()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineScriptPack);
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         TSourceHandler handler = new("nothing here", HttpStatusCode.OK);
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
+        TScriptObserver observer = new();
+        engine.TEngineObserverAttach(observer);
         LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整", pack.TLanguageFixtureName));
 
-        Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
+        engine.TEngineScriptStart(entry.LEntryId);
         await TScriptCountCheck(handler, 2);
+        LBulletin raised = await observer.TScriptObserverRaised.WaitAsync(TEngineScriptPatience);
         await TScriptSettle(engine, entry.LEntryId);
 
+        Assert.Equal(entry.LEntryId, raised.LBulletinId);
         Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
+        engine.TEngineScriptStart(entry.LEntryId);
         await Task.Delay(200);
 
         Assert.Equal(2, handler.TSourceHandlerCount);
@@ -127,7 +133,7 @@ public sealed class TEngineScript
     }
 
     [Fact]
-    public void ScriptRead_LanguageWithoutStyles_ReadsEmptyWithoutFetch()
+    public void ScriptStart_LanguageWithoutStyles_ReadsEmptyWithoutFetch()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate("{}");
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
@@ -135,6 +141,7 @@ public sealed class TEngineScript
         using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
         LEntry entry = engine.TEngineEntrySave(TScriptDraftCreate("整", pack.TLanguageFixtureName));
 
+        engine.TEngineScriptStart(entry.LEntryId);
         Assert.Empty(engine.TEngineScriptRead(entry.LEntryId));
         Assert.False(engine.TEngineScriptCheck(entry.LEntryId));
         Assert.Equal(0, handler.TSourceHandlerCount);

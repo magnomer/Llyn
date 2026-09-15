@@ -49,8 +49,10 @@ public partial class PWindow
 
         double limitLeft = SystemParameters.VirtualScreenLeft;
         double limitTop = SystemParameters.VirtualScreenTop;
-        double width = Math.Clamp(state.LWindowStateWidth, MinWidth, Math.Max(MinWidth, SystemParameters.VirtualScreenWidth));
-        double height = Math.Clamp(state.LWindowStateHeight, MinHeight, Math.Max(MinHeight, SystemParameters.VirtualScreenHeight));
+        double width = Math.Clamp(
+            state.LWindowStateWidth, MinWidth, Math.Max(MinWidth, SystemParameters.VirtualScreenWidth));
+        double height = Math.Clamp(
+            state.LWindowStateHeight, MinHeight, Math.Max(MinHeight, SystemParameters.VirtualScreenHeight));
         double limitRight = Math.Max(limitLeft, limitLeft + SystemParameters.VirtualScreenWidth - width);
         double limitBottom = Math.Max(limitTop, limitTop + SystemParameters.VirtualScreenHeight - height);
 

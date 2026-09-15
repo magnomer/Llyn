@@ -47,7 +47,8 @@ public sealed record LReading(string LReadingVariety, string LReadingPhonetic)
 
             foreach (LVariety variety in varieties)
             {
-                if (tagged.All(known => !string.Equals(known.LReadingVariety, variety.LVarietyName, StringComparison.Ordinal)))
+                if (tagged.All(known =>
+                        !string.Equals(known.LReadingVariety, variety.LVarietyName, StringComparison.Ordinal)))
                 {
                     expanded.Add(reading with { LReadingVariety = variety.LVarietyName });
                 }

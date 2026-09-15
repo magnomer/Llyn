@@ -80,7 +80,8 @@ public sealed class TEngineParadigm
         LEntry entry = engine.TEngineEntrySave(TParadigmDraftCreate("word", "Noun", "Verb"));
 
         IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
-        Assert.Equal(["plural", "past", "past participle"], slots.Select(slot => slot.LParadigmSlotMorphology.LMorphologyName));
+        Assert.Equal(
+            ["plural", "past", "past participle"], slots.Select(slot => slot.LParadigmSlotMorphology.LMorphologyName));
         Assert.Equal([1L, 6L, 6L], slots.Select(slot => slot.LParadigmSlotSpeech.LSpeechValueCode));
     }
 
@@ -125,7 +126,12 @@ public sealed class TEngineParadigm
         IReadOnlyList<LParadigmSlot> empty = engine.TEngineParadigmRead(entry.LEntryId);
         engine.TEngineInflectionAppend(entry.LEntryId, [
             TInterface.TInflectionCreate(
-                entry.LEntryId, 0, "walked", null, null, empty.Select(slot => slot.LParadigmSlotMorphology.LMorphologyId).ToList()),
+                entry.LEntryId,
+                0,
+                "walked",
+                null,
+                null,
+                empty.Select(slot => slot.LParadigmSlotMorphology.LMorphologyId).ToList()),
         ]);
 
         IReadOnlyList<LParadigmSlot> slots = engine.TEngineParadigmRead(entry.LEntryId);
@@ -205,7 +211,9 @@ public sealed class TEngineParadigm
 
         Assert.False(engine.TEngineSettingsRead().LSettingsMorphology);
         Assert.Empty(engine.TEngineInflectionRead(entry.LEntryId));
-        Assert.All(engine.TEngineParadigmRead(entry.LEntryId), slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
+        Assert.All(
+            engine.TEngineParadigmRead(entry.LEntryId),
+            slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
     }
 
     private const string TParadigmFetchBody =

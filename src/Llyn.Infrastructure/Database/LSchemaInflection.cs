@@ -30,7 +30,8 @@ public static class LSchemaInflection
                 name TEXT NOT NULL,
                 position INTEGER NOT NULL,
                 UNIQUE (morphology_feature_parent, pack_code),
-                FOREIGN KEY (morphology_feature_parent) REFERENCES morphology_feature (morphology_feature_id) ON DELETE CASCADE
+                FOREIGN KEY (morphology_feature_parent)
+                    REFERENCES morphology_feature (morphology_feature_id) ON DELETE CASCADE
             );
 
             CREATE TABLE IF NOT EXISTS inflection (

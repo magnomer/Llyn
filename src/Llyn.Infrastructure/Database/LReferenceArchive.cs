@@ -220,7 +220,8 @@ public sealed class LReferenceArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET reference_state = $referenceState, reference_ref = $reference WHERE example_id = $example;";
+                "UPDATE example SET reference_state = $referenceState, reference_ref = $reference "
+                + "WHERE example_id = $example;";
             LStateColumn.LStateColumnApply(command, "reference", reference);
             command.Parameters.AddWithValue("$example", exampleId);
             if (command.ExecuteNonQuery() == 0)

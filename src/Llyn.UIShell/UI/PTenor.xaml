@@ -83,7 +83,13 @@
                         <StackPanel>
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Degree.Title}" />
 
-                            <RadioButton GroupName="PDegreeChoice" IsChecked="True" Click="PDegreeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name" Content="{DynamicResource Degree.Name}" />
+                            <RadioButton
+                                GroupName="PDegreeChoice"
+                                IsChecked="True"
+                                Click="PDegreeHandle"
+                                Style="{StaticResource Theme.Choice.Order}"
+                                Tag="Name"
+                                Content="{DynamicResource Degree.Name}" />
                             <RadioButton GroupName="PDegreeChoice" Click="PDegreeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Degree.Reverse}" />
                             <RadioButton GroupName="PDegreeChoice" Click="PDegreeHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Usage" Content="{DynamicResource Degree.Usage}" />
                         </StackPanel>
@@ -104,7 +110,15 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Path Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" Data="{local:PIcon register, 16}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                    <Path
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="{local:PIcon register, 16}"
+                                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                        Stretch="None" />
                                     <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PGamutItemName}" />
                                     <Border Grid.Column="2" Style="{StaticResource Theme.Catalog.Pellet}">
                                         <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PGamutItemCount}" />

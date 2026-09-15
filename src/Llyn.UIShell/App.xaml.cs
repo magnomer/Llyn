@@ -21,6 +21,7 @@ public partial class LBootstrap : System.Windows.Application
             PField.PFieldApply(Resources);
             PIndicator.PIndicatorApply(Resources);
             PCaret.PCaretHook();
+            PSwath.PSwathHook();
         }
         catch (Exception exception)
         {
@@ -115,7 +116,8 @@ public partial class LBootstrap : System.Windows.Application
         }
 
         MessageBox.Show(
-            $"{LBootstrapTextRead("Workspace.DatabaseReset")}\n\n{rescue.LDoctorRescueBackup}\n\n{rescue.LDoctorRescueReason}",
+            $"{LBootstrapTextRead("Workspace.DatabaseReset")}\n\n"
+                + $"{rescue.LDoctorRescueBackup}\n\n{rescue.LDoctorRescueReason}",
             LBootstrapTextRead("Terms.Product"),
             MessageBoxButton.OK,
             MessageBoxImage.Warning);

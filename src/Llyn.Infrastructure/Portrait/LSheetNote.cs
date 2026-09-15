@@ -34,7 +34,8 @@ public static class LSheetNote
             switch (block.LMarkdownBlockKind)
             {
                 case LMarkdownKind.LMarkdownKindHeading:
-                    string tag = "h" + Math.Min(block.LMarkdownBlockLevel + 2, 6).ToString(CultureInfo.InvariantCulture);
+                    int level = Math.Min(block.LMarkdownBlockLevel + 2, 6);
+                    string tag = "h" + level.ToString(CultureInfo.InvariantCulture);
                     page.Append('<').Append(tag).Append('>')
                         .Append(LSheetNoteFormat(block.LMarkdownBlockSpan))
                         .Append("</").Append(tag).Append(">\n");
@@ -44,10 +45,14 @@ public static class LSheetNote
                     page.Append("<li>").Append(LSheetNoteFormat(block.LMarkdownBlockSpan)).Append("</li>\n");
                     break;
                 case LMarkdownKind.LMarkdownKindQuote:
-                    page.Append("<blockquote>").Append(LSheetNoteFormat(block.LMarkdownBlockSpan)).Append("</blockquote>\n");
+                    page.Append("<blockquote>")
+                        .Append(LSheetNoteFormat(block.LMarkdownBlockSpan))
+                        .Append("</blockquote>\n");
                     break;
                 case LMarkdownKind.LMarkdownKindCode:
-                    page.Append("<pre><code>").Append(LSheet.LSheetNormalize(block.LMarkdownBlockText)).Append("</code></pre>\n");
+                    page.Append("<pre><code>")
+                        .Append(LSheet.LSheetNormalize(block.LMarkdownBlockText))
+                        .Append("</code></pre>\n");
                     break;
                 case LMarkdownKind.LMarkdownKindRule:
                     page.Append("<hr>\n");

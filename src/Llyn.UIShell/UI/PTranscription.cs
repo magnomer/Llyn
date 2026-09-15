@@ -52,7 +52,9 @@ public partial class PEditor
         if (e.Parameter is PTranscriptionItem row)
         {
             await PNotationOpen(
-                e.OriginalSource as UIElement ?? PTranscription, row.PTranscriptionItemId, row.PTranscriptionItemScheme);
+                e.OriginalSource as UIElement ?? PTranscription,
+                row.PTranscriptionItemId,
+                row.PTranscriptionItemScheme);
         }
     }
 
@@ -60,7 +62,8 @@ public partial class PEditor
     {
         foreach (string scheme in _pTranscriptionSchemes)
         {
-            if (_pTranscriptionItem.All(row => !string.Equals(row.PTranscriptionItemScheme, scheme, StringComparison.Ordinal)))
+            if (_pTranscriptionItem.All(
+                row => !string.Equals(row.PTranscriptionItemScheme, scheme, StringComparison.Ordinal)))
             {
                 return scheme;
             }
@@ -97,7 +100,8 @@ public partial class PEditor
             return;
         }
 
-        if (string.Equals(e.PropertyName, nameof(PTranscriptionItem.PTranscriptionItemScheme), StringComparison.Ordinal))
+        if (string.Equals(
+            e.PropertyName, nameof(PTranscriptionItem.PTranscriptionItemScheme), StringComparison.Ordinal))
         {
             PEditorRequestSend(
                 new LRequestTranscriptionScheme(_pEditorDraft, row.PTranscriptionItemId, row.PTranscriptionItemScheme));

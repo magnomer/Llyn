@@ -202,7 +202,11 @@
                     </Grid.Margin>
 
                     <StackPanel>
-                        <TextBox x:Name="PSentenceLine" ContextMenu="{DynamicResource Theme.Mention.Menu}" Style="{DynamicResource Theme.Card.Instance}" Text="{Binding PSentenceText, UpdateSourceTrigger=PropertyChanged}">
+                        <TextBox
+                            x:Name="PSentenceLine"
+                            ContextMenu="{DynamicResource Theme.Mention.Menu}"
+                            Style="{DynamicResource Theme.Card.Instance}"
+                            Text="{Binding PSentenceText, UpdateSourceTrigger=PropertyChanged}">
                             <TextBox.Tag>
                                 <MultiBinding Converter="{StaticResource Theme.State.Show}">
                                     <Binding Path="PSentenceUnknown" />
@@ -211,7 +215,11 @@
                                 </MultiBinding>
                             </TextBox.Tag>
                         </TextBox>
-                        <ItemsControl x:Name="PSentenceMentionLine" ItemTemplate="{DynamicResource Theme.Mention.Chip}" ItemsSource="{Binding PSentenceChip.PMentionLineChip}" Style="{DynamicResource Theme.Mention.Line}" />
+                        <ItemsControl
+                            x:Name="PSentenceMentionLine"
+                            ItemTemplate="{DynamicResource Theme.Mention.Chip}"
+                            ItemsSource="{Binding PSentenceChip.PMentionLineChip}"
+                            Style="{DynamicResource Theme.Mention.Line}" />
                         <ItemsControl x:Name="PSentenceGlossLine" ItemTemplate="{DynamicResource Theme.Gloss.Row}" ItemsSource="{Binding PSentenceGloss}" Style="{DynamicResource Theme.Gloss.Line}" />
                     </StackPanel>
                 </Grid>

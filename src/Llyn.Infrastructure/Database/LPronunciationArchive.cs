@@ -138,7 +138,12 @@ public sealed class LPronunciationArchive
 
         using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
         LDatabaseOrder.LDatabaseOrderNormalize(
-            session.LDatabaseSessionConnection, "pronunciation", "entry_parent = $owner", entryId, "pronunciation_id", order);
+            session.LDatabaseSessionConnection,
+            "pronunciation",
+            "entry_parent = $owner",
+            entryId,
+            "pronunciation_id",
+            order);
         session.LDatabaseSessionCommit();
     }
 
@@ -241,7 +246,8 @@ public sealed class LPronunciationArchive
 
     private static IReadOnlyList<long> LPronunciationSiblingRead(SqliteConnection connection, long entryId)
     {
-        return LDatabaseOrder.LDatabaseOrderRead(connection, "pronunciation", "entry_parent = $owner", entryId, "pronunciation_id");
+        return LDatabaseOrder.LDatabaseOrderRead(
+            connection, "pronunciation", "entry_parent = $owner", entryId, "pronunciation_id");
     }
 
     private static string? LPronunciationVarietyRead(string? text)

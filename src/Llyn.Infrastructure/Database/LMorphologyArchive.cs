@@ -132,7 +132,8 @@ public sealed class LMorphologyArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT morphology_value_id, morphology_feature_parent, pack_code, name, position FROM morphology_value WHERE morphology_value_id = $id;
+            SELECT morphology_value_id, morphology_feature_parent, pack_code, name, position
+            FROM morphology_value WHERE morphology_value_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
 

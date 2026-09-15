@@ -73,7 +73,12 @@ public sealed class PParadigmItem
         {
             if (row.Count > 0 && !PParadigmItemMatch(row[0], slot))
             {
-                items.Add(PParadigmItemCreate(row, parts.Count > 1 && previous != row[0].LParadigmSlotSpeech.LSpeechValueId, pending, enabled, held));
+                items.Add(PParadigmItemCreate(
+                    row,
+                    parts.Count > 1 && previous != row[0].LParadigmSlotSpeech.LSpeechValueId,
+                    pending,
+                    enabled,
+                    held));
                 previous = row[0].LParadigmSlotSpeech.LSpeechValueId;
                 row = [];
             }
@@ -81,7 +86,12 @@ public sealed class PParadigmItem
             row.Add(slot);
         }
 
-        items.Add(PParadigmItemCreate(row, parts.Count > 1 && previous != row[0].LParadigmSlotSpeech.LSpeechValueId, pending, enabled, held));
+        items.Add(PParadigmItemCreate(
+            row,
+            parts.Count > 1 && previous != row[0].LParadigmSlotSpeech.LSpeechValueId,
+            pending,
+            enabled,
+            held));
         return items;
     }
 

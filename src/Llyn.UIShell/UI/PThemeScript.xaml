@@ -88,6 +88,22 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Theme.Script.Head" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+    </Style>
+
+    <Style x:Key="Theme.Script.Loading" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
+        <Setter Property="Margin" Value="0,2,0,6" />
+    </Style>
+
     <DataTemplate x:Key="Theme.Script.Picture">
         <StackPanel Margin="0,0,14,8" VerticalAlignment="Top">
             <Rectangle Style="{StaticResource Theme.Script.Shape}" />

@@ -1,26 +1,22 @@
 # PDial.cs
 
-## `private (string PDialChild, Border PDialCard, string[] PDialKeys)[] PDialTableRead()`
+## `private (string PDialChild, StackPanel PDialPage, string[] PDialKeys)[] PDialTableRead()`
 
-The one table of setting groups: the child name, the card that shows it, and the keys a search reads.
-The ledger rows, the card swap and the search all read it, so a group is added in one place.
+The one table of setting groups: the child name, the page that shows it, and the keys a search reads.
+The ledger rows, the page swap and the search all read it, so a group is added in one place.
 
 ## `private void PDialShow(string child)`
 
-Brings the card of one group to the front and marks that group's row in the catalog.
-The cards share one cell, so showing one means collapsing the others.
-A card is found through the table, never by guessing a name from the child.
-Marking the row here rather than in the click keeps the first card, shown on attach, marked as well.
+Brings the page of one group to the front and marks that group's row in the catalog.
+The pages share one cell, so showing one means collapsing the others.
+A page is found through the table, never by guessing a name from the child.
+Marking the row here rather than in the click keeps the first page, shown on attach, marked as well.
 
 ## `private void PDialFolderHandle(object sender, RoutedEventArgs e)`
 
 Opens the workspace folder in the shell's file browser.
 The path is handed to the shell as is, so the user's default browser for folders is what opens.
 A folder the shell cannot open is reported as a notice, since the folder may have been moved away meanwhile.
-
-## `private void PDialFooterApply()`
-
-Writes the product name and version under the cards in the language now applied.
 
 ## `private void PDialWidthHandle(object sender, RoutedEventArgs e)`
 

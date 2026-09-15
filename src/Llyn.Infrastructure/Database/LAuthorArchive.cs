@@ -244,7 +244,8 @@ public sealed class LAuthorArchive
             if (references > 0)
             {
                 throw new InvalidOperationException(
-                    $"Author {id} is still credited on {references} Reference(s); detach every reference before deleting it.");
+                    $"Author {id} is still credited on {references} Reference(s); "
+                    + "detach every reference before deleting it.");
             }
         }
 

@@ -24,6 +24,8 @@ public partial class PEditor
         PEditorGraspShow();
         PEditorFrequencyShow();
         PEditorParadigmShow();
+        PEditorScriptShow();
+        PEditorFanqieShow();
     }
 
     internal void PEditorFrequencyShow()

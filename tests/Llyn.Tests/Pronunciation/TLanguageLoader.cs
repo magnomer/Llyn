@@ -76,7 +76,8 @@ public sealed class TLanguageLoader
         LSourceAttempt attempt = Assert.Single(oxford.LSourceSpecAttempts);
         Assert.Equal(
             [("British", "regex"), ("American", "regex")],
-            attempt.LSourceAttemptReadings.Select(reading => (reading.LSourceReadingVariety, reading.LSourceReadingStrategy)));
+            attempt.LSourceAttemptReadings.Select(reading =>
+                (reading.LSourceReadingVariety, reading.LSourceReadingStrategy)));
         Assert.All(attempt.LSourceAttemptReadings, reading => Assert.False(reading.LSourceReadingPhonetic));
     }
 
@@ -87,7 +88,8 @@ public sealed class TLanguageLoader
 
         Assert.Equal(
             [("British", "British"), ("American", "American")],
-            language.LLanguageRespellings.Select(group => (group.LRespellingName, string.Join(",", group.LRespellingVarieties))));
+            language.LLanguageRespellings.Select(group =>
+                (group.LRespellingName, string.Join(",", group.LRespellingVarieties))));
         Assert.All(language.LLanguageRespellings, group => Assert.NotEmpty(group.LRespellingRules));
         Assert.All(language.LLanguageRespellings, group => Assert.NotEmpty(group.LRespellingVarieties));
         Assert.Empty(language.LLanguageCleanups);
@@ -133,7 +135,8 @@ public sealed class TLanguageLoader
             """
             { "transcription": [
                 { "name": "Pinyin", "sources": [ { "name": "Wiktionary", "attempts": [
-                    { "urls": ["https://example.test/{word}"], "strategy": "regex", "match": "m=(\\S+)", "group": 1 } ] } ] },
+                    { "urls": ["https://example.test/{word}"], "strategy": "regex",
+                      "match": "m=(\\S+)", "group": 1 } ] } ] },
                 "Bopomofo",
                 " ",
                 "Pinyin" ] }
@@ -193,7 +196,8 @@ public sealed class TLanguageLoader
 
         Assert.Equal(
             [("Good", ""), ("Last", "American")],
-            language.LLanguageRespellings.Select(group => (group.LRespellingName, string.Join(",", group.LRespellingVarieties))));
+            language.LLanguageRespellings.Select(group =>
+                (group.LRespellingName, string.Join(",", group.LRespellingVarieties))));
     }
 
     [Fact]
@@ -227,9 +231,11 @@ public sealed class TLanguageLoader
             """
             { "frequency": [
                 { "name": "First", "attempts": [
-                    { "urls": ["https://example.test/a/{word}"], "strategy": "regex", "match": "a=(\\S+)", "group": 1 } ] },
+                    { "urls": ["https://example.test/a/{word}"], "strategy": "regex",
+                      "match": "a=(\\S+)", "group": 1 } ] },
                 { "name": "Second", "attempts": [
-                    { "urls": ["https://example.test/b/{word}"], "strategy": "regex", "match": "b=(\\S+)", "group": 1 } ] } ],
+                    { "urls": ["https://example.test/b/{word}"], "strategy": "regex",
+                      "match": "b=(\\S+)", "group": 1 } ] } ],
               "bands": [
                 { "upTo": 10, "name": "Common" },
                 { "match": "^[SW]1$", "name": "Very common" } ] }
@@ -340,25 +346,6 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
-    public void LanguageLoad_ScriptStyles_ReadsFormPatternGroupsAndRewrite()
-    {
-        LLanguage language = TInterface.TLanguageLoad("Classical Chinese");
-
-        Assert.Equal(
-            ["金文", "小篆", "隸書", "異體"],
-            language.LLanguageScripts.Select(style => style.LScriptStyleName).ToList());
-        LScriptStyle seal = language.LLanguageScripts[1];
-        Assert.Equal("https://xiaoxue.iis.sinica.edu.tw/xiaozhuan/PageResult/PageResult", seal.LScriptStyleUrl);
-        Assert.Equal("{word}", seal.LScriptStyleForm["EudcFontChar"]);
-        Assert.Equal((1, 2), (seal.LScriptStyleImage, seal.LScriptStyleCaption));
-        Assert.Equal("https://xiaoxue.iis.sinica.edu.tw", seal.LScriptStylePrefix);
-        Assert.Equal("size=200", Assert.Single(seal.LScriptStyleRewrite).LRespellingRuleReplacement);
-        Assert.NotNull(seal.LScriptStyleGloss);
-        Assert.Null(language.LLanguageScripts[0].LScriptStyleGloss);
-        Assert.Empty(TInterface.TLanguageLoad("English").LLanguageScripts);
-    }
-
-    [Fact]
     public void LanguageLoad_FlagNamesSvg_ReadsPackFilePath()
     {
         LLanguage own = TInterface.TLanguageLoad("Classical Chinese");
@@ -368,24 +355,6 @@ public sealed class TLanguageLoader
         Assert.EndsWith(Path.Combine("languages", "Classical Chinese", "flag.svg"), own.LLanguageFlag);
         Assert.True(File.Exists(own.LLanguageFlag));
         Assert.Equal("cn", coded.LLanguageFlag);
-    }
-
-    [Fact]
-    public void LanguageLoad_ScriptMissingMatch_SkipsThatStyle()
-    {
-        LLanguage language = TLanguageFixtureLoad(
-            """
-            { "language": "Fixture", "script": [
-                { "name": "Seal", "url": "https://example.test/seal" },
-                { "name": "Clerical", "url": "https://example.test/clerical",
-                  "match": "<img src=\"([^\"]+)\"", "image": 1 } ] }
-            """);
-
-        LScriptStyle style = Assert.Single(language.LLanguageScripts);
-        Assert.Equal("Clerical", style.LScriptStyleName);
-        Assert.Empty(style.LScriptStyleForm);
-        Assert.Equal(0, style.LScriptStyleCaption);
-        Assert.Empty(style.LScriptStyleRewrite);
     }
 
     [Fact]

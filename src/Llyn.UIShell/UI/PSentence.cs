@@ -340,14 +340,16 @@ internal sealed partial class PSentence : INotifyPropertyChanged
             PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
         }
 
-        if (!pending(nameof(PSentenceParticle)) && !PSentenceParticleRead().LStateWrittenMatch(draft.LSentenceDraftParticle))
+        if (!pending(nameof(PSentenceParticle))
+            && !PSentenceParticleRead().LStateWrittenMatch(draft.LSentenceDraftParticle))
         {
             _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
             PSentenceRaise(nameof(PSentenceParticle));
             PSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
         }
 
-        if (!pending(nameof(PSentenceDependence)) && !PSentenceDependenceRead().LStateWrittenMatch(draft.LSentenceDraftDependence))
+        if (!pending(nameof(PSentenceDependence))
+            && !PSentenceDependenceRead().LStateWrittenMatch(draft.LSentenceDraftDependence))
         {
             _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
             PSentenceRaise(nameof(PSentenceDependence));

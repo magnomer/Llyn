@@ -6,7 +6,7 @@ The shared read-only entry view as a control.
 It is handed a loaded draft and draws it.
 It never loads one itself, and it never decides which entry is shown.
 That belongs to the browse-style panel it sits in.
-Playback, the heart, the star row and the paradigm box each sit in a part of their own.
+Playback, heart, star row, paradigm box, announcements and incoming links each sit in a part of their own.
 
 ## `internal void PDisplayAttach(PWindow host, LEngine engine)`
 
@@ -52,23 +52,6 @@ A missing or unreadable stamp shows as nothing.
 
 Empties the view and leaves the unselected notice in its place.
 Playback stops, because what it was playing belonged to the entry that was shown.
-
-## `private void PDisplayBulletinHandle(LBulletin bulletin)`
-
-What the view does when the engine announces that stored data changed.
-It answers for the entry it stands on, and ignores an announcement about another Entry.
-An announcement about any other record is answered whatever its id.
-A card embeds Situations, Registers, Tags, Examples and Sources by reference.
-A Situation renamed in its own tab must redraw the chip here.
-A picture it shares relocated there must redraw the picture here.
-Typing in any editor announces its draft, and that is the one subject left alone, since nothing stored changed.
-A mark set from another tab moves the heart.
-A frequency the engine finished fetching fills the chip alone, because nothing else on the page changed.
-A script fetch that stored a character's pictures redraws the script box alone, whichever entry asked.
-The shown entry may share the character.
-A headword written elsewhere is read back and redrawn, so two views of one entry never disagree.
-An entry that is gone leaves the unselected notice, because there is nothing left to show.
-A workspace that moved empties the view, since the id it stood on means nothing in the new database.
 
 ## `internal void PDisplayClose()`
 

@@ -59,7 +59,8 @@ internal static class PIndicator
                         Orientation="Vertical"
                         ViewportSize="{TemplateBinding ViewportHeight}"
                         Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                        Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                        Value="{Binding VerticalOffset, Mode=OneWay,
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
                     <ScrollBar
                         x:Name="PART_HorizontalScrollBar"
                         Grid.Row="1"
@@ -73,7 +74,8 @@ internal static class PIndicator
                         Orientation="Horizontal"
                         ViewportSize="{TemplateBinding ViewportWidth}"
                         Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-                        Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
+                        Value="{Binding HorizontalOffset, Mode=OneWay,
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
                 </Grid>
                 <ControlTemplate.Triggers>
                     <Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
@@ -108,8 +110,15 @@ internal static class PIndicator
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 TargetType="{x:Type ScrollBar}">
                 <Grid Margin="{{{inset}}}" Background="Transparent" SnapsToDevicePixels="True">
-                    <Border {{{rail}}} Background="{DynamicResource Theme.Line}" CornerRadius="{{{PIndicatorRailRadius}}}" Opacity="0.34" />
-                    <Track x:Name="PART_Track" IsDirectionReversed="{{{direction}}}" Orientation="{TemplateBinding Orientation}">
+                    <Border
+                        {{{rail}}}
+                        Background="{DynamicResource Theme.Line}"
+                        CornerRadius="{{{PIndicatorRailRadius}}}"
+                        Opacity="0.34" />
+                    <Track
+                        x:Name="PART_Track"
+                        IsDirectionReversed="{{{direction}}}"
+                        Orientation="{TemplateBinding Orientation}">
                         <Track.DecreaseRepeatButton>
                             <RepeatButton
                                 Command="{x:Static ScrollBar.{{{decrease}}}}"
@@ -135,11 +144,17 @@ internal static class PIndicator
                                             Opacity="0.42" />
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{DynamicResource Theme.Accent}" />
+                                                <Setter
+                                                    TargetName="PSurface"
+                                                    Property="Background"
+                                                    Value="{DynamicResource Theme.Accent}" />
                                                 <Setter TargetName="PSurface" Property="Opacity" Value="0.62" />
                                             </Trigger>
                                             <Trigger Property="IsDragging" Value="True">
-                                                <Setter TargetName="PSurface" Property="Background" Value="{DynamicResource Theme.Accent}" />
+                                                <Setter
+                                                    TargetName="PSurface"
+                                                    Property="Background"
+                                                    Value="{DynamicResource Theme.Accent}" />
                                                 <Setter TargetName="PSurface" Property="Opacity" Value="0.88" />
                                             </Trigger>
                                             <Trigger Property="IsEnabled" Value="False">

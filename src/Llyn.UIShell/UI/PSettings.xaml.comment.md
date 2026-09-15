@@ -2,7 +2,7 @@
 
 ## `<Rectangle ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
-The seams that part the setting catalog from the card of the chosen group.
+The seams that part the setting catalog from the page of the chosen group.
 The row seam runs under the search field and is bled past the panel margin, as every tab does it.
 The column seam sits in the gutter and reaches the foot of the window.
 
@@ -19,13 +19,27 @@ Five groups need no ordering, and the text alone decides which rows stay.
 ## `<ItemsControl x:Name="PLedger">`
 
 The catalog of setting groups, one row each, the title over a summary of the values the group holds.
-Choosing a row swaps the card on the right and nothing else.
+Choosing a row swaps the page on the right and nothing else.
 
 ## `<Border Grid.Row="1" Grid.Column="1" ... Style="{StaticResource Theme.Panel.Surface}">`
 
-The edit area, one card per group drawn in the same cell, only the chosen one visible.
-A card opens with its title and purpose, then its rows parted by one-pixel lines.
+The edit area, one page per group drawn in the same cell, only the chosen one visible.
+A page opens with its heading and purpose, then its rows parted by hairlines.
 Each row reads its label over its helper, with the control at the far end.
+No box is drawn around a page, because the surface it stands on is already the region.
+A page and its rules run the whole width of the surface, as a seam does.
+Each row caps its label column instead, so the control stands close after the text in a wide window.
+The filler column past the control takes the rest, which is why the rule can outrun the row.
+
+## `<Button x:Name="PDialFolder" ...>`
+
+The action that opens the workspace folder, set at the foot of the workspace page.
+It stands with the setting it acts on rather than in a command rail over every page.
+The negative margin lines its label up with the rows above, since the button pads its own text.
+
+## `<Button x:Name="PDialWidth" ...>`
+
+The action that drops the stored panel widths, set at the foot of the layout page for the same reason.
 
 ## `<Button x:Name="PWorkspaceDialog" ...>`
 

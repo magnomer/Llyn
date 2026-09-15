@@ -213,7 +213,9 @@ public sealed class TSpeech
             TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntrySpeechRead(entry.LEntryId);
         Assert.Equal(3, speeches.Count);
         Assert.Equal([0, 1, 2], speeches.Select(row => row.LSpeechPosition));
-        Assert.Equal(engine.TEngineSpeechFind("English", "Verb, transitive")!.LSpeechValueId, speeches[1].LSpeechValueId);
+        Assert.Equal(
+            engine.TEngineSpeechFind("English", "Verb, transitive")!.LSpeechValueId,
+            speeches[1].LSpeechValueId);
         Assert.Equal("Verb, ergative", speeches[2].LSpeechCustom);
 
         Assert.Equal(

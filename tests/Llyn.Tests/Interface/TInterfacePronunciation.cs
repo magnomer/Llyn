@@ -267,4 +267,25 @@ internal static partial class TInterface
 
     internal static string TFrequencyFormat(this LFrequency frequency) =>
         frequency.LFrequencyFormat();
+
+    internal static LHypothesis THypothesisCreate(
+        IReadOnlyDictionary<string, string> initials,
+        IReadOnlyDictionary<string, string> finals,
+        IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> tones) =>
+        new(initials, finals, tones);
+
+    internal static LHypothesisTone THypothesisToneCreate(
+        string onset, IReadOnlyList<LRespellingRule> rules, string label) =>
+        new(onset, rules, label);
+
+    internal static LHypothesisSound? THypothesisResolve(this LHypothesis hypothesis, LFanqieRow row) =>
+        hypothesis.LHypothesisResolve(row);
+
+    internal static LFanqieRow TFanqieRowCreate(
+        string initial, string rime, string heading, string division, string tone, bool rounded) =>
+        new("字", "book", 0, "text", initial, rime, heading, division, tone, rounded);
+
+    internal static LFanqieRow TFanqieRowCreate(
+        string character, int position, string initial, string rime, string division, string tone) =>
+        new(character, "book", position, "text", initial, rime, rime, division, tone, false);
 }

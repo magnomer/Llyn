@@ -35,6 +35,15 @@ It collapses when empty.
 The gloss under a row's pictures, inked and wrapped.
 It collapses when empty.
 
+## `<Style x:Key="Theme.Script.Head" TargetType="TextBlock">`
+
+The box's name at the head of a folded box, small and muted in the interface font, beside the switch.
+
+## `<Style x:Key="Theme.Script.Loading" TargetType="TextBlock">`
+
+The muted line under the rows saying the pictures are being fetched, in the interface font.
+It is the only content of the box while nothing is stored yet.
+
 ## `<DataTemplate x:Key="Theme.Script.Picture">`
 
 One picture with its caption beneath, spaced from the next.

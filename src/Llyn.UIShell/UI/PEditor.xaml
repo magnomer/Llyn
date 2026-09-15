@@ -35,7 +35,13 @@
             <Grid MinHeight="56" Margin="0,0,10,0">
                 <TextBlock x:Name="PHeadwordHint" VerticalAlignment="Top" Style="{StaticResource Editor.Field.Hint}" Text="{DynamicResource Input.Headword}" />
                 <TextBlock x:Name="PHeadwordGhost" VerticalAlignment="Top" Style="{StaticResource Editor.Field.Ghost}" />
-                <TextBox x:Name="PHeadword" Margin="-2,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Headword}" Tag="{DynamicResource Input.Headword}" />
+                <TextBox
+                    x:Name="PHeadword"
+                    Margin="-2,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource Theme.Input.Headword}"
+                    Tag="{DynamicResource Input.Headword}" />
             </Grid>
 
             <Grid Grid.Column="1">
@@ -71,10 +77,24 @@
             </Grid>
 
             <StackPanel Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Orientation="Horizontal">
-                <ToggleButton x:Name="PEditorFavorite" Width="42" Height="42" Margin="12,0,0,0" Padding="0" Click="PEditorFavoriteHandle" Style="{StaticResource Theme.Favorite.Mark}" ToolTip="{DynamicResource Favorite.Mark}">
+                <ToggleButton
+                    x:Name="PEditorFavorite"
+                    Width="42"
+                    Height="42"
+                    Margin="12,0,0,0"
+                    Padding="0"
+                    Click="PEditorFavoriteHandle"
+                    Style="{StaticResource Theme.Favorite.Mark}"
+                    ToolTip="{DynamicResource Favorite.Mark}">
                     <Path Style="{StaticResource Editor.Field.Mark}" />
                 </ToggleButton>
-                <local:PGrasp x:Name="PEditorGrasp" Margin="2,0,0,0" VerticalAlignment="Center" PGraspChanged="PEditorGraspHandle" PGraspHovered="PEditorHoverHandle" ToolTip="{DynamicResource Grasp.Mark}" />
+                <local:PGrasp
+                    x:Name="PEditorGrasp"
+                    Margin="2,0,0,0"
+                    VerticalAlignment="Center"
+                    PGraspChanged="PEditorGraspHandle"
+                    PGraspHovered="PEditorHoverHandle"
+                    ToolTip="{DynamicResource Grasp.Mark}" />
                 <TextBlock x:Name="PEditorGraspLabel" Margin="6,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Grasp.Label}" />
             </StackPanel>
 
@@ -134,9 +154,26 @@
                                 <TextBox x:Name="PPronunciationField" Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" />
                             </Grid>
                             <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="]" />
-                            <Button x:Name="PPlaybackAction" Click="PPlaybackActionHandle" Style="{StaticResource Theme.Accent.Tool}" Margin="8,0,0,0" Tag="{local:PIcon play, 24}" ToolTip="{DynamicResource Downloader.Play}" Visibility="Collapsed" />
-                            <Button x:Name="PPhonetician" Click="PPhoneticianHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="{local:PIcon lookup, 24}" ToolTip="{DynamicResource Phonetician.Title}" />
-                            <Button x:Name="PDownloader" Click="PDownloaderHandle" Style="{StaticResource Theme.Accent.Tool}" Tag="{local:PIcon download, 24}" ToolTip="{DynamicResource Downloader.Title}" />
+                            <Button
+                                x:Name="PPlaybackAction"
+                                Click="PPlaybackActionHandle"
+                                Style="{StaticResource Theme.Accent.Tool}"
+                                Margin="8,0,0,0"
+                                Tag="{local:PIcon play, 24}"
+                                ToolTip="{DynamicResource Downloader.Play}"
+                                Visibility="Collapsed" />
+                            <Button
+                                x:Name="PPhonetician"
+                                Click="PPhoneticianHandle"
+                                Style="{StaticResource Theme.Accent.Tool}"
+                                Tag="{local:PIcon lookup, 24}"
+                                ToolTip="{DynamicResource Phonetician.Title}" />
+                            <Button
+                                x:Name="PDownloader"
+                                Click="PDownloaderHandle"
+                                Style="{StaticResource Theme.Accent.Tool}"
+                                Tag="{local:PIcon download, 24}"
+                                ToolTip="{DynamicResource Downloader.Title}" />
                             <StackPanel Style="{StaticResource Theme.Accent.Control}">
                                 <Button Style="{StaticResource Theme.Accent.Addition}" />
                                 <Button Style="{StaticResource Theme.Accent.Remove}" />
@@ -145,7 +182,16 @@
                     </Grid>
                 </Border>
 
-                <Border x:Name="PPlayback" Height="37" Margin="10,0,0,0" Padding="3" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True" Visibility="Collapsed">
+                <Border
+                    x:Name="PPlayback"
+                    Height="37"
+                    Margin="10,0,0,0"
+                    Padding="3"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    SnapsToDevicePixels="True"
+                    Visibility="Collapsed">
                     <Slider x:Name="PVolume" Style="{StaticResource Theme.Volume.Slider}" ToolTip="{DynamicResource Downloader.Volume}" ValueChanged="PVolumeHandle" />
                 </Border>
 
@@ -212,11 +258,23 @@
             </StackPanel>
 
             <local:PParadigm x:Name="PEditorParadigm" Margin="0,14,0,0" />
+
+            <local:PScript x:Name="PEditorScript" Margin="0,14,0,0" PScriptFolded="True" />
+
+            <local:PFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" PFanqieFolded="True" />
         </StackPanel>
 
         <Border Grid.Row="3" Padding="0,0,0,8" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
             <Grid x:Name="PStack" Margin="27,0,0,0" HorizontalAlignment="Left" Loaded="PStackPillHandle">
-                <Border x:Name="PStackPill" Width="0" Height="34" HorizontalAlignment="Left" VerticalAlignment="Center" Background="{StaticResource Theme.AccentSoft}" CornerRadius="9" IsHitTestVisible="False">
+                <Border
+                    x:Name="PStackPill"
+                    Width="0"
+                    Height="34"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="{StaticResource Theme.AccentSoft}"
+                    CornerRadius="9"
+                    IsHitTestVisible="False">
                     <Border.RenderTransform>
                         <TranslateTransform x:Name="PStackPillOffset" />
                     </Border.RenderTransform>
@@ -233,7 +291,12 @@
             <Grid>
                 <ScrollViewer x:Name="PMeaning" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <ItemsControl x:Name="PMeaningList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Meaning.Card}" />
+                        <ItemsControl
+                            x:Name="PMeaningList"
+                            LostMouseCapture="PCardDragCancel"
+                            MouseLeftButtonUp="PCardDragFinish"
+                            MouseMove="PCardDragUpdate"
+                            ItemTemplate="{DynamicResource Theme.Meaning.Card}" />
 
                         <Button Click="PMeaningHandle" Content="{DynamicResource Input.MeaningAdd}" Style="{StaticResource Editor.Card.Add}" />
                     </StackPanel>
@@ -241,7 +304,12 @@
 
                 <ScrollViewer x:Name="PCollocation" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
                     <StackPanel>
-                        <ItemsControl x:Name="PCollocationList" LostMouseCapture="PCardDragCancel" MouseLeftButtonUp="PCardDragFinish" MouseMove="PCardDragUpdate" ItemTemplate="{DynamicResource Theme.Collocation.Card}" />
+                        <ItemsControl
+                            x:Name="PCollocationList"
+                            LostMouseCapture="PCardDragCancel"
+                            MouseLeftButtonUp="PCardDragFinish"
+                            MouseMove="PCardDragUpdate"
+                            ItemTemplate="{DynamicResource Theme.Collocation.Card}" />
 
                         <Button Click="PCollocationHandle" Content="{DynamicResource Input.CollocationAdd}" Style="{StaticResource Editor.Card.Add}" />
                     </StackPanel>
@@ -256,7 +324,18 @@
                         <Border Background="{StaticResource Theme.Surface}" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1" CornerRadius="12,12,0,0">
                             <TextBlock Margin="22,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{DynamicResource Display.Note}" />
                         </Border>
-                        <TextBox x:Name="PNoteContents" Grid.Row="1" Margin="22,18,22,22" Padding="14,12" VerticalAlignment="Stretch" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap" Style="{StaticResource Theme.Input.Field}" Tag="{DynamicResource Input.NoteHint}" />
+                        <TextBox
+                            x:Name="PNoteContents"
+                            Grid.Row="1"
+                            Margin="22,18,22,22"
+                            Padding="14,12"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Top"
+                            VerticalScrollBarVisibility="Auto"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            Style="{StaticResource Theme.Input.Field}"
+                            Tag="{DynamicResource Input.NoteHint}" />
                     </Grid>
                 </Border>
             </Grid>
@@ -278,7 +357,12 @@
                     </Border>
                     <TextBlock x:Name="PNotationNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Phonetician.Searching}" Visibility="Collapsed" />
                     <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="PNotationList" Grid.IsSharedSizeScope="True" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Notation.Row}" Visibility="Collapsed" />
+                        <ItemsControl
+                            x:Name="PNotationList"
+                            Grid.IsSharedSizeScope="True"
+                            ItemContainerStyle="{StaticResource Editor.Popup.Stretch}"
+                            ItemTemplate="{DynamicResource Theme.Notation.Row}"
+                            Visibility="Collapsed" />
                     </ScrollViewer>
                 </StackPanel>
             </Border>
@@ -300,7 +384,12 @@
                     </Border>
                     <TextBlock x:Name="PClipNotice" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Downloader.Searching}" Visibility="Collapsed" />
                     <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="PClipList" Grid.IsSharedSizeScope="True" ItemContainerStyle="{StaticResource Editor.Popup.Stretch}" ItemTemplate="{DynamicResource Theme.Clip.Row}" Visibility="Collapsed" />
+                        <ItemsControl
+                            x:Name="PClipList"
+                            Grid.IsSharedSizeScope="True"
+                            ItemContainerStyle="{StaticResource Editor.Popup.Stretch}"
+                            ItemTemplate="{DynamicResource Theme.Clip.Row}"
+                            Visibility="Collapsed" />
                     </ScrollViewer>
                 </StackPanel>
             </Border>

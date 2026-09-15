@@ -36,7 +36,8 @@ internal static class PField
     private static MultiBinding PFieldInsetBuild()
     {
         var pInset = new MultiBinding { Converter = new PFieldConverter() };
-        pInset.Bindings.Add(new Binding(nameof(Control.FontFamily)) { RelativeSource = RelativeSource.TemplatedParent });
+        pInset.Bindings.Add(
+            new Binding(nameof(Control.FontFamily)) { RelativeSource = RelativeSource.TemplatedParent });
         pInset.Bindings.Add(new Binding(nameof(Control.FontSize)) { RelativeSource = RelativeSource.TemplatedParent });
         pInset.Bindings.Add(new Binding(nameof(Control.Padding)) { RelativeSource = RelativeSource.TemplatedParent });
         return pInset;
@@ -60,7 +61,9 @@ internal static class PField
         var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), PFieldPlaceholderName);
         pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
         pPlaceholder.SetValue(TextBlock.PaddingProperty, PFieldPlaceholderInset);
-        pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
+        pPlaceholder.SetValue(
+            FrameworkElement.VerticalAlignmentProperty,
+            new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
         pPlaceholder.SetValue(UIElement.OpacityProperty, PFieldPlaceholderOpacity);
@@ -81,11 +84,13 @@ internal static class PField
         pTemplate.Triggers.Add(pEmptyTrigger);
 
         var pHoverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
-        pHoverTrigger.Setters.Add(new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Line"), PFieldSurfaceName));
+        pHoverTrigger.Setters.Add(
+            new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Line"), PFieldSurfaceName));
         pTemplate.Triggers.Add(pHoverTrigger);
 
         var pFocusTrigger = new Trigger { Property = UIElement.IsKeyboardFocusedProperty, Value = true };
-        pFocusTrigger.Setters.Add(new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Accent"), PFieldSurfaceName));
+        pFocusTrigger.Setters.Add(
+            new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Accent"), PFieldSurfaceName));
         pFocusTrigger.Setters.Add(new Setter(UIElement.OpacityProperty, 0.36, PFieldPlaceholderName));
         pTemplate.Triggers.Add(pFocusTrigger);
 
@@ -102,7 +107,9 @@ internal static class PField
         var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), PFieldPlaceholderName);
         pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
         pPlaceholder.SetValue(TextBlock.PaddingProperty, PFieldPlaceholderInset);
-        pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
+        pPlaceholder.SetValue(
+            FrameworkElement.VerticalAlignmentProperty,
+            new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
         pPlaceholder.SetValue(UIElement.OpacityProperty, PFieldPlaceholderOpacity);
@@ -136,7 +143,8 @@ internal static class PField
         var pSurface = new FrameworkElementFactory(typeof(Border), PFieldSurfaceName);
         pSurface.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Control.BackgroundProperty));
         pSurface.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Control.BorderBrushProperty));
-        pSurface.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Control.BorderThicknessProperty));
+        pSurface.SetValue(
+            Border.BorderThicknessProperty, new TemplateBindingExtension(Control.BorderThicknessProperty));
         pSurface.SetValue(Border.CornerRadiusProperty, new CornerRadius(7));
 
         var pGrid = new FrameworkElementFactory(typeof(Grid));
@@ -144,7 +152,9 @@ internal static class PField
         var pPlaceholder = new FrameworkElementFactory(typeof(TextBlock), PFieldPlaceholderName);
         pPlaceholder.SetValue(FrameworkElement.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
         pPlaceholder.SetValue(TextBlock.PaddingProperty, PFieldPlaceholderInset);
-        pPlaceholder.SetValue(FrameworkElement.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
+        pPlaceholder.SetValue(
+            FrameworkElement.VerticalAlignmentProperty,
+            new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
         pPlaceholder.SetValue(TextBlock.ForegroundProperty, new DynamicResourceExtension("Theme.Muted"));
         pPlaceholder.SetValue(UIElement.IsHitTestVisibleProperty, false);
         pPlaceholder.SetValue(UIElement.OpacityProperty, PFieldPlaceholderOpacity);
@@ -164,12 +174,14 @@ internal static class PField
         pTemplate.Triggers.Add(pEmptyTrigger);
 
         var pFocusTrigger = new Trigger { Property = UIElement.IsKeyboardFocusedProperty, Value = true };
-        pFocusTrigger.Setters.Add(new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Accent"), PFieldSurfaceName));
+        pFocusTrigger.Setters.Add(
+            new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Accent"), PFieldSurfaceName));
         pFocusTrigger.Setters.Add(new Setter(UIElement.OpacityProperty, 0.36, PFieldPlaceholderName));
         pTemplate.Triggers.Add(pFocusTrigger);
 
         var pHoverTrigger = new Trigger { Property = UIElement.IsMouseOverProperty, Value = true };
-        pHoverTrigger.Setters.Add(new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Accent"), PFieldSurfaceName));
+        pHoverTrigger.Setters.Add(
+            new Setter(Border.BorderBrushProperty, new DynamicResourceExtension("Theme.Accent"), PFieldSurfaceName));
         pTemplate.Triggers.Add(pHoverTrigger);
 
         pTemplate.Seal();

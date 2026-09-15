@@ -8,7 +8,13 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition SharedSizeGroup="{Binding (ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=ContentPresenter}, StringFormat=PNotationColumn{0}}" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="PNotationSelector" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="PNotationSelectorHandle" Style="{DynamicResource Theme.Popup.RowReading}" ToolTip="{Binding PNotationReadingLabel}">
+            <Button
+                x:Name="PNotationSelector"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                Click="PNotationSelectorHandle"
+                Style="{DynamicResource Theme.Popup.RowReading}"
+                ToolTip="{Binding PNotationReadingLabel}">
                 <StackPanel Orientation="Horizontal">
                     <Image x:Name="PNotationReadingFlag" Width="19" Height="14" Margin="0,0,6,0" VerticalAlignment="Center" Source="{Binding PNotationReadingFlag}" Stretch="Uniform" />
                     <TextBlock x:Name="PNotationReadingLabel" Margin="0,0,6,0" VerticalAlignment="Center" FontSize="11" Text="{Binding PNotationReadingLabel}">
@@ -26,7 +32,15 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <TextBlock x:Name="PNotationReadingPhonetic" VerticalAlignment="Center" FontFamily="{DynamicResource Theme.Phonetic}" FontSize="14" FontWeight="SemiBold" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"><Run x:Name="PNotationReadingOpener" Text="[" /><Run Text="{Binding PNotationReadingPhonetic, Mode=OneWay}" /><Run x:Name="PNotationReadingCloser" Text="]" /></TextBlock>
+                    <TextBlock
+                        x:Name="PNotationReadingPhonetic"
+                        VerticalAlignment="Center"
+                        FontFamily="{DynamicResource Theme.Phonetic}"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
+                        <Run x:Name="PNotationReadingOpener" Text="[" /><Run Text="{Binding PNotationReadingPhonetic, Mode=OneWay}" /><Run x:Name="PNotationReadingCloser" Text="]" />
+                    </TextBlock>
                 </StackPanel>
             </Button>
         </Grid>
@@ -50,14 +64,31 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemSource}" TextTrimming="CharacterEllipsis" />
-                <ItemsControl x:Name="PNotationReadingList" Grid.Column="1" AlternationCount="8" Margin="4,0,10,0" VerticalAlignment="Center" ItemTemplate="{DynamicResource Theme.Notation.Reading}" ItemsSource="{Binding PNotationItemReading}">
+                <ItemsControl
+                    x:Name="PNotationReadingList"
+                    Grid.Column="1"
+                    AlternationCount="8"
+                    Margin="4,0,10,0"
+                    VerticalAlignment="Center"
+                    ItemTemplate="{DynamicResource Theme.Notation.Reading}"
+                    ItemsSource="{Binding PNotationItemReading}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
-                <TextBlock x:Name="PNotationNote" Grid.Column="1" Margin="4,0,10,0" VerticalAlignment="Center" FontSize="11" FontStyle="Italic" Foreground="{DynamicResource Theme.Muted}" Text="{Binding PNotationItemNotice}" TextTrimming="CharacterEllipsis" Visibility="Collapsed" />
+                <TextBlock
+                    x:Name="PNotationNote"
+                    Grid.Column="1"
+                    Margin="4,0,10,0"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    FontStyle="Italic"
+                    Foreground="{DynamicResource Theme.Muted}"
+                    Text="{Binding PNotationItemNotice}"
+                    TextTrimming="CharacterEllipsis"
+                    Visibility="Collapsed" />
             </Grid>
         </Border>
         <DataTemplate.Triggers>

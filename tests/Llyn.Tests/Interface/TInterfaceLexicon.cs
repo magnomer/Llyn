@@ -103,7 +103,8 @@ internal static partial class TInterface
         long id = 0) =>
         new(ipa, null, audio, source, id, variety);
 
-    internal static LTranscriptionDraft TTranscriptionDraftCreate(string scheme, string text, long id = 0, bool seeded = false) =>
+    internal static LTranscriptionDraft TTranscriptionDraftCreate(
+        string scheme, string text, long id = 0, bool seeded = false) =>
         new(scheme, text, id, seeded);
 
     internal static IReadOnlyList<LSpeechDraft> TSpeechDraftCreate(IReadOnlyList<string>? speeches)
@@ -155,7 +156,8 @@ internal static partial class TInterface
     internal static LMention TMentionCreate(long id, int start, int length, long entryId, long senseId = 0) =>
         new(id, start, length, entryId, senseId);
 
-    internal static (int LMentionSpanOffset, int LMentionSpanLength) TMentionSpanResolve(string text, int offset, bool separated) =>
+    internal static (int LMentionSpanOffset, int LMentionSpanLength) TMentionSpanResolve(
+        string text, int offset, bool separated) =>
         LMentionSpan.LMentionSpanResolve(text, offset, separated);
 
     internal static IReadOnlyList<LMentionPiece> TMentionSpanDivide(string text, IReadOnlyList<LMention> mentions) =>

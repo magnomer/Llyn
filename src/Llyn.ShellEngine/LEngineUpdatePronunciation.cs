@@ -64,7 +64,8 @@ public sealed partial class LEngine
         }
     }
 
-    private static IReadOnlyList<LPronunciationDraft> LEnginePronunciationScan(IReadOnlyList<LPronunciationDraft> drafts)
+    private static IReadOnlyList<LPronunciationDraft> LEnginePronunciationScan(
+        IReadOnlyList<LPronunciationDraft> drafts)
     {
         List<LPronunciationDraft> filled = [];
         foreach (LPronunciationDraft draft in drafts)
@@ -138,7 +139,8 @@ public sealed partial class LEngine
         string file = LEngineRecordingFormat(draft.LPronunciationDraftAudio);
         LPronunciationAudio? audio = pronunciations.LPronunciationAudioRead(pronunciationId);
         if (string.Equals(audio?.LPronunciationAudioFile, file, StringComparison.Ordinal)
-            && string.Equals(audio?.LPronunciationAudioSource, draft.LPronunciationDraftSource, StringComparison.Ordinal))
+            && string.Equals(
+                audio?.LPronunciationAudioSource, draft.LPronunciationDraftSource, StringComparison.Ordinal))
         {
             return;
         }

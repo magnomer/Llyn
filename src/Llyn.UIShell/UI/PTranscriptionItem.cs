@@ -41,7 +41,8 @@ internal sealed class PTranscriptionItem : INotifyPropertyChanged
         }
     }
 
-    public string PTranscriptionItemLabel => PTranscriptionLabelFormat(_pTranscriptionItemHost, _pTranscriptionItemScheme);
+    public string PTranscriptionItemLabel =>
+        PTranscriptionLabelFormat(_pTranscriptionItemHost, _pTranscriptionItemScheme);
 
     public string PTranscriptionItemText
     {
@@ -79,7 +80,8 @@ internal sealed class PTranscriptionItem : INotifyPropertyChanged
             foreach (PTranscriptionItem row in rows)
             {
                 if (!ReferenceEquals(row, this)
-                    && string.Equals(row.PTranscriptionItemScheme, choice.PTranscriptionChoiceScheme, StringComparison.Ordinal))
+                    && string.Equals(
+                        row.PTranscriptionItemScheme, choice.PTranscriptionChoiceScheme, StringComparison.Ordinal))
                 {
                     taken = true;
                     break;

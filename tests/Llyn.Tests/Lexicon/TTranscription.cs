@@ -112,7 +112,8 @@ public sealed class TTranscription
         engine.TEngineRequestApply(TInterface.TTranscriptionAdditionCreate(started.LDraftId, "Yale", 1));
         Assert.True(engine.TEngineDraftCheck(started.LDraftId));
 
-        long yale = engine.TEngineDraftRead(started.LDraftId)!.LDraftContent.LEntryDraftTranscriptions[1].LTranscriptionDraftId;
+        long yale = engine.TEngineDraftRead(started.LDraftId)!
+            .LDraftContent.LEntryDraftTranscriptions[1].LTranscriptionDraftId;
         engine.TEngineRequestApply(TInterface.TTranscriptionRemovalCreate(started.LDraftId, yale));
         Assert.False(engine.TEngineDraftCheck(started.LDraftId));
 
@@ -204,7 +205,8 @@ public sealed class TTranscription
         """
         { "transcription": [
             { "name": "Pinyin", "sources": [ { "name": "Wiktionary", "attempts": [
-                { "urls": ["https://example.test/{word}"], "strategy": "regex", "match": "m=([^;]+)", "group": 1 } ] } ] },
+                { "urls": ["https://example.test/{word}"], "strategy": "regex",
+                  "match": "m=([^;]+)", "group": 1 } ] } ] },
             "Bopomofo" ] }
         """;
 
@@ -221,7 +223,9 @@ public sealed class TTranscription
             0, "你好", pack.TLanguageFixtureName, "Pinyin", receiver, CancellationToken.None);
 
         LCandidate candidate = Assert.Single(receiver.TReceiverStubCandidates);
-        Assert.Equal(("Wiktionary", "nǐ hǎo", string.Empty), (candidate.LCandidateSource, candidate.LCandidatePhonetic, candidate.LCandidateVariety));
+        Assert.Equal(
+            ("Wiktionary", "nǐ hǎo", string.Empty),
+            (candidate.LCandidateSource, candidate.LCandidatePhonetic, candidate.LCandidateVariety));
         Assert.Equal(1, receiver.TReceiverStubFinished);
     }
 

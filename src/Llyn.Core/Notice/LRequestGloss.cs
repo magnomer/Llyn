@@ -9,7 +9,11 @@ public sealed record LRequestGlossRemoval(
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestGlossText(
-    long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestGlossId, LStateWritten LRequestValue)
+    long LRequestDraftId,
+    long LRequestCardId,
+    long LRequestSentenceId,
+    long LRequestGlossId,
+    LStateWritten LRequestValue)
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestGlossLanguage(

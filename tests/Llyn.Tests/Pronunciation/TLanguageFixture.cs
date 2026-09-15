@@ -21,6 +21,11 @@ internal sealed class TLanguageFixture : IDisposable
         return new TLanguageFixture(name, folder);
     }
 
+    internal void TLanguageFixtureSave(string file, string json)
+    {
+        File.WriteAllText(Path.Combine(_tLanguageFixtureFolder, file), json);
+    }
+
     public void Dispose()
     {
         Directory.Delete(_tLanguageFixtureFolder, true);

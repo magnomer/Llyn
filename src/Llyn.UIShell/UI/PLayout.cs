@@ -11,7 +11,8 @@ public sealed class PLayout
 {
     private readonly LEngine _lEngine;
 
-    private readonly List<(string PLayoutTab, Grid PLayoutHost, GridLength PLayoutLeft, GridLength PLayoutMiddle)> _pLayoutList = [];
+    private readonly List<(string PLayoutTab, Grid PLayoutHost, GridLength PLayoutLeft, GridLength PLayoutMiddle)>
+        _pLayoutList = [];
 
     private Grid? _pLayoutRecent;
 

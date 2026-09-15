@@ -84,13 +84,17 @@ public sealed class TEntryLoad
             [
                 TInterface.TCardDraftCreate(
                     string.Empty, string.Empty, "a unit of language",
-                    [TInterface.TSentenceDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [], ["spoken"], [], 1),
+                    [TInterface.TSentenceDraftCreate("he said a word")],
+                    [TInterface.TSituationDraftCreate("conversation")],
+                    [], ["spoken"], [], 1),
                 TInterface.TCardDraftCreate(string.Empty, string.Empty, "a promise", [], [], [], [], [], 2),
             ],
             [
                 TInterface.TCardDraftCreate(
-                    string.Empty, "in a word", "briefly", [TInterface.TSentenceDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [],
-                    ["written"], [], 1),
+                    string.Empty, "in a word", "briefly",
+                    [TInterface.TSentenceDraftCreate("in a word, no")],
+                    [TInterface.TSituationDraftCreate("summary")],
+                    [], ["written"], [], 1),
             ]);
 
         LEntryDraft sword = TInterface.TEntryDraftCreate(
@@ -236,7 +240,8 @@ public sealed class TEntryLoad
             [TInterface.TCardDraftCreate(
                 "the set phrase", "in a word", "briefly", [], [], [], [], [], 1)]));
 
-        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
+        LMeaning meaning = Assert.Single(
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
         Assert.Equal("the plain meaning", meaning.LMeaningTitle);
         LCollocation collocation = Assert.Single(
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(stored.LEntryId));
@@ -266,7 +271,10 @@ public sealed class TEntryLoad
                 string.Empty,
                 string.Empty,
                 "a unit of language",
-                [TInterface.TSentenceDraftCreate("he said a word"), TInterface.TSentenceDraftCreate("not a word was spoken")],
+                [
+                    TInterface.TSentenceDraftCreate("he said a word"),
+                    TInterface.TSentenceDraftCreate("not a word was spoken"),
+                ],
                 [TInterface.TSituationDraftCreate("conversation")],
                 [],
                 ["verb", "formal", "spoken"], [], 1)],
@@ -279,10 +287,13 @@ public sealed class TEntryLoad
                 [],
                 ["written", "idiom"], [], 1)]));
 
-        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
+        LMeaning meaning = Assert.Single(
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(stored.LEntryId));
         Assert.Equal(
             ["verb", "formal", "spoken"],
-            TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase).TTagMeaningRead(meaning.LMeaningId).Select(tag => tag.LTagText));
+            TInterface.TTagArchiveCreate(workspace.TWorkspaceDatabase)
+                .TTagMeaningRead(meaning.LMeaningId)
+                .Select(tag => tag.LTagText));
         Assert.Equal(
             [0L, 1L, 2L],
             workspace.TWorkspaceColumnRead("SELECT position FROM sense_tag ORDER BY position;"));
@@ -315,7 +326,11 @@ public sealed class TEntryLoad
             "English",
             string.Empty,
             string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a meaning", [TInterface.TSentenceDraftCreate("  ")], [], [], [], [], 1)],
+            [
+                TInterface.TCardDraftCreate(
+                    string.Empty, string.Empty, "a meaning",
+                    [TInterface.TSentenceDraftCreate("  ")], [], [], [], [], 1),
+            ],
             []));
 
         Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM example;"));

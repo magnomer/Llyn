@@ -82,7 +82,13 @@
                         <StackPanel>
                             <TextBlock Margin="10,7,10,8" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Funnel.Title}" />
 
-                            <RadioButton GroupName="PFunnelChoice" IsChecked="True" Click="PFunnelHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Name" Content="{DynamicResource Funnel.Name}" />
+                            <RadioButton
+                                GroupName="PFunnelChoice"
+                                IsChecked="True"
+                                Click="PFunnelHandle"
+                                Style="{StaticResource Theme.Choice.Order}"
+                                Tag="Name"
+                                Content="{DynamicResource Funnel.Name}" />
                             <RadioButton GroupName="PFunnelChoice" Click="PFunnelHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Funnel.Reverse}" />
                         </StackPanel>
                     </Border>
@@ -101,7 +107,15 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Path Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" Data="{local:PIcon tag, 16}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                    <Path
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="{local:PIcon tag, 16}"
+                                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                        Stretch="None" />
                                     <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PDirectoryItemText}" />
                                 </Grid>
                             </Button>

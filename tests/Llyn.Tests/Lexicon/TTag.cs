@@ -44,7 +44,11 @@ public sealed class TTag
 
         engine.TEngineTagSave(
             meaningId,
-            [TInterface.TTagCreate("  This is a new text  "), TInterface.TTagCreate("chiefly British"), TInterface.TTagCreate("   ")],
+            [
+                TInterface.TTagCreate("  This is a new text  "),
+                TInterface.TTagCreate("chiefly British"),
+                TInterface.TTagCreate("   "),
+            ],
             LOwner.LOwnerMeaning);
 
         Assert.Equal(

@@ -2,12 +2,14 @@
 
 ## `<UserControl.Resources>`
 
-The read-only card shapes are merged in from [PDisplayCard.xaml](PDisplayCard.xaml.comment.md).
+The read-only card shapes are merged in from [PDisplayCard.xaml](PDisplayCard.comment.md).
 A Meaning card and a Collocation card are one card (LCardDraft), so the two templates share their tail.
 They are kept apart from this file.
 The card is its own shape, not part of the page around it.
 Every member the loaded draft carries is drawn.
 A field the card left empty collapses rather than leaving a blank line.
+The incoming rows and the stamps take their shapes from [PDisplayUsage.xaml](PDisplayUsage.comment.md).
+The contents column takes its row from [PDisplayCompass.xaml](PDisplayCompass.comment.md), merged from code because the row answers a click.
 
 ## `<StackPanel x:Name="PDisplayIncomingSection">`
 
@@ -95,12 +97,19 @@ The inflected forms of the headword, one row each, boxed above the first meaning
 It is read-only here, because the engine fetches the forms and the editor edits them as inflection rows.
 The box collapses by itself while the headword has no form to show.
 
-## `<Border x:Name="PDisplayScriptSection" Margin="0,14,0,0" Style="{StaticResource Theme.Script.Box}" Visibility="Collapsed">`
+## `<local:PScript x:Name="PDisplayScript" Margin="0,14,0,0" />`
 
 The character styles of the headword, one row per character and style, boxed above the first meaning.
-It is read-only and absent from the editor, because the engine fetches the pictures and the user never places them.
-The list is its own shared-size scope, so the character and chip columns line up across rows.
-The section collapses until the engine has stored pictures for a character of the entry.
+It is read-only, because the engine fetches the pictures and the user never places them.
+The same control sits folded in the editor, so both show one thing.
+It shows the loading line while a fetch runs and collapses when nothing is stored and nothing runs.
+
+## `<local:PFanqie x:Name="PDisplayFanqie" Margin="0,14,0,0" />`
+
+The rime-book placements of the headword, one block per character, book and source, boxed under the script box.
+It is read-only like the script box, because the engine fetches the rows and the user never writes them.
+The same control sits folded in the editor.
+It shows the loading line while a fetch runs and collapses when nothing is stored and nothing runs.
 
 ## `<StackPanel x:Name="PCompass" HorizontalAlignment="Right" VerticalAlignment="Top" ...>`
 

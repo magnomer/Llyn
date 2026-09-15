@@ -51,11 +51,13 @@ internal static class PFont
         ArgumentNullException.ThrowIfNull(engine);
 
         LFont example = PFontRoleRead(engine, language, LFontRole.LFontRoleExample);
-        PFontResourceSet(resources, "Theme.Card.ExampleFamily", example.LFontFamily is string named ? new FontFamily(named) : null);
+        PFontResourceSet(
+            resources, "Theme.Card.ExampleFamily", example.LFontFamily is string named ? new FontFamily(named) : null);
         PFontResourceSet(resources, "Theme.Card.ExampleSize", example.LFontSize > 0 ? example.LFontSize : null);
 
         LFont gloss = PFontRoleRead(engine, language, LFontRole.LFontRoleGloss);
-        PFontResourceSet(resources, "Theme.Card.GlossFamily", gloss.LFontFamily is string glossed ? new FontFamily(glossed) : null);
+        PFontResourceSet(
+            resources, "Theme.Card.GlossFamily", gloss.LFontFamily is string glossed ? new FontFamily(glossed) : null);
         PFontResourceSet(resources, "Theme.Card.GlossSize", gloss.LFontSize > 0 ? gloss.LFontSize : null);
         PFontResourceSet(resources, "Theme.Card.GlossStyle", PFontStyleRead(gloss.LFontStyle));
     }

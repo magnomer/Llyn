@@ -131,7 +131,8 @@ public partial class PRepertoire
 
     public void PImageOpenHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PImage row } && PImage.PImageOpen(_pRepertoireHost) is string chosen)
+        if (sender is FrameworkElement { DataContext: PImage row }
+            && PImage.PImageOpen(_pRepertoireHost) is string chosen)
         {
             row.PImageLocation = chosen;
         }
@@ -139,7 +140,8 @@ public partial class PRepertoire
 
     public void PVideoOpenHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { DataContext: PVideo row } && PVideo.PVideoOpen(_pRepertoireHost) is string chosen)
+        if (sender is FrameworkElement { DataContext: PVideo row }
+            && PVideo.PVideoOpen(_pRepertoireHost) is string chosen)
         {
             row.PVideoLocation = chosen;
         }

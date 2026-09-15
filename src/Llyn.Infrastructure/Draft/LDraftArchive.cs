@@ -26,8 +26,9 @@ public static class LDraftArchive
         LDraftArchiveValidate(draft);
 
         string folder = LWorkspaceRoot.LWorkspaceDraftRead(root);
-        string pending = Path.Combine(folder, draft.LDraftId.ToString(CultureInfo.InvariantCulture) + LDraftArchivePending);
-        string path = Path.Combine(folder, draft.LDraftId.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
+        string stem = draft.LDraftId.ToString(CultureInfo.InvariantCulture);
+        string pending = Path.Combine(folder, stem + LDraftArchivePending);
+        string path = Path.Combine(folder, stem + LDraftArchiveExtension);
 
         File.WriteAllText(
             pending,
@@ -40,7 +41,9 @@ public static class LDraftArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceDraftRead(root), id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
+        string path = Path.Combine(
+            LWorkspaceRoot.LWorkspaceDraftRead(root),
+            id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
         return LDraftArchiveLoad(path);
     }
 
@@ -86,7 +89,9 @@ public static class LDraftArchive
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         ArgumentOutOfRangeException.ThrowIfZero(id);
 
-        string path = Path.Combine(LWorkspaceRoot.LWorkspaceDraftRead(root), id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
+        string path = Path.Combine(
+            LWorkspaceRoot.LWorkspaceDraftRead(root),
+            id.ToString(CultureInfo.InvariantCulture) + LDraftArchiveExtension);
         try
         {
             File.Delete(path);

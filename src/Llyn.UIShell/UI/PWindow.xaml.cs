@@ -53,6 +53,8 @@ public partial class PWindow : Window
         PInput.PInputAttach(this, engine);
         PLibrary.PLibraryAttach(this, engine);
         PPhonology.PPhonologyAttach(this, engine);
+        PYunjing.PYunjingAttach(this, engine);
+        PNavigationYunjing.Visibility = PYunjing.PYunjingCheck() ? Visibility.Visible : Visibility.Collapsed;
         PTaxonomy.PTaxonomyAttach(this, engine);
         PTenor.PTenorAttach(this, engine);
         PRepertoire.PRepertoireAttach(this, engine);
@@ -72,6 +74,7 @@ public partial class PWindow : Window
     {
         _pLayout.PLayoutAttach((Grid)PLibrary.Content, "library");
         _pLayout.PLayoutAttach((Grid)PPhonology.Content, "phonology");
+        _pLayout.PLayoutAttach((Grid)PYunjing.Content, "yunjing");
         _pLayout.PLayoutAttach((Grid)PTaxonomy.Content, "taxonomy");
         _pLayout.PLayoutAttach((Grid)PTenor.Content, "tenor");
         _pLayout.PLayoutAttach((Grid)PRepertoire.Content, "repertoire");
@@ -98,6 +101,7 @@ public partial class PWindow : Window
         PInput.PInputClose();
         PLibrary.PLibraryClose();
         PPhonology.PPhonologyClose();
+        PYunjing.PYunjingClose();
         PTaxonomy.PTaxonomyClose();
         PTenor.PTenorClose();
         PRepertoire.PRepertoireClose();

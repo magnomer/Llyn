@@ -56,7 +56,8 @@ public partial class PDisplay
 
         if (PCompassSectionAdd(PDisplayCollocationSection, _pDisplayHost.PLocalizationTextRead("Display.Collocation")))
         {
-            PCompassCardAdd(PDisplayCollocation, _pDisplayHost.PLocalizationTextRead("Display.CollocationSingle"), unknown);
+            PCompassCardAdd(
+                PDisplayCollocation, _pDisplayHost.PLocalizationTextRead("Display.CollocationSingle"), unknown);
         }
 
         PCompassSectionAdd(PDisplayIncomingSection, _pDisplayHost.PLocalizationTextRead("Display.Translated"));
@@ -190,7 +191,7 @@ public partial class PDisplay
         PDisplayContents.ScrollToVerticalOffset(PDisplayContents.VerticalOffset + top - PCompassLead);
     }
 
-    private void PCompassRowHandle(object sender, RoutedEventArgs e)
+    internal void PCompassRowHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement row && row.DataContext is PCompassItem item)
         {

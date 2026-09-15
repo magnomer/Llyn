@@ -137,7 +137,8 @@ public sealed partial class LEngine
             LEngineTranscriptionFormat(current)));
     }
 
-    private static IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionScan(IReadOnlyList<LTranscriptionDraft> drafts)
+    private static IReadOnlyList<LTranscriptionDraft> LEngineTranscriptionScan(
+        IReadOnlyList<LTranscriptionDraft> drafts)
     {
         List<LTranscriptionDraft> filled = [];
         foreach (LTranscriptionDraft draft in drafts)

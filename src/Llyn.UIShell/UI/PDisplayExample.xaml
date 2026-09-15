@@ -45,7 +45,14 @@
         <StackPanel Margin="0,7,0,0" Orientation="Horizontal">
             <Image Style="{DynamicResource Theme.Gloss.Flag}" />
             <Ellipse Style="{DynamicResource Theme.Gloss.Globe}" />
-            <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontFamily="{DynamicResource Theme.Card.GlossFamily}" FontSize="{DynamicResource Theme.Card.GlossSize}" FontStyle="{DynamicResource Theme.Card.GlossStyle}" Foreground="{DynamicResource Theme.Muted}" TextWrapping="Wrap">
+            <TextBlock
+                Margin="8,0,0,0"
+                VerticalAlignment="Center"
+                FontFamily="{DynamicResource Theme.Card.GlossFamily}"
+                FontSize="{DynamicResource Theme.Card.GlossSize}"
+                FontStyle="{DynamicResource Theme.Card.GlossStyle}"
+                Foreground="{DynamicResource Theme.Muted}"
+                TextWrapping="Wrap">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
                         <Binding Path="PGlossUnknown" />
@@ -101,7 +108,10 @@
                         </MultiBinding>
                     </local:PMention.PMentionText>
                 </local:PMention>
-                <ItemsControl ItemTemplate="{StaticResource Display.Card.ExampleGloss}" ItemsSource="{Binding LSentenceDraftExample.LExampleDraftGloss, Converter={StaticResource Display.Card.Gloss}}" Style="{DynamicResource Theme.Gloss.Line}" />
+                <ItemsControl
+                    ItemTemplate="{StaticResource Display.Card.ExampleGloss}"
+                    ItemsSource="{Binding LSentenceDraftExample.LExampleDraftGloss, Converter={StaticResource Display.Card.Gloss}}"
+                    Style="{DynamicResource Theme.Gloss.Line}" />
             </StackPanel>
 
             <Border Grid.Column="3" Margin="16,0,0,0">

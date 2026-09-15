@@ -7,6 +7,7 @@ A `.llx` file is read into `LMarkupEntry` records, matched against the workspace
 All three `LMarkupMode` values land here.
 The Append merge stands in `LEngineMarkupAppend.cs` and the Replace detach in `LEngineMarkupReplace.cs`.
 Every link by name, and the sense pass that follows the writes, stands in `LEngineMarkupLink.cs`.
+The turn from a parsed entry into the draft the update path takes stands in `LEngineMarkupDraft.cs`.
 
 ## `public const long LEngineMarkupCeiling = 64L * 1024 * 1024;`
 
@@ -68,29 +69,3 @@ Example, situation and reference drafts share the id field but not the id space,
 A New intake creates a bare entry holding only headword and language, and its index maps to the new id.
 A blank headword refuses here, before any row is written.
 Other modes map their index to the target they name.
-
-## `private LEntryDraft LEngineMarkupResolve(LMarkupEntry entry, IReadOnlyDictionary<(string, string), long> prepared, List<LMarkupOmission> omissions, List<(LMarkupMention, int)> held)`
-
-Turns one parsed entry into the draft the update path consumes, every id 0 except links.
-Names that resolve to nothing are dropped and named in an omission.
-A local file that does not exist is kept as written and named in an omission.
-An audio location the location rule refuses is blanked, and an image or video row so refused is dropped.
-A mention that names a sense is added to `held` with the entry's line, for the sense pass.
-The overloads below each settle one kind of link.
-
-## Inline notes
-
-### `private static LSpeechValue? LEngineMarkupResolve(LSpeechArchive values, string language, string name, List<LMarkupOmission> omissions)`
-
-A part of speech by name within the entry's language, or nothing with an omission.
-
-### `private LInflection LEngineMarkupResolve(LSpeechArchive values, string language, LMarkupInflection inflection, int position, List<LMarkupOmission> omissions)`
-
-An inflection with its speech and morphology names turned into ids.
-A morphology is searched through every feature of the resolved speech.
-No speech means no feature to search, so every morphology name is an omission.
-
-### `private IReadOnlyList<LCardDraft> LEngineMarkupResolve(IReadOnlyList<LMarkupCard> cards, LMarkupEntry entry, IReadOnlyDictionary<(string, string), long> prepared, List<LMarkupOmission> omissions, List<(LMarkupMention, int)> held)`
-
-Cards in file order, numbered from 1, with children resolved the same way.
-Situations, registers, tags, images and videos pass through whole, since the update path settles them by text.

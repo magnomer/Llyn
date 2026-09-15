@@ -5,7 +5,16 @@
 
     <DataTemplate x:Key="Theme.Slate.Row">
         <Grid Background="Transparent" PreviewMouseLeftButtonDown="PSlateHandle">
-            <TextBlock VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource Theme.Ink}" TextTrimming="CharacterEllipsis"><Run Text="{Binding PSlateItemLead, Mode=OneWay}" /><Run FontWeight="SemiBold" Foreground="{DynamicResource Theme.Accent}" Text="{Binding PSlateItemMark, Mode=OneWay}" /><Run Text="{Binding PSlateItemTail, Mode=OneWay}" /></TextBlock>
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="12"
+                Foreground="{DynamicResource Theme.Ink}"
+                TextTrimming="CharacterEllipsis">
+                <Run Text="{Binding PSlateItemLead, Mode=OneWay}" /><Run
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource Theme.Accent}"
+                    Text="{Binding PSlateItemMark, Mode=OneWay}" /><Run Text="{Binding PSlateItemTail, Mode=OneWay}" />
+            </TextBlock>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

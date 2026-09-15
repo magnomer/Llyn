@@ -105,7 +105,7 @@ public partial class PCorpus
         PCitationUpdate();
     }
 
-    private void PCitationPickHandle(object sender, MouseButtonEventArgs e)
+    internal void PCitationPickHandle(object sender, MouseButtonEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: PCandidateItem item })
         {

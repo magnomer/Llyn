@@ -26,6 +26,12 @@ public partial class PWindow
             return;
         }
 
+        if (PYunjing.IsVisible && selectedButton != PNavigationYunjing
+            && !PWindowDiscardConfirm(PYunjing.PYunjingChangeCheck(), PYunjing.PYunjingDraftFinish))
+        {
+            return;
+        }
+
         if (PTaxonomy.IsVisible && selectedButton != PNavigationTaxonomy
             && !PWindowDiscardConfirm(PTaxonomy.PTaxonomyChangeCheck(), PTaxonomy.PTaxonomyDraftFinish))
         {
@@ -104,6 +110,7 @@ public partial class PWindow
             ("Input", PNavigationInput, PInput, null),
             ("Library", PNavigationLibrary, PLibrary, PLibrary.PLibraryScribeRestore),
             ("Phonology", PNavigationPhonology, PPhonology, PPhonology.PPhonologyScribeRestore),
+            ("Yunjing", PNavigationYunjing, PYunjing, PYunjing.PYunjingScribeRestore),
             ("Taxonomy", PNavigationTaxonomy, PTaxonomy, PTaxonomy.PTaxonomyScribeRestore),
             ("Tenor", PNavigationTenor, PTenor, PTenor.PTenorScribeRestore),
             ("Repertoire", PNavigationRepertoire, PRepertoire, PRepertoire.PRepertoireScribeRestore),

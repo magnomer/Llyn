@@ -20,7 +20,8 @@ internal sealed partial class PSentence
     {
         int split = field.IndexOf(':', StringComparison.Ordinal);
         name = split < 0 ? field : field[..split];
-        if (split < 0 || !long.TryParse(field[(split + 1)..], NumberStyles.Integer, CultureInfo.InvariantCulture, out long id))
+        if (split < 0
+            || !long.TryParse(field[(split + 1)..], NumberStyles.Integer, CultureInfo.InvariantCulture, out long id))
         {
             return null;
         }

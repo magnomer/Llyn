@@ -40,16 +40,38 @@ public sealed partial class LEngine
                 stored = new LScriptArchive(_lEngineDatabase).LScriptRead(entry.LEntryLanguage, character);
             }
 
-            if (stored.Count == 0)
-            {
-                LEngineScriptStart(entryId, entry.LEntryLanguage, character);
-                continue;
-            }
-
             images.AddRange(stored);
         }
 
         return images;
+    }
+
+    public void LEngineScriptStart(long entryId)
+    {
+        LEntry? entry;
+        lock (_lEngineGate)
+        {
+            entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+        }
+
+        if (entry is null || LEngineStyleRead(entry.LEntryLanguage).Count == 0)
+        {
+            return;
+        }
+
+        foreach (string character in LGlyph.LGlyphScan(entry.LEntryHeadword))
+        {
+            bool stored;
+            lock (_lEngineGate)
+            {
+                stored = new LScriptArchive(_lEngineDatabase).LScriptRead(entry.LEntryLanguage, character).Count > 0;
+            }
+
+            if (!stored)
+            {
+                LEngineScriptStart(entryId, entry.LEntryLanguage, character);
+            }
+        }
     }
 
     public bool LEngineScriptCheck(long entryId)
@@ -162,22 +184,20 @@ public sealed partial class LEngine
                     return;
                 }
 
-                if (found.Count == 0)
-                {
-                    if (reached)
-                    {
-                        _lEngineScriptMissed.Add(key);
-                    }
-
-                    return;
-                }
-
-                new LScriptArchive(_lEngineDatabase).LScriptSave(language, character, found);
                 raised = true;
+                if (found.Count > 0)
+                {
+                    new LScriptArchive(_lEngineDatabase).LScriptSave(language, character, found);
+                }
+                else if (reached)
+                {
+                    _lEngineScriptMissed.Add(key);
+                }
             }
         }
         catch (Exception)
         {
+            raised = !fetch.IsCancellationRequested;
         }
         finally
         {

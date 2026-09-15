@@ -10,131 +10,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PDisplayImage.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PDisplayVideo.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PRepertoireVignette.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Llyn;component/UI/PRepertoireScenario.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <local:PImageConverter x:Key="Display.Card.Preview" />
             <local:PVideoConverter x:Key="Display.Card.Reel" />
-
-            <Style x:Key="Theme.Atlas.Kind" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Meta}">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding PAtlasItemKind}" Value="">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Atlas.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding PAtlasItemChosen}" Value="True">
-                        <Setter Property="Tag" Value="Chosen" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Vignette.Heading" TargetType="TextBlock">
-                <Setter Property="Height" Value="34" />
-                <Setter Property="Margin" Value="2,0,2,12" />
-                <Setter Property="Padding" Value="0,5,0,0" />
-                <Setter Property="FontSize" Value="19" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-            </Style>
-
-            <Style x:Key="Theme.Vignette.Chip" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
-                <Setter Property="Background" Value="{StaticResource Theme.SituationSoft}" />
-                <Setter Property="BorderBrush" Value="{StaticResource Theme.SituationEdge}" />
-                <Setter Property="BorderThickness" Value="1" />
-            </Style>
-
-            <Style x:Key="Theme.Vignette.Kind" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
-                <Setter Property="Foreground" Value="{StaticResource Theme.Situation}" />
-            </Style>
-
-            <Style x:Key="Theme.Vignette.Tally" TargetType="Border" BasedOn="{StaticResource Theme.Speech.Chip}">
-                <Setter Property="Background" Value="{StaticResource Theme.SurfaceRaised}" />
-            </Style>
-
-            <Style x:Key="Theme.Vignette.Figure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Speech.Name}">
-                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-            </Style>
-
-            <Style x:Key="Theme.Vignette.Picture" TargetType="ItemsControl">
-                <Setter Property="Margin" Value="2,0,0,24" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding LSituationImage.Count}" Value="0">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Vignette.Video" TargetType="ItemsControl">
-                <Setter Property="Margin" Value="2,0,0,24" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding LSituationVideo.Count}" Value="0">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Scenario.Media" TargetType="ItemsControl">
-                <Setter Property="Margin" Value="2,16,0,0" />
-            </Style>
-
-            <Style x:Key="Theme.Scenario.Hint" TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">
-                <Setter Property="Margin" Value="0,0,4,0" />
-                <Setter Property="Opacity" Value="0" />
-                <Setter Property="IsHitTestVisible" Value="False" />
-                <Setter Property="Visibility" Value="Collapsed" />
-                <Setter Property="Text" Value="{Binding Tag, ElementName=PScenarioTitle}" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Text, ElementName=PScenarioTitle}" Value="">
-                        <Setter Property="Visibility" Value="Visible" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Scenario.Ghost" TargetType="TextBlock" BasedOn="{StaticResource Theme.Text.Headword}">
-                <Setter Property="Margin" Value="0,0,4,0" />
-                <Setter Property="Opacity" Value="0" />
-                <Setter Property="IsHitTestVisible" Value="False" />
-                <Setter Property="Text" Value="{Binding Text, ElementName=PScenarioTitle}" />
-            </Style>
-
-            <Style x:Key="Theme.Scenario.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Vignette.Kind}">
-                <Setter Property="Margin" Value="0,0,4,0" />
-                <Setter Property="Visibility" Value="Hidden" />
-                <Setter Property="Text" Value="{Binding Text, ElementName=PScenarioKind}" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Text, ElementName=PScenarioKind}" Value="">
-                        <Setter Property="Text" Value="{Binding Tag, ElementName=PScenarioKind}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="Theme.Scenario.Kind" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="VerticalContentAlignment" Value="Center" />
-                <Setter Property="AcceptsReturn" Value="False" />
-                <Setter Property="TextWrapping" Value="NoWrap" />
-                <Setter Property="FontSize" Value="12" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Foreground" Value="{StaticResource Theme.Situation}" />
-            </Style>
-
-            <Style x:Key="Theme.Scenario.Description" TargetType="TextBox" BasedOn="{StaticResource Theme.Input.Bare}">
-                <Setter Property="Margin" Value="2,0" />
-                <Setter Property="MinHeight" Value="120" />
-                <Setter Property="VerticalContentAlignment" Value="Top" />
-                <Setter Property="FontSize" Value="14" />
-            </Style>
-
-            <Style x:Key="Theme.Occurrence.Row" TargetType="Button" BasedOn="{StaticResource Theme.Catalog.Row}">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding POccurrenceItemChosen}" Value="True">
-                        <Setter Property="Tag" Value="Chosen" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -325,7 +206,15 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Path Grid.Column="0" Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" Data="{local:PIcon situation, 16}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                    <Path
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Data="{local:PIcon situation, 16}"
+                                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                        Stretch="None" />
                                     <TextBlock Grid.Column="1" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PAtlasItemTitle}" />
                                     <TextBlock Grid.Column="2" Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource Theme.Atlas.Kind}" Text="{Binding PAtlasItemKind}" />
                                     <Border Grid.Column="3" Style="{StaticResource Theme.Catalog.Pellet}">
@@ -452,7 +341,13 @@
                         </WrapPanel>
                     </StackPanel>
 
-                    <ScrollViewer Grid.Row="1" Margin="-9,0,-30,0" Padding="0,0,10,0" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer
+                        Grid.Row="1"
+                        Margin="-9,0,-30,0"
+                        Padding="0,0,10,0"
+                        HorizontalScrollBarVisibility="Disabled"
+                        Style="{StaticResource Theme.Scroll.Gutter}"
+                        VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="9,39,9,24">
                             <TextBlock Style="{StaticResource Theme.Vignette.Heading}" Text="{DynamicResource Situation.Description}" />
                             <TextBox
@@ -476,13 +371,23 @@
                                     <Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
                                         <StackPanel Orientation="Horizontal">
                                             <Button Click="PImageAddHandle" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.ImageAdd}">
-                                                <Path Width="24" Height="24" Data="{local:PIcon image, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                                <Path
+                                                    Width="24"
+                                                    Height="24"
+                                                    Data="{local:PIcon image, 24}"
+                                                    Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                    Stretch="None" />
                                             </Button>
 
                                             <Rectangle Style="{StaticResource Theme.Command.Divider}" />
 
                                             <Button Click="PVideoAddHandle" Style="{StaticResource Theme.Command.Icon}" ToolTip="{DynamicResource Card.VideoAdd}">
-                                                <Path Width="24" Height="24" Data="{local:PIcon video, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                                                <Path
+                                                    Width="24"
+                                                    Height="24"
+                                                    Data="{local:PIcon video, 24}"
+                                                    Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                    Stretch="None" />
                                             </Button>
                                         </StackPanel>
                                     </Border>

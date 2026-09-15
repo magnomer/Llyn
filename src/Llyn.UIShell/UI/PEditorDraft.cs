@@ -122,6 +122,8 @@ public partial class PEditor
         PEditorGraspShow();
         PEditorFrequencyShow();
         PEditorParadigmShow();
+        PEditorScriptShow();
+        PEditorFanqieShow();
     }
 
     private string PEditorNoteRead()

@@ -70,47 +70,9 @@ Either list hides itself while the Situation has none of that kind, as a card's 
 ## `<ResourceDictionary.MergedDictionaries>`
 
 The card display's picture and video dictionaries, merged so the reading side draws media with the card's own templates.
+The panel's own shapes follow, the reading side in [PRepertoireVignette.xaml](PRepertoireVignette.comment.md) and the editing side in [PRepertoireScenario.xaml](PRepertoireScenario.comment.md).
+The two converters stay, because both sides of the panel read media through them.
 The editing side's row templates are merged from code instead, because they carry handlers this panel answers.
-
-## `<Style x:Key="Theme.Vignette.Chip" TargetType="Border">`
-
-The kind chip, shaped as a speech chip and coloured as the cards colour a Situation.
-The same style dresses the chip on both sides.
-The kind reads the same whether it is read or written.
-
-## `<Style x:Key="Theme.Vignette.Tally" TargetType="Border">`
-
-The reference count, a chip of the same shape in the raised surface colour.
-That colour makes it read as a figure and not a kind.
-It reads as a sentence, not a bare number.
-A bare number beside a title says nothing about what it counts.
-
-## `<Style x:Key="Theme.Scenario.Measure" TargetType="TextBlock">`
-
-The unseen twin that measures the kind.
-Its chip closes on the written kind, or on the placeholder while it is empty.
-Without it the chip in the editor stood at a fixed width the reading side never showed.
-
-## `<Style x:Key="Theme.Scenario.Hint" TargetType="TextBlock">`
-
-The unseen twin that measures the empty title, copied from the entry editor's `Editor.Field.Hint`.
-It reads the field's own placeholder rather than one fixed word, because the placeholder changes with the state.
-It is written here rather than shared, because the entry editor's styles are bound to `PHeadword` by name.
-
-## `<Style x:Key="Theme.Scenario.Ghost" TargetType="TextBlock">`
-
-The unseen twin that measures the written title.
-The head row closes on the text rather than on a fixed box.
-
-## `<Style x:Key="Theme.Scenario.Kind" TargetType="TextBox">`
-
-The bare field the kind is written into, inside the same chip the reading side draws.
-Bare, so the written kind sits exactly where the read kind sits.
-
-## `<Style x:Key="Theme.Scenario.Description" TargetType="TextBox">`
-
-The bare field the description is written into, where the reading side renders it.
-Its size matches the rendered paragraph, so a line of description sits at one height in both modes.
 
 ## `<ItemsControl x:Name="POccurrence">`
 
@@ -137,10 +99,6 @@ Leaving the editor asks about the draft as it does there.
 Under the description stand `PScenarioImage` and `PScenarioVideo`, the card's own row templates over the draft's rows.
 They sit where the reading side draws the same media, and a gutter column keeps room for each row's remove.
 The two add buttons after them are the card's, in the same icon group, the only buttons the editor carries.
-
-## `<Style x:Key="Theme.Scenario.Media" TargetType="ItemsControl">`
-
-The two row lists, indented to the description's edge and spaced as a card spaces its media.
 
 ## `<Button x:Name="PRepertoireBin" ...>`
 

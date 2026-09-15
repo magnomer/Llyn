@@ -83,7 +83,8 @@ public partial class PColophon : UserControl
         string? text = PColophonTextRead(value);
 
         field.Text = text ?? string.Empty;
-        PField.PFieldPlaceholderShow(field, value.LStateValueState == LState.LStateUnknown && !value.LStateValueUnreadable);
+        PField.PFieldPlaceholderShow(
+            field, value.LStateValueState == LState.LStateUnknown && !value.LStateValueUnreadable);
         section.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
     }
 

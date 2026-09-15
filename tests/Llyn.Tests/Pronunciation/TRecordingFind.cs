@@ -39,10 +39,14 @@ public sealed class TRecordingFind
             started.LDraftId, "tomato", pack.TLanguageFixtureName, 0, listener, CancellationToken.None);
 
         Assert.Equal(
-            [("Tagged", "American", "https://example.test/us.mp3"), ("Flat", "American", "https://example.test/flat.mp3")],
+            [
+                ("Tagged", "American", "https://example.test/us.mp3"),
+                ("Flat", "American", "https://example.test/flat.mp3"),
+            ],
             listener.TListenerStubRecordings
                 .OrderBy(recording => recording.LRecordingOrder)
-                .Select(recording => (recording.LRecordingSource, recording.LRecordingVariety, recording.LRecordingAddress)));
+                .Select(recording =>
+                    (recording.LRecordingSource, recording.LRecordingVariety, recording.LRecordingAddress)));
         Assert.Equal(1, listener.TListenerStubFinished);
     }
 
@@ -69,7 +73,8 @@ public sealed class TRecordingFind
             ],
             listener.TListenerStubRecordings
                 .OrderBy(recording => recording.LRecordingOrder)
-                .Select(recording => (recording.LRecordingSource, recording.LRecordingVariety, recording.LRecordingAddress)));
+                .Select(recording =>
+                    (recording.LRecordingSource, recording.LRecordingVariety, recording.LRecordingAddress)));
     }
 
     [Fact]

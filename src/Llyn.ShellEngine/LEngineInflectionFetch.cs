@@ -28,8 +28,8 @@ public sealed partial class LEngine
         return sources;
     }
 
-    private async Task<(IReadOnlyDictionary<string, string> LInflectionFound, bool LInflectionReached)> LEngineInflectionScan(
-        string word, string language, CancellationToken cancellation)
+    private async Task<(IReadOnlyDictionary<string, string> LInflectionFound, bool LInflectionReached)>
+        LEngineInflectionScan(string word, string language, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(word);
 
@@ -229,7 +229,8 @@ public sealed partial class LEngine
         {
             lock (_lEngineGate)
             {
-                if (_lEngineInflectionPending.TryGetValue(entry.LEntryId, out CancellationTokenSource? held) && held == fetch)
+                if (_lEngineInflectionPending.TryGetValue(entry.LEntryId, out CancellationTokenSource? held)
+                    && held == fetch)
                 {
                     _lEngineInflectionPending.Remove(entry.LEntryId);
                     fetch.Dispose();

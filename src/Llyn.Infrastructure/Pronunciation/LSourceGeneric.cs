@@ -48,7 +48,8 @@ public sealed class LSourceGeneric : LSource
         List<LReading> readings = [];
         foreach (LSourceAttempt attempt in _lSourceGenericSpec.LSourceSpecAttempts)
         {
-            (LAnswer answer, current) = await LSourceAttemptResolve(attempt, current, cancellation).ConfigureAwait(false);
+            (LAnswer answer, current) = await LSourceAttemptResolve(attempt, current, cancellation)
+                .ConfigureAwait(false);
             reached |= answer.LAnswerReached;
             HashSet<string> fresh = new(StringComparer.Ordinal);
             foreach (LReading reading in answer.LAnswerReadings)
@@ -112,7 +113,8 @@ public sealed class LSourceGeneric : LSource
         bool reached = false;
         for (int hop = 0; ; hop++)
         {
-            (LAnswer answer, string? next) = await LSourceAttemptRun(attempt, current, cancellation).ConfigureAwait(false);
+            (LAnswer answer, string? next) = await LSourceAttemptRun(attempt, current, cancellation)
+                .ConfigureAwait(false);
             reached |= answer.LAnswerReached;
             foreach (LReading reading in answer.LAnswerReadings)
             {
@@ -147,7 +149,8 @@ public sealed class LSourceGeneric : LSource
         string[] urls = new string[attempt.LSourceAttemptUrls.Count];
         for (int index = 0; index < urls.Length; index++)
         {
-            urls[index] = attempt.LSourceAttemptUrls[index].Replace(LSourceGenericToken, escaped, StringComparison.Ordinal);
+            urls[index] = attempt.LSourceAttemptUrls[index]
+                .Replace(LSourceGenericToken, escaped, StringComparison.Ordinal);
         }
 
         LAnswer fetched = await LSourceReader
@@ -273,7 +276,8 @@ public sealed class LSourceGeneric : LSource
             return true;
         }
 
-        string pattern = attempt.LSourceAttemptGuard.Replace(LSourceGenericToken, Regex.Escape(word), StringComparison.Ordinal);
+        string pattern = attempt.LSourceAttemptGuard
+            .Replace(LSourceGenericToken, Regex.Escape(word), StringComparison.Ordinal);
         return Regex.IsMatch(
             body, pattern, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, LSourceGenericPatience);
     }

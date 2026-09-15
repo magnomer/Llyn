@@ -29,4 +29,6 @@ public enum LSubject
     LSubjectInflection,
 
     LSubjectScript,
+
+    LSubjectFanqie,
 }

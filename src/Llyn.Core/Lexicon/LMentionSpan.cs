@@ -7,7 +7,8 @@ namespace Llyn.Core;
 
 public static class LMentionSpan
 {
-    public static (int LMentionSpanOffset, int LMentionSpanLength) LMentionSpanResolve(string text, int offset, bool separated)
+    public static (int LMentionSpanOffset, int LMentionSpanLength) LMentionSpanResolve(
+        string text, int offset, bool separated)
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentOutOfRangeException.ThrowIfNegative(offset);

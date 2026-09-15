@@ -45,7 +45,8 @@ public sealed partial class LEngine
                     continue;
                 }
 
-                if (string.Equals(LCatalog.LCatalogTextNormalize(entry.LEntryHeadword), written, StringComparison.Ordinal))
+                if (string.Equals(
+                    LCatalog.LCatalogTextNormalize(entry.LEntryHeadword), written, StringComparison.Ordinal))
                 {
                     exact.Add(entry);
                 }
@@ -76,7 +77,8 @@ public sealed partial class LEngine
             LEntry? single = null;
             foreach (LEntry entry in LEngineTranslationFind(written, entryId))
             {
-                if (!string.Equals(LCatalog.LCatalogTextNormalize(entry.LEntryHeadword), folded, StringComparison.Ordinal))
+                if (!string.Equals(
+                    LCatalog.LCatalogTextNormalize(entry.LEntryHeadword), folded, StringComparison.Ordinal))
                 {
                     break;
                 }

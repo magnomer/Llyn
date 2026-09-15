@@ -8,6 +8,7 @@ The recording records, the harvest fan-out, the workspace download, and the engi
 The language pack loader and the per-session trove are relayed here too.
 The frequency record, its parse and its stored form are relayed here too.
 The tone contour parse and the engine's tonal check are relayed here too.
+The reading hypothesis, its resolve and the fanqie row it reads are relayed here too.
 Each relay is transparent and carries no test logic of its own.
 
 ## `internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client)`
@@ -45,6 +46,15 @@ Relays the preview download into the workspace cache.
 ## `internal static Task TEngineRecordingFind(this LEngine engine, long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
 
 Relays the engine-level discovery, so a test can see the draft's row variety narrow the search.
+
+## `internal static LHypothesis THypothesisCreate(IReadOnlyDictionary<string, string> initials, IReadOnlyDictionary<string, string> finals, IReadOnlyDictionary<string, IReadOnlyList<LRespellingRule>> tones)`
+
+Builds the hypothesis tables directly, so a test needs no language pack to check the join.
+
+## `internal static LFanqieRow TFanqieRowCreate(string initial, string rime, string heading, string division, string tone, bool rounded)`
+
+A row carrying only the parts the hypothesis reads.
+The character, book, position and text are fixed, because the resolve never looks at them.
 
 ## `internal static LTrove TTroveCreate()`
 

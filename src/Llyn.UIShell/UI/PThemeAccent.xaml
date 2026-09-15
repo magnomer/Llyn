@@ -18,7 +18,12 @@
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Path Width="24" Height="24" Data="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                    <Path
+                        Width="24"
+                        Height="24"
+                        Data="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}"
+                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                        Stretch="None" />
                 </DataTemplate>
             </Setter.Value>
         </Setter>

@@ -98,7 +98,54 @@
       ]
     }
   ],
-  "note": "Language selector pack for Classical Chinese. Pronunciation and audio sources are listed separately and can be added without changing the application. The script list names the character styles the reading view shows above the first meaning, one row per style, fetched once per character from the Academia Sinica 小學堂 databases and kept in the workspace database. Each style posts the database's own search form with the character in EudcFontChar, because the site has no query API and every database needs its own hidden fields or answers 500. The match pattern reads every result cell: group 1 is the glyph image the site renders from its private fonts, group 2 the caption under it, such as the inscription and its era. The rewrite lifts the image size so the stored picture is the large original, and the view scales it down. The small seal style also reads the 說文 gloss the page prints under the results.",
+  "fanqie": [
+    {
+      "name": "廣韻",
+      "source": "Kaom",
+      "url": "http://www.kaom.net/zgy_dw8.php",
+      "form": {
+        "word": "{word}",
+        "t": "g",
+        "bianti": "no"
+      },
+      "match": "<span class='string'>{word}</span>",
+      "busy": "點擊過頻",
+      "interval": 4,
+      "split": "<br\\s*/?>",
+      "head": "<b>(?<rime>[^<]+)</b>\\[(?<heading>[^\\]]+)\\]<s>(?<division>[^<]*)</s>",
+      "column": "^(?<division>.)等(?<tone>.)$",
+      "rounded": "<u>(?:<[^>]+>)*<span class='string'>{word}</span>",
+      "spelling": "<a[^>]*>([^<]*)</a>"
+    },
+    {
+      "name": "廣韻",
+      "source": "Wiktionary",
+      "url": "https://en.wiktionary.org/w/index.php?title=Module:zh/data/ltc-pron/{word}&action=raw",
+      "match": "{word}",
+      "line": "\"(?<initial>.)(?<rime>.)(?<division>.)(?<rounded>[開合]) (?<tone>.)(?<spelling>..)\"",
+      "rounded": "合"
+    },
+    {
+      "name": "集韻",
+      "source": "Kaom",
+      "url": "http://www.kaom.net/zgy_dw8.php",
+      "form": {
+        "word": "{word}",
+        "t": "j",
+        "bianti": "no"
+      },
+      "match": "<span class='string'>{word}</span>",
+      "busy": "點擊過頻",
+      "interval": 4,
+      "split": "<br\\s*/?>",
+      "head": "<b>(?<rime>[^<]+)</b>\\[(?<heading>[^\\]]+)\\]<s>(?<division>[^<]*)</s>",
+      "column": "^(?<division>.)等(?<tone>.)$",
+      "rounded": "<u>(?:<[^>]+>)*<span class='string'>{word}</span>",
+      "spelling": "<a[^>]*>([^<]*)</a>"
+    }
+  ],
+  "hypothesis": "hypothesis.json",
+  "note": "Language selector pack for Classical Chinese. Pronunciation and audio sources are listed separately and can be added without changing the application. The script list names the character styles the reading view shows above the first meaning, one row per style, fetched once per character from the Academia Sinica 小學堂 databases and kept in the workspace database. Each style posts the database's own search form with the character in EudcFontChar, because the site has no query API and every database needs its own hidden fields or answers 500. The match pattern reads every result cell: group 1 is the glyph image the site renders from its private fonts, group 2 the caption under it, such as the inscription and its era. The rewrite lifts the image size so the stored picture is the large original, and the view scales it down. The small seal style also reads the 說文 gloss the page prints under the results. The fanqie list names the rime books the reading view shows under the script box, one block per book and source, fetched once per character from the 古音小鏡 廣韻·集韻 tables and kept in the workspace database. Each book posts the site's search form with the character in word and the book in t. The site answers with the whole rime table the character sits in, marking the character with the match pattern, and only the marked cells are read: the row's initial, the cell's rime with its rime heading, and the column's division and tone, such as 疑 模[模] 一等平. The site refuses a post within a few seconds of the last and prints the busy text instead, so the interval holds the next post back and a busy answer is asked again later. The Wiktionary row reads the same 廣韻 placements from the English Wiktionary's Middle Chinese data module, fetched with a GET as plain text, one reading per quoted line such as 疑模一開 平五乎, which the line pattern reads apart into initial, rime, division, 開合, tone and the 反切 spelling; a character without a module answers not found and is left alone. Each row names its source, shown as the chip at the right of its lines. A cell of the table holds one group per 小韻 parted by a line break, so the split pattern parts them, the head pattern reads each group's rime, rime heading and 韻鏡 division, the column pattern reads the column's division and tone, the rounded pattern reads the underline the site draws under a 合口 character, and the spelling pattern reads the 反切 printed as the link of each group. The hypothesis key names the file beside this one holding the user's own reconstruction tables, hypothesis.json, kept apart because Classical Chinese will carry a system of its own.",
   "pronunciation": [],
   "audio": []
 }

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Llyn.Core;
@@ -107,7 +107,7 @@ public sealed class TMarkupLink
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry glow = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "glow", "English", string.Empty, string.Empty, [TCardCreate("shine", 1)], []));
+            "glow", "English", string.Empty, string.Empty, [TInterface.TCardCreate("shine", 1)], []));
         long oldId = Assert.Single(
             Assert.IsType<LEntryDraft>(engine.TEngineEntryLoad(glow.LEntryId)).LEntryDraftMeanings).LCardDraftId;
 
@@ -278,7 +278,7 @@ public sealed class TMarkupLink
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         LEntry glow = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
-            "glow", "English", string.Empty, string.Empty, [TCardCreate("shine", 1)], []));
+            "glow", "English", string.Empty, string.Empty, [TInterface.TCardCreate("shine", 1)], []));
 
         string path = TMarkupSave(workspace, TMarkupOwn.Replace("<language>English</language>", string.Empty));
         engine.TEngineMarkupImport(
@@ -332,14 +332,5 @@ public sealed class TMarkupLink
         string path = Path.Combine(workspace.TWorkspaceFolder, "import.llx");
         File.WriteAllText(path, text, new UTF8Encoding(false));
         return path;
-    }
-
-    private static LCardDraft TCardCreate(string definition, int position)
-    {
-        return TInterface.TCardDraftCreate(
-            LStateValue.LStateValueUnspecified,
-            LStateValue.LStateValueUnspecified,
-            TInterface.TStateValueCreate(definition),
-            [], [], [], [], [], position);
     }
 }

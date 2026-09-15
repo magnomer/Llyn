@@ -15,7 +15,7 @@ The realm the workspace was minted under survives the rebuild, so rows made here
 A row the current schema cannot hold, such as a child whose parent is gone, is dropped.
 The launch goes on without it.
 The id counters carry across, so a rebuilt workspace never hands out an id a tombstone remembers.
-The realm row is single, minted once, and stamps every row made here.
+The realm row, the stamp and the id counter on a fresh workspace are covered by `TSchemaRealm`.
 
 ## `public void DatabaseCreate_SituationMediaAbsent_RebuildsWithSituationsIntact()`
 

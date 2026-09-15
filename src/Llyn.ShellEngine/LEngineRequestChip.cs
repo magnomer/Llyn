@@ -18,7 +18,11 @@ public sealed partial class LEngine
                 content,
                 request.LRequestCardId,
                 situations => LEngineListInsert(
-                    situations, found, stored.LSituationId, request.LRequestPosition, static row => row.LSituationDraftId));
+                    situations,
+                    found,
+                    stored.LSituationId,
+                    request.LRequestPosition,
+                    static row => row.LSituationDraftId));
         }
 
         LSituationDraft situation = new(
@@ -49,7 +53,11 @@ public sealed partial class LEngine
             content,
             request.LRequestCardId,
             situations => LEngineListInsert(
-                situations, situation, stored.LSituationId, request.LRequestPosition, static row => row.LSituationDraftId));
+                situations,
+                situation,
+                stored.LSituationId,
+                request.LRequestPosition,
+                static row => row.LSituationDraftId));
     }
 
     private static LEntryDraft LEngineSituationRemove(LEntryDraft content, LRequestSituationRemoval request)
@@ -57,7 +65,8 @@ public sealed partial class LEngine
         return LEngineSituationApply(
             content,
             request.LRequestCardId,
-            situations => LEngineListRemove(situations, request.LRequestSituationId, static row => row.LSituationDraftId));
+            situations => LEngineListRemove(
+                situations, request.LRequestSituationId, static row => row.LSituationDraftId));
     }
 
     private static LEntryDraft LEngineSituationMove(LEntryDraft content, LRequestSituationShift request)
@@ -66,7 +75,10 @@ public sealed partial class LEngine
             content,
             request.LRequestCardId,
             situations => LEngineListMove(
-                situations, request.LRequestSituationId, request.LRequestPosition, static row => row.LSituationDraftId));
+                situations,
+                request.LRequestSituationId,
+                request.LRequestPosition,
+                static row => row.LSituationDraftId));
     }
 
     private static LDraft LEngineSituationChange(LDraft draft, long id, Func<LSituation, LSituation> change)
@@ -130,7 +142,11 @@ public sealed partial class LEngine
                 content,
                 request.LRequestCardId,
                 registers => LEngineListInsert(
-                    registers, found, stored.LRegisterId, request.LRequestPosition, static row => row.LRegisterDraftId));
+                    registers,
+                    found,
+                    stored.LRegisterId,
+                    request.LRequestPosition,
+                    static row => row.LRegisterDraftId));
         }
 
         LRegisterDraft register = new(name, LEngineIdentityCreate());
@@ -227,7 +243,8 @@ public sealed partial class LEngine
         return LEngineTagApply(
             content,
             request.LRequestCardId,
-            tags => LEngineListInsert(tags, tag, stored.LTagId, request.LRequestPosition, static row => row.LTagDraftId));
+            tags => LEngineListInsert(
+                tags, tag, stored.LTagId, request.LRequestPosition, static row => row.LTagDraftId));
     }
 
     private static LEntryDraft LEngineTagRemove(LEntryDraft content, LRequestTagRemoval request)
@@ -243,7 +260,8 @@ public sealed partial class LEngine
         return LEngineTagApply(
             content,
             request.LRequestCardId,
-            tags => LEngineListMove(tags, request.LRequestTagId, request.LRequestPosition, static row => row.LTagDraftId));
+            tags => LEngineListMove(
+                tags, request.LRequestTagId, request.LRequestPosition, static row => row.LTagDraftId));
     }
 
     private static LEntryDraft LEngineTagChange(LEntryDraft content, LRequestTagText request)

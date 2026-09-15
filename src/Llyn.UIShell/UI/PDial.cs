@@ -7,7 +7,7 @@ namespace Llyn.UIShell;
 
 public partial class PSettings
 {
-    private (string PDialChild, Border PDialCard, string[] PDialKeys)[] PDialTableRead()
+    private (string PDialChild, StackPanel PDialPage, string[] PDialKeys)[] PDialTableRead()
     {
         return
         [
@@ -26,18 +26,12 @@ public partial class PSettings
             item.PLedgerItemChosen = string.Equals(item.PLedgerItemChild, child, StringComparison.Ordinal);
         }
 
-        foreach ((string name, Border card, _) in PDialTableRead())
+        foreach ((string name, StackPanel page, _) in PDialTableRead())
         {
-            card.Visibility = string.Equals(name, child, StringComparison.Ordinal)
+            page.Visibility = string.Equals(name, child, StringComparison.Ordinal)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
-    }
-
-    private void PDialFooterApply()
-    {
-        PDialFooter.Text =
-            _pSettingsHost.PLocalizationTextRead("Terms.Product") + " " + PWindow.PHeadquarterVersionRead();
     }
 
     private void PDialFolderHandle(object sender, RoutedEventArgs e)

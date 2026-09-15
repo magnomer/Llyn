@@ -33,7 +33,8 @@ public sealed class TEntrySave
         Assert.Equal("word", entries.TEntryRead(entry.LEntryId)?.LEntryHeadword);
         Assert.Equal("English", entries.TEntryRead(entry.LEntryId)?.LEntryLanguage);
 
-        IReadOnlyList<LMeaning> meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);
+        IReadOnlyList<LMeaning> meanings =
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);
         Assert.Equal(
             ["the first meaning", "the second meaning"],
             meanings.Select(meaning => meaning.LMeaningDefinition));
@@ -44,7 +45,9 @@ public sealed class TEntrySave
         Assert.Equal("in a word", collocation.LCollocationExpression);
         Assert.Equal("briefly", collocation.LCollocationMeaning);
 
-        Assert.Equal("a note", TInterface.TNoteArchiveCreate(workspace.TWorkspaceDatabase).TNoteRead(entry.LEntryId)?.LNoteText);
+        Assert.Equal(
+            "a note",
+            TInterface.TNoteArchiveCreate(workspace.TWorkspaceDatabase).TNoteRead(entry.LEntryId)?.LNoteText);
         Assert.Equal(
             "wɜːd",
             Assert.Single(TInterface.TPronunciationArchiveCreate(workspace.TWorkspaceDatabase)
@@ -74,15 +77,20 @@ public sealed class TEntrySave
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(
-                string.Empty, string.Empty, "a meaning", [TInterface.TSentenceDraftCreate("he said a word")], [TInterface.TSituationDraftCreate("conversation")], [],
-                ["spoken"], [], 1)],
+                string.Empty, string.Empty, "a meaning",
+                [TInterface.TSentenceDraftCreate("he said a word")],
+                [TInterface.TSituationDraftCreate("conversation")],
+                [], ["spoken"], [], 1)],
             [TInterface.TCardDraftCreate(
-                string.Empty, "in a word", "briefly", [TInterface.TSentenceDraftCreate("in a word, no")], [TInterface.TSituationDraftCreate("summary")], [],
-                ["written"], [], 1)]);
+                string.Empty, "in a word", "briefly",
+                [TInterface.TSentenceDraftCreate("in a word, no")],
+                [TInterface.TSituationDraftCreate("summary")],
+                [], ["written"], [], 1)]);
 
         LEntry entry = engine.TEngineEntrySave(draft);
 
-        LMeaning meaning = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
+        LMeaning meaning = Assert.Single(
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId));
         LCollocation collocation = Assert.Single(
             TInterface.TCollocationArchiveCreate(workspace.TWorkspaceDatabase).TCollocationRead(entry.LEntryId));
 
@@ -110,7 +118,8 @@ public sealed class TEntrySave
             Assert.Single(tags.TTagCollocationRead(collocation.LCollocationId)).LTagText);
 
         LEntry second = engine.TEngineEntrySave(draft);
-        LMeaning other = Assert.Single(TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(second.LEntryId));
+        LMeaning other = Assert.Single(
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(second.LEntryId));
 
         Assert.NotEqual(
             Assert.Single(examples.TSentenceMeaningRead(meaning.LMeaningId)).LSentenceExample.LExampleId,
@@ -172,7 +181,8 @@ public sealed class TEntrySave
                 TInterface.TCardDraftCreate(string.Empty, "word for word", "exactly", [], [], [], [], [], 3),
             ]));
 
-        IReadOnlyList<LMeaning> meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);
+        IReadOnlyList<LMeaning> meanings =
+            TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase).TMeaningRead(entry.LEntryId);
         Assert.Equal(
             ["the first meaning", "the second meaning"],
             meanings.Select(meaning => meaning.LMeaningDefinition));

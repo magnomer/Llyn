@@ -62,7 +62,8 @@ public sealed partial class LEngine
             {
                 if (slot.LParadigmSlotState == LState.LStateSpecified
                     && slot.LParadigmSlotInflection is LInflection inflection
-                    && LEngineParadigmMatch(slot.LParadigmSlotParadigm, entry.LEntryHeadword, inflection.LInflectionText))
+                    && LEngineParadigmMatch(
+                        slot.LParadigmSlotParadigm, entry.LEntryHeadword, inflection.LInflectionText))
                 {
                     continue;
                 }
@@ -134,7 +135,8 @@ public sealed partial class LEngine
         {
             foreach (long code in paradigm.LParadigmMorphology)
             {
-                LMorphology? morphology = LEngineMorphologyResolve(pack, morphologies, value.LSpeechValueLanguage, code);
+                LMorphology? morphology = LEngineMorphologyResolve(
+                    pack, morphologies, value.LSpeechValueLanguage, code);
                 if (morphology is null || !taken.Add(morphology.LMorphologyId))
                 {
                     continue;
@@ -175,7 +177,8 @@ public sealed partial class LEngine
             return null;
         }
 
-        LFeature? feature = pack.LSpeechPackFeatures.FirstOrDefault(row => row.LFeatureCode == declared.LMorphologyFeatureId);
+        LFeature? feature = pack.LSpeechPackFeatures.FirstOrDefault(
+            row => row.LFeatureCode == declared.LMorphologyFeatureId);
         if (feature is null)
         {
             return null;

@@ -17,6 +17,7 @@ public partial class PCorpus : UserControl
     public PCorpus()
     {
         InitializeComponent();
+        Resources.MergedDictionaries.Add(new PCorpusTranscript(this));
     }
 
     internal void PCorpusAttach(PWindow host, LEngine engine)

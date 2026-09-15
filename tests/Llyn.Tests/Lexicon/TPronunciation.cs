@@ -180,7 +180,10 @@ public sealed class TPronunciation
         answered = engine.TEngineRequestApply(TInterface.TRequestIpaCreate(started.LDraftId, "wɜːɖ"));
 
         Assert.Equal(
-            [(primary.LPronunciationDraftId, "wɜːɖ"), (answered.LDraftContent.LEntryDraftPronunciations[1].LPronunciationDraftId, "wɝd")],
+            [
+                (primary.LPronunciationDraftId, "wɜːɖ"),
+                (answered.LDraftContent.LEntryDraftPronunciations[1].LPronunciationDraftId, "wɝd"),
+            ],
             answered.LDraftContent.LEntryDraftPronunciations
                 .Select(row => (row.LPronunciationDraftId, row.LPronunciationDraftIpa)));
     }

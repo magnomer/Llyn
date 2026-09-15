@@ -7,6 +7,7 @@ The search field and the sorting dropdown refill the register catalog.
 A chosen Register refills the Entries beside it, and a chosen Entry is loaded back from the workspace.
 It is rendered read-only in the reader, which the mode toggle swaps for the editor.
 This is the same read half of the entry round trip the library panel offers, reached through a Register.
+The entry list itself lives in [PTenorCohort.cs](PTenorCohort.comment.md).
 
 ## Inline notes
 
@@ -44,12 +45,6 @@ Asks for the wording, makes the register, and browses by it.
 A dismissed dialog changes nothing.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 
-### `private void PCohortEntryCreate()`
-
-Starts a fresh entry in the editor, marked with the chosen register on its first sense.
-The clear leaves the register choice standing, so the list still shows that register's entries beside the fresh one.
-An entry started with no register chosen comes up blank, since every entry is listed then.
-
 ### `private void PGamutFind(string query)`
 
 The engine returns the Registers answering the query, already counted and in the chosen ordering.
@@ -64,22 +59,10 @@ That is how a register chip read on a card reaches this panel.
 The query is emptied first.
 Otherwise a Register left out by the standing query would be chosen and dropped at once.
 
-### `private void PCohortFind()`
-
-The Entries are never refilled on their own.
-They are refilled whenever the catalog is, because the chosen Register may have just changed or vanished.
-A Register carrying no id stands for the whole workspace, which is what the engine reads an empty id as.
-Rows sharing a headword are numbered afterwards, so the reader can tell them apart.
-
 ### `_pGamutChoice = item.PGamutItemChosen ? null : item.PGamutItemId;`
 
 Clicking the chosen Register lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
-
-### `private void PCohortEntryUpdate(long id)`
-
-A store is answered by re-reading the catalog rather than the entry list alone.
-Storing may have marked a card with a Register nothing carried, or taken away the last card that carried one.
 
 ### `internal void PDegreeRestore(LCatalogOrder order)`
 

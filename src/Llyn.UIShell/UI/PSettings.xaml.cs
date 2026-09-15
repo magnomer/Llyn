@@ -38,7 +38,6 @@ public partial class PSettings : UserControl
         PFrequency.IsChecked = settings.LSettingsFrequency;
         PMorphology.IsChecked = settings.LSettingsMorphology;
         PLayoutLinked.IsChecked = settings.LSettingsLinked;
-        PDialFooterApply();
 
         _pSettingsReady = true;
     }

@@ -189,7 +189,11 @@ public sealed class TRequest
         using LEngine engine = workspace.TWorkspaceEngineStart();
         LDraft started = engine.TEngineExampleStart("Example", null);
         LExample sent = TInterface.TExampleCreate(
-            0, "en", TInterface.TStateValueCreate("a line"), LStateValue.LStateValueUnspecified, LStateAnchor.LStateAnchorUnspecified);
+            0,
+            "en",
+            TInterface.TStateValueCreate("a line"),
+            LStateValue.LStateValueUnspecified,
+            LStateAnchor.LStateAnchorUnspecified);
         LDraft changed = engine.TEngineRequestApply(TInterface.TExampleBodyCreate(started.LDraftId, sent));
         TRequestObserver observer = new();
         engine.TEngineObserverAttach(observer);

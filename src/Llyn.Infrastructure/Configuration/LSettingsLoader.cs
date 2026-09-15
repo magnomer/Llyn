@@ -78,9 +78,10 @@ public static class LSettingsLoader
                 !document.RootElement.TryGetProperty(LSettingsLoaderMorphology, out JsonElement inflect) ||
                 inflect.ValueKind != JsonValueKind.False;
 
-            IReadOnlyList<LLayout>? layout = document.RootElement.TryGetProperty(LSettingsLoaderLayout, out JsonElement panels)
-                ? LLayoutLoader.LLayoutLoaderRead(panels)
-                : null;
+            IReadOnlyList<LLayout>? layout =
+                document.RootElement.TryGetProperty(LSettingsLoaderLayout, out JsonElement panels)
+                    ? LLayoutLoader.LLayoutLoaderRead(panels)
+                    : null;
 
             bool linked =
                 !document.RootElement.TryGetProperty(LSettingsLoaderLinked, out JsonElement share) ||

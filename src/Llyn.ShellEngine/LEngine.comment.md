@@ -25,6 +25,7 @@ The five entry points that return a `Task` hold the gate briefly.
 They take only what they need from the engine.
 They then run the fetch outside the gate.
 A lock held across an await would stall the shell for a whole network call.
+The lookup and recording entry points, with the source caches they read, live in `LEngineRecording.cs`.
 
 This class is also the composition root.
 It owns the shared `HttpClient`.
@@ -41,6 +42,7 @@ The morphology sources of each language are cached in a fourth set, which `LEngi
 Its pending fetches, its missed slots per Entry, and the Entries it lost sit beside them.
 They are cleared with the frequency ones.
 The script fetches, pending and missed per character, sit in `LEngineScript.cs` and are cleared with them too.
+The fanqie fetches sit likewise in `LEngineFanqie.cs`, one at a time with an interval between posts.
 It holds no source- or language-specific facts of its own: everything language-specific comes from `languages//source.json`.
 
 ## `public LEngine()`
@@ -128,71 +130,6 @@ The move is then announced, so every surface holding a stored record learns that
 One announcement replaces the list of panels the settings panel used to reset by name.
 A panel added later is current without that list being edited.
 
-## `public Task LEnginePronunciationFind(string session, string word, string language, LReceiver receiver, CancellationToken cancellation)`
-
-Starts a pronunciation lookup for `word` in `language` and streams results to `receiver`.
-The task completes when every source finishes.
-`session` is the draft the asking editor holds, and it names the trove the answer is kept in.
-A lookup already answered under that draft is replayed instead of searched again.
-So reopening the menu on an unchanged headword costs no network at all.
-When the respelling switch is on and the pack declares groups, the receiver is wrapped in `LReceiverRespelling`.
-Both the fresh search and the replay stream through that wrapper, so the switch shapes what the phonetician sees.
-The trove is never wrapped and keeps cleaned but un-respelled text.
-So flipping the switch changes the next replay without any refetch, and nothing stored is touched.
-The pack is read under the gate whatever the switch says, because the fresh path needs its cleanup groups.
-
-## `public Task LEngineRecordingFind(long session, string word, string language, long target, LListener listener, CancellationToken cancellation)`
-
-Starts an audio-recording discovery for `word` in `language` and streams results to `listener`.
-The task completes when every source finishes.
-`target` is the pronunciation row the menu was opened from, and `0` names the primary row.
-The row's variety is read from the draft here, so the shell never decides which case applies.
-An empty variety returns every variety, tagged rows under their tag and untagged rows fanned out per declared variety.
-A named variety returns that variety only, an untagged row collapsing to one under it.
-It reuses what the same draft already found, narrowed to the row's variety, so no row's menu fetches twice.
-The pack is read under the gate, because the fresh path needs its declared varieties.
-
-## `private string LEngineVarietyResolve(long session, long target)`
-
-The variety of the pronunciation row `target` in draft `session`, trimmed, or empty when there is none.
-`target` of `0` reads the primary row, the first in the draft's list.
-A draftless session, a missing draft, or a row no longer present all read as no variety.
-So the menu still opens and shows every variety rather than failing.
-
-## `private async Task LEngineCandidateScan(string session, string word, string language, IReadOnlyList<LSource> sources, LLanguage pack, LReceiver receiver, CancellationToken cancellation)`
-
-Runs a real lookup and keeps what it returned in the trove under `session`.
-The lookup is handed the pack's declared varieties, so untagged readings fan out per variety.
-It is handed the pack's cleanup groups too, so what reaches the trove is already cleaned.
-The receiver still sees each candidate stream in, because the search is unchanged.
-Nothing is kept when the search is cancelled, since the task then ends by throwing.
-
-## `private async Task LEngineRecordingScan(long session, string word, string language, string variety, IReadOnlyList<LSource> sources, LLanguage pack, LListener listener, CancellationToken cancellation)`
-
-The recording counterpart of `LEngineCandidateScan`.
-The harvest gets the pack's declared varieties and the row's variety, so it fans out and narrows its stream.
-What it returns holds every variety, and that whole set is kept in the trove for any row to narrow.
-
-## `private static Task LEngineCandidatePublish(IReadOnlyList<LCandidate> held, LReceiver receiver)`
-
-Hands a kept answer to the receiver in one pass, then reports the search finished.
-The receiver cannot tell a replay from a search, so the menu needs no second path.
-The task is already complete, because nothing was awaited.
-
-## `private static Task LEngineRecordingPublish(IReadOnlyList<LRecording> held, LListener listener)`
-
-The recording counterpart of `LEngineCandidatePublish`.
-The caller narrows the kept set to the opening row's variety first, as the harvest narrows a live stream.
-
-## `public Task<string> LEngineRecordingSave(LRecording recording, string word, string language, CancellationToken cancellation)`
-
-Downloads the chosen `recording` into the workspace and returns the saved path.
-The recording carries its own variety, and the workspace names the file by it.
-
-## `public Task<string> LEngineRecordingPrepare(LRecording recording, CancellationToken cancellation)`
-
-Downloads the `recording` to a temporary file for playback and returns its path.
-
 ## Inline notes
 
 ### `_lEngineDatabase = new LDatabase(_lEngineWorkspace);`
@@ -210,6 +147,12 @@ So binding to a workspace is also when they are written into it.
 An entry can carry a part of speech from the first save.
 The shell never seeds anything.
 
+### `LEngineDiweiApply();`
+
+The 音韻地位 categories are derived from stored placements and the hypothesis on disk.
+So binding to a workspace is also when they are written again.
+An edited hypothesis file shows in the tone classes at the next start.
+
 ### `private const long LEngineClientCeiling = 8L * 1024 * 1024;`
 
 The most bytes one response may hold before the client refuses it.
@@ -223,11 +166,6 @@ Cambridge (and some Wiktionary edge caches) reject requests without a browser-li
 ### `_lEngineDatabase = new LDatabase(_lEngineWorkspace);`
 
 The database follows the workspace: initialize one in the new folder.
-
-### `private string LEngineRecordingFormat(string path)`
-
-The workspace-relative form of a downloaded recording's path, which is how it is stored.
-A path outside the workspace has no relative form and is stored as it stands.
 
 ### `private static bool LEngineOwnerCheck(LOwner owner)`
 

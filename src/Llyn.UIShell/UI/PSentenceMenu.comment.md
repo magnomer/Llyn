@@ -7,6 +7,7 @@ The rows themselves hold no engine.
 So every change in a row arrives here and leaves as a request naming the card and the row.
 The card that owns the row is found and the engine is asked.
 One list of Sources serves every row on the form, Example and Situation alike.
+The field a row cites through is answered in [PSentenceCitation.cs](PSentenceCitation.comment.md).
 The linking gesture on a row's sentence is answered here too, four commands sent as Mention requests.
 The frame the rows read a sentence under is settled here too.
 That is the order its two fields take and what each has been saved holding.
@@ -83,26 +84,7 @@ Unlink applies from a chip always, and from the field when the selection lies in
 Redraws every row's chip line after the card was redrawn, since the rows hold no engine.
 A headword read that fails is reported once and the rest of the card is left as drawn.
 
-## `internal void PCitationKeyHandle(object sender, KeyEventArgs e)`
-
-Drives the citation field from the keyboard.
-While the dropdown stands open the arrows walk it and enter takes the selected row.
-Enter with nothing selected commits the typed line, and escape puts the cited byline back.
-
-## `internal void PCitationLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)`
-
-Leaving the field discards whatever was typed and not taken, and shuts the dropdown it opened.
-A citation is either a stored Source or nothing, so a half-typed line is never kept.
-
 ## Inline notes
-
-### `private void PSentenceCitationCommit(PSentence row)`
-
-An empty line stops the row citing anything.
-A line equal to the cited byline changes nothing.
-A line equal to some offered byline cites that Source, so typing a byline out in full never doubles it.
-Any other line becomes a new Source titled with that line, which the row then cites.
-The new Source joins the offered list at once rather than waiting for the engine to report it.
 
 ### `private void PSentenceChangeHandle(PCard card, PSentence row, string field)`
 

@@ -40,26 +40,6 @@
                 TextChanged="PWinnowHandle" />
         </Border>
 
-        <local:PRail Grid.Row="0" Grid.Column="1" Margin="0,0,0,18">
-            <Border Style="{StaticResource Theme.Command.Group}">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        x:Name="PDialFolder"
-                        Click="PDialFolderHandle"
-                        Content="{DynamicResource Settings.Folder}"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon folder, 24}" />
-                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
-                    <Button
-                        x:Name="PDialWidth"
-                        Click="PDialWidthHandle"
-                        Content="{DynamicResource Settings.Reset}"
-                        Style="{StaticResource Theme.Command.Segment}"
-                        Tag="{local:PIcon sort, 24}" />
-                </StackPanel>
-            </Border>
-        </local:PRail>
-
         <Grid Grid.Row="1" Grid.Column="0" Style="{StaticResource Theme.Catalog.Frame}">
             <ScrollViewer Style="{StaticResource Theme.Catalog.Scroll}">
                 <ItemsControl x:Name="PLedger">
@@ -87,156 +67,187 @@
         </Grid>
 
         <Border Grid.Row="1" Grid.Column="1" Margin="0,14,0,0" Style="{StaticResource Theme.Panel.Surface}">
-            <ScrollViewer Margin="30,18,0,0" Padding="0,0,30,30" HorizontalScrollBarVisibility="Disabled" Style="{StaticResource Theme.Scroll.Gutter}" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <Grid>
-                        <Border x:Name="PDialWorkspace" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Card}">
-                            <StackPanel>
-                                <StackPanel Margin="20,16">
-                                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="{DynamicResource Settings.Workspace}" />
-                                    <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Settings.WorkspaceHelper}" TextWrapping="Wrap" />
-                                </StackPanel>
-                                <Rectangle Height="1" Fill="{StaticResource Theme.Line}" />
-                                <Grid Margin="20,14,20,16">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox
-                                        x:Name="PWorkspacePath"
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Height="44"
-                                        VerticalAlignment="Center"
-                                        KeyDown="PWorkspacePathHandle"
-                                        LostKeyboardFocus="PWorkspaceFocusHandle"
-                                        Style="{StaticResource Theme.Input.Field}" />
-                                    <Button
-                                        x:Name="PWorkspaceDialog"
-                                        Grid.Row="0"
-                                        Grid.Column="1"
-                                        Margin="8,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Click="PWorkspaceDialogHandle"
-                                        Style="{StaticResource Theme.Input.Action}"
-                                        ToolTip="{DynamicResource Workspace.Browse}">
-                                        <Path Width="24" Height="24" Data="{local:PIcon folder, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
-                                    </Button>
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Workspace.Helper}" TextWrapping="Wrap" />
-                                </Grid>
-                            </StackPanel>
-                        </Border>
+            <ScrollViewer
+                Margin="30,18,0,0"
+                Padding="0,0,30,30"
+                Focusable="False"
+                HorizontalScrollBarVisibility="Disabled"
+                Style="{StaticResource Theme.Scroll.Gutter}"
+                VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <StackPanel x:Name="PDialWorkspace">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Workspace}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.WorkspaceHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                x:Name="PWorkspacePath"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Height="44"
+                                VerticalAlignment="Center"
+                                KeyDown="PWorkspacePathHandle"
+                                LostKeyboardFocus="PWorkspaceFocusHandle"
+                                Style="{StaticResource Theme.Input.Field}" />
+                            <Button
+                                x:Name="PWorkspaceDialog"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="PWorkspaceDialogHandle"
+                                Style="{StaticResource Theme.Input.Action}"
+                                ToolTip="{DynamicResource Workspace.Browse}">
+                                <Path Width="24" Height="24" Data="{local:PIcon folder, 24}" Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Stretch="None" />
+                            </Button>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8,0,0" Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Workspace.Helper}" />
+                        </Grid>
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Button
+                            x:Name="PDialFolder"
+                            Margin="-13,16,0,0"
+                            HorizontalAlignment="Left"
+                            Click="PDialFolderHandle"
+                            Content="{DynamicResource Settings.Folder}"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon folder, 24}" />
+                    </StackPanel>
 
-                        <Border x:Name="PDialLanguage" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
-                            <StackPanel>
-                                <StackPanel Margin="20,16">
-                                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="{DynamicResource Settings.Language}" />
-                                    <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Settings.LanguageHelper}" TextWrapping="Wrap" />
-                                </StackPanel>
-                                <Rectangle Height="1" Fill="{StaticResource Theme.Line}" />
-                                <Grid Margin="20,14,20,16">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Settings.Language}" />
-                                    <ComboBox
-                                        x:Name="PLocalization"
-                                        Grid.Column="1"
-                                        Width="200"
-                                        Margin="16,0,0,0"
-                                        VerticalAlignment="Center"
-                                        SelectedValuePath="Tag"
-                                        SelectionChanged="PLocalizationHandle"
-                                        Style="{StaticResource Theme.Input.Choice}">
-                                        <ComboBoxItem Content="English" Tag="en" />
-                                        <ComboBoxItem Content="한국어" Tag="ko" />
-                                    </ComboBox>
-                                </Grid>
-                            </StackPanel>
-                        </Border>
+                    <StackPanel x:Name="PDialLanguage" Visibility="Collapsed">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Language}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.LanguageHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Settings.Language}" />
+                            <ComboBox
+                                x:Name="PLocalization"
+                                Grid.Column="1"
+                                Width="200"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                SelectedValuePath="Tag"
+                                SelectionChanged="PLocalizationHandle"
+                                Style="{StaticResource Theme.Input.Choice}">
+                                <ComboBoxItem Content="English" Tag="en" />
+                                <ComboBoxItem Content="한국어" Tag="ko" />
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
 
-                        <Border x:Name="PDialTranscription" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
-                            <StackPanel>
-                                <StackPanel Margin="20,16">
-                                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="{DynamicResource Settings.Transcription}" />
-                                    <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Settings.TranscriptionHelper}" TextWrapping="Wrap" />
-                                </StackPanel>
-                                <Rectangle Height="1" Fill="{StaticResource Theme.Line}" />
-                                <Grid Margin="20,14,20,16">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Respelling.Switch}" />
-                                        <TextBlock Margin="0,3,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Respelling.Helper}" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                    <ToggleButton x:Name="PRespelling" Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Click="PRespellingHandle" Style="{StaticResource Theme.Choice.Switch}" />
-                                </Grid>
+                    <StackPanel x:Name="PDialTranscription" Visibility="Collapsed">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Transcription}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.TranscriptionHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Respelling.Switch}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Respelling.Helper}" />
                             </StackPanel>
-                        </Border>
+                            <ToggleButton
+                                x:Name="PRespelling"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="PRespellingHandle"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+                    </StackPanel>
 
-                        <Border x:Name="PDialWeb" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
-                            <StackPanel>
-                                <StackPanel Margin="20,16">
-                                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="{DynamicResource Settings.Web}" />
-                                    <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Settings.WebHelper}" TextWrapping="Wrap" />
-                                </StackPanel>
-                                <Rectangle Height="1" Fill="{StaticResource Theme.Line}" />
-                                <Grid Margin="20,14,20,16">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Frequency.Switch}" />
-                                        <TextBlock Margin="0,3,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Frequency.Helper}" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                    <ToggleButton x:Name="PFrequency" Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Click="PFrequencyHandle" Style="{StaticResource Theme.Choice.Switch}" />
-                                </Grid>
-                                <Rectangle Height="1" Fill="{StaticResource Theme.Line}" />
-                                <Grid Margin="20,14,20,16">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Morphology.Switch}" />
-                                        <TextBlock Margin="0,3,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Morphology.Helper}" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                    <ToggleButton x:Name="PMorphology" Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Click="PMorphologyHandle" Style="{StaticResource Theme.Choice.Switch}" />
-                                </Grid>
+                    <StackPanel x:Name="PDialWeb" Visibility="Collapsed">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Web}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.WebHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Frequency.Switch}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Frequency.Helper}" />
                             </StackPanel>
-                        </Border>
+                            <ToggleButton
+                                x:Name="PFrequency"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="PFrequencyHandle"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Morphology.Switch}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Morphology.Helper}" />
+                            </StackPanel>
+                            <ToggleButton
+                                x:Name="PMorphology"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="PMorphologyHandle"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+                    </StackPanel>
 
-                        <Border x:Name="PDialLayout" VerticalAlignment="Top" Style="{StaticResource Theme.Input.Card}" Visibility="Collapsed">
-                            <StackPanel>
-                                <StackPanel Margin="20,16">
-                                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="{DynamicResource Settings.Layout}" />
-                                    <TextBlock Margin="0,4,0,0" FontSize="13" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Settings.LayoutHelper}" TextWrapping="Wrap" />
-                                </StackPanel>
-                                <Rectangle Height="1" Fill="{StaticResource Theme.Line}" />
-                                <Grid Margin="20,14,20,16">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Layout.Linked}" />
-                                        <TextBlock Margin="0,3,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" Text="{DynamicResource Layout.LinkedHelper}" TextWrapping="Wrap" />
-                                    </StackPanel>
-                                    <ToggleButton x:Name="PLayoutLinked" Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Click="PLayoutLinkedHandle" Style="{StaticResource Theme.Choice.Switch}" />
-                                </Grid>
+                    <StackPanel x:Name="PDialLayout" Visibility="Collapsed">
+                        <TextBlock Style="{StaticResource Theme.Page.Title}" Text="{DynamicResource Settings.Layout}" />
+                        <TextBlock MaxWidth="560" HorizontalAlignment="Left" Style="{StaticResource Theme.Page.Helper}" Text="{DynamicResource Settings.LayoutHelper}" />
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Grid Margin="0,22,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" MaxWidth="560" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource Theme.Input.Label}" Text="{DynamicResource Layout.Linked}" />
+                                <TextBlock Style="{StaticResource Theme.Page.Note}" Text="{DynamicResource Layout.LinkedHelper}" />
                             </StackPanel>
-                        </Border>
-                    </Grid>
-                    <TextBlock x:Name="PDialFooter" Margin="0,24,0,0" FontSize="12" Foreground="{StaticResource Theme.Muted}" />
-                </StackPanel>
+                            <ToggleButton
+                                x:Name="PLayoutLinked"
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Click="PLayoutLinkedHandle"
+                                Style="{StaticResource Theme.Choice.Switch}" />
+                        </Grid>
+                        <Rectangle Style="{StaticResource Theme.Page.Rule}" />
+                        <Button
+                            x:Name="PDialWidth"
+                            Margin="-13,16,0,0"
+                            HorizontalAlignment="Left"
+                            Click="PDialWidthHandle"
+                            Content="{DynamicResource Settings.Reset}"
+                            Style="{StaticResource Theme.Command.Segment}"
+                            Tag="{local:PIcon sort, 24}" />
+                    </StackPanel>
+                </Grid>
             </ScrollViewer>
         </Border>
     </Grid>

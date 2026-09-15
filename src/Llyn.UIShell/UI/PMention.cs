@@ -36,11 +36,17 @@ public sealed class PMention : TextBlock
 
     private IReadOnlyList<LMentionPiece> _pMentionPiece = [];
 
+    private Point? _pMentionPress;
+
     public PMention()
     {
         SetResourceReference(FontFamilyProperty, "Theme.Card.ExampleFamily");
         SetResourceReference(FontSizeProperty, "Theme.Card.ExampleSize");
         TextWrapping = TextWrapping.Wrap;
+
+        AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(PMentionPressHandle), true);
+        AddHandler(MouseLeftButtonUpEvent, new MouseButtonEventHandler(PMentionReleaseHandle), true);
+        AddHandler(QueryCursorEvent, new QueryCursorEventHandler(PMentionCursorHandle), true);
     }
 
     public event EventHandler<PMentionArgument> PMentionClick
@@ -67,11 +73,21 @@ public sealed class PMention : TextBlock
         set => SetValue(PMentionLanguageProperty, value);
     }
 
-    protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+    private void PMentionPressHandle(object sender, MouseButtonEventArgs e)
     {
-        base.OnMouseLeftButtonUp(e);
+        _pMentionPress = e.GetPosition(this);
+    }
 
-        if (PMentionOffsetRead(e.GetPosition(this)) is not int offset)
+    private void PMentionReleaseHandle(object sender, MouseButtonEventArgs e)
+    {
+        Point? press = _pMentionPress;
+        _pMentionPress = null;
+
+        Point release = e.GetPosition(this);
+        if (press is null
+            || Math.Abs(release.X - press.Value.X) > SystemParameters.MinimumHorizontalDragDistance
+            || Math.Abs(release.Y - press.Value.Y) > SystemParameters.MinimumVerticalDragDistance
+            || PMentionOffsetRead(release) is not int offset)
         {
             return;
         }
@@ -80,15 +96,22 @@ public sealed class PMention : TextBlock
         RaiseEvent(new PMentionArgument(PMentionClickEvent, this, offset, PMentionPieceFind(offset)));
     }
 
-    protected override void OnMouseMove(MouseEventArgs e)
+    private void PMentionCursorHandle(object sender, QueryCursorEventArgs e)
     {
-        base.OnMouseMove(e);
+        if (IsMouseCaptured)
+        {
+            return;
+        }
 
         LMentionPiece? piece = PMentionOffsetRead(e.GetPosition(this)) is int offset
             ? PMentionPieceFind(offset)
             : null;
 
-        Cursor = piece?.LMentionPieceStored is { LMentionEntryId: not 0 } ? Cursors.Hand : Cursors.Arrow;
+        if (piece?.LMentionPieceStored is { LMentionEntryId: not 0 })
+        {
+            e.Cursor = Cursors.Hand;
+            e.Handled = true;
+        }
     }
 
     internal Rect PMentionPieceRead(int offset)

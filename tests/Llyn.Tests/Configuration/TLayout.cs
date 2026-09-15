@@ -159,7 +159,10 @@ public sealed class TLayout
 
         LLayout[] layout =
         [
-            TInterface.TLayoutCreate("corpus", order: LCatalogOrder.LCatalogOrderSource, filter: TInterface.TCatalogFilterCreate("Korean", "French"))
+            TInterface.TLayoutCreate(
+                "corpus",
+                order: LCatalogOrder.LCatalogOrderSource,
+                filter: TInterface.TCatalogFilterCreate("Korean", "French"))
         ];
 
         TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", layout: layout));

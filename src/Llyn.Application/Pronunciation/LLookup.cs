@@ -43,7 +43,15 @@ public sealed class LLookup : LSeeker
         for (int order = 0; order < _lLookupSources.Count; order++)
         {
             pending.Add(LLookupSourceRun(
-                _lLookupSources[order], order, word, _lLookupVarieties, _lLookupCleanups, _lLookupLiteral, receiver, found, cancellation));
+                _lLookupSources[order],
+                order,
+                word,
+                _lLookupVarieties,
+                _lLookupCleanups,
+                _lLookupLiteral,
+                receiver,
+                found,
+                cancellation));
         }
 
         try

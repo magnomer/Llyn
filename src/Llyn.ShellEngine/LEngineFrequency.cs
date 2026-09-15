@@ -241,7 +241,8 @@ public sealed partial class LEngine
 
             lock (_lEngineGate)
             {
-                if (_lEngineFrequencyPending.TryGetValue(entry.LEntryId, out CancellationTokenSource? held) && held == fetch)
+                if (_lEngineFrequencyPending.TryGetValue(entry.LEntryId, out CancellationTokenSource? held)
+                    && held == fetch)
                 {
                     _lEngineFrequencyPending.Remove(entry.LEntryId);
                     fetch.Dispose();

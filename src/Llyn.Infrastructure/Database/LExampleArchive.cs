@@ -153,7 +153,8 @@ public sealed class LExampleArchive
         using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
         {
             command.CommandText =
-                "UPDATE example SET reference_state = $referenceState, reference_ref = $reference WHERE example_id = $id;";
+                "UPDATE example SET reference_state = $referenceState, reference_ref = $reference "
+                + "WHERE example_id = $id;";
             LStateColumn.LStateColumnApply(command, "reference", source);
             command.Parameters.AddWithValue("$id", exampleId);
             if (command.ExecuteNonQuery() == 0)

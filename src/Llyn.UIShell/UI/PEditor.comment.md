@@ -47,6 +47,15 @@ So both reach the editor that owns the draft and the menus.
 Pronunciation and volume tray carry the theme's shared styles, so switching mode moves neither of them.
 The rows start at the headword's own margin, because an indent here read as a different position.
 
+## `<local:PScript x:Name="PEditorScript" Margin="0,14,0,0" PScriptFolded="True" />`
+
+The character styles of the entry, the same box the reading view shows, folded under its head here.
+The editor never writes them, so they sit closed as reference until the switch opens them.
+
+## `<local:PFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" PFanqieFolded="True" />`
+
+The rime-book placements of the entry, the same box the reading view shows, folded under its head here.
+
 ## `<Border x:Name="PPronunciation" Style="{StaticResource Theme.Pronunciation.Surface}">`
 
 The primary pronunciation: its variety as a flag or a label, then the bracketed field, then its buttons.

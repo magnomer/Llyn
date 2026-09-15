@@ -244,7 +244,10 @@ public static class LMarkdown
         }
 
         blocks.Add(new LMarkdownBlock(
-            LMarkdownKind.LMarkdownKindParagraph, 0, LMarkdownInline.LMarkdownInlineParse(body.ToString()), string.Empty));
+            LMarkdownKind.LMarkdownKindParagraph,
+            0,
+            LMarkdownInline.LMarkdownInlineParse(body.ToString()),
+            string.Empty));
         return next;
     }
 

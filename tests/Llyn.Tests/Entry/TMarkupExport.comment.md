@@ -17,7 +17,3 @@ The one text assertion is that no `id` appears anywhere.
 ### `public async Task MarkupExport_PortraitMarkupFormat_WritesSameText()`
 
 The label is passed but never read, since markup carries states rather than display words.
-
-### `private static LCardDraft TCardCreate(string definition, int position)`
-
-A card with only a definition, enough for a sense that just needs to exist.

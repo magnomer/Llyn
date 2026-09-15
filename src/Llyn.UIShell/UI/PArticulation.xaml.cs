@@ -145,7 +145,11 @@ public partial class PArticulation : UserControl
 
     private void PArticulationCellPlace(Grid table, string characters, int column, int row)
     {
-        StackPanel cell = new() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Center };
+        StackPanel cell = new()
+        {
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Center,
+        };
 
         foreach (string character in characters.Split(' ', System.StringSplitOptions.RemoveEmptyEntries))
         {

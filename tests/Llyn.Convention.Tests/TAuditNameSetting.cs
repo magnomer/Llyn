@@ -69,6 +69,7 @@ internal static class TAuditNameSetting
         "TAuditLine.cs",
         "TAuditLineSetting.cs",
         "TAuditName.cs",
+        "TAuditNameFilter.cs",
         "TAuditNameRegistry.cs",
         "TAuditNameSetting.cs",
         "TAuditNameWalker.cs",

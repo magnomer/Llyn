@@ -89,7 +89,9 @@ public sealed class TIdentity
             LCardDraftVideo = [TInterface.TVideoDraftCreate("media/kindling.mp4", "00:12-00:19")],
         };
 
-        LEntryDraft stored = engine.TRequestContentApply(started.LDraftId, content with { LEntryDraftMeanings = [card] }).LDraftContent;
+        LEntryDraft stored = engine
+            .TRequestContentApply(started.LDraftId, content with { LEntryDraftMeanings = [card] })
+            .LDraftContent;
 
         List<long> minted = [];
         TIdentityNegativeRead(stored, minted);
