@@ -161,7 +161,8 @@ The pattern reads the 四库全书 row's raw count, and that count is the stored
 The site prints simplified names in the table, so the row label is written simplified in the pattern.
 The page writes every CJK character as a numeric entity, so the attempt is decoded before the patterns run.
 The once total is the corpus size of about 698 million characters, derived from the site's own per-ten-thousand coverage.
-The shared ladder then reads 69,810 and over as core, 6,981 as everyday, 698 as advanced.
+The ladder rungs are fixed in the engine at one word in 10,000, 100,000 and 1,000,000.
+Against that total, a count of 69,810 and over is core, 6,981 and over everyday, 698 and over advanced.
 The page title names the character looked up, so the confirm guard fails for an unknown one.
 A character the corpora never use has no table, so the attempt yields nothing.
 A word of several characters has no table either, and Classical Chinese entries are single characters.

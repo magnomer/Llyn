@@ -73,7 +73,10 @@ Leipzig Corpora Collection, French news corpus of 2011 with one million sentence
 The answer carries the word's frequency class.
 It is 0 for the most frequent word and one higher each time the frequency halves.
 The once rule doubles per class from a factor of 22, the interval of the most frequent French word.
-The shared ladder then reads class 8 and under as core, 12 as everyday, 15 as advanced.
+The ladder rungs are fixed in the engine at one word in 10,000, 100,000 and 1,000,000.
+With factor 22, class 8 is one word in 5,632, so it and every lower class are core.
+Class 12 is one in 90,112, so classes 9 to 12 are everyday.
+Class 15 is one in 720,896, so classes 13 to 15 are advanced and 16 and up rare.
 An unknown spelling answers 404, so the attempt yields nothing.
 
 ## `morphology[0]` Wiktionary

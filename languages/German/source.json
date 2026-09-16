@@ -9,6 +9,101 @@
     "family": "Georgia, Segoe UI",
     "size": 15
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "<h2 id=\"German\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+          "normalize": true
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary (de)",
+      "attempts": [
+        {
+          "urls": [
+            "https://de.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+          ],
+          "strategy": "json",
+          "path": "parse.wikitext.*",
+          "match": "\\{\\{Sprache\\|Deutsch\\}\\}[\\s\\S]*?\\{\\{Lautschrift\\|([^|}]+)\\}\\}",
+          "group": 1,
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/api3/deko/search?query={word}&m=pc&range=word&page=1"
+          ],
+          "headers": {
+            "Referer": "https://dict.naver.com/"
+          },
+          "strategy": "regex",
+          "match": "\"symbolFile\":\"(https?://[^\"]+)\"(?:(?!\"symbolFile\")[\\s\\S])*?\"handleEntry\":\"{word}\"",
+          "group": 1
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "<h2 id=\"German\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/De-(?!at-|ch-)[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q188_%28deu%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "Leipzig",
+      "attempts": [
+        {
+          "urls": [
+            "https://api.wortschatz-leipzig.de/ws/words/deu_news_2012_1M/word/{word}"
+          ],
+          "confirm": "\"word\":\"{word}\"",
+          "strategy": "regex",
+          "match": "\"frequencyClass\":([0-9]+)",
+          "group": 1
+        }
+      ],
+      "once": { "factor": 35, "base": 2 }
+    }
+  ],
+  "morphology": []
 }

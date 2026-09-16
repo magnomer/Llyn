@@ -188,7 +188,8 @@ Both prefixes mark the recording as English.
 Datamuse word API.
 The `f:` tag is the word's frequency in occurrences per million words of text.
 The once total is one million, so the tooltip reads the interval straight off the figure.
-The shared ladder then reads 100 per million as core, 10 as everyday, 1 as advanced.
+The ladder rungs are fixed in the engine at one word in 10,000, 100,000 and 1,000,000.
+Against that total, 100 per million and over is core, 10 and over everyday, 1 and over advanced.
 A spelling the API does not know returns an empty list.
 The confirm guard then fails and the attempt yields nothing.
 
