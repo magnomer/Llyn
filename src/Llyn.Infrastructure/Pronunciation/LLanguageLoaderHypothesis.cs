@@ -66,7 +66,55 @@ public static partial class LLanguageLoader
             return null;
         }
 
-        return new LHypothesis(initials, finals, LLanguageToneScan(section));
+        return new LHypothesis(initials, finals, LLanguageToneScan(section), LLanguagePlaceScan(section));
+    }
+
+    private static IReadOnlyList<LHypothesisPlace> LLanguagePlaceScan(JsonElement section)
+    {
+        List<LHypothesisPlace> places = [];
+        if (!section.TryGetProperty("place", out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
+        {
+            return places;
+        }
+
+        foreach (JsonElement element in rows.EnumerateArray())
+        {
+            LHypothesisPlace? place = LLanguagePlaceRead(element);
+            if (place is not null)
+            {
+                places.Add(place);
+            }
+        }
+
+        return places;
+    }
+
+    private static LHypothesisPlace? LLanguagePlaceRead(JsonElement element)
+    {
+        if (element.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+
+        string name = LLanguageTextRead(element, "name")?.Trim() ?? string.Empty;
+        if (name.Length == 0
+            || !element.TryGetProperty("initial", out JsonElement rows)
+            || rows.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
+        List<string> initials = [];
+        foreach (JsonElement row in rows.EnumerateArray())
+        {
+            string initial = row.ValueKind == JsonValueKind.String ? row.GetString()!.Trim() : string.Empty;
+            if (initial.Length > 0 && !initials.Contains(initial))
+            {
+                initials.Add(initial);
+            }
+        }
+
+        return initials.Count > 0 ? new LHypothesisPlace(name, initials) : null;
     }
 
     private static IReadOnlyDictionary<string, string> LLanguageTableRead(JsonElement section, string key)

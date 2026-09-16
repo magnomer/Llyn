@@ -54,6 +54,10 @@ A missing key means on, so an older workspace starts with its panels linked.
 
 The epithet switch defaults on the same way, so an older workspace lists its Han characters with their readings.
 
+### `set.ValueKind == JsonValueKind.True;`
+
+The tally switch defaults off like the respelling switch, so an older workspace prints its tallies in IPA.
+
 ### `[LSettingsLoaderSplit] = settings.LSettingsSplit ? LSettingsLoaderEditor : LSettingsLoaderDisplay`
 
 A split is written as one of two words rather than as a boolean.

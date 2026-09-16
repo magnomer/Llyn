@@ -41,6 +41,15 @@
     "云": "w",
     "來": "l"
   },
+  "place": [
+    { "name": "labial", "initial": ["明", "幫", "並", "滂"] },
+    { "name": "dental", "initial": ["泥", "端", "定", "透", "精", "從", "清", "心", "邪"] },
+    { "name": "retroflex", "initial": ["娘", "知", "澄", "徹", "莊", "崇", "初", "生", "俟"] },
+    { "name": "palatal", "initial": ["日", "章", "禪", "常", "昌", "書", "船"] },
+    { "name": "velar", "initial": ["疑", "見", "群", "羣", "溪", "匣"] },
+    { "name": "laryngeal", "initial": ["影", "曉"] },
+    { "name": "other", "initial": ["以", "云", "來"] }
+  ],
   "final": {
     "歌 一": "a",
     "歌 一 合": "wa",

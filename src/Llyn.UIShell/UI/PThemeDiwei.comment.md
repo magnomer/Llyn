@@ -14,7 +14,7 @@ The parameter the respelling half sends the switch command.
 
 ## `<Style x:Key="Theme.Diwei.Switch" TargetType="Border">`
 
-The pill at the right end of a division heading holding the IPA and respelling halves.
+The pill at the right end of a section heading holding the IPA and respelling halves.
 It shows only while the section says the switch is on, respelling being on for the language.
 
 ## `<Style x:Key="Theme.Diwei.Choice" TargetType="Button">`
@@ -73,19 +73,19 @@ The tally lines of a section between its heading and its plate, collapsed while 
 
 ## `<Style x:Key="Theme.Diwei.Head" TargetType="TextBlock">`
 
-A division heading, drawn as the reading view's section titles are.
+A section heading, a division or a place, drawn as the reading view's section titles are.
 
 ## `<Style x:Key="Theme.Diwei.Plate" TargetType="Border">`
 
-The bordered plate the rows of one division sit on, the same plate the fanqie box uses.
+The bordered plate the rows of one section sit on, the same plate the fanqie box uses.
 
 ## `<Style x:Key="Theme.Diwei.Reading" TargetType="TextBlock">`
 
-The final's reading column, bold in the interface font.
+The reading column, the final or the onset, bold in the interface font.
 
-## `<Style x:Key="Theme.Diwei.Rime" TargetType="TextBlock">`
+## `<Style x:Key="Theme.Diwei.Label" TargetType="TextBlock">`
 
-The rime column, in the glyph font the page inherits.
+The label column, the rime or the initial, in the glyph font the page inherits.
 
 ## `<Style x:Key="Theme.Diwei.Rounded" TargetType="Border">`
 
@@ -103,9 +103,9 @@ The word takes the button's ink itself, since the default text style would paint
 
 ## `<DataTemplate x:Key="Theme.Diwei.Line">`
 
-One row across shared columns: reading, rime, 合口 chip, then the characters wrapping.
+One row across shared columns: reading, label, 合口 chip, then the characters wrapping.
 
 ## `<DataTemplate x:Key="Theme.Diwei.Section">`
 
-One division: its heading with the switch at its right end, its tally lines and the plate of rows.
+One section: its heading with the switch at its right end, its tally lines and the plate of rows.
 The rows share column widths within the section.

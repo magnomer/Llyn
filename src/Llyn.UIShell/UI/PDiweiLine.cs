@@ -8,23 +8,39 @@ internal sealed class PDiweiLine
 {
     private readonly List<string> _pDiweiLineCharacters = [];
 
-    internal PDiweiLine(LFanqieRow row, LHypothesis? hypothesis)
+    internal PDiweiLine(string kind, LFanqieRow row, LHypothesis? hypothesis)
     {
+        ArgumentNullException.ThrowIfNull(kind);
         ArgumentNullException.ThrowIfNull(row);
 
-        string? final = hypothesis?.LHypothesisFinalFind(row);
-        PDiweiLineReading = final is null ? string.Empty : '/' + final + '/';
-        PDiweiLineRime = LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime);
-        PDiweiLineRounded = row.LFanqieRowRounded;
+        bool rime = kind == LDiwei.LDiweiRime;
+        string? part = rime ? hypothesis?.LHypothesisInitialFind(row) : hypothesis?.LHypothesisFinalFind(row);
+        PDiweiLineReading = part is null ? string.Empty : '/' + part + '/';
+        PDiweiLineLabel = rime ? row.LFanqieRowInitial : LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime);
+        PDiweiLineRounded = !rime && row.LFanqieRowRounded;
+        PDiweiLineRank = rime ? hypothesis?.LHypothesisRankRead(row.LFanqieRowInitial) ?? -1 : -1;
     }
 
     public string PDiweiLineReading { get; }
 
-    public string PDiweiLineRime { get; }
+    public string PDiweiLineLabel { get; }
 
     public bool PDiweiLineRounded { get; }
 
+    public int PDiweiLineRank { get; }
+
     public IReadOnlyList<string> PDiweiLineCharacters => _pDiweiLineCharacters;
+
+    internal static void PDiweiLineSort(List<PDiweiLine> lines)
+    {
+        ArgumentNullException.ThrowIfNull(lines);
+
+        lines.Sort((left, right) =>
+        {
+            int order = PDiweiRankNormalize(left.PDiweiLineRank).CompareTo(PDiweiRankNormalize(right.PDiweiLineRank));
+            return order != 0 ? order : string.CompareOrdinal(left.PDiweiLineLabel, right.PDiweiLineLabel);
+        });
+    }
 
     internal void PDiweiLineAdd(string character)
     {
@@ -33,4 +49,6 @@ internal sealed class PDiweiLine
             _pDiweiLineCharacters.Add(character);
         }
     }
+
+    private static int PDiweiRankNormalize(int rank) => rank < 0 ? int.MaxValue : rank;
 }

@@ -148,6 +148,14 @@ public partial class PYunjing
         {
             _pYunmuChoice = _pYunmuChoice == item.PYunjingItemId ? null : item.PYunjingItemId;
             PYunjingSelect(_pYunmuList, _pYunmuChoice);
+            if (_pYunmuChoice is null)
+            {
+                PDiweiHide();
+            }
+            else if (PDiweiFind(LDiwei.LDiweiRime, item.PYunjingItemKey) is LDiwei diwei)
+            {
+                PDiweiShow(diwei);
+            }
         }
 
         PXiaoyunFind();
@@ -177,10 +185,7 @@ public partial class PYunjing
         PPlumb.Text = string.Empty;
         PFathom.Text = string.Empty;
         PYunjingLoad();
-        if (kind == LDiwei.LDiweiInitial)
-        {
-            PDiweiShow(found);
-        }
+        PDiweiShow(found);
     }
 
     private static void PYunjingSelect(ObservableCollection<PYunjingItem> list, long? chosen)

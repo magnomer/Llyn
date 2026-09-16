@@ -9,8 +9,6 @@ public partial class PYunjing
 {
     private LDiwei? _pDiweiShown;
 
-    private bool _pTallyRespelled;
-
     private void PDiweiAttach()
     {
         PYunjingDiwei.PDiweiAttach(_lEngine);
@@ -20,7 +18,7 @@ public partial class PYunjing
 
     private void PTallyChange(bool respelled)
     {
-        _pTallyRespelled = respelled;
+        _lEngine.LEngineTallySave(respelled);
         PDiweiLoad();
     }
 
@@ -86,8 +84,10 @@ public partial class PYunjing
             return;
         }
 
-        bool respelled = switched && _pTallyRespelled;
-        PYunjingDiwei.PDiweiApply(diwei, PDiweiItem.PDiweiItemScan(rows, hypothesis, tallies, switched, respelled));
+        bool respelled = switched && _lEngine.LEngineSettingsRead().LSettingsTally;
+        PYunjingDiwei.PDiweiApply(
+            diwei,
+            PDiweiItem.PDiweiItemScan(diwei.LDiweiKind, rows, hypothesis, tallies, switched, respelled));
     }
 
     private void PDiweiEntryShow(string character)

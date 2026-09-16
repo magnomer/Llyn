@@ -43,7 +43,7 @@ public sealed class TTally
 
         IReadOnlyList<LTally> tallies = engine.TEngineTallyRead(lai);
 
-        Assert.Equal(["三", "一"], tallies.Select(tally => tally.LTallyDivision));
+        Assert.Equal(["三", "一"], tallies.Select(tally => tally.LTallyHeading));
         Assert.Equal(
             [("Korean", "ㄹ(1)"), ("Mandarin", "l(1)"), ("Xiang", "l(1)")],
             tallies[0].LTallyLines.Select(line => (line.LTallyLineLanguage, TTallyMarkFormat(line.LTallyLineIpa))));
@@ -68,7 +68,7 @@ public sealed class TTally
 
         IReadOnlyList<LTally> tallies = engine.TEngineTallyRead(lai);
 
-        Assert.Equal(["三"], tallies.Select(tally => tally.LTallyDivision));
+        Assert.Equal(["三"], tallies.Select(tally => tally.LTallyHeading));
         Assert.Single(tallies[0].LTallyLines);
         Assert.Equal(["林"], engine.TEngineFanqieRead(lai).Select(row => row.LFanqieRowCharacter));
     }
@@ -160,6 +160,38 @@ public sealed class TTally
             [("Korean", "", "ㅣㅁ(1)"), ("Japanese", "Go-on", "imu(1)"), ("Japanese", "Kan-on", "in(1)")],
             single.LTallyLines.Select(line =>
                 (line.LTallyLineLanguage, line.LTallyLineKind, TTallyMarkFormat(line.LTallyLineIpa))));
+    }
+
+    [Fact]
+    public void TallyRead_RimeKind_SectionsByArticulatoryPlace()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineEntrySave(TTallyDraftCreate("林", [TInterface.TReflexDraftCreate("Korean", "", "림")]));
+        engine.TEngineEntrySave(TTallyDraftCreate("金", [TInterface.TReflexDraftCreate("Korean", "", "김")]));
+        engine.TEngineEntrySave(TTallyDraftCreate("心", [TInterface.TReflexDraftCreate("Korean", "", "심")]));
+        LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
+        LDiweiArchive archive = TInterface.TDiweiArchiveCreate(workspace.TWorkspaceDatabase);
+        foreach ((string character, string initial) in new[] { ("林", "來"), ("金", "見"), ("心", "心") })
+        {
+            fanqie.TFanqieSave(
+                TTallyLanguage,
+                character,
+                [TInterface.TFanqieRowCreate(character, 0, initial, "侵", "三", "平")]);
+            archive.TDiweiApply(TTallyLanguage, character, null);
+        }
+
+        TTallyAnchorApply(workspace, engine, "林", "金", "心");
+        LDiwei qin = Assert.IsType<LDiwei>(
+            engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiRime, "侵 III"));
+
+        IReadOnlyList<LTally> tallies = engine.TEngineTallyRead(qin);
+
+        Assert.Equal(["other", "velar", "dental"], tallies.Select(tally => tally.LTallyHeading));
+        Assert.Equal(
+            ["ㅣㅁ(1)", "ㅣㅁ(1)", "ㅣㅁ(1)"],
+            tallies.Select(tally => TTallyMarkFormat(Assert.Single(tally.LTallyLines).LTallyLineIpa)));
+        Assert.Equal(["金"], tallies[1].LTallyLines[0].LTallyLineIpa[0].LTallyMarkCharacters);
     }
 
     private static LDiwei TTallyDiweiPlace(

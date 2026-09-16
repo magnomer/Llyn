@@ -45,6 +45,17 @@ internal static class PFont
         }
     }
 
+    internal static void PFontGlyphApply(ResourceDictionary resources, LEngine engine, string language)
+    {
+        ArgumentNullException.ThrowIfNull(resources);
+        ArgumentNullException.ThrowIfNull(engine);
+
+        LFont glyph = PFontRoleRead(engine, language, LFontRole.LFontRoleGlyph);
+        PFontResourceSet(
+            resources, "Theme.Glyph.Family", glyph.LFontFamily is string named ? new FontFamily(named) : null);
+        PFontResourceSet(resources, "Theme.Glyph.Size", glyph.LFontSize > 0 ? glyph.LFontSize : null);
+    }
+
     internal static void PFontExampleApply(ResourceDictionary resources, LEngine engine, string language)
     {
         ArgumentNullException.ThrowIfNull(resources);

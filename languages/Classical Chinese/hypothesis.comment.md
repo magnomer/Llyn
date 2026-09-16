@@ -15,6 +15,13 @@ Onsets starting p t c s k ʔ h are voiceless.
 Onsets starting b d q z g x are voiced obstruents.
 Onsets starting m n j w l are sonorants.
 
+## `place`
+
+The place list groups the initials by articulatory place, in the order the rime page sections them.
+Each place names itself and lists its initials in the order its rows should follow.
+`name` is printed through the localization key `Yunjing.Place` plus the name capitalized, or as written without one.
+An initial no place lists falls into a trailing section of its own.
+
 ## `final`
 
 The final table gives the final of every rime.

@@ -45,7 +45,11 @@ public sealed class THypothesis
                 TInterface.THypothesisToneCreate("^[ptcskʔh]", THypothesisStops, "7"),
                 TInterface.THypothesisToneCreate("", THypothesisStops, "8"),
             ],
-        });
+        },
+        [
+            TInterface.THypothesisPlaceCreate("dental", ["端", "定"]),
+            TInterface.THypothesisPlaceCreate("velar", ["疑", "見", "匣"]),
+        ]);
 
     [Theory]
     [InlineData("疑", "模", "一", "平", false, "ngo", "2")]
@@ -95,6 +99,30 @@ public sealed class THypothesis
         LFanqieRow row = TInterface.TFanqieRowCreate(initial, rime, "heading", division, "平", false);
 
         Assert.Null(THypothesisTables.THypothesisResolve(row));
+    }
+
+    [Theory]
+    [InlineData("見", "k")]
+    [InlineData("來", "l")]
+    [InlineData("曉", null)]
+    [InlineData("", null)]
+    public void HypothesisInitialFind_TableLookup_ReadsOnsetAlone(string initial, string? onset)
+    {
+        LFanqieRow row = TInterface.TFanqieRowCreate(initial, "模", "模", "一", "平", false);
+
+        Assert.Equal(onset, THypothesisTables.THypothesisInitialFind(row));
+    }
+
+    [Theory]
+    [InlineData("端", "dental", 0)]
+    [InlineData("定", "dental", 1)]
+    [InlineData("疑", "velar", 2)]
+    [InlineData("匣", "velar", 4)]
+    [InlineData("來", null, -1)]
+    public void HypothesisPlaceFind_PackOrder_RanksAcrossPlaces(string initial, string? place, int rank)
+    {
+        Assert.Equal(place, THypothesisTables.THypothesisPlaceFind(initial)?.LHypothesisPlaceName);
+        Assert.Equal(rank, THypothesisTables.THypothesisRankRead(initial));
     }
 
     [Fact]

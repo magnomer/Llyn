@@ -27,7 +27,7 @@ The prepare pass reads the section off the draft's language before the form show
 Renders the glyph row from the draft's row in the glyph scheme, keyed by its transcription id.
 The pack's glyph section is asked once per render, and the row is shown only while the language declares one.
 The list's tag says whether the section declares sources, so the template can hide the lookup button.
-The glyph typography is put on the list, so the field takes the serif face the pack names.
+The glyph typography goes into the list's resources, so the field takes it and the scheme label does not.
 
 ## `private void PGlyphPrepare(LEntryDraft draft)`
 

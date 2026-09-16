@@ -60,6 +60,11 @@ public sealed partial class LEngine
         LEngineSettingsChange(settings => settings with { LSettingsEpithet = epithet });
     }
 
+    public void LEngineTallySave(bool respelled)
+    {
+        LEngineSettingsChange(settings => settings with { LSettingsTally = respelled });
+    }
+
     public void LEngineFrequencySave(bool frequency)
     {
         LEngineSettingsChange(settings => settings with { LSettingsFrequency = frequency });

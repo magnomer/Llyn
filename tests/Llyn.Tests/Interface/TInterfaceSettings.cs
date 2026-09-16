@@ -17,8 +17,10 @@ internal static partial class TInterface
         bool linked = true,
         string? mode = null,
         bool split = false,
-        bool epithet = true) =>
-        new(localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split, epithet);
+        bool epithet = true,
+        bool tally = false) =>
+        new(localization, window, volume, respelled, frequency, morphology, layout, linked, mode, split, epithet,
+            tally);
 
     internal static LLayout TLayoutCreate(
         string tab,

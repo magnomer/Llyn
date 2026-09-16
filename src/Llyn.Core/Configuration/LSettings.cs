@@ -13,4 +13,5 @@ public sealed record LSettings(
     bool LSettingsLinked = true,
     string? LSettingsMode = null,
     bool LSettingsSplit = false,
-    bool LSettingsEpithet = true);
+    bool LSettingsEpithet = true,
+    bool LSettingsTally = false);

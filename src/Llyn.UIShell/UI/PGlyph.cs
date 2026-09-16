@@ -36,7 +36,7 @@ public partial class PEditor
         _pGlyph = language.Length == 0 ? null : _lEngine.LEngineGlyphRead(language);
         PGlyph.Visibility = _pGlyph is null ? Visibility.Collapsed : Visibility.Visible;
         PGlyph.Tag = _pGlyph is not null && _pGlyph.LGlyphSources.Count > 0;
-        PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PGlyph);
+        PFont.PFontGlyphApply(PGlyph.Resources, _lEngine, language);
 
         List<LTranscriptionDraft> rows = [];
         foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)

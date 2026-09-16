@@ -51,6 +51,11 @@ A blank language has no pack and answers false.
 
 Turns the epithet after every listed headword on or off.
 
+## `public void LEngineTallySave(bool respelled)`
+
+Persists whether the tally lines of a category page print the respelling set and keeps it current.
+The page reads the switch on every fill, so the choice survives a restart and a change of category alike.
+
 ## `public void LEngineFrequencySave(bool frequency)`
 
 Persists whether an entry's frequency is fetched from the pack's web source and keeps it current.

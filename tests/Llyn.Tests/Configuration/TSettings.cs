@@ -156,6 +156,44 @@ public sealed class TSettings
     }
 
     [Fact]
+    public void SettingsSave_TallyOn_RoundTripsTrue()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+
+        TInterface.TSettingsSave(workspace.TWorkspaceFolder, TInterface.TSettingsCreate("en", tally: true));
+
+        Assert.True(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsTally);
+        Assert.Contains(
+            "\"tally\": true",
+            File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+    }
+
+    [Theory]
+    [InlineData("{ \"localization\": \"en\" }")]
+    [InlineData("{ \"localization\": \"en\", \"tally\": \"yes\" }")]
+    public void SettingsLoad_TallyAbsentOrNotTrue_LoadsFalse(string json)
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        File.WriteAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json"), json);
+
+        Assert.False(TInterface.TSettingsLoad(workspace.TWorkspaceFolder).LSettingsTally);
+    }
+
+    [Fact]
+    public void TallySave_True_ReadsBackAndWritesKey()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        engine.TEngineTallySave(true);
+
+        Assert.True(engine.TEngineSettingsRead().LSettingsTally);
+        Assert.Contains(
+            "\"tally\": true",
+            File.ReadAllText(Path.Combine(workspace.TWorkspaceFolder, "settings.json")));
+    }
+
+    [Fact]
     public void SettingsSave_Layout_RoundTripsPerTab()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();

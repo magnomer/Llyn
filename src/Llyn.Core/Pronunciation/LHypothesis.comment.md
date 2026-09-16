@@ -15,6 +15,8 @@ A pack without the file carries `null`, and the fanqie box prints the placement 
   A rime ending in a capital letter, the 重紐 mark, is tried as written and then without the letter.
 - `LHypothesisTones` — The class rows of each rime-book tone, keyed by the tone's character.
   Each row is one [LHypothesisTone](LHypothesisTone.comment.md): an onset pattern, its rewrites and its class label.
+- `LHypothesisPlaces` — The articulatory places the pack lists under `place`, in its order, empty when it lists none.
+  Each is one [LHypothesisPlace](LHypothesisPlace.comment.md): a name and the initials it gathers.
 
 ## `private const string LHypothesisRounded = "合";`
 
@@ -27,6 +29,21 @@ The row's rewrites run over the joined syllable, and its class becomes the sound
 A tone outside the table, or with no row taking the onset, keeps the joined syllable with a blank class.
 `null` when the initial or the final is not in the tables.
 The box then falls back to the placement text.
+
+## `public string? LHypothesisInitialFind(LFanqieRow row)`
+
+The onset alone, without final or tone, for a rime category page's reading column.
+`null` when the placement names no initial or the table lacks it.
+
+## `public LHypothesisPlace? LHypothesisPlaceFind(string initial)`
+
+The first place listing the initial, or `null` when none does.
+
+## `public int LHypothesisRankRead(string initial)`
+
+The position of an initial across every place in pack order.
+A rime page sorts its rows by it, so they follow the pack.
+-1 for an initial no place lists.
 
 ## `public string? LHypothesisFinalFind(LFanqieRow row)`
 

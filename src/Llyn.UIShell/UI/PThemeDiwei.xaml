@@ -211,12 +211,12 @@
         <Setter Property="Text" Value="{Binding PDiweiLineReading}" />
     </Style>
 
-    <Style x:Key="Theme.Diwei.Rime" TargetType="TextBlock">
+    <Style x:Key="Theme.Diwei.Label" TargetType="TextBlock">
         <Setter Property="FontSize" Value="15" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Ink}" />
         <Setter Property="Margin" Value="0,0,14,0" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Text" Value="{Binding PDiweiLineRime}" />
+        <Setter Property="Text" Value="{Binding PDiweiLineLabel}" />
     </Style>
 
     <Style x:Key="Theme.Diwei.Rounded" TargetType="Border">
@@ -319,12 +319,12 @@
         <Grid MinHeight="26">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PDiweiReading" />
-                <ColumnDefinition Width="Auto" SharedSizeGroup="PDiweiRime" />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="PDiweiLabel" />
                 <ColumnDefinition Width="Auto" SharedSizeGroup="PDiweiRounded" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <TextBlock Style="{StaticResource Theme.Diwei.Reading}" />
-            <TextBlock Grid.Column="1" Style="{StaticResource Theme.Diwei.Rime}" />
+            <TextBlock Grid.Column="1" Style="{StaticResource Theme.Diwei.Label}" />
             <Border Grid.Column="2" Style="{StaticResource Theme.Diwei.Rounded}">
                 <TextBlock Style="{StaticResource Theme.Diwei.RoundedText}" />
             </Border>

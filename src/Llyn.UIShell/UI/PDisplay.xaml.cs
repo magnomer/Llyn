@@ -93,7 +93,6 @@ public partial class PDisplay : UserControl
         PDisplayPronunciationCloser.Text = respelling.PRespellingCloser;
         PDisplayContour.PContourTonal = draft.LEntryDraftLanguage.Length > 0
             && _lEngine.LEngineTonalCheck(draft.LEntryDraftLanguage);
-        PDisplayContour.PContourIpa = draft.LEntryDraftIpa;
         PDisplayPronunciationSurface.Visibility = PDisplayPronunciation.Text.Length == 0
             ? Visibility.Collapsed
             : Visibility.Visible;
@@ -213,7 +212,6 @@ public partial class PDisplay : UserControl
         PPlaybackAction.Visibility = Visibility.Collapsed;
         PDisplayPronunciationSurface.Visibility = Visibility.Collapsed;
         PDisplayPronunciationLead.SharedSizeGroup = null;
-        PDisplayContour.PContourIpa = string.Empty;
         PDisplayAccentClear();
         _pDisplayTranscription.Clear();
         _pDisplayReflex.Clear();

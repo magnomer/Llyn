@@ -64,6 +64,10 @@ public sealed class TLanguageLoaderHan
             entering.LHypothesisToneRules, rule => rule.LRespellingRulePattern == "ng$");
         Assert.Equal("k", velar.LRespellingRuleReplacement);
         Assert.Equal("4S", hypothesis.LHypothesisTones["上"][1].LHypothesisToneClass);
+        Assert.Equal(
+            ["labial", "dental", "retroflex", "palatal", "velar", "laryngeal", "other"],
+            hypothesis.LHypothesisPlaces.Select(place => place.LHypothesisPlaceName));
+        Assert.Equal(["明", "幫", "並", "滂"], hypothesis.LHypothesisPlaces[0].LHypothesisPlaceInitials);
         Assert.Null(TInterface.TLanguageLoad("English").LLanguageHypothesis);
     }
     [Fact]

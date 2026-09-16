@@ -10,7 +10,8 @@ A pack that declares nothing clears the local value, so the theme's own family a
 
 Takes any element that carries text, because a text box and a text block share the same font properties.
 Both read them from `TextElement`, so one attached property serves either.
-The bare form asks for the headword role, and the role form serves the glyph chips with their serif face.
+The bare form asks for the headword role.
+The role form serves whole controls such as the fanqie and script panels.
 
 ### `internal static void PFontPlace(params FrameworkElement[] surfaces)`
 
@@ -20,6 +21,17 @@ Word aligns text by baseline, and a reader expects the stroke bottoms to sit at 
 The family reports its baseline as a fraction of the size, and the top margin fills up to `PFontBaseline`.
 The surface must be top-aligned inside a row of fixed minimum height for the margin to mean anything.
 Called after `PFontApply`, because the family it reads is the one just put on.
+
+### `internal static void PFontGlyphApply(ResourceDictionary resources, LEngine engine, string language)`
+
+Puts the typography a pack declares for its glyph row into the resources of the row's list.
+Only the glyph value reads those keys, so the row's label keeps the theme face.
+The shared label column then measures the same in both panels.
+Setting the font on the list itself once leaked into the label.
+That pushed every reading row sideways in the editor alone.
+The editor field and the reading chips read the same two keys.
+So both draw the characters at one size in one face.
+A part the pack leaves out has its key removed, so the theme's default in `PThemeGlyph.xaml` stands.
 
 ### `internal static void PFontExampleApply(ResourceDictionary resources, LEngine engine, string language)`
 

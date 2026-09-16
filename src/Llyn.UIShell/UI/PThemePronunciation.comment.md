@@ -72,9 +72,10 @@ The empty field is still wide enough to read it.
 
 The same pronunciation with a caret in it.
 It holds no floor width and fills the width its unseen twin measures.
-It holds no height of its own and fills the row, centering its text inside.
-A fixed box height would center the text in two steps, each rounded on its own.
-One step, against the row, is the step the read text takes.
+It is as tall as its own line and is centered against the row, its text pinned to its top.
+So it takes the one centering step the read text block takes, rounded by the same layout rounding.
+Filling the row and centering inside instead let the text box place its line unrounded.
+That sat a pixel off the read text at larger sizes.
 It carries the read size and is pulled a pixel left.
 A WPF text box keeps that pixel for the caret.
 So a reading sits in the same place whether it is being read or being typed.

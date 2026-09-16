@@ -17,18 +17,19 @@ public sealed partial class LEngine
             IReadOnlyList<LFanqieRow> rows = new LDiweiArchive(_lEngineDatabase).LDiweiFanqieRead(diwei.LDiweiId);
             IReadOnlyDictionary<long, IReadOnlyList<LReflex>> anchored =
                 new LReflexArchive(_lEngineDatabase).LReflexAnchorScan(diwei.LDiweiId);
-            Dictionary<string, List<string>> divisions = new(StringComparer.Ordinal);
+            LHypothesis? hypothesis = LEngineHypothesisRead(diwei.LDiweiLanguage);
+            Dictionary<string, List<string>> sections = new(StringComparer.Ordinal);
             List<string> order = [];
             Dictionary<string, Dictionary<string, IReadOnlyList<LReflex>>> readings = new(StringComparer.Ordinal);
             foreach (LFanqieRow row in rows)
             {
-                if (!divisions.TryGetValue(row.LFanqieRowDivision, out List<string>? characters))
+                string heading = LEngineHeadingRead(diwei.LDiweiKind, row, hypothesis);
+                if (!sections.TryGetValue(heading, out List<string>? characters))
                 {
                     characters = [];
-                    divisions[row.LFanqieRowDivision] = characters;
-                    readings[row.LFanqieRowDivision] =
-                        new Dictionary<string, IReadOnlyList<LReflex>>(StringComparer.Ordinal);
-                    order.Add(row.LFanqieRowDivision);
+                    sections[heading] = characters;
+                    readings[heading] = new Dictionary<string, IReadOnlyList<LReflex>>(StringComparer.Ordinal);
+                    order.Add(heading);
                 }
 
                 if (row.LFanqieRowCharacter.Length > 0 && !characters.Contains(row.LFanqieRowCharacter))
@@ -36,7 +37,7 @@ public sealed partial class LEngine
                     characters.Add(row.LFanqieRowCharacter);
                 }
 
-                LEngineTallyLoad(readings[row.LFanqieRowDivision], row, anchored);
+                LEngineTallyLoad(readings[heading], row, anchored);
             }
 
             List<string> ranking = [];
@@ -49,15 +50,25 @@ public sealed partial class LEngine
             }
 
             List<LTally> tallies = new(order.Count);
-            foreach (string division in order)
+            foreach (string heading in order)
             {
                 tallies.Add(new LTally(
-                    division,
-                    LTallyLine.LTallyLineScan(diwei.LDiweiKind, divisions[division], readings[division], ranking)));
+                    heading,
+                    LTallyLine.LTallyLineScan(diwei.LDiweiKind, sections[heading], readings[heading], ranking)));
             }
 
             return tallies;
         }
+    }
+
+    private static string LEngineHeadingRead(string kind, LFanqieRow row, LHypothesis? hypothesis)
+    {
+        if (kind != LDiwei.LDiweiRime)
+        {
+            return row.LFanqieRowDivision;
+        }
+
+        return hypothesis?.LHypothesisPlaceFind(row.LFanqieRowInitial)?.LHypothesisPlaceName ?? string.Empty;
     }
 
     private static void LEngineTallyLoad(

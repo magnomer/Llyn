@@ -35,13 +35,14 @@ The empty text under a column says nothing is there, or nothing matches when a s
 
 A click chooses the row in its column, or clears the choice when the row was already chosen.
 The column is told by which list holds the row.
-A chosen onset opens its category page, and a cleared one hides it.
+A chosen onset or rime opens its category page, and a cleared one hides it.
+The page follows the last click, so choosing a rime after an onset shows the rime.
 
 ## `internal void PYunjingDiweiShow(string language, string kind, string key)`
 
 Chooses one category by kind and key, as a fanqie link asks, and clears the other column's choice.
 The column filters are emptied so the chosen row is listed.
-An onset then opens its category page.
+The category then opens its page.
 A key the store does not hold changes nothing.
 
 ## `private static void PYunjingSelect(ObservableCollection<PYunjingItem> list, long? chosen)`

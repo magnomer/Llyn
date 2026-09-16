@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Llyn.Core;
 
 public sealed record LHypothesis(
     IReadOnlyDictionary<string, string> LHypothesisInitials,
     IReadOnlyDictionary<string, string> LHypothesisFinals,
-    IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> LHypothesisTones)
+    IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> LHypothesisTones,
+    IReadOnlyList<LHypothesisPlace>? LHypothesisPlaces = null)
 {
     private const string LHypothesisRounded = "合";
+
+    public IReadOnlyList<LHypothesisPlace> LHypothesisPlaces { get; init; } = LHypothesisPlaces ?? [];
 
     public LHypothesisSound? LHypothesisResolve(LFanqieRow row)
     {
@@ -39,6 +43,52 @@ public sealed record LHypothesis(
         }
 
         return new LHypothesisSound(syllable, string.Empty);
+    }
+
+    public string? LHypothesisInitialFind(LFanqieRow row)
+    {
+        ArgumentNullException.ThrowIfNull(row);
+
+        return row.LFanqieRowInitial.Length > 0
+            && LHypothesisInitials.TryGetValue(row.LFanqieRowInitial, out string? initial)
+            ? initial
+            : null;
+    }
+
+    public LHypothesisPlace? LHypothesisPlaceFind(string initial)
+    {
+        ArgumentNullException.ThrowIfNull(initial);
+
+        foreach (LHypothesisPlace place in LHypothesisPlaces)
+        {
+            if (place.LHypothesisPlaceInitials.Contains(initial))
+            {
+                return place;
+            }
+        }
+
+        return null;
+    }
+
+    public int LHypothesisRankRead(string initial)
+    {
+        ArgumentNullException.ThrowIfNull(initial);
+
+        int rank = 0;
+        foreach (LHypothesisPlace place in LHypothesisPlaces)
+        {
+            foreach (string held in place.LHypothesisPlaceInitials)
+            {
+                if (string.Equals(held, initial, StringComparison.Ordinal))
+                {
+                    return rank;
+                }
+
+                rank++;
+            }
+        }
+
+        return -1;
     }
 
     public string? LHypothesisFinalFind(LFanqieRow row)

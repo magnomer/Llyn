@@ -249,6 +249,11 @@ internal static partial class TInterface
         engine.LEngineRespellingSave(respelled);
     }
 
+    internal static void TEngineTallySave(this LEngine engine, bool respelled)
+    {
+        engine.LEngineTallySave(respelled);
+    }
+
     internal static bool TEngineRespellingCheck(this LEngine engine, string language) =>
         engine.LEngineRespellingCheck(language);
 

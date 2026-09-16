@@ -135,7 +135,7 @@
                             </Border>
                         </StackPanel>
 
-                        <local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" />
+                        <local:PContour x:Name="PDisplayContour" Style="{StaticResource Theme.Contour.Box}" PContourIpa="{Binding Text, ElementName=PDisplayPronunciation}" />
                         <ItemsControl x:Name="PDisplayAccent" ItemTemplate="{StaticResource Theme.Accent.Display}">
                             <ItemsControl.CommandBindings>
                                 <CommandBinding Command="{x:Static local:PAccentCommand.PAccentCommandPlayback}" Executed="PDisplayPlaybackHandle" />
@@ -151,16 +151,15 @@
                                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
                                     <TextBlock x:Name="PDisplayGlyphLabel" Style="{StaticResource Theme.Pronunciation.Label}" />
                                 </StackPanel>
-                                <ItemsControl x:Name="PDisplayGlyph" Grid.Column="1" Margin="3,0" VerticalAlignment="Center" ItemTemplate="{StaticResource Theme.Glyph.Display}">
-                                    <ItemsControl.CommandBindings>
-                                        <CommandBinding Command="{x:Static local:PGlyphCommand.PGlyphCommandEntry}" Executed="PDisplayGlyphHandle" />
-                                    </ItemsControl.CommandBindings>
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
+                                <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
+                                    <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
+                                        <ItemsControl x:Name="PDisplayGlyph" Style="{StaticResource Theme.Glyph.Line}">
+                                            <ItemsControl.CommandBindings>
+                                                <CommandBinding Command="{x:Static local:PGlyphCommand.PGlyphCommandEntry}" Executed="PDisplayGlyphHandle" />
+                                            </ItemsControl.CommandBindings>
+                                        </ItemsControl>
+                                    </Grid>
+                                </StackPanel>
                             </Grid>
                         </Border>
                     </StackPanel>

@@ -19,7 +19,7 @@ A missing or unreadable file yields `null`, and the fanqie box prints the placem
 
 ## `private static LHypothesis? LLanguageHypothesisScan(JsonElement section)`
 
-Reads the `initial` and `final` tables and the `tone` rules from one object.
+Reads the `initial` and `final` tables, the `tone` rules and the `place` list from one object.
 An object missing either table yields `null`, since nothing could be resolved from it.
 
 ## `private static IReadOnlyDictionary<string, string> LLanguageTableRead(JsonElement section, string key)`
@@ -37,3 +37,13 @@ A tone with no readable row is left out.
 One class row: `onset` the pattern over the onset, `rewrite` the rules in respelling form, `class` the label key.
 A missing onset matches every onset, a missing rewrite leaves the syllable as joined.
 A row that is not an object, or whose onset pattern is broken, reads `null`.
+
+## `private static IReadOnlyList<LHypothesisPlace> LLanguagePlaceScan(JsonElement section)`
+
+The `place` array: the articulatory places in file order, each read by the row reader below.
+A missing or malformed array reads as no places.
+
+## `private static LHypothesisPlace? LLanguagePlaceRead(JsonElement element)`
+
+One place: `name` its key and `initial` the initials it gathers, blanks and repeats dropped.
+A row without a name or without any initial reads `null`.

@@ -12,22 +12,26 @@ internal sealed class PDiweiItem
 
     private const string PDiweiItemBlank = "Yunjing.DivisionNone";
 
+    private const string PDiweiItemPrefix = "Yunjing.Place";
+
+    private const string PDiweiItemUnplaced = "Yunjing.PlaceNone";
+
     private static readonly string[] PDiweiItemOrder = ["一", "二", "三", "四"];
 
     private static readonly string[] PDiweiItemRoman = ["I", "II", "III", "IV"];
 
     private readonly List<PDiweiLine> _pDiweiItemLines = [];
 
-    private PDiweiItem(string division, IReadOnlyList<PTally> tallies, bool switched, bool respelled)
+    private PDiweiItem(string kind, string heading, IReadOnlyList<PTally> tallies, bool switched, bool respelled)
     {
-        PDiweiItemDivision = division;
-        PDiweiItemLabel = PDiweiLabelFormat(division);
+        PDiweiItemHeading = heading;
+        PDiweiItemLabel = kind == LDiwei.LDiweiRime ? PDiweiPlaceFormat(heading) : PDiweiLabelFormat(heading);
         PDiweiItemTallies = tallies;
         PDiweiItemSwitched = switched;
         PDiweiItemRespelled = respelled;
     }
 
-    public string PDiweiItemDivision { get; }
+    public string PDiweiItemHeading { get; }
 
     public string PDiweiItemLabel { get; }
 
@@ -40,36 +44,43 @@ internal sealed class PDiweiItem
     public bool PDiweiItemRespelled { get; }
 
     internal static IReadOnlyList<PDiweiItem> PDiweiItemScan(
+        string kind,
         IReadOnlyList<LFanqieRow> rows,
         LHypothesis? hypothesis,
         IReadOnlyList<LTally> tallies,
         bool switched,
         bool respelled)
     {
+        ArgumentNullException.ThrowIfNull(kind);
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(tallies);
 
+        bool rime = kind == LDiwei.LDiweiRime;
         Dictionary<string, PDiweiItem> sections = new(StringComparer.Ordinal);
         Dictionary<(string, string, bool), PDiweiLine> lines = [];
         foreach (LFanqieRow row in rows)
         {
-            string division = row.LFanqieRowDivision;
-            if (!sections.TryGetValue(division, out PDiweiItem? section))
+            string heading = rime
+                ? hypothesis?.LHypothesisPlaceFind(row.LFanqieRowInitial)?.LHypothesisPlaceName ?? string.Empty
+                : row.LFanqieRowDivision;
+            if (!sections.TryGetValue(heading, out PDiweiItem? section))
             {
                 section = new PDiweiItem(
-                    division,
+                    kind,
+                    heading,
                     PTally.PTallyScan(
-                        tallies.FirstOrDefault(tally => tally.LTallyDivision == division), respelled),
+                        tallies.FirstOrDefault(tally => tally.LTallyHeading == heading), respelled),
                     switched,
                     respelled);
-                sections[division] = section;
+                sections[heading] = section;
             }
 
-            (string, string, bool) key =
-                (division, LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime), row.LFanqieRowRounded);
+            (string, string, bool) key = rime
+                ? (heading, row.LFanqieRowInitial, false)
+                : (heading, LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime), row.LFanqieRowRounded);
             if (!lines.TryGetValue(key, out PDiweiLine? line))
             {
-                line = new PDiweiLine(row, hypothesis);
+                line = new PDiweiLine(kind, row, hypothesis);
                 lines[key] = line;
                 section._pDiweiItemLines.Add(line);
             }
@@ -79,20 +90,39 @@ internal sealed class PDiweiItem
 
         List<PDiweiItem> items = [.. sections.Values];
         items.Sort((left, right) =>
-            PDiweiRankRead(left.PDiweiItemDivision).CompareTo(PDiweiRankRead(right.PDiweiItemDivision)));
+            PDiweiRankRead(kind, left.PDiweiItemHeading, hypothesis)
+                .CompareTo(PDiweiRankRead(kind, right.PDiweiItemHeading, hypothesis)));
         foreach (PDiweiItem item in items)
         {
-            item._pDiweiItemLines.Sort((left, right) =>
-                string.CompareOrdinal(left.PDiweiLineRime, right.PDiweiLineRime));
+            PDiweiLine.PDiweiLineSort(item._pDiweiItemLines);
         }
 
         return items;
     }
 
-    private static int PDiweiRankRead(string division)
+    private static int PDiweiRankRead(string kind, string heading, LHypothesis? hypothesis)
     {
-        int index = Array.IndexOf(PDiweiItemOrder, division);
-        return index >= 0 ? index : division.Length == 0 ? int.MaxValue : PDiweiItemOrder.Length;
+        if (heading.Length == 0)
+        {
+            return int.MaxValue;
+        }
+
+        if (kind != LDiwei.LDiweiRime)
+        {
+            int index = Array.IndexOf(PDiweiItemOrder, heading);
+            return index >= 0 ? index : PDiweiItemOrder.Length;
+        }
+
+        IReadOnlyList<LHypothesisPlace> places = hypothesis?.LHypothesisPlaces ?? [];
+        for (int index = 0; index < places.Count; index++)
+        {
+            if (string.Equals(places[index].LHypothesisPlaceName, heading, StringComparison.Ordinal))
+            {
+                return index;
+            }
+        }
+
+        return places.Count;
     }
 
     private static string PDiweiLabelFormat(string division)
@@ -107,5 +137,17 @@ internal sealed class PDiweiItem
         string roman = index >= 0 ? PDiweiItemRoman[index] : division;
         string pattern = catalog[PDiweiItemKey];
         return pattern.Length == 0 ? division : string.Format(CultureInfo.CurrentCulture, pattern, division, roman);
+    }
+
+    private static string PDiweiPlaceFormat(string place)
+    {
+        PLocalizationCatalog catalog = PLocalizationCatalog.PLocalizationCatalogCurrent;
+        if (place.Length == 0)
+        {
+            return catalog[PDiweiItemUnplaced];
+        }
+
+        string label = catalog[PDiweiItemPrefix + char.ToUpperInvariant(place[0]) + place[1..]];
+        return label.Length == 0 ? place : label;
     }
 }

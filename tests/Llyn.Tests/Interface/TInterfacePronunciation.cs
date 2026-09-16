@@ -284,8 +284,21 @@ internal static partial class TInterface
     internal static LHypothesis THypothesisCreate(
         IReadOnlyDictionary<string, string> initials,
         IReadOnlyDictionary<string, string> finals,
-        IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> tones) =>
-        new(initials, finals, tones);
+        IReadOnlyDictionary<string, IReadOnlyList<LHypothesisTone>> tones,
+        IReadOnlyList<LHypothesisPlace>? places = null) =>
+        new(initials, finals, tones, places);
+
+    internal static LHypothesisPlace THypothesisPlaceCreate(string name, IReadOnlyList<string> initials) =>
+        new(name, initials);
+
+    internal static string? THypothesisInitialFind(this LHypothesis hypothesis, LFanqieRow row) =>
+        hypothesis.LHypothesisInitialFind(row);
+
+    internal static LHypothesisPlace? THypothesisPlaceFind(this LHypothesis hypothesis, string initial) =>
+        hypothesis.LHypothesisPlaceFind(initial);
+
+    internal static int THypothesisRankRead(this LHypothesis hypothesis, string initial) =>
+        hypothesis.LHypothesisRankRead(initial);
 
     internal static LHypothesisTone THypothesisToneCreate(
         string onset, IReadOnlyList<LRespellingRule> rules, string label) =>

@@ -2,7 +2,7 @@
 
 ## `internal sealed class PTally`
 
-One printed line of a division's tally on the Diwei page: language, kind and the marks of the chosen set.
+One printed line of a section's tally on the Diwei page: language, kind and the marks of the chosen set.
 It is built from the engine's [LTally](../../Llyn.Core/Pronunciation/LTally.comment.md) for the set the switch shows.
 
 ## `public string PTallyLanguage { get; }`
@@ -20,5 +20,5 @@ Each carries its characters, listed in the popup the part opens.
 
 ## `internal static IReadOnlyList<PTally> PTallyScan(LTally? tally, bool respelled)`
 
-The lines of one division, the respelling set when `respelled`, else the IPA set.
+The lines of one section, the respelling set when `respelled`, else the IPA set.
 A line whose chosen set is empty prints nothing, and a missing tally prints none.
