@@ -27,6 +27,7 @@ public sealed partial class LEngine
         {
             ArgumentNullException.ThrowIfNull(reflexes);
             IReadOnlyList<LReflex> saved = new LReflexArchive(_lEngineDatabase).LReflexSet(entryId, reflexes);
+            LEngineEpithetUpdate(entryId);
             LEngineUpdatedSet(entryId);
             return saved;
         }
@@ -57,6 +58,7 @@ public sealed partial class LEngine
         }
 
         IReadOnlyList<LReflex> saved = reflexes.LReflexSet(entryId, current);
+        LEngineEpithetUpdate(entryId);
         for (int index = 0; index < saved.Count; index++)
         {
             LEngineIdentityRecord(identity, written[index].LReflexDraftId, saved[index].LReflexId);
@@ -98,7 +100,9 @@ public sealed partial class LEngine
                 draft.LReflexDraftText.Trim(),
                 draft.LReflexDraftMain,
                 draft.LReflexDraftNote.Trim(),
-                draft.LReflexDraftRespelling.Trim()));
+                draft.LReflexDraftRespelling.Trim(),
+                draft.LReflexDraftRegion.Trim(),
+                draft.LReflexDraftRemark.Trim()));
         }
 
         return rows;
@@ -174,7 +178,11 @@ public sealed partial class LEngine
 
     private static IEnumerable<string> LReflexPartScan(LReflex reflex)
     {
-        string[] parts = [reflex.LReflexLanguage, reflex.LReflexKind, reflex.LReflexText, reflex.LReflexNote];
+        string[] parts =
+        [
+            reflex.LReflexLanguage, reflex.LReflexRegion, reflex.LReflexKind, reflex.LReflexText, reflex.LReflexNote,
+            reflex.LReflexRemark,
+        ];
         foreach (string part in parts)
         {
             if (part.Length > 0)

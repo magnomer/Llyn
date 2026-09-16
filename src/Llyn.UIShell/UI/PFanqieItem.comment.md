@@ -24,9 +24,9 @@ The site the lines came from, drawn as the chip at the right of the block.
 
 The character's placements in that book from that source, one line each, in answer order.
 
-## `internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books, LHypothesis? hypothesis)`
+## `internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books)`
 
 Groups the rows by character, book and source.
 Then walks the characters in headword order and the books in pack order.
 A book that placed nothing for a character leaves no block.
-Each row becomes a line, its reading resolved through the hypothesis when the pack declares one.
+Each row becomes a line, its reading and tone class printed as stored.

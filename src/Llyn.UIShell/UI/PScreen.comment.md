@@ -34,6 +34,13 @@ The Screen owns the switch beneath it rather than the row that holds the Screen.
 Play is a thing the surface does.
 A row that had to relay it would know how the surface works.
 
+Nothing is opened until the user asks for play.
+A card lists every film of every meaning.
+Opening each would start a player or a browser page for films nobody watches.
+The stage stands empty with its switch until the switch is pressed.
+Only then is a player chosen and given the address.
+Once a player stands, a changed address or span reaches it as before.
+
 ## `public string PScreenLocation { get; set; }`
 
 Where the film is read from, taken as the user is still typing it.
@@ -62,6 +69,17 @@ A film and a pronunciation are both the program speaking, so one slider answers 
 
 Every change to what is played waits half a second before anything is built.
 The location field updates on each keystroke, and a half-typed address would otherwise open a browser page per letter.
+A Screen nobody has asked to play ignores the change, since there is no player to hand it to.
+
+### `private static void PScreenPlayingHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)`
+
+The first ask for play opens the player, and every later ask is relayed to the one standing.
+A row put back into the tree while marked playing opens on load instead, so this waits for the tree.
+
+### `private void PScreenOpenHandle(object sender, RoutedEventArgs e)`
+
+A Screen entering the tree opens only when its row already says it is playing.
+That is the row returning after the card was taken down, not a card being read.
 
 ### `private void PScreenVolumeApply()`
 
@@ -79,6 +97,7 @@ Only a width change is answered, because the answer is a height change and answe
 The one place the two players are chosen between.
 A file address is the machine's own player and anything else is the browser page.
 Whichever was standing is stopped first, because a Screen shows one film at a time.
+The Screen remembers a player was opened, so later changes of address reach it and an unopened one stays idle.
 
 ### `private void PScreenSync()`
 

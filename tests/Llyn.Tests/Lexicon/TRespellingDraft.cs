@@ -98,7 +98,7 @@ public sealed class TRespellingDraft
             ]));
 
         Assert.Equal(
-            [("ʈ͡ʂʊŋ⁵⁵", "tʂuŋ⁵⁵"), ("ʈ͡ʂʊŋ⁵¹", null)],
+            [("ʈ͡ʂʊŋ⁵⁵", "tʂuŋ⁵⁵"), ("ʈ͡ʂʊŋ⁵¹", "tʂuŋ⁵¹")],
             engine.TEnginePronunciationRead(entry.LEntryId)
                 .Select(row => (row.LPronunciationIpa, row.LPronunciationRespelling)));
 
@@ -128,7 +128,7 @@ public sealed class TRespellingDraft
     }
 
     [Fact]
-    public void RequestApply_ReflexText_DerivesSlashedRespelling()
+    public void RequestApply_ReflexText_DerivesBareRespelling()
     {
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -139,14 +139,14 @@ public sealed class TRespellingDraft
             TInterface.TReflexAdditionCreate(started.LDraftId, "Mandarin", "", 0));
         long rowId = Assert.Single(added.LDraftContent.LEntryDraftReflexes).LReflexDraftId;
         LDraft typed = engine.TEngineRequestApply(
-            TInterface.TReflexTextCreate(started.LDraftId, rowId, "[ʈ͡ʂɤŋ²¹⁴]"));
+            TInterface.TReflexTextCreate(started.LDraftId, rowId, "ʈ͡ʂɤŋ²¹⁴"));
         LReflexDraft row = Assert.Single(typed.LDraftContent.LEntryDraftReflexes);
-        Assert.Equal("[ʈ͡ʂɤŋ²¹⁴]", row.LReflexDraftText);
-        Assert.Equal("/tʂəŋ²¹⁴/", row.LReflexDraftRespelling);
+        Assert.Equal("ʈ͡ʂɤŋ²¹⁴", row.LReflexDraftText);
+        Assert.Equal("tʂəŋ²¹⁴", row.LReflexDraftRespelling);
 
         LDraft overwritten = engine.TEngineRequestApply(
-            TInterface.TReflexRespellingCreate(started.LDraftId, rowId, "/tʂəŋ/"));
-        Assert.Equal("/tʂəŋ/", Assert.Single(overwritten.LDraftContent.LEntryDraftReflexes).LReflexDraftRespelling);
+            TInterface.TReflexRespellingCreate(started.LDraftId, rowId, "tʂəŋ"));
+        Assert.Equal("tʂəŋ", Assert.Single(overwritten.LDraftContent.LEntryDraftReflexes).LReflexDraftRespelling);
 
         LDraft korean = engine.TEngineRequestApply(
             TInterface.TReflexLanguageCreate(started.LDraftId, rowId, "Korean"));
@@ -154,7 +154,7 @@ public sealed class TRespellingDraft
     }
 
     [Fact]
-    public void EntryLoad_RowsWithoutRespelling_DerivesBothKinds()
+    public void EntrySave_RowsWithoutRespelling_StoresBothKinds()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
@@ -163,17 +163,21 @@ public sealed class TRespellingDraft
         {
             LEntryDraftReflexes =
             [
-                TInterface.TReflexDraftCreate("Cantonese", "", "[t͡sɪŋ³⁵]"),
+                TInterface.TReflexDraftCreate("Cantonese", "", "t͡sɪŋ³⁵"),
                 TInterface.TReflexDraftCreate("Korean", "", "중"),
             ],
         });
 
-        Assert.Null(Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationRespelling);
+        Assert.Equal(
+            "tʂuŋ⁵⁵", Assert.Single(engine.TEnginePronunciationRead(entry.LEntryId)).LPronunciationRespelling);
+        Assert.Equal(
+            ["tsiŋ³⁵", ""],
+            engine.TEngineReflexRead(entry.LEntryId).Select(row => row.LReflexRespelling));
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
         Assert.Equal("tʂuŋ⁵⁵", Assert.Single(loaded.LEntryDraftPronunciations).LPronunciationDraftRespelling);
         Assert.Equal(
-            ["/t͡siŋ³⁵/", ""],
+            ["tsiŋ³⁵", ""],
             loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftRespelling));
     }
 

@@ -22,6 +22,8 @@ A pack that declares none for the role answers a blank font, and the theme's own
 ## `public IReadOnlyList<string> LEngineLanguageRead()`
 
 Returns the names of the languages that have a pack on disk, for the UI to offer as choices.
+The scan opens and parses every pack once, and the engine keeps the list until the workspace changes.
+Every panel asks for it on each entry switch, so a fresh scan each time stalled the UI thread.
 
 ## `public async Task<string?> LEngineFlagRead(string language, CancellationToken cancellation)`
 

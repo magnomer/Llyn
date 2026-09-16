@@ -1,0 +1,29 @@
+{
+  "language": "Wu",
+  "flag": "flag.svg",
+  "listed": false,
+  "separator": "none",
+  "tonal": true,
+  "phonemic": true,
+  "respelling": [
+    {
+      "name": "Standard",
+      "rules": [
+        ["͡", ""],
+        ["̯", ""],
+        ["dʑ", "dz"],
+        ["tɕ", "ts"],
+        ["ʑ", "z"],
+        ["ɕ", "s"],
+        ["ɤ", "ə"],
+        ["z̩", "ə"],
+        ["ɨ", "ə"],
+        ["ɿ", "ə"],
+        ["ɑ", "a"],
+        ["ɒ", "a"]
+      ]
+    }
+  ],
+  "pronunciation": [],
+  "audio": []
+}

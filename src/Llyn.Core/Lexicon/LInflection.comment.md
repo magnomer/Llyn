@@ -18,3 +18,5 @@ It links its part of speech by row id (`LInflectionSpeechId`), never by name.
 - `LInflectionSpeechId` — Linked `speech_value` row, or `null` when unspecified.
 - `LInflectionMorphology` — Ordered `morphology_value` row ids the inflection carries.
   Each value knows its feature, so the feature is not repeated here.
+- `LInflectionRegular` — Whether the form is the one the paradigm's regular pattern predicts from the headword.
+  It is derived when the form or its entry is stored, so the reading view never runs the pattern.

@@ -21,3 +21,7 @@ The CHECK keeps the two from drifting into a row that is half link, half name.
 
 grasp is the user's own half-step score of how well they know the word, zero until rated.
 The CHECK keeps it within the ten half steps five stars hold.
+
+epithet is the string the lists print after the headword, derived from the reflex rows and stored.
+It is written whenever the reflex rows are, so a list reads one column and runs no rule.
+A database from before the column comes across with it blank and the engine fills it once.

@@ -33,6 +33,7 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderTonal = "tonal";
     private const string LLanguageLoaderSilent = "silent";
     private const string LLanguageLoaderPhonemic = "phonemic";
+    private const string LLanguageLoaderListed = "listed";
     private const string LLanguageLoaderGlyph = "glyph";
     private const string LLanguageLoaderEmblem = ".svg";
 
@@ -47,7 +48,8 @@ public static partial class LLanguageLoader
         List<string> names = new();
         foreach (string directory in Directory.EnumerateDirectories(root))
         {
-            if (File.Exists(Path.Combine(directory, LLanguageLoaderFile)))
+            string file = Path.Combine(directory, LLanguageLoaderFile);
+            if (File.Exists(file) && LLanguageListedCheck(file))
             {
                 names.Add(Path.GetFileName(directory));
             }
@@ -70,6 +72,21 @@ public static partial class LLanguageLoader
 
             return string.CompareOrdinal(left, right);
         });
+    }
+
+    private static bool LLanguageListedCheck(string file)
+    {
+        try
+        {
+            using FileStream stream = File.OpenRead(file);
+            using JsonDocument document = JsonDocument.Parse(stream);
+            JsonElement root = document.RootElement;
+            return root.ValueKind != JsonValueKind.Object || LLanguageListedRead(root);
+        }
+        catch (Exception exception) when (exception is IOException or JsonException or UnauthorizedAccessException)
+        {
+            return true;
+        }
     }
 
     public static bool LLanguageNameValidate(string? language)
@@ -151,7 +168,14 @@ public static partial class LLanguageLoader
             LLanguageHypothesisRead(language, root),
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderSilent),
             LLanguageReflexScan(root),
-            root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderPhonemic));
+            root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderPhonemic),
+            root.ValueKind != JsonValueKind.Object || LLanguageListedRead(root));
+    }
+
+    private static bool LLanguageListedRead(JsonElement root)
+    {
+        return !root.TryGetProperty(LLanguageLoaderListed, out JsonElement listed)
+            || listed.ValueKind != JsonValueKind.False;
     }
 
     private static string? LLanguageFlagRead(string language, JsonElement root)

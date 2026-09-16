@@ -58,16 +58,16 @@ public sealed partial class LEngine
 
             _lEngineReflexMissed.Remove(entryId);
             new LReflexArchive(_lEngineDatabase).LReflexSet(entryId, []);
+            LEngineEpithetUpdate(entryId);
             cleared = LEngineReflexPropagate(entryId, [], true);
         }
 
+        LEngineReflexStart(entryId);
         LEngineBulletinRaise(LSubject.LSubjectReflex, entryId);
         foreach (long draft in cleared)
         {
             LEngineBulletinRaise(LSubject.LSubjectDraft, draft);
         }
-
-        LEngineReflexStart(entryId);
     }
 
     public bool LEngineReflexCheck(long entryId)
@@ -99,7 +99,7 @@ public sealed partial class LEngine
 
         IReadOnlyList<string> characters = LGlyph.LGlyphScan(headword);
         bool reached = false;
-        List<LReflexDraft> rows = [];
+        List<IReadOnlyList<LReflexDraft>> rounds = [];
         foreach (LReflexRule rule in rules)
         {
             foreach (string character in characters)
@@ -120,11 +120,11 @@ public sealed partial class LEngine
                 }
 
                 reached |= answered;
-                rows.AddRange(found);
+                rounds.Add(found);
             }
         }
 
-        IReadOnlyList<LReflexDraft> merged = characters.Count > 1 ? LEngineReflexResolve(rows) : rows;
+        IReadOnlyList<LReflexDraft> merged = LEngineReflexResolve(rounds);
         List<LReflexDraft> spelled = new(merged.Count);
         foreach (LReflexDraft row in merged)
         {
@@ -134,26 +134,34 @@ public sealed partial class LEngine
         return (spelled, reached);
     }
 
-    private static IReadOnlyList<LReflexDraft> LEngineReflexResolve(IReadOnlyList<LReflexDraft> rows)
+    private static IReadOnlyList<LReflexDraft> LEngineReflexResolve(IReadOnlyList<IReadOnlyList<LReflexDraft>> rounds)
     {
         List<LReflexDraft> merged = [];
-        Dictionary<string, int> places = new(StringComparer.Ordinal);
-        foreach (LReflexDraft row in rows)
+        List<int> stamps = [];
+        for (int round = 0; round < rounds.Count; round++)
         {
-            string key = row.LReflexDraftLanguage + '\n' + row.LReflexDraftKind + '\n' + row.LReflexDraftNote;
-            if (places.TryGetValue(key, out int place))
+            foreach (LReflexDraft row in rounds[round])
             {
-                LReflexDraft held = merged[place];
-                merged[place] = held with
+                int place = merged.FindIndex(held =>
+                    string.Equals(held.LReflexDraftLanguage, row.LReflexDraftLanguage, StringComparison.Ordinal)
+                    && string.Equals(held.LReflexDraftRegion, row.LReflexDraftRegion, StringComparison.Ordinal)
+                    && string.Equals(held.LReflexDraftKind, row.LReflexDraftKind, StringComparison.Ordinal)
+                    && string.Equals(held.LReflexDraftNote, row.LReflexDraftNote, StringComparison.Ordinal));
+                if (place >= 0 && stamps[place] != round)
                 {
-                    LReflexDraftText = held.LReflexDraftText + ' ' + row.LReflexDraftText,
-                    LReflexDraftMain = held.LReflexDraftMain || row.LReflexDraftMain,
-                };
-                continue;
-            }
+                    LReflexDraft held = merged[place];
+                    merged[place] = held with
+                    {
+                        LReflexDraftText = held.LReflexDraftText + ' ' + row.LReflexDraftText,
+                        LReflexDraftMain = held.LReflexDraftMain || row.LReflexDraftMain,
+                    };
+                    stamps[place] = round;
+                    continue;
+                }
 
-            places[key] = merged.Count;
-            merged.Add(row);
+                merged.Add(row);
+                stamps.Add(round);
+            }
         }
 
         return merged;
@@ -190,6 +198,7 @@ public sealed partial class LEngine
                     return;
                 }
 
+                raised = true;
                 if (found.Count == 0)
                 {
                     if (reached)
@@ -212,12 +221,13 @@ public sealed partial class LEngine
 
                 IReadOnlyList<LReflex> saved = reflexes.LReflexSet(
                     entry.LEntryId, LEngineReflexRead(entry.LEntryId, found));
+                LEngineEpithetUpdate(entry.LEntryId);
                 drafts = LEngineReflexPropagate(entry.LEntryId, saved);
-                raised = true;
             }
         }
         catch (Exception)
         {
+            raised = !fetch.IsCancellationRequested;
         }
         finally
         {
@@ -259,7 +269,9 @@ public sealed partial class LEngine
                 reflex.LReflexMain,
                 reflex.LReflexId,
                 reflex.LReflexNote,
-                reflex.LReflexRespelling));
+                reflex.LReflexRespelling,
+                reflex.LReflexRegion,
+                reflex.LReflexRemark));
         }
 
         List<long> filled = [];

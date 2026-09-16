@@ -14,6 +14,8 @@ public partial class PScreen : UserControl
 
     private bool _pScreenWeb;
 
+    private bool _pScreenOpened;
+
     public PScreen()
     {
         InitializeComponent();
@@ -93,7 +95,7 @@ public partial class PScreen : UserControl
 
     private static void PScreenSourceHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)
     {
-        if (holder is PScreen screen)
+        if (holder is PScreen screen && (screen._pScreenOpened || screen.PScreenPlaying))
         {
             screen._pScreenPending.Stop();
             screen._pScreenPending.Start();
@@ -102,11 +104,20 @@ public partial class PScreen : UserControl
 
     private static void PScreenPlayingHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)
     {
-        if (holder is PScreen screen)
+        if (holder is not PScreen screen)
         {
-            screen.PScreenSwitch.IsChecked = screen.PScreenPlaying;
-            screen.PScreenSync();
+            return;
         }
+
+        screen.PScreenSwitch.IsChecked = screen.PScreenPlaying;
+        if (screen.PScreenPlaying && !screen._pScreenOpened && screen.IsLoaded)
+        {
+            screen._pScreenPending.Stop();
+            screen.PScreenShow();
+            return;
+        }
+
+        screen.PScreenSync();
     }
 
     private static void PScreenVolumeHandle(DependencyObject holder, DependencyPropertyChangedEventArgs e)
@@ -139,7 +150,7 @@ public partial class PScreen : UserControl
 
     private void PScreenOpenHandle(object sender, RoutedEventArgs e)
     {
-        if (PScreenLocation.Length != 0)
+        if (PScreenPlaying && PScreenLocation.Length != 0)
         {
             _pScreenPending.Stop();
             _pScreenPending.Start();
@@ -174,6 +185,7 @@ public partial class PScreen : UserControl
             return;
         }
 
+        _pScreenOpened = true;
         if (address.IsFile)
         {
             _pScreenWeb = false;
@@ -198,6 +210,7 @@ public partial class PScreen : UserControl
 
     private void PScreenStop()
     {
+        _pScreenOpened = false;
         PScreenNotice.Visibility = Visibility.Collapsed;
         PScreenMediaStop();
         PScreenPageStop();

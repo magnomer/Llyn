@@ -26,7 +26,8 @@ public sealed record LLanguage(
     LHypothesis? LLanguageHypothesis = null,
     bool LLanguageSilent = false,
     IReadOnlyList<LReflexRule>? LLanguageReflexRules = null,
-    bool LLanguagePhonemic = false)
+    bool LLanguagePhonemic = false,
+    bool LLanguageListed = true)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 

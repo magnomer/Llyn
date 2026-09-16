@@ -113,6 +113,7 @@ public sealed partial class LEngine
         LEngineReflexSync(id, draft.LEntryDraftReflexes, changes, identity);
 
         LEntry updated = entries.LEntryRead(id) ?? stored;
+        LEngineParadigmUpdate(updated);
         session.LDatabaseSessionCommit();
         return updated;
     }

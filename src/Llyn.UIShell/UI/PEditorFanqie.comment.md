@@ -6,7 +6,7 @@ The fanqie box of the editor: the same control as the reading view's, folded und
 
 ## `internal void PEditorFanqieShow()`
 
-Reads the pack's books and hypothesis for the entry's language and the entry's stored rows.
+Reads the pack's books for the entry's language and the entry's stored rows.
 It asks the engine to fetch what is missing first.
 A fetch started here reaches the editor by bulletin like any other.
 An unsaved entry has no id and shows nothing.

@@ -61,9 +61,7 @@ public sealed partial class LEngine
             foreach (LParadigmSlot slot in LEngineParadigmRead(entry))
             {
                 if (slot.LParadigmSlotState == LState.LStateSpecified
-                    && slot.LParadigmSlotInflection is LInflection inflection
-                    && LEngineParadigmMatch(
-                        slot.LParadigmSlotParadigm, entry.LEntryHeadword, inflection.LInflectionText))
+                    && slot.LParadigmSlotInflection is { LInflectionRegular: true })
                 {
                     continue;
                 }
@@ -72,6 +70,39 @@ public sealed partial class LEngine
             }
 
             return shown;
+        }
+    }
+
+    private void LEngineParadigmUpdate(long entryId)
+    {
+        LEntry? entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+        if (entry is not null)
+        {
+            LEngineParadigmUpdate(entry);
+        }
+    }
+
+    private void LEngineParadigmUpdate(LEntry entry)
+    {
+        if (string.IsNullOrWhiteSpace(entry.LEntryLanguage))
+        {
+            return;
+        }
+
+        LInflectionArchive inflections = new(_lEngineDatabase);
+        foreach (LParadigmSlot slot in LEngineParadigmRead(entry))
+        {
+            if (slot.LParadigmSlotInflection is not LInflection inflection)
+            {
+                continue;
+            }
+
+            bool regular = LEngineParadigmMatch(
+                slot.LParadigmSlotParadigm, entry.LEntryHeadword, inflection.LInflectionText);
+            if (regular != inflection.LInflectionRegular)
+            {
+                inflections.LInflectionRegularSave(inflection.LInflectionId, regular);
+            }
         }
     }
 

@@ -24,11 +24,11 @@ The localization key of the tone class pattern, `{0}` standing for the class key
 
 ## `public string PFanqieLineReading`
 
-The hypothesis reading between slashes, such as `/ngoʔ/`, or empty when the pack has none or cannot resolve it.
+The stored reading between slashes, such as `/ngoʔ/`, or empty when the placement stored none.
 
 ## `public string PFanqieLineLabel`
 
-The tone class of the reading in the interface language, such as `4성S`, or empty when the hypothesis gave none.
+The stored tone class in the interface language, such as `4성S`, or empty when the placement stored none.
 
 ## `public string PFanqieLineInitial`
 
@@ -67,12 +67,13 @@ The 反切 the source printed, such as 五乎, or empty.
 
 The placement text as fetched, shown alone when the row carries no parts, and empty otherwise.
 
-## `internal static PFanqieLine PFanqieLineCreate(LFanqieRow row, LHypothesis? hypothesis)`
+## `internal static PFanqieLine PFanqieLineCreate(LFanqieRow row)`
 
-Builds the columns from a stored row, resolving the reading through the hypothesis when there is one.
+Builds the columns from a stored row, the reading and tone class taken as the row stores them.
+No hypothesis runs here, so drawing an entry derives nothing.
 A row without initial and rime, from a book read without part patterns, keeps only its text.
 
-## `private static string PFanqieLabelFormat(LHypothesisSound? sound)`
+## `private static string PFanqieLabelFormat(string toneClass)`
 
 The class label: the localized pattern filled with the class key, or the bare key when the pattern is missing.
-Empty without a sound or with a blank class.
+Empty with a blank class.

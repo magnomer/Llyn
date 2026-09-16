@@ -48,6 +48,11 @@ public partial class PRepertoire
             _pDisplayEntry = bulletin.LBulletinId;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PAtlasFind(PInquest.Text ?? string.Empty);
         POccurrenceEntryUpdate(bulletin.LBulletinId);
     }

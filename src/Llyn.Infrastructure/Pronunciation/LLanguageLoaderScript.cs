@@ -80,9 +80,10 @@ public static partial class LLanguageLoader
         return form;
     }
 
-    private static IReadOnlyList<LRespellingRule> LLanguageRewriteScan(JsonElement row)
+    private static IReadOnlyList<LRespellingRule> LLanguageRewriteScan(
+        JsonElement row, string key = LLanguageLoaderRewrite)
     {
-        if (!row.TryGetProperty(LLanguageLoaderRewrite, out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
+        if (!row.TryGetProperty(key, out JsonElement rows) || rows.ValueKind != JsonValueKind.Array)
         {
             return Array.Empty<LRespellingRule>();
         }

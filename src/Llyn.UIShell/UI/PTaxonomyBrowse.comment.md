@@ -38,6 +38,8 @@ No tab switch is needed to trigger it.
 A workspace that moved is the one announcement that empties the panel first.
 Its flags are reloaded before any row is built.
 A tag announcement carries a tag id, not an entry id, so it only refreshes the catalog.
+A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
+Those announcements are skipped.
 Passing it on as an entry would make a fresh entry being written adopt the tag's id.
 
 ### `private void PTaxonomyFreshHandle(object sender, RoutedEventArgs e)`

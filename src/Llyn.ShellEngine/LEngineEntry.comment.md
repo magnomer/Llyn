@@ -99,14 +99,14 @@ The stored entry as the input form would have handed it over.
 Every recording comes out of the store relative to the workspace and leaves here as a full path.
 The shell deals in full paths, and only the engine knows which folder the workspace stands in.
 A pronunciation row carrying no recording is handed back untouched.
-A reading stored without a respelling has one derived on the way out.
-So rows from before the column show both forms too.
+Every string comes out as stored, and nothing is derived on the way out.
+The respelling was derived when the entry was saved, so a load runs no rule.
 
-## `private LEntryDraft LEngineRespellingRestore(LEntryDraft draft)`
+## `private LEntryDraft LEngineRespellingUpdate(LEntryDraft draft)`
 
-Derives the respelling of every pronunciation row and reflex row that carries none.
+Derives the respelling of every pronunciation row and reflex row that carries none, before the draft is stored.
 A row that already carries one is left alone, since the user may have written it by hand.
-Nothing is stored here, and the next commit writes what was derived.
+It runs on the save and update seams, so the store always holds what the reading view will print.
 
 ## `public LRevision LEngineEntryDelete(long id)`
 

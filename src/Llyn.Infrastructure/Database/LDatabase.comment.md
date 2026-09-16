@@ -26,6 +26,12 @@ The file is not opened until a connection or a session is asked for.
 The path of the database file this instance is bound to.
 `LDoctor` needs it to move an unusable database aside, which is work on the file rather than on its contents.
 
+## `public bool LDatabaseMigrated`
+
+Whether `LDatabaseCreate` rebuilt the file from an older schema version.
+The engine reads it once after opening, to derive the stored strings the new columns hold.
+A file made or opened at the current version leaves it false.
+
 ## `public SqliteConnection LDatabaseConnectionRead()`
 
 Opens the database, creating the file if absent.

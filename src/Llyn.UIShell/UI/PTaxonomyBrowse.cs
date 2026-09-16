@@ -30,6 +30,11 @@ public partial class PTaxonomy
             return;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PMembershipEntryUpdate(
             bulletin.LBulletinSubject == LSubject.LSubjectTag ? 0 : bulletin.LBulletinId);
     }

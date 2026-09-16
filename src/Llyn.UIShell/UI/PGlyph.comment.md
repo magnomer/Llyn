@@ -17,6 +17,11 @@ The engine finds that scheme's sources in the pack's glyph section.
 Whether a transcription scheme is the glyph scheme of the language shown.
 The transcription rows ask it to leave the glyph row out.
 
+## `private static bool PGlyphSchemeCheck(LGlyph? glyph, string scheme)`
+
+Whether a transcription scheme is the scheme of `glyph`, which may be absent.
+The prepare pass reads the section off the draft's language before the form shows it.
+
 ## `private void PGlyphShow(LEntryDraft draft)`
 
 Renders the glyph row from the draft's row in the glyph scheme, keyed by its transcription id.
@@ -27,7 +32,7 @@ The glyph typography is put on the list, so the field takes the serif face the p
 ## `private void PGlyphPrepare(LEntryDraft draft)`
 
 Asks for a seeded row in the glyph scheme when the language declares one and the draft has none.
-It runs after the fill guard drops, as the transcription rows' ask does, and costs nothing while left blank.
+It runs before the render, as the transcription rows' ask does, and costs nothing while left blank.
 
 ## `private void PGlyphClear()`
 

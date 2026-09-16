@@ -33,6 +33,16 @@ public sealed class TLanguageLoader
     }
 
     [Fact]
+    public void LanguageLoad_UnlistedPack_ReadsUnlistedAndStaysOffTheList()
+    {
+        Assert.False(TInterface.TLanguageLoad("Wu").LLanguageListed);
+        Assert.True(TInterface.TLanguageLoad("Wu").LLanguagePhonemic);
+        Assert.True(TInterface.TLanguageLoad("Mandarin").LLanguageListed);
+        Assert.DoesNotContain("Wu", TInterface.TLanguageScan());
+        Assert.Contains("Mandarin", TInterface.TLanguageScan());
+    }
+
+    [Fact]
     public void LanguageLoad_PackWithoutVarieties_ReadsNoneUnflagged()
     {
         LLanguage language = TInterface.TLanguageLoad("Spanish");

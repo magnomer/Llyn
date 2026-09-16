@@ -40,12 +40,13 @@ Each card takes its own words out of the one translation answer, in the order th
 The chip lines under the rows are redrawn after, because the rows hold no engine to read headwords from.
 An id the answer does not name is passed over, as a chip with no Entry has nothing to say.
 
-### `private void PCardPrepare()`
+### `private void PCardPrepare(LEntryDraft draft)`
 
-Asks for one empty card in every list that shows none.
+Asks for one empty card in every list of the draft that holds none.
 The panel is an editor.
 An editor with nothing to type into is not a state the form has.
 The card is minted by the engine like any other, so it is named before anything is typed into it.
+The draft is checked rather than the drawn lists, because the ask now runs before the render.
 
 
 # PEditorCard.xaml

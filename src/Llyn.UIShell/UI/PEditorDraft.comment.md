@@ -15,17 +15,35 @@ The form assembles nothing, down to the last chip and row.
 
 Renders the draft over what is shown, changing only what differs.
 It runs on every draft bulletin, so it must be cheap and must not move the caret.
+The draft is prepared before the render, so the blank rows it asks for are already in what is drawn.
 The fill guard is held for the whole pass, because filling raises the same events typing does.
 The pronunciation field prints whichever stored form the respelling switch picks, between the brackets that form takes.
 The pronunciation rows after the primary are rendered in the same pass, keyed by their draft ids.
 The transcription rows are rendered the same way, and shown only while the draft's language declares a scheme.
 The glyph row is read off the pack before them, so the transcription pass knows which scheme to skip.
-Once the guard drops, a language with schemes and no transcription row is asked for one in its first scheme.
+The reflex fetch is started after the render, because it changes nothing in the draft itself.
+
+### `private LEntryDraft PEditorDraftPrepare(LEntryDraft draft)`
+
+Asks for every blank row the form needs and returns the draft as it stands afterwards.
+A language with schemes and no transcription row is asked for one in its first scheme.
 A language with a glyph section and no glyph row is asked for one the same way.
-The engine answers with a bulletin and this render runs again, now with a row to type into.
-An empty row never dirties the draft, so the ask costs nothing when it is left blank.
-A card left with no sentence row is asked for a blank one in the same breath.
+A list showing no card is asked for one.
+A card with no sentence row is asked for a blank one.
 So there is always somewhere to type.
+An empty row never dirties the draft, so the ask costs nothing when it is left blank.
+Each ask answers with a draft bulletin.
+The bulletin handler only marks the draft stale while this runs.
+Rendering on each answer drew the whole form three or four times per entry.
+A wide Chinese form stalled the switch that way.
+The stale draft is read back once before the sentence pass, because a fresh card needs its id first.
+It is read once more at the end, so the render that follows draws every row that was asked for.
+Nothing is asked during a render or on a halted form, since such a request would be refused anyway.
+
+### `private LEntryDraft PEditorDraftRead(LEntryDraft draft)`
+
+The engine's current draft when an ask changed it, otherwise the draft handed in.
+A read that fails halts the form the way a refused request does.
 
 ### `private void PEditorTextShow(TextBox box, string key, string text)`
 
@@ -73,7 +91,8 @@ The language menu may move it onto an installed pack.
 A blank draft has no language until the form says which one it is typed in.
 The chosen language is sent at once, so the first keystroke lands in a draft that knows it.
 
-### `PCardPrepare();`
+### `PEditorDraftRestore();`
 
-An empty form is one empty card of each kind.
-Those cards are asked for, so they carry engine ids before anything is typed into them.
+An empty form is one empty card of each kind, each with a blank sentence row.
+The language ask is sent with the restore held back, and one restore then prepares and renders the blank form.
+The cards are asked for in that pass, so they carry engine ids before anything is typed into them.

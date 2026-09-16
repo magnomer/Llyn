@@ -14,3 +14,4 @@ An inflection has its own id and is unique on (entry_parent, position).
 It cascades when its Entry is deleted.
 An inflection_feature links its inflection by id and cascades with it.
 It stores only the morphology_value link, because the value knows its feature.
+regular is one when the form is what the paradigm's pattern predicts from the headword, derived on store.

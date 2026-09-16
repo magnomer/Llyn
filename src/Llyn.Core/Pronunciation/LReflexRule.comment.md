@@ -33,7 +33,25 @@ Every URL, field and pattern is pack data, so a new language needs no code.
 - `LReflexRuleFirst` — True to mark the first row as the one in common use when no match captured `main`.
   A dictionary listing the representative reading first needs no `main` group at all.
 - `LReflexRuleRewrite` — Ordered rewrite rules applied to the formatted text before it is stored.
-  `/([^/]+)/` to `[$1]` turns `/lʊŋ²²/, /nʊŋ²²/` into `[lʊŋ²²], [nʊŋ²²]`.
+  Every slash and bracket is dropped after them, so a stored reading is always bare.
+- `LReflexRuleRegion` — The place every row of the rule is taken from, such as `Shanghai`, or `null`.
+  The view shows it when the language name is hovered.
+- `LReflexRuleSplit` — A regex the text and the note are both cut on, or `null` to keep each whole.
+  `\s*[,/]\s*` turns `ɣaʔ², ɣəʔ²` under `ghah4 / gheh4` into two rows, each reading paired with its own note by position.
+  When the two lists differ in length every reading keeps the whole note.
+- `LReflexRuleRemark` — A regex read after the match for what the page says of one reading, or `null`.
+  `{note}` stands for the row's note, and the named group `remark` is stored.
+  `<li>{note} - (?<remark>[^<]*?)[;.]?</li>` reads `literary` out of `<li>ok - literary;</li>`.
+- `LReflexRuleUntil` — A regex ending the stretch of page the remark is looked for in, or `null`.
+  Without it the remark is looked for to the end of the page.
+  The next language header keeps a Hakka reading from taking a Southern Min note.
+- `LReflexRuleFolded` — True when the rows of the rule are folded away under the visible rows.
+  The view and the editor show them only after the fold is opened.
+- `LReflexRuleRecast` — Ordered rewrite rules applied to each note piece before it is stored.
+  `^(\d)(.+)$` to `$2$1` moves the tone Wugniu writes first to the end, so `7oq` is stored as `oq7`.
+  The remark is still looked for under the note as the page wrote it.
+- `LReflexRuleSuperscript` — True to store every digit of the note as a superscript, so `oq7` becomes `oq⁷`.
+  The digits are raised after the recasts, so a recast still sees plain digits.
 
 ## `public const string LReflexRuleText = "text";`
 
@@ -50,3 +68,7 @@ The named group carrying the note printed after the reading, such as a pinyin or
 ## `public const string LReflexRuleMain = "main";`
 
 The named group whose non-empty capture marks the reading as the one in common use.
+
+## `public const string LReflexRuleSense = "remark";`
+
+The named group of the remark pattern carrying what the page says of the reading.

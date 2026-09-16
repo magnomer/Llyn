@@ -26,6 +26,11 @@ public partial class PFavorite
             return;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PRosterEntryUpdate(bulletin.LBulletinId);
     }
 

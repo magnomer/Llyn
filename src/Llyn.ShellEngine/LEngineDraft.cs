@@ -23,10 +23,10 @@ public sealed partial class LEngine
                 throw new LRefusal(LRefusal.LRefusalHeadword);
             }
 
-            draft = LEngineDraftNormalize(draft) with
+            draft = LEngineRespellingUpdate(LEngineDraftNormalize(draft) with
             {
                 LEntryDraftHeadword = draft.LEntryDraftHeadword.Trim(),
-            };
+            });
 
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
@@ -86,6 +86,7 @@ public sealed partial class LEngine
             LEngineTranscriptionSync(
                 entry.LEntryId, LEngineTranscriptionReset(draft.LEntryDraftTranscriptions), null, identity);
             LEngineReflexSync(entry.LEntryId, LEngineReflexReset(draft.LEntryDraftReflexes), null, identity);
+            LEngineParadigmUpdate(entry);
 
             LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);
             LRevision revision = new LRevisionArchive(_lEngineDatabase).LRevisionRecord([change]);

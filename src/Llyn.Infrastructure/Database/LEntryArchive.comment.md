@@ -67,6 +67,18 @@ A null clears the value, so a source that no longer answers leaves nothing stale
 Throws when no entry carries that id, as `LEntryUpdate` does.
 `LEntryUpdate` still writes `frequency` from its record, so a read-then-update round trip keeps the value.
 
+## `public string LEntryEpithetRead(long entryId)`
+
+The stored epithet of the entry `entryId` names, or empty when it has none or no entry carries the id.
+It is one scalar read, so every list row can ask without loading the entry or its reflex rows.
+
+## `public void LEntryEpithetSave(long entryId, string epithet)`
+
+Writes the derived epithet alone onto the entry `entryId` names.
+A value equal to the one stored is not written, so nothing else notices.
+`updated_utc` is left where it stands, because a derived string is not a user edit.
+An id no entry carries is not an error here, since the derivation may outlive the entry.
+
 ## `public void LEntryGraspSet(long entryId, int grasp)`
 
 Writes the user's grasp alone onto the entry `entryId` names.

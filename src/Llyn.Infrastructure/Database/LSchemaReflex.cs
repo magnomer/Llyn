@@ -25,6 +25,8 @@ public static class LSchemaReflex
                 main INTEGER NOT NULL DEFAULT 0,
                 note TEXT NOT NULL DEFAULT '',
                 respelling TEXT NOT NULL DEFAULT '',
+                region TEXT NOT NULL DEFAULT '',
+                remark TEXT NOT NULL DEFAULT '',
                 FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
             """;

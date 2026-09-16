@@ -21,25 +21,22 @@ public partial class PDisplay
     {
         IReadOnlyList<LFanqieRow> rows;
         IReadOnlyList<LFanqieBook> books;
-        LHypothesis? hypothesis;
         bool pending;
         try
         {
             books = _lEngine.LEngineBookRead(language);
-            hypothesis = _lEngine.LEngineHypothesisRead(language);
             rows = books.Count == 0 ? [] : _lEngine.LEngineFanqieRead(id);
             pending = books.Count > 0 && _lEngine.LEngineFanqieCheck(id);
         }
         catch (Exception)
         {
             books = [];
-            hypothesis = null;
             rows = [];
             pending = false;
         }
 
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
-        PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books, hypothesis);
+        PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books);
         PDisplayFanqie.PFanqiePending = pending;
         PDisplayFanqie.PFanqieDiweiNotice = (kind, key) => _pDisplayHost.PWindowDiweiShow(language, kind, key);
     }

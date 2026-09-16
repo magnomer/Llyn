@@ -25,6 +25,7 @@ A classical language has no country, so its pack ships its own emblem.
 ## `public static IReadOnlyList<string> LLanguageLoaderScan()`
 
 Scans the `languages/` folder for available packs, returning the name of every language that has a `source.json`.
+A pack whose `listed` key is `false` is left off, though it still loads by name.
 Language-agnostic: the set of languages is whatever is on disk, discovered at runtime.
 So adding a pack folder makes it selectable with no code change.
 
@@ -81,8 +82,18 @@ A missing block reads as no varieties, and a repeated name keeps its first row.
 The top-level `tonal` key is read as a plain boolean, and only a literal `true` switches the tone contour on.
 The top-level `silent` key is read the same way, and only a literal `true` hides the pronunciation rows.
 The top-level `phonemic` key is read the same way, and only a literal `true` puts a respelled reading between slashes.
+The top-level `listed` key is read by `LLanguageListedRead`, and only a literal `false` takes the pack off the picker.
 
 ### `private static bool LLanguageFlaggedCheck(JsonElement root)`
 
 `varieties.shown` chooses how the UI labels each reading, `flag` for the flag image or `text` for the name.
 The default is `text`, so a pack that lists varieties without choosing shows names.
+
+### `private static bool LLanguageListedCheck(string file)`
+
+Opens one pack file to ask whether it is listed, so the scan can leave an unlisted pack out.
+A file that cannot be opened or parsed counts as listed, and the loader reports it as blank later.
+
+### `private static bool LLanguageListedRead(JsonElement root)`
+
+True unless the top-level `listed` key is a literal `false`.

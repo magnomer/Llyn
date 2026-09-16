@@ -11,6 +11,9 @@ Each row belongs to one entry through `entry_parent` and goes with it when the e
 The language, kind and note are plain text, unconstrained, since two rows of one language differ by kind or note.
 `main` is a flag, one when the reading is the one in common use.
 `respelling` is the reading recast in its own language's convention, empty when that language has no groups.
+`region` is the place the reading is taken from and `remark` what the source says of it.
+Both are empty when unknown.
+A database from before the two columns keeps its rows, which come across with both blank.
 
 ## `public const long LSchemaReflexNoted = 60;`
 

@@ -13,4 +13,5 @@ The books arrive in pack order and the positions in table order, and the row ids
 ## `public IReadOnlyList<LFanqieRow> LFanqieRead(string language, string character)`
 
 Every stored row of the character, in insertion order, with the parts the line was built from.
+The reading and tone class come back as the placement stored them, so no hypothesis runs on read.
 An empty list means the character was never fetched, or nothing was found and nothing stored.

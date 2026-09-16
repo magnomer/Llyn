@@ -11,11 +11,25 @@ internal sealed class PReflexItem : INotifyPropertyChanged
     private string _pReflexItemKind;
     private string _pReflexItemText;
     private string _pReflexItemNote;
+    private string _pReflexItemRegion;
+    private string _pReflexItemRemark;
     private bool _pReflexItemMain;
     private bool _pReflexItemLead;
+    private bool _pReflexItemHidden;
 
     internal PReflexItem(
-        PWindow host, long id, string language, string kind, string text, string note, bool main, bool respelled)
+        PWindow host,
+        long id,
+        string language,
+        string kind,
+        string text,
+        string note,
+        bool main,
+        bool respelled,
+        string region,
+        string remark,
+        bool phonemic,
+        bool folded)
     {
         _pReflexItemHost = host;
         PReflexItemId = id;
@@ -23,8 +37,13 @@ internal sealed class PReflexItem : INotifyPropertyChanged
         _pReflexItemKind = kind;
         _pReflexItemText = text;
         _pReflexItemNote = note;
+        _pReflexItemRegion = region;
+        _pReflexItemRemark = remark;
         _pReflexItemMain = main;
         PReflexItemRespelled = respelled;
+        PReflexItemPhonemic = phonemic;
+        PReflexItemFolded = folded;
+        _pReflexItemHidden = folded;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -32,6 +51,14 @@ internal sealed class PReflexItem : INotifyPropertyChanged
     public long PReflexItemId { get; }
 
     public bool PReflexItemRespelled { get; }
+
+    public bool PReflexItemPhonemic { get; }
+
+    public bool PReflexItemFolded { get; }
+
+    public string PReflexItemOpener => PReflexItemPhonemic ? "/" : string.Empty;
+
+    public string PReflexItemCloser => PReflexItemPhonemic ? "/" : string.Empty;
 
     public string PReflexItemLanguage
     {
@@ -61,13 +88,34 @@ internal sealed class PReflexItem : INotifyPropertyChanged
     public string PReflexItemText
     {
         get => _pReflexItemText;
-        set => PReflexItemSet(ref _pReflexItemText, value, nameof(PReflexItemText));
+        set
+        {
+            PReflexItemSet(ref _pReflexItemText, value, nameof(PReflexItemText));
+        }
     }
 
     public string PReflexItemNote
     {
         get => _pReflexItemNote;
         set => PReflexItemSet(ref _pReflexItemNote, value, nameof(PReflexItemNote));
+    }
+
+    public string PReflexItemRegion
+    {
+        get => _pReflexItemRegion;
+        set
+        {
+            if (PReflexItemSet(ref _pReflexItemRegion, value, nameof(PReflexItemRegion)))
+            {
+                PReflexItemRaise(nameof(PReflexItemArea));
+            }
+        }
+    }
+
+    public string PReflexItemRemark
+    {
+        get => _pReflexItemRemark;
+        set => PReflexItemSet(ref _pReflexItemRemark, value, nameof(PReflexItemRemark));
     }
 
     public bool PReflexItemMain
@@ -99,6 +147,22 @@ internal sealed class PReflexItem : INotifyPropertyChanged
             PReflexItemRaise(nameof(PReflexItemLead));
             PReflexItemRaise(nameof(PReflexItemHead));
             PReflexItemRaise(nameof(PReflexItemLabel));
+            PReflexItemRaise(nameof(PReflexItemArea));
+        }
+    }
+
+    public bool PReflexItemHidden
+    {
+        get => _pReflexItemHidden;
+        set
+        {
+            if (_pReflexItemHidden == value)
+            {
+                return;
+            }
+
+            _pReflexItemHidden = value;
+            PReflexItemRaise(nameof(PReflexItemHidden));
         }
     }
 
@@ -111,9 +175,12 @@ internal sealed class PReflexItem : INotifyPropertyChanged
     public string PReflexItemLabel =>
         _pReflexItemLead ? PReflexLabelFormat(_pReflexItemHost, _pReflexItemLanguage) : string.Empty;
 
+    public string PReflexItemArea => _pReflexItemLead ? _pReflexItemRegion : string.Empty;
+
     public string PReflexItemTag => PReflexLabelFormat(_pReflexItemHost, _pReflexItemKind);
 
-    internal static PReflexItem PReflexItemCreate(PWindow host, LReflexDraft draft, PRespelling respelling)
+    internal static PReflexItem PReflexItemCreate(
+        PWindow host, LReflexDraft draft, PRespelling respelling, bool phonemic, bool folded)
     {
         ArgumentNullException.ThrowIfNull(host);
         ArgumentNullException.ThrowIfNull(draft);
@@ -127,7 +194,11 @@ internal sealed class PReflexItem : INotifyPropertyChanged
             PReflexTextRead(draft, respelling),
             draft.LReflexDraftNote,
             draft.LReflexDraftMain,
-            respelling.PRespellingShown);
+            respelling.PRespellingShown,
+            draft.LReflexDraftRegion,
+            draft.LReflexDraftRemark,
+            phonemic,
+            folded);
     }
 
     internal static string PReflexTextRead(LReflexDraft draft, PRespelling respelling)

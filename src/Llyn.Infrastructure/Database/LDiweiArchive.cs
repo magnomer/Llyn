@@ -164,7 +164,7 @@ public sealed class LDiweiArchive
         command.CommandText =
             """
             SELECT f.character, f.book, f.position, f.text, f.initial, f.rime, f.heading, f.division, f.tone,
-                   f.rounded, f.source, f.spelling
+                   f.rounded, f.source, f.spelling, f.reading, f.tone_class
             FROM fanqie_diwei l
             JOIN fanqie f ON f.fanqie_id = l.fanqie_parent
             WHERE l.diwei_ref = $diwei
@@ -188,7 +188,9 @@ public sealed class LDiweiArchive
                 reader.GetString(8),
                 reader.GetInt32(9) != 0,
                 reader.GetString(10),
-                reader.GetString(11)));
+                reader.GetString(11),
+                reader.GetString(12),
+                reader.GetString(13)));
         }
 
         return rows;
@@ -247,14 +249,26 @@ public sealed class LDiweiArchive
                 clear.ExecuteNonQuery();
             }
 
-            foreach ((string kind, string key) in LDiweiKeyScan(row, hypothesis))
+            LHypothesisSound? sound = hypothesis?.LHypothesisResolve(row);
+            LDiweiReadingSave(session, fanqieId, sound);
+            foreach ((string kind, string key) in LDiweiKeyScan(row, sound))
             {
                 LDiweiLinkCreate(session, fanqieId, LDiweiRowCreate(session, language, kind, key));
             }
         }
     }
 
-    private static IEnumerable<(string, string)> LDiweiKeyScan(LFanqieRow row, LHypothesis? hypothesis)
+    private static void LDiweiReadingSave(LDatabaseSession session, long fanqieId, LHypothesisSound? sound)
+    {
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText = "UPDATE fanqie SET reading = $reading, tone_class = $class WHERE fanqie_id = $fanqie;";
+        command.Parameters.AddWithValue("$reading", sound?.LHypothesisSoundText ?? string.Empty);
+        command.Parameters.AddWithValue("$class", sound?.LHypothesisSoundClass ?? string.Empty);
+        command.Parameters.AddWithValue("$fanqie", fanqieId);
+        command.ExecuteNonQuery();
+    }
+
+    private static IEnumerable<(string, string)> LDiweiKeyScan(LFanqieRow row, LHypothesisSound? sound)
     {
         if (row.LFanqieRowInitial.Length > 0)
         {
@@ -267,7 +281,7 @@ public sealed class LDiweiArchive
             yield return (LDiwei.LDiweiRime, rime);
         }
 
-        string? tone = hypothesis?.LHypothesisResolve(row)?.LHypothesisSoundClass;
+        string? tone = sound?.LHypothesisSoundClass;
         if (!string.IsNullOrEmpty(tone))
         {
             yield return (LDiwei.LDiweiTone, tone);

@@ -14,6 +14,11 @@ The second is marked rather than shown.
 The mark stands until the user writes over it or the row is dropped.
 Writing in the row is the user saying what the location is, which is why any edit ends the mark.
 
+A preview is not attempted until the row has been seen.
+A card holds every picture of every meaning, and most of them sit below the fold when the entry opens.
+Decoding a picture nobody has scrolled to would cost the open for nothing.
+The row therefore waits for its element to report itself in view, and loads once, then keeps up with edits.
+
 A preview is attempted and allowed to fail.
 A path that names nothing and an address that answers nothing leave the row with no preview.
 So does a file that is not a picture.
@@ -31,6 +36,12 @@ The row id is carried through untouched, so an edited location updates a picture
 ## `internal long PImageId`
 
 The id of the engine's row this one shows, which every request about it names.
+
+## `public void PImageLoad()`
+
+The element drawing the row has come into view, so the preview is loaded now.
+The first call loads and marks the row seen, and later edits to the location reload at once.
+A second call does nothing, since a seen row already keeps its preview current.
 
 ## `internal LStateWritten PImageLocationRead()`
 

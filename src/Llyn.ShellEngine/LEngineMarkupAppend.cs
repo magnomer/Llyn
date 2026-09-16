@@ -24,7 +24,12 @@ public sealed partial class LEngine
                 loaded.LEntryDraftReflexes,
                 parsed.LEntryDraftReflexes,
                 static row => string.Join(
-                    ' ', row.LReflexDraftLanguage, row.LReflexDraftKind, row.LReflexDraftText, row.LReflexDraftNote)),
+                    ' ',
+                    row.LReflexDraftLanguage,
+                    row.LReflexDraftRegion,
+                    row.LReflexDraftKind,
+                    row.LReflexDraftText,
+                    row.LReflexDraftNote)),
             LEntryDraftSpeeches = LEngineMarkupAppend(
                 loaded.LEntryDraftSpeeches,
                 parsed.LEntryDraftSpeeches,

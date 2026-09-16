@@ -28,6 +28,8 @@ public static class LSchemaFanqie
                 rounded INTEGER NOT NULL,
                 source TEXT NOT NULL,
                 spelling TEXT NOT NULL,
+                reading TEXT NOT NULL DEFAULT '',
+                tone_class TEXT NOT NULL DEFAULT '',
                 UNIQUE (language, character, book, source, position)
             );
             """;

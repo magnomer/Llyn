@@ -139,6 +139,9 @@ internal static partial class TInterface
     internal static LLanguage TLanguageLoad(string language) =>
         LLanguageLoader.LLanguageLoaderLoad(language);
 
+    internal static IReadOnlyList<string> TLanguageScan() =>
+        LLanguageLoader.LLanguageLoaderScan();
+
     internal static IReadOnlyList<string> TGlyphScan(string text) =>
         LGlyph.LGlyphScan(text);
 

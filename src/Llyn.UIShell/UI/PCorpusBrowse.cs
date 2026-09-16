@@ -51,6 +51,11 @@ public partial class PCorpus
             _pDisplayEntry = bulletin.LBulletinId;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PCitationFind();
         PAnthologyFind(PQuery.Text ?? string.Empty);
         PQuotationEntryUpdate(bulletin.LBulletinId);

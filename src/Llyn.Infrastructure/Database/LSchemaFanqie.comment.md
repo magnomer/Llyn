@@ -13,3 +13,5 @@ The text is the line the reading view prints as it stands.
 The parts it was built from sit beside it, so a hypothesis can derive a reading without a refetch.
 The source names the site the row came from, since one book may be read from several.
 The spelling is the 反切 the site printed, or empty.
+The reading and tone class are what the hypothesis derived from the parts, written when the placement is stored.
+Both are empty when the hypothesis gave none, and the view prints them as they stand.

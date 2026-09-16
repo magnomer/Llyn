@@ -23,6 +23,7 @@ public static class LSchemaEntry
                 frequency TEXT,
                 added_utc TEXT,
                 updated_utc TEXT,
+                epithet TEXT NOT NULL DEFAULT '',
                 CHECK (length(origin_realm) = 16 OR origin_id = 0)
             );
 

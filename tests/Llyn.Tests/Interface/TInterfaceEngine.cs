@@ -328,6 +328,10 @@ internal static partial class TInterface
     internal static IReadOnlyList<LReflexRule> TEngineReflexRead(this LEngine engine, string language) =>
         engine.LEngineReflexRead(language);
 
+    internal static IReadOnlyList<LReflex> TEngineReflexSet(
+        this LEngine engine, long entryId, IReadOnlyList<LReflex> reflexes) =>
+        engine.LEngineReflexSet(entryId, reflexes);
+
     internal static bool TEngineReflexCheck(this LEngine engine, long entryId) =>
         engine.LEngineReflexCheck(entryId);
 

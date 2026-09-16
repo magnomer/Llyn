@@ -26,8 +26,8 @@ public sealed class TMarkupParse
         Assert.Equal("ɪ", Assert.Single(pronunciation.LPronunciationDraftSyllables).LSyllableNucleus);
         Assert.Equal("KIN-dl", Assert.Single(entry.LMarkupEntryTranscription).LTranscriptionDraftText);
         LReflexDraft reflex = Assert.Single(entry.LMarkupEntryReflex);
-        Assert.Equal("[ʈ͡ʂɤŋ²¹⁴]", reflex.LReflexDraftText);
-        Assert.Equal("/tʂəŋ²¹⁴/", reflex.LReflexDraftRespelling);
+        Assert.Equal("ʈ͡ʂɤŋ²¹⁴", reflex.LReflexDraftText);
+        Assert.Equal("tʂəŋ²¹⁴", reflex.LReflexDraftRespelling);
         Assert.True(reflex.LReflexDraftMain);
         Assert.Equal("Chiefly *literary*.", entry.LMarkupEntryNote);
 

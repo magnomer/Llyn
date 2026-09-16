@@ -1,0 +1,22 @@
+{
+  "language": "Hakka",
+  "flag": "flag.svg",
+  "listed": false,
+  "separator": "none",
+  "tonal": true,
+  "phonemic": true,
+  "respelling": [
+    {
+      "name": "Standard",
+      "rules": [
+        ["͡", ""],
+        ["̯", ""],
+        ["tɕ", "ts"],
+        ["ɕ", "s"],
+        ["ɨ", "ə"]
+      ]
+    }
+  ],
+  "pronunciation": [],
+  "audio": []
+}

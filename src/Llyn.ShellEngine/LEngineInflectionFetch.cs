@@ -174,6 +174,7 @@ public sealed partial class LEngine
         if (appended.Count > 0)
         {
             new LInflectionArchive(_lEngineDatabase).LInflectionAppend(entry.LEntryId, appended);
+            LEngineParadigmUpdate(entry);
         }
 
         if (missed.Count > 0)

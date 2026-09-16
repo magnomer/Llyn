@@ -30,6 +30,13 @@ The rows come back with their ids and positions.
 
 Reads the entry's inflections, ordered by position, each carrying its ordered features.
 
+## `public void LInflectionRegularSave(long inflectionId, bool regular)`
+
+Writes the derived regular flag alone onto one inflection row.
+The engine derives it whenever the form or its entry is stored, so a reader never runs the paradigm pattern.
+A row rewritten by a move or a delete carries the flag across.
+The insert writes what the record holds.
+
 ## `public IReadOnlyList<LInflection> LInflectionSet(long entryId, IReadOnlyList<LInflection> inflections)`
 
 Replaces the entry's inflections with `inflections` in list order.

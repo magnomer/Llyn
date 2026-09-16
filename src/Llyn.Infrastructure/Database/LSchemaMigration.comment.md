@@ -20,7 +20,7 @@ So a crash at any point leaves it whole, at one version or the other.
 A copy of the old file is kept beside it under its version, so nothing is lost to a rebuild.
 The same rebuild serves a file written by a newer build, since what this build cannot read it cannot keep.
 
-## `public const long LSchemaMigrationVersion = 62;`
+## `public const long LSchemaMigrationVersion = 64;`
 
 The schema version this build produces.
 A change to any table raises it.

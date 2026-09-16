@@ -18,7 +18,6 @@ public partial class PEditor
 
         PSentenceFrameLoad(started.LDraftContent.LEntryDraftLanguage);
         PEditorDraftShow(started.LDraftContent);
-        PCardPrepare();
         PEditorChangeUpdate();
         PEditorFavoriteShow();
         PEditorGraspShow();

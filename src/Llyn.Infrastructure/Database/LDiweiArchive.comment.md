@@ -45,11 +45,19 @@ One category row with its count, as the read queries select them.
 ## `private static void LDiweiCharacterApply(`
 
 Reads the character's fanqie rows with their ids, clears each row's links and writes them afresh.
+The hypothesis is run once per row here.
+What it gives is stored on the row and keyed into the links.
+So the reading view prints a stored reading and never runs the hypothesis itself.
 
-## `private static IEnumerable<(string, string)> LDiweiKeyScan(LFanqieRow row, LHypothesis? hypothesis)`
+## `private static void LDiweiReadingSave(LDatabaseSession session, long fanqieId, LHypothesisSound? sound)`
+
+Writes the derived reading and tone class onto the fanqie row, or blanks both when the hypothesis gave none.
+
+## `private static IEnumerable<(string, string)> LDiweiKeyScan(LFanqieRow row, LHypothesisSound? sound)`
 
 The category keys one fanqie row carries: its initial, its rime without the 重紐 letter, and its tone class.
-The tone class comes from the hypothesis, so a row it cannot resolve links to no tone.
+The tone class comes from the sound the hypothesis derived.
+A row it could not resolve links to no tone.
 An empty part is skipped.
 
 ## `private static long LDiweiRowCreate(LDatabaseSession session, string language, string kind, string key)`

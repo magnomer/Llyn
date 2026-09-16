@@ -22,7 +22,12 @@ public partial class PEditor
 
     private bool PGlyphSchemeCheck(string scheme)
     {
-        return _pGlyph is not null && string.Equals(scheme, _pGlyph.LGlyphName, StringComparison.Ordinal);
+        return PGlyphSchemeCheck(_pGlyph, scheme);
+    }
+
+    private static bool PGlyphSchemeCheck(LGlyph? glyph, string scheme)
+    {
+        return glyph is not null && string.Equals(scheme, glyph.LGlyphName, StringComparison.Ordinal);
     }
 
     private void PGlyphShow(LEntryDraft draft)
@@ -53,21 +58,23 @@ public partial class PEditor
 
     private void PGlyphPrepare(LEntryDraft draft)
     {
-        if (_pGlyph is null)
+        string language = draft.LEntryDraftLanguage;
+        LGlyph? glyph = language.Length == 0 ? null : _lEngine.LEngineGlyphRead(language);
+        if (glyph is null)
         {
             return;
         }
 
         foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
         {
-            if (PGlyphSchemeCheck(spelled.LTranscriptionDraftScheme))
+            if (PGlyphSchemeCheck(glyph, spelled.LTranscriptionDraftScheme))
             {
                 return;
             }
         }
 
         PEditorRequestSend(new LRequestTranscriptionAddition(
-            _pEditorDraft, _pGlyph.LGlyphName, draft.LEntryDraftTranscriptions.Count, true));
+            _pEditorDraft, glyph.LGlyphName, draft.LEntryDraftTranscriptions.Count, true));
     }
 
     private void PGlyphClear()

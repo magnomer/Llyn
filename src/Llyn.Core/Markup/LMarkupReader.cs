@@ -330,6 +330,8 @@ internal static class LMarkupReader
         string text = string.Empty;
         string respelling = string.Empty;
         string note = string.Empty;
+        string region = string.Empty;
+        string remark = string.Empty;
         bool main = false;
 
         foreach (XElement child in element.Elements())
@@ -351,6 +353,12 @@ internal static class LMarkupReader
                 case "note":
                     note = LMarkup.LMarkupTextParse(child);
                     break;
+                case "region":
+                    region = LMarkup.LMarkupTextParse(child);
+                    break;
+                case "remark":
+                    remark = LMarkup.LMarkupTextParse(child);
+                    break;
                 case "main":
                     main = true;
                     break;
@@ -360,6 +368,14 @@ internal static class LMarkupReader
             }
         }
 
-        return new LReflexDraft(language, kind, text, main, LReflexDraftNote: note, LReflexDraftRespelling: respelling);
+        return new LReflexDraft(
+            language,
+            kind,
+            text,
+            main,
+            LReflexDraftNote: note,
+            LReflexDraftRespelling: respelling,
+            LReflexDraftRegion: region,
+            LReflexDraftRemark: remark);
     }
 }

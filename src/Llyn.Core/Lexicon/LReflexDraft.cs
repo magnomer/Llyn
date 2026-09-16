@@ -7,7 +7,9 @@ public sealed record LReflexDraft(
     bool LReflexDraftMain = false,
     long LReflexDraftId = 0,
     string LReflexDraftNote = "",
-    string LReflexDraftRespelling = "")
+    string LReflexDraftRespelling = "",
+    string LReflexDraftRegion = "",
+    string LReflexDraftRemark = "")
 {
     public string LReflexDraftRespelling { get; init; } = LReflexDraftRespelling ?? string.Empty;
 
@@ -19,9 +21,15 @@ public sealed record LReflexDraft(
 
     public string LReflexDraftNote { get; init; } = LReflexDraftNote ?? string.Empty;
 
+    public string LReflexDraftRegion { get; init; } = LReflexDraftRegion ?? string.Empty;
+
+    public string LReflexDraftRemark { get; init; } = LReflexDraftRemark ?? string.Empty;
+
     public bool LReflexDraftEmpty =>
         LReflexDraftText.Trim().Length == 0
         && LReflexDraftLanguage.Trim().Length == 0
         && LReflexDraftKind.Trim().Length == 0
-        && LReflexDraftNote.Trim().Length == 0;
+        && LReflexDraftNote.Trim().Length == 0
+        && LReflexDraftRegion.Trim().Length == 0
+        && LReflexDraftRemark.Trim().Length == 0;
 }

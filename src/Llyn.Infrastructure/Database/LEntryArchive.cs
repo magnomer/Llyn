@@ -219,6 +219,34 @@ public sealed partial class LEntryArchive
         session.LDatabaseSessionCommit();
     }
 
+    public string LEntryEpithetRead(long entryId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText = "SELECT epithet FROM entry WHERE entry_id = $id;";
+        command.Parameters.AddWithValue("$id", entryId);
+        return command.ExecuteScalar() as string ?? string.Empty;
+    }
+
+    public void LEntryEpithetSave(long entryId, string epithet)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
+        ArgumentNullException.ThrowIfNull(epithet);
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "UPDATE entry SET epithet = $epithet WHERE entry_id = $id AND epithet <> $epithet;";
+            command.Parameters.AddWithValue("$epithet", epithet);
+            command.Parameters.AddWithValue("$id", entryId);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
     public void LEntryGraspSet(long entryId, int grasp)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);

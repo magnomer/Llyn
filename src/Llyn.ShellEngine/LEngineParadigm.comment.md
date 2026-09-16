@@ -25,11 +25,21 @@ The public seams and the fetch share it so an entry is read once per question.
 ## `public IReadOnlyList<LParadigmSlot> LEngineParadigmShow(long entryId)`
 
 Reads the slots of the entry as `LEngineParadigmRead` does and drops those the display need not show.
-A specified slot whose stored form is regular under its paradigm's rules is dropped, judged by `LEngineParadigmMatch`.
+A specified slot whose stored form carries the regular flag is dropped.
 So a noun whose plural is `cats` shows no plural row, while `mice` keeps one.
 A paradigm stating no rules keeps every row, which is why verb forms always show.
 An empty answer means the headword is not inflecting for display.
-The judgement lives here so the shell never reads a rule.
+The flag was derived when the form was stored, so showing runs no rule.
+
+## `private void LEngineParadigmUpdate(long entryId)`
+
+Derives the regular flag of every stored form of the entry `entryId` names, or does nothing for a missing entry.
+
+## `private void LEngineParadigmUpdate(LEntry entry)`
+
+Judges every answered slot of the entry by `LEngineParadigmMatch` and stores the flag where it changed.
+An entry without a language has no pack and no paradigm, so nothing is judged.
+It runs whenever the forms, the headword or the parts of speech are stored, since the judgement reads all three.
 
 ## `private static IReadOnlyList<LParadigm> LEngineParadigmScan(LSpeechPack pack, long speechCode)`
 

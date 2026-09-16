@@ -37,10 +37,10 @@ public sealed class LFanqieArchive
                 """
                 INSERT INTO fanqie (
                     language, character, book, position, text,
-                    initial, rime, heading, division, tone, rounded, source, spelling)
+                    initial, rime, heading, division, tone, rounded, source, spelling, reading, tone_class)
                 VALUES (
                     $language, $character, $book, $position, $text,
-                    $initial, $rime, $heading, $division, $tone, $rounded, $source, $spelling);
+                    $initial, $rime, $heading, $division, $tone, $rounded, $source, $spelling, $reading, $class);
                 """;
             command.Parameters.AddWithValue("$language", language);
             command.Parameters.AddWithValue("$character", character);
@@ -55,6 +55,8 @@ public sealed class LFanqieArchive
             command.Parameters.AddWithValue("$rounded", row.LFanqieRowRounded ? 1 : 0);
             command.Parameters.AddWithValue("$source", row.LFanqieRowSource);
             command.Parameters.AddWithValue("$spelling", row.LFanqieRowSpelling);
+            command.Parameters.AddWithValue("$reading", row.LFanqieRowReading);
+            command.Parameters.AddWithValue("$class", row.LFanqieRowClass);
             command.ExecuteNonQuery();
         }
 
@@ -70,7 +72,8 @@ public sealed class LFanqieArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT book, position, text, initial, rime, heading, division, tone, rounded, source, spelling
+            SELECT book, position, text, initial, rime, heading, division, tone, rounded, source, spelling,
+                   reading, tone_class
             FROM fanqie
             WHERE language = $language AND character = $character
             ORDER BY fanqie_id;
@@ -94,7 +97,9 @@ public sealed class LFanqieArchive
                 reader.GetString(7),
                 reader.GetInt32(8) != 0,
                 reader.GetString(9),
-                reader.GetString(10)));
+                reader.GetString(10),
+                reader.GetString(11),
+                reader.GetString(12)));
         }
 
         return rows;

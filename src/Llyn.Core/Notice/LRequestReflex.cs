@@ -24,3 +24,6 @@ public sealed record LRequestReflexNote(long LRequestDraftId, long LRequestRefle
 
 public sealed record LRequestReflexMain(long LRequestDraftId, long LRequestReflexId, bool LRequestMain)
     : LRequest(LRequestDraftId);
+
+public sealed record LRequestReflexRemark(long LRequestDraftId, long LRequestReflexId, string LRequestText)
+    : LRequest(LRequestDraftId);

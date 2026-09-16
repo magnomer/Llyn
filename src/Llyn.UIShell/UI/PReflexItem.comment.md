@@ -3,8 +3,8 @@
 ## `internal sealed class PReflexItem : INotifyPropertyChanged`
 
 One reflex row as the reading view and the input panel bind it.
-It carries the language, the kind, the text, the note and the main mark of one draft row.
-It also knows whether it leads its language group.
+It carries the language, kind, text, note, region, remark and main mark of one draft row.
+It also knows whether it leads its language group, and whether it is folded away under the visible rows.
 The panel edits it through its properties, and the view only reads them.
 
 ## `public long PReflexItemId { get; }`
@@ -27,9 +27,39 @@ It is read from the switch and the row's own language.
 So a Korean row stays plain while a Mandarin row is respelled.
 A change of that state rebuilds the row.
 
+## `public bool PReflexItemPhonemic { get; }`
+
+Whether the row's language is phonemic, fixed when the row is built, so its reading is drawn between slashes.
+
+## `public bool PReflexItemFolded { get; }`
+
+Whether the row belongs to a language the pack folds away, fixed when the row is built.
+
+## `public string PReflexItemOpener`
+
+The slash drawn before the reading of a phonemic language, or nothing.
+
+## `public string PReflexItemCloser`
+
+The slash drawn after the reading of a phonemic language, or nothing.
+
 ## `public string PReflexItemText`
 
-The reading as typed or fetched, in the form the switch picks for the row's language.
+The reading as typed or fetched, bare, in the form the switch picks for the row's language.
+
+## `public string PReflexItemRegion`
+
+The place the reading is taken from, as fetched, never typed.
+Both the view and the editor show it on the lead row when its language is hovered.
+
+## `public string PReflexItemRemark`
+
+What the source says of the reading, printed after the note and edited on the row.
+
+## `public bool PReflexItemHidden`
+
+Whether the row is hidden in the stack, true for a folded row while the fold is closed.
+The panel and the view set it from the shared fold state.
 
 ## `public string PReflexItemNote`
 
@@ -54,13 +84,18 @@ Writing it writes the language, so typing into a blank field starts a new group.
 
 The localized language on a lead row, or nothing beneath it, for the reading view.
 
+## `public string PReflexItemArea`
+
+The region on a lead row, or nothing beneath it, so the language name alone carries the hover.
+
 ## `public string PReflexItemTag`
 
 The localized kind, or nothing when the row has none.
 
-## `internal static PReflexItem PReflexItemCreate(PWindow host, LReflexDraft draft, PRespelling respelling)`
+## `internal static PReflexItem PReflexItemCreate(`
 
 Builds the row for one draft reflex, printing the form `respelling` picks for the row's language.
+`phonemic` decides the slashes and `folded` whether the row starts hidden.
 
 ## `internal static string PReflexTextRead(LReflexDraft draft, PRespelling respelling)`
 

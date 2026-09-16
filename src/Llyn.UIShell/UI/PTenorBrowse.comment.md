@@ -31,6 +31,8 @@ No tab switch is needed.
 A workspace that moved is the one announcement that empties the panel first.
 
 A register announcement carries a register id, not an entry id, so it only refreshes the catalog.
+A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
+Those announcements are skipped.
 Passing it on as an entry would make a fresh entry being written adopt the register's id.
 
 ### `private void PTenorFreshHandle(object sender, RoutedEventArgs e)`

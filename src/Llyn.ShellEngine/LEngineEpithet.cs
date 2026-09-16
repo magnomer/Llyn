@@ -14,25 +14,29 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            if (!_lEngineSettings.LSettingsEpithet)
+            if (!_lEngineSettings.LSettingsEpithet || entryId <= 0)
             {
                 return string.Empty;
             }
 
-            LEntry? entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
-            if (entry is null)
-            {
-                return string.Empty;
-            }
-
-            IReadOnlyList<LReflexRule> rules = LEngineReflexRead(entry.LEntryLanguage);
-            if (!LEngineEpithetCheck(rules))
-            {
-                return string.Empty;
-            }
-
-            return LEngineEpithetFormat(rules, new LReflexArchive(_lEngineDatabase).LReflexRead(entryId));
+            return new LEntryArchive(_lEngineDatabase).LEntryEpithetRead(entryId);
         }
+    }
+
+    private void LEngineEpithetUpdate(long entryId)
+    {
+        LEntryArchive entries = new(_lEngineDatabase);
+        LEntry? entry = entries.LEntryRead(entryId);
+        if (entry is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<LReflexRule> rules = LEngineReflexRead(entry.LEntryLanguage);
+        string epithet = LEngineEpithetCheck(rules)
+            ? LEngineEpithetFormat(rules, new LReflexArchive(_lEngineDatabase).LReflexRead(entryId))
+            : string.Empty;
+        entries.LEntryEpithetSave(entryId, epithet);
     }
 
     private static bool LEngineEpithetCheck(IReadOnlyList<LReflexRule> rules)

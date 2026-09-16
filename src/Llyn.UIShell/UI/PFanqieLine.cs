@@ -60,14 +60,13 @@ internal sealed class PFanqieLine
 
     public string PFanqieLineText { get; }
 
-    internal static PFanqieLine PFanqieLineCreate(LFanqieRow row, LHypothesis? hypothesis)
+    internal static PFanqieLine PFanqieLineCreate(LFanqieRow row)
     {
         ArgumentNullException.ThrowIfNull(row);
 
         bool parted = row.LFanqieRowInitial.Length > 0 || row.LFanqieRowRime.Length > 0;
-        LHypothesisSound? sound = hypothesis?.LHypothesisResolve(row);
-        string reading = sound is null ? string.Empty : '/' + sound.LHypothesisSoundText + '/';
-        string label = PFanqieLabelFormat(sound);
+        string reading = row.LFanqieRowReading.Length == 0 ? string.Empty : '/' + row.LFanqieRowReading + '/';
+        string label = PFanqieLabelFormat(row.LFanqieRowClass);
         string rime = row.LFanqieRowHeading.Length == 0
             ? row.LFanqieRowRime
             : row.LFanqieRowRime + '[' + row.LFanqieRowHeading + ']';
@@ -89,16 +88,16 @@ internal sealed class PFanqieLine
             parted ? string.Empty : row.LFanqieRowText);
     }
 
-    private static string PFanqieLabelFormat(LHypothesisSound? sound)
+    private static string PFanqieLabelFormat(string toneClass)
     {
-        if (sound is null || sound.LHypothesisSoundClass.Length == 0)
+        if (toneClass.Length == 0)
         {
             return string.Empty;
         }
 
         string pattern = PLocalizationCatalog.PLocalizationCatalogCurrent[PFanqieLineKey];
         return pattern.Length == 0
-            ? sound.LHypothesisSoundClass
-            : string.Format(CultureInfo.CurrentCulture, pattern, sound.LHypothesisSoundClass);
+            ? toneClass
+            : string.Format(CultureInfo.CurrentCulture, pattern, toneClass);
     }
 }

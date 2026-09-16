@@ -21,7 +21,8 @@ The group numbers, prefix, rewrite rules and gloss pattern are optional.
 The `form` object as posted fields, string values only, in written order.
 A row without a form posts nothing but still asks the address.
 
-## `private static IReadOnlyList<LRespellingRule> LLanguageRewriteScan(JsonElement row)`
+## `private static IReadOnlyList<LRespellingRule> LLanguageRewriteScan(JsonElement row, string key = LLanguageLoaderRewrite)`
 
 The `rewrite` array as ordered rules, each a two-string pair like a respelling rule.
+Another key names another such array, as `recast` does for a reflex rule.
 A pair whose pattern does not compile is skipped rather than failing the pack.

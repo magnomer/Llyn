@@ -174,11 +174,11 @@ public sealed partial class LEngine
                     });
             }
 
-            return LEngineRespellingRestore(draft with { LEntryDraftPronunciations = resolved });
+            return draft with { LEntryDraftPronunciations = resolved };
         }
     }
 
-    private LEntryDraft LEngineRespellingRestore(LEntryDraft draft)
+    private LEntryDraft LEngineRespellingUpdate(LEntryDraft draft)
     {
         List<LPronunciationDraft> spoken = new(draft.LEntryDraftPronunciations.Count);
         foreach (LPronunciationDraft row in draft.LEntryDraftPronunciations)

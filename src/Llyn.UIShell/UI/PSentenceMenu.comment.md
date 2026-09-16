@@ -97,12 +97,13 @@ The typed citation line is no request at all, and only opens the dropdown of Sou
 
 Whether a request for this row's field is still waiting, in which case a redraw must not overwrite it.
 
-### `private void PSentencePrepare()`
+### `private void PSentencePrepare(LEntryDraft draft)`
 
-Asks for a blank row on every card that shows none, after each redraw.
+Asks for a blank row on every top card of the draft that holds none.
 A card with no row to write in offers nothing.
 The engine keeps the blank row rather than the card.
-The cards are collected first and checked again before each ask, because each answer redraws and prepares in turn.
+The draft is walked rather than the drawn cards.
+The ask runs before the render and after the card ask.
 
 ### `private static void PSentenceFrameShow(ObservableCollection<string> catalog, IReadOnlyList<string> values)`
 

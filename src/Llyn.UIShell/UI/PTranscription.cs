@@ -140,10 +140,15 @@ public partial class PEditor
 
     private IReadOnlyList<LTranscriptionDraft> PTranscriptionScan(LEntryDraft draft)
     {
+        return PTranscriptionScan(draft, _pGlyph);
+    }
+
+    private static IReadOnlyList<LTranscriptionDraft> PTranscriptionScan(LEntryDraft draft, LGlyph? glyph)
+    {
         List<LTranscriptionDraft> rows = [];
         foreach (LTranscriptionDraft spelled in draft.LEntryDraftTranscriptions)
         {
-            if (!PGlyphSchemeCheck(spelled.LTranscriptionDraftScheme))
+            if (!PGlyphSchemeCheck(glyph, spelled.LTranscriptionDraftScheme))
             {
                 rows.Add(spelled);
             }
@@ -154,12 +159,15 @@ public partial class PEditor
 
     private void PTranscriptionPrepare(LEntryDraft draft)
     {
-        if (_pTranscriptionSchemes.Count == 0 || PTranscriptionScan(draft).Count > 0)
+        string language = draft.LEntryDraftLanguage;
+        IReadOnlyList<string> schemes = language.Length == 0 ? [] : _lEngine.LEngineSchemeRead(language);
+        LGlyph? glyph = language.Length == 0 ? null : _lEngine.LEngineGlyphRead(language);
+        if (schemes.Count == 0 || PTranscriptionScan(draft, glyph).Count > 0)
         {
             return;
         }
 
-        PEditorRequestSend(new LRequestTranscriptionAddition(_pEditorDraft, _pTranscriptionSchemes[0], 0, true));
+        PEditorRequestSend(new LRequestTranscriptionAddition(_pEditorDraft, schemes[0], 0, true));
     }
 
     private PTranscriptionItem PTranscriptionCreate(LTranscriptionDraft spelled)

@@ -25,7 +25,10 @@ public partial class PLibrary
             return;
         }
 
-        PIndexEntryUpdate(bulletin.LBulletinId);
+        if (PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            PIndexEntryUpdate(bulletin);
+        }
     }
 
     private void PInquiryHandle(object sender, TextChangedEventArgs e)
@@ -151,9 +154,11 @@ public partial class PLibrary
         }
     }
 
-    private void PIndexEntryUpdate(long id)
+    private void PIndexEntryUpdate(LBulletin bulletin)
     {
-        if (id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
+        long id = bulletin.LBulletinId;
+        bool stored = bulletin.LBulletinSubject == LSubject.LSubjectEntry;
+        if (stored && id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
             _pDisplayEntry = id;
             PIndexSelect(id);
@@ -163,29 +168,31 @@ public partial class PLibrary
 
         PIndexFind(PInquiry.Text ?? string.Empty);
 
-        if (_pDisplayEntry is not long shown
+        if (!stored
+            || _pDisplayEntry is not long shown
             || (id > 0 && shown != id))
         {
             return;
         }
 
-        LEntryDraft? draft;
+        LEntry? entry;
         try
         {
-            draft = _lEngine.LEngineEntryLoad(shown);
+            entry = _lEngine.LEngineEntryRead(shown);
         }
         catch (Exception)
         {
             return;
         }
 
-        if (draft is null)
+        if (entry is null)
         {
             PLibraryClear();
             return;
         }
 
-        PLibraryEntryShow(shown, draft);
+        PLibraryMode.IsEnabled = true;
+        PLibraryCommandApply();
     }
 
     private void PLibraryFreshHandle(object sender, RoutedEventArgs e)

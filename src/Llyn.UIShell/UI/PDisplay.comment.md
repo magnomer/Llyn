@@ -73,7 +73,10 @@ The playback command is bound here, so a row's play button reaches this view's p
 
 The reflexes of the entry, one row each at the head of the reading stack under the headword.
 The rows are drawn by the shared reflex template.
+`PDisplayReflexLoading` under them is the fetching line, shown only while the engine fills the entry.
 It is empty for every entry whose language declares no reflex rule and carries none.
+`PDisplayReflexTable` holds the rows, the fetching line and the fold toggle in a stack no wider than the rows.
+So the toggle centres under the table, as it does in the editor.
 
 ## `<ItemsControl x:Name="PDisplayTranscription" ItemTemplate="{StaticResource Theme.Transcription.Display}" />`
 

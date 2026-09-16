@@ -21,12 +21,10 @@ public partial class PEditor
         string language = _pSpeakerChoice;
         IReadOnlyList<LFanqieRow> rows;
         IReadOnlyList<LFanqieBook> books;
-        LHypothesis? hypothesis;
         bool pending;
         try
         {
             books = _lEngine.LEngineBookRead(language);
-            hypothesis = _lEngine.LEngineHypothesisRead(language);
             if (books.Count > 0)
             {
                 _lEngine.LEngineFanqieStart(entry.Value);
@@ -38,13 +36,12 @@ public partial class PEditor
         catch (Exception)
         {
             books = [];
-            hypothesis = null;
             rows = [];
             pending = false;
         }
 
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PEditorFanqie);
-        PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books, hypothesis);
+        PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books);
         PEditorFanqie.PFanqiePending = pending;
         PEditorFanqie.PFanqieRebuildNotice = books.Count == 0 ? null : () => PEditorFanqieRebuild(entry.Value);
         PEditorFanqie.PFanqieDiweiNotice = (kind, key) => _pEditorHost.PWindowDiweiShow(language, kind, key);

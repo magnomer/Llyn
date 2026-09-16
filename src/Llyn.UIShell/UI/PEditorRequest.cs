@@ -151,6 +151,16 @@ public partial class PEditor
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectReflex)
+        {
+            if (bulletin.LBulletinId == PEditorEntryRead())
+            {
+                PReflexPendingShow();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectSettings)
         {
             PEditorDraftRestore();
@@ -161,6 +171,12 @@ public partial class PEditor
             || _pEditorDraft == 0
             || bulletin.LBulletinId != _pEditorDraft)
         {
+            return;
+        }
+
+        if (_pEditorPreparing)
+        {
+            _pEditorPrepareStale = true;
             return;
         }
 

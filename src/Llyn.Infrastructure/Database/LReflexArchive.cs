@@ -23,7 +23,7 @@ public sealed class LReflexArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT reflex_id, position, language, kind, text, main, note, respelling
+            SELECT reflex_id, position, language, kind, text, main, note, respelling, region, remark
             FROM reflex WHERE entry_parent = $entry ORDER BY position, reflex_id;
             """;
         command.Parameters.AddWithValue("$entry", entryId);
@@ -41,7 +41,9 @@ public sealed class LReflexArchive
                 reader.GetString(4),
                 reader.GetInt32(5) != 0,
                 reader.GetString(6),
-                reader.GetString(7)));
+                reader.GetString(7),
+                reader.GetString(8),
+                reader.GetString(9)));
         }
 
         return rows;
@@ -62,6 +64,8 @@ public sealed class LReflexArchive
             ArgumentNullException.ThrowIfNull(reflex.LReflexKind);
             ArgumentNullException.ThrowIfNull(reflex.LReflexText);
             ArgumentNullException.ThrowIfNull(reflex.LReflexNote);
+            ArgumentNullException.ThrowIfNull(reflex.LReflexRegion);
+            ArgumentNullException.ThrowIfNull(reflex.LReflexRemark);
             if (reflex.LReflexId > 0)
             {
                 kept.Add(reflex.LReflexId);
@@ -82,6 +86,8 @@ public sealed class LReflexArchive
                 LReflexText = reflexes[position].LReflexText.Trim(),
                 LReflexNote = reflexes[position].LReflexNote.Trim(),
                 LReflexRespelling = reflexes[position].LReflexRespelling.Trim(),
+                LReflexRegion = reflexes[position].LReflexRegion.Trim(),
+                LReflexRemark = reflexes[position].LReflexRemark.Trim(),
             };
 
             stored.Add(row.LReflexId > 0 ? LReflexRowSave(connection, row) : LReflexInsert(connection, row));
@@ -114,7 +120,7 @@ public sealed class LReflexArchive
         command.CommandText =
             """
             UPDATE reflex SET position = $position, language = $language, kind = $kind, text = $text, main = $main,
-                note = $note, respelling = $respelling
+                note = $note, respelling = $respelling, region = $region, remark = $remark
             WHERE reflex_id = $id AND entry_parent = $entry;
             """;
         LReflexParameterApply(command, row);
@@ -133,8 +139,8 @@ public sealed class LReflexArchive
         using SqliteCommand command = connection.CreateCommand();
         command.CommandText =
             """
-            INSERT INTO reflex (entry_parent, position, language, kind, text, main, note, respelling)
-            VALUES ($entry, $position, $language, $kind, $text, $main, $note, $respelling)
+            INSERT INTO reflex (entry_parent, position, language, kind, text, main, note, respelling, region, remark)
+            VALUES ($entry, $position, $language, $kind, $text, $main, $note, $respelling, $region, $remark)
             RETURNING reflex_id;
             """;
         LReflexParameterApply(command, row);
@@ -151,5 +157,7 @@ public sealed class LReflexArchive
         command.Parameters.AddWithValue("$main", row.LReflexMain ? 1 : 0);
         command.Parameters.AddWithValue("$note", row.LReflexNote);
         command.Parameters.AddWithValue("$respelling", row.LReflexRespelling);
+        command.Parameters.AddWithValue("$region", row.LReflexRegion);
+        command.Parameters.AddWithValue("$remark", row.LReflexRemark);
     }
 }

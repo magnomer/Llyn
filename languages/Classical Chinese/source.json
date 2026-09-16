@@ -146,44 +146,139 @@
     }
   ],
   "reflex": [
-      {
-          "language": "Korean",
-          "url": "https://hanja.dict.naver.com/api3/ccko/search?query={word}&m=pc&range=letter&page=1",
-          "headers": {
-              "Referer": "https://hanja.dict.naver.com/"
-          },
-          "match": "(?<=\"items\":\\[\\{[^\\[\\]]*\"expKoreanPron\":\"[^\"]*)(?<note>[^\" ,/][^\",/]*?) (?<text>[^\" ,/]+)(?=[\",/])",
-          "every": true,
-          "epithet": "{note} {text}",
-          "clip": "\\(.*\\)",
-          "first": true
+    {
+      "language": "Korean",
+      "url": "https://hanja.dict.naver.com/api3/ccko/search?query={word}&m=pc&range=letter&page=1",
+      "headers": {
+        "Referer": "https://hanja.dict.naver.com/"
       },
-      {
-          "language": "Mandarin",
-          "url": "https://en.wiktionary.org/wiki/{word}",
-          "match": "Standard Chinese</a></i>\\)</small>.{0,600}?Hanyu Pinyin</a></i></small>: <span[^>]*><span[^>]*><a[^>]*>(?<note>[^<]+)</a>.{0,1500}?Sinological <a[^>]*>IPA</a> <sup>\\(<a[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">/(?<text>[^/<]+)/",
-          "format": "[{text}]",
-          "every": true,
-          "first": true
-      },
-      {
-          "language": "Cantonese",
-          "url": "https://en.wiktionary.org/wiki/{word}",
-          "match": "Standard Cantonese</a>.{0,400}?Jyutping</a></i></small>: <span[^>]*>(?<note>(?:[^<]|</?sup>)+)</span>.{0,2500}?Sinological <a[^>]*>IPA</a> <sup>\\(<a[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">(?<text>[^<]+)</span>",
-          "rewrite": [
-              ["/([^/]+)/", "[$1]"]
-          ],
-          "every": true,
-          "first": true
-      },
-      {
-          "language": "Japanese",
-          "url": "https://en.wiktionary.org/wiki/{word}",
-          "match": "<i class=\"Hira mention\" lang=\"ja\">(?<=<b><a[^>]*>(?<kind>Go-on|Kan-on|Tō-on|Sō-on|Kan\\'yō-on)</a></b>:\\s*<span class=\"on-yomi\">(?:(?!</li>).){0,2000}?(?<main><span class=\"jouyou-reading\">)?<i class=\"Hira mention\" lang=\"ja\">)<a[^>]*>(?<text>[^<]+)</a>",
-          "every": true
-      }
+      "match": "(?<=\"items\":\\[\\{[^\\[\\]]*\"expKoreanPron\":\"[^\"]*)(?<note>[^\" ,/][^\",/]*?) (?<text>[^\" ,/]+)(?=[\",/])",
+      "every": true,
+      "epithet": "{note} {text}",
+      "clip": "\\(.*\\)",
+      "first": true
+    },
+    {
+      "language": "Mandarin",
+      "region": "Beijing",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "Standard Chinese</a></i>\\)</small>.{0,600}?Hanyu Pinyin</a></i></small>: <span[^>]*><span[^>]*><a[^>]*>(?<note>[^<]+)</a>.{0,1500}?Sinological <a[^>]*>IPA</a> <sup>\\(<a[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true
+    },
+    {
+      "language": "Cantonese",
+      "region": "Guangzhou",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "Standard Cantonese</a>.{0,400}?Jyutping</a></i></small>: <span[^>]*>(?<note>(?:[^<]|</?sup>)+)</span>.{0,2500}?Sinological <a[^>]*>IPA</a> <sup>\\(<a[^>]*>key</a>\\)</sup></small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true,
+      "superscript": true
+    },
+    {
+      "language": "Japanese",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "<i class=\"Hira mention\" lang=\"ja\">(?<=<b><a[^>]*>(?<kind>Go-on|Kan-on|Tō-on|Sō-on|Kan\\'yō-on)</a></b>:\\s*<span class=\"on-yomi\">(?:(?!</li>).){0,2000}?(?<main><span class=\"jouyou-reading\">)?<i class=\"Hira mention\" lang=\"ja\">)<a[^>]*>(?<text>[^<]+)</a>(?=(?:(?!<sup>|</sup>|</li>).)*?<span class=\"ann-pos\">(?:<a[^>]*>)?(?<remark>historical|ancient)<|)",
+      "every": true
+    },
+    {
+      "language": "Gan",
+      "region": "Nanchang",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "<li><small>\\((?:(?!</small>).)*?>Nanchang<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Wiktionary</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?Sinological <a[^>]*>IPA</a>(?:(?!</li>).)*?</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true,
+      "folded": true,
+      "superscript": true
+    },
+    {
+      "language": "Hakka",
+      "region": "Sixian",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "<li><small>\\((?:(?!</small>).)*?>Sixian<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Pha.{1,3}k-fa-s.{1,3}</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?Sinological <a[^>]*>IPA</a>(?:(?!</li>).)*?</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true,
+      "folded": true,
+      "superscript": true
+    },
+    {
+      "language": "Jin",
+      "region": "Taiyuan",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "<li><small>\\((?:(?!</small>).)*?>Taiyuan<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Wiktionary</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?Sinological <a[^>]*>IPA</a>(?:(?!</li>).)*?</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true,
+      "folded": true,
+      "superscript": true
+    },
+    {
+      "language": "Southern Min",
+      "region": "Xiamen",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "<li><small>\\((?:(?!</small>).)*?>Xiamen<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Pe.{1,3}h-.{1,3}e-j.{1,3}</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?Sinological <a[^>]*>IPA</a> \\((?:(?!</small>).)*?>Xiamen<(?:(?!</small>).)*?\\)</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true,
+      "folded": true,
+      "superscript": true
+    },
+    {
+      "language": "Wu",
+      "region": "Shanghai",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "<li><small>\\((?:(?!</small>).)*?>Shanghai<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Wugniu</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?Sinological <a[^>]*>IPA</a> \\((?:(?!</small>).)*?>Shanghai<(?:(?!</small>).)*?\\)</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "recast": [
+        ["^(\\d)(.+)$", "$2$1"]
+      ],
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true,
+      "folded": true,
+      "superscript": true
+    },
+    {
+      "language": "Xiang",
+      "region": "Changsha",
+      "url": "https://en.wiktionary.org/wiki/{word}",
+      "match": "(?<=<li><small>\\((?:(?!</small>).)*?>Changsha<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Wiktionary</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?)Sinological <a[^>]*>IPA</a>(?:(?!</li>).)*?(?:\\(<i>(?<remark>[^<]+)</i>\\)\\s*)?</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "split": "\\s*[,/]\\s*",
+      "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
+      "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",
+      "every": true,
+      "first": true,
+      "folded": true,
+      "superscript": true
+    }
   ],
   "hypothesis": "hypothesis.json",
+  "respelling": [
+    {
+      "name": "Standard",
+      "rules": [
+        ["͡", ""],
+        ["̯", ""]
+      ]
+    }
+  ],
   "pronunciation": [],
   "audio": []
 }

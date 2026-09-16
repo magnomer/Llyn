@@ -35,6 +35,10 @@ The form sends it in place of `LRequestReflexText` while the respelling switch s
 
 Replaces the note of one row.
 
+## `public sealed record LRequestReflexRemark(long LRequestDraftId, long LRequestReflexId, string LRequestText)`
+
+Replaces the remark of one row.
+
 ## `public sealed record LRequestReflexMain(long LRequestDraftId, long LRequestReflexId, bool LRequestMain)`
 
 Marks or unmarks one row as the reading in common use.

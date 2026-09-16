@@ -153,6 +153,13 @@ The shell never seeds anything.
 The 音韻地位 categories are derived from stored placements and the hypothesis on disk.
 So binding to a workspace is also when they are written again.
 An edited hypothesis file shows in the tone classes at the next start.
+The readings stored on the placements are written again by the same pass.
+
+### `if (database.LDatabaseMigrated)`
+
+A workspace rebuilt from an older schema has its derived strings filled once, here and in the constructor alike.
+So the reading view prints stored strings from the first open after a migration.
+An ordinary open skips the pass, since every save keeps the strings current.
 
 ### `private const long LEngineClientCeiling = 8L * 1024 * 1024;`
 

@@ -23,7 +23,7 @@ internal sealed class PFanqieItem
     public IReadOnlyList<PFanqieLine> PFanqieItemLines { get; }
 
     internal static IReadOnlyList<PFanqieItem> PFanqieItemScan(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books, LHypothesis? hypothesis)
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<LFanqieBook> books)
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(books);
@@ -44,7 +44,7 @@ internal sealed class PFanqieItem
                 groups[key] = group;
             }
 
-            group.Add(PFanqieLine.PFanqieLineCreate(row, hypothesis));
+            group.Add(PFanqieLine.PFanqieLineCreate(row));
         }
 
         List<PFanqieItem> items = [];

@@ -16,7 +16,7 @@ So an Entry the user emptied on purpose is asked again only at the next start.
 ## `public void LEngineReflexRebuild(long entryId)`
 
 Drops the stored rows of the Entry and every held draft's rows, then begins a fill as `LEngineReflexStart` does.
-The reading view and the drafts are told at once, so they empty before the fill answers.
+The fill begins before the reading view and the drafts are told, so they find it running when they redraw.
 A miss recorded this session is forgotten, so the sources are asked again.
 Nothing happens while a fill runs already, or when the Entry is missing or its pack lists no rule.
 
@@ -39,9 +39,11 @@ A headword of several characters has its rows merged, since the rows are one ent
 Every merged row then has its respelling derived from its own language's pack, whatever the switch says.
 The text stays as fetched, so both forms are stored and the switch only picks which is shown.
 
-## `private static IReadOnlyList<LReflexDraft> LEngineReflexResolve(IReadOnlyList<LReflexDraft> rows)`
+## `private static IReadOnlyList<LReflexDraft> LEngineReflexResolve(IReadOnlyList<IReadOnlyList<LReflexDraft>> rounds)`
 
-Rows of one language, kind and note folded into one, their texts joined by a space in character order.
+Rows of one language, region, kind and note folded into one, their texts joined by a space in character order.
+Each round is the answer of one rule for one character, so two rows of one round never fold together.
+So the two readings of one character stay two rows, while the readings of two characters join into a word.
 The folded row is main when any of its parts was.
 
 ## `private void LEngineReflexClear()`
@@ -58,6 +60,8 @@ The Entry must also still stand as fetched, with no rows of its own.
 A fill writes no revision row, because a machine fill is not a user edit.
 Every exception is swallowed, since a missing reading is not an error the user can act on.
 The bulletins are raised outside the gate after the write, one for the entry and one per draft filled.
+A miss or a failure raises the entry bulletin too, so a surface showing its loading line may clear it.
+Only a cancelled fill stays silent, since the surface that asked has moved on.
 
 ## `private List<long> LEngineReflexPropagate(long entryId, IReadOnlyList<LReflex> saved, bool sweep = false)`
 

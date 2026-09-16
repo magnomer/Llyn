@@ -282,28 +282,19 @@ public partial class PEditor
         return PEditorRequestCheck(PEditorRequestFormat(card, row.PSentenceRow, field));
     }
 
-    private void PSentencePrepare()
+    private void PSentencePrepare(LEntryDraft draft)
     {
-        List<PCard> bare = [];
-        PSentencePrepare(_pMeaningList, bare);
-        PSentencePrepare(_pCollocationList, bare);
-
-        foreach (PCard card in bare)
-        {
-            if (card.PCardSentence.Count == 0)
-            {
-                PEditorRequestSend(new LRequestSentenceAddition(_pEditorDraft, card.PCardId, 0));
-            }
-        }
+        PSentencePrepare(draft.LEntryDraftMeanings);
+        PSentencePrepare(draft.LEntryDraftCollocations);
     }
 
-    private static void PSentencePrepare(IReadOnlyList<PCard> cards, List<PCard> bare)
+    private void PSentencePrepare(IReadOnlyList<LCardDraft> cards)
     {
-        foreach (PCard card in cards)
+        foreach (LCardDraft card in cards)
         {
-            if (card.PCardSentence.Count == 0)
+            if (card.LCardDraftSentence.Count == 0)
             {
-                bare.Add(card);
+                PEditorRequestSend(new LRequestSentenceAddition(_pEditorDraft, card.LCardDraftId, 0));
             }
         }
     }

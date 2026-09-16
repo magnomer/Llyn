@@ -106,14 +106,14 @@ public partial class PEditor
         card.PCardVideoShow(draft.LCardDraftVideo, (row, field) => PVideoPendingCheck(card, row, field));
     }
 
-    private void PCardPrepare()
+    private void PCardPrepare(LEntryDraft draft)
     {
-        if (_pMeaningList.Count == 0)
+        if (draft.LEntryDraftMeanings.Count == 0)
         {
             PEditorRequestSend(new LRequestCardAddition(_pEditorDraft, LCardKind.LCardKindMeaning, 0, 0));
         }
 
-        if (_pCollocationList.Count == 0)
+        if (draft.LEntryDraftCollocations.Count == 0)
         {
             PEditorRequestSend(new LRequestCardAddition(_pEditorDraft, LCardKind.LCardKindCollocation, 0, 0));
         }

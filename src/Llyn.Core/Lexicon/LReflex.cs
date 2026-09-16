@@ -9,9 +9,15 @@ public sealed record LReflex(
     string LReflexText,
     bool LReflexMain = false,
     string LReflexNote = "",
-    string LReflexRespelling = "")
+    string LReflexRespelling = "",
+    string LReflexRegion = "",
+    string LReflexRemark = "")
 {
     public string LReflexNote { get; init; } = LReflexNote ?? string.Empty;
 
     public string LReflexRespelling { get; init; } = LReflexRespelling ?? string.Empty;
+
+    public string LReflexRegion { get; init; } = LReflexRegion ?? string.Empty;
+
+    public string LReflexRemark { get; init; } = LReflexRemark ?? string.Empty;
 }

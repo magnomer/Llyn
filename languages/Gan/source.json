@@ -1,0 +1,27 @@
+{
+  "language": "Gan",
+  "flag": "flag.svg",
+  "listed": false,
+  "separator": "none",
+  "tonal": true,
+  "phonemic": true,
+  "respelling": [
+    {
+      "name": "Standard",
+      "rules": [
+        ["͡", ""],
+        ["̯", ""],
+        ["tɕ", "ts"],
+        ["ȵ", "n"],
+        ["n̠ʲ", "n"],
+        ["ɕ", "s"],
+        ["z̩", "i"],
+        ["ɛ", "e"],
+        ["ɔ", "o"],
+        ["ɨ", "ə"]
+      ]
+    }
+  ],
+  "pronunciation": [],
+  "audio": []
+}

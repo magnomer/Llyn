@@ -12,7 +12,13 @@ public sealed record LFanqieRow(
     string LFanqieRowTone = "",
     bool LFanqieRowRounded = false,
     string? LFanqieRowSource = null,
-    string LFanqieRowSpelling = "")
+    string LFanqieRowSpelling = "",
+    string LFanqieRowReading = "",
+    string LFanqieRowClass = "")
 {
     public string LFanqieRowSource { get; init; } = LFanqieRowSource ?? LFanqieRowBook;
+
+    public string LFanqieRowReading { get; init; } = LFanqieRowReading ?? string.Empty;
+
+    public string LFanqieRowClass { get; init; } = LFanqieRowClass ?? string.Empty;
 }

@@ -16,6 +16,8 @@ The panel answers the engine rather than its own visibility.
 So a pronunciation corrected in another tab is in the inventory at once, with no tab switch to trigger it.
 A workspace that moved is the one announcement that empties the panel first.
 Its flags are reloaded before any row is built.
+A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
+Those announcements are skipped.
 
 ### `private string? _pDisplayEntry;`
 

@@ -18,3 +18,7 @@ A start on an entry with nothing stored fetches, stores the rows and raises the 
 A start on an entry with rows stored fetches nothing.
 An entry every page was not found for is asked once per session and stores nothing.
 A held draft of the entry with no rows takes the stored rows and stays unchanged against the entry.
+The epithet is derived when the rows are stored and kept on the entry.
+It reads back blank once the rows are dropped.
+The setting hides it from the read without touching what is stored.
+A workspace rebuilt from an older schema has its blank epithets and respellings derived once on open.

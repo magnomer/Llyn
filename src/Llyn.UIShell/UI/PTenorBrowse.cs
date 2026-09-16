@@ -32,6 +32,11 @@ public partial class PTenor
             return;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PCohortEntryUpdate(
             bulletin.LBulletinSubject == LSubject.LSubjectRegister ? 0 : bulletin.LBulletinId);
     }

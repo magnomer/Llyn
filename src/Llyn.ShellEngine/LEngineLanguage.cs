@@ -14,7 +14,7 @@ public sealed partial class LEngine
     {
         lock (_lEngineGate)
         {
-            return LLanguageLoader.LLanguageLoaderScan();
+            return _lEngineLanguageListed ??= LLanguageLoader.LLanguageLoaderScan();
         }
     }
 

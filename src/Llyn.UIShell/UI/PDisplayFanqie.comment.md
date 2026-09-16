@@ -13,7 +13,7 @@ A failed ask is ignored, and the box then shows what is stored.
 
 ## `private void PDisplayFanqieShow(long id, string language)`
 
-Reads the pack's books and hypothesis.
+Reads the pack's books.
 When it lists any book, it reads the entry's stored rows and whether a fetch runs.
 The fetch itself is started by the entry show, not here, so a bulletin never starts another.
 The blocks and the pending flag are handed to the box control, which shows the loading line or hides itself.

@@ -84,6 +84,7 @@ public partial class PDisplay : UserControl
         PDisplayLanguageShow(draft.LEntryDraftLanguage);
         PDisplayReflexStart(id);
         PDisplayReflexShow(draft);
+        PReflexPendingShow(id);
         PRespelling respelling = PRespelling.PRespellingRead(_lEngine, draft.LEntryDraftLanguage);
         PDisplayPronunciation.Text = draft.LEntryDraftPronunciation is LPronunciationDraft primary
             ? respelling.PRespellingTextRead(primary)
@@ -216,6 +217,8 @@ public partial class PDisplay : UserControl
         PDisplayAccentClear();
         _pDisplayTranscription.Clear();
         _pDisplayReflex.Clear();
+        PDisplayReflexFold.Visibility = Visibility.Collapsed;
+        PDisplayReflexLoading.Visibility = Visibility.Collapsed;
         PDisplayGlyphClear();
         PDisplaySpeech.ItemsSource = null;
         PDisplaySpeechSection.Visibility = Visibility.Collapsed;

@@ -9,12 +9,13 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-internal sealed class PImage : INotifyPropertyChanged
+internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
     private static LEngine? _pImageEngine;
 
     private string _pImageLocation;
     private bool _pImageUnknown;
+    private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
 
@@ -25,7 +26,6 @@ internal sealed class PImage : INotifyPropertyChanged
         _pImageRow = written.LImageDraftId;
         _pImageLocation = written.LImageDraftLocation.LStateValueShow();
         _pImageUnknown = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
-        PImagePreviewUpdate();
     }
 
     public string PImageLocation
@@ -78,6 +78,17 @@ internal sealed class PImage : INotifyPropertyChanged
 
     internal long PImageId => _pImageRow;
 
+    public void PImageLoad()
+    {
+        if (_pImageSeen)
+        {
+            return;
+        }
+
+        _pImageSeen = true;
+        PImagePreviewUpdate();
+    }
+
     internal LStateWritten PImageLocationRead()
     {
         return new LStateWritten(_pImageLocation, _pImageUnknown);
@@ -126,6 +137,11 @@ internal sealed class PImage : INotifyPropertyChanged
 
     private void PImagePreviewUpdate()
     {
+        if (!_pImageSeen)
+        {
+            return;
+        }
+
         Uri? address = PImageAddressRead(_pImageLocation);
         if (address is null)
         {

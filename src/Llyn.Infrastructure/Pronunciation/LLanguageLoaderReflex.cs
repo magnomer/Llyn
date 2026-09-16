@@ -8,6 +8,7 @@ namespace Llyn.Infrastructure;
 public static partial class LLanguageLoader
 {
     private const string LLanguageLoaderReflex = "reflex";
+    private const string LLanguageLoaderRecast = "recast";
 
     private static IReadOnlyList<LReflexRule> LLanguageReflexScan(JsonElement root)
     {
@@ -59,6 +60,13 @@ public static partial class LLanguageLoader
             LLanguageTextRead(row, "epithet"),
             LLanguageTextRead(row, "clip"),
             LLanguageBooleanRead(row, "first"),
-            LLanguageRewriteScan(row));
+            LLanguageRewriteScan(row),
+            LLanguageTextRead(row, "region")?.Trim(),
+            LLanguageTextRead(row, "split"),
+            LLanguageTextRead(row, "remark"),
+            LLanguageTextRead(row, "until"),
+            LLanguageBooleanRead(row, "folded"),
+            LLanguageRewriteScan(row, LLanguageLoaderRecast),
+            LLanguageBooleanRead(row, "superscript"));
     }
 }

@@ -1,0 +1,29 @@
+{
+  "language": "Xiang",
+  "flag": "flag.svg",
+  "listed": false,
+  "separator": "none",
+  "tonal": true,
+  "phonemic": true,
+  "respelling": [
+    {
+      "name": "Standard",
+      "rules": [
+        ["͡", ""],
+        ["̯", ""],
+        ["ɸ", "f"],
+        ["l̃", "l"],
+        ["tɕ", "ts"],
+        ["ɕ", "s"],
+        ["e̞", "e"],
+        ["z̩", "ə"],
+        ["ɤ̞", "ə"],
+        ["a̠", "a"],
+        ["ɒ", "a"],
+        ["ʊ", "u"]
+      ]
+    }
+  ],
+  "pronunciation": [],
+  "audio": []
+}

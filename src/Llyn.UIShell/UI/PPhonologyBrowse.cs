@@ -25,6 +25,11 @@ public partial class PPhonology
             return;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PInventoryEntryUpdate(bulletin.LBulletinId);
     }
 

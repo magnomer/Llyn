@@ -13,6 +13,8 @@ public partial class PEditor
 {
     private readonly ObservableCollection<PReflexItem> _pReflexItem = [];
 
+    private HashSet<string> _pReflexFolded = [];
+
     private static string PReflexRequestFormat(long id, string field)
     {
         return string.Concat("Reflex:", id.ToString(CultureInfo.InvariantCulture), ":", field);
@@ -49,6 +51,8 @@ public partial class PEditor
             return;
         }
 
+        PReflexTable.MinWidth = PReflexTable.ActualWidth;
+        PReflexTable.MinHeight = PReflexTable.ActualHeight;
         try
         {
             _lEngine.LEngineReflexRebuild(entry);
@@ -56,6 +60,8 @@ public partial class PEditor
         catch (Exception)
         {
         }
+
+        PReflexPendingShow();
     }
 
     private void PReflexChangeHandle(object? sender, PropertyChangedEventArgs e)
@@ -77,6 +83,8 @@ public partial class PEditor
                 : new LRequestReflexText(_pEditorDraft, row.PReflexItemId, row.PReflexItemText),
             nameof(PReflexItem.PReflexItemNote) =>
                 new LRequestReflexNote(_pEditorDraft, row.PReflexItemId, row.PReflexItemNote),
+            nameof(PReflexItem.PReflexItemRemark) =>
+                new LRequestReflexRemark(_pEditorDraft, row.PReflexItemId, row.PReflexItemRemark),
             _ => null,
         };
 
@@ -101,6 +109,7 @@ public partial class PEditor
             ? Visibility.Visible
             : Visibility.Collapsed;
 
+        _pReflexFolded = PDisplay.PReflexFoldRead(_lEngine, language);
         PCard.PCardRowShow(
             _pReflexItem,
             draft.LEntryDraftReflexes,
@@ -110,6 +119,37 @@ public partial class PEditor
             PReflexUpdate);
 
         PDisplay.PReflexLeadApply(_pReflexItem);
+        PDisplay.PReflexFoldApply(_pReflexItem, PReflexFold);
+        PReflexPendingShow();
+    }
+
+    internal void PReflexPendingShow()
+    {
+        bool pending = false;
+        if (PEditorEntryRead() is long entry)
+        {
+            try
+            {
+                pending = _lEngine.LEngineReflexCheck(entry);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        if (!pending)
+        {
+            PReflexTable.MinWidth = 0;
+            PReflexTable.MinHeight = 0;
+        }
+
+        PReflexLoading.Visibility = pending ? Visibility.Visible : Visibility.Collapsed;
+        PReflexRenewal.Tag = pending;
+    }
+
+    internal void PReflexFoldHandle(object sender, RoutedEventArgs e)
+    {
+        PDisplay.PReflexFoldToggle(_pReflexItem, PReflexFold);
     }
 
     private void PReflexPrepare(LEntryDraft draft)
@@ -127,20 +167,24 @@ public partial class PEditor
         catch (Exception)
         {
         }
+
+        PReflexPendingShow();
     }
 
     private PReflexItem PReflexCreate(LReflexDraft reflex)
     {
-        PReflexItem row = PReflexItem.PReflexItemCreate(
-            _pEditorHost, reflex, PRespelling.PRespellingRead(_lEngine, reflex.LReflexDraftLanguage));
+        PReflexItem row = PDisplay.PReflexItemCreate(_pEditorHost, _lEngine, reflex, _pReflexFolded);
         row.PropertyChanged += PReflexChangeHandle;
         return row;
     }
 
     private PReflexItem PReflexUpdate(PReflexItem row, LReflexDraft reflex)
     {
-        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, reflex.LReflexDraftLanguage);
-        if (respelling.PRespellingShown != row.PReflexItemRespelled)
+        string language = reflex.LReflexDraftLanguage.Trim();
+        PRespelling respelling = PRespelling.PRespellingRead(_lEngine, language);
+        if (respelling.PRespellingShown != row.PReflexItemRespelled
+            || _lEngine.LEnginePhonemicCheck(language) != row.PReflexItemPhonemic
+            || _pReflexFolded.Contains(language) != row.PReflexItemFolded)
         {
             row.PropertyChanged -= PReflexChangeHandle;
             return PReflexCreate(reflex);
@@ -168,6 +212,12 @@ public partial class PEditor
             row.PReflexItemNote = reflex.LReflexDraftNote;
         }
 
+        row.PReflexItemRegion = reflex.LReflexDraftRegion;
+        if (!PEditorRequestCheck(PReflexRequestFormat(row.PReflexItemId, nameof(PReflexItem.PReflexItemRemark))))
+        {
+            row.PReflexItemRemark = reflex.LReflexDraftRemark;
+        }
+
         return row;
     }
 
@@ -179,6 +229,11 @@ public partial class PEditor
         }
 
         _pReflexItem.Clear();
+        PReflexFold.Visibility = Visibility.Collapsed;
+        PReflexLoading.Visibility = Visibility.Collapsed;
+        PReflexRenewal.Tag = false;
+        PReflexTable.MinWidth = 0;
+        PReflexTable.MinHeight = 0;
         PReflexBlock.Visibility = Visibility.Collapsed;
     }
 }

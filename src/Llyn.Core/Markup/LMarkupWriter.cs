@@ -137,6 +137,8 @@ internal static class LMarkupWriter
         LMarkup.LMarkupTextFormat(element, "text", reflex.LReflexDraftText);
         LMarkup.LMarkupTextFormat(element, "respelling", reflex.LReflexDraftRespelling);
         LMarkup.LMarkupTextFormat(element, "note", reflex.LReflexDraftNote);
+        LMarkup.LMarkupTextFormat(element, "region", reflex.LReflexDraftRegion);
+        LMarkup.LMarkupTextFormat(element, "remark", reflex.LReflexDraftRemark);
         if (reflex.LReflexDraftMain)
         {
             element.Add(new XElement("main"));

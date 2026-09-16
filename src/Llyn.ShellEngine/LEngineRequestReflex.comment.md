@@ -10,6 +10,7 @@ So a blank row is held and named, and the commit leaves it out.
 ## `private LEntryDraft LEngineReflexApply(LEntryDraft content, LRequest request)`
 
 Routes every reflex request to its handler, and hands any other request on to the card lists.
+A remark request replaces that one text of the named row, while the region only comes from the fetch.
 
 ## `private LEntryDraft LEngineReflexAdd(LEntryDraft content, LRequestReflexAddition request)`
 
@@ -19,7 +20,7 @@ A new reflex row for the language and kind sent and a minted id, at the place as
 
 Fills the row's respelling from its reading through the respelling groups of the row's own language.
 It runs whether or not the switch is on, so both forms are always held and the switch only picks.
-A row of a phonemic language has its square brackets turned into slashes, because the brackets sit inside the reading.
+The respelling is as bare as the reading, and the view draws the slashes of a phonemic language around it.
 A blank reading, a blank language or a language without groups leaves the respelling blank.
 The groups are asked with no variety, so only the unscoped ones apply.
 

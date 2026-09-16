@@ -1,0 +1,25 @@
+{
+  "language": "Southern Min",
+  "flag": "flag.svg",
+  "listed": false,
+  "separator": "none",
+  "tonal": true,
+  "phonemic": true,
+  "respelling": [
+    {
+      "name": "Standard",
+      "rules": [
+        ["͡", ""],
+        ["̯", ""],
+        ["dʑ", "dz"],
+        ["tɕ", "ts"],
+        ["ɕ", "s"],
+        ["iɪ", "i"],
+        ["ɪ", "i"],
+        ["ʊ", "u"]
+      ]
+    }
+  ],
+  "pronunciation": [],
+  "audio": []
+}

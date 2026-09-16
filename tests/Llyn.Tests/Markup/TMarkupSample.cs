@@ -39,8 +39,8 @@ internal static class TMarkupSample
             </transcription>
             <reflex>
               <language>Mandarin</language>
-              <text>[ʈ͡ʂɤŋ²¹⁴]</text>
-              <respelling>/tʂəŋ²¹⁴/</respelling>
+              <text>ʈ͡ʂɤŋ²¹⁴</text>
+              <respelling>tʂəŋ²¹⁴</respelling>
               <note>zhěng</note>
               <main />
             </reflex>

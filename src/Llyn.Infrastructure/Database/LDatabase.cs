@@ -24,6 +24,8 @@ public sealed class LDatabase
 
     public string LDatabaseFile => _lDatabaseFile;
 
+    public bool LDatabaseMigrated { get; private set; }
+
     public SqliteConnection LDatabaseConnectionRead()
     {
         return LDatabaseConnectionRead(_lDatabaseFile);
@@ -111,6 +113,7 @@ public sealed class LDatabase
         if (stale)
         {
             LSchemaMigration.LSchemaMigrationRun(_lDatabaseFile);
+            LDatabaseMigrated = true;
         }
 
         using SqliteConnection fresh = LDatabaseConnectionRead();

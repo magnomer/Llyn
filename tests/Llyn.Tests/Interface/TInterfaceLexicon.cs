@@ -117,8 +117,10 @@ internal static partial class TInterface
         bool main = false,
         long id = 0,
         string note = "",
-        string respelling = "") =>
-        new(language, kind, text, main, id, note, respelling);
+        string respelling = "",
+        string region = "",
+        string remark = "") =>
+        new(language, kind, text, main, id, note, respelling, region, remark);
 
     internal static IReadOnlyList<LSpeechDraft> TSpeechDraftCreate(IReadOnlyList<string>? speeches)
     {

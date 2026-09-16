@@ -17,7 +17,7 @@ public sealed class TReflex
         LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate(
             [
                 TInterface.TReflexDraftCreate("Korean", "", "롱(농)", note: "희롱할"),
-                TInterface.TReflexDraftCreate("Mandarin", "", "[nʊŋ⁵¹]", note: "nòng"),
+                TInterface.TReflexDraftCreate("Mandarin", "", "nʊŋ⁵¹", note: "nòng"),
                 TInterface.TReflexDraftCreate("Japanese", "Go-on", "る"),
                 TInterface.TReflexDraftCreate("Japanese", "Kan-on", "ろう", true),
             ]));
@@ -32,7 +32,7 @@ public sealed class TReflex
         LEntryDraft? loaded = engine.TEngineEntryLoad(entry.LEntryId);
         Assert.NotNull(loaded);
         Assert.Equal(
-            ["롱(농)", "[nʊŋ⁵¹]", "る", "ろう"],
+            ["롱(농)", "nʊŋ⁵¹", "る", "ろう"],
             loaded.LEntryDraftReflexes.Select(row => row.LReflexDraftText));
         Assert.Equal(
             ["희롱할", "nòng", "", ""],
@@ -188,6 +188,68 @@ public sealed class TReflex
                  row.LReflexDraftNote,
                  row.LReflexDraftMain)));
         Assert.Contains("<main />", written);
+    }
+
+    [Fact]
+    public void EntrySave_RegionAndRemark_ReadBackOnEveryPath()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate(
+            [
+                TInterface.TReflexDraftCreate("Wu", "", "oʔ⁵⁵", note: "7oq", region: "Shanghai", remark: "literary"),
+            ]));
+
+        LReflex stored = Assert.Single(engine.TEngineReflexRead(entry.LEntryId));
+        Assert.Equal(("Shanghai", "literary"), (stored.LReflexRegion, stored.LReflexRemark));
+        LReflexDraft loaded = Assert.Single(engine.TEngineEntryLoad(entry.LEntryId)!.LEntryDraftReflexes);
+        Assert.Equal(("Shanghai", "literary"), (loaded.LReflexDraftRegion, loaded.LReflexDraftRemark));
+    }
+
+    [Fact]
+    public void RequestApply_ReflexRemark_LandsOnTheRow()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+
+        LDraft answered = engine.TEngineRequestApply(
+            TInterface.TReflexAdditionCreate(started.LDraftId, "Wu", "", 0));
+        long row = Assert.Single(answered.LDraftContent.LEntryDraftReflexes).LReflexDraftId;
+        answered = engine.TEngineRequestApply(TInterface.TReflexRemarkCreate(started.LDraftId, row, "vernacular"));
+
+        LReflexDraft filled = Assert.Single(answered.LDraftContent.LEntryDraftReflexes);
+        Assert.Equal("vernacular", filled.LReflexDraftRemark);
+        Assert.False(filled.LReflexDraftEmpty);
+    }
+
+    [Fact]
+    public void MarkupFormat_ReflexRegionAndRemark_RoundTrip()
+    {
+        const string text = """
+            <llyn>
+              <entry>
+                <headword>惡</headword>
+                <language>Classical Chinese</language>
+                <reflex>
+                  <language>Wu</language><text>oʔ⁵⁵</text><note>7oq</note>
+                  <region>Shanghai</region><remark>literary</remark>
+                </reflex>
+              </entry>
+            </llyn>
+            """;
+
+        IReadOnlyList<LMarkupEntry> parsed = TInterface.TMarkupParse(
+            text, out IReadOnlyList<LMarkupOmission> omissions);
+        string written = TInterface.TMarkupFormat(parsed);
+        IReadOnlyList<LMarkupEntry> again = TInterface.TMarkupParse(written);
+
+        Assert.Empty(omissions);
+        Assert.Equal(parsed, again);
+        LReflexDraft reflex = Assert.Single(Assert.Single(again).LMarkupEntryReflex);
+        Assert.Equal(("Shanghai", "literary"), (reflex.LReflexDraftRegion, reflex.LReflexDraftRemark));
+        Assert.Contains("<region>Shanghai</region>", written);
     }
 
     private static LEntryDraft TReflexDraftCreate(IReadOnlyList<LReflexDraft> reflexes)

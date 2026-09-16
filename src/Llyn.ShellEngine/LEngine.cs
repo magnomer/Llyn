@@ -26,6 +26,7 @@ public sealed partial class LEngine : IDisposable
     private readonly Dictionary<long, HashSet<long>> _lEngineInflectionMissed = [];
     private readonly HashSet<long> _lEngineInflectionLost = [];
     private readonly Dictionary<string, LLanguage> _lEngineLanguages = new(StringComparer.Ordinal);
+    private IReadOnlyList<string>? _lEngineLanguageListed;
     private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);
     private readonly LTrove _lEngineTrove = new();
     private string _lEngineWorkspace;
@@ -59,6 +60,10 @@ public sealed partial class LEngine : IDisposable
 
         LEngineLanguageImport();
         LEngineDiweiApply();
+        if (_lEngineDatabase.LDatabaseMigrated)
+        {
+            LEngineWorkspaceUpdate();
+        }
 
         _lEngineClient = client ?? new HttpClient
         {
@@ -164,6 +169,7 @@ public sealed partial class LEngine : IDisposable
             LEngineFanqieClear();
             LEngineReflexClear();
             _lEngineLanguages.Clear();
+            _lEngineLanguageListed = null;
             _lEngineSpeechPacks.Clear();
             _lEngineTrove.LTroveClear();
 
@@ -175,6 +181,10 @@ public sealed partial class LEngine : IDisposable
             LEngineSettingsSave();
             LEngineLanguageImport();
             LEngineDiweiApply();
+            if (database.LDatabaseMigrated)
+            {
+                LEngineWorkspaceUpdate();
+            }
         }
 
         LEngineBulletinRaise(LSubject.LSubjectWorkspace, 0);

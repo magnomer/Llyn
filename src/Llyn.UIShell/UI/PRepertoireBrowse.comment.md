@@ -16,6 +16,7 @@ The panel answers two questions rather than one: what this Situation is, and whe
 
 The panel answers the engine rather than its own visibility.
 A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
+A fetched frequency, paradigm, script, fanqie or reflex row changes no situation or entry row, so those read nothing.
 An entry stored in another tab may reference a Situation, so the catalog and its reference figures are read again.
 A workspace that moved is the one announcement that empties the panel first.
 Its flags are reloaded before any row is built.

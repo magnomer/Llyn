@@ -30,7 +30,10 @@ The panel answers the engine rather than its own visibility.
 So a save made in the input panel lands here at once, with no tab switch to trigger it.
 A workspace that moved is the one announcement that empties the panel first.
 Its flags are reloaded before any row is built.
-Every other announcement re-lists the index and refreshes the entry this panel stands on.
+Every announcement that can change a listed row re-lists the index.
+A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
+Those announcements are skipped.
+Each keystroke in the input panel announces a draft change, so re-listing on it stalled every edit.
 
 ### `private void POrderHandle(object sender, RoutedEventArgs e)`
 
@@ -62,11 +65,12 @@ The entry went away between the search and the click.
 The row is stale.
 So the list is re-read rather than left offering a row that no longer loads.
 
-### `private void PIndexEntryUpdate(long id)`
+### `private void PIndexEntryUpdate(LBulletin bulletin)`
 
 After a store, the headword the index lists may have changed.
-So may the text the display shows.
-Each is read again from what was written.
+It is read again from what was written.
+The display re-reads its own entry on the same announcement, so it is not filled twice here.
+An Entry announcement alone carries an entry id, so only it may select a row or find the entry gone.
 The editor keeps the entry it is on — the user corrected it, they did not leave it.
 
 ### `return;`

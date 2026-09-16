@@ -22,6 +22,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(inflections);
             LEngineInflectionValidate(inflections);
             new LInflectionArchive(_lEngineDatabase).LInflectionSet(entryId, inflections);
+            LEngineParadigmUpdate(entryId);
             LEngineInflectionReset(entryId);
             LEngineUpdatedSet(entryId);
         }
@@ -34,6 +35,7 @@ public sealed partial class LEngine
             ArgumentNullException.ThrowIfNull(inflections);
             LEngineInflectionValidate(inflections);
             new LInflectionArchive(_lEngineDatabase).LInflectionAppend(entryId, inflections);
+            LEngineParadigmUpdate(entryId);
         }
     }
 

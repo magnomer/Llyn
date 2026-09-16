@@ -34,6 +34,10 @@ public sealed partial class LEngine
                 content,
                 sent.LRequestReflexId,
                 row => row with { LReflexDraftNote = sent.LRequestText ?? string.Empty }),
+            LRequestReflexRemark sent => LEngineReflexChange(
+                content,
+                sent.LRequestReflexId,
+                row => row with { LReflexDraftRemark = sent.LRequestText ?? string.Empty }),
             LRequestReflexMain sent => LEngineReflexChange(
                 content,
                 sent.LRequestReflexId,
@@ -60,13 +64,11 @@ public sealed partial class LEngine
             return row with { LReflexDraftRespelling = string.Empty };
         }
 
-        string respelling = LRespelling.LRespellingScan(pack.LLanguageRespellings, row.LReflexDraftText, string.Empty);
-        if (pack.LLanguagePhonemic)
+        return row with
         {
-            respelling = respelling.Replace('[', '/').Replace(']', '/');
-        }
-
-        return row with { LReflexDraftRespelling = respelling };
+            LReflexDraftRespelling =
+                LRespelling.LRespellingScan(pack.LLanguageRespellings, row.LReflexDraftText, string.Empty),
+        };
     }
 
     private static LEntryDraft LEngineReflexChange(

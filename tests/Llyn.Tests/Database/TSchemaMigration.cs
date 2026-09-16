@@ -104,6 +104,26 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_OlderBuildBeforeTheRegion_KeepsRowsWithBlankRegion()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "ALTER TABLE reflex DROP COLUMN region; ALTER TABLE reflex DROP COLUMN remark; " +
+            "INSERT INTO entry (entry_id, headword, language, added_utc, updated_utc) " +
+            "VALUES (1, '弄', 'Classical Chinese', '2026-01-01', '2026-01-01'); " +
+            "INSERT INTO reflex (entry_parent, position, language, kind, text, main, note) " +
+            "VALUES (1, 0, 'Mandarin', '', '[nʊŋ⁵¹]', 0, 'nòng'); " +
+            "UPDATE schema_version SET version = 62;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM reflex WHERE region = '' AND remark = '';"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM reflex WHERE text = '[nʊŋ⁵¹]';"));
+    }
+
+    [Fact]
     public void DatabaseCreate_OlderBuild_KeepsTheFileAndLeavesNoResidue()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

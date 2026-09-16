@@ -311,6 +311,7 @@
     "Input.Reflex": "Reading",
     "Reflex.Main": "In common use",
     "Reflex.Rebuild": "Fetch the readings again",
+    "Reflex.Loading": "Fetching the readings…",
     "Reflex.Korean": "Korean",
     "Reflex.Mandarin": "Mandarin",
     "Reflex.Japanese": "Japanese",

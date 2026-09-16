@@ -5,6 +5,8 @@
 The epithet an entry is listed with: the reading a pack's reflex rule names, printed after the headword.
 Every list and candidate menu asks for it, so a Han character reads `弄 [희롱할 롱]` wherever it is named.
 The epithet is never part of the headword, and the setting turns it off everywhere at once.
+It is derived when the reflex rows are stored and kept on the entry row.
+So a list reads one stored string per row and runs no rule and no pattern.
 
 ## `private static readonly TimeSpan LEngineEpithetPatience`
 
@@ -12,9 +14,14 @@ How long a clip pattern may run over one piece before it is given up.
 
 ## `public string LEngineEpithetRead(long entryId)`
 
-The epithet of the Entry identified by `entryId`, or an empty string.
-Empty when the setting is off, the Entry is missing or its pack names no epithet rule.
-Empty too when the Entry keeps no row of such a rule.
+The stored epithet of the Entry identified by `entryId`, or an empty string.
+Empty when the setting is off, the Entry is missing or nothing was derived for it.
+
+## `private void LEngineEpithetUpdate(long entryId)`
+
+Derives the epithet of the Entry from its stored reflex rows and its pack's rules, and stores it.
+Empty is stored when the Entry keeps no row of an epithet rule or the pack names none.
+Every seam that stores reflex rows calls it, so the stored string never lags the rows.
 
 ## `private static bool LEngineEpithetCheck(IReadOnlyList<LReflexRule> rules)`
 

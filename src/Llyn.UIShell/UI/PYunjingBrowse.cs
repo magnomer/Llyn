@@ -41,6 +41,11 @@ public partial class PYunjing
             return;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PXiaoyunEntryUpdate(bulletin.LBulletinId);
     }
 

@@ -77,6 +77,9 @@ The tonal flag is pushed by `PEditorContourApply` whenever the language changes.
 The reflex block at the head of the reading stack.
 It holds the rows and the fetch-again button at their top right corner.
 It stays collapsed until a draft in a language with reflex rules or reflex rows is rendered.
+`PReflexTable` is the stack of rows the button sits beside, sized by hand while a fetch runs.
+`PReflexLoading` is the fetching line under the rows, shown only while a fetch runs.
+`PReflexRenewal` is the button itself, whose tag turns its icon while a fetch runs.
 
 ## `<ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />`
 

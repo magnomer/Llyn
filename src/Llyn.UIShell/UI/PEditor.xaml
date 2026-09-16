@@ -133,8 +133,17 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
-                <Button Grid.Column="1" Style="{StaticResource Theme.Reflex.Rebuild}" />
+                <StackPanel x:Name="PReflexTable">
+                    <ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
+                    <TextBlock x:Name="PReflexLoading" Style="{StaticResource Theme.Reflex.Loading}" Visibility="Collapsed" />
+                    <ToggleButton
+                        x:Name="PReflexFold"
+                        Checked="PReflexFoldHandle"
+                        Style="{StaticResource Theme.Reflex.Fold}"
+                        Unchecked="PReflexFoldHandle"
+                        Visibility="Collapsed" />
+                </StackPanel>
+                <Button x:Name="PReflexRenewal" Grid.Column="1" Style="{StaticResource Theme.Reflex.Rebuild}" />
             </Grid>
             <StackPanel Orientation="Horizontal">
 

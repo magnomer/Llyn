@@ -48,9 +48,12 @@ One failure drops the rest, because a form writing into a draft that refused it 
 ### `private void PEditorBulletinHandle(LBulletin bulletin)`
 
 Re-reads and renders on a bulletin naming this form's own draft.
+While the form asks for its own blank rows, the bulletin only marks the draft stale.
+One render follows the asks.
 A finished frequency fetch for the entry the draft stands on fills the chip alone.
 A Source bulletin reloads the offered Sources, since a byline may have changed under a row.
 A settings bulletin re-renders the draft, so the reading fields swap to the form now picked.
+A reflex bulletin for the entry the draft stands on settles the fetching line and the turning icon.
 Every other bulletin is another surface's business.
 
 ### `private void PEditorLanguageSend()`

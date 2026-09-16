@@ -8,8 +8,14 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
+    private bool _pEditorPreparing;
+
+    private bool _pEditorPrepareStale;
+
     private void PEditorDraftShow(LEntryDraft draft)
     {
+        draft = PEditorDraftPrepare(draft);
+
         bool filling = _pEditorFill;
         _pEditorFill = true;
         try
@@ -44,10 +50,51 @@ public partial class PEditor
             _pEditorFill = filling;
         }
 
-        PTranscriptionPrepare(draft);
-        PGlyphPrepare(draft);
         PReflexPrepare(draft);
-        PSentencePrepare();
+    }
+
+    private LEntryDraft PEditorDraftPrepare(LEntryDraft draft)
+    {
+        if (_pEditorFill || _pEditorHalted || _pEditorDraft == 0)
+        {
+            return draft;
+        }
+
+        _pEditorPreparing = true;
+        _pEditorPrepareStale = false;
+        try
+        {
+            PCardPrepare(draft);
+            PTranscriptionPrepare(draft);
+            PGlyphPrepare(draft);
+            draft = PEditorDraftRead(draft);
+            PSentencePrepare(draft);
+            return PEditorDraftRead(draft);
+        }
+        finally
+        {
+            _pEditorPreparing = false;
+            _pEditorPrepareStale = false;
+        }
+    }
+
+    private LEntryDraft PEditorDraftRead(LEntryDraft draft)
+    {
+        if (!_pEditorPrepareStale || _pEditorHalted || _pEditorDraft == 0)
+        {
+            return draft;
+        }
+
+        _pEditorPrepareStale = false;
+        try
+        {
+            return _lEngine.LEngineDraftRead(_pEditorDraft)?.LDraftContent ?? draft;
+        }
+        catch (Exception exception)
+        {
+            PEditorHoldSuspend(exception);
+            return draft;
+        }
     }
 
     private void PEditorTextShow(TextBox box, string key, string text)
@@ -127,8 +174,18 @@ public partial class PEditor
 
         _pEditorFill = false;
 
-        PEditorLanguageSend();
-        PCardPrepare();
+        _pEditorPreparing = true;
+        try
+        {
+            PEditorLanguageSend();
+        }
+        finally
+        {
+            _pEditorPreparing = false;
+            _pEditorPrepareStale = false;
+        }
+
+        PEditorDraftRestore();
         PEditorChangeUpdate();
         PEditorFavoriteShow();
         PEditorGraspShow();

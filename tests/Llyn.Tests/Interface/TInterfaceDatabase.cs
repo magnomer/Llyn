@@ -316,6 +316,13 @@ internal static partial class TInterface
         fanqieArchive.LFanqieSave(language, character, rows);
     }
 
+    internal static IReadOnlyList<LFanqieRow> TFanqieRead(
+        this LFanqieArchive fanqieArchive, string language, string character) =>
+        fanqieArchive.LFanqieRead(language, character);
+
+    internal static string TEntryEpithetRead(this LEntryArchive entryArchive, long entryId) =>
+        entryArchive.LEntryEpithetRead(entryId);
+
     internal static LTagArchive TTagArchiveCreate(LDatabase database) =>
         new(database);
 

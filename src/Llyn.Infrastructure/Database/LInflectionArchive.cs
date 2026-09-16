@@ -49,6 +49,22 @@ public sealed class LInflectionArchive
         return stored;
     }
 
+    public void LInflectionRegularSave(long inflectionId, bool regular)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(inflectionId);
+
+        using LDatabaseSession session = _lInflectionArchiveDatabase.LDatabaseSessionStart();
+        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
+        {
+            command.CommandText = "UPDATE inflection SET regular = $regular WHERE inflection_id = $id;";
+            command.Parameters.AddWithValue("$regular", regular ? 1 : 0);
+            command.Parameters.AddWithValue("$id", inflectionId);
+            command.ExecuteNonQuery();
+        }
+
+        session.LDatabaseSessionCommit();
+    }
+
     public void LInflectionDelete(long entryId, int position)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
@@ -97,12 +113,12 @@ public sealed class LInflectionArchive
     private static IReadOnlyList<LInflection> LInflectionSetRead(SqliteConnection connection, long entryId)
     {
         List<(long LInflectionId, int LInflectionPosition, string LInflectionText, string? LInflectionLocal,
-            long? LInflectionSpeechId)> rows = [];
+            long? LInflectionSpeechId, bool LInflectionRegular)> rows = [];
         using (SqliteCommand command = connection.CreateCommand())
         {
             command.CommandText =
                 """
-                SELECT inflection_id, position, text, local, speech_value_ref
+                SELECT inflection_id, position, text, local, speech_value_ref, regular
                 FROM inflection WHERE entry_parent = $entry ORDER BY position;
                 """;
             command.Parameters.AddWithValue("$entry", entryId);
@@ -115,7 +131,8 @@ public sealed class LInflectionArchive
                     reader.GetInt32(1),
                     reader.GetString(2),
                     reader.IsDBNull(3) ? null : reader.GetString(3),
-                    reader.IsDBNull(4) ? null : reader.GetInt64(4)));
+                    reader.IsDBNull(4) ? null : reader.GetInt64(4),
+                    reader.GetInt32(5) != 0));
             }
         }
 
@@ -123,7 +140,7 @@ public sealed class LInflectionArchive
             LInflectionMorphologyRead(connection, entryId);
 
         List<LInflection> inflections = [];
-        foreach ((long id, int position, string text, string? local, long? speechValueId) in rows)
+        foreach ((long id, int position, string text, string? local, long? speechValueId, bool regular) in rows)
         {
             inflections.Add(new LInflection(
                 id,
@@ -132,7 +149,8 @@ public sealed class LInflectionArchive
                 text,
                 local,
                 speechValueId,
-                morphology.TryGetValue(id, out IReadOnlyList<long>? found) ? found : []));
+                morphology.TryGetValue(id, out IReadOnlyList<long>? found) ? found : [],
+                regular));
         }
 
         return inflections;
@@ -191,8 +209,8 @@ public sealed class LInflectionArchive
             {
                 command.CommandText =
                     """
-                    INSERT INTO inflection (entry_parent, position, text, local, speech_value_ref)
-                    VALUES ($entry, $position, $text, $local, $speech)
+                    INSERT INTO inflection (entry_parent, position, text, local, speech_value_ref, regular)
+                    VALUES ($entry, $position, $text, $local, $speech, $regular)
                     RETURNING inflection_id;
                     """;
                 command.Parameters.AddWithValue("$entry", entryId);
@@ -201,6 +219,7 @@ public sealed class LInflectionArchive
                 command.Parameters.AddWithValue("$local", (object?)inflection.LInflectionLocal ?? DBNull.Value);
                 command.Parameters.AddWithValue(
                     "$speech", (object?)inflection.LInflectionSpeechId ?? DBNull.Value);
+                command.Parameters.AddWithValue("$regular", inflection.LInflectionRegular ? 1 : 0);
                 id = Convert.ToInt64(command.ExecuteScalar());
             }
 

@@ -14,7 +14,8 @@ The phonemic flag is the pack's alone.
 Flipping the switch raises a settings bulletin so open readings redraw.
 A reflex row's text derives a respelling through the row's own language, slashed for a phonemic pack.
 A reflex respelling written by hand stands until the text or the language changes.
-Rows stored without a respelling, pronunciation and reflex alike, have one derived when the entry is loaded.
+Rows saved without a respelling, pronunciation and reflex alike, have one derived and stored on the way in.
+A load reads the stored form back and derives nothing.
 
 ## `private sealed class TRespellingObserver : LObserver`
 

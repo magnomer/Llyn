@@ -47,6 +47,11 @@ public partial class PReference
             _pDisplayEntry = bulletin.LBulletinId;
         }
 
+        if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
+        {
+            return;
+        }
+
         PImprint.PImprintBulletinHandle(bulletin);
         PShelfFind(PSurvey.Text ?? string.Empty);
         PFootnoteEntryUpdate(bulletin.LBulletinId);

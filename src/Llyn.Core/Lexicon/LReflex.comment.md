@@ -17,10 +17,18 @@ The language and kind are stored as text, so a row stays readable after its pack
 - `LReflexLanguage` — The borrowing language the reading belongs to, such as Korean or Japanese.
 - `LReflexKind` — The kind of reading, printed before it, such as a Japanese Go-on or Kan-on.
   Empty when the language sorts its readings by no kind.
-- `LReflexText` — The reading as the view prints it, such as `롱(농)` or `[nʊŋ⁵¹]`.
+- `LReflexText` — The reading as stored, such as `롱(농)` or `nʊŋ⁵¹`.
+  A pronunciation is stored bare, with no slash or bracket, so its onset, nucleus and coda can be read later.
+  A page listing two readings gives two rows, never one row holding both.
 - `LReflexNote` — The note printed after the reading: a Mandarin pinyin or a Korean 훈.
   Empty when the reading carries none.
 - `LReflexMain` — True when this reading is the one in common use.
   The view then prints it in the accent colour.
-- `LReflexRespelling` — The reading recast in its own language's respelling convention, such as `/nuŋ⁵¹/`.
+- `LReflexRespelling` — The reading recast in its own language's respelling convention, such as `nuŋ⁵¹`.
   Empty when that language declares no respelling groups.
+- `LReflexRegion` — The place the reading is taken from, such as `Shanghai` under Wu.
+  The view shows it when the language name is hovered.
+  Empty when the language names no place.
+- `LReflexRemark` — What the source says of the reading, such as `literary` or `vernacular (“difficult”)`.
+  The view shows it when the reading is hovered.
+  Empty when the source says nothing.

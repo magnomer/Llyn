@@ -85,7 +85,16 @@
                         </StackPanel>
                     </Grid>
                     <StackPanel Margin="12,12,0,0" Grid.IsSharedSizeScope="True">
-                        <ItemsControl x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />
+                        <StackPanel x:Name="PDisplayReflexTable" HorizontalAlignment="Left">
+                            <ItemsControl x:Name="PDisplayReflex" ItemTemplate="{StaticResource Theme.Reflex.Display}" />
+                            <TextBlock x:Name="PDisplayReflexLoading" Style="{StaticResource Theme.Reflex.Loading}" Visibility="Collapsed" />
+                            <ToggleButton
+                                x:Name="PDisplayReflexFold"
+                                Checked="PReflexFoldHandle"
+                                Style="{StaticResource Theme.Reflex.Fold}"
+                                Unchecked="PReflexFoldHandle"
+                                Visibility="Collapsed" />
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Border x:Name="PDisplayPronunciationSurface" Style="{StaticResource Theme.Pronunciation.Surface}" Visibility="Collapsed">
                                 <Grid>

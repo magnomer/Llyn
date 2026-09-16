@@ -57,6 +57,30 @@ public sealed class TDiweiArchive
     }
 
     [Fact]
+    public void DiweiApply_Hypothesis_StoresReadingAndClassOnRows()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TDiweiArchivePack);
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string language = pack.TLanguageFixtureName;
+        LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
+        fanqie.TFanqieSave(
+            language, "爛", [TDiweiRowCreate("爛", "來", "寒", "去"), TDiweiRowCreate("爛", "日", "寒", "平", 1)]);
+        LDiweiArchive archive = TInterface.TDiweiArchiveCreate(workspace.TWorkspaceDatabase);
+
+        archive.TDiweiApply(language, "爛", TDiweiArchiveTables);
+
+        Assert.Equal(
+            [("lan", "6"), ("", "")],
+            fanqie.TFanqieRead(language, "爛").Select(row => (row.LFanqieRowReading, row.LFanqieRowClass)));
+
+        archive.TDiweiRebuild(language, null);
+
+        Assert.Equal(
+            ["", ""], fanqie.TFanqieRead(language, "爛").Select(row => row.LFanqieRowReading));
+    }
+
+    [Fact]
     public void DiweiRebuild_NewHypothesis_ReplacesToneClassesAndDropsOrphans()
     {
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TDiweiArchivePack);

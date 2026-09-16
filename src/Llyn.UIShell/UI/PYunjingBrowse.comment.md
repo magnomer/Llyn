@@ -11,6 +11,8 @@ The message shown when the categories or an entry cannot be read.
 ## `private async void PYunjingBulletinHandle(LBulletin bulletin)`
 
 A moved workspace resets the panel, stored placements reload the columns, anything else refreshes the entry side.
+A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
+Those announcements are skipped.
 
 ## `private void PYunjingLoad()`
 

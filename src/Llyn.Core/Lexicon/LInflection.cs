@@ -9,4 +9,5 @@ public sealed record LInflection(
     string LInflectionText,
     string? LInflectionLocal,
     long? LInflectionSpeechId,
-    IReadOnlyList<long> LInflectionMorphology);
+    IReadOnlyList<long> LInflectionMorphology,
+    bool LInflectionRegular = false);

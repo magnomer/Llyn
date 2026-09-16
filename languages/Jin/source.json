@@ -1,0 +1,19 @@
+{
+  "language": "Jin",
+  "flag": "flag.svg",
+  "listed": false,
+  "separator": "none",
+  "tonal": true,
+  "phonemic": true,
+  "respelling": [
+    {
+      "name": "Standard",
+      "rules": [
+        ["͡", ""],
+        ["̯", ""]
+      ]
+    }
+  ],
+  "pronunciation": [],
+  "audio": []
+}
