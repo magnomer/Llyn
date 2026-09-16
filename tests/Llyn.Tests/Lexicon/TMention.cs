@@ -216,7 +216,7 @@ public sealed class TMention
         LMeaningArchive meanings = TInterface.TMeaningArchiveCreate(workspace.TWorkspaceDatabase);
 
         LEntry entry = entries.TEntryCreate(
-            TInterface.TEntryCreate(0, "word", "en", 0, null, null, null),
+            TInterface.TEntryCreate(0, "word", "en", 0, null, null),
             [TInterface.TFormCreate(0, 0, "word", null, "headword")],
             []);
         LMeaning meaning = meanings.TMeaningCreate(

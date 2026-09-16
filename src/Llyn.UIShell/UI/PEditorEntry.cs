@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using Llyn.Core;
 
@@ -30,7 +31,7 @@ public partial class PEditor
     internal void PEditorFrequencyShow()
     {
         long? entry = PEditorEntryRead();
-        LFrequency? frequency = null;
+        IReadOnlyList<LFrequency> frequency = [];
 
         if (entry is not null)
         {
@@ -40,11 +41,11 @@ public partial class PEditor
             }
             catch (Exception)
             {
-                frequency = null;
+                frequency = [];
             }
         }
 
-        if (frequency is null)
+        if (frequency.Count == 0)
         {
             PEditorFrequency.Text = string.Empty;
             PEditorFrequencyChip.ToolTip = null;
@@ -52,9 +53,14 @@ public partial class PEditor
             return;
         }
 
-        PEditorFrequency.Text = PFrequencyLabel.PFrequencyLabelFormat(frequency);
+        int count = PFrequencyLabel.PFrequencyBandResolve(frequency);
+        PFrequencyLabel.PFrequencyLabelShow(
+            PEditorFrequency,
+            PEditorFrequencyBand,
+            count,
+            _pEditorHost.PLocalizationTextRead(PFrequencyLabel.PFrequencyLabelResolve(count)));
         PEditorFrequencyChip.ToolTip = PFrequencyLabel.PFrequencySourceFormat(
-            frequency, _pEditorHost.PLocalizationTextRead("Frequency.Unit"));
+            frequency, _pEditorHost.PLocalizationTextRead("Frequency.Once"));
         PEditorFrequencySection.Visibility = Visibility.Visible;
     }
 

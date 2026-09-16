@@ -71,13 +71,21 @@ The `sources` list has the shape of `pronunciation` and runs when the user looks
 A scheme without sources is typed by hand.
 A transcription lookup keeps what the source wrote, spaces included, and runs no cleanup or respelling.
 `frequency` has the shape of `pronunciation`.
-Its sources are asked one at a time in written order, and the first non-empty answer wins.
+Every source is asked in written order, and each answer is stored as its own row.
 `normalize` stays off there because the answer is a figure or a code rather than IPA.
-`bands` turns that raw answer into a label.
-Each row carries a `name` and either an `upTo` ceiling or a `match` regex.
-A numeric answer parsed as a decimal must not exceed the ceiling.
+A source carries `once`, the figures that turn its raw answer into a word interval for the tooltip.
+The interval grades the answer on the ladder every language shares, one rung per decade of words.
+Core is one occurrence within 10,000 words, Everyday within 100,000, Advanced within 1,000,000, Rare beyond.
+A source whose answer is a code rather than a figure carries `bands` instead.
+A band row carries a `name` and a `match` regex.
+The name must be one of the four ladder names, since every language shares one vocabulary of bands.
+A pack declares bands only when no interval can be read, never to grade a figure on its own scale.
 Rows are tried in written order and the first that fits wins.
-The raw answer is shown when none fits.
+The raw answer is shown when nothing labels it.
+`total` divides by the raw count.
+`factor` with `base` scales the base raised to the raw class.
+`factor` alone scales the raw rank.
+A source without `once` prints its raw answer in the tooltip instead.
 `morphology` has the shape of `frequency`, one reading per inflected form.
 Its `variety` is the morphology value code from `vocabulary.json` written as a decimal string.
 `normalize` stays off so the form keeps its spelling.
@@ -175,13 +183,16 @@ Both prefixes mark the recording as English.
 ## `frequency[0]` Datamuse
 
 Datamuse word API.
-The `f:` tag is the word's frequency in occurrences per million words of text, so the figure bands numerically.
+The `f:` tag is the word's frequency in occurrences per million words of text.
+The once total is one million, so the tooltip reads the interval straight off the figure.
+The shared ladder then reads 100 per million as core, 10 as everyday, 1 as advanced.
 A spelling the API does not know returns an empty list.
 The confirm guard then fails and the attempt yields nothing.
 
 ## `frequency[1]` Longman
 
 Longman marks its top spoken and written words with a `<span class="FREQ">` holding S1, S2, S3, W1, W2 or W3.
+The code is no figure, so pattern bands label the top thousand core and the next two thousand everyday.
 The spoken code comes first when a word carries both, and the class is upper-case FREQ.
 A word outside those lists has no such span.
 An unknown word returns a results page without one.

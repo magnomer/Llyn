@@ -200,7 +200,7 @@
             "https://www.cantonese.sheik.co.uk/dictionary/words/{word}/"
           ],
           "strategy": "regex",
-          "match": "(Level: *[0-9]+)",
+          "match": "Level: *([0-9]+)",
           "group": 1
         },
         {
@@ -208,16 +208,17 @@
             "https://www.cantonese.sheik.co.uk/dictionary/characters/{word}/"
           ],
           "strategy": "regex",
-          "match": "(Level: *[0-9]+)",
+          "match": "Level: *([0-9]+)",
           "group": 1
         }
+      ],
+      "unit": "Level",
+      "bands": [
+        { "match": "^(Level: *)?1$", "name": "Core" },
+        { "match": "^(Level: *)?2$", "name": "Everyday" },
+        { "match": "^(Level: *)?3$", "name": "Advanced" },
+        { "match": "^(Level: *)?[0-9]+$", "name": "Rare" }
       ]
     }
-  ],
-  "bands": [
-    { "match": "^Level: *1$", "name": "Very common" },
-    { "match": "^Level: *2$", "name": "Common" },
-    { "match": "^Level: *3$", "name": "Uncommon" },
-    { "match": "^Level: *[0-9]+$", "name": "Rare" }
   ]
 }

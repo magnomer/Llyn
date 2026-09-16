@@ -8,4 +8,5 @@ public sealed record LSourceAttempt(
     string? LSourceAttemptGuard,
     IReadOnlyDictionary<string, string>? LSourceAttemptHeaders,
     string? LSourceAttemptPrefix,
-    LSourceReading? LSourceAttemptFollow = null);
+    LSourceReading? LSourceAttemptFollow = null,
+    bool LSourceAttemptDecoded = false);

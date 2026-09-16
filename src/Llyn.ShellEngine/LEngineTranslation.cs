@@ -106,7 +106,7 @@ public sealed partial class LEngine
             using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
 
             entry = new LEntryArchive(_lEngineDatabase).LEntryCreate(
-                new LEntry(0, headword.Trim(), language, 0, null, null, null),
+                new LEntry(0, headword.Trim(), language, 0, null, null),
                 forms: [],
                 speeches: []);
 

@@ -24,6 +24,7 @@ public static class LSchema
         LSchemaImage.LSchemaImageCreate(connection);
         LSchemaVideo.LSchemaVideoCreate(connection);
         LSchemaFavorite.LSchemaFavoriteCreate(connection);
+        LSchemaFrequency.LSchemaFrequencyCreate(connection);
         LSchemaScript.LSchemaScriptCreate(connection);
         LSchemaFanqie.LSchemaFanqieCreate(connection);
         LSchemaDiwei.LSchemaDiweiCreate(connection);

@@ -98,6 +98,27 @@ public sealed class TSourceGeneric
     }
 
     [Fact]
+    public async Task SourceFind_DecodedAttempt_MatchesEntityWrittenCharacters()
+    {
+        const string body = "<title>&#x6574; - site</title><td>&#x56DB;&#x5E93;</td><td>&#x6574;</td><td>48825</td>";
+        LSourceReading count = TInterface.TSourceReadingCreate(
+            "1", "regex", "<td>四库</td><td>{word}</td><td>(\\d+)</td>", 1, null, false, 0);
+        LSource source = TSourceGenericCreate(
+            body,
+            TPronunciationHelper.TSourceAttemptCreate(count)
+                with { LSourceAttemptGuard = "<title>{word} - ", LSourceAttemptDecoded = true });
+        LSource plain = TSourceGenericCreate(
+            body,
+            TPronunciationHelper.TSourceAttemptCreate(count) with { LSourceAttemptGuard = "<title>{word} - " });
+
+        LAnswer decoded = await source.TSourceFind("整", CancellationToken.None);
+        LAnswer raw = await plain.TSourceFind("整", CancellationToken.None);
+
+        Assert.Equal("48825", Assert.Single(decoded.LAnswerReadings).LReadingPhonetic);
+        Assert.True(raw.LAnswerEmpty);
+    }
+
+    [Fact]
     public async Task SourceFind_FollowPointer_ReadsTargetPage()
     {
         LSource source = TInterface.TSourceGenericCreate(

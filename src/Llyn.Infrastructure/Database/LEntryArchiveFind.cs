@@ -16,7 +16,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE lmatch(headword, $query)
             ORDER BY headword;
@@ -42,7 +42,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE lfold(language) = lfold($language) AND lfold(headword) = lfold($headword)
             ORDER BY headword, entry_id;
@@ -62,7 +62,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE language = $language AND headword <> '' AND instr(lfold($text), lfold(headword)) > 0
             ORDER BY length(headword) DESC, headword, entry_id;
@@ -93,7 +93,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE $tag = 0
                OR entry_id IN (
@@ -128,7 +128,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE $register = 0
                OR entry_id IN (
@@ -162,7 +162,7 @@ public sealed partial class LEntryArchive
         return LEntryOwnerFind(
             situationId,
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (
@@ -186,7 +186,7 @@ public sealed partial class LEntryArchive
         return LEntryOwnerFind(
             exampleId,
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (
@@ -210,7 +210,7 @@ public sealed partial class LEntryArchive
         return LEntryOwnerFind(
             referenceId,
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry
             WHERE $owner = 0
                OR entry_id IN (

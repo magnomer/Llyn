@@ -46,6 +46,10 @@ internal static class PThemeLoader
             ["contourMid"] = "Theme.ContourMid.Color",
             ["contourLow"] = "Theme.ContourLow.Color",
             ["contourBottom"] = "Theme.ContourBottom.Color",
+            ["frequencyCore"] = "Theme.FrequencyCore.Color",
+            ["frequencyEveryday"] = "Theme.FrequencyEveryday.Color",
+            ["frequencyAdvanced"] = "Theme.FrequencyAdvanced.Color",
+            ["frequencyRare"] = "Theme.FrequencyRare.Color",
             ["pending"] = "Theme.Pending.Color"
         };
 

@@ -229,7 +229,7 @@ public sealed partial class LEngine
             }
 
             LEntry created = archive.LEntryCreate(
-                new LEntry(0, entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage, 0, null, null, null),
+                new LEntry(0, entry.LMarkupEntryHeadword, entry.LMarkupEntryLanguage, 0, null, null),
                 [],
                 []);
             prepared[intake.LMarkupIntakeIndex] = created.LEntryId;

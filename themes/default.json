@@ -31,6 +31,10 @@
     "contourMid": "#2E9E5B",
     "contourLow": "#3A6FD8",
     "contourBottom": "#7B4FC4",
+    "frequencyCore": "#C08A0C",
+    "frequencyEveryday": "#2E9E5B",
+    "frequencyAdvanced": "#3A6FD8",
+    "frequencyRare": "#8B6BB8",
     "pending": "#E8842B"
   }
 }

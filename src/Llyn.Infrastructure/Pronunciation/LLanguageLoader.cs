@@ -29,7 +29,6 @@ public static partial class LLanguageLoader
     private const string LLanguageLoaderFollow = "follow";
     private const string LLanguageLoaderFrequency = "frequency";
     private const string LLanguageLoaderMorphology = "morphology";
-    private const string LLanguageLoaderBands = "bands";
     private const string LLanguageLoaderTonal = "tonal";
     private const string LLanguageLoaderSilent = "silent";
     private const string LLanguageLoaderPhonemic = "phonemic";
@@ -159,7 +158,6 @@ public static partial class LLanguageLoader
             LLanguageRespellingScan(root, LLanguageLoaderCleanup, scoped),
             LLanguageRespellingScan(root, LLanguageLoaderRespelling, scoped),
             LLanguageSourceScan(root, LLanguageLoaderFrequency, spelling),
-            LLanguageBandScan(root),
             LLanguageSourceScan(root, LLanguageLoaderMorphology, spelling),
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderTonal),
             LLanguageGlyphRead(root, spelling),
@@ -190,66 +188,6 @@ public static partial class LLanguageLoader
         return flag.EndsWith(LLanguageLoaderEmblem, StringComparison.OrdinalIgnoreCase)
             ? Path.Combine(AppContext.BaseDirectory, LLanguageLoaderFolder, language, flag)
             : flag;
-    }
-
-    private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)
-    {
-        if (root.ValueKind != JsonValueKind.Object ||
-            !root.TryGetProperty(LLanguageLoaderBands, out JsonElement rows) ||
-            rows.ValueKind != JsonValueKind.Array)
-        {
-            return Array.Empty<LBand>();
-        }
-
-        List<LBand> bands = new();
-        foreach (JsonElement row in rows.EnumerateArray())
-        {
-            LBand? band = LLanguageBandRead(row);
-            if (band is not null)
-            {
-                bands.Add(band);
-            }
-        }
-
-        return bands;
-    }
-
-    private static LBand? LLanguageBandRead(JsonElement row)
-    {
-        if (row.ValueKind != JsonValueKind.Object)
-        {
-            return null;
-        }
-
-        string name = LLanguageTextRead(row, "name")?.Trim() ?? string.Empty;
-        if (name.Length == 0)
-        {
-            return null;
-        }
-
-        if (row.TryGetProperty("upTo", out JsonElement limit) &&
-            limit.ValueKind == JsonValueKind.Number &&
-            limit.TryGetDouble(out double upTo))
-        {
-            return new LBand(name, upTo, null);
-        }
-
-        string? pattern = LLanguageTextRead(row, "match");
-        if (string.IsNullOrEmpty(pattern))
-        {
-            return null;
-        }
-
-        try
-        {
-            _ = new Regex(pattern);
-        }
-        catch (ArgumentException)
-        {
-            return null;
-        }
-
-        return new LBand(name, null, pattern);
     }
 
     private static LFont LLanguageFontBlank => new(null, 0);

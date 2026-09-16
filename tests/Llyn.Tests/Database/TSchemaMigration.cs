@@ -86,6 +86,29 @@ public sealed class TSchemaMigration
     }
 
     [Fact]
+    public void DatabaseCreate_OlderBuildWithEntryFrequency_MovesItIntoTheFrequencyTable()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+
+        workspace.TWorkspaceScriptRun(
+            "ALTER TABLE entry ADD COLUMN frequency TEXT; " +
+            "INSERT INTO entry (entry_id, headword, language, frequency, added_utc, updated_utc) " +
+            "VALUES (1, 'word', 'English', 'Datamuse|12.5|per million', '2026-01-01', '2026-01-02'), " +
+            "       (2, 'bare', 'English', 'S1', '2026-01-01', '2026-01-01'), " +
+            "       (3, 'none', 'English', NULL, '2026-01-01', '2026-01-01'); " +
+            "UPDATE schema_version SET version = 66;");
+
+        workspace.TWorkspaceDatabase.TDatabaseCreate();
+
+        Assert.Equal(0, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM pragma_table_info('entry') WHERE name = 'frequency';"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM frequency;"));
+        Assert.Equal(1, workspace.TWorkspaceCountRead(
+            "SELECT COUNT(*) FROM frequency WHERE entry_parent = 1 AND source = 'Datamuse' " +
+            "AND raw = '12.5|per million' AND band IS NULL AND fetched_utc = '2026-01-02';"));
+    }
+
+    [Fact]
     public void DatabaseCreate_OlderBuildBeforeTheNote_DropsEveryReflexRow()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();

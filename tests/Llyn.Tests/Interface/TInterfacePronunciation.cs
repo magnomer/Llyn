@@ -76,8 +76,12 @@ internal static partial class TInterface
     internal static LSourceSpec TSourceSpecCreate(
         string name,
         IReadOnlyList<LSourceAttempt> attempts,
-        IReadOnlyList<LRespellingRule>? spelling = null) =>
-        new LSourceSpec(name, attempts, spelling);
+        IReadOnlyList<LRespellingRule>? spelling = null,
+        double? total = null,
+        double? factor = null,
+        double? power = null,
+        string? unit = null) =>
+        new LSourceSpec(name, attempts, spelling, null, total, factor, power, unit);
 
     internal static LSource TSourceGenericCreate(LSourceSpec spec, HttpClient client) =>
         new LSourceGeneric(spec, client);
@@ -275,11 +279,11 @@ internal static partial class TInterface
     internal static LFrequency TFrequencyCreate(string source, string raw, string? band) =>
         new LFrequency(source, raw, band);
 
-    internal static LFrequency TFrequencyParse(string stored) =>
-        LFrequency.LFrequencyParse(stored);
+    internal static long? TFrequencyOnceResolve(LSourceSpec spec, double raw) =>
+        LFrequency.LFrequencyOnceResolve(spec, raw);
 
-    internal static string TFrequencyFormat(this LFrequency frequency) =>
-        frequency.LFrequencyFormat();
+    internal static string? TFrequencyBandResolve(LSourceSpec spec, double raw) =>
+        LFrequency.LFrequencyBandResolve(spec, raw);
 
     internal static LHypothesis THypothesisCreate(
         IReadOnlyDictionary<string, string> initials,

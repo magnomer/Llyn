@@ -39,7 +39,8 @@ The stamps collapse when the entry cannot be read.
 ## `private void PDisplayFrequencyShow(long id)`
 
 Fills the frequency chip from the stored entry, since the draft does not carry it.
-The chip and its tooltip are worded by the shared label, so the editor shows the same.
+The chip, its stars and its tooltip are worded by the shared label, so the editor shows the same.
+The rung name is localized here, since only the surface knows the user's language.
 The section collapses when the entry has no frequency yet or the read fails.
 An entry with no value asks the engine to fill it, and the fill announces itself when done.
 

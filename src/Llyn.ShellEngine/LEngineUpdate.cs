@@ -82,7 +82,7 @@ public sealed partial class LEngine
             !string.Equals(stored.LEntryLanguage, draft.LEntryDraftLanguage, StringComparison.Ordinal);
         if (renamed)
         {
-            entries.LEntryFrequencySet(id, null);
+            new LFrequencyArchive(_lEngineDatabase).LFrequencyClear(id);
             changes.Add(new LRevisionChange(0, id, "entry", "update", draft.LEntryDraftHeadword));
         }
 

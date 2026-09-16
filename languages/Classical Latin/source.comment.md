@@ -51,5 +51,8 @@ The Lingua Libre recording carries no reading, so it is shown once under every v
 Logeion's info API is the same call its sidebar makes.
 It answers with the headword's rank in the Latin corpus of the PhiloLogic texts as a sentence.
 The sentence reads the 304th most frequent word, or unranked when it appears fewer than 50 times.
-The pattern keeps the figure or the word unranked, so the bands can read either.
+The pattern keeps the figure or the word unranked, so a pattern band can still label the latter.
+The once factor of 12 is a Zipf estimate, since a rank alone gives no count.
+The shared ladder then reads rank 833 and under as core, 8,333 as everyday, 83,333 as advanced.
 A spelling Logeion does not know is unranked too, so a typo is shown as rare rather than as nothing.
+Unranked is the one band the pack still declares, since no interval can grade a word.

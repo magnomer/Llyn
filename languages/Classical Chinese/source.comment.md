@@ -151,3 +151,17 @@ The remark of each reading is read from the note box under the block, such as `l
 Every dialect rule keeps every block, so a character with several pronunciation sections lists each section's reading.
 The first row of each is marked in common use, unless a main group already marked one.
 
+
+## `frequency[0]` 四庫全書
+
+書同文漢字網 prints a character-frequency table on its search page for every character it knows.
+The table counts the character in the 四部叢刊 and in the 文淵閣四庫全書 e-text 書同文 digitised itself.
+Both corpora hold pre-modern text only, so no modern usage leaks into the figure.
+The pattern reads the 四库全书 row's raw count, and that count is the stored ground truth.
+The site prints simplified names in the table, so the row label is written simplified in the pattern.
+The page writes every CJK character as a numeric entity, so the attempt is decoded before the patterns run.
+The once total is the corpus size of about 698 million characters, derived from the site's own per-ten-thousand coverage.
+The shared ladder then reads 69,810 and over as core, 6,981 as everyday, 698 as advanced.
+The page title names the character looked up, so the confirm guard fails for an unknown one.
+A character the corpora never use has no table, so the attempt yields nothing.
+A word of several characters has no table either, and Classical Chinese entries are single characters.

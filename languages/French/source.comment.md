@@ -72,7 +72,8 @@ An accented address is redirected to its unaccented spelling, which the reader f
 Leipzig Corpora Collection, French news corpus of 2011 with one million sentences.
 The answer carries the word's frequency class.
 It is 0 for the most frequent word and one higher each time the frequency halves.
-So the class bands numerically and a small class is a common word.
+The once rule doubles per class from a factor of 22, the interval of the most frequent French word.
+The shared ladder then reads class 8 and under as core, 12 as everyday, 15 as advanced.
 An unknown spelling answers 404, so the attempt yields nothing.
 
 ## `morphology[0]` Wiktionary

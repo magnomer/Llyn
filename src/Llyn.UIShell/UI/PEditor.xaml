@@ -126,14 +126,9 @@
                 <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandAddition}" Executed="PReflexAddHandle" />
                 <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandRemoval}" Executed="PReflexRemoveHandle" />
                 <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandMain}" Executed="PReflexMainHandle" />
-                <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandRenewal}" Executed="PReflexRebuildHandle" />
                 <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandAnchor}" Executed="PReflexAnchorHandle" />
             </StackPanel.CommandBindings>
             <Grid x:Name="PReflexBlock" Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
                 <StackPanel x:Name="PReflexTable">
                     <local:PReflexList x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
                     <TextBlock x:Name="PReflexLoading" Style="{StaticResource Theme.Reflex.Loading}" Visibility="Collapsed" />
@@ -144,7 +139,6 @@
                         Unchecked="PReflexFoldHandle"
                         Visibility="Collapsed" />
                 </StackPanel>
-                <Button x:Name="PReflexRenewal" Grid.Column="1" Style="{StaticResource Theme.Reflex.Rebuild}" />
                 <Popup
                     x:Name="PAnchor"
                     AllowsTransparency="True"
@@ -272,7 +266,10 @@
 
             <StackPanel x:Name="PEditorFrequencySection" Margin="12,10,0,0" Visibility="Collapsed">
                 <Border x:Name="PEditorFrequencyChip" Style="{StaticResource Theme.Frequency.Chip}">
-                    <TextBlock x:Name="PEditorFrequency" Style="{StaticResource Theme.Frequency.Name}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="PEditorFrequency" Style="{StaticResource Theme.Frequency.Name}" />
+                        <TextBlock x:Name="PEditorFrequencyBand" Style="{StaticResource Theme.Frequency.Band}" />
+                    </StackPanel>
                 </Border>
             </StackPanel>
 
@@ -282,6 +279,16 @@
 
             <local:PFanqie x:Name="PEditorFanqie" Margin="0,14,0,0" PFanqieFolded="True" />
         </StackPanel>
+
+        <Button
+            x:Name="PReflexRenewal"
+            Grid.Row="1"
+            Style="{StaticResource Theme.Reflex.Rebuild}"
+            Visibility="{Binding Visibility, ElementName=PReflexBlock}">
+            <Button.CommandBindings>
+                <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandRenewal}" Executed="PReflexRebuildHandle" />
+            </Button.CommandBindings>
+        </Button>
 
         <Border Grid.Row="3" Padding="0,0,0,8" Margin="-34,20,-34,0" BorderBrush="{StaticResource Theme.Line}" BorderThickness="0,0,0,1">
             <Grid x:Name="PStack" Margin="27,0,0,0" HorizontalAlignment="Left" Loaded="PStackPillHandle">

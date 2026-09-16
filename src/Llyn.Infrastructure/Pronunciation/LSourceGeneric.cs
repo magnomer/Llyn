@@ -161,6 +161,11 @@ public sealed class LSourceGeneric : LSource
             return (fetched, null);
         }
 
+        if (attempt.LSourceAttemptDecoded)
+        {
+            body = WebUtility.HtmlDecode(body);
+        }
+
         try
         {
             return LSourceBodyRead(attempt, body, word);

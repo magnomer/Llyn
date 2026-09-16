@@ -59,14 +59,6 @@ Moves `updated_utc` alone to now.
 The engine calls it when a part of the entry changes through its own seam.
 An id no entry carries is not an error here, since nothing was meant to be read back.
 
-## `public void LEntryFrequencySet(long entryId, string? frequency)`
-
-Writes the fetched frequency alone onto the entry `entryId` names.
-`updated_utc` is left where it stands, because a machine fill is not a user edit.
-A null clears the value, so a source that no longer answers leaves nothing stale behind.
-Throws when no entry carries that id, as `LEntryUpdate` does.
-`LEntryUpdate` still writes `frequency` from its record, so a read-then-update round trip keeps the value.
-
 ## `public string LEntryEpithetRead(long entryId)`
 
 The stored epithet of the entry `entryId` names, or empty when it has none or no entry carries the id.

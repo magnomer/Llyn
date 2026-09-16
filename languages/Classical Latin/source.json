@@ -105,14 +105,11 @@
           "match": "\"rank\":\"(?:the )?(\\d+|unranked)",
           "group": 1
         }
+      ],
+      "once": { "factor": 12 },
+      "bands": [
+        { "match": "^unranked", "name": "Rare" }
       ]
     }
-  ],
-  "bands": [
-    { "upTo": 500, "name": "Very common" },
-    { "upTo": 2000, "name": "Common" },
-    { "upTo": 10000, "name": "Uncommon" },
-    { "match": "^\\d", "name": "Rare" },
-    { "match": "^unranked", "name": "Rare" }
   ]
 }

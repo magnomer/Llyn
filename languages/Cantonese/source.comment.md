@@ -100,6 +100,10 @@ Only the mp3 rendition is taken, because the original is WAV or Opus.
 
 CantoDict serves a word page at `/dictionary/words/` and a character page at `/dictionary/characters/`.
 Both are reached straight from the hanzi, each carrying an editor-assigned difficulty Level from 1 upward.
+The pattern keeps the number alone, and the unit puts the word Level back in the tooltip.
+A Level is an editor's grade with no count behind it, so pattern bands label it instead of an interval.
+The bands carry the four ladder names, Level 1 as core, 2 as everyday, 3 as advanced, higher as rare.
+The bands also accept the older `Level: n` text a workspace fetched before the pattern was narrowed.
 A single character has no word page, so the first attempt yields nothing there.
 The second attempt reads the character page instead.
 An unknown spelling returns a bare detail view without a Level, so the attempt yields nothing.

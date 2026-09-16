@@ -281,5 +281,23 @@
     }
   ],
   "pronunciation": [],
-  "audio": []
+  "audio": [],
+  "frequency": [
+    {
+      "name": "四庫全書",
+      "attempts": [
+        {
+          "urls": [
+            "https://hanzi.unihan.com.cn/Search?key={word}"
+          ],
+          "decode": true,
+          "confirm": "<title>{word} - ",
+          "strategy": "regex",
+          "match": "<td>四库全书</td>\\s*<td[^>]*>{word}</td>\\s*<td>\\w+</td>\\s*<td>\\w+</td>\\s*<td>(\\d+)</td>",
+          "group": 1
+        }
+      ],
+      "once": { "total": 698100000 }
+    }
+  ]
 }

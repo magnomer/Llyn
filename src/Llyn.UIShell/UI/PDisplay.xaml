@@ -183,7 +183,10 @@
 
                     <StackPanel x:Name="PDisplayFrequencySection" Margin="12,14,0,0" Visibility="Collapsed">
                         <Border x:Name="PDisplayFrequencyChip" Style="{StaticResource Theme.Frequency.Chip}">
-                            <TextBlock x:Name="PDisplayFrequency" Style="{StaticResource Theme.Frequency.Name}" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="PDisplayFrequency" Style="{StaticResource Theme.Frequency.Name}" />
+                                <TextBlock x:Name="PDisplayFrequencyBand" Style="{StaticResource Theme.Frequency.Band}" />
+                            </StackPanel>
                         </Border>
                     </StackPanel>
 

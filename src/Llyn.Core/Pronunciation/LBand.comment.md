@@ -1,15 +1,14 @@
 # LBand.cs
 
-## `public sealed record LBand(string LBandName, double? LBandLimit, string? LBandPattern)`
+## `public sealed record LBand(string LBandName, string LBandPattern)`
 
-One frequency band a language pack declares, such as common or rare.
-The pack lists its bands in order, and the first band that matches a raw figure wins.
-A band matches when `LBandLimit` is set and the raw figure parses as a decimal not above it.
-A band also matches when `LBandPattern` is set and the raw figure matches it as a regex.
-The engine holds no bands of its own.
+One frequency band a language pack declares for a figure the shared ladder cannot grade.
+A numeric figure with a word interval is graded by [LFrequency](LFrequency.comment.md) and never reaches these bands.
+The pack lists bands under each frequency source in order, and the first regex matching the raw figure wins.
+So a pack labels only codes and levels, such as HSK 5 or S1, and a rank of unranked.
+The name must be one of the four ladder names, so a level reads the same as a graded figure.
 
 **Parameters**
 
 - `LBandName` — The label an entry earns when this band matches, as the pack spells it.
-- `LBandLimit` — The highest figure this band still covers, or `null` when the band is not numeric.
-- `LBandPattern` — The regex a raw figure must match for this band, or `null` when the band is numeric.
+- `LBandPattern` — The regex the raw figure must match for this band.

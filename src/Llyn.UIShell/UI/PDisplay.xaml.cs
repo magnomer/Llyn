@@ -161,17 +161,17 @@ public partial class PDisplay : UserControl
 
     private void PDisplayFrequencyShow(long id)
     {
-        LFrequency? frequency;
+        IReadOnlyList<LFrequency> frequency;
         try
         {
             frequency = _lEngine.LEngineFrequencyRead(id);
         }
         catch (Exception)
         {
-            frequency = null;
+            frequency = [];
         }
 
-        if (frequency is null)
+        if (frequency.Count == 0)
         {
             PDisplayFrequency.Text = string.Empty;
             PDisplayFrequencyChip.ToolTip = null;
@@ -179,9 +179,14 @@ public partial class PDisplay : UserControl
             return;
         }
 
-        PDisplayFrequency.Text = PFrequencyLabel.PFrequencyLabelFormat(frequency);
+        int count = PFrequencyLabel.PFrequencyBandResolve(frequency);
+        PFrequencyLabel.PFrequencyLabelShow(
+            PDisplayFrequency,
+            PDisplayFrequencyBand,
+            count,
+            _pDisplayHost.PLocalizationTextRead(PFrequencyLabel.PFrequencyLabelResolve(count)));
         PDisplayFrequencyChip.ToolTip = PFrequencyLabel.PFrequencySourceFormat(
-            frequency, _pDisplayHost.PLocalizationTextRead("Frequency.Unit"));
+            frequency, _pDisplayHost.PLocalizationTextRead("Frequency.Once"));
         PDisplayFrequencySection.Visibility = Visibility.Visible;
     }
 

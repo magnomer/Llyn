@@ -66,10 +66,9 @@ internal static partial class TInterface
         string headword,
         string language,
         int grasp,
-        string? frequency,
         string? addedUtc,
         string? updatedUtc) =>
-        new(id, headword, language, grasp, frequency, addedUtc, updatedUtc);
+        new(id, headword, language, grasp, addedUtc, updatedUtc);
 
     internal static LEntryDraft TEntryDraftCreate(
         string headword,

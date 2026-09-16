@@ -105,7 +105,8 @@ Sharing the pronunciation row put them beside a chip that the editor puts a butt
 ## `<StackPanel x:Name="PDisplayFrequencySection" Margin="12,10,0,0" ...>`
 
 The frequency of the headword, one chip under the parts of speech.
-It is read-only here and absent from the editor, because the engine fetches it and the user never types it.
+It is read-only here and in the editor, because the engine fetches it and the user never types it.
+The chip holds the rung name and a row of four stars, filled to the rung.
 The chip carries the tooltip, so hovering anywhere on it names the source and the raw figure.
 The section collapses until the engine has a value for the entry.
 

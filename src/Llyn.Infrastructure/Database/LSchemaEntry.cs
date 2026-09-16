@@ -20,7 +20,6 @@ public static class LSchemaEntry
                 headword TEXT NOT NULL,
                 language TEXT NOT NULL,
                 grasp INTEGER NOT NULL DEFAULT 0 CHECK (grasp BETWEEN 0 AND 10),
-                frequency TEXT,
                 added_utc TEXT,
                 updated_utc TEXT,
                 epithet TEXT NOT NULL DEFAULT '',

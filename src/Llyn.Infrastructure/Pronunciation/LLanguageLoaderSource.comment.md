@@ -14,10 +14,28 @@ So is an attempt with no URL or no reading.
 
 One source row: its `name` and its `attempts`.
 A row without a name or without a usable attempt reads as nothing.
+A frequency source also carries its `once` figures, its `unit` and any pattern `bands` for figures no interval grades.
 
+## `private static double? LLanguageFigureRead(JsonElement rule, string key)`
+
+One positive number under the source's `once` object, or `null` when the key is absent or not positive.
+The keys are `total`, `factor` and `base`, see [LSourceSpec](../../Llyn.Core/Pronunciation/LSourceSpec.comment.md).
+
+## `private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement source)`
+
+The source declares its pattern bands under `bands`, in the order they are tried.
+A missing block reads as no bands, and a figure the ladder cannot grade then shows without a label.
+Order is kept because the first matching band wins.
+
+## `private static LBand? LLanguageBandRead(JsonElement row)`
+
+A band row carries a `name` and a `match` regex.
+A numeric ceiling or floor is not a band, since the shared ladder grades every figure with an interval.
+A row with a blank name, no regex, or a regex that fails to compile is skipped.
+The regex is compiled once here so one typo never blanks the pack.
 ## `private static LSourceAttempt? LLanguageAttemptRead(JsonElement row)`
 
-One attempt: its `urls`, its readings, and the optional `confirm`, `headers`, `prefix` and `follow` keys.
+One attempt: its `urls`, its readings, and the optional `confirm`, `headers`, `prefix`, `follow` and `decode` keys.
 An attempt needs at least one URL and one reading, or it is dropped.
 
 ## `private static IReadOnlyDictionary<string, string>? LLanguageHeaderRead(JsonElement row)`

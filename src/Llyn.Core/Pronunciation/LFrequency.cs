@@ -1,25 +1,80 @@
-using System.Globalization;
+using System;
 
 namespace Llyn.Core;
 
-public sealed record LFrequency(string LFrequencySource, string LFrequencyRaw, string? LFrequencyBand)
+public sealed record LFrequency(
+    string LFrequencySource,
+    string LFrequencyRaw,
+    string? LFrequencyBand,
+    long? LFrequencyOnce = null,
+    string? LFrequencyUnit = null)
 {
-    public bool LFrequencyNumeric =>
-        double.TryParse(LFrequencyRaw, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
+    private static readonly (double LFrequencyLimit, string LFrequencyName)[] LFrequencyBands =
+    [
+        (10000, "Core"),
+        (100000, "Everyday"),
+        (1000000, "Advanced"),
+    ];
 
-    public static LFrequency LFrequencyParse(string stored)
+    private const string LFrequencyRare = "Rare";
+
+    public static string? LFrequencyBandResolve(LSourceSpec spec, double raw)
     {
-        int separator = stored.IndexOf('|');
-        if (separator < 0)
+        if (LFrequencyOnceRead(spec, raw) is not double interval)
         {
-            return new LFrequency(string.Empty, stored, null);
+            return null;
         }
 
-        return new LFrequency(stored[..separator], stored[(separator + 1)..], null);
+        foreach ((double limit, string name) in LFrequencyBands)
+        {
+            if (interval <= limit)
+            {
+                return name;
+            }
+        }
+
+        return LFrequencyRare;
     }
 
-    public string LFrequencyFormat()
+    public static long? LFrequencyOnceResolve(LSourceSpec spec, double raw)
     {
-        return $"{LFrequencySource}|{LFrequencyRaw}";
+        if (LFrequencyOnceRead(spec, raw) is not double interval)
+        {
+            return null;
+        }
+
+        if (interval < 1)
+        {
+            return 1;
+        }
+
+        int digits = (int)Math.Floor(Math.Log10(interval)) - 1;
+        double step = Math.Pow(10, Math.Max(digits, 0));
+        return (long)(Math.Round(interval / step) * step);
+    }
+
+    public static double? LFrequencyOnceRead(LSourceSpec spec, double raw)
+    {
+        ArgumentNullException.ThrowIfNull(spec);
+
+        double interval;
+        if (spec.LSourceSpecTotal is double total && raw > 0)
+        {
+            interval = total / raw;
+        }
+        else if (spec.LSourceSpecFactor is double factor && spec.LSourceSpecBase is double power)
+        {
+            interval = factor * Math.Pow(power, raw);
+        }
+        else if (spec.LSourceSpecFactor is double scale)
+        {
+            interval = scale * raw;
+        }
+        else
+        {
+            return null;
+        }
+
+        return double.IsNaN(interval) || double.IsInfinity(interval) || interval < 0 ? null : interval;
     }
 }

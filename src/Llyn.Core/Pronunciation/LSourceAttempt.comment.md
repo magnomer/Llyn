@@ -26,3 +26,6 @@ The readings are held as [LSourceReading](LSourceReading.comment.md) records, on
   The value it captures is another headword the same attempt is fetched again for.
   A simplified Chinese page only points at its traditional form, and the pointer is read from the page itself.
   It is `null` when the source never redirects by page text.
+- `LSourceAttemptDecoded` — Whether the body is HTML-decoded before the guard and the readings run.
+  A site that writes every CJK character as a numeric entity is then matched on its decoded text.
+  So a pack pattern can name the character itself.

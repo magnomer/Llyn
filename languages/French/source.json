@@ -116,7 +116,8 @@
           "match": "\"frequencyClass\":([0-9]+)",
           "group": 1
         }
-      ]
+      ],
+      "once": { "factor": 22, "base": 2 }
     }
   ],
   "morphology": [
@@ -139,11 +140,5 @@
         }
       ]
     }
-  ],
-  "bands": [
-    { "upTo": 9, "name": "Very common" },
-    { "upTo": 12, "name": "Common" },
-    { "upTo": 15, "name": "Uncommon" },
-    { "match": "^\\d", "name": "Rare" }
   ]
 }

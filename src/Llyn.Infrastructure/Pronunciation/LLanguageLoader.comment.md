@@ -45,19 +45,6 @@ Every other pack follows in ordinal order.
 The order is a rule about the language set, not a detail of one menu.
 So it is settled here, not in the UI.
 
-### `private static IReadOnlyList<LBand> LLanguageBandScan(JsonElement root)`
-
-The pack declares its frequency bands under `bands`, in the order they are tried.
-A missing block reads as no bands, and the raw figure then shows without a label.
-Order is kept because the first matching band wins.
-
-### `private static LBand? LLanguageBandRead(JsonElement row)`
-
-A band row carries a `name` and either an `upTo` integer or a `match` regex.
-`upTo` is read first, so a row carrying both is a limit band.
-A row with a blank name, with neither key, or with a regex that fails to compile is skipped.
-The regex is compiled once here so one typo never blanks the pack.
-
 ### `private static LFont LLanguageFontRead(JsonElement root, string key)`
 
 One reader serves both typography blocks the pack declares, `font` for the word and `example` for the sentence.

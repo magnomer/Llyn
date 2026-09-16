@@ -36,13 +36,12 @@ public sealed partial class LEntryArchive
         {
             command.CommandText =
                 """
-                INSERT INTO entry (headword, language, frequency, added_utc, updated_utc)
-                VALUES ($headword, $language, $frequency, $added, $updated)
+                INSERT INTO entry (headword, language, added_utc, updated_utc)
+                VALUES ($headword, $language, $added, $updated)
                 RETURNING entry_id;
                 """;
             command.Parameters.AddWithValue("$headword", stored.LEntryHeadword);
             command.Parameters.AddWithValue("$language", stored.LEntryLanguage);
-            command.Parameters.AddWithValue("$frequency", (object?)stored.LEntryFrequency ?? DBNull.Value);
             command.Parameters.AddWithValue("$added", (object?)stored.LEntryAddedUtc ?? DBNull.Value);
             command.Parameters.AddWithValue("$updated", (object?)stored.LEntryUpdatedUtc ?? DBNull.Value);
             stored = stored with { LEntryId = (long)command.ExecuteScalar()! };
@@ -63,7 +62,7 @@ public sealed partial class LEntryArchive
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
         command.CommandText =
             """
-            SELECT entry_id, headword, language, grasp, frequency, added_utc, updated_utc
+            SELECT entry_id, headword, language, grasp, added_utc, updated_utc
             FROM entry WHERE entry_id = $id;
             """;
         command.Parameters.AddWithValue("$id", id);
@@ -140,13 +139,11 @@ public sealed partial class LEntryArchive
             command.CommandText =
                 """
                 UPDATE entry
-                SET headword = $headword, language = $language, frequency = $frequency,
-                    updated_utc = $updated
+                SET headword = $headword, language = $language, updated_utc = $updated
                 WHERE entry_id = $id;
                 """;
             command.Parameters.AddWithValue("$headword", entry.LEntryHeadword);
             command.Parameters.AddWithValue("$language", entry.LEntryLanguage);
-            command.Parameters.AddWithValue("$frequency", (object?)entry.LEntryFrequency ?? DBNull.Value);
             command.Parameters.AddWithValue("$updated", now);
             command.Parameters.AddWithValue("$id", entry.LEntryId);
             if (command.ExecuteNonQuery() == 0)
@@ -195,25 +192,6 @@ public sealed partial class LEntryArchive
             command.Parameters.AddWithValue("$updated", now);
             command.Parameters.AddWithValue("$id", id);
             command.ExecuteNonQuery();
-        }
-
-        session.LDatabaseSessionCommit();
-    }
-
-    public void LEntryFrequencySet(long entryId, string? frequency)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
-
-        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            command.CommandText = "UPDATE entry SET frequency = $frequency WHERE entry_id = $id;";
-            command.Parameters.AddWithValue("$frequency", (object?)frequency ?? DBNull.Value);
-            command.Parameters.AddWithValue("$id", entryId);
-            if (command.ExecuteNonQuery() == 0)
-            {
-                throw new InvalidOperationException($"No entry carries the id '{entryId}'.");
-            }
         }
 
         session.LDatabaseSessionCommit();
@@ -295,8 +273,7 @@ public sealed partial class LEntryArchive
             reader.GetString(2),
             reader.GetInt32(3),
             reader.IsDBNull(4) ? null : reader.GetString(4),
-            reader.IsDBNull(5) ? null : reader.GetString(5),
-            reader.IsDBNull(6) ? null : reader.GetString(6));
+            reader.IsDBNull(5) ? null : reader.GetString(5));
     }
 
     private static void LEntryFormInsert(SqliteConnection connection, long id, IReadOnlyList<LForm> forms)

@@ -154,6 +154,8 @@ Only the mp3 rendition is taken, because the original is WAV.
 
 Purple Culture's dictionary page marks a word on the HSK vocabulary lists with a green badge.
 The badge holds HSK 1 to HSK 6.
+An HSK level is a syllabus grade with no count behind it, so pattern bands label it, not an interval.
+The bands carry the ladder names: HSK 1 and 2 core, 3 and 4 everyday, 5 and 6 advanced.
 The headword badge comes first when compounds below carry their own.
 The page title names the word looked up, so the confirm guard fails for an unknown spelling.
 A word outside the HSK lists has no badge.

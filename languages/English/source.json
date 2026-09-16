@@ -343,7 +343,8 @@
           "match": "\"f:([0-9.]+)\"",
           "group": 1
         }
-      ]
+      ],
+      "once": { "total": 1000000 }
     },
     {
       "name": "Longman",
@@ -356,6 +357,10 @@
           "match": "class=\"FREQ\"[^>]*>([SW][123])<",
           "group": 1
         }
+      ],
+      "bands": [
+        { "match": "^[SW]1$", "name": "Core" },
+        { "match": "^[SW][23]$", "name": "Everyday" }
       ]
     }
   ],
@@ -376,13 +381,5 @@
         }
       ]
     }
-  ],
-  "bands": [
-    { "upTo": 0.1, "name": "Rare" },
-    { "upTo": 1, "name": "Uncommon" },
-    { "upTo": 10, "name": "Common" },
-    { "match": "^\\d", "name": "Very common" },
-    { "match": "^[SW]1$", "name": "Very common" },
-    { "match": "^[SW][23]$", "name": "Common" }
   ]
 }

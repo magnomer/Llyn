@@ -281,12 +281,12 @@
           "match": "class='badge bg-success[^']*'>(HSK [1-6])</span>",
           "group": 1
         }
+      ],
+      "bands": [
+        { "match": "^HSK [12]$", "name": "Core" },
+        { "match": "^HSK [34]$", "name": "Everyday" },
+        { "match": "^HSK [56]$", "name": "Advanced" }
       ]
     }
-  ],
-  "bands": [
-    { "match": "^HSK [12]$", "name": "Very common" },
-    { "match": "^HSK [34]$", "name": "Common" },
-    { "match": "^HSK [56]$", "name": "Uncommon" }
   ]
 }

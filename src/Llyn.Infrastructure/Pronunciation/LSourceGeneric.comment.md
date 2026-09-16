@@ -55,6 +55,7 @@ It comes back with the headword the chase ended on.
 Fetches and extracts once.
 The second value is the headword the attempt's `follow` reading captured, or `null` when there is none to follow.
 A page the guard rejects is not followed.
+An attempt marked decoded has its body HTML-decoded first, so entity-written characters match as characters.
 
 A pattern that runs past its patience is read as a page with nothing on it.
 Every pattern comes from a language pack and runs over a page a stranger wrote.

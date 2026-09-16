@@ -25,7 +25,8 @@ An id that has gone stale is a normal cost of remembering one, not an error.
 ## `internal void PEditorFrequencyShow()`
 
 Fills the frequency chip under the parts of speech from the stored entry, since the draft does not carry it.
-The chip is worded by the shared label and sits where the view puts it.
+The chip, its stars and its tooltip are worded by the shared label, and it sits where the view does.
+The rung name is localized here, since only the surface knows the user's language.
 So the two modes read alike.
 A form standing on nothing has no entry to ask, so the chip is hidden rather than emptied.
 Hiding it moves nothing below the header, because it holds its own row.

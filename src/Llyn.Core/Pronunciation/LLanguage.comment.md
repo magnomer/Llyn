@@ -52,11 +52,10 @@ Everything language-specific arrives through this record.
   They run only when the user switches respelling on.
   A pack that declares none carries an empty list.
 - `LLanguageFrequencies` — The sources the pack declares for fetching an entry's frequency, held as [LSourceSpec](LSourceSpec.comment.md) records.
-  The engine asks them in order and keeps the first figure returned.
+  Each carries its own bands.
+  The engine asks every one and stores one row per source that answered.
   A pack that declares none carries an empty list, and no frequency is fetched for that language.
-- `LLanguageBands` — The frequency bands the pack declares, held as [LBand](LBand.comment.md) records, in the order they are tried.
-  A fetched figure earns the name of the first band that matches it.
-  A pack that declares none carries an empty list, and the raw figure stands unlabelled.
+  A fetched figure earns the name of the first band of its source that matches it.
 - `LLanguageMorphologies` — The sources the pack declares for fetching inflected forms, held as [LSourceSpec](LSourceSpec.comment.md) records.
   Each reading is keyed on a morphology value code written as a decimal string.
   A pack that declares none carries an empty list, and no form is fetched for that language.

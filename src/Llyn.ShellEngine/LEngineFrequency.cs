@@ -34,13 +34,15 @@ public sealed partial class LEngine
         return sources;
     }
 
-    public async Task<LFrequency?> LEngineFrequencyFind(string word, string language, CancellationToken cancellation)
+    public async Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(
+        string word, string language, CancellationToken cancellation)
     {
-        (LFrequency? found, _) = await LEngineFrequencyScan(word, language, cancellation).ConfigureAwait(false);
+        (IReadOnlyList<LFrequency> found, _) = await LEngineFrequencyScan(word, language, cancellation)
+            .ConfigureAwait(false);
         return found;
     }
 
-    private async Task<(LFrequency? LFrequencyFound, bool LFrequencyReached)> LEngineFrequencyScan(
+    private async Task<(IReadOnlyList<LFrequency> LFrequencyFound, bool LFrequencyReached)> LEngineFrequencyScan(
         string word, string language, CancellationToken cancellation)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(word);
@@ -52,6 +54,7 @@ public sealed partial class LEngine
         }
 
         bool reached = false;
+        List<LFrequency> rows = [];
         LReceiverFrequency receiver = new();
         foreach (LSource source in sources)
         {
@@ -65,33 +68,71 @@ public sealed partial class LEngine
                 reached |= candidate.LCandidateReached;
                 if (!string.IsNullOrEmpty(candidate.LCandidatePhonetic))
                 {
-                    string raw = candidate.LCandidatePhonetic;
-                    return (new LFrequency(candidate.LCandidateSource, raw, LEngineBandResolve(language, raw)), true);
+                    rows.Add(LEngineFrequencyResolve(
+                        language, new LFrequency(candidate.LCandidateSource, candidate.LCandidatePhonetic, null)));
+                    break;
                 }
             }
         }
 
-        return (null, reached);
+        return (rows, reached || rows.Count > 0);
     }
 
-    internal string? LEngineBandResolve(string language, string raw)
+    private LFrequency LEngineFrequencyResolve(string language, LFrequency row)
     {
-        ArgumentNullException.ThrowIfNull(raw);
+        LSourceSpec? spec = LEngineSpecFind(language, row.LFrequencySource);
+        if (spec is null)
+        {
+            return row;
+        }
 
+        bool numeric = double.TryParse(
+            row.LFrequencyRaw, NumberStyles.Float, CultureInfo.InvariantCulture, out double figure);
+        return row with
+        {
+            LFrequencyBand = LEngineBandResolve(spec, row.LFrequencyRaw),
+            LFrequencyOnce = numeric ? LFrequency.LFrequencyOnceResolve(spec, figure) : null,
+            LFrequencyUnit = numeric ? spec.LSourceSpecUnit : null,
+        };
+    }
+
+    private LSourceSpec? LEngineSpecFind(string language, string source)
+    {
         if (string.IsNullOrWhiteSpace(language))
         {
             return null;
         }
 
-        bool numeric = double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out double figure);
-        foreach (LBand band in LEngineLanguageLoad(language).LLanguageBands)
+        foreach (LSourceSpec spec in LEngineLanguageLoad(language).LLanguageFrequencies)
         {
-            if (band.LBandLimit is double limit && numeric && figure <= limit)
+            if (string.Equals(spec.LSourceSpecName, source, StringComparison.Ordinal))
             {
-                return band.LBandName;
+                return spec;
             }
+        }
 
-            if (band.LBandPattern is string pattern && LEngineBandMatch(raw, pattern))
+        return null;
+    }
+
+    internal string? LEngineBandResolve(string language, string source, string raw)
+    {
+        ArgumentNullException.ThrowIfNull(raw);
+
+        LSourceSpec? spec = LEngineSpecFind(language, source);
+        return spec is null ? null : LEngineBandResolve(spec, raw);
+    }
+
+    private static string? LEngineBandResolve(LSourceSpec spec, string raw)
+    {
+        if (double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out double figure)
+            && LFrequency.LFrequencyBandResolve(spec, figure) is string graded)
+        {
+            return graded;
+        }
+
+        foreach (LBand band in spec.LSourceSpecBands)
+        {
+            if (LEngineBandMatch(raw, band.LBandPattern))
             {
                 return band.LBandName;
             }
@@ -112,33 +153,50 @@ public sealed partial class LEngine
         }
     }
 
-    public LFrequency? LEngineFrequencyRead(long entryId)
+    public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)
     {
         LEntry? entry;
+        IReadOnlyList<LFrequency> stored;
         bool missed;
         lock (_lEngineGate)
         {
             entry = new LEntryArchive(_lEngineDatabase).LEntryRead(entryId);
+            stored = entry is null ? [] : new LFrequencyArchive(_lEngineDatabase).LFrequencyRead(entryId);
             missed = _lEngineFrequencyMissed.Contains(entryId);
         }
 
         if (entry is null)
         {
-            return null;
+            return [];
         }
 
-        if (string.IsNullOrWhiteSpace(entry.LEntryFrequency))
+        if (stored.Count == 0)
         {
             if (!missed)
             {
                 LEngineFrequencyStart(entryId);
             }
 
-            return null;
+            return [];
         }
 
-        LFrequency parsed = LFrequency.LFrequencyParse(entry.LEntryFrequency);
-        return parsed with { LFrequencyBand = LEngineBandResolve(entry.LEntryLanguage, parsed.LFrequencyRaw) };
+        List<LFrequency> rows = new(stored.Count);
+        foreach (LFrequency row in stored)
+        {
+            LFrequency resolved = LEngineFrequencyResolve(entry.LEntryLanguage, row);
+            if (!string.Equals(row.LFrequencyBand, resolved.LFrequencyBand, StringComparison.Ordinal))
+            {
+                lock (_lEngineGate)
+                {
+                    new LFrequencyArchive(_lEngineDatabase)
+                        .LFrequencyBandSet(entryId, row.LFrequencySource, resolved.LFrequencyBand);
+                }
+            }
+
+            rows.Add(resolved);
+        }
+
+        return rows;
     }
 
     public void LEngineFrequencyStart(long entryId)
@@ -196,7 +254,7 @@ public sealed partial class LEngine
         {
             await _lEngineFrequencyGate.WaitAsync(fetch.Token).ConfigureAwait(false);
             admitted = true;
-            (LFrequency? found, bool reached) = await LEngineFrequencyScan(
+            (IReadOnlyList<LFrequency> found, bool reached) = await LEngineFrequencyScan(
                 entry.LEntryHeadword, entry.LEntryLanguage, fetch.Token).ConfigureAwait(false);
 
             lock (_lEngineGate)
@@ -206,7 +264,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                if (found is null)
+                if (found.Count == 0)
                 {
                     if (reached)
                     {
@@ -216,8 +274,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                LEntryArchive entries = new(_lEngineDatabase);
-                LEntry? current = entries.LEntryRead(entry.LEntryId);
+                LEntry? current = new LEntryArchive(_lEngineDatabase).LEntryRead(entry.LEntryId);
                 if (current is null
                     || !string.Equals(current.LEntryHeadword, entry.LEntryHeadword, StringComparison.Ordinal)
                     || !string.Equals(current.LEntryLanguage, entry.LEntryLanguage, StringComparison.Ordinal))
@@ -225,7 +282,7 @@ public sealed partial class LEngine
                     return;
                 }
 
-                entries.LEntryFrequencySet(entry.LEntryId, found.LFrequencyFormat());
+                new LFrequencyArchive(_lEngineDatabase).LFrequencySet(entry.LEntryId, found);
                 raised = true;
             }
         }

@@ -3,9 +3,9 @@
 ## `public sealed partial class LEngine`
 
 The frequency side of the engine.
-An Entry earns one Frequency value, fetched once from the web sources its language pack names.
-The database keeps only the `"<source>|<raw>"` string, never the band.
-The band is resolved from the pack each time the value is read, so a pack edit applies at once.
+An Entry earns one Frequency row per web source its language pack names, fetched once.
+The database keeps the raw figure as ground truth and the band as a cache of its last label.
+The word interval and the band are derived from the raw figure on every read, both being arithmetic.
 The fill runs in the background and never blocks the save that asked for it.
 
 ## `private static readonly TimeSpan LEngineBandPatience`
@@ -19,38 +19,53 @@ The built frequency sources of one language, made once and kept for the engine's
 A pack without a `frequency` list yields no sources, so every fill for that language ends at once.
 An Entry with no language named has no pack, so it yields no sources either.
 
-## `public async Task<LFrequency?> LEngineFrequencyFind(string word, string language, CancellationToken cancellation)`
+## `public async Task<IReadOnlyList<LFrequency>> LEngineFrequencyFind(string word, string language, CancellationToken cancellation)`
 
-Asks the frequency sources of `language` for `word` and keeps the first non-empty answer in written order.
-Returns null when every source came up empty.
+Asks every frequency source of `language` for `word` and returns one resolved row per source that answered, in written order.
+Returns an empty list when every source came up empty.
 
-## `private async Task<(LFrequency? LFrequencyFound, bool LFrequencyReached)> LEngineFrequencyScan(string word, string language, CancellationToken cancellation)`
+## `private async Task<(IReadOnlyList<LFrequency> LFrequencyFound, bool LFrequencyReached)> LEngineFrequencyScan(string word, string language, CancellationToken cancellation)`
 
-The lookup behind the find, one source at a time in written order, stopping at the first answer.
-A later source is never asked once an earlier one has answered, so no request is wasted.
+The lookup behind the find, one source at a time in written order.
+Every source is asked, because each corpus is its own measure and the rows are kept side by side.
 The lookup runs literal with no variety fan-out and no cleanup, because a figure is not IPA.
 The receiver is a private no-op, since nothing streams the figures to a caller.
 The second value says whether any source was reached at all.
 A word every source reached yet none knew is a miss, while sources that never answered are not.
 
-## `internal string? LEngineBandResolve(string language, string raw)`
+## `private LFrequency LEngineFrequencyResolve(string language, LFrequency row)`
 
-Walks the bands of the pack in order and returns the name of the first that matches `raw`.
-A band matches by its numeric limit or by its regex pattern, as [LBand](../Llyn.Core/Pronunciation/LBand.comment.md) states.
-The figure is parsed as an invariant decimal, so `3.07` and `1e3` compare against a limit.
-Returns null when no band matches, so the raw figure shows as is.
-An Entry with no language named has no bands, so it returns null too.
+Stamps one row with its band, its word interval and its unit from the pack source of the same name.
+The interval and the unit are stamped only when the raw figure is numeric.
+The band is always recomputed from the raw figure, so a stored label never outlives the ladder that made it.
+A row whose source the pack no longer names is returned as it is.
+
+## `private LSourceSpec? LEngineSpecFind(string language, string source)`
+
+The pack's frequency source of the given name, or null when the language is blank or names no such source.
+
+## `internal string? LEngineBandResolve(string language, string source, string raw)`
+
+Grades `raw` on the shared ladder, else walks the pattern bands of the named source in order.
+Returns null when the pack names no such source or nothing labels the figure, which then shows as is.
+
+## `private static string? LEngineBandResolve(LSourceSpec spec, string raw)`
+
+A numeric figure with a word interval is graded by [LFrequency](../Llyn.Core/Pronunciation/LFrequency.comment.md) on the shared ladder.
+Otherwise the first [LBand](../Llyn.Core/Pronunciation/LBand.comment.md) whose pattern matches names it.
+The figure is parsed as an invariant decimal, so `3.07` and `1e3` grade as numbers.
 
 ## `private static bool LEngineBandMatch(string raw, string pattern)`
 
 Runs one pack regex culture-invariant under the band patience.
 A pattern that times out is a non-match rather than a failure.
 
-## `public LFrequency? LEngineFrequencyRead(long entryId)`
+## `public IReadOnlyList<LFrequency> LEngineFrequencyRead(long entryId)`
 
-Reads the stored frequency of the Entry identified by `entryId` and resolves its band from the pack now.
-Returns null when the Entry is missing or holds no value.
-An empty value on an Entry whose pack has sources starts a fill before returning.
+Reads the stored frequency rows of the Entry identified by `entryId` and stamps each with its word interval.
+Returns an empty list when the Entry is missing or holds no row.
+A row whose stored band differs from the one its raw figure now earns has the new band stored.
+An Entry with no row whose pack has sources starts a fill before returning.
 So an old Entry fills itself on first display.
 An Entry the sources already answered with nothing this session is not asked again on every display.
 
@@ -79,7 +94,7 @@ The fill itself, run outside the gate for the whole fetch.
 At most four fills fetch at once.
 An import of many entries queues them rather than opening one connection each.
 A fill cancelled while it queues never fetches.
-The value is written only when the fill was not cancelled and the setting is still on.
+The rows are written only when the fill was not cancelled and the setting is still on.
 The Entry must also still exist with the same headword and language as fetched.
 A fill writes no revision row, because a machine fill is not a user edit.
 Every exception is swallowed, since a missing figure is not an error the user can act on.

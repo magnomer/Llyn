@@ -285,17 +285,17 @@ internal static partial class TInterface
         engine.LEngineLinkedSave(linked);
     }
 
-    internal static Task<LFrequency?> TEngineFrequencyFind(
+    internal static Task<IReadOnlyList<LFrequency>> TEngineFrequencyFind(
         this LEngine engine,
         string word,
         string language,
         CancellationToken cancellation) =>
         engine.LEngineFrequencyFind(word, language, cancellation);
 
-    internal static string? TEngineBandResolve(this LEngine engine, string language, string raw) =>
-        engine.LEngineBandResolve(language, raw);
+    internal static string? TEngineBandResolve(this LEngine engine, string language, string source, string raw) =>
+        engine.LEngineBandResolve(language, source, raw);
 
-    internal static LFrequency? TEngineFrequencyRead(this LEngine engine, long entryId) =>
+    internal static IReadOnlyList<LFrequency> TEngineFrequencyRead(this LEngine engine, long entryId) =>
         engine.LEngineFrequencyRead(entryId);
 
     internal static void TEngineFrequencyStart(this LEngine engine, long entryId)

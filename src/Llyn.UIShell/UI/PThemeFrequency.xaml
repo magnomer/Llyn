@@ -25,4 +25,22 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style x:Key="Theme.Frequency.Band" TargetType="TextBlock">
+        <Setter Property="Margin" Value="7,0,0,0" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <SolidColorBrush x:Key="Theme.Frequency.Core" Color="{DynamicResource Theme.FrequencyCore.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Frequency.Everyday" Color="{DynamicResource Theme.FrequencyEveryday.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Frequency.Advanced" Color="{DynamicResource Theme.FrequencyAdvanced.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Frequency.Rare" Color="{DynamicResource Theme.FrequencyRare.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Frequency.Unknown" Color="{DynamicResource Theme.Muted.Color}" />
+
+    <SolidColorBrush x:Key="Theme.Frequency.Empty" Opacity="0.22" Color="{DynamicResource Theme.Muted.Color}" />
+
 </ResourceDictionary>

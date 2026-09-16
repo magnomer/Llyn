@@ -253,29 +253,53 @@ public sealed class TLanguageLoader
         LSourceSpec longman = TLanguageSourceFind("English", "Longman");
 
         Assert.Null(Assert.Single(longman.LSourceSpecAttempts).LSourceAttemptFollow);
+        Assert.False(Assert.Single(longman.LSourceSpecAttempts).LSourceAttemptDecoded);
     }
 
     [Fact]
-    public void LanguageLoad_FrequencyAndBands_ReadsBothInWrittenOrder()
+    public void LanguageLoad_DecodeKey_MarksAttemptDecoded()
+    {
+        LLanguage language = TLanguageFixtureLoad(
+            """
+            { "pronunciation": [ { "name": "Stub", "attempts": [
+                { "urls": ["https://example.test/{word}"], "strategy": "regex", "match": "m=(.+)", "group": 1,
+                  "decode": true } ] } ] }
+            """);
+
+        LSourceAttempt attempt = Assert.Single(Assert.Single(language.LLanguageLookupSources).LSourceSpecAttempts);
+        Assert.True(attempt.LSourceAttemptDecoded);
+    }
+
+    [Fact]
+    public void LanguageLoad_FrequencyWithBandsAndOnce_ReadsEachSourceOwnScale()
     {
         LLanguage language = TLanguageFixtureLoad(
             """
             { "frequency": [
                 { "name": "First", "attempts": [
                     { "urls": ["https://example.test/a/{word}"], "strategy": "regex",
-                      "match": "a=(\\S+)", "group": 1 } ] },
+                      "match": "a=(\\S+)", "group": 1 } ],
+                  "once": { "total": 1000000 },
+                  "bands": [
+                    { "match": "^[SW]1$", "name": "Core" },
+                    { "match": "^unranked$", "name": "Rare" } ] },
                 { "name": "Second", "attempts": [
                     { "urls": ["https://example.test/b/{word}"], "strategy": "regex",
-                      "match": "b=(\\S+)", "group": 1 } ] } ],
-              "bands": [
-                { "upTo": 10, "name": "Common" },
-                { "match": "^[SW]1$", "name": "Very common" } ] }
+                      "match": "b=(\\S+)", "group": 1 } ],
+                  "once": { "factor": 22, "base": 2 }, "unit": " Level " } ] }
             """);
 
         Assert.Equal(["First", "Second"], language.LLanguageFrequencies.Select(source => source.LSourceSpecName));
+        LSourceSpec first = language.LLanguageFrequencies[0];
         Assert.Equal(
-            [("Common", 10, null), ("Very common", null, "^[SW]1$")],
-            language.LLanguageBands.Select(band => (band.LBandName, band.LBandLimit, band.LBandPattern)));
+            [("Core", "^[SW]1$"), ("Rare", "^unranked$")],
+            first.LSourceSpecBands.Select(band => (band.LBandName, band.LBandPattern)));
+        Assert.Equal((1000000, null, null), (first.LSourceSpecTotal, first.LSourceSpecFactor, first.LSourceSpecBase));
+        LSourceSpec second = language.LLanguageFrequencies[1];
+        Assert.Empty(second.LSourceSpecBands);
+        Assert.Equal((null, 22, 2), (second.LSourceSpecTotal, second.LSourceSpecFactor, second.LSourceSpecBase));
+        Assert.Equal("Level", second.LSourceSpecUnit);
+        Assert.Null(first.LSourceSpecUnit);
     }
 
     [Fact]
@@ -283,16 +307,25 @@ public sealed class TLanguageLoader
     {
         LLanguage language = TLanguageFixtureLoad(
             """
-            { "bands": [
-                { "upTo": 10 },
-                { "name": " ", "upTo": 10 },
-                { "name": "Bare" },
-                { "name": "Broken", "match": "(" },
-                { "name": "Kept", "match": "^S1$" } ] }
+            { "frequency": [
+                { "name": "First", "attempts": [
+                    { "urls": ["https://example.test/a/{word}"], "strategy": "regex",
+                      "match": "a=(\\S+)", "group": 1 } ],
+                  "once": { "total": -5, "factor": "12" },
+                  "bands": [
+                    { "match": "^S1$" },
+                    { "name": " ", "match": "^S1$" },
+                    { "name": "Numeric", "upTo": 10 },
+                    { "name": "Floored", "atLeast": 10 },
+                    { "name": "Bare" },
+                    { "name": "Broken", "match": "(" },
+                    { "name": "Kept", "match": "^S1$" } ] } ] }
             """);
 
-        LBand kept = Assert.Single(language.LLanguageBands);
+        LSourceSpec first = Assert.Single(language.LLanguageFrequencies);
+        LBand kept = Assert.Single(first.LSourceSpecBands);
         Assert.Equal("Kept", kept.LBandName);
+        Assert.Equal((null, null, null), (first.LSourceSpecTotal, first.LSourceSpecFactor, first.LSourceSpecBase));
     }
 
     [Fact]
@@ -350,7 +383,6 @@ public sealed class TLanguageLoader
         LLanguage language = TInterface.TLanguageLoad("Spanish");
 
         Assert.Empty(language.LLanguageFrequencies);
-        Assert.Empty(language.LLanguageBands);
     }
 
     [Fact]
