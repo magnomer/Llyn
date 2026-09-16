@@ -261,7 +261,11 @@ public sealed class LDiweiArchive
     private static void LDiweiReadingSave(LDatabaseSession session, long fanqieId, LHypothesisSound? sound)
     {
         using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
-        command.CommandText = "UPDATE fanqie SET reading = $reading, tone_class = $class WHERE fanqie_id = $fanqie;";
+        command.CommandText =
+            """
+            UPDATE fanqie SET reading = $reading, tone_class = $class
+            WHERE fanqie_id = $fanqie AND (reading <> $reading OR tone_class <> $class);
+            """;
         command.Parameters.AddWithValue("$reading", sound?.LHypothesisSoundText ?? string.Empty);
         command.Parameters.AddWithValue("$class", sound?.LHypothesisSoundClass ?? string.Empty);
         command.Parameters.AddWithValue("$fanqie", fanqieId);

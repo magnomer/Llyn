@@ -41,6 +41,10 @@ The list of rows, its own shared-size scope so the columns line up across rows.
 
 The loading line under the rows.
 
+## `protected override AutomationPeer OnCreateAutomationPeer()`
+
+The surface peer, so thirty glyph pictures and their captions are not reported one by one to accessibility subscribers.
+
 ## `public PScript()`
 
 Builds the box from the theme's script styles, unfocusable, collapsed until it has something to show.

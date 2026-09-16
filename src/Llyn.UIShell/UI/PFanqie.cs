@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -35,6 +36,11 @@ public sealed class PFanqie : ContentControl
     private readonly ItemsControl _pFanqieList = new();
     private readonly TextBlock _pFanqieLoading = new();
     private readonly Button _pFanqieRefresh = new();
+
+    protected override AutomationPeer OnCreateAutomationPeer()
+    {
+        return new PSurfacePeer(this);
+    }
 
     public PFanqie()
     {

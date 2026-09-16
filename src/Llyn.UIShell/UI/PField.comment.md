@@ -2,7 +2,7 @@
 
 ## Inline notes
 
-### `internal static class PField`
+### `internal static partial class PField`
 
 Builds the reusable text-input field control template in code.
 The content host must be named "PART_ContentHost".

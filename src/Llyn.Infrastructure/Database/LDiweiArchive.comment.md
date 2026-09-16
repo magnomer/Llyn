@@ -52,6 +52,7 @@ So the reading view prints a stored reading and never runs the hypothesis itself
 ## `private static void LDiweiReadingSave(LDatabaseSession session, long fanqieId, LHypothesisSound? sound)`
 
 Writes the derived reading and tone class onto the fanqie row, or blanks both when the hypothesis gave none.
+A row already holding the same pair is not written, so a rebuild at every open dirties nothing.
 
 ## `private static IEnumerable<(string, string)> LDiweiKeyScan(LFanqieRow row, LHypothesisSound? sound)`
 

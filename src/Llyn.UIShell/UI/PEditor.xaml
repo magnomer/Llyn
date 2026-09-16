@@ -134,7 +134,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel x:Name="PReflexTable">
-                    <ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
+                    <local:PReflexList x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />
                     <TextBlock x:Name="PReflexLoading" Style="{StaticResource Theme.Reflex.Loading}" Visibility="Collapsed" />
                     <ToggleButton
                         x:Name="PReflexFold"

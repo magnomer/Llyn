@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -11,9 +12,16 @@ public sealed partial class LEngine
         using LDatabaseSession session = _lEngineDatabase.LDatabaseSessionStart();
         foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryFind(string.Empty))
         {
-            LEngineRespellingUpdate(entry);
-            LEngineEpithetUpdate(entry.LEntryId);
-            LEngineParadigmUpdate(entry);
+            try
+            {
+                LEngineRespellingUpdate(entry);
+                LEngineEpithetUpdate(entry.LEntryId);
+                LEngineParadigmUpdate(entry);
+            }
+            catch (Exception exception) when (exception is not OutOfMemoryException)
+            {
+                LAuditWriter.LAuditWriterRecord(_lEngineWorkspace, exception);
+            }
         }
 
         session.LDatabaseSessionCommit();

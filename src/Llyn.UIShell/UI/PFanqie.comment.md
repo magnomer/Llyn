@@ -47,6 +47,11 @@ The list of blocks, its own shared-size scope so the columns line up across bloc
 
 The loading line under the blocks.
 
+## `protected override AutomationPeer OnCreateAutomationPeer()`
+
+The surface peer, so the many cells of the placement lines are not reported one by one to accessibility subscribers.
+The rebuild button and the category buttons stay reachable through it.
+
 ## `public PFanqie()`
 
 Builds the box from the theme's fanqie styles, unfocusable, collapsed until it has something to show.

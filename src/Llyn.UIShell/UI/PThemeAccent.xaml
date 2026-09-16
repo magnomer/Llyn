@@ -61,11 +61,13 @@
         <Setter Property="Text" Value="{Binding PAccentItemLabel}" />
     </Style>
 
-    <Style x:Key="Theme.Accent.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
+    <Style x:Key="Theme.Accent.Prompt" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Text}">
+        <Setter Property="Margin" Value="0,-3,0,3" />
         <Setter Property="Text" Value="{Binding PAccentItemText}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding PAccentItemText}" Value="">
                 <Setter Property="Text" Value="{DynamicResource Input.Pronunciation}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -126,6 +128,13 @@
         </Setter>
     </Style>
 
+    <DataTemplate x:Key="Theme.Accent.Slot">
+        <StackPanel Style="{StaticResource Theme.Accent.Control}">
+            <Button Style="{StaticResource Theme.Accent.Addition}" />
+            <Button Style="{StaticResource Theme.Accent.Remove}" />
+        </StackPanel>
+    </DataTemplate>
+
     <DataTemplate x:Key="Theme.Accent.Row">
         <Border Style="{StaticResource Theme.Pronunciation.Surface}">
             <Grid>
@@ -139,18 +148,14 @@
                 </StackPanel>
                 <StackPanel Grid.Column="1" Style="{StaticResource Theme.Pronunciation.Body}">
                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding PAccentItemOpener}" />
-                    <Grid Style="{StaticResource Theme.Pronunciation.Cell}">
-                        <TextBlock Style="{StaticResource Theme.Accent.Measure}" />
-                        <TextBox Style="{StaticResource Theme.Pronunciation.Field}" Tag="{DynamicResource Input.Pronunciation}" Text="{Binding PAccentItemText, UpdateSourceTrigger=PropertyChanged}" />
+                    <Grid Background="Transparent" Style="{StaticResource Theme.Pronunciation.Cell}" Tag="Theme.Pronunciation.Field PAccentItemText Input.Pronunciation">
+                        <TextBlock Style="{StaticResource Theme.Accent.Prompt}" />
                     </Grid>
                     <TextBlock Style="{StaticResource Theme.Pronunciation.Bracket}" Text="{Binding PAccentItemCloser}" />
                     <Button Style="{StaticResource Theme.Accent.Playback}" />
                     <Button Style="{StaticResource Theme.Accent.Phonetician}" />
                     <Button Style="{StaticResource Theme.Accent.Downloader}" />
-                    <StackPanel Style="{StaticResource Theme.Accent.Control}">
-                        <Button Style="{StaticResource Theme.Accent.Addition}" />
-                        <Button Style="{StaticResource Theme.Accent.Remove}" />
-                    </StackPanel>
+                    <ContentControl Focusable="False" Tag="Theme.Accent.Slot" />
                 </StackPanel>
             </Grid>
         </Border>

@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace Llyn.UIShell;
 
-internal static class PField
+internal static partial class PField
 {
     internal const string PFieldSurfaceName = "PSurface";
 

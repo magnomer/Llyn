@@ -139,12 +139,11 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Theme.Reflex.Measure" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
-        <Setter Property="MaxWidth" Value="420" />
-        <Setter Property="Text" Value="{Binding PReflexItemText}" />
+    <Style x:Key="Theme.Reflex.Prompt" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Text}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding PReflexItemText}" Value="">
                 <Setter Property="Text" Value="{DynamicResource Input.Reflex}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -165,15 +164,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="Theme.Reflex.Gauge" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="MinWidth" Value="12" />
-        <Setter Property="MaxWidth" Value="160" />
-        <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="FontWeight" Value="Normal" />
-    </Style>
-
     <Style x:Key="Theme.Reflex.Note" TargetType="TextBox" BasedOn="{StaticResource Theme.Pronunciation.Field}">
         <Setter Property="Margin" Value="-2,0" />
         <Setter Property="MinWidth" Value="12" />
@@ -181,14 +171,6 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
-    </Style>
-
-    <Style x:Key="Theme.Reflex.Scale" TargetType="TextBlock" BasedOn="{StaticResource Theme.Pronunciation.Measure}">
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="MinWidth" Value="12" />
-        <Setter Property="MaxWidth" Value="420" />
-        <Setter Property="FontSize" Value="13" />
-        <Setter Property="FontWeight" Value="Normal" />
     </Style>
 
     <Style x:Key="Theme.Reflex.Star" TargetType="Button" BasedOn="{StaticResource Theme.Accent.Handle}">
@@ -276,6 +258,14 @@
         <Setter Property="Text" Value="{DynamicResource Reflex.Loading}" />
     </Style>
 
+    <DataTemplate x:Key="Theme.Reflex.Control">
+        <StackPanel Style="{StaticResource Theme.Accent.Control}">
+            <Button Style="{StaticResource Theme.Reflex.Star}" />
+            <Button Style="{StaticResource Theme.Reflex.Addition}" />
+            <Button Style="{StaticResource Theme.Reflex.Remove}" />
+        </StackPanel>
+    </DataTemplate>
+
     <DataTemplate x:Key="Theme.Reflex.Row">
         <Border Style="{StaticResource Theme.Reflex.Surface}">
             <Grid>
@@ -286,40 +276,33 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
-                    <Grid Margin="0,0,8,0">
-                        <TextBlock Style="{StaticResource Theme.Reflex.Gauge}" Text="{Binding PReflexItemHead}" />
-                        <TextBox Style="{StaticResource Theme.Reflex.Name}" Text="{Binding PReflexItemHead, UpdateSourceTrigger=PropertyChanged}" />
+                    <Grid Margin="0,0,8,0" MinWidth="12" Background="Transparent" Tag="Theme.Reflex.Name PReflexItemHead">
+                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Label}" />
                     </Grid>
                 </StackPanel>
-                <Grid Grid.Column="1" Margin="0,0,6,2" HorizontalAlignment="Left">
-                    <TextBlock Style="{StaticResource Theme.Reflex.Scale}" Text="{Binding PReflexItemKind}" />
-                    <TextBox Style="{StaticResource Theme.Reflex.Note}" Text="{Binding PReflexItemKind, UpdateSourceTrigger=PropertyChanged}" />
+                <Grid
+                    Grid.Column="1"
+                    Margin="0,0,6,2"
+                    MinWidth="12"
+                    HorizontalAlignment="Left"
+                    Background="Transparent" Tag="Theme.Reflex.Note PReflexItemKind">
+                    <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Tag}" />
                 </Grid>
                 <StackPanel Grid.Column="2" Margin="3,0" Orientation="Horizontal">
                     <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemOpener}" />
-                    <Grid HorizontalAlignment="Left" Margin="0" Style="{StaticResource Theme.Pronunciation.Cell}">
-                        <TextBlock Style="{StaticResource Theme.Reflex.Measure}" />
-                        <TextBox
-                            Style="{StaticResource Theme.Reflex.Field}"
-                            Tag="{DynamicResource Input.Reflex}"
-                            Text="{Binding PReflexItemText, UpdateSourceTrigger=PropertyChanged}" />
+                    <Grid HorizontalAlignment="Left" Background="Transparent" Tag="Theme.Reflex.Field PReflexItemText Input.Reflex">
+                        <TextBlock Style="{StaticResource Theme.Reflex.Prompt}" />
                     </Grid>
                     <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemCloser}" />
                 </StackPanel>
                 <StackPanel Grid.Column="3" Style="{StaticResource Theme.Pronunciation.Body}">
-                    <Grid Margin="12,0,3,2">
-                        <TextBlock Style="{StaticResource Theme.Reflex.Scale}" Text="{Binding PReflexItemNote}" />
-                        <TextBox Style="{StaticResource Theme.Reflex.Note}" Text="{Binding PReflexItemNote, UpdateSourceTrigger=PropertyChanged}" />
+                    <Grid Margin="12,0,3,2" MinWidth="12" Background="Transparent" Tag="Theme.Reflex.Note PReflexItemNote">
+                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Side}" />
                     </Grid>
-                    <Grid Margin="6,0,3,2">
-                        <TextBlock Style="{StaticResource Theme.Reflex.Scale}" Text="{Binding PReflexItemRemark}" />
-                        <TextBox Style="{StaticResource Theme.Reflex.Note}" Text="{Binding PReflexItemRemark, UpdateSourceTrigger=PropertyChanged}" />
+                    <Grid Margin="6,0,3,2" MinWidth="12" Background="Transparent" Tag="Theme.Reflex.Note PReflexItemRemark">
+                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Remark}" />
                     </Grid>
-                    <StackPanel Style="{StaticResource Theme.Accent.Control}">
-                        <Button Style="{StaticResource Theme.Reflex.Star}" />
-                        <Button Style="{StaticResource Theme.Reflex.Addition}" />
-                        <Button Style="{StaticResource Theme.Reflex.Remove}" />
-                    </StackPanel>
+                    <ContentControl Focusable="False" Tag="Theme.Reflex.Control" />
                 </StackPanel>
             </Grid>
         </Border>

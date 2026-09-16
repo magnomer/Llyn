@@ -40,9 +40,13 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost
         PCollocationList.ItemsSource = _pCollocationList;
         PNotationList.ItemsSource = _pNotationItem;
         PAccent.ItemsSource = _pAccentItem;
+        PField.PFieldCellAttach(PAccent);
+        PAccentControl.PAccentControlAttach(PAccent);
         PTranscription.ItemsSource = _pTranscriptionItem;
         PGlyph.ItemsSource = _pGlyphItem;
         PReflex.ItemsSource = _pReflexItem;
+        PField.PFieldCellAttach(PReflex);
+        PAccentControl.PAccentControlAttach(PReflex);
         PClipList.ItemsSource = _pClipItem;
         PLanguageList.ItemsSource = _pLanguageItem;
         PProspectList.ItemsSource = _pProspectItem;

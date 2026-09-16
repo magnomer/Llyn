@@ -12,6 +12,8 @@ The pass runs once, right after the migration, and never on an ordinary open.
 Walks every entry of the workspace in one session and derives what each stores.
 Respellings missing on pronunciation and reflex rows, the epithet, and the regular flag of every form.
 One session holds the whole pass, so a walk cut short lands nothing half-done.
+An entry whose pack or rows refuse the derivation is written to the audit log and skipped.
+The pass then reaches every other entry, since the migration that called it will not call again.
 
 ## `private void LEngineRespellingUpdate(LEntry entry)`
 

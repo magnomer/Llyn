@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Shapes;
@@ -31,6 +32,11 @@ public sealed class PScript : ContentControl
     private readonly StackPanel _pScriptBody = new();
     private readonly ItemsControl _pScriptList = new();
     private readonly TextBlock _pScriptLoading = new();
+
+    protected override AutomationPeer OnCreateAutomationPeer()
+    {
+        return new PSurfacePeer(this);
+    }
 
     public PScript()
     {
