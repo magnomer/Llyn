@@ -22,14 +22,7 @@ public sealed class LFanqieArchive
         ArgumentNullException.ThrowIfNull(rows);
 
         using LDatabaseSession session = _lFanqieArchiveDatabase.LDatabaseSessionStart();
-        using (SqliteCommand clear = session.LDatabaseSessionConnection.CreateCommand())
-        {
-            clear.CommandText = "DELETE FROM fanqie WHERE language = $language AND character = $character;";
-            clear.Parameters.AddWithValue("$language", language);
-            clear.Parameters.AddWithValue("$character", character);
-            clear.ExecuteNonQuery();
-        }
-
+        List<long> kept = [];
         foreach (LFanqieRow row in rows)
         {
             using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
@@ -40,7 +33,13 @@ public sealed class LFanqieArchive
                     initial, rime, heading, division, tone, rounded, source, spelling, reading, tone_class)
                 VALUES (
                     $language, $character, $book, $position, $text,
-                    $initial, $rime, $heading, $division, $tone, $rounded, $source, $spelling, $reading, $class);
+                    $initial, $rime, $heading, $division, $tone, $rounded, $source, $spelling, $reading, $class)
+                ON CONFLICT (language, character, book, source, position) DO UPDATE SET
+                    text = excluded.text, initial = excluded.initial, rime = excluded.rime,
+                    heading = excluded.heading, division = excluded.division, tone = excluded.tone,
+                    rounded = excluded.rounded, spelling = excluded.spelling,
+                    reading = excluded.reading, tone_class = excluded.tone_class
+                RETURNING fanqie_id;
                 """;
             command.Parameters.AddWithValue("$language", language);
             command.Parameters.AddWithValue("$character", character);
@@ -57,10 +56,23 @@ public sealed class LFanqieArchive
             command.Parameters.AddWithValue("$spelling", row.LFanqieRowSpelling);
             command.Parameters.AddWithValue("$reading", row.LFanqieRowReading);
             command.Parameters.AddWithValue("$class", row.LFanqieRowClass);
-            command.ExecuteNonQuery();
+            kept.Add((long)command.ExecuteScalar()!);
         }
 
+        LFanqieLeftoverDelete(session.LDatabaseSessionConnection, language, character, kept);
         session.LDatabaseSessionCommit();
+    }
+
+    private static void LFanqieLeftoverDelete(
+        SqliteConnection connection, string language, string character, List<long> kept)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        string held = kept.Count == 0 ? "0" : string.Join(", ", kept);
+        command.CommandText =
+            $"DELETE FROM fanqie WHERE language = $language AND character = $character AND fanqie_id NOT IN ({held});";
+        command.Parameters.AddWithValue("$language", language);
+        command.Parameters.AddWithValue("$character", character);
+        command.ExecuteNonQuery();
     }
 
     public IReadOnlyList<LFanqieRow> LFanqieRead(string language, string character)
@@ -73,7 +85,7 @@ public sealed class LFanqieArchive
         command.CommandText =
             """
             SELECT book, position, text, initial, rime, heading, division, tone, rounded, source, spelling,
-                   reading, tone_class
+                   reading, tone_class, fanqie_id
             FROM fanqie
             WHERE language = $language AND character = $character
             ORDER BY fanqie_id;
@@ -99,7 +111,8 @@ public sealed class LFanqieArchive
                 reader.GetString(9),
                 reader.GetString(10),
                 reader.GetString(11),
-                reader.GetString(12)));
+                reader.GetString(12),
+                reader.GetInt64(13)));
         }
 
         return rows;

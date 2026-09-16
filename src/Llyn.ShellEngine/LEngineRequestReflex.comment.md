@@ -11,6 +11,8 @@ So a blank row is held and named, and the commit leaves it out.
 
 Routes every reflex request to its handler, and hands any other request on to the card lists.
 A remark request replaces that one text of the named row, while the region only comes from the fetch.
+An anchor request ties or unties the named row and one fanqie row.
+The row's other anchors stand as they were.
 
 ## `private LEntryDraft LEngineReflexAdd(LEntryDraft content, LRequestReflexAddition request)`
 

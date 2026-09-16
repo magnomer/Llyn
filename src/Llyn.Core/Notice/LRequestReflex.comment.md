@@ -42,3 +42,13 @@ Replaces the remark of one row.
 ## `public sealed record LRequestReflexMain(long LRequestDraftId, long LRequestReflexId, bool LRequestMain)`
 
 Marks or unmarks one row as the reading in common use.
+
+## `public sealed record LRequestReflexAnchor(`
+
+Ties one row to the fanqie row `LRequestFanqieId` names when `LRequestAnchored`, and unties it otherwise.
+One request per tick, so the other anchors of the row and the other rows stand untouched.
+
+## `public sealed record LRequestReflexAnchor(`
+
+Ties one row to the fanqie row `LRequestFanqieId` names when `LRequestAnchored`, and unties it otherwise.
+One request per tick, so the other anchors of the row and the other rows stand untouched.

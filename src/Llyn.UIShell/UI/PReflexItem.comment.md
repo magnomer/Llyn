@@ -5,6 +5,8 @@
 One reflex row as the reading view and the input panel bind it.
 It carries the language, kind, text, note, region, remark and main mark of one draft row.
 It also knows whether it leads its language group, and whether it is folded away under the visible rows.
+It holds the fanqie ids the row is anchored to and the label they print as.
+It also knows whether the row may be anchored at all.
 The panel edits it through its properties, and the view only reads them.
 
 ## `public long PReflexItemId { get; }`
@@ -74,6 +76,20 @@ Whether the row is the reading in common use, drawn in the accent colour.
 
 Whether the row is the first of its language group, so it alone prints the language.
 The panel sets it after every reorder, since a row leads by position rather than by content.
+
+## `public IReadOnlyList<long> PReflexItemAnchors`
+
+The fanqie ids the row is tied to, sorted, raised only when the set changes.
+The label is not derived here, since the item never sees the fanqie rows.
+
+## `public string PReflexItemAnchor`
+
+The anchored placements printed after the remark, written by the pane that holds the fanqie rows.
+
+## `public bool PReflexItemAnchorable`
+
+Whether the editor row shows its anchor label at all.
+A multi-character headword and a character without stored placements show none.
 
 ## `public string PReflexItemHead`
 

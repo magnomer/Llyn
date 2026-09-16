@@ -14,6 +14,8 @@ public partial class PDisplay
 
     private readonly ObservableCollection<PReflexItem> _pDisplayReflex = [];
 
+    private IReadOnlyList<LFanqieRow> _pDisplayFanqie = [];
+
     private void PDisplayReflexStart(long id)
     {
         try
@@ -39,6 +41,7 @@ public partial class PDisplay
 
         PReflexLeadApply(_pDisplayReflex);
         PReflexFoldApply(_pDisplayReflex, PDisplayReflexFold);
+        PReflexAnchorApply(_pDisplayReflex, _pDisplayFanqie, draft.LEntryDraftHeadword);
     }
 
     private void PReflexPendingShow(long id)
@@ -120,6 +123,19 @@ public partial class PDisplay
             bool lead = !string.Equals(held, row.PReflexItemLanguage, StringComparison.Ordinal);
             row.PReflexItemLead = lead;
             held = row.PReflexItemLanguage;
+        }
+    }
+
+    internal static void PReflexAnchorApply(
+        IReadOnlyList<PReflexItem> rows, IReadOnlyList<LFanqieRow> fanqie, string headword)
+    {
+        bool anchorable = fanqie.Count > 0 && LGlyph.LGlyphScan(headword).Count == 1;
+        foreach (PReflexItem row in rows)
+        {
+            row.PReflexItemAnchorable = anchorable;
+            row.PReflexItemAnchor = anchorable
+                ? PAnchorItem.PAnchorTextFormat(fanqie, row.PReflexItemAnchors)
+                : string.Empty;
         }
     }
 

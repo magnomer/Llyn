@@ -15,23 +15,28 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             IReadOnlyList<LFanqieRow> rows = new LDiweiArchive(_lEngineDatabase).LDiweiFanqieRead(diwei.LDiweiId);
+            IReadOnlyDictionary<long, IReadOnlyList<LReflex>> anchored =
+                new LReflexArchive(_lEngineDatabase).LReflexAnchorScan(diwei.LDiweiId);
             Dictionary<string, List<string>> divisions = new(StringComparer.Ordinal);
             List<string> order = [];
-            Dictionary<string, IReadOnlyList<LReflex>> readings = new(StringComparer.Ordinal);
+            Dictionary<string, Dictionary<string, IReadOnlyList<LReflex>>> readings = new(StringComparer.Ordinal);
             foreach (LFanqieRow row in rows)
             {
                 if (!divisions.TryGetValue(row.LFanqieRowDivision, out List<string>? characters))
                 {
                     characters = [];
                     divisions[row.LFanqieRowDivision] = characters;
+                    readings[row.LFanqieRowDivision] =
+                        new Dictionary<string, IReadOnlyList<LReflex>>(StringComparer.Ordinal);
                     order.Add(row.LFanqieRowDivision);
                 }
 
                 if (row.LFanqieRowCharacter.Length > 0 && !characters.Contains(row.LFanqieRowCharacter))
                 {
                     characters.Add(row.LFanqieRowCharacter);
-                    LEngineTallyLoad(diwei.LDiweiLanguage, row.LFanqieRowCharacter, readings);
                 }
+
+                LEngineTallyLoad(readings[row.LFanqieRowDivision], row, anchored);
             }
 
             List<string> ranking = [];
@@ -48,28 +53,35 @@ public sealed partial class LEngine
             {
                 tallies.Add(new LTally(
                     division,
-                    LTallyLine.LTallyLineScan(diwei.LDiweiKind, divisions[division], readings, ranking)));
+                    LTallyLine.LTallyLineScan(diwei.LDiweiKind, divisions[division], readings[division], ranking)));
             }
 
             return tallies;
         }
     }
 
-    private void LEngineTallyLoad(
-        string language, string character, Dictionary<string, IReadOnlyList<LReflex>> readings)
+    private static void LEngineTallyLoad(
+        Dictionary<string, IReadOnlyList<LReflex>> readings,
+        LFanqieRow row,
+        IReadOnlyDictionary<long, IReadOnlyList<LReflex>> anchored)
     {
-        if (readings.ContainsKey(character))
+        if (row.LFanqieRowCharacter.Length == 0
+            || !anchored.TryGetValue(row.LFanqieRowId, out IReadOnlyList<LReflex>? reflexes))
         {
             return;
         }
 
-        List<LReflex> reflexes = [];
-        LReflexArchive archive = new(_lEngineDatabase);
-        foreach (LEntry entry in new LEntryArchive(_lEngineDatabase).LEntryHeadwordFind(language, character))
+        List<LReflex> held = readings.TryGetValue(row.LFanqieRowCharacter, out IReadOnlyList<LReflex>? kept)
+            ? [.. kept]
+            : [];
+        foreach (LReflex reflex in reflexes)
         {
-            reflexes.AddRange(archive.LReflexRead(entry.LEntryId));
+            if (!held.Any(found => found.LReflexId == reflex.LReflexId))
+            {
+                held.Add(reflex);
+            }
         }
 
-        readings[character] = reflexes;
+        readings[row.LFanqieRowCharacter] = held;
     }
 }

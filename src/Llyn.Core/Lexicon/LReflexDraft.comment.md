@@ -24,6 +24,10 @@ On commit a row is stored whenever any of its six texts is filled.
 - `LReflexDraftAnatomy` — The onset, vowel, coda and tone of the reading, cut in IPA and in respelling alike.
   The engine recuts it whenever the language, the reading or the respelling of the row changes.
   A view reads it and never cuts a reading itself.
+- `LReflexDraftAnchors` — The ids of the fanqie rows the user tied this reading to, sorted, each once.
+  The anchor request toggles one id, and the row is stored with them on commit.
+- `LReflexDraftAnchors` — The ids of the fanqie rows the user tied this reading to, sorted, each once.
+  The anchor request toggles one id, and the row is stored with them on commit.
 
 ## `public bool LReflexDraftEmpty`
 

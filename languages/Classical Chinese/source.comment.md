@@ -139,7 +139,9 @@ Gan, Hakka and Jin have one IPA line per block and read it whatever its bracket 
 Xiang may list two IPA lines per block, one bracketed old-style and one new-style.
 Its block context sits in a look-behind, so each IPA line of the block is its own row.
 The bracketed style label is captured as the remark of that row.
-A block with one unlabelled IPA line gives one row with no remark.
+The new-style label is also captured as the main group, so the new-style row is the one in common use.
+The old-style row is never marked, whatever order the page lists the two in.
+A block with one unlabelled IPA line gives one row with no remark, marked as the first.
 A block listing two readings is parted by the split into two rows.
 The superscript key raises every tone digit of the note, so a Nanchang `lung5` is stored as `lung⁵`.
 Wugniu writes the tone before the syllable, as `7oq`.
@@ -147,5 +149,5 @@ The Wu recast moves that leading digit to the end before it is raised, so the no
 The remark is still looked for under `7oq`, the form the page writes.
 The remark of each reading is read from the note box under the block, such as `literary` or `vernacular (“difficult”)`.
 Every dialect rule keeps every block, so a character with several pronunciation sections lists each section's reading.
-The first row of each is marked in common use.
+The first row of each is marked in common use, unless a main group already marked one.
 

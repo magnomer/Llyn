@@ -124,6 +124,10 @@
         </Style.Triggers>
     </Style>
 
+    <Style x:Key="Theme.Fanqie.Heading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">
+        <Setter Property="Text" Value="{Binding PFanqieLineHeading}" />
+    </Style>
+
     <Style x:Key="Theme.Fanqie.Reading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">
         <Setter Property="FontFamily" Value="{StaticResource Theme.Font}" />
         <Setter Property="FontWeight" Value="SemiBold" />
@@ -149,15 +153,10 @@
 
     <Style x:Key="Theme.Fanqie.Medial" TargetType="Border">
         <Setter Property="Margin" Value="0,0,12,0" />
-        <Setter Property="Padding" Value="5,0" />
-        <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Visibility" Value="Visible" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding PFanqieLineRounded}" Value="True">
-                <Setter Property="Background" Value="{StaticResource Theme.AccentSoft}" />
-            </DataTrigger>
             <DataTrigger Binding="{Binding PFanqieLineMedial}" Value="">
                 <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
@@ -165,12 +164,12 @@
     </Style>
 
     <Style x:Key="Theme.Fanqie.MedialText" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="15" />
         <Setter Property="Foreground" Value="{StaticResource Theme.Muted}" />
         <Setter Property="Text" Value="{Binding PFanqieLineMedial}" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding PFanqieLineRounded}" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                <Setter Property="Foreground" Value="{StaticResource Theme.Warning}" />
                 <Setter Property="FontWeight" Value="SemiBold" />
             </DataTrigger>
         </Style.Triggers>
@@ -207,7 +206,10 @@
             <TextBlock Style="{StaticResource Theme.Fanqie.Reading}" />
             <TextBlock Grid.Column="1" Style="{StaticResource Theme.Fanqie.Label}" />
             <Button Grid.Column="2" Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandInitial}" Content="{Binding PFanqieLineInitial}" />
-            <Button Grid.Column="3" Style="{StaticResource Theme.Fanqie.Link}" Command="{x:Static local:PFanqieCommand.PFanqieCommandRime}" Content="{Binding PFanqieLineRime}" />
+            <StackPanel Grid.Column="3" Orientation="Horizontal">
+                <Button Style="{StaticResource Theme.Fanqie.Link}" Margin="0" Command="{x:Static local:PFanqieCommand.PFanqieCommandRime}" Content="{Binding PFanqieLineRime}" />
+                <TextBlock Style="{StaticResource Theme.Fanqie.Heading}" />
+            </StackPanel>
             <Border Grid.Column="4" Style="{StaticResource Theme.Fanqie.Medial}">
                 <TextBlock Style="{StaticResource Theme.Fanqie.MedialText}" />
             </Border>

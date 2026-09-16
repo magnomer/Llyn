@@ -20,6 +20,9 @@ internal static partial class TInterface
     internal static string TReadingNormalize(string phonetic) =>
         LReading.LReadingNormalize(phonetic);
 
+    internal static string TDiweiRimeFormat(string rime, string division, bool rounded) =>
+        LDiwei.LDiweiRimeFormat(rime, division, rounded);
+
     internal static LRespellingRule TRespellingRuleCreate(string pattern, string replacement) =>
         new LRespellingRule(pattern, replacement);
 

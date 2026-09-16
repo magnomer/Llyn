@@ -1,3 +1,4 @@
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -29,9 +30,9 @@ public sealed class TDiweiArchive
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         string language = pack.TLanguageFixtureName;
-        LEntry lan = engine.TEngineEntrySave(TDiweiDraftCreate("爛", language));
-        LEntry lanman = engine.TEngineEntrySave(TDiweiDraftCreate("爛漫", language));
-        engine.TEngineEntrySave(TDiweiDraftCreate("孤", language));
+        LEntry lan = engine.TEngineEntrySave(TDiweiDraftCreate("爛", language, "란"));
+        engine.TEngineEntrySave(TDiweiDraftCreate("爛漫", language, "란만"));
+        LEntry gu = engine.TEngineEntrySave(TDiweiDraftCreate("孤", language, "고"));
         LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
         fanqie.TFanqieSave(
             language, "爛", [TDiweiRowCreate("爛", "來", "寒", "去"), TDiweiRowCreate("爛", "來", "寒A", "平", 1)]);
@@ -40,18 +41,20 @@ public sealed class TDiweiArchive
 
         archive.TDiweiApply(language, "爛", TDiweiArchiveTables);
         archive.TDiweiApply(language, "孤", TDiweiArchiveTables);
+        TDiweiAnchorApply(engine, lan.LEntryId, fanqie.TFanqieRead(language, "爛"));
+        TDiweiAnchorApply(engine, gu.LEntryId, fanqie.TFanqieRead(language, "孤"));
 
         Assert.Equal(["來", "見"], TDiweiKeyScan(archive, language, LDiwei.LDiweiInitial));
-        Assert.Equal(["寒", "模"], TDiweiKeyScan(archive, language, LDiwei.LDiweiRime));
+        Assert.Equal(["寒 I", "模 I"], TDiweiKeyScan(archive, language, LDiwei.LDiweiRime));
         Assert.Equal(["6", "1"], TDiweiKeyScan(archive, language, LDiwei.LDiweiTone));
         LDiwei lai = Assert.IsType<LDiwei>(archive.TDiweiFind(language, LDiwei.LDiweiInitial, "來"));
-        LDiwei han = Assert.IsType<LDiwei>(archive.TDiweiFind(language, LDiwei.LDiweiRime, "寒"));
+        LDiwei han = Assert.IsType<LDiwei>(archive.TDiweiFind(language, LDiwei.LDiweiRime, "寒 I"));
         LDiwei sixth = Assert.IsType<LDiwei>(archive.TDiweiFind(language, LDiwei.LDiweiTone, "6"));
         LDiwei first = Assert.IsType<LDiwei>(archive.TDiweiFind(language, LDiwei.LDiweiTone, "1"));
-        Assert.Equal((2, 2, 2, 3), (lai.LDiweiCount, han.LDiweiCount, sixth.LDiweiCount, first.LDiweiCount));
+        Assert.Equal((1, 1, 1, 2), (lai.LDiweiCount, han.LDiweiCount, sixth.LDiweiCount, first.LDiweiCount));
         LDiwei jian = Assert.IsType<LDiwei>(archive.TDiweiFind(language, LDiwei.LDiweiInitial, "見"));
-        Assert.Equal(
-            [lan.LEntryId, lanman.LEntryId], archive.TDiweiEntryScan(language, [lai.LDiweiId, sixth.LDiweiId]));
+        Assert.Equal([lan.LEntryId], archive.TDiweiEntryScan(language, [lai.LDiweiId, sixth.LDiweiId]));
+        Assert.Equal([lan.LEntryId, gu.LEntryId], archive.TDiweiEntryScan(language, [first.LDiweiId]));
         Assert.Empty(archive.TDiweiEntryScan(language, [han.LDiweiId, jian.LDiweiId]));
         Assert.Equal(9, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM fanqie_diwei;"));
     }
@@ -119,6 +122,19 @@ public sealed class TDiweiArchive
         Assert.NotNull(archive.TDiweiFind(language, LDiwei.LDiweiInitial, "見"));
     }
 
+    [Theory]
+    [InlineData("模", "一", false, "模 I")]
+    [InlineData("寒A", "一", true, "寒 I W")]
+    [InlineData("侵", "三", false, "侵 III")]
+    [InlineData("侵", "", true, "侵 W")]
+    [InlineData("侵", "五", false, "侵 五")]
+    [InlineData("", "一", true, "")]
+    public void RimeFormat_DivisionAndRounding_KeysSeparateRows(
+        string rime, string division, bool rounded, string expected)
+    {
+        Assert.Equal(expected, TInterface.TDiweiRimeFormat(rime, division, rounded));
+    }
+
     private static LFanqieRow TDiweiRowCreate(
         string character, string initial, string rime, string tone, int position = 0)
     {
@@ -130,7 +146,15 @@ public sealed class TDiweiArchive
         return archive.TDiweiRead(language, kind).Select(row => row.LDiweiKey).ToList();
     }
 
-    private static LEntryDraft TDiweiDraftCreate(string headword, string language)
+    private static void TDiweiAnchorApply(LEngine engine, long entryId, IReadOnlyList<LFanqieRow> rows)
+    {
+        IReadOnlyList<long> anchors = rows.Select(row => row.LFanqieRowId).ToList();
+        engine.TEngineReflexSet(
+            entryId,
+            engine.TEngineReflexRead(entryId).Select(reflex => reflex with { LReflexAnchors = anchors }).ToList());
+    }
+
+    private static LEntryDraft TDiweiDraftCreate(string headword, string language, string reading = "")
     {
         return TInterface.TEntryDraftCreate(
             headword,
@@ -138,6 +162,7 @@ public sealed class TDiweiArchive
             string.Empty,
             string.Empty,
             [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a state", [], [], [], [], [], 1)],
-            []);
+            [],
+            reflexes: reading.Length == 0 ? [] : [TInterface.TReflexDraftCreate("Korean", "", reading)]);
     }
 }

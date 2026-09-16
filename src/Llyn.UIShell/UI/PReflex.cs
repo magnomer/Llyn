@@ -15,6 +15,8 @@ public partial class PEditor
 
     private HashSet<string> _pReflexFolded = [];
 
+    private IReadOnlyList<LFanqieRow> _pReflexFanqie = [];
+
     private static string PReflexRequestFormat(long id, string field)
     {
         return string.Concat("Reflex:", id.ToString(CultureInfo.InvariantCulture), ":", field);
@@ -120,7 +122,13 @@ public partial class PEditor
 
         PDisplay.PReflexLeadApply(_pReflexItem);
         PDisplay.PReflexFoldApply(_pReflexItem, PReflexFold);
+        PReflexAnchorShow();
         PReflexPendingShow();
+    }
+
+    internal void PReflexAnchorShow()
+    {
+        PDisplay.PReflexAnchorApply(_pReflexItem, _pReflexFanqie, PHeadword.Text);
     }
 
     internal void PReflexPendingShow()
@@ -218,6 +226,7 @@ public partial class PEditor
             row.PReflexItemRemark = reflex.LReflexDraftRemark;
         }
 
+        row.PReflexItemAnchors = reflex.LReflexDraftAnchors;
         return row;
     }
 
@@ -229,6 +238,7 @@ public partial class PEditor
         }
 
         _pReflexItem.Clear();
+        _pReflexFanqie = [];
         PReflexFold.Visibility = Visibility.Collapsed;
         PReflexLoading.Visibility = Visibility.Collapsed;
         PReflexRenewal.Tag = false;

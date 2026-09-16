@@ -15,4 +15,7 @@ public static class PReflexCommand
 
     public static RoutedCommand PReflexCommandRenewal { get; } =
         new(nameof(PReflexCommandRenewal), typeof(PReflexCommand));
+
+    public static RoutedCommand PReflexCommandAnchor { get; } =
+        new(nameof(PReflexCommandAnchor), typeof(PReflexCommand));
 }

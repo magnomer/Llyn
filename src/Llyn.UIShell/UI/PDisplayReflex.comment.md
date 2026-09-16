@@ -23,6 +23,7 @@ A failed ask is ignored, and the lines then show what is stored.
 Rebuilds the rows from the draft, in the order the entry keeps them, and marks the lead of each language.
 Each row prints the form the switch picks for that row's own language, asked of the engine per row.
 The folded languages are read from the rules of the entry's language, and the fold is applied last.
+The anchor labels are written from the fanqie rows the view last read, and again when the rows land.
 
 ## `private void PReflexPendingShow(long id)`
 
@@ -55,6 +56,12 @@ Empty for a blank language or a pack without rules.
 
 Marks each row that opens a run of one language as its lead, so the language prints once per run.
 Shared with the editor, whose rows lead by the same rule.
+
+## `internal static void PReflexAnchorApply(`
+
+Writes each row's anchor label from `fanqie`, and whether the row may be anchored at all.
+Only a single-character headword with stored placements may be, so every other row prints nothing.
+Shared by both panes, so the label reads the same in the editor and the reading view.
 
 ## `internal static void PReflexFoldToggle(IReadOnlyList<PReflexItem> rows, ToggleButton fold)`
 

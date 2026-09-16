@@ -98,6 +98,38 @@ public sealed class TEngineReflexSource
         Assert.Equal(["", "historical", "", "ancient"], found.Select(row => row.LReflexDraftRemark));
     }
 
+    [Fact]
+    public async Task ReflexFind_MainGroupInsideRemark_MarksNewStyleOverFirst()
+    {
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
+            """
+            { "reflex": [ { "language": "Xiang", "region": "Changsha", "url": "https://example.test/wiki/{word}",
+              "match": "(?<=<p>Note: <span>(?<note>[^<]+)</span></p>(?:(?!</ul>).)*?)IPA(?: \\(<i>(?<remark>(?<main>new-style)|[^<]+)</i>\\))?: <span>(?<text>[^<]+)</span>",
+              "every": true, "first": true } ] }
+            """);
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart(TPronunciationHelper.TSourceClientCreate(
+            new Dictionary<string, string>
+            {
+                ["https://example.test/wiki/%E6%95%B4"] =
+                    "<ul><p>Note: <span>zhen3</span></p><li>IPA (<i>old-style</i>): <span>/ʈ͡ʂən⁴¹/</span></li>"
+                    + "<li>IPA (<i>new-style</i>): <span>/t͡sən⁴¹/</span></li></ul>",
+                ["https://example.test/wiki/%E6%9E%97"] =
+                    "<ul><p>Note: <span>lin2</span></p><li>IPA: <span>/lin¹³/</span></li></ul>",
+            }));
+
+        IReadOnlyList<LReflexDraft> styled = await engine.TEngineReflexFind(
+            "整", pack.TLanguageFixtureName, CancellationToken.None);
+        IReadOnlyList<LReflexDraft> plain = await engine.TEngineReflexFind(
+            "林", pack.TLanguageFixtureName, CancellationToken.None);
+
+        Assert.Equal(
+            [("Xiang", "", "ʈ͡ʂən⁴¹", "zhen3", false), ("Xiang", "", "t͡sən⁴¹", "zhen3", true)],
+            styled.Select(TReflexRowRead));
+        Assert.Equal(["old-style", "new-style"], styled.Select(row => row.LReflexDraftRemark));
+        Assert.Equal([("Xiang", "", "lin¹³", "lin2", true)], plain.Select(TReflexRowRead));
+    }
+
     private static (string, string, string, string, bool) TReflexRowRead(LReflexDraft row) =>
         (row.LReflexDraftLanguage,
          row.LReflexDraftKind,

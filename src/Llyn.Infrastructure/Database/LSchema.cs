@@ -27,6 +27,7 @@ public static class LSchema
         LSchemaScript.LSchemaScriptCreate(connection);
         LSchemaFanqie.LSchemaFanqieCreate(connection);
         LSchemaDiwei.LSchemaDiweiCreate(connection);
+        LSchemaAnchor.LSchemaAnchorCreate(connection);
 
         LSchemaRevision.LSchemaRevisionCreate(connection);
 

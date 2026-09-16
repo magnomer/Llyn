@@ -19,6 +19,7 @@ internal sealed class PFanqieLine
         string label,
         string initial,
         string rime,
+        string heading,
         string yunmu,
         string medial,
         string division,
@@ -30,6 +31,7 @@ internal sealed class PFanqieLine
         PFanqieLineLabel = label;
         PFanqieLineInitial = initial;
         PFanqieLineRime = rime;
+        PFanqieLineHeading = heading;
         PFanqieLineYunmu = yunmu;
         PFanqieLineMedial = medial;
         PFanqieLineDivision = division;
@@ -45,6 +47,8 @@ internal sealed class PFanqieLine
     public string PFanqieLineInitial { get; }
 
     public string PFanqieLineRime { get; }
+
+    public string PFanqieLineHeading { get; }
 
     public string PFanqieLineYunmu { get; }
 
@@ -67,9 +71,7 @@ internal sealed class PFanqieLine
         bool parted = row.LFanqieRowInitial.Length > 0 || row.LFanqieRowRime.Length > 0;
         string reading = row.LFanqieRowReading.Length == 0 ? string.Empty : '/' + row.LFanqieRowReading + '/';
         string label = PFanqieLabelFormat(row.LFanqieRowClass);
-        string rime = row.LFanqieRowHeading.Length == 0
-            ? row.LFanqieRowRime
-            : row.LFanqieRowRime + '[' + row.LFanqieRowHeading + ']';
+        string heading = row.LFanqieRowHeading.Length == 0 ? string.Empty : '[' + row.LFanqieRowHeading + ']';
         string medial = !parted ? string.Empty : row.LFanqieRowRounded ? PFanqieLineMark : PFanqieLineUnrounded;
         string division = row.LFanqieRowDivision.Length == 0
             ? string.Empty
@@ -79,8 +81,9 @@ internal sealed class PFanqieLine
             reading,
             label,
             row.LFanqieRowInitial,
-            rime,
-            LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime),
+            row.LFanqieRowRime,
+            heading,
+            LDiwei.LDiweiRimeFormat(row.LFanqieRowRime, row.LFanqieRowDivision, row.LFanqieRowRounded),
             medial,
             division,
             row.LFanqieRowTone,

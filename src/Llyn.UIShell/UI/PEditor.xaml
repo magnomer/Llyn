@@ -127,6 +127,7 @@
                 <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandRemoval}" Executed="PReflexRemoveHandle" />
                 <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandMain}" Executed="PReflexMainHandle" />
                 <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandRenewal}" Executed="PReflexRebuildHandle" />
+                <CommandBinding Command="{x:Static local:PReflexCommand.PReflexCommandAnchor}" Executed="PReflexAnchorHandle" />
             </StackPanel.CommandBindings>
             <Grid x:Name="PReflexBlock" Visibility="Collapsed">
                 <Grid.ColumnDefinitions>
@@ -144,6 +145,23 @@
                         Visibility="Collapsed" />
                 </StackPanel>
                 <Button x:Name="PReflexRenewal" Grid.Column="1" Style="{StaticResource Theme.Reflex.Rebuild}" />
+                <Popup
+                    x:Name="PAnchor"
+                    AllowsTransparency="True"
+                    Closed="PAnchorClosedHandle"
+                    Placement="Bottom"
+                    PopupAnimation="Fade"
+                    StaysOpen="False"
+                    VerticalOffset="-4">
+                    <Border Margin="10" MinWidth="260" MaxWidth="560" Style="{StaticResource Theme.Popup.Surface}">
+                        <StackPanel>
+                            <TextBlock x:Name="PAnchorEmpty" Style="{StaticResource Theme.Popup.Notice}" Text="{DynamicResource Anchor.Empty}" Visibility="Collapsed" />
+                            <ScrollViewer MaxHeight="264" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="PAnchorList" />
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </Popup>
             </Grid>
             <StackPanel Orientation="Horizontal">
 

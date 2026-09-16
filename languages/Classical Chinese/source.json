@@ -259,7 +259,7 @@
       "language": "Xiang",
       "region": "Changsha",
       "url": "https://en.wiktionary.org/wiki/{word}",
-      "match": "(?<=<li><small>\\((?:(?!</small>).)*?>Changsha<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Wiktionary</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?)Sinological <a[^>]*>IPA</a>(?:(?!</li>).)*?(?:\\(<i>(?<remark>[^<]+)</i>\\)\\s*)?</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
+      "match": "(?<=<li><small>\\((?:(?!</small>).)*?>Changsha<(?:(?!</small>).)*?\\)(?:(?!</small>).)*?</small>\\s*<ul>(?:(?!</ul>).)*?<a[^>]*>Wiktionary</a>(?:(?!</li>).)*?<span class=\"zhpron-monospace\">(?<note>(?:(?!</li>).)*?)</li>(?:(?!</ul>).)*?)Sinological <a[^>]*>IPA</a>(?:(?!</li>).)*?(?:\\(<i>(?<remark>(?<main>new-style)|[^<]+)</i>\\)\\s*)?</small>: <span class=\"IPA\">(?<text>(?:(?!</li>).)*?)</li>",
       "split": "\\s*[,/]\\s*",
       "remark": "<li>{note} - (?<remark>(?:(?!</li>).)*?)[;.]?</li>",
       "until": "<li><a[^>]*>[^<]+</a>\\s*<ul>",

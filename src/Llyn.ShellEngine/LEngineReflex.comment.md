@@ -37,15 +37,17 @@ The draft rows worth storing, every row that carries any text.
 
 ## `private static IReadOnlyList<LReflex> LEngineReflexRead(long entryId, IReadOnlyList<LReflexDraft> drafts)`
 
-The draft rows as the rows the archive stores, positions from list order.
+The draft rows as the rows the archive stores, positions from list order, anchors carried across.
 
 ## `private static bool LEngineReflexMatch(IReadOnlyList<LReflex> stored, IReadOnlyList<LReflex> current)`
 
 Whether two stored lists are the same rows in the same order.
+The anchors are compared by position apart, since a record compares its list by reference.
 
 ## `private static bool LEngineReflexMatch(IReadOnlyList<LReflexDraft> one, IReadOnlyList<LReflexDraft> other)`
 
 Whether two draft lists hold the same rows once blank rows are dropped, for the dirty check of a draft.
+The anchors are compared by position apart, so a tick alone dirties the draft.
 
 ## `private static IReadOnlyList<LReflexDraft> LEngineReflexReset(IReadOnlyList<LReflexDraft> drafts)`
 

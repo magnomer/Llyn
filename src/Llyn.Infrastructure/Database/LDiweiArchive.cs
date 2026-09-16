@@ -10,10 +10,10 @@ public sealed class LDiweiArchive
 {
     private const string LDiweiArchiveTally =
         """
-        (SELECT COUNT(DISTINCT e.entry_id)
+        (SELECT COUNT(DISTINCT r.entry_parent)
          FROM fanqie_diwei l
-         JOIN fanqie f ON f.fanqie_id = l.fanqie_parent
-         JOIN entry e ON e.language = f.language AND instr(e.headword, f.character) > 0
+         JOIN anchor a ON a.fanqie_ref = l.fanqie_parent
+         JOIN reflex r ON r.reflex_id = a.reflex_parent
          WHERE l.diwei_ref = d.diwei_id)
         """;
 
@@ -132,13 +132,14 @@ public sealed class LDiweiArchive
         string wanted = string.Join(", ", diweiIds.Select((_, index) => "$diwei" + index));
         command.CommandText =
             $"""
-            SELECT DISTINCT e.entry_id
+            SELECT DISTINCT r.entry_parent
             FROM fanqie f
-            JOIN entry e ON e.language = f.language AND instr(e.headword, f.character) > 0
+            JOIN anchor a ON a.fanqie_ref = f.fanqie_id
+            JOIN reflex r ON r.reflex_id = a.reflex_parent
             WHERE f.language = $language
               AND (SELECT COUNT(*) FROM fanqie_diwei l
                    WHERE l.fanqie_parent = f.fanqie_id AND l.diwei_ref IN ({wanted})) = $count
-            ORDER BY e.entry_id;
+            ORDER BY r.entry_parent;
             """;
         command.Parameters.AddWithValue("$language", language);
         command.Parameters.AddWithValue("$count", diweiIds.Distinct().Count());
@@ -164,10 +165,11 @@ public sealed class LDiweiArchive
         command.CommandText =
             """
             SELECT f.character, f.book, f.position, f.text, f.initial, f.rime, f.heading, f.division, f.tone,
-                   f.rounded, f.source, f.spelling, f.reading, f.tone_class
+                   f.rounded, f.source, f.spelling, f.reading, f.tone_class, f.fanqie_id
             FROM fanqie_diwei l
             JOIN fanqie f ON f.fanqie_id = l.fanqie_parent
             WHERE l.diwei_ref = $diwei
+              AND EXISTS (SELECT 1 FROM anchor a WHERE a.fanqie_ref = f.fanqie_id)
             ORDER BY f.fanqie_id;
             """;
         command.Parameters.AddWithValue("$diwei", diweiId);
@@ -190,7 +192,8 @@ public sealed class LDiweiArchive
                 reader.GetString(10),
                 reader.GetString(11),
                 reader.GetString(12),
-                reader.GetString(13)));
+                reader.GetString(13),
+                reader.GetInt64(14)));
         }
 
         return rows;
@@ -236,7 +239,8 @@ public sealed class LDiweiArchive
                     reader.GetString(8),
                     reader.GetInt32(9) != 0,
                     reader.GetString(10),
-                    reader.GetString(11))));
+                    reader.GetString(11),
+                    LFanqieRowId: reader.GetInt64(0))));
             }
         }
 
@@ -279,7 +283,7 @@ public sealed class LDiweiArchive
             yield return (LDiwei.LDiweiInitial, row.LFanqieRowInitial);
         }
 
-        string rime = LDiwei.LDiweiRimeNormalize(row.LFanqieRowRime);
+        string rime = LDiwei.LDiweiRimeFormat(row.LFanqieRowRime, row.LFanqieRowDivision, row.LFanqieRowRounded);
         if (rime.Length > 0)
         {
             yield return (LDiwei.LDiweiRime, rime);

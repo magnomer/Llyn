@@ -48,6 +48,14 @@ public sealed partial class LEngine
                 content,
                 sent.LRequestReflexId,
                 row => row with { LReflexDraftMain = sent.LRequestMain }),
+            LRequestReflexAnchor sent => LEngineReflexChange(
+                content,
+                sent.LRequestReflexId,
+                row => row with
+                {
+                    LReflexDraftAnchors = LAnchor.LAnchorToggle(
+                        row.LReflexDraftAnchors, sent.LRequestFanqieId, sent.LRequestAnchored),
+                }),
             _ => LEngineListApply(content, request),
         };
     }

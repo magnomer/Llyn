@@ -109,7 +109,8 @@ public sealed partial class LEngine
                 draft.LReflexDraftRespelling.Trim(),
                 draft.LReflexDraftRegion.Trim(),
                 draft.LReflexDraftRemark.Trim(),
-                draft.LReflexDraftAnatomy));
+                draft.LReflexDraftAnatomy,
+                draft.LReflexDraftAnchors));
         }
 
         return rows;
@@ -124,7 +125,8 @@ public sealed partial class LEngine
 
         for (int index = 0; index < stored.Count; index++)
         {
-            if (stored[index] != current[index])
+            if (!LAnchor.LAnchorMatch(stored[index].LReflexAnchors, current[index].LReflexAnchors)
+                || stored[index] with { LReflexAnchors = [] } != current[index] with { LReflexAnchors = [] })
             {
                 return false;
             }
@@ -144,7 +146,8 @@ public sealed partial class LEngine
 
         for (int index = 0; index < one.Count; index++)
         {
-            if (one[index] != other[index])
+            if (!LAnchor.LAnchorMatch(one[index].LReflexDraftAnchors, other[index].LReflexDraftAnchors)
+                || one[index] with { LReflexDraftAnchors = [] } != other[index] with { LReflexDraftAnchors = [] })
             {
                 return false;
             }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Llyn.Core;
 
 public sealed record LReflex(
@@ -12,7 +14,8 @@ public sealed record LReflex(
     string LReflexRespelling = "",
     string LReflexRegion = "",
     string LReflexRemark = "",
-    LAnatomy? LReflexAnatomy = null)
+    LAnatomy? LReflexAnatomy = null,
+    IReadOnlyList<long>? LReflexAnchors = null)
 {
     public string LReflexNote { get; init; } = LReflexNote ?? string.Empty;
 
@@ -23,4 +26,6 @@ public sealed record LReflex(
     public string LReflexRemark { get; init; } = LReflexRemark ?? string.Empty;
 
     public LAnatomy LReflexAnatomy { get; init; } = LReflexAnatomy ?? LAnatomy.LAnatomyEmpty;
+
+    public IReadOnlyList<long> LReflexAnchors { get; init; } = LAnchor.LAnchorNormalize(LReflexAnchors);
 }

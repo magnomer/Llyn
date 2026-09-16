@@ -40,19 +40,23 @@ The word takes the button's ink itself, since the default text style would paint
 The border is always drawn and only coloured under the mouse, so hovering moves nothing beside it.
 It fades while pressed and collapses when the part is empty.
 
+## `<Style x:Key="Theme.Fanqie.Heading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
+
+The bracketed rime heading after the rime link, plain ink, so only the rime itself reads as the link.
+
 ## `<Style x:Key="Theme.Fanqie.Reading" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
 
 The reading column, bold in the interface font, collapsed when the line has no reading.
 
 ## `<Style x:Key="Theme.Fanqie.Medial" TargetType="Border">`
 
-The 開合 column: a plain word for 開, a soft accent chip for 合.
-The site draws 合口 on a coloured ground, and the chip keeps that cue.
+The 開合 column, a bare word on no ground, so it never reads as a link chip.
 Collapsed when the line carries no parts.
 
 ## `<Style x:Key="Theme.Fanqie.MedialText" TargetType="TextBlock">`
 
-The word inside the medial column, muted for 開 and accented for 合.
+The word inside the medial column, muted for 開 and red for 合, at the size the other parts use.
+Red is the warning ink, chosen because it is the one colour the link chips never wear.
 
 ## `<Style x:Key="Theme.Fanqie.Spelling" TargetType="TextBlock" BasedOn="{StaticResource Theme.Fanqie.Part}">`
 
@@ -65,7 +69,7 @@ The placement as fetched, shown only on a line that carries no parts.
 ## `<DataTemplate x:Key="Theme.Fanqie.Line">`
 
 One placement across the shared columns: reading, initial, rime, 開合, division, tone, 反切.
-The initial and the rime are links into the rime table.
+The initial and the rime are links into the rime table, the rime heading sitting after its link.
 The columns share their widths across every block of the box, so the parts line up under each other.
 
 ## `<Style x:Key="Theme.Fanqie.Head" TargetType="TextBlock">`

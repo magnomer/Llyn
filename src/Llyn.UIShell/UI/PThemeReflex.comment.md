@@ -3,8 +3,9 @@
 The look of a reflex row, shared by the editor and the reading view.
 The pronunciation and accent styles are merged, so a row sits in the reading stack as a pronunciation row does.
 A row has no border and no box.
-The language leads, the kind stands in the next column, the reading after it and the note last.
-The first three columns are shared across every row, so the rows read as one table under the headword.
+The language leads, then the kind, the reading, the note with its remark, and the anchors last.
+The first four columns are shared across every row, so the rows read as one table under the headword.
+So the anchored reading of every row starts at one x, whatever the notes before it measure.
 A language whose readings have no kind leaves that cell blank, so its readings still line up with the rest.
 The language prints once on the first row of its run.
 Hovering the language shows the region its readings come from, and the remark prints after the note.
@@ -55,6 +56,17 @@ It is hidden rather than collapsed when the row has none, so it never pulls the 
 ## `<Style x:Key="Theme.Reflex.Remark" TargetType="TextBlock">`
 
 The remark after the note, drawn as the note is, such as literary or vernacular.
+
+## `<Style x:Key="Theme.Reflex.Anchor" TargetType="TextBlock">`
+
+The anchored placements after the remark, drawn as the note is, collapsed when the row is anchored to none.
+Both modes draw it, so the placement stands at one place in the editor and the reading view.
+
+## `<Style x:Key="Theme.Reflex.Anchoring" TargetType="Button">`
+
+The editor's hand on the anchors: the same anchor text made clickable, opening the dropdown through the command.
+While the row is anchored to nothing it prints the muted prompt instead, so there is something to click.
+It hovers in the accent colour and is collapsed on a row that may not be anchored.
 
 ## `<Style x:Key="Theme.Reflex.Field" TargetType="TextBox">`
 
@@ -111,12 +123,14 @@ Both the editor and the reading view show it, and hide it when the fill answers.
 
 ## `<DataTemplate x:Key="Theme.Reflex.Row">`
 
-One editor row: the language, kind, reading, note and remark fields, and the hover star, plus and minus.
+One editor row: the language, kind, reading, note and remark fields, the anchor button, the hover star, plus and minus.
 Every field is bare and stands where the reading view prints its text.
+The note and remark cells are the same grids in both templates.
+So an empty cell measures alike in both modes.
 The region is no field, only the hover the view has on the language.
 The reading field of a phonemic language stands between two slashes it does not hold.
 
 ## `<DataTemplate x:Key="Theme.Reflex.Display">`
 
-One reading-view row: the language on a lead row, the kind, the reading, its note and its remark.
+One reading-view row: the language on a lead row, the kind, the reading, its note, its remark and its anchors.
 The reading stands between the same slashes the editor row draws, in the same stack with the same inset.

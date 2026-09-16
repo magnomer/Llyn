@@ -64,6 +64,10 @@ internal static partial class TInterface
     internal static IReadOnlyList<LEntry> TEntryFind(this LEntryArchive entryArchive, string query) =>
         entryArchive.LEntryFind(query);
 
+    internal static IReadOnlyList<LEntry> TEntryHeadwordFind(
+        this LEntryArchive entryArchive, string language, string headword) =>
+        entryArchive.LEntryHeadwordFind(language, headword);
+
     internal static IReadOnlyList<LForm> TEntryFormRead(this LEntryArchive entryArchive, long id) =>
         entryArchive.LEntryFormRead(id);
 

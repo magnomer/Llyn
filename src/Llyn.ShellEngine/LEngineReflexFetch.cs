@@ -272,7 +272,8 @@ public sealed partial class LEngine
                 reflex.LReflexRespelling,
                 reflex.LReflexRegion,
                 reflex.LReflexRemark,
-                reflex.LReflexAnatomy));
+                reflex.LReflexAnatomy,
+                reflex.LReflexAnchors));
         }
 
         List<long> filled = [];

@@ -89,11 +89,12 @@ The rime column, in the glyph font the page inherits.
 
 ## `<Style x:Key="Theme.Diwei.Rounded" TargetType="Border">`
 
-The soft accent chip marking a 合口 row, collapsed on an 開口 row.
+The bare 合 mark of a 合口 row, on no ground so it never reads as a chip.
+Collapsed on an 開口 row.
 
 ## `<Style x:Key="Theme.Diwei.RoundedText" TargetType="TextBlock">`
 
-The 合 inside the chip.
+The 合 word, red semibold in the warning ink, the same mark the fanqie block draws.
 
 ## `<Style x:Key="Theme.Diwei.Chip" TargetType="Button">`
 

@@ -13,6 +13,8 @@ public partial class PEditor
         PEditorFanqie.PFanqieDiweiNotice = null;
         if (entry is null)
         {
+            _pReflexFanqie = [];
+            PReflexAnchorShow();
             PEditorFanqie.PFanqieItems = null;
             PEditorFanqie.PFanqiePending = false;
             return;
@@ -40,6 +42,8 @@ public partial class PEditor
             pending = false;
         }
 
+        _pReflexFanqie = rows;
+        PReflexAnchorShow();
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PEditorFanqie);
         PEditorFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books);
         PEditorFanqie.PFanqiePending = pending;

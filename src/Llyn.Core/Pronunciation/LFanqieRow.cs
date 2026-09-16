@@ -14,7 +14,8 @@ public sealed record LFanqieRow(
     string? LFanqieRowSource = null,
     string LFanqieRowSpelling = "",
     string LFanqieRowReading = "",
-    string LFanqieRowClass = "")
+    string LFanqieRowClass = "",
+    long LFanqieRowId = 0)
 {
     public string LFanqieRowSource { get; init; } = LFanqieRowSource ?? LFanqieRowBook;
 

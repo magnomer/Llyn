@@ -130,6 +130,60 @@
         <Setter Property="Text" Value="{Binding PReflexItemRemark}" />
     </Style>
 
+    <Style x:Key="Theme.Reflex.Anchor" TargetType="TextBlock" BasedOn="{StaticResource Theme.Reflex.Tag}">
+        <Setter Property="Margin" Value="12,0,3,2" />
+        <Setter Property="MaxWidth" Value="520" />
+        <Setter Property="Text" Value="{Binding PReflexItemAnchor}" />
+        <Style.Triggers>
+            <Trigger Property="Text" Value="">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="Theme.Reflex.Anchoring" TargetType="Button">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Command" Value="{x:Static local:PReflexCommand.PReflexCommandAnchor}" />
+        <Setter Property="CommandParameter" Value="{Binding}" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}">
+                        <Grid>
+                            <TextBlock x:Name="PSurfaceText" Style="{StaticResource Theme.Reflex.Anchor}" />
+                            <TextBlock
+                                x:Name="PSurfacePrompt"
+                                Margin="12,0,3,2"
+                                Style="{StaticResource Theme.Reflex.Tag}"
+                                Text="{DynamicResource Input.Anchor}"
+                                Visibility="Collapsed" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding PReflexItemAnchor}" Value="">
+                            <Setter TargetName="PSurfacePrompt" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PSurfaceText" Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                            <Setter TargetName="PSurfacePrompt" Property="Foreground" Value="{StaticResource Theme.Accent}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PReflexItemAnchorable}" Value="True">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="Theme.Reflex.Field" TargetType="TextBox" BasedOn="{StaticResource Theme.Pronunciation.Field}">
         <Setter Property="MaxWidth" Value="424" />
         <Style.Triggers>
@@ -273,6 +327,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexKind" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexText" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexNote" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
@@ -302,6 +357,9 @@
                     <Grid Margin="6,0,3,2" MinWidth="12" Background="Transparent" Tag="Theme.Reflex.Note PReflexItemRemark">
                         <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Remark}" />
                     </Grid>
+                </StackPanel>
+                <StackPanel Grid.Column="4" Style="{StaticResource Theme.Pronunciation.Body}">
+                    <Button Style="{StaticResource Theme.Reflex.Anchoring}" />
                     <ContentControl Focusable="False" Tag="Theme.Reflex.Control" />
                 </StackPanel>
             </Grid>
@@ -315,6 +373,7 @@
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReadingLabel" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexKind" />
                     <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexText" />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="PReflexNote" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Style="{StaticResource Theme.Pronunciation.Lead}">
@@ -327,9 +386,14 @@
                     <TextBlock Style="{StaticResource Theme.Reflex.Edge}" Text="{Binding PReflexItemCloser}" />
                 </StackPanel>
                 <StackPanel Grid.Column="3" Orientation="Horizontal">
-                    <TextBlock Style="{StaticResource Theme.Reflex.Side}" />
-                    <TextBlock Style="{StaticResource Theme.Reflex.Remark}" />
+                    <Grid Margin="12,0,3,2" MinWidth="12">
+                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Side}" />
+                    </Grid>
+                    <Grid Margin="6,0,3,2" MinWidth="12">
+                        <TextBlock Margin="0" Style="{StaticResource Theme.Reflex.Remark}" />
+                    </Grid>
                 </StackPanel>
+                <TextBlock Grid.Column="4" Style="{StaticResource Theme.Reflex.Anchor}" />
             </Grid>
         </Border>
     </DataTemplate>

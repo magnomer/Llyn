@@ -28,6 +28,11 @@ Safe to run on each startup: existing tables and an existing version row are lef
 The Author and Reference tables come before the Example tables.
 An example row carries a foreign key into source, and SQLite refuses a child table whose parent is missing.
 
+### `LSchemaAnchor.LSchemaAnchorCreate(connection);`
+
+The anchor table comes after reflex, fanqie and diwei.
+It carries a foreign key into both reflex and fanqie, so both parents must stand first.
+
 ### `LSchemaRevision.LSchemaRevisionCreate(connection);`
 
 The operational and history tables close the schema.

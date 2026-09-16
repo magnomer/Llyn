@@ -98,9 +98,6 @@ public sealed partial class LEngine
             lock (_lEngineGate)
             {
                 _lEngineFanqieMissed.Remove(LFanqieKeyFormat(entry.LEntryLanguage, character));
-                new LFanqieArchive(_lEngineDatabase).LFanqieSave(entry.LEntryLanguage, character, []);
-                new LDiweiArchive(_lEngineDatabase).LDiweiApply(
-                    entry.LEntryLanguage, character, LEngineHypothesisRead(entry.LEntryLanguage));
             }
 
             LEngineFanqieStart(entryId, entry.LEntryLanguage, character);

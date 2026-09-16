@@ -3,12 +3,13 @@
 ## `public sealed class LDiweiArchive`
 
 Derives and reads the 音韻地位 categories of a language from its stored fanqie rows.
-Nothing here is typed by the user: the rows follow the fanqie store and the hypothesis.
+The categories follow the fanqie store and the hypothesis, never the user.
+The entries a category counts follow the anchors the user drew from reflex rows to fanqie rows.
 
 ## `private const string LDiweiArchiveTally =`
 
-The count of entries in a category: entries of the language whose headword holds a linked character.
-A fanqie row is per character, so entries are found by the character they are written with.
+The count of entries in a category: entries owning a reflex row anchored to a linked fanqie row.
+An entry with no anchored row is not counted, whatever its headword.
 
 ## `public void LDiweiApply(string language, string character, LHypothesis? hypothesis)`
 
@@ -30,13 +31,15 @@ The category with this key, with its count, or `null` when no placement carries 
 
 ## `public IReadOnlyList<long> LDiweiEntryScan(string language, IReadOnlyList<long> diweiIds)`
 
-The entries whose headword holds a character with one fanqie row linked to every given category at once.
+The entries owning a reflex row anchored to one fanqie row linked to every given category at once.
 So an initial and a rime together name one cell of the rime table, not two separate sets.
 Empty ids give nothing.
 
 ## `public IReadOnlyList<LFanqieRow> LDiweiFanqieRead(long diweiId)`
 
-Every stored fanqie row linked to one category, in storage order, each carrying its character.
+The fanqie rows linked to one category that some reflex row is anchored to, in storage order.
+Each carries its character and id.
+A placement nobody anchored is left out, so the page lists no character without an anchored reading.
 
 ## `private static LDiwei LDiweiRowRead(SqliteDataReader reader)`
 
@@ -56,7 +59,7 @@ A row already holding the same pair is not written, so a rebuild at every open d
 
 ## `private static IEnumerable<(string, string)> LDiweiKeyScan(LFanqieRow row, LHypothesisSound? sound)`
 
-The category keys one fanqie row carries: its initial, its rime without the 重紐 letter, and its tone class.
+The category keys one fanqie row carries: its initial, its rime keyed with division and 開合, and its tone class.
 The tone class comes from the sound the hypothesis derived.
 A row it could not resolve links to no tone.
 An empty part is skipped.

@@ -24,3 +24,5 @@ The reading the hypothesis derives from them is stored beside them too, so the v
 - `LFanqieRowSpelling` — The 反切 spelling the source prints for the placement, such as 五乎, or empty.
 - `LFanqieRowReading` — The reading the language's hypothesis derived when the row was placed, or empty.
 - `LFanqieRowClass` — The tone class the hypothesis put the reading in, or empty.
+- `LFanqieRowId` — The stored id of the row, zero before the archive has kept it.
+  The save upserts on the natural key, so the id survives a refetch and an Anchor on it stands.

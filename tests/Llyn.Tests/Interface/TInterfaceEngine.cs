@@ -351,6 +351,9 @@ internal static partial class TInterface
     internal static IReadOnlyList<LFanqieRow> TEngineFanqieRead(this LEngine engine, long entryId) =>
         engine.LEngineFanqieRead(entryId);
 
+    internal static IReadOnlyList<LFanqieRow> TEngineFanqieRead(this LEngine engine, LDiwei diwei) =>
+        engine.LEngineFanqieRead(diwei);
+
     internal static LDiwei? TEngineDiweiFind(this LEngine engine, string language, string kind, string key) =>
         engine.LEngineDiweiFind(language, kind, key);
 

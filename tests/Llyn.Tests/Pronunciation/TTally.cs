@@ -39,6 +39,7 @@ public sealed class TTally
         LDiwei lai = TTallyDiweiPlace(
             workspace,
             [("林", "侵", "三"), ("爛", "寒", "一"), ("弄", "送", "一")]);
+        TTallyAnchorApply(workspace, engine, "林", "爛", "弄");
 
         IReadOnlyList<LTally> tallies = engine.TEngineTallyRead(lai);
 
@@ -57,18 +58,82 @@ public sealed class TTally
     }
 
     [Fact]
-    public void TallyRead_CharacterWithoutEntry_LeavesDivisionWithoutLines()
+    public void TallyRead_CharacterWithoutAnchor_LeavesDivisionOut()
     {
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
         engine.TEngineEntrySave(TTallyDraftCreate("林", [TInterface.TReflexDraftCreate("Korean", "", "림")]));
         LDiwei lai = TTallyDiweiPlace(workspace, [("林", "侵", "三"), ("爛", "寒", "一")]);
+        TTallyAnchorApply(workspace, engine, "林");
 
         IReadOnlyList<LTally> tallies = engine.TEngineTallyRead(lai);
 
-        Assert.Equal(["三", "一"], tallies.Select(tally => tally.LTallyDivision));
+        Assert.Equal(["三"], tallies.Select(tally => tally.LTallyDivision));
         Assert.Single(tallies[0].LTallyLines);
-        Assert.Empty(tallies[1].LTallyLines);
+        Assert.Equal(["林"], engine.TEngineFanqieRead(lai).Select(row => row.LFanqieRowCharacter));
+    }
+
+    [Fact]
+    public void TallyRead_UnanchoredReflex_CountsNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        engine.TEngineEntrySave(TTallyDraftCreate("林", [TInterface.TReflexDraftCreate("Korean", "", "림")]));
+        LDiwei lai = TTallyDiweiPlace(workspace, [("林", "侵", "三")]);
+
+        IReadOnlyList<LTally> tallies = engine.TEngineTallyRead(lai);
+
+        Assert.Empty(tallies);
+        Assert.Empty(engine.TEngineFanqieRead(lai));
+        Assert.Equal(0, Assert.IsType<LDiwei>(
+            engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "來")).LDiweiCount);
+    }
+
+    [Fact]
+    public void TallyRead_RowAnchoredToOnePlacement_CountsOnlyOnThatPage()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntry wan = engine.TEngineEntrySave(TTallyDraftCreate(
+            "完",
+            [
+                TInterface.TReflexDraftCreate("Korean", "", "환"),
+                TInterface.TReflexDraftCreate("Korean", "", "관"),
+                TInterface.TReflexDraftCreate("Mandarin", "", "wan³⁵", respelling: "wan³⁵"),
+            ]));
+        LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
+        LDiweiArchive archive = TInterface.TDiweiArchiveCreate(workspace.TWorkspaceDatabase);
+        fanqie.TFanqieSave(
+            TTallyLanguage,
+            "完",
+            [
+                TInterface.TFanqieRowCreate("完", 0, "匣", "寒", "一", "平"),
+                TInterface.TFanqieRowCreate("完", 1, "溪", "寒", "一", "平"),
+            ]);
+        archive.TDiweiApply(TTallyLanguage, "完", null);
+        IReadOnlyList<LFanqieRow> rows = fanqie.TFanqieRead(TTallyLanguage, "完");
+        IReadOnlyList<LReflex> reflexes = engine.TEngineReflexRead(wan.LEntryId);
+        engine.TEngineReflexSet(
+            wan.LEntryId,
+            [
+                reflexes[0] with { LReflexAnchors = [rows[0].LFanqieRowId] },
+                reflexes[1] with { LReflexAnchors = [rows[1].LFanqieRowId] },
+                reflexes[2] with { LReflexAnchors = [rows[0].LFanqieRowId] },
+            ]);
+        LDiwei xia = Assert.IsType<LDiwei>(engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "匣"));
+        LDiwei xi = Assert.IsType<LDiwei>(engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "溪"));
+
+        LTally onXia = Assert.Single(engine.TEngineTallyRead(xia));
+        LTally onXi = Assert.Single(engine.TEngineTallyRead(xi));
+
+        Assert.Equal(
+            [("Korean", "ㅎ(1)"), ("Mandarin", "w(1)")],
+            onXia.LTallyLines.Select(line => (line.LTallyLineLanguage, TTallyMarkFormat(line.LTallyLineIpa))));
+        Assert.Equal(
+            [("Korean", "ㄱ(1)")],
+            onXi.LTallyLines.Select(line => (line.LTallyLineLanguage, TTallyMarkFormat(line.LTallyLineIpa))));
+        Assert.Equal((1, 1), (xia.LDiweiCount, xi.LDiweiCount));
+        Assert.Equal([wan.LEntryId], archive.TDiweiEntryScan(TTallyLanguage, [xi.LDiweiId]));
     }
 
     [Fact]
@@ -84,8 +149,9 @@ public sealed class TTally
                 TInterface.TReflexDraftCreate("Japanese", "Kan-on", "りん"),
             ]));
         TTallyDiweiPlace(workspace, [("林", "侵", "三")]);
+        TTallyAnchorApply(workspace, engine, "林");
         LDiwei qin = Assert.IsType<LDiwei>(
-            engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiRime, "侵"));
+            engine.TEngineDiweiFind(TTallyLanguage, LDiwei.LDiweiRime, "侵 III"));
 
         IReadOnlyList<LTally> tallies = engine.TEngineTallyRead(qin);
 
@@ -111,6 +177,26 @@ public sealed class TTally
         }
 
         return Assert.IsType<LDiwei>(archive.TDiweiFind(TTallyLanguage, LDiwei.LDiweiInitial, "來"));
+    }
+
+    private static void TTallyAnchorApply(TWorkspace workspace, LEngine engine, params string[] characters)
+    {
+        LFanqieArchive fanqie = TInterface.TFanqieArchiveCreate(workspace.TWorkspaceDatabase);
+        LEntryArchive entries = TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase);
+        foreach (string character in characters)
+        {
+            IReadOnlyList<long> anchors = fanqie.TFanqieRead(TTallyLanguage, character)
+                .Select(row => row.LFanqieRowId)
+                .ToList();
+            foreach (LEntry entry in entries.TEntryHeadwordFind(TTallyLanguage, character))
+            {
+                engine.TEngineReflexSet(
+                    entry.LEntryId,
+                    engine.TEngineReflexRead(entry.LEntryId)
+                        .Select(reflex => reflex with { LReflexAnchors = anchors })
+                        .ToList());
+            }
+        }
     }
 
     private static string TTallyMarkFormat(IReadOnlyList<LTallyMark> marks) =>

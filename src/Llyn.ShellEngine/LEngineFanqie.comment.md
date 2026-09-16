@@ -43,8 +43,9 @@ A language whose pack lists no book starts nothing.
 
 ## `public void LEngineFanqieRebuild(long entryId)`
 
-Drops what is stored for every character of the entry and fetches it again, on the user's request.
-The links to the categories go with the rows, and the fetch places the new rows when it lands.
+Fetches every character of the entry again, on the user's request.
+The stored rows stand until the fetch lands, and the save rewrites them under their ids.
+So the anchors reflex rows hold on them survive the rebuild.
 A character the sites once answered nothing for is asked again too.
 
 ## `public bool LEngineFanqieCheck(long entryId)`

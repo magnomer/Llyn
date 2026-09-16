@@ -312,6 +312,8 @@
     "Variety.American": "American",
     "Transcription.Title": "Transcription",
     "Input.Reflex": "Reading",
+    "Input.Anchor": "Rime-book placement",
+    "Anchor.Empty": "No placement is stored for this character yet",
     "Reflex.Main": "In common use",
     "Reflex.Rebuild": "Fetch the readings again",
     "Reflex.Loading": "Fetching the readings…",

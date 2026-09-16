@@ -35,6 +35,8 @@ public partial class PDisplay
             pending = false;
         }
 
+        _pDisplayFanqie = rows;
+        PReflexAnchorApply(_pDisplayReflex, rows, PDisplayHeadword.Text);
         PFont.PFontApply(_lEngine, language, LFontRole.LFontRoleGlyph, PDisplayFanqie);
         PDisplayFanqie.PFanqieItems = PFanqieItem.PFanqieItemScan(rows, books);
         PDisplayFanqie.PFanqiePending = pending;
@@ -43,6 +45,7 @@ public partial class PDisplay
 
     private void PDisplayFanqieClear()
     {
+        _pDisplayFanqie = [];
         PDisplayFanqie.PFanqieItems = null;
         PDisplayFanqie.PFanqiePending = false;
         PDisplayFanqie.PFanqieDiweiNotice = null;

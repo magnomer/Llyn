@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Llyn.Core;
 
@@ -16,6 +17,9 @@ internal sealed class PReflexItem : INotifyPropertyChanged
     private bool _pReflexItemMain;
     private bool _pReflexItemLead;
     private bool _pReflexItemHidden;
+    private IReadOnlyList<long> _pReflexItemAnchors = [];
+    private string _pReflexItemAnchor = string.Empty;
+    private bool _pReflexItemAnchorable;
 
     internal PReflexItem(
         PWindow host,
@@ -29,9 +33,11 @@ internal sealed class PReflexItem : INotifyPropertyChanged
         string region,
         string remark,
         bool phonemic,
-        bool folded)
+        bool folded,
+        IReadOnlyList<long> anchors)
     {
         _pReflexItemHost = host;
+        _pReflexItemAnchors = anchors;
         PReflexItemId = id;
         _pReflexItemLanguage = language;
         _pReflexItemKind = kind;
@@ -166,6 +172,43 @@ internal sealed class PReflexItem : INotifyPropertyChanged
         }
     }
 
+    public IReadOnlyList<long> PReflexItemAnchors
+    {
+        get => _pReflexItemAnchors;
+        set
+        {
+            IReadOnlyList<long> anchors = value ?? [];
+            if (LAnchor.LAnchorMatch(_pReflexItemAnchors, anchors))
+            {
+                return;
+            }
+
+            _pReflexItemAnchors = anchors;
+            PReflexItemRaise(nameof(PReflexItemAnchors));
+        }
+    }
+
+    public string PReflexItemAnchor
+    {
+        get => _pReflexItemAnchor;
+        set => PReflexItemSet(ref _pReflexItemAnchor, value, nameof(PReflexItemAnchor));
+    }
+
+    public bool PReflexItemAnchorable
+    {
+        get => _pReflexItemAnchorable;
+        set
+        {
+            if (_pReflexItemAnchorable == value)
+            {
+                return;
+            }
+
+            _pReflexItemAnchorable = value;
+            PReflexItemRaise(nameof(PReflexItemAnchorable));
+        }
+    }
+
     public string PReflexItemHead
     {
         get => _pReflexItemLead ? _pReflexItemLanguage : string.Empty;
@@ -198,7 +241,8 @@ internal sealed class PReflexItem : INotifyPropertyChanged
             draft.LReflexDraftRegion,
             draft.LReflexDraftRemark,
             phonemic,
-            folded);
+            folded,
+            draft.LReflexDraftAnchors);
     }
 
     internal static string PReflexTextRead(LReflexDraft draft, PRespelling respelling)

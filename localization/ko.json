@@ -312,6 +312,8 @@
     "Variety.American": "미국",
     "Transcription.Title": "전사",
     "Input.Reflex": "독음",
+    "Input.Anchor": "음운지위",
+    "Anchor.Empty": "이 글자의 운서 지위가 아직 저장되지 않았습니다",
     "Reflex.Main": "통용 독음",
     "Reflex.Rebuild": "독음 다시 가져오기",
     "Reflex.Loading": "독음 가져오는 중…",

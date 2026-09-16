@@ -214,6 +214,9 @@ internal static partial class TInterface
     internal static LRequest TReflexRemarkCreate(long draftId, long reflexId, string text) =>
         new LRequestReflexRemark(draftId, reflexId, text);
 
+    internal static LRequest TReflexAnchorCreate(long draftId, long reflexId, long fanqieId, bool anchored) =>
+        new LRequestReflexAnchor(draftId, reflexId, fanqieId, anchored);
+
     internal static LRequest TReferenceBodyCreate(long draftId, LReference reference) =>
         new LRequestReferenceBody(
             draftId,

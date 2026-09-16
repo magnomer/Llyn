@@ -35,3 +35,6 @@ The language and kind are stored as text, so a row stays readable after its pack
 - `LReflexAnatomy` — The onset, vowel, coda and tone of the reading, cut in IPA and in respelling alike.
   It is one [LAnatomy](../Pronunciation/LAnatomy.comment.md), derived by the engine under the entry's pack rules.
   Empty in every part when the entry's language declares no rule for the reading's language.
+- `LReflexAnchors` — The ids of the fanqie rows the user tied this reading to, sorted, each once.
+  Only through them does the reading count on a Diwei page.
+  Empty until the user anchors the row.

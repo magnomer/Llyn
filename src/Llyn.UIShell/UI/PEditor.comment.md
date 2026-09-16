@@ -80,6 +80,8 @@ It stays collapsed until a draft in a language with reflex rules or reflex rows 
 `PReflexTable` is the stack of rows the button sits beside, sized by hand while a fetch runs.
 `PReflexLoading` is the fetching line under the rows, shown only while a fetch runs.
 `PReflexRenewal` is the button itself, whose tag turns its icon while a fetch runs.
+`PAnchor` is the anchor dropdown, one popup for every row, targeted at the label that opened it.
+`PAnchorList` holds its tick rows and `PAnchorEmpty` the notice shown when the character has no placement.
 
 ## `<ItemsControl x:Name="PReflex" ItemTemplate="{StaticResource Theme.Reflex.Row}" />`
 

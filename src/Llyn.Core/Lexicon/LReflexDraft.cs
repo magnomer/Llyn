@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Llyn.Core;
 
 public sealed record LReflexDraft(
@@ -10,7 +12,8 @@ public sealed record LReflexDraft(
     string LReflexDraftRespelling = "",
     string LReflexDraftRegion = "",
     string LReflexDraftRemark = "",
-    LAnatomy? LReflexDraftAnatomy = null)
+    LAnatomy? LReflexDraftAnatomy = null,
+    IReadOnlyList<long>? LReflexDraftAnchors = null)
 {
     public string LReflexDraftRespelling { get; init; } = LReflexDraftRespelling ?? string.Empty;
 
@@ -27,6 +30,8 @@ public sealed record LReflexDraft(
     public string LReflexDraftRemark { get; init; } = LReflexDraftRemark ?? string.Empty;
 
     public LAnatomy LReflexDraftAnatomy { get; init; } = LReflexDraftAnatomy ?? LAnatomy.LAnatomyEmpty;
+
+    public IReadOnlyList<long> LReflexDraftAnchors { get; init; } = LAnchor.LAnchorNormalize(LReflexDraftAnchors);
 
     public bool LReflexDraftEmpty =>
         LReflexDraftText.Trim().Length == 0

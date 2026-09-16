@@ -31,25 +31,135 @@ public sealed class LReflexArchive
         command.Parameters.AddWithValue("$entry", entryId);
 
         List<LReflex> rows = [];
+        using (SqliteDataReader reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                rows.Add(LReflexRowRead(reader, entryId));
+            }
+        }
+
+        return LReflexAnchorLoad(session.LDatabaseSessionConnection, rows);
+    }
+
+    public IReadOnlyDictionary<long, IReadOnlyList<LReflex>> LReflexAnchorScan(long diweiId)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(diweiId);
+
+        using LDatabaseSession session = _lReflexArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT r.reflex_id, r.position, r.language, r.kind, r.text, r.main, r.note, r.respelling, r.region,
+                r.remark, r.onset_ipa, r.vowel_ipa, r.coda_ipa, r.tone_ipa,
+                r.onset_respelling, r.vowel_respelling, r.coda_respelling, r.tone_respelling,
+                r.entry_parent, a.fanqie_ref
+            FROM fanqie_diwei l
+            JOIN anchor a ON a.fanqie_ref = l.fanqie_parent
+            JOIN reflex r ON r.reflex_id = a.reflex_parent
+            WHERE l.diwei_ref = $diwei
+            ORDER BY a.fanqie_ref, r.entry_parent, r.position, r.reflex_id;
+            """;
+        command.Parameters.AddWithValue("$diwei", diweiId);
+
+        Dictionary<long, List<LReflex>> anchored = [];
+        List<LReflex> rows = [];
+        List<long> owners = [];
+        using (SqliteDataReader reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                rows.Add(LReflexRowRead(reader, reader.GetInt64(18)));
+                owners.Add(reader.GetInt64(19));
+            }
+        }
+
+        IReadOnlyList<LReflex> filled = LReflexAnchorLoad(session.LDatabaseSessionConnection, rows);
+        for (int index = 0; index < filled.Count; index++)
+        {
+            if (!anchored.TryGetValue(owners[index], out List<LReflex>? held))
+            {
+                held = [];
+                anchored[owners[index]] = held;
+            }
+
+            held.Add(filled[index]);
+        }
+
+        Dictionary<long, IReadOnlyList<LReflex>> result = new(anchored.Count);
+        foreach ((long fanqieId, List<LReflex> held) in anchored)
+        {
+            result[fanqieId] = held;
+        }
+
+        return result;
+    }
+
+    private static LReflex LReflexRowRead(SqliteDataReader reader, long entryId)
+    {
+        return new LReflex(
+            reader.GetInt64(0),
+            entryId,
+            reader.GetInt32(1),
+            reader.GetString(2),
+            reader.GetString(3),
+            reader.GetString(4),
+            reader.GetInt32(5) != 0,
+            reader.GetString(6),
+            reader.GetString(7),
+            reader.GetString(8),
+            reader.GetString(9),
+            LReflexAnatomyRead(reader));
+    }
+
+    private static IReadOnlyList<LReflex> LReflexAnchorLoad(SqliteConnection connection, List<LReflex> rows)
+    {
+        List<LReflex> filled = new(rows.Count);
+        foreach (LReflex row in rows)
+        {
+            filled.Add(row with { LReflexAnchors = LReflexAnchorRead(connection, row.LReflexId) });
+        }
+
+        return filled;
+    }
+
+    private static IReadOnlyList<long> LReflexAnchorRead(SqliteConnection connection, long reflexId)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT fanqie_ref FROM anchor WHERE reflex_parent = $reflex ORDER BY fanqie_ref;";
+        command.Parameters.AddWithValue("$reflex", reflexId);
+
+        List<long> anchors = [];
         using SqliteDataReader reader = command.ExecuteReader();
         while (reader.Read())
         {
-            rows.Add(new LReflex(
-                reader.GetInt64(0),
-                entryId,
-                reader.GetInt32(1),
-                reader.GetString(2),
-                reader.GetString(3),
-                reader.GetString(4),
-                reader.GetInt32(5) != 0,
-                reader.GetString(6),
-                reader.GetString(7),
-                reader.GetString(8),
-                reader.GetString(9),
-                LReflexAnatomyRead(reader)));
+            anchors.Add(reader.GetInt64(0));
         }
 
-        return rows;
+        return anchors;
+    }
+
+    private static void LReflexAnchorSave(SqliteConnection connection, LReflex row)
+    {
+        using (SqliteCommand clear = connection.CreateCommand())
+        {
+            clear.CommandText = "DELETE FROM anchor WHERE reflex_parent = $reflex;";
+            clear.Parameters.AddWithValue("$reflex", row.LReflexId);
+            clear.ExecuteNonQuery();
+        }
+
+        foreach (long fanqieId in row.LReflexAnchors)
+        {
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText =
+                """
+                INSERT OR IGNORE INTO anchor (reflex_parent, fanqie_ref)
+                SELECT $reflex, fanqie_id FROM fanqie WHERE fanqie_id = $fanqie;
+                """;
+            command.Parameters.AddWithValue("$reflex", row.LReflexId);
+            command.Parameters.AddWithValue("$fanqie", fanqieId);
+            command.ExecuteNonQuery();
+        }
     }
 
     private static LAnatomy LReflexAnatomyRead(SqliteDataReader reader)
@@ -106,7 +216,9 @@ public sealed class LReflexArchive
                 LReflexRemark = reflexes[position].LReflexRemark.Trim(),
             };
 
-            stored.Add(row.LReflexId > 0 ? LReflexRowSave(connection, row) : LReflexInsert(connection, row));
+            LReflex saved = row.LReflexId > 0 ? LReflexRowSave(connection, row) : LReflexInsert(connection, row);
+            LReflexAnchorSave(connection, saved);
+            stored.Add(saved);
         }
 
         session.LDatabaseSessionCommit();

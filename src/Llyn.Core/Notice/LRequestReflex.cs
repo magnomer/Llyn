@@ -27,3 +27,7 @@ public sealed record LRequestReflexMain(long LRequestDraftId, long LRequestRefle
 
 public sealed record LRequestReflexRemark(long LRequestDraftId, long LRequestReflexId, string LRequestText)
     : LRequest(LRequestDraftId);
+
+public sealed record LRequestReflexAnchor(
+    long LRequestDraftId, long LRequestReflexId, long LRequestFanqieId, bool LRequestAnchored)
+    : LRequest(LRequestDraftId);

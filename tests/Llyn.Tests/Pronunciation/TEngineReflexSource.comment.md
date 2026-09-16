@@ -9,3 +9,5 @@ A page listing one reading twice yields one row.
 A match capturing a `remark` group hands that text as the remark without any remark pattern.
 A historical spelling equal to the current one folds into the marked row.
 A different historical or ancient spelling is its own unmarked row labelled by the remark.
+A `main` group nested in the remark marks the new-style row over the first.
+A lone unlabelled row is still marked as the first.

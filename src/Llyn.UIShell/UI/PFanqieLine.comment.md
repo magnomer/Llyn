@@ -36,12 +36,16 @@ The initial, such as 疑.
 
 ## `public string PFanqieLineRime`
 
-The rime with its rime heading in brackets when the source gives one, such as `模[模]` or `模`.
+The rime as the source prints it, such as 模 or 寒A, drawn as the link into the rime table.
+
+## `public string PFanqieLineHeading`
+
+The rime heading in brackets when the source gives one, such as `[桓]`, drawn after the link and outside it.
 
 ## `public string PFanqieLineYunmu`
 
 The rime category the line points to, as the diwei store keys it.
-It drops the heading and the 重紐 letter, such as 寒.
+It drops the heading and the 重紐 letter and adds the division and 開合, such as `寒 I W`.
 
 ## `public string PFanqieLineMedial`
 

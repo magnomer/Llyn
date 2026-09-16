@@ -19,6 +19,7 @@ internal static class TAuditNameRegistry
     [
         "Accent",
         "Anatomy",
+        "Anchor",
         "Answer",
         "Anthology",
         "Articulation",

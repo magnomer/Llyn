@@ -46,6 +46,11 @@ A language change also remarks the leads at once, so the language prints on the 
 Rebuilds the rows from the draft, keeping a row that is still being typed into.
 The stack is shown when the language declares a rule or the draft carries a row, and hidden otherwise.
 The folded languages are read from the rules of the draft's language, and the fold is applied last.
+The anchor labels are written from the fanqie rows the editor last read.
+
+## `internal void PReflexAnchorShow()`
+
+Writes every row's anchor label from the fanqie rows held, under the headword as it now reads.
 
 ## `internal void PReflexPendingShow()`
 
@@ -75,7 +80,9 @@ It prints the form the switch picks for the row's own language.
 Brings a row up to the draft, leaving a field alone while its own request is still deferred.
 A row whose respelled, phonemic or folded state no longer matches its language is rebuilt.
 Those states are fixed when the row is created.
+The anchors are taken from the draft as they are, since the engine holds them and the tick sent them.
 
 ## `private void PReflexClear()`
 
-Drops every row and hides the stack, the fetching line and the turning icon with it.
+Drops every row and the fanqie rows held.
+The stack, the fetching line and the turning icon hide with them.
