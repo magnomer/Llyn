@@ -37,7 +37,7 @@ public sealed class TEngineReflexSource
 
         Assert.Equal(
             [("Jin", "", "ɣaʔ²", "ghah4", true), ("Jin", "", "ɣəʔ²", "gheh4", false)],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
         Assert.Equal(["Taiyuan", "Taiyuan"], found.Select(row => row.LReflexDraftRegion));
         Assert.Equal(["literary", "vernacular (“difficult”)"], found.Select(row => row.LReflexDraftRemark));
         Assert.True(Assert.Single(engine.TEngineReflexRead(pack.TLanguageFixtureName)).LReflexRuleFolded);
@@ -63,7 +63,7 @@ public sealed class TEngineReflexSource
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "惡", pack.TLanguageFixtureName, CancellationToken.None);
 
-        Assert.Equal([("Wu", "", "u³⁴", "5u", false)], found.Select(TReflexRowRead));
+        Assert.Equal([("Wu", "", "u³⁴", "5u", false)], found.Select(TReflexFixture.TReflexRowRead));
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public sealed class TEngineReflexSource
              ("Japanese", "Go-on", "きやう", "", false),
              ("Japanese", "Kan-on", "りん", "", true),
              ("Japanese", "Kan-on", "りむ", "", false)],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
         Assert.Equal(["", "historical", "", "ancient"], found.Select(row => row.LReflexDraftRemark));
     }
 
@@ -104,7 +104,10 @@ public sealed class TEngineReflexSource
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
             """
             { "reflex": [ { "language": "Xiang", "region": "Changsha", "url": "https://example.test/wiki/{word}",
-              "match": "(?<=<p>Note: <span>(?<note>[^<]+)</span></p>(?:(?!</ul>).)*?)IPA(?: \\(<i>(?<remark>(?<main>new-style)|[^<]+)</i>\\))?: <span>(?<text>[^<]+)</span>",
+              "match": "(?<=<p>Note: <span>(?<note>[^<]+)</span></p>(?:(?!</ul>).)*?)IPA
+            """.TrimEnd()
+            + """(?: \\(<i>(?<remark>(?<main>new-style)|[^<]+)</i>\\))?: <span>(?<text>[^<]+)</span>","""
+            + """
               "every": true, "first": true } ] }
             """);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
@@ -125,15 +128,8 @@ public sealed class TEngineReflexSource
 
         Assert.Equal(
             [("Xiang", "", "ʈ͡ʂən⁴¹", "zhen3", false), ("Xiang", "", "t͡sən⁴¹", "zhen3", true)],
-            styled.Select(TReflexRowRead));
+            styled.Select(TReflexFixture.TReflexRowRead));
         Assert.Equal(["old-style", "new-style"], styled.Select(row => row.LReflexDraftRemark));
-        Assert.Equal([("Xiang", "", "lin¹³", "lin2", true)], plain.Select(TReflexRowRead));
+        Assert.Equal([("Xiang", "", "lin¹³", "lin2", true)], plain.Select(TReflexFixture.TReflexRowRead));
     }
-
-    private static (string, string, string, string, bool) TReflexRowRead(LReflexDraft row) =>
-        (row.LReflexDraftLanguage,
-         row.LReflexDraftKind,
-         row.LReflexDraftText,
-         row.LReflexDraftNote,
-         row.LReflexDraftMain);
 }

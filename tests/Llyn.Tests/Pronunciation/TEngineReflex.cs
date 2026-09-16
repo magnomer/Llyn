@@ -1,12 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Llyn.Core;
-using Llyn.Infrastructure;
 using Llyn.ShellEngine;
 using Xunit;
 
@@ -14,72 +10,10 @@ namespace Llyn.Tests;
 
 public sealed class TEngineReflex
 {
-    private const string TEngineReflexPack =
-        """
-        { "reflex": [
-            { "language": "Korean", "url": "https://example.test/wiki/{word}",
-              "match": "eumhun: (?<sense>[^ ]+) (?<sound>[^ <]+)(?: initial (?<initial>[^ <]+))?",
-              "format": "{sound}[[({initial})]] | {sense}", "epithet": "{text}", "clip": "\\(.*\\)",
-              "first": true },
-            { "language": "Japanese", "url": "https://example.test/wiki/{word}",
-              "match": "<b>(?<kind>Go-on|Kan-on)</b>: (?<main><i class=\"jouyou\">)?<span>(?<text>[^<]+)</span>",
-              "every": true, "first": true },
-            { "language": "Mandarin", "url": "https://example.test/ipa/{word}",
-              "match": "IPA: (?<text>/[^ <]+/(?:, /[^ <]+/)*)(?: (?<note>[^<]+))?", "busy": "Too fast",
-              "split": "\\s*,\\s*", "region": "Beijing" } ] }
-        """;
-
-    private const string TEngineReflexNong =
-        """
-        <p>eumhun: 희롱할 롱 initial 농</p>
-        <ul><li><b>Go-on</b>: <span>る</span></li>
-        <li><b>Kan-on</b>: <i class="jouyou"><span>ろう</span></i></li></ul>
-        """;
-
-    private const string TEngineReflexZhang =
-        """
-        <p>eumhun: 홀 장</p>
-        <ul><li><b>Kan-on</b>: <span>しょう</span></li></ul>
-        """;
-
-    private const string TEngineReflexAn =
-        """
-        <p>eumhun: 편안 안</p>
-        <ul><li><b>Go-on</b>: <span>あん</span></li>
-        <li><b>Kan-on</b>: <i class="jouyou"><span>あん</span></i></li></ul>
-        """;
-
-    private static readonly TimeSpan TEngineReflexPatience = TimeSpan.FromSeconds(5);
-
-    private static readonly Dictionary<string, string> TEngineReflexPages = new()
-    {
-        ["https://example.test/wiki/%E5%BC%84"] = TEngineReflexNong,
-        ["https://example.test/wiki/%E7%92%8B"] = TEngineReflexZhang,
-        ["https://example.test/wiki/%E5%AE%89"] = TEngineReflexAn,
-        ["https://example.test/ipa/%E5%AE%89"] = "<p>IPA: /än⁵⁵/ ān</p>",
-        ["https://example.test/ipa/%E5%BC%84"] = "<p>IPA: /nʊŋ⁵¹/, /lʊŋ⁵¹/ nòng</p>",
-        ["https://example.test/ipa/%E7%92%8B"] = "<p>IPA: /ʈ͡ʂɑŋ⁵⁵/ zhāng</p>",
-    };
-
-    private const string TEngineWuPack =
-        """
-        { "reflex": [
-            { "language": "Wu", "url": "https://example.test/wu/{word}",
-              "match": "Wugniu: (?<note>[^<]+)</span>.*?IPA: (?<text>[^<]+)</span>",
-              "split": "\\s*[,/]\\s*", "recast": [["^(\\d)(.+)$", "$2$1"]], "superscript": true,
-              "remark": "<li>{note} - (?<remark>[^<]*?)[;.]?</li>", "every": true, "first": true } ] }
-        """;
-
-    private static readonly Dictionary<string, string> TEngineWuPages = new()
-    {
-        ["https://example.test/wu/%E5%B1%8B"] =
-            "<p>Wugniu: 7oq / 7ok</span> IPA: /oʔ⁵/, /ʊʔ⁵/</span></p><ul><li>7ok - literary;</li></ul>",
-    };
-
     [Fact]
     public void ReflexRuleRead_FixturePack_ReadsRulesInPackOrder()
     {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
@@ -96,10 +30,10 @@ public sealed class TEngineReflex
     [Fact]
     public async Task ReflexFind_ThreeRules_ReadsRowsKindsNotesAndMark()
     {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
+            TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "弄", pack.TLanguageFixtureName, CancellationToken.None);
@@ -112,7 +46,7 @@ public sealed class TEngineReflex
                 ("Mandarin", "", "nʊŋ⁵¹", "nòng", false),
                 ("Mandarin", "", "lʊŋ⁵¹", "nòng", false),
             ],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
         Assert.Equal("Beijing", found[3].LReflexDraftRegion);
         Assert.Equal(string.Empty, found[0].LReflexDraftRegion);
     }
@@ -120,10 +54,10 @@ public sealed class TEngineReflex
     [Fact]
     public async Task ReflexFind_OptionalSegmentUncaptured_DropsTheSegment()
     {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
+            TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "璋", pack.TLanguageFixtureName, CancellationToken.None);
@@ -134,10 +68,10 @@ public sealed class TEngineReflex
     [Fact]
     public async Task ReflexFind_NoMainCaptured_MarksFirstRow()
     {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
+            TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "璋", pack.TLanguageFixtureName, CancellationToken.None);
@@ -148,7 +82,7 @@ public sealed class TEngineReflex
                 ("Japanese", "Kan-on", "しょう", "", true),
                 ("Mandarin", "", "ʈ͡ʂɑŋ⁵⁵", "zhāng", false),
             ],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
     }
 
     [Fact]
@@ -177,16 +111,16 @@ public sealed class TEngineReflex
                 ("Korean", "", "오", "미워할", false),
                 ("Korean", "", "호", "강 이름", false),
             ],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
     }
 
     [Fact]
     public async Task ReflexFind_OneTextAcrossKinds_MarksEveryRow()
     {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
+            TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "安", pack.TLanguageFixtureName, CancellationToken.None);
@@ -198,7 +132,7 @@ public sealed class TEngineReflex
                 ("Japanese", "Kan-on", "あん", "", true),
                 ("Mandarin", "", "än⁵⁵", "ān", false),
             ],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
     }
 
     [Fact]
@@ -207,10 +141,10 @@ public sealed class TEngineReflex
         using TLanguageFixture borrower = TLanguageFixture.TLanguageFixtureCreate(
             """{ "phonemic": true, "respelling": [ { "name": "Plain", "rules": [["ʊ", "u"], ["⁵¹", "4"]] } ] }""");
         using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(
-            TEngineReflexPack.Replace("\"Mandarin\"", "\"" + borrower.TLanguageFixtureName + "\""));
+            TReflexFixture.TReflexPack.Replace("\"Mandarin\"", "\"" + borrower.TLanguageFixtureName + "\""));
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
+            TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "弄", pack.TLanguageFixtureName, CancellationToken.None);
@@ -226,10 +160,10 @@ public sealed class TEngineReflex
     [Fact]
     public async Task ReflexFind_TwoCharacters_MergesRowsOfOneKindAndNote()
     {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
+            TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexPages));
 
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "弄璋", pack.TLanguageFixtureName, CancellationToken.None);
@@ -243,16 +177,16 @@ public sealed class TEngineReflex
                 ("Mandarin", "", "lʊŋ⁵¹", "nòng", false),
                 ("Mandarin", "", "ʈ͡ʂɑŋ⁵⁵", "zhāng", false),
             ],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
     }
 
     [Fact]
     public async Task ReflexFind_RecastAndSuperscript_MovesToneAndRaisesDigits()
     {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineWuPack);
+        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TReflexFixture.TReflexWuPack);
         using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
         using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineWuPages));
+            TPronunciationHelper.TSourceClientCreate(TReflexFixture.TReflexWuPages));
 
         IReadOnlyList<LReflexDraft> found = await engine.TEngineReflexFind(
             "屋", pack.TLanguageFixtureName, CancellationToken.None);
@@ -262,238 +196,7 @@ public sealed class TEngineReflex
                 ("Wu", "", "oʔ⁵", "oq⁷", true),
                 ("Wu", "", "ʊʔ⁵", "ok⁷", false),
             ],
-            found.Select(TReflexRowRead));
+            found.Select(TReflexFixture.TReflexRowRead));
         Assert.Equal("literary", found[1].LReflexDraftRemark);
-    }
-
-    [Fact]
-    public async Task ReflexStart_NothingStored_FetchesStoresAndRaises()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
-        TReflexObserver observer = new();
-        engine.TEngineObserverAttach(observer);
-        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate("弄", pack.TLanguageFixtureName));
-
-        Assert.Empty(engine.TEngineReflexRead(entry.LEntryId));
-        engine.TEngineReflexStart(entry.LEntryId);
-
-        LBulletin raised = await observer.TReflexObserverRaised.WaitAsync(TEngineReflexPatience);
-        Assert.Equal(entry.LEntryId, raised.LBulletinId);
-        await TReflexSettle(engine, entry.LEntryId);
-
-        IReadOnlyList<LReflex> read = engine.TEngineReflexRead(entry.LEntryId);
-        Assert.Equal(5, read.Count);
-        Assert.Equal(("Japanese", "Kan-on", "ろう", "", true), TReflexRowRead(read[2]));
-        Assert.Equal(("Mandarin", "", "nʊŋ⁵¹", "nòng", false), TReflexRowRead(read[3]));
-        Assert.Equal("Beijing", read[3].LReflexRegion);
-        Assert.Equal(5, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM reflex;"));
-    }
-
-    [Fact]
-    public async Task ReflexStart_RowsStored_FetchesNothing()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TSourceHandler handler = new(TEngineReflexNong, HttpStatusCode.OK);
-        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
-        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate("弄", pack.TLanguageFixtureName) with
-        {
-            LEntryDraftReflexes = [TInterface.TReflexDraftCreate("Korean", "", "롱")],
-        });
-
-        engine.TEngineReflexStart(entry.LEntryId);
-        await Task.Delay(200);
-
-        Assert.Equal(0, handler.TSourceHandlerCount);
-        Assert.Equal("롱", Assert.Single(engine.TEngineReflexRead(entry.LEntryId)).LReflexText);
-    }
-
-    [Fact]
-    public async Task ReflexRebuild_RowsStored_DropsThemAndFetchesAgain()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
-        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate("弄", pack.TLanguageFixtureName) with
-        {
-            LEntryDraftReflexes = [TInterface.TReflexDraftCreate("Korean", "", "롱")],
-        });
-        TReflexObserver observer = new();
-        engine.TEngineObserverAttach(observer);
-
-        engine.TEngineReflexRebuild(entry.LEntryId);
-
-        LBulletin raised = await observer.TReflexObserverRaised.WaitAsync(TEngineReflexPatience);
-        Assert.Equal(entry.LEntryId, raised.LBulletinId);
-        await TReflexSettle(engine, entry.LEntryId);
-
-        IReadOnlyList<LReflex> read = engine.TEngineReflexRead(entry.LEntryId);
-        Assert.Equal(5, read.Count);
-        Assert.Equal(("Korean", "", "롱(농) | 희롱할", "", true), TReflexRowRead(read[0]));
-    }
-
-    [Fact]
-    public void EpithetRead_KoreanRowsStored_JoinsClippedPieces()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart();
-        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate("惡", pack.TLanguageFixtureName) with
-        {
-            LEntryDraftReflexes =
-            [
-                TInterface.TReflexDraftCreate("Korean", "", "악할 악(악)"),
-                TInterface.TReflexDraftCreate("Korean", "", "미워할 오"),
-                TInterface.TReflexDraftCreate("Japanese", "Go-on", "あく"),
-            ],
-        });
-
-        Assert.Equal("악할 악, 미워할 오", engine.TEngineEpithetRead(entry.LEntryId));
-        Assert.Equal(
-            "악할 악, 미워할 오",
-            TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntryEpithetRead(entry.LEntryId));
-
-        engine.TEngineEpithetSave(false);
-
-        Assert.Equal(string.Empty, engine.TEngineEpithetRead(entry.LEntryId));
-
-        engine.TEngineReflexSet(entry.LEntryId, []);
-
-        Assert.Equal(
-            string.Empty,
-            TInterface.TEntryArchiveCreate(workspace.TWorkspaceDatabase).TEntryEpithetRead(entry.LEntryId));
-    }
-
-    [Fact]
-    public async Task ReflexStart_PagesNotFound_AsksOncePerSession()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        TSourceHandler handler = new("gone", HttpStatusCode.NotFound);
-        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler));
-        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate("弄", pack.TLanguageFixtureName));
-
-        engine.TEngineReflexStart(entry.LEntryId);
-        await TReflexSettle(engine, entry.LEntryId);
-        engine.TEngineReflexStart(entry.LEntryId);
-        await Task.Delay(200);
-
-        Assert.Equal(3, handler.TSourceHandlerCount);
-        Assert.Empty(engine.TEngineReflexRead(entry.LEntryId));
-    }
-
-    [Fact]
-    public async Task ReflexStart_HeldDraftWithoutRows_FillsTheDraft()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        using LEngine engine = workspace.TWorkspaceEngineStart(
-            TPronunciationHelper.TSourceClientCreate(TEngineReflexPages));
-        LEntry entry = engine.TEngineEntrySave(TReflexDraftCreate("弄", pack.TLanguageFixtureName));
-        LDraft started = engine.TEngineDraftStart("Input", entry.LEntryId);
-        TReflexObserver observer = new(started.LDraftId);
-        engine.TEngineObserverAttach(observer);
-
-        engine.TEngineReflexStart(entry.LEntryId);
-        await observer.TReflexObserverRaised.WaitAsync(TEngineReflexPatience);
-        await TReflexSettle(engine, entry.LEntryId);
-
-        LDraft? held = engine.TEngineDraftRead(started.LDraftId);
-        Assert.NotNull(held);
-        Assert.Equal(5, held.LDraftContent.LEntryDraftReflexes.Count);
-        Assert.All(held.LDraftContent.LEntryDraftReflexes, row => Assert.True(row.LReflexDraftId > 0));
-        Assert.False(engine.TEngineDraftCheck(started.LDraftId));
-    }
-
-    private static async Task TReflexSettle(LEngine engine, long entryId)
-    {
-        DateTime deadline = DateTime.UtcNow + TEngineReflexPatience;
-        while (engine.TEngineReflexCheck(entryId))
-        {
-            Assert.True(DateTime.UtcNow < deadline, "Waited for the reflex fetch to settle.");
-            await Task.Delay(20);
-        }
-    }
-
-    private static (string, string, string, string, bool) TReflexRowRead(LReflexDraft row) =>
-        (row.LReflexDraftLanguage,
-         row.LReflexDraftKind,
-         row.LReflexDraftText,
-         row.LReflexDraftNote,
-         row.LReflexDraftMain);
-
-    private static (string, string, string, string, bool) TReflexRowRead(LReflex row) =>
-        (row.LReflexLanguage, row.LReflexKind, row.LReflexText, row.LReflexNote, row.LReflexMain);
-
-    [Fact]
-    public void WorkspaceOpen_MigratedBlankColumns_DerivesEpithetAndRespelling()
-    {
-        using TLanguageFixture pack = TLanguageFixture.TLanguageFixtureCreate(TEngineReflexPack);
-        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
-        long id;
-        using (LEngine engine = workspace.TWorkspaceEngineStart())
-        {
-            id = engine.TEngineEntrySave(TReflexDraftCreate("惡", pack.TLanguageFixtureName) with
-            {
-                LEntryDraftReflexes =
-                [
-                    TInterface.TReflexDraftCreate("Korean", "", "악할 악(악)"),
-                    TInterface.TReflexDraftCreate("Cantonese", "", "t͡sɪŋ³⁵"),
-                ],
-            }).LEntryId;
-        }
-
-        workspace.TWorkspaceScriptRun(
-            $"""
-            UPDATE entry SET epithet = '';
-            UPDATE reflex SET respelling = '';
-            UPDATE schema_version SET version = {LSchemaMigration.LSchemaMigrationVersion - 1};
-            """);
-
-        using LEngine reopened = workspace.TWorkspaceEngineStart();
-
-        Assert.Equal("악할 악", reopened.TEngineEpithetRead(id));
-        Assert.Equal(["", "tsiŋ³⁵"], reopened.TEngineReflexRead(id).Select(row => row.LReflexRespelling));
-    }
-
-    private static LEntryDraft TReflexDraftCreate(string headword, string language)
-    {
-        return TInterface.TEntryDraftCreate(
-            headword,
-            language,
-            string.Empty,
-            string.Empty,
-            [TInterface.TCardDraftCreate(string.Empty, string.Empty, "a state", [], [], [], [], [], 1)],
-            []);
-    }
-
-    private sealed class TReflexObserver : LObserver
-    {
-        private readonly long _tReflexObserverDraft;
-
-        private readonly TaskCompletionSource<LBulletin> _tReflexObserverRaised =
-            new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-        internal TReflexObserver(long draft = 0)
-        {
-            _tReflexObserverDraft = draft;
-        }
-
-        internal Task<LBulletin> TReflexObserverRaised => _tReflexObserverRaised.Task;
-
-        public void LObserverBulletinHandle(LBulletin bulletin)
-        {
-            bool wanted = _tReflexObserverDraft == 0
-                ? bulletin.LBulletinSubject == LSubject.LSubjectReflex
-                : bulletin.LBulletinSubject == LSubject.LSubjectDraft && bulletin.LBulletinId == _tReflexObserverDraft;
-            if (wanted)
-            {
-                _tReflexObserverRaised.TrySetResult(bulletin);
-            }
-        }
     }
 }

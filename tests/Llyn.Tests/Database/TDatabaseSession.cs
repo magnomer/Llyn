@@ -85,11 +85,11 @@ public sealed class TDatabaseSession
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", 0, null, null), [], []);
         LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one"));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "one"));
         LMeaning second = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two"));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "two"));
         LMeaning third = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three"));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "three"));
 
         Assert.Equal([0, 1, 2], meanings.TMeaningRead(entry.LEntryId).Select(meaning => meaning.LMeaningPosition));
 
@@ -111,9 +111,11 @@ public sealed class TDatabaseSession
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", 0, null, null), [], []);
         LMeaning first = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "one"));
-        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "two"));
-        meanings.TMeaningCreate(TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, "three"));
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "one"));
+        meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "two"));
+        meanings.TMeaningCreate(
+            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, "three"));
 
         meanings.TMeaningDelete(first.LMeaningId);
 
@@ -131,7 +133,8 @@ public sealed class TDatabaseSession
         LEntry entry = entries.TEntryCreate(
             TInterface.TEntryCreate(0, "word", "en", 0, null, null), [], []);
         LMeaning meaning = meanings.TMeaningCreate(
-            TInterface.TMeaningCreate(0, entry.LEntryId, null, 0, null, null));
+            TInterface.TMeaningCreate(
+                0, entry.LEntryId, null, 0, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified));
 
         tags.TTagMeaningSave(
             meaning.LMeaningId,
@@ -202,7 +205,7 @@ public sealed class TDatabaseSession
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
 
         LExample stored = examples.TExampleCreate(TInterface.TExampleCreate(
-            0, "en", "a sentence", "one translation", null));
+            0, "en", "a sentence", "one translation", LStateAnchor.LStateAnchorUnspecified));
 
         examples.TExampleUpdate(stored with { LExampleText = "a changed sentence" });
 
@@ -219,7 +222,7 @@ public sealed class TDatabaseSession
         LExampleArchive examples = TInterface.TExampleArchiveCreate(workspace.TWorkspaceDatabase);
 
         LExample stored = examples.TExampleCreate(
-            TInterface.TExampleCreate(0, "en", "a sentence", null, null) with
+            TInterface.TExampleCreate(0, "en", "a sentence", null, LStateAnchor.LStateAnchorUnspecified) with
             {
                 LExampleGloss =
                 [

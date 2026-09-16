@@ -1,3 +1,5 @@
+using Llyn.Core;
+
 namespace Llyn.Tests;
 
 internal sealed class TLanguageFixture : IDisposable
@@ -19,6 +21,12 @@ internal sealed class TLanguageFixture : IDisposable
         Directory.CreateDirectory(folder);
         File.WriteAllText(Path.Combine(folder, "source.json"), json);
         return new TLanguageFixture(name, folder);
+    }
+
+    internal static LLanguage TLanguageFixtureLoad(string json)
+    {
+        using TLanguageFixture pack = TLanguageFixtureCreate(json);
+        return TInterface.TLanguageLoad(pack.TLanguageFixtureName);
     }
 
     internal void TLanguageFixtureSave(string file, string json)

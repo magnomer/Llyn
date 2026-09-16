@@ -1,6 +1,6 @@
 # PSwath.cs
 
-## `public sealed class PSwath : FrameworkElement`
+## `public sealed partial class PSwath : FrameworkElement`
 
 The band of text a reader drags across in the reading view, highlighted so it can be copied.
 It runs from wherever the press landed to wherever the pointer is, across everything between.
@@ -10,29 +10,16 @@ A picture, video, glyph shape or tone contour is an item too, taken whole or not
 Copying today takes only the text, and a richer export will read the same band later.
 It lies over the page inside the scroll viewer, so its highlight scrolls and clips with the text.
 It never takes a hit, so every click still lands on the text and buttons under it.
+The drag that draws the band lives in `PSwathDrag.cs`.
 
 ### `internal void PSwathAttach(ScrollViewer viewer)`
 
 The viewer's tunnelling mouse events are listened to, so a press anywhere on the page is seen first.
-A press on a button, link, star row, slider or scroll bar is left to that control.
 
 ### `internal void PSwathClear()`
 
 A press, a new entry and an emptied view each drop the band.
 The block list is dropped with it, since the page it described is about to change.
-
-### `private void PSwathMoveHandle(object sender, MouseEventArgs e)`
-
-Nothing starts until the pointer has moved a drag's distance.
-A plain click therefore still opens a word on a sentence and reaches every control.
-The blocks are gathered at that moment, in visual order, which is reading order.
-The mouse is then captured by the viewer, so the band follows the pointer past the window's edge.
-Focus is taken so the copy key reaches this element.
-
-### `private static bool PSwathControlCheck(DependencyObject? node)`
-
-Walks up from what was hit, through content elements and visuals alike, looking for a control.
-A link is a content element, so the logical parent is followed until a visual is reached.
 
 ### `private void PSwathScan(DependencyObject node)`
 
