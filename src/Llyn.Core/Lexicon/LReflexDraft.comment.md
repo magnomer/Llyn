@@ -21,6 +21,9 @@ On commit a row is stored whenever any of its six texts is filled.
   It is as bare as the reading, and the view draws the slashes of a phonemic language around either.
 - `LReflexDraftRegion` — The place the reading is taken from, shown when the language name is hovered, or empty.
 - `LReflexDraftRemark` — What the source says of the reading, shown when the reading is hovered, or empty.
+- `LReflexDraftAnatomy` — The onset, vowel, coda and tone of the reading, cut in IPA and in respelling alike.
+  The engine recuts it whenever the language, the reading or the respelling of the row changes.
+  A view reads it and never cuts a reading itself.
 
 ## `public bool LReflexDraftEmpty`
 

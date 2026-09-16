@@ -106,6 +106,7 @@ The respelling was derived when the entry was saved, so a load runs no rule.
 
 Derives the respelling of every pronunciation row and reflex row that carries none, before the draft is stored.
 A row that already carries one is left alone, since the user may have written it by hand.
+Every reflex row then has its anatomy cut under the entry's own pack rules, whatever it carried.
 It runs on the save and update seams, so the store always holds what the reading view will print.
 
 ## `public LRevision LEngineEntryDelete(long id)`

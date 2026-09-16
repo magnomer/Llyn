@@ -32,3 +32,6 @@ The language and kind are stored as text, so a row stays readable after its pack
 - `LReflexRemark` — What the source says of the reading, such as `literary` or `vernacular (“difficult”)`.
   The view shows it when the reading is hovered.
   Empty when the source says nothing.
+- `LReflexAnatomy` — The onset, vowel, coda and tone of the reading, cut in IPA and in respelling alike.
+  It is one [LAnatomy](../Pronunciation/LAnatomy.comment.md), derived by the engine under the entry's pack rules.
+  Empty in every part when the entry's language declares no rule for the reading's language.

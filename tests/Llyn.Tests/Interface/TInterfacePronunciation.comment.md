@@ -47,6 +47,14 @@ Relays the preview download into the workspace cache.
 
 Relays the engine-level discovery, so a test can see the draft's row variety narrow the search.
 
+## `internal static LAnatomy TAnatomyScan(IReadOnlyList<LAnatomyRule> rules, string language, string text, string respelling)`
+
+Relays `LAnatomy.LAnatomyScan`.
+
+## `internal static bool TAnatomyRuleMatch(this LAnatomyRule rule, string language)`
+
+Relays `LAnatomyRule.LAnatomyRuleMatch`.
+
 ## `internal static LHypothesis THypothesisCreate(IReadOnlyDictionary<string, string> initials, IReadOnlyDictionary<string, string> finals, IReadOnlyDictionary<string, IReadOnlyList<LRespellingRule>> tones)`
 
 Builds the hypothesis tables directly, so a test needs no language pack to check the join.

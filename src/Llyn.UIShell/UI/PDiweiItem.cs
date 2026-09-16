@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -17,10 +18,13 @@ internal sealed class PDiweiItem
 
     private readonly List<PDiweiLine> _pDiweiItemLines = [];
 
-    private PDiweiItem(string division)
+    private PDiweiItem(string division, IReadOnlyList<PTally> tallies, bool switched, bool respelled)
     {
         PDiweiItemDivision = division;
         PDiweiItemLabel = PDiweiLabelFormat(division);
+        PDiweiItemTallies = tallies;
+        PDiweiItemSwitched = switched;
+        PDiweiItemRespelled = respelled;
     }
 
     public string PDiweiItemDivision { get; }
@@ -29,10 +33,21 @@ internal sealed class PDiweiItem
 
     public IReadOnlyList<PDiweiLine> PDiweiItemLines => _pDiweiItemLines;
 
+    public IReadOnlyList<PTally> PDiweiItemTallies { get; }
+
+    public bool PDiweiItemSwitched { get; }
+
+    public bool PDiweiItemRespelled { get; }
+
     internal static IReadOnlyList<PDiweiItem> PDiweiItemScan(
-        IReadOnlyList<LFanqieRow> rows, LHypothesis? hypothesis)
+        IReadOnlyList<LFanqieRow> rows,
+        LHypothesis? hypothesis,
+        IReadOnlyList<LTally> tallies,
+        bool switched,
+        bool respelled)
     {
         ArgumentNullException.ThrowIfNull(rows);
+        ArgumentNullException.ThrowIfNull(tallies);
 
         Dictionary<string, PDiweiItem> sections = new(StringComparer.Ordinal);
         Dictionary<(string, string, bool), PDiweiLine> lines = [];
@@ -41,7 +56,12 @@ internal sealed class PDiweiItem
             string division = row.LFanqieRowDivision;
             if (!sections.TryGetValue(division, out PDiweiItem? section))
             {
-                section = new PDiweiItem(division);
+                section = new PDiweiItem(
+                    division,
+                    PTally.PTallyScan(
+                        tallies.FirstOrDefault(tally => tally.LTallyDivision == division), respelled),
+                    switched,
+                    respelled);
                 sections[division] = section;
             }
 

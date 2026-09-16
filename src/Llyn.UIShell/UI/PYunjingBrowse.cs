@@ -41,6 +41,12 @@ public partial class PYunjing
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectSettings)
+        {
+            PDiweiLoad();
+            return;
+        }
+
         if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
         {
             return;

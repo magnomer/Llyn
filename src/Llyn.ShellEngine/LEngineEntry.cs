@@ -191,7 +191,9 @@ public sealed partial class LEngine
         List<LReflexDraft> reflexes = new(draft.LEntryDraftReflexes.Count);
         foreach (LReflexDraft row in draft.LEntryDraftReflexes)
         {
-            reflexes.Add(row.LReflexDraftRespelling.Length == 0 ? LEngineRespellingResolve(row) : row);
+            reflexes.Add(LEngineAnatomyResolve(
+                draft.LEntryDraftLanguage,
+                row.LReflexDraftRespelling.Length == 0 ? LEngineRespellingResolve(row) : row));
         }
 
         return draft with { LEntryDraftPronunciations = spoken, LEntryDraftReflexes = reflexes };

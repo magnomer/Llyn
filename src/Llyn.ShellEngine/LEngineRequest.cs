@@ -107,8 +107,8 @@ public sealed partial class LEngine
         return request switch
         {
             LRequestHeadword sent => content with { LEntryDraftHeadword = sent.LRequestText ?? string.Empty },
-            LRequestLanguage sent => LEngineRespellingRebuild(
-                content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty }),
+            LRequestLanguage sent => LEngineAnatomyRebuild(LEngineRespellingRebuild(
+                content with { LEntryDraftLanguage = sent.LRequestText ?? string.Empty })),
             LRequestNote sent => content with { LEntryDraftNote = sent.LRequestText ?? string.Empty },
             LRequestSpeech sent => content with { LEntryDraftSpeeches = sent.LRequestSpeeches ?? [] },
             LRequestCardAddition sent => LEngineCardInsert(content, sent),

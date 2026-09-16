@@ -22,6 +22,10 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="Theme.Yunjing.Key" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Title}">
+            <Setter Property="FontSize" Value="26" />
+        </Style>
+
         <DataTemplate x:Key="Theme.Yunjing.Cell">
             <Button Click="PYunjingHandle" Style="{StaticResource Theme.Yunjing.Row}">
                 <Grid>
@@ -29,7 +33,7 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Style="{StaticResource Theme.Catalog.Title}" Text="{Binding PYunjingItemKey}" />
+                    <TextBlock Grid.Column="0" Style="{StaticResource Theme.Yunjing.Key}" Text="{Binding PYunjingItemKey}" />
                     <Border Grid.Column="1" Style="{StaticResource Theme.Catalog.Pellet}">
                         <TextBlock Style="{StaticResource Theme.Catalog.Tally}" Text="{Binding PYunjingItemCount}" />
                     </Border>

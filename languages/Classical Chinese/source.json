@@ -270,6 +270,7 @@
     }
   ],
   "hypothesis": "hypothesis.json",
+  "anatomy": "anatomy.json",
   "respelling": [
     {
       "name": "Standard",

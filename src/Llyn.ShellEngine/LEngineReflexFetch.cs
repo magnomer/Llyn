@@ -128,7 +128,7 @@ public sealed partial class LEngine
         List<LReflexDraft> spelled = new(merged.Count);
         foreach (LReflexDraft row in merged)
         {
-            spelled.Add(LEngineRespellingResolve(row));
+            spelled.Add(LEngineAnatomyResolve(language, LEngineRespellingResolve(row)));
         }
 
         return (spelled, reached);
@@ -271,7 +271,8 @@ public sealed partial class LEngine
                 reflex.LReflexNote,
                 reflex.LReflexRespelling,
                 reflex.LReflexRegion,
-                reflex.LReflexRemark));
+                reflex.LReflexRemark,
+                reflex.LReflexAnatomy));
         }
 
         List<long> filled = [];

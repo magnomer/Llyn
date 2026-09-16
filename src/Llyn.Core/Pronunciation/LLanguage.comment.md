@@ -86,3 +86,6 @@ Everything language-specific arrives through this record.
   A pack that only names the language of a reflex row stays off the list until it is filled.
   The respelling groups of such a pack collapse allophones, so their output is phonemic rather than phonetic.
   The brackets stay square while the original reading is shown, and in a pack that omits the key.
+- `LLanguageAnatomies` — The rules the pack declares under `anatomy`, held as [LAnatomyRule](LAnatomyRule.comment.md) records.
+  They cut the reflex readings of this pack's entries into onset, vowel, coda and tone, one rule per reflex language.
+  Empty for every pack but Classical Chinese, whose file `anatomy.json` holds them.

@@ -58,8 +58,16 @@ public sealed partial class LEngine
                 ? row.LReflexRespelling
                 : LEngineRespellingResolve(new LReflexDraft(row.LReflexLanguage, LReflexDraftText: row.LReflexText))
                     .LReflexDraftRespelling;
-            changed |= respelling.Length != row.LReflexRespelling.Length;
-            spelled.Add(row with { LReflexRespelling = respelling });
+            LAnatomy anatomy = row.LReflexText.Length == 0
+                ? row.LReflexAnatomy
+                : LEngineAnatomyResolve(
+                    entry.LEntryLanguage,
+                    new LReflexDraft(
+                        row.LReflexLanguage,
+                        LReflexDraftText: row.LReflexText,
+                        LReflexDraftRespelling: respelling)).LReflexDraftAnatomy;
+            changed |= respelling.Length != row.LReflexRespelling.Length || anatomy != row.LReflexAnatomy;
+            spelled.Add(row with { LReflexRespelling = respelling, LReflexAnatomy = anatomy });
         }
 
         if (changed)

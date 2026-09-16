@@ -9,7 +9,8 @@ public sealed record LReflexDraft(
     string LReflexDraftNote = "",
     string LReflexDraftRespelling = "",
     string LReflexDraftRegion = "",
-    string LReflexDraftRemark = "")
+    string LReflexDraftRemark = "",
+    LAnatomy? LReflexDraftAnatomy = null)
 {
     public string LReflexDraftRespelling { get; init; } = LReflexDraftRespelling ?? string.Empty;
 
@@ -24,6 +25,8 @@ public sealed record LReflexDraft(
     public string LReflexDraftRegion { get; init; } = LReflexDraftRegion ?? string.Empty;
 
     public string LReflexDraftRemark { get; init; } = LReflexDraftRemark ?? string.Empty;
+
+    public LAnatomy LReflexDraftAnatomy { get; init; } = LReflexDraftAnatomy ?? LAnatomy.LAnatomyEmpty;
 
     public bool LReflexDraftEmpty =>
         LReflexDraftText.Trim().Length == 0

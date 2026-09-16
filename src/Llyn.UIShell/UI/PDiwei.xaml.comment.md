@@ -20,6 +20,10 @@ The engine, asked only for the language's fonts.
 
 What a click on a character chip runs, handed the character.
 
+## `internal Action<bool>? PDiweiSwitchNotice { get; set; }`
+
+What the IPA or respelling switch runs, handed true for respelling.
+
 ## `internal void PDiweiAttach(LEngine engine)`
 
 Keeps the engine for the fonts.
@@ -33,6 +37,10 @@ An empty list shows the empty notice instead.
 ## `internal void PDiweiClear()`
 
 Drops the sections, so a hidden page holds nothing.
+
+## `private void PDiweiSwitchHandle(object sender, ExecutedRoutedEventArgs e)`
+
+Answers a click on either half of any section's switch with the notice, the parameter saying which half.
 
 ## `private void PDiweiEntryHandle(object sender, ExecutedRoutedEventArgs e)`
 

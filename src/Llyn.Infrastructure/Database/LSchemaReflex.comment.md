@@ -14,6 +14,9 @@ The language, kind and note are plain text, unconstrained, since two rows of one
 `region` is the place the reading is taken from and `remark` what the source says of it.
 Both are empty when unknown.
 A database from before the two columns keeps its rows, which come across with both blank.
+The eight `onset_ipa` to `tone_respelling` columns hold the reading cut into its parts, in IPA and in respelling.
+They are derived, never typed, and a database from before them comes across with all eight blank.
+The workspace update then cuts every row again from its text under the entry's pack rules.
 
 ## `public const long LSchemaReflexNoted = 60;`
 

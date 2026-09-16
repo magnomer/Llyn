@@ -153,7 +153,8 @@ public sealed class LEntryLoader
                 reflex.LReflexNote,
                 reflex.LReflexRespelling,
                 reflex.LReflexRegion,
-                reflex.LReflexRemark));
+                reflex.LReflexRemark,
+                reflex.LReflexAnatomy));
         }
 
         return drafts;

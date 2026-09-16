@@ -23,6 +23,8 @@ public partial class PDiwei : UserControl
 
     internal Action<string>? PDiweiEntryNotice { get; set; }
 
+    internal Action<bool>? PDiweiSwitchNotice { get; set; }
+
     internal void PDiweiAttach(LEngine engine)
     {
         _lEngine = engine;
@@ -32,6 +34,7 @@ public partial class PDiwei : UserControl
     {
         ArgumentNullException.ThrowIfNull(diwei);
         ArgumentNullException.ThrowIfNull(items);
+
 
         PFont.PFontApply(_lEngine, diwei.LDiweiLanguage, PDiweiHeadword);
         PFont.PFontPlace(PDiweiHeadword);
@@ -50,6 +53,14 @@ public partial class PDiwei : UserControl
     {
         PDiweiList.ItemsSource = null;
         PDiweiEmpty.Visibility = Visibility.Collapsed;
+    }
+
+    private void PDiweiSwitchHandle(object sender, ExecutedRoutedEventArgs e)
+    {
+        if (e.Parameter is bool respelled)
+        {
+            PDiweiSwitchNotice?.Invoke(respelled);
+        }
     }
 
     private void PDiweiEntryHandle(object sender, ExecutedRoutedEventArgs e)

@@ -38,6 +38,7 @@ Whatever the user wrote into the respelling by hand is replaced, because a stale
 ## `private LEntryDraft LEngineRespellingRebuild(LEntryDraft content)`
 
 Derives every pronunciation row's respelling again, for a draft whose language changed.
+The language request runs `LEngineAnatomyRebuild` over its result, so the reflex rows are recut as well.
 
 ## `private static LEntryDraft LEnginePronunciationChange(`
 

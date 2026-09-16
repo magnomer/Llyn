@@ -38,6 +38,7 @@ A headword every site reached yet none knew is a miss, while sites that never an
 A headword of several characters has its rows merged, since the rows are one entry's.
 Every merged row then has its respelling derived from its own language's pack, whatever the switch says.
 The text stays as fetched, so both forms are stored and the switch only picks which is shown.
+Each row then has its anatomy cut under the rules of the entry's own pack.
 
 ## `private static IReadOnlyList<LReflexDraft> LEngineReflexResolve(IReadOnlyList<IReadOnlyList<LReflexDraft>> rounds)`
 

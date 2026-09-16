@@ -35,6 +35,13 @@ internal static partial class TInterface
     internal static string TRespellingScan(IReadOnlyList<LRespelling> groups, string phonetic, string variety) =>
         LRespelling.LRespellingScan(groups, phonetic, variety);
 
+    internal static LAnatomy TAnatomyScan(
+        IReadOnlyList<LAnatomyRule> rules, string language, string text, string respelling) =>
+        LAnatomy.LAnatomyScan(rules, language, text, respelling);
+
+    internal static bool TAnatomyRuleMatch(this LAnatomyRule rule, string language) =>
+        rule.LAnatomyRuleMatch(language);
+
     internal static LCandidate TCandidateCreate(
         string source,
         string? phonetic,

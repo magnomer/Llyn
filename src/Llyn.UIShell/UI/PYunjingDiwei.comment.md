@@ -8,9 +8,17 @@ The category page of the rime table panel: shown when an onset is chosen, hidden
 
 The category the page shows, or `null` while the reading view stands.
 
+## `private bool _pTallyRespelled;`
+
+Whether the tally lines print the respelling set, as the page's switch last said.
+
 ## `private void PDiweiAttach()`
 
-Hands the page the engine and routes its character chips to the window.
+Hands the page the engine, routes its character chips to the window and its switch to the tally choice.
+
+## `private void PTallyChange(bool respelled)`
+
+Keeps the switch's choice and fills the page again, so the tally lines change set.
 
 ## `private LDiwei? PDiweiFind(string kind, string key)`
 
@@ -27,7 +35,8 @@ Drops the page and gives the reading view its place back, unless the editor hold
 
 ## `private void PDiweiLoad()`
 
-Reads the category's placements and the hypothesis, and hands the page the grouped rows.
+Reads the category's placements, the hypothesis and the tallies, and hands the page the grouped rows.
+The switch shows only while respelling is on for the language, and the IPA set prints while it is hidden.
 Called again on every panel load, so a fetch that lands refreshes the page.
 
 ## `private void PDiweiEntryShow(string character)`

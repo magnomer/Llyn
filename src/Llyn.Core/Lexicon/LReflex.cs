@@ -11,7 +11,8 @@ public sealed record LReflex(
     string LReflexNote = "",
     string LReflexRespelling = "",
     string LReflexRegion = "",
-    string LReflexRemark = "")
+    string LReflexRemark = "",
+    LAnatomy? LReflexAnatomy = null)
 {
     public string LReflexNote { get; init; } = LReflexNote ?? string.Empty;
 
@@ -20,4 +21,6 @@ public sealed record LReflex(
     public string LReflexRegion { get; init; } = LReflexRegion ?? string.Empty;
 
     public string LReflexRemark { get; init; } = LReflexRemark ?? string.Empty;
+
+    public LAnatomy LReflexAnatomy { get; init; } = LReflexAnatomy ?? LAnatomy.LAnatomyEmpty;
 }

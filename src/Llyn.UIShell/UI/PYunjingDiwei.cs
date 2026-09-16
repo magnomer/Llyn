@@ -9,10 +9,19 @@ public partial class PYunjing
 {
     private LDiwei? _pDiweiShown;
 
+    private bool _pTallyRespelled;
+
     private void PDiweiAttach()
     {
         PYunjingDiwei.PDiweiAttach(_lEngine);
         PYunjingDiwei.PDiweiEntryNotice = PDiweiEntryShow;
+        PYunjingDiwei.PDiweiSwitchNotice = PTallyChange;
+    }
+
+    private void PTallyChange(bool respelled)
+    {
+        _pTallyRespelled = respelled;
+        PDiweiLoad();
     }
 
     private LDiwei? PDiweiFind(string kind, string key)
@@ -62,10 +71,14 @@ public partial class PYunjing
 
         IReadOnlyList<LFanqieRow> rows;
         LHypothesis? hypothesis;
+        IReadOnlyList<LTally> tallies;
+        bool switched;
         try
         {
             rows = _lEngine.LEngineFanqieRead(diwei);
             hypothesis = _lEngine.LEngineHypothesisRead(diwei.LDiweiLanguage);
+            tallies = _lEngine.LEngineTallyRead(diwei);
+            switched = _lEngine.LEngineRespellingCheck(diwei.LDiweiLanguage);
         }
         catch (Exception exception)
         {
@@ -73,7 +86,8 @@ public partial class PYunjing
             return;
         }
 
-        PYunjingDiwei.PDiweiApply(diwei, PDiweiItem.PDiweiItemScan(rows, hypothesis));
+        bool respelled = switched && _pTallyRespelled;
+        PYunjingDiwei.PDiweiApply(diwei, PDiweiItem.PDiweiItemScan(rows, hypothesis, tallies, switched, respelled));
     }
 
     private void PDiweiEntryShow(string character)

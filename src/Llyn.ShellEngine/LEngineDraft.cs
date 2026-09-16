@@ -85,7 +85,12 @@ public sealed partial class LEngine
                 entry.LEntryId, LEnginePronunciationReset(draft.LEntryDraftPronunciations), null, identity);
             LEngineTranscriptionSync(
                 entry.LEntryId, LEngineTranscriptionReset(draft.LEntryDraftTranscriptions), null, identity);
-            LEngineReflexSync(entry.LEntryId, LEngineReflexReset(draft.LEntryDraftReflexes), null, identity);
+            LEngineReflexSync(
+                entry.LEntryId,
+                draft.LEntryDraftLanguage,
+                LEngineReflexReset(draft.LEntryDraftReflexes),
+                null,
+                identity);
             LEngineParadigmUpdate(entry);
 
             LRevisionChange change = new(0, entry.LEntryId, "entry", "create", entry.LEntryHeadword);

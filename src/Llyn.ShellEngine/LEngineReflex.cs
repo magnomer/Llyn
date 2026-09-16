@@ -35,13 +35,14 @@ public sealed partial class LEngine
 
     private void LEngineReflexSync(
         long entryId,
+        string language,
         IReadOnlyList<LReflexDraft> drafts,
         List<LRevisionChange>? changes,
         Dictionary<long, long> identity)
     {
         LReflexArchive reflexes = new(_lEngineDatabase);
         IReadOnlyList<LReflex> stored = reflexes.LReflexRead(entryId);
-        IReadOnlyList<LReflexDraft> written = LEngineReflexScan(drafts);
+        IReadOnlyList<LReflexDraft> written = LEngineAnatomyScan(language, LEngineReflexScan(drafts));
         IReadOnlyList<LReflex> current = LEngineReflexRead(entryId, written);
 
         if (LEngineReflexMatch(stored, current))
@@ -62,6 +63,11 @@ public sealed partial class LEngine
         for (int index = 0; index < saved.Count; index++)
         {
             LEngineIdentityRecord(identity, written[index].LReflexDraftId, saved[index].LReflexId);
+        }
+
+        if (LEngineReflexMatch(LEngineAnatomyClear(stored), LEngineAnatomyClear(current)))
+        {
+            return;
         }
 
         changes?.Add(new LRevisionChange(
@@ -102,7 +108,8 @@ public sealed partial class LEngine
                 draft.LReflexDraftNote.Trim(),
                 draft.LReflexDraftRespelling.Trim(),
                 draft.LReflexDraftRegion.Trim(),
-                draft.LReflexDraftRemark.Trim()));
+                draft.LReflexDraftRemark.Trim(),
+                draft.LReflexDraftAnatomy));
         }
 
         return rows;

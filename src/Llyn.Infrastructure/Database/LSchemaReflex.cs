@@ -27,6 +27,14 @@ public static class LSchemaReflex
                 respelling TEXT NOT NULL DEFAULT '',
                 region TEXT NOT NULL DEFAULT '',
                 remark TEXT NOT NULL DEFAULT '',
+                onset_ipa TEXT NOT NULL DEFAULT '',
+                vowel_ipa TEXT NOT NULL DEFAULT '',
+                coda_ipa TEXT NOT NULL DEFAULT '',
+                tone_ipa TEXT NOT NULL DEFAULT '',
+                onset_respelling TEXT NOT NULL DEFAULT '',
+                vowel_respelling TEXT NOT NULL DEFAULT '',
+                coda_respelling TEXT NOT NULL DEFAULT '',
+                tone_respelling TEXT NOT NULL DEFAULT '',
                 FOREIGN KEY (entry_parent) REFERENCES entry (entry_id) ON DELETE CASCADE
             );
             """;

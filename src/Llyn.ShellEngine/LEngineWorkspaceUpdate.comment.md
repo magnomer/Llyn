@@ -20,5 +20,7 @@ The pass then reaches every other entry, since the migration that called it will
 Derives and stores the respelling of every pronunciation row and reflex row of the entry that carries none.
 A row already carrying one is left as the user wrote it.
 A row whose language has no respelling groups stays blank, as a save would leave it.
+Every reflex row also has its anatomy cut again from its text and respelling under the entry's pack rules.
+So a workspace from before the anatomy columns, or one whose rules changed, fills them on its next bind.
 The reflex rows are rewritten as one set only when at least one changed.
 So the ids and the order stand.

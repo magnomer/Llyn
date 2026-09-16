@@ -23,6 +23,7 @@ It runs whether or not the switch is on, so both forms are always held and the s
 The respelling is as bare as the reading, and the view draws the slashes of a phonemic language around it.
 A blank reading, a blank language or a language without groups leaves the respelling blank.
 The groups are asked with no variety, so only the unscoped ones apply.
+A language, text or respelling request then recuts the row's anatomy under the entry's own language.
 
 ## `private static LEntryDraft LEngineReflexChange(`
 

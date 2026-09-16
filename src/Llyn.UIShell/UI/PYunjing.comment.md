@@ -24,6 +24,11 @@ The same control over the rime column, with its own ordering and search.
 The search field over the entries of the cell.
 No language filter stands beside it, since the panel reads one language.
 
+## `<Style x:Key="Theme.Yunjing.Key" TargetType="TextBlock" BasedOn="{StaticResource Theme.Catalog.Title}">`
+
+The category key at 1.8 times the catalog title size, since one Han character reads better large.
+The size is this panel's alone, and the entry column keeps the catalog size.
+
 ## `<DataTemplate x:Key="Theme.Yunjing.Cell">`
 
 One category row: its key and the count of entries under it, shared by the onset and rime columns.

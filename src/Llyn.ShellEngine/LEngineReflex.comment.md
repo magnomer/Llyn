@@ -25,7 +25,9 @@ Makes `reflexes` the whole list of the Entry, and returns the rows with their id
 
 The entry's reflexes reconciled to the draft, on a create and on an update alike.
 A row blank in every text is left out, and a row with any text is stored.
+Every stored row has its anatomy cut under the rules of the pack `language` names, the entry's own.
 An unchanged list writes nothing and raises no change.
+A list differing only in anatomy, as after a rule edit, is stored but raises no change.
 A positive id naming no stored row of this entry refuses the commit rather than rebinding to a fresh row.
 Each minted id is recorded against the draft id it replaces.
 

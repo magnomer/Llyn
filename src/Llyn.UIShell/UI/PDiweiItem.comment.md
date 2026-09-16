@@ -25,9 +25,9 @@ The Roman numeral of each division, for languages that name them so.
 
 The rows of the section, sorted by rime.
 
-## `private PDiweiItem(string division)`
+## `private PDiweiItem(string division, IReadOnlyList<PTally> tallies, bool switched, bool respelled)`
 
-Names the section from the source division.
+Names the section from the source division and keeps its tally lines and the state its switch repeats.
 
 ## `public string PDiweiItemDivision`
 
@@ -41,9 +41,22 @@ The heading in the interface language, such as `Division I`.
 
 The rows of the section.
 
+## `public IReadOnlyList<PTally> PDiweiItemTallies { get; }`
+
+The tally lines printed under the heading, one per borrowing language and kind, empty when none has a reading.
+
+## `public bool PDiweiItemSwitched { get; }`
+
+Whether the heading shows the IPA and respelling switch, true while respelling is on for the language.
+
+## `public bool PDiweiItemRespelled { get; }`
+
+Which half of the switch is lit and which set the tally lines print, true for respelling.
+
 ## `internal static IReadOnlyList<PDiweiItem> PDiweiItemScan(`
 
 Groups the category's placements into sections by division and rows by rime and 開合.
+Each section takes the tally of its division, printed for the set `respelled` names, and repeats the switch state.
 Sections follow table order, with unknown divisions after and the blank one last.
 Rows within a section are sorted by rime.
 
