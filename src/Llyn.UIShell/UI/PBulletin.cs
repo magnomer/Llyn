@@ -14,7 +14,6 @@ internal static class PBulletin
             LSubject.LSubjectInflection => false,
             LSubject.LSubjectScript => false,
             LSubject.LSubjectFanqie => false,
-            LSubject.LSubjectReflex => false,
             _ => true,
         };
     }

@@ -107,18 +107,19 @@ Clearing afterwards would drop that fresh draft's id and leave it held forever.
 A refused commit puts the id back, so the form goes on with the same draft.
 The inflection fill is the engine's own step after a commit, so nothing starts it here.
 
-### `PEditorEntryShow(stored.LEntryId);`
-
-The user corrected an entry, and did not finish one.
-So the form stays on it rather than resetting.
-It is filled from a fresh draft of the stored entry rather than left as typed.
-The cards this update created carry stored ids now.
-A form still holding none would create them a second time on the next save.
-
 ### `PEditorReset();`
 
-An entry was finished, so the form comes up empty on a new draft.
-The next thing typed here is the next entry, not a rewrite of the one just written.
+Only the Input tab comes up empty after a new entry is written.
+There the next thing typed is the next entry, not a rewrite of the one just written.
+Every other tab stands on the entry it just wrote, exactly as it does after a correction.
+A browse tab that reset here would show an empty draft beside the index row it just selected.
+
+### `PEditorEntryShow(stored.LOutcomeEntry.LEntryId);`
+
+The form stays on the stored entry rather than resetting.
+It is filled from a fresh draft of the stored entry rather than left as typed.
+The cards this write created carry stored ids now.
+A form still holding none would create them a second time on the next save.
 
 ### `private void PEditorDiscardHandle(object sender, RoutedEventArgs e)`
 

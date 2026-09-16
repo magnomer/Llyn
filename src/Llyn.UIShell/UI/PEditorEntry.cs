@@ -225,13 +225,13 @@ public partial class PEditor
             return;
         }
 
-        if (entry is not null)
+        if (entry is null && string.Equals(_pEditorOrigin, "Input", StringComparison.Ordinal))
         {
-            PEditorEntryShow(stored.LOutcomeEntry.LEntryId);
+            PEditorReset();
             return;
         }
 
-        PEditorReset();
+        PEditorEntryShow(stored.LOutcomeEntry.LEntryId);
     }
 
     private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
