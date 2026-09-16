@@ -1,4 +1,4 @@
-using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -12,7 +12,7 @@ internal static class LSourceReader
 {
     private const int LSourceReaderRetry = 2;
 
-    public static async Task<LAnswer> LSourceReaderRead(
+    public static async Task<(LAnswer, string?)> LSourceReaderRead(
         HttpClient client,
         IReadOnlyList<string> urls,
         IReadOnlyDictionary<string, string>? headers,
@@ -24,13 +24,13 @@ internal static class LSourceReader
             LAnswer answer = await LSourceReaderLoad(client, url, headers, cancellation).ConfigureAwait(false);
             if (!answer.LAnswerEmpty)
             {
-                return answer;
+                return (answer, url);
             }
 
             reached |= answer.LAnswerReached;
         }
 
-        return reached ? LAnswer.LAnswerBlank : LAnswer.LAnswerLost;
+        return (reached ? LAnswer.LAnswerBlank : LAnswer.LAnswerLost, null);
     }
 
     private static async Task<LAnswer> LSourceReaderLoad(

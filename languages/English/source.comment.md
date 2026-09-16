@@ -26,6 +26,9 @@ The `span` strategy is a tolerant nested-span IPA reader.
 A search answer can so be narrowed to the file that carries exactly it.
 `normalize` strips IPA delimiters and entities.
 `prefix` makes a captured site-relative address absolute.
+The `link` strategy reads nothing and answers the address the attempt fetched, once the fetch succeeded.
+It serves a speech service whose address is itself the recording.
+`{headword}` inside a URL is the headword as typed, before any `spelling` rule ran.
 `follow` is an optional reading-shaped object on an attempt, with strategy, match, group and path.
 When the attempt's readings all come up empty, its captured value is taken as another headword.
 The attempt is then fetched again for that headword, at most twice.

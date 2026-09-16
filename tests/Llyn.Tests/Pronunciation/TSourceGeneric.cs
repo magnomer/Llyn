@@ -303,6 +303,30 @@ public sealed class TSourceGeneric
     }
 
     [Fact]
+    public async Task SourceFind_LinkStrategy_AnswersTypedHeadwordAddress()
+    {
+        LSource source = TInterface.TSourceGenericCreate(
+            TInterface.TSourceSpecCreate(
+                "Stub",
+                [
+                    TInterface.TSourceAttemptCreate(
+                        ["https://example.test/tts?text={headword}"],
+                        [TInterface.TSourceReadingCreate(string.Empty, "link", null, 0, null, false, 0)],
+                        null,
+                        null,
+                        null),
+                ],
+                [TInterface.TRespellingRuleCreate("[āă]", "a")]),
+            TPronunciationHelper.TSourceClientCreate("ID3", HttpStatusCode.OK));
+
+        LAnswer answer = await source.TSourceFind("rōsā", CancellationToken.None);
+
+        Assert.Equal(
+            "https://example.test/tts?text=r%C5%8Ds%C4%81",
+            Assert.Single(answer.LAnswerReadings).LReadingPhonetic);
+    }
+
+    [Fact]
     public async Task SourceFind_ServerFailure_ReturnsLost()
     {
         LSource source = TSourceGenericCreate(

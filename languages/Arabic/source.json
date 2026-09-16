@@ -6,9 +6,92 @@
     "size": 40
   },
   "example": {
-    "family": "Georgia, Segoe UI",
-    "size": 15
+    "family": "Segoe UI",
+    "size": 17
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "spelling": [
+    ["[\\u064B-\\u065F\\u0670\\u0640]", ""],
+    ["\\u0671", "ا"]
+  ],
+  "transcription": [
+    {
+      "name": "Romanization",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+                "https://en.wiktionary.org/wiki/{word}"
+              ],
+              "strategy": "regex",
+              "match": "<h2 id=\"Arabic\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>([^<]+)<",
+              "group": 1,
+              "normalize": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "<h2 id=\"Arabic\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/tts?speech_fmt=mp3&speed=50&speaker=ar_ar&service=ardic&from=pc&text={headword}"
+          ],
+          "strategy": "link"
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "<h2 id=\"Arabic\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Ar-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q13955_%28ara%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ]
 }

@@ -13,6 +13,7 @@ A comma or slash inside one matched text separates alternatives, and each is a r
 Spelling rules on a spec recast the headword before the token fills, so a macron headword matches the bare file.
 A flat attempt marked every is one untagged reading yielding every match, and the first phonetic is the answer's value.
 A `{word}` token in a pattern is the headword, escaped so a regex character in it matches literally.
+A link reading answers the fetched address itself, with `{headword}` filled as typed before any spelling rule.
 A missed guard is a blank answer and a server failure is a lost one.
 A page that only points at another headword is followed there, and the reading comes from the page pointed at.
 A page with its own readings that also points elsewhere keeps its own and adds the pointed page's.

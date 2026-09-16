@@ -35,10 +35,11 @@ Recasts the headword into the spelling the pack's sources key on.
 Each `spelling` rule of the pack runs in written order on the previous rule's output.
 A Latin pack drops the macrons here, so a headword typed with them still reaches the bare-spelled page.
 The recast word fills `{word}` in every URL and match pattern of every attempt.
+The headword as typed fills `{headword}` in a URL, for a service that needs the marks the recast dropped.
 A headword a page followed to is taken as the page wrote it, so the rules run once at entry.
 A rule set that empties the word is ignored, so a bad rule never sends a blank request.
 
-## `private async Task<(LAnswer, string)> LSourceAttemptResolve(LSourceAttempt attempt, string word, CancellationToken cancellation)`
+## `private async Task<(LAnswer, string)> LSourceAttemptResolve(LSourceAttempt attempt, string word, string headword, CancellationToken cancellation)`
 
 Runs one attempt and follows the pointer it captures.
 Each hop fetches the attempt again for the headword the pointer named.
@@ -50,9 +51,10 @@ A headword already visited ends the chase, so two pages pointing at each other c
 The answer counts as reached when any page on the way loaded.
 It comes back with the headword the chase ended on.
 
-## `private async Task<(LAnswer, string?)> LSourceAttemptRun(LSourceAttempt attempt, string word, CancellationToken cancellation)`
+## `private async Task<(LAnswer, string?)> LSourceAttemptRun(LSourceAttempt attempt, string word, string headword, CancellationToken cancellation)`
 
 Fetches and extracts once.
+The address that answered is kept, since a `link` reading takes it as its value.
 The second value is the headword the attempt's `follow` reading captured, or `null` when there is none to follow.
 A page the guard rejects is not followed.
 An attempt marked decoded has its body HTML-decoded first, so entity-written characters match as characters.
@@ -61,9 +63,11 @@ A pattern that runs past its patience is read as a page with nothing on it.
 Every pattern comes from a language pack and runs over a page a stranger wrote.
 Either can make a backtracking pattern spin for minutes, and one lookup must never hold the program that long.
 
-## `private static (LAnswer, string?) LSourceBodyRead(LSourceAttempt attempt, string body, string word)`
+## `private static (LAnswer, string?) LSourceBodyRead(LSourceAttempt attempt, string body, string word, string landed)`
 
 Runs the guard, every reading and the follow reading over one fetched page, under the patience the runner sets.
+A `link` reading skips the body and answers the address the page was fetched from.
+It serves a speech service whose address is itself the recording, once the fetch has shown it answers.
 
 ## `private static LSourceReading LSourcePatternResolve(LSourceReading reading, string word)`
 

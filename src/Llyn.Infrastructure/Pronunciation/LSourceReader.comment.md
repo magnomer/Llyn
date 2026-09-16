@@ -1,4 +1,4 @@
-# LSourceReader.cs
+﻿# LSourceReader.cs
 
 ## `internal static class LSourceReader`
 
@@ -10,9 +10,9 @@ A caller can tell a page that answered with nothing from a host that never answe
 A 404 is an answer: the site is up and has no such word.
 An exhausted 5xx or timeout is not, and that is what a menu reports as a failure to retrieve.
 
-## `public static Task<LAnswer> LSourceReaderRead(HttpClient client, IReadOnlyList<string> urls, IReadOnlyDictionary<string, string>? headers, CancellationToken cancellation)`
+## `public static Task<(LAnswer, string?)> LSourceReaderRead(HttpClient client, IReadOnlyList<string> urls, IReadOnlyDictionary<string, string>? headers, CancellationToken cancellation)`
 
-The first URL with a body wins.
+The first URL with a body wins, and comes back beside the answer so the caller knows which one.
 When none has one, the answer is blank if any URL answered at all, and lost otherwise.
 So one unreachable mirror does not condemn a source whose other mirror simply had no entry.
 

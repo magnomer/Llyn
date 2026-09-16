@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -15,7 +15,9 @@ public sealed class LSourceGeneric : LSource
     private const string LSourceGenericRegex = "regex";
     private const string LSourceGenericJson = "json";
     private const string LSourceGenericSpan = "span";
+    private const string LSourceGenericLink = "link";
     private const string LSourceGenericToken = "{word}";
+    private const string LSourceGenericHeadword = "{headword}";
     private const int LSourceGenericHops = 2;
 
     private static readonly char[] LSourceGenericSeparators = [',', '/'];
@@ -42,13 +44,14 @@ public sealed class LSourceGeneric : LSource
             return LAnswer.LAnswerBlank;
         }
 
-        string current = LSourceSpellingResolve(word.Trim());
+        string headword = word.Trim();
+        string current = LSourceSpellingResolve(headword);
         bool reached = false;
         HashSet<string> filled = new(StringComparer.Ordinal);
         List<LReading> readings = [];
         foreach (LSourceAttempt attempt in _lSourceGenericSpec.LSourceSpecAttempts)
         {
-            (LAnswer answer, current) = await LSourceAttemptResolve(attempt, current, cancellation)
+            (LAnswer answer, current) = await LSourceAttemptResolve(attempt, current, headword, cancellation)
                 .ConfigureAwait(false);
             reached |= answer.LAnswerReached;
             HashSet<string> fresh = new(StringComparer.Ordinal);
@@ -104,6 +107,7 @@ public sealed class LSourceGeneric : LSource
     private async Task<(LAnswer, string)> LSourceAttemptResolve(
         LSourceAttempt attempt,
         string word,
+        string headword,
         CancellationToken cancellation)
     {
         HashSet<string> visited = new(StringComparer.Ordinal) { word };
@@ -113,7 +117,7 @@ public sealed class LSourceGeneric : LSource
         bool reached = false;
         for (int hop = 0; ; hop++)
         {
-            (LAnswer answer, string? next) = await LSourceAttemptRun(attempt, current, cancellation)
+            (LAnswer answer, string? next) = await LSourceAttemptRun(attempt, current, headword, cancellation)
                 .ConfigureAwait(false);
             reached |= answer.LAnswerReached;
             foreach (LReading reading in answer.LAnswerReadings)
@@ -143,20 +147,23 @@ public sealed class LSourceGeneric : LSource
     private async Task<(LAnswer, string?)> LSourceAttemptRun(
         LSourceAttempt attempt,
         string word,
+        string headword,
         CancellationToken cancellation)
     {
         string escaped = Uri.EscapeDataString(word);
+        string typed = Uri.EscapeDataString(headword);
         string[] urls = new string[attempt.LSourceAttemptUrls.Count];
         for (int index = 0; index < urls.Length; index++)
         {
             urls[index] = attempt.LSourceAttemptUrls[index]
-                .Replace(LSourceGenericToken, escaped, StringComparison.Ordinal);
+                .Replace(LSourceGenericToken, escaped, StringComparison.Ordinal)
+                .Replace(LSourceGenericHeadword, typed, StringComparison.Ordinal);
         }
 
-        LAnswer fetched = await LSourceReader
+        (LAnswer fetched, string? landed) = await LSourceReader
             .LSourceReaderRead(_lSourceGenericClient, urls, attempt.LSourceAttemptHeaders, cancellation)
             .ConfigureAwait(false);
-        if (fetched.LAnswerValue is not string body)
+        if (fetched.LAnswerValue is not string body || landed is null)
         {
             return (fetched, null);
         }
@@ -168,7 +175,7 @@ public sealed class LSourceGeneric : LSource
 
         try
         {
-            return LSourceBodyRead(attempt, body, word);
+            return LSourceBodyRead(attempt, body, word, landed);
         }
         catch (RegexMatchTimeoutException)
         {
@@ -176,7 +183,8 @@ public sealed class LSourceGeneric : LSource
         }
     }
 
-    private static (LAnswer, string?) LSourceBodyRead(LSourceAttempt attempt, string body, string word)
+    private static (LAnswer, string?) LSourceBodyRead(
+        LSourceAttempt attempt, string body, string word, string landed)
     {
         if (!LSourceConfirm(attempt, body, word))
         {
@@ -186,7 +194,10 @@ public sealed class LSourceGeneric : LSource
         List<LReading> readings = [];
         foreach (LSourceReading reading in attempt.LSourceAttemptReadings)
         {
-            foreach (string value in LSourceValueScan(LSourcePatternResolve(reading, word), body))
+            IReadOnlyList<string> values = reading.LSourceReadingStrategy == LSourceGenericLink
+                ? [landed]
+                : LSourceValueScan(LSourcePatternResolve(reading, word), body);
+            foreach (string value in values)
             {
                 string? address = LSourceAddressResolve(attempt, value);
                 if (!string.IsNullOrEmpty(address))
