@@ -88,3 +88,6 @@ Everything language-specific arrives through this record.
 - `LLanguageAnatomies` — The rules the pack declares under `anatomy`, held as [LAnatomyRule](LAnatomyRule.comment.md) records.
   They cut the reflex readings of this pack's entries into onset, vowel, coda and tone, one rule per reflex language.
   Empty for every pack but Classical Chinese, whose file `anatomy.json` holds them.
+- `LLanguageAnatomyTones` — The tone correspondence rows the pack declares under `tone`, held as [LAnatomyTone](LAnatomyTone.comment.md) records.
+  They say which tone classes a reflex reading's contour may descend from, one row per reflex language.
+  Empty for every pack but Classical Chinese, whose file `anatomy_tone.json` holds them.

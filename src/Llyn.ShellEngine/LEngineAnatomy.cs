@@ -5,6 +5,11 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
+    public IReadOnlyList<LAnatomyTone> LEngineToneRead(string language)
+    {
+        return string.IsNullOrWhiteSpace(language) ? [] : LEngineLanguageLoad(language).LLanguageAnatomyTones;
+    }
+
     private LReflexDraft LEngineAnatomyResolve(string language, LReflexDraft row)
     {
         IReadOnlyList<LAnatomyRule> rules = language.Trim().Length == 0

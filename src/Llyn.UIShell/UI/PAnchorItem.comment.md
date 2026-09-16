@@ -2,7 +2,7 @@
 
 ## `internal sealed class PAnchorItem`
 
-One row of the anchor dropdown: a fanqie row of the character, its label and its tick.
+One row of the anchor dropdown: a fanqie row of the character, its label, its tick and its estimate.
 Also the formatting the reflex rows print their anchors with, in the editor and the reading view alike.
 
 ## `private const string PAnchorItemKey`
@@ -16,6 +16,7 @@ What stands between two anchored placements on one reflex row.
 ## `internal static IReadOnlyList<PAnchorItem> PAnchorItemScan(`
 
 One item per stored fanqie row, ticked when `anchors` holds its id.
+It is estimated when `classes` holds the row's tone class, so the dropdown can mark it.
 A row the archive has not kept yet has no id and is skipped.
 
 ## `internal static string PAnchorTextFormat(IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors)`

@@ -45,6 +45,13 @@ internal static partial class TInterface
     internal static bool TAnatomyRuleMatch(this LAnatomyRule rule, string language) =>
         rule.LAnatomyRuleMatch(language);
 
+    internal static IReadOnlyList<string> TAnatomyToneScan(
+        IReadOnlyList<LAnatomyTone> rules, string language, string tone) =>
+        LAnatomyTone.LAnatomyToneScan(rules, language, tone);
+
+    internal static bool TAnatomyToneMatch(this LAnatomyTone rule, string language) =>
+        rule.LAnatomyToneMatch(language);
+
     internal static LCandidate TCandidateCreate(
         string source,
         string? phonetic,

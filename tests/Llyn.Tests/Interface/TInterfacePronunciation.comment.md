@@ -55,6 +55,14 @@ Relays `LAnatomy.LAnatomyScan`.
 
 Relays `LAnatomyRule.LAnatomyRuleMatch`.
 
+## `internal static IReadOnlyList<string> TAnatomyToneScan(IReadOnlyList<LAnatomyTone> rules, string language, string tone)`
+
+Relays `LAnatomyTone.LAnatomyToneScan`.
+
+## `internal static bool TAnatomyToneMatch(this LAnatomyTone rule, string language)`
+
+Relays `LAnatomyTone.LAnatomyToneMatch`.
+
 ## `internal static LHypothesis THypothesisCreate(IReadOnlyDictionary<string, string> initials, IReadOnlyDictionary<string, string> finals, IReadOnlyDictionary<string, IReadOnlyList<LRespellingRule>> tones)`
 
 Builds the hypothesis tables directly, so a test needs no language pack to check the join.

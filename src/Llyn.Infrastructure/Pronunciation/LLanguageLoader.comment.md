@@ -71,6 +71,7 @@ The top-level `silent` key is read the same way, and only a literal `true` hides
 The top-level `phonemic` key is read the same way, and only a literal `true` puts a respelled reading between slashes.
 The top-level `listed` key is read by `LLanguageListedRead`, and only a literal `false` takes the pack off the picker.
 The top-level `anatomy` key is read by `LLanguageAnatomyRead` in `LLanguageLoaderAnatomy.cs`.
+The top-level `tone` key is read by `LLanguageClassRead` in `LLanguageLoaderClass.cs`.
 
 ### `private static bool LLanguageFlaggedCheck(JsonElement root)`
 

@@ -271,6 +271,7 @@
   ],
   "hypothesis": "hypothesis.json",
   "anatomy": "anatomy.json",
+  "tone": "anatomy_tone.json",
   "respelling": [
     {
       "name": "Standard",

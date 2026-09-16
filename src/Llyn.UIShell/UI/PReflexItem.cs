@@ -62,6 +62,8 @@ internal sealed class PReflexItem : INotifyPropertyChanged
 
     public bool PReflexItemFolded { get; }
 
+    public string PReflexItemTone { get; set; } = string.Empty;
+
     public string PReflexItemOpener => PReflexItemPhonemic ? "/" : string.Empty;
 
     public string PReflexItemCloser => PReflexItemPhonemic ? "/" : string.Empty;
@@ -242,7 +244,10 @@ internal sealed class PReflexItem : INotifyPropertyChanged
             draft.LReflexDraftRemark,
             phonemic,
             folded,
-            draft.LReflexDraftAnchors);
+            draft.LReflexDraftAnchors)
+        {
+            PReflexItemTone = draft.LReflexDraftAnatomy.LAnatomyToneIpa,
+        };
     }
 
     internal static string PReflexTextRead(LReflexDraft draft, PRespelling respelling)

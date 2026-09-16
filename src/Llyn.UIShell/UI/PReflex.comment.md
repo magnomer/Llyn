@@ -81,6 +81,7 @@ Brings a row up to the draft, leaving a field alone while its own request is sti
 A row whose respelled, phonemic or folded state no longer matches its language is rebuilt.
 Those states are fixed when the row is created.
 The anchors are taken from the draft as they are, since the engine holds them and the tick sent them.
+The tone is taken from the draft's anatomy the same way, since the engine cuts it.
 
 ## `private void PReflexClear()`
 

@@ -226,6 +226,7 @@ public partial class PEditor
             row.PReflexItemRemark = reflex.LReflexDraftRemark;
         }
 
+        row.PReflexItemTone = reflex.LReflexDraftAnatomy.LAnatomyToneIpa;
         row.PReflexItemAnchors = reflex.LReflexDraftAnchors;
         return row;
     }

@@ -58,6 +58,17 @@ The 集韻 row posts the same Kaom form as the 廣韻 row with the book changed 
 The hypothesis key names the file beside this one holding the user's own reconstruction tables, `hypothesis.json`.
 It is kept apart because Classical Chinese will carry a system of its own.
 
+## `anatomy`
+
+The anatomy key names the file of rules cutting a reflex reading into onset, vowel, coda and tone, `anatomy.json`.
+One rule serves each borrowing language, and the Sinitic languages share one rule.
+
+## `tone`
+
+The tone key names the file holding the tone correspondence rows, `anatomy_tone.json`.
+Each row says which tone classes of the hypothesis a contour of one borrowing language may descend from.
+The anchor dropdown marks the placements a reflex reading's tone allows.
+
 ## `reflex`
 
 The reflex list names the readings of a character in the languages that borrowed it, one rule per language.

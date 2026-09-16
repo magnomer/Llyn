@@ -27,7 +27,8 @@ public sealed record LLanguage(
     IReadOnlyList<LReflexRule>? LLanguageReflexRules = null,
     bool LLanguagePhonemic = false,
     bool LLanguageListed = true,
-    IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null)
+    IReadOnlyList<LAnatomyRule>? LLanguageAnatomies = null,
+    IReadOnlyList<LAnatomyTone>? LLanguageAnatomyTones = null)
 {
     public IReadOnlyList<LScheme> LLanguageSchemes { get; init; } = LLanguageSchemes ?? [];
 
@@ -50,4 +51,6 @@ public sealed record LLanguage(
     public IReadOnlyList<LReflexRule> LLanguageReflexRules { get; init; } = LLanguageReflexRules ?? [];
 
     public IReadOnlyList<LAnatomyRule> LLanguageAnatomies { get; init; } = LLanguageAnatomies ?? [];
+
+    public IReadOnlyList<LAnatomyTone> LLanguageAnatomyTones { get; init; } = LLanguageAnatomyTones ?? [];
 }

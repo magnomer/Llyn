@@ -37,6 +37,11 @@ Whether the row's language is phonemic, fixed when the row is built, so its read
 
 Whether the row belongs to a language the pack folds away, fixed when the row is built.
 
+## `public string PReflexItemTone { get; set; }`
+
+The tone of the reading as the engine cut it, such as `55`, or empty.
+The anchor dropdown reads it to estimate which placements the reading descends from.
+
 ## `public string PReflexItemOpener`
 
 The slash drawn before the reading of a phonemic language, or nothing.

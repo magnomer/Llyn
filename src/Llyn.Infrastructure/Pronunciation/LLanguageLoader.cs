@@ -168,7 +168,8 @@ public static partial class LLanguageLoader
             LLanguageReflexScan(root),
             root.ValueKind == JsonValueKind.Object && LLanguageBooleanRead(root, LLanguageLoaderPhonemic),
             root.ValueKind != JsonValueKind.Object || LLanguageListedRead(root),
-            LLanguageAnatomyRead(language, root));
+            LLanguageAnatomyRead(language, root),
+            LLanguageClassRead(language, root));
     }
 
     private static bool LLanguageListedRead(JsonElement root)

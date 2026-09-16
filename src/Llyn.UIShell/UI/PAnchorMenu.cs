@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -10,6 +12,10 @@ namespace Llyn.UIShell;
 public partial class PEditor
 {
     private const string PAnchorMenuStyle = "Theme.Choice.Filter";
+
+    private const string PAnchorMenuBrush = "Theme.Accent";
+
+    private const string PAnchorMenuMark = " ≈";
 
     private PReflexItem? _pAnchorRow;
 
@@ -30,7 +36,9 @@ public partial class PEditor
     private void PAnchorBuild(PReflexItem row)
     {
         PAnchorList.Children.Clear();
-        IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(_pReflexFanqie, row.PReflexItemAnchors);
+        IReadOnlyList<string> classes = LAnatomyTone.LAnatomyToneScan(
+            _lEngine.LEngineToneRead(_pSpeakerChoice), row.PReflexItemLanguage, row.PReflexItemTone);
+        IReadOnlyList<PAnchorItem> items = PAnchorItem.PAnchorItemScan(_pReflexFanqie, row.PReflexItemAnchors, classes);
         PAnchorEmpty.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         foreach (PAnchorItem item in items)
         {
@@ -39,11 +47,27 @@ public partial class PEditor
                 Style = (Style)PAnchorList.FindResource(PAnchorMenuStyle),
                 Tag = item.PAnchorItemId,
                 IsChecked = item.PAnchorItemAnchored,
-                Content = new TextBlock { Text = item.PAnchorItemLabel, VerticalAlignment = VerticalAlignment.Center },
+                Content = PAnchorLabelBuild(item),
             };
             box.Click += PAnchorTickHandle;
             PAnchorList.Children.Add(box);
         }
+    }
+
+    private TextBlock PAnchorLabelBuild(PAnchorItem item)
+    {
+        TextBlock label = new() { VerticalAlignment = VerticalAlignment.Center };
+        label.Inlines.Add(new Run(item.PAnchorItemLabel));
+        if (item.PAnchorItemEstimated)
+        {
+            label.Inlines.Add(new Run(PAnchorMenuMark)
+            {
+                Foreground = (Brush)PAnchorList.FindResource(PAnchorMenuBrush),
+                FontWeight = FontWeights.SemiBold,
+            });
+        }
+
+        return label;
     }
 
     private void PAnchorTickHandle(object sender, RoutedEventArgs e)

@@ -12,11 +12,12 @@ internal sealed class PAnchorItem
 
     private const string PAnchorItemSeparator = " · ";
 
-    internal PAnchorItem(long id, string label, bool anchored)
+    internal PAnchorItem(long id, string label, bool anchored, bool estimated)
     {
         PAnchorItemId = id;
         PAnchorItemLabel = label;
         PAnchorItemAnchored = anchored;
+        PAnchorItemEstimated = estimated;
     }
 
     public long PAnchorItemId { get; }
@@ -25,11 +26,14 @@ internal sealed class PAnchorItem
 
     public bool PAnchorItemAnchored { get; }
 
+    public bool PAnchorItemEstimated { get; }
+
     internal static IReadOnlyList<PAnchorItem> PAnchorItemScan(
-        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors)
+        IReadOnlyList<LFanqieRow> rows, IReadOnlyList<long> anchors, IReadOnlyList<string> classes)
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(anchors);
+        ArgumentNullException.ThrowIfNull(classes);
 
         List<PAnchorItem> items = new(rows.Count);
         foreach (LFanqieRow row in rows)
@@ -37,7 +41,10 @@ internal sealed class PAnchorItem
             if (row.LFanqieRowId > 0)
             {
                 items.Add(new PAnchorItem(
-                    row.LFanqieRowId, PAnchorLabelFormat(row), anchors.Contains(row.LFanqieRowId)));
+                    row.LFanqieRowId,
+                    PAnchorLabelFormat(row),
+                    anchors.Contains(row.LFanqieRowId),
+                    row.LFanqieRowClass.Length > 0 && classes.Contains(row.LFanqieRowClass)));
             }
         }
 
