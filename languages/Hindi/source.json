@@ -2,13 +2,120 @@
   "language": "Hindi",
   "flag": "in",
   "font": {
-    "family": "Segoe UI",
+    "family": "Nirmala UI, Segoe UI",
     "size": 40
   },
   "example": {
-    "family": "Georgia, Segoe UI",
-    "size": 15
+    "family": "Nirmala UI, Segoe UI",
+    "size": 16
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "spelling": [
+    ["\\u0958", "क़"],
+    ["\\u0959", "ख़"],
+    ["\\u095A", "ग़"],
+    ["\\u095B", "ज़"],
+    ["\\u095C", "ड़"],
+    ["\\u095D", "ढ़"],
+    ["\\u095E", "फ़"],
+    ["\\u095F", "य़"]
+  ],
+  "transcription": [
+    {
+      "name": "Romanization",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+                "https://en.wiktionary.org/wiki/{word}"
+              ],
+              "strategy": "regex",
+              "match": "<h2 id=\"Hindi\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>([^<]+)<",
+              "group": 1,
+              "normalize": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "<h2 id=\"Hindi\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/tts?speech_fmt=mp3&speed=50&speaker=hi_in&service=hidic&from=pc&text={word}"
+          ],
+          "strategy": "link"
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "<h2 id=\"Hindi\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Hi-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q1568_%28hin%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "Leipzig",
+      "attempts": [
+        {
+          "urls": [
+            "https://api.wortschatz-leipzig.de/ws/words/hin_news_2011_1M/word/{word}"
+          ],
+          "confirm": "\"word\":\"{word}\"",
+          "strategy": "regex",
+          "match": "\"frequencyClass\":([0-9]+)",
+          "group": 1
+        }
+      ],
+      "once": { "factor": 23, "base": 2 }
+    }
+  ],
+  "morphology": []
 }
