@@ -2,7 +2,47 @@
   "language": "Japanese",
   "flag": "jp",
   "separator": "none",
+  "font": {
+    "family": "Yu Gothic UI",
+    "size": 40
+  },
+  "example": {
+    "family": "Yu Mincho, Yu Gothic UI",
+    "size": 16
+  },
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
   "transcription": [
+    {
+      "name": "Kana",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+              ],
+              "follow": {
+                "strategy": "json",
+                "path": "parse.wikitext.*",
+                "match": "\\{\\{ja-see\\|(?:[a-z]+=[^|}]*\\|)*([^|}]+)",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "json",
+              "path": "parse.wikitext.*",
+              "match": "==Japanese==[\\s\\S]*?\\{\\{ja-pron\\|(?:[a-z_]+=[^|}]*\\|)*([^|}=]+)(?=[|}])",
+              "group": 1,
+              "normalize": false
+            }
+          ]
+        }
+      ]
+    },
     {
       "name": "Romaji",
       "sources": [
@@ -14,8 +54,42 @@
                 "https://en.wiktionary.org/wiki/{word}",
                 "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
               ],
-              "strategy": "span",
-              "match": "<span class=\"headword-tr tr\"[^>]*><span class=\"Latn\" lang=\"ja\">"
+              "follow": {
+                "strategy": "regex",
+                "match": "class=\"wikitable ja-see\"[\\s\\S]*?<a [^>]*title=\"([^\"]+)\"",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "regex",
+              "match": "<h2 id=\"Japanese\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>(?:<span class=\"Latn\" lang=\"ja\">)?(?:<a[^>]*>)?([^<]+)<",
+              "group": 1,
+              "normalize": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pitch",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/wiki/{word}",
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+              ],
+              "follow": {
+                "strategy": "regex",
+                "match": "class=\"wikitable ja-see\"[\\s\\S]*?<a [^>]*title=\"([^\"]+)\"",
+                "group": 1,
+                "normalize": false
+              },
+              "strategy": "regex",
+              "match": "<h2 id=\"Japanese\"(?:(?!<samp>)[\\s\\S])*?<samp>(\\[[^<\\]]+\\])</samp>",
+              "group": 1,
+              "normalize": false
             }
           ]
         }
@@ -30,15 +104,100 @@
       "size": 26
     }
   },
-
-  "font": {
-    "family": "Yu Gothic UI",
-    "size": 40
-  },
-  "example": {
-    "family": "Yu Mincho, Yu Gothic UI",
-    "size": 16
-  },
-  "pronunciation": [],
-  "audio": []
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+          ],
+          "follow": {
+            "strategy": "regex",
+            "match": "class=\"wikitable ja-see\"[\\s\\S]*?<a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
+          "strategy": "span",
+          "match": "title=\"Appendix:Japanese pronunciation\">key</a>\\)</sup>:(?:(?!<span class=\"IPA)[\\s\\S]){0,80}<span class=\"IPA[^\"]*\"[^>]*>",
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/tts?speech_fmt=mp3&speed=50&speaker=ja_jp&service=jadic&from=pc&text={word}"
+          ],
+          "strategy": "link"
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+          ],
+          "follow": {
+            "strategy": "regex",
+            "match": "class=\"wikitable ja-see\"[\\s\\S]*?<a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false
+          },
+          "strategy": "regex",
+          "match": "<h2 id=\"Japanese\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Ja-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/wiki/{word}",
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q5287_%28jpn%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "Jisho",
+      "attempts": [
+        {
+          "urls": [
+            "https://jisho.org/api/v1/search/words?keyword={word}"
+          ],
+          "strategy": "regex",
+          "match": "\"jlpt\":\\[(\"jlpt-n[1-5]\"(?:,\"jlpt-n[1-5]\")*)\\],\"japanese\":\\[\\{(?:\"word\":\"{word}\"|(?:\"word\":\"[^\"]*\",)?\"reading\":\"{word}\")",
+          "group": 1
+        },
+        {
+          "urls": [
+            "https://jisho.org/api/v1/search/words?keyword={word}"
+          ],
+          "strategy": "regex",
+          "match": "\"is_(common)\":true,\"tags\":\\[[^\\]]*\\],\"jlpt\":\\[\\],\"japanese\":\\[\\{(?:\"word\":\"{word}\"|(?:\"word\":\"[^\"]*\",)?\"reading\":\"{word}\")",
+          "group": 1
+        }
+      ],
+      "bands": [
+        { "match": "jlpt-n[45]", "name": "Core" },
+        { "match": "jlpt-n[23]", "name": "Everyday" },
+        { "match": "jlpt-n1", "name": "Advanced" },
+        { "match": "^common$", "name": "Advanced" }
+      ]
+    }
+  ],
+  "morphology": []
 }

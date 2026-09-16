@@ -9,6 +9,75 @@
     "family": "Georgia, Segoe UI",
     "size": 15
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "<h2 id=\"Indonesian\"(?:(?!class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/api3/idko/search?query={word}&m=pc&range=word&page=1"
+          ],
+          "headers": {
+            "Referer": "https://dict.naver.com/"
+          },
+          "strategy": "regex",
+          "match": "\"symbolFile\":\"(https?://[^\"]+)\"(?:(?!\"symbolFile\":\"http)[\\s\\S])*?\"handleEntry\":\"{word}\"",
+          "group": 1
+        },
+        {
+          "urls": [
+            "https://dict.naver.com/tts?speech_fmt=mp3&speed=50&speaker=id_id&service=iddic&from=pc&text={word}"
+          ],
+          "strategy": "link"
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "<h2 id=\"Indonesian\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Id-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q9240_%28ind%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ],
+  "morphology": []
 }

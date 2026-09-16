@@ -9,6 +9,151 @@
     "family": "Georgia, Segoe UI",
     "size": 15
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "varieties": {
+    "shown": "flag",
+    "list": [
+      { "name": "Brazilian", "flag": "br" },
+      { "name": "European", "flag": "pt" }
+    ]
+  },
+  "cleanup": [
+    {
+      "name": "Optional",
+      "varieties": ["Brazilian", "European"],
+      "rules": [
+        ["\\(([^()]*)$", "($1)"]
+      ]
+    }
+  ],
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "readings": [
+            {
+              "variety": "Brazilian",
+              "strategy": "span",
+              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Brazilian Portuguese\"[^>]*>Brazil</a></span>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "normalize": true
+            },
+            {
+              "variety": "European",
+              "strategy": "span",
+              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:European Portuguese\"[^>]*>Portugal</a></span>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "normalize": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wikcionário",
+      "attempts": [
+        {
+          "urls": [
+            "https://pt.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&redirects=1&page={word}"
+          ],
+          "readings": [
+            {
+              "variety": "Brazilian",
+              "strategy": "json",
+              "path": "parse.wikitext.*",
+              "match": "=\\{\\{-pt-\\}\\}=(?:(?!\\n=\\{\\{)[\\s\\S])*?\\n===Brasil===(?:(?!\\n===[^=])[\\s\\S])*?AFI(?:\\]\\])?:\\s*(?:\\{\\{AFI\\|)?(/[^/|}\\n]+/)",
+              "group": 1,
+              "normalize": true
+            },
+            {
+              "variety": "European",
+              "strategy": "json",
+              "path": "parse.wikitext.*",
+              "match": "=\\{\\{-pt-\\}\\}=(?:(?!\\n=\\{\\{)[\\s\\S])*?\\n===Portugal===(?:(?!\\n===[^=])[\\s\\S])*?AFI(?:\\]\\])?:\\s*(?:\\{\\{AFI\\|)?(/[^/|}\\n]+/)",
+              "group": 1,
+              "normalize": true
+            },
+            {
+              "strategy": "json",
+              "path": "parse.wikitext.*",
+              "match": "=\\{\\{-pt-\\}\\}=(?:(?!\\n=\\{\\{)[\\s\\S])*?\\{\\{pronúncia\\|pt\\}\\}==\\s*\\n\\* (?:\\[\\[)?AFI(?:\\]\\])?:\\s*(?:\\{\\{AFI\\|)?(/[^/|}\\n]+/)",
+              "group": 1,
+              "normalize": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/tts?speech_fmt=mp3&speed=50&speaker=pt_pt&service=ptdic&from=pc&text={word}"
+          ],
+          "readings": [
+            { "variety": "European", "strategy": "link" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "prefix": "https:",
+          "readings": [
+            {
+              "variety": "Brazilian",
+              "strategy": "regex",
+              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?Brazil(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "group": 1
+            },
+            {
+              "variety": "European",
+              "strategy": "regex",
+              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?Portugal(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "group": 1
+            },
+            {
+              "strategy": "regex",
+              "match": "<h2 id=\"Portuguese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>|Brazil|Portugal)[\\s\\S])*?</td>(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "group": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "Leipzig",
+      "attempts": [
+        {
+          "urls": [
+            "https://api.wortschatz-leipzig.de/ws/words/por_news_2013_1M/word/{word}"
+          ],
+          "confirm": "\"word\":\"{word}\"",
+          "strategy": "regex",
+          "match": "\"frequencyClass\":([0-9]+)",
+          "group": 1
+        }
+      ],
+      "once": { "factor": 23, "base": 2 }
+    }
+  ],
+  "morphology": []
 }

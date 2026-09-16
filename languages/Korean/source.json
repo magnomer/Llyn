@@ -2,13 +2,208 @@
   "language": "Korean",
   "flag": "kr",
   "font": {
-    "family": "Segoe UI",
+    "family": "Malgun Gothic, Segoe UI",
     "size": 40
   },
   "example": {
-    "family": "Georgia, Segoe UI",
-    "size": 15
+    "family": "Malgun Gothic, Segoe UI",
+    "size": 16
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "cleanup": [
+    {
+      "name": "Variants",
+      "rules": [
+        ["\\]\\s*~\\s*\\[", " ~ "]
+      ]
+    }
+  ],
+  "transcription": [
+    {
+      "name": "Romanization",
+      "sources": [
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+                "https://en.wiktionary.org/wiki/{word}"
+              ],
+              "strategy": "regex",
+              "match": "<h2 id=\"Korean\"(?:(?!headword-tr)[\\s\\S])*?class=\"headword-tr[^\"]*\"[^>]*>([^<]+)<",
+              "group": 1,
+              "normalize": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Phonetic",
+      "sources": [
+        {
+          "name": "Krdict",
+          "attempts": [
+            {
+              "urls": [
+                "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?nation=kor&nationCode=0&mainSearchWord={word}"
+              ],
+              "strategy": "regex",
+              "match": "<span class=\"word_type1_17\">\\s*{word}\\s*(?:<sup>\\d+</sup>\\s*)?</span>(?:(?!</dt>)[\\s\\S])*?\\[([^<\\[\\]]+)",
+              "group": 1,
+              "normalize": true
+            }
+          ]
+        },
+        {
+          "name": "Wiktionary",
+          "attempts": [
+            {
+              "urls": [
+                "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+                "https://en.wiktionary.org/wiki/{word}"
+              ],
+              "strategy": "span",
+              "match": "<h2 id=\"Korean\"[\\s\\S]*?<li class=\"ko-pron(?:__|&#95;&#95;)ph\">Phonetic hangul: <span class=\"Kore\" lang=\"ko\">",
+              "normalize": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "glyph": {
+    "name": "Hanja",
+    "language": "Classical Chinese",
+    "font": {
+      "family": "Batang, Malgun Gothic",
+      "size": 26
+    },
+    "sources": [
+      {
+        "name": "Krdict",
+        "attempts": [
+          {
+            "urls": [
+              "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?nation=kor&nationCode=0&mainSearchWord={word}"
+            ],
+            "strategy": "regex",
+            "match": "<span class=\"word_type1_17\">\\s*{word}\\s*(?:<sup>\\d+</sup>\\s*)?</span>\\s*</a>\\s*<!-- 원어 -->\\s*<span>\\(([\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF][^)]*)\\)</span>",
+            "group": 1,
+            "normalize": false,
+            "every": true
+          }
+        ]
+      },
+      {
+        "name": "Wiktionary",
+        "attempts": [
+          {
+            "urls": [
+              "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+              "https://en.wiktionary.org/wiki/{word}"
+            ],
+            "strategy": "regex",
+            "match": "<i>hanja</i> <b class=\"Kore\" lang=\"ko\"><a [^>]*title=\"([^\"]+)\"",
+            "group": 1,
+            "normalize": false,
+            "every": true
+          }
+        ]
+      }
+    ]
+  },
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "<h2 id=\"Korean\"[\\s\\S]*?title=\"Appendix:Korean pronunciation\">key</a>\\)</sup>:(?:(?!<span class=\"IPA)[\\s\\S]){0,80}<span class=\"IPA[^\"]*\"[^>]*>",
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Krdict",
+      "attempts": [
+        {
+          "urls": [
+            "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?nation=kor&nationCode=0&mainSearchWord={word}"
+          ],
+          "strategy": "regex",
+          "match": "<span class=\"word_type1_17\">\\s*{word}\\s*(?:<sup>\\d+</sup>\\s*)?</span>(?:(?!</dt>)[\\s\\S])*?fnSoundPlay\\('(https://krdicmedia\\.korean\\.go\\.kr/[^']+\\.mp3)'\\)",
+          "group": 1
+        }
+      ]
+    },
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/tts?speech_fmt=mp3&speed=50&speaker=ko_kr&service=krdic&from=pc&text={word}"
+          ],
+          "strategy": "link"
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "<h2 id=\"Korean\"[\\s\\S]*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Ko-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q9176_%28kor%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "Krdict",
+      "attempts": [
+        {
+          "urls": [
+            "https://krdict.korean.go.kr/kor/dicMarinerSearch/search?nation=kor&nationCode=0&mainSearchWord={word}"
+          ],
+          "strategy": "regex",
+          "match": "<span class=\"word_type1_17\">\\s*{word}\\s*(?:<sup>\\d+</sup>\\s*)?</span>(?:(?!</dt>)[\\s\\S])*?<span class=\"star\">(?:(?:<i class=\"ri-star-s-fill\"></i>){3}</span>[\\s\\S]*?<th>(?<grade>초급)\\(|(?:<i class=\"ri-star-s-fill\"></i>){2}</span>[\\s\\S]*?<th>(?<grade>중급)\\(|<i class=\"ri-star-s-fill\"></i></span>[\\s\\S]*?<th>(?<grade>고급)\\()",
+          "group": 1
+        }
+      ],
+      "bands": [
+        { "match": "초급", "name": "Core" },
+        { "match": "중급", "name": "Everyday" },
+        { "match": "고급", "name": "Advanced" }
+      ]
+    }
+  ],
+  "morphology": []
 }
