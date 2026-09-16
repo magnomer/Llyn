@@ -10,6 +10,129 @@
     "family": "Georgia, Segoe UI",
     "size": 15
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "varieties": {
+    "shown": "text",
+    "list": [
+      { "name": "Northern" },
+      { "name": "Central" },
+      { "name": "Southern" }
+    ]
+  },
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "readings": [
+            {
+              "variety": "Northern",
+              "strategy": "span",
+              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Hanoi\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "normalize": true
+            },
+            {
+              "variety": "Central",
+              "strategy": "span",
+              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Huế\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "normalize": true
+            },
+            {
+              "variety": "Southern",
+              "strategy": "span",
+              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?title=\"w:Saigon\"[^>]*>[^<]*</a></span></span><span class=\"ib-brac qualifier-brac\">\\)</span> <a [^>]*>IPA</a>(?:(?!<span class=\"IPA)[\\s\\S])*?<span class=\"IPA nowrap\"[^>]*>",
+              "normalize": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Naver",
+      "attempts": [
+        {
+          "urls": [
+            "https://dict.naver.com/api3/viko/search?query={word}&m=pc&range=word&page=1"
+          ],
+          "headers": {
+            "Referer": "https://dict.naver.com/"
+          },
+          "strategy": "regex",
+          "match": "\"symbolFile\":\"(https?://[^\"]+)\"(?:(?!\"rank\":)[\\s\\S])*?\"handleEntry\":\"{word}\"",
+          "group": 1
+        },
+        {
+          "urls": [
+            "https://dict.naver.com/tts?speech_fmt=mp3&speed=50&speaker=vi_vn&service=vidic&from=pc&text={word}"
+          ],
+          "strategy": "link"
+        }
+      ]
+    },
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "prefix": "https:",
+          "readings": [
+            {
+              "variety": "Northern",
+              "strategy": "regex",
+              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Hanoi\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "group": 1
+            },
+            {
+              "variety": "Central",
+              "strategy": "regex",
+              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Huế\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "group": 1
+            },
+            {
+              "variety": "Southern",
+              "strategy": "regex",
+              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>)[\\s\\S])*?title=\"w:Saigon\"(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "group": 1
+            },
+            {
+              "strategy": "regex",
+              "match": "<h2 id=\"Vietnamese\"(?:(?!<h2 )[\\s\\S])*?<td>Audio(?:(?!</td>|title=\"w:)[\\s\\S])*?</td>(?:(?!</tr>)[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*\\.mp3)",
+              "group": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "Leipzig",
+      "attempts": [
+        {
+          "urls": [
+            "https://api.wortschatz-leipzig.de/ws/words/vie_newscrawl_2013_1M/word/{word}"
+          ],
+          "confirm": "\"word\":\"{word}\"",
+          "strategy": "regex",
+          "match": "\"frequencyClass\":([0-9]+)",
+          "group": 1
+        }
+      ],
+      "once": { "factor": 60, "base": 2 }
+    }
+  ],
+  "morphology": []
 }

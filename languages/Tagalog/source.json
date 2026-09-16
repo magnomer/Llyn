@@ -9,6 +9,70 @@
     "family": "Georgia, Segoe UI",
     "size": 15
   },
-  "pronunciation": [],
-  "audio": []
+  "gloss": {
+    "family": "Georgia, Segoe UI",
+    "size": 15,
+    "style": "italic"
+  },
+  "pronunciation": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "span",
+          "match": "<h2 id=\"Tagalog\"(?:(?!<span class=\"IPA nowrap\">)(?!<h2 )[\\s\\S])*?<span class=\"IPA nowrap\">",
+          "normalize": true
+        }
+      ]
+    }
+  ],
+  "audio": [
+    {
+      "name": "Wiktionary",
+      "attempts": [
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "<h2 id=\"Tagalog\"(?:(?!<h2 )[\\s\\S])*?(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/Tl-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        },
+        {
+          "urls": [
+            "https://en.wiktionary.org/api/rest_v1/page/html/{word}",
+            "https://en.wiktionary.org/wiki/{word}"
+          ],
+          "strategy": "regex",
+          "match": "(//upload\\.wikimedia\\.org/wikipedia/commons/transcoded/[^\"]*/LL-Q34057_%28tgl%29-[^\"/]*\\.mp3)",
+          "group": 1,
+          "prefix": "https:"
+        }
+      ]
+    }
+  ],
+  "frequency": [
+    {
+      "name": "Leipzig",
+      "attempts": [
+        {
+          "urls": [
+            "https://api.wortschatz-leipzig.de/ws/words/tgl_newscrawl_2013_300K/word/{word}"
+          ],
+          "confirm": "\"word\":\"{word}\"",
+          "strategy": "regex",
+          "match": "\"frequencyClass\":([0-9]+)",
+          "group": 1
+        }
+      ],
+      "once": { "factor": 17, "base": 2 }
+    }
+  ],
+  "morphology": []
 }
