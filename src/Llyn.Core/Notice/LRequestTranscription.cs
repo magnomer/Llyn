@@ -13,7 +13,13 @@ public sealed record LRequestTranscriptionShift(
 
 public sealed record LRequestTranscriptionScheme(
     long LRequestDraftId, long LRequestTranscriptionId, string LRequestText)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestTranscriptionScheme)}:{LRequestTranscriptionId}";
+}
 
 public sealed record LRequestTranscriptionText(long LRequestDraftId, long LRequestTranscriptionId, string LRequestText)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestTranscriptionText)}:{LRequestTranscriptionId}";
+}

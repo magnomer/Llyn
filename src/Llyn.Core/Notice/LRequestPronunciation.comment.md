@@ -1,5 +1,6 @@
 # LRequestPronunciation.cs
 
+The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The pronunciation requests, one per change to the entry's ordered pronunciation list.
 Each names the row by its id, so a change lands on that row wherever the list has moved it.
 `LRequestIpa` and `LRequestAudio` remain for a form that edits the primary row alone.

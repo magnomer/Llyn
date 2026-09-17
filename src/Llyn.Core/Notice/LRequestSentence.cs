@@ -12,20 +12,35 @@ public sealed record LRequestSentenceShift(
 
 public sealed record LRequestSentenceExample(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestExampleId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestSentenceExample)}:{LRequestSentenceId}";
+}
 
 public sealed record LRequestSentenceText(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestSentenceText)}:{LRequestSentenceId}";
+}
 
 public sealed record LRequestSentenceParticle(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestSentenceParticle)}:{LRequestSentenceId}";
+}
 
 public sealed record LRequestSentenceDependence(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestSentenceDependence)}:{LRequestSentenceId}";
+}
 
 public sealed record LRequestSentenceReference(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestReferenceId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestSentenceReference)}:{LRequestSentenceId}";
+}

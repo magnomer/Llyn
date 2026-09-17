@@ -15,7 +15,7 @@ public partial class PCorpus
     private void PTranscriptLinkHandle(object sender, ExecutedRoutedEventArgs e)
     {
         (int offset, int length) = PMentionSelection.PMentionSelectionRead(PTranscriptText);
-        if (length == 0 || _pTranscriptDraft == 0)
+        if (length == 0 || PTranscriptDraft == 0)
         {
             return;
         }
@@ -26,12 +26,12 @@ public partial class PCorpus
             PTranscriptText.SelectedText.Trim(),
             _pTranscriptLanguage,
             entryId => PTranscriptRequestSend(
-                new LRequestMentionAddition(_pTranscriptDraft, 0, 0, offset, length, entryId, 0)));
+                new LRequestMentionAddition(PTranscriptDraft, 0, 0, offset, length, entryId, 0)));
     }
 
     private void PTranscriptSenseHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pTranscriptDraft == 0
+        if (PTranscriptDraft == 0
             || PTranscriptMentionFind() is not LMentionDraft mention
             || mention.LMentionDraftEntry == 0)
         {
@@ -43,18 +43,18 @@ public partial class PCorpus
             PMentionSelection.PMentionSelectionPlace(PTranscriptText),
             mention.LMentionDraftEntry,
             senseId => PTranscriptRequestSend(
-                new LRequestMentionSense(_pTranscriptDraft, 0, 0, mention.LMentionDraftId, senseId)));
+                new LRequestMentionSense(PTranscriptDraft, 0, 0, mention.LMentionDraftId, senseId)));
     }
 
     private void PTranscriptSilenceHandle(object sender, ExecutedRoutedEventArgs e)
     {
         (int offset, int length) = PMentionSelection.PMentionSelectionRead(PTranscriptText);
-        if (length == 0 || _pTranscriptDraft == 0)
+        if (length == 0 || PTranscriptDraft == 0)
         {
             return;
         }
 
-        PTranscriptRequestSend(new LRequestMentionAddition(_pTranscriptDraft, 0, 0, offset, length, 0, 0));
+        PTranscriptRequestSend(new LRequestMentionAddition(PTranscriptDraft, 0, 0, offset, length, 0, 0));
     }
 
     private void PTranscriptUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
@@ -62,12 +62,12 @@ public partial class PCorpus
         long? mentionId = e.Parameter is PMentionChip chip
             ? chip.PMentionChipId
             : PTranscriptMentionFind()?.LMentionDraftId;
-        if (mentionId is not long id || _pTranscriptDraft == 0)
+        if (mentionId is not long id || PTranscriptDraft == 0)
         {
             return;
         }
 
-        PTranscriptRequestSend(new LRequestMentionRemoval(_pTranscriptDraft, 0, 0, id));
+        PTranscriptRequestSend(new LRequestMentionRemoval(PTranscriptDraft, 0, 0, id));
     }
 
     private void PTranscriptLinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -90,28 +90,6 @@ public partial class PCorpus
     {
         (int offset, int length) = PMentionSelection.PMentionSelectionRead(PTranscriptText);
         return PMentionSelection.PMentionSelectionFind(_pTranscriptMention, offset, length);
-    }
-
-    private void PTranscriptRequestSend(LRequest request)
-    {
-        PTranscriptChangeSave();
-
-        if (_pTranscriptHalted || _pTranscriptDraft == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineRequestApply(request);
-        }
-        catch (Exception exception)
-        {
-            PTranscriptHoldSuspend(exception);
-            return;
-        }
-
-        PTranscriptChangeUpdate();
     }
 
     private void PTranscriptMentionShow(LExample? example)

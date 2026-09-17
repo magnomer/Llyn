@@ -20,12 +20,13 @@ A subscriber already attached is not added twice, so a surface re-attached keeps
 Stops announcing to `observer`.
 A surface that is closing detaches, so a dead control is never called.
 
-## `private void LEngineBulletinRaise(LSubject subject, long id)`
+## `internal void LEngineBulletinRaise(LSubject subject, long id)`
 
 Announces one change to every subscriber.
 The list is copied under the gate and the calls are made outside it.
 A subscriber re-reads through the engine, and the gate is reentrant, so it would hold either way.
 Copying keeps a subscriber that detaches during the announcement from disturbing the walk.
+Internal rather than private, because a tenure raises its own state bulletin through it.
 
 Announcements are made where a stored record is finished, not where each step of it is written.
 An entry save, create, or update announces nothing on its own.

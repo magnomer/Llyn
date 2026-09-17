@@ -16,4 +16,7 @@ public sealed record LRequestImageShift(
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestImageLocation(long LRequestDraftId, long LRequestImageId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestImageLocation)}:{LRequestImageId}";
+}

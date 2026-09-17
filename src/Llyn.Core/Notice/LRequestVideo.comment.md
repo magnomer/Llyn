@@ -1,5 +1,6 @@
 # LRequestVideo.cs
 
+The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The video requests, shaped like the image requests with a second field for the span.
 
 ## `public sealed record LRequestVideoAddition(`

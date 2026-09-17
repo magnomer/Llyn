@@ -12,10 +12,19 @@ public sealed record LRequestCardShift(
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestCardTitle(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestCardTitle)}:{LRequestCardId}";
+}
 
 public sealed record LRequestCardExpression(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestCardExpression)}:{LRequestCardId}";
+}
 
 public sealed record LRequestCardMeaning(long LRequestDraftId, long LRequestCardId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestCardMeaning)}:{LRequestCardId}";
+}

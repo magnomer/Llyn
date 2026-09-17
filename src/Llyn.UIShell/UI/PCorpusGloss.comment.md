@@ -20,12 +20,9 @@ One row, subscribed so its edits reach the panel.
 
 ## `private void PTranscriptGlossChange(object? sender, PropertyChangedEventArgs arguments)`
 
-Marks a typed row dirty and defers the save with the rest of the form.
+Defers a typed row's text as its own request, keyed by the row, so the tenure keeps only the latest.
 A chosen language is sent at once.
-
-## `private IReadOnlyList<LRequest> PTranscriptGlossRead(long draft)`
-
-The text requests of every dirty row, sent after the body, and the dirty set cleared.
+No dirty set is kept, since a restore writes what is waiting first and then reads it back.
 
 ## `private void PGlossAddHandle(object sender, RoutedEventArgs e)`
 

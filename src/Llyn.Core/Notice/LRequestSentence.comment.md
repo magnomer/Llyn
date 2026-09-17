@@ -1,5 +1,6 @@
 # LRequestSentence.cs
 
+The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The sentence requests, one per structural change and one per field of a sentence row.
 Every one names the card and the sentence by id, real or minted.
 The addition alone names no sentence, because it has none yet.

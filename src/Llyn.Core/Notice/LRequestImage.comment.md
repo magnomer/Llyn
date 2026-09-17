@@ -1,5 +1,6 @@
 # LRequestImage.cs
 
+The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The image requests, shaped like the situation requests.
 An image row is added blank and its location typed or chosen afterwards.
 So the engine keeps a blank image row in the draft and commit skips it.

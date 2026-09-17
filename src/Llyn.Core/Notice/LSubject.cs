@@ -35,4 +35,6 @@ public enum LSubject
     LSubjectReflex,
 
     LSubjectSettings,
+
+    LSubjectTenure,
 }

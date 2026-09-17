@@ -84,3 +84,8 @@ The id is the entry's, and a surface showing it re-reads its reflex lines alone.
 
 A setting that shapes how stored records are shown was flipped, such as the respelling switch.
 The id is zero, because no record changed and every surface showing a reading re-reads it.
+
+## `LSubjectTenure,`
+
+The state of one held draft moved: it changed, can undo or redo, or halted.
+The id is the draft the tenure holds, so the one panel holding it settles its buttons.

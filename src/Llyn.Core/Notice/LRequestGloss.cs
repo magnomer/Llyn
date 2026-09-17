@@ -14,8 +14,14 @@ public sealed record LRequestGlossText(
     long LRequestSentenceId,
     long LRequestGlossId,
     LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestGlossText)}:{LRequestGlossId}";
+}
 
 public sealed record LRequestGlossLanguage(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestGlossId, string LRequestLanguage)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestGlossLanguage)}:{LRequestGlossId}";
+}

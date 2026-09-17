@@ -3,20 +3,32 @@
 ## `public partial class PCorpus`
 
 When what the user typed into the sentence editor reaches the draft the engine holds.
-The panel no longer keeps a copy of the stored Example to compare itself against.
-It writes what it holds instead, and asks the engine whether that differs.
-Typing is written once the user stops, because a write per keystroke is a write per keystroke.
-A citation or a language chosen writes at once, because there is no keystroke coming to end it.
-This mirrors `PEditorChange.cs` and `PEditorDraft.cs` field for field, so the two editors cannot drift apart.
+The panel holds one `LTenure` and its controls, and the tenure runs the hold from start to commit or cancel.
+The panel keeps no draft id, halted flag or timer of its own, since the engine owns each of those.
+Typing is deferred through the tenure and written once the user stops, so a keystroke is not a write.
+A row added or removed is applied at once, because there is no keystroke coming to end it.
+The tenure raises a bulletin when its state moves, and the panel settles its buttons from that.
+
+## `private const string PTranscriptOrigin = "Corpus";`
+
+The surface a recovered sentence says it came from.
+
+## `private LTenure? _pTranscriptTenure;`
+
+The engine's hold on the sentence being edited, or null while the editor holds nothing.
+
+## `private long PTranscriptDraft => _pTranscriptTenure?.LTenureId ?? 0;`
+
+The held draft's id as the requests name it, zero while nothing is held.
+Read from the tenure each time, so the panel keeps no copy to drift.
 
 ## `private bool PTranscriptDraftFinish(bool store)`
 
 Ends the held sentence when the panel is left, committing it or discarding it.
 The panel routes here only while the Example editor is the side in front.
-Typing still waiting to be written is written first, whatever the answer was.
-A refused commit puts the id back and answers false, so the window stays open over work still on disk.
-A form halted by a failed flush answers that it did not finish.
-Committing then would store a draft missing the edits the flush dropped.
+The tenure writes what is waiting, cancels an unchanged or unwanted draft, and commits the rest.
+A refused commit keeps the tenure and answers false, so the window stays open over work still on disk.
+A halted tenure refuses to finish the same way, since committing would store a draft missing the dropped edits.
 
 ## `private bool PTranscriptChangeCheck()`
 
@@ -26,60 +38,55 @@ Otherwise a window closing within a keystroke of the last change would call it u
 
 ## `private void PTranscriptChangeDefer()`
 
-Restarts the wait that ends in a write, for every edit the controls report.
-A filling panel, a suspended one, and one holding no draft each write nothing.
+Defers the whole body of the form as one request, for every edit the body's controls report.
+The engine decides what changed, and an unchanged body raises no bulletin, so nothing is redrawn under the caret.
 
-## `private async Task PTranscriptChangeRun(CancellationToken token)`
+## `private void PTranscriptRequestDefer(LRequest request)`
 
-Waits out the quiet and then writes, unless another edit cancels the wait first.
-The wait is not awaited, because the keystroke that started it must return at once.
-Its continuation comes back on the UI thread, which is where the engine is used.
-Nobody is left to observe the task, so the write it ends with is guarded inside it.
+Hands one request to the tenure to write once the typing stops.
+A filling panel and one holding no draft defer nothing.
+A halted tenure drops the request itself.
 
-## `private void PTranscriptChangeSave()`
+## `private void PTranscriptRequestSend(LRequest request)`
 
-The one place control values reach the held sentence outside a commit.
-It also settles the buttons, so a write and what the buttons say never drift apart.
+Hands one request to the tenure to write now, for a Mention or a Gloss alike.
+What was waiting is written first, because a Mention span was measured against the text as typed.
+The bulletin that answers redraws the transcript, chip line included.
 
 ## `private void PTranscriptChangeUpdate()`
 
-Settles the rail's save against the engine's answer, as the repertoire panel settles its own.
+Settles the rail's save, the editor's enabled state and the undo pair from one reading of the tenure's state.
 It reads the same answer the closing warning reads, so the two cannot disagree.
 It stands aside while `PEditor` is in front, because then the save belongs to the entry editor.
-The undo and redo pair is settled last, so it never says more than the draft can do.
+With no tenure the editor keeps whatever enabled state a failed start left it, since there is nothing to read.
+
+## `private void PTranscriptHoldShow(bool running)`
+
+Enables or disables the editor to match whether the tenure still runs, and says so once when it stops.
+Editing on would collect keystrokes nothing is holding, which is the loss the draft exists to prevent.
+The control's own enabled state is the memory of having said so, so the notice is not repeated.
 
 ## `private LDraft? PTranscriptDraftStart(long? example)`
 
-Starts a held sentence, on a stored Example or on nothing, and hands back what was started.
+Starts a tenure on a stored Example or on nothing, and hands back the draft it holds.
 Whatever was held before is discarded first, so the panel never holds two.
-A refusal suspends the editor rather than leaving it typing into an id the engine never gave.
+A refusal disables the editor rather than leaving it typing into a tenure the engine never gave.
 
 ## `private void PTranscriptDraftShow(LDraft? started)`
 
 Fills the controls from a draft just started, or empties them when none was.
 
-## `private void PTranscriptDraftSave()`
-
-Sends the whole body of the form as one request and lets the engine decide what changed.
-An unchanged body is dropped by the engine without a bulletin, so nothing is redrawn under the caret.
-A changed body answers with one bulletin, and the bulletin redraws only what differs.
-
 ## `private void PTranscriptDraftRestore()`
 
 Reads the held sentence back and redraws the controls from it where they differ.
 This is what the panel's own draft bulletin does.
+What is waiting is written first, so a bulletin from the tenure's timer never redraws over a newer keystroke.
 Nothing is read while the controls are being filled, because filling raises the bulletin's own echo.
 
 ## `private void PTranscriptDraftCancel()`
 
-Discards the held sentence and forgets its id.
-The id is dropped before the call, so a failing discard cannot leave the panel writing into it.
-A failure here is swallowed, because the caller is already leaving the work behind.
-
-## `private bool PTranscriptDraftCheck()`
-
-The engine's answer to whether the held sentence differs from the Example it opened on.
-A panel holding no draft has nothing to lose and answers false.
+Discards the held sentence and forgets the tenure.
+The tenure is dropped before the call, so its last bulletin finds no panel holding it.
 
 ## `private long? PTranscriptExampleRead()`
 
@@ -88,7 +95,7 @@ The delete control, the usage count and the discard all read identity through th
 
 ## `public void PChronicleUndo()`
 
-Steps the example form's draft one snapshot back through the engine's chronicle.
+Steps the example form's draft one snapshot back through the tenure.
 The draft bulletin the engine raises brings the older fields back through the ordinary restore.
 
 ## `public void PChronicleRedo()`
@@ -96,13 +103,26 @@ The draft bulletin the engine raises brings the older fields back through the or
 Steps the example form's draft one snapshot forward again.
 The inverse of the undo above, through the same bulletin.
 
+## `private void PTranscriptChronicleRun(Func<LTenure, LDraft?> step)`
+
+The one path both steps share.
+No tenure means nothing to walk, so it returns without asking.
+The tenure writes what is waiting before it steps, so the snapshot stepped away from is the one on screen.
+The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
+A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
+The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
+
 ## `public void PChronicleUpdate()`
 
-Lights `PCorpusBackward` and `PCorpusForward` only when the engine has a step to walk for the held draft.
-No draft disables both.
+Lights `PCorpusBackward` and `PCorpusForward` only when the tenure has a step to walk.
+No tenure disables both.
 While `PEditor` is in front the pair follows that editor's draft instead, read through `PEditorChronicleRead`.
 The panel is the pair's only writer, so the two editors never overwrite each other.
 The editor's chronicle notice and the editor toggle both call here, so the pair follows whoever is in front.
+
+## `private (bool PTranscriptBackward, bool PTranscriptForward) PTranscriptChronicleRead()`
+
+The undo and redo answers of the tenure's state, both false while nothing is held.
 
 ## `private void PCorpusUndoHandle(object sender, RoutedEventArgs e)`
 
@@ -112,32 +132,3 @@ An Entry open in `PEditor` steps its own chronicle, and otherwise the held draft
 ## `private void PCorpusRedoHandle(object sender, RoutedEventArgs e)`
 
 The rail's redo, the inverse of the one above.
-
-## `private void PTranscriptChronicleRun(Func<long, LDraft?> step)`
-
-The one path both steps share.
-No draft means nothing to walk, so it returns without asking.
-The pending debounced request is flushed first, so the snapshot stepped away from is the one on screen.
-The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
-A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
-The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
-
-## `private void PTranscriptHoldSuspend(Exception exception)`
-
-Stops the editor when the push breaks, and says so once.
-Editing on would collect keystrokes nothing is holding, which is the loss the draft exists to prevent.
-
-## `private void PTranscriptHoldResume()`
-
-Gives the editor back once a draft is held again.
-
-## Inline notes
-
-### `private const int PTranscriptChangeDelay = 250;`
-
-Long enough that ordinary typing writes once rather than once per letter.
-Short enough that a crash costs a word, not a sentence.
-
-### `private const string PTranscriptOrigin = "Corpus";`
-
-The surface a recovered sentence says it came from.

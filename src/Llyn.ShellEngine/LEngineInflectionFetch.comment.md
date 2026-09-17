@@ -5,9 +5,9 @@
 The inflection fetch side of the engine.
 It fills the unspecified slots of an Entry's paradigm from the morphology sources its language pack names.
 A form found is stored once as an inflection, so the next read finds it specified.
-A form a reached source could not name is remembered for the session, so its slot reads unknown.
-An Entry no source could be reached for is remembered as lost, so the session does not ask again.
-Both memories go when the Entry's inflections are rewritten, when the switch turns off, or when the workspace changes.
+A form a reached source could not name becomes a lacuna row, so its slot reads unknown after a reopen.
+An Entry no source was reached for becomes a lacuna row with no morphology, so no reopen asks again.
+Both rows go only when the Entry's inflections are rewritten, since only a hand edit warrants asking again.
 The fetch runs in the background and never blocks the caller that asked for it.
 Unlike the frequency fill, a paradigm read never starts a fetch by itself, because the caller decides when to ask.
 
@@ -34,7 +34,7 @@ A slot still empty can then say it is being looked up rather than lost.
 ## `public void LEngineInflectionStart(long entryId)`
 
 Begins a background fetch for the Entry identified by `entryId` and returns at once.
-Nothing starts when the setting is off, a fetch is already running, or the Entry was lost this session.
+Nothing starts when the setting is off, a fetch is already running, or a lacuna row marks the Entry lost.
 Nothing starts while a held draft edits the Entry, since a save would overwrite what the fetch stored.
 Nothing starts when the Entry is missing, the pack has no sources, or no slot is unspecified.
 An Entry whose parts declare no paradigm has no slots, so it starts nothing either.
@@ -43,15 +43,16 @@ The gate holds the pending map, so the same Entry never fetches twice at once.
 
 ## `private void LEngineInflectionReset(long entryId)`
 
-Cancels a pending fetch of one Entry and forgets its misses and its loss.
+Cancels a pending fetch of one Entry and deletes its lacuna rows.
 Called under the gate whenever the Entry's inflections are rewritten by hand or by a save.
 What the user wrote replaces what the source said, so the source may be asked again later.
 
 ## `private void LEngineInflectionClear()`
 
-Cancels every pending fetch and forgets every miss and loss.
+Cancels every pending fetch.
 Called under the gate when the workspace changes, the switch turns off, or the engine is disposed.
 A fetch begun against one workspace must never write into the next.
+The lacuna rows stay, since they belong to the workspace and not to the session.
 
 ## `private LDraft? LEngineDraftFind(long entryId)`
 
@@ -65,7 +66,7 @@ Writes what a reached fetch answered into the Entry's slots, under the gate.
 The slots are read again, so a form the user typed meanwhile is never doubled.
 Each unspecified slot whose code was found becomes one inflection carrying the form, the slot's part, and the slot's morphology.
 The inflections are appended in slot order behind whatever the Entry already holds.
-Every unspecified slot not found is remembered as a miss by its morphology id, replacing the earlier set.
+Every unspecified slot not found is saved as a lacuna row by its morphology id, replacing the Entry's earlier rows.
 
 ## `private async Task LEngineInflectionRun(LEntry entry, CancellationTokenSource fetch)`
 
@@ -73,7 +74,7 @@ The fetch itself, run outside the gate for the whole scan.
 The answer is dropped when the fetch was cancelled or the setting turned off meanwhile.
 It is dropped too when the Entry is gone, renamed, moved to another language, or now held by a draft.
 A reached answer is applied through `LEngineInflectionApply`.
-An answer no source was reached for marks the Entry lost instead.
+An answer no source was reached for adds the lacuna row marking the Entry lost, keeping the rows already there.
 Every exception is swallowed, since a missing form is not an error the user can act on.
 The pending mark is dropped only when it is still this fetch's own.
 So a newer fetch is never unmarked by an older one.

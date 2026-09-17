@@ -27,6 +27,12 @@ Runs one commit of a held draft, and handles the one refusal the user can answer
 When the engine refuses because a stored value cannot be read, a yes-or-no dialog asks whether to drop such values.
 Yes has the engine drop them and runs the commit once more.
 No, and every other failure, rethrows so the caller reports it as before.
+The entry, situation and source panels still call this form until they hold a tenure too.
+
+### `internal long? PWindowCommitRun(LTenure held, bool store)`
+
+The same answer over a tenure, which finishes itself and answers the stored id or null for a cancel.
+The sweep and the second try go through the tenure too, so its state bulletin follows.
 
 ### `internal void PWindowFailureShow(string key, Exception exception)`
 

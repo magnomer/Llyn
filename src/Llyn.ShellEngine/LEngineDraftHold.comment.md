@@ -10,6 +10,7 @@ It stays apart from `LEngineDraft.cs`, which owns the database write and knows n
 An id raised here belongs to the workspace that raised it, so a workspace change marks every held id stale.
 Every call naming an id is checked against that mark.
 A shell can keep an id the engine has already left behind.
+These are primitives, and `LTenure` in `LTenure.cs` is the session object that sequences them for a panel.
 
 A held draft carries an entry, a sentence, a situation or a source.
 The kind is a further content field rather than a tag beside one.

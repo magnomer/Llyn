@@ -29,12 +29,6 @@ Marks the selection as standing for nothing, which is an addition with Entry 0.
 Drops the Mention under the selection, or the one whose chip was asked from.
 A chip carries itself as the command parameter, so the same command serves both.
 
-### `private void PTranscriptRequestSend(LRequest request)`
-
-Sends one row request against the held draft, for a Mention or a Gloss alike.
-The pending text change is saved first, because a Mention span was measured against the text as typed.
-The bulletin that answers redraws the transcript, chip line included.
-
 ### `private void PTranscriptMentionShow(LExample? example)`
 
 Takes the Mentions the held sentence carries and redraws the chip line from them.

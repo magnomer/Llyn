@@ -1,5 +1,6 @@
 # LRequestCard.cs
 
+The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The card requests.
 Every one names the card by its draft id, real or minted, except the addition, which has no card yet.
 Addition, Removal and Shift are the three structural nouns every list uses, and plan06 reuses them.

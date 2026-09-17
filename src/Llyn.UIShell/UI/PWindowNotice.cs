@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -44,6 +45,26 @@ public partial class PWindow
 
             _lEngine.LEngineDraftSweep(held);
             return commit(held);
+        }
+    }
+
+    internal long? PWindowCommitRun(LTenure held, bool store)
+    {
+        ArgumentNullException.ThrowIfNull(held);
+
+        try
+        {
+            return held.LTenureFinish(store);
+        }
+        catch (LRefusal refusal) when (refusal.LRefusalReason == LRefusal.LRefusalUnreadable)
+        {
+            if (!PWindowUnreadableConfirm())
+            {
+                throw;
+            }
+
+            held.LTenureSweep();
+            return held.LTenureFinish(store);
         }
     }
 

@@ -16,7 +16,13 @@ public sealed record LRequestVideoShift(
     : LRequest(LRequestDraftId);
 
 public sealed record LRequestVideoLocation(long LRequestDraftId, long LRequestVideoId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestVideoLocation)}:{LRequestVideoId}";
+}
 
 public sealed record LRequestVideoSpan(long LRequestDraftId, long LRequestVideoId, LStateWritten LRequestValue)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestVideoSpan)}:{LRequestVideoId}";
+}

@@ -31,7 +31,7 @@ public sealed partial class LEngine
         }
     }
 
-    private void LEngineBulletinRaise(LSubject subject, long id)
+    internal void LEngineBulletinRaise(LSubject subject, long id)
     {
         LObserver[] observers;
         lock (_lEngineGate)

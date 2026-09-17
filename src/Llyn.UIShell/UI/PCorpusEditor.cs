@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -82,7 +83,6 @@ public partial class PCorpus
         _pTranscriptTextUnknown = example?.LExampleText.LStateValueState == LState.LStateUnknown;
         PTranscriptText.Tag = PTranscriptHintRead(_pTranscriptTextUnknown);
 
-        _pTranscriptGlossDirty.Clear();
         PTranscriptGlossShow(example);
 
         _pTranscriptLanguage = example?.LExampleLanguage ?? string.Empty;
@@ -170,18 +170,21 @@ public partial class PCorpus
 
     private void PTranscriptStoreRun()
     {
-        PTranscriptChangeSave();
-
-        long held = _pTranscriptDraft;
-        if (held == 0 || _pTranscriptHalted)
+        if (_pTranscriptTenure is not LTenure held)
         {
             return;
         }
 
-        LExample stored;
+        held.LTenurePersist();
+        if (!held.LTenureStateRead().LTenureStateChanged)
+        {
+            return;
+        }
+
+        long? stored;
         try
         {
-            stored = _pCorpusHost.PWindowCommitRun(held, _lEngine.LEngineExampleCommit);
+            stored = _pCorpusHost.PWindowCommitRun(held, true);
         }
         catch (Exception exception)
         {
@@ -189,11 +192,16 @@ public partial class PCorpus
             return;
         }
 
-        _pTranscriptDraft = 0;
-        _pExcerptExample = stored.LExampleId;
+        _pTranscriptTenure = null;
+        if (stored is not long example)
+        {
+            return;
+        }
+
+        _pExcerptExample = example;
 
         PAnthologyFind(PQuery.Text ?? string.Empty);
         PCorpusScribeShow(false);
-        PAnthologyExampleShow(stored.LExampleId);
+        PAnthologyExampleShow(example);
     }
 }

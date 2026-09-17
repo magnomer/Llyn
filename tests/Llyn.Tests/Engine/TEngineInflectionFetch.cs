@@ -223,6 +223,79 @@ public sealed class TEngineInflectionFetch
             slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
     }
 
+    [Fact]
+    public async Task InflectionStart_AfterReopen_KeepsUnknownSlot()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TSourceHandler handler = new(TInflectionFetchPast, HttpStatusCode.OK);
+        LEntry entry = await TInflectionMissRun(workspace, handler);
+
+        using LEngine reopened = workspace.TWorkspaceEngineStart(new HttpClient(handler));
+        int asked = handler.TSourceHandlerCount;
+        reopened.TEngineInflectionStart(entry.LEntryId);
+        await Task.Delay(200);
+
+        Assert.Equal(asked, handler.TSourceHandlerCount);
+        Assert.False(reopened.TEngineInflectionCheck(entry.LEntryId));
+        IReadOnlyList<LParadigmSlot> slots = reopened.TEngineParadigmRead(entry.LEntryId);
+        Assert.Equal(LState.LStateSpecified, slots[0].LParadigmSlotState);
+        Assert.Equal("went", slots[0].LParadigmSlotInflection?.LInflectionText);
+        Assert.Equal(LState.LStateUnknown, slots[1].LParadigmSlotState);
+    }
+
+    [Fact]
+    public async Task InflectionStart_AfterReopen_LostEntryAsksNothing()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TSourceHandler handler = new(string.Empty, HttpStatusCode.ServiceUnavailable);
+        LEntry entry = await TInflectionMissRun(workspace, handler);
+
+        using LEngine reopened = workspace.TWorkspaceEngineStart(new HttpClient(handler));
+        int asked = handler.TSourceHandlerCount;
+        reopened.TEngineInflectionStart(entry.LEntryId);
+        await Task.Delay(200);
+
+        Assert.Equal(asked, handler.TSourceHandlerCount);
+        Assert.False(reopened.TEngineInflectionCheck(entry.LEntryId));
+        Assert.All(
+            reopened.TEngineParadigmRead(entry.LEntryId),
+            slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
+    }
+
+    [Fact]
+    public async Task InflectionSet_AfterReopen_ClearsLacuna()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        TSourceHandler handler = new(TInflectionFetchPast, HttpStatusCode.OK);
+        LEntry entry = await TInflectionMissRun(workspace, handler);
+
+        using LEngine reopened = workspace.TWorkspaceEngineStart(new HttpClient(handler));
+        Assert.Equal(1, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
+        reopened.TEngineInflectionSet(entry.LEntryId, []);
+
+        Assert.Equal(0, workspace.TWorkspaceCountRead("SELECT COUNT(*) FROM lacuna;"));
+        Assert.All(
+            reopened.TEngineParadigmRead(entry.LEntryId),
+            slot => Assert.Equal(LState.LStateUnspecified, slot.LParadigmSlotState));
+        int asked = handler.TSourceHandlerCount;
+        reopened.TEngineInflectionStart(entry.LEntryId);
+        await TInflectionCountCheck(handler, asked + 1);
+    }
+
+    private static async Task<LEntry> TInflectionMissRun(TWorkspace workspace, TSourceHandler handler)
+    {
+        using LEngine engine = workspace.TWorkspaceEngineStart(new HttpClient(handler, false));
+        TInflectionObserver observer = new();
+        engine.TEngineObserverAttach(observer);
+        engine.TEngineFrequencySave(false);
+        LEntry entry = engine.TEngineEntrySave(TInflectionDraftCreate("go"));
+
+        engine.TEngineInflectionStart(entry.LEntryId);
+        await observer.TInflectionObserverRaised.WaitAsync(TInflectionFetchPatience);
+        return entry;
+    }
+
     private static async Task TInflectionCountCheck(TSourceHandler handler, int count)
     {
         DateTime deadline = DateTime.UtcNow + TInflectionFetchPatience;

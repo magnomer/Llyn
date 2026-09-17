@@ -16,4 +16,7 @@ public sealed record LRequestMentionRemoval(
 
 public sealed record LRequestMentionSense(
     long LRequestDraftId, long LRequestCardId, long LRequestSentenceId, long LRequestMentionId, long LRequestSenseId)
-    : LRequest(LRequestDraftId);
+    : LRequest(LRequestDraftId)
+{
+    public override string LRequestKey => $"{nameof(LRequestMentionSense)}:{LRequestMentionId}";
+}

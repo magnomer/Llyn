@@ -23,8 +23,6 @@ public sealed partial class LEngine : IDisposable
     private readonly HashSet<long> _lEngineFrequencyMissed = [];
     private readonly Dictionary<string, IReadOnlyList<LSource>> _lEngineInflectionSources = new(StringComparer.Ordinal);
     private readonly Dictionary<long, CancellationTokenSource> _lEngineInflectionPending = [];
-    private readonly Dictionary<long, HashSet<long>> _lEngineInflectionMissed = [];
-    private readonly HashSet<long> _lEngineInflectionLost = [];
     private readonly Dictionary<string, LLanguage> _lEngineLanguages = new(StringComparer.Ordinal);
     private IReadOnlyList<string>? _lEngineLanguageListed;
     private readonly Dictionary<string, LSpeechPack> _lEngineSpeechPacks = new(StringComparer.Ordinal);

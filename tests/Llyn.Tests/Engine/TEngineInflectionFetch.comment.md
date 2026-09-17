@@ -10,6 +10,8 @@ A source that cannot be reached leaves both slots unspecified and raises nothing
 With the setting off, a start asks nothing and writes nothing.
 A headword change while a fetch is pending discards the forms instead of storing them under the new headword.
 A hand set of the inflections forgets the unknown mark, so the slot reads unspecified again.
+An unknown slot and a lost entry survive a reopen of the same workspace, so neither asks the web again.
+A hand set after the reopen deletes the lacuna rows, so the web may be asked again.
 
 ## Inline notes
 
@@ -26,6 +28,11 @@ The setting is written to the workspace before the engine starts, since the engi
 
 The client holds its answer behind a gate, so the headword changes under the pending fetch.
 Nothing observable follows, so a short wait stands in for the fetch settling.
+
+### `private static async Task<LEntry> TInflectionMissRun(TWorkspace workspace, TSourceHandler handler)`
+
+Runs one fetch that misses in a first engine and disposes it, so the reopen facts share one setup.
+The first client leaves the handler alive on dispose, since the reopened engine sends through the same one.
 
 ### `private static async Task TInflectionCountCheck(TSourceHandler handler, int count)`
 

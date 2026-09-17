@@ -32,7 +32,15 @@ public sealed partial class LEngine
         }
 
         IReadOnlyList<LInflection> stored = new LInflectionArchive(_lEngineDatabase).LInflectionRead(entry.LEntryId);
-        _lEngineInflectionMissed.TryGetValue(entry.LEntryId, out HashSet<long>? missed);
+        HashSet<long> missed = [];
+        foreach (LLacuna lacuna in new LLacunaArchive(_lEngineDatabase).LLacunaRead(entry.LEntryId))
+        {
+            if (lacuna.LLacunaMorphologyId is long morphologyId)
+            {
+                missed.Add(morphologyId);
+            }
+        }
+
         List<LParadigmSlot> slots = [];
         foreach (LSpeech speech in new LEntryArchive(_lEngineDatabase).LEntrySpeechRead(entry.LEntryId))
         {
@@ -146,7 +154,7 @@ public sealed partial class LEngine
         LSpeech speech,
         LSpeechPack pack,
         IReadOnlyList<LInflection> stored,
-        HashSet<long>? missed)
+        HashSet<long> missed)
     {
         if (speech.LSpeechValueId is not long speechId)
         {
@@ -187,7 +195,7 @@ public sealed partial class LEngine
                 LState state = LState.LStateSpecified;
                 if (inflection is null)
                 {
-                    state = missed is not null && missed.Contains(morphology.LMorphologyId)
+                    state = missed.Contains(morphology.LMorphologyId)
                         ? LState.LStateUnknown
                         : LState.LStateUnspecified;
                 }

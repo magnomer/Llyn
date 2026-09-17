@@ -26,6 +26,7 @@ They take only what they need from the engine.
 They then run the fetch outside the gate.
 A lock held across an await would stall the shell for a whole network call.
 The lookup and recording entry points, with the source caches they read, live in `LEngineRecording.cs`.
+A held draft is driven by an `LTenure`, made in `LEngineTenure.cs`, so no panel sequences the draft calls itself.
 
 This class is also the composition root.
 It owns the shared `HttpClient`.
@@ -39,8 +40,8 @@ Beside them sit the pending fills, one cancellation source per Entry.
 A third set names the Entries whose sources answered with nothing this session.
 A pending set of entry ids beside it stops the same Entry from filling twice at once.
 The morphology sources of each language are cached in a fourth set, which `LEngineInflectionFetch.cs` owns.
-Its pending fetches, its missed slots per Entry, and the Entries it lost sit beside them.
-They are cleared with the frequency ones.
+Its pending fetches sit beside them and are cleared with the frequency ones.
+The slots it missed and the Entries it lost are lacuna rows of the workspace, not fields of the engine.
 The script fetches, pending and missed per character, sit in `LEngineScript.cs` and are cleared with them too.
 The fanqie fetches sit likewise in `LEngineFanqie.cs`, one at a time with an interval between posts.
 The reflex fills sit in `LEngineReflexFetch.cs`, and the rows they store are edited through `LEngineReflex.cs`.

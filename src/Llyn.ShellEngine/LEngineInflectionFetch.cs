@@ -73,7 +73,6 @@ public sealed partial class LEngine
         {
             if (!_lEngineSettings.LSettingsMorphology
                 || _lEngineInflectionPending.ContainsKey(entryId)
-                || _lEngineInflectionLost.Contains(entryId)
                 || LEngineDraftFind(entryId) is not null)
             {
                 return;
@@ -83,6 +82,14 @@ public sealed partial class LEngine
             if (entry is null || LEngineInflectionLoad(entry.LEntryLanguage).Count == 0)
             {
                 return;
+            }
+
+            foreach (LLacuna lacuna in new LLacunaArchive(_lEngineDatabase).LLacunaRead(entryId))
+            {
+                if (lacuna.LLacunaMorphologyId is null)
+                {
+                    return;
+                }
             }
 
             bool wanted = false;
@@ -111,8 +118,7 @@ public sealed partial class LEngine
             held.Dispose();
         }
 
-        _lEngineInflectionMissed.Remove(entryId);
-        _lEngineInflectionLost.Remove(entryId);
+        new LLacunaArchive(_lEngineDatabase).LLacunaDelete(entryId);
     }
 
     private void LEngineInflectionClear()
@@ -124,8 +130,6 @@ public sealed partial class LEngine
         }
 
         _lEngineInflectionPending.Clear();
-        _lEngineInflectionMissed.Clear();
-        _lEngineInflectionLost.Clear();
     }
 
     private LDraft? LEngineDraftFind(long entryId)
@@ -145,7 +149,7 @@ public sealed partial class LEngine
     private void LEngineInflectionApply(LEntry entry, IReadOnlyDictionary<string, string> found)
     {
         List<LInflection> appended = [];
-        HashSet<long> missed = [];
+        List<long?> missed = [];
         foreach (LParadigmSlot slot in LEngineParadigmRead(entry))
         {
             if (slot.LParadigmSlotState == LState.LStateSpecified)
@@ -177,14 +181,7 @@ public sealed partial class LEngine
             LEngineParadigmUpdate(entry);
         }
 
-        if (missed.Count > 0)
-        {
-            _lEngineInflectionMissed[entry.LEntryId] = missed;
-        }
-        else
-        {
-            _lEngineInflectionMissed.Remove(entry.LEntryId);
-        }
+        new LLacunaArchive(_lEngineDatabase).LLacunaSave(entry.LEntryId, missed);
     }
 
     private async Task LEngineInflectionRun(LEntry entry, CancellationTokenSource fetch)
@@ -217,7 +214,15 @@ public sealed partial class LEngine
                 }
                 else
                 {
-                    _lEngineInflectionLost.Add(entry.LEntryId);
+                    LLacunaArchive lacunae = new(_lEngineDatabase);
+                    List<long?> kept = [];
+                    foreach (LLacuna lacuna in lacunae.LLacunaRead(entry.LEntryId))
+                    {
+                        kept.Add(lacuna.LLacunaMorphologyId);
+                    }
+
+                    kept.Add(null);
+                    lacunae.LLacunaSave(entry.LEntryId, kept);
                 }
 
                 finished = true;

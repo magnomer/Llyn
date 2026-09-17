@@ -18,8 +18,6 @@ public partial class PCorpus
 
     private readonly ObservableCollection<PGloss> _pExcerptGloss = [];
 
-    private readonly HashSet<long> _pTranscriptGlossDirty = [];
-
     private void PExcerptGlossShow(IReadOnlyList<LGloss> glosses)
     {
         _pExcerptGloss.Clear();
@@ -47,7 +45,7 @@ public partial class PCorpus
             PTranscriptGlossCreate,
             (row, draft) =>
             {
-                row.PGlossShow(draft, _ => _pTranscriptGlossDirty.Contains(row.PGlossId));
+                row.PGlossShow(draft, static _ => false);
                 return row;
             });
 
@@ -71,29 +69,14 @@ public partial class PCorpus
         switch (arguments.PropertyName)
         {
             case nameof(PGloss.PGlossText):
-                _pTranscriptGlossDirty.Add(gloss.PGlossId);
-                PTranscriptChangeDefer();
+                PTranscriptRequestDefer(
+                    new LRequestGlossText(PTranscriptDraft, 0, 0, gloss.PGlossId, gloss.PGlossTextRead()));
                 break;
             case nameof(PGloss.PGlossLanguage):
                 PTranscriptRequestSend(
-                    new LRequestGlossLanguage(_pTranscriptDraft, 0, 0, gloss.PGlossId, gloss.PGlossLanguage));
+                    new LRequestGlossLanguage(PTranscriptDraft, 0, 0, gloss.PGlossId, gloss.PGlossLanguage));
                 break;
         }
-    }
-
-    private IReadOnlyList<LRequest> PTranscriptGlossRead(long draft)
-    {
-        List<LRequest> requests = [];
-        foreach (PGloss gloss in _pTranscriptGloss)
-        {
-            if (_pTranscriptGlossDirty.Contains(gloss.PGlossId))
-            {
-                requests.Add(new LRequestGlossText(draft, 0, 0, gloss.PGlossId, gloss.PGlossTextRead()));
-            }
-        }
-
-        _pTranscriptGlossDirty.Clear();
-        return requests;
     }
 
     internal void PGlossAddHandle(object sender, RoutedEventArgs e)
@@ -103,14 +86,14 @@ public partial class PCorpus
             : _pTranscriptGloss.Count;
 
         PTranscriptRequestSend(new LRequestGlossAddition(
-            _pTranscriptDraft, 0, 0, PGlossLanguageRead(), position));
+            PTranscriptDraft, 0, 0, PGlossLanguageRead(), position));
     }
 
     internal void PGlossRemoveHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PGloss gloss })
         {
-            PTranscriptRequestSend(new LRequestGlossRemoval(_pTranscriptDraft, 0, 0, gloss.PGlossId));
+            PTranscriptRequestSend(new LRequestGlossRemoval(PTranscriptDraft, 0, 0, gloss.PGlossId));
         }
     }
 
@@ -126,7 +109,7 @@ public partial class PCorpus
             return;
         }
 
-        PTranscriptRequestSend(new LRequestGlossAddition(_pTranscriptDraft, 0, 0, PGlossLanguageRead(), 0));
+        PTranscriptRequestSend(new LRequestGlossAddition(PTranscriptDraft, 0, 0, PGlossLanguageRead(), 0));
 
         Dispatcher.BeginInvoke(DispatcherPriority.Loaded, () =>
         {

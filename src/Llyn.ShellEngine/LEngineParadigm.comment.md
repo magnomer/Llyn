@@ -6,7 +6,7 @@ The paradigm side of the engine.
 It answers which forms an entry is expected to have and which of them are stored.
 A language pack declares the forms by code on a part of speech.
 The engine resolves those codes to the workspace's rows and pairs each with a stored inflection.
-A slot a reached source could not fill this session reads unknown, as `LEngineInflectionFetch.cs` records it.
+A slot a reached source could not fill reads unknown, as the lacuna rows `LEngineInflectionFetch.cs` stores record it.
 The pack is read once per language through `LSpeechLoader` and kept beside the language packs.
 The cache is cleared with the workspace, as the language packs are.
 
@@ -52,7 +52,7 @@ It is skipped when one of its excepted codes is also on the chain.
 So a plural declared on nouns reaches countable nouns and stops at uncountable ones.
 A code of `0` answers nothing.
 
-## `private IReadOnlyList<LParadigmSlot> LEngineParadigmResolve(LSpeech speech, LSpeechPack pack, IReadOnlyList<LInflection> stored, HashSet<long>? missed)`
+## `private IReadOnlyList<LParadigmSlot> LEngineParadigmResolve(LSpeech speech, LSpeechPack pack, IReadOnlyList<LInflection> stored, HashSet<long> missed)`
 
 Turns one part of speech the entry carries into its slots.
 A part typed by hand has no code and answers nothing.

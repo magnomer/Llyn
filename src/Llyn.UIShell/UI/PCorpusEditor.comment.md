@@ -67,7 +67,8 @@ With an Example chosen, or an Entry shown, it starts a new Entry instead.
 Commits the held sentence, creating an Example the draft names none of and rewriting the one it names.
 The rail's save calls it, because the editor carries no save of its own.
 Anything still waiting to be pushed is pushed first, so the commit carries the last keystroke.
+An unchanged draft commits nothing, so a blank sentence is never stored by a stray save.
+The tenure finishes itself and answers the stored id, which the panel then shows.
 Saving changes neither the identifier, nor what quotes the Example, nor the order it takes for any quoter.
 There is no discard: leaving the editor through the mode toggle asks about the draft instead.
-A form halted by a failed flush commits nothing.
-The draft would otherwise be stored missing the edits the flush dropped.
+A halted tenure refuses to finish and the refusal is shown, since the draft misses the edits the flush dropped.

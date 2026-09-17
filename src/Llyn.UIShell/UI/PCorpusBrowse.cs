@@ -26,9 +26,19 @@ public partial class PCorpus
     {
         if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
         {
-            if (bulletin.LBulletinId == _pTranscriptDraft)
+            if (bulletin.LBulletinId == PTranscriptDraft)
             {
                 PTranscriptDraftRestore();
+            }
+
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectTenure)
+        {
+            if (bulletin.LBulletinId == PTranscriptDraft)
+            {
+                PTranscriptChangeUpdate();
             }
 
             return;

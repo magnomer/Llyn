@@ -1,5 +1,6 @@
 # LRequestReflex.cs
 
+The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The reflex requests, one per change to the entry's ordered reflex list.
 Each names the row by its id, so a change lands on that row wherever the list has moved it.
 

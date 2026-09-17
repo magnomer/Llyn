@@ -1,5 +1,6 @@
 # LRequestMention.cs
 
+The field requests key `LRequestKey` by type and row id, so a deferred edit replaces only its own row.
 The Mention requests, one per gesture a shown sentence offers on one of its words.
 Every one names the card and the sentence by id, real or minted.
 `LRequestCardId` 0 and `LRequestSentenceId` 0 together name the draft's own Example instead, the one the corpus panel holds.

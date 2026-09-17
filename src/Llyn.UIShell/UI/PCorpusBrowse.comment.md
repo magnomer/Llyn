@@ -20,6 +20,7 @@ It also decides which delete the panel offers, so it is held rather than asked f
 
 Re-reads the workspace whenever the engine announces a change, wherever it was made.
 A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
+A tenure bulletin says the held draft's state moved, so the rail's buttons are settled and nothing else is read.
 A fetched frequency, paradigm, script, fanqie or reflex row changes no example or entry row, so those read nothing.
 The citations are read with the catalog, because a Source stored elsewhere is what a row cites.
 A workspace that moved reloads the flags and the language menu first, since neither belongs to the old folder's rows.

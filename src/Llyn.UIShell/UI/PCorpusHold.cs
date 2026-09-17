@@ -1,134 +1,73 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PCorpus
 {
-    private const int PTranscriptChangeDelay = 250;
-
     private const string PTranscriptOrigin = "Corpus";
 
-    private CancellationTokenSource? _pTranscriptPending;
+    private LTenure? _pTranscriptTenure;
 
-    private long _pTranscriptDraft;
-
-    private bool _pTranscriptHalted;
+    private long PTranscriptDraft => _pTranscriptTenure?.LTenureId ?? 0;
 
     private bool PTranscriptDraftFinish(bool store)
     {
-        if (_pTranscriptPending is not null)
-        {
-            PTranscriptChangeSave();
-        }
-
-        if (!store || !PTranscriptDraftCheck())
-        {
-            PTranscriptDraftCancel();
-            return true;
-        }
-
-        long held = _pTranscriptDraft;
-        if (held == 0)
+        if (_pTranscriptTenure is not LTenure held)
         {
             return true;
         }
-
-        if (_pTranscriptHalted)
-        {
-            return false;
-        }
-
-        _pTranscriptDraft = 0;
 
         try
         {
-            _pCorpusHost.PWindowCommitRun(held, _lEngine.LEngineExampleCommit);
+            _pCorpusHost.PWindowCommitRun(held, store);
         }
         catch (Exception exception)
         {
-            _pTranscriptDraft = held;
             _pCorpusHost.PWindowFailureShow("Example.SaveFailed", exception);
             return false;
         }
 
+        _pTranscriptTenure = null;
         return true;
     }
 
     private bool PTranscriptChangeCheck()
     {
-        if (_pTranscriptPending is not null)
+        if (_pTranscriptTenure is not LTenure held)
         {
-            PTranscriptChangeSave();
+            return false;
         }
 
-        return PTranscriptDraftCheck();
+        held.LTenurePersist();
+        return held.LTenureStateRead().LTenureStateChanged;
     }
 
     private void PTranscriptChangeDefer()
     {
-        if (_pTranscriptLoading || _pTranscriptHalted || _pTranscriptDraft == 0)
-        {
-            return;
-        }
-
-        PTranscriptChangeStop();
-
-        CancellationTokenSource pending = new();
-        _pTranscriptPending = pending;
-
-        _ = PTranscriptChangeRun(pending.Token);
+        PTranscriptRequestDefer(PTranscriptRead(PTranscriptDraft));
     }
 
-    private async Task PTranscriptChangeRun(CancellationToken token)
+    private void PTranscriptRequestDefer(LRequest request)
     {
-        try
-        {
-            await Task.Delay(PTranscriptChangeDelay, token).ConfigureAwait(true);
-        }
-        catch (OperationCanceledException)
+        if (_pTranscriptLoading || _pTranscriptTenure is not LTenure held)
         {
             return;
         }
 
-        try
-        {
-            PTranscriptChangeSave();
-        }
-        catch (Exception exception)
-        {
-            _pCorpusHost.PWindowFailureShow("Example.HoldFailed", exception);
-        }
+        held.LTenureRequestDefer(request);
     }
 
-    private void PTranscriptChangeSave()
+    private void PTranscriptRequestSend(LRequest request)
     {
-        PTranscriptChangeStop();
-
-        if (_pTranscriptLoading || _pTranscriptHalted || _pTranscriptDraft == 0)
+        if (_pTranscriptTenure is not LTenure held)
         {
             return;
         }
 
-        PTranscriptDraftSave();
-        PTranscriptChangeUpdate();
-    }
-
-    private void PTranscriptChangeStop()
-    {
-        CancellationTokenSource? pending = _pTranscriptPending;
-        _pTranscriptPending = null;
-
-        if (pending is null)
-        {
-            return;
-        }
-
-        pending.Cancel();
-        pending.Dispose();
+        held.LTenureRequestApply(request);
     }
 
     private void PTranscriptChangeUpdate()
@@ -138,26 +77,46 @@ public partial class PCorpus
             return;
         }
 
-        PCorpusStore.IsEnabled = PTranscriptDraftCheck();
+        LTenureState? state = _pTranscriptTenure?.LTenureStateRead();
+        PCorpusStore.IsEnabled = state is { LTenureStateChanged: true };
+        if (state is not null)
+        {
+            PTranscriptHoldShow(!state.LTenureStateHalted);
+        }
+
         PChronicleUpdate();
+    }
+
+    private void PTranscriptHoldShow(bool running)
+    {
+        if (running == PTranscript.IsEnabled)
+        {
+            return;
+        }
+
+        PTranscript.IsEnabled = running;
+        if (!running)
+        {
+            _pCorpusHost.PWindowFailureShow("Example.HoldFailed");
+        }
     }
 
     private LDraft? PTranscriptDraftStart(long? example)
     {
-        PTranscriptChangeStop();
         PTranscriptDraftCancel();
 
         try
         {
-            LDraft started = _lEngine.LEngineExampleStart(PTranscriptOrigin, example);
-            _pTranscriptDraft = started.LDraftId;
-            PTranscriptHoldResume();
-            return started;
+            LTenure started = _lEngine.LEngineTenureStart(PTranscriptOrigin, LSubject.LSubjectExample, example);
+            _pTranscriptTenure = started;
+            PTranscript.IsEnabled = true;
+            return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pTranscriptDraft = 0;
-            PTranscriptHoldSuspend(exception);
+            _pTranscriptTenure = null;
+            PTranscript.IsEnabled = false;
+            _pCorpusHost.PWindowFailureShow("Example.HoldFailed", exception);
             return null;
         }
     }
@@ -167,95 +126,44 @@ public partial class PCorpus
         PTranscriptApply(started?.LDraftExample);
     }
 
-    private void PTranscriptDraftSave()
-    {
-        if (_pTranscriptDraft == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineRequestApply(PTranscriptRead(_pTranscriptDraft));
-            foreach (LRequest request in PTranscriptGlossRead(_pTranscriptDraft))
-            {
-                _lEngine.LEngineRequestApply(request);
-            }
-        }
-        catch (Exception exception)
-        {
-            PTranscriptHoldSuspend(exception);
-        }
-    }
-
     private void PTranscriptDraftRestore()
     {
-        if (_pTranscriptDraft == 0 || _pTranscriptLoading)
+        if (_pTranscriptLoading || _pTranscriptTenure is not LTenure held)
         {
             return;
         }
 
         try
         {
-            if (_lEngine.LEngineDraftRead(_pTranscriptDraft)?.LDraftExample is LExample held)
+            held.LTenurePersist();
+            if (held.LTenureRead()?.LDraftExample is LExample sentence)
             {
-                PTranscriptShow(held);
+                PTranscriptShow(sentence);
             }
         }
         catch (Exception exception)
         {
-            PTranscriptHoldSuspend(exception);
+            _pCorpusHost.PWindowFailureShow("Example.HoldFailed", exception);
         }
     }
 
     private void PTranscriptDraftCancel()
     {
-        if (_pTranscriptDraft == 0)
+        if (_pTranscriptTenure is not LTenure held)
         {
             return;
         }
 
-        long held = _pTranscriptDraft;
-        _pTranscriptDraft = 0;
-
-        try
-        {
-            _lEngine.LEngineDraftCancel(held);
-        }
-        catch (Exception)
-        {
-        }
-    }
-
-    private bool PTranscriptDraftCheck()
-    {
-        if (_pTranscriptDraft == 0)
-        {
-            return false;
-        }
-
-        try
-        {
-            return _lEngine.LEngineDraftCheck(_pTranscriptDraft);
-        }
-        catch (Exception exception)
-        {
-            PTranscriptHoldSuspend(exception);
-            return false;
-        }
+        _pTranscriptTenure = null;
+        held.LTenureCancel();
     }
 
     private long? PTranscriptExampleRead()
     {
-        if (_pTranscriptDraft == 0)
-        {
-            return null;
-        }
-
         LDraft? held;
         try
         {
-            held = _lEngine.LEngineDraftRead(_pTranscriptDraft);
+            held = _pTranscriptTenure?.LTenureRead();
         }
         catch (Exception)
         {
@@ -267,26 +175,24 @@ public partial class PCorpus
 
     public void PChronicleUndo()
     {
-        PTranscriptChronicleRun(_lEngine.LEngineChronicleUndo);
+        PTranscriptChronicleRun(static held => held.LTenureUndo());
     }
 
     public void PChronicleRedo()
     {
-        PTranscriptChronicleRun(_lEngine.LEngineChronicleRedo);
+        PTranscriptChronicleRun(static held => held.LTenureRedo());
     }
 
-    private void PTranscriptChronicleRun(Func<long, LDraft?> step)
+    private void PTranscriptChronicleRun(Func<LTenure, LDraft?> step)
     {
-        if (_pTranscriptDraft == 0)
+        if (_pTranscriptTenure is not LTenure held)
         {
             return;
         }
 
-        PTranscriptChangeSave();
-
         try
         {
-            PChronicle.PChronicleRun(() => step(_pTranscriptDraft));
+            PChronicle.PChronicleRun(() => step(held));
         }
         catch (Exception exception)
         {
@@ -300,10 +206,16 @@ public partial class PCorpus
     {
         (bool undo, bool redo) = PEditor.Visibility == Visibility.Visible
             ? PEditor.PEditorChronicleRead()
-            : (_pTranscriptDraft != 0 && _lEngine.LEngineUndoCheck(_pTranscriptDraft),
-                _pTranscriptDraft != 0 && _lEngine.LEngineRedoCheck(_pTranscriptDraft));
+            : PTranscriptChronicleRead();
         PCorpusBackward.IsEnabled = undo;
         PCorpusForward.IsEnabled = redo;
+    }
+
+    private (bool PTranscriptBackward, bool PTranscriptForward) PTranscriptChronicleRead()
+    {
+        return _pTranscriptTenure?.LTenureStateRead() is LTenureState state
+            ? (state.LTenureStateBackward, state.LTenureStateForward)
+            : (false, false);
     }
 
     private void PCorpusUndoHandle(object sender, RoutedEventArgs e)
@@ -326,28 +238,5 @@ public partial class PCorpus
         }
 
         PChronicleRedo();
-    }
-
-    private void PTranscriptHoldSuspend(Exception exception)
-    {
-        if (_pTranscriptHalted)
-        {
-            return;
-        }
-
-        _pTranscriptHalted = true;
-        PTranscript.IsEnabled = false;
-        _pCorpusHost.PWindowFailureShow("Example.HoldFailed", exception);
-    }
-
-    private void PTranscriptHoldResume()
-    {
-        if (!_pTranscriptHalted)
-        {
-            return;
-        }
-
-        _pTranscriptHalted = false;
-        PTranscript.IsEnabled = true;
     }
 }
