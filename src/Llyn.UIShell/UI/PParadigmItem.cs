@@ -41,14 +41,15 @@ public sealed class PParadigmItem
         LParadigmSlot first = slots[0];
         string part = grouped ? first.LParadigmSlotSpeech.LSpeechValueName : string.Empty;
         string name = string.Join(", ", slots.Select(slot => slot.LParadigmSlotMorphology.LMorphologyName));
-        return first.LParadigmSlotState switch
+        if (first.LParadigmSlotInflection is LInflection inflection)
         {
-            LState.LStateSpecified when first.LParadigmSlotInflection is LInflection inflection
-                => new PParadigmItem(part, name, inflection.LInflectionText, false, false, false, false),
-            LState.LStateUnknown => new PParadigmItem(part, name, string.Empty, true, false, false, false),
-            _ => new PParadigmItem(
-                part, name, string.Empty, false, pending, enabled && !pending && !held, enabled && !pending && held),
-        };
+            return new PParadigmItem(part, name, inflection.LInflectionText, false, false, false, false);
+        }
+
+        return PStateConverter.PStateConverterCheck(first.LParadigmSlotState)
+            ? new PParadigmItem(part, name, string.Empty, true, false, false, false)
+            : new PParadigmItem(
+                part, name, string.Empty, false, pending, enabled && !pending && !held, enabled && !pending && held);
     }
 
     internal static IReadOnlyList<PParadigmItem> PParadigmItemScan(
@@ -98,8 +99,6 @@ public sealed class PParadigmItem
     private static bool PParadigmItemMatch(LParadigmSlot one, LParadigmSlot other)
     {
         return one.LParadigmSlotSpeech.LSpeechValueId == other.LParadigmSlotSpeech.LSpeechValueId
-            && one.LParadigmSlotState == LState.LStateSpecified
-            && other.LParadigmSlotState == LState.LStateSpecified
             && one.LParadigmSlotInflection is LInflection first
             && other.LParadigmSlotInflection is LInflection second
             && string.Equals(first.LInflectionText, second.LInflectionText, StringComparison.Ordinal);

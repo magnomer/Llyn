@@ -66,7 +66,7 @@ public partial class PReference : UserControl
     internal void PReferenceReset()
     {
         PReferenceClear();
-        PShelfFind(PSurvey.Text ?? string.Empty);
+        PShelfFind();
     }
 
     internal bool PReferenceChangeCheck()

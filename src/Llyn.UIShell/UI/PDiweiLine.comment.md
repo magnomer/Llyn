@@ -45,7 +45,3 @@ On an initial's page every row is unranked, so the rimes sort by label alone.
 ## `internal void PDiweiLineAdd(string character)`
 
 Adds a character once, skipping blanks and repeats.
-
-## `private static int PDiweiRankNormalize(int rank)`
-
-An unlisted rank turned into the last position, so it sorts after every listed one.

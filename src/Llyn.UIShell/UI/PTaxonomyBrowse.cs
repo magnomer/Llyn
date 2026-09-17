@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -13,16 +15,22 @@ public partial class PTaxonomy
 
     private readonly ObservableCollection<PMembershipItem> _pMembershipList = [];
 
-    private long _pDirectoryChoice;
-
     private long? _pDisplayEntry;
 
-    private LCatalogOrder _pFunnelChoice;
-
-    private LCatalogFilter _pLatticeChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pTaxonomyVista;
 
     private async void PTaxonomyBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pTaxonomyVista is not null && bulletin.LBulletinId == _pTaxonomyVista.LVistaId)
+            {
+                PDirectoryFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             await PEnsign.PEnsignLoad(_lEngine);
@@ -41,7 +49,7 @@ public partial class PTaxonomy
 
     private void PExplorationHandle(object sender, TextChangedEventArgs e)
     {
-        PDirectoryFind(PExploration.Text ?? string.Empty);
+        _pTaxonomyVista?.LVistaQuerySet(PExploration.Text ?? string.Empty);
     }
 
     private void PScoutHandle(object sender, TextChangedEventArgs e)
@@ -51,56 +59,69 @@ public partial class PTaxonomy
 
     private void PFunnelHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pTaxonomyVista is null)
         {
             return;
         }
 
-        _pFunnelChoice = LCatalog.LCatalogOrderParse(choice, _pFunnelChoice);
-        _lEngine.LEngineFunnelSave(_pFunnelChoice);
         PFunnelDropper.IsChecked = false;
-        PDirectoryFind(PExploration.Text ?? string.Empty);
-    }
-
-    internal async void PFunnelRestore(LCatalogOrder order)
-    {
-        _pFunnelChoice = order;
-        PChoice.PChoiceOrderApply(PFunnelDropdown, order);
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PDirectoryFind(PExploration.Text ?? string.Empty);
+        _pTaxonomyVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pTaxonomyVista.LVistaOrder));
     }
 
     private void PLatticeHandle(object sender, RoutedEventArgs e)
     {
-        _pLatticeChoice = PChoice.PChoiceFilterRead(PLatticeList);
-        _lEngine.LEngineLatticeSave(_pLatticeChoice);
-        PLatticeMark.Visibility = _pLatticeChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PMembershipFind();
+        if (_pTaxonomyVista is null)
+        {
+            return;
+        }
+
+        _pTaxonomyVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PLatticeList));
+        PLatticeRestore();
     }
 
-    internal async void PLatticeRestore(LCatalogFilter filter)
+    internal async void PTaxonomyVistaRestore(LVista vista)
     {
-        _pLatticeChoice = filter;
-        PLatticeMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        _pTaxonomyVista = vista;
+        PFunnelRestore();
+        PLatticeRestore();
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PChoice.PChoiceFilterBuild(PLatticeList, _lEngine.LEngineLanguageRead(), filter, PLatticeHandle);
+        PChoice.PChoiceFilterBuild(PLatticeList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PLatticeHandle);
+        vista.LVistaQuerySet(PExploration.Text ?? string.Empty);
+        PDirectoryFind();
+    }
+
+    private void PFunnelRestore()
+    {
+        if (_pTaxonomyVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PFunnelDropdown, _pTaxonomyVista.LVistaOrder);
+        }
+    }
+
+    private void PLatticeRestore()
+    {
+        bool active = _pTaxonomyVista?.LVistaFilter.LCatalogFilterActive == true;
+        PLatticeMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PDirectoryReset()
     {
-        _pDirectoryChoice = 0;
+        _pTaxonomyVista?.LVistaSelect(null);
     }
 
-    private void PDirectoryFind(string query)
+    private void PDirectoryFind()
     {
+        if (_pTaxonomyVista is null)
+        {
+            return;
+        }
+
         IReadOnlyList<LTag> read;
         try
         {
-            read = _lEngine.LEngineTagFind(query, _pFunnelChoice);
+            read = _lEngine.LEngineTagFind(_pTaxonomyVista);
         }
         catch (Exception exception)
         {
@@ -108,18 +129,17 @@ public partial class PTaxonomy
             return;
         }
 
-        _pDirectoryList.Clear();
-        bool kept = false;
-        foreach (LTag tag in read)
+        long? chosen = _pTaxonomyVista.LVistaChosen;
+        if (chosen is not null && !read.Any(tag => tag.LTagId == chosen))
         {
-            bool chosen = tag.LTagId == _pDirectoryChoice;
-            kept |= chosen;
-            _pDirectoryList.Add(new PDirectoryItem(tag.LTagId, tag.LTagText, chosen));
+            _pTaxonomyVista.LVistaSelect(null);
+            chosen = null;
         }
 
-        if (!kept)
+        _pDirectoryList.Clear();
+        foreach (LTag tag in read)
         {
-            _pDirectoryChoice = 0;
+            _pDirectoryList.Add(new PDirectoryItem(tag.LTagId, tag.LTagText, tag.LTagId == chosen));
         }
 
         PDirectoryEmpty.Visibility = _pDirectoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -133,16 +153,31 @@ public partial class PTaxonomy
             return;
         }
 
-        _pDirectoryChoice = item.PDirectoryItemChosen ? 0 : item.PDirectoryItemId;
-        PDirectoryFind(PExploration.Text ?? string.Empty);
+        PDirectorySelect(item.PDirectoryItemChosen ? null : item.PDirectoryItemId);
+    }
+
+    private void PDirectorySelect(long? id)
+    {
+        if (_pTaxonomyVista is null)
+        {
+            return;
+        }
+
+        _pTaxonomyVista.LVistaSelect(id);
+        foreach (PDirectoryItem row in _pDirectoryList)
+        {
+            row.PDirectoryItemChosen = row.PDirectoryItemId == id;
+        }
+
+        PMembershipFind();
     }
 
     internal void PDirectoryTagShow(long id)
     {
-        _pDirectoryChoice = id;
         PExploration.Text = string.Empty;
         PScout.Text = string.Empty;
-        PDirectoryFind(string.Empty);
+        _pTaxonomyVista?.LVistaSelect(id);
+        PDirectoryFind();
     }
 
     private void PTaxonomyFreshHandle(object sender, RoutedEventArgs e)
@@ -152,7 +187,7 @@ public partial class PTaxonomy
             return;
         }
 
-        if (_pDirectoryChoice == 0 && _pDisplayEntry is null)
+        if (_pTaxonomyVista?.LVistaChosen is null && _pDisplayEntry is null)
         {
             PDirectoryTagCreate();
             return;
@@ -253,7 +288,7 @@ public partial class PTaxonomy
 
     internal long PTaxonomyVoyageRead()
     {
-        return _pDirectoryChoice;
+        return _pTaxonomyVista?.LVistaChosen ?? 0;
     }
 
     private void PTaxonomyEntryShow(long id, LEntryDraft draft)

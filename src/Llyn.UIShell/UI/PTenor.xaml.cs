@@ -39,7 +39,7 @@ public partial class PTenor : UserControl
     {
         PTenorClear();
         PGamutReset();
-        PGamutFind(PSounding.Text ?? string.Empty);
+        PGamutFind();
     }
 
     internal bool PTenorDraftFinish(bool store)

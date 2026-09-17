@@ -10,7 +10,8 @@ public partial class PEditor
         ObservableCollection<PCard> cards,
         string prefix,
         IReadOnlyList<LCardDraft> drafts,
-        IReadOnlyDictionary<long, LTranslationTarget> targets)
+        IReadOnlyDictionary<long, LTranslationTarget> targets,
+        string language)
     {
         List<PCard> shown = new(drafts.Count);
         foreach (LCardDraft draft in drafts)
@@ -23,7 +24,7 @@ public partial class PEditor
             }
 
             PCardTextShow(card, draft);
-            PCardListShow(card, draft, targets);
+            PCardListShow(card, draft, targets, language);
             card.PCardPosition = draft.LCardDraftPosition;
             shown.Add(card);
         }
@@ -46,25 +47,11 @@ public partial class PEditor
         }
     }
 
-    private void PCardTextShow(PCard card, LCardDraft draft)
+    private static void PCardTextShow(PCard card, LCardDraft draft)
     {
-        if (!PEditorRequestCheck(PEditorRequestFormat(card, nameof(PCard.PTitle)))
-            && !card.PCardTitleRead().LStateWrittenMatch(draft.LCardDraftTitle))
-        {
-            card.PCardTitleShow(draft.LCardDraftTitle);
-        }
-
-        if (!PEditorRequestCheck(PEditorRequestFormat(card, nameof(PCard.PCardExpression)))
-            && !card.PCardExpressionRead().LStateWrittenMatch(draft.LCardDraftExpression))
-        {
-            card.PCardExpressionShow(draft.LCardDraftExpression);
-        }
-
-        if (!PEditorRequestCheck(PEditorRequestFormat(card, nameof(PCard.PCardDefinition)))
-            && !card.PCardDefinitionRead().LStateWrittenMatch(draft.LCardDraftMeaning))
-        {
-            card.PCardDefinitionShow(draft.LCardDraftMeaning);
-        }
+        card.PCardTitleShow(draft.LCardDraftTitle);
+        card.PCardExpressionShow(draft.LCardDraftExpression);
+        card.PCardDefinitionShow(draft.LCardDraftMeaning);
     }
 
     private PCard PCardCreate(string prefix, LCardDraft draft)
@@ -81,41 +68,37 @@ public partial class PEditor
             PCardId = draft.LCardDraftId,
         };
 
-        card.PCardSentenceApply(_pEditorSentenceOrder);
         PSentenceAttach(card);
         PLinkAttach(card);
         PContextAttach(card);
         PRegisterAttach(card);
         PLabelAttach(card);
-        PImageAttach(card);
-        PVideoAttach(card);
-        PEditorChangeAttach(card);
         return card;
     }
 
     private void PCardListShow(
-        PCard card, LCardDraft draft, IReadOnlyDictionary<long, LTranslationTarget> targets)
+        PCard card, LCardDraft draft, IReadOnlyDictionary<long, LTranslationTarget> targets, string language)
     {
-        card.PCardSentenceShow(draft.LCardDraftSentence, (row, field) => PSentencePendingCheck(card, row, field));
+        card.PCardSentenceShow(draft.LCardDraftSentence, language);
         PSentenceMentionShow(card);
         card.PCardContextShow(draft.LCardDraftSituation);
         card.PCardRegisterShow(draft.LCardDraftRegister);
         card.PCardLinkShow(PCardTargetRead(targets, draft.LCardDraftTranslation));
         card.PCardLabelShow(draft.LCardDraftTag);
-        card.PCardImageShow(draft.LCardDraftImage, row => PImagePendingCheck(card, row));
-        card.PCardVideoShow(draft.LCardDraftVideo, (row, field) => PVideoPendingCheck(card, row, field));
+        card.PCardImageShow(draft.LCardDraftImage);
+        card.PCardVideoShow(draft.LCardDraftVideo);
     }
 
     private void PCardPrepare(LEntryDraft draft)
     {
         if (draft.LEntryDraftMeanings.Count == 0)
         {
-            PEditorRequestSend(new LRequestCardAddition(_pEditorDraft, LCardKind.LCardKindMeaning, 0, 0));
+            PEditorRequestSend(new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindMeaning, 0, 0));
         }
 
         if (draft.LEntryDraftCollocations.Count == 0)
         {
-            PEditorRequestSend(new LRequestCardAddition(_pEditorDraft, LCardKind.LCardKindCollocation, 0, 0));
+            PEditorRequestSend(new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindCollocation, 0, 0));
         }
     }
 

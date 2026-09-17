@@ -20,7 +20,7 @@ public partial class PEditor
 
         try
         {
-            foreach (LTranslationTarget target in _lEngine.LEngineTargetRead(_pEditorDraft, ids))
+            foreach (LTranslationTarget target in _lEngine.LEngineTargetRead(PEditorDraft, ids))
             {
                 targets[target.LTranslationTargetId] = target;
             }

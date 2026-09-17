@@ -51,6 +51,16 @@ public partial class PImprint : UserControl, PChronicleHost
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectTenure)
+        {
+            if (bulletin.LBulletinId == PImprintDraft)
+            {
+                PImprintChangeUpdate();
+            }
+
+            return;
+        }
+
         PAuthorFind();
 
         if (bulletin.LBulletinSubject == LSubject.LSubjectAuthor)

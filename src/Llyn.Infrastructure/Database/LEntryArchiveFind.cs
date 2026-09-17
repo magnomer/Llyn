@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Llyn.Core;
 using Microsoft.Data.Sqlite;
 
@@ -71,6 +72,92 @@ public sealed partial class LEntryArchive
         command.Parameters.AddWithValue("$text", text);
 
         return LEntryListRead(command);
+    }
+
+    public IReadOnlyList<LEntry> LEntryScan(IReadOnlyList<long> ids, string query)
+    {
+        ArgumentNullException.ThrowIfNull(ids);
+        ArgumentNullException.ThrowIfNull(query);
+        query = query.Trim();
+
+        if (ids.Count == 0)
+        {
+            return [];
+        }
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        List<LEntry> entries = [];
+        foreach (IReadOnlyList<long> batch in LEntryListDivide(ids))
+        {
+            using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+            command.CommandText =
+                $"""
+                SELECT entry_id, headword, language, grasp, added_utc, updated_utc
+                FROM entry
+                WHERE entry_id IN ({LEntryListFormat(command, batch)}) AND lmatch(headword, $query)
+                ORDER BY entry_id;
+                """;
+            command.Parameters.AddWithValue("$query", query);
+            entries.AddRange(LEntryListRead(command));
+        }
+
+        return entries;
+    }
+
+    public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)
+    {
+        ArgumentNullException.ThrowIfNull(ids);
+
+        Dictionary<long, string> epithets = [];
+        if (ids.Count == 0)
+        {
+            return epithets;
+        }
+
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        foreach (IReadOnlyList<long> batch in LEntryListDivide(ids))
+        {
+            using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+            command.CommandText =
+                $"""
+                SELECT entry_id, epithet FROM entry
+                WHERE entry_id IN ({LEntryListFormat(command, batch)}) AND epithet <> '';
+                """;
+            using SqliteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                epithets[reader.GetInt64(0)] = reader.GetString(1);
+            }
+        }
+
+        return epithets;
+    }
+
+    private static IEnumerable<IReadOnlyList<long>> LEntryListDivide(IReadOnlyList<long> ids)
+    {
+        const int limit = 500;
+        for (int start = 0; start < ids.Count; start += limit)
+        {
+            List<long> batch = new(Math.Min(limit, ids.Count - start));
+            for (int index = start; index < ids.Count && index < start + limit; index++)
+            {
+                batch.Add(ids[index]);
+            }
+
+            yield return batch;
+        }
+    }
+
+    private static string LEntryListFormat(SqliteCommand command, IReadOnlyList<long> ids)
+    {
+        string[] names = new string[ids.Count];
+        for (int index = 0; index < ids.Count; index++)
+        {
+            names[index] = "$id" + index.ToString(CultureInfo.InvariantCulture);
+            command.Parameters.AddWithValue(names[index], ids[index]);
+        }
+
+        return string.Join(", ", names);
     }
 
     private static IReadOnlyList<LEntry> LEntryListRead(SqliteCommand command)

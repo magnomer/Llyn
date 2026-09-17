@@ -6,36 +6,36 @@ What the picture and video rows of the situation editor ask the panel for.
 That is a row opened, a row dropped, a file chosen, and a location or span written.
 The rows are the card's own rows, so the panel answers as the entry editor answers.
 A Situation has no card, so every request names card zero and the engine routes it by the draft.
-Rows are refreshed the way a card's are: one that already reads what the engine holds is left alone.
-
-## `private static string PScenarioRequestFormat(string kind, long rowId, string field)`
-
-The key one row's field waits under, so a second edit replaces the first rather than queueing behind it.
+Every request goes through the tenure, which keys what waits by `LRequestKey`.
+So the panel keeps no map of its own of which row is still waiting.
 
 ## `private void PScenarioImageShow(IReadOnlyList<LImageDraft> rows)`
 
 Redraws the picture rows from the held Situation, adding, dropping, and moving rows to match.
-A row whose location request is still waiting keeps what was typed.
+What was waiting is written before the read, so a redraw never lands over a newer keystroke.
 
 ## `private void PScenarioVideoShow(IReadOnlyList<LVideoDraft> rows)`
 
 Redraws the video rows the same way, location and span apart.
 
-## `private PImage PScenarioImageCreate(LImageDraft draft)`
+## `private static PImage PScenarioImageCreate(LImageDraft draft)`
 
-A picture row that reports its location changes to the panel.
+A picture row holding the engine's location, and nothing typed.
 
-## `private PVideo PScenarioVideoCreate(LVideoDraft draft)`
+## `private static PVideo PScenarioVideoCreate(LVideoDraft draft)`
 
-A video row that reports its location and span changes to the panel.
+A video row holding the engine's location and span, and nothing typed.
 
-## `private void PScenarioImageChange(object? sender, PropertyChangedEventArgs arguments)`
+## `private void PScenarioImageChange(object sender, TextChangedEventArgs e)`
 
-Turns a typed location into a deferred request for that row, as `PImageAttach` does for a card.
+Turns a location typed into any picture row into a deferred request for that row, as the entry editor does.
+The change bubbles up from the row's field to the list, so the panel names no field.
+Only a field the keyboard is in has been typed into.
 
-## `private void PScenarioVideoChange(object? sender, PropertyChangedEventArgs arguments)`
+## `private void PScenarioVideoChange(object sender, TextChangedEventArgs e)`
 
-Turns a typed location or span into a deferred request for that row, as `PVideoAttach` does for a card.
+Turns a location or span typed into any video row into a deferred request for that row.
+Which of the two was typed is read from what the field binds to.
 
 ## `private void PImageAddHandle(object sender, RoutedEventArgs e)`
 
@@ -55,29 +55,8 @@ Drops the row the click came from.
 
 ## `public void PImageOpenHandle(object sender, RoutedEventArgs e)`
 
-Chooses a picture file and writes its path into the row, which then reports the change like typing.
+Chooses a picture file and sends its path as the row's location at once.
 
 ## `public void PVideoOpenHandle(object sender, RoutedEventArgs e)`
 
-Chooses a video file and writes its path into the row.
-
-## `private bool PScenarioRequestCheck(string key)`
-
-Whether a request for the row's field is still waiting, in which case a redraw must not overwrite it.
-
-## `private void PScenarioRequestDefer(string key, LRequest request)`
-
-Holds the request under its key and restarts the same wait typing restarts.
-So a location written while the description is being typed reaches the engine in the same write.
-
-## `private void PScenarioRequestSend(LRequest request)`
-
-Sends a request at once, for adding and dropping rows.
-Whatever is waiting is written first, so the engine sees the rows in the order they were changed.
-
-## `private void PScenarioRequestPersist()`
-
-Writes every waiting request, forgetting each only once the engine took it.
-A request that fails stays in the map for the caller to clear.
-Nothing is lost before it is written.
-The draft save calls this before the body, so the two never cross.
+Chooses a video file and sends its path as the row's location at once.

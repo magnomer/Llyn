@@ -40,7 +40,7 @@ public partial class PLibrary : UserControl
     internal void PLibraryReset()
     {
         PLibraryClear();
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        PIndexFind();
     }
 
     internal bool PLibraryDraftFinish(bool store)
@@ -67,12 +67,12 @@ public partial class PLibrary : UserControl
 
     private void PLibraryPressCheck(object sender, CanExecuteRoutedEventArgs e)
     {
-        e.CanExecute = _pDisplayEntry is not null && PDisplay.Visibility == Visibility.Visible;
+        e.CanExecute = _pLibraryVista?.LVistaChosen is not null && PDisplay.Visibility == Visibility.Visible;
     }
 
     private async void PLibraryPressHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pLibraryVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pLibraryHost.PWindowPressRun(
                 ticket => _lEngine.LEnginePortraitPrint(entry, _pLibraryHost.PWindowLabelRead(), ticket));
@@ -81,7 +81,7 @@ public partial class PLibrary : UserControl
 
     private async void PLibraryPortraitHandle(object sender, ExecutedRoutedEventArgs e)
     {
-        if (_pDisplayEntry is long entry && PDisplay.Visibility == Visibility.Visible)
+        if (_pLibraryVista?.LVistaChosen is long entry && PDisplay.Visibility == Visibility.Visible)
         {
             await _pLibraryHost.PWindowPortraitExport(entry);
         }

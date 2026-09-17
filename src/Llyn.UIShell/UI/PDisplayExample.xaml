@@ -55,9 +55,8 @@
                 TextWrapping="Wrap">
                 <TextBlock.Text>
                     <MultiBinding Converter="{StaticResource Display.Card.State}">
-                        <Binding Path="PGlossUnknown" />
-                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                         <Binding Path="PGlossText" />
+                        <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>

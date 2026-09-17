@@ -16,10 +16,6 @@ internal sealed class PDiweiItem
 
     private const string PDiweiItemUnplaced = "Yunjing.PlaceNone";
 
-    private static readonly string[] PDiweiItemOrder = ["一", "二", "三", "四"];
-
-    private static readonly string[] PDiweiItemRoman = ["I", "II", "III", "IV"];
-
     private readonly List<PDiweiLine> _pDiweiItemLines = [];
 
     private PDiweiItem(string kind, string heading, IReadOnlyList<PTally> tallies, bool switched, bool respelled)
@@ -90,39 +86,14 @@ internal sealed class PDiweiItem
 
         List<PDiweiItem> items = [.. sections.Values];
         items.Sort((left, right) =>
-            PDiweiRankRead(kind, left.PDiweiItemHeading, hypothesis)
-                .CompareTo(PDiweiRankRead(kind, right.PDiweiItemHeading, hypothesis)));
+            LDiwei.LDiweiRankRead(kind, left.PDiweiItemHeading, hypothesis)
+                .CompareTo(LDiwei.LDiweiRankRead(kind, right.PDiweiItemHeading, hypothesis)));
         foreach (PDiweiItem item in items)
         {
             PDiweiLine.PDiweiLineSort(item._pDiweiItemLines);
         }
 
         return items;
-    }
-
-    private static int PDiweiRankRead(string kind, string heading, LHypothesis? hypothesis)
-    {
-        if (heading.Length == 0)
-        {
-            return int.MaxValue;
-        }
-
-        if (kind != LDiwei.LDiweiRime)
-        {
-            int index = Array.IndexOf(PDiweiItemOrder, heading);
-            return index >= 0 ? index : PDiweiItemOrder.Length;
-        }
-
-        IReadOnlyList<LHypothesisPlace> places = hypothesis?.LHypothesisPlaces ?? [];
-        for (int index = 0; index < places.Count; index++)
-        {
-            if (string.Equals(places[index].LHypothesisPlaceName, heading, StringComparison.Ordinal))
-            {
-                return index;
-            }
-        }
-
-        return places.Count;
     }
 
     private static string PDiweiLabelFormat(string division)
@@ -133,8 +104,7 @@ internal sealed class PDiweiItem
             return catalog[PDiweiItemBlank];
         }
 
-        int index = Array.IndexOf(PDiweiItemOrder, division);
-        string roman = index >= 0 ? PDiweiItemRoman[index] : division;
+        string roman = LDiwei.LDiweiDivisionFormat(division);
         string pattern = catalog[PDiweiItemKey];
         return pattern.Length == 0 ? division : string.Format(CultureInfo.CurrentCulture, pattern, division, roman);
     }

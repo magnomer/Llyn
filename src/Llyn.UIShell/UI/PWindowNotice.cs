@@ -28,26 +28,6 @@ public partial class PWindow
             MessageBoxImage.Warning);
     }
 
-    internal PWindowStored PWindowCommitRun<PWindowStored>(long held, Func<long, PWindowStored> commit)
-    {
-        ArgumentNullException.ThrowIfNull(commit);
-
-        try
-        {
-            return commit(held);
-        }
-        catch (LRefusal refusal) when (refusal.LRefusalReason == LRefusal.LRefusalUnreadable)
-        {
-            if (!PWindowUnreadableConfirm())
-            {
-                throw;
-            }
-
-            _lEngine.LEngineDraftSweep(held);
-            return commit(held);
-        }
-    }
-
     internal long? PWindowCommitRun(LTenure held, bool store)
     {
         ArgumentNullException.ThrowIfNull(held);

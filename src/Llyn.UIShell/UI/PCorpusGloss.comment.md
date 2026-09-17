@@ -20,9 +20,14 @@ One row, subscribed so its edits reach the panel.
 
 ## `private void PTranscriptGlossChange(object? sender, PropertyChangedEventArgs arguments)`
 
-Defers a typed row's text as its own request, keyed by the row, so the tenure keeps only the latest.
-A chosen language is sent at once.
+Sends a chosen language at once, since the row notices its picker.
 No dirty set is kept, since a restore writes what is waiting first and then reads it back.
+
+## `internal void PTranscriptGlossHandle(object sender, TextChangedEventArgs e)`
+
+Defers the text typed into a Gloss field as its own request, keyed by the row.
+So the tenure keeps only the latest.
+Only a field the keyboard is in has been typed into, so a value the engine drew raises nothing.
 
 ## `private void PGlossAddHandle(object sender, RoutedEventArgs e)`
 

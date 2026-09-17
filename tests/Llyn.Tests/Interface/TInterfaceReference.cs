@@ -42,6 +42,9 @@ internal static partial class TInterface
         LCatalogOrder order) =>
         engine.LEngineAuthorFind(query, order);
 
+    internal static IReadOnlyList<LFellow> TEngineFellowFind(this LEngine engine, long authorId) =>
+        engine.LEngineFellowFind(authorId);
+
     internal static void TEngineAuthorAbsorb(this LEngine engine, long kept, long dropped)
     {
         engine.LEngineAuthorAbsorb(kept, dropped);

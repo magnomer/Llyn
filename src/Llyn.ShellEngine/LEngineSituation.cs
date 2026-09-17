@@ -58,6 +58,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+        return LEngineSituationFind(vista.LVistaQuery, vista.LVistaOrder);
+    }
+
     private static LSituation? LEngineSituationResolve(LSituationArchive situations, LStateValue title)
     {
         string written = LCatalog.LCatalogTextNormalize(title.LStateValueShow());

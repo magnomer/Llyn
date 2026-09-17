@@ -38,17 +38,17 @@ Rendering on each answer drew the whole form three or four times per entry.
 A wide Chinese form stalled the switch that way.
 The stale draft is read back once before the sentence pass, because a fresh card needs its id first.
 It is read once more at the end, so the render that follows draws every row that was asked for.
-Nothing is asked during a render or on a halted form, since such a request would be refused anyway.
+Nothing is asked during a render or with no tenure, since such a request would be dropped anyway.
 
 ### `private LEntryDraft PEditorDraftRead(LEntryDraft draft)`
 
-The engine's current draft when an ask changed it, otherwise the draft handed in.
-A read that fails halts the form the way a refused request does.
+The tenure's current draft when an ask changed it, otherwise the draft handed in.
+A read that fails is shown as a hold failure, since the draft itself could not be reached.
 
-### `private void PEditorTextShow(TextBox box, string key, string text)`
+### `private static void PEditorTextShow(TextBox box, string text)`
 
 Writes the draft's text into a box only when the box does not already show it.
-A box with a request still waiting is skipped, because the draft is about to change to what it holds.
+What was waiting is written before the read, so the draft already holds what the box holds.
 Writing the older value first would move the caret and then write it back.
 
 ### `private void PEditorSpeechShow(IReadOnlyList<LSpeechDraft> speeches)`
@@ -70,11 +70,7 @@ The control will offer it again when the store can hold it.
 Restores the recording the draft carries, and only when the engine says the file is still there.
 A recording already shown is left playing, so an unrelated answer does not stop it.
 A workspace whose audio folder was removed shows no play control rather than one that fails.
-
-### `_pRecordingStored = true;`
-
-The entry's own audio, not a fetch for the spelling currently in the headword box.
-Editing the headword from here on leaves it alone.
+A recording the engine dropped on a headword or language change arrives as an empty draft, and the tray empties.
 
 ### `PRecordingClear();`
 

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -21,12 +22,20 @@ public partial class PReference
 
     private long? _pColophonReference;
 
-    private LCatalogOrder _pGradeChoice;
-
-    private LCatalogFilter _pTrellisChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pReferenceVista;
 
     private void PReferenceBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pReferenceVista is not null && bulletin.LBulletinId == _pReferenceVista.LVistaId)
+            {
+                PShelfFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
         {
             PImprint.PImprintBulletinHandle(bulletin);
@@ -53,13 +62,13 @@ public partial class PReference
         }
 
         PImprint.PImprintBulletinHandle(bulletin);
-        PShelfFind(PSurvey.Text ?? string.Empty);
+        PShelfFind();
         PFootnoteEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PSurveyHandle(object sender, TextChangedEventArgs e)
     {
-        PShelfFind(PSurvey.Text ?? string.Empty);
+        _pReferenceVista?.LVistaQuerySet(PSurvey.Text ?? string.Empty);
     }
 
     private void PRummageHandle(object sender, TextChangedEventArgs e)
@@ -69,42 +78,52 @@ public partial class PReference
 
     private void PTrellisHandle(object sender, RoutedEventArgs e)
     {
-        _pTrellisChoice = PChoice.PChoiceFilterRead(PTrellisList);
-        _lEngine.LEngineTrellisSave(_pTrellisChoice);
-        PTrellisMark.Visibility = _pTrellisChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PFootnoteFind();
-    }
-
-    internal async void PTrellisRestore(LCatalogFilter filter)
-    {
-        _pTrellisChoice = filter;
-        PTrellisMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PChoice.PChoiceFilterBuild(PTrellisList, _lEngine.LEngineLanguageRead(), filter, PTrellisHandle);
-    }
-
-    private void PGradeHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (_pReferenceVista is null)
         {
             return;
         }
 
-        _pGradeChoice = LCatalog.LCatalogOrderParse(choice, _pGradeChoice);
-        _lEngine.LEngineGradeSave(_pGradeChoice);
-        PGradeDropper.IsChecked = false;
-        PShelfFind(PSurvey.Text ?? string.Empty);
+        _pReferenceVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PTrellisList));
+        PTrellisRestore();
     }
 
-    internal void PGradeRestore(LCatalogOrder order)
+    private void PGradeHandle(object sender, RoutedEventArgs e)
     {
-        _pGradeChoice = order;
-        PChoice.PChoiceOrderApply(PGradeDropdown, order);
+        if (sender is not FrameworkElement { Tag: string choice } || _pReferenceVista is null)
+        {
+            return;
+        }
 
+        PGradeDropper.IsChecked = false;
+        _pReferenceVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pReferenceVista.LVistaOrder));
+    }
+
+    internal async void PReferenceVistaRestore(LVista vista)
+    {
+        _pReferenceVista = vista;
+        PGradeRestore();
+        PTrellisRestore();
+
+        await PEnsign.PEnsignLoad(_lEngine);
+
+        PChoice.PChoiceFilterBuild(PTrellisList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PTrellisHandle);
+        vista.LVistaQuerySet(PSurvey.Text ?? string.Empty);
         PImprint.PAuthorFind();
-        PShelfFind(PSurvey.Text ?? string.Empty);
+        PShelfFind();
+    }
+
+    private void PGradeRestore()
+    {
+        if (_pReferenceVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PGradeDropdown, _pReferenceVista.LVistaOrder);
+        }
+    }
+
+    private void PTrellisRestore()
+    {
+        bool active = _pReferenceVista?.LVistaFilter.LCatalogFilterActive == true;
+        PTrellisMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     internal IReadOnlyList<LAuthor> PShelfCreditRead(long id)
@@ -126,12 +145,17 @@ public partial class PReference
         }
     }
 
-    private void PShelfFind(string query)
+    private void PShelfFind()
     {
+        if (_pReferenceVista is null)
+        {
+            return;
+        }
+
         IReadOnlyList<LCatalogReference> read;
         try
         {
-            read = _lEngine.LEngineReferenceFind(query, _pGradeChoice);
+            read = _lEngine.LEngineReferenceFind(_pReferenceVista);
             _pShelfCount = _lEngine.LEngineUsageRead(LOwner.LOwnerReference);
             _pShelfCredit = _lEngine.LEngineAuthorRead(LOwner.LOwnerReference);
         }
@@ -197,7 +221,7 @@ public partial class PReference
         if (reference is null)
         {
             PReferenceClear();
-            PShelfFind(PSurvey.Text ?? string.Empty);
+            PShelfFind();
             return;
         }
 

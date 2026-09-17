@@ -5,9 +5,6 @@ namespace Llyn.UIShell;
 
 internal sealed class PContext
 {
-    private readonly string _pContextText;
-    private readonly bool _pContextUnknown;
-
     internal PContext(LStateValue text, long id)
         : this(text, id, LStateValue.LStateValueUnspecified, LStateValue.LStateValueUnspecified)
     {
@@ -17,8 +14,7 @@ internal sealed class PContext
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        _pContextText = text.LStateValueShow();
-        _pContextUnknown = text.LStateValueState == LState.LStateUnknown;
+        PContextText = text;
         PContextId = id;
         PContextDescription = description ?? LStateValue.LStateValueUnspecified;
         PContextKind = kind ?? LStateValue.LStateValueUnspecified;
@@ -30,12 +26,5 @@ internal sealed class PContext
 
     internal LStateValue PContextKind { get; }
 
-    public string PContextText => _pContextText;
-
-    public bool PContextUnknown => _pContextUnknown;
-
-    internal LStateWritten PContextTextRead()
-    {
-        return new LStateWritten(_pContextText, _pContextUnknown);
-    }
+    public LStateValue PContextText { get; }
 }

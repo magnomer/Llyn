@@ -9,7 +9,7 @@ Only starting, saving and committing differ by kind, and only those live here.
 The shared claim, sweep, recovery and discard read `LDraftSituation` and branch where the kinds part.
 This follows `LEngineDraftExample.cs` call for call, so a third kind cannot invent a third protocol.
 
-## `public LDraft LEngineSituationStart(string origin, long? situationId)`
+## `internal LDraft LEngineSituationStart(string origin, long? situationId)`
 
 Mints a draft id, writes the first file, and returns the held Situation.
 With no Situation the content is blank under an id minted for it, which is a context being written first.

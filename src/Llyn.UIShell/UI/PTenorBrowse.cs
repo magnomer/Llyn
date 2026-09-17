@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -15,16 +17,22 @@ public partial class PTenor
 
     private readonly ObservableCollection<PCohortItem> _pCohortList = [];
 
-    private long? _pGamutChoice;
-
     private long? _pDisplayEntry;
 
-    private LCatalogOrder _pDegreeChoice;
-
-    private LCatalogFilter _pGrilleChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pTenorVista;
 
     private async void PTenorBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pTenorVista is not null && bulletin.LBulletinId == _pTenorVista.LVistaId)
+            {
+                PGamutFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             await PEnsign.PEnsignLoad(_lEngine);
@@ -43,30 +51,18 @@ public partial class PTenor
 
     private void PSoundingHandle(object sender, TextChangedEventArgs e)
     {
-        PGamutFind(PSounding.Text ?? string.Empty);
+        _pTenorVista?.LVistaQuerySet(PSounding.Text ?? string.Empty);
     }
 
     private void PDegreeHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pTenorVista is null)
         {
             return;
         }
 
-        _pDegreeChoice = LCatalog.LCatalogOrderParse(choice, _pDegreeChoice);
-        _lEngine.LEngineDegreeSave(_pDegreeChoice);
         PDegreeDropper.IsChecked = false;
-        PGamutFind(PSounding.Text ?? string.Empty);
-    }
-
-    internal async void PDegreeRestore(LCatalogOrder order)
-    {
-        _pDegreeChoice = order;
-        PChoice.PChoiceOrderApply(PDegreeDropdown, order);
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PGamutFind(PSounding.Text ?? string.Empty);
+        _pTenorVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pTenorVista.LVistaOrder));
     }
 
     private void PQuestHandle(object sender, TextChangedEventArgs e)
@@ -76,33 +72,58 @@ public partial class PTenor
 
     private void PGrilleHandle(object sender, RoutedEventArgs e)
     {
-        _pGrilleChoice = PChoice.PChoiceFilterRead(PGrilleList);
-        _lEngine.LEngineGrilleSave(_pGrilleChoice);
-        PGrilleMark.Visibility = _pGrilleChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PCohortFind();
+        if (_pTenorVista is null)
+        {
+            return;
+        }
+
+        _pTenorVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PGrilleList));
+        PGrilleRestore();
     }
 
-    internal async void PGrilleRestore(LCatalogFilter filter)
+    internal async void PTenorVistaRestore(LVista vista)
     {
-        _pGrilleChoice = filter;
-        PGrilleMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        _pTenorVista = vista;
+        PDegreeRestore();
+        PGrilleRestore();
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PChoice.PChoiceFilterBuild(PGrilleList, _lEngine.LEngineLanguageRead(), filter, PGrilleHandle);
+        PChoice.PChoiceFilterBuild(PGrilleList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PGrilleHandle);
+        vista.LVistaQuerySet(PSounding.Text ?? string.Empty);
+        PGamutFind();
+    }
+
+    private void PDegreeRestore()
+    {
+        if (_pTenorVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PDegreeDropdown, _pTenorVista.LVistaOrder);
+        }
+    }
+
+    private void PGrilleRestore()
+    {
+        bool active = _pTenorVista?.LVistaFilter.LCatalogFilterActive == true;
+        PGrilleMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PGamutReset()
     {
-        _pGamutChoice = null;
+        _pTenorVista?.LVistaSelect(null);
     }
 
-    private void PGamutFind(string query)
+    private void PGamutFind()
     {
+        if (_pTenorVista is null)
+        {
+            return;
+        }
+
         IReadOnlyList<LCatalogRegister> read;
         try
         {
-            read = _lEngine.LEngineRegisterFind(query, _pDegreeChoice);
+            read = _lEngine.LEngineRegisterFind(_pTenorVista);
         }
         catch (Exception exception)
         {
@@ -110,23 +131,22 @@ public partial class PTenor
             return;
         }
 
+        long? chosen = _pTenorVista.LVistaChosen;
+        if (chosen is not null && !read.Any(row => row.LCatalogRegisterStored.LRegisterId == chosen))
+        {
+            _pTenorVista.LVistaSelect(null);
+            chosen = null;
+        }
+
         _pGamutList.Clear();
-        bool kept = false;
         foreach (LCatalogRegister row in read)
         {
             LRegister stored = row.LCatalogRegisterStored;
-            bool chosen = stored.LRegisterId == _pGamutChoice;
-            kept |= chosen;
             _pGamutList.Add(new PGamutItem(
                 stored.LRegisterId,
                 stored.LRegisterName.LStateValueShow(),
                 row.LCatalogRegisterUsage,
-                chosen));
-        }
-
-        if (!kept)
-        {
-            _pGamutChoice = null;
+                stored.LRegisterId == chosen));
         }
 
         PGamutEmpty.Visibility = _pGamutList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -140,16 +160,31 @@ public partial class PTenor
             return;
         }
 
-        _pGamutChoice = item.PGamutItemChosen ? null : item.PGamutItemId;
-        PGamutFind(PSounding.Text ?? string.Empty);
+        PGamutSelect(item.PGamutItemChosen ? null : item.PGamutItemId);
+    }
+
+    private void PGamutSelect(long? id)
+    {
+        if (_pTenorVista is null)
+        {
+            return;
+        }
+
+        _pTenorVista.LVistaSelect(id);
+        foreach (PGamutItem row in _pGamutList)
+        {
+            row.PGamutItemChosen = row.PGamutItemId == id;
+        }
+
+        PCohortFind();
     }
 
     internal void PGamutRegisterShow(long id)
     {
-        _pGamutChoice = id;
         PSounding.Text = string.Empty;
         PQuest.Text = string.Empty;
-        PGamutFind(string.Empty);
+        _pTenorVista?.LVistaSelect(id);
+        PGamutFind();
     }
 
     private void PTenorFreshHandle(object sender, RoutedEventArgs e)
@@ -159,7 +194,7 @@ public partial class PTenor
             return;
         }
 
-        if (_pGamutChoice is null && _pDisplayEntry is null)
+        if (_pTenorVista?.LVistaChosen is null && _pDisplayEntry is null)
         {
             PGamutRegisterCreate();
             return;
@@ -260,7 +295,7 @@ public partial class PTenor
 
     internal long PTenorVoyageRead()
     {
-        return _pGamutChoice ?? 0;
+        return _pTenorVista?.LVistaChosen ?? 0;
     }
 
     private void PTenorEntryShow(long id, LEntryDraft draft)

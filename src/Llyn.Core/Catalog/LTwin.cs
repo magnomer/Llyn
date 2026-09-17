@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Llyn.UIShell;
+namespace Llyn.Core;
 
-internal static class PTwin
+public static class LTwin
 {
-    internal static void PTwinNameApply<PTwinRow>(
-        IReadOnlyList<PTwinRow> rows, Func<PTwinRow, string> read, Action<PTwinRow, string> write)
+    public static void LTwinNameApply<LTwinRow>(
+        IReadOnlyList<LTwinRow> rows, Func<LTwinRow, string> read, Action<LTwinRow, string> write)
     {
         ArgumentNullException.ThrowIfNull(rows);
 
@@ -17,14 +17,14 @@ internal static class PTwin
             order[index] = index;
         }
 
-        PTwinNameApply(rows, read, write, order);
+        LTwinNameApply(rows, read, write, order);
     }
 
-    internal static void PTwinNameApply<PTwinRow>(
-        IReadOnlyList<PTwinRow> rows,
-        Func<PTwinRow, string> read,
-        Action<PTwinRow, string> write,
-        Func<PTwinRow, long> rank)
+    public static void LTwinNameApply<LTwinRow>(
+        IReadOnlyList<LTwinRow> rows,
+        Func<LTwinRow, string> read,
+        Action<LTwinRow, string> write,
+        Func<LTwinRow, long> rank)
     {
         ArgumentNullException.ThrowIfNull(rows);
         ArgumentNullException.ThrowIfNull(rank);
@@ -41,20 +41,20 @@ internal static class PTwin
             return result != 0 ? result : one.CompareTo(other);
         });
 
-        PTwinNameApply(rows, read, write, order);
+        LTwinNameApply(rows, read, write, order);
     }
 
-    private static void PTwinNameApply<PTwinRow>(
-        IReadOnlyList<PTwinRow> rows,
-        Func<PTwinRow, string> read,
-        Action<PTwinRow, string> write,
+    private static void LTwinNameApply<LTwinRow>(
+        IReadOnlyList<LTwinRow> rows,
+        Func<LTwinRow, string> read,
+        Action<LTwinRow, string> write,
         int[] order)
     {
         ArgumentNullException.ThrowIfNull(read);
         ArgumentNullException.ThrowIfNull(write);
 
         Dictionary<string, int> shared = new(StringComparer.Ordinal);
-        foreach (PTwinRow row in rows)
+        foreach (LTwinRow row in rows)
         {
             string name = read(row);
             shared[name] = shared.TryGetValue(name, out int seen) ? seen + 1 : 1;
@@ -63,7 +63,7 @@ internal static class PTwin
         Dictionary<string, int> taken = new(StringComparer.Ordinal);
         foreach (int index in order)
         {
-            PTwinRow row = rows[index];
+            LTwinRow row = rows[index];
             string name = read(row);
             if (shared[name] < 2)
             {

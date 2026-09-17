@@ -14,9 +14,17 @@ Drops the Gloss the command carries from the sentence row the command was raised
 
 ## `private void PGlossChangeHandle(PCard card, PSentence row, PGloss gloss, string field)`
 
-Turns one edited field of a Gloss into its request.
-Typed text is deferred under a key that names the Gloss, so the redraw skips it while it is pending.
-A chosen language is sent at once.
+Sends a chosen language at once, since the Gloss row notices its picker.
+Typed text never comes this way, because the row holds no copy of it.
+
+## `private void PGlossChangeHandle(PGloss gloss, LStateWritten written)`
+
+Turns the text typed into a Gloss field into its request.
+It is deferred through the tenure, keyed by the request's own Gloss, so a later edit replaces the earlier.
+
+## `private (PCard, PSentence)? PSentenceGlossFind(PGloss gloss)`
+
+The card and sentence row a Gloss row sits under, which every request about the Gloss names.
 
 ## `private string PGlossLanguageRead()`
 

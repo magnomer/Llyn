@@ -16,9 +16,19 @@ The panel answers two questions rather than one: what this sentence is, and wher
 How many places quote each Example, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
+### `private LVista? _pCorpusVista;`
+
+The engine's view state for the corpus tab: order, query, and the languages hidden from the entry column.
+The panel keeps no copy of any of the three and reads each from the vista where it needs it.
+It is null until the window hands one over, so the handlers do nothing before that.
+A switched workspace hands over a fresh vista, read from that workspace's own layout.
+
 ## `private async void PCorpusBulletinHandle(LBulletin bulletin)`
 
 Re-reads the workspace whenever the engine announces a change, wherever it was made.
+A vista announcement carrying this panel's vista id refills the catalog, since order, filter or query moved.
+The entry column is refilled with it, so a moved filter reaches it the same way.
+Another panel's vista is not this panel's business and is skipped.
 A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
 A tenure bulletin says the held draft's state moved, so the rail's buttons are settled and nothing else is read.
 A fetched frequency, paradigm, script, fanqie or reflex row changes no example or entry row, so those read nothing.
@@ -27,10 +37,25 @@ A workspace that moved reloads the flags and the language menu first, since neit
 An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
 Only an Entry announcement is read that way, since a frequency or tag announcement carries another id.
 
-## `private void PAnthologyFind(string query)`
+### `private void PQueryHandle(object sender, TextChangedEventArgs e)`
 
-Refills the catalog with the rows the engine returns, already matched and already ordered.
-The panel names the ordering and the query and decides nothing else about either.
+Each keystroke hands the search text to the vista, whose announcement refills the catalog.
+
+### `private void PRankHandle(object sender, RoutedEventArgs e)`
+
+A chosen ordering closes the dropdown and hands the ordering to the vista.
+The vista saves it and announces it, and the announcement refills the catalog.
+
+### `private void PGauzeHandle(object sender, RoutedEventArgs e)`
+
+The ticked languages are read off the menu and handed to the vista, which saves and announces them.
+The mark on the button is redrawn from the vista at once.
+
+## `private void PAnthologyFind()`
+
+Refills the catalog with the rows the engine returns for the vista, already matched and already ordered.
+The panel hands over its vista and decides nothing about the ordering or the query.
+Before a vista is handed over nothing is asked.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open editor keeps its selection either way, because the row may be the one being written.
 Rows sharing a sentence are numbered afterwards, so the reader can tell them apart.
@@ -78,15 +103,21 @@ The held draft goes first, because nothing may write into a draft the panel no l
 The mode toggle and the bin are disabled with it.
 There is nothing to edit or delete while nothing is selected.
 
-### `internal void PRankRestore(LCatalogOrder order)`
+### `internal async void PCorpusVistaRestore(LVista vista)`
 
-Puts the panel back on the ordering the settings stored, and moves the dropdown mark onto it.
-The window calls it once on attach, so the panel never reads the stored state for itself.
+Takes the vista the window started for this tab and puts the panel on it.
+The dropdown mark and the filter mark are drawn from it first.
+The flags are loaded before any row is built, then the language menu is built from the loaded packs.
+Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
+The speakers, the citations and the catalog are then listed.
 
-### `internal void PGauzeRestore(LCatalogFilter filter)`
+### `private void PRankRestore()`
 
-Puts the language filter back on the languages the settings stored, and builds the menu over the loaded languages.
-The window calls it once on attach, so the panel never reads the stored state for itself.
+Moves the dropdown mark onto the ordering the vista holds.
+
+### `private void PGauzeRestore()`
+
+Shows the filter mark while the vista hides any language.
 
 ### `internal void PCorpusScribeRestore(bool editing)`
 

@@ -55,6 +55,35 @@ public sealed partial class LEngine
             LEnginePronunciationFind(query, order), row => row.LCatalogPronunciationEntry.LEntryLanguage);
     }
 
+    public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        lock (_lEngineGate)
+        {
+            IReadOnlyList<LCatalogPronunciation> found = LEnginePronunciationFind(
+                vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
+            List<LEntry> entries = new(found.Count);
+            foreach (LCatalogPronunciation row in found)
+            {
+                entries.Add(row.LCatalogPronunciationEntry);
+            }
+
+            IReadOnlyList<LVistaRow> built = LEngineVistaBuild(entries, null);
+            List<LCatalogPronunciation> rows = new(found.Count);
+            for (int index = 0; index < found.Count; index++)
+            {
+                rows.Add(found[index] with
+                {
+                    LCatalogPronunciationName = built[index].LVistaRowName,
+                    LCatalogPronunciationEpithet = built[index].LVistaRowEpithet,
+                });
+            }
+
+            return rows;
+        }
+    }
+
     public void LEnginePronunciationUpdate(LPronunciation pronunciation)
     {
         lock (_lEngineGate)

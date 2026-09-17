@@ -25,13 +25,9 @@ internal sealed class PAtlasItem : INotifyPropertyChanged
 
     private static string? PAtlasTextRead(LStateValue value, string unknown)
     {
-        return value.LStateValueState switch
-        {
-            _ when value.LStateValueUnreadable => value.LStateValueShow(),
-            LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => unknown,
-            _ => null,
-        };
+        return PStateConverter.PStateConverterCheck(value)
+            ? unknown
+            : value.LStateValueShow() is { Length: > 0 } shown ? shown : null;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

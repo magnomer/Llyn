@@ -11,29 +11,64 @@ The entry list itself lives in [PTenorCohort.cs](PTenorCohort.comment.md).
 
 ## Inline notes
 
-### `private string? _pGamutChoice;`
+### `private LVista? _pTenorVista;`
 
-The Register the entry list stands on, held by its id rather than its name.
-A name may be rewritten while the panel stands on it.
-An id never is.
-Null is not an absence to be corrected: it is the whole workspace, which is what the panel shows first.
-
-### `private LCatalogOrder _pDegreeChoice;`
-
-Which ordering the register catalog is listed in, held as one of the orderings the engine supports.
-It starts as whatever the workspace stored, which the window applies before the panel is first shown.
+The engine's view state for the tenor tab: order, query, the chosen Register, and the languages hidden from its Entries.
+The panel keeps no copy of any of the four and reads each from the vista where it needs it.
+The Register is held by its id rather than its name, since a name may be rewritten under the panel.
+A null Register is not an absence to be corrected.
+It is the whole workspace, which is what the panel shows first.
+The vista is null until the window hands one over, so the handlers do nothing before that.
+A switched workspace hands over a fresh vista, read from that workspace's own layout.
 
 ### `private async void PTenorBulletinHandle(LBulletin bulletin)`
 
 The panel answers the engine rather than its own visibility.
 So a Register written on a card in the input panel is in the catalog at once.
 No tab switch is needed.
+A vista announcement carrying this panel's vista id rebuilds the catalog, since order, filter or query moved.
+The entry list is rebuilt with it, so a moved filter reaches it the same way.
+Another panel's vista is not this panel's business and is skipped.
 A workspace that moved is the one announcement that empties the panel first.
 
 A register announcement carries a register id, not an entry id, so it only refreshes the catalog.
 A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
 Those announcements are skipped.
 Passing it on as an entry would make a fresh entry being written adopt the register's id.
+
+### `private void PSoundingHandle(object sender, TextChangedEventArgs e)`
+
+Each keystroke hands the search text to the vista, whose announcement rebuilds the catalog.
+
+### `private void PDegreeHandle(object sender, RoutedEventArgs e)`
+
+A chosen ordering closes the dropdown and hands the ordering to the vista.
+The vista saves it and announces it, and the announcement rebuilds the catalog.
+
+### `private void PGrilleHandle(object sender, RoutedEventArgs e)`
+
+The ticked languages are read off the menu and handed to the vista, which saves and announces them.
+The mark on the button is redrawn from the vista at once.
+
+### `internal async void PTenorVistaRestore(LVista vista)`
+
+Takes the vista the window started for this tab and puts the panel on it.
+The dropdown mark and the filter mark are drawn from it first.
+The flags are loaded before any row is built, then the language menu is built from the loaded packs.
+Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
+The catalog is then listed from the vista.
+
+### `private void PDegreeRestore()`
+
+Moves the dropdown mark onto the ordering the vista holds.
+
+### `private void PGrilleRestore()`
+
+Shows the filter mark while the vista hides any language.
+
+### `private void PGamutReset()`
+
+Lets go of the chosen Register, so a switched workspace opens on every Entry.
 
 ### `private void PTenorFreshHandle(object sender, RoutedEventArgs e)`
 
@@ -47,12 +82,14 @@ Asks for the wording, makes the register, and browses by it.
 A dismissed dialog changes nothing.
 The panel is cleared first, so an unsaved fresh entry the leave check already settled does not linger.
 
-### `private void PGamutFind(string query)`
+### `private void PGamutFind()`
 
-The engine returns the Registers answering the query, already counted and in the chosen ordering.
+The engine returns the Registers answering the vista, already counted and in its ordering.
 The rows the language packs name and the rows the user wrote arrive as one shelf.
 The chosen Register is re-marked as the catalog is rebuilt, so the selection survives a re-sort.
-A chosen Register the workspace no longer holds is dropped, and the panel falls back to every Entry.
+A chosen Register the rows no longer hold is dropped through the vista, and the list is built unmarked.
+The panel then falls back to every Entry.
+Before a vista is handed over nothing is asked.
 
 ### `internal void PGamutRegisterShow(long id)`
 
@@ -60,16 +97,17 @@ Browses by one Register for a caller outside the panel.
 That is how a register chip read on a card reaches this panel.
 The query is emptied first.
 Otherwise a Register left out by the standing query would be chosen and dropped at once.
+The Register is then chosen through the vista and the catalog rebuilt, since it may be new to the list.
 
-### `_pGamutChoice = item.PGamutItemChosen ? null : item.PGamutItemId;`
+### `private void PGamutSelect(long? id)`
+
+Chooses one Register, or none, and re-marks the rows in place before listing the entries under it.
+No row is rebuilt, so the list keeps its scroll and its focus.
+
+### `PGamutSelect(item.PGamutItemChosen ? null : item.PGamutItemId);`
 
 Clicking the chosen Register lets go of it.
 That is how the panel is put back on the whole workspace without a separate control saying so.
-
-### `internal void PDegreeRestore(LCatalogOrder order)`
-
-Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
-The window calls it once on attach, so the panel never reads the stored state for itself.
 
 ### `internal void PTenorScribeRestore(bool editing)`
 

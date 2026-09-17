@@ -15,12 +15,23 @@ The credits of every Source are read once and turned round into the works of eve
 An Author credited nowhere is still listed, because the workspace still holds it.
 The rows come back ordered under `order`, or under the name where an Author does not answer to that ordering.
 
+## `public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista)`
+
+The Authors the authors panel's vista lists, with the query and order read off the vista.
+The vista's filter hides kinds from the Sources crediting the chosen Author, so it is not applied here.
+
 ## `public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(long? author, string query, LCatalogFilter kind, LCatalogOrder order)`
 
 Reads the Sources crediting `author` as browsed rows, narrowed by `query` and by the kinds left shown.
 Passing `null` lists every Source, as the sources panel lists every Entry under no chosen Source.
 Passing zero lists the Sources crediting nobody, so a missing credit can be found and written.
 The kinds are matched by their stored word, which is what the filter remembers between sessions.
+
+## `public IReadOnlyList<LFellow> LEngineFellowFind(long authorId)`
+
+Reads every Author credited beside `authorId` on some Source, with how many Sources credit the two together.
+The credits of every Source are read once, so the tally never queries per Source.
+The rows come by shared count falling, then by name, case aside, so the closest co-author leads.
 
 ## `public void LEngineAuthorAbsorb(long kept, long dropped)`
 

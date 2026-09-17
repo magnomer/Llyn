@@ -14,9 +14,10 @@ Renaming and deleting an Author belong to an author tab of their own.
 
 ## Inline notes
 
-### `private LState _pAuthorState = LState.LStateUnspecified;`
+### `private LStateMark _pAuthorState = LStateMark.LStateMarkUnspecified;`
 
-Whether the authorship is unknown as against never having been filled in.
+The authorship mark as the held draft has it, unknown as against never having been filled in.
+It is carried whole rather than read apart, so the area resolves no state.
 It is a column on the `source` row.
 It is saved with the five fields rather than when a credit is made.
 
@@ -119,8 +120,3 @@ Puts the new credit before the old one, then drops the old one.
 In that order a request that fails leaves the row crediting what it did.
 A blank row has nothing to drop, and is forgotten once its credit is made.
 
-## `private bool PAuthorRequestSend(LRequest request)`
-
-Sends one credit request and leaves the redraw to the draft bulletin the engine raises.
-Typing still waiting in the five fields is written first, so the requests reach the engine in order.
-Says whether the request was taken, so a second one can depend on the first.

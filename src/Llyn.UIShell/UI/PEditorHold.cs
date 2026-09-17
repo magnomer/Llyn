@@ -1,49 +1,48 @@
 using System;
 using System.Windows;
-using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    private long _pEditorDraft;
-
-    private bool _pEditorHalted;
+    private LTenure? _pEditorTenure;
 
     internal Action? PEditorChronicleNotice;
 
+    private long PEditorDraft => _pEditorTenure?.LTenureId ?? 0;
+
     private LDraft? PEditorDraftStart(long? entry)
     {
-        PEditorChangeStop();
         PEditorDraftCancel();
         _pMeaningList.Clear();
         _pCollocationList.Clear();
-        _pRecordingFresh.Clear();
 
         try
         {
-            LDraft started = _lEngine.LEngineDraftStart(_pEditorOrigin, entry);
-            _pEditorDraft = started.LDraftId;
-            PEditorHoldResume();
-            return started;
+            LTenure started = _lEngine.LEngineTenureStart(_pEditorOrigin, LSubject.LSubjectEntry, entry);
+            _pEditorTenure = started;
+            IsEnabled = true;
+            return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pEditorDraft = 0;
-            PEditorHoldSuspend(exception);
+            _pEditorTenure = null;
+            IsEnabled = false;
+            _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
             return null;
         }
     }
 
     public void PChronicleUndo()
     {
-        PEditorChronicleRun(_lEngine.LEngineChronicleUndo);
+        PEditorChronicleRun(static held => held.LTenureUndo());
     }
 
     public void PChronicleRedo()
     {
-        PEditorChronicleRun(_lEngine.LEngineChronicleRedo);
+        PEditorChronicleRun(static held => held.LTenureRedo());
     }
 
     private void PEditorUndoHandle(object sender, RoutedEventArgs e)
@@ -66,23 +65,21 @@ public partial class PEditor
 
     internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()
     {
-        return (
-            _pEditorDraft != 0 && _lEngine.LEngineUndoCheck(_pEditorDraft),
-            _pEditorDraft != 0 && _lEngine.LEngineRedoCheck(_pEditorDraft));
+        return _pEditorTenure?.LTenureStateRead() is LTenureState state
+            ? (state.LTenureStateBackward, state.LTenureStateForward)
+            : (false, false);
     }
 
-    private void PEditorChronicleRun(Func<long, LDraft?> step)
+    private void PEditorChronicleRun(Func<LTenure, LDraft?> step)
     {
-        if (_pEditorDraft == 0)
+        if (_pEditorTenure is not LTenure held)
         {
             return;
         }
 
-        PEditorChangeSave();
-
         try
         {
-            PChronicle.PChronicleRun(() => step(_pEditorDraft));
+            PChronicle.PChronicleRun(() => step(held));
         }
         catch (Exception exception)
         {
@@ -92,43 +89,45 @@ public partial class PEditor
         PChronicleUpdate();
     }
 
-    private void PEditorHoldSuspend(Exception exception)
+    private void PEditorHoldShow(bool running)
     {
-        if (_pEditorHalted)
+        if (running == IsEnabled)
         {
             return;
         }
 
-        _pEditorHalted = true;
-        IsEnabled = false;
-        _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
-    }
-
-    private void PEditorHoldResume()
-    {
-        if (!_pEditorHalted)
+        IsEnabled = running;
+        if (!running)
         {
-            return;
+            _pEditorHost.PWindowFailureShow("Input.HoldFailed");
         }
-
-        _pEditorHalted = false;
-        IsEnabled = true;
     }
 
     private void PEditorDraftCancel()
     {
-        if (_pEditorDraft == 0)
+        if (_pEditorTenure is not LTenure held)
         {
             return;
         }
 
-        long held = _pEditorDraft;
-        _pEditorDraft = 0;
-        _pEditorRequestPending.Clear();
+        _pEditorTenure = null;
+        held.LTenureCancel();
+    }
+
+    private void PEditorDraftRestore()
+    {
+        if (_pEditorTenure is not LTenure held)
+        {
+            return;
+        }
 
         try
         {
-            _lEngine.LEngineDraftCancel(held);
+            held.LTenurePersist();
+            if (held.LTenureRead() is LDraft draft)
+            {
+                PEditorDraftShow(draft.LDraftContent);
+            }
         }
         catch (Exception exception)
         {
@@ -136,88 +135,25 @@ public partial class PEditor
         }
     }
 
-    private void PEditorDraftRestore()
-    {
-        if (_pEditorDraft == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            if (_lEngine.LEngineDraftRead(_pEditorDraft) is LDraft held)
-            {
-                PEditorDraftShow(held.LDraftContent);
-            }
-        }
-        catch (Exception exception)
-        {
-            PEditorHoldSuspend(exception);
-        }
-    }
-
     internal bool PEditorDraftFinish(bool store)
     {
-        if (_pEditorPending is not null)
-        {
-            PEditorChangeSave();
-        }
-
-        if (!store || !PEditorDraftCheck())
-        {
-            PEditorDraftCancel();
-            return true;
-        }
-
-        long held = _pEditorDraft;
-        if (held == 0)
+        if (_pEditorTenure is not LTenure held)
         {
             return true;
         }
-
-        if (_pEditorHalted)
-        {
-            return false;
-        }
-
-        _pEditorDraft = 0;
 
         try
         {
-            _pEditorHost.PWindowCommitRun(held, _lEngine.LEngineDraftCommit);
+            _pEditorHost.PWindowCommitRun(held, store);
         }
         catch (Exception exception)
         {
-            _pEditorDraft = held;
             long? entry = PEditorEntryRead();
             _pEditorHost.PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
             return false;
         }
 
+        _pEditorTenure = null;
         return true;
-    }
-
-    private bool PEditorDraftCheck()
-    {
-        return PEditorDraftCheck(out _);
-    }
-
-    private bool PEditorDraftCheck(out string? refusal)
-    {
-        refusal = null;
-        if (_pEditorDraft == 0)
-        {
-            return false;
-        }
-
-        try
-        {
-            return _lEngine.LEngineDraftCheck(_pEditorDraft, out refusal);
-        }
-        catch (Exception exception)
-        {
-            PEditorHoldSuspend(exception);
-            return false;
-        }
     }
 }

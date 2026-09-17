@@ -32,6 +32,24 @@ public sealed partial class LEngine
             LEngineFavoriteFind(query, order), favorite => favorite.LFavoriteEntry.LEntryLanguage);
     }
 
+    public IReadOnlyList<LVistaRow> LEngineFavoriteFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        lock (_lEngineGate)
+        {
+            IReadOnlyList<LFavorite> favorites = LEngineFavoriteFind(
+                vista.LVistaQuery, vista.LVistaOrder, vista.LVistaFilter);
+            List<LEntry> entries = new(favorites.Count);
+            foreach (LFavorite favorite in favorites)
+            {
+                entries.Add(favorite.LFavoriteEntry);
+            }
+
+            return LEngineVistaBuild(entries, null);
+        }
+    }
+
     public bool LEngineFavoriteCheck(long entryId)
     {
         lock (_lEngineGate)

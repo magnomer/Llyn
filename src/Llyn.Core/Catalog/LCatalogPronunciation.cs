@@ -6,7 +6,9 @@ namespace Llyn.Core;
 
 public sealed record LCatalogPronunciation(
     LEntry LCatalogPronunciationEntry,
-    string LCatalogPronunciationSound)
+    string LCatalogPronunciationSound,
+    string LCatalogPronunciationName = "",
+    string? LCatalogPronunciationEpithet = null)
 {
     public static LCatalogPronunciation LCatalogPronunciationCreate(LEntry entry, string? sound)
     {

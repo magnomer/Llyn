@@ -37,4 +37,6 @@ public enum LSubject
     LSubjectSettings,
 
     LSubjectTenure,
+
+    LSubjectVista,
 }

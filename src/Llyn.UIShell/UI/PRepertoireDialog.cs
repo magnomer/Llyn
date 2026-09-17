@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -13,13 +11,6 @@ public partial class PRepertoire
     private readonly ObservableCollection<PImage> _pScenarioImage = [];
 
     private readonly ObservableCollection<PVideo> _pScenarioVideo = [];
-
-    private readonly Dictionary<string, LRequest> _pScenarioRequestPending = [];
-
-    private static string PScenarioRequestFormat(string kind, long rowId, string field)
-    {
-        return string.Concat(kind, ":", rowId.ToString(CultureInfo.InvariantCulture), ":", field);
-    }
 
     private void PScenarioImageShow(IReadOnlyList<LImageDraft> rows)
     {
@@ -31,7 +22,7 @@ public partial class PRepertoire
             PScenarioImageCreate,
             (row, draft) =>
             {
-                row.PImageShow(draft, PScenarioRequestCheck(PScenarioImageFormat(row)));
+                row.PImageShow(draft);
                 return row;
             });
     }
@@ -46,78 +37,61 @@ public partial class PRepertoire
             PScenarioVideoCreate,
             (row, draft) =>
             {
-                row.PVideoShow(draft, field => PScenarioRequestCheck(PScenarioVideoFormat(row, field)));
+                row.PVideoShow(draft);
                 return row;
             });
     }
 
-    private static string PScenarioImageFormat(PImage row)
+    private static PImage PScenarioImageCreate(LImageDraft draft)
     {
-        return PScenarioRequestFormat(nameof(PImage), row.PImageId, nameof(PImage.PImageLocation));
+        return new PImage(draft);
     }
 
-    private static string PScenarioVideoFormat(PVideo row, string field)
+    private static PVideo PScenarioVideoCreate(LVideoDraft draft)
     {
-        return PScenarioRequestFormat(nameof(PVideo), row.PVideoId, field);
+        return new PVideo(draft);
     }
 
-    private PImage PScenarioImageCreate(LImageDraft draft)
+    private void PScenarioImageChange(object sender, TextChangedEventArgs e)
     {
-        PImage row = new(draft);
-        row.PropertyChanged += PScenarioImageChange;
-        return row;
-    }
-
-    private PVideo PScenarioVideoCreate(LVideoDraft draft)
-    {
-        PVideo row = new(draft);
-        row.PropertyChanged += PScenarioVideoChange;
-        return row;
-    }
-
-    private void PScenarioImageChange(object? sender, PropertyChangedEventArgs arguments)
-    {
-        if (sender is PImage row
-            && string.Equals(arguments.PropertyName, nameof(PImage.PImageLocation), StringComparison.Ordinal))
+        if (e.OriginalSource is TextBox { IsKeyboardFocusWithin: true, DataContext: PImage row } box)
         {
             PScenarioRequestDefer(
-                PScenarioImageFormat(row),
-                new LRequestImageLocation(_pScenarioDraft, row.PImageId, row.PImageLocationRead()));
+                new LRequestImageLocation(PScenarioDraft, row.PImageId, new LStateWritten(box.Text)));
         }
     }
 
-    private void PScenarioVideoChange(object? sender, PropertyChangedEventArgs arguments)
+    private void PScenarioVideoChange(object sender, TextChangedEventArgs e)
     {
-        if (sender is not PVideo row
-            || arguments.PropertyName is not (nameof(PVideo.PVideoLocation) or nameof(PVideo.PVideoTimestamp)))
+        if (e.OriginalSource is not TextBox { IsKeyboardFocusWithin: true, DataContext: PVideo row } box)
         {
             return;
         }
 
+        LStateWritten written = new(box.Text);
         PScenarioRequestDefer(
-            PScenarioVideoFormat(row, arguments.PropertyName),
-            arguments.PropertyName == nameof(PVideo.PVideoLocation)
-                ? new LRequestVideoLocation(_pScenarioDraft, row.PVideoId, row.PVideoLocationRead())
-                : new LRequestVideoSpan(_pScenarioDraft, row.PVideoId, row.PVideoSpanRead()));
+            PEditor.PEditorFieldRead(box) == nameof(PVideo.PVideoLocation)
+                ? new LRequestVideoLocation(PScenarioDraft, row.PVideoId, written)
+                : new LRequestVideoSpan(PScenarioDraft, row.PVideoId, written));
     }
 
     private void PImageAddHandle(object sender, RoutedEventArgs e)
     {
         PScenarioRequestSend(new LRequestImageAddition(
-            _pScenarioDraft, 0, LStateWritten.LStateWrittenEmpty, _pScenarioImage.Count));
+            PScenarioDraft, 0, LStateWritten.LStateWrittenEmpty, _pScenarioImage.Count));
     }
 
     private void PVideoAddHandle(object sender, RoutedEventArgs e)
     {
         PScenarioRequestSend(new LRequestVideoAddition(
-            _pScenarioDraft, 0, LStateWritten.LStateWrittenEmpty, _pScenarioVideo.Count));
+            PScenarioDraft, 0, LStateWritten.LStateWrittenEmpty, _pScenarioVideo.Count));
     }
 
     public void PImageRemoveHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PImage row })
         {
-            PScenarioRequestSend(new LRequestImageRemoval(_pScenarioDraft, 0, row.PImageId));
+            PScenarioRequestSend(new LRequestImageRemoval(PScenarioDraft, 0, row.PImageId));
         }
     }
 
@@ -125,7 +99,7 @@ public partial class PRepertoire
     {
         if (sender is FrameworkElement { DataContext: PVideo row })
         {
-            PScenarioRequestSend(new LRequestVideoRemoval(_pScenarioDraft, 0, row.PVideoId));
+            PScenarioRequestSend(new LRequestVideoRemoval(PScenarioDraft, 0, row.PVideoId));
         }
     }
 
@@ -134,7 +108,7 @@ public partial class PRepertoire
         if (sender is FrameworkElement { DataContext: PImage row }
             && PImage.PImageOpen(_pRepertoireHost) is string chosen)
         {
-            row.PImageLocation = chosen;
+            PScenarioRequestSend(new LRequestImageLocation(PScenarioDraft, row.PImageId, new LStateWritten(chosen)));
         }
     }
 
@@ -143,63 +117,7 @@ public partial class PRepertoire
         if (sender is FrameworkElement { DataContext: PVideo row }
             && PVideo.PVideoOpen(_pRepertoireHost) is string chosen)
         {
-            row.PVideoLocation = chosen;
-        }
-    }
-
-    private bool PScenarioRequestCheck(string key)
-    {
-        return _pScenarioRequestPending.ContainsKey(key);
-    }
-
-    private void PScenarioRequestDefer(string key, LRequest request)
-    {
-        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft == 0)
-        {
-            return;
-        }
-
-        _pScenarioRequestPending[key] = request;
-        PScenarioChangeDefer();
-    }
-
-    private void PScenarioRequestSend(LRequest request)
-    {
-        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft == 0)
-        {
-            return;
-        }
-
-        PScenarioChangeSave();
-
-        if (_pScenarioHalted)
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineRequestApply(request);
-        }
-        catch (Exception exception)
-        {
-            PScenarioHoldSuspend(exception);
-            return;
-        }
-
-        PScenarioChangeUpdate();
-    }
-
-    private void PScenarioRequestPersist()
-    {
-        List<string> keys = [.. _pScenarioRequestPending.Keys];
-        foreach (string key in keys)
-        {
-            if (_pScenarioRequestPending.TryGetValue(key, out LRequest? request))
-            {
-                _lEngine.LEngineRequestApply(request);
-                _pScenarioRequestPending.Remove(key);
-            }
+            PScenarioRequestSend(new LRequestVideoLocation(PScenarioDraft, row.PVideoId, new LStateWritten(chosen)));
         }
     }
 }

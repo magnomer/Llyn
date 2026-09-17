@@ -44,7 +44,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronic
     internal void PRepertoireReset()
     {
         PRepertoireClear();
-        PAtlasFind(PInquest.Text ?? string.Empty);
+        PAtlasFind();
     }
 
     internal bool PRepertoireChangeCheck()

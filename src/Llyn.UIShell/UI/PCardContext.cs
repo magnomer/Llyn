@@ -36,7 +36,7 @@ internal sealed partial class PCard
             static draft => draft.LSituationDraftId,
             PCardContextCreate,
             static (row, draft) =>
-                row is PContext chip && chip.PContextTextRead().LStateWrittenMatch(draft.LSituationDraftTitle)
+                row is PContext chip && chip.PContextText == draft.LSituationDraftTitle
                     ? row
                     : PCardContextCreate(draft));
 
@@ -103,7 +103,8 @@ internal sealed partial class PCard
 
         foreach (object row in PCardContext)
         {
-            if (row is PContext chip && string.Equals(chip.PContextText, text, StringComparison.Ordinal))
+            if (row is PContext chip
+                && string.Equals(chip.PContextText.LStateValueShow(), text, StringComparison.Ordinal))
             {
                 return true;
             }

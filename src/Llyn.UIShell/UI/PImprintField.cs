@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -21,13 +22,13 @@ public partial class PImprint
         LReferenceKind.LReferenceKindUnknown,
     ];
 
-    private bool _pImprintTitleUnknown;
+    private LStateValue _pImprintTitle = LStateValue.LStateValueUnspecified;
 
-    private bool _pImprintYearUnknown;
+    private LStateValue _pImprintYear = LStateValue.LStateValueUnspecified;
 
-    private bool _pImprintNoteUnknown;
+    private LStateValue _pImprintNote = LStateValue.LStateValueUnspecified;
 
-    private bool _pImprintUrlUnknown;
+    private LStateValue _pImprintUrl = LStateValue.LStateValueUnspecified;
 
     private LReferenceKind _pImprintKind;
 
@@ -35,12 +36,12 @@ public partial class PImprint
 
     private void PImprintTitleHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintTitleUnknown, PImprintTitle);
+        PImprintMarkClear(ref _pImprintTitle, PImprintTitle);
     }
 
     private void PImprintNoteHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintNoteUnknown, PImprintNote);
+        PImprintMarkClear(ref _pImprintNote, PImprintNote);
     }
 
     private void PImprintKindHandle(object sender, RoutedEventArgs e)
@@ -62,24 +63,29 @@ public partial class PImprint
 
     private void PImprintYearHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintYearUnknown, PImprintYear);
+        PImprintMarkClear(ref _pImprintYear, PImprintYear);
     }
 
     private void PImprintUrlHandle(object sender, TextChangedEventArgs e)
     {
-        PImprintMarkClear(ref _pImprintUrlUnknown, PImprintUrl);
+        PImprintMarkClear(ref _pImprintUrl, PImprintUrl);
     }
 
-    private void PImprintMarkClear(ref bool unknown, TextBox field)
+    private void PImprintMarkClear(ref LStateValue held, TextBox field)
     {
         if (_pImprintLoading)
         {
             return;
         }
 
-        unknown = false;
+        held = LStateValue.LStateValueUnspecified;
         field.Tag = PImprintHintRead(field, false);
         PImprintChangeDefer();
+    }
+
+    private static LStateWritten PImprintFieldRead(TextBox field, LStateValue held)
+    {
+        return new LStateWritten(field.Text, PStateConverter.PStateConverterCheck(held));
     }
 
     private string PImprintHintRead(TextBox field, bool unknown)
@@ -102,10 +108,10 @@ public partial class PImprint
         LReference? reference = draft?.LDraftReference;
         _pImprintLoading = true;
 
-        PImprintFieldShow(PImprintTitle, reference?.LReferenceTitle, ref _pImprintTitleUnknown);
-        PImprintFieldShow(PImprintYear, reference?.LReferenceYear, ref _pImprintYearUnknown);
-        PImprintFieldShow(PImprintNote, reference?.LReferenceNote, ref _pImprintNoteUnknown);
-        PImprintFieldShow(PImprintUrl, reference?.LReferenceUrl, ref _pImprintUrlUnknown);
+        PImprintFieldShow(PImprintTitle, reference?.LReferenceTitle, ref _pImprintTitle);
+        PImprintFieldShow(PImprintYear, reference?.LReferenceYear, ref _pImprintYear);
+        PImprintFieldShow(PImprintNote, reference?.LReferenceNote, ref _pImprintNote);
+        PImprintFieldShow(PImprintUrl, reference?.LReferenceUrl, ref _pImprintUrl);
         PImprintKindShow(reference?.LReferenceKind ?? LReferenceKind.LReferenceKindUnspecified);
 
         PAuthorOpen(draft);
@@ -125,10 +131,10 @@ public partial class PImprint
 
         _pImprintLoading = true;
 
-        PImprintFieldShow(PImprintTitle, reference.LReferenceTitle, ref _pImprintTitleUnknown, true);
-        PImprintFieldShow(PImprintYear, reference.LReferenceYear, ref _pImprintYearUnknown, true);
-        PImprintFieldShow(PImprintNote, reference.LReferenceNote, ref _pImprintNoteUnknown, true);
-        PImprintFieldShow(PImprintUrl, reference.LReferenceUrl, ref _pImprintUrlUnknown, true);
+        PImprintFieldShow(PImprintTitle, reference.LReferenceTitle, ref _pImprintTitle, true);
+        PImprintFieldShow(PImprintYear, reference.LReferenceYear, ref _pImprintYear, true);
+        PImprintFieldShow(PImprintNote, reference.LReferenceNote, ref _pImprintNote, true);
+        PImprintFieldShow(PImprintUrl, reference.LReferenceUrl, ref _pImprintUrl, true);
 
         if (PImprintKindRead() != reference.LReferenceKind)
         {
@@ -174,16 +180,17 @@ public partial class PImprint
         return _pImprintKind;
     }
 
-    private void PImprintFieldShow(TextBox field, LStateValue? value, ref bool held, bool differing = false)
+    private void PImprintFieldShow(TextBox field, LStateValue? value, ref LStateValue held, bool differing = false)
     {
-        if (differing && new LStateWritten(field.Text, held).LStateWrittenMatch(value))
+        LStateValue shown = value ?? LStateValue.LStateValueUnspecified;
+        if (differing && held == shown)
         {
             return;
         }
 
-        field.Text = value?.LStateValueShow() ?? string.Empty;
-        held = value?.LStateValueState == LState.LStateUnknown;
-        field.Tag = PImprintHintRead(field, held);
+        held = shown;
+        field.Text = shown.LStateValueShow();
+        field.Tag = PImprintHintRead(field, PStateConverter.PStateConverterCheck(shown));
     }
 
     internal void PImprintTallyShow()
@@ -195,28 +202,31 @@ public partial class PImprint
     {
         return new LRequestReferenceBody(
             draft,
-            new LStateWritten(PImprintTitle.Text, _pImprintTitleUnknown),
-            new LStateWritten(PImprintYear.Text, _pImprintYearUnknown),
+            PImprintFieldRead(PImprintTitle, _pImprintTitle),
+            PImprintFieldRead(PImprintYear, _pImprintYear),
             PImprintKindRead(),
-            new LStateWritten(PImprintNote.Text, _pImprintNoteUnknown),
-            new LStateWritten(PImprintUrl.Text, _pImprintUrlUnknown),
-            _pAuthorState);
+            PImprintFieldRead(PImprintNote, _pImprintNote),
+            PImprintFieldRead(PImprintUrl, _pImprintUrl),
+            _pAuthorState.LStateMarkState);
     }
 
     internal void PImprintStoreRun()
     {
-        PImprintChangeSave();
-
-        long held = _pImprintDraft;
-        if (held == 0 || _pImprintHalted)
+        if (_pImprintTenure is not LTenure held)
         {
             return;
         }
 
-        LReference stored;
+        held.LTenurePersist();
+        if (!held.LTenureStateRead().LTenureStateChanged)
+        {
+            return;
+        }
+
+        long? stored;
         try
         {
-            stored = _pImprintHost.PWindowCommitRun(held, _lEngine.LEngineReferenceCommit);
+            stored = _pImprintHost.PWindowCommitRun(held, true);
         }
         catch (Exception exception)
         {
@@ -224,9 +234,13 @@ public partial class PImprint
             return;
         }
 
-        _pImprintDraft = 0;
+        _pImprintTenure = null;
+        if (stored is not long reference)
+        {
+            return;
+        }
 
         _pImprintOwner.PReferenceScribeShow(false);
-        _pImprintOwner.PReferenceShow(stored.LReferenceId);
+        _pImprintOwner.PReferenceShow(reference);
     }
 }

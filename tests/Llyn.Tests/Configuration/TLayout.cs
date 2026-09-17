@@ -14,14 +14,22 @@ public sealed class TLayout
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        engine.TEngineOrderSave(LCatalogOrder.LCatalogOrderRecent);
-        engine.TEngineSequenceSave(LCatalogOrder.LCatalogOrderSound);
-        engine.TEngineSeriesSave(LCatalogOrder.LCatalogOrderMarked);
-        engine.TEngineFunnelSave(LCatalogOrder.LCatalogOrderUsage);
-        engine.TEngineTierSave(LCatalogOrder.LCatalogOrderKind);
-        engine.TEngineGradeSave(LCatalogOrder.LCatalogOrderYear);
-        engine.TEngineRankSave(LCatalogOrder.LCatalogOrderLanguage);
-        engine.TEngineDegreeSave(LCatalogOrder.LCatalogOrderReverse);
+        engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderRecent);
+        engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderSound);
+        engine.TEngineVistaStart("favorite", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderMarked);
+        engine.TEngineVistaStart("taxonomy", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderUsage);
+        engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderKind);
+        engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderYear);
+        engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderLanguage);
+        engine.TEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderReverse);
 
         IReadOnlyList<LLayout> layout = engine.TEngineSettingsRead().LSettingsLayout ?? [];
 
@@ -41,14 +49,22 @@ public sealed class TLayout
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        engine.TEngineSieveSave(TInterface.TCatalogFilterCreate("Korean"));
-        engine.TEngineLensSave(TInterface.TCatalogFilterCreate("French"));
-        engine.TEngineStrainerSave(TInterface.TCatalogFilterCreate("German"));
-        engine.TEngineLatticeSave(TInterface.TCatalogFilterCreate("Spanish"));
-        engine.TEngineGrilleSave(TInterface.TCatalogFilterCreate("Italian"));
-        engine.TEngineMeshSave(TInterface.TCatalogFilterCreate("Japanese"));
-        engine.TEngineGauzeSave(TInterface.TCatalogFilterCreate("Chinese"));
-        engine.TEngineTrellisSave(TInterface.TCatalogFilterCreate("Dutch"));
+        engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Korean"));
+        engine.TEngineVistaStart("phonology", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("French"));
+        engine.TEngineVistaStart("favorite", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("German"));
+        engine.TEngineVistaStart("taxonomy", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Spanish"));
+        engine.TEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Italian"));
+        engine.TEngineVistaStart("repertoire", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Japanese"));
+        engine.TEngineVistaStart("corpus", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Chinese"));
+        engine.TEngineVistaStart("reference", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Dutch"));
 
         IReadOnlyList<LLayout> layout = engine.TEngineSettingsRead().LSettingsLayout ?? [];
 
@@ -69,8 +85,9 @@ public sealed class TLayout
 
         using (LEngine engine = workspace.TWorkspaceEngineStart())
         {
-            engine.TEngineOrderSave(LCatalogOrder.LCatalogOrderReverse);
-            engine.TEngineSieveSave(TInterface.TCatalogFilterCreate("Korean", "French"));
+            LVista vista = engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword);
+            vista.TVistaOrderSet(LCatalogOrder.LCatalogOrderReverse);
+            vista.TVistaFilterSet(TInterface.TCatalogFilterCreate("Korean", "French"));
             engine.TEngineModeSave("Corpus");
             engine.TEngineSplitSave(true);
         }
@@ -91,8 +108,10 @@ public sealed class TLayout
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         engine.TEngineLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
-        engine.TEngineDegreeSave(LCatalogOrder.LCatalogOrderUsage);
-        engine.TEngineGrilleSave(TInterface.TCatalogFilterCreate("Korean"));
+        engine.TEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderUsage);
+        engine.TEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Korean"));
         engine.TEngineLayoutSave(TInterface.TLayoutCreate("tenor", 340, 300));
 
         LLayout tenor = Assert.Single(engine.TEngineSettingsRead().LSettingsLayout ?? []);
@@ -110,8 +129,10 @@ public sealed class TLayout
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
         engine.TEngineLayoutSave(TInterface.TLayoutCreate("tenor", 320, 300));
-        engine.TEngineDegreeSave(LCatalogOrder.LCatalogOrderUsage);
-        engine.TEngineGrilleSave(TInterface.TCatalogFilterCreate("Korean"));
+        engine.TEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderUsage);
+        engine.TEngineVistaStart("tenor", LCatalogOrder.LCatalogOrderName)
+            .TVistaFilterSet(TInterface.TCatalogFilterCreate("Korean"));
         engine.TEngineLayoutReset();
 
         LLayout tenor = Assert.Single(engine.TEngineSettingsRead().LSettingsLayout ?? []);
@@ -128,7 +149,8 @@ public sealed class TLayout
         using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
         using LEngine engine = workspace.TWorkspaceEngineStart();
 
-        engine.TEngineOrderSave(LCatalogOrder.LCatalogOrderEarliest);
+        engine.TEngineVistaStart("library", LCatalogOrder.LCatalogOrderHeadword)
+            .TVistaOrderSet(LCatalogOrder.LCatalogOrderEarliest);
         engine.TEngineModeSave("Library");
 
         LSettings settings = engine.TEngineSettingsRead();

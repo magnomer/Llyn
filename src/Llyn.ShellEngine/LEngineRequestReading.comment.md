@@ -14,6 +14,28 @@ Routes every reading request to its handler, and hands any other request on to t
 `LRequestIpa` and `LRequestAudio` edit the primary row alone, for a form that shows one reading.
 `LRequestRespelling` and `LRequestPronunciationRespelling` write the respelling alone and derive nothing.
 
+## `private LDraft LEngineAudioClear(LDraft draft, LRequest request)`
+
+Applies a headword or language request, then drops the recordings that no longer fit the draft.
+A recording is audio of one word in one language.
+A new language makes every recording on the entry audio in the wrong language, so all of them go.
+A new spelling drops only a recording fetched this draft, since a stored one is the entry's own.
+So a typo corrected in a stored headword keeps the entry's audio.
+A request that leaves the field as it was drops nothing, so a form may send it on every pause.
+The stored entry is read through the draft's entry id, and a draft started on nothing has none.
+
+## `private static LEntryDraft LEngineAudioClear(LEntryDraft content, LEntryDraft? stored)`
+
+Empties the audio and source of every pronunciation row whose recording is not the stored row's.
+
+## `private static bool LEngineAudioMatch(LPronunciationDraft row, LEntryDraft? stored)`
+
+Whether the row's recording may stay.
+A row without one has nothing to lose.
+No stored entry means nothing may stay.
+A row whose id names a stored row keeps the recording that row already carries.
+Any other recording was fetched this draft and is fresh.
+
 ## `private LEntryDraft LEnginePrimaryChange(`
 
 Applies a change to the first pronunciation row, minting that row when the list is empty.

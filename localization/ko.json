@@ -144,6 +144,7 @@
     "List.LoadFailed": "항목을 열 수 없습니다.",
     "List.ImportFailed": "파일을 가져올 수 없습니다.",
     "Duplex.Search": "항목 검색",
+    "Duplex.Empty": "일치하는 항목이 없습니다",
     "Duplex.LoadFailed": "항목을 열 수 없습니다.",
     "Order.Title": "항목 정렬",
     "Order.Headword": "표제어 가 → 하",

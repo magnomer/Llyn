@@ -8,6 +8,8 @@ The id the row will be stored under stands at its right.
 It is also the citation field at the sentence's right end, and the buttons that open and drop rows.
 Each field's hint reads the unknown mark when the row holds something it cannot read back.
 So an empty-looking field says which kind of empty it is.
+Every field binds the row's value one way through the state converter.
+What is typed leaves through the editor's text handler, so the row holds no copy of it.
 
 The two frame fields sit in the first two columns.
 Each is placed by the column the row was told to take.
@@ -35,6 +37,8 @@ It stands in the sentence column so it reads as part of the sentence and not of 
 ## `Theme.Sentence.Citation`
 
 The field the cited Source is typed into, showing its `Author (Year)` byline.
+The byline is looked up when the field is drawn, from the row's anchor and the shared Source list.
+The field binds one way, so a typed line is the field's alone until the editor commits or discards it.
 It is bare like the sentence field, right-aligned and muted, so it reads as the sentence's tail.
 Its font, size and baseline drop are bound to the sentence field and its frame, not to the resources.
 So its box stands level with the sentence box whatever font the language pack gave the sentence.

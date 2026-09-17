@@ -15,7 +15,7 @@ public partial class PEditor
         }
 
         PEditorRequestSend(new LRequestGlossAddition(
-            _pEditorDraft, card.PCardId, row.PSentenceRow, PGlossLanguageRead(), row.PSentenceGloss.Count));
+            PEditorDraft, card.PCardId, row.PSentenceRow, PGlossLanguageRead(), row.PSentenceGloss.Count));
     }
 
     internal void PGlossRemoveHandle(object sender, ExecutedRoutedEventArgs e)
@@ -27,24 +27,52 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestSend(new LRequestGlossRemoval(_pEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId));
+        PEditorRequestSend(new LRequestGlossRemoval(PEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId));
     }
 
     private void PGlossChangeHandle(PCard card, PSentence row, PGloss gloss, string field)
     {
-        switch (field)
+        if (field == nameof(PGloss.PGlossLanguage))
         {
-            case nameof(PGloss.PGlossText):
-                PEditorRequestDefer(
-                    PEditorRequestFormat(card, row.PSentenceRow, PSentence.PSentenceGlossFormat(gloss, field)),
-                    new LRequestGlossText(
-                        _pEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId, gloss.PGlossTextRead()));
-                break;
-            case nameof(PGloss.PGlossLanguage):
-                PEditorRequestSend(new LRequestGlossLanguage(
-                    _pEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId, gloss.PGlossLanguage));
-                break;
+            PEditorRequestSend(new LRequestGlossLanguage(
+                PEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId, gloss.PGlossLanguage));
         }
+    }
+
+    private void PGlossChangeHandle(PGloss gloss, LStateWritten written)
+    {
+        if (PSentenceGlossFind(gloss) is (PCard card, PSentence row))
+        {
+            PEditorRequestDefer(
+                new LRequestGlossText(PEditorDraft, card.PCardId, row.PSentenceRow, gloss.PGlossId, written));
+        }
+    }
+
+    private (PCard, PSentence)? PSentenceGlossFind(PGloss gloss)
+    {
+        foreach (PCard card in _pMeaningList)
+        {
+            foreach (PSentence row in card.PCardSentence)
+            {
+                if (row.PSentenceGloss.Contains(gloss))
+                {
+                    return (card, row);
+                }
+            }
+        }
+
+        foreach (PCard card in _pCollocationList)
+        {
+            foreach (PSentence row in card.PCardSentence)
+            {
+                if (row.PSentenceGloss.Contains(gloss))
+                {
+                    return (card, row);
+                }
+            }
+        }
+
+        return null;
     }
 
     private string PGlossLanguageRead()

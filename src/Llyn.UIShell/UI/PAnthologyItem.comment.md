@@ -33,5 +33,5 @@ The panel sets it instead of refilling the list, so the catalog keeps its scroll
 ## `public string PAnthologyItemName`
 
 The sentence as the row shows it, numbered `(1)`, `(2)` while another row carries the same sentence.
-`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`LTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PAnthologyItemText` keeps the plain sentence for everything that is not display.

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Llyn.Core;
 
@@ -40,10 +41,46 @@ public sealed record LDiwei(
 
         if (division.Length > 0)
         {
-            int index = Array.IndexOf(LDiweiDivisions, division);
-            key += ' ' + (index >= 0 ? LDiweiRomans[index] : division);
+            key += ' ' + LDiweiDivisionFormat(division);
         }
 
         return rounded ? key + ' ' + LDiweiRounded : key;
     }
+
+    public static string LDiweiDivisionFormat(string division)
+    {
+        ArgumentNullException.ThrowIfNull(division);
+
+        int index = Array.IndexOf(LDiweiDivisions, division);
+        return index >= 0 ? LDiweiRomans[index] : division;
+    }
+
+    public static int LDiweiRankRead(string kind, string heading, LHypothesis? hypothesis)
+    {
+        ArgumentNullException.ThrowIfNull(heading);
+
+        if (heading.Length == 0)
+        {
+            return int.MaxValue;
+        }
+
+        if (kind != LDiweiRime)
+        {
+            int index = Array.IndexOf(LDiweiDivisions, heading);
+            return index >= 0 ? index : LDiweiDivisions.Length;
+        }
+
+        IReadOnlyList<LHypothesisPlace> places = hypothesis?.LHypothesisPlaces ?? [];
+        for (int index = 0; index < places.Count; index++)
+        {
+            if (string.Equals(places[index].LHypothesisPlaceName, heading, StringComparison.Ordinal))
+            {
+                return index;
+            }
+        }
+
+        return places.Count;
+    }
+
+    public static int LDiweiRankNormalize(int rank) => rank < 0 ? int.MaxValue : rank;
 }

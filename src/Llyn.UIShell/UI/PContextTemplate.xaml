@@ -12,9 +12,8 @@
                 <TextBlock VerticalAlignment="Center" FontSize="{DynamicResource Theme.Card.SituationSize}" Foreground="{DynamicResource Theme.Situation}">
                     <TextBlock.Text>
                         <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                            <Binding Path="PContextUnknown" />
-                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                             <Binding Path="PContextText" />
+                            <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>

@@ -14,7 +14,7 @@ The row announces its chosen flag, so the mark moves without the list being rebu
 ## `public string PMembershipItemName`
 
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
-`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`LTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PMembershipItemHeadword` keeps the plain headword for everything that is not display.
 
 ## `public string PMembershipItemEpithet { get; }`

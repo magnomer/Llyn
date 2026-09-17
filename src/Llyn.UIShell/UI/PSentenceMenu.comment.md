@@ -24,8 +24,8 @@ A workspace that cannot be read leaves the list empty rather than failing the fo
 ## `internal void PSentenceFrameLoad(string language)`
 
 Settles the Example frame for `language`: which of its two fields is written first, and what each offers.
-The order comes from the language pack and is handed to every card on the form.
-A row never keeps the order of the language it was drawn in.
+The order comes from the language pack and is handed to every row on the form.
+Neither the editor nor a card keeps it, so a row opened later reads the engine's order when built.
 The two lists come from what the workspace has already saved for that language.
 Nothing ships a marker or a role.
 A workspace that cannot be read leaves a list empty rather than failing the form.
@@ -33,7 +33,7 @@ An unnamed language is the one the speaker field currently shows.
 
 ## `internal void PSentenceAttach(PCard card)`
 
-Points the card's row changes at this editor, so each becomes a request.
+Points the card's row picks at this editor, so each becomes a request.
 
 ## `internal void PSentenceAddHandle(object sender, RoutedEventArgs e)`
 
@@ -88,14 +88,15 @@ A headword read that fails is reported once and the rest of the card is left as 
 
 ### `private void PSentenceChangeHandle(PCard card, PSentence row, string field)`
 
-Turns one row change into its request.
-The sentence, the marker and the role are deferred with the debounce, one pending request per row and field.
-The Source is sent at once, because it is picked rather than typed.
+Turns a pick a row noticed into its request, which today is only the language of a Gloss row.
+
+### `private void PSentenceChangeHandle(PCard card, PSentence row, string field, TextBox box)`
+
+Turns the text typed into one field of a row into its request.
+The sentence, the marker and the role are deferred through the tenure, keyed by the request's own row and field.
 The typed citation line is no request at all, and only opens the dropdown of Sources answering it.
-
-### `private bool PSentencePendingCheck(PCard card, PSentence row, string field)`
-
-Whether a request for this row's field is still waiting, in which case a redraw must not overwrite it.
+The field is told apart by what its text binds to.
+So the row holds no copy of what was typed.
 
 ### `private void PSentencePrepare(LEntryDraft draft)`
 

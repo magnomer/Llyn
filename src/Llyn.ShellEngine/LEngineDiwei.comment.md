@@ -13,6 +13,13 @@ The categories of one kind with their entry counts.
 
 The category a link in the reading view names, or `null` when nothing is placed there.
 
+## `public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind)`
+
+The categories of one kind as the yunjing panel's vista lists them.
+A category answers the vista's query when its key carries the trimmed text, case aside.
+The rows come by key, by key reversed, or by entry count with the key breaking ties.
+The vista's filter names languages and the language is already given, so it is not applied here.
+
 ## `public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)`
 
 Every stored placement linked to one category, for the category page to group.
@@ -20,6 +27,14 @@ Every stored placement linked to one category, for the category page to group.
 ## `public IReadOnlyList<long> LEngineDiweiScan(string language, IReadOnlyList<long> diweiIds)`
 
 The entries sitting at the cell the given categories name together.
+
+## `public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query)`
+
+The entries of one rime table cell as the yunjing panel lists them, ready to show.
+The cell's entry ids are scanned once, then the entries among them matching the headword query are read once.
+Only those ids are read, so a cell never costs the whole entry table.
+Rows keep id order and are built by the vista row builder, twins numbered and epithets read in one scan.
+No row is marked chosen, because the panel's shown entry is its own to mark.
 
 ## `public void LEngineDiweiRebuild()`
 

@@ -49,6 +49,7 @@ public partial class PWindow : Window
         PImage.PImageAttach(engine);
 
         engine.LEngineLeftoverSweep();
+        engine.LEngineRecordingSweep();
         PWindowLeftover = engine.LEngineLeftoverRead().Count;
 
         LWorkspaceState state = engine.LEngineStateRead();

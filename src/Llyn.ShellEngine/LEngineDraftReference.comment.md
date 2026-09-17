@@ -13,7 +13,7 @@ A credit with a positive id names a stored Author.
 One with a minted id names an Author commit creates.
 So a source nothing has stored yet can already credit somebody.
 
-## `public LDraft LEngineReferenceStart(string origin, long? referenceId)`
+## `internal LDraft LEngineReferenceStart(string origin, long? referenceId)`
 
 Mints a draft id, writes the first file, and returns the held Reference.
 With no Reference the content is blank under an id minted for it, which is a source being written first.

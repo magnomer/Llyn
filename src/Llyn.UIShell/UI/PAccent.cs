@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,16 +19,11 @@ public partial class PEditor
     private long _pAccentPrimaryId;
     private PRespelling _pAccentRespelling = PRespelling.PRespellingPlain;
 
-    private static string PAccentRequestFormat(long id)
-    {
-        return string.Concat("Accent:", id.ToString(CultureInfo.InvariantCulture));
-    }
-
     private LRequest PAccentRequestCreate(PAccentItem row)
     {
         return _pAccentRespelling.PRespellingShown
-            ? new LRequestPronunciationRespelling(_pEditorDraft, row.PAccentItemId, row.PAccentItemText)
-            : new LRequestPronunciationIpa(_pEditorDraft, row.PAccentItemId, row.PAccentItemText);
+            ? new LRequestPronunciationRespelling(PEditorDraft, row.PAccentItemId, row.PAccentItemText)
+            : new LRequestPronunciationIpa(PEditorDraft, row.PAccentItemId, row.PAccentItemText);
     }
 
     internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)
@@ -37,10 +31,10 @@ public partial class PEditor
         int position = e.Parameter is PAccentItem row ? _pAccentItem.IndexOf(row) + 2 : 1;
         if (_pAccentPrimaryId == 0)
         {
-            PEditorRequestSend(new LRequestPronunciationAddition(_pEditorDraft, string.Empty, 0));
+            PEditorRequestSend(new LRequestPronunciationAddition(PEditorDraft, string.Empty, 0));
         }
 
-        PEditorRequestSend(new LRequestPronunciationAddition(_pEditorDraft, string.Empty, position));
+        PEditorRequestSend(new LRequestPronunciationAddition(PEditorDraft, string.Empty, position));
     }
 
     internal void PAccentRemoveHandle(object sender, ExecutedRoutedEventArgs e)
@@ -48,7 +42,7 @@ public partial class PEditor
         long id = e.Parameter is PAccentItem row ? row.PAccentItemId : _pAccentPrimaryId;
         if (id != 0)
         {
-            PEditorRequestSend(new LRequestPronunciationRemoval(_pEditorDraft, id));
+            PEditorRequestSend(new LRequestPronunciationRemoval(PEditorDraft, id));
         }
     }
 
@@ -77,7 +71,7 @@ public partial class PEditor
 
         if (!_lEngine.LEngineRecordingExist(row.PAccentItemAudio))
         {
-            PEditorRequestSend(new LRequestPronunciationAudio(_pEditorDraft, row.PAccentItemId, string.Empty, null));
+            PEditorRequestSend(new LRequestPronunciationAudio(PEditorDraft, row.PAccentItemId, string.Empty, null));
             return;
         }
 
@@ -103,19 +97,6 @@ public partial class PEditor
         return null;
     }
 
-    private void PAccentFreshClear()
-    {
-        foreach (long id in _pRecordingFresh)
-        {
-            if (PAccentFind(id) is not null)
-            {
-                PEditorRequestSend(new LRequestPronunciationAudio(_pEditorDraft, id, string.Empty, null));
-            }
-        }
-
-        _pRecordingFresh.Clear();
-    }
-
     private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)
     {
         if (sender is not PAccentItem row
@@ -124,7 +105,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestDefer(PAccentRequestFormat(row.PAccentItemId), PAccentRequestCreate(row));
+        PEditorRequestDefer(PAccentRequestCreate(row));
     }
 
     private void PAccentShow(LEntryDraft draft)
@@ -170,10 +151,7 @@ public partial class PEditor
             return PAccentCreate(spoken);
         }
 
-        if (!PEditorRequestCheck(PAccentRequestFormat(row.PAccentItemId)))
-        {
-            row.PAccentItemText = _pAccentRespelling.PRespellingTextRead(spoken);
-        }
+        row.PAccentItemText = _pAccentRespelling.PRespellingTextRead(spoken);
 
         row.PAccentItemAudio = spoken.LPronunciationDraftAudio;
         return row;
@@ -233,7 +211,6 @@ public partial class PEditor
     private void PAccentClear()
     {
         PAccentRowClear();
-        _pRecordingFresh.Clear();
         _pAccentLanguage = string.Empty;
         _pAccentFlagged = false;
         _pAccentPrimary = string.Empty;

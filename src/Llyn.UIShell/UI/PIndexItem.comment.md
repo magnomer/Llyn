@@ -18,7 +18,7 @@ The panel sets it instead of refilling the list, so the catalog keeps its scroll
 ## `public string PIndexItemName`
 
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
-`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`LTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PIndexItemHeadword` keeps the plain headword for everything that is not display.
 
 ## `public string PIndexItemEpithet { get; }`

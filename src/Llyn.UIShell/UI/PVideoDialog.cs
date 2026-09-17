@@ -5,21 +5,12 @@ namespace Llyn.UIShell;
 
 public partial class PEditor
 {
-    internal void PVideoAttach(PCard card)
-    {
-        card.PCardVideoNotice = (row, field) => PEditorRequestDefer(
-            PEditorRequestFormat(card, row.PVideoId, field),
-            field == nameof(PVideo.PVideoLocation)
-                ? new LRequestVideoLocation(_pEditorDraft, row.PVideoId, row.PVideoLocationRead())
-                : new LRequestVideoSpan(_pEditorDraft, row.PVideoId, row.PVideoSpanRead()));
-    }
-
     internal void PVideoAddHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PCard card })
         {
             PEditorRequestSend(new LRequestVideoAddition(
-                _pEditorDraft, card.PCardId, LStateWritten.LStateWrittenEmpty, card.PCardVideo.Count));
+                PEditorDraft, card.PCardId, LStateWritten.LStateWrittenEmpty, card.PCardVideo.Count));
         }
     }
 
@@ -27,20 +18,15 @@ public partial class PEditor
     {
         if (sender is FrameworkElement { DataContext: PVideo row } && PCardVideoFind(row) is PCard card)
         {
-            PEditorRequestSend(new LRequestVideoRemoval(_pEditorDraft, card.PCardId, row.PVideoId));
+            PEditorRequestSend(new LRequestVideoRemoval(PEditorDraft, card.PCardId, row.PVideoId));
         }
-    }
-
-    private bool PVideoPendingCheck(PCard card, PVideo row, string field)
-    {
-        return PEditorRequestCheck(PEditorRequestFormat(card, row.PVideoId, field));
     }
 
     public void PVideoOpenHandle(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { DataContext: PVideo row } && PVideo.PVideoOpen(_pEditorHost) is string chosen)
         {
-            row.PVideoLocation = chosen;
+            PEditorRequestSend(new LRequestVideoLocation(PEditorDraft, row.PVideoId, new LStateWritten(chosen)));
         }
     }
 

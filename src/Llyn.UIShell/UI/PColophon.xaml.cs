@@ -51,13 +51,9 @@ public partial class PColophon : UserControl
 
     private string? PColophonTextRead(LStateValue value)
     {
-        return value.LStateValueState switch
-        {
-            _ when value.LStateValueUnreadable => value.LStateValueShow(),
-            LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => _pColophonHost.PLocalizationTextRead("Display.Unknown"),
-            _ => null,
-        };
+        return PStateConverter.PStateConverterCheck(value)
+            ? _pColophonHost.PLocalizationTextRead("Display.Unknown")
+            : value.LStateValueShow() is { Length: > 0 } shown ? shown : null;
     }
 
     private void PColophonTitleShow(LStateValue value)
@@ -65,7 +61,7 @@ public partial class PColophon : UserControl
         string? text = PColophonTextRead(value);
 
         PColophonTitle.Text = text ?? _pColophonHost.PLocalizationTextRead("Source.Untitled");
-        PField.PFieldPlaceholderShow(PColophonTitle, text is null || value.LStateValueState == LState.LStateUnknown);
+        PField.PFieldPlaceholderShow(PColophonTitle, text is null || PStateConverter.PStateConverterCheck(value));
     }
 
     private void PColophonKindShow(LReferenceKind kind)
@@ -83,15 +79,13 @@ public partial class PColophon : UserControl
         string? text = PColophonTextRead(value);
 
         field.Text = text ?? string.Empty;
-        PField.PFieldPlaceholderShow(
-            field, value.LStateValueState == LState.LStateUnknown && !value.LStateValueUnreadable);
+        PField.PFieldPlaceholderShow(field, PStateConverter.PStateConverterCheck(value));
         section.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void PColophonAuthorShow(LReference reference, IReadOnlyList<LAuthor> credits)
     {
-        bool shown = credits.Count > 0
-            || reference.LReferenceAuthorState.LStateMarkState == LState.LStateUnknown;
+        bool shown = credits.Count > 0 || PStateConverter.PStateConverterCheck(reference.LReferenceAuthorState);
 
         PColophonAuthor.Text = shown
             ? PShelfItem.PShelfCreditRead(

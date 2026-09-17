@@ -35,6 +35,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LTag> LEngineTagFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+        return LEngineTagFind(vista.LVistaQuery, vista.LVistaOrder);
+    }
+
     public IReadOnlyList<LTag> LEngineTagRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)

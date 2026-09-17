@@ -101,6 +101,8 @@ That is how the library panel arranges an Entry.
 Leaving the editor asks about the draft as it does there.
 Under the description stand `PScenarioImage` and `PScenarioVideo`, the card's own row templates over the draft's rows.
 They sit where the reading side draws the same media, and a gutter column keeps room for each row's remove.
+Each list hears the text changes bubbling from its rows.
+So a typed location reaches the panel without a row copy.
 The two add buttons after them are the card's, in the same icon group, the only buttons the editor carries.
 
 ## `<Button x:Name="PRepertoireBin" ...>`

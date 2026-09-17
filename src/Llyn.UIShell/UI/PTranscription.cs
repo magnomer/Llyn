@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -15,11 +14,6 @@ public partial class PEditor
     private readonly ObservableCollection<PTranscriptionItem> _pTranscriptionItem = [];
     private IReadOnlyList<string> _pTranscriptionSchemes = [];
 
-    private static string PTranscriptionRequestFormat(long id)
-    {
-        return string.Concat("Transcription:", id.ToString(CultureInfo.InvariantCulture));
-    }
-
     internal void PTranscriptionAddHandle(object sender, ExecutedRoutedEventArgs e)
     {
         string? scheme = PTranscriptionSchemeFind();
@@ -31,7 +25,7 @@ public partial class PEditor
         int position = e.Parameter is PTranscriptionItem row
             ? _pTranscriptionItem.IndexOf(row) + 1
             : _pTranscriptionItem.Count;
-        PEditorRequestSend(new LRequestTranscriptionAddition(_pEditorDraft, scheme, position));
+        PEditorRequestSend(new LRequestTranscriptionAddition(PEditorDraft, scheme, position));
     }
 
     internal void PTranscriptionAddCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -43,7 +37,7 @@ public partial class PEditor
     {
         if (e.Parameter is PTranscriptionItem row)
         {
-            PEditorRequestSend(new LRequestTranscriptionRemoval(_pEditorDraft, row.PTranscriptionItemId));
+            PEditorRequestSend(new LRequestTranscriptionRemoval(PEditorDraft, row.PTranscriptionItemId));
         }
     }
 
@@ -104,7 +98,7 @@ public partial class PEditor
             e.PropertyName, nameof(PTranscriptionItem.PTranscriptionItemScheme), StringComparison.Ordinal))
         {
             PEditorRequestSend(
-                new LRequestTranscriptionScheme(_pEditorDraft, row.PTranscriptionItemId, row.PTranscriptionItemScheme));
+                new LRequestTranscriptionScheme(PEditorDraft, row.PTranscriptionItemId, row.PTranscriptionItemScheme));
             return;
         }
 
@@ -114,8 +108,7 @@ public partial class PEditor
         }
 
         PEditorRequestDefer(
-            PTranscriptionRequestFormat(row.PTranscriptionItemId),
-            new LRequestTranscriptionText(_pEditorDraft, row.PTranscriptionItemId, row.PTranscriptionItemText));
+            new LRequestTranscriptionText(PEditorDraft, row.PTranscriptionItemId, row.PTranscriptionItemText));
     }
 
     private void PTranscriptionShow(LEntryDraft draft)
@@ -167,7 +160,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestSend(new LRequestTranscriptionAddition(_pEditorDraft, schemes[0], 0, true));
+        PEditorRequestSend(new LRequestTranscriptionAddition(PEditorDraft, schemes[0], 0, true));
     }
 
     private PTranscriptionItem PTranscriptionCreate(LTranscriptionDraft spelled)
@@ -180,12 +173,7 @@ public partial class PEditor
     private PTranscriptionItem PTranscriptionUpdate(PTranscriptionItem row, LTranscriptionDraft spelled)
     {
         row.PTranscriptionItemScheme = spelled.LTranscriptionDraftScheme;
-
-        if (!PEditorRequestCheck(PTranscriptionRequestFormat(row.PTranscriptionItemId)))
-        {
-            row.PTranscriptionItemText = spelled.LTranscriptionDraftText;
-        }
-
+        row.PTranscriptionItemText = spelled.LTranscriptionDraftText;
         return row;
     }
 

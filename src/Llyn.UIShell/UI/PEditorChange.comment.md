@@ -4,78 +4,75 @@
 
 When what the user typed reaches the draft the engine holds.
 The form no longer keeps a copy of the entry to compare itself against.
-A typed field becomes one request, held until the user stops, then sent.
-A structural action sends its request at once, because there is no keystroke coming to end it.
-The chip lists still travel the older way, as one draft save after the same pause.
-The two action buttons follow the engine's answer, so they cannot disagree with the closing warning.
+A typed field becomes one request, deferred through the tenure until the user stops.
+A structural action applies its request at once, because there is no keystroke coming to end it.
+The two action buttons follow the tenure's answer, so they cannot disagree with the closing warning.
 
-## `internal bool PEditorChangeCheck()`
-
-Whether this form holds work a host would be sorry to lose.
-Typing still waiting to be sent is sent first.
-Otherwise a window closing within a keystroke of the last change would call it unchanged.
-
-## `private void PEditorChangeUpdate()`
-
-Settles discard, store and the change notice against the engine's answer, then the undo and redo pair.
-Every write and every restore ends here, so the buttons never say more than the draft can do.
-
-## Inline notes
-
-### `private const int PEditorChangeDelay = 250;`
-
-Long enough that ordinary typing writes once rather than once per letter.
-Short enough that a crash costs a word, not a card.
-
-### `private bool _pEditorFill;`
+## `private bool _pEditorFill;`
 
 Filling the controls raises the same events typing does.
 So the form says nothing while it is being rendered from the draft the engine answered with.
 A render reached from inside a render restores the guard it found rather than dropping it.
 
-### `private void PEditorChangeAttach(PCard card)`
-
-A card reports its own text edits, since its fields are bound rather than typed into directly.
-Its lists report through their own attachments, one per list, made when the card is built.
-The handlers hold the editor rather than the other way round, so a dropped card is still collectible.
-
-### `private void PCardChangeHandle(object? sender, PropertyChangedEventArgs e)`
-
-The three text fields of a card each become their own request, keyed by card and field.
-The number and the header a card raises are the engine's answers, so they raise no request.
-
-### `private PRespelling _pEditorRespelling = PRespelling.PRespellingPlain;`
+## `private PRespelling _pEditorRespelling = PRespelling.PRespellingPlain;`
 
 Which form the pronunciation field prints, read on every render from the switch and the draft's pack.
 A typed change is sent as a request for that form, so the edit side mirrors the read side.
 
-### `private void PEditorTextHandle(object sender, TextChangedEventArgs e)`
+## `internal Action<bool>? PEditorChangeNotice;`
+
+Raised with whether the draft can be stored, so the mounting panel settles its rail's save in turn.
+
+## `internal bool PEditorChangeCheck()`
+
+Whether this form holds work a host would be sorry to lose.
+Typing still waiting to be written is written first.
+Otherwise a window closing within a keystroke of the last change would call it unchanged.
+
+## `private void PCardChangeHandle(PCard card, string field, LStateWritten written)`
+
+The three text fields of a card each become their own request, keyed by the request's own card and field.
+The number and the header a card raises are the engine's answers, so they raise no request.
+
+## `internal static string PEditorFieldRead(TextBox box)`
+
+Which value a typed box shows, read from the path its text binds to.
+A box inside an editable choice binds to the choice, so the choice's path is the answer there.
+A box bound through several values, as the citation field is, answers with the first of them.
+Boxes are told apart this way rather than by name.
+So a template adds a field without the editor learning it.
+
+## `private void PEditorTextHandle(object sender, TextChangedEventArgs e)`
 
 One handler for every text box in the editor, caught as the event bubbles.
 Fields are added to the form often, and each new one would otherwise need remembering.
-A card's own boxes are passed over here, because the card already reported them by property.
-A pronunciation row's box and a transcription row's box are passed over for the same reason.
-The entry-level boxes become their own requests, and anything else is a chip and takes the older path.
+A pronunciation row's box and a transcription row's box are passed over, as the rows report through their own handlers.
+A box standing on a card, a row, a Gloss or a media row is handed to the field handler.
+The entry-level boxes become their own requests.
 The pronunciation field becomes a respelling request while respellings are shown and a reading request otherwise.
 
-### `private void PEditorFocusHandle(object sender, RoutedEventArgs e)`
+## `private void PEditorFieldHandle(TextBox box)`
 
-Leaving any field sends what it holds.
+Turns the text typed into a card, row, Gloss or media field into its request.
+Only a box the keyboard is in has been typed into.
+A box the engine's value was drawn into raises the same event, and says nothing here.
+The value a box shows binds one way.
+What is typed leaves as written text, and the draft answers with the state.
+
+## `private void PEditorFocusHandle(object sender, RoutedEventArgs e)`
+
+Leaving any field writes what is waiting.
 Text sitting in a box is an unsent request, not state, so a click elsewhere must not lose it.
 
-### `_ = PEditorChangeRun(pending.Token);`
+## `private void PEditorChangeSave()`
 
-The wait is not awaited, because the keystroke that started it must return at once.
-Its continuation comes back on the UI thread, which is where the engine is used.
-Nobody is left to observe the task, so the write it ends with is guarded inside it.
-A refusal or a locked file reaches the window instead of vanishing into a dropped task.
-
-### `private void PEditorChangeSave()`
-
-The one place the pause ends.
+Writes what is waiting in the tenure now.
 A render that drops a focused card raises a focus loss, which lands here mid-fill.
-Nothing is written then, and the wait is left running so the waiting requests still go.
-Waiting requests go, and nothing else, because the chips and rows reached the engine as requests of their own.
-It also settles the buttons, so a write and what the buttons say never drift apart.
-A suspended form writes nothing, because its draft is the thing that failed.
-The save button follows the engine's refusal answer too, so a draft with no headword shows Discard alone.
+Nothing is written then, and the tenure's wait is left running so the waiting requests still go.
+
+## `private void PEditorChangeUpdate()`
+
+Settles discard, store and the change notice from one reading of the tenure's state, then the undo and redo pair.
+The save button follows the refusal answer too, so a draft with no headword shows Discard alone.
+The form's enabled state is settled from the same reading, so a halted tenure stops the typing.
+Every tenure bulletin ends here, so the buttons never say more than the draft can do.

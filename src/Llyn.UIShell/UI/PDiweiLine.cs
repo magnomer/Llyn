@@ -37,7 +37,8 @@ internal sealed class PDiweiLine
 
         lines.Sort((left, right) =>
         {
-            int order = PDiweiRankNormalize(left.PDiweiLineRank).CompareTo(PDiweiRankNormalize(right.PDiweiLineRank));
+            int order = LDiwei.LDiweiRankNormalize(left.PDiweiLineRank)
+                .CompareTo(LDiwei.LDiweiRankNormalize(right.PDiweiLineRank));
             return order != 0 ? order : string.CompareOrdinal(left.PDiweiLineLabel, right.PDiweiLineLabel);
         });
     }
@@ -49,6 +50,4 @@ internal sealed class PDiweiLine
             _pDiweiLineCharacters.Add(character);
         }
     }
-
-    private static int PDiweiRankNormalize(int rank) => rank < 0 ? int.MaxValue : rank;
 }

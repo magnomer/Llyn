@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Llyn.UIShell;
@@ -21,6 +22,11 @@ public partial class PCorpusTranscript : ResourceDictionary
     private void PGlossRemoveHandle(object sender, RoutedEventArgs e)
     {
         _pTranscriptHost.PGlossRemoveHandle(sender, e);
+    }
+
+    private void PTranscriptGlossHandle(object sender, TextChangedEventArgs e)
+    {
+        _pTranscriptHost.PTranscriptGlossHandle(sender, e);
     }
 
     private void PCitationPickHandle(object sender, MouseButtonEventArgs e)

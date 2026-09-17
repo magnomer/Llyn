@@ -39,7 +39,7 @@ public partial class PGuild : UserControl
     internal void PGuildReset()
     {
         PGuildClear();
-        PRollFind(PMuster.Text ?? string.Empty);
+        PRollFind();
     }
 
     internal bool PGuildChangeCheck()

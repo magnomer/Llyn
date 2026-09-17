@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -23,6 +24,24 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LDiwei> LEngineDiweiFind(LVista vista, string language, string kind)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+
+        string wanted = vista.LVistaQuery.Trim();
+        IEnumerable<LDiwei> kept = LEngineDiweiRead(language, kind).Where(row =>
+            wanted.Length == 0 || row.LDiweiKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
+        return vista.LVistaOrder switch
+        {
+            LCatalogOrder.LCatalogOrderReverse => [.. kept
+                .OrderByDescending(row => row.LDiweiKey, StringComparer.Ordinal)],
+            LCatalogOrder.LCatalogOrderUsage => [.. kept
+                .OrderByDescending(row => row.LDiweiCount)
+                .ThenBy(row => row.LDiweiKey, StringComparer.Ordinal)],
+            _ => [.. kept.OrderBy(row => row.LDiweiKey, StringComparer.Ordinal)],
+        };
+    }
+
     public IReadOnlyList<LFanqieRow> LEngineFanqieRead(LDiwei diwei)
     {
         ArgumentNullException.ThrowIfNull(diwei);
@@ -38,6 +57,23 @@ public sealed partial class LEngine
         lock (_lEngineGate)
         {
             return new LDiweiArchive(_lEngineDatabase).LDiweiEntryScan(language, diweiIds);
+        }
+    }
+
+    public IReadOnlyList<LVistaRow> LEngineXiaoyunFind(string language, IReadOnlyList<long> diweiIds, string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        lock (_lEngineGate)
+        {
+            IReadOnlyList<long> ids = new LDiweiArchive(_lEngineDatabase).LDiweiEntryScan(language, diweiIds);
+            if (ids.Count == 0)
+            {
+                return [];
+            }
+
+            IReadOnlyList<LEntry> entries = new LEntryArchive(_lEngineDatabase).LEntryScan(ids, query);
+            return LEngineVistaBuild(entries, null);
         }
     }
 

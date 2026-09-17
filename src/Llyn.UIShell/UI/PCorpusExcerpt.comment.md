@@ -16,7 +16,7 @@ Every side of the panel reads it, so it lives with the page that shows it.
 ## `private string? PExcerptTextRead(LStateValue value)`
 
 The text a three-state value reads as, or null when it was never written.
-An unknown value reads the unknown mark, as the situation reading reads it.
+An unknown value reads the unknown mark, and whether it is unknown is the converter's to say.
 
 ## `private void PExcerptSentenceShow(LExample example)`
 

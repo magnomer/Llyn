@@ -36,6 +36,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogAuthor> LEngineAuthorFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+        return LEngineAuthorFind(vista.LVistaQuery, vista.LVistaOrder);
+    }
+
     public IReadOnlyList<LCatalogReference> LEngineOeuvreFind(
         long? author,
         string query,
@@ -76,6 +82,48 @@ public sealed partial class LEngine
             }
 
             return LCatalogReference.LCatalogReferenceSort(rows, order);
+        }
+    }
+
+    public IReadOnlyList<LFellow> LEngineFellowFind(long authorId)
+    {
+        lock (_lEngineGate)
+        {
+            IReadOnlyList<LReference> references = new LReferenceArchive(_lEngineDatabase).LReferenceAllRead();
+            IReadOnlyDictionary<long, IReadOnlyList<LAuthor>> credits =
+                new LAuthorArchive(_lEngineDatabase).LAuthorReferenceRead();
+
+            Dictionary<long, LFellow> shared = [];
+            foreach (LReference reference in references)
+            {
+                if (!credits.TryGetValue(reference.LReferenceId, out IReadOnlyList<LAuthor>? credited)
+                    || !LEngineOeuvreMatch(authorId, credited))
+                {
+                    continue;
+                }
+
+                foreach (LAuthor credit in credited)
+                {
+                    if (credit.LAuthorId == authorId)
+                    {
+                        continue;
+                    }
+
+                    shared[credit.LAuthorId] = shared.TryGetValue(credit.LAuthorId, out LFellow? held)
+                        ? held with { LFellowShared = held.LFellowShared + 1 }
+                        : new LFellow(credit.LAuthorId, credit.LAuthorName, 1);
+                }
+            }
+
+            List<LFellow> fellows = [.. shared.Values];
+            fellows.Sort((left, right) =>
+            {
+                int order = right.LFellowShared.CompareTo(left.LFellowShared);
+                return order != 0
+                    ? order
+                    : string.Compare(left.LFellowName, right.LFellowName, StringComparison.CurrentCultureIgnoreCase);
+            });
+            return fellows;
         }
     }
 

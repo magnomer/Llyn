@@ -13,4 +13,5 @@ The entry and page likeness reads, both prints and the press hand-in are relayed
 The status bar read is relayed here too.
 The chronicle undo and redo with their two checks are relayed here as well.
 The chronicle clock seam is relayed here too.
+The recording sweep is relayed here beside the leftover sweep.
 Each relay is transparent and carries no test logic of its own.

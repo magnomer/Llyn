@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -177,15 +178,10 @@ public partial class PEditor
 
     private long? PEditorEntryRead()
     {
-        if (_pEditorDraft == 0)
-        {
-            return null;
-        }
-
         LDraft? held;
         try
         {
-            held = _lEngine.LEngineDraftRead(_pEditorDraft);
+            held = _pEditorTenure?.LTenureRead();
         }
         catch (Exception)
         {
@@ -202,26 +198,33 @@ public partial class PEditor
 
     internal void PEditorEntrySave()
     {
-        PEditorChangeSave();
+        if (_pEditorTenure is not LTenure held)
+        {
+            return;
+        }
 
-        long held = _pEditorDraft;
-        if (held == 0 || _pEditorHalted)
+        held.LTenurePersist();
+        if (!held.LTenureStateRead().LTenureStateChanged)
         {
             return;
         }
 
         long? entry = PEditorEntryRead();
-        _pEditorDraft = 0;
 
-        LOutcome stored;
+        long? stored;
         try
         {
-            stored = _pEditorHost.PWindowCommitRun(held, _lEngine.LEngineDraftCommit);
+            stored = _pEditorHost.PWindowCommitRun(held, true);
         }
         catch (Exception exception)
         {
-            _pEditorDraft = held;
             _pEditorHost.PWindowFailureShow(entry is null ? "Input.SaveFailed" : "Input.UpdateFailed", exception);
+            return;
+        }
+
+        _pEditorTenure = null;
+        if (stored is not long id)
+        {
             return;
         }
 
@@ -231,14 +234,13 @@ public partial class PEditor
             return;
         }
 
-        PEditorEntryShow(stored.LOutcomeEntry.LEntryId);
+        PEditorEntryShow(id);
     }
 
     private void PEditorDiscardHandle(object sender, RoutedEventArgs e)
     {
         long? entry = PEditorEntryRead();
 
-        PEditorChangeStop();
         PEditorDraftCancel();
 
         if (entry is null)

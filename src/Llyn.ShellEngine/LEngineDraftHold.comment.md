@@ -11,6 +11,7 @@ An id raised here belongs to the workspace that raised it, so a workspace change
 Every call naming an id is checked against that mark.
 A shell can keep an id the engine has already left behind.
 These are primitives, and `LTenure` in `LTenure.cs` is the session object that sequences them for a panel.
+The start, check, cancel and request primitives are internal, so the shell reaches them through a tenure alone.
 
 A held draft carries an entry, a sentence, a situation or a source.
 The kind is a further content field rather than a tag beside one.
@@ -33,7 +34,7 @@ The court rows live in `LEngineCourt.cs`.
 The field by field comparisons live in `LEngineDraftMatch.cs`.
 The translation settlement a commit runs, and the deferred court pass after it, live in `LEngineDraftTranslation.cs`.
 
-## `public LDraft LEngineDraftStart(string origin, long? entryId)`
+## `internal LDraft LEngineDraftStart(string origin, long? entryId)`
 
 Mints an id, writes the first file, and returns the held draft.
 With no entry the content is blank, which is a new word being typed.
@@ -66,11 +67,11 @@ A draft bulletin carrying id zero follows, because the held set shrank and the s
 Zero names no draft, so no editor mistakes it for its own.
 The chronicle of the draft is dropped with it, since nothing remains to step back through.
 
-## `public bool LEngineDraftCheck(long id)`
+## `internal bool LEngineDraftCheck(long id)`
 
 Whether held work differs from the record it was started from, with the refusal left unread.
 
-## `public bool LEngineDraftCheck(long id, out string? refusal)`
+## `internal bool LEngineDraftCheck(long id, out string? refusal)`
 
 Whether held work differs from the record it was started from.
 `refusal` names the reason a commit of it would be refused right now, or null when it would go through.
@@ -184,7 +185,7 @@ Taking the file away would leave that editor saving into nothing, and every late
 The draft it keeps names a stored entry.
 The editor's own commit updates that entry rather than storing the word twice.
 
-## `public void LEngineDraftCancel(long id)`
+## `internal void LEngineDraftCancel(long id)`
 
 Discards held work: the court first, the file second.
 The chronicle of the draft is dropped with it.

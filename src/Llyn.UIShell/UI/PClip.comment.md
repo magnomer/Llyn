@@ -116,7 +116,7 @@ But it is audio of a word the form no longer holds.
 
 The primary row keeps its recording on the form, the way it always has.
 A further row is sent an audio request on its own id, and the draft render shows the file.
-Either way the recording is fetched for the headword as it stands now, so editing it drops this.
+Either way the recording is fetched for the headword as it stands, and the engine drops it on a change.
 The recording is sent as a request at once, because a pick is a whole action.
 The primary row's id is read back after the audio is sent, since the engine mints that row late.
 

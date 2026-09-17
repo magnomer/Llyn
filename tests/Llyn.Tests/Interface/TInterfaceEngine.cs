@@ -208,6 +208,11 @@ internal static partial class TInterface
         engine.LEngineLeftoverSweep();
     }
 
+    internal static void TEngineRecordingSweep(this LEngine engine)
+    {
+        engine.LEngineRecordingSweep();
+    }
+
     internal static string TEngineWorkspaceRead(this LEngine engine) =>
         engine.LEngineWorkspaceRead();
 

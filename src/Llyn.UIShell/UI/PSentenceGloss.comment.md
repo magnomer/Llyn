@@ -12,16 +12,16 @@ The rows in the order the Example keeps them.
 
 The field name of one Gloss edit, the property joined to the Gloss id.
 The sentence row raises it as its own property change, so the card forwards it like any other field.
-The editor keys its pending request by it, and the redraw asks by it.
+The row raises its property change under it, and the editor reads the Gloss and field back out of it.
 
 ## `internal PGloss? PSentenceGlossFind(string field, out string name)`
 
 Splits a field name of that shape back into the Gloss it names and the property.
 Any other field gives null.
 
-## `private void PSentenceGlossShow(IReadOnlyList<LGlossDraft> drafts, Func<PGloss, string, bool> pending)`
+## `private void PSentenceGlossShow(IReadOnlyList<LGlossDraft> drafts)`
 
-Redraws the rows from the drafts, keeping the rows whose ids survive and skipping a field still pending.
+Redraws the rows from the drafts, keeping the rows whose ids survive.
 
 ## `private PGloss PSentenceGlossCreate(LGlossDraft draft)`
 

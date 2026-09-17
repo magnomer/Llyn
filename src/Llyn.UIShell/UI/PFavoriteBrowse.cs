@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -13,12 +14,20 @@ public partial class PFavorite
 
     private long? _pRosterEntry;
 
-    private LCatalogOrder _pSeriesChoice;
-
-    private LCatalogFilter _pStrainerChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pFavoriteVista;
 
     private async void PFavoriteBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pFavoriteVista is not null && bulletin.LBulletinId == _pFavoriteVista.LVistaId)
+            {
+                PRosterFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             await PEnsign.PEnsignLoad(_lEngine);
@@ -42,58 +51,66 @@ public partial class PFavorite
 
     private void PRecallHandle(object sender, TextChangedEventArgs e)
     {
-        PRosterFind(PRecall.Text ?? string.Empty);
+        _pFavoriteVista?.LVistaQuerySet(PRecall.Text ?? string.Empty);
     }
 
     private void PSeriesHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pFavoriteVista is null)
         {
             return;
         }
 
-        _pSeriesChoice = LCatalog.LCatalogOrderParse(choice, _pSeriesChoice);
-        _lEngine.LEngineSeriesSave(_pSeriesChoice);
         PSeriesDropper.IsChecked = false;
-        PRosterFind(PRecall.Text ?? string.Empty);
+        _pFavoriteVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pFavoriteVista.LVistaOrder));
     }
 
     private void PSeriesGraspUpdate()
     {
-        if (_pSeriesChoice != LCatalogOrder.LCatalogOrderGrasp)
+        if (_pFavoriteVista?.LVistaOrder != LCatalogOrder.LCatalogOrderGrasp)
         {
             return;
         }
 
-        PRosterFind(PRecall.Text ?? string.Empty);
-    }
-
-    internal async void PSeriesRestore(LCatalogOrder order)
-    {
-        _pSeriesChoice = order;
-        PChoice.PChoiceOrderApply(PSeriesDropdown, order);
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PRosterFind(PRecall.Text ?? string.Empty);
+        PRosterFind();
     }
 
     private void PStrainerHandle(object sender, RoutedEventArgs e)
     {
-        _pStrainerChoice = PChoice.PChoiceFilterRead(PStrainerList);
-        _lEngine.LEngineStrainerSave(_pStrainerChoice);
-        PStrainerMark.Visibility = _pStrainerChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PRosterFind(PRecall.Text ?? string.Empty);
+        if (_pFavoriteVista is null)
+        {
+            return;
+        }
+
+        _pFavoriteVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PStrainerList));
+        PStrainerRestore();
     }
 
-    internal async void PStrainerRestore(LCatalogFilter filter)
+    internal async void PFavoriteVistaRestore(LVista vista)
     {
-        _pStrainerChoice = filter;
-        PStrainerMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        _pFavoriteVista = vista;
+        PSeriesRestore();
+        PStrainerRestore();
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PChoice.PChoiceFilterBuild(PStrainerList, _lEngine.LEngineLanguageRead(), filter, PStrainerHandle);
+        PChoice.PChoiceFilterBuild(PStrainerList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PStrainerHandle);
+        vista.LVistaQuerySet(PRecall.Text ?? string.Empty);
+        PRosterFind();
+    }
+
+    private void PSeriesRestore()
+    {
+        if (_pFavoriteVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PSeriesDropdown, _pFavoriteVista.LVistaOrder);
+        }
+    }
+
+    private void PStrainerRestore()
+    {
+        bool active = _pFavoriteVista?.LVistaFilter.LCatalogFilterActive == true;
+        PStrainerMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PRosterSelect(long? id)
@@ -105,12 +122,18 @@ public partial class PFavorite
         }
     }
 
-    private void PRosterFind(string query)
+    private void PRosterFind()
     {
-        IReadOnlyList<LFavorite> favorites;
+        _pRosterList.Clear();
+        if (_pFavoriteVista is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<LVistaRow> favorites;
         try
         {
-            favorites = _lEngine.LEngineFavoriteFind(query, _pSeriesChoice, _pStrainerChoice);
+            favorites = _lEngine.LEngineFavoriteFind(_pFavoriteVista);
         }
         catch (Exception exception)
         {
@@ -118,21 +141,17 @@ public partial class PFavorite
             favorites = [];
         }
 
-        _pRosterList.Clear();
-        foreach (LFavorite favorite in favorites)
+        foreach (LVistaRow row in favorites)
         {
             _pRosterList.Add(new PRosterItem(
-                favorite.LFavoriteEntry.LEntryId,
-                favorite.LFavoriteEntry.LEntryHeadword,
-                favorite.LFavoriteEntry.LEntryLanguage,
-                _lEngine.LEngineEpithetRead(favorite.LFavoriteEntry.LEntryId)));
+                row.LVistaRowId,
+                row.LVistaRowHeadword,
+                row.LVistaRowLanguage,
+                row.LVistaRowEpithet ?? string.Empty)
+            {
+                PRosterItemName = row.LVistaRowName,
+            });
         }
-
-        PTwin.PTwinNameApply(
-            _pRosterList,
-            row => row.PRosterItemHeadword,
-            (row, name) => row.PRosterItemName = name,
-            row => row.PRosterItemId);
 
         PRosterEmpty.Visibility = _pRosterList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
@@ -170,7 +189,7 @@ public partial class PFavorite
         if (draft is null)
         {
             PFavoriteClear();
-            PRosterFind(PRecall.Text ?? string.Empty);
+            PRosterFind();
             return;
         }
 
@@ -194,7 +213,7 @@ public partial class PFavorite
         PFavoriteBin.IsEnabled = true;
         }
 
-        PRosterFind(PRecall.Text ?? string.Empty);
+        PRosterFind();
 
         if (_pRosterEntry is not long shown
             || (id > 0 && shown != id))

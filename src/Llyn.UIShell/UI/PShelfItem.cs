@@ -47,18 +47,14 @@ internal sealed class PShelfItem : INotifyPropertyChanged
             return string.Join(", ", names);
         }
 
-        return reference.LReferenceAuthorState.LStateMarkState == LState.LStateUnknown ? unknown : unset;
+        return PStateConverter.PStateConverterCheck(reference.LReferenceAuthorState) ? unknown : unset;
     }
 
     private static string? PShelfValueRead(LStateValue value, string unknown)
     {
-        return value.LStateValueState switch
-        {
-            _ when value.LStateValueUnreadable => value.LStateValueShow(),
-            LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => unknown,
-            _ => null,
-        };
+        return PStateConverter.PStateConverterCheck(value)
+            ? unknown
+            : value.LStateValueShow() is { Length: > 0 } shown ? shown : null;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

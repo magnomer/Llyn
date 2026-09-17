@@ -55,3 +55,8 @@ Nothing else goes: the cards stay exactly as they were, one label shorter.
 The tags answering `query`, in `order`.
 The tag catalog is held whole rather than searched in the store.
 The match is made over what was read.
+
+## `public IReadOnlyList<LTag> LEngineTagFind(LVista vista)`
+
+The tags the taxonomy panel's vista lists, with the query and order read off the vista.
+The vista's filter hides languages from the entries of the chosen tag, not tags, so it is not applied here.

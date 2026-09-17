@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -12,12 +13,20 @@ public partial class PPhonology
 
     private long? _pDisplayEntry;
 
-    private LCatalogOrder _pSequenceChoice;
-
-    private LCatalogFilter _pLensChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pPhonologyVista;
 
     private async void PPhonologyBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pPhonologyVista is not null && bulletin.LBulletinId == _pPhonologyVista.LVistaId)
+            {
+                PInventoryFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             await PEnsign.PEnsignLoad(_lEngine);
@@ -35,48 +44,56 @@ public partial class PPhonology
 
     private void PProbeHandle(object sender, TextChangedEventArgs e)
     {
-        PInventoryFind(PProbe.Text ?? string.Empty);
+        _pPhonologyVista?.LVistaQuerySet(PProbe.Text ?? string.Empty);
     }
 
     private void PSequenceHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pPhonologyVista is null)
         {
             return;
         }
 
-        _pSequenceChoice = LCatalog.LCatalogOrderParse(choice, _pSequenceChoice);
-        _lEngine.LEngineSequenceSave(_pSequenceChoice);
         PSequenceDropper.IsChecked = false;
-        PInventoryFind(PProbe.Text ?? string.Empty);
-    }
-
-    internal async void PSequenceRestore(LCatalogOrder order)
-    {
-        _pSequenceChoice = order;
-        PChoice.PChoiceOrderApply(PSequenceDropdown, order);
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PInventoryFind(PProbe.Text ?? string.Empty);
+        _pPhonologyVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pPhonologyVista.LVistaOrder));
     }
 
     private void PLensHandle(object sender, RoutedEventArgs e)
     {
-        _pLensChoice = PChoice.PChoiceFilterRead(PLensList);
-        _lEngine.LEngineLensSave(_pLensChoice);
-        PLensMark.Visibility = _pLensChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PInventoryFind(PProbe.Text ?? string.Empty);
+        if (_pPhonologyVista is null)
+        {
+            return;
+        }
+
+        _pPhonologyVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PLensList));
+        PLensRestore();
     }
 
-    internal async void PLensRestore(LCatalogFilter filter)
+    internal async void PPhonologyVistaRestore(LVista vista)
     {
-        _pLensChoice = filter;
-        PLensMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        _pPhonologyVista = vista;
+        PSequenceRestore();
+        PLensRestore();
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PChoice.PChoiceFilterBuild(PLensList, _lEngine.LEngineLanguageRead(), filter, PLensHandle);
+        PChoice.PChoiceFilterBuild(PLensList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PLensHandle);
+        vista.LVistaQuerySet(PProbe.Text ?? string.Empty);
+        PInventoryFind();
+    }
+
+    private void PSequenceRestore()
+    {
+        if (_pPhonologyVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PSequenceDropdown, _pPhonologyVista.LVistaOrder);
+        }
+    }
+
+    private void PLensRestore()
+    {
+        bool active = _pPhonologyVista?.LVistaFilter.LCatalogFilterActive == true;
+        PLensMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PInventorySelect(long? id)
@@ -88,24 +105,26 @@ public partial class PPhonology
         }
     }
 
-    private void PInventoryFind(string query)
+    private void PInventoryFind()
     {
         _pInventoryList.Clear();
-        foreach (LCatalogPronunciation row in _lEngine.LEnginePronunciationFind(query, _pSequenceChoice, _pLensChoice))
+        if (_pPhonologyVista is null)
+        {
+            return;
+        }
+
+        foreach (LCatalogPronunciation row in _lEngine.LEnginePronunciationFind(_pPhonologyVista))
         {
             _pInventoryList.Add(new PInventoryItem(
                 row.LCatalogPronunciationEntry.LEntryId,
                 row.LCatalogPronunciationEntry.LEntryHeadword,
                 row.LCatalogPronunciationEntry.LEntryLanguage,
                 row.LCatalogPronunciationSound,
-                _lEngine.LEngineEpithetRead(row.LCatalogPronunciationEntry.LEntryId)));
+                row.LCatalogPronunciationEpithet ?? string.Empty)
+            {
+                PInventoryItemName = row.LCatalogPronunciationName,
+            });
         }
-
-        PTwin.PTwinNameApply(
-            _pInventoryList,
-            row => row.PInventoryItemHeadword,
-            (row, name) => row.PInventoryItemName = name,
-            row => row.PInventoryItemId);
 
         PInventoryEmpty.Visibility = _pInventoryList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
@@ -143,7 +162,7 @@ public partial class PPhonology
         if (draft is null)
         {
             PPhonologyClear();
-            PInventoryFind(PProbe.Text ?? string.Empty);
+            PInventoryFind();
             return;
         }
 
@@ -164,10 +183,10 @@ public partial class PPhonology
         {
             _pDisplayEntry = id;
             PInventorySelect(id);
-        PPhonologyBin.IsEnabled = true;
+            PPhonologyBin.IsEnabled = true;
         }
 
-        PInventoryFind(PProbe.Text ?? string.Empty);
+        PInventoryFind();
 
         if (_pDisplayEntry is not long shown
             || (id > 0 && shown != id))

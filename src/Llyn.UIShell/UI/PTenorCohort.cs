@@ -23,9 +23,9 @@ public partial class PTenor
         try
         {
             read = _lEngine.LEngineEntryFind(
-                new LRegister(_pGamutChoice ?? 0, LStateValue.LStateValueUnspecified),
+                new LRegister(_pTenorVista?.LVistaChosen ?? 0, LStateValue.LStateValueUnspecified),
                 PQuest.Text ?? string.Empty,
-                _pGrilleChoice);
+                _pTenorVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
         }
         catch (Exception exception)
         {
@@ -43,7 +43,7 @@ public partial class PTenor
                 _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pCohortList,
             row => row.PCohortItemHeadword,
             (row, name) => row.PCohortItemName = name,
@@ -88,7 +88,7 @@ public partial class PTenor
         if (draft is null)
         {
             PTenorClear();
-            PGamutFind(PSounding.Text ?? string.Empty);
+            PGamutFind();
             return;
         }
 
@@ -112,7 +112,7 @@ public partial class PTenor
             PTenorBin.IsEnabled = true;
         }
 
-        PGamutFind(PSounding.Text ?? string.Empty);
+        PGamutFind();
 
         if (_pDisplayEntry is not long shown
             || (id > 0 && shown != id))
@@ -141,7 +141,7 @@ public partial class PTenor
 
     private void PCohortEntryCreate()
     {
-        long? register = _pGamutChoice;
+        long? register = _pTenorVista?.LVistaChosen;
 
         PTenorClear();
         PTenorMode.IsEnabled = true;

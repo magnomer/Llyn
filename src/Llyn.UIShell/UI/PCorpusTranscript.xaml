@@ -113,10 +113,14 @@
                 </Border>
             </Popup>
 
-            <TextBox Grid.Column="1" Style="{StaticResource Theme.Transcript.Gloss}" Text="{Binding PGlossText, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox
+                Grid.Column="1"
+                Style="{StaticResource Theme.Transcript.Gloss}"
+                Text="{Binding PGlossText, Converter={StaticResource Theme.Gloss.State}, Mode=OneWay}"
+                TextChanged="PTranscriptGlossHandle">
                 <TextBox.Tag>
                     <MultiBinding Converter="{StaticResource Theme.Gloss.State}">
-                        <Binding Path="PGlossUnknown" />
+                        <Binding Path="PGlossText" />
                         <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                         <local:PLocalizationBinder PLocalizationBinderKey="Example.Translation" />
                     </MultiBinding>

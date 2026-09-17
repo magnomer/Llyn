@@ -63,7 +63,7 @@ public partial class PDisplay
         PCompassSectionAdd(PDisplayIncomingSection, _pDisplayHost.PLocalizationTextRead("Display.Translated"));
         PCompassSectionAdd(PDisplayNoteSection, _pDisplayHost.PLocalizationTextRead("Display.Note"));
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pCompassRows, row => row.PCompassItemLabel, (row, name) => row.PCompassItemName = name);
 
         PCompassPlace();
@@ -95,13 +95,9 @@ public partial class PDisplay
                 continue;
             }
 
-            string label = card.LCardDraftTitle.LStateValueState switch
-            {
-                _ when card.LCardDraftTitle.LStateValueUnreadable => card.LCardDraftTitle.LStateValueShow(),
-                LState.LStateSpecified => card.LCardDraftTitle.LStateValueShow(),
-                LState.LStateUnknown => unknown,
-                _ => kind,
-            };
+            string label = PStateConverter.PStateConverterCheck(card.LCardDraftTitle)
+                ? unknown
+                : card.LCardDraftTitle.LStateValueShow() is { Length: > 0 } shown ? shown : kind;
 
             _pCompassRows.Add(new PCompassItem(
                 container,

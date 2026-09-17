@@ -11,8 +11,7 @@ internal sealed class PGloss : INotifyPropertyChanged
     private readonly long _pGlossId;
     private string _pGlossLanguage;
     private ImageSource? _pGlossFlag;
-    private string _pGlossText;
-    private bool _pGlossUnknown;
+    private LStateValue _pGlossText;
     private bool _pGlossLanguageVisible;
 
     internal PGloss(ObservableCollection<PLanguageItem> catalog, LGlossDraft draft)
@@ -23,8 +22,7 @@ internal sealed class PGloss : INotifyPropertyChanged
         _pGlossId = draft.LGlossDraftId;
         _pGlossLanguage = draft.LGlossDraftLanguage;
         _pGlossFlag = PEnsign.PEnsignFind(_pGlossLanguage);
-        _pGlossText = draft.LGlossDraftText.LStateValueShow();
-        _pGlossUnknown = draft.LGlossDraftText.LStateValueState == LState.LStateUnknown;
+        _pGlossText = draft.LGlossDraftText;
     }
 
     public ObservableCollection<PLanguageItem> PGlossLanguageCatalog { get; }
@@ -68,34 +66,18 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    public string PGlossText
+    public LStateValue PGlossText
     {
         get => _pGlossText;
-        set
+        private set
         {
-            if (string.Equals(_pGlossText, value, StringComparison.Ordinal))
+            if (_pGlossText == value)
             {
                 return;
             }
 
             _pGlossText = value;
-            PGlossUnknown = false;
             PGlossRaise(nameof(PGlossText));
-        }
-    }
-
-    public bool PGlossUnknown
-    {
-        get => _pGlossUnknown;
-        private set
-        {
-            if (_pGlossUnknown == value)
-            {
-                return;
-            }
-
-            _pGlossUnknown = value;
-            PGlossRaise(nameof(PGlossUnknown));
         }
     }
 
@@ -114,15 +96,9 @@ internal sealed class PGloss : INotifyPropertyChanged
         }
     }
 
-    internal LStateWritten PGlossTextRead()
-    {
-        return new LStateWritten(_pGlossText, _pGlossUnknown);
-    }
-
-    internal void PGlossShow(LGlossDraft draft, Func<string, bool> pending)
+    internal void PGlossShow(LGlossDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
-        ArgumentNullException.ThrowIfNull(pending);
 
         if (!string.Equals(_pGlossLanguage, draft.LGlossDraftLanguage, StringComparison.Ordinal))
         {
@@ -131,12 +107,7 @@ internal sealed class PGloss : INotifyPropertyChanged
             PGlossRaise(nameof(PGlossLanguage));
         }
 
-        if (!pending(nameof(PGlossText)) && !PGlossTextRead().LStateWrittenMatch(draft.LGlossDraftText))
-        {
-            _pGlossText = draft.LGlossDraftText.LStateValueShow();
-            PGlossRaise(nameof(PGlossText));
-            PGlossUnknown = draft.LGlossDraftText.LStateValueState == LState.LStateUnknown;
-        }
+        PGlossText = draft.LGlossDraftText;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -19,10 +19,10 @@ The rest keep their controls, so the caret stays in a card while its neighbours 
 Every card, new or kept, is then shown its text and its lists, since any of them may have changed.
 Each card takes the number the draft carries, not its place in the loop.
 
-### `private void PCardTextShow(PCard card, LCardDraft draft)`
+### `private static void PCardTextShow(PCard card, LCardDraft draft)`
 
-Writes a card's three text fields only where the card does not already show the draft's value.
-A field with a request still waiting is skipped, because the draft is about to change to what it holds.
+Hands a card the draft's three text values, and the card redraws only a field whose value changed.
+What was waiting is written before the read, so the draft already holds what the field shows.
 
 ### `private PCard PCardCreate(`
 
@@ -35,7 +35,7 @@ So a new card and a kept one take one path.
 ### `private void PCardListShow(`
 
 Shows one card every list the draft card holds, each list diffed by id.
-A field with a request still waiting is handed the check so the row is not overwritten under the caret.
+The draft's language goes with the rows, since a new row reads its field order from the engine under it.
 Each card takes its own words out of the one translation answer, in the order the card holds them.
 The chip lines under the rows are redrawn after, because the rows hold no engine to read headwords from.
 An id the answer does not name is passed over, as a chip with no Entry has nothing to say.

@@ -31,19 +31,19 @@ Redraws each field from the held Situation only where the field says something e
 A field that already reads what the engine holds is left alone, caret included.
 The picture and video rows follow the same rule, row by row, through `PRepertoireDialog.cs`.
 
-## `private LRequestSituationBody PScenarioRead(long draft, long situation)`
+## `private LRequestSituationBody PScenarioRead(long draft)`
 
 The editor as written, for the engine to read into the Situation it holds.
 Each field travels with its mark, so the panel resolves no state.
-The engine keeps the id of the Situation it holds, because the panel mints nothing.
+The body names no situation id, since the engine lands it on the Situation the draft holds.
 
 ## `private void PScenarioStoreRun()`
 
-Commits the held Situation, for the rail's save button.
+Finishes the tenure over the held Situation, for the rail's save button.
 It stores over the selected one or creates one nothing references yet.
 Typing still waiting to be written is written first, so the commit carries the last keystroke.
+An unchanged draft is not committed, since storing what matches its Situation would rewrite it for nothing.
 Whether this is a create or a rewrite is the engine's reading of the draft, not the panel's.
 Saving does not change the id, what references it, or the order it takes for any referrer.
-A form halted by a failed flush commits nothing.
-The draft would otherwise be stored missing the edits the flush dropped.
+A halted tenure refuses to finish, so a draft missing the edits a failed flush dropped stores nothing.
 

@@ -56,7 +56,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
         PSlate.CustomPopupPlacementCallback = PSlatePlace;
         PCategoryList.ItemsSource = _pCategoryItem;
         PMarkerList.ItemsSource = _pMarkerChip;
-        PHeadword.TextChanged += PHeadwordHandle;
         PMarkerField.KeyDown += PMarkerFieldHandle;
         PMarkerField.TextChanged += PMarkerTextHandle;
         AddHandler(TextBoxBase.TextChangedEvent, new TextChangedEventHandler(PEditorTextHandle));
@@ -104,7 +103,6 @@ public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHo
             _pEditorObserver = null;
         }
 
-        PEditorChangeStop();
         PNotationCancel();
         PClipCancel();
         _pDownloaderPlayer.Close();

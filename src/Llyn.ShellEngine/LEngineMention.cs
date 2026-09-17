@@ -69,6 +69,74 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(mentions);
+
+        lock (_lEngineGate)
+        {
+            List<long> entries = [];
+            foreach (LMentionDraft mention in mentions)
+            {
+                if (mention.LMentionDraftEntry != 0 && !entries.Contains(mention.LMentionDraftEntry))
+                {
+                    entries.Add(mention.LMentionDraftEntry);
+                }
+            }
+
+            Dictionary<long, string> headwords = [];
+            if (entries.Count > 0)
+            {
+                LTranslationArchive targets = new(_lEngineDatabase);
+                foreach (LTranslationTarget target in targets.LTranslationTargetRead(entries))
+                {
+                    headwords[target.LTranslationTargetId] = target.LTranslationTargetHeadword;
+                }
+            }
+
+            LMeaningArchive meanings = new(_lEngineDatabase);
+            Dictionary<long, string> senses = [];
+            List<LMentionLabel> labels = new(mentions.Count);
+            foreach (LMentionDraft mention in mentions)
+            {
+                int start = LMentionSpan.LMentionUnitRead(text, mention.LMentionDraftOffset);
+                int end = LMentionSpan.LMentionUnitRead(
+                    text, mention.LMentionDraftOffset + mention.LMentionDraftLength);
+                string word = end > start ? text[start..end] : string.Empty;
+                string name = headwords.GetValueOrDefault(mention.LMentionDraftEntry, string.Empty);
+
+                string sense = string.Empty;
+                if (mention.LMentionDraftSense != 0)
+                {
+                    if (!senses.TryGetValue(mention.LMentionDraftSense, out string? held))
+                    {
+                        held = LEngineSenseRead(meanings, mention.LMentionDraftSense);
+                        senses[mention.LMentionDraftSense] = held;
+                    }
+
+                    sense = held;
+                }
+
+                labels.Add(new LMentionLabel(mention.LMentionDraftId, word, mention.LMentionDraftEntry, name, sense));
+            }
+
+            return labels;
+        }
+    }
+
+    private static string LEngineSenseRead(LMeaningArchive meanings, long sense)
+    {
+        LMeaning? meaning = meanings.LMeaningSingleRead(sense);
+        if (meaning is null)
+        {
+            return string.Empty;
+        }
+
+        string title = meaning.LMeaningTitle.LStateValueShow();
+        return title.Length > 0 ? title : meaning.LMeaningDefinition.LStateValueShow();
+    }
+
     private static (int LEngineMentionOffset, int LEngineMentionLength) LEngineMentionScan(
         LEntryArchive entries, List<Rune> runes, string language, int offset)
     {

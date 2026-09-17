@@ -8,7 +8,7 @@ It sits apart from `LEngineDraftHold.cs`, which owns what every kind of draft sh
 Only starting, saving and committing differ by kind, and only those live here.
 The shared claim, sweep, recovery and discard read `LDraftExample` and branch where the kinds part.
 
-## `public LDraft LEngineExampleStart(string origin, long? exampleId)`
+## `internal LDraft LEngineExampleStart(string origin, long? exampleId)`
 
 Mints a draft id, writes the first file, and returns the held sentence.
 With no Example the content is blank under an id minted for it.

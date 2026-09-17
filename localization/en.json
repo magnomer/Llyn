@@ -144,6 +144,7 @@
     "List.LoadFailed": "The entry could not be opened.",
     "List.ImportFailed": "The file could not be imported.",
     "Duplex.Search": "Search entries",
+    "Duplex.Empty": "No entries match",
     "Duplex.LoadFailed": "The entry could not be opened.",
     "Order.Title": "Sort entries",
     "Order.Headword": "Headword A → Z",

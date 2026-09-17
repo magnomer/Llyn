@@ -25,3 +25,10 @@ Forgets the bylines of the entry that was shown.
 An example citing nothing yields an empty line, which the template collapses.
 An id no byline answered is drawn as the id itself.
 A citation is a fact worth showing even when its Source is gone.
+
+### `public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)`
+
+The same line for a row being written, looked up in the Sources the form offers.
+The row binds its anchor and the shared catalog, and the name is found when the field is drawn.
+The row keeps no copy of the name.
+A reloaded catalog only needs the row to say its anchor again.

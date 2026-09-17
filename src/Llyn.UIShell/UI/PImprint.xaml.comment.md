@@ -29,6 +29,7 @@ Every caller wants both, so the pair is offered as one call.
 
 Takes the bulletins the owning panel receives, since this area holds no observer of its own.
 A draft bulletin redraws the held draft when it is the one named.
+A tenure bulletin for the held draft settles the panel's rail and the area's enabled state.
 Any other bulletin re-reads the author catalog, and an author bulletin redraws the credits too.
 So a rename made elsewhere shows its new name in the credit rows.
 

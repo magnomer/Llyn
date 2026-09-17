@@ -84,6 +84,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+        return LEngineReferenceFind(vista.LVistaQuery, vista.LVistaOrder);
+    }
+
     public IReadOnlyList<LReference> LEngineReferenceRead(long ownerId, LOwner owner)
     {
         lock (_lEngineGate)

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using Llyn.Core;
@@ -17,24 +16,19 @@ public partial class PEditor
 
     private IReadOnlyList<LFanqieRow> _pReflexFanqie = [];
 
-    private static string PReflexRequestFormat(long id, string field)
-    {
-        return string.Concat("Reflex:", id.ToString(CultureInfo.InvariantCulture), ":", field);
-    }
-
     internal void PReflexAddHandle(object sender, ExecutedRoutedEventArgs e)
     {
         PReflexItem? row = e.Parameter as PReflexItem;
         int position = row is null ? _pReflexItem.Count : _pReflexItem.IndexOf(row) + 1;
         PEditorRequestSend(new LRequestReflexAddition(
-            _pEditorDraft, row?.PReflexItemLanguage ?? string.Empty, row?.PReflexItemKind ?? string.Empty, position));
+            PEditorDraft, row?.PReflexItemLanguage ?? string.Empty, row?.PReflexItemKind ?? string.Empty, position));
     }
 
     internal void PReflexRemoveHandle(object sender, ExecutedRoutedEventArgs e)
     {
         if (e.Parameter is PReflexItem row)
         {
-            PEditorRequestSend(new LRequestReflexRemoval(_pEditorDraft, row.PReflexItemId));
+            PEditorRequestSend(new LRequestReflexRemoval(PEditorDraft, row.PReflexItemId));
         }
     }
 
@@ -42,7 +36,7 @@ public partial class PEditor
     {
         if (e.Parameter is PReflexItem row)
         {
-            PEditorRequestSend(new LRequestReflexMain(_pEditorDraft, row.PReflexItemId, !row.PReflexItemMain));
+            PEditorRequestSend(new LRequestReflexMain(PEditorDraft, row.PReflexItemId, !row.PReflexItemMain));
         }
     }
 
@@ -77,16 +71,16 @@ public partial class PEditor
         LRequest? request = field switch
         {
             nameof(PReflexItem.PReflexItemLanguage) =>
-                new LRequestReflexLanguage(_pEditorDraft, row.PReflexItemId, row.PReflexItemLanguage),
+                new LRequestReflexLanguage(PEditorDraft, row.PReflexItemId, row.PReflexItemLanguage),
             nameof(PReflexItem.PReflexItemKind) =>
-                new LRequestReflexKind(_pEditorDraft, row.PReflexItemId, row.PReflexItemKind),
+                new LRequestReflexKind(PEditorDraft, row.PReflexItemId, row.PReflexItemKind),
             nameof(PReflexItem.PReflexItemText) => row.PReflexItemRespelled
-                ? new LRequestReflexRespelling(_pEditorDraft, row.PReflexItemId, row.PReflexItemText)
-                : new LRequestReflexText(_pEditorDraft, row.PReflexItemId, row.PReflexItemText),
+                ? new LRequestReflexRespelling(PEditorDraft, row.PReflexItemId, row.PReflexItemText)
+                : new LRequestReflexText(PEditorDraft, row.PReflexItemId, row.PReflexItemText),
             nameof(PReflexItem.PReflexItemNote) =>
-                new LRequestReflexNote(_pEditorDraft, row.PReflexItemId, row.PReflexItemNote),
+                new LRequestReflexNote(PEditorDraft, row.PReflexItemId, row.PReflexItemNote),
             nameof(PReflexItem.PReflexItemRemark) =>
-                new LRequestReflexRemark(_pEditorDraft, row.PReflexItemId, row.PReflexItemRemark),
+                new LRequestReflexRemark(PEditorDraft, row.PReflexItemId, row.PReflexItemRemark),
             _ => null,
         };
 
@@ -100,7 +94,7 @@ public partial class PEditor
             PDisplay.PReflexLeadApply(_pReflexItem);
         }
 
-        PEditorRequestDefer(PReflexRequestFormat(row.PReflexItemId, field), request);
+        PEditorRequestDefer(request);
     }
 
     private void PReflexShow(LEntryDraft draft)
@@ -200,31 +194,12 @@ public partial class PEditor
 
         row.PReflexItemMain = reflex.LReflexDraftMain;
 
-        if (!PEditorRequestCheck(PReflexRequestFormat(row.PReflexItemId, nameof(PReflexItem.PReflexItemLanguage))))
-        {
-            row.PReflexItemLanguage = reflex.LReflexDraftLanguage;
-        }
-
-        if (!PEditorRequestCheck(PReflexRequestFormat(row.PReflexItemId, nameof(PReflexItem.PReflexItemKind))))
-        {
-            row.PReflexItemKind = reflex.LReflexDraftKind;
-        }
-
-        if (!PEditorRequestCheck(PReflexRequestFormat(row.PReflexItemId, nameof(PReflexItem.PReflexItemText))))
-        {
-            row.PReflexItemText = PReflexItem.PReflexTextRead(reflex, respelling);
-        }
-
-        if (!PEditorRequestCheck(PReflexRequestFormat(row.PReflexItemId, nameof(PReflexItem.PReflexItemNote))))
-        {
-            row.PReflexItemNote = reflex.LReflexDraftNote;
-        }
-
+        row.PReflexItemLanguage = reflex.LReflexDraftLanguage;
+        row.PReflexItemKind = reflex.LReflexDraftKind;
+        row.PReflexItemText = PReflexItem.PReflexTextRead(reflex, respelling);
+        row.PReflexItemNote = reflex.LReflexDraftNote;
         row.PReflexItemRegion = reflex.LReflexDraftRegion;
-        if (!PEditorRequestCheck(PReflexRequestFormat(row.PReflexItemId, nameof(PReflexItem.PReflexItemRemark))))
-        {
-            row.PReflexItemRemark = reflex.LReflexDraftRemark;
-        }
+        row.PReflexItemRemark = reflex.LReflexDraftRemark;
 
         row.PReflexItemTone = reflex.LReflexDraftAnatomy.LAnatomyToneIpa;
         row.PReflexItemAnchors = reflex.LReflexDraftAnchors;

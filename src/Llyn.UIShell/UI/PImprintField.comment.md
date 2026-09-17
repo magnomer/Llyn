@@ -10,14 +10,15 @@ The area no longer keeps a copy of the stored Source to compare itself against.
 
 ## Inline notes
 
-### `private bool _pImprintTitleUnknown;`
+### `private LStateValue _pImprintTitle = LStateValue.LStateValueUnspecified;`
 
-Whether the title stands recorded as unknown rather than merely blank.
-One flag per field is the only per-field state the edit area holds, as the built panels do it.
+The title as the held draft has it, state and all.
+One value per field is the only per-field state the edit area holds, and the converter reads its mark.
 
-## `private void PImprintMarkClear(ref bool unknown, TextBox field)`
+## `private void PImprintMarkClear(ref LStateValue held, TextBox field)`
 
-Typing into a field drops its unknown mark, because a typed value is a stated one.
+Typing into a field drops the value it was drawn from, because a typed value is a stated one.
+The field then travels as typed, with no mark, until the draft answers with its state.
 The guard keeps a programmatic fill from reading as a user edit.
 Every edit that passes the guard starts the wait that ends in a push.
 
@@ -51,10 +52,15 @@ This is what the draft bulletin does, so a keystroke echoed back never moves the
 Writes the kind into its chip and marks it in the list, building the list on first use.
 The rows read their names by resource, so a language change renames them without a rebuild.
 
-## `private void PImprintFieldShow(TextBox field, LStateValue? value, ref bool held, bool differing = false)`
+## `private static LStateWritten PImprintFieldRead(TextBox field, LStateValue held)`
 
-Writes one field and its held mark from a value.
-With `differing` set it first checks whether the field already reads that value, and leaves it alone when it does.
+One field as typed, with the mark of the value it still shows.
+A field the user has not typed into keeps the unknown mark it was drawn with.
+
+## `private void PImprintFieldShow(TextBox field, LStateValue? value, ref LStateValue held, bool differing = false)`
+
+Writes one field and its held value from the draft.
+With `differing` set it first checks whether the field already holds that value, and leaves it alone when it does.
 
 ## `internal void PImprintTallyShow()`
 
@@ -71,14 +77,14 @@ The author state comes from the credits region, because it is a column on the sa
 
 ## `internal void PImprintStoreRun()`
 
-Commits the held Source and asks the panel to read over what was stored.
+Finishes the tenure over the held Source and asks the panel to read over what was stored.
 The rail's save calls it through the panel, because the area carries no save of its own.
 There is no discard: leaving the area through the mode toggle asks about the draft instead.
-Typing still waiting to be pushed is pushed first, so the commit carries the last keystrokes.
+Typing still waiting to be written is written first, so the commit carries the last keystrokes.
+An unchanged draft is not committed, since storing what matches its Source would rewrite it for nothing.
 The engine announces the commit and the shelf is read again on that.
 The stored Source refreshes its own citation figure.
 The panel no longer re-reads straight after its own commit, because it hears about the commit like everything else.
 Saving changes neither the identifier nor where the Source is cited.
-A form halted by a failed flush commits nothing.
-The draft would otherwise be stored missing the edits the flush dropped.
+A halted tenure refuses to finish, so a draft missing the edits a failed flush dropped stores nothing.
 

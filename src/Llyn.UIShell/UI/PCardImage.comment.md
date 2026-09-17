@@ -8,23 +8,15 @@ A picture is an addition the user asks for through the card's Extra row.
 So an empty card shows no picture field, and one whose last picture is dropped goes back to none.
 The engine holds the rows, blank ones included, and the card renders them by id.
 
-## `internal Action<PImage>? PCardImageNotice { get; set; }`
-
-Where a changed location goes.
-The editor sets it when it builds the card and turns the change into a request.
-
-## `internal void PCardImageShow(IReadOnlyList<LImageDraft> rows, Func<PImage, bool> pending)`
+## `internal void PCardImageShow(IReadOnlyList<LImageDraft> rows)`
 
 Makes the rows show the engine's Images, matched by id.
-A location with a request still waiting is left as typed, which `pending` answers per row.
+A row already reading what the engine holds is left alone.
 
 ## Inline notes
 
-### `private PImage PCardImageCreate(LImageDraft draft)`
+### `private static PImage PCardImageCreate(LImageDraft draft)`
 
-Builds one row from the engine's row and starts listening to its location.
-
-### `private void PCardImageChange(object? sender, PropertyChangedEventArgs arguments)`
-
-Only the location is the engine's.
-The preview is drawn from it and never reported.
+Builds one row from the engine's row.
+The row holds the engine's values and nothing typed, so nothing on it is listened to.
+What is typed into its fields leaves through the editor's own handler.

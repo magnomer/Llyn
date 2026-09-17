@@ -109,7 +109,7 @@ public partial class PGuild
 
             LAuthor created = _lEngine.LEngineAuthorCreate(new LAuthor(0, typed));
             _pRollAuthor = created.LAuthorId;
-            PRollFind(PMuster.Text ?? string.Empty);
+            PRollFind();
             PGuildMode.IsEnabled = true;
             PGuildBin.IsEnabled = true;
             PAutographOpen(created.LAuthorId);

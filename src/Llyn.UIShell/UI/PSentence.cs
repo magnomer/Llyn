@@ -8,15 +8,10 @@ namespace Llyn.UIShell;
 internal sealed partial class PSentence : INotifyPropertyChanged
 {
     private long _pSentenceId;
-    private string _pSentenceText;
-    private bool _pSentenceUnknown;
-    private long _pSentenceCitation;
-    private string _pSentenceCitationName;
-    private string _pSentenceCitationText;
-    private string _pSentenceParticle;
-    private bool _pSentenceParticleUnknown;
-    private string _pSentenceDependence;
-    private bool _pSentenceDependenceUnknown;
+    private LStateValue _pSentenceText;
+    private LStateAnchor _pSentenceCitation;
+    private LStateValue _pSentenceParticle;
+    private LStateValue _pSentenceDependence;
     private int _pSentenceParticleColumn;
     private int _pSentenceDependenceColumn = 2;
     private bool _pSentenceFrameVisible;
@@ -40,17 +35,12 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceLanguageCatalog = languages;
         _pSentenceRow = draft.LSentenceDraftId;
         _pSentenceId = example.LExampleDraftId;
-        _pSentenceText = example.LExampleDraftText.LStateValueShow();
-        _pSentenceUnknown = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
-        _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
-        _pSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
-        _pSentenceCitationText = _pSentenceCitationName;
-        _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
-        _pSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
-        _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
-        _pSentenceDependenceUnknown = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
+        _pSentenceText = example.LExampleDraftText;
+        _pSentenceCitation = example.LExampleDraftReference;
+        _pSentenceParticle = draft.LSentenceDraftParticle;
+        _pSentenceDependence = draft.LSentenceDraftDependence;
         _pSentenceMention = example.LExampleDraftMention;
-        PSentenceGlossShow(example.LExampleDraftGloss, static (_, _) => false);
+        PSentenceGlossShow(example.LExampleDraftGloss);
     }
 
     public ObservableCollection<PCitationItem> PSentenceCitationCatalog { get; }
@@ -78,159 +68,65 @@ internal sealed partial class PSentence : INotifyPropertyChanged
 
     internal long PSentenceRow => _pSentenceRow;
 
-    public string PSentenceText
+    public LStateValue PSentenceText
     {
         get => _pSentenceText;
-        set
+        private set
         {
-            if (string.Equals(_pSentenceText, value, StringComparison.Ordinal))
+            if (_pSentenceText == value)
             {
                 return;
             }
 
             _pSentenceText = value;
-            PSentenceUnknown = false;
             PSentenceRaise(nameof(PSentenceText));
         }
     }
 
-    public bool PSentenceUnknown
-    {
-        get => _pSentenceUnknown;
-        private set
-        {
-            if (_pSentenceUnknown == value)
-            {
-                return;
-            }
-
-            _pSentenceUnknown = value;
-            PSentenceRaise(nameof(PSentenceUnknown));
-        }
-    }
-
-    public long PSentenceCitationId
+    public LStateAnchor PSentenceCitation
     {
         get => _pSentenceCitation;
-        set
-        {
-            long chosen = value;
-            if (_pSentenceCitation == chosen)
-            {
-                return;
-            }
-
-            _pSentenceCitation = chosen;
-            PSentenceRaise(nameof(PSentenceCitationId));
-
-            PSentenceCitationName = PSentenceCitationFind(chosen);
-        }
-    }
-
-    public string PSentenceCitationName
-    {
-        get => _pSentenceCitationName;
         private set
         {
-            if (!string.Equals(_pSentenceCitationName, value, StringComparison.Ordinal))
-            {
-                _pSentenceCitationName = value;
-                PSentenceRaise(nameof(PSentenceCitationName));
-            }
-
-            PSentenceCitationText = value;
-        }
-    }
-
-    public string PSentenceCitationText
-    {
-        get => _pSentenceCitationText;
-        set
-        {
-            string typed = value ?? string.Empty;
-            if (string.Equals(_pSentenceCitationText, typed, StringComparison.Ordinal))
+            if (_pSentenceCitation == value)
             {
                 return;
             }
 
-            _pSentenceCitationText = typed;
-            PSentenceRaise(nameof(PSentenceCitationText));
+            _pSentenceCitation = value;
+            PSentenceRaise(nameof(PSentenceCitation));
         }
     }
 
-    public string PSentenceParticle
+    public LStateValue PSentenceParticle
     {
         get => _pSentenceParticle;
-        set
-        {
-            string chosen = value ?? string.Empty;
-            if (string.Equals(_pSentenceParticle, chosen, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pSentenceParticle = chosen;
-            PSentenceParticleUnknown = false;
-            PSentenceRaise(nameof(PSentenceParticle));
-            PSentenceRaise(nameof(PSentenceFrameVisible));
-            PSentenceRaise(nameof(PSentenceFrameWritten));
-            PSentenceRaise(nameof(PSentenceFrameGap));
-        }
-    }
-
-    public bool PSentenceParticleUnknown
-    {
-        get => _pSentenceParticleUnknown;
         private set
         {
-            if (_pSentenceParticleUnknown == value)
+            if (_pSentenceParticle == value)
             {
                 return;
             }
 
-            _pSentenceParticleUnknown = value;
-            PSentenceRaise(nameof(PSentenceParticleUnknown));
-            PSentenceRaise(nameof(PSentenceFrameVisible));
-            PSentenceRaise(nameof(PSentenceFrameWritten));
-            PSentenceRaise(nameof(PSentenceFrameGap));
+            _pSentenceParticle = value;
+            PSentenceRaise(nameof(PSentenceParticle));
+            PSentenceFrameRaise();
         }
     }
 
-    public string PSentenceDependence
+    public LStateValue PSentenceDependence
     {
         get => _pSentenceDependence;
-        set
-        {
-            string chosen = value ?? string.Empty;
-            if (string.Equals(_pSentenceDependence, chosen, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pSentenceDependence = chosen;
-            PSentenceDependenceUnknown = false;
-            PSentenceRaise(nameof(PSentenceDependence));
-            PSentenceRaise(nameof(PSentenceFrameVisible));
-            PSentenceRaise(nameof(PSentenceFrameWritten));
-            PSentenceRaise(nameof(PSentenceFrameGap));
-        }
-    }
-
-    public bool PSentenceDependenceUnknown
-    {
-        get => _pSentenceDependenceUnknown;
         private set
         {
-            if (_pSentenceDependenceUnknown == value)
+            if (_pSentenceDependence == value)
             {
                 return;
             }
 
-            _pSentenceDependenceUnknown = value;
-            PSentenceRaise(nameof(PSentenceDependenceUnknown));
-            PSentenceRaise(nameof(PSentenceFrameVisible));
-            PSentenceRaise(nameof(PSentenceFrameWritten));
-            PSentenceRaise(nameof(PSentenceFrameGap));
+            _pSentenceDependence = value;
+            PSentenceRaise(nameof(PSentenceDependence));
+            PSentenceFrameRaise();
         }
     }
 
@@ -245,20 +141,10 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     }
 
     public bool PSentenceFrameWritten =>
-        _pSentenceParticle.Length > 0
-        || _pSentenceDependence.Length > 0
-        || _pSentenceParticleUnknown
-        || _pSentenceDependenceUnknown;
+        PSentenceFrameCheck(_pSentenceParticle) || PSentenceFrameCheck(_pSentenceDependence);
 
-    public string PSentenceFrameGap
-    {
-        get
-        {
-            bool particle = _pSentenceParticle.Length > 0 || _pSentenceParticleUnknown;
-            bool dependence = _pSentenceDependence.Length > 0 || _pSentenceDependenceUnknown;
-            return particle && dependence ? " " : string.Empty;
-        }
-    }
+    public string PSentenceFrameGap =>
+        PSentenceFrameCheck(_pSentenceParticle) && PSentenceFrameCheck(_pSentenceDependence) ? " " : string.Empty;
 
     public int PSentenceParticleColumn
     {
@@ -298,25 +184,9 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         PSentenceDependenceColumn = order.LSentenceOrderDependence * 2;
     }
 
-    internal LStateWritten PSentenceParticleRead()
-    {
-        return new LStateWritten(_pSentenceParticle, _pSentenceParticleUnknown);
-    }
-
-    internal LStateWritten PSentenceDependenceRead()
-    {
-        return new LStateWritten(_pSentenceDependence, _pSentenceDependenceUnknown);
-    }
-
-    internal LStateWritten PSentenceTextRead()
-    {
-        return new LStateWritten(_pSentenceText, _pSentenceUnknown);
-    }
-
-    internal void PSentenceShow(LSentenceDraft draft, Func<string, bool> pending)
+    internal void PSentenceShow(LSentenceDraft draft)
     {
         ArgumentNullException.ThrowIfNull(draft);
-        ArgumentNullException.ThrowIfNull(pending);
 
         LExampleDraft example = draft.LSentenceDraftExample
             ?? LExampleDraft.LExampleDraftCreate(string.Empty);
@@ -324,57 +194,30 @@ internal sealed partial class PSentence : INotifyPropertyChanged
         _pSentenceRow = draft.LSentenceDraftId;
         PSentenceId = example.LExampleDraftId;
         _pSentenceMention = example.LExampleDraftMention;
-        PSentenceGlossShow(example.LExampleDraftGloss, (gloss, field) => pending(PSentenceGlossFormat(gloss, field)));
-
-        if (!pending(nameof(PSentenceText)) && !PSentenceTextRead().LStateWrittenMatch(example.LExampleDraftText))
-        {
-            _pSentenceText = example.LExampleDraftText.LStateValueShow();
-            PSentenceRaise(nameof(PSentenceText));
-            PSentenceUnknown = example.LExampleDraftText.LStateValueState == LState.LStateUnknown;
-        }
-
-        if (_pSentenceCitation != example.LExampleDraftReference.LStateAnchorShow())
-        {
-            _pSentenceCitation = example.LExampleDraftReference.LStateAnchorShow();
-            PSentenceRaise(nameof(PSentenceCitationId));
-            PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
-        }
-
-        if (!pending(nameof(PSentenceParticle))
-            && !PSentenceParticleRead().LStateWrittenMatch(draft.LSentenceDraftParticle))
-        {
-            _pSentenceParticle = draft.LSentenceDraftParticle.LStateValueShow();
-            PSentenceRaise(nameof(PSentenceParticle));
-            PSentenceParticleUnknown = draft.LSentenceDraftParticle.LStateValueState == LState.LStateUnknown;
-        }
-
-        if (!pending(nameof(PSentenceDependence))
-            && !PSentenceDependenceRead().LStateWrittenMatch(draft.LSentenceDraftDependence))
-        {
-            _pSentenceDependence = draft.LSentenceDraftDependence.LStateValueShow();
-            PSentenceRaise(nameof(PSentenceDependence));
-            PSentenceDependenceUnknown = draft.LSentenceDraftDependence.LStateValueState == LState.LStateUnknown;
-        }
+        PSentenceGlossShow(example.LExampleDraftGloss);
+        PSentenceText = example.LExampleDraftText;
+        PSentenceCitation = example.LExampleDraftReference;
+        PSentenceParticle = draft.LSentenceDraftParticle;
+        PSentenceDependence = draft.LSentenceDraftDependence;
     }
 
     internal void PSentenceCitationShow()
     {
-        PSentenceCitationName = PSentenceCitationFind(_pSentenceCitation);
+        PSentenceRaise(nameof(PSentenceCitation));
     }
 
-    internal void PSentenceCitationReset()
+    internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, LStateAnchor anchor)
     {
-        PSentenceCitationText = _pSentenceCitationName;
-    }
+        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(anchor);
 
-    private string PSentenceCitationFind(long reference)
-    {
+        long reference = anchor.LStateAnchorShow();
         if (reference == 0)
         {
             return string.Empty;
         }
 
-        foreach (PCitationItem row in PSentenceCitationCatalog)
+        foreach (PCitationItem row in catalog)
         {
             if (row.PCitationItemId == reference)
             {
@@ -386,6 +229,18 @@ internal sealed partial class PSentence : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    private static bool PSentenceFrameCheck(LStateValue value)
+    {
+        return PStateConverter.PStateConverterCheck(value) || value.LStateValueShow().Length > 0;
+    }
+
+    private void PSentenceFrameRaise()
+    {
+        PSentenceRaise(nameof(PSentenceFrameVisible));
+        PSentenceRaise(nameof(PSentenceFrameWritten));
+        PSentenceRaise(nameof(PSentenceFrameGap));
+    }
 
     private void PSentenceRaise(string propertyName)
     {

@@ -46,7 +46,7 @@ public partial class PCorpus : UserControl, PChronicleHost
     internal void PCorpusReset()
     {
         PCorpusClear();
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        PAnthologyFind();
     }
 
     internal bool PCorpusChangeCheck()

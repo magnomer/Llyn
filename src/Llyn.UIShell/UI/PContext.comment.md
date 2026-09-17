@@ -24,6 +24,6 @@ An id the store never gave it stays empty, so loading a card does not read as ed
 The description and the kind ride along unread.
 No control on the card shows either, and a save that dropped them would erase what another panel wrote.
 
-## `internal LStateWritten PContextTextRead()`
+## `public LStateValue PContextText { get; }`
 
-The wording as written, with its mark, for the engine to read.
+The wording as the draft holds it, which the template shows and a redraw compares against.

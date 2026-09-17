@@ -1,134 +1,73 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PRepertoire
 {
-    private const int PScenarioChangeDelay = 250;
-
     private const string PScenarioOrigin = "Repertoire";
 
-    private CancellationTokenSource? _pScenarioPending;
+    private LTenure? _pScenarioTenure;
 
-    private long _pScenarioDraft;
-
-    private bool _pScenarioHalted;
+    private long PScenarioDraft => _pScenarioTenure?.LTenureId ?? 0;
 
     private bool PScenarioDraftFinish(bool store)
     {
-        if (_pScenarioPending is not null)
-        {
-            PScenarioChangeSave();
-        }
-
-        if (!store || !PScenarioDraftCheck())
-        {
-            PScenarioDraftCancel();
-            return true;
-        }
-
-        long held = _pScenarioDraft;
-        if (held == 0)
+        if (_pScenarioTenure is not LTenure held)
         {
             return true;
         }
-
-        if (_pScenarioHalted)
-        {
-            return false;
-        }
-
-        _pScenarioDraft = 0;
 
         try
         {
-            _pRepertoireHost.PWindowCommitRun(held, _lEngine.LEngineSituationCommit);
+            _pRepertoireHost.PWindowCommitRun(held, store);
         }
         catch (Exception exception)
         {
-            _pScenarioDraft = held;
             _pRepertoireHost.PWindowFailureShow("Situation.SaveFailed", exception);
             return false;
         }
 
+        _pScenarioTenure = null;
         return true;
     }
 
     private bool PScenarioChangeCheck()
     {
-        if (_pScenarioPending is not null)
+        if (_pScenarioTenure is not LTenure held)
         {
-            PScenarioChangeSave();
+            return false;
         }
 
-        return PScenarioDraftCheck();
+        held.LTenurePersist();
+        return held.LTenureStateRead().LTenureStateChanged;
     }
 
     private void PScenarioChangeDefer()
     {
-        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft == 0)
-        {
-            return;
-        }
-
-        PScenarioChangeStop();
-
-        CancellationTokenSource pending = new();
-        _pScenarioPending = pending;
-
-        _ = PScenarioChangeRun(pending.Token);
+        PScenarioRequestDefer(PScenarioRead(PScenarioDraft));
     }
 
-    private async Task PScenarioChangeRun(CancellationToken token)
+    private void PScenarioRequestDefer(LRequest request)
     {
-        try
-        {
-            await Task.Delay(PScenarioChangeDelay, token).ConfigureAwait(true);
-        }
-        catch (OperationCanceledException)
+        if (_pScenarioLoading || _pScenarioTenure is not LTenure held)
         {
             return;
         }
 
-        try
-        {
-            PScenarioChangeSave();
-        }
-        catch (Exception exception)
-        {
-            _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
-        }
+        held.LTenureRequestDefer(request);
     }
 
-    private void PScenarioChangeSave()
+    private void PScenarioRequestSend(LRequest request)
     {
-        PScenarioChangeStop();
-
-        if (_pScenarioLoading || _pScenarioHalted || _pScenarioDraft == 0)
+        if (_pScenarioLoading || _pScenarioTenure is not LTenure held)
         {
             return;
         }
 
-        PScenarioDraftSave();
-        PScenarioChangeUpdate();
-    }
-
-    private void PScenarioChangeStop()
-    {
-        CancellationTokenSource? pending = _pScenarioPending;
-        _pScenarioPending = null;
-
-        if (pending is null)
-        {
-            return;
-        }
-
-        pending.Cancel();
-        pending.Dispose();
+        held.LTenureRequestApply(request);
     }
 
     private void PScenarioChangeUpdate()
@@ -138,26 +77,46 @@ public partial class PRepertoire
             return;
         }
 
-        PRepertoireStore.IsEnabled = PScenarioDraftCheck();
+        LTenureState? state = _pScenarioTenure?.LTenureStateRead();
+        PRepertoireStore.IsEnabled = state is { LTenureStateChanged: true };
+        if (state is not null)
+        {
+            PScenarioHoldShow(!state.LTenureStateHalted);
+        }
+
         PChronicleUpdate();
+    }
+
+    private void PScenarioHoldShow(bool running)
+    {
+        if (running == PScenario.IsEnabled)
+        {
+            return;
+        }
+
+        PScenario.IsEnabled = running;
+        if (!running)
+        {
+            _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed");
+        }
     }
 
     private LDraft? PScenarioDraftStart(long? situation)
     {
-        PScenarioChangeStop();
         PScenarioDraftCancel();
 
         try
         {
-            LDraft started = _lEngine.LEngineSituationStart(PScenarioOrigin, situation);
-            _pScenarioDraft = started.LDraftId;
-            PScenarioHoldResume();
-            return started;
+            LTenure started = _lEngine.LEngineTenureStart(PScenarioOrigin, LSubject.LSubjectSituation, situation);
+            _pScenarioTenure = started;
+            PScenario.IsEnabled = true;
+            return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pScenarioDraft = 0;
-            PScenarioHoldSuspend(exception);
+            _pScenarioTenure = null;
+            PScenario.IsEnabled = false;
+            _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
             return null;
         }
     }
@@ -167,103 +126,44 @@ public partial class PRepertoire
         PScenarioApply(started?.LDraftSituation);
     }
 
-    private void PScenarioDraftSave()
-    {
-        if (_pScenarioDraft == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            LDraft? held = _lEngine.LEngineDraftRead(_pScenarioDraft);
-            if (held?.LDraftSituation is not LSituation content)
-            {
-                return;
-            }
-
-            PScenarioRequestPersist();
-            _lEngine.LEngineRequestApply(
-                PScenarioRead(_pScenarioDraft, content.LSituationId));
-        }
-        catch (Exception exception)
-        {
-            _pScenarioRequestPending.Clear();
-            PScenarioHoldSuspend(exception);
-        }
-    }
-
     private void PScenarioDraftRestore()
     {
-        if (_pScenarioDraft == 0 || _pScenarioLoading)
+        if (_pScenarioLoading || _pScenarioTenure is not LTenure held)
         {
             return;
         }
 
         try
         {
-            if (_lEngine.LEngineDraftRead(_pScenarioDraft)?.LDraftSituation is LSituation held)
+            held.LTenurePersist();
+            if (held.LTenureRead()?.LDraftSituation is LSituation situation)
             {
-                PScenarioShow(held);
+                PScenarioShow(situation);
             }
         }
         catch (Exception exception)
         {
-            PScenarioHoldSuspend(exception);
+            _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
         }
     }
 
     private void PScenarioDraftCancel()
     {
-        if (_pScenarioDraft == 0)
+        if (_pScenarioTenure is not LTenure held)
         {
             return;
         }
 
-        PScenarioChangeStop();
-
-        long held = _pScenarioDraft;
-        _pScenarioDraft = 0;
-        _pScenarioRequestPending.Clear();
-
-        try
-        {
-            _lEngine.LEngineDraftCancel(held);
-        }
-        catch (Exception)
-        {
-        }
-    }
-
-    private bool PScenarioDraftCheck()
-    {
-        if (_pScenarioDraft == 0)
-        {
-            return false;
-        }
-
-        try
-        {
-            return _lEngine.LEngineDraftCheck(_pScenarioDraft);
-        }
-        catch (Exception exception)
-        {
-            PScenarioHoldSuspend(exception);
-            return false;
-        }
+        _pScenarioTenure = null;
+        held.LTenureCancel();
     }
 
     private long? PScenarioSituationRead()
     {
-        if (_pScenarioDraft == 0)
-        {
-            return null;
-        }
-
         LDraft? held;
         try
         {
-            held = _lEngine.LEngineDraftRead(_pScenarioDraft);
+            held = _pScenarioTenure?.LTenureRead();
         }
         catch (Exception)
         {
@@ -275,26 +175,24 @@ public partial class PRepertoire
 
     public void PChronicleUndo()
     {
-        PScenarioChronicleRun(_lEngine.LEngineChronicleUndo);
+        PScenarioChronicleRun(static held => held.LTenureUndo());
     }
 
     public void PChronicleRedo()
     {
-        PScenarioChronicleRun(_lEngine.LEngineChronicleRedo);
+        PScenarioChronicleRun(static held => held.LTenureRedo());
     }
 
-    private void PScenarioChronicleRun(Func<long, LDraft?> step)
+    private void PScenarioChronicleRun(Func<LTenure, LDraft?> step)
     {
-        if (_pScenarioDraft == 0)
+        if (_pScenarioTenure is not LTenure held)
         {
             return;
         }
 
-        PScenarioChangeSave();
-
         try
         {
-            PChronicle.PChronicleRun(() => step(_pScenarioDraft));
+            PChronicle.PChronicleRun(() => step(held));
         }
         catch (Exception exception)
         {
@@ -308,10 +206,16 @@ public partial class PRepertoire
     {
         (bool undo, bool redo) = PEditor.Visibility == Visibility.Visible
             ? PEditor.PEditorChronicleRead()
-            : (_pScenarioDraft != 0 && _lEngine.LEngineUndoCheck(_pScenarioDraft),
-                _pScenarioDraft != 0 && _lEngine.LEngineRedoCheck(_pScenarioDraft));
+            : PScenarioChronicleRead();
         PRepertoireBackward.IsEnabled = undo;
         PRepertoireForward.IsEnabled = redo;
+    }
+
+    private (bool PScenarioBackward, bool PScenarioForward) PScenarioChronicleRead()
+    {
+        return _pScenarioTenure?.LTenureStateRead() is LTenureState state
+            ? (state.LTenureStateBackward, state.LTenureStateForward)
+            : (false, false);
     }
 
     private void PRepertoireUndoHandle(object sender, RoutedEventArgs e)
@@ -334,28 +238,5 @@ public partial class PRepertoire
         }
 
         PChronicleRedo();
-    }
-
-    private void PScenarioHoldSuspend(Exception exception)
-    {
-        if (_pScenarioHalted)
-        {
-            return;
-        }
-
-        _pScenarioHalted = true;
-        PScenario.IsEnabled = false;
-        _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
-    }
-
-    private void PScenarioHoldResume()
-    {
-        if (!_pScenarioHalted)
-        {
-            return;
-        }
-
-        _pScenarioHalted = false;
-        PScenario.IsEnabled = true;
     }
 }

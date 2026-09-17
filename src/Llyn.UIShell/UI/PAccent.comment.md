@@ -10,17 +10,13 @@ That is the same set the primary row wears.
 A row edit becomes a request on that row's id.
 A plus becomes an addition request after it, and a minus a removal request.
 Lookup and download open the editor's one menu under the row's own button.
-The rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
+The rows are rendered as a diff on each draft bulletin, and what was waiting is written before the read.
 The primary field also wears a variety chip here, because the chip is drawn from the same draft row.
 
 ## `private LRequest PAccentRequestCreate(PAccentItem row)`
 
 The request a row's typed text becomes, a respelling request while respellings are shown and a reading request otherwise.
 The row prints the form the switch picks, so the text it holds belongs to that form.
-
-## `private static string PAccentRequestFormat(long id)`
-
-The pending-request key of one row's IPA, so a draft render skips a row whose edit is still waiting.
 
 ## `internal void PAccentAddHandle(object sender, ExecutedRoutedEventArgs e)`
 
@@ -54,12 +50,6 @@ The button that raised the command, so the menu opens under it rather than under
 ## `private PAccentItem? PAccentFind(long id)`
 
 The shown row with one pronunciation id, or nothing when the draft no longer has it.
-
-## `private void PAccentFreshClear()`
-
-Clears the audio off every further row downloaded this session and not yet stored.
-A fetched recording is audio of one spelling in one language, so a change of either drops it.
-A row that has gone is skipped, since its audio went with it.
 
 ## `private void PAccentChangeHandle(object? sender, PropertyChangedEventArgs e)`
 
@@ -101,4 +91,4 @@ Drops every row and stops listening to it, for a rebuild or a reset.
 
 ## `private void PAccentClear()`
 
-Empties the rows, the primary chip and the fresh-audio set when the form resets.
+Empties the rows and the primary chip when the form resets.

@@ -14,6 +14,6 @@ internal sealed partial class PSentence
 
     internal void PSentenceMentionShow(LEngine engine, string silent)
     {
-        PSentenceChip.PMentionLineShow(engine, _pSentenceText, _pSentenceMention, silent);
+        PSentenceChip.PMentionLineShow(engine, _pSentenceText.LStateValueShow(), _pSentenceMention, silent);
     }
 }

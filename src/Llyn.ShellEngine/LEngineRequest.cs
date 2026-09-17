@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LDraft LEngineRequestApply(LRequest request)
+    internal LDraft LEngineRequestApply(LRequest request)
     {
         LDraft saved;
         lock (_lEngineGate)
@@ -82,7 +82,9 @@ public sealed partial class LEngine
             LRequestExampleBody sent => LEngineExampleChange(
                 draft, example => LEngineBodyApply(example, sent)),
             LRequestSituationBody sent => LEngineSituationChange(
-                draft, sent.LRequestSituationId, situation => LEngineBodyApply(situation, sent)),
+                draft,
+                draft.LDraftSituation?.LSituationId ?? sent.LRequestSituationId,
+                situation => LEngineBodyApply(situation, sent)),
             LRequestAuthorAddition sent => LEngineAuthorAdd(draft, sent),
             LRequestAuthorPick sent => LEngineAuthorInsert(draft, sent),
             LRequestAuthorRemoval sent => LEngineAuthorRemove(draft, sent.LRequestAuthorId),
@@ -99,6 +101,7 @@ public sealed partial class LEngine
                 draft,
                 sent.LRequestSituationId,
                 situation => situation with { LSituationKind = LEngineValueRead(sent.LRequestValue) }),
+            LRequestHeadword or LRequestLanguage => LEngineAudioClear(draft, request),
             _ => draft with { LDraftContent = LEngineRequestApply(draft.LDraftContent, request) },
         };
     }

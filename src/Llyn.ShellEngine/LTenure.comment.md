@@ -8,7 +8,8 @@ Edits arrive as requests, either deferred behind a short quiet or applied at onc
 Deferred requests queue by `LRequestKey`, so a later request for the same field replaces the earlier one.
 Every step ends by reading the state and raising a tenure bulletin when it moved.
 The panel settles its buttons from that bulletin and keeps no dirty flag or halted flag of its own.
-A request that fails to apply halts the tenure, since editing on would collect keystrokes nothing is holding.
+A request the engine refuses is dropped, and a draft bulletin sends the panel back to the draft.
+A request that fails otherwise halts the tenure, since editing on would collect keystrokes nothing is holding.
 Two locks: the gate guards the queue and the flags, and the turn serialises the applies.
 No engine call is made under the gate, because the engine raises bulletins that read the state back.
 
@@ -90,7 +91,7 @@ For a change with no keystroke coming to end it, such as a chosen language or an
 ## `public void LTenurePersist()`
 
 Writes what is waiting now, in arrival order, and stops the wait.
-The queue is emptied under the gate and applied outside it.
+It takes the turn even when nothing waits, so the next draft read sees a flush in flight finished.
 
 ## `public LDraft? LTenureUndo()`
 
@@ -114,8 +115,8 @@ A failure here is swallowed, because the caller is already leaving the work behi
 ## `public long? LTenureFinish(bool store)`
 
 Ends the tenure, committing the draft or discarding it, and answers the stored record's id.
-What was waiting is written first, whatever the answer was.
-Not storing, or nothing changed, cancels and answers null.
+Not storing cancels at once, so nothing waiting is written into a draft about to be dropped.
+Otherwise what was waiting is written first, and nothing changed cancels and answers null.
 A halted tenure rethrows the failure that halted it, so the panel shows why and stays open.
 A refused commit leaves the tenure alive over the draft still on disk.
 
@@ -140,6 +141,13 @@ The wait is not awaited, because the keystroke that started it must return at on
 It resumes on a pool thread, and the engine's observers marshal to their own threads.
 A wait that was replaced while resuming flushes nothing, leaving it to the newer wait.
 
+## `private void LTenureDispatch(CancellationTokenSource? pending)`
+
+Empties the queue under the gate and applies what it held.
+Given the wait it resumes from, it applies nothing when a newer wait has replaced that one.
+The check and the emptying share one hold of the gate, so no deferral slips in between them.
+Called under the turn.
+
 ## `private void LTenureStop()`
 
 Cancels the wait in progress, if any.
@@ -148,7 +156,9 @@ Called under the gate.
 ## `private void LTenureApply(IReadOnlyList<LRequest> requests)`
 
 Applies the requests in order and announces the state afterwards.
-The first failure halts the tenure and the rest are dropped.
+A refused request is skipped and the rest still apply, and one draft bulletin follows so the panel refills.
+A refusal saying the draft is gone is a lost hold, not a refused edit, and halts like any failure.
+The first other failure halts the tenure and the rest are dropped.
 Called under the turn.
 
 ## `private void LTenureSuspend(Exception exception)`

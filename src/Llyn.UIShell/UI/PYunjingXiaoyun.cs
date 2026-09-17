@@ -16,12 +16,12 @@ public partial class PYunjing
     private void PXiaoyunFind()
     {
         List<long> wanted = [];
-        if (_pShengmuChoice is long onset)
+        if (_pShengmuVista?.LVistaChosen is long onset)
         {
             wanted.Add(onset);
         }
 
-        if (_pYunmuChoice is long rime)
+        if (_pYunmuVista?.LVistaChosen is long rime)
         {
             wanted.Add(rime);
         }
@@ -30,31 +30,22 @@ public partial class PYunjing
         _pXiaoyunList.Clear();
         if (_pYunjingLanguage is string language && wanted.Count > 0)
         {
+            IReadOnlyList<LVistaRow> rows;
             try
             {
-                foreach (long id in _lEngine.LEngineDiweiScan(language, wanted))
-                {
-                    if (_lEngine.LEngineEntryRead(id) is LEntry entry
-                        && (query.Length == 0
-                            || entry.LEntryHeadword.Contains(query, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        _pXiaoyunList.Add(new PXiaoyunItem(
-                            id, entry.LEntryHeadword, entry.LEntryLanguage, _lEngine.LEngineEpithetRead(id)));
-                    }
-                }
+                rows = _lEngine.LEngineXiaoyunFind(language, wanted, query);
             }
             catch (Exception exception)
             {
                 _pYunjingHost.PWindowFailureShow(PYunjingFailure, exception);
                 return;
             }
-        }
 
-        PTwin.PTwinNameApply(
-            _pXiaoyunList,
-            row => row.PXiaoyunItemHeadword,
-            (row, name) => row.PXiaoyunItemName = name,
-            row => row.PXiaoyunItemId);
+            foreach (LVistaRow row in rows)
+            {
+                _pXiaoyunList.Add(new PXiaoyunItem(row));
+            }
+        }
 
         PXiaoyunEmpty.SetResourceReference(
             TextBlock.TextProperty,

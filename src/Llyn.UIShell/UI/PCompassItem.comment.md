@@ -16,5 +16,5 @@ Only this changes after the row is made, so it is the only member that raises a 
 ## `public string PCompassItemName`
 
 The label as the row shows it, numbered `(1)`, `(2)` while another row carries the same label.
-`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`LTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PCompassItemLabel` keeps the plain label for everything that is not display.

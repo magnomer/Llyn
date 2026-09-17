@@ -381,9 +381,17 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel>
-                                    <ItemsControl x:Name="PScenarioImage" ItemTemplate="{DynamicResource Theme.Image.Row}" Style="{StaticResource Theme.Scenario.Media}" />
+                                    <ItemsControl
+                                        x:Name="PScenarioImage"
+                                        ItemTemplate="{DynamicResource Theme.Image.Row}"
+                                        Style="{StaticResource Theme.Scenario.Media}"
+                                        TextBoxBase.TextChanged="PScenarioImageChange" />
 
-                                    <ItemsControl x:Name="PScenarioVideo" ItemTemplate="{DynamicResource Theme.Video.Row}" Style="{StaticResource Theme.Scenario.Media}" />
+                                    <ItemsControl
+                                        x:Name="PScenarioVideo"
+                                        ItemTemplate="{DynamicResource Theme.Video.Row}"
+                                        Style="{StaticResource Theme.Scenario.Media}"
+                                        TextBoxBase.TextChanged="PScenarioVideoChange" />
 
                                     <Border Margin="0,16,-76,0" HorizontalAlignment="Center" Style="{StaticResource Theme.Command.Group}">
                                         <StackPanel Orientation="Horizontal">

@@ -49,24 +49,24 @@ Where the record reads the moment, so a test can hold or advance it.
 
 The seam a test sets the clock through.
 
-## `public LDraft? LEngineChronicleUndo(long id)`
+## `internal LDraft? LEngineChronicleUndo(long id)`
 
 Steps the held draft back one snapshot and returns the draft as saved.
 Null when nothing is behind it.
 The draft being replaced is kept for redo.
 A draft bulletin follows, so every open editor of the draft reloads.
 
-## `public LDraft? LEngineChronicleRedo(long id)`
+## `internal LDraft? LEngineChronicleRedo(long id)`
 
 Steps the held draft forward one snapshot and returns the draft as saved.
 Null when nothing is ahead of it.
 The draft being replaced is kept for undo, so the two calls mirror each other.
 
-## `public bool LEngineUndoCheck(long id)`
+## `internal bool LEngineUndoCheck(long id)`
 
 Whether an undo would step anywhere, so a button can dim before it is pressed.
 
-## `public bool LEngineRedoCheck(long id)`
+## `internal bool LEngineRedoCheck(long id)`
 
 Whether a redo would step anywhere.
 

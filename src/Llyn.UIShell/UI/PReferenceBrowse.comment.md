@@ -21,9 +21,19 @@ It also decides which delete the panel offers, so it is held rather than asked f
 The credits of every Source, read whole rather than one Source at a time.
 The catalog, the ordering, and the search all need them, so a per-row read would be one query per row.
 
+### `private LVista? _pReferenceVista;`
+
+The engine's view state for the reference tab: order, query, and the languages hidden from the entry column.
+The panel keeps no copy of any of the three and reads each from the vista where it needs it.
+It is null until the window hands one over, so the handlers do nothing before that.
+A switched workspace hands over a fresh vista, read from that workspace's own layout.
+
 ## `private void PReferenceBulletinHandle(LBulletin bulletin)`
 
 Re-reads the shelf and the authors whenever the engine announces a change, wherever it was made.
+A vista announcement carrying this panel's vista id refills the shelf, since order, filter or query moved.
+The entry column is refilled with it, so a moved filter reaches it the same way.
+Another panel's vista is not this panel's business and is skipped.
 A draft bulletin is the edit area's own typing coming back.
 It is handed to the area and nothing is re-read.
 A fetched frequency, paradigm, script, fanqie or reflex row changes no source or entry row, so those read nothing.
@@ -35,9 +45,24 @@ A workspace that moved empties the panel before the same re-read runs.
 An Entry stored while the editor holds a fresh one and shows nothing is that fresh one, and is adopted.
 Only an Entry announcement is read that way, since a frequency or tag announcement carries another id.
 
-## `private void PShelfFind(string query)`
+### `private void PSurveyHandle(object sender, TextChangedEventArgs e)`
 
-Refills the shelf with the rows the engine returns, already matched and already ordered.
+Each keystroke hands the search text to the vista, whose announcement refills the shelf.
+
+### `private void PTrellisHandle(object sender, RoutedEventArgs e)`
+
+The ticked languages are read off the menu and handed to the vista, which saves and announces them.
+The mark on the button is redrawn from the vista at once.
+
+### `private void PGradeHandle(object sender, RoutedEventArgs e)`
+
+A chosen ordering closes the dropdown and hands the ordering to the vista.
+The vista saves it and announces it, and the announcement refills the shelf.
+
+## `private void PShelfFind()`
+
+Refills the shelf with the rows the engine returns for the vista, already matched and already ordered.
+Before a vista is handed over nothing is asked.
 Each row carries its own name, credits and citation count, so the panel derives none of them.
 The held counts and credits are read again with it.
 The read area and the editor also stand on them.
@@ -80,15 +105,21 @@ Held work is discarded first, because the panel is leaving behind everything the
 The mode toggle and the bin are disabled with it.
 There is nothing to edit or delete while nothing is selected.
 
-### `internal void PTrellisRestore(LCatalogFilter filter)`
+### `internal async void PReferenceVistaRestore(LVista vista)`
 
-Puts the language filter back on the languages the settings stored, and builds the menu over the loaded languages.
-The window calls it once on attach, so the panel never reads the stored state for itself.
+Takes the vista the window started for this tab and puts the panel on it.
+The dropdown mark and the filter mark are drawn from it first.
+The flags are loaded before any row is built, then the language menu is built from the loaded packs.
+Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
+The edit area's author catalog and the shelf are then listed.
 
-### `internal void PGradeRestore(LCatalogOrder order)`
+### `private void PGradeRestore()`
 
-Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
-The window calls it once on attach, so the panel never reads the stored state for itself.
+Moves the dropdown mark onto the ordering the vista holds.
+
+### `private void PTrellisRestore()`
+
+Shows the filter mark while the vista hides any language.
 
 ### `internal void PReferenceScribeRestore(bool editing)`
 

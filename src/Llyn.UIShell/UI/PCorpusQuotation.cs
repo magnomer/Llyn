@@ -25,7 +25,7 @@ public partial class PCorpus
                     LStateValue.LStateValueUnspecified,
                     LStateAnchor.LStateAnchorUnspecified),
                 PDredge.Text ?? string.Empty,
-                _pGauzeChoice);
+                _pCorpusVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
         }
         catch (Exception exception)
         {
@@ -43,7 +43,7 @@ public partial class PCorpus
                 _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pQuotationList,
             row => row.PQuotationItemHeadword,
             (row, name) => row.PQuotationItemName = name,

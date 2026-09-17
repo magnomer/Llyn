@@ -9,8 +9,6 @@ The region is only a hover on the language field.
 The folded languages hide under the same fold the view has, and the fold state is shared with it.
 Every change is a request to the engine, and the rows are rebuilt from the draft it answers with.
 
-## `private static string PReflexRequestFormat(long id, string field)`
-
 The key a deferred request of one row and one field is held under.
 
 ## `internal void PReflexAddHandle(object sender, ExecutedRoutedEventArgs e)`

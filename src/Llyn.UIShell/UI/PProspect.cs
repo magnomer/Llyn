@@ -90,7 +90,7 @@ public partial class PEditor
                 _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             stored,
             row => row.PProspectItemHeadword,
             (row, name) => row.PProspectItemName = name,
@@ -141,7 +141,7 @@ public partial class PEditor
             return;
         }
 
-        if (_pEditorDraft == 0)
+        if (PEditorDraft == 0)
         {
             PProspectHide();
             return;
@@ -151,7 +151,7 @@ public partial class PEditor
         try
         {
             link = _lEngine.LEngineCourtStart(
-                _pEditorDraft,
+                PEditorDraft,
                 _pEditorOrigin,
                 item.PProspectItemHeadword,
                 item.PProspectItemLanguage);
@@ -186,7 +186,7 @@ public partial class PEditor
                 _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             stored,
             row => row.PProspectItemHeadword,
             (row, name) => row.PProspectItemName = name,

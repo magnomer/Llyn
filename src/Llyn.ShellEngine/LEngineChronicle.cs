@@ -24,7 +24,7 @@ public sealed partial class LEngine
         set => _lEngineChronicleClock = value;
     }
 
-    public LDraft? LEngineChronicleUndo(long id)
+    internal LDraft? LEngineChronicleUndo(long id)
     {
         LDraft? restored;
         lock (_lEngineGate)
@@ -41,7 +41,7 @@ public sealed partial class LEngine
         return restored;
     }
 
-    public LDraft? LEngineChronicleRedo(long id)
+    internal LDraft? LEngineChronicleRedo(long id)
     {
         LDraft? restored;
         lock (_lEngineGate)
@@ -58,7 +58,7 @@ public sealed partial class LEngine
         return restored;
     }
 
-    public bool LEngineUndoCheck(long id)
+    internal bool LEngineUndoCheck(long id)
     {
         lock (_lEngineGate)
         {
@@ -66,7 +66,7 @@ public sealed partial class LEngine
         }
     }
 
-    public bool LEngineRedoCheck(long id)
+    internal bool LEngineRedoCheck(long id)
     {
         lock (_lEngineGate)
         {

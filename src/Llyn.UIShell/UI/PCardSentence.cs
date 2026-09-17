@@ -8,34 +8,29 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard
 {
-    private LSentenceOrder _pCardSentenceOrder = LSentenceOrder.LSentenceOrderDefault;
-
     public ObservableCollection<PSentence> PCardSentence { get; } = [];
 
     internal Action<PSentence, string>? PCardSentenceNotice { get; set; }
 
     internal void PCardSentenceApply(LSentenceOrder order)
     {
-        _pCardSentenceOrder = order ?? LSentenceOrder.LSentenceOrderDefault;
         foreach (PSentence row in PCardSentence)
         {
-            row.PSentenceOrderApply(_pCardSentenceOrder);
+            row.PSentenceOrderApply(order);
         }
     }
 
-    internal void PCardSentenceShow(IReadOnlyList<LSentenceDraft> drafts, Func<PSentence, string, bool> pending)
+    internal void PCardSentenceShow(IReadOnlyList<LSentenceDraft> drafts, string language)
     {
-        ArgumentNullException.ThrowIfNull(pending);
-
         PCardRowShow(
             PCardSentence,
             drafts,
             static row => row.PSentenceRow,
             static draft => draft.LSentenceDraftId,
-            PCardSentenceCreate,
+            draft => PCardSentenceCreate(draft, language),
             (row, draft) =>
             {
-                row.PSentenceShow(draft, field => pending(row, field));
+                row.PSentenceShow(draft);
                 return row;
             });
     }
@@ -45,10 +40,10 @@ internal sealed partial class PCard
         return PCardSentence.IndexOf(row);
     }
 
-    private PSentence PCardSentenceCreate(LSentenceDraft draft)
+    private PSentence PCardSentenceCreate(LSentenceDraft draft, string language)
     {
         PSentence row = new(_pCardCitation, _pCardParticle, _pCardDependence, _pCardLanguage, draft);
-        row.PSentenceOrderApply(_pCardSentenceOrder);
+        row.PSentenceOrderApply(_pCardEngine.LEngineOrderRead(language));
         row.PropertyChanged += PCardSentenceChange;
         return row;
     }

@@ -136,15 +136,15 @@ public partial class PEditor
     {
         int position = card.PCardContextPosition;
         PEditorRequestSend(id is long picked
-            ? new LRequestSituationPick(_pEditorDraft, card.PCardId, picked, position)
-            : new LRequestSituationAddition(_pEditorDraft, card.PCardId, new LStateWritten(written), position));
+            ? new LRequestSituationPick(PEditorDraft, card.PCardId, picked, position)
+            : new LRequestSituationAddition(PEditorDraft, card.PCardId, new LStateWritten(written), position));
     }
 
     private void PContextRemove(PCard card, PContext? chip)
     {
         if (chip is not null)
         {
-            PEditorRequestSend(new LRequestSituationRemoval(_pEditorDraft, card.PCardId, chip.PContextId));
+            PEditorRequestSend(new LRequestSituationRemoval(PEditorDraft, card.PCardId, chip.PContextId));
         }
     }
 

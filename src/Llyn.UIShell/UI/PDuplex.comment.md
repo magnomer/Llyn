@@ -1,28 +1,16 @@
 # PDuplex.xaml
 
-## `<TextBox x:Name="PLeftQuery" ... />`
+## `<Rectangle Grid.Row="0" ... Style="{StaticResource Theme.Panel.SeamRow}" />`
 
-Each side carries its own query field above it.
-The two fields are peers and neither drives the other.
+The seam that parts the two search bars from the pair of entries below them.
+It is bled past the panel margin so it meets the navigation's own edge.
+Its row is fixed to the bar's height and gap, since the bars belong to the wings.
+The column seam sits in the middle of the gutter and parts one side from the other.
+Neither seam encloses anything, and the two entries read as two pages side by side.
 
-## `<Grid x:Name="PLeft" Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">`
+## `<local:PWing x:Name="PLeftWing" ... />`
 
-The comparison side owns two things.
-Above are the matches the query found, below is the Entry chosen from them.
-The matches collapse once a row is taken, so the Entry reads on the full height.
-
-## `<Border Grid.Row="0" ... Visibility="{Binding Visibility, ElementName=PLeftIndex}">`
-
-The card follows the list it frames rather than carrying a name of its own.
-An empty card would otherwise sit above the Entry with nothing in it.
-
-## `<local:PDisplay x:Name="PLeftDisplay" />`
-
-The read-only entry view is shared, so it is a control rather than markup written here.
-Both sides read an Entry the same way the library panel does.
-Comparison is what differs, not how an Entry reads.
-
-## `<ItemsControl x:Name="PRightIndex" Visibility="Collapsed">`
-
-The right side repeats the left side's markup with its own names.
-The two sides are independent, so neither can be a template of the other at runtime.
+Each side is one wing: bar, matches and display.
+The two wings are peers and neither drives the other.
+A wing spans both rows, so its bar lines up with the seam the panel draws.
+Only the gutter margin differs between the two.

@@ -43,7 +43,8 @@ The template then says the form is looked up once the entry is saved.
 
 ## `internal static PParadigmItem PParadigmItemCreate(IReadOnlyList<LParadigmSlot> slots, bool grouped, bool pending, bool enabled, bool held)`
 
-Maps the state of the first slot to the row's text and flags, naming every slot handed in.
+Maps the first slot to the row's text and flags, naming every slot handed in.
+A slot with an inflection is filled, one the converter reads as unknown is marked, and any other is open.
 `grouped` says whether the row heads a part group and carries the part's name.
 `pending` says whether the engine is fetching for this entry.
 `enabled` says whether the morphology switch is on, and `held` whether a draft holds the entry.

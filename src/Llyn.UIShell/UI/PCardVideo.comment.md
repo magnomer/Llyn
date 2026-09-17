@@ -7,23 +7,15 @@ A clip is an addition the user asks for.
 So a card starts with no row and offers none it is not given.
 The engine holds the rows, blank ones included, and the card renders them by id.
 
-## `internal Action<PVideo, string>? PCardVideoNotice { get; set; }`
-
-Where a changed location or span goes, with the name of the one that changed.
-The editor sets it when it builds the card and turns the change into a request.
-
-## `internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows, Func<PVideo, string, bool> pending)`
+## `internal void PCardVideoShow(IReadOnlyList<LVideoDraft> rows)`
 
 Makes the rows show the engine's Videos, matched by id.
-A field with a request still waiting is left as typed, which `pending` answers per row and field.
+A field already reading what the engine holds is left alone.
 
 ## Inline notes
 
-### `private PVideo PCardVideoCreate(LVideoDraft draft)`
+### `private static PVideo PCardVideoCreate(LVideoDraft draft)`
 
-Builds one row from the engine's row and starts listening to it.
-
-### `private void PCardVideoChange(object? sender, PropertyChangedEventArgs arguments)`
-
-The location and the span are the engine's.
-The playback state and the preview are drawn from them and never reported.
+Builds one row from the engine's row.
+The row holds the engine's values and nothing typed, so nothing on it is listened to.
+What is typed into its fields leaves through the editor's own handler.

@@ -15,7 +15,7 @@ public partial class PImprint
 
     private IReadOnlyList<LAuthor> _pAuthorCatalog = [];
 
-    private LState _pAuthorState = LState.LStateUnspecified;
+    private LStateMark _pAuthorState = LStateMark.LStateMarkUnspecified;
 
     private IReadOnlyList<LAuthor> _pAuthorCredited = [];
 
@@ -42,7 +42,7 @@ public partial class PImprint
 
     private void PAuthorShow(LDraft? draft)
     {
-        _pAuthorState = draft?.LDraftReference?.LReferenceAuthorState.LStateMarkState ?? LState.LStateUnspecified;
+        _pAuthorState = draft?.LDraftReference?.LReferenceAuthorState ?? LStateMark.LStateMarkUnspecified;
         PAuthorNotice.Visibility = draft is null ? Visibility.Visible : Visibility.Collapsed;
         PAuthorCreditShow(draft is null ? [] : PAuthorCreditRead(draft));
     }
@@ -51,7 +51,7 @@ public partial class PImprint
     {
         _pAuthorCredited = credits;
 
-        if (credits.Count == 0 && _pAuthorBlankAt < 0 && _pImprintDraft != 0)
+        if (credits.Count == 0 && _pAuthorBlankAt < 0 && PImprintDraft != 0)
         {
             _pAuthorBlankAt = 0;
         }
@@ -157,7 +157,7 @@ public partial class PImprint
 
     private void PAuthorAdd(PAuthorItem item)
     {
-        if (_pImprintDraft == 0)
+        if (PImprintDraft == 0)
         {
             return;
         }
@@ -224,8 +224,8 @@ public partial class PImprint
             return;
         }
 
-        PAuthorRequestSend(
-            new LRequestAuthorShift(_pImprintDraft, item.PAuthorItemId, item.PAuthorItemPosition + step));
+        PImprintRequestSend(
+            new LRequestAuthorShift(PImprintDraft, item.PAuthorItemId, item.PAuthorItemPosition + step));
     }
 
     private void PAuthorRemove(PAuthorItem item)
@@ -239,12 +239,12 @@ public partial class PImprint
             return;
         }
 
-        PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, item.PAuthorItemId));
+        PImprintRequestSend(new LRequestAuthorRemoval(PImprintDraft, item.PAuthorItemId));
     }
 
     private void PAuthorTextHandle(object sender, TextChangedEventArgs e)
     {
-        if (e.OriginalSource is not TextBox { IsKeyboardFocusWithin: true } box || _pImprintDraft == 0)
+        if (e.OriginalSource is not TextBox { IsKeyboardFocusWithin: true } box || PImprintDraft == 0)
         {
             return;
         }
@@ -314,7 +314,7 @@ public partial class PImprint
             return;
         }
 
-        PAuthorChange(row, new LRequestAuthorAddition(_pImprintDraft, name, row.PAuthorItemPosition));
+        PAuthorChange(row, new LRequestAuthorAddition(PImprintDraft, name, row.PAuthorItemPosition));
     }
 
     private void PAuthorAttach(PAuthorItem row, TextBox box, long id)
@@ -325,12 +325,12 @@ public partial class PImprint
             return;
         }
 
-        PAuthorChange(row, new LRequestAuthorPick(_pImprintDraft, id, row.PAuthorItemPosition));
+        PAuthorChange(row, new LRequestAuthorPick(PImprintDraft, id, row.PAuthorItemPosition));
     }
 
     private void PAuthorChange(PAuthorItem row, LRequest request)
     {
-        if (_pImprintDraft == 0)
+        if (PImprintDraft == 0)
         {
             return;
         }
@@ -338,7 +338,7 @@ public partial class PImprint
         int blank = _pAuthorBlankAt;
         _pAuthorBlankAt = -1;
 
-        if (!PAuthorRequestSend(request))
+        if (!PImprintRequestSend(request))
         {
             _pAuthorBlankAt = blank;
             return;
@@ -346,30 +346,7 @@ public partial class PImprint
 
         if (!row.PAuthorItemBlank)
         {
-            PAuthorRequestSend(new LRequestAuthorRemoval(_pImprintDraft, row.PAuthorItemId));
+            PImprintRequestSend(new LRequestAuthorRemoval(PImprintDraft, row.PAuthorItemId));
         }
-    }
-
-    private bool PAuthorRequestSend(LRequest request)
-    {
-        if (_pImprintDraft == 0 || _pImprintHalted)
-        {
-            return false;
-        }
-
-        PImprintChangeSave();
-
-        try
-        {
-            _lEngine.LEngineRequestApply(request);
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.AuthorFailed", exception);
-            return false;
-        }
-
-        PImprintChangeUpdate();
-        return true;
     }
 }

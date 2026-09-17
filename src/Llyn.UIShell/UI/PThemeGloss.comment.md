@@ -6,8 +6,9 @@ So the remove control and the boxed field stand on the same styles as every othe
 
 ## `<local:PStateConverter x:Key="Theme.Gloss.State" />`
 
-Turns the unknown mark of a row into the placeholder its field shows.
-The localized hint appears when the row is blank.
+Reads the row's text value into the field and the placeholder beside it.
+The field binds the value one way, and the placeholder reads the unknown mark or the localized hint.
+What is typed leaves through the editor's own handler, so the row holds no copy of it.
 
 ## `<Style x:Key="Theme.Gloss.Line" TargetType="ItemsControl">`
 

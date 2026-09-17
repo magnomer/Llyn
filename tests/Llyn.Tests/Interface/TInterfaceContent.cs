@@ -241,6 +241,10 @@ internal static partial class TInterface
     internal static LMeaning? TEngineMeaningRead(this LEngine engine, long id) =>
         engine.LEngineMeaningRead(id);
 
+    internal static IReadOnlyList<LMentionLabel> TEngineMentionResolve(
+        this LEngine engine, string text, IReadOnlyList<LMentionDraft> mentions) =>
+        engine.LEngineMentionResolve(text, mentions);
+
     internal static IReadOnlyList<LMeaning> TEngineMeaningRead(
         this LEngine engine,
         long ownerId,

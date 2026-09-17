@@ -6,6 +6,8 @@
 
     <local:PStateConverter x:Key="Theme.State.Show" />
 
+    <local:PCitationConverter x:Key="Theme.Citation.Show" />
+
     <local:PFontConverter x:Key="Theme.Sentence.Inset" />
 
     <Style x:Key="Theme.Sentence.Control" TargetType="FrameworkElement">
@@ -57,7 +59,7 @@
         <Style.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding PSentenceCitationText}" Value="" />
+                    <Condition Binding="{Binding Text, RelativeSource={RelativeSource Self}}" Value="" />
                     <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="False" />
                     <Condition Binding="{Binding IsKeyboardFocusWithin, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="False" />
                 </MultiDataTrigger.Conditions>
@@ -124,12 +126,12 @@
                             <TextBlock Grid.Column="1" Style="{DynamicResource Theme.Card.Frame}" Text="{Binding PSentenceFrameGap}" />
 
                             <Grid x:Name="PSentenceParticleField" Grid.Column="{Binding PSentenceParticleColumn}">
-                                <TextBlock Style="{DynamicResource Theme.Card.Ghost}" Text="{Binding PSentenceParticle}" />
+                                <TextBlock Style="{DynamicResource Theme.Card.Ghost}" Text="{Binding PSentenceParticle, Converter={StaticResource Theme.State.Show}}" />
                                 <TextBlock Text="{Binding Tag, ElementName=PSentenceParticle}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Sentence.Hint}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding PSentenceParticle}" Value="">
+                                                <DataTrigger Binding="{Binding PSentenceParticle, Converter={StaticResource Theme.State.Show}}" Value="">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -143,10 +145,10 @@
                                         Height="{Binding ActualHeight, ElementName=PSentenceParticleField}"
                                         Style="{DynamicResource Theme.Choice.Bare}"
                                         ItemsSource="{Binding PSentenceParticleCatalog}"
-                                        Text="{Binding PSentenceParticle, UpdateSourceTrigger=PropertyChanged}">
+                                        Text="{Binding PSentenceParticle, Converter={StaticResource Theme.State.Show}, Mode=OneWay}">
                                         <ComboBox.Tag>
                                             <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                                <Binding Path="PSentenceParticleUnknown" />
+                                                <Binding Path="PSentenceParticle" />
                                                 <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                                                 <local:PLocalizationBinder PLocalizationBinderKey="Card.ParticleHint" />
                                             </MultiBinding>
@@ -156,12 +158,12 @@
                             </Grid>
 
                             <Grid x:Name="PSentenceDependenceField" Grid.Column="{Binding PSentenceDependenceColumn}">
-                                <TextBlock Style="{DynamicResource Theme.Card.Ghost}" Text="{Binding PSentenceDependence}" />
+                                <TextBlock Style="{DynamicResource Theme.Card.Ghost}" Text="{Binding PSentenceDependence, Converter={StaticResource Theme.State.Show}}" />
                                 <TextBlock Text="{Binding Tag, ElementName=PSentenceDependence}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Theme.Sentence.Hint}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding PSentenceDependence}" Value="">
+                                                <DataTrigger Binding="{Binding PSentenceDependence, Converter={StaticResource Theme.State.Show}}" Value="">
                                                     <Setter Property="Visibility" Value="Visible" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -175,10 +177,10 @@
                                         Height="{Binding ActualHeight, ElementName=PSentenceDependenceField}"
                                         Style="{DynamicResource Theme.Choice.Bare}"
                                         ItemsSource="{Binding PSentenceDependenceCatalog}"
-                                        Text="{Binding PSentenceDependence, UpdateSourceTrigger=PropertyChanged}">
+                                        Text="{Binding PSentenceDependence, Converter={StaticResource Theme.State.Show}, Mode=OneWay}">
                                         <ComboBox.Tag>
                                             <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                                <Binding Path="PSentenceDependenceUnknown" />
+                                                <Binding Path="PSentenceDependence" />
                                                 <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                                                 <local:PLocalizationBinder PLocalizationBinderKey="Card.DependenceHint" />
                                             </MultiBinding>
@@ -206,10 +208,10 @@
                             x:Name="PSentenceLine"
                             ContextMenu="{DynamicResource Theme.Mention.Menu}"
                             Style="{DynamicResource Theme.Card.Instance}"
-                            Text="{Binding PSentenceText, UpdateSourceTrigger=PropertyChanged}">
+                            Text="{Binding PSentenceText, Converter={StaticResource Theme.State.Show}, Mode=OneWay}">
                             <TextBox.Tag>
                                 <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                    <Binding Path="PSentenceUnknown" />
+                                    <Binding Path="PSentenceText" />
                                     <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                                     <local:PLocalizationBinder PLocalizationBinderKey="Card.ExampleHint" />
                                 </MultiBinding>
@@ -239,8 +241,13 @@
                             FontSize="{Binding FontSize, ElementName=PSentenceLine}"
                             PreviewKeyDown="PCitationKeyHandle"
                             LostKeyboardFocus="PCitationLeaveHandle"
-                            Style="{StaticResource Theme.Sentence.Citation}"
-                            Text="{Binding PSentenceCitationText, UpdateSourceTrigger=PropertyChanged}">
+                            Style="{StaticResource Theme.Sentence.Citation}">
+                            <TextBox.Text>
+                                <MultiBinding Converter="{StaticResource Theme.Citation.Show}" Mode="OneWay">
+                                    <Binding Path="PSentenceCitation" />
+                                    <Binding Path="PSentenceCitationCatalog" />
+                                </MultiBinding>
+                            </TextBox.Text>
                             <TextBox.Margin>
                                 <MultiBinding Converter="{StaticResource Theme.Sentence.Inset}">
                                     <Binding Path="FontFamily" ElementName="PSentenceLead" />

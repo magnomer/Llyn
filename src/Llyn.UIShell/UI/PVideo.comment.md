@@ -11,7 +11,8 @@ The address is not: it is read off the location whenever the location changes.
 
 A location standing empty is not one thing.
 It may never have been written, or it may have been written and be unknown now.
-The second is marked rather than shown, and any edit ends the mark.
+The second is marked rather than shown, and the converter reads the mark off the engine's value.
+The row holds the engine's values and nothing typed, so what is typed leaves through the editor as written text.
 
 The timestamp is written the way it is read, as `00:30 - 04:20`.
 It says which part of the video the preview plays.
@@ -27,28 +28,25 @@ The row for a stored Video, holding the location and the span as the store knows
 
 The id of the engine's row this one shows, which every request about it names.
 
-## `internal LStateWritten PVideoLocationRead()`
-
-The location as written, with its mark, for the engine to read.
-
-## `internal LStateWritten PVideoSpanRead()`
-
-The span as written, with its mark, for the engine to read.
-
 ## `internal static string? PVideoOpen(Window owner)`
 
 Asks the user for a video file on this machine and answers its path, or null when they chose none.
 It lives on the row for the reason the picture chooser lives on its row.
 
-## `internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)`
+## `internal void PVideoShow(LVideoDraft written)`
 
 Redraws the row from the engine's row, location and span apart, only where the field says something else.
-A field with a request still waiting is left as typed, which `pending` answers by field name.
+A field already reading what the engine holds is left alone.
 The id is always taken.
 
-## `public string PVideoTimestamp`
+## `public LStateValue PVideoLocation`
 
-The span as the user wrote it.
+The location as the draft holds it, set only from the draft.
+A changed location reads the address the screen plays again.
+
+## `public LStateValue PVideoTimestamp`
+
+The span as the draft holds it, set only from the draft.
 Both ends are optional: nothing before the dash means from the start, nothing after it means to the end.
 
 ## `public TimeSpan PVideoFrom`

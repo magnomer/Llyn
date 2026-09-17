@@ -163,7 +163,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestSend(new LRequestTranslationRemoval(_pEditorDraft, card.PCardId, chip.PLinkChipId));
+        PEditorRequestSend(new LRequestTranslationRemoval(PEditorDraft, card.PCardId, chip.PLinkChipId));
         PLinkCourtDelete(chip.PLinkChipId);
     }
 
@@ -176,7 +176,7 @@ public partial class PEditor
 
         if (!card.PCardLinkCheck(id))
         {
-            PEditorRequestSend(new LRequestTranslationPick(_pEditorDraft, card.PCardId, id, card.PCardLinkPosition));
+            PEditorRequestSend(new LRequestTranslationPick(PEditorDraft, card.PCardId, id, card.PCardLinkPosition));
         }
 
         return true;
@@ -184,14 +184,14 @@ public partial class PEditor
 
     private void PLinkCourtDelete(long id)
     {
-        if (_pEditorDraft == 0)
+        if (PEditorDraft == 0)
         {
             return;
         }
 
         try
         {
-            LCourt? link = _lEngine.LEngineCourtFind(_pEditorDraft, id);
+            LCourt? link = _lEngine.LEngineCourtFind(PEditorDraft, id);
             if (link is null)
             {
                 return;

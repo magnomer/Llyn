@@ -72,7 +72,7 @@ public partial class PEditor : LReceiver
 
         if (id == 0)
         {
-            PEditorRequestSend(new LRequestIpa(_pEditorDraft, reading.PNotationReadingPhonetic));
+            PEditorRequestSend(new LRequestIpa(PEditorDraft, reading.PNotationReadingPhonetic));
             id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
         }
         else
@@ -82,7 +82,7 @@ public partial class PEditor : LReceiver
                 return;
             }
 
-            PEditorRequestSend(new LRequestPronunciationIpa(_pEditorDraft, id, reading.PNotationReadingPhonetic));
+            PEditorRequestSend(new LRequestPronunciationIpa(PEditorDraft, id, reading.PNotationReadingPhonetic));
         }
 
         PNotationVarietySend(id, reading.PNotationReadingVariety);
@@ -95,17 +95,12 @@ public partial class PEditor : LReceiver
             return;
         }
 
-        PEditorRequestSend(new LRequestPronunciationVariety(_pEditorDraft, pronunciationId, variety));
+        PEditorRequestSend(new LRequestPronunciationVariety(PEditorDraft, pronunciationId, variety));
     }
 
     private LEntryDraft? PNotationDraftRead()
     {
-        if (_pEditorHalted || _pEditorDraft == 0)
-        {
-            return null;
-        }
-
-        return _lEngine.LEngineDraftRead(_pEditorDraft)?.LDraftContent;
+        return _pEditorTenure?.LTenureRead()?.LDraftContent;
     }
 
     private PNotationReading PNotationReadingCreate(LCandidate candidate)
@@ -166,12 +161,12 @@ public partial class PEditor : LReceiver
             if (_pNotationScheme.Length > 0)
             {
                 await _lEngine.LEngineTranscriptionFind(
-                    _pEditorDraft, word, _pNotationLanguage, _pNotationScheme, this, cancellation);
+                    PEditorDraft, word, _pNotationLanguage, _pNotationScheme, this, cancellation);
             }
             else
             {
                 await _lEngine.LEnginePronunciationFind(
-                    _pEditorDraft, word, _pNotationLanguage, this, cancellation);
+                    PEditorDraft, word, _pNotationLanguage, this, cancellation);
             }
         }
         catch (OperationCanceledException)

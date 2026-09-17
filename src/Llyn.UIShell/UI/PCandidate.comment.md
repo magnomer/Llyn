@@ -51,11 +51,11 @@ Rows are ordered by how many cards already use them, so the settled wordings sta
 A Situation the card already carries is left out, since it cannot be attached twice.
 The list stays shut when nothing matches, rather than standing empty.
 
-### `private void PCandidateCitationShow(PCard card, PSentence row)`
+### `private void PCandidateCitationShow(PCard card, PSentence row, TextBox box)`
 
 Offers the Sources whose author, year, title or address answer what stands in the citation field.
-The field is found through the keyboard focus, so a line the engine put there opens nothing.
-A line equal to the cited name opens nothing either, since the row already cites it.
+The field arrives from its own change, and only a field the user types into raises one.
+A line equal to the cited name opens nothing, since the row already cites it.
 Rows carry the `Author (Year)` byline and are ordered by how many rows already cite them.
 
 ### `private void PCandidateSelect(PCandidateItem item)`
@@ -63,9 +63,3 @@ Rows carry the `Author (Year)` byline and are ordered by how many rows already c
 Asks the engine to link the row the user chose, at the caret, and empties the entry.
 A row the card already carries is not asked for again.
 A pick from the citation field cites the chosen Source on that sentence row instead.
-
-### `private static TextBox? PCandidateCitationFind(PSentence row)`
-
-The example line and the citation field share one sentence row as their context.
-The two are told apart by the path their text binds to, never by comparing text.
-The box's text still lags one keystroke behind the row while the row is raising its change.

@@ -72,51 +72,19 @@ public partial class PGuild
     {
         _pFellowList.Clear();
 
-        IReadOnlyList<LCatalogReference> works;
+        IReadOnlyList<LFellow> fellows;
         try
         {
-            works = _lEngine.LEngineOeuvreFind(
-                id, string.Empty, LCatalogFilter.LCatalogFilterEmpty, LCatalogOrder.LCatalogOrderName);
+            fellows = _lEngine.LEngineFellowFind(id);
         }
         catch (Exception)
         {
-            works = [];
+            fellows = [];
         }
 
-        Dictionary<long, (string PFellowName, int PFellowShared)> shared = [];
-        foreach (LCatalogReference work in works)
+        foreach (LFellow fellow in fellows)
         {
-            foreach (LAuthor credit in work.LCatalogReferenceCredit)
-            {
-                if (credit.LAuthorId == id)
-                {
-                    continue;
-                }
-
-                shared[credit.LAuthorId] =
-                    shared.TryGetValue(credit.LAuthorId, out (string PFellowName, int PFellowShared) held)
-                        ? (held.PFellowName, held.PFellowShared + 1)
-                        : (credit.LAuthorName, 1);
-            }
-        }
-
-        List<(long PFellowId, string PFellowName, int PFellowShared)> fellows = [];
-        foreach ((long fellow, (string name, int count)) in shared)
-        {
-            fellows.Add((fellow, name, count));
-        }
-
-        fellows.Sort((left, right) =>
-        {
-            int order = right.PFellowShared.CompareTo(left.PFellowShared);
-            return order != 0
-                ? order
-                : string.Compare(left.PFellowName, right.PFellowName, StringComparison.CurrentCultureIgnoreCase);
-        });
-
-        foreach ((long fellow, string name, int count) in fellows)
-        {
-            _pFellowList.Add(new PFellowItem(fellow, name, count));
+            _pFellowList.Add(new PFellowItem(fellow.LFellowId, fellow.LFellowName, fellow.LFellowShared));
         }
 
         PVitaFellowSection.Visibility = _pFellowList.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -153,7 +121,7 @@ public partial class PGuild
                 usage, owner, unknown, string.Empty, _lEngine.LEngineEpithetRead(usage.LUsageEntry)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pVitaCitation, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
 
         PVitaCitationSection.Visibility = _pVitaCitation.Count == 0 ? Visibility.Collapsed : Visibility.Visible;

@@ -1,159 +1,119 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
 public partial class PImprint
 {
-    private const int PImprintChangeDelay = 250;
-
     private const string PImprintOrigin = "Reference";
 
-    private CancellationTokenSource? _pImprintPending;
-
-    private long _pImprintDraft;
-
-    private bool _pImprintHalted;
+    private LTenure? _pImprintTenure;
 
     internal Action? PImprintChronicleNotice;
 
+    private long PImprintDraft => _pImprintTenure?.LTenureId ?? 0;
+
     internal bool PImprintDraftFinish(bool store)
     {
-        if (_pImprintPending is not null)
-        {
-            PImprintChangeSave();
-        }
-
-        if (!store || !PImprintDraftCheck())
-        {
-            PImprintDraftCancel();
-            return true;
-        }
-
-        long held = _pImprintDraft;
-        if (held == 0)
+        if (_pImprintTenure is not LTenure held)
         {
             return true;
         }
-
-        if (_pImprintHalted)
-        {
-            return false;
-        }
-
-        _pImprintDraft = 0;
 
         try
         {
-            _pImprintHost.PWindowCommitRun(held, _lEngine.LEngineReferenceCommit);
+            _pImprintHost.PWindowCommitRun(held, store);
         }
         catch (Exception exception)
         {
-            _pImprintDraft = held;
             _pImprintHost.PWindowFailureShow("Source.SaveFailed", exception);
             return false;
         }
 
+        _pImprintTenure = null;
         return true;
     }
 
     internal bool PImprintChangeCheck()
     {
-        if (_pImprintPending is not null)
+        if (_pImprintTenure is not LTenure held)
         {
-            PImprintChangeSave();
+            return false;
         }
 
-        return PImprintDraftCheck();
+        held.LTenurePersist();
+        return held.LTenureStateRead().LTenureStateChanged;
     }
 
     private void PImprintChangeDefer()
     {
-        if (_pImprintLoading || _pImprintHalted || _pImprintDraft == 0)
-        {
-            return;
-        }
-
-        PImprintChangeStop();
-
-        CancellationTokenSource pending = new();
-        _pImprintPending = pending;
-
-        _ = PImprintChangeRun(pending.Token);
+        PImprintRequestDefer(PImprintRead(PImprintDraft));
     }
 
-    private async Task PImprintChangeRun(CancellationToken token)
+    private void PImprintRequestDefer(LRequest request)
     {
-        try
-        {
-            await Task.Delay(PImprintChangeDelay, token).ConfigureAwait(true);
-        }
-        catch (OperationCanceledException)
+        if (_pImprintLoading || _pImprintTenure is not LTenure held)
         {
             return;
         }
 
-        try
-        {
-            PImprintChangeSave();
-        }
-        catch (Exception exception)
-        {
-            _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
-        }
+        held.LTenureRequestDefer(request);
     }
 
-    private void PImprintChangeSave()
+    private bool PImprintRequestSend(LRequest request)
     {
-        PImprintChangeStop();
-
-        if (_pImprintLoading || _pImprintHalted || _pImprintDraft == 0)
+        if (_pImprintLoading || _pImprintTenure is not LTenure held)
         {
-            return;
+            return false;
         }
 
-        PImprintDraftSave();
-        PImprintChangeUpdate();
-    }
-
-    private void PImprintChangeStop()
-    {
-        CancellationTokenSource? pending = _pImprintPending;
-        _pImprintPending = null;
-
-        if (pending is null)
-        {
-            return;
-        }
-
-        pending.Cancel();
-        pending.Dispose();
+        held.LTenureRequestApply(request);
+        return !held.LTenureStateRead().LTenureStateHalted;
     }
 
     internal void PImprintChangeUpdate()
     {
-        PImprintChangeNotice?.Invoke(PImprintDraftCheck());
+        LTenureState? state = _pImprintTenure?.LTenureStateRead();
+        PImprintChangeNotice?.Invoke(state is { LTenureStateChanged: true });
+        if (state is not null)
+        {
+            PImprintHoldShow(!state.LTenureStateHalted);
+        }
+
         PChronicleUpdate();
+    }
+
+    private void PImprintHoldShow(bool running)
+    {
+        if (running == IsEnabled)
+        {
+            return;
+        }
+
+        IsEnabled = running;
+        if (!running)
+        {
+            _pImprintHost.PWindowFailureShow("Source.HoldFailed");
+        }
     }
 
     private LDraft? PImprintDraftStart(long? reference)
     {
-        PImprintChangeStop();
         PImprintDraftCancel();
 
         try
         {
-            LDraft started = _lEngine.LEngineReferenceStart(PImprintOrigin, reference);
-            _pImprintDraft = started.LDraftId;
-            PImprintHoldResume();
-            return started;
+            LTenure started = _lEngine.LEngineTenureStart(PImprintOrigin, LSubject.LSubjectReference, reference);
+            _pImprintTenure = started;
+            IsEnabled = true;
+            return started.LTenureRead();
         }
         catch (Exception exception)
         {
-            _pImprintDraft = 0;
-            PImprintHoldSuspend(exception);
+            _pImprintTenure = null;
+            IsEnabled = false;
+            _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
             return null;
         }
     }
@@ -163,26 +123,9 @@ public partial class PImprint
         PImprintApply(started);
     }
 
-    private void PImprintDraftSave()
-    {
-        if (_pImprintDraft == 0)
-        {
-            return;
-        }
-
-        try
-        {
-            _lEngine.LEngineRequestApply(PImprintRead(_pImprintDraft));
-        }
-        catch (Exception exception)
-        {
-            PImprintHoldSuspend(exception);
-        }
-    }
-
     internal void PImprintDraftRestore(long id)
     {
-        if (id == _pImprintDraft)
+        if (id == PImprintDraft)
         {
             PImprintDraftRestore();
         }
@@ -190,72 +133,42 @@ public partial class PImprint
 
     private void PImprintDraftRestore()
     {
-        if (_pImprintDraft == 0 || _pImprintLoading)
+        if (_pImprintLoading || _pImprintTenure is not LTenure held)
         {
             return;
         }
 
         try
         {
-            if (_lEngine.LEngineDraftRead(_pImprintDraft) is LDraft held)
+            held.LTenurePersist();
+            if (held.LTenureRead() is LDraft draft)
             {
-                PImprintShow(held);
+                PImprintShow(draft);
             }
         }
         catch (Exception exception)
         {
-            PImprintHoldSuspend(exception);
+            _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
         }
     }
 
     internal void PImprintDraftCancel()
     {
-        if (_pImprintDraft == 0)
+        if (_pImprintTenure is not LTenure held)
         {
             return;
         }
 
-        long held = _pImprintDraft;
-        _pImprintDraft = 0;
-
-        try
-        {
-            _lEngine.LEngineDraftCancel(held);
-        }
-        catch (Exception)
-        {
-        }
-    }
-
-    private bool PImprintDraftCheck()
-    {
-        if (_pImprintDraft == 0)
-        {
-            return false;
-        }
-
-        try
-        {
-            return _lEngine.LEngineDraftCheck(_pImprintDraft);
-        }
-        catch (Exception exception)
-        {
-            PImprintHoldSuspend(exception);
-            return false;
-        }
+        _pImprintTenure = null;
+        held.LTenureCancel();
     }
 
     private long? PImprintReferenceRead()
     {
-        if (_pImprintDraft == 0)
-        {
-            return null;
-        }
-
         LDraft? held;
         try
         {
-            held = _lEngine.LEngineDraftRead(_pImprintDraft);
+            held = _pImprintTenure?.LTenureRead();
         }
         catch (Exception)
         {
@@ -267,26 +180,24 @@ public partial class PImprint
 
     public void PChronicleUndo()
     {
-        PImprintChronicleRun(_lEngine.LEngineChronicleUndo);
+        PImprintChronicleRun(static held => held.LTenureUndo());
     }
 
     public void PChronicleRedo()
     {
-        PImprintChronicleRun(_lEngine.LEngineChronicleRedo);
+        PImprintChronicleRun(static held => held.LTenureRedo());
     }
 
-    private void PImprintChronicleRun(Func<long, LDraft?> step)
+    private void PImprintChronicleRun(Func<LTenure, LDraft?> step)
     {
-        if (_pImprintDraft == 0)
+        if (_pImprintTenure is not LTenure held)
         {
             return;
         }
 
-        PImprintChangeSave();
-
         try
         {
-            PChronicle.PChronicleRun(() => step(_pImprintDraft));
+            PChronicle.PChronicleRun(() => step(held));
         }
         catch (Exception exception)
         {
@@ -303,31 +214,8 @@ public partial class PImprint
 
     internal (bool PImprintPast, bool PImprintFuture) PImprintChronicleRead()
     {
-        return (
-            _pImprintDraft != 0 && _lEngine.LEngineUndoCheck(_pImprintDraft),
-            _pImprintDraft != 0 && _lEngine.LEngineRedoCheck(_pImprintDraft));
-    }
-
-    private void PImprintHoldSuspend(Exception exception)
-    {
-        if (_pImprintHalted)
-        {
-            return;
-        }
-
-        _pImprintHalted = true;
-        IsEnabled = false;
-        _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
-    }
-
-    private void PImprintHoldResume()
-    {
-        if (!_pImprintHalted)
-        {
-            return;
-        }
-
-        _pImprintHalted = false;
-        IsEnabled = true;
+        return _pImprintTenure?.LTenureStateRead() is LTenureState state
+            ? (state.LTenureStateBackward, state.LTenureStateForward)
+            : (false, false);
     }
 }

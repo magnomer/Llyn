@@ -8,10 +8,8 @@ namespace Llyn.UIShell;
 
 internal sealed class PVideo : INotifyPropertyChanged
 {
-    private string _pVideoLocation = string.Empty;
-    private bool _pVideoUnknown;
-    private bool _pVideoUnwritten;
-    private string _pVideoTimestamp = string.Empty;
+    private LStateValue _pVideoLocation = LStateValue.LStateValueUnspecified;
+    private LStateValue _pVideoTimestamp = LStateValue.LStateValueUnspecified;
     private Uri? _pVideoPreview;
     private TimeSpan _pVideoFrom = TimeSpan.Zero;
     private TimeSpan? _pVideoUntil;
@@ -24,60 +22,39 @@ internal sealed class PVideo : INotifyPropertyChanged
 
         _pVideoRow = written.LVideoDraftId;
 
-        PVideoLocation = written.LVideoDraftLocation.LStateValueShow();
-        PVideoUnknown = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
-        PVideoTimestamp = written.LVideoDraftSpan.LStateValueShow();
-        _pVideoUnwritten = written.LVideoDraftSpan.LStateValueState == LState.LStateUnknown;
+        PVideoLocation = written.LVideoDraftLocation;
+        PVideoTimestamp = written.LVideoDraftSpan;
     }
 
-    public bool PVideoUnknown
-    {
-        get => _pVideoUnknown;
-        private set
-        {
-            if (_pVideoUnknown == value)
-            {
-                return;
-            }
-
-            _pVideoUnknown = value;
-            PVideoRaise(nameof(PVideoUnknown));
-        }
-    }
-
-    public string PVideoLocation
+    public LStateValue PVideoLocation
     {
         get => _pVideoLocation;
-        set
+        private set
         {
-            string chosen = value ?? string.Empty;
-            if (string.Equals(_pVideoLocation, chosen, StringComparison.Ordinal))
+            if (_pVideoLocation == value)
             {
                 return;
             }
 
-            _pVideoLocation = chosen;
-            PVideoUnknown = false;
+            _pVideoLocation = value;
             PVideoRaise(nameof(PVideoLocation));
-            PVideoPreview = PImage.PImageAddressRead(chosen);
+            PVideoPreview = PImage.PImageAddressRead(value.LStateValueShow());
         }
     }
 
-    public string PVideoTimestamp
+    public LStateValue PVideoTimestamp
     {
         get => _pVideoTimestamp;
-        set
+        private set
         {
-            string chosen = value ?? string.Empty;
-            if (string.Equals(_pVideoTimestamp, chosen, StringComparison.Ordinal))
+            if (_pVideoTimestamp == value)
             {
                 return;
             }
 
-            _pVideoTimestamp = chosen;
-            _pVideoUnwritten = false;
+            _pVideoTimestamp = value;
             PVideoRaise(nameof(PVideoTimestamp));
-            PVideoTimestampApply(chosen);
+            PVideoTimestampApply(value.LStateValueShow());
         }
     }
 
@@ -143,16 +120,6 @@ internal sealed class PVideo : INotifyPropertyChanged
 
     internal long PVideoId => _pVideoRow;
 
-    internal LStateWritten PVideoLocationRead()
-    {
-        return new LStateWritten(_pVideoLocation, _pVideoUnknown);
-    }
-
-    internal LStateWritten PVideoSpanRead()
-    {
-        return new LStateWritten(_pVideoTimestamp, _pVideoUnwritten);
-    }
-
     internal static string? PVideoOpen(Window owner)
     {
         Microsoft.Win32.OpenFileDialog dialog = new()
@@ -165,28 +132,13 @@ internal sealed class PVideo : INotifyPropertyChanged
         return dialog.ShowDialog(owner) == true ? dialog.FileName : null;
     }
 
-    internal void PVideoShow(LVideoDraft written, Func<string, bool> pending)
+    internal void PVideoShow(LVideoDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
-        ArgumentNullException.ThrowIfNull(pending);
 
         _pVideoRow = written.LVideoDraftId;
-
-        if (!pending(nameof(PVideoLocation)) && !PVideoLocationRead().LStateWrittenMatch(written.LVideoDraftLocation))
-        {
-            _pVideoLocation = written.LVideoDraftLocation.LStateValueShow();
-            PVideoRaise(nameof(PVideoLocation));
-            PVideoUnknown = written.LVideoDraftLocation.LStateValueState == LState.LStateUnknown;
-            PVideoPreview = PImage.PImageAddressRead(_pVideoLocation);
-        }
-
-        if (!pending(nameof(PVideoTimestamp)) && !PVideoSpanRead().LStateWrittenMatch(written.LVideoDraftSpan))
-        {
-            _pVideoTimestamp = written.LVideoDraftSpan.LStateValueShow();
-            _pVideoUnwritten = written.LVideoDraftSpan.LStateValueState == LState.LStateUnknown;
-            PVideoRaise(nameof(PVideoTimestamp));
-            PVideoTimestampApply(_pVideoTimestamp);
-        }
+        PVideoLocation = written.LVideoDraftLocation;
+        PVideoTimestamp = written.LVideoDraftSpan;
     }
 
     private void PVideoTimestampApply(string timestamp)

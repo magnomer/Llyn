@@ -77,3 +77,9 @@ The sound is read here because the phonology catalog orders by it and shows it.
 ## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The same rows with the entries in a hidden language left out.
+
+## `public IReadOnlyList<LCatalogPronunciation> LEnginePronunciationFind(LVista vista)`
+
+The rows the phonology panel's vista lists, with the query, order and filter read off the vista.
+Each row carries its twin name and epithet, filled from the vista row builder in one scan.
+The panel hands over its vista and copies rows, so no choice is kept on the panel side.

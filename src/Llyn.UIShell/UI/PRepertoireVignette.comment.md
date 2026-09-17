@@ -17,7 +17,7 @@ Every showing reads it back, so nothing stale is drawn and no comparison is made
 
 What one stored field reads as, or null for one never written.
 A written value reads itself, and an unknown one reads the mark.
-A card field does the same in the entry display.
+Whether it is unknown is the converter's to say, as for a card field in the entry display.
 
 ## `private void PVignetteTitleShow(LStateValue value)`
 

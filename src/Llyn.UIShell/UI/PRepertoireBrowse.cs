@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -13,17 +14,35 @@ public partial class PRepertoire
 
     private IReadOnlyDictionary<long, int> _pAtlasCount = new Dictionary<long, int>();
 
-    private LCatalogOrder _pTierChoice;
-
-    private LCatalogFilter _pMeshChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pRepertoireVista;
 
     private async void PRepertoireBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pRepertoireVista is not null && bulletin.LBulletinId == _pRepertoireVista.LVistaId)
+            {
+                PAtlasFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
         {
-            if (bulletin.LBulletinId == _pScenarioDraft)
+            if (bulletin.LBulletinId == PScenarioDraft)
             {
                 PScenarioDraftRestore();
+            }
+
+            return;
+        }
+
+        if (bulletin.LBulletinSubject == LSubject.LSubjectTenure)
+        {
+            if (bulletin.LBulletinId == PScenarioDraft)
+            {
+                PScenarioChangeUpdate();
             }
 
             return;
@@ -50,13 +69,13 @@ public partial class PRepertoire
             return;
         }
 
-        PAtlasFind(PInquest.Text ?? string.Empty);
+        PAtlasFind();
         POccurrenceEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PInquestHandle(object sender, TextChangedEventArgs e)
     {
-        PAtlasFind(PInquest.Text ?? string.Empty);
+        _pRepertoireVista?.LVistaQuerySet(PInquest.Text ?? string.Empty);
     }
 
     private void PSortieHandle(object sender, TextChangedEventArgs e)
@@ -66,43 +85,51 @@ public partial class PRepertoire
 
     private void PMeshHandle(object sender, RoutedEventArgs e)
     {
-        _pMeshChoice = PChoice.PChoiceFilterRead(PMeshList);
-        _lEngine.LEngineMeshSave(_pMeshChoice);
-        PMeshMark.Visibility = _pMeshChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        POccurrenceFind();
-    }
-
-    internal async void PMeshRestore(LCatalogFilter filter)
-    {
-        _pMeshChoice = filter;
-        PMeshMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PChoice.PChoiceFilterBuild(PMeshList, _lEngine.LEngineLanguageRead(), filter, PMeshHandle);
-    }
-
-    private void PTierHandle(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (_pRepertoireVista is null)
         {
             return;
         }
 
-        _pTierChoice = LCatalog.LCatalogOrderParse(choice, _pTierChoice);
-        _lEngine.LEngineTierSave(_pTierChoice);
-        PTierDropper.IsChecked = false;
-        PAtlasFind(PInquest.Text ?? string.Empty);
+        _pRepertoireVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PMeshList));
+        PMeshRestore();
     }
 
-    internal async void PTierRestore(LCatalogOrder order)
+    private void PTierHandle(object sender, RoutedEventArgs e)
     {
-        _pTierChoice = order;
-        PChoice.PChoiceOrderApply(PTierDropdown, order);
+        if (sender is not FrameworkElement { Tag: string choice } || _pRepertoireVista is null)
+        {
+            return;
+        }
+
+        PTierDropper.IsChecked = false;
+        _pRepertoireVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pRepertoireVista.LVistaOrder));
+    }
+
+    internal async void PRepertoireVistaRestore(LVista vista)
+    {
+        _pRepertoireVista = vista;
+        PTierRestore();
+        PMeshRestore();
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PAtlasFind(PInquest.Text ?? string.Empty);
+        PChoice.PChoiceFilterBuild(PMeshList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PMeshHandle);
+        vista.LVistaQuerySet(PInquest.Text ?? string.Empty);
+        PAtlasFind();
+    }
+
+    private void PTierRestore()
+    {
+        if (_pRepertoireVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PTierDropdown, _pRepertoireVista.LVistaOrder);
+        }
+    }
+
+    private void PMeshRestore()
+    {
+        bool active = _pRepertoireVista?.LVistaFilter.LCatalogFilterActive == true;
+        PMeshMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PAtlasSelect(long? id)
@@ -114,12 +141,17 @@ public partial class PRepertoire
         }
     }
 
-    private void PAtlasFind(string query)
+    private void PAtlasFind()
     {
+        if (_pRepertoireVista is null)
+        {
+            return;
+        }
+
         IReadOnlyList<LCatalogSituation> read;
         try
         {
-            read = _lEngine.LEngineSituationFind(query, _pTierChoice);
+            read = _lEngine.LEngineSituationFind(_pRepertoireVista);
             _pAtlasCount = _lEngine.LEngineUsageRead(LOwner.LOwnerSituation);
         }
         catch (Exception exception)
@@ -193,7 +225,7 @@ public partial class PRepertoire
         if (situation is null)
         {
             PRepertoireClear();
-            PAtlasFind(PInquest.Text ?? string.Empty);
+            PAtlasFind();
             return;
         }
 
@@ -245,7 +277,7 @@ public partial class PRepertoire
 
         PRepertoireScribeShow(false);
         PRepertoireClear();
-        PAtlasFind(PInquest.Text ?? string.Empty);
+        PAtlasFind();
     }
 
     private void PRepertoireScribeHandle(object sender, RoutedEventArgs e)

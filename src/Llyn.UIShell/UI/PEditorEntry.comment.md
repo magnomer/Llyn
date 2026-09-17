@@ -76,17 +76,16 @@ The engine announces the change, so the view showing the same entry follows with
 The entry the held draft was started from, or null when it was started from nothing.
 It is asked of the engine rather than kept, so the two can never disagree.
 
-### `PEditorChangeSave();`
+### `held.LTenurePersist();`
 
 Everything typed reaches the draft before the draft is committed.
 A store within a keystroke of the last change would otherwise write the form as it stood before it.
-A hold that failed while flushing halts the form, and a halted form commits nothing.
-The draft would otherwise be stored missing the edits the failed flush dropped.
+An unchanged draft is not committed, since storing what matches its entry would rewrite the entry for nothing.
 
-### `stored = _lEngine.LEngineDraftCommit(held);`
+### `stored = _pEditorHost.PWindowCommitRun(held, true);`
 
-The answer is the stored entry with the map from every temporary id to its real one.
-This form only needs the entry, because it reloads the whole record from the store.
+The tenure commits the draft and answers the stored entry's id.
+A halted tenure refuses, so a form missing the edits a failed flush dropped stores nothing.
 The write is deliberately synchronous.
 LDatabase keeps its ambient session in a plain instance field.
 LEngine is built on the UI thread, so it stays on it.
@@ -99,12 +98,10 @@ So the missing field can be filled in and the write repeated.
 An update whose entry vanished between load and save is reported as that.
 It is never quietly turned back into a create.
 
-### `_pEditorDraft = 0;`
+### `_pEditorTenure = null;`
 
-The form stops naming the draft before the commit rather than after it.
-The commit announces the entry while it runs, and a listener may start the form on a fresh draft.
-Clearing afterwards would drop that fresh draft's id and leave it held forever.
-A refused commit puts the id back, so the form goes on with the same draft.
+The form forgets the tenure once it has finished, since the draft behind it is gone.
+A refused commit keeps the tenure, so the form goes on with the same draft.
 The inflection fill is the engine's own step after a commit, so nothing starts it here.
 
 ### `PEditorReset();`
@@ -114,7 +111,7 @@ There the next thing typed is the next entry, not a rewrite of the one just writ
 Every other tab stands on the entry it just wrote, exactly as it does after a correction.
 A browse tab that reset here would show an empty draft beside the index row it just selected.
 
-### `PEditorEntryShow(stored.LOutcomeEntry.LEntryId);`
+### `PEditorEntryShow(id);`
 
 The form stays on the stored entry rather than resetting.
 It is filled from a fresh draft of the stored entry rather than left as typed.
@@ -125,7 +122,7 @@ A form still holding none would create them a second time on the next save.
 
 A thrown-away edit takes its draft and its tentative entries with it.
 The entry the draft stood on is read before that, because the draft is what names it.
-The pending write is called off next, so nothing lands after the draft is gone.
+The tenure drops its own wait when it cancels, so nothing lands after the draft is gone.
 A form that was correcting an entry comes back to it as it is stored.
 A form that was creating one comes up empty, since there is nothing stored to come back to.
 Either path starts the next draft, so the form is never left without one.

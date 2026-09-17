@@ -25,7 +25,7 @@ public partial class PRepertoire
                     LStateValue.LStateValueUnspecified,
                     LStateValue.LStateValueUnspecified),
                 PSortie.Text ?? string.Empty,
-                _pMeshChoice);
+                _pRepertoireVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
         }
         catch (Exception exception)
         {
@@ -43,7 +43,7 @@ public partial class PRepertoire
                 _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pOccurrenceList,
             row => row.POccurrenceItemHeadword,
             (row, name) => row.POccurrenceItemName = name,

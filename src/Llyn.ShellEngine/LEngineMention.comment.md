@@ -3,6 +3,7 @@
 ## `public sealed partial class LEngine`
 
 Answers "what may this word mean" for a clicked position of a sentence.
+Also reads what a chip line shows for the Mentions a sentence already holds.
 Nothing here writes, and linking goes through `LRequestMentionAddition` on an open draft.
 So the corpus panel and the card editor link through one path.
 A read-only display opens a draft the way an edit does.
@@ -25,6 +26,17 @@ Otherwise the word is resolved.
 In a language without separators the longest stored headword of that language covering the offset is the word.
 Only when no headword matches, or the language separates words, does the letter run of [LMentionSpan](../Llyn.Core/Lexicon/LMentionSpan.comment.md) decide.
 The candidates are every Entry of the language whose headword is that word, case folded, in headword order.
+
+## `public IReadOnlyList<LMentionLabel> LEngineMentionResolve(string text, IReadOnlyList<LMentionDraft> mentions)`
+
+Reads the span text, headword and sense of every Mention in one pass, in the order given.
+The headwords are read in one batched call, each Meaning once however many Mentions narrow to it.
+A Mention standing for nothing gets an empty name, for the line to substitute its own word.
+The offsets count code points, so the span is cut at the UTF-16 units the sentence maps them to.
+
+## `private static string LEngineSenseRead(LMeaningArchive meanings, long sense)`
+
+The title of one Meaning, its definition when the title is empty, empty when the Meaning is gone.
 
 ## `private static (int LEngineMentionOffset, int LEngineMentionLength) LEngineMentionScan(`
 

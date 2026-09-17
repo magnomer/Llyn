@@ -17,8 +17,6 @@ public partial class PGuild
 
     private long? _pColophonReference;
 
-    private LCatalogFilter _pLouverChoice = LCatalogFilter.LCatalogFilterEmpty;
-
     private void PCombHandle(object sender, TextChangedEventArgs e)
     {
         POeuvreFind();
@@ -26,17 +24,19 @@ public partial class PGuild
 
     private void PLouverHandle(object sender, RoutedEventArgs e)
     {
-        _pLouverChoice = PChoice.PChoiceFilterRead(PLouverList);
-        _lEngine.LEngineLouverSave(_pLouverChoice);
-        PLouverMark.Visibility = _pLouverChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        POeuvreFind();
+        if (_pGuildVista is null)
+        {
+            return;
+        }
+
+        _pGuildVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PLouverList));
+        PLouverRestore();
     }
 
-    internal void PLouverRestore(LCatalogFilter filter)
+    private void PLouverRestore()
     {
-        _pLouverChoice = filter;
-        PLouverMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PLouverBuild(filter);
+        bool active = _pGuildVista?.LVistaFilter.LCatalogFilterActive == true;
+        PLouverMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PLouverBuild(LCatalogFilter filter)
@@ -83,7 +83,10 @@ public partial class PGuild
         try
         {
             _pOeuvreCatalog = _lEngine.LEngineOeuvreFind(
-                _pRollAuthor, PComb.Text ?? string.Empty, _pLouverChoice, LCatalogOrder.LCatalogOrderName);
+                _pRollAuthor,
+                PComb.Text ?? string.Empty,
+                _pGuildVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty,
+                LCatalogOrder.LCatalogOrderName);
         }
         catch (Exception exception)
         {
@@ -102,7 +105,8 @@ public partial class PGuild
             _pOeuvreList.Add(new PShelfItem(row, unknown, unset));
         }
 
-        bool narrowed = !string.IsNullOrWhiteSpace(PComb.Text) || _pLouverChoice.LCatalogFilterActive;
+        bool narrowed = !string.IsNullOrWhiteSpace(PComb.Text)
+            || _pGuildVista?.LVistaFilter.LCatalogFilterActive == true;
         POeuvreEmpty.SetResourceReference(
             TextBlock.TextProperty,
             _pRollAuthor is null ? "Source.Empty" : narrowed ? "Guild.Unmatched" : "Guild.Vacant");

@@ -16,8 +16,6 @@ public partial class PEditor
 
     private readonly ObservableCollection<string> _pEditorDependence = [];
 
-    private LSentenceOrder _pEditorSentenceOrder = LSentenceOrder.LSentenceOrderDefault;
-
     internal void PSentenceLoad()
     {
         _pEditorCitation.Clear();
@@ -45,18 +43,18 @@ public partial class PEditor
     {
         string chosen = string.IsNullOrWhiteSpace(language) ? _pSpeakerChoice : language;
 
-        _pEditorSentenceOrder = _lEngine.LEngineOrderRead(chosen);
+        LSentenceOrder order = _lEngine.LEngineOrderRead(chosen);
         PSentenceFrameShow(_pEditorParticle, PSentenceParticleRead(chosen));
         PSentenceFrameShow(_pEditorDependence, PSentenceDependenceRead(chosen));
 
         foreach (PCard card in _pMeaningList)
         {
-            card.PCardSentenceApply(_pEditorSentenceOrder);
+            card.PCardSentenceApply(order);
         }
 
         foreach (PCard card in _pCollocationList)
         {
-            card.PCardSentenceApply(_pEditorSentenceOrder);
+            card.PCardSentenceApply(order);
         }
     }
 
@@ -105,7 +103,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestSend(new LRequestSentenceAddition(_pEditorDraft, card.PCardId, card.PCardSentenceFind(row) + 1));
+        PEditorRequestSend(new LRequestSentenceAddition(PEditorDraft, card.PCardId, card.PCardSentenceFind(row) + 1));
     }
 
     internal void PSentenceRemoveHandle(object sender, RoutedEventArgs e)
@@ -115,7 +113,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestSend(new LRequestSentenceRemoval(_pEditorDraft, card.PCardId, row.PSentenceRow));
+        PEditorRequestSend(new LRequestSentenceRemoval(PEditorDraft, card.PCardId, row.PSentenceRow));
     }
 
     internal void PSentenceLinkHandle(object sender, ExecutedRoutedEventArgs e)
@@ -139,7 +137,7 @@ public partial class PEditor
             box.SelectedText.Trim(),
             _pSpeakerChoice,
             entryId => PEditorRequestSend(
-                new LRequestMentionAddition(_pEditorDraft, cardId, rowId, offset, length, entryId, 0)));
+                new LRequestMentionAddition(PEditorDraft, cardId, rowId, offset, length, entryId, 0)));
     }
 
     internal void PSentenceSenseHandle(object sender, ExecutedRoutedEventArgs e)
@@ -159,7 +157,7 @@ public partial class PEditor
             PMentionSelection.PMentionSelectionPlace(box),
             mention.LMentionDraftEntry,
             senseId => PEditorRequestSend(
-                new LRequestMentionSense(_pEditorDraft, cardId, rowId, mention.LMentionDraftId, senseId)));
+                new LRequestMentionSense(PEditorDraft, cardId, rowId, mention.LMentionDraftId, senseId)));
     }
 
     internal void PSentenceSilenceHandle(object sender, ExecutedRoutedEventArgs e)
@@ -176,7 +174,7 @@ public partial class PEditor
         }
 
         PEditorRequestSend(
-            new LRequestMentionAddition(_pEditorDraft, card.PCardId, row.PSentenceRow, offset, length, 0, 0));
+            new LRequestMentionAddition(PEditorDraft, card.PCardId, row.PSentenceRow, offset, length, 0, 0));
     }
 
     internal void PSentenceUnlinkHandle(object sender, ExecutedRoutedEventArgs e)
@@ -196,7 +194,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestSend(new LRequestMentionRemoval(_pEditorDraft, card.PCardId, row.PSentenceRow, id));
+        PEditorRequestSend(new LRequestMentionRemoval(PEditorDraft, card.PCardId, row.PSentenceRow, id));
     }
 
     internal void PSentenceLinkCheck(object sender, CanExecuteRoutedEventArgs e)
@@ -245,41 +243,29 @@ public partial class PEditor
         if (row.PSentenceGlossFind(field, out string name) is PGloss gloss)
         {
             PGlossChangeHandle(card, row, gloss, name);
-            return;
-        }
-
-        switch (field)
-        {
-            case nameof(PSentence.PSentenceText):
-                PEditorRequestDefer(
-                    PEditorRequestFormat(card, row.PSentenceRow, field),
-                    new LRequestSentenceText(_pEditorDraft, card.PCardId, row.PSentenceRow, row.PSentenceTextRead()));
-                break;
-            case nameof(PSentence.PSentenceParticle):
-                PEditorRequestDefer(
-                    PEditorRequestFormat(card, row.PSentenceRow, field),
-                    new LRequestSentenceParticle(
-                        _pEditorDraft, card.PCardId, row.PSentenceRow, row.PSentenceParticleRead()));
-                break;
-            case nameof(PSentence.PSentenceDependence):
-                PEditorRequestDefer(
-                    PEditorRequestFormat(card, row.PSentenceRow, field),
-                    new LRequestSentenceDependence(
-                        _pEditorDraft, card.PCardId, row.PSentenceRow, row.PSentenceDependenceRead()));
-                break;
-            case nameof(PSentence.PSentenceCitationId):
-                PEditorRequestSend(new LRequestSentenceReference(
-                    _pEditorDraft, card.PCardId, row.PSentenceRow, row.PSentenceCitationId));
-                break;
-            case nameof(PSentence.PSentenceCitationText):
-                PCandidateCitationShow(card, row);
-                break;
         }
     }
 
-    private bool PSentencePendingCheck(PCard card, PSentence row, string field)
+    private void PSentenceChangeHandle(PCard card, PSentence row, string field, TextBox box)
     {
-        return PEditorRequestCheck(PEditorRequestFormat(card, row.PSentenceRow, field));
+        LStateWritten written = new(box.Text);
+        switch (field)
+        {
+            case nameof(PSentence.PSentenceText):
+                PEditorRequestDefer(new LRequestSentenceText(PEditorDraft, card.PCardId, row.PSentenceRow, written));
+                break;
+            case nameof(PSentence.PSentenceParticle):
+                PEditorRequestDefer(
+                    new LRequestSentenceParticle(PEditorDraft, card.PCardId, row.PSentenceRow, written));
+                break;
+            case nameof(PSentence.PSentenceDependence):
+                PEditorRequestDefer(
+                    new LRequestSentenceDependence(PEditorDraft, card.PCardId, row.PSentenceRow, written));
+                break;
+            case nameof(PSentence.PSentenceCitation):
+                PCandidateCitationShow(card, row, box);
+                break;
+        }
     }
 
     private void PSentencePrepare(LEntryDraft draft)
@@ -294,7 +280,7 @@ public partial class PEditor
         {
             if (card.LCardDraftSentence.Count == 0)
             {
-                PEditorRequestSend(new LRequestSentenceAddition(_pEditorDraft, card.LCardDraftId, 0));
+                PEditorRequestSend(new LRequestSentenceAddition(PEditorDraft, card.LCardDraftId, 0));
             }
         }
     }

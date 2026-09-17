@@ -12,7 +12,8 @@ A row without a morphology value says no source was reached for the entry.
 ## `public void LLacunaSave(long entryId, IReadOnlyList<long?> morphologyIds)`
 
 Replaces the entry's rows with one per given morphology id in one transaction.
-A `null` id writes the row that marks the entry lost.
+A `null` id writes the row that marks the entry lost, and only the first of several is written.
+The key treats every null as distinct, so the replace clause alone would let lost rows pile up.
 An empty list leaves the entry with no rows at all.
 Every row is stamped with the same fetch time.
 

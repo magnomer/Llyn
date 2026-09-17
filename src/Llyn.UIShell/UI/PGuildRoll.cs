@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -16,10 +17,20 @@ public partial class PGuild
 
     private long? _pRollAuthor;
 
-    private LCatalogOrder _pEchelonChoice;
+    private LVista? _pGuildVista;
 
     private void PGuildBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pGuildVista is not null && bulletin.LBulletinId == _pGuildVista.LVistaId)
+            {
+                PRollFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
         {
             return;
@@ -31,7 +42,7 @@ public partial class PGuild
             return;
         }
 
-        PRollFind(PMuster.Text ?? string.Empty);
+        PRollFind();
 
         if (_pRollAuthor is long author && PRollCatalogFind(author) is not null)
         {
@@ -53,27 +64,36 @@ public partial class PGuild
 
     private void PMusterHandle(object sender, TextChangedEventArgs e)
     {
-        PRollFind(PMuster.Text ?? string.Empty);
+        _pGuildVista?.LVistaQuerySet(PMuster.Text ?? string.Empty);
     }
 
     private void PEchelonHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pGuildVista is null)
         {
             return;
         }
 
-        _pEchelonChoice = LCatalog.LCatalogOrderParse(choice, _pEchelonChoice);
-        _lEngine.LEngineEchelonSave(_pEchelonChoice);
         PEchelonDropper.IsChecked = false;
-        PRollFind(PMuster.Text ?? string.Empty);
+        _pGuildVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pGuildVista.LVistaOrder));
     }
 
-    internal void PEchelonRestore(LCatalogOrder order)
+    internal void PGuildVistaRestore(LVista vista)
     {
-        _pEchelonChoice = order;
-        PChoice.PChoiceOrderApply(PEchelonDropdown, order);
-        PRollFind(PMuster.Text ?? string.Empty);
+        _pGuildVista = vista;
+        PEchelonRestore();
+        PLouverRestore();
+        PLouverBuild(vista.LVistaFilter);
+        vista.LVistaQuerySet(PMuster.Text ?? string.Empty);
+        PRollFind();
+    }
+
+    private void PEchelonRestore()
+    {
+        if (_pGuildVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PEchelonDropdown, _pGuildVista.LVistaOrder);
+        }
     }
 
     private LCatalogAuthor? PRollCatalogFind(long id)
@@ -97,12 +117,18 @@ public partial class PGuild
         }
     }
 
-    private void PRollFind(string query)
+    private void PRollFind()
     {
+        if (_pGuildVista is null)
+        {
+            return;
+        }
+
+        string query = _pGuildVista.LVistaQuery;
         IReadOnlyList<LCatalogReference> orphan;
         try
         {
-            _pRollCatalog = _lEngine.LEngineAuthorFind(query, _pEchelonChoice);
+            _pRollCatalog = _lEngine.LEngineAuthorFind(_pGuildVista);
             orphan = _lEngine.LEngineOeuvreFind(
                 0, string.Empty, LCatalogFilter.LCatalogFilterEmpty, LCatalogOrder.LCatalogOrderName);
         }

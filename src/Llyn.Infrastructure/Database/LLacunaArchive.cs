@@ -49,8 +49,19 @@ public sealed class LLacunaArchive
         using LDatabaseSession session = _lLacunaArchiveDatabase.LDatabaseSessionStart();
         SqliteConnection connection = session.LDatabaseSessionConnection;
         LLacunaClear(connection, entryId);
+        bool lost = false;
         foreach (long? morphologyId in morphologyIds)
         {
+            if (morphologyId is null)
+            {
+                if (lost)
+                {
+                    continue;
+                }
+
+                lost = true;
+            }
+
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText =
                 """

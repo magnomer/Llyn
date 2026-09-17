@@ -18,7 +18,7 @@ A side that names itself nowhere shows the unnamed text, and one marked as not k
 ## `public string PUsageItemName`
 
 The headword as the row shows it, numbered `(1)`, `(2)` while another row carries the same headword.
-`PTwin` writes it once the list is filled, because a repeat is only visible across rows.
+`LTwin` writes it once the list is filled, because a repeat is only visible across rows.
 `PUsageItemHeadword` keeps the plain headword for everything that is not display.
 
 ## `public LOwner PUsageItemKind`

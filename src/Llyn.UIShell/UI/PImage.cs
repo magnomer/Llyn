@@ -13,8 +13,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
 {
     private static LEngine? _pImageEngine;
 
-    private string _pImageLocation;
-    private bool _pImageUnknown;
+    private LStateValue _pImageLocation;
     private bool _pImageSeen;
     private ImageSource? _pImagePreview;
     private long _pImageRow;
@@ -24,40 +23,22 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         ArgumentNullException.ThrowIfNull(written);
 
         _pImageRow = written.LImageDraftId;
-        _pImageLocation = written.LImageDraftLocation.LStateValueShow();
-        _pImageUnknown = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
+        _pImageLocation = written.LImageDraftLocation;
     }
 
-    public string PImageLocation
+    public LStateValue PImageLocation
     {
         get => _pImageLocation;
-        set
-        {
-            string chosen = value ?? string.Empty;
-            if (string.Equals(_pImageLocation, chosen, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pImageLocation = chosen;
-            PImageUnknown = false;
-            PImageRaise(nameof(PImageLocation));
-            PImagePreviewUpdate();
-        }
-    }
-
-    public bool PImageUnknown
-    {
-        get => _pImageUnknown;
         private set
         {
-            if (_pImageUnknown == value)
+            if (_pImageLocation == value)
             {
                 return;
             }
 
-            _pImageUnknown = value;
-            PImageRaise(nameof(PImageUnknown));
+            _pImageLocation = value;
+            PImageRaise(nameof(PImageLocation));
+            PImagePreviewUpdate();
         }
     }
 
@@ -89,25 +70,12 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
         PImagePreviewUpdate();
     }
 
-    internal LStateWritten PImageLocationRead()
-    {
-        return new LStateWritten(_pImageLocation, _pImageUnknown);
-    }
-
-    internal void PImageShow(LImageDraft written, bool pending)
+    internal void PImageShow(LImageDraft written)
     {
         ArgumentNullException.ThrowIfNull(written);
 
         _pImageRow = written.LImageDraftId;
-        if (pending || PImageLocationRead().LStateWrittenMatch(written.LImageDraftLocation))
-        {
-            return;
-        }
-
-        _pImageLocation = written.LImageDraftLocation.LStateValueShow();
-        PImageRaise(nameof(PImageLocation));
-        PImageUnknown = written.LImageDraftLocation.LStateValueState == LState.LStateUnknown;
-        PImagePreviewUpdate();
+        PImageLocation = written.LImageDraftLocation;
     }
 
     internal static string? PImageOpen(Window owner)
@@ -142,7 +110,7 @@ internal sealed class PImage : INotifyPropertyChanged, PImagePending
             return;
         }
 
-        Uri? address = PImageAddressRead(_pImageLocation);
+        Uri? address = PImageAddressRead(_pImageLocation.LStateValueShow());
         if (address is null)
         {
             PImagePreview = null;

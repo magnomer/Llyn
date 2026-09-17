@@ -25,6 +25,11 @@ An empty query offers the whole shelf.
 The shelf the tenor panel browses: every Register, counted and ordered.
 A row is answered by its name.
 
+## `public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)`
+
+The shelf the tenor panel's vista lists, with the query and order read off the vista.
+The vista's filter hides languages from the entries of the chosen Register, not Registers, so it is not applied here.
+
 ## `public LRegister LEngineRegisterCreate(string name)`
 
 Makes a written Register reading `name` with no card marked by it yet, for the tenor panel's New.

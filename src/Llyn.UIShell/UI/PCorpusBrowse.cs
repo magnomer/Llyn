@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -18,12 +19,20 @@ public partial class PCorpus
 
     private IReadOnlyDictionary<long, int> _pAnthologyCount = new Dictionary<long, int>();
 
-    private LCatalogOrder _pRankChoice;
-
-    private LCatalogFilter _pGauzeChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pCorpusVista;
 
     private async void PCorpusBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pCorpusVista is not null && bulletin.LBulletinId == _pCorpusVista.LVistaId)
+            {
+                PAnthologyFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectDraft)
         {
             if (bulletin.LBulletinId == PTranscriptDraft)
@@ -67,38 +76,53 @@ public partial class PCorpus
         }
 
         PCitationFind();
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        PAnthologyFind();
         PQuotationEntryUpdate(bulletin.LBulletinId);
     }
 
     private void PQueryHandle(object sender, TextChangedEventArgs e)
     {
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        _pCorpusVista?.LVistaQuerySet(PQuery.Text ?? string.Empty);
     }
 
     private void PRankHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pCorpusVista is null)
         {
             return;
         }
 
-        _pRankChoice = LCatalog.LCatalogOrderParse(choice, _pRankChoice);
-        _lEngine.LEngineRankSave(_pRankChoice);
         PRankDropper.IsChecked = false;
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        _pCorpusVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pCorpusVista.LVistaOrder));
     }
 
-    internal async void PRankRestore(LCatalogOrder order)
+    internal async void PCorpusVistaRestore(LVista vista)
     {
-        _pRankChoice = order;
-        PChoice.PChoiceOrderApply(PRankDropdown, order);
+        _pCorpusVista = vista;
+        PRankRestore();
+        PGauzeRestore();
 
         await PEnsign.PEnsignLoad(_lEngine);
 
+        PChoice.PChoiceFilterBuild(PGauzeList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PGauzeHandle);
+        vista.LVistaQuerySet(PQuery.Text ?? string.Empty);
         PSpeakerLoad();
         PCitationFind();
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        PAnthologyFind();
+    }
+
+    private void PRankRestore()
+    {
+        if (_pCorpusVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PRankDropdown, _pCorpusVista.LVistaOrder);
+        }
+    }
+
+    private void PGauzeRestore()
+    {
+        bool active = _pCorpusVista?.LVistaFilter.LCatalogFilterActive == true;
+        PGauzeMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void PDredgeHandle(object sender, TextChangedEventArgs e)
@@ -108,20 +132,13 @@ public partial class PCorpus
 
     private void PGauzeHandle(object sender, RoutedEventArgs e)
     {
-        _pGauzeChoice = PChoice.PChoiceFilterRead(PGauzeList);
-        _lEngine.LEngineGauzeSave(_pGauzeChoice);
-        PGauzeMark.Visibility = _pGauzeChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PQuotationFind();
-    }
+        if (_pCorpusVista is null)
+        {
+            return;
+        }
 
-    internal async void PGauzeRestore(LCatalogFilter filter)
-    {
-        _pGauzeChoice = filter;
-        PGauzeMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PChoice.PChoiceFilterBuild(PGauzeList, _lEngine.LEngineLanguageRead(), filter, PGauzeHandle);
+        _pCorpusVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PGauzeList));
+        PGauzeRestore();
     }
 
     private void PAnthologySelect(long? id)
@@ -133,12 +150,17 @@ public partial class PCorpus
         }
     }
 
-    private void PAnthologyFind(string query)
+    private void PAnthologyFind()
     {
+        if (_pCorpusVista is null)
+        {
+            return;
+        }
+
         IReadOnlyList<LCatalogExample> read;
         try
         {
-            read = _lEngine.LEngineExampleFind(query, _pRankChoice);
+            read = _lEngine.LEngineExampleFind(_pCorpusVista);
             _pAnthologyCount = _lEngine.LEngineUsageRead(LOwner.LOwnerExample);
         }
         catch (Exception exception)
@@ -162,7 +184,7 @@ public partial class PCorpus
                 unwritten));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pAnthologyList, row => row.PAnthologyItemText, (row, name) => row.PAnthologyItemName = name);
 
         PAnthologyEmpty.Visibility = _pAnthologyList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -210,7 +232,7 @@ public partial class PCorpus
         if (example is null)
         {
             PCorpusClear();
-            PAnthologyFind(PQuery.Text ?? string.Empty);
+            PAnthologyFind();
             return;
         }
 
@@ -264,7 +286,7 @@ public partial class PCorpus
 
         PCorpusScribeShow(false);
         PCorpusClear();
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        PAnthologyFind();
     }
 
     private string PCorpusTallyRead(long? id)

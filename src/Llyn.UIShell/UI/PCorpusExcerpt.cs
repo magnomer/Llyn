@@ -11,13 +11,9 @@ public partial class PCorpus
 
     private string? PExcerptTextRead(LStateValue value)
     {
-        return value.LStateValueState switch
-        {
-            _ when value.LStateValueUnreadable => value.LStateValueShow(),
-            LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => _pCorpusHost.PLocalizationTextRead("Display.Unknown"),
-            _ => null,
-        };
+        return PStateConverter.PStateConverterCheck(value)
+            ? _pCorpusHost.PLocalizationTextRead("Display.Unknown")
+            : value.LStateValueShow() is { Length: > 0 } shown ? shown : null;
     }
 
     private void PExcerptSentenceShow(LExample example)
@@ -26,9 +22,12 @@ public partial class PCorpus
 
         PExcerptText.PMentionText = text ?? _pCorpusHost.PLocalizationTextRead("Example.Unwritten");
         PExcerptText.PMentionLanguage = example.LExampleLanguage;
-        PExcerptText.PMentionMention = example.LExampleText.LStateValueState == LState.LStateSpecified
-            ? example.LExampleMention
-            : [];
+        PExcerptText.PMentionMention =
+            text is null
+            || example.LExampleText.LStateValueUnreadable
+            || PStateConverter.PStateConverterCheck(example.LExampleText)
+                ? []
+                : example.LExampleMention;
         PExcerptText.SetResourceReference(
             TextBlock.ForegroundProperty,
             text is null ? "Theme.Muted" : "Theme.Ink");
@@ -37,9 +36,7 @@ public partial class PCorpus
     private void PExcerptCitationShow(LStateAnchor value)
     {
         string shown = PCitationNameRead(value.LStateAnchorShow());
-        string? text = value.LStateAnchorState == LState.LStateSpecified && !string.IsNullOrEmpty(shown)
-            ? shown
-            : null;
+        string? text = value.LStateAnchorShow() != 0 && !string.IsNullOrEmpty(shown) ? shown : null;
 
         PExcerptCitation.Text = text ?? string.Empty;
         PExcerptCitationSection.Visibility = text is null ? Visibility.Collapsed : Visibility.Visible;

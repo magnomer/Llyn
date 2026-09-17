@@ -4,6 +4,9 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
+    internal static LFellow TFellowCreate(long id, string name, int shared) =>
+        new(id, name, shared);
+
     internal static LAuthor TAuthorCreate(long id, string name) =>
         new(id, name);
 
@@ -182,6 +185,9 @@ internal static partial class TInterface
 
     internal static int TMentionUnitRead(string text, int offset) =>
         LMentionSpan.LMentionUnitRead(text, offset);
+
+    internal static LMentionLabel TMentionLabelCreate(long id, string word, long entryId, string name, string sense) =>
+        new(id, word, entryId, name, sense);
 
     internal static LMentionDraft TMentionDraftCreate(long id, int start, int length, long entryId, long senseId = 0) =>
         new(id, start, length, entryId, senseId);

@@ -105,20 +105,20 @@ public partial class PEditor
             return false;
         }
 
-        PEditorRequestSend(new LRequestTagAddition(_pEditorDraft, card.PCardId, written, card.PCardLabelPosition));
+        PEditorRequestSend(new LRequestTagAddition(PEditorDraft, card.PCardId, written, card.PCardLabelPosition));
         return true;
     }
 
     private void PLabelSend(PCard card, long id)
     {
-        PEditorRequestSend(new LRequestTagPick(_pEditorDraft, card.PCardId, id, card.PCardLabelPosition));
+        PEditorRequestSend(new LRequestTagPick(PEditorDraft, card.PCardId, id, card.PCardLabelPosition));
     }
 
     private void PLabelRemove(PCard card, PLabelChip? chip)
     {
         if (chip is not null)
         {
-            PEditorRequestSend(new LRequestTagRemoval(_pEditorDraft, card.PCardId, chip.PLabelChipId));
+            PEditorRequestSend(new LRequestTagRemoval(PEditorDraft, card.PCardId, chip.PLabelChipId));
         }
     }
 

@@ -37,7 +37,7 @@ internal sealed partial class PSentence
         return null;
     }
 
-    private void PSentenceGlossShow(IReadOnlyList<LGlossDraft> drafts, Func<PGloss, string, bool> pending)
+    private void PSentenceGlossShow(IReadOnlyList<LGlossDraft> drafts)
     {
         PCard.PCardRowShow(
             PSentenceGloss,
@@ -47,7 +47,7 @@ internal sealed partial class PSentence
             PSentenceGlossCreate,
             (row, draft) =>
             {
-                row.PGlossShow(draft, field => pending(row, field));
+                row.PGlossShow(draft);
                 return row;
             });
     }
@@ -61,8 +61,7 @@ internal sealed partial class PSentence
 
     private void PSentenceGlossChange(object? sender, PropertyChangedEventArgs arguments)
     {
-        if (sender is PGloss gloss
-            && arguments.PropertyName is nameof(PGloss.PGlossText) or nameof(PGloss.PGlossLanguage))
+        if (sender is PGloss gloss && arguments.PropertyName == nameof(PGloss.PGlossLanguage))
         {
             PSentenceRaise(PSentenceGlossFormat(gloss, arguments.PropertyName));
         }

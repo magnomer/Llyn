@@ -3,13 +3,41 @@
 ## `public partial class PEditor`
 
 The draft the form writes into, and what becomes of it.
-The form keeps the id of the draft the engine holds for it, and writes every keystroke through that.
-Starting one, writing into it, reading it back, and committing or throwing it away are all here.
-A downstream that refuses any of those takes the form out of the user's hands until one answers again.
+The form holds one `LTenure` and its controls, and the tenure runs the hold from start to commit or cancel.
+The form keeps no draft id, halted flag or timer of its own, since the engine owns each of those.
+Starting one, reading it back, stepping it, and committing or throwing it away are all here.
+The tenure raises a bulletin when its state moves, and the form settles its buttons from that.
+This mirrors `PCorpusHold.cs` member for member, so the editors cannot drift apart.
+
+## `private LTenure? _pEditorTenure;`
+
+The engine's hold on the entry being edited, or null while the form holds nothing.
+It is the form's only claim on anything outside itself.
+The draft carries the entry it was started from, so the form no longer remembers that.
+
+## `internal Action? PEditorChronicleNotice;`
+
+Raised after every settle of the form's chronicle state, so the mounting panel settles its rail in turn.
+The rail's pair follows the form's draft the way the rail's save follows the change notice.
+
+## `private long PEditorDraft => _pEditorTenure?.LTenureId ?? 0;`
+
+The held draft's id as the requests name it, zero while nothing is held.
+Read from the tenure each time, so the form keeps no copy to drift.
+
+## `private LDraft? PEditorDraftStart(long? entry)`
+
+Hands the current draft back and asks the engine for a tenure on a new one.
+Everything the form shows from then on belongs to that draft.
+The card lists are emptied first, because a card's id is an address into the draft that is gone.
+A stored entry reopened would otherwise find its old cards by id and keep their stale chips.
+An entry that no longer loads is refused before a file is written, and the form comes up empty.
+A refusal disables the form rather than leaving it typing into a tenure the engine never gave.
+A start that succeeds enables the form again, since the downstream the form lost is back.
 
 ## `public void PChronicleUndo()`
 
-Steps the entry form's draft one snapshot back through the engine's chronicle.
+Steps the entry form's draft one snapshot back through the tenure.
 The draft bulletin the engine raises brings the older fields back through the ordinary restore.
 
 ## `public void PChronicleRedo()`
@@ -27,100 +55,52 @@ The redo button, the inverse of the one above.
 
 ## `public void PChronicleUpdate()`
 
-Lights the form's own undo and redo buttons only when the engine has a step to walk.
-No draft disables both.
+Lights the form's own undo and redo buttons only when the tenure has a step to walk.
+No tenure disables both.
 Then the chronicle notice is raised, so a panel that mounts the form can settle its own rail.
 The form never touches a panel's buttons, because only the panel knows which editor is in front.
 
 ## `internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()`
 
-Whether the held draft has a step behind it and a step ahead of it.
+The undo and redo answers of the tenure's state, both false while nothing is held.
 A mounting panel reads this when the form is in front, the way it reads the change notice for save.
 
-## `private void PEditorChronicleRun(Func<long, LDraft?> step)`
+## `private void PEditorChronicleRun(Func<LTenure, LDraft?> step)`
 
 The one path both steps share.
-No draft means nothing to walk, so it returns without asking.
-The pending debounced request is flushed first, so the snapshot stepped away from is the one on screen.
+No tenure means nothing to walk, so it returns without asking.
+The tenure writes what is waiting before it steps, so the snapshot stepped away from is the one on screen.
 The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
 A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
 The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
 
-## Inline notes
+## `private void PEditorHoldShow(bool running)`
 
-### `private long _pEditorDraft;`
-
-Which held draft this form is editing.
-It is the form's only claim on anything outside itself.
-The draft carries the entry it was started from, so the form no longer remembers that.
-Zero means the engine refused to start one, and every write here is skipped.
-
-### `internal Action? PEditorChronicleNotice;`
-
-Raised after every settle of the form's chronicle state, so the mounting panel settles its rail in turn.
-The rail's pair follows the form's draft the way the rail's save follows the change notice.
-
-### `private LDraft? PEditorDraftStart(long? entry)`
-
-Hands the current draft back and asks the engine for a new one.
-Everything the form shows from then on belongs to that draft.
-The card lists are emptied first, because a card's id is an address into the draft that is gone.
-A stored entry reopened would otherwise find its old cards by id and keep their stale chips.
-An entry that no longer loads is refused before a file is written, and the form comes up empty.
-A refusal is reported and the form is suspended.
-A control may buffer keystrokes only while a draft waits for them.
-A draft that starts lifts a suspension, since the downstream the form lost is back.
-
-### `private void PEditorHoldSuspend(Exception exception)`
-
-Puts the form into a held-nothing state and says why once.
+Enables or disables the form to match whether the tenure still runs, and says so once when it stops.
 The whole editor is disabled, so no further keystroke is taken into a buffer that has nowhere to push.
-Only the first failure is reported, because a reset after one raises the same failure again.
+The control's own enabled state is the memory of having said so, so the notice is not repeated.
 
-### `private void PEditorHoldResume()`
+## `private void PEditorDraftCancel()`
 
-Gives the form back to the user once a draft is holding its keystrokes again.
-It does nothing to a form that was never suspended, so an ordinary start touches no control.
+Throws the held draft away, links and all, and forgets the tenure.
+The tenure is dropped before the call, so its last bulletin finds no form holding it.
 
-### `private void PEditorDraftCancel()`
-
-Throws the held draft away, links and all.
-The id is dropped first, so a failure to delete cannot leave the form writing into a dead draft.
-A failure to delete is reported, since a draft left behind is offered back as leftover on the next launch.
-
-### `private void PEditorDraftRestore()`
+## `private void PEditorDraftRestore()`
 
 Reads the draft as stored and renders it over the form.
 This is what every draft bulletin does, and what a form does when it doubts what it shows.
+What is waiting is written first, so a bulletin from the tenure's timer never redraws over a newer keystroke.
 A draft that reads back null leaves the form alone, since there is nothing left to agree with.
 
-### `internal bool PEditorDraftFinish(bool store)`
+## `internal bool PEditorDraftFinish(bool store)`
 
 The window's exit answer applied to this form's own draft.
-A write still waiting on the typing pause is made before the wait is dropped.
+The tenure writes what is waiting, cancels an unchanged or unwanted draft, and commits the rest.
 So a form closed between two keystrokes carries the last of them out with it.
-The caller is not trusted to have asked the form for changes first.
 Storing commits it, which is the same write the save button makes.
 A word typed and never saved survives the exit that was meant to keep it.
-Discarding cancels it.
-A draft matching its entry is cancelled either way, since there is nothing in it to store.
-A refused commit keeps the draft and reports the refusal, the same way the save button does.
-A form halted by a failed flush answers that it did not finish.
-Committing then would store a draft missing the edits the flush dropped.
-The answer the user gave was to keep the word.
-Deleting it is the one thing that answer never asked for.
+A refused commit keeps the tenure and reports the refusal, the same way the save button does.
+A halted tenure refuses to finish the same way, since committing would store a draft missing the dropped edits.
 What is returned is whether the form is finished.
 A false answer holds the window open over work the store would not take.
 A settled form leaves the folder no file, so a clean exit is never reported as work a crash cost.
-
-### `private bool PEditorDraftCheck()`
-
-Asks the engine whether the held draft differs from the entry it started from, with the refusal left unread.
-
-### `private bool PEditorDraftCheck(out string? refusal)`
-
-Asks the engine whether the held draft differs from the entry it started from.
-`refusal` is the reason a commit would be refused now, or null, which is what enables the save button.
-A form with no draft has nothing to lose, so it answers no.
-A question the engine cannot answer at all suspends the form.
-The draft behind it can no longer be trusted.

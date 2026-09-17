@@ -81,6 +81,60 @@ public sealed partial class LEngine
         };
     }
 
+    private LDraft LEngineAudioClear(LDraft draft, LRequest request)
+    {
+        LEntryDraft before = draft.LDraftContent;
+        LEntryDraft content = LEngineRequestApply(before, request);
+        if (!string.Equals(before.LEntryDraftLanguage, content.LEntryDraftLanguage, StringComparison.Ordinal))
+        {
+            content = LEngineAudioClear(content, null);
+        }
+        else if (!string.Equals(before.LEntryDraftHeadword, content.LEntryDraftHeadword, StringComparison.Ordinal))
+        {
+            LEntryDraft? stored = draft.LDraftEntryId <= 0 ? null : LEngineEntryLoad(draft.LDraftEntryId);
+            content = LEngineAudioClear(content, stored);
+        }
+
+        return draft with { LDraftContent = content };
+    }
+
+    private static LEntryDraft LEngineAudioClear(LEntryDraft content, LEntryDraft? stored)
+    {
+        List<LPronunciationDraft> spoken = new(content.LEntryDraftPronunciations.Count);
+        foreach (LPronunciationDraft row in content.LEntryDraftPronunciations)
+        {
+            spoken.Add(LEngineAudioMatch(row, stored)
+                ? row
+                : row with { LPronunciationDraftAudio = string.Empty, LPronunciationDraftSource = null });
+        }
+
+        return content with { LEntryDraftPronunciations = spoken };
+    }
+
+    private static bool LEngineAudioMatch(LPronunciationDraft row, LEntryDraft? stored)
+    {
+        if (row.LPronunciationDraftAudio.Length == 0)
+        {
+            return true;
+        }
+
+        if (stored is null)
+        {
+            return false;
+        }
+
+        foreach (LPronunciationDraft kept in stored.LEntryDraftPronunciations)
+        {
+            if (kept.LPronunciationDraftId == row.LPronunciationDraftId)
+            {
+                return string.Equals(
+                    kept.LPronunciationDraftAudio, row.LPronunciationDraftAudio, StringComparison.Ordinal);
+            }
+        }
+
+        return false;
+    }
+
     private LEntryDraft LEnginePrimaryChange(
         LEntryDraft content, Func<LPronunciationDraft, LPronunciationDraft> change)
     {

@@ -148,6 +148,98 @@ public sealed class TRequest
         Assert.Equal(LRefusal.LRefusalDraft, refusal.LRefusalReason);
     }
 
+    [Fact]
+    public void RequestApply_HeadwordFreshAudio_Clears()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+        engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "kindle"));
+        engine.TEngineRequestApply(TInterface.TRequestAudioCreate(started.LDraftId, "kindle.mp3", "Wiktionary"));
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "kindles"));
+
+        LPronunciationDraft spoken = Assert.Single(answered.LDraftContent.LEntryDraftPronunciations);
+        Assert.Equal(string.Empty, spoken.LPronunciationDraftAudio);
+        Assert.Null(spoken.LPronunciationDraftSource);
+    }
+
+    [Fact]
+    public void RequestApply_HeadwordStoredAudio_Stays()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string file = TRequestRecordingSave(workspace);
+        LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "kindle", "English", string.Empty, string.Empty, [], [], file, "Wiktionary"));
+        LDraft started = engine.TEngineDraftStart("Input", stored.LEntryId);
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "kindles"));
+
+        LPronunciationDraft spoken = Assert.Single(answered.LDraftContent.LEntryDraftPronunciations);
+        Assert.Equal(file, spoken.LPronunciationDraftAudio);
+        Assert.Equal("Wiktionary", spoken.LPronunciationDraftSource);
+    }
+
+    [Fact]
+    public void RequestApply_HeadwordReplacedAudio_Clears()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string file = TRequestRecordingSave(workspace);
+        LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "kindle", "English", string.Empty, string.Empty, [], [], file, "Wiktionary"));
+        LDraft started = engine.TEngineDraftStart("Input", stored.LEntryId);
+        engine.TEngineRequestApply(TInterface.TRequestAudioCreate(started.LDraftId, "other.mp3", "Forvo"));
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TRequestHeadwordCreate(started.LDraftId, "kindles"));
+
+        LPronunciationDraft spoken = Assert.Single(answered.LDraftContent.LEntryDraftPronunciations);
+        Assert.Equal(string.Empty, spoken.LPronunciationDraftAudio);
+    }
+
+    [Fact]
+    public void RequestApply_LanguageFreshAudio_Clears()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspaceCreate();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LDraft started = engine.TEngineDraftStart("Input", null);
+        engine.TEngineRequestApply(TInterface.TRequestLanguageCreate(started.LDraftId, "English"));
+        engine.TEngineRequestApply(TInterface.TRequestAudioCreate(started.LDraftId, "kindle.mp3", "Wiktionary"));
+        LDraft same = engine.TEngineRequestApply(TInterface.TRequestLanguageCreate(started.LDraftId, "English"));
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TRequestLanguageCreate(started.LDraftId, "German"));
+
+        Assert.Equal("kindle.mp3", same.LDraftContent.LEntryDraftAudio);
+        Assert.Equal(string.Empty, answered.LDraftContent.LEntryDraftAudio);
+    }
+
+    [Fact]
+    public void RequestApply_LanguageStoredAudio_Clears()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        string file = TRequestRecordingSave(workspace);
+        LEntry stored = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(
+            "kindle", "English", string.Empty, string.Empty, [], [], file, "Wiktionary"));
+        LDraft started = engine.TEngineDraftStart("Input", stored.LEntryId);
+
+        LDraft answered = engine.TEngineRequestApply(TInterface.TRequestLanguageCreate(started.LDraftId, "German"));
+
+        LPronunciationDraft spoken = Assert.Single(answered.LDraftContent.LEntryDraftPronunciations);
+        Assert.Equal(string.Empty, spoken.LPronunciationDraftAudio);
+        Assert.Null(spoken.LPronunciationDraftSource);
+    }
+
+    private static string TRequestRecordingSave(TWorkspace workspace)
+    {
+        string folder = Path.Combine(workspace.TWorkspaceFolder, "audio", "english");
+        Directory.CreateDirectory(folder);
+        string file = Path.Combine(folder, "kindle.mp3");
+        File.WriteAllBytes(file, [0]);
+        return file;
+    }
+
     private static long TRequestCardAdd(LEngine engine, long draftId, int position)
     {
         LDraft answered = engine.TEngineRequestApply(

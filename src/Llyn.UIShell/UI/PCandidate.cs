@@ -79,7 +79,11 @@ public partial class PEditor
 
         if (sentence is not null)
         {
-            sentence.PSentenceCitationId = item.PCandidateItemId;
+            if (card is not null)
+            {
+                PSentenceCitationSend(card, sentence, item.PCandidateItemId);
+            }
+
             return;
         }
 
@@ -213,11 +217,11 @@ public partial class PEditor
         PCandidateList.SelectedIndex = -1;
     }
 
-    private void PCandidateCitationShow(PCard card, PSentence row)
+    private void PCandidateCitationShow(PCard card, PSentence row, TextBox box)
     {
-        TextBox? box = PCandidateCitationFind(row);
-        string word = row.PSentenceCitationText.Trim();
-        if (box is null || word.Length == 0 || string.Equals(word, row.PSentenceCitationName, StringComparison.Ordinal))
+        string word = box.Text.Trim();
+        string cited = PSentence.PSentenceCitationFind(_pEditorCitation, row.PSentenceCitation);
+        if (word.Length == 0 || string.Equals(word, cited, StringComparison.Ordinal))
         {
             PCandidateHide();
             return;
@@ -271,16 +275,6 @@ public partial class PEditor
         _pCandidateCard = null;
         _pCandidateSentence = null;
         _pCandidateRegister = false;
-    }
-
-    private static TextBox? PCandidateCitationFind(PSentence row)
-    {
-        return Keyboard.FocusedElement is TextBox { DataContext: PSentence focused } box
-            && ReferenceEquals(focused, row)
-            && BindingOperations.GetBinding(box, TextBox.TextProperty)?.Path.Path
-                == nameof(PSentence.PSentenceCitationText)
-            ? box
-            : null;
     }
 
     private TextBox? PCandidateRegisterFind(PCard card)

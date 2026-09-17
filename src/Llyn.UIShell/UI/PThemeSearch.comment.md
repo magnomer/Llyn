@@ -3,11 +3,13 @@
 ## `<Style x:Key="Theme.Search.Bar" TargetType="Border">`
 
 The ground every panel's ordering control and search field stand on together.
+Every searching panel stands on it, the two duplex wings included, so a search reads alike everywhere.
 The outline is clear at rest and appears under the pointer or on keyboard focus.
 An edge therefore marks what the control is doing rather than that it exists.
 It is held at one pixel throughout.
 A bar that gains its edge therefore does not shift the row beneath it.
 The bar is the placement target of the ordering dropdown, so the dropdown falls from the whole control.
+A bar with no name hangs the dropdown from its dropper instead, offset back to the bar's own edge.
 
 ## `<Style x:Key="Theme.Search.Dropper" TargetType="ToggleButton">`
 
@@ -18,6 +20,7 @@ It is unfocusable, so tabbing into the bar reaches the field the user came to ty
 ## `<Style x:Key="Theme.Search.Field" TargetType="TextBox">`
 
 The search field inside the bar, on one line and without a frame.
+A field whose matches drop beneath the bar hooks its own key and focus events itself.
 It takes the plain template, which draws the placeholder but no frame of its own.
 The bar around it already frames the dropper, the divider and the field as one control.
 

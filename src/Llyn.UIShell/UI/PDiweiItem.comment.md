@@ -21,14 +21,6 @@ The prefix of a place heading's localization key, the place name capitalized aft
 
 The localization key of the section for initials no place of the hypothesis lists.
 
-## `private static readonly string[] PDiweiItemOrder = ["一", "二", "三", "四"];`
-
-The divisions in table order, which is also the section order on an initial's page.
-
-## `private static readonly string[] PDiweiItemRoman = ["I", "II", "III", "IV"];`
-
-The Roman numeral of each division, for languages that name them so.
-
 ## `private readonly List<PDiweiLine> _pDiweiItemLines = [];`
 
 The rows of the section, sorted as the line class orders them.
@@ -68,15 +60,12 @@ Groups the category's placements into sections and rows by the page's kind.
 An initial's page sections by division and rows by rime and 開合.
 A rime's page sections by the articulatory place of the initial and rows by initial.
 Each section takes the tally of its heading, printed for the set `respelled` names, and repeats the switch state.
-Divisions follow table order, places pack order, with unknown ones after and the blank one last.
-
-## `private static int PDiweiRankRead(string kind, string heading, LHypothesis? hypothesis)`
-
-The sorting rank of a section: its table or pack position, then unknown ones, then blank.
+Sections come in the rank the category gives its headings: table order, pack order, unknown after, blank last.
 
 ## `private static string PDiweiLabelFormat(string division)`
 
 The division heading: the localized pattern filled with the division and its numeral, or the blank heading.
+The numeral comes from the category, so the same table serves the rime key and the label.
 
 ## `private static string PDiweiPlaceFormat(string place)`
 

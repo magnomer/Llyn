@@ -12,10 +12,6 @@ A plus becomes an addition request after it, and a minus a removal request.
 Lookup opens the editor's one menu under the row's own button, searching in the row's scheme.
 The rows are rendered as a diff on each draft bulletin, so a row being typed into is left alone.
 
-## `private static string PTranscriptionRequestFormat(long id)`
-
-The pending-request key of one row's text, so a draft render skips a row whose edit is still waiting.
-
 ## `internal void PTranscriptionAddHandle(object sender, ExecutedRoutedEventArgs e)`
 
 Adds a row in the first declared scheme the draft does not yet hold.

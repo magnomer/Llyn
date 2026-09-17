@@ -10,11 +10,12 @@ Reads the oeuvre again under the typed text.
 
 ## `private void PLouverHandle(object sender, RoutedEventArgs e)`
 
-Takes the ticked kinds from the menu, stores them, marks the button while any hides, and reads the oeuvre again.
+Takes the ticked kinds from the menu and hands them to the vista, which saves and announces them.
+The mark on the button is redrawn from the vista at once.
 
-## `internal void PLouverRestore(LCatalogFilter filter)`
+## `private void PLouverRestore()`
 
-Reapplies the hidden kinds the last session ended on and builds the menu rows.
+Shows the filter mark while the vista hides any kind.
 
 ## `private void PLouverBuild(LCatalogFilter filter)`
 

@@ -16,13 +16,13 @@ public partial class PEditor
     private void PMeaningHandle(object sender, RoutedEventArgs e)
     {
         PEditorRequestSend(
-            new LRequestCardAddition(_pEditorDraft, LCardKind.LCardKindMeaning, 0, _pMeaningList.Count));
+            new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindMeaning, 0, _pMeaningList.Count));
     }
 
     private void PCollocationHandle(object sender, RoutedEventArgs e)
     {
         PEditorRequestSend(
-            new LRequestCardAddition(_pEditorDraft, LCardKind.LCardKindCollocation, 0, _pCollocationList.Count));
+            new LRequestCardAddition(PEditorDraft, LCardKind.LCardKindCollocation, 0, _pCollocationList.Count));
     }
 
     internal void PCardHandle(object sender, RoutedEventArgs e)
@@ -39,7 +39,7 @@ public partial class PEditor
             return;
         }
 
-        PEditorRequestSend(new LRequestCardRemoval(_pEditorDraft, card.PCardId));
+        PEditorRequestSend(new LRequestCardRemoval(PEditorDraft, card.PCardId));
     }
 
     internal void PCardPositionHandle(object sender, MouseButtonEventArgs e)
@@ -134,7 +134,7 @@ public partial class PEditor
 
     private void PCardMove(PCard card, int target)
     {
-        PEditorRequestSend(new LRequestCardShift(_pEditorDraft, card.PCardId, 0, target));
+        PEditorRequestSend(new LRequestCardShift(PEditorDraft, card.PCardId, 0, target));
     }
 
     private ObservableCollection<PCard>? PCardListFind(PCard card)

@@ -60,15 +60,12 @@ public partial class PEditor
 
         if (!string.Equals(_pSpeakerChoice, language, StringComparison.Ordinal))
         {
-            PRecordingClear();
-            PAccentFreshClear();
             _pSpeakerChoice = language;
             _pSpeakerEntry = false;
             PCategoryLoad();
             PSentenceFrameLoad(language);
             PEditorExampleShow(language);
             PEditorLanguageSend();
-            PEditorAudioSend();
         }
         PSpeakerName.Text = language;
         PHeadwordFontApply(language);

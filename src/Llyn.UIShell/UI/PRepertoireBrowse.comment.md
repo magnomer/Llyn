@@ -13,10 +13,21 @@ The panel answers two questions rather than one: what this Situation is, and whe
 
 ## Inline notes
 
+### `private LVista? _pRepertoireVista;`
+
+The engine's view state for the repertoire tab: order, query, and the languages hidden from the entry column.
+The panel keeps no copy of any of the three and reads each from the vista where it needs it.
+It is null until the window hands one over, so the handlers do nothing before that.
+A switched workspace hands over a fresh vista, read from that workspace's own layout.
+
 ### `private async void PRepertoireBulletinHandle(LBulletin bulletin)`
 
 The panel answers the engine rather than its own visibility.
+A vista announcement carrying this panel's vista id refills the catalog, since order, filter or query moved.
+The entry column is refilled with it, so a moved filter reaches it the same way.
+Another panel's vista is not this panel's business and is skipped.
 A draft bulletin is the panel's own typing coming back, so it redraws the editor and reads nothing else.
+A tenure bulletin for the held draft settles the rail's buttons and the editor's enabled state.
 A fetched frequency, paradigm, script, fanqie or reflex row changes no situation or entry row, so those read nothing.
 An entry stored in another tab may reference a Situation, so the catalog and its reference figures are read again.
 A workspace that moved is the one announcement that empties the panel first.
@@ -29,9 +40,24 @@ Only an Entry announcement is read that way, since a frequency or tag announceme
 How many places reference each Situation, read once per catalog fill rather than once per row.
 It also decides which delete the panel offers, so it is held rather than asked for again.
 
-## `private void PAtlasFind(string query)`
+### `private void PInquestHandle(object sender, TextChangedEventArgs e)`
 
-Refills the catalog with the rows the engine returns, already matched and already ordered.
+Each keystroke hands the search text to the vista, whose announcement refills the catalog.
+
+### `private void PMeshHandle(object sender, RoutedEventArgs e)`
+
+The ticked languages are read off the menu and handed to the vista, which saves and announces them.
+The mark on the button is redrawn from the vista at once.
+
+### `private void PTierHandle(object sender, RoutedEventArgs e)`
+
+A chosen ordering closes the dropdown and hands the ordering to the vista.
+The vista saves it and announces it, and the announcement refills the catalog.
+
+## `private void PAtlasFind()`
+
+Refills the catalog with the rows the engine returns for the vista, already matched and already ordered.
+Before a vista is handed over nothing is asked.
 What a title, a description or a kind answers is decided below the shell.
 A selection that survives the fill is kept, and one that no longer stands is dropped.
 An open editor keeps its selection either way, because the row may be the one being written.
@@ -54,15 +80,21 @@ A Situation nothing references is deleted outright.
 One something references is deleted only after the user is told how many places that reaches and says yes.
 The detaching and the delete are one operation in the store, because between two steps the count can change.
 
-### `internal void PMeshRestore(LCatalogFilter filter)`
+### `internal async void PRepertoireVistaRestore(LVista vista)`
 
-Puts the language filter back on the languages the settings stored, and builds the menu over the loaded languages.
-The window calls it once on attach, so the panel never reads the stored state for itself.
+Takes the vista the window started for this tab and puts the panel on it.
+The dropdown mark and the filter mark are drawn from it first.
+The flags are loaded before any row is built, then the language menu is built from the loaded packs.
+Search text still standing in the box is handed to the vista, so a switched workspace keeps the search.
+The catalog is then listed from the vista.
 
-### `internal void PTierRestore(LCatalogOrder order)`
+### `private void PTierRestore()`
 
-Puts the panel back on the ordering the workspace stored, and moves the dropdown mark onto it.
-The window calls it once on attach, so the panel never reads the stored state for itself.
+Moves the dropdown mark onto the ordering the vista holds.
+
+### `private void PMeshRestore()`
+
+Shows the filter mark while the vista hides any language.
 
 ### `internal void PRepertoireScribeRestore(bool editing)`
 

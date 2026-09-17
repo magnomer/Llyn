@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows.Media;
+using Llyn.Core;
 
 namespace Llyn.UIShell;
 
@@ -7,13 +8,13 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
 {
     private bool _pXiaoyunItemChosen;
 
-    internal PXiaoyunItem(long id, string headword, string language, string epithet = "")
+    internal PXiaoyunItem(LVistaRow row)
     {
-        PXiaoyunItemId = id;
-        PXiaoyunItemHeadword = headword;
-        PXiaoyunItemName = headword;
-        PXiaoyunItemEpithet = epithet ?? string.Empty;
-        PXiaoyunItemFlag = PEnsign.PEnsignFind(language);
+        PXiaoyunItemId = row.LVistaRowId;
+        PXiaoyunItemHeadword = row.LVistaRowHeadword;
+        PXiaoyunItemName = row.LVistaRowName;
+        PXiaoyunItemEpithet = row.LVistaRowEpithet ?? string.Empty;
+        PXiaoyunItemFlag = PEnsign.PEnsignFind(row.LVistaRowLanguage);
     }
 
     public long PXiaoyunItemId { get; }
@@ -22,7 +23,7 @@ internal sealed class PXiaoyunItem : INotifyPropertyChanged
 
     public string PXiaoyunItemEpithet { get; }
 
-    public string PXiaoyunItemName { get; internal set; }
+    public string PXiaoyunItemName { get; }
 
     public ImageSource? PXiaoyunItemFlag { get; }
 

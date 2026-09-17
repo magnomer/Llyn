@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Llyn.Core;
 
@@ -9,7 +10,7 @@ public partial class PEditor
 {
     internal void PCitationKeyHandle(object sender, KeyEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PSentence row } || PCardSentenceFind(row) is null)
+        if (sender is not TextBox { DataContext: PSentence row } box || PCardSentenceFind(row) is not PCard card)
         {
             return;
         }
@@ -22,7 +23,7 @@ public partial class PEditor
 
         if (e.Key == Key.Enter)
         {
-            PSentenceCitationCommit(row);
+            PSentenceCitationCommit(card, row, box);
             e.Handled = true;
             return;
         }
@@ -30,14 +31,14 @@ public partial class PEditor
         if (e.Key == Key.Escape)
         {
             PCandidateHide();
-            row.PSentenceCitationReset();
+            PSentenceCitationReset(box);
             e.Handled = true;
         }
     }
 
     internal void PCitationLeaveHandle(object sender, KeyboardFocusChangedEventArgs e)
     {
-        if (sender is not TextBox { DataContext: PSentence row })
+        if (sender is not TextBox { DataContext: PSentence row } box)
         {
             return;
         }
@@ -47,23 +48,29 @@ public partial class PEditor
             PCandidateHide();
         }
 
-        row.PSentenceCitationReset();
+        PSentenceCitationReset(box);
     }
 
-    private void PSentenceCitationCommit(PSentence row)
+    private static void PSentenceCitationReset(TextBox box)
+    {
+        BindingOperations.GetMultiBindingExpression(box, TextBox.TextProperty)?.UpdateTarget();
+    }
+
+    private void PSentenceCitationCommit(PCard card, PSentence row, TextBox box)
     {
         PCandidateHide();
 
-        string typed = row.PSentenceCitationText.Trim();
+        string typed = box.Text.Trim();
         if (typed.Length == 0)
         {
-            row.PSentenceCitationId = 0;
+            PSentenceCitationSend(card, row, 0);
             return;
         }
 
-        if (string.Equals(typed, row.PSentenceCitationName, StringComparison.Ordinal))
+        string cited = PSentence.PSentenceCitationFind(_pEditorCitation, row.PSentenceCitation);
+        if (string.Equals(typed, cited, StringComparison.Ordinal))
         {
-            row.PSentenceCitationReset();
+            PSentenceCitationReset(box);
             return;
         }
 
@@ -71,7 +78,7 @@ public partial class PEditor
         {
             if (string.Equals(item.PCitationItemName, typed, StringComparison.CurrentCultureIgnoreCase))
             {
-                row.PSentenceCitationId = item.PCitationItemId;
+                PSentenceCitationSend(card, row, item.PCitationItemId);
                 return;
             }
         }
@@ -84,13 +91,18 @@ public partial class PEditor
         catch (Exception exception)
         {
             _pEditorHost.PWindowFailureShow("Reference.CreateFailed", exception);
-            row.PSentenceCitationReset();
+            PSentenceCitationReset(box);
             return;
         }
 
         _pEditorCitation.Add(PCitationItem.PCitationItemCreate(
             LCatalogReference.LCatalogReferenceCreate(stored, null, 0)));
-        row.PSentenceCitationId = stored.LReferenceId;
+        PSentenceCitationSend(card, row, stored.LReferenceId);
+    }
+
+    private void PSentenceCitationSend(PCard card, PSentence row, long reference)
+    {
+        PEditorRequestSend(new LRequestSentenceReference(PEditorDraft, card.PCardId, row.PSentenceRow, reference));
     }
 
     private void PSentenceCitationShow()

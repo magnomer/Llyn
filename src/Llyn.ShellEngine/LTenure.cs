@@ -116,29 +116,16 @@ public sealed class LTenure
 
         lock (_lTenureTurn)
         {
-            LTenurePersist();
+            LTenureDispatch(null);
             LTenureApply([request]);
         }
     }
 
     public void LTenurePersist()
     {
-        LRequest[] taken;
-        lock (_lTenureGate)
-        {
-            LTenureStop();
-            if (_lTenureEnded || _lTenureFault is not null || _lTenureQueue.Count == 0)
-            {
-                return;
-            }
-
-            taken = [.. _lTenureQueue];
-            _lTenureQueue.Clear();
-        }
-
         lock (_lTenureTurn)
         {
-            LTenureApply(taken);
+            LTenureDispatch(null);
         }
     }
 
@@ -195,23 +182,26 @@ public sealed class LTenure
     {
         lock (_lTenureTurn)
         {
-            LTenurePersist();
-
-            Exception? fault;
             lock (_lTenureGate)
             {
                 if (_lTenureEnded)
                 {
                     return null;
                 }
-
-                fault = _lTenureFault;
             }
 
             if (!store)
             {
                 LTenureCancel();
                 return null;
+            }
+
+            LTenureDispatch(null);
+
+            Exception? fault;
+            lock (_lTenureGate)
+            {
+                fault = _lTenureFault;
             }
 
             if (fault is not null)
@@ -253,7 +243,7 @@ public sealed class LTenure
         LDraft? restored;
         lock (_lTenureTurn)
         {
-            LTenurePersist();
+            LTenureDispatch(null);
 
             lock (_lTenureGate)
             {
@@ -296,15 +286,33 @@ public sealed class LTenure
             return;
         }
 
+        lock (_lTenureTurn)
+        {
+            LTenureDispatch(pending);
+        }
+    }
+
+    private void LTenureDispatch(CancellationTokenSource? pending)
+    {
+        LRequest[] taken;
         lock (_lTenureGate)
         {
-            if (!ReferenceEquals(_lTenurePending, pending))
+            if (pending is not null && !ReferenceEquals(_lTenurePending, pending))
             {
                 return;
             }
+
+            LTenureStop();
+            if (_lTenureEnded || _lTenureFault is not null || _lTenureQueue.Count == 0)
+            {
+                return;
+            }
+
+            taken = [.. _lTenureQueue];
+            _lTenureQueue.Clear();
         }
 
-        LTenurePersist();
+        LTenureApply(taken);
     }
 
     private void LTenureStop()
@@ -323,6 +331,7 @@ public sealed class LTenure
 
     private void LTenureApply(IReadOnlyList<LRequest> requests)
     {
+        bool refused = false;
         foreach (LRequest request in requests)
         {
             lock (_lTenureGate)
@@ -337,11 +346,20 @@ public sealed class LTenure
             {
                 _lEngine.LEngineRequestApply(request);
             }
+            catch (LRefusal refusal) when (refusal.LRefusalReason != LRefusal.LRefusalDraft)
+            {
+                refused = true;
+            }
             catch (Exception exception)
             {
                 LTenureSuspend(exception);
                 return;
             }
+        }
+
+        if (refused)
+        {
+            _lEngine.LEngineBulletinRaise(LSubject.LSubjectDraft, LTenureId);
         }
 
         LTenureStateRaise();

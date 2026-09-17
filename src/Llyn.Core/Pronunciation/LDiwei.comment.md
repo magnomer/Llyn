@@ -49,3 +49,18 @@ So 模 一 開 keys `模 I` and 寒 一 合 keys `寒 I W`.
 Every division and 開合 gets its own row.
 A division outside 一 to 四 stays as printed.
 Empty with an empty rime.
+
+## `public static string LDiweiDivisionFormat(string division)`
+
+The Roman numeral of a division 一 to 四, or the division as printed.
+The rime key and the division label both print it, so it is written once.
+
+## `public static int LDiweiRankRead(string kind, string heading, LHypothesis? hypothesis)`
+
+The sorting rank of a category page section: its table or pack position, then unknown ones, then blank.
+An initial's page sections by division, ranked in table order.
+A rime's page sections by place, ranked as the hypothesis lists the places.
+
+## `public static int LDiweiRankNormalize(int rank)`
+
+An unlisted rank turned into the last position, so it sorts after every listed one.

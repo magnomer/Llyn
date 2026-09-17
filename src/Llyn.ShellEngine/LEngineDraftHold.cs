@@ -11,7 +11,7 @@ public sealed partial class LEngine
 
     private readonly HashSet<long> _lEngineDraftStale = [];
 
-    public LDraft LEngineDraftStart(string origin, long? entryId)
+    internal LDraft LEngineDraftStart(string origin, long? entryId)
     {
         lock (_lEngineGate)
         {
@@ -72,12 +72,12 @@ public sealed partial class LEngine
         LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
     }
 
-    public bool LEngineDraftCheck(long id)
+    internal bool LEngineDraftCheck(long id)
     {
         return LEngineDraftCheck(id, out _);
     }
 
-    public bool LEngineDraftCheck(long id, out string? refusal)
+    internal bool LEngineDraftCheck(long id, out string? refusal)
     {
         lock (_lEngineGate)
         {
@@ -270,7 +270,7 @@ public sealed partial class LEngine
         return outcome;
     }
 
-    public void LEngineDraftCancel(long id)
+    internal void LEngineDraftCancel(long id)
     {
         lock (_lEngineGate)
         {

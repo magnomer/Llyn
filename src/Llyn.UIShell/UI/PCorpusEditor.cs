@@ -80,7 +80,7 @@ public partial class PCorpus
         _pTranscriptLoading = true;
 
         PTranscriptText.Text = example?.LExampleText.LStateValueShow() ?? string.Empty;
-        _pTranscriptTextUnknown = example?.LExampleText.LStateValueState == LState.LStateUnknown;
+        _pTranscriptTextUnknown = PStateConverter.PStateConverterCheck(example?.LExampleText);
         PTranscriptText.Tag = PTranscriptHintRead(_pTranscriptTextUnknown);
 
         PTranscriptGlossShow(example);
@@ -136,7 +136,7 @@ public partial class PCorpus
         }
 
         field.Text = value.LStateValueShow();
-        held = value.LStateValueState == LState.LStateUnknown;
+        held = PStateConverter.PStateConverterCheck(value);
         field.Tag = PTranscriptHintRead(held);
     }
 
@@ -200,7 +200,7 @@ public partial class PCorpus
 
         _pExcerptExample = example;
 
-        PAnthologyFind(PQuery.Text ?? string.Empty);
+        PAnthologyFind();
         PCorpusScribeShow(false);
         PAnthologyExampleShow(example);
     }

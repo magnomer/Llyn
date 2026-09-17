@@ -53,7 +53,7 @@ Chosen by hand, so the language is no longer the loaded entry's.
 A language chosen by hand belongs in the held draft like anything else typed.
 It is chosen whole, so its request goes at once rather than after a pause.
 It is not counted as unsaved work, because the tongue on offer is the panel's state.
-The recording was fetched for the old language, so its clearing is sent right behind it.
+The engine drops every recording on this request, since each is audio in the old language.
 
 ### `PMarkerLoad();`
 

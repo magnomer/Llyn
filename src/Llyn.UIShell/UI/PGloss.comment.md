@@ -3,10 +3,11 @@
 ## `internal sealed class PGloss`
 
 One Gloss row as the UI shows it: the language it is written in and its flag.
-The text comes with its unknown mark.
+The text is the engine's value, state and all, and the converter reads its mark.
 The card editor and the corpus panel both draw it, through the templates in `PThemeGloss.xaml`.
-The row raises a property change for every edit and lets its owner decide what to send.
-It resolves no state of its own: the text and the mark travel to the engine as written.
+The row raises a property change for a language pick and lets its owner decide what to send.
+What is typed into its text field leaves through the owner's own handler.
+So the row holds no copy of it.
 
 ## `internal PGloss(ObservableCollection<PLanguageItem> catalog, LGlossDraft draft)`
 
@@ -30,23 +31,14 @@ A null is ignored, because the picker's list clears its selection to null while 
 
 The flag of the chosen language, or null when none is chosen.
 
-## `public string PGlossText`
+## `public LStateValue PGlossText`
 
-The rendering as typed.
-Typing clears the unknown mark, because what stood there as unknown stops being that the moment it is written.
-
-## `public bool PGlossUnknown`
-
-Whether the text stands as not known.
+The rendering as the draft holds it, set only from the draft.
 
 ## `public bool PGlossLanguageVisible`
 
 Whether the language picker is open.
 
-## `internal LStateWritten PGlossTextRead()`
+## `internal void PGlossShow(LGlossDraft draft)`
 
-The text and its mark as written, for a request to carry.
-
-## `internal void PGlossShow(LGlossDraft draft, Func<string, bool> pending)`
-
-Redraws the row from the draft, skipping a field whose edit is still pending.
+Redraws the row from the draft, leaving a field already reading what the engine holds alone.

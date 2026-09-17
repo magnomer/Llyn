@@ -157,15 +157,15 @@ public partial class PEditor
     {
         int position = card.PCardRegisterPosition;
         PEditorRequestSend(id is long picked
-            ? new LRequestRegisterPick(_pEditorDraft, card.PCardId, picked, position)
-            : new LRequestRegisterAddition(_pEditorDraft, card.PCardId, new LStateWritten(written), position));
+            ? new LRequestRegisterPick(PEditorDraft, card.PCardId, picked, position)
+            : new LRequestRegisterAddition(PEditorDraft, card.PCardId, new LStateWritten(written), position));
     }
 
     private void PRegisterRemove(PCard card, PRegister? chip)
     {
         if (chip is not null)
         {
-            PEditorRequestSend(new LRequestRegisterRemoval(_pEditorDraft, card.PCardId, chip.PRegisterId));
+            PEditorRequestSend(new LRequestRegisterRemoval(PEditorDraft, card.PCardId, chip.PRegisterId));
         }
     }
 }

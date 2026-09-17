@@ -10,9 +10,8 @@ Both are places a picture lives, and neither is more the picture than the other.
 A location standing empty is not one thing.
 It may never have been written.
 Or it may have been written and be unknown now.
-The second is marked rather than shown.
-The mark stands until the user writes over it or the row is dropped.
-Writing in the row is the user saying what the location is, which is why any edit ends the mark.
+The second is marked rather than shown, and the converter reads the mark off the engine's value.
+The row holds that value and nothing typed, so what is typed leaves through the editor as written text.
 
 A preview is not attempted until the row has been seen.
 A card holds every picture of every meaning, and most of them sit below the fold when the entry opens.
@@ -43,14 +42,14 @@ The element drawing the row has come into view, so the preview is loaded now.
 The first call loads and marks the row seen, and later edits to the location reload at once.
 A second call does nothing, since a seen row already keeps its preview current.
 
-## `internal LStateWritten PImageLocationRead()`
+## `public LStateValue PImageLocation`
 
-The location as written, with its mark, for the engine to read.
+The location as the draft holds it, set only from the draft.
+A changed location reloads the preview of a row already seen.
 
-## `internal void PImageShow(LImageDraft written, bool pending)`
+## `internal void PImageShow(LImageDraft written)`
 
 Redraws the row from the engine's row where the location differs.
-A location with a request still waiting is left as typed.
 The id is always taken.
 
 ## `internal static string? PImageOpen(Window owner)`

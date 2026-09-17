@@ -13,7 +13,7 @@ The lists inside a card are applied in `LEngineRequestList.cs` and the files bes
 The pronunciation and transcription lists of the entry are applied in `LEngineRequestReading.cs`.
 The sentence, situation and source panels are applied in `LEngineRequestPanel.cs` and `LEngineRequestChip.cs`.
 
-## `public LDraft LEngineRequestApply(LRequest request)`
+## `internal LDraft LEngineRequestApply(LRequest request)`
 
 Applies one request to the held draft it names and returns the draft as saved.
 The draft must be held by this engine, so a request for a leftover or another copy's draft is refused.
@@ -35,9 +35,13 @@ The switch over the kinds that reach past the entry content.
 The example and source panels edit their own field of the draft, and the credits edit its author list.
 The body records lay every field of a panel over the held one, so the engine decides what changed.
 A situation field request may mean the panel's situation or a chip, so it is routed by id.
+A situation body on a draft holding a Situation lands on that Situation, whatever id it carries.
+So the panel need not read the draft back to learn the id before every keystroke.
 A media request on a draft holding a Situation lands on that Situation's lists before the switch runs.
 The card id such a request carries is ignored there, because a Situation draft holds no card.
 Everything else is a change to the entry content and falls through to the content switch.
+A headword or language request goes through `LEngineAudioClear`, which reads the stored entry the draft edits.
+A new language drops every recording, and a new spelling drops the ones fetched this draft.
 
 ### `private LEntryDraft LEngineRequestApply(LEntryDraft content, LRequest request)`
 

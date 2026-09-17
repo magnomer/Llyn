@@ -39,7 +39,7 @@ public partial class PTaxonomy : UserControl
     {
         PTaxonomyClear();
         PDirectoryReset();
-        PDirectoryFind(PExploration.Text ?? string.Empty);
+        PDirectoryFind();
     }
 
     internal bool PTaxonomyDraftFinish(bool store)

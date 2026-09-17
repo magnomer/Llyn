@@ -28,3 +28,9 @@ The mark carries its own stamp, so ordering by the mark is not ordering by the e
 ## `public IReadOnlyList<LFavorite> LEngineFavoriteFind(string query, LCatalogOrder order, LCatalogFilter filter)`
 
 The same list with the marked entries in a hidden language left out.
+
+## `public IReadOnlyList<LVistaRow> LEngineFavoriteFind(LVista vista)`
+
+The rows the favorites panel's vista lists, with the query, order and filter read off the vista.
+They come back as vista rows, twins numbered and epithets read in one scan, so the panel only copies them.
+No row is marked chosen, because the panel's shown entry is its own to mark.

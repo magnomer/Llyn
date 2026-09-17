@@ -90,6 +90,11 @@ The Examples answering `query`, in `order`, as rows already carrying their cited
 An Example is matched over its sentence, its translation and the name of the Source it cites.
 The name is resolved here, because matching on an id the reader never sees would answer the wrong question.
 
+## `public IReadOnlyList<LCatalogExample> LEngineExampleFind(LVista vista)`
+
+The Examples the corpus panel's vista lists, with the query and order read off the vista.
+The vista's filter hides languages from the entries quoting the chosen Example, so it is not applied here.
+
 ## `public IReadOnlyDictionary<long, string> LEngineCitationRead()`
 
 The `Author (Year)` line every stored Source is cited under, by id.

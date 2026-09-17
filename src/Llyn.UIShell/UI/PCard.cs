@@ -9,8 +9,6 @@ namespace Llyn.UIShell;
 
 internal sealed partial class PCard : INotifyPropertyChanged
 {
-    internal const string PCardUnknownMark = "(?)";
-
     private readonly LEngine _pCardEngine;
     private readonly string _pCardPrefix;
     private readonly ObservableCollection<PCitationItem> _pCardCitation;
@@ -20,12 +18,9 @@ internal sealed partial class PCard : INotifyPropertyChanged
     private int _pCardPosition;
     private string _pCardPositionText;
     private bool _pCardPositionActive;
-    private string _pTitle;
-    private bool _pTitleUnknown;
-    private string _pCardDefinition;
-    private bool _pCardDefinitionUnknown;
-    private string _pCardExpression;
-    private bool _pCardExpressionUnknown;
+    private LStateValue _pTitle = LStateValue.LStateValueUnspecified;
+    private LStateValue _pCardDefinition = LStateValue.LStateValueUnspecified;
+    private LStateValue _pCardExpression = LStateValue.LStateValueUnspecified;
 
     internal PCard(
         LEngine engine,
@@ -46,9 +41,6 @@ internal sealed partial class PCard : INotifyPropertyChanged
         _pCardParticle = particles;
         _pCardDependence = dependences;
         _pCardLanguage = languages;
-        _pTitle = string.Empty;
-        _pCardDefinition = string.Empty;
-        _pCardExpression = string.Empty;
         PCardContextStart();
         PCardRegisterStart();
         PCardLinkStart();
@@ -112,139 +104,49 @@ internal sealed partial class PCard : INotifyPropertyChanged
 
     public string PCardTitle => $"{_pCardPrefix} {_pCardPosition}";
 
-    public string PTitle
-    {
-        get => _pTitle;
-        set
-        {
-            if (string.Equals(_pTitle, value, StringComparison.Ordinal))
-            {
-                return;
-            }
+    public LStateValue PTitle => _pTitle;
 
-            _pTitle = value;
-            PTitleUnknown = false;
-            PCardRaise(nameof(PTitle));
-        }
-    }
+    public LStateValue PCardDefinition => _pCardDefinition;
 
-    public bool PTitleUnknown
-    {
-        get => _pTitleUnknown;
-        private set
-        {
-            if (_pTitleUnknown == value)
-            {
-                return;
-            }
-
-            _pTitleUnknown = value;
-            PCardRaise(nameof(PTitleUnknown));
-        }
-    }
-
-    public string PCardDefinition
-    {
-        get => _pCardDefinition;
-        set
-        {
-            if (string.Equals(_pCardDefinition, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pCardDefinition = value;
-            PCardDefinitionUnknown = false;
-            PCardRaise(nameof(PCardDefinition));
-        }
-    }
-
-    public bool PCardDefinitionUnknown
-    {
-        get => _pCardDefinitionUnknown;
-        private set
-        {
-            if (_pCardDefinitionUnknown == value)
-            {
-                return;
-            }
-
-            _pCardDefinitionUnknown = value;
-            PCardRaise(nameof(PCardDefinitionUnknown));
-        }
-    }
-
-    public string PCardExpression
-    {
-        get => _pCardExpression;
-        set
-        {
-            if (string.Equals(_pCardExpression, value, StringComparison.Ordinal))
-            {
-                return;
-            }
-
-            _pCardExpression = value;
-            PCardExpressionUnknown = false;
-            PCardRaise(nameof(PCardExpression));
-        }
-    }
-
-    public bool PCardExpressionUnknown
-    {
-        get => _pCardExpressionUnknown;
-        private set
-        {
-            if (_pCardExpressionUnknown == value)
-            {
-                return;
-            }
-
-            _pCardExpressionUnknown = value;
-            PCardRaise(nameof(PCardExpressionUnknown));
-        }
-    }
-
-    internal LStateWritten PCardTitleRead()
-    {
-        return new LStateWritten(_pTitle, _pTitleUnknown);
-    }
-
-    internal LStateWritten PCardDefinitionRead()
-    {
-        return new LStateWritten(_pCardDefinition, _pCardDefinitionUnknown);
-    }
-
-    internal LStateWritten PCardExpressionRead()
-    {
-        return new LStateWritten(_pCardExpression, _pCardExpressionUnknown);
-    }
+    public LStateValue PCardExpression => _pCardExpression;
 
     internal void PCardTitleShow(LStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        _pTitle = value.LStateValueShow();
+        if (_pTitle == value)
+        {
+            return;
+        }
+
+        _pTitle = value;
         PCardRaise(nameof(PTitle));
-        PTitleUnknown = value.LStateValueState == LState.LStateUnknown;
     }
 
     internal void PCardDefinitionShow(LStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        _pCardDefinition = value.LStateValueShow();
+        if (_pCardDefinition == value)
+        {
+            return;
+        }
+
+        _pCardDefinition = value;
         PCardRaise(nameof(PCardDefinition));
-        PCardDefinitionUnknown = value.LStateValueState == LState.LStateUnknown;
     }
 
     internal void PCardExpressionShow(LStateValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        _pCardExpression = value.LStateValueShow();
+        if (_pCardExpression == value)
+        {
+            return;
+        }
+
+        _pCardExpression = value;
         PCardRaise(nameof(PCardExpression));
-        PCardExpressionUnknown = value.LStateValueState == LState.LStateUnknown;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

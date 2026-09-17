@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Llyn.Core;
 using Llyn.ShellEngine;
 
@@ -6,51 +6,31 @@ namespace Llyn.UIShell;
 
 public partial class PDuplex : UserControl
 {
-    private PWindow _pDuplexHost = null!;
-
-    private LEngine _lEngine = null!;
-
     public PDuplex()
     {
         InitializeComponent();
     }
 
+    private LEngine _lEngine = null!;
+
     internal void PDuplexAttach(PWindow host, LEngine engine)
     {
-        _pDuplexHost = host;
         _lEngine = engine;
-
-        PLeftIndex.ItemsSource = _pLeftIndex;
-        PRightIndex.ItemsSource = _pRightIndex;
-
-        PLeftDisplay.PDisplayAttach(host, engine);
-        PRightDisplay.PDisplayAttach(host, engine);
+        PLeftWing.PWingAttach(host, engine);
+        PRightWing.PWingAttach(host, engine);
     }
 
-    internal async void PDuplexRestore(LWorkspaceState state)
+    internal void PDuplexRestore(LWorkspaceState state)
     {
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PLeftQuery.Text = string.Empty;
-        PRightQuery.Text = string.Empty;
-
-        PLeftDisplay.PDisplayClear();
-        PRightDisplay.PDisplayClear();
-
-        if (state.LWorkspaceStateLeft is long left)
-        {
-            PDuplexEntryShow(left, PLeftDisplay);
-        }
-
-        if (state.LWorkspaceStateRight is long right)
-        {
-            PDuplexEntryShow(right, PRightDisplay);
-        }
+        PLeftWing.PWingRestore(
+            _lEngine.LEngineVistaStart("left", LCatalogOrder.LCatalogOrderHeadword, true), state.LWorkspaceStateLeft);
+        PRightWing.PWingRestore(
+            _lEngine.LEngineVistaStart("right", LCatalogOrder.LCatalogOrderHeadword, true), state.LWorkspaceStateRight);
     }
 
     internal void PDuplexClose()
     {
-        PLeftDisplay.PDisplayClose();
-        PRightDisplay.PDisplayClose();
+        PLeftWing.PWingClose();
+        PRightWing.PWingClose();
     }
 }

@@ -11,10 +11,10 @@ A row that has never been written shows an empty Example id until the engine nam
 A row standing empty is not one thing.
 The sentence may never have been written.
 Or it may have been written and be unknown now.
-The second is marked rather than shown.
-The mark stands until the user writes over it or clears the row.
-So nothing unknown is quietly turned into nothing at all.
-Writing in the row is the user saying what the sentence is, which is why any edit ends the mark.
+The second is marked rather than shown, and the converter reads the mark off the engine's value.
+The row holds that value and nothing typed.
+What is typed leaves through the editor as written text, and the draft answers with the state.
+So the row never resolves a state and never holds a second copy of one.
 
 The row's Mentions and the chip line that shows them live in `PSentenceMention.cs`.
 
@@ -58,45 +58,32 @@ Nothing ships one, so the list is empty until a user writes and saves one.
 Puts the marker and the role in the places the language pack states.
 The row states no order of its own, so it holds only what it was told.
 
-## `internal LStateWritten PSentenceParticleRead()`
+## `public LStateValue PSentenceText`
 
-The marker as written, with its mark, for the engine to read.
+The sentence as the draft holds it, set only from the draft.
+The same holds for the marker and the role.
 
-## `internal LStateWritten PSentenceDependenceRead()`
+## `public LStateAnchor PSentenceCitation`
 
-The role as written, with its mark, for the engine to read.
+The Source the row cites, as the draft holds it.
+The field shows its byline through a lookup made when the field is drawn, so the row keeps no name.
 
-## `internal LStateWritten PSentenceTextRead()`
+## `internal void PSentenceShow(LSentenceDraft draft)`
 
-The sentence as written, with its mark, for the engine to read.
-
-## `internal void PSentenceShow(LSentenceDraft draft, Func<string, bool> pending)`
-
-Redraws the row from the engine's row, field by field, only where the field says something else.
+Redraws the row from the engine's row, field by field, only where the value changed.
 The Mentions are always taken, since the row only shows them and never types into them.
-A field with a request still waiting is left as typed, which `pending` answers by field name.
 The ids are always taken, because the engine is the only minter.
-A field that already stands for what the engine holds is left alone, so the caret survives its own echo.
-The engine answers that through the written field, since the row never resolves a state itself.
-
-## `public string PSentenceCitationName`
-
-The `Author (Year)` line of the cited Source, or nothing when the row cites none.
-Setting it also resets the typed line, so the field shows what the engine holds once a pick lands.
-
-## `public string PSentenceCitationText`
-
-The line standing in the citation field, which the user types into.
-While the user types it drifts from the cited name, and the editor offers Sources for it.
-It comes back to the name when the field is left or a Source is taken.
+A field already reading what the engine holds is left alone, so the caret survives its own echo.
 
 ## `internal void PSentenceCitationShow()`
 
-Reads the name of the cited Source again, for when the list of Sources changed underneath the row.
+Says the cited Source again, for when the list of Sources changed underneath the row.
+The field then looks the byline up afresh.
 
-## `internal void PSentenceCitationReset()`
+## `internal static string PSentenceCitationFind(ObservableCollection<PCitationItem> catalog, LStateAnchor anchor)`
 
-Puts the cited name back in the field, discarding whatever was typed and not taken.
+The `Author (Year)` line of the Source an anchor names, or nothing when it names none.
+The citation converter calls it when a field is drawn, and the editor when it compares a typed line.
 
 ## `public bool PSentenceFrameVisible`
 
@@ -116,3 +103,7 @@ The handles beside it are not read across a gap that holds nothing.
 The separator drawn between the marker and the role inside the frame.
 It is one space when both are written and nothing otherwise.
 The writing view spaces the frame exactly as the reading view does.
+
+## `private static bool PSentenceFrameCheck(LStateValue value)`
+
+Whether a frame field says anything: text, or the unknown mark.

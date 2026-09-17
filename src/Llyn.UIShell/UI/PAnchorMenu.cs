@@ -80,7 +80,7 @@ public partial class PEditor
         bool anchored = box.IsChecked == true;
         row.PReflexItemAnchors = LAnchor.LAnchorToggle(row.PReflexItemAnchors, fanqieId, anchored);
         PReflexAnchorShow();
-        PEditorRequestSend(new LRequestReflexAnchor(_pEditorDraft, row.PReflexItemId, fanqieId, anchored));
+        PEditorRequestSend(new LRequestReflexAnchor(PEditorDraft, row.PReflexItemId, fanqieId, anchored));
     }
 
     private void PAnchorClosedHandle(object? sender, EventArgs e)

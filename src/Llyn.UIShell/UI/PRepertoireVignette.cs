@@ -11,13 +11,9 @@ public partial class PRepertoire
 
     private string? PVignetteTextRead(LStateValue value)
     {
-        return value.LStateValueState switch
-        {
-            _ when value.LStateValueUnreadable => value.LStateValueShow(),
-            LState.LStateSpecified => value.LStateValueShow(),
-            LState.LStateUnknown => _pRepertoireHost.PLocalizationTextRead("Display.Unknown"),
-            _ => null,
-        };
+        return PStateConverter.PStateConverterCheck(value)
+            ? _pRepertoireHost.PLocalizationTextRead("Display.Unknown")
+            : value.LStateValueShow() is { Length: > 0 } shown ? shown : null;
     }
 
     private void PVignetteTitleShow(LStateValue value)

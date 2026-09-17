@@ -132,3 +132,8 @@ Deleting an Author never deletes a Reference.
 The Sources answering `query`, in `order`, as rows already carrying their name, credits and citation count.
 The credits and the counts are read whole rather than one Source at a time.
 Both are needed to order and to match, so the browsing panel decides neither.
+
+## `public IReadOnlyList<LCatalogReference> LEngineReferenceFind(LVista vista)`
+
+The Sources the sources panel's vista lists, with the query and order read off the vista.
+The vista's filter hides languages from the entries citing the chosen Source, so it is not applied here.

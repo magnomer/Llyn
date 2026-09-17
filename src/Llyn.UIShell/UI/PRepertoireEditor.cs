@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -71,9 +72,9 @@ public partial class PRepertoire
         PScenarioKind.Text = situation?.LSituationKind.LStateValueShow() ?? string.Empty;
         PScenarioDescription.Text = situation?.LSituationDescription.LStateValueShow() ?? string.Empty;
 
-        _pScenarioTitleUnknown = situation?.LSituationTitle.LStateValueState == LState.LStateUnknown;
-        _pScenarioKindUnknown = situation?.LSituationKind.LStateValueState == LState.LStateUnknown;
-        _pScenarioDescriptionUnknown = situation?.LSituationDescription.LStateValueState == LState.LStateUnknown;
+        _pScenarioTitleUnknown = PStateConverter.PStateConverterCheck(situation?.LSituationTitle);
+        _pScenarioKindUnknown = PStateConverter.PStateConverterCheck(situation?.LSituationKind);
+        _pScenarioDescriptionUnknown = PStateConverter.PStateConverterCheck(situation?.LSituationDescription);
 
         PScenarioTitle.Tag = PScenarioHintRead(PScenarioTitle, _pScenarioTitleUnknown);
         PScenarioKind.Tag = PScenarioHintRead(PScenarioKind, _pScenarioKindUnknown);
@@ -113,15 +114,15 @@ public partial class PRepertoire
         }
 
         field.Text = value.LStateValueShow();
-        held = value.LStateValueState == LState.LStateUnknown;
+        held = PStateConverter.PStateConverterCheck(value);
         field.Tag = PScenarioHintRead(field, held);
     }
 
-    private LRequestSituationBody PScenarioRead(long draft, long situation)
+    private LRequestSituationBody PScenarioRead(long draft)
     {
         return new LRequestSituationBody(
             draft,
-            situation,
+            0,
             new LStateWritten(PScenarioTitle.Text, _pScenarioTitleUnknown),
             new LStateWritten(PScenarioDescription.Text, _pScenarioDescriptionUnknown),
             new LStateWritten(PScenarioKind.Text, _pScenarioKindUnknown));
@@ -129,18 +130,21 @@ public partial class PRepertoire
 
     private void PScenarioStoreRun()
     {
-        PScenarioChangeSave();
-
-        long held = _pScenarioDraft;
-        if (held == 0 || _pScenarioHalted)
+        if (_pScenarioTenure is not LTenure held)
         {
             return;
         }
 
-        LSituation stored;
+        held.LTenurePersist();
+        if (!held.LTenureStateRead().LTenureStateChanged)
+        {
+            return;
+        }
+
+        long? stored;
         try
         {
-            stored = _pRepertoireHost.PWindowCommitRun(held, _lEngine.LEngineSituationCommit);
+            stored = _pRepertoireHost.PWindowCommitRun(held, true);
         }
         catch (Exception exception)
         {
@@ -148,12 +152,17 @@ public partial class PRepertoire
             return;
         }
 
-        _pScenarioDraft = 0;
-        _pVignetteSituation = stored.LSituationId;
-        PAtlasSelect(stored.LSituationId);
+        _pScenarioTenure = null;
+        if (stored is not long situation)
+        {
+            return;
+        }
 
-        PAtlasFind(PInquest.Text ?? string.Empty);
+        _pVignetteSituation = situation;
+        PAtlasSelect(situation);
+
+        PAtlasFind();
         PRepertoireScribeShow(false);
-        PRepertoireShow(stored.LSituationId);
+        PRepertoireShow(situation);
     }
 }

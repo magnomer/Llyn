@@ -28,7 +28,7 @@ public partial class PReference
                     LStateValue.LStateValueUnspecified,
                     LStateMark.LStateMarkUnspecified),
                 PRummage.Text ?? string.Empty,
-                _pTrellisChoice);
+                _pReferenceVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
         }
         catch (Exception exception)
         {
@@ -46,7 +46,7 @@ public partial class PReference
                 _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pFootnoteList,
             row => row.PFootnoteItemHeadword,
             (row, name) => row.PFootnoteItemName = name,

@@ -37,7 +37,7 @@ public partial class PLibrary
 
             LMarkupOutcome outcome = await Task.Run(() => _lEngine.LEngineMarkupImport(cargo, intakes));
 
-            PIndexFind(PInquiry.Text ?? string.Empty);
+            PIndexFind();
             PSCustoms.PSCustomsOmissionShow(_pLibraryHost, outcome.LMarkupOutcomeOmission);
         }
         catch (Exception exception)

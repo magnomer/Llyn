@@ -35,6 +35,26 @@ This is the candidate list for a clicked word, and zero rows is a legitimate ans
 Every Entry of one language whose headword appears inside `text`, longest headword first.
 One query serves a language without word separators, where the engine tries each hit against the click.
 
+## `public IReadOnlyList<LEntry> LEntryScan(IReadOnlyList<long> ids, string query)`
+
+The entries among `ids` whose headword matches `query`, in id order, in one session.
+The ids are sent in batches, so a long list never outruns the parameter limit.
+The cell of a rhyme table reads its entries this way instead of one read per id.
+
+## `public IReadOnlyDictionary<long, string> LEntryEpithetScan(IReadOnlyList<long> ids)`
+
+The epithet of every entry among `ids` that has one, keyed by id, in one session.
+An entry with no epithet has no key, so a caller falls back to nothing without a lookup per row.
+A catalog reads its epithets this way instead of one session per row.
+
+## `private static IEnumerable<IReadOnlyList<long>> LEntryListDivide(IReadOnlyList<long> ids)`
+
+Cuts the ids into batches of five hundred, well under what one statement may bind.
+
+## `private static string LEntryListFormat(SqliteCommand command, IReadOnlyList<long> ids)`
+
+Binds one parameter per id on the command and answers the list to put inside the `IN`.
+
 ## `private static IReadOnlyList<LEntry> LEntryListRead(SqliteCommand command)`
 
 The rows a prepared query yields, in the order the query states.

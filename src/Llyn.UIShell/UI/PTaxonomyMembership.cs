@@ -23,9 +23,9 @@ public partial class PTaxonomy
         try
         {
             read = _lEngine.LEngineEntryFind(
-                new LTag(_pDirectoryChoice, string.Empty),
+                new LTag(_pTaxonomyVista?.LVistaChosen ?? 0, string.Empty),
                 PScout.Text ?? string.Empty,
-                _pLatticeChoice);
+                _pTaxonomyVista?.LVistaFilter ?? LCatalogFilter.LCatalogFilterEmpty);
         }
         catch (Exception exception)
         {
@@ -43,7 +43,7 @@ public partial class PTaxonomy
                 _lEngine.LEngineEpithetRead(entry.LEntryId)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pMembershipList,
             row => row.PMembershipItemHeadword,
             (row, name) => row.PMembershipItemName = name,
@@ -88,7 +88,7 @@ public partial class PTaxonomy
         if (draft is null)
         {
             PTaxonomyClear();
-            PDirectoryFind(PExploration.Text ?? string.Empty);
+            PDirectoryFind();
             return;
         }
 
@@ -112,7 +112,7 @@ public partial class PTaxonomy
             PTaxonomyBin.IsEnabled = true;
         }
 
-        PDirectoryFind(PExploration.Text ?? string.Empty);
+        PDirectoryFind();
 
         if (_pDisplayEntry is not long shown
             || (id > 0 && shown != id))
@@ -141,7 +141,7 @@ public partial class PTaxonomy
 
     private void PMembershipEntryCreate()
     {
-        long tag = _pDirectoryChoice;
+        long tag = _pTaxonomyVista?.LVistaChosen ?? 0;
 
         PTaxonomyClear();
         PTaxonomyMode.IsEnabled = true;

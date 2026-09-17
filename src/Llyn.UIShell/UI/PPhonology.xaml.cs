@@ -39,7 +39,7 @@ public partial class PPhonology : UserControl
     internal void PPhonologyReset()
     {
         PPhonologyClear();
-        PInventoryFind(PProbe.Text ?? string.Empty);
+        PInventoryFind();
     }
 
     internal bool PPhonologyDraftFinish(bool store)

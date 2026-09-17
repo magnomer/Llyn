@@ -236,6 +236,22 @@ public sealed class LPronunciationArchive
             reader.GetString(3));
     }
 
+    public IReadOnlyList<string> LPronunciationAudioScan()
+    {
+        using LDatabaseSession session = _lPronunciationArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText = "SELECT file FROM pronunciation_audio;";
+
+        List<string> files = [];
+        using SqliteDataReader reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            files.Add(reader.GetString(0));
+        }
+
+        return files;
+    }
+
     public long? LPronunciationHolderRead(long id)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(id);

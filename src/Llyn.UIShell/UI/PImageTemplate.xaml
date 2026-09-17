@@ -47,10 +47,10 @@
                         FontSize="12"
                         Foreground="{DynamicResource Theme.Muted}"
                         Style="{DynamicResource Theme.Input.Bare}"
-                        Text="{Binding PImageLocation, UpdateSourceTrigger=PropertyChanged}">
+                        Text="{Binding PImageLocation, Converter={StaticResource Theme.State.Show}, Mode=OneWay}">
                         <TextBox.Tag>
                             <MultiBinding Converter="{StaticResource Theme.State.Show}">
-                                <Binding Path="PImageUnknown" />
+                                <Binding Path="PImageLocation" />
                                 <local:PLocalizationBinder PLocalizationBinderKey="Display.Unknown" />
                                 <local:PLocalizationBinder PLocalizationBinderKey="Card.LocationHint" />
                             </MultiBinding>

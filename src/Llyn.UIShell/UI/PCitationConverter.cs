@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Data;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
 
-internal sealed class PCitationConverter : IValueConverter
+internal sealed class PCitationConverter : IValueConverter, IMultiValueConverter
 {
     private readonly Dictionary<long, string> _pCitationConverterLines = [];
 
@@ -45,6 +46,22 @@ internal sealed class PCitationConverter : IValueConverter
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        ArgumentNullException.ThrowIfNull(values);
+
+        return values.Length > 1
+            && values[0] is LStateAnchor anchor
+            && values[1] is ObservableCollection<PCitationItem> catalog
+            ? PSentence.PSentenceCitationFind(catalog, anchor)
+            : string.Empty;
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
     {
         throw new NotSupportedException();
     }

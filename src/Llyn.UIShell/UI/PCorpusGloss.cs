@@ -45,7 +45,7 @@ public partial class PCorpus
             PTranscriptGlossCreate,
             (row, draft) =>
             {
-                row.PGlossShow(draft, static _ => false);
+                row.PGlossShow(draft);
                 return row;
             });
 
@@ -61,22 +61,26 @@ public partial class PCorpus
 
     private void PTranscriptGlossChange(object? sender, PropertyChangedEventArgs arguments)
     {
-        if (_pTranscriptLoading || sender is not PGloss gloss)
+        if (_pTranscriptLoading
+            || sender is not PGloss gloss
+            || arguments.PropertyName != nameof(PGloss.PGlossLanguage))
         {
             return;
         }
 
-        switch (arguments.PropertyName)
+        PTranscriptRequestSend(
+            new LRequestGlossLanguage(PTranscriptDraft, 0, 0, gloss.PGlossId, gloss.PGlossLanguage));
+    }
+
+    internal void PTranscriptGlossHandle(object sender, TextChangedEventArgs e)
+    {
+        if (_pTranscriptLoading || sender is not TextBox { IsKeyboardFocusWithin: true, DataContext: PGloss gloss } box)
         {
-            case nameof(PGloss.PGlossText):
-                PTranscriptRequestDefer(
-                    new LRequestGlossText(PTranscriptDraft, 0, 0, gloss.PGlossId, gloss.PGlossTextRead()));
-                break;
-            case nameof(PGloss.PGlossLanguage):
-                PTranscriptRequestSend(
-                    new LRequestGlossLanguage(PTranscriptDraft, 0, 0, gloss.PGlossId, gloss.PGlossLanguage));
-                break;
+            return;
         }
+
+        PTranscriptRequestDefer(
+            new LRequestGlossText(PTranscriptDraft, 0, 0, gloss.PGlossId, new LStateWritten(box.Text)));
     }
 
     internal void PGlossAddHandle(object sender, RoutedEventArgs e)

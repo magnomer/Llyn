@@ -3,19 +3,33 @@
 ## `public partial class PRepertoire`
 
 When what the user typed into the situation editor reaches the draft the engine holds.
-The panel no longer keeps a copy of the stored Situation to compare itself against.
-It writes what it holds instead, and asks the engine whether that differs.
-Typing is written once the user stops, because a write per keystroke is a write per keystroke.
-This mirrors `PCorpusHold.cs` field for field, so the three editors cannot drift apart.
+The panel holds one `LTenure` and its controls, and the tenure runs the hold from start to commit or cancel.
+The panel keeps no draft id, halted flag, timer or pending map of its own, since the engine owns them.
+Typing is deferred through the tenure and written once the user stops, so a keystroke is not a write.
+A media row added or removed is applied at once, because there is no keystroke coming to end it.
+The tenure raises a bulletin when its state moves, and the panel settles its buttons from that.
+This mirrors `PCorpusHold.cs` member for member, so the editors cannot drift apart.
+
+## `private const string PScenarioOrigin = "Repertoire";`
+
+The surface a recovered Situation says it came from.
+
+## `private LTenure? _pScenarioTenure;`
+
+The engine's hold on the Situation being edited, or null while the editor holds nothing.
+
+## `private long PScenarioDraft => _pScenarioTenure?.LTenureId ?? 0;`
+
+The held draft's id as the requests name it, zero while nothing is held.
+Read from the tenure each time, so the panel keeps no copy to drift.
 
 ## `private bool PScenarioDraftFinish(bool store)`
 
 Ends the held Situation when the panel is left, committing it or discarding it.
 The panel routes here only while the Situation editor is the side in front.
-Typing still waiting to be written is written first, whatever the answer was.
-A refused commit puts the id back and answers false, so the window stays open over work still on disk.
-A form halted by a failed flush answers that it did not finish.
-Committing then would store a draft missing the edits the flush dropped.
+The tenure writes what is waiting, cancels an unchanged or unwanted draft, and commits the rest.
+A refused commit keeps the tenure and answers false, so the window stays open over work still on disk.
+A halted tenure refuses to finish the same way, since committing would store a draft missing the dropped edits.
 
 ## `private bool PScenarioChangeCheck()`
 
@@ -25,72 +39,65 @@ Otherwise a window closing within a keystroke of the last change would call it u
 
 ## `private void PScenarioChangeDefer()`
 
-Restarts the wait that ends in a write, for every edit the controls report.
-A filling panel, a suspended one, and one holding no draft each write nothing.
+Defers the whole body of the form as one request, for every edit the three fields report.
+The engine decides what changed, and an unchanged body raises no bulletin, so nothing is redrawn under the caret.
+The body names no situation id, since the engine lands it on the Situation the draft holds.
 
-## `private async Task PScenarioChangeRun(CancellationToken token)`
+## `private void PScenarioRequestDefer(LRequest request)`
 
-Waits out the quiet and then writes, unless another edit cancels the wait first.
-The wait is not awaited, because the keystroke that started it must return at once.
-Its continuation comes back on the UI thread, which is where the engine is used.
-Nobody is left to observe the task, so the write it ends with is guarded inside it.
+Hands one request to the tenure to write once the typing stops.
+A filling panel and one holding no draft defer nothing.
+A halted tenure drops the request itself.
+A media row's location travels this way, keyed by its row, so a later edit replaces the earlier one waiting.
 
-## `private void PScenarioChangeSave()`
+## `private void PScenarioRequestSend(LRequest request)`
 
-The one place control values reach the held Situation outside a commit.
-It also settles the buttons, so a write and what the buttons say never drift apart.
+Hands one request to the tenure to write now, for a media row added or removed.
+What was waiting is written first, so a location typed before the add travels ahead of it.
 
 ## `private void PScenarioChangeUpdate()`
 
-Settles the rail's save button against the engine's answer, while the Situation editor is the side in front.
+Settles the rail's save, the editor's enabled state and the undo pair from one reading of the tenure's state.
 It reads the same answer the closing warning reads, so the two cannot disagree.
-While the entry editor is in front, that editor's own notice drives the same button.
-This one then leaves it alone.
-The undo and redo pair is settled last, so it never says more than the draft can do.
+It stands aside while `PEditor` is in front, because then the save belongs to the entry editor.
+With no tenure the editor keeps whatever enabled state a failed start left it, since there is nothing to read.
+
+## `private void PScenarioHoldShow(bool running)`
+
+Enables or disables the editor to match whether the tenure still runs, and says so once when it stops.
+Editing on would collect keystrokes nothing is holding, which is the loss the draft exists to prevent.
+The control's own enabled state is the memory of having said so, so the notice is not repeated.
 
 ## `private LDraft? PScenarioDraftStart(long? situation)`
 
-Starts a held Situation, on a stored one or on nothing, and hands back what was started.
+Starts a tenure on a stored Situation or on nothing, and hands back the draft it holds.
 Whatever was held before is discarded first, so the panel never holds two.
-A refusal suspends the editor rather than leaving it typing into an id the engine never gave.
+A refusal disables the editor rather than leaving it typing into a tenure the engine never gave.
 
 ## `private void PScenarioDraftShow(LDraft? started)`
 
 Fills the controls from a draft just started, or empties them when none was.
 
-## `private void PScenarioDraftSave()`
-
-Sends the whole body of the form as one request and lets the engine decide what changed.
-An unchanged body is dropped by the engine without a bulletin, so nothing is redrawn under the caret.
-A changed body answers with one bulletin, and the bulletin redraws only what differs.
-Row requests waiting from the media lists are written first, so a location typed with the description travels with it.
-A failed write drops what was waiting, because the editor is suspended and nothing would send it.
-
 ## `private void PScenarioDraftRestore()`
 
 Reads the held Situation back and redraws the controls from it where they differ.
 This is what the panel's own draft bulletin does.
+What is waiting is written first, so a bulletin from the tenure's timer never redraws over a newer keystroke.
 Nothing is read while the controls are being filled, because filling raises the bulletin's own echo.
 
 ## `private void PScenarioDraftCancel()`
 
-Discards the held Situation and forgets its id, with any row request still waiting on it and the wait itself.
-The id is dropped before the call, so a failing discard cannot leave the panel writing into it.
-A failure here is swallowed, because the caller is already leaving the work behind.
-
-## `private bool PScenarioDraftCheck()`
-
-The engine's answer to whether the held Situation differs from the one it opened on.
-A panel holding no draft has nothing to lose and answers false.
+Discards the held Situation and forgets the tenure.
+The tenure is dropped before the call, so its last bulletin finds no panel holding it.
 
 ## `private long? PScenarioSituationRead()`
 
 The stored Situation the held work was opened on, or null for one nothing has stored.
-The delete control and the discard both read identity through this.
+The delete control, the usage count and the discard all read identity through this.
 
 ## `public void PChronicleUndo()`
 
-Steps the situation form's draft one snapshot back through the engine's chronicle.
+Steps the situation form's draft one snapshot back through the tenure.
 The draft bulletin the engine raises brings the older fields back through the ordinary restore.
 
 ## `public void PChronicleRedo()`
@@ -98,13 +105,26 @@ The draft bulletin the engine raises brings the older fields back through the or
 Steps the situation form's draft one snapshot forward again.
 The inverse of the undo above, through the same bulletin.
 
+## `private void PScenarioChronicleRun(Func<LTenure, LDraft?> step)`
+
+The one path both steps share.
+No tenure means nothing to walk, so it returns without asking.
+The tenure writes what is waiting before it steps, so the snapshot stepped away from is the one on screen.
+The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
+A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
+The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
+
 ## `public void PChronicleUpdate()`
 
-Lights `PRepertoireBackward` and `PRepertoireForward` only when the engine has a step to walk for the held draft.
-No draft disables both.
+Lights `PRepertoireBackward` and `PRepertoireForward` only when the tenure has a step to walk.
+No tenure disables both.
 While `PEditor` is in front the pair follows that editor's draft instead, read through `PEditorChronicleRead`.
 The panel is the pair's only writer, so the two editors never overwrite each other.
 The editor's chronicle notice and the editor toggle both call here, so the pair follows whoever is in front.
+
+## `private (bool PScenarioBackward, bool PScenarioForward) PScenarioChronicleRead()`
+
+The undo and redo answers of the tenure's state, both false while nothing is held.
 
 ## `private void PRepertoireUndoHandle(object sender, RoutedEventArgs e)`
 
@@ -114,32 +134,3 @@ An Entry open in `PEditor` steps its own chronicle, and otherwise the held draft
 ## `private void PRepertoireRedoHandle(object sender, RoutedEventArgs e)`
 
 The rail's redo, the inverse of the one above.
-
-## `private void PScenarioChronicleRun(Func<long, LDraft?> step)`
-
-The one path both steps share.
-No draft means nothing to walk, so it returns without asking.
-The pending debounced request is flushed first, so the snapshot stepped away from is the one on screen.
-The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
-A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
-The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
-
-## `private void PScenarioHoldSuspend(Exception exception)`
-
-Stops the editor when the push breaks, and says so once.
-Editing on would collect keystrokes nothing is holding, which is the loss the draft exists to prevent.
-
-## `private void PScenarioHoldResume()`
-
-Gives the editor back once a draft is held again.
-
-## Inline notes
-
-### `private const int PScenarioChangeDelay = 250;`
-
-Long enough that ordinary typing writes once rather than once per letter.
-Short enough that a crash costs a word, not a description.
-
-### `private const string PScenarioOrigin = "Repertoire";`
-
-The surface a recovered Situation says it came from.

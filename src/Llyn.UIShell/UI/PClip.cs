@@ -69,7 +69,7 @@ public partial class PEditor : LListener
             }
 
             await _lEngine.LEngineRecordingFind(
-                _pEditorDraft, word, _pClipLanguage, _pClipTarget, this, cancellation);
+                PEditorDraft, word, _pClipLanguage, _pClipTarget, this, cancellation);
         }
         catch (OperationCanceledException)
         {
@@ -226,16 +226,14 @@ public partial class PEditor : LListener
             {
                 _pRecording = path;
                 _pRecordingSource = recording.LRecordingSource;
-                _pRecordingStored = false;
                 PPlaybackAction.Visibility = Visibility.Visible;
                 PEditorAudioSend();
                 id = PNotationDraftRead()?.LEntryDraftPronunciation?.LPronunciationDraftId ?? 0;
             }
             else
             {
-                _pRecordingFresh.Add(target);
                 PEditorRequestSend(
-                    new LRequestPronunciationAudio(_pEditorDraft, target, path, recording.LRecordingSource));
+                    new LRequestPronunciationAudio(PEditorDraft, target, path, recording.LRecordingSource));
             }
 
             PNotationVarietySend(id, reading.PClipReadingVariety);

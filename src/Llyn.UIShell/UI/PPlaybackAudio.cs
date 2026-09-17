@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,10 +13,6 @@ public partial class PEditor
 
     private string? _pRecording;
     private string? _pRecordingSource;
-
-    private bool _pRecordingStored;
-
-    private readonly HashSet<long> _pRecordingFresh = [];
 
     private void PPlaybackActionHandle(object sender, RoutedEventArgs e)
     {
@@ -61,32 +55,10 @@ public partial class PEditor
         PVolumeCatalog.PVolumeCatalogCurrent.PVolumeCatalogLevel = PVolume.Value;
     }
 
-    private void PHeadwordHandle(object sender, TextChangedEventArgs e)
-    {
-        if (_pEditorFill)
-        {
-            return;
-        }
-
-        PRecordingFreshClear();
-    }
-
-    private void PRecordingFreshClear()
-    {
-        if (!_pRecordingStored && _pRecording is not null)
-        {
-            PRecordingClear();
-            PEditorAudioSend();
-        }
-
-        PAccentFreshClear();
-    }
-
     private void PRecordingClear()
     {
         _pRecording = null;
         _pRecordingSource = null;
-        _pRecordingStored = false;
         _pDownloaderPlayer.Stop();
         PPlaybackAction.Visibility = Visibility.Collapsed;
         PPlaybackTrayShow();

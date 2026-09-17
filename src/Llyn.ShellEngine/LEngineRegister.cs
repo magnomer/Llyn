@@ -68,6 +68,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogRegister> LEngineRegisterFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+        return LEngineRegisterFind(vista.LVistaQuery, vista.LVistaOrder);
+    }
+
     public LRegister LEngineRegisterCreate(string name)
     {
         LRegister created;

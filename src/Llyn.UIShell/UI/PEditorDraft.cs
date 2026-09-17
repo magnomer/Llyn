@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -20,13 +21,12 @@ public partial class PEditor
         _pEditorFill = true;
         try
         {
-            PEditorTextShow(PHeadword, PEditorRequestHeadword, draft.LEntryDraftHeadword);
+            PEditorTextShow(PHeadword, draft.LEntryDraftHeadword);
             _pEditorRespelling = PRespelling.PRespellingRead(_lEngine, draft.LEntryDraftLanguage);
             PPronunciationOpener.Text = _pEditorRespelling.PRespellingOpener;
             PPronunciationCloser.Text = _pEditorRespelling.PRespellingCloser;
             PEditorTextShow(
                 PPronunciationField,
-                PEditorRequestIpa,
                 draft.LEntryDraftPronunciation is LPronunciationDraft primary
                     ? _pEditorRespelling.PRespellingTextRead(primary)
                     : string.Empty);
@@ -38,8 +38,9 @@ public partial class PEditor
             PEditorLanguageShow(draft.LEntryDraftLanguage);
 
             IReadOnlyDictionary<long, LTranslationTarget> targets = PEditorTargetRead(draft);
-            PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets);
-            PCardShow(_pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets);
+            PCardShow(_pMeaningList, "Meaning", draft.LEntryDraftMeanings, targets, draft.LEntryDraftLanguage);
+            PCardShow(
+                _pCollocationList, "Collocation", draft.LEntryDraftCollocations, targets, draft.LEntryDraftLanguage);
 
             PEditorNoteShow(draft.LEntryDraftNote);
             PEditorRecordingShow(draft);
@@ -55,7 +56,7 @@ public partial class PEditor
 
     private LEntryDraft PEditorDraftPrepare(LEntryDraft draft)
     {
-        if (_pEditorFill || _pEditorHalted || _pEditorDraft == 0)
+        if (_pEditorFill || _pEditorTenure is null)
         {
             return draft;
         }
@@ -80,7 +81,7 @@ public partial class PEditor
 
     private LEntryDraft PEditorDraftRead(LEntryDraft draft)
     {
-        if (!_pEditorPrepareStale || _pEditorHalted || _pEditorDraft == 0)
+        if (!_pEditorPrepareStale || _pEditorTenure is not LTenure held)
         {
             return draft;
         }
@@ -88,18 +89,18 @@ public partial class PEditor
         _pEditorPrepareStale = false;
         try
         {
-            return _lEngine.LEngineDraftRead(_pEditorDraft)?.LDraftContent ?? draft;
+            return held.LTenureRead()?.LDraftContent ?? draft;
         }
         catch (Exception exception)
         {
-            PEditorHoldSuspend(exception);
+            _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
             return draft;
         }
     }
 
-    private void PEditorTextShow(TextBox box, string key, string text)
+    private static void PEditorTextShow(TextBox box, string text)
     {
-        if (PEditorRequestCheck(key) || string.Equals(box.Text, text, StringComparison.Ordinal))
+        if (string.Equals(box.Text, text, StringComparison.Ordinal))
         {
             return;
         }
@@ -109,7 +110,7 @@ public partial class PEditor
 
     private void PEditorSpeechShow(IReadOnlyList<LSpeechDraft> speeches)
     {
-        if (PEditorRequestCheck(PEditorRequestSpeech) || PMarkerMatch(speeches))
+        if (PMarkerMatch(speeches))
         {
             return;
         }
@@ -119,8 +120,7 @@ public partial class PEditor
 
     private void PEditorNoteShow(string note)
     {
-        if (PEditorRequestCheck(PEditorRequestNote)
-            || string.Equals(PEditorNoteRead(), note, StringComparison.Ordinal))
+        if (string.Equals(PEditorNoteRead(), note, StringComparison.Ordinal))
         {
             return;
         }
@@ -144,7 +144,6 @@ public partial class PEditor
 
         _pRecording = audio;
         _pRecordingSource = draft.LEntryDraftPronunciation?.LPronunciationDraftSource;
-        _pRecordingStored = true;
         PPlaybackAction.Visibility = Visibility.Visible;
         PVolumeLoad();
     }

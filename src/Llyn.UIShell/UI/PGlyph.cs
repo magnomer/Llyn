@@ -74,7 +74,7 @@ public partial class PEditor
         }
 
         PEditorRequestSend(new LRequestTranscriptionAddition(
-            _pEditorDraft, glyph.LGlyphName, draft.LEntryDraftTranscriptions.Count, true));
+            PEditorDraft, glyph.LGlyphName, draft.LEntryDraftTranscriptions.Count, true));
     }
 
     private void PGlyphClear()

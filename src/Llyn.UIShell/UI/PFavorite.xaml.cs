@@ -37,7 +37,7 @@ public partial class PFavorite : UserControl
     internal void PFavoriteReset()
     {
         PFavoriteClear();
-        PRosterFind(PRecall.Text ?? string.Empty);
+        PRosterFind();
     }
 
     internal bool PFavoriteDraftFinish(bool store)

@@ -31,3 +31,14 @@ The number is read-only otherwise, so a click on it drags the card as the header
 
 Closes the badge and puts the stored number back into it.
 A number typed and then abandoned leaves nothing behind.
+
+### `public LStateValue PTitle => _pTitle;`
+
+The title, definition and expression are the engine's values, shown as they stand.
+A field the user types into binds the value one way and reports the typing to the editor itself.
+So the card holds no copy of what was typed and never resolves a state.
+
+### `internal void PCardTitleShow(LStateValue value)`
+
+Takes the draft's value and redraws the field only when the value differs.
+A field already reading what the engine holds is left alone, so the caret survives its own echo.

@@ -65,6 +65,12 @@ public sealed partial class LEngine
         }
     }
 
+    public IReadOnlyList<LCatalogExample> LEngineExampleFind(LVista vista)
+    {
+        ArgumentNullException.ThrowIfNull(vista);
+        return LEngineExampleFind(vista.LVistaQuery, vista.LVistaOrder);
+    }
+
     public IReadOnlyDictionary<long, string> LEngineCitationRead()
     {
         lock (_lEngineGate)

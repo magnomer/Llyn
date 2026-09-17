@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -18,16 +19,22 @@ public partial class PYunjing
 
     private string? _pYunjingLanguage;
 
-    private long? _pShengmuChoice;
+    private LVista? _pShengmuVista;
 
-    private long? _pYunmuChoice;
-
-    private LCatalogOrder _pLadderChoice;
-
-    private LCatalogOrder _pStairChoice;
+    private LVista? _pYunmuVista;
 
     private async void PYunjingBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (bulletin.LBulletinId == _pShengmuVista?.LVistaId || bulletin.LBulletinId == _pYunmuVista?.LVistaId)
+            {
+                PYunjingLoad();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             await PEnsign.PEnsignLoad(_lEngine);
@@ -57,7 +64,7 @@ public partial class PYunjing
 
     private void PYunjingLoad()
     {
-        if (_pYunjingLanguage is not string language)
+        if (_pYunjingLanguage is not string language || _pShengmuVista is null || _pYunmuVista is null)
         {
             return;
         }
@@ -66,8 +73,8 @@ public partial class PYunjing
         IReadOnlyList<LDiwei> rimes;
         try
         {
-            initials = _lEngine.LEngineDiweiRead(language, LDiwei.LDiweiInitial);
-            rimes = _lEngine.LEngineDiweiRead(language, LDiwei.LDiweiRime);
+            initials = _lEngine.LEngineDiweiFind(_pShengmuVista, language, LDiwei.LDiweiInitial);
+            rimes = _lEngine.LEngineDiweiFind(_pYunmuVista, language, LDiwei.LDiweiRime);
         }
         catch (Exception exception)
         {
@@ -75,10 +82,18 @@ public partial class PYunjing
             return;
         }
 
-        _pShengmuChoice = PYunjingListBuild(
-            _pShengmuList, initials, _pShengmuChoice, PPlumb.Text ?? string.Empty, _pLadderChoice);
-        _pYunmuChoice = PYunjingListBuild(
-            _pYunmuList, rimes, _pYunmuChoice, PFathom.Text ?? string.Empty, _pStairChoice);
+        if (_pShengmuVista.LVistaChosen is long onset && !initials.Any(row => row.LDiweiId == onset))
+        {
+            _pShengmuVista.LVistaSelect(null);
+        }
+
+        if (_pYunmuVista.LVistaChosen is long rime && !rimes.Any(row => row.LDiweiId == rime))
+        {
+            _pYunmuVista.LVistaSelect(null);
+        }
+
+        PYunjingListBuild(_pShengmuList, initials, _pShengmuVista.LVistaChosen);
+        PYunjingListBuild(_pYunmuList, rimes, _pYunmuVista.LVistaChosen);
         PYunjingEmptyShow(
             PShengmuEmpty, _pShengmuList.Count, PPlumb.Text, "Yunjing.ShengmuEmpty", "Yunjing.ShengmuUnmatched");
         PYunjingEmptyShow(
@@ -87,35 +102,19 @@ public partial class PYunjing
         PDiweiLoad();
     }
 
-    private static long? PYunjingListBuild(
+    private static void PYunjingListBuild(
         ObservableCollection<PYunjingItem> list,
         IReadOnlyList<LDiwei> rows,
-        long? chosen,
-        string query,
-        LCatalogOrder order)
+        long? chosen)
     {
-        string wanted = query.Trim();
-        IEnumerable<LDiwei> kept = rows.Where(row =>
-            wanted.Length == 0 || row.LDiweiKey.Contains(wanted, StringComparison.OrdinalIgnoreCase));
-        kept = order switch
-        {
-            LCatalogOrder.LCatalogOrderReverse => kept.OrderByDescending(row => row.LDiweiKey, StringComparer.Ordinal),
-            LCatalogOrder.LCatalogOrderUsage => kept
-                .OrderByDescending(row => row.LDiweiCount)
-                .ThenBy(row => row.LDiweiKey, StringComparer.Ordinal),
-            _ => kept.OrderBy(row => row.LDiweiKey, StringComparer.Ordinal),
-        };
-
         list.Clear();
-        bool held = false;
-        foreach (LDiwei row in kept)
+        foreach (LDiwei row in rows)
         {
-            bool marked = row.LDiweiId == chosen;
-            held |= marked;
-            list.Add(new PYunjingItem(row.LDiweiId, row.LDiweiKey, row.LDiweiCount) { PYunjingItemChosen = marked });
+            list.Add(new PYunjingItem(row.LDiweiId, row.LDiweiKey, row.LDiweiCount)
+            {
+                PYunjingItemChosen = row.LDiweiId == chosen,
+            });
         }
-
-        return held ? chosen : null;
     }
 
     private static void PYunjingEmptyShow(TextBlock label, int count, string? query, string vacant, string unmatched)
@@ -131,34 +130,29 @@ public partial class PYunjing
             return;
         }
 
-        if (_pShengmuList.Contains(item))
+        bool onset = _pShengmuList.Contains(item);
+        LVista? vista = onset ? _pShengmuVista : _pYunmuVista;
+        if (vista is null)
         {
-            _pShengmuChoice = _pShengmuChoice == item.PYunjingItemId ? null : item.PYunjingItemId;
-            PYunjingSelect(_pShengmuList, _pShengmuChoice);
-            if (_pShengmuChoice is null)
-            {
-                PDiweiHide();
-            }
-            else if (PDiweiFind(LDiwei.LDiweiInitial, item.PYunjingItemKey) is LDiwei diwei)
-            {
-                PDiweiShow(diwei);
-            }
+            return;
         }
-        else
+
+        long? chosen = vista.LVistaChosen == item.PYunjingItemId ? null : item.PYunjingItemId;
+        vista.LVistaSelect(chosen);
+        foreach (PYunjingItem listed in onset ? _pShengmuList : _pYunmuList)
         {
-            _pYunmuChoice = _pYunmuChoice == item.PYunjingItemId ? null : item.PYunjingItemId;
-            PYunjingSelect(_pYunmuList, _pYunmuChoice);
-            if (_pYunmuChoice is null)
-            {
-                PDiweiHide();
-            }
-            else if (PDiweiFind(LDiwei.LDiweiRime, item.PYunjingItemKey) is LDiwei diwei)
-            {
-                PDiweiShow(diwei);
-            }
+            listed.PYunjingItemChosen = listed.PYunjingItemId == chosen;
         }
 
         PXiaoyunFind();
+        if (chosen is null)
+        {
+            PDiweiHide();
+        }
+        else if (PDiweiFind(onset ? LDiwei.LDiweiInitial : LDiwei.LDiweiRime, item.PYunjingItemKey) is LDiwei diwei)
+        {
+            PDiweiShow(diwei);
+        }
     }
 
     internal void PYunjingDiweiShow(string language, string kind, string key)
@@ -180,30 +174,22 @@ public partial class PYunjing
         }
 
         _pYunjingLanguage = language;
-        _pShengmuChoice = kind == LDiwei.LDiweiInitial ? found.LDiweiId : null;
-        _pYunmuChoice = kind == LDiwei.LDiweiRime ? found.LDiweiId : null;
         PPlumb.Text = string.Empty;
         PFathom.Text = string.Empty;
+        _pShengmuVista?.LVistaSelect(kind == LDiwei.LDiweiInitial ? found.LDiweiId : null);
+        _pYunmuVista?.LVistaSelect(kind == LDiwei.LDiweiRime ? found.LDiweiId : null);
         PYunjingLoad();
         PDiweiShow(found);
     }
 
-    private static void PYunjingSelect(ObservableCollection<PYunjingItem> list, long? chosen)
-    {
-        foreach (PYunjingItem item in list)
-        {
-            item.PYunjingItemChosen = chosen is not null && item.PYunjingItemId == chosen;
-        }
-    }
-
     private void PPlumbHandle(object sender, TextChangedEventArgs e)
     {
-        PYunjingLoad();
+        _pShengmuVista?.LVistaQuerySet(PPlumb.Text ?? string.Empty);
     }
 
     private void PFathomHandle(object sender, TextChangedEventArgs e)
     {
-        PYunjingLoad();
+        _pYunmuVista?.LVistaQuerySet(PFathom.Text ?? string.Empty);
     }
 
     private void PBeaconHandle(object sender, TextChangedEventArgs e)
@@ -213,41 +199,50 @@ public partial class PYunjing
 
     private void PLadderHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pShengmuVista is null)
         {
             return;
         }
 
-        _pLadderChoice = LCatalog.LCatalogOrderParse(choice, _pLadderChoice);
-        _lEngine.LEngineLadderSave(_pLadderChoice);
         PLadderDropper.IsChecked = false;
-        PYunjingLoad();
+        _pShengmuVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pShengmuVista.LVistaOrder));
     }
 
     private void PStairHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pYunmuVista is null)
         {
             return;
         }
 
-        _pStairChoice = LCatalog.LCatalogOrderParse(choice, _pStairChoice);
-        _lEngine.LEngineStairSave(_pStairChoice);
         PStairDropper.IsChecked = false;
+        _pYunmuVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pYunmuVista.LVistaOrder));
+    }
+
+    internal void PYunjingVistaRestore(LVista shengmu, LVista yunmu)
+    {
+        _pShengmuVista = shengmu;
+        _pYunmuVista = yunmu;
+        PLadderRestore();
+        PStairRestore();
+        shengmu.LVistaQuerySet(PPlumb.Text ?? string.Empty);
+        yunmu.LVistaQuerySet(PFathom.Text ?? string.Empty);
         PYunjingLoad();
     }
 
-    internal void PLadderRestore(LCatalogOrder order)
+    private void PLadderRestore()
     {
-        _pLadderChoice = order;
-        PChoice.PChoiceOrderApply(PLadderDropdown, order);
-        PYunjingLoad();
+        if (_pShengmuVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PLadderDropdown, _pShengmuVista.LVistaOrder);
+        }
     }
 
-    internal void PStairRestore(LCatalogOrder order)
+    private void PStairRestore()
     {
-        _pStairChoice = order;
-        PChoice.PChoiceOrderApply(PStairDropdown, order);
-        PYunjingLoad();
+        if (_pYunmuVista is not null)
+        {
+            PChoice.PChoiceOrderApply(PStairDropdown, _pYunmuVista.LVistaOrder);
+        }
     }
 }

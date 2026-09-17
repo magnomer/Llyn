@@ -35,7 +35,7 @@ public partial class PDisplay
                 _lEngine.LEngineEpithetRead(usage.LUsageEntry)));
         }
 
-        PTwin.PTwinNameApply(
+        LTwin.LTwinNameApply(
             _pDisplayIncoming, row => row.PUsageItemHeadword, (row, name) => row.PUsageItemName = name);
 
         PDisplayIncomingSection.Visibility = _pDisplayIncoming.Count == 0

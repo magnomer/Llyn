@@ -89,3 +89,8 @@ The id is zero, because no record changed and every surface showing a reading re
 
 The state of one held draft moved: it changed, can undo or redo, or halted.
 The id is the draft the tenure holds, so the one panel holding it settles its buttons.
+
+## `LSubjectVista,`
+
+The view state of one catalog tab moved: its order, filter, query or chosen row.
+The id is the vista's own, so the one panel holding it re-lists or re-marks its rows.

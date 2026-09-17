@@ -7,7 +7,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LDraft LEngineExampleStart(string origin, long? exampleId)
+    internal LDraft LEngineExampleStart(string origin, long? exampleId)
     {
         lock (_lEngineGate)
         {

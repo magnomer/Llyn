@@ -94,3 +94,8 @@ The two share one seam rather than each carrying its own.
 
 The Situations answering `query`, in `order`, as rows already carrying how many places reference them.
 A Situation is matched over its title, its description and its kind.
+
+## `public IReadOnlyList<LCatalogSituation> LEngineSituationFind(LVista vista)`
+
+The Situations the repertoire panel's vista lists, with the query and order read off the vista.
+The vista's filter hides languages from the entries referencing the chosen Situation, so it is not applied here.

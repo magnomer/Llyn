@@ -15,13 +15,9 @@ internal sealed class PUsageItem
         PUsageItemLanguage = usage.LUsageLanguage;
         PUsageItemOwner = owner;
         PUsageItemKind = usage.LUsageOwner;
-        PUsageItemTitle = usage.LUsageTitle.LStateValueState switch
-        {
-            _ when usage.LUsageTitle.LStateValueUnreadable => usage.LUsageTitle.LStateValueShow(),
-            LState.LStateSpecified => usage.LUsageTitle.LStateValueShow(),
-            LState.LStateUnknown => unknown,
-            _ => unnamed,
-        };
+        PUsageItemTitle = PStateConverter.PStateConverterCheck(usage.LUsageTitle)
+            ? unknown
+            : usage.LUsageTitle.LStateValueShow() is { Length: > 0 } shown ? shown : unnamed;
         PUsageItemFlag = PEnsign.PEnsignFind(usage.LUsageLanguage);
     }
 

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Llyn.Core;
+using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
@@ -10,14 +11,20 @@ public partial class PLibrary
 {
     private readonly ObservableCollection<PIndexItem> _pIndexList = [];
 
-    private long? _pDisplayEntry;
-
-    private LCatalogOrder _pOrderChoice;
-
-    private LCatalogFilter _pSieveChoice = LCatalogFilter.LCatalogFilterEmpty;
+    private LVista? _pLibraryVista;
 
     private async void PLibraryBulletinHandle(LBulletin bulletin)
     {
+        if (bulletin.LBulletinSubject == LSubject.LSubjectVista)
+        {
+            if (_pLibraryVista is not null && bulletin.LBulletinId == _pLibraryVista.LVistaId)
+            {
+                PIndexFind();
+            }
+
+            return;
+        }
+
         if (bulletin.LBulletinSubject == LSubject.LSubjectWorkspace)
         {
             await PEnsign.PEnsignLoad(_lEngine);
@@ -33,80 +40,90 @@ public partial class PLibrary
 
     private void PInquiryHandle(object sender, TextChangedEventArgs e)
     {
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        _pLibraryVista?.LVistaQuerySet(PInquiry.Text ?? string.Empty);
     }
 
     private void POrderHandle(object sender, RoutedEventArgs e)
     {
-        if (sender is not FrameworkElement { Tag: string choice })
+        if (sender is not FrameworkElement { Tag: string choice } || _pLibraryVista is null)
         {
             return;
         }
 
-        _pOrderChoice = LCatalog.LCatalogOrderParse(choice, _pOrderChoice);
-        _lEngine.LEngineOrderSave(_pOrderChoice);
         POrderDropper.IsChecked = false;
-        PIndexFind(PInquiry.Text ?? string.Empty);
-    }
-
-    internal async void POrderRestore(LCatalogOrder order)
-    {
-        _pOrderChoice = order;
-        PChoice.PChoiceOrderApply(POrderDropdown, order);
-
-        await PEnsign.PEnsignLoad(_lEngine);
-
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        _pLibraryVista.LVistaOrderSet(LCatalog.LCatalogOrderParse(choice, _pLibraryVista.LVistaOrder));
     }
 
     private void PSieveHandle(object sender, RoutedEventArgs e)
     {
-        _pSieveChoice = PChoice.PChoiceFilterRead(PSieveList);
-        _lEngine.LEngineSieveSave(_pSieveChoice);
-        PSieveMark.Visibility = _pSieveChoice.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        if (_pLibraryVista is null)
+        {
+            return;
+        }
+
+        _pLibraryVista.LVistaFilterSet(PChoice.PChoiceFilterRead(PSieveList));
+        PSieveRestore();
     }
 
-    internal async void PSieveRestore(LCatalogFilter filter)
+    internal async void PLibraryVistaRestore(LVista vista)
     {
-        _pSieveChoice = filter;
-        PSieveMark.Visibility = filter.LCatalogFilterActive ? Visibility.Visible : Visibility.Collapsed;
+        _pLibraryVista = vista;
+        POrderRestore();
+        PSieveRestore();
 
         await PEnsign.PEnsignLoad(_lEngine);
 
-        PChoice.PChoiceFilterBuild(PSieveList, _lEngine.LEngineLanguageRead(), filter, PSieveHandle);
+        PChoice.PChoiceFilterBuild(PSieveList, _lEngine.LEngineLanguageRead(), vista.LVistaFilter, PSieveHandle);
+        vista.LVistaQuerySet(PInquiry.Text ?? string.Empty);
+        PIndexFind();
     }
 
-    private void PIndexSelect(long? id)
+    private void POrderRestore()
     {
+        if (_pLibraryVista is not null)
+        {
+            PChoice.PChoiceOrderApply(POrderDropdown, _pLibraryVista.LVistaOrder);
+        }
+    }
+
+    private void PSieveRestore()
+    {
+        bool active = _pLibraryVista?.LVistaFilter.LCatalogFilterActive == true;
+        PSieveMark.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void PIndexChosenApply()
+    {
+        long? chosen = _pLibraryVista?.LVistaChosen;
         foreach (PIndexItem item in _pIndexList)
         {
-            item.PIndexItemChosen = id is not null
-                && item.PIndexItemId == id;
+            item.PIndexItemChosen = chosen is not null
+                && item.PIndexItemId == chosen;
         }
     }
 
-    private void PIndexFind(string query)
+    private void PIndexFind()
     {
         _pIndexList.Clear();
-        foreach (LEntry entry in _lEngine.LEngineEntryFind(query, _pOrderChoice, _pSieveChoice))
+        if (_pLibraryVista is null)
         {
-            _pIndexList.Add(new PIndexItem(
-                entry.LEntryId,
-                entry.LEntryHeadword,
-                entry.LEntryLanguage,
-                _lEngine.LEngineEpithetRead(entry.LEntryId)));
+            return;
         }
 
-        PTwin.PTwinNameApply(
-            _pIndexList,
-            row => row.PIndexItemHeadword,
-            (row, name) => row.PIndexItemName = name,
-            row => row.PIndexItemId);
+        foreach (LVistaRow row in _lEngine.LEngineEntryFind(_pLibraryVista))
+        {
+            _pIndexList.Add(new PIndexItem(
+                row.LVistaRowId,
+                row.LVistaRowHeadword,
+                row.LVistaRowLanguage,
+                row.LVistaRowEpithet ?? string.Empty)
+            {
+                PIndexItemName = row.LVistaRowName,
+                PIndexItemChosen = row.LVistaRowChosen,
+            });
+        }
 
         PIndexEmpty.Visibility = _pIndexList.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-
-        PIndexSelect(_pDisplayEntry);
     }
 
     private void PIndexHandle(object sender, RoutedEventArgs e)
@@ -140,12 +157,12 @@ public partial class PLibrary
         if (draft is null)
         {
             PLibraryClear();
-            PIndexFind(PInquiry.Text ?? string.Empty);
+            PIndexFind();
             return;
         }
 
-        _pDisplayEntry = id;
-        PIndexSelect(id);
+        _pLibraryVista?.LVistaSelect(id);
+        PIndexChosenApply();
         PLibraryEntryShow(id, draft);
 
         if (PEditor.Visibility == Visibility.Visible)
@@ -160,16 +177,15 @@ public partial class PLibrary
         bool stored = bulletin.LBulletinSubject == LSubject.LSubjectEntry;
         if (stored && id > 0 && IsVisible && PEditor.Visibility == Visibility.Visible)
         {
-            _pDisplayEntry = id;
-            PIndexSelect(id);
+            _pLibraryVista?.LVistaSelect(id);
         }
 
         PLibraryCommandApply();
 
-        PIndexFind(PInquiry.Text ?? string.Empty);
+        PIndexFind();
 
         if (!stored
-            || _pDisplayEntry is not long shown
+            || _pLibraryVista?.LVistaChosen is not long shown
             || (id > 0 && shown != id))
         {
             return;
@@ -225,9 +241,9 @@ public partial class PLibrary
 
             PLibraryScribeShow(false);
 
-            if (_pDisplayEntry is not null)
+            if (_pLibraryVista?.LVistaChosen is long chosen)
             {
-                PIndexEntryShow(_pDisplayEntry.Value);
+                PIndexEntryShow(chosen);
                 return;
             }
 
@@ -235,13 +251,13 @@ public partial class PLibrary
             return;
         }
 
-        if (_pDisplayEntry is null)
+        if (_pLibraryVista?.LVistaChosen is not long shown)
         {
             PLibraryClear();
             return;
         }
 
-        PEditor.PEditorEntryShow(_pDisplayEntry.Value);
+        PEditor.PEditorEntryShow(shown);
         PLibraryScribeShow(true);
     }
 
@@ -257,7 +273,7 @@ public partial class PLibrary
 
     internal void PLibraryScribeRestore(bool editing)
     {
-        if (editing && _pDisplayEntry is null)
+        if (editing && _pLibraryVista?.LVistaChosen is null)
         {
             return;
         }
@@ -277,7 +293,7 @@ public partial class PLibrary
 
     internal long PLibraryVoyageRead()
     {
-        return _pDisplayEntry ?? 0;
+        return _pLibraryVista?.LVistaChosen ?? 0;
     }
 
     private void PLibraryEntryShow(long id, LEntryDraft draft)
@@ -289,13 +305,13 @@ public partial class PLibrary
 
     internal void PLibraryCommandApply()
     {
-        PLibraryBin.IsEnabled = _pDisplayEntry is not null;
+        PLibraryBin.IsEnabled = _pLibraryVista?.LVistaChosen is not null;
     }
 
     private void PLibraryClear()
     {
-        _pDisplayEntry = null;
-        PIndexSelect(null);
+        _pLibraryVista?.LVistaSelect(null);
+        PIndexChosenApply();
         PDisplay.PDisplayClear();
         PEditor.PEditorReset();
         PLibraryScribeShow(false);
@@ -310,7 +326,7 @@ public partial class PLibrary
 
     private void PLibraryBinHandle(object sender, RoutedEventArgs e)
     {
-        if (_pDisplayEntry is not long id)
+        if (_pLibraryVista?.LVistaChosen is not long id)
         {
             return;
         }

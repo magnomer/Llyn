@@ -47,8 +47,8 @@ public partial class PYunjing : UserControl
     internal void PYunjingReset()
     {
         _pYunjingLanguage = PYunjingLanguageFind();
-        _pShengmuChoice = null;
-        _pYunmuChoice = null;
+        _pShengmuVista?.LVistaSelect(null);
+        _pYunmuVista?.LVistaSelect(null);
         PYunjingClear();
         PYunjingLoad();
     }
