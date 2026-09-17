@@ -1,0 +1,26 @@
+{
+  "generation": 8,
+  "project": "Llyn",
+  "test": {
+    "project": "tests/Llyn.Convention.Tests",
+    "configuration": "Debug",
+    "filter": "FullyQualifiedName~TAuditTruth|FullyQualifiedName~TAuditStrict"
+  },
+  "sources": {
+    "custody": "temp/audit/Custody-{version}.md",
+    "strict": "temp/audit/Truth-{version}.md"
+  },
+  "custody": {
+    "kinds": [ "Argument", "Guard", "Fork", "Mutation" ]
+  },
+  "strict": {
+    "kinds": [ "Storage", "Flow", "Treat" ]
+  },
+  "report": {
+    "directory": "docs-work/audit",
+    "versionFile": "version.json",
+    "versionKey": "current-version",
+    "prefix": "UI-",
+    "consoleLimit": 40
+  }
+}

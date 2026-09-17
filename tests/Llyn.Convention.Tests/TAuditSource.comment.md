@@ -9,6 +9,14 @@ Carries no settings of its own: each test hands in the `TAuditScope` its sidecar
 
 Walks up from the test binary to the first folder that holds `.git`.
 
+## `private const string TAuditVersionFile = "version.json";`
+
+The file the current version is read from, relative to the repo root.
+
+## `public static string TAuditVersionRead(string repoRoot)`
+
+The current version, for naming a report.
+
 ## `public static IReadOnlyList<string> TAuditFileRead(string repoRoot, TAuditScope scope)`
 
 Asks Git for the tracked and untracked files matching the scope's patterns.
