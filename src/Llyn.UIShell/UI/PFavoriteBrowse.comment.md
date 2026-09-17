@@ -12,6 +12,7 @@ A mark set from another tab puts its row here without the tab being opened.
 A workspace that moved empties the panel first, and its flags are loaded before the rows are built.
 A draft edit or a fetched frequency, paradigm, script, fanqie or reflex row changes no listed row.
 Those announcements are skipped.
+A changed grasp is the exception when the roster is ordered by grasp, because the row moves.
 
 ## `private void PRecallHandle(object sender, TextChangedEventArgs e)`
 
@@ -83,6 +84,11 @@ Fills the display and enables the mode toggle, which is dead while nothing is se
 ## `private void PFavoriteClear()`
 
 Returns the panel to nothing selected, reading, and no editor open.
+
+## `private void PSeriesGraspUpdate()`
+
+Reads the roster again when a grasp changed under the grasp ordering, and does nothing otherwise.
+Under any other ordering the grasp is not shown, so the rows stay where they are.
 
 ## `internal void PSeriesRestore(LCatalogOrder order)`
 

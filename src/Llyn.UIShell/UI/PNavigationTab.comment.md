@@ -33,13 +33,17 @@ The switch and the restore read the same table.
 A tab cannot be stored under one name and restored under another.
 A tab holding no editor offers no way to restore one.
 
-## `internal void PWindowEntryShow(long id)`
+## `internal bool PWindowEntryShow(long id)`
 
 Switches to the library panel and opens one Entry there.
 It is the way a referring side listed under a shared record reaches the Entry holding it.
 Panel switching is the window's to do, so a panel asks for it rather than reaching into `PNavigation` itself.
 The library is asked first, because the tab guard above passes over a library that is already the target.
 Opening the entry would otherwise cancel the draft being written in that panel without a word.
+The place being left is recorded on the voyage trail once the library has agreed to be left.
+Recording after the guard means a cancelled jump leaves no station behind.
+The other four jumps below record the same way.
+The answer says whether the jump went, so the voyage trail can hold its place when the panel refused.
 
 ## `internal void PWindowMentionHandle(PMention anchor, LMentionResult result)`
 
@@ -71,22 +75,27 @@ The popup is declared once, in the editor, and the window is the only path betwe
 The menu closes when the window loses activation.
 A popup that stays open over another window would answer keys meant for that window.
 
-## `internal void PWindowSituationShow(long id)`
+## `internal bool PWindowSituationShow(long id)`
 
 Switches to the repertoire panel and opens one Situation there.
 It is the way a situation chip read on a card reaches the record it names.
 The repertoire is asked first, for the reason the library is asked above.
 
-## `internal void PWindowExampleShow(long id)`
+## `internal bool PWindowExampleShow(long id)`
 
 Switches to the corpus panel and opens one Example there.
 It is the way a citation row read on an author reaches the Example that cites the author's source.
 The corpus is asked first, for the reason the library is asked above.
 
-## `internal void PWindowTagShow(long id)`
+## `internal bool PWindowTagShow(long id)`
 
 Switches to the taxonomy panel and browses by one tag, named by its id.
 The taxonomy is asked first, for the reason the library is asked above.
+
+## `internal bool PWindowRegisterShow(long id)`
+
+Switches to the tenor panel and opens one Register there.
+The tenor is asked first, for the reason the library is asked above.
 
 Every browse-style panel that holds an editor is asked the same question before the tab changes.
 The list stays one guard per panel rather than one loop, because each panel names its own check.

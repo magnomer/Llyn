@@ -17,6 +17,8 @@ public partial class PImprint
 
     private bool _pImprintHalted;
 
+    internal Action? PImprintChronicleNotice;
+
     internal bool PImprintDraftFinish(bool store)
     {
         if (_pImprintPending is not null)
@@ -133,6 +135,7 @@ public partial class PImprint
     internal void PImprintChangeUpdate()
     {
         PImprintChangeNotice?.Invoke(PImprintDraftCheck());
+        PChronicleUpdate();
     }
 
     private LDraft? PImprintDraftStart(long? reference)
@@ -260,6 +263,49 @@ public partial class PImprint
         }
 
         return held?.LDraftEntryId is null or 0 ? null : held.LDraftEntryId;
+    }
+
+    public void PChronicleUndo()
+    {
+        PImprintChronicleRun(_lEngine.LEngineChronicleUndo);
+    }
+
+    public void PChronicleRedo()
+    {
+        PImprintChronicleRun(_lEngine.LEngineChronicleRedo);
+    }
+
+    private void PImprintChronicleRun(Func<long, LDraft?> step)
+    {
+        if (_pImprintDraft == 0)
+        {
+            return;
+        }
+
+        PImprintChangeSave();
+
+        try
+        {
+            PChronicle.PChronicleRun(() => step(_pImprintDraft));
+        }
+        catch (Exception exception)
+        {
+            _pImprintHost.PWindowFailureShow("Source.HoldFailed", exception);
+        }
+
+        PChronicleUpdate();
+    }
+
+    public void PChronicleUpdate()
+    {
+        PImprintChronicleNotice?.Invoke();
+    }
+
+    internal (bool PImprintPast, bool PImprintFuture) PImprintChronicleRead()
+    {
+        return (
+            _pImprintDraft != 0 && _lEngine.LEngineUndoCheck(_pImprintDraft),
+            _pImprintDraft != 0 && _lEngine.LEngineRedoCheck(_pImprintDraft));
     }
 
     private void PImprintHoldSuspend(Exception exception)

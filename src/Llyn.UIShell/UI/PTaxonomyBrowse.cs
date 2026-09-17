@@ -251,6 +251,11 @@ public partial class PTaxonomy
         return _pTaxonomyHost.PWindowDiscardConfirm(PTaxonomyChangeCheck(), PTaxonomyDraftFinish);
     }
 
+    internal long PTaxonomyVoyageRead()
+    {
+        return _pDirectoryChoice;
+    }
+
     private void PTaxonomyEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);

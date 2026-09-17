@@ -63,6 +63,23 @@ Otherwise the draft is dropped and the panel goes back to the chosen Source, or 
 
 Swaps the entry display for the entry editor and back.
 The toggle marks follow, so the rail and the cell never disagree.
+The undo and redo pair is settled last, since the editor now in front owns it.
+
+## `private void PReferenceChronicleUpdate()`
+
+Lights `PReferenceBackward` and `PReferenceForward` from whichever editor is in front.
+An Entry open in `PEditor` lends its chronicle state, and otherwise the source area's draft does.
+The panel is the pair's only writer, so the two editors never overwrite each other.
+Both editors' chronicle notices and the editor toggle call here.
+
+## `private void PReferenceUndoHandle(object sender, RoutedEventArgs e)`
+
+The rail's undo, standing for whichever editor is in front, as the rail's save does.
+An Entry open in `PEditor` steps its own chronicle, and otherwise the edit area steps the held Source.
+
+## `private void PReferenceRedoHandle(object sender, RoutedEventArgs e)`
+
+The rail's redo, the inverse of the one above.
 
 ## `private void PReferenceStoreHandle(object sender, RoutedEventArgs e)`
 

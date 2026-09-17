@@ -27,6 +27,7 @@ public static class LCatalog
             LCatalogOrder.LCatalogOrderSound => "Sound",
             LCatalogOrder.LCatalogOrderPending => "Pending",
             LCatalogOrder.LCatalogOrderWork => "Work",
+            LCatalogOrder.LCatalogOrderGrasp => "Grasp",
             _ => "Name",
         };
     }
@@ -51,6 +52,7 @@ public static class LCatalog
             "Sound" => LCatalogOrder.LCatalogOrderSound,
             "Pending" => LCatalogOrder.LCatalogOrderPending,
             "Work" => LCatalogOrder.LCatalogOrderWork,
+            "Grasp" => LCatalogOrder.LCatalogOrderGrasp,
             _ => fallback,
         };
     }

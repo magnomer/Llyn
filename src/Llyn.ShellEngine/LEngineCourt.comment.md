@@ -60,6 +60,7 @@ Committing and cancelling both act on the whole set.
 ## `private void LEngineCourtUpdate(LCourt link, long realId)`
 
 Rewrites the one draft that held a settled link.
+The owner's chronicle is dropped first, because a snapshot from before the rewrite would bring the draft id back.
 
 ## `private static IReadOnlyList<LCardDraft> LEngineTranslationUpdate(IReadOnlyList<LCardDraft> cards, long draftId, long realId)`
 

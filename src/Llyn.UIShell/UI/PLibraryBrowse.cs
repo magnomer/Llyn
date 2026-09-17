@@ -275,6 +275,11 @@ public partial class PLibrary
         return _pLibraryHost.PWindowDiscardConfirm(PLibraryChangeCheck(), PLibraryDraftFinish);
     }
 
+    internal long PLibraryVoyageRead()
+    {
+        return _pDisplayEntry ?? 0;
+    }
+
     private void PLibraryEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);

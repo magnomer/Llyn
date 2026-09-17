@@ -29,7 +29,7 @@
                 IsEnabled="False"
                 Style="{StaticResource Theme.Command.Primary}" />
             <Button
-                x:Name="PSCoinageRetreat"
+                x:Name="PSCoinageDismiss"
                 MinWidth="88"
                 Margin="6,0,0,0"
                 Content="{DynamicResource Coinage.Cancel}"

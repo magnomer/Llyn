@@ -35,6 +35,9 @@ A field standing Unspecified or Unknown still has a place in every ordering, ord
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
 
 The action row of the panel.
+`PReferenceBackward` and `PReferenceForward` walk the chronicle of whichever editor is in front.
+They are lit only while the engine has a step to walk.
+They carry no label, only the arrow and a tooltip, and a divider parts them from new and save.
 `PReferenceFresh` opens the edit area on a Source nothing cites yet.
 That is the normal case, because a Source is written down first and cited afterwards.
 `PReferenceStore` saves whichever editor is in front, the Entry open in `PEditor` or the held Source.

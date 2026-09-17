@@ -21,6 +21,11 @@ public sealed record LPortraitAsset(
             return null;
         }
 
+        if (trimmed.StartsWith("data:", StringComparison.Ordinal))
+        {
+            return LPortraitAssetParse(trimmed);
+        }
+
         string path = trimmed;
         if (Uri.TryCreate(trimmed, UriKind.Absolute, out Uri? address))
         {
@@ -66,5 +71,45 @@ public sealed record LPortraitAsset(
         {
             return null;
         }
+    }
+
+    private static LPortraitAsset? LPortraitAssetParse(string address)
+    {
+        int comma = address.IndexOf(',', StringComparison.Ordinal);
+        if (comma < 0)
+        {
+            return null;
+        }
+
+        string head = address.Substring(5, comma - 5);
+        int semicolon = head.IndexOf(';', StringComparison.Ordinal);
+        string media = semicolon < 0 ? head : head.Substring(0, semicolon);
+        if (!head.EndsWith(";base64", StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        byte[] data;
+        try
+        {
+            data = Convert.FromBase64String(address.Substring(comma + 1));
+        }
+        catch (FormatException)
+        {
+            return null;
+        }
+
+        string suffix = media switch
+        {
+            "image/png" => ".png",
+            "image/gif" => ".gif",
+            "image/bmp" => ".bmp",
+            "image/webp" => ".webp",
+            "image/tiff" => ".tif",
+            "image/svg+xml" => ".svg",
+            _ => ".jpg",
+        };
+
+        return new LPortraitAsset(data, media, suffix);
     }
 }

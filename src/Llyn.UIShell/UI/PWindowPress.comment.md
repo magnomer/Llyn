@@ -25,7 +25,7 @@ A dialog that named no sheet gets the regional default rather than the browser's
 
 ## `internal LPortraitLabel PWindowLabelRead()`
 
-The localized words an entry portrait is written with.
+The localized words an entry likeness is written with: the stand-in mark and every section heading.
 Every panel that exports or prints an entry reads them here, so all agree.
 
 ## `internal LPortraitLegend PWindowLegendRead(string realm)`

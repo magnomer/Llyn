@@ -1,4 +1,4 @@
-# LEngineDraftCard.cs
+﻿# LEngineDraftCard.cs
 
 ## `public sealed partial class LEngine`
 
@@ -36,3 +36,6 @@ This is the only place card order is computed, so the form no longer keeps its o
 A card still carrying no id is named here too.
 The answer is about to be matched by id.
 Both the move and the renumber end here, so the two cannot drift apart.
+When the list actually changed, the draft is recorded in the chronicle before the write.
+So a move can be undone.
+A renumber that moved nothing records nothing.

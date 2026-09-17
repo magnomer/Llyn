@@ -29,6 +29,7 @@ public sealed partial class LEngine
                 return held;
             }
 
+            LEngineChronicleRecord(held, saved, request);
             LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, saved);
         }
 

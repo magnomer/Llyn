@@ -8,6 +8,28 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
+    private static bool LEngineDraftMatch(LDraft one, LDraft other)
+    {
+        if (one.LDraftExample is LExample sentence)
+        {
+            return other.LDraftExample is LExample spoken && LEngineExampleMatch(sentence, spoken);
+        }
+
+        if (one.LDraftSituation is LSituation situation)
+        {
+            return other.LDraftSituation is LSituation scene && LEngineSituationMatch(situation, scene);
+        }
+
+        if (one.LDraftReference is LReference reference)
+        {
+            return other.LDraftReference is LReference cited
+                && LEngineReferenceMatch(reference, cited)
+                && LEngineCreditMatch(one.LDraftAuthor, other.LDraftAuthor);
+        }
+
+        return LEngineDraftMatch(one.LDraftContent, other.LDraftContent);
+    }
+
     private static bool LEngineDraftMatch(LEntryDraft one, LEntryDraft other)
     {
         return string.Equals(

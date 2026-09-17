@@ -139,6 +139,7 @@ public partial class PCorpus
         }
 
         PCorpusStore.IsEnabled = PTranscriptDraftCheck();
+        PChronicleUpdate();
     }
 
     private LDraft? PTranscriptDraftStart(long? example)
@@ -262,6 +263,69 @@ public partial class PCorpus
         }
 
         return held?.LDraftEntryId is null or 0 ? null : held.LDraftEntryId;
+    }
+
+    public void PChronicleUndo()
+    {
+        PTranscriptChronicleRun(_lEngine.LEngineChronicleUndo);
+    }
+
+    public void PChronicleRedo()
+    {
+        PTranscriptChronicleRun(_lEngine.LEngineChronicleRedo);
+    }
+
+    private void PTranscriptChronicleRun(Func<long, LDraft?> step)
+    {
+        if (_pTranscriptDraft == 0)
+        {
+            return;
+        }
+
+        PTranscriptChangeSave();
+
+        try
+        {
+            PChronicle.PChronicleRun(() => step(_pTranscriptDraft));
+        }
+        catch (Exception exception)
+        {
+            _pCorpusHost.PWindowFailureShow("Example.HoldFailed", exception);
+        }
+
+        PChronicleUpdate();
+    }
+
+    public void PChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorChronicleRead()
+            : (_pTranscriptDraft != 0 && _lEngine.LEngineUndoCheck(_pTranscriptDraft),
+                _pTranscriptDraft != 0 && _lEngine.LEngineRedoCheck(_pTranscriptDraft));
+        PCorpusBackward.IsEnabled = undo;
+        PCorpusForward.IsEnabled = redo;
+    }
+
+    private void PCorpusUndoHandle(object sender, RoutedEventArgs e)
+    {
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PChronicleUndo();
+            return;
+        }
+
+        PChronicleUndo();
+    }
+
+    private void PCorpusRedoHandle(object sender, RoutedEventArgs e)
+    {
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PChronicleRedo();
+            return;
+        }
+
+        PChronicleRedo();
     }
 
     private void PTranscriptHoldSuspend(Exception exception)

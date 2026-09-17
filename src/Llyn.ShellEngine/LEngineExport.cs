@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +31,7 @@ public sealed partial class LEngine
             return;
         }
 
-        LPortrait portrait = LEnginePortraitRead(entryId, label);
+        LPortraitPage portrait = LEnginePortraitRead(entryId, label);
         LTheme theme = LTheme.LThemeLoad();
 
         switch (format)
@@ -62,7 +62,7 @@ public sealed partial class LEngine
         ArgumentNullException.ThrowIfNull(ticket);
 
         LPress press = LEnginePressRead();
-        LPortrait portrait = LEnginePortraitRead(entryId, label);
+        LPortraitPage portrait = LEnginePortraitRead(entryId, label);
 
         await press.LPressPrint(LSheet.LSheetFormat(portrait, LTheme.LThemeLoad()), ticket);
     }
@@ -76,7 +76,7 @@ public sealed partial class LEngine
         LPress press = LEnginePressRead();
         LPortraitPage page = LEnginePortraitRead(id, owner, legend);
 
-        await press.LPressPrint(LSheetPage.LSheetPageFormat(page, LTheme.LThemeLoad()), ticket);
+        await press.LPressPrint(LSheet.LSheetFormat(page, LTheme.LThemeLoad()), ticket);
     }
 
     private LPress LEnginePressRead()

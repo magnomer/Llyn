@@ -26,6 +26,12 @@ public partial class PFavorite
             return;
         }
 
+        if (bulletin.LBulletinSubject == LSubject.LSubjectGrasp)
+        {
+            PSeriesGraspUpdate();
+            return;
+        }
+
         if (!PBulletin.PBulletinEntryCheck(bulletin.LBulletinSubject))
         {
             return;
@@ -49,6 +55,16 @@ public partial class PFavorite
         _pSeriesChoice = LCatalog.LCatalogOrderParse(choice, _pSeriesChoice);
         _lEngine.LEngineSeriesSave(_pSeriesChoice);
         PSeriesDropper.IsChecked = false;
+        PRosterFind(PRecall.Text ?? string.Empty);
+    }
+
+    private void PSeriesGraspUpdate()
+    {
+        if (_pSeriesChoice != LCatalogOrder.LCatalogOrderGrasp)
+        {
+            return;
+        }
+
         PRosterFind(PRecall.Text ?? string.Empty);
     }
 

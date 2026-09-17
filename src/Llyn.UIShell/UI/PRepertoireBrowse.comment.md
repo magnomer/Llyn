@@ -78,3 +78,8 @@ Otherwise the launch would open a blank draft nobody asked for.
 Marks the catalog row the panel stands on and clears the mark from every other row.
 A null id leaves no row marked, which is what a cleared panel shows.
 It is called wherever the shown situation changes, so the mark and the right-hand side never disagree.
+
+## `internal long PRepertoireVoyageRead()`
+
+The Situation the panel shows, as the station the window records before a jump away.
+Zero says no Situation is shown, so there is no place to come back to.

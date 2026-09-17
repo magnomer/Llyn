@@ -7,6 +7,45 @@ The form keeps the id of the draft the engine holds for it, and writes every key
 Starting one, writing into it, reading it back, and committing or throwing it away are all here.
 A downstream that refuses any of those takes the form out of the user's hands until one answers again.
 
+## `public void PChronicleUndo()`
+
+Steps the entry form's draft one snapshot back through the engine's chronicle.
+The draft bulletin the engine raises brings the older fields back through the ordinary restore.
+
+## `public void PChronicleRedo()`
+
+Steps the entry form's draft one snapshot forward again.
+The inverse of the undo above, through the same bulletin.
+
+## `private void PEditorUndoHandle(object sender, RoutedEventArgs e)`
+
+The undo button, which walks the same road the keys walk.
+
+## `private void PEditorRedoHandle(object sender, RoutedEventArgs e)`
+
+The redo button, the inverse of the one above.
+
+## `public void PChronicleUpdate()`
+
+Lights the form's own undo and redo buttons only when the engine has a step to walk.
+No draft disables both.
+Then the chronicle notice is raised, so a panel that mounts the form can settle its own rail.
+The form never touches a panel's buttons, because only the panel knows which editor is in front.
+
+## `internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()`
+
+Whether the held draft has a step behind it and a step ahead of it.
+A mounting panel reads this when the form is in front, the way it reads the change notice for save.
+
+## `private void PEditorChronicleRun(Func<long, LDraft?> step)`
+
+The one path both steps share.
+No draft means nothing to walk, so it returns without asking.
+The pending debounced request is flushed first, so the snapshot stepped away from is the one on screen.
+The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
+A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
+The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
+
 ## Inline notes
 
 ### `private long _pEditorDraft;`
@@ -15,6 +54,11 @@ Which held draft this form is editing.
 It is the form's only claim on anything outside itself.
 The draft carries the entry it was started from, so the form no longer remembers that.
 Zero means the engine refused to start one, and every write here is skipped.
+
+### `internal Action? PEditorChronicleNotice;`
+
+Raised after every settle of the form's chronicle state, so the mounting panel settles its rail in turn.
+The rail's pair follows the form's draft the way the rail's save follows the change notice.
 
 ### `private LDraft? PEditorDraftStart(long? entry)`
 

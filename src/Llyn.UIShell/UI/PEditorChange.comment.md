@@ -15,6 +15,11 @@ Whether this form holds work a host would be sorry to lose.
 Typing still waiting to be sent is sent first.
 Otherwise a window closing within a keystroke of the last change would call it unchanged.
 
+## `private void PEditorChangeUpdate()`
+
+Settles discard, store and the change notice against the engine's answer, then the undo and redo pair.
+Every write and every restore ends here, so the buttons never say more than the draft can do.
+
 ## Inline notes
 
 ### `private const int PEditorChangeDelay = 250;`

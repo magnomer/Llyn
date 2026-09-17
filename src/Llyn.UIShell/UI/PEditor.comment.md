@@ -13,6 +13,10 @@ It is not a white box of its own that no theme reaches.
 
 ## `<Border x:Name="PEditorCommand"`
 
+Undo and redo stand first, lit only while the engine has a step to walk.
+A divider parts them from the pair that ends the edit.
+They carry no label, only the arrow and a tooltip.
+The keys of the window are the main road, and the buttons only show it exists.
 Discard and store answer one unsaved edit, so they share one group and are separated by their fill alone.
 The group is the command bar the browsing panels carry, so the two surfaces read as one language.
 A borderless tint is what this window gives a language pill and an open tab, not a button.

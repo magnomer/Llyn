@@ -6,7 +6,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PRepertoire : UserControl, PImageHost, PVideoHost
+public partial class PRepertoire : UserControl, PImageHost, PVideoHost, PChronicleHost
 {
     private PWindow _pRepertoireHost = null!;
 
@@ -35,6 +35,7 @@ public partial class PRepertoire : UserControl, PImageHost, PVideoHost
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, PScenarioOrigin, null);
         PEditor.PEditorChangeNotice = changed => PRepertoireStore.IsEnabled = changed;
+        PEditor.PEditorChronicleNotice = PChronicleUpdate;
 
         _pRepertoireObserver = new PObserver(this, PRepertoireBulletinHandle);
         engine.LEngineObserverAttach(_pRepertoireObserver);

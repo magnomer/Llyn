@@ -25,3 +25,4 @@ The stored form of a member is its text, so a remembered choice survives a resta
 - `LCatalogOrderSound` — By the stored pronunciation, entries carrying one first.
 - `LCatalogOrderPending` — By what is still missing, entries carrying no pronunciation first.
 - `LCatalogOrderWork` — By how many sources credit the author, most credited first.
+- `LCatalogOrderGrasp` — By how well the user knows the entry, best known first.

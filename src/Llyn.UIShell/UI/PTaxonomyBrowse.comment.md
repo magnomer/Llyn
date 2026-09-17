@@ -86,3 +86,8 @@ An empty editor is the state a new record is written in.
 
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.
+
+## `internal long PTaxonomyVoyageRead()`
+
+The tag the panel shows, as the station the window records before a jump away.
+Zero says no tag is shown, so there is no place to come back to.

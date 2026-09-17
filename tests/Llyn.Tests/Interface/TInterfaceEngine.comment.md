@@ -1,4 +1,4 @@
-﻿# TInterfaceEngine.cs
+# TInterfaceEngine.cs
 
 ## `internal static partial class TInterface`
 
@@ -9,5 +9,8 @@ The grasp read and save are relayed here as well.
 The script read, its pending check and its find are relayed here too.
 The reflex read, its rules, its pending check, its start and its find are relayed here as well.
 The markup read, find, import and export and the portrait export are relayed here too.
-The page portrait read, both prints and the press hand-in are relayed here as well.
+The entry and page likeness reads, both prints and the press hand-in are relayed here as well.
+The status bar read is relayed here too.
+The chronicle undo and redo with their two checks are relayed here as well.
+The chronicle clock seam is relayed here too.
 Each relay is transparent and carries no test logic of its own.

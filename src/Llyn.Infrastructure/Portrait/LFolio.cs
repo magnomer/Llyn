@@ -16,14 +16,14 @@ public static class LFolio
         + "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/"
         + "relationships/officeDocument\" Target=\"word/document.xml\"/></Relationships>";
 
-    public static void LFolioSave(LPortrait portrait, LTheme theme, string path)
+    public static void LFolioSave(LPortraitPage page, LTheme theme, string path)
     {
-        ArgumentNullException.ThrowIfNull(portrait);
+        ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(theme);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
         List<LPortraitAsset> plates = new List<LPortraitAsset>();
-        string document = LFolioBody.LFolioBodyFormat(portrait, theme, plates);
+        string document = LFolioBody.LFolioBodyFormat(page, theme, plates);
 
         using FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write);
         using ZipArchive package = new ZipArchive(file, ZipArchiveMode.Create);

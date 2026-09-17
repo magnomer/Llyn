@@ -121,6 +121,11 @@ It is anything else that would leave typed corrections behind.
 The window asks it too, for a jump that lands on the library the user is already writing in.
 Nothing unsaved means nothing to ask about.
 
+### `internal long PLibraryVoyageRead()`
+
+The Entry the panel shows, as the station the window records before a jump away.
+Zero says no Entry is shown, so there is no place to come back to.
+
 ### `private void PLibraryEntryShow(long id, LEntryDraft draft)`
 
 The shared display draws the entry, and this panel decides what the toggle may then do.

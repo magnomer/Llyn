@@ -46,6 +46,7 @@ Settles the rail's save button against the engine's answer, while the Situation 
 It reads the same answer the closing warning reads, so the two cannot disagree.
 While the entry editor is in front, that editor's own notice drives the same button.
 This one then leaves it alone.
+The undo and redo pair is settled last, so it never says more than the draft can do.
 
 ## `private LDraft? PScenarioDraftStart(long? situation)`
 
@@ -86,6 +87,42 @@ A panel holding no draft has nothing to lose and answers false.
 
 The stored Situation the held work was opened on, or null for one nothing has stored.
 The delete control and the discard both read identity through this.
+
+## `public void PChronicleUndo()`
+
+Steps the situation form's draft one snapshot back through the engine's chronicle.
+The draft bulletin the engine raises brings the older fields back through the ordinary restore.
+
+## `public void PChronicleRedo()`
+
+Steps the situation form's draft one snapshot forward again.
+The inverse of the undo above, through the same bulletin.
+
+## `public void PChronicleUpdate()`
+
+Lights `PRepertoireBackward` and `PRepertoireForward` only when the engine has a step to walk for the held draft.
+No draft disables both.
+While `PEditor` is in front the pair follows that editor's draft instead, read through `PEditorChronicleRead`.
+The panel is the pair's only writer, so the two editors never overwrite each other.
+The editor's chronicle notice and the editor toggle both call here, so the pair follows whoever is in front.
+
+## `private void PRepertoireUndoHandle(object sender, RoutedEventArgs e)`
+
+The rail's undo, standing for whichever editor is in front, as the rail's save does.
+An Entry open in `PEditor` steps its own chronicle, and otherwise the held draft steps.
+
+## `private void PRepertoireRedoHandle(object sender, RoutedEventArgs e)`
+
+The rail's redo, the inverse of the one above.
+
+## `private void PScenarioChronicleRun(Func<long, LDraft?> step)`
+
+The one path both steps share.
+No draft means nothing to walk, so it returns without asking.
+The pending debounced request is flushed first, so the snapshot stepped away from is the one on screen.
+The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
+A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
+The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
 
 ## `private void PScenarioHoldSuspend(Exception exception)`
 

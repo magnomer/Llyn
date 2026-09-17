@@ -18,6 +18,8 @@ The sentence, situation and source panels are applied in `LEngineRequestPanel.cs
 Applies one request to the held draft it names and returns the draft as saved.
 The draft must be held by this engine, so a request for a leftover or another copy's draft is refused.
 The content is normalized after the change, so anything the change left unnamed is named before the write.
+The draft being replaced is recorded in the chronicle first, so the edit can be undone.
+A request that changes nothing records nothing, since there is nothing to step back from.
 A request that leaves the draft equal to what was held writes nothing and raises nothing.
 So a form may send the whole body of a panel on every pause.
 Only a real change is announced.

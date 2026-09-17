@@ -258,6 +258,11 @@ public partial class PTenor
         return _pTenorHost.PWindowDiscardConfirm(PTenorChangeCheck(), PTenorDraftFinish);
     }
 
+    internal long PTenorVoyageRead()
+    {
+        return _pGamutChoice ?? 0;
+    }
+
     private void PTenorEntryShow(long id, LEntryDraft draft)
     {
         PDisplay.PDisplayShow(id, draft);

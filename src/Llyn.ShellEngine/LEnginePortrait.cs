@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Llyn.Core;
 
@@ -6,7 +6,7 @@ namespace Llyn.ShellEngine;
 
 public sealed partial class LEngine
 {
-    public LPortrait LEnginePortraitRead(long entryId, LPortraitLabel label)
+    public LPortraitPage LEnginePortraitRead(long entryId, LPortraitLabel label)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(entryId);
         ArgumentNullException.ThrowIfNull(label);
@@ -14,13 +14,78 @@ public sealed partial class LEngine
         LEntryDraft draft = LEngineEntryLoad(entryId)
             ?? throw new InvalidOperationException("The entry no longer stands in the workspace.");
 
-        string mark = label.LPortraitLabelUnknown;
         LSentenceOrder order = LEngineFrameRead(draft.LEntryDraftLanguage);
 
         List<long> ids = [];
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftMeanings, ids);
         LPortraitLink.LPortraitLinkRead(draft.LEntryDraftCollocations, ids);
 
+        IReadOnlyDictionary<long, LPortraitLink> targets = LEngineTargetScan(ids);
+        IReadOnlyDictionary<long, string> sources = LEngineSourceScan();
+
+        bool favorite;
+        try
+        {
+            favorite = LEngineFavoriteCheck(entryId);
+        }
+        catch (Exception)
+        {
+            favorite = false;
+        }
+
+        IReadOnlyList<LFanqieRow> fanqie = LEngineFanqieScan(entryId, draft.LEntryDraftLanguage);
+
+        List<LPortraitSection> sections = [];
+        LEngineGlyphAdd(sections, draft, label);
+        LEngineFrequencyAdd(sections, entryId, label);
+        LEngineFormAdd(sections, draft, label);
+        LEngineParadigmAdd(sections, entryId, label);
+        LEngineFanqieAdd(sections, fanqie, label);
+        LEngineBandAdd(
+            sections,
+            label.LPortraitLabelMeanings,
+            LPortraitCard.LPortraitCardCreate(
+                draft.LEntryDraftMeanings,
+                label.LPortraitLabelMeaning,
+                order,
+                draft.LEntryDraftLanguage,
+                label,
+                targets,
+                sources));
+        LEngineBandAdd(
+            sections,
+            label.LPortraitLabelCollocations,
+            LPortraitCard.LPortraitCardCreate(
+                draft.LEntryDraftCollocations,
+                label.LPortraitLabelCollocation,
+                order,
+                draft.LEntryDraftLanguage,
+                label,
+                targets,
+                sources));
+        LEngineIncomingAdd(sections, entryId, label);
+        LEngineNoteAdd(sections, draft, label);
+        LEngineScriptAdd(sections, entryId, draft.LEntryDraftLanguage, label);
+
+        return new LPortraitPage(
+            draft.LEntryDraftHeadword,
+            draft.LEntryDraftLanguage,
+            LEngineSpeechShow(draft.LEntryDraftSpeeches),
+            sections,
+            favorite,
+            [
+                .. LPortraitReading.LPortraitReadingCreate(
+                    draft.LEntryDraftPronunciations,
+                    LEngineRespellingCheck(draft.LEntryDraftLanguage),
+                    LEnginePhonemicCheck(draft.LEntryDraftLanguage)),
+                .. LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftTranscriptions),
+                .. LPortraitReading.LPortraitReadingCreate(
+                    draft.LEntryDraftReflexes, LEngineRespellingCheck, LEnginePhonemicCheck, fanqie),
+            ]);
+    }
+
+    private IReadOnlyDictionary<long, LPortraitLink> LEngineTargetScan(IReadOnlyList<long> ids)
+    {
         Dictionary<long, LPortraitLink> targets = [];
 
         try
@@ -38,43 +103,31 @@ public sealed partial class LEngine
             targets.Clear();
         }
 
-        IReadOnlyList<LUsage> incoming;
+        return targets;
+    }
+
+    private IReadOnlyDictionary<long, string> LEngineSourceScan()
+    {
         try
         {
-            incoming = LEngineIncomingRead(entryId);
+            return LEngineCitationRead();
         }
         catch (Exception)
         {
-            incoming = [];
+            return new Dictionary<long, string>();
         }
+    }
 
-        bool favorite;
+    private IReadOnlyList<LFanqieRow> LEngineFanqieScan(long entryId, string language)
+    {
         try
         {
-            favorite = LEngineFavoriteCheck(entryId);
+            return LEngineBookRead(language).Count == 0 ? [] : LEngineFanqieRead(entryId);
         }
         catch (Exception)
         {
-            favorite = false;
+            return [];
         }
-
-        return new LPortrait(
-            draft.LEntryDraftHeadword,
-            draft.LEntryDraftLanguage,
-            LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftPronunciations),
-            [
-                .. LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftTranscriptions),
-                .. LPortraitReading.LPortraitReadingCreate(draft.LEntryDraftReflexes),
-            ],
-            LEngineSpeechShow(draft.LEntryDraftSpeeches),
-            LPortraitCard.LPortraitCardCreate(
-                draft.LEntryDraftMeanings, label.LPortraitLabelMeaning, order, mark, targets),
-            LPortraitCard.LPortraitCardCreate(
-                draft.LEntryDraftCollocations, label.LPortraitLabelCollocation, order, mark, targets),
-            LPortraitUsage.LPortraitUsageCreate(incoming, label),
-            draft.LEntryDraftNote,
-            favorite,
-            label);
     }
 
     private LSentenceOrder LEngineFrameRead(string language)

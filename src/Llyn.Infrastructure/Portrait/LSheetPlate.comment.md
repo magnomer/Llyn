@@ -2,11 +2,7 @@
 
 ## `public static class LSheetPlate`
 
-Renders picture and video plates, whether a card or a page section holds them.
-
-## `public static void LSheetPlateAppend(StringBuilder page, LPortraitCard card)`
-
-The card's own plates, handed on to the list form below.
+Renders the picture and video plates a section holds.
 
 ## `public static void LSheetPlateAppend(StringBuilder page, IReadOnlyList<LPortraitMedia> images, IReadOnlyList<LPortraitMedia> videos)`
 
@@ -18,7 +14,7 @@ A hosted video lays the host's own thumbnail over the plain plate, which shows t
 ## `private static string? LSheetAddressRead(string location)`
 
 The address an image tag can carry, or null when there is none worth writing.
-Only a readable local file qualifies, and it becomes a data address the page carries within itself.
+A readable local file or a data address qualifies, and it becomes a data address the page carries within itself.
 A web address is dropped.
 The page would otherwise fetch from a host the user's entry named, wherever it is opened.
 A local path that does not read is dropped too.

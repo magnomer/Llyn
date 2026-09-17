@@ -215,6 +215,38 @@ public partial class PReference
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PReferenceViewer.IsChecked = !editing;
         PReferenceScribe.IsChecked = editing;
+        PReferenceChronicleUpdate();
+    }
+
+    private void PReferenceChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorChronicleRead()
+            : PImprint.PImprintChronicleRead();
+        PReferenceBackward.IsEnabled = undo;
+        PReferenceForward.IsEnabled = redo;
+    }
+
+    private void PReferenceUndoHandle(object sender, RoutedEventArgs e)
+    {
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PChronicleUndo();
+            return;
+        }
+
+        PImprint.PChronicleUndo();
+    }
+
+    private void PReferenceRedoHandle(object sender, RoutedEventArgs e)
+    {
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PChronicleRedo();
+            return;
+        }
+
+        PImprint.PChronicleRedo();
     }
 
     private void PReferenceStoreHandle(object sender, RoutedEventArgs e)

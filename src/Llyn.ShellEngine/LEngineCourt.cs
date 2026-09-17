@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
@@ -166,6 +166,7 @@ public sealed partial class LEngine
                 LEngineTranslationUpdate(owner.LDraftContent.LEntryDraftCollocations, link.LCourtTargetId, realId),
         };
 
+        LEngineChronicleClear(owner.LDraftId);
         LDraftArchive.LDraftArchiveSave(_lEngineWorkspace, owner with { LDraftContent = content });
     }
 

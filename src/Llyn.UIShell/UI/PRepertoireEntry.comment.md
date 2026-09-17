@@ -61,6 +61,7 @@ Otherwise the draft is dropped and the panel goes back to the chosen Situation, 
 
 Swaps the entry display for the entry editor and back.
 The toggle marks follow, so the rail and the cell never disagree.
+The undo and redo pair is settled last, since the editor now in front owns it.
 
 ## `private void PRepertoireStoreHandle(object sender, RoutedEventArgs e)`
 

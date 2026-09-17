@@ -1,4 +1,4 @@
-# LEngineDraftMatch.cs
+﻿# LEngineDraftMatch.cs
 
 ## `public sealed partial class LEngine`
 
@@ -6,6 +6,12 @@ Whether two forms of the same record say the same thing.
 Every call here is static and answers by content, because records compare lists by reference.
 A reference comparison would call every reloaded draft a change and never settle.
 This is what tells held work apart from the record it was started from.
+
+## `private static bool LEngineDraftMatch(LDraft one, LDraft other)`
+
+Whether two held drafts say the same thing, whatever kind of record they hold.
+An example, situation or reference draft is compared through that record's own matcher.
+An entry draft is compared through its content, so blank scaffolding is ignored as it is everywhere.
 
 ## `private static bool LEngineDraftMatch(LEntryDraft one, LEntryDraft other)`
 

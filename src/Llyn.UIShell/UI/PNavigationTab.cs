@@ -123,16 +123,18 @@ public partial class PWindow
         ];
     }
 
-    internal void PWindowEntryShow(long id)
+    internal bool PWindowEntryShow(long id)
     {
         PMentionMenuHide();
         if (!PLibrary.PLibraryLeaveConfirm())
         {
-            return;
+            return false;
         }
 
+        PVoyageRecord();
         PNavigationHandle(PNavigationLibrary, new RoutedEventArgs());
         PLibrary.PIndexEntryShow(id);
+        return true;
     }
 
     internal void PWindowMentionHandle(PMention anchor, LMentionResult result)
@@ -200,47 +202,55 @@ public partial class PWindow
         PMentionMenuHide();
     }
 
-    internal void PWindowSituationShow(long id)
+    internal bool PWindowSituationShow(long id)
     {
         if (!PRepertoire.PRepertoireLeaveConfirm())
         {
-            return;
+            return false;
         }
 
+        PVoyageRecord();
         PNavigationHandle(PNavigationRepertoire, new RoutedEventArgs());
         PRepertoire.PAtlasSituationShow(id);
+        return true;
     }
 
-    internal void PWindowTagShow(long id)
+    internal bool PWindowTagShow(long id)
     {
         if (!PTaxonomy.PTaxonomyLeaveConfirm())
         {
-            return;
+            return false;
         }
 
+        PVoyageRecord();
         PNavigationHandle(PNavigationTaxonomy, new RoutedEventArgs());
         PTaxonomy.PDirectoryTagShow(id);
+        return true;
     }
 
-    internal void PWindowExampleShow(long id)
+    internal bool PWindowExampleShow(long id)
     {
         if (!PCorpus.PCorpusLeaveConfirm())
         {
-            return;
+            return false;
         }
 
+        PVoyageRecord();
         PNavigationHandle(PNavigationCorpus, new RoutedEventArgs());
         PCorpus.PAnthologyExampleShow(id);
+        return true;
     }
 
-    internal void PWindowRegisterShow(long id)
+    internal bool PWindowRegisterShow(long id)
     {
         if (!PTenor.PTenorLeaveConfirm())
         {
-            return;
+            return false;
         }
 
+        PVoyageRecord();
         PNavigationHandle(PNavigationTenor, new RoutedEventArgs());
         PTenor.PGamutRegisterShow(id);
+        return true;
     }
 }

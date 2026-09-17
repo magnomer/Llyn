@@ -16,6 +16,8 @@ It attaches the edit area to the same host and engine, and to itself.
 The area reads the shelf's answers through it.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The editor's change notice drives `PReferenceStore`, as it drives the save button of the tenor panel.
+Both the editor and the edit area are lent `PReferenceBackward` and `PReferenceForward`.
+So the rail's undo and redo follow whichever is in front.
 The window fills the source shelf when it restores the stored ordering.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.

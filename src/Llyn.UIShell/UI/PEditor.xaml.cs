@@ -6,7 +6,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PEditor : UserControl, PImageHost, PVideoHost
+public partial class PEditor : UserControl, PImageHost, PVideoHost, PChronicleHost
 {
     private PWindow _pEditorHost = null!;
 

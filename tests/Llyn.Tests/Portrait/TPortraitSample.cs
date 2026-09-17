@@ -1,53 +1,127 @@
-﻿using Llyn.Core;
+using Llyn.Core;
 
 namespace Llyn.Tests;
 
 internal static class TPortraitSample
 {
-    internal static LPortrait TPortraitSampleCreate()
+    internal static LPortraitPage TPortraitSampleCreate()
     {
-        LPortraitLabel label = TInterface.TPortraitLabelCreate(
-            "Unknown", "Meaning", "Meanings", "Collocation", "Collocations", "Links here", "Note");
+        LPortraitSection mention = TInterface.TPortraitSectionCreate(
+            "Mentions",
+            0,
+            [],
+            [],
+            [TInterface.TPortraitLinkCreate(2, "log", "English")],
+            [],
+            [],
+            [],
+            LPortraitRole.LPortraitRoleBridge);
 
-        LPortraitCard sense = TInterface.TPortraitCardCreate(
-            1,
+        LPortraitSection quote = TInterface.TPortraitSectionCreate(
+            "Example",
+            0,
+            [
+                TInterface.TPortraitLineCreate("(+with)", "she knelt to kindle the damp logs"),
+                TInterface.TPortraitLineCreate("Korean", "그녀는 무릎을 꿇고 젖은 장작에 불을 붙였다"),
+                TInterface.TPortraitLineCreate("Source", "Field Notes"),
+            ],
+            [],
+            [],
+            [],
+            [],
+            [mention],
+            LPortraitRole.LPortraitRoleQuote);
+
+        LPortraitSection sense = TInterface.TPortraitSectionCreate(
             "set alight",
-            "Meaning",
-            string.Empty,
-            "to set something burning",
-            ["around a hearth <cold>"],
-            ["formal"],
-            [TInterface.TPortraitLinkCreate(1, "불붙이다", "Korean")],
-            [TInterface.TPortraitExampleCreate("(+with)", "she knelt to kindle the damp logs")],
-            ["literal", "fire & light"],
-            [],
-            [TInterface.TPortraitMediaCreate("https://youtu.be/dQw4w9WgXcQ", "0:12-0:30", true)]);
-
-        LPortraitCard phrase = TInterface.TPortraitCardCreate(
             1,
-            string.Empty,
-            "Collocation",
-            "kindle interest",
-            "to cause interest to begin",
+            [TInterface.TPortraitLineCreate(string.Empty, "to set something burning")],
             [],
             [],
             [],
-            [],
-            [],
-            [],
-            []);
+            [TInterface.TPortraitMediaCreate("https://youtu.be/dQw4w9WgXcQ", "0:12-0:30", true)],
+            [
+                TInterface.TPortraitSectionCreate(
+                    "Situations",
+                    0,
+                    [],
+                    ["around a hearth <cold>"],
+                    [],
+                    [],
+                    [],
+                    [],
+                    LPortraitRole.LPortraitRoleScene),
+                TInterface.TPortraitSectionCreate(
+                    "Registers", 0, [], ["formal"], [], [], [], [], LPortraitRole.LPortraitRoleTone),
+                TInterface.TPortraitSectionCreate(
+                    "Translations",
+                    0,
+                    [],
+                    [],
+                    [TInterface.TPortraitLinkCreate(1, "불붙이다", "Korean")],
+                    [],
+                    [],
+                    [],
+                    LPortraitRole.LPortraitRoleBridge),
+                quote,
+                TInterface.TPortraitSectionCreate(
+                    "Tags", 0, [], ["literal", "fire & light"], [], [], [], [], LPortraitRole.LPortraitRoleLabel),
+            ],
+            LPortraitRole.LPortraitRoleCard);
 
-        return TInterface.TPortraitCreate(
+        LPortraitSection phrase = TInterface.TPortraitSectionCreate(
+            "Collocation",
+            1,
+            [TInterface.TPortraitLineCreate(string.Empty, "to cause interest to begin")],
+            [],
+            [],
+            [],
+            [],
+            [
+                TInterface.TPortraitSectionCreate(
+                    string.Empty,
+                    0,
+                    [TInterface.TPortraitLineCreate(string.Empty, "kindle interest")],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    LPortraitRole.LPortraitRolePhrase),
+            ],
+            LPortraitRole.LPortraitRoleKind);
+
+        return TInterface.TPortraitPageCreate(
             "kindle",
             "English",
-            [TInterface.TPortraitReadingCreate(string.Empty, "/ˈkɪnd(ə)l/")],
-            [],
-            ["verb"],
-            [sense],
-            [phrase],
-            [TInterface.TPortraitUsageCreate("불붙이다", "set alight", "Meaning", "Korean")],
-            "Chiefly *literary*.\r\n\r\n- poetic\n- archaic",
             true,
-            label);
+            [TInterface.TPortraitLineCreate(string.Empty, "ˈkɪnd(ə)l", "/", "/")],
+            ["verb"],
+            [
+                TInterface.TPortraitSectionCreate("Meanings", 0, [], [], [], [], [], [sense]),
+                TInterface.TPortraitSectionCreate("Collocations", 0, [], [], [], [], [], [phrase]),
+                TInterface.TPortraitSectionCreate(
+                    "Links here",
+                    0,
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [
+                        TInterface.TPortraitSectionCreate(
+                            string.Empty,
+                            0,
+                            [TInterface.TPortraitLineCreate("Meaning", "set alight")],
+                            [],
+                            [TInterface.TPortraitLinkCreate(3, "불붙이다", "Korean")],
+                            [],
+                            [],
+                            [],
+                            LPortraitRole.LPortraitRoleUsage),
+                    ]),
+                TInterface.TPortraitSectionCreate(
+                    "Note", [], "Chiefly *literary*.\r\n\r\n- poetic\n- archaic", [], []),
+            ]);
     }
 }

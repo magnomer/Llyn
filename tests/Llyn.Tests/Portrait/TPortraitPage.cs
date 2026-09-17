@@ -107,10 +107,11 @@ public sealed class TPortraitPage
                     "Description", [], "Sitting **close** to the fire.", [], []),
             ]);
 
-        string sheet = TInterface.TSheetPageFormat(page, TInterface.TThemeLoad());
+        string sheet = TInterface.TSheetFormat(page, TInterface.TThemeLoad());
 
         Assert.Contains("<h1 class=\"headword\">The fire &lt;kindled&gt;.</h1>", sheet);
-        Assert.Contains("<span>English</span><span>Quoted in one place</span>", sheet);
+        Assert.Contains("<span class=\"tongue\"><i></i><span>English</span></span>", sheet);
+        Assert.Contains("<span>Quoted in one place</span>", sheet);
         Assert.Contains("<h2>Translation</h2>", sheet);
         Assert.Contains("<span class=\"tag\">Korean</span><span>불이 붙었다.</span>", sheet);
         Assert.Contains("<p>Sitting <strong>close</strong> to the fire.</p>", sheet);

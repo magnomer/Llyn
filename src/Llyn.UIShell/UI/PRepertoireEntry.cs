@@ -212,6 +212,7 @@ public partial class PRepertoire
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PRepertoireViewer.IsChecked = !editing;
         PRepertoireScribe.IsChecked = editing;
+        PChronicleUpdate();
     }
 
     private void PRepertoireStoreHandle(object sender, RoutedEventArgs e)

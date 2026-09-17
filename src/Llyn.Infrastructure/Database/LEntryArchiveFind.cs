@@ -245,4 +245,12 @@ public sealed partial class LEntryArchive
 
         return entries;
     }
+
+    public long LEntryCountRead()
+    {
+        using LDatabaseSession session = _lEntryArchiveDatabase.LDatabaseSessionStart();
+        using SqliteCommand command = session.LDatabaseSessionConnection.CreateCommand();
+        command.CommandText = "SELECT COUNT(*) FROM entry;";
+        return (long)command.ExecuteScalar()!;
+    }
 }

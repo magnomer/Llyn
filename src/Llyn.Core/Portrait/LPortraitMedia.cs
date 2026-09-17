@@ -28,6 +28,20 @@ public sealed record LPortraitMedia(
         return shown;
     }
 
+    public static LPortraitMedia LPortraitMediaCreate(byte[] data, string caption)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+
+        string media = data.Length >= 4 && data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E && data[3] == 0x47
+            ? "image/png"
+            : data.Length >= 3 && data[0] == 0x47 && data[1] == 0x49 && data[2] == 0x46
+                ? "image/gif"
+                : "image/jpeg";
+
+        return new LPortraitMedia(
+            "data:" + media + ";base64," + Convert.ToBase64String(data), caption ?? string.Empty, false);
+    }
+
     public static IReadOnlyList<LPortraitMedia> LPortraitMediaCreate(
         IReadOnlyList<LVideoDraft> videos, string mark)
     {

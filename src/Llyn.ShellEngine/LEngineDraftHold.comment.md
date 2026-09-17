@@ -1,4 +1,4 @@
-# LEngineDraftHold.cs
+﻿# LEngineDraftHold.cs
 
 ## `public sealed partial class LEngine`
 
@@ -61,6 +61,9 @@ A dropped draft that kept its rows would leave links no call can reach again.
 `LCourtArchiveSettle` matches on target alone, so a row whose owner is gone answers no settlement.
 The rows pointing at this draft are left, because the caller dropping a chip already took its own row back.
 Abandoning work is `LEngineDraftCancel`, which settles those rows too.
+A draft bulletin carrying id zero follows, because the held set shrank and the status bar counts that set.
+Zero names no draft, so no editor mistakes it for its own.
+The chronicle of the draft is dropped with it, since nothing remains to step back through.
 
 ## `public bool LEngineDraftCheck(long id)`
 
@@ -84,6 +87,11 @@ Language counts against a standing entry, because the tongue it is filed under i
 A new word carries the tongue the shell already chose, so that alone leaves the draft unchanged.
 Cards holding nothing at all are left out too.
 The form always offers one empty card, and an empty card is not work.
+
+## `private bool LEngineDraftCheck(LDraft draft)`
+
+The dirty check over a draft already in hand, so a caller holding one need not read it again.
+The public checks and the chronicle share it.
 
 ## `public void LEngineDraftSweep(long id)`
 
@@ -130,6 +138,7 @@ A leftover carrying the sent content therefore reads as changed forever.
 The sweep passes it over and every launch offers work that was already saved.
 Reading the entry back makes the leftover match, which is what lets the sweep collect it.
 Only after the entry exists is the court settled and each owner draft rewritten.
+Every draft the round finished loses its chronicle, since its file is gone.
 Rewriting means the tentative id sitting in a translation list becomes the real entry id.
 An owner this same walk entered settles its own list through the map and is rewritten all the same.
 An owner whose file has since gone is passed over rather than recreated.
@@ -177,12 +186,14 @@ The editor's own commit updates that entry rather than storing the word twice.
 ## `public void LEngineDraftCancel(long id)`
 
 Discards held work: the court first, the file second.
+The chronicle of the draft is dropped with it.
 It also drops what this draft's lookups and audio searches found, because closing is what frees a trove.
 Links go first because a link outliving its target would point at a record that will never arrive.
 The rows this draft owns are settled by `LEngineCourtRemove`, and the rows pointing at it are settled here.
 Each row pointing at it also has its tentative id struck from the draft that held it.
 That id will never become an entry now.
 A chip left carrying it would be stored as a translation of a record that never existed.
+A draft bulletin carrying id zero follows, as after a delete, so the status bar recounts the held set.
 
 ## `private bool LEngineHoldCheck(long id)`
 

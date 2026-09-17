@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
@@ -17,11 +17,31 @@ public sealed record LPortraitLink(
         {
             foreach (long id in card.LCardDraftTranslation)
             {
-                if (!ids.Contains(id))
+                LPortraitLinkAdd(ids, id);
+            }
+
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
+            {
+                if (sentence.LSentenceDraftExample is not LExampleDraft example)
                 {
-                    ids.Add(id);
+                    continue;
+                }
+
+                foreach (LMentionDraft mention in example.LExampleDraftMention)
+                {
+                    LPortraitLinkAdd(ids, mention.LMentionDraftEntry);
                 }
             }
+
+            LPortraitLinkRead(card.LCardDraftChild, ids);
+        }
+    }
+
+    private static void LPortraitLinkAdd(List<long> ids, long id)
+    {
+        if (id > 0 && !ids.Contains(id))
+        {
+            ids.Add(id);
         }
     }
 }

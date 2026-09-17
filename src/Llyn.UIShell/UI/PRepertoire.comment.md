@@ -22,6 +22,9 @@ The search field and the language filter over the middle column, copied from the
 ## `<StackPanel Grid.Row="0" Grid.Column="1" ...>`
 
 The action row of the panel.
+`PRepertoireBackward` and `PRepertoireForward` walk the chronicle of whichever editor is in front.
+They are lit only while the engine has a step to walk.
+They carry no label, only the arrow and a tooltip, and a divider parts them from new and save.
 `PRepertoireFresh` opens the editor on a Situation nothing references yet.
 This panel is the only place such a Situation can arise.
 Elsewhere one is written from the card that carries it.

@@ -35,6 +35,7 @@ public static class LFolioStyle
         LFolioStyleAppend(styles, "Phrase", "Phrase", 24, true, ink, null, 100);
         LFolioStyleAppend(styles, "Sense", "Sense", 24, false, ink, null, 100);
         LFolioStyleAppend(styles, "Scene", "Scene", 20, false, situation, null, 80);
+        LFolioStyleAppend(styles, "Tone", "Tone", 20, false, muted, null, 80);
         LFolioStyleAppend(styles, "Bridge", "Bridge", 20, true, accent, null, 80);
         LFolioStyleAppend(styles, "Quote", "Quote", 22, false, ink, "Georgia", 100);
         LFolioStyleAppend(styles, "Label", "Label", 18, false, muted, null, 80);

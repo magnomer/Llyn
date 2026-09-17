@@ -158,6 +158,21 @@
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
+                        x:Name="PReferenceBackward"
+                        Click="PReferenceUndoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon undo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Undo}" />
+                    <Button
+                        x:Name="PReferenceForward"
+                        Click="PReferenceRedoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon redo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Redo}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
                         x:Name="PReferenceFresh"
                         Click="PReferenceFreshHandle"
                         Content="{DynamicResource Scribe.New}"

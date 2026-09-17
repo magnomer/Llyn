@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Llyn.Core;
@@ -165,9 +165,98 @@ public sealed class TMarkupExport
             entry.LEntryId,
             portrait,
             LPortraitFormat.LPortraitFormatMarkup,
-            TInterface.TPortraitLabelCreate(
-                "?", "Meaning", "Meanings", "Collocation", "Collocations", "Incoming", "Note"));
+            TInterface.TPortraitLabelRead());
 
         Assert.Equal(File.ReadAllText(direct), File.ReadAllText(portrait));
+    }
+
+    [Fact]
+    public void MarkupExport_Exemplar_CarriesEveryText()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+        LEntryDraft draft = TExemplar.TExemplarCreate(engine);
+        IReadOnlyList<long> ids = TExemplar.TExemplarSave(engine, draft);
+
+        string path = Path.Combine(workspace.TWorkspaceFolder, "exemplar.llx");
+        engine.TEngineMarkupExport(ids, path);
+        string text = File.ReadAllText(path);
+
+        foreach (string typed in TExemplar.TExemplarTextRead(draft))
+        {
+            Assert.Contains(typed, text);
+        }
+    }
+
+    [Fact]
+    public void MarkupExport_Exemplar_SharedWorkspaceWritesSameText()
+    {
+        string shared;
+        using (TWorkspace sender = TWorkspace.TWorkspacePrepare())
+        using (LEngine engine = sender.TWorkspaceEngineStart())
+        {
+            IReadOnlyList<long> ids = TExemplar.TExemplarSave(engine, TExemplar.TExemplarCreate(engine));
+            string path = Path.Combine(sender.TWorkspaceFolder, "exemplar.llx");
+            engine.TEngineMarkupExport(ids, path);
+            shared = File.ReadAllText(path);
+        }
+
+        using TWorkspace receiver = TWorkspace.TWorkspacePrepare();
+        using LEngine received = receiver.TWorkspaceEngineStart();
+        LMarkupCargo cargo = received.TEngineMarkupRead(TInterface.TMarkupSave(receiver, shared));
+        Assert.Empty(cargo.LMarkupCargoOmission);
+
+        List<LMarkupIntake> intakes = [];
+        for (int index = 0; index < cargo.LMarkupCargoEntry.Count; index++)
+        {
+            intakes.Add(TInterface.TMarkupIntakeCreate(index, LMarkupMode.LMarkupModeNew));
+        }
+
+        LMarkupOutcome outcome = received.TEngineMarkupImport(cargo, intakes);
+        Assert.Empty(outcome.LMarkupOutcomeOmission);
+
+        List<long> imported = [];
+        foreach (LEntry entry in outcome.LMarkupOutcomeEntry)
+        {
+            imported.Add(entry.LEntryId);
+        }
+
+        string again = Path.Combine(receiver.TWorkspaceFolder, "again.llx");
+        received.TEngineMarkupExport(imported, again);
+
+        Assert.Equal(shared, File.ReadAllText(again));
+    }
+
+    [Fact]
+    public void MarkupExport_Exemplar_SharedWorkspaceLoadsSameDraft()
+    {
+        string shared;
+        string sent;
+        using (TWorkspace sender = TWorkspace.TWorkspacePrepare())
+        using (LEngine engine = sender.TWorkspaceEngineStart())
+        {
+            IReadOnlyList<long> ids = TExemplar.TExemplarSave(engine, TExemplar.TExemplarCreate(engine));
+            sent = TExemplar.TExemplarShapeRead(engine.TEngineEntryLoad(ids[0])!);
+            string path = Path.Combine(sender.TWorkspaceFolder, "exemplar.llx");
+            engine.TEngineMarkupExport(ids, path);
+            shared = File.ReadAllText(path);
+        }
+
+        using TWorkspace receiver = TWorkspace.TWorkspacePrepare();
+        using LEngine received = receiver.TWorkspaceEngineStart();
+        LMarkupCargo cargo = received.TEngineMarkupRead(TInterface.TMarkupSave(receiver, shared));
+
+        List<LMarkupIntake> intakes = [];
+        for (int index = 0; index < cargo.LMarkupCargoEntry.Count; index++)
+        {
+            intakes.Add(TInterface.TMarkupIntakeCreate(index, LMarkupMode.LMarkupModeNew));
+        }
+
+        LMarkupOutcome outcome = received.TEngineMarkupImport(cargo, intakes);
+        Assert.Empty(outcome.LMarkupOutcomeOmission);
+
+        string arrived = TExemplar.TExemplarShapeRead(
+            received.TEngineEntryLoad(outcome.LMarkupOutcomeEntry[0].LEntryId)!);
+        Assert.Equal(sent, arrived);
     }
 }

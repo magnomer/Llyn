@@ -324,6 +324,11 @@ public partial class PRepertoire
         return _pRepertoireHost.PWindowDiscardConfirm(PRepertoireChangeCheck(), PRepertoireDraftFinish);
     }
 
+    internal long PRepertoireVoyageRead()
+    {
+        return _pVignetteSituation ?? 0;
+    }
+
     private void PRepertoireClear()
     {
         PScenarioDraftCancel();

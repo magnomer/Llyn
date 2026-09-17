@@ -7,13 +7,6 @@ namespace Llyn.Infrastructure;
 
 public static class LSheetPlate
 {
-    public static void LSheetPlateAppend(StringBuilder page, LPortraitCard card)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-
-        LSheetPlateAppend(page, card.LPortraitCardImage, card.LPortraitCardVideo);
-    }
-
     public static void LSheetPlateAppend(
         StringBuilder page, IReadOnlyList<LPortraitMedia> images, IReadOnlyList<LPortraitMedia> videos)
     {

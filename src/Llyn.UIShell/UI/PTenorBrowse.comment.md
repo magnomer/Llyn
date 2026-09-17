@@ -76,3 +76,8 @@ The window calls it once on attach, so the panel never reads the stored state fo
 Puts the panel back on the side it was left standing on.
 A session that ended on the editor with nothing selected comes back on the reading side instead.
 Otherwise the launch would open a blank draft nobody asked for.
+
+## `internal long PTenorVoyageRead()`
+
+The Register the panel shows, as the station the window records before a jump away.
+Zero says no Register is shown, so there is no place to come back to.

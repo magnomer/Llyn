@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Llyn.Core;
@@ -8,9 +8,9 @@ namespace Llyn.Infrastructure;
 public static class LFolioBody
 {
     public static string LFolioBodyFormat(
-        LPortrait portrait, LTheme theme, List<LPortraitAsset> plates)
+        LPortraitPage page, LTheme theme, List<LPortraitAsset> plates)
     {
-        ArgumentNullException.ThrowIfNull(portrait);
+        ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(theme);
         ArgumentNullException.ThrowIfNull(plates);
 
@@ -25,8 +25,8 @@ public static class LFolioBody
             .Append("xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">")
             .Append("<w:body>");
 
-        string crest = portrait.LPortraitHeadword;
-        if (portrait.LPortraitFavorite)
+        string crest = page.LPortraitPageTitle;
+        if (page.LPortraitPageFavorite)
         {
             crest += "  ★";
         }
@@ -34,24 +34,20 @@ public static class LFolioBody
         LFolioLine.LFolioLineAppend(body, "Headword", crest);
 
         List<string> marks = new List<string>();
-        if (portrait.LPortraitLanguage.Length > 0)
+        if (page.LPortraitPageLanguage.Length > 0)
         {
-            marks.Add(portrait.LPortraitLanguage);
+            marks.Add(page.LPortraitPageLanguage);
         }
 
-        foreach (LPortraitReading reading in portrait.LPortraitPronunciation)
+        foreach (LPortraitLine line in page.LPortraitPageLine)
         {
-            marks.Add(LFolioReadingFormat(reading, "[ ", " ]"));
+            string text = line.LPortraitLineOpener + line.LPortraitLineText + line.LPortraitLineCloser;
+            marks.Add(line.LPortraitLineLabel.Length == 0 ? text : line.LPortraitLineLabel + " " + text);
         }
 
-        foreach (LPortraitReading reading in portrait.LPortraitTranscription)
+        foreach (string chip in page.LPortraitPageChip)
         {
-            marks.Add(LFolioReadingFormat(reading, string.Empty, string.Empty));
-        }
-
-        if (portrait.LPortraitSpeech.Count > 0)
-        {
-            marks.Add(string.Join(", ", portrait.LPortraitSpeech));
+            marks.Add(chip);
         }
 
         if (marks.Count > 0)
@@ -59,34 +55,9 @@ public static class LFolioBody
             LFolioLine.LFolioLineAppend(body, "Sound", string.Join("   ·   ", marks));
         }
 
-        LFolioBodyAppend(
-            body, portrait.LPortraitLabel.LPortraitLabelMeanings,
-            portrait.LPortraitMeaning, plates, theme);
-        LFolioBodyAppend(
-            body, portrait.LPortraitLabel.LPortraitLabelCollocations,
-            portrait.LPortraitCollocation, plates, theme);
-
-        if (portrait.LPortraitIncoming.Count > 0)
+        foreach (LPortraitSection section in page.LPortraitPageSection)
         {
-            LFolioLine.LFolioLineAppend(
-                body, "Band", portrait.LPortraitLabel.LPortraitLabelIncoming);
-
-            foreach (LPortraitUsage usage in portrait.LPortraitIncoming)
-            {
-                LFolioLine.LFolioLineAppend(body, "Row", "→  " + usage.LPortraitUsageHeadword, string.Empty);
-                LFolioLine.LFolioLineAppend(
-                    body,
-                    "RowDetail",
-                    "     " + usage.LPortraitUsageTitle
-                        + "   ·   " + usage.LPortraitUsageOwner
-                        + "   ·   " + usage.LPortraitUsageLanguage);
-            }
-        }
-
-        if (portrait.LPortraitNote.Length > 0)
-        {
-            LFolioLine.LFolioLineAppend(body, "Band", portrait.LPortraitLabel.LPortraitLabelNote);
-            LFolioNote.LFolioNoteAppend(body, portrait.LPortraitNote);
+            LFolioSection.LFolioSectionAppend(body, section, plates, theme);
         }
 
         body.Append("<w:sectPr><w:pgSz w:w=\"11906\" w:h=\"16838\"/>")
@@ -95,31 +66,5 @@ public static class LFolioBody
             .Append("</w:body></w:document>");
 
         return body.ToString();
-    }
-
-    private static string LFolioReadingFormat(LPortraitReading reading, string open, string close)
-    {
-        string text = open + reading.LPortraitReadingText + close;
-        return reading.LPortraitReadingLabel.Length == 0 ? text : reading.LPortraitReadingLabel + " " + text;
-    }
-
-    private static void LFolioBodyAppend(
-        StringBuilder body,
-        string heading,
-        IReadOnlyList<LPortraitCard> cards,
-        List<LPortraitAsset> plates,
-        LTheme theme)
-    {
-        if (cards.Count == 0)
-        {
-            return;
-        }
-
-        LFolioLine.LFolioLineAppend(body, "Band", heading);
-
-        foreach (LPortraitCard card in cards)
-        {
-            LFolioCard.LFolioCardAppend(body, card, plates, theme);
-        }
     }
 }

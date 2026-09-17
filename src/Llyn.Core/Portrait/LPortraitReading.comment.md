@@ -1,27 +1,47 @@
 # LPortraitReading.cs
 
-## `public sealed record LPortraitReading(`
+## `public static class LPortraitReading`
 
-One reading line of the portrait: a label and the text shown beside it.
-A pronunciation shows its variety as the label and its IPA as the text.
+Turns the reading rows of a draft into the labelled lines shown under the title.
+A pronunciation shows its variety as the label and one reading as the text, bare.
+The display's brackets travel as the line's open and close marks, so a writer draws them in its own style.
+The reading is the respelling when the language is set to respell and the row has one, else the IPA.
+That is the rule the display panel follows, so a page never prints one sound twice.
+A phonemic language takes slashes, and any other takes square brackets, as the panel does.
 A transcription shows its scheme as the label and its spelled reading as the text.
+A reflex follows the same respelling rule under its own language, as the reflex rows of the panel do.
 The label is empty when the row needs none, which a single unlabeled pronunciation never does.
 
-**Parameters**
+## `public static IReadOnlyList<LPortraitLine> LPortraitReadingCreate(IReadOnlyList<LPronunciationDraft> pronunciations, bool respelled, bool phonemic)`
 
-- `LPortraitReadingLabel` - the variety or the scheme, empty when there is none.
-- `LPortraitReadingText` - the IPA or the spelled reading, never empty.
+The pronunciations of a draft as lines, in draft order, skipping a row whose reading is blank.
+`respelled` says whether the respelling stands in for the IPA, `phonemic` which brackets close it.
 
-## `public static IReadOnlyList<LPortraitReading> LPortraitReadingCreate(IReadOnlyList<LPronunciationDraft> pronunciations)`
+## `public static IReadOnlyList<LPortraitLine> LPortraitReadingCreate(IReadOnlyList<LTranscriptionDraft> transcriptions)`
 
-The pronunciations of a draft as reading lines, in draft order, skipping a row whose IPA is blank.
+The transcriptions of a draft as lines, in draft order, skipping a row whose text is blank.
 
-## `public static IReadOnlyList<LPortraitReading> LPortraitReadingCreate(IReadOnlyList<LTranscriptionDraft> transcriptions)`
+## `public static IReadOnlyList<LPortraitLine> LPortraitReadingCreate(IReadOnlyList<LReflexDraft> reflexes, Func<string, bool> respelled, Func<string, bool> phonemic, IReadOnlyList<LFanqieRow> fanqie)`
 
-The transcriptions of a draft as reading lines, in draft order, skipping a row whose text is blank.
+The reflexes of a draft as lines, in draft order, skipping a row whose reading is blank.
+Each reflex belongs to its own language, so the two questions are asked per language.
+A phonemic reflex takes slashes around the reading alone and any other stands bare, as the reflex rows do.
+The label is the language, the kind, the region and the main mark, so a page reads `Japanese Kan-on`.
+The note, the remark and the anchored rime rows follow the reading, as the panel's reflex row prints them.
 
-## `public static IReadOnlyList<LPortraitReading> LPortraitReadingCreate(IReadOnlyList<LReflexDraft> reflexes)`
+## `public static string LPortraitAnchorRead(IReadOnlyList<LFanqieRow> fanqie, IReadOnlyList<long> anchors)`
 
-The reflexes of a draft as reading lines, in draft order, skipping a row whose text is blank.
-The label is the language followed by the kind, so the printed page reads `Japanese Kan-on`.
-The note follows the text, so a Mandarin line reads its IPA and then its pinyin.
+The rime rows a reflex is tied to, each as its slashed reading or its book, joined by a dot.
+Empty when the reflex anchors nothing.
+
+## `private static void LPortraitReadingAdd(List<string> parts, string text)`
+
+Adds a part, skipping an empty one.
+
+## `private static string LPortraitReadingRead(string phonetic, string respelling, bool respelled)`
+
+The one reading a row shows, trimmed.
+
+## `private static (string, string) LPortraitMarkRead(bool phonemic, bool bracketed)`
+
+The marks around a reading: slashes when phonemic, square brackets when a bracketed row, else none.

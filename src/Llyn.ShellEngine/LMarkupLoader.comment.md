@@ -18,6 +18,7 @@ Null means no entry has that id.
 Draft ids and positions are dropped, because list order carries the positions.
 Grasp, frequency, favorite and timestamps are never read.
 Forms and syllables pass whole, since they hold no id worth hiding.
+A reflex also drops its anatomy and anchors, since the receiving engine derives the one and owns the other.
 
 ## `private LMarkupInflection LMarkupInflectionCreate(LInflection inflection)`
 

@@ -212,6 +212,7 @@ public partial class PCorpus
         PDisplay.Visibility = editing ? Visibility.Collapsed : Visibility.Visible;
         PCorpusViewer.IsChecked = !editing;
         PCorpusScribe.IsChecked = editing;
+        PChronicleUpdate();
     }
 
     private void PQuotationEntryUpdate(long id)

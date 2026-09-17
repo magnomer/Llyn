@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Text;
 using Llyn.Core;
 
@@ -7,33 +6,30 @@ namespace Llyn.Infrastructure;
 
 public static class LSheet
 {
-    public static string LSheetFormat(LPortrait portrait, LTheme theme)
+    public static string LSheetFormat(LPortraitPage page, LTheme theme)
     {
-        ArgumentNullException.ThrowIfNull(portrait);
+        ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(theme);
 
-        StringBuilder page = new StringBuilder();
+        StringBuilder sheet = new StringBuilder();
 
-        page.Append("<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n")
+        sheet.Append("<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n")
             .Append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n")
             .Append("<title>")
-            .Append(LSheetNormalize(portrait.LPortraitHeadword))
+            .Append(LSheetNormalize(page.LPortraitPageTitle))
             .Append("</title>\n<style>")
             .Append(LSheetStyle.LSheetStyleRead(theme))
             .Append("</style>\n</head>\n<body>\n<main class=\"portrait\">\n");
 
-        LSheetCrestAppend(page, portrait);
+        LSheetCrestAppend(sheet, page);
 
-        LSheetBandAppend(
-            page, portrait.LPortraitLabel.LPortraitLabelMeanings, portrait.LPortraitMeaning);
-        LSheetBandAppend(
-            page, portrait.LPortraitLabel.LPortraitLabelCollocations, portrait.LPortraitCollocation);
+        foreach (LPortraitSection section in page.LPortraitPageSection)
+        {
+            LSheetSection.LSheetSectionAppend(sheet, section);
+        }
 
-        LSheetIncomingAppend(page, portrait);
-        LSheetNoteAppend(page, portrait);
-
-        page.Append("</main>\n</body>\n</html>\n");
-        return page.ToString();
+        sheet.Append("</main>\n</body>\n</html>\n");
+        return sheet.ToString();
     }
 
     public static string LSheetNormalize(string? text)
@@ -73,130 +69,60 @@ public static class LSheet
         return safe.ToString();
     }
 
-    private static void LSheetCrestAppend(StringBuilder page, LPortrait portrait)
+    private static void LSheetCrestAppend(StringBuilder sheet, LPortraitPage page)
     {
-        page.Append("<div class=\"crest\">\n<h1 class=\"headword\">")
-            .Append(LSheetNormalize(portrait.LPortraitHeadword))
+        sheet.Append("<div class=\"crest\">\n<h1 class=\"headword\">")
+            .Append(LSheetNormalize(page.LPortraitPageTitle))
             .Append("</h1>\n");
 
-        if (portrait.LPortraitLanguage.Length > 0)
+        if (page.LPortraitPageLanguage.Length > 0)
         {
-            page.Append("<span class=\"tongue\"><i></i><span>")
-                .Append(LSheetNormalize(portrait.LPortraitLanguage))
+            sheet.Append("<span class=\"tongue\"><i></i><span>")
+                .Append(LSheetNormalize(page.LPortraitPageLanguage))
                 .Append("</span></span>\n");
         }
 
-        if (portrait.LPortraitFavorite)
+        if (page.LPortraitPageFavorite)
         {
-            page.Append("<span class=\"star\">★</span>\n");
+            sheet.Append("<span class=\"star\">★</span>\n");
         }
 
-        page.Append("</div>\n");
+        sheet.Append("</div>\n");
 
-        foreach (LPortraitReading reading in portrait.LPortraitPronunciation)
+        foreach (LPortraitLine line in page.LPortraitPageLine)
         {
-            page.Append("<div class=\"sound\">");
-            LSheetReadingAppend(page, reading);
-            page.Append("<em>[</em><b>")
-                .Append(LSheetNormalize(reading.LPortraitReadingText))
-                .Append("</b><em>]</em></div>\n");
-        }
+            sheet.Append("<div class=\"sound\">");
 
-        foreach (LPortraitReading reading in portrait.LPortraitTranscription)
-        {
-            page.Append("<div class=\"sound\">");
-            LSheetReadingAppend(page, reading);
-            page.Append("<b>").Append(LSheetNormalize(reading.LPortraitReadingText)).Append("</b></div>\n");
-        }
-
-        if (portrait.LPortraitSpeech.Count == 0)
-        {
-            return;
-        }
-
-        page.Append("<div class=\"speech\">");
-        foreach (string speech in portrait.LPortraitSpeech)
-        {
-            page.Append("<span>").Append(LSheetNormalize(speech)).Append("</span>");
-        }
-
-        page.Append("</div>\n");
-    }
-
-    private static void LSheetReadingAppend(StringBuilder page, LPortraitReading reading)
-    {
-        if (reading.LPortraitReadingLabel.Length > 0)
-        {
-            page.Append("<span>").Append(LSheetNormalize(reading.LPortraitReadingLabel)).Append("</span> ");
-        }
-    }
-
-    private static void LSheetBandAppend(
-        StringBuilder page, string heading, IReadOnlyList<LPortraitCard> cards)
-    {
-        if (cards.Count == 0)
-        {
-            return;
-        }
-
-        page.Append("<section class=\"band\">\n<h2>")
-            .Append(LSheetNormalize(heading))
-            .Append("</h2>\n");
-
-        foreach (LPortraitCard card in cards)
-        {
-            LSheetCard.LSheetCardAppend(page, card);
-        }
-
-        page.Append("</section>\n");
-    }
-
-    private static void LSheetIncomingAppend(StringBuilder page, LPortrait portrait)
-    {
-        if (portrait.LPortraitIncoming.Count == 0)
-        {
-            return;
-        }
-
-        page.Append("<section class=\"band\">\n<h2>")
-            .Append(LSheetNormalize(portrait.LPortraitLabel.LPortraitLabelIncoming))
-            .Append("</h2>\n<div class=\"rows\">\n");
-
-        foreach (LPortraitUsage usage in portrait.LPortraitIncoming)
-        {
-            page.Append("<div class=\"row\"><span class=\"mark\">→</span>")
-                .Append("<span class=\"body\"><b>")
-                .Append(LSheetNormalize(usage.LPortraitUsageHeadword))
-                .Append("</b>");
-
-            if (usage.LPortraitUsageTitle.Length > 0)
+            if (line.LPortraitLineLabel.Length > 0)
             {
-                page.Append("<span>")
-                    .Append(LSheetNormalize(usage.LPortraitUsageTitle))
-                    .Append("</span>");
+                sheet.Append("<span>").Append(LSheetNormalize(line.LPortraitLineLabel)).Append("</span> ");
             }
 
-            page.Append("</span><span class=\"pill\">")
-                .Append(LSheetNormalize(usage.LPortraitUsageOwner))
-                .Append("</span><span class=\"speak\">")
-                .Append(LSheetNormalize(usage.LPortraitUsageLanguage))
-                .Append("</span></div>\n");
+            LSheetMarkAppend(sheet, line.LPortraitLineOpener);
+            sheet.Append("<b>").Append(LSheetNormalize(line.LPortraitLineText)).Append("</b>");
+            LSheetMarkAppend(sheet, line.LPortraitLineCloser);
+            sheet.Append("</div>\n");
         }
 
-        page.Append("</div>\n</section>\n");
-    }
-
-    private static void LSheetNoteAppend(StringBuilder page, LPortrait portrait)
-    {
-        if (portrait.LPortraitNote.Length == 0)
+        if (page.LPortraitPageChip.Count == 0)
         {
             return;
         }
 
-        page.Append("<section class=\"band\">\n<h2>")
-            .Append(LSheetNormalize(portrait.LPortraitLabel.LPortraitLabelNote))
-            .Append("</h2>\n<div class=\"note\">\n");
-        LSheetNote.LSheetNoteAppend(page, portrait.LPortraitNote);
-        page.Append("</div>\n</section>\n");
+        sheet.Append("<div class=\"speech\">");
+        foreach (string chip in page.LPortraitPageChip)
+        {
+            sheet.Append("<span>").Append(LSheetNormalize(chip)).Append("</span>");
+        }
+
+        sheet.Append("</div>\n");
+    }
+
+    private static void LSheetMarkAppend(StringBuilder sheet, string mark)
+    {
+        if (mark.Length > 0)
+        {
+            sheet.Append("<em>").Append(LSheetNormalize(mark)).Append("</em>");
+        }
     }
 }

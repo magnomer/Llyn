@@ -103,6 +103,7 @@
                             <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Reverse" Content="{DynamicResource Series.Reverse}" />
                             <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Language" Content="{DynamicResource Series.Language}" />
                             <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Marked" Content="{DynamicResource Series.Marked}" />
+                            <RadioButton GroupName="PSeriesChoice" Click="PSeriesHandle" Style="{StaticResource Theme.Choice.Order}" Tag="Grasp" Content="{DynamicResource Series.Grasp}" />
                         </StackPanel>
                     </Border>
                 </Popup>

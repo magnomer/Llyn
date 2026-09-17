@@ -9,4 +9,4 @@ The page's whole appearance, built from the display's theme.
 Colours become custom properties so one declaration feeds every rule.
 Sizes, margins and radii are the display's own values in device-independent pixels.
 Backgrounds are forced to print, because a card without its ground is not the card seen.
-Cards and rows are kept off page breaks, which the panel never has to think about.
+Cards are kept off page breaks, which the panel never has to think about.

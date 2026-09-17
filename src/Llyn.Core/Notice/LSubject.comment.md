@@ -45,6 +45,8 @@ The workspace folder changed, so every stored record a subscriber holds is stale
 
 A held Draft changed because a Request was applied to it.
 The id is the draft's, and the surface holding that draft re-reads it and renders what differs.
+An id of zero means a held draft was cancelled or deleted, so the set of held drafts shrank.
+No surface holds draft zero, so only a surface counting the whole set acts on it.
 
 ## `LSubjectFrequency,`
 

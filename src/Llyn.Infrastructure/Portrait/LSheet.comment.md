@@ -1,41 +1,30 @@
-﻿# LSheet.cs
+# LSheet.cs
 
 ## `public static class LSheet`
 
-Renders a portrait as one standalone HTML page.
+Renders a page likeness as one standalone HTML page.
+An entry, an example, a source and a situation all print in this one dress.
 It is the fidelity anchor of the whole export.
 The PDF is this page printed, so anything fixed here is fixed in both.
 
-## `public static string LSheetFormat(LPortrait portrait, LTheme theme)`
+## `public static string LSheetFormat(LPortraitPage page, LTheme theme)`
 
 The style sheet is inlined, and pictures are embedded, so the file stands alone once moved.
-The section order is the display panel's own order.
+The title and crest come first, then the sections in the order the likeness carries them.
+Nothing is decided here: an absent section was already left out by whoever built the likeness.
 
 ## `public static string LSheetNormalize(string? text)`
 
 Every value written into the page passes through here.
 Entry text is written by the reader and may hold anything, including markup.
 
-## `private static void LSheetCrestAppend(StringBuilder page, LPortrait portrait)`
+## `private static void LSheetCrestAppend(StringBuilder sheet, LPortraitPage page)`
 
-The headword, language, star, pronunciations, transcriptions and speech chips form the panel's masthead.
-They are written together because the display draws them as one block above the sections.
-Each pronunciation and transcription takes a sound line of its own, in stored order.
-An empty pronunciation list, transcription list or speech list draws nothing, as on screen.
+The title, language chip and star form the masthead, as one block above the sections.
+Each reading line follows as a sound row, its label muted before its text.
+The line's open and close marks are drawn around the text in their own muted style.
+The further chips share one row beneath, and no row is written when there are none.
 
-## `private static void LSheetReadingAppend(StringBuilder page, LPortraitReading reading)`
+## `private static void LSheetMarkAppend(StringBuilder sheet, string mark)`
 
-The label of a reading, the variety or the scheme, written muted before its text.
-A reading with no label writes nothing here.
-
-## `private static void LSheetBandAppend(StringBuilder page, string heading, IReadOnlyList<LPortraitCard> cards)`
-
-An empty section is not drawn at all, matching the panel's collapsed sections.
-
-## `private static void LSheetIncomingAppend(StringBuilder page, LPortrait portrait)`
-
-The rows carry no link, because an exported page cannot open another entry.
-
-## `private static void LSheetNoteAppend(StringBuilder page, LPortrait portrait)`
-
-The note is Markdown, so `LSheetNote` renders its blocks inside the note box.
+One bracket mark in its muted style, or nothing when the line carries none.

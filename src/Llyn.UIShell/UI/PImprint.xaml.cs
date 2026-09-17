@@ -5,7 +5,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PImprint : UserControl
+public partial class PImprint : UserControl, PChronicleHost
 {
     private PWindow _pImprintHost = null!;
 

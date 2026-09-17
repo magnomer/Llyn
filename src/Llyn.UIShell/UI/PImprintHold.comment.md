@@ -45,6 +45,7 @@ Hands the engine's answer to the panel, which settles the rail's save on it.
 It reads the same answer the closing warning reads, so the two cannot disagree.
 The panel calls it when it brings the area back in front.
 So the save is settled for the area shown.
+The undo and redo pair is settled last, so it never says more than the draft can do.
 
 ## `private LDraft? PImprintDraftStart(long? reference)`
 
@@ -89,6 +90,36 @@ The stored Source the held work was opened on, or null for one nothing has store
 The delete control, the citation figure and every credit call read identity through this.
 Credits are attached to a stored row, which is why they are offered only once this answers.
 
+## `public void PChronicleUndo()`
+
+Steps the source form's draft one snapshot back through the engine's chronicle.
+The draft bulletin the engine raises brings the older fields back through the ordinary restore.
+
+## `public void PChronicleRedo()`
+
+Steps the source form's draft one snapshot forward again.
+The inverse of the undo above, through the same bulletin.
+
+## `public void PChronicleUpdate()`
+
+Raises the chronicle notice, so the panel settles its rail from the draft held here.
+The area owns no buttons of its own and never writes the panel's.
+Only the panel knows which editor is in front.
+
+## `internal (bool PImprintPast, bool PImprintFuture) PImprintChronicleRead()`
+
+Whether the held draft has a step behind it and a step ahead of it.
+No draft answers false to both.
+
+## `private void PImprintChronicleRun(Func<long, LDraft?> step)`
+
+The one path both steps share.
+No draft means nothing to walk, so it returns without asking.
+The pending debounced request is flushed first, so the snapshot stepped away from is the one on screen.
+The step runs inside `PChronicle.PChronicleRun`, so the caret stays at the end of the focused box.
+A step the engine refuses is shown as a hold failure, since the draft itself could not be reached.
+The buttons are settled afterwards, since a step that found nothing raises no bulletin to settle them.
+
 ## `private void PImprintHoldSuspend(Exception exception)`
 
 Stops the editor when the push breaks, and says so once.
@@ -99,6 +130,10 @@ Editing on would collect keystrokes nothing is holding, which is the loss the dr
 Gives the editor back once a draft is held again.
 
 ## Inline notes
+
+### `internal Action? PImprintChronicleNotice;`
+
+Raised after every settle of the area's chronicle state, so the panel settles its rail in turn.
 
 ### `private const int PImprintChangeDelay = 250;`
 

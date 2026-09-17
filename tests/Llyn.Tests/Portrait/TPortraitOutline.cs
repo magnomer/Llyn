@@ -27,7 +27,10 @@ public sealed class TPortraitOutline
     {
         string page = TInterface.TOutlineFormat(TPortraitSample.TPortraitSampleCreate());
 
-        Assert.Contains(@"around a hearth \<cold\>", page);
+        Assert.Contains("*around a hearth \\<cold\\>*\n\n`formal`\n\n→ 불붙이다 (Korean)", page);
+        Assert.Contains("  - → log (English)", page);
+        Assert.Contains("### 1 · Collocation\n\n**kindle interest**\n\nto cause interest to begin", page);
+        Assert.Contains("- **(+with)** she knelt to kindle the damp logs\n  - **Korean** ", page);
         Assert.DoesNotContain("\n# Chiefly", page);
     }
 

@@ -24,6 +24,11 @@ public static class LCatalogFavorite
                     StringComparer.CurrentCultureIgnoreCase)],
             LCatalogOrder.LCatalogOrderMarked => [.. favorites
                 .OrderByDescending(favorite => favorite.LFavoriteMarkedUtc, StringComparer.Ordinal)],
+            LCatalogOrder.LCatalogOrderGrasp => [.. favorites
+                .OrderByDescending(favorite => favorite.LFavoriteEntry.LEntryGrasp)
+                .ThenBy(
+                    favorite => favorite.LFavoriteEntry.LEntryHeadword,
+                    StringComparer.CurrentCultureIgnoreCase)],
             _ => [.. favorites
                 .OrderBy(
                     favorite => favorite.LFavoriteEntry.LEntryHeadword,

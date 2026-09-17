@@ -25,6 +25,9 @@ public partial class PWindow : Window
         Resources.MergedDictionaries.Add(new PMentionMenuTemplate(this));
         PMentionList.ItemsSource = _pMentionItem;
         PreviewKeyDown += PMentionKeyHandle;
+        PreviewKeyDown += PChronicleKeyHandle;
+        PreviewKeyDown += PVoyageKeyHandle;
+        PreviewMouseDown += PVoyageMouseHandle;
         Deactivated += PMentionLeaveHandle;
 
         PWindowStateRestore();
@@ -64,6 +67,7 @@ public partial class PWindow : Window
         PFavorite.PFavoriteAttach(this, engine);
         PDuplex.PDuplexAttach(this, engine);
         PSettings.PSettingsAttach(this, engine);
+        PEstablishment.PEstablishmentAttach(this, engine);
 
         PWindowLayoutAttach();
 
@@ -110,6 +114,7 @@ public partial class PWindow : Window
         PGuild.PGuildClose();
         PFavorite.PFavoriteClose();
         PDuplex.PDuplexClose();
+        PEstablishment.PEstablishmentClose();
         _lEngine.LEngineLeftoverSweep();
         _lEngine.Dispose();
     }

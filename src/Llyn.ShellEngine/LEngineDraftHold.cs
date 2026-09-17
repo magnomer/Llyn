@@ -63,10 +63,13 @@ public sealed partial class LEngine
             LEngineDraftValidate(id);
             LEngineCourtRemove(id);
             _lEngineDraftHeld.Remove(id);
+            LEngineChronicleClear(id);
             _lEngineTrove.LTroveClear(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
             LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
     }
 
     public bool LEngineDraftCheck(long id)
@@ -93,28 +96,32 @@ public sealed partial class LEngine
             }
 
             refusal = LEngineRefusalRead(draft);
-
-            if (draft.LDraftExample is LExample sentence)
-            {
-                return LEngineExampleCheck(draft, sentence);
-            }
-
-            if (draft.LDraftSituation is LSituation situation)
-            {
-                return LEngineSituationCheck(draft, situation);
-            }
-
-            if (draft.LDraftReference is LReference reference)
-            {
-                return LEngineReferenceCheck(draft, reference);
-            }
-
-            LEntryDraft origin = draft.LDraftEntryId <= 0
-                ? LEngineDraftBlank with { LEntryDraftLanguage = draft.LDraftContent.LEntryDraftLanguage }
-                : LEngineEntryLoad(draft.LDraftEntryId) ?? LEngineDraftBlank;
-
-            return !LEngineDraftMatch(origin, draft.LDraftContent);
+            return LEngineDraftCheck(draft);
         }
+    }
+
+    private bool LEngineDraftCheck(LDraft draft)
+    {
+        if (draft.LDraftExample is LExample sentence)
+        {
+            return LEngineExampleCheck(draft, sentence);
+        }
+
+        if (draft.LDraftSituation is LSituation situation)
+        {
+            return LEngineSituationCheck(draft, situation);
+        }
+
+        if (draft.LDraftReference is LReference reference)
+        {
+            return LEngineReferenceCheck(draft, reference);
+        }
+
+        LEntryDraft origin = draft.LDraftEntryId <= 0
+            ? LEngineDraftBlank with { LEntryDraftLanguage = draft.LDraftContent.LEntryDraftLanguage }
+            : LEngineEntryLoad(draft.LDraftEntryId) ?? LEngineDraftBlank;
+
+        return !LEngineDraftMatch(origin, draft.LDraftContent);
     }
 
     public void LEngineDraftSweep(long id)
@@ -162,6 +169,7 @@ public sealed partial class LEngine
             foreach (long done in finished)
             {
                 _lEngineDraftHeld.Remove(done);
+                LEngineChronicleClear(done);
                 LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, done);
                 LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, done);
             }
@@ -277,10 +285,13 @@ public sealed partial class LEngine
             }
 
             _lEngineDraftHeld.Remove(id);
+            LEngineChronicleClear(id);
             _lEngineTrove.LTroveClear(id);
             LClaimArchive.LClaimArchiveDelete(_lEngineWorkspace, id);
             LDraftArchive.LDraftArchiveDelete(_lEngineWorkspace, id);
         }
+
+        LEngineBulletinRaise(LSubject.LSubjectDraft, 0);
     }
 
     private bool LEngineHoldCheck(long id)

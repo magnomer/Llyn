@@ -15,6 +15,20 @@ Passing the words in keeps export out of the interface layer without moving tran
 - `LPortraitLabelCollocations` - the plural word, used as a section heading.
 - `LPortraitLabelIncoming` - the heading over the entries that link here.
 - `LPortraitLabelNote` - the heading over the entry note.
+- `LPortraitLabelForm` - the heading over the written forms.
+- `LPortraitLabelParadigm` - the heading over the inflection slots.
+- `LPortraitLabelFrequency` - the heading over the frequency rows.
+- `LPortraitLabelGlyph` - the heading over the character chips.
+- `LPortraitLabelScript` - the heading over the character form plates.
+- `LPortraitLabelFanqie` - the heading over the rime book rows.
+- `LPortraitLabelExample` - the heading of one example row under a card.
+- `LPortraitLabelGloss` - the label of a gloss line whose language is unnamed.
+- `LPortraitLabelSource` - the label of the source line under an example.
+- `LPortraitLabelMention` - the heading over the words an example mentions.
+- `LPortraitLabelSituation` - the heading over situation chips.
+- `LPortraitLabelRegister` - the heading over register chips.
+- `LPortraitLabelTranslation` - the heading over translation links.
+- `LPortraitLabelTag` - the heading over tag chips.
 
 ## `public static LPortraitLabel LPortraitLabelDefault`
 

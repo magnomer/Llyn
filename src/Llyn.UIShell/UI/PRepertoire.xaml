@@ -144,6 +144,21 @@
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
+                        x:Name="PRepertoireBackward"
+                        Click="PRepertoireUndoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon undo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Undo}" />
+                    <Button
+                        x:Name="PRepertoireForward"
+                        Click="PRepertoireRedoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon redo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Redo}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
                         x:Name="PRepertoireFresh"
                         Click="PRepertoireFreshHandle"
                         Content="{DynamicResource Scribe.New}"

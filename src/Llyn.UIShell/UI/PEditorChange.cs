@@ -192,5 +192,6 @@ public partial class PEditor
         PEditorDiscard.IsEnabled = changed;
         PEditorStore.IsEnabled = storable;
         PEditorChangeNotice?.Invoke(storable);
+        PChronicleUpdate();
     }
 }

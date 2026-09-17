@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Llyn.Core;
 using Llyn.Infrastructure;
 using Llyn.ShellEngine;
@@ -22,6 +22,21 @@ internal static partial class TInterface
         string headword,
         string language) =>
         engine.LEngineCourtStart(ownerId, origin, headword, language);
+
+    internal static LDraft? TEngineChronicleUndo(this LEngine engine, long id) =>
+        engine.LEngineChronicleUndo(id);
+
+    internal static LDraft? TEngineChronicleRedo(this LEngine engine, long id) =>
+        engine.LEngineChronicleRedo(id);
+
+    internal static bool TEngineUndoCheck(this LEngine engine, long id) =>
+        engine.LEngineUndoCheck(id);
+
+    internal static bool TEngineRedoCheck(this LEngine engine, long id) =>
+        engine.LEngineRedoCheck(id);
+
+    internal static void TEngineClockSet(this LEngine engine, Func<DateTimeOffset> clock) =>
+        engine.LEngineChronicleClock = clock;
 
     internal static long TEngineCardCreate(this LEngine engine) =>
         engine.LEngineCardCreate();
@@ -165,6 +180,9 @@ internal static partial class TInterface
         LPortraitLabel label) =>
         engine.LEnginePortraitExport(entryId, path, format, label);
 
+    internal static LPortraitPage TEnginePortraitRead(this LEngine engine, long entryId, LPortraitLabel label) =>
+        engine.LEnginePortraitRead(entryId, label);
+
     internal static LPortraitPage TEnginePortraitRead(
         this LEngine engine, long id, LOwner owner, LPortraitLegend legend) =>
         engine.LEnginePortraitRead(id, owner, legend);
@@ -197,6 +215,9 @@ internal static partial class TInterface
     {
         engine.LEngineWorkspaceOpen(path);
     }
+
+    internal static LEstablishment TEngineEstablishmentRead(this LEngine engine) =>
+        engine.LEngineEstablishmentRead();
 
     internal static void TEngineObserverAttach(this LEngine engine, LObserver observer)
     {

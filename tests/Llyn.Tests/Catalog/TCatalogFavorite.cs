@@ -66,6 +66,25 @@ public sealed class TCatalogFavorite
                 .Select(favorite => favorite.LFavoriteEntry.LEntryHeadword));
     }
 
+    [Fact]
+    public void FavoriteFind_GraspOrder_ReturnsHighestGraspFirst()
+    {
+        using TWorkspace workspace = TWorkspace.TWorkspacePrepare();
+        using LEngine engine = workspace.TWorkspaceEngineStart();
+
+        TCatalogFavoriteSave(engine, "apple", "English");
+        TCatalogFavoriteSave(engine, "stone", "English");
+        TCatalogFavoriteSave(engine, "river", "English");
+
+        LFavorite stone = engine.TEngineFavoriteFind("stone").Single();
+        engine.TEngineGraspSave(stone.LFavoriteEntry.LEntryId, 7);
+
+        Assert.Equal(
+            ["stone", "apple", "river"],
+            engine.TEngineFavoriteFind(string.Empty, LCatalogOrder.LCatalogOrderGrasp)
+                .Select(favorite => favorite.LFavoriteEntry.LEntryHeadword));
+    }
+
     private static void TCatalogFavoriteSave(LEngine engine, string headword, string language)
     {
         LEntry entry = engine.TEngineEntrySave(TInterface.TEntryDraftCreate(

@@ -32,6 +32,8 @@ public partial class PReference : UserControl
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, "Reference", null);
         PEditor.PEditorChangeNotice = changed => PReferenceStore.IsEnabled = changed;
+        PEditor.PEditorChronicleNotice = PReferenceChronicleUpdate;
+        PImprint.PImprintChronicleNotice = PReferenceChronicleUpdate;
         PImprint.PImprintChangeNotice = changed =>
         {
             if (PEditor.Visibility != Visibility.Visible)

@@ -140,6 +140,21 @@
             <Border Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
+                        x:Name="PCorpusBackward"
+                        Click="PCorpusUndoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon undo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Undo}" />
+                    <Button
+                        x:Name="PCorpusForward"
+                        Click="PCorpusRedoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon redo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Redo}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
                         x:Name="PCorpusFresh"
                         Click="PCorpusFreshHandle"
                         Content="{DynamicResource Scribe.New}"

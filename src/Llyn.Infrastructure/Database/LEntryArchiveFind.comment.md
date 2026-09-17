@@ -75,3 +75,8 @@ An entry tagged on several of its cards is still one row.
 Returns the entries carrying the Register `registerId` names, ordered by headword.
 It returns every entry when `registerId` is zero.
 A register is held on a meaning or a collocation, so both sides are unioned as the Tag find does.
+
+## `public long LEntryCountRead()`
+
+How many entries the database stores, counted in one statement.
+The status bar prints it, so nothing is loaded that the count alone answers.

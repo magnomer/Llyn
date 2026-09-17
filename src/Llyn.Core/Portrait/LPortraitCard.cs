@@ -1,51 +1,55 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Llyn.Core;
 
-public sealed record LPortraitCard(
-    int LPortraitCardPosition,
-    string LPortraitCardTitle,
-    string LPortraitCardKind,
-    string LPortraitCardExpression,
-    string LPortraitCardMeaning,
-    IReadOnlyList<string> LPortraitCardSituation,
-    IReadOnlyList<string> LPortraitCardRegister,
-    IReadOnlyList<LPortraitLink> LPortraitCardTranslation,
-    IReadOnlyList<LPortraitExample> LPortraitCardExample,
-    IReadOnlyList<string> LPortraitCardTag,
-    IReadOnlyList<LPortraitMedia> LPortraitCardImage,
-    IReadOnlyList<LPortraitMedia> LPortraitCardVideo)
+public static class LPortraitCard
 {
-    public static IReadOnlyList<LPortraitCard> LPortraitCardCreate(
+    public static IReadOnlyList<LPortraitSection> LPortraitCardCreate(
         IReadOnlyList<LCardDraft> cards,
         string kind,
         LSentenceOrder order,
-        string mark,
-        IReadOnlyDictionary<long, LPortraitLink> targets)
+        string language,
+        LPortraitLabel label,
+        IReadOnlyDictionary<long, LPortraitLink> targets,
+        IReadOnlyDictionary<long, string> sources)
     {
         ArgumentNullException.ThrowIfNull(cards);
+        ArgumentNullException.ThrowIfNull(kind);
+        ArgumentNullException.ThrowIfNull(order);
+        ArgumentNullException.ThrowIfNull(language);
+        ArgumentNullException.ThrowIfNull(label);
         ArgumentNullException.ThrowIfNull(targets);
+        ArgumentNullException.ThrowIfNull(sources);
 
-        List<LPortraitCard> shown = new List<LPortraitCard>();
+        string mark = label.LPortraitLabelUnknown;
+        List<LPortraitSection> shown = new List<LPortraitSection>();
 
         foreach (LCardDraft card in cards)
         {
-            List<string> situations = new List<string>();
+            string title = LPortraitText.LPortraitTextRead(card.LCardDraftTitle, mark);
+            string expression = LPortraitText.LPortraitTextRead(card.LCardDraftExpression, mark);
+            string meaning = LPortraitText.LPortraitTextRead(card.LCardDraftMeaning, mark);
+
+            List<LPortraitLine> lines = [];
+            if (meaning.Length > 0)
+            {
+                lines.Add(new LPortraitLine(string.Empty, meaning));
+            }
+
+            List<string> situations = [];
             foreach (LSituationDraft situation in card.LCardDraftSituation)
             {
-                situations.Add(
-                    LPortraitText.LPortraitTextRead(situation.LSituationDraftTitle, mark));
+                LPortraitCardAdd(situations, situation.LSituationDraftTitle, mark);
             }
 
-            List<string> registers = new List<string>();
+            List<string> registers = [];
             foreach (LRegisterDraft register in card.LCardDraftRegister)
             {
-                registers.Add(
-                    LPortraitText.LPortraitTextRead(register.LRegisterDraftName, mark));
+                LPortraitCardAdd(registers, register.LRegisterDraftName, mark);
             }
 
-            List<LPortraitLink> links = new List<LPortraitLink>();
+            List<LPortraitLink> links = [];
             foreach (long id in card.LCardDraftTranslation)
             {
                 if (targets.TryGetValue(id, out LPortraitLink? link))
@@ -54,38 +58,85 @@ public sealed record LPortraitCard(
                 }
             }
 
-            List<LPortraitExample> examples = new List<LPortraitExample>();
-            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
-            {
-                examples.Add(new LPortraitExample(
-                    LPortraitFrame.LPortraitFrameRead(sentence, order, mark),
-                    LPortraitText.LPortraitTextRead(
-                        sentence.LSentenceDraftExample?.LExampleDraftText
-                            ?? LStateValue.LStateValueUnspecified,
-                        mark)));
-            }
-
-            List<string> tags = new List<string>();
+            List<string> tags = [];
             foreach (LTagDraft tag in card.LCardDraftTag)
             {
-                tags.Add(tag.LTagDraftText);
+                if (tag.LTagDraftText.Length > 0)
+                {
+                    tags.Add(tag.LTagDraftText);
+                }
             }
 
-            shown.Add(new LPortraitCard(
-                card.LCardDraftPosition,
-                LPortraitText.LPortraitTextRead(card.LCardDraftTitle, mark),
-                kind,
-                LPortraitText.LPortraitTextRead(card.LCardDraftExpression, mark),
-                LPortraitText.LPortraitTextRead(card.LCardDraftMeaning, mark),
-                situations,
-                registers,
-                links,
-                examples,
-                tags,
+            List<LPortraitSection> children = [];
+            if (expression.Length > 0)
+            {
+                children.Add(new LPortraitSection(
+                    string.Empty,
+                    [new LPortraitLine(string.Empty, expression)],
+                    string.Empty,
+                    [],
+                    [],
+                    LPortraitSectionRole: LPortraitRole.LPortraitRolePhrase));
+            }
+
+            LPortraitCardAdd(
+                children, label.LPortraitLabelSituation, LPortraitRole.LPortraitRoleScene, situations, []);
+            LPortraitCardAdd(
+                children, label.LPortraitLabelRegister, LPortraitRole.LPortraitRoleTone, registers, []);
+            LPortraitCardAdd(
+                children, label.LPortraitLabelTranslation, LPortraitRole.LPortraitRoleBridge, [], links);
+
+            foreach (LSentenceDraft sentence in card.LCardDraftSentence)
+            {
+                if (!sentence.LSentenceDraftEmpty)
+                {
+                    children.Add(LPortraitSentence.LPortraitSentenceCreate(
+                        sentence, order, language, label, targets, sources));
+                }
+            }
+
+            LPortraitCardAdd(children, label.LPortraitLabelTag, LPortraitRole.LPortraitRoleLabel, tags, []);
+            children.AddRange(LPortraitCardCreate(
+                card.LCardDraftChild, kind, order, language, label, targets, sources));
+
+            bool named = title.Length > 0;
+            shown.Add(new LPortraitSection(
+                named ? title : kind,
+                lines,
+                string.Empty,
                 LPortraitMedia.LPortraitMediaCreate(card.LCardDraftImage, mark),
-                LPortraitMedia.LPortraitMediaCreate(card.LCardDraftVideo, mark)));
+                LPortraitMedia.LPortraitMediaCreate(card.LCardDraftVideo, mark),
+                card.LCardDraftPosition,
+                LPortraitSectionChild: children,
+                LPortraitSectionRole: named ? LPortraitRole.LPortraitRoleCard : LPortraitRole.LPortraitRoleKind));
         }
 
         return shown;
+    }
+
+    public static void LPortraitCardAdd(
+        List<LPortraitSection> children,
+        string heading,
+        LPortraitRole role,
+        IReadOnlyList<string> chips,
+        IReadOnlyList<LPortraitLink> links)
+    {
+        ArgumentNullException.ThrowIfNull(children);
+        ArgumentNullException.ThrowIfNull(chips);
+        ArgumentNullException.ThrowIfNull(links);
+
+        if (chips.Count > 0 || links.Count > 0)
+        {
+            children.Add(LPortraitSection.LPortraitSectionCreate(heading, role, chips, links));
+        }
+    }
+
+    private static void LPortraitCardAdd(List<string> chips, LStateValue value, string mark)
+    {
+        string text = LPortraitText.LPortraitTextRead(value, mark);
+        if (text.Length > 0)
+        {
+            chips.Add(text);
+        }
     }
 }

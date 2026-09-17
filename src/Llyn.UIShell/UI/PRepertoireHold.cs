@@ -139,6 +139,7 @@ public partial class PRepertoire
         }
 
         PRepertoireStore.IsEnabled = PScenarioDraftCheck();
+        PChronicleUpdate();
     }
 
     private LDraft? PScenarioDraftStart(long? situation)
@@ -270,6 +271,69 @@ public partial class PRepertoire
         }
 
         return held?.LDraftEntryId is null or 0 ? null : held.LDraftEntryId;
+    }
+
+    public void PChronicleUndo()
+    {
+        PScenarioChronicleRun(_lEngine.LEngineChronicleUndo);
+    }
+
+    public void PChronicleRedo()
+    {
+        PScenarioChronicleRun(_lEngine.LEngineChronicleRedo);
+    }
+
+    private void PScenarioChronicleRun(Func<long, LDraft?> step)
+    {
+        if (_pScenarioDraft == 0)
+        {
+            return;
+        }
+
+        PScenarioChangeSave();
+
+        try
+        {
+            PChronicle.PChronicleRun(() => step(_pScenarioDraft));
+        }
+        catch (Exception exception)
+        {
+            _pRepertoireHost.PWindowFailureShow("Situation.HoldFailed", exception);
+        }
+
+        PChronicleUpdate();
+    }
+
+    public void PChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditor.Visibility == Visibility.Visible
+            ? PEditor.PEditorChronicleRead()
+            : (_pScenarioDraft != 0 && _lEngine.LEngineUndoCheck(_pScenarioDraft),
+                _pScenarioDraft != 0 && _lEngine.LEngineRedoCheck(_pScenarioDraft));
+        PRepertoireBackward.IsEnabled = undo;
+        PRepertoireForward.IsEnabled = redo;
+    }
+
+    private void PRepertoireUndoHandle(object sender, RoutedEventArgs e)
+    {
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PChronicleUndo();
+            return;
+        }
+
+        PChronicleUndo();
+    }
+
+    private void PRepertoireRedoHandle(object sender, RoutedEventArgs e)
+    {
+        if (PEditor.Visibility == Visibility.Visible)
+        {
+            PEditor.PChronicleRedo();
+            return;
+        }
+
+        PChronicleRedo();
     }
 
     private void PScenarioHoldSuspend(Exception exception)

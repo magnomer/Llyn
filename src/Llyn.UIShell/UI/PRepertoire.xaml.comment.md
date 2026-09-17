@@ -15,6 +15,7 @@ Binds the panel to the window it asks for confirmations and panel switches throu
 It binds its lists, the editor's media rows among them, and subscribes to the engine, and reads nothing yet.
 It attaches the entry display and editor to the same host and engine, so an Entry is read and written.
 The editor's change notice drives `PRepertoireStore`, as it drives the save button of the tenor panel.
+The editor is lent `PRepertoireBackward` and `PRepertoireForward` too, so the rail's undo and redo follow an open Entry.
 The window fills the situation catalog when it restores the stored ordering.
 Every change after that arrives as an announcement.
 The panel is current whether or not its tab is in front.

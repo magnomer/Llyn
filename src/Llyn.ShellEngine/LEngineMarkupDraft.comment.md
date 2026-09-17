@@ -10,6 +10,7 @@ The four overloads share one name because each settles one kind of link of the s
 
 Turns one parsed entry into the draft the update path consumes, every id 0 except links.
 Names that resolve to nothing are dropped and named in an omission.
+A speech the pack does not know is kept as a custom speech, as the editor keeps a typed one.
 A local file that does not exist is kept as written and named in an omission.
 An audio location the location rule refuses is blanked, and an image or video row so refused is dropped.
 A mention that names a sense is added to `held` with the entry's line, for the sense pass.
@@ -20,6 +21,7 @@ The overloads below each settle one kind of link.
 ### `private static LSpeechValue? LEngineMarkupResolve(LSpeechArchive values, string language, string name, List<LMarkupOmission> omissions)`
 
 A part of speech by name within the entry's language, or nothing with an omission.
+An inflection's speech goes through here, because a paradigm slot needs a pack value.
 
 ### `private LInflection LEngineMarkupResolve(LSpeechArchive values, string language, LMarkupInflection inflection, int position, List<LMarkupOmission> omissions)`
 

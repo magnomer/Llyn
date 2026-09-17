@@ -13,7 +13,7 @@ Without it every format still works except PDF.
 
 ## `public async Task LEnginePortraitExport(long entryId, string path, LPortraitFormat format, LPortraitLabel label)`
 
-The formats are written from the portrait, so they show exactly what the panel shows.
+The formats are written from the entry's page likeness, so they show exactly what the panel shows.
 PDF is the rendered page printed, which is why it needs no layout of its own.
 An unconfigured press is an error rather than a silent empty file.
 
@@ -30,7 +30,7 @@ The shell only chose the printer: what is on the page was never read from the sc
 ## `public async Task LEnginePortraitPrint(long id, LOwner owner, LPortraitLegend legend, LPressTicket ticket)`
 
 Prints one example, source or situation, whichever `owner` names.
-The page likeness is assembled from stored rows exactly as the entry portrait is.
+The page likeness is assembled from stored rows exactly as the entry's is, and the same sheet prints both.
 
 ## `private LPress LEnginePressRead()`
 

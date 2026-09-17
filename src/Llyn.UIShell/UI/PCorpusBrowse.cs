@@ -357,6 +357,11 @@ public partial class PCorpus
         return _pCorpusHost.PWindowDiscardConfirm(PCorpusChangeCheck(), PCorpusDraftFinish);
     }
 
+    internal long PCorpusVoyageRead()
+    {
+        return _pExcerptExample ?? 0;
+    }
+
     private void PCorpusClear()
     {
         PTranscriptDraftCancel();

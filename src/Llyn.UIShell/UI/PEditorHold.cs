@@ -1,4 +1,6 @@
 using System;
+using System.Windows;
+using System.Windows.Controls;
 using Llyn.Core;
 
 namespace Llyn.UIShell;
@@ -8,6 +10,8 @@ public partial class PEditor
     private long _pEditorDraft;
 
     private bool _pEditorHalted;
+
+    internal Action? PEditorChronicleNotice;
 
     private LDraft? PEditorDraftStart(long? entry)
     {
@@ -30,6 +34,62 @@ public partial class PEditor
             PEditorHoldSuspend(exception);
             return null;
         }
+    }
+
+    public void PChronicleUndo()
+    {
+        PEditorChronicleRun(_lEngine.LEngineChronicleUndo);
+    }
+
+    public void PChronicleRedo()
+    {
+        PEditorChronicleRun(_lEngine.LEngineChronicleRedo);
+    }
+
+    private void PEditorUndoHandle(object sender, RoutedEventArgs e)
+    {
+        PChronicleUndo();
+    }
+
+    private void PEditorRedoHandle(object sender, RoutedEventArgs e)
+    {
+        PChronicleRedo();
+    }
+
+    public void PChronicleUpdate()
+    {
+        (bool undo, bool redo) = PEditorChronicleRead();
+        PEditorBackward.IsEnabled = undo;
+        PEditorForward.IsEnabled = redo;
+        PEditorChronicleNotice?.Invoke();
+    }
+
+    internal (bool PEditorPast, bool PEditorFuture) PEditorChronicleRead()
+    {
+        return (
+            _pEditorDraft != 0 && _lEngine.LEngineUndoCheck(_pEditorDraft),
+            _pEditorDraft != 0 && _lEngine.LEngineRedoCheck(_pEditorDraft));
+    }
+
+    private void PEditorChronicleRun(Func<long, LDraft?> step)
+    {
+        if (_pEditorDraft == 0)
+        {
+            return;
+        }
+
+        PEditorChangeSave();
+
+        try
+        {
+            PChronicle.PChronicleRun(() => step(_pEditorDraft));
+        }
+        catch (Exception exception)
+        {
+            _pEditorHost.PWindowFailureShow("Input.HoldFailed", exception);
+        }
+
+        PChronicleUpdate();
     }
 
     private void PEditorHoldSuspend(Exception exception)

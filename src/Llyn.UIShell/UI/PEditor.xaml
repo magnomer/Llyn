@@ -95,6 +95,21 @@
                 Style="{StaticResource Theme.Command.Group}">
                 <StackPanel Orientation="Horizontal">
                     <Button
+                        x:Name="PEditorBackward"
+                        Click="PEditorUndoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon undo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Undo}" />
+                    <Button
+                        x:Name="PEditorForward"
+                        Click="PEditorRedoHandle"
+                        IsEnabled="False"
+                        Style="{StaticResource Theme.Command.Segment}"
+                        Tag="{local:PIcon redo, 24}"
+                        ToolTip="{DynamicResource Chronicle.Redo}" />
+                    <Rectangle Style="{StaticResource Theme.Command.Divider}" />
+                    <Button
                         x:Name="PEditorDiscard"
                         Click="PEditorDiscardHandle"
                         Content="{DynamicResource Input.Discard}"

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Llyn.Core;
 using Llyn.Infrastructure;
 
@@ -6,96 +6,37 @@ namespace Llyn.Tests;
 
 internal static partial class TInterface
 {
-    internal static LPortraitLabel TPortraitLabelCreate(
-        string unknown,
-        string meaning,
-        string meanings,
-        string collocation,
-        string collocations,
-        string incoming,
-        string note) =>
-        new(unknown, meaning, meanings, collocation, collocations, incoming, note);
+    internal static LPortraitLabel TPortraitLabelRead() => LPortraitLabel.LPortraitLabelDefault;
 
     internal static LPortraitLink TPortraitLinkCreate(long id, string headword, string language) =>
         new(id, headword, language);
-
-    internal static LPortraitExample TPortraitExampleCreate(string frame, string text) =>
-        new(frame, text);
 
     internal static LPortraitMedia TPortraitMediaCreate(
         string location, string span, bool moving) =>
         new(location, span, moving);
 
-    internal static LPortraitUsage TPortraitUsageCreate(
-        string headword, string title, string owner, string language) =>
-        new(headword, title, owner, language);
-
-    internal static LPortraitCard TPortraitCardCreate(
-        int position,
-        string title,
-        string kind,
-        string expression,
-        string meaning,
-        IReadOnlyList<string> situation,
-        IReadOnlyList<string> register,
-        IReadOnlyList<LPortraitLink> translation,
-        IReadOnlyList<LPortraitExample> example,
-        IReadOnlyList<string> tag,
-        IReadOnlyList<LPortraitMedia> image,
-        IReadOnlyList<LPortraitMedia> video) =>
-        new(
-            position,
-            title,
-            kind,
-            expression,
-            meaning,
-            situation,
-            register,
-            translation,
-            example,
-            tag,
-            image,
-            video);
-
-    internal static LPortrait TPortraitCreate(
-        string headword,
-        string language,
-        IReadOnlyList<LPortraitReading> pronunciation,
-        IReadOnlyList<LPortraitReading> transcription,
-        IReadOnlyList<string> speech,
-        IReadOnlyList<LPortraitCard> meaning,
-        IReadOnlyList<LPortraitCard> collocation,
-        IReadOnlyList<LPortraitUsage> incoming,
-        string note,
-        bool favorite,
-        LPortraitLabel label) =>
-        new(
-            headword,
-            language,
-            pronunciation,
-            transcription,
-            speech,
-            meaning,
-            collocation,
-            incoming,
-            note,
-            favorite,
-            label);
-
-    internal static LPortraitReading TPortraitReadingCreate(string label, string text) => new(label, text);
-
     internal static LTheme TThemeLoad() => LTheme.LThemeLoad();
 
     internal static string TThemeRead(this LTheme theme, string name) => theme.LThemeRead(name);
 
-    internal static string TSheetFormat(LPortrait portrait, LTheme theme) =>
-        LSheet.LSheetFormat(portrait, theme);
+    internal static string TSheetFormat(LPortraitPage page, LTheme theme) => LSheet.LSheetFormat(page, theme);
 
-    internal static string TOutlineFormat(LPortrait portrait) => LOutline.LOutlineFormat(portrait);
+    internal static string TOutlineFormat(LPortraitPage page) => LOutline.LOutlineFormat(page);
+
+    internal static string TSheetNormalize(string? text) => LSheet.LSheetNormalize(text);
+
+    internal static string TOutlineNormalize(string? text) => LOutline.LOutlineNormalize(text);
+
+    internal static string TFolioLineFormat(string? text) => LFolioLine.LFolioLineFormat(text);
 
     internal static LPortraitLegend TPortraitLegendRead() => LPortraitLegend.LPortraitLegendDefault;
 
-    internal static LPortraitLine TPortraitLineCreate(string label, string text) => new(label, text);
+    internal static IReadOnlyList<string> TPortraitTextRead(LPortraitPage page) =>
+        LPortraitText.LPortraitTextRead(page);
+
+    internal static LPortraitLine TPortraitLineCreate(
+        string label, string text, string open = "", string close = "") =>
+        new(label, text, open, close);
 
     internal static LPortraitSection TPortraitSectionCreate(
         string heading,
@@ -105,6 +46,18 @@ internal static partial class TInterface
         IReadOnlyList<LPortraitMedia> video) =>
         new(heading, line, note, image, video);
 
+    internal static LPortraitSection TPortraitSectionCreate(
+        string heading,
+        int position,
+        IReadOnlyList<LPortraitLine> line,
+        IReadOnlyList<string> chip,
+        IReadOnlyList<LPortraitLink> link,
+        IReadOnlyList<LPortraitMedia> image,
+        IReadOnlyList<LPortraitMedia> video,
+        IReadOnlyList<LPortraitSection> child,
+        LPortraitRole role = LPortraitRole.LPortraitRoleBand) =>
+        new(heading, line, string.Empty, image, video, position, chip, link, child, role);
+
     internal static LPortraitPage TPortraitPageCreate(
         string title,
         string language,
@@ -112,8 +65,14 @@ internal static partial class TInterface
         IReadOnlyList<LPortraitSection> section) =>
         new(title, language, chip, section);
 
-    internal static string TSheetPageFormat(LPortraitPage page, LTheme theme) =>
-        LSheetPage.LSheetPageFormat(page, theme);
+    internal static LPortraitPage TPortraitPageCreate(
+        string title,
+        string language,
+        bool favorite,
+        IReadOnlyList<LPortraitLine> line,
+        IReadOnlyList<string> chip,
+        IReadOnlyList<LPortraitSection> section) =>
+        new(title, language, chip, section, favorite, line);
 
     internal static LPressTicket TPressTicketCreate(string printer, bool landscape, int copies) =>
         new(
@@ -130,8 +89,8 @@ internal static partial class TInterface
     internal static IReadOnlyList<LMarkdownBlock> TMarkdownParse(string? text) =>
         LMarkdown.LMarkdownParse(text);
 
-    internal static void TFolioSave(LPortrait portrait, LTheme theme, string path)
+    internal static void TFolioSave(LPortraitPage page, LTheme theme, string path)
     {
-        LFolio.LFolioSave(portrait, theme, path);
+        LFolio.LFolioSave(page, theme, path);
     }
 }

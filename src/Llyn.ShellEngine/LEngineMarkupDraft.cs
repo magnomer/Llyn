@@ -18,10 +18,10 @@ public sealed partial class LEngine
         List<LSpeechDraft> speeches = new(entry.LMarkupEntrySpeech.Count);
         foreach (string name in entry.LMarkupEntrySpeech)
         {
-            if (LEngineMarkupResolve(values, language, name, omissions) is LSpeechValue value)
-            {
-                speeches.Add(LSpeechDraft.LSpeechDraftCreate(value.LSpeechValueId, value.LSpeechValueName));
-            }
+            LSpeechValue? value = string.IsNullOrWhiteSpace(language) ? null : values.LSpeechValueFind(language, name);
+            speeches.Add(value is null
+                ? LSpeechDraft.LSpeechDraftCreate(name)
+                : LSpeechDraft.LSpeechDraftCreate(value.LSpeechValueId, value.LSpeechValueName));
         }
 
         List<LInflection> inflections = new(entry.LMarkupEntryInflection.Count);

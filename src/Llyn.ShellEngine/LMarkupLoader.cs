@@ -51,7 +51,12 @@ internal sealed class LMarkupLoader
         List<LReflexDraft> reflexes = new(draft.LEntryDraftReflexes.Count);
         foreach (LReflexDraft reflex in draft.LEntryDraftReflexes)
         {
-            reflexes.Add(reflex with { LReflexDraftId = 0 });
+            reflexes.Add(reflex with
+            {
+                LReflexDraftId = 0,
+                LReflexDraftAnatomy = LAnatomy.LAnatomyEmpty,
+                LReflexDraftAnchors = [],
+            });
         }
 
         return new LMarkupEntry(

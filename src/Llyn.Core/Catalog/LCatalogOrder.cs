@@ -33,4 +33,6 @@ public enum LCatalogOrder
     LCatalogOrderPending,
 
     LCatalogOrderWork,
+
+    LCatalogOrderGrasp,
 }

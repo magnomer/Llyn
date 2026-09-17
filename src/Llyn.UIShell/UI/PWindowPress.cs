@@ -80,7 +80,21 @@ public partial class PWindow
             PLocalizationTextRead("Display.CollocationSingle"),
             PLocalizationTextRead("Display.Collocation"),
             PLocalizationTextRead("Display.Translated"),
-            PLocalizationTextRead("Display.Note"));
+            PLocalizationTextRead("Display.Note"),
+            PLocalizationTextRead("Portrait.Form"),
+            PLocalizationTextRead("Portrait.Paradigm"),
+            PLocalizationTextRead("Frequency.Title"),
+            PLocalizationTextRead("Portrait.Glyph"),
+            PLocalizationTextRead("Display.Script"),
+            PLocalizationTextRead("Display.Fanqie"),
+            PLocalizationTextRead("Portrait.Example"),
+            PLocalizationTextRead("Portrait.Gloss"),
+            PLocalizationTextRead("Reference.Title"),
+            PLocalizationTextRead("Portrait.Mention"),
+            PLocalizationTextRead("Portrait.Situation"),
+            PLocalizationTextRead("Portrait.Register"),
+            PLocalizationTextRead("Portrait.Translation"),
+            PLocalizationTextRead("Portrait.Tag"));
     }
 
     internal LPortraitLegend PWindowLegendRead(string realm)

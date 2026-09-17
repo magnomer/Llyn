@@ -7,7 +7,21 @@ public sealed record LPortraitLabel(
     string LPortraitLabelCollocation,
     string LPortraitLabelCollocations,
     string LPortraitLabelIncoming,
-    string LPortraitLabelNote)
+    string LPortraitLabelNote,
+    string LPortraitLabelForm,
+    string LPortraitLabelParadigm,
+    string LPortraitLabelFrequency,
+    string LPortraitLabelGlyph,
+    string LPortraitLabelScript,
+    string LPortraitLabelFanqie,
+    string LPortraitLabelExample,
+    string LPortraitLabelGloss,
+    string LPortraitLabelSource,
+    string LPortraitLabelMention,
+    string LPortraitLabelSituation,
+    string LPortraitLabelRegister,
+    string LPortraitLabelTranslation,
+    string LPortraitLabelTag)
 {
     public static LPortraitLabel LPortraitLabelDefault { get; } = new(
         "Unknown",
@@ -16,5 +30,19 @@ public sealed record LPortraitLabel(
         "Collocation",
         "Collocations",
         "Links here",
-        "Note");
+        "Note",
+        "Forms",
+        "Paradigm",
+        "Frequency",
+        "Characters",
+        "Character forms",
+        "Rime books",
+        "Example",
+        "Gloss",
+        "Source",
+        "Mentions",
+        "Situations",
+        "Registers",
+        "Translations",
+        "Tags");
 }

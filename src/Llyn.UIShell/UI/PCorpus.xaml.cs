@@ -6,7 +6,7 @@ using Llyn.ShellEngine;
 
 namespace Llyn.UIShell;
 
-public partial class PCorpus : UserControl
+public partial class PCorpus : UserControl, PChronicleHost
 {
     private PWindow _pCorpusHost = null!;
 
@@ -37,6 +37,7 @@ public partial class PCorpus : UserControl
         PDisplay.PDisplayAttach(host, engine);
         PEditor.PEditorAttach(host, engine, PTranscriptOrigin, null);
         PEditor.PEditorChangeNotice = changed => PCorpusStore.IsEnabled = changed;
+        PEditor.PEditorChronicleNotice = PChronicleUpdate;
 
         _pCorpusObserver = new PObserver(this, PCorpusBulletinHandle);
         engine.LEngineObserverAttach(_pCorpusObserver);

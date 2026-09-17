@@ -1,28 +1,30 @@
 # LPortraitCard.cs
 
-## `public sealed record LPortraitCard`
+## `public static class LPortraitCard`
 
-One meaning or collocation card, resolved to what the card shows.
+Turns meaning and collocation card drafts into numbered sections.
 A meaning card and a collocation card share this shape, exactly as they do on screen.
-Which one it is shows only in the kind label and in whether an expression is set.
+Which one it is shows only in the kind word that stands in for a missing title.
+Every child carries the role it plays on screen, so a writer never guesses a role from a shape.
 
-**Parameters**
+## `public static IReadOnlyList<LPortraitSection> LPortraitCardCreate(IReadOnlyList<LCardDraft> cards, string kind, LSentenceOrder order, string language, LPortraitLabel label, IReadOnlyDictionary<long, LPortraitLink> targets, IReadOnlyDictionary<long, string> sources)`
 
-- `LPortraitCardPosition` - the number in the round badge on the card header.
-- `LPortraitCardTitle` - the header title, empty when the card carries none.
-- `LPortraitCardKind` - the localized word shown in place of a missing title.
-- `LPortraitCardExpression` - the collocation phrase, empty on a meaning card.
-- `LPortraitCardMeaning` - the definition line.
-- `LPortraitCardSituation` - the situation chips.
-- `LPortraitCardTranslation` - the linked entries this card translates to.
-- `LPortraitCardExample` - the example lines, each already framed.
-- `LPortraitCardTag` - the tag chips.
-- `LPortraitCardImage` - the pictures shown under the card body.
-- `LPortraitCardVideo` - the video plates shown under the pictures.
-
-## `public static IReadOnlyList<LPortraitCard> LPortraitCardCreate(IReadOnlyList<LCardDraft> cards, string kind, LSentenceOrder order, string mark, IReadOnlyDictionary<string, LPortraitLink> targets)`
-
-Turns stored card drafts into what the cards show.
+One section per card, in stored order, numbered by the card's position.
+The heading is the title, else the kind word, and the role says which.
+So a writer can mute a heading that is only the kind.
+The expression becomes a phrase child standing first, drawn before the meaning as the panel does.
+The meaning is the card's one unlabelled line, skipped when empty.
+Situations become a scene child, registers a tone child and tags a label child, each of chips.
+Translations become a bridge child of links, and an id with no loaded target is dropped.
+Each written sentence becomes a child, and the child cards recurse through here.
+The children stand in the display's order: phrase, situations, registers, translations, examples, tags, then cards.
 An unset field becomes empty text and an unknown one becomes the mark, as the display does.
-A translation id with no loaded target is dropped rather than shown as a bare id.
 Media whose location was never written is skipped, because the display draws no empty plate.
+
+## `public static void LPortraitCardAdd(List<LPortraitSection> children, string heading, LPortraitRole role, IReadOnlyList<string> chips, IReadOnlyList<LPortraitLink> links)`
+
+Adds one unnumbered child of the given role carrying the chips or links, skipped when both are empty.
+
+## `private static void LPortraitCardAdd(List<string> chips, LStateValue value, string mark)`
+
+Adds one chip when the value reads as text.
